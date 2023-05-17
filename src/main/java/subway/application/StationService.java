@@ -1,44 +1,185 @@
 package subway.application;
 
+import java.util.ArrayList;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class StationService {
+
+    private static final int MIN_STATION_COUNT = 2;
+    public static final long EMPTY_STATION_ID = 0L;
+    public static final int MIN_DISTANCE_VALUE = 1;
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, LineDao lineDao) {
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public Long saveStation(Long lineId, StationRequest request) {
+        validateBothExist(lineId, request);
+        validateBothNotExist(lineId, request);
+        if (lineDao.isUpEndStation(lineId, request.getDownStation())) {   //상행 종점 추가
+            return saveUpEndStation(lineId, request);
+        }
+        if (stationDao.isDownEndStation(lineId, request.getUpStation())) { //하행 종점 추가
+            return saveDownEndStation(lineId, request);
+        }
+        return saveMiddle(lineId, request);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    private void validateBothExist(Long lineId, StationRequest request) {
+        if (isExistBoth(lineId, request)) {
+            throw new IllegalArgumentException("이미 존재하는 역입니다.");
+        }
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    private boolean isExistBoth(Long lineId, StationRequest request) {
+        return stationDao.isExist(lineId, request.getUpStation())
+            && stationDao.isExist(lineId, request.getDownStation());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+    private void validateBothNotExist(Long lineId, StationRequest request) {
+        if (isNotExistBoth(lineId, request)) {
+            throw new IllegalArgumentException("해당 노선에 기준이 될 역이 없습니다");
+        }
     }
 
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    private boolean isNotExistBoth(Long lineId, StationRequest request) {
+        return !stationDao.isExist(lineId, request.getUpStation())
+            && !stationDao.isExist(lineId, request.getDownStation());
+    }
+
+    private Long saveDownEndStation(Long lineId, StationRequest request) {
+        Long originTailId = stationDao.findTailStationByLineId(lineId);
+        StationEntity newStation = new StationEntity(request.getDownStation(),
+            EMPTY_STATION_ID, null, lineId);
+        Long newHeadId = stationDao.insert(newStation);
+        stationDao.updateDistanceById(originTailId, request.getDistance());
+        stationDao.updateNextStationById(originTailId, newHeadId);
+        return newHeadId;
+    }
+
+    private Long saveUpEndStation(Long lineId, StationRequest request) {
+        Long originHeadId = lineDao.findHeadIdById(lineId);
+        StationEntity newStation = new StationEntity(request.getUpStation(), originHeadId,
+            request.getDistance(),
+            lineId);
+        Long newHeadId = stationDao.insert(newStation);
+        lineDao.updateHeadStation(lineId, newHeadId);
+        return newHeadId;
+    }
+
+    private Long saveMiddle(Long lineId, StationRequest request) {
+        StationEntity upStationOfNew;
+        if (stationDao.isExist(lineId, request.getUpStation())) {   //하행 방향으로 추가
+            upStationOfNew = stationDao.findByLineIdAndName(lineId, request.getUpStation());
+            validateDistance(upStationOfNew, request);
+            return saveMiddleStation(lineId, request.getDownStation(), upStationOfNew,
+                request.getDistance(), upStationOfNew.getDistance() - request.getDistance());
+        }
+        upStationOfNew = stationDao.findByNextStationId(lineId, request.getDownStation());
+        validateDistance(upStationOfNew, request);
+        return saveMiddleStation(lineId, request.getUpStation(), upStationOfNew,
+            upStationOfNew.getDistance() - request.getDistance(), request.getDistance());
+    }
+
+    private void validateDistance(StationEntity upStationOfNew, StationRequest request) {
+        if (upStationOfNew.getDistance() - request.getDistance() < MIN_DISTANCE_VALUE) {
+            throw new IllegalArgumentException("추가하려는 역이 기존 목적지 역보다 멀리 있습니다");
+        }
+    }
+
+    private Long saveMiddleStation(Long lineId, String newStationName, StationEntity upStationOfNew,
+        int newUpStationDistance, int newDistance) {
+        Long downStationOfNewId = upStationOfNew.getNext();
+        StationEntity newStation = new StationEntity(newStationName, downStationOfNewId,
+            newDistance, lineId);
+
+        Long newStationId = stationDao.insert(newStation);
+        stationDao.updateNextStationById(upStationOfNew.getId(), newStationId);
+        stationDao.updateDistanceById(upStationOfNew.getId(), newUpStationDistance);
+        return newStationId;
+    }
+
+    public List<StationResponse> findLineStationResponsesById(Long lineId) {
+        List<StationEntity> rawStations = stationDao.findByLineId(lineId);
+        StationEntity currentStation = stationDao.findHeadStationByLineId(lineId);
+        return sortStations(rawStations, currentStation).stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    private static List<StationEntity> sortStations(List<StationEntity> rawStations,
+        StationEntity currentStation) {
+        List<StationEntity> sortedStations = new ArrayList<>(List.of(currentStation));
+        while (currentStation.getNext() != EMPTY_STATION_ID) {
+            StationEntity finalCurrentStation = currentStation;
+            currentStation = rawStations.stream()
+                .filter(entity -> Objects.equals(entity.getId(), finalCurrentStation.getNext()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("노선에 잘못된 역 정보가 포함되어 있습니다."));
+            sortedStations.add(currentStation);
+        }
+        return sortedStations;
+    }
+
+    public void deleteStation(Long lineId, String name) {
+        validateCanDelete(lineId, name);
+        StationEntity deleteStation = stationDao.findByLineIdAndName(lineId, name);
+        if (lineDao.isUpEndStation(lineId, name)) {
+            deleteUpEndStation(lineId, deleteStation);
+            return;
+        }
+        StationEntity upStation = stationDao.findByNextStationId(lineId, name);
+        if (stationDao.isDownEndStation(lineId, name)) {
+            deleteDownEndStation(deleteStation, upStation);
+            return;
+        }
+        deleteMiddleStation(deleteStation, upStation);
+    }
+
+    private void validateCanDelete(Long lineId, String name) {
+        validateStationCount(lineId);
+        validateExistStation(lineId, name);
+    }
+
+    private void validateStationCount(Long lineId) {
+        if (stationDao.findByLineId(lineId).size() <= MIN_STATION_COUNT) {
+            throw new IllegalArgumentException("노선에는 최소 2개 이상의 역이 존재해야 합니다.");
+        }
+    }
+
+    private void validateExistStation(Long lineId, String name) {
+        stationDao.findByLineIdAndName(lineId, name);
+    }
+
+    private void deleteUpEndStation(Long lineId, StationEntity deleteStation) {
+        lineDao.updateHeadStation(lineId, deleteStation.getNext());
+        stationDao.deleteById(deleteStation.getId());
+    }
+
+    private void deleteDownEndStation(StationEntity deleteStation, StationEntity upStation) {
+        stationDao.updateNextStationById(upStation.getId(), EMPTY_STATION_ID);
+        stationDao.deleteById(deleteStation.getId());
+    }
+
+    private void deleteMiddleStation(StationEntity deleteStation, StationEntity upStation) {
+        int newDistance = upStation.getDistance() + deleteStation.getDistance();
+        stationDao.updateDistanceById(upStation.getId(), newDistance);
+        stationDao.updateNextStationById(upStation.getId(), deleteStation.getNext());
+        stationDao.deleteById(deleteStation.getId());
     }
 }

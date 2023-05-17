@@ -1,10 +1,11 @@
 package subway.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
+import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -13,49 +14,72 @@ import java.util.Map;
 
 @Repository
 public class LineDao {
+
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+        new LineEntity(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color"),
+            rs.getLong("head_station")
+        );
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
-            );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("line")
+            .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
+    public Long insert(LineEntity entity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
+        params.put("name", entity.getName());
+        params.put("color", entity.getColor());
+        params.put("head_station", entity.getHeadStation());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+    public List<LineEntity> findAll() {
+        String sql = "select * from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public LineEntity findById(Long id) {
+        try {
+            String sql = "select * from LINE WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+        }
     }
 
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    public Long findHeadIdById(Long lineId) {
+        String sql = "select head_station from LINE WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("head_station"), lineId);
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public boolean isExist(String name) {
+        String sql = "select exists(select * from LINE where name = ?) as is_exist";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+            rs.getBoolean("is_exist"), name));
+    }
+
+    public boolean isUpEndStation(Long lineId, String name) {
+        String sql = "select exists(select * from LINE "
+            + "left outer join STATION on STATION.id = LINE.head_station "
+            + "where LINE.id = ? and STATION.name = ?) as is_up_end_station";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+            rs.getBoolean("IS_UP_END_STATION"), lineId, name));
+    }
+
+    public int updateHeadStation(Long lineId, Long headStation) {
+        String sql = "update LINE set head_station = ? where id = ?";
+        return jdbcTemplate.update(sql, headStation, lineId);
+    }
+
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }
