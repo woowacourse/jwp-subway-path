@@ -1,0 +1,39 @@
+package subway.application;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import subway.domain.Route;
+import subway.domain.Section;
+import subway.domain.SubwayGraph;
+import subway.dto.RouteRequest;
+import subway.dto.RouteResponse;
+import subway.dto.StationResponse;
+
+@Service
+public class RouteService {
+    
+    private final StationService stationService;
+    private final SectionService sectionService;
+    
+    public RouteService(final StationService stationService,
+            final SectionService sectionService) {
+        this.stationService = stationService;
+        this.sectionService = sectionService;
+    }
+    
+    public RouteResponse findRouteBetween(final RouteRequest routeRequest) {
+        final List<Section> sections = this.sectionService.findAll()
+                .stream()
+                .map(Section::from)
+                .collect(Collectors.toUnmodifiableList());
+        final SubwayGraph subwayGraph = SubwayGraph.from(sections, routeRequest.getSourceStationId(),
+                routeRequest.getTargetStationId());
+        final Route route = subwayGraph.getRoute();
+        final List<StationResponse> stationResponses = route.getStationIds()
+                .stream()
+                .map(this.stationService::findStationResponseById)
+                .collect(Collectors.toUnmodifiableList());
+        return RouteResponse.of(stationResponses, route.getDistance());
+    }
+}

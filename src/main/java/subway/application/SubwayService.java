@@ -11,6 +11,7 @@ import subway.domain.LineSections;
 import subway.domain.Route;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.SubwayGraph;
 import subway.dto.SubwayResponse;
 
 @Service
@@ -35,16 +36,15 @@ public class SubwayService {
             return SubwayResponse.of(line, List.of());
         }
         
-        final Route route = Route.from(sections);
-        
         final long upTerminalStationId = lineSections.getUpTerminalStationId();
         final long downTerminalStationId = lineSections.getDownTerminalStationId();
         
-        final List<Station> orderedStations = route.findRoute(upTerminalStationId, downTerminalStationId)
+        final SubwayGraph subwayGraph = SubwayGraph.from(sections, upTerminalStationId, downTerminalStationId);
+        final Route route = subwayGraph.getRoute();
+        final List<Station> orderedStations = route.getStationIds()
                 .stream()
                 .map(this.stationDao::findById)
                 .collect(Collectors.toUnmodifiableList());
-        
         return SubwayResponse.of(line, orderedStations);
     }
     
