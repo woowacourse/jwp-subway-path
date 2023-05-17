@@ -1,5 +1,7 @@
 package subway.domain.core;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.List;
 import subway.exception.InvalidSectionException;
@@ -72,6 +74,18 @@ public class Subway {
                 .filter(station -> station.isSameName(name))
                 .findAny()
                 .orElseThrow(StationNotFoundException::new);
+    }
+
+    public List<Section> getSections() {
+        return lines.stream()
+                .flatMap(line -> line.getSections().stream())
+                .collect(toList());
+    }
+
+    public List<Station> getStations() {
+        return lines.stream()
+                .flatMap(line -> line.findAllStation().stream())
+                .collect(toList());
     }
 
     public List<Line> getLines() {
