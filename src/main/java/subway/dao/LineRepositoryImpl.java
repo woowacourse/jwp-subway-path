@@ -26,7 +26,7 @@ public class LineRepositoryImpl implements LineRepository {
 
     @Override
     public Long insert(final Line line) {
-        final LineEntity requestLineEntity = new LineEntity(line.getName().name(), line.getColor(), line.getExtraFare());
+        final LineEntity requestLineEntity = new LineEntity(line.getName().name(), line.getColor(), line.getExtraFare().fare());
         return lineDao.insert(requestLineEntity);
     }
 
@@ -51,7 +51,7 @@ public class LineRepositoryImpl implements LineRepository {
 
     @Override
     public void updateById(final Long id, final Line line) {
-        final LineEntity requestLineEntity = new LineEntity(id, line.getName().name(), line.getColor(), line.getExtraFare());
+        final LineEntity requestLineEntity = new LineEntity(id, line.getName().name(), line.getColor(), line.getExtraFare().fare());
         final int updatedCount = lineDao.update(requestLineEntity);
         if (updatedCount != 1) {
             throw new DBException(DB_UPDATE_ERROR);

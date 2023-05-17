@@ -24,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.line.Line;
+import subway.domain.line.LineExtraFare;
 import subway.domain.line.LineName;
 import subway.domain.line.LineWithSectionRes;
 import subway.exception.DBException;
@@ -114,7 +115,7 @@ class LineRepositoryImplTest {
         // then
         assertThat(line)
             .extracting(Line::getName, Line::getColor, Line::getExtraFare)
-            .containsExactly(new LineName("이호선"), "bg-green-600", 0);
+            .containsExactly(new LineName("이호선"), "bg-green-600", new LineExtraFare(0));
     }
 
     @Test

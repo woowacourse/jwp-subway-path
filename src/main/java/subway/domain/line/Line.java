@@ -7,7 +7,7 @@ public class Line {
 
     private final LineName name;
     private final String color;
-    private final int extraFare;
+    private final LineExtraFare extraFare;
     private Sections sections;
 
     public Line(final String name, final String color, final int extraFare) {
@@ -17,7 +17,7 @@ public class Line {
     public Line(final String name, final String color, final int extraFare, final Sections sections) {
         this.name = new LineName(name);
         this.color = color;
-        this.extraFare = extraFare;
+        this.extraFare = new LineExtraFare(extraFare);
         this.sections = sections;
     }
 
@@ -37,7 +37,7 @@ public class Line {
         return sections;
     }
 
-    public int getExtraFare() {
+    public LineExtraFare getExtraFare() {
         return extraFare;
     }
 }

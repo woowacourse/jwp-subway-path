@@ -177,7 +177,7 @@ public class LineService {
             return new StationResponse(stationId, station.getName().name());
         }).collect(Collectors.toUnmodifiableList());
         return new LineResponse(lineWithSections.get(0).getLineId(), line.getName().name(), line.getColor(),
-            line.getExtraFare(), stationResponses);
+            line.getExtraFare().fare(), stationResponses);
     }
 
     private Station createStation(final Long stationId, final List<LineWithSectionRes> lineWithSections) {
