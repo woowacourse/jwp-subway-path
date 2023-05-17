@@ -3,6 +3,7 @@ package subway.exception;
 public enum ErrorMessage {
     DUPLICATE_NAME("중복된 이름입니다."),
     DUPLICATE_STATION("이미 존재하는 역입니다."),
+    DUPLICATE_SECTION("이미 존재하는 구간입니다."),
     NOT_FOUND_STATION("존재하지 않는 역입니다."),
     NOT_FOUND_SECTION("존재하지 않는 구간입니다."),
     NOT_FOUND_SECTION_BY_LINE_ID("해당 노선의 구간을 찾을 수 없습니다."),

@@ -1,6 +1,9 @@
 package subway.dao;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -12,6 +15,7 @@ import subway.dao.entity.StationEntity;
 
 @Repository
 public class SectionDao {
+    private static final int EXISTED_SECTION = 1;
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -49,9 +53,43 @@ public class SectionDao {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(sectionEntity)).longValue();
     }
 
+    public boolean exists(final SectionEntity sectionEntity) {
+        final String sql = "SELECT EXISTS("
+                + "SELECT * FROM section "
+                + "WHERE line_id = ? AND up_station_id = ? AND down_station_id = ?"
+                + ")";
+
+        Integer result = jdbcTemplate.queryForObject(
+                sql, Integer.class,
+                sectionEntity.getLineId(),
+                sectionEntity.getUpStationId(),
+                sectionEntity.getDownStationId()
+        );
+
+        return result == EXISTED_SECTION;
+    }
+
     public List<SectionEntity> findByLineId(final Long lineId) {
         final String sql = "SELECT * FROM section WHERE line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
+
+        try {
+            return jdbcTemplate.query(sql, rowMapper, lineId);
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    public Optional<SectionEntity> findByLineIdAndUpStationIdAndDownStationId(final Long upStationId,
+                                                                              final Long downStationId,
+                                                                              final Long lineId) {
+        final String sql = "SELECT * FROM section "
+                + "WHERE up_station_id = ? AND down_station_id = ? AND line_id = ?";
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, upStationId, downStationId, lineId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<SectionWithStationNameEntity> findByLineIdWithStationName(final Long sectionId) {

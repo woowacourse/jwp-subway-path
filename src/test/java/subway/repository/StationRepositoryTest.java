@@ -3,11 +3,14 @@ package subway.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.exception.DuplicateException;
 import subway.exception.ErrorMessage;
@@ -18,7 +21,14 @@ import subway.exception.NotFoundException;
 @JdbcTest
 class StationRepositoryTest {
     @Autowired
+    private JdbcTemplate jdbcTemplate;
     private StationRepository stationRepository;
+
+    @BeforeEach
+    void setUp() {
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        stationRepository = new StationRepository(stationDao);
+    }
 
     @Test
     void 역을_입력받아_저장한다() {
