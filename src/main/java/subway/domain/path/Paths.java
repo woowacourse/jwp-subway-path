@@ -1,14 +1,13 @@
-package subway.domain;
+package subway.domain.path;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.UnaryOperator;
+import subway.domain.Station;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toUnmodifiableList;
+import static subway.domain.path.PathUtils.*;
 
 public final class Paths {
     private final List<Path> paths;
@@ -28,7 +27,7 @@ public final class Paths {
         findOverlappedOriginalPath(path)
                 .ifPresentOrElse(originalPath -> {
                             result.remove(originalPath);
-                            result.addAll(originalPath.divideBy(path));
+                            result.addAll(divide(originalPath, path));
                         },
                         () -> result.add(path));
 
@@ -57,7 +56,7 @@ public final class Paths {
 
     private Optional<Path> findOverlappedOriginalPath(final Path newPath) {
         return paths.stream()
-                .filter(path -> path.isUpStationEquals(newPath) || path.isDownStationEquals(newPath))
+                .filter(path -> isOverlapped(path, newPath))
                 .findAny();
     }
 
@@ -68,7 +67,8 @@ public final class Paths {
         result.removeAll(affectedPaths);
 
         if (isStationBetween(affectedPaths)) {
-            mergeBothSides(result, affectedPaths);
+            final Path merged = merge(affectedPaths.get(0), affectedPaths.get(1));
+            result.add(merged);
         }
 
         return new Paths(result);
@@ -84,43 +84,34 @@ public final class Paths {
         return affectedPaths.size() == 2;
     }
 
-    private void mergeBothSides(final List<Path> result, final List<Path> affectedPaths) {
-        final Path previous = affectedPaths.get(0);
-        final Path next = affectedPaths.get(1);
-
-        result.add(previous.merge(next));
-    }
-
     public List<Path> getOrdered() {
         if (paths.isEmpty()) {
             return Collections.emptyList();
         }
 
-        final Path start = findStartPath();
-        return Stream.iterate(start, findNextPath())
+        final Map<Station, Path> pathsByUpStation = new HashMap<>();
+        paths.forEach(path -> pathsByUpStation.put(path.getUp(), path));
+
+        return Stream.iterate(getStartPath(), up -> pathsByUpStation.get(up.getDown()))
                 .limit(paths.size())
                 .collect(toUnmodifiableList());
     }
 
-    private Path findStartPath() {
+    private Path getStartPath() {
+        final Station startStation = getStations().stream()
+                .filter(this::isNotDownStationInAnyPath)
+                .findAny().orElseThrow();
+
         return paths.stream()
-                .filter(this::notExistUpPath)
-                .findAny()
-                .orElseThrow();
+                .filter(path -> path.isUpStation(startStation))
+                .findAny().orElseThrow();
     }
 
-    private boolean notExistUpPath(final Path path) {
+    private boolean isNotDownStationInAnyPath(final Station station) {
         return paths.stream()
-                .filter(path::isUpPath)
+                .filter(path -> path.isDownStation(station))
                 .findAny()
                 .isEmpty();
-    }
-
-    private UnaryOperator<Path> findNextPath() {
-        return before -> paths.stream()
-                .filter(before::isDownPath)
-                .findAny()
-                .orElseThrow();
     }
 
     public List<Station> getStations() {

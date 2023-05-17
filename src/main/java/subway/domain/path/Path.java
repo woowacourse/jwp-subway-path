@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.path;
 
-import java.util.List;
+import subway.domain.Station;
+
 import java.util.Objects;
 
 public final class Path {
@@ -27,58 +28,16 @@ public final class Path {
         }
     }
 
-    public boolean isUpStationEquals(final Path another) {
-        return up.equals(another.up);
+    public boolean isUpStation(final Station up) {
+        return up.equals(this.up);
     }
 
-    public boolean isDownStationEquals(final Path another) {
-        return down.equals(another.down);
+    public boolean isDownStation(final Station down) {
+        return down.equals(this.down);
     }
 
     public boolean contains(final Station station) {
         return up.equals(station) || down.equals(station);
-    }
-
-    public boolean isDownPath(final Path path) {
-        if (this.equals(path)) {
-            return false;
-        }
-
-        return down.equals(path.up);
-    }
-
-    public boolean isUpPath(final Path path) {
-        if (this.equals(path)) {
-            return false;
-        }
-
-        return up.equals(path.down);
-    }
-
-    public List<Path> divideBy(final Path middle) {
-        if (distance <= middle.distance) {
-            throw new IllegalArgumentException("기존의 거리보다 길 수 없습니다.");
-        }
-        final int newDistance = distance - middle.distance;
-
-        if (up.equals(middle.up)) {
-            final Path newPath = new Path(middle.down, down, newDistance);
-            return List.of(middle, newPath);
-        }
-
-        final Path newPath = new Path(up, middle.up, newDistance);
-        return List.of(middle, newPath);
-    }
-
-    public Path merge(final Path another) {
-        if (down.equals(another.up)) {
-            return new Path(up, another.down, distance + another.distance);
-        }
-        if (up.equals(another.down)) {
-            return new Path(another.up, down, distance + another.distance);
-        }
-
-        throw new IllegalStateException("두 경로를 합칠 수 없습니다.");
     }
 
     public Long getId() {

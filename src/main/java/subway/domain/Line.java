@@ -1,5 +1,8 @@
 package subway.domain;
 
+import subway.domain.path.Path;
+import subway.domain.path.Paths;
+
 import java.util.Objects;
 
 public final class Line {

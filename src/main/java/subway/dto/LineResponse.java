@@ -1,7 +1,7 @@
 package subway.dto;
 
 import subway.domain.Line;
-import subway.domain.Paths;
+import subway.domain.path.Paths;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package subway.dto;
 
-import subway.domain.Path;
+import subway.domain.path.Path;
 
 public final class PathResponse {
     private final Long id;

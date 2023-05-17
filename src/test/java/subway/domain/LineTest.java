@@ -2,6 +2,8 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.path.Path;
+import subway.domain.path.Paths;
 
 import java.util.List;
 

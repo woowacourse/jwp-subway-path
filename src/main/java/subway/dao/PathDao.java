@@ -4,9 +4,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import subway.domain.Path;
-import subway.domain.Paths;
 import subway.domain.Station;
+import subway.domain.path.Path;
+import subway.domain.path.Paths;
 
 import java.util.List;
 
