@@ -32,7 +32,6 @@ public class LineDao {
 
     public LineEntity insert(final LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", lineEntity.getId());
         params.put("name", lineEntity.getName());
         params.put("color", lineEntity.getColor());
 
