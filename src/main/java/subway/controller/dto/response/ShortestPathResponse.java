@@ -42,13 +42,14 @@ public class ShortestPathResponse {
 
     private static List<LineSectionResponse> generateLineSections(final List<PathSection> sections) {
         final List<LineSectionResponse> result = new ArrayList<>();
-        final Long currentLineId = sections.get(0).getLineId();
-
+        Long currentLineId = sections.get(0).getLineId();
         List<PathSection> currentSections = new ArrayList<>();
+
         for (final PathSection section : sections) {
             if (section.getLineId() != currentLineId) {
                 result.add(LineSectionResponse.from(currentSections));
                 currentSections = new ArrayList<>();
+                currentLineId = section.getLineId();
             }
             currentSections.add(section);
         }
