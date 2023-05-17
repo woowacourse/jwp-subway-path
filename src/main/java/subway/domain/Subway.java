@@ -8,7 +8,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class Subway {
     private final WeightedMultigraph<Station, WeightedEdgeWithLine> graph;
 
-    public Subway(WeightedMultigraph<Station, WeightedEdgeWithLine> graph) {
+    private Subway(WeightedMultigraph<Station, WeightedEdgeWithLine> graph) {
         this.graph = graph;
     }
 
@@ -34,14 +34,14 @@ public class Subway {
 
         List<Station> stations = shortestRoute.getVertexList();
         double totalDistance = shortestRoute.getWeight();
-        int totalCharge = calculateCharge(shortestRoute);
+        int totalCharge = calculateChargeByDistance(shortestRoute);
 
         return new Path(stations, totalDistance, totalCharge);
     }
 
-    private int calculateCharge(GraphPath<Station, WeightedEdgeWithLine> shortestRoute) {
+    private int calculateChargeByDistance(GraphPath<Station, WeightedEdgeWithLine> shortestRoute) {
         double totalDistance = shortestRoute.getWeight();
-        int basicFare = calculateBasicCharge(totalDistance);
+        int basicFare = calculateChargeByDistance(totalDistance);
 
         List<WeightedEdgeWithLine> edges = shortestRoute.getEdgeList();
         int additionalCharge = calculateAdditionalChargeByLine(edges);
@@ -50,7 +50,7 @@ public class Subway {
         return basicFare + additionalCharge - discountCharge;
     }
 
-    private int calculateBasicCharge(double totalDistance) {
+    private int calculateChargeByDistance(double totalDistance) {
         if (totalDistance <= 10) {
             return 1250;
         }
@@ -68,7 +68,7 @@ public class Subway {
                 .orElse(0);
     }
 
-    private static int calulateDiscountChargeByAge() {
+    private int calulateDiscountChargeByAge() {
         // TODO : step3 요구사항
         return 0;
     }

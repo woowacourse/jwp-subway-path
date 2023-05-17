@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 class LineTest {
 
-
     public static final Station STATION_A = new Station(1L, "A");
     public static final Station STATION_B = new Station(2L, "B");
     public static final Station STATION_C = new Station(3L, "C");
