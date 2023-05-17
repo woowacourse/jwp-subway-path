@@ -96,7 +96,13 @@ public class SectionH2Dao implements SectionDao {
                 "SELECT down_station_id AS station_id FROM section WHERE line_id = :lineId" +
                 ") AS all_station_ids";
         final Map<String, Long> parameter = Map.of("lineId", lineId);
-        final List<Long> stationIds = namedParameterJdbcTemplate.queryForList(sql, parameter, Long.class);
-        return stationIds;
+        return namedParameterJdbcTemplate.queryForList(sql, parameter, Long.class);
+    }
+
+    @Override
+    public void deleteSectionsOf(final Long lineId) {
+        final String sql = "DELETE FROM section WHERE line_id = :lineId";
+        final Map<String, Long> parameter = Map.of("lineId", lineId);
+        namedParameterJdbcTemplate.update(sql, parameter);
     }
 }

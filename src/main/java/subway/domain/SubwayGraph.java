@@ -3,7 +3,10 @@ package subway.domain;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static subway.domain.Direction.UP;
 
@@ -18,14 +21,13 @@ public class SubwayGraph implements Graph {
     }
 
     @Override
-    public DefaultWeightedEdge addSection(final Station upStation, final Station downStation) {
-        graph.addEdge(upStation, downStation);
-        return graph.getEdge(upStation, downStation);
-    }
-
-    @Override
-    public void setSectionDistance(final DefaultWeightedEdge section, final int distance) {
-        graph.setEdgeWeight(section, distance);
+    public Section addSection(final Station upStation,
+                              final Station downStation,
+                              final int distance) {
+        final Section section = new Section(upStation, downStation, distance);
+        graph.addEdge(upStation, downStation, section);
+        graph.setEdgeWeight(section, section.getDistance());
+        return section;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class SubwayGraph implements Graph {
 
     @Override
     public double getSectionDistance(final DefaultWeightedEdge edge) {
-        return graph.getEdgeWeight(edge);
+        return ((Section)edge).getDistance();
     }
 
     @Override
@@ -99,6 +101,14 @@ public class SubwayGraph implements Graph {
             return isUpFirstStation(station);
         }
         return isDownLastStation(station);
+    }
+
+    @Override
+    public List<Section> getSections() {
+        final List<Section> collect = graph.edgeSet().stream()
+                .map(it -> (Section) it)
+                .collect(Collectors.toList());
+        return new ArrayList<>(collect);
     }
 
     private boolean isDownLastStation(final Station station) {

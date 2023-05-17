@@ -12,8 +12,7 @@ public class AddStationToUpStrategy implements AddStationStrategy {
             final Station existingStation,
             final Station newStation,
             final int distance) {
-        graph.addStation(newStation);
-        graph.setSectionDistance(graph.addSection(newStation, existingStation), distance);
+        graph.addSection(newStation, existingStation, distance);
     }
 
     @Override
@@ -33,7 +32,8 @@ public class AddStationToUpStrategy implements AddStationStrategy {
         final int updatedDistance = existingDistance - distance;
 
         graph.removeSection(adjacentStation, existingStation);
-        graph.setSectionDistance(graph.addSection(adjacentStation, newStation), updatedDistance);
-        graph.setSectionDistance(graph.addSection(newStation, existingStation), distance);
+
+        graph.addSection(adjacentStation, newStation, updatedDistance);
+        graph.addSection(newStation,existingStation, distance);
     }
 }

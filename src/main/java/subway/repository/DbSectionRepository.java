@@ -70,4 +70,16 @@ public class DbSectionRepository implements SectionRepository {
     public List<Long> findAllStationIds(final Line line) {
         return new ArrayList<>(sectionDao.findAllStationIdsOf(line.getId()));
     }
+
+    @Override
+    public void deleteSectionsOf(final Line line) {
+        sectionDao.deleteSectionsOf(line.getId());
+    }
+
+    @Override
+    public void saveAll(final Line line, final List<Section> sections) {
+        for (final Section section : sections) {
+            save(line.getId(), section);
+        }
+    }
 }

@@ -10,6 +10,7 @@
 - [x] Sections 중복 코드 없애기
 - [ ] MockMVC 사용한 테스트 코드 작성
 
+
 # API 설계
 
 | HttpMethod | URL                                  | HttpStatus | Description         |

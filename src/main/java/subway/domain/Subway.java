@@ -34,7 +34,6 @@ public class Subway {
 
     public void addSection(final Line line, final Section section) {
         final Sections newSections = findSectionsOf(line);
-        sections.add(newSections);
         newSections.createInitialSection(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 

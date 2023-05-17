@@ -6,7 +6,7 @@ import subway.domain.Section;
 import java.util.List;
 
 public interface SectionRepository {
-    Section save(final Long id, Section section);
+    Section save(final Long lineId, Section section);
 
     void delete(final Long lineId, Section section);
 
@@ -19,5 +19,9 @@ public interface SectionRepository {
     Long findStationIdAfter(Long lineId, Long stationId);
 
     List<Long> findAllStationIds(Line line);
+
+    void deleteSectionsOf(Line line);
+
+    void saveAll(Line line, List<Section> sections);
 
 }

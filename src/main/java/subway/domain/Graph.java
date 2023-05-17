@@ -2,15 +2,14 @@ package subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import java.util.List;
 import java.util.Set;
 
 public interface Graph {
 
     void addStation(Station station);
 
-    DefaultWeightedEdge addSection(Station upStation, Station downStation);
-
-    void setSectionDistance(DefaultWeightedEdge section, int distance);
+    DefaultWeightedEdge addSection(Station upStation, Station downStation, int distance);
 
     boolean containsStation(Station station);
 
@@ -39,4 +38,7 @@ public interface Graph {
     void removeAllSections(Set<DefaultWeightedEdge> edges);
 
     boolean isTerminal(Direction direction, Station station);
+
+
+    List<Section> getSections();
 }

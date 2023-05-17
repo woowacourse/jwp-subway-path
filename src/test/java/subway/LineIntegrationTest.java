@@ -148,7 +148,7 @@ class LineIntegrationTest extends IntegrationTest {
 
         노선에_최초의_역_2개_추가_요청(lineId,
                 new InitialSectionCreateRequest(
-                        lineId, station1Id, station2Id, 3
+                        lineId, station1Id, station1Id, 3
                 ));
 
         final ExtractableResponse<Response> response = 노선에_역_1개_추가_요청(station1Id, newStationId, lineId, 1);

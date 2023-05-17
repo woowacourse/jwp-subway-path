@@ -1,6 +1,5 @@
 package subway.service;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import subway.domain.*;
 import subway.dto.*;
@@ -38,7 +37,8 @@ public class LineServiceImpl implements LineService {
             final List<Section> sections = sectionRepository.findAllSectionOf(line);
             final Graph newGraph = new SubwayGraph();
 
-            for (final Long stationId : sectionRepository.findAllStationIds(line)) {
+            final List<Long> allStationIds = sectionRepository.findAllStationIds(line);
+            for (final Long stationId : allStationIds) {
                 final Station station = stationRepository.findById(stationId);
                 newGraph.addStation(station);
             }
@@ -48,11 +48,11 @@ public class LineServiceImpl implements LineService {
                 final Station downStation = section.getDownStation();
                 final int distance = section.getDistance();
 
-                final DefaultWeightedEdge edge = newGraph.addSection(upStation, downStation);
-                newGraph.setSectionDistance(edge, distance);
+                newGraph.addSection(upStation, downStation, distance);
             }
 
             subwaySections.add(new Sections(line, newGraph));
+            System.out.println("newGraph = " + newGraph);
         }
 
         return new Subway(subwaySections);
@@ -102,10 +102,10 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public LineResponse addStation(final Long id, final SectionCreateRequest request) {
+    public LineResponse addStation(final Long lineId, final SectionCreateRequest request) {
         final Subway subway = findSubway();
 
-        final Line line = lineRepository.findById(id);
+        final Line line = lineRepository.findById(lineId);
 
         final Station upStation = stationRepository.findById(request.getUpStationId());
         final Station downStation = stationRepository.findById(request.getDownStationId());
@@ -114,16 +114,17 @@ public class LineServiceImpl implements LineService {
             throw new StationNotFoundException("존재하는 역의 id를 입력해 주세요.");
         }
 
-        final int distance = request.getDistance(); // upStation ~ newStation
+        final int distance = request.getDistance();
 
         final Station newStation = subway.addStation(line, upStation, downStation, distance);
 
-        final int currentDistance = subway.findDistanceBetween(line, upStation, downStation); // upStation ~ downStation
-        final int updatedDistance = currentDistance - distance; // newStation ~ downStation
+        final Sections sections = subway.findSectionsOf(line);
 
-        sectionRepository.save(line.getId(), new Section(id, upStation, newStation, distance));
-        sectionRepository.save(line.getId(), new Section(id, newStation, downStation, updatedDistance));
-        sectionRepository.delete(line.getId(), new Section(id, upStation, downStation, currentDistance));
+        sectionRepository.deleteSectionsOf(line);
+        final Graph graph = sections.getGraph();
+        final List<Section> sections1 = graph.getSections();
+        sectionRepository.saveAll(line, sections1);
+
 
         final List<StationResponse> stationResponse = mapToStationResponse(line);
 

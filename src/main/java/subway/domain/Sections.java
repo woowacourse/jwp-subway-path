@@ -22,16 +22,18 @@ public class Sections {
         this.line = line;
     }
 
+
     public void createInitialSection(Station upStation, Station downStation, int distance) {
         validateDistance(distance);
         graph.addStation(upStation);
         graph.addStation(downStation);
-        graph.addSection(upStation, downStation);
-        graph.setSectionDistance(graph.getSection(upStation, downStation), distance);
+
+        graph.addSection(upStation, downStation, distance);
     }
 
     public Station addStation(Station upStation, Station downStation, int distance) {
-        validateStations(upStation, downStation);
+        validateSameStations(upStation, downStation);
+        validateTwoNewStations(upStation, downStation);
         validateDistance(distance);
 
         if (isNewStation(downStation)) {
@@ -45,6 +47,12 @@ public class Sections {
         }
 
         throw new InvalidStationException("부적절한 입력입니다.");
+    }
+
+    private void validateTwoNewStations(final Station upStation, final Station downStation) {
+        if (isNewStation(upStation) && isNewStation(downStation)) {
+            throw new InvalidStationException("둘 중 하나는 기존에 입력된 역이어야 합니다!");
+        }
     }
 
     private Station addStationToDirection(final Direction direction, final Station newStation, final Station existingStation, final int distance) {
@@ -100,7 +108,7 @@ public class Sections {
         }
     }
 
-    private void validateStations(final Station upLineStation, final Station downLineStation) {
+    private void validateSameStations(final Station upLineStation, final Station downLineStation) {
         if (upLineStation.equals(downLineStation)) {
             throw new InvalidStationException("서로 다른 역을 입력해 주세요.");
         }
@@ -151,7 +159,7 @@ public class Sections {
 
         int distance = distanceBetweenUpLineStationAndStation + distanceBetweenStationAndDownLineStation;
 
-        graph.setSectionDistance(graph.addSection(upLineStation, downLineStation), distance);
+        graph.addSection(upLineStation, downLineStation, distance);
         graph.removeAllSections(edgesToRemove);
         graph.removeStation(station);
     }
@@ -190,5 +198,17 @@ public class Sections {
 
     public Line getLine() {
         return line;
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "graph=" + graph +
+                ", line=" + line +
+                '}';
     }
 }
