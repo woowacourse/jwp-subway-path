@@ -96,10 +96,16 @@ public class StationDao {
             rs.getBoolean("IS_DOWN_END_STATION"), lineId, name));
     }
 
-    public boolean isExist(Long lineId, String name) {
+    public boolean isExistInLine(Long lineId, String name) {
         String sql = "select exists(select * from STATION where line_id = ? and name = ?) as is_exist";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
             rs.getBoolean("IS_EXIST"), lineId, name));
+    }
+
+    public boolean isNotExist(String name) {
+        String sql = "select not exists(select * from STATION where name = ?) as is_not_exist";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+            rs.getBoolean("IS_NOT_EXIST"), name));
     }
 
     public int updateNextStationById(Long id, Long newNextStation) {

@@ -47,8 +47,8 @@ public class StationService {
     }
 
     private boolean isExistBoth(Long lineId, StationRequest request) {
-        return stationDao.isExist(lineId, request.getUpStation())
-            && stationDao.isExist(lineId, request.getDownStation());
+        return stationDao.isExistInLine(lineId, request.getUpStation())
+            && stationDao.isExistInLine(lineId, request.getDownStation());
     }
 
     private void validateBothNotExist(Long lineId, StationRequest request) {
@@ -58,8 +58,8 @@ public class StationService {
     }
 
     private boolean isNotExistBoth(Long lineId, StationRequest request) {
-        return !stationDao.isExist(lineId, request.getUpStation())
-            && !stationDao.isExist(lineId, request.getDownStation());
+        return !stationDao.isExistInLine(lineId, request.getUpStation())
+            && !stationDao.isExistInLine(lineId, request.getDownStation());
     }
 
     private Long saveDownEndStation(Long lineId, StationRequest request) {
@@ -84,7 +84,7 @@ public class StationService {
 
     private Long saveMiddle(Long lineId, StationRequest request) {
         StationEntity upStationOfNew;
-        if (stationDao.isExist(lineId, request.getUpStation())) {   //하행 방향으로 추가
+        if (stationDao.isExistInLine(lineId, request.getUpStation())) {   //하행 방향으로 추가
             upStationOfNew = stationDao.findByLineIdAndName(lineId, request.getUpStation());
             validateDistance(upStationOfNew, request);
             return saveMiddleStation(lineId, request.getDownStation(), upStationOfNew,

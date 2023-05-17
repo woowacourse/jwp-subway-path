@@ -154,25 +154,47 @@ class StationDaoTest {
     }
 
     @Test
-    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 역이 노선에 존재한다면 true를 반환한다")
-    void isExist_true() {
+    @DisplayName("isExistInLine()를 호출할 때 입력한 name를 갖는 역이 노선에 존재한다면 true를 반환한다")
+    void isExistInLine_true() {
         // given, when
         String name = "선릉역";
-        boolean isExistLine = stationDao.isExist(lineId, name);
+        boolean isExistLine = stationDao.isExistInLine(lineId, name);
 
         // then
         Assertions.assertThat(isExistLine).isTrue();
     }
 
     @Test
-    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 역이 노선에 존재하지 않는다면 false를 반환한다")
-    void isExist_false() {
+    @DisplayName("isExistInLine()를 호출할 때 입력한 name를 갖는 역이 노선에 존재하지 않는다면 false를 반환한다")
+    void isExistInLine_false() {
         // given, when
         String name = "없는역";
-        boolean isExistLine = stationDao.isExist(lineId, name);
+        boolean isExistLine = stationDao.isExistInLine(lineId, name);
 
         // then
         Assertions.assertThat(isExistLine).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"선릉역", "왕십리역", "강남역", "잠실역"})
+    @DisplayName("isNotExist()를 호출할 때 입력한 name를 갖는 역이 모든 노선을 통틀어 존재한다면 false를 반환한다")
+    void isNotExist_false(String name) {
+        // given, when
+        boolean isNotExist = stationDao.isNotExist(name);
+
+        // then
+        Assertions.assertThat(isNotExist).isFalse();
+    }
+
+    @Test
+    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 역이 모든 노선을 통틀어 존재하지 않는다면 true를 반환한다")
+    void isNotExist_true() {
+        // given, when
+        String name = "없는역";
+        boolean isNotExist = stationDao.isNotExist(name);
+
+        // then
+        Assertions.assertThat(isNotExist).isTrue();
     }
 
     @Test

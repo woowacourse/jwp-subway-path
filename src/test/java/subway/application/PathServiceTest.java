@@ -59,13 +59,25 @@ class PathServiceTest {
 
     @Test
     @DisplayName("findPath()를 호출할 때 존재하지 않는 역의 정보가 포함되어 있으면 예외를 반환한다.")
-    void findPath_fail() {
+    void findPath_fail_not_exist_station() {
         // given
         String notExistStation = "없는역";
+        PathRequest request= new PathRequest(notExistStation, endStation);
 
         // when, then
-        Assertions.assertThatThrownBy(() -> new PathRequest(notExistStation, endStation))
+        Assertions.assertThatThrownBy(() -> pathService.findPath(request))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재하지 않는 역이 포함되어 있습니다");
+    }
+
+    @Test
+    @DisplayName("findPath()를 호출할 때 출발역과 도착역이 동일하다면 예외를 반환한다.")
+    void findPath_fail_same_station() {
+        // given
+        PathRequest request = new PathRequest(endStation, endStation);
+        // when, then
+        Assertions.assertThatThrownBy(() ->pathService.findPath(request))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("출발역과 도착역이 같습니다");
     }
 }
