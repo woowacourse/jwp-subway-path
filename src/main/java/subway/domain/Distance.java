@@ -49,4 +49,12 @@ public class Distance {
     public int getValue() {
         return value;
     }
+
+    public boolean isFartherThan(Distance otherDistance) {
+        return value > otherDistance.value;
+    }
+
+    public boolean isCloserThan(Distance otherDistance) {
+        return value < otherDistance.value;
+    }
 }
