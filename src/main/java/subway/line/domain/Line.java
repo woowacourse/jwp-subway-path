@@ -3,9 +3,11 @@ package subway.line.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.jgrapht.graph.WeightedMultigraph;
 import subway.section.domain.Direction;
 import subway.section.domain.Section;
 import subway.section.domain.Sections;
+import subway.station.domain.Station;
 
 import java.util.HashSet;
 import java.util.List;
@@ -73,5 +75,9 @@ public class Line {
     
     public List<String> getSortedStations() {
         return sections.getSortedStations();
+    }
+    
+    public void addLineToGraph(final WeightedMultigraph<Station, Section> graph) {
+        sections.addSectionsToGraph(graph);
     }
 }
