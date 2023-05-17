@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
+import subway.dao.entity.SectionWithStationNameEntity;
+import subway.dao.entity.StationEntity;
 
 @Repository
 public class SectionDao {
@@ -20,6 +22,14 @@ public class SectionDao {
                     rs.getLong("down_station_id"),
                     rs.getLong("line_id"),
                     rs.getInt("distance")
+            );
+
+    private final RowMapper<SectionWithStationNameEntity> sectionWithStationNameEntityRowMapper = (rs, rowNum) ->
+            new SectionWithStationNameEntity(
+                    rs.getLong("section.id"),
+                    new StationEntity(rs.getLong("us.id"), rs.getString("us.name")),
+                    new StationEntity(rs.getLong("ds.id"), rs.getString("ds.name")),
+                    rs.getInt("section.distance")
             );
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
@@ -36,6 +46,14 @@ public class SectionDao {
     public List<SectionEntity> findByLineId(final Long lineId) {
         final String sql = "SELECT * FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
+
+    public List<SectionWithStationNameEntity> findByLineIdWithStationName(final Long lineId) {
+        final String sql = "SELECT * FROM section "
+                + "JOIN station AS us ON section.up_station_id = us.id "
+                + "JOIN station AS ds ON section.up_station_id = ds.id "
+                + "WHERE line_id = ?";
+        return jdbcTemplate.query(sql, sectionWithStationNameEntityRowMapper, lineId);
     }
 
     public int delete(final SectionEntity sectionEntity) {

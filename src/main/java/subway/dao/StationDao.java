@@ -1,5 +1,7 @@
 package subway.dao;
 
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -26,9 +28,13 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public StationEntity findById(final Long id) {
+    public Optional<StationEntity> findById(final Long id) {
         final String sql = "SELECT * FROM station WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Long save(final StationEntity stationEntity) {
@@ -42,9 +48,13 @@ public class StationDao {
         return result == EXISTED_STATION;
     }
 
-    public StationEntity findByName(final String name) {
+    public Optional<StationEntity> findByName(final String name) {
         final String sql = "SELECT * FROM station WHERE name = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, name);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public int deleteByName(final String name) {

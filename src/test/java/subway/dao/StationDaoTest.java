@@ -28,7 +28,7 @@ class StationDaoTest {
     @DisplayName("Station id를 입력받아 해당하는 Station Entity 를 반환한다.")
     void findById() {
         // when
-        StationEntity newStationEntity = stationDao.findById(id);
+        StationEntity newStationEntity = stationDao.findById(id).get();
 
         // expected
         assertThat(newStationEntity.getId()).isEqualTo(id);
@@ -48,7 +48,7 @@ class StationDaoTest {
     @DisplayName("Station 이름을 입력받아 해당하는 Station Entity 를 반환한다.")
     void findByName() {
         // when
-        StationEntity newStationEntity = stationDao.findByName("잠실역");
+        StationEntity newStationEntity = stationDao.findByName("잠실역").get();
 
         // expected
         assertThat(newStationEntity.getId()).isEqualTo(id);

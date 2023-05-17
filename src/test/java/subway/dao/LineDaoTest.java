@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.entity.LineEntity;
+import subway.dao.entity.LineWithSectionEntities;
 
 @JdbcTest
 class LineDaoTest {
@@ -65,10 +66,10 @@ class LineDaoTest {
         lineDao.save(new LineEntity("5호선"));
 
         // when
-        List<LineEntity> lineEntities = lineDao.findAll();
+        List<LineWithSectionEntities> linesWithSections = lineDao.findLinesWithSections();
 
         // expected
-        assertThat(lineEntities).hasSize(4);
+        assertThat(linesWithSections).hasSize(4);
     }
 
     @Test
