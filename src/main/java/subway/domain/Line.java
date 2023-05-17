@@ -104,19 +104,18 @@ public class Line {
         sections.remove(sectionsToMerge.get(1));
     }
 
-    public LineName getName() {
-        return name;
+    public List<String> getStationNamesInOrder() {
+        return getSectionsWithoutEndPoints().stream()
+                .map(section -> section.getDownstream().getName())
+                .collect(Collectors.toList());
     }
 
     public List<Section> getSectionsWithoutEndPoints() {
         return new LinkedList<>(sections.subList(1, sections.size() - 1));
     }
 
-    // TODO : 네이밍 변경
-    public List<String> getStationNamesInOrder() {
-        return sections.subList(0, sections.size() - 1).stream()
-                .map(section -> section.getDownstream().getName())
-                .collect(Collectors.toList());
+    public LineName getName() {
+        return name;
     }
 
     @Override
