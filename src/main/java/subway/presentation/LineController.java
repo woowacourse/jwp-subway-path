@@ -12,7 +12,8 @@ import subway.business.LineService;
 import subway.business.dto.LineDto;
 import subway.business.dto.SectionCreateDto;
 import subway.presentation.dto.request.LineRequest;
-import subway.presentation.dto.request.StationDeleteInLineRequest;
+import subway.presentation.dto.request.StationRegisterInLineRequest;
+import subway.presentation.dto.request.StationUnregisterInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 
 import javax.validation.Valid;
@@ -48,11 +49,17 @@ public class LineController {
         return ResponseEntity.ok(lineService.findById(id));
     }
 
+    @PatchMapping("/{id}/register")
+    public ResponseEntity<LineDetailResponse> registerStation(
+            @PathVariable final Long id, @RequestBody @Valid final StationRegisterInLineRequest request) {
+        return ResponseEntity.ok(lineService.registerStation(id, request));
+    }
+
     @PatchMapping("/{id}/unregister")
-    public ResponseEntity<LineDetailResponse> deleteStation(@PathVariable Long id,
-            @RequestBody @Valid final StationDeleteInLineRequest request) {
-        return lineService.deleteStation(id, request)
-                .map(lineDetailResponse -> ResponseEntity.ok().body(lineDetailResponse))
+    public ResponseEntity<LineDetailResponse> unregisterStation(
+            @PathVariable final Long id, @RequestBody @Valid final StationUnregisterInLineRequest request) {
+        return lineService.unregisterStation(id, request)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
 

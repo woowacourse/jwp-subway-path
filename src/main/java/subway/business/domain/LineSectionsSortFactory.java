@@ -32,26 +32,26 @@ public class LineSectionsSortFactory {
 
     private static List<LineSection> makeUpside(
             final LineSection standardSection, final Map<Station, LineSection> sectionsByPreviousStation) {
-        final List<LineSection> upsideSections = new ArrayList<>();
+        final List<LineSection> nextSideSections = new ArrayList<>();
         Station nextStation = standardSection.getNextStation();
         while (sectionsByPreviousStation.containsKey(nextStation)) {
             final LineSection nextSection = sectionsByPreviousStation.get(nextStation);
-            upsideSections.add(nextSection);
+            nextSideSections.add(nextSection);
             nextStation = nextSection.getNextStation();
         }
-        return upsideSections;
+        return nextSideSections;
     }
 
     private static List<LineSection> makeDownside(
             final LineSection standardSection, final Map<Station, LineSection> sectionsByNextStation) {
-        final List<LineSection> downsideSections = new ArrayList<>();
+        final List<LineSection> previousSideSections = new ArrayList<>();
         Station previousStation = standardSection.getPreviousStation();
         while (sectionsByNextStation.containsKey(previousStation)) {
             final LineSection previousSection = sectionsByNextStation.get(previousStation);
-            downsideSections.add(FIRST_INDEX, previousSection);
+            previousSideSections.add(FIRST_INDEX, previousSection);
             previousStation = previousSection.getPreviousStation();
         }
-        return downsideSections;
+        return previousSideSections;
     }
 
     private static void validateSectionsSize(final List<LineSection> unSortedSections, final List<LineSection> sortedSections) {

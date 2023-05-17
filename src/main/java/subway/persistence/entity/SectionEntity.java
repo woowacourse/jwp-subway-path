@@ -51,19 +51,6 @@ public class SectionEntity {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SectionEntity)) return false;
-        SectionEntity that = (SectionEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(lineId, that.lineId) && Objects.equals(distance, that.distance) && Objects.equals(previousStationId, that.previousStationId) && Objects.equals(nextStationId, that.nextStationId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, lineId, distance, previousStationId, nextStationId);
-    }
-
-    @Override
     public String toString() {
         return "SectionEntity{" +
                 "id=" + id +

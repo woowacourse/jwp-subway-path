@@ -13,16 +13,18 @@ import subway.business.LineService;
 import subway.exception.bad_request.DuplicatedLineNameException;
 import subway.exception.not_found.LineNotFoundException;
 import subway.presentation.dto.request.LineRequest;
+import subway.presentation.dto.request.StationRegisterInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 import subway.presentation.dto.response.StationResponse;
+import subway.presentation.dto.request.converter.SubwayDirection;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LineController.class)
@@ -148,6 +150,69 @@ class LineControllerTest {
             // then
             mockMvc.perform(get("/lines/{id}", lineId))
                     .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
+    @DisplayName("노선에 역 추가 - PATCH /lines/{id}/register")
+    class Register {
+
+        @Test
+        @DisplayName("성공 - 상행 끝점에 추가")
+        void success_upper_end_point() throws Exception {
+            // given
+            final long lineId = 1L;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "송파", 5);
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+                    List.of(new StationResponse(1L, "잠실"), new StationResponse(5L, "송파"), new StationResponse(2L, "잠실새내"))
+            );
+
+            // when
+            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+
+            // then
+            final String responseBody =
+                    "{" +
+                            "\"id\":1,\"name\":\"2호선\",\"color\":\"bg-green-600\",\"stations\": [" +
+                            "   {\"id\":1,\"name\":\"잠실\"}," +
+                            "   {\"id\":5,\"name\":\"송파\"}," +
+                            "   {\"id\":2,\"name\":\"잠실새내\"}" +
+                            "]}";
+            mockMvc.perform(patch("/lines/{id}/register", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(responseBody));
+        }
+
+        @Test
+        @DisplayName("성공 - 하행 끝점에 추가")
+        void success_down_end_point() throws Exception {
+            // given
+            final long lineId = 1L;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실", "송파", 5);
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+                    List.of(new StationResponse(1L, "잠실새내"), new StationResponse(5L, "송파"), new StationResponse(2L, "잠실"))
+            );
+
+            // when
+            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+
+            // then
+            final String responseBody =
+                    "{" +
+                            "\"id\":1,\"name\":\"2호선\",\"color\":\"bg-green-600\",\"stations\": [" +
+                            "   {\"id\":1,\"name\":\"잠실새내\"}," +
+                            "   {\"id\":5,\"name\":\"송파\"}," +
+                            "   {\"id\":2,\"name\":\"잠실\"}" +
+                            "]}";
+            mockMvc.perform(patch("/lines/{id}/register", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(responseBody));
         }
     }
 

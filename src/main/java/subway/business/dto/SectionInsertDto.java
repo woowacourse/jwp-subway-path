@@ -1,6 +1,6 @@
 package subway.business.dto;
 
-import subway.presentation.query_option.SubwayDirection;
+import subway.presentation.dto.request.converter.SubwayDirection;
 
 public class SectionInsertDto {
 

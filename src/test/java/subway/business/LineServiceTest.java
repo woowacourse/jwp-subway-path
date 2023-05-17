@@ -17,7 +17,7 @@ import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
-import subway.presentation.dto.request.StationDeleteInLineRequest;
+import subway.presentation.dto.request.StationUnregisterInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 
 import java.util.List;
@@ -154,7 +154,7 @@ class LineServiceTest {
         // given
         final long lineId = 1L;
         final String stationName = "잠실새내";
-        final StationDeleteInLineRequest request = new StationDeleteInLineRequest("잠실새내");
+        final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실새내");
         final SectionEntity frontSection = new SectionEntity(1L, lineId, 3, 1L, 2L);
         final SectionEntity backSection = new SectionEntity(2L, lineId, 3, 2L, 3L);
         final List<SectionEntity> entities = List.of(frontSection, backSection);
@@ -169,7 +169,7 @@ class LineServiceTest {
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
 
         // when
-        final Optional<LineDetailResponse> response = lineService.deleteStation(lineId, request);
+        final Optional<LineDetailResponse> response = lineService.unregisterStation(lineId, request);
 
         // then
         assertAll(

@@ -11,7 +11,7 @@ import subway.persistence.StationDao;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 import subway.presentation.dto.response.SectionResponse;
-import subway.presentation.query_option.SubwayDirection;
+import subway.presentation.dto.request.converter.SubwayDirection;
 
 import java.util.List;
 import java.util.stream.Collectors;

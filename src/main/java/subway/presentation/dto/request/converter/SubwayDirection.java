@@ -1,4 +1,4 @@
-package subway.presentation.query_option;
+package subway.presentation.dto.request.converter;
 
 import subway.exception.bad_request.InvalidDirectionException;
 
