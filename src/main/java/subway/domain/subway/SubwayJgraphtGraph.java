@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import subway.domain.line.Line;
-import subway.domain.line.Lines;
 import subway.domain.section.PathSection;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
@@ -13,11 +12,9 @@ import subway.exception.InvalidStationException;
 
 public class SubwayJgraphtGraph implements SubwayGraph {
 
-    private final Lines lines;
     private final DijkstraShortestPath dijkstraShortestPath;
 
     public SubwayJgraphtGraph(final List<Line> lines) {
-        this.lines = new Lines(lines);
         this.dijkstraShortestPath = new DijkstraShortestPath(generateGraph(lines));
     }
 
