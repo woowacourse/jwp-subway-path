@@ -1,4 +1,4 @@
-package subway.application;
+package subway.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;

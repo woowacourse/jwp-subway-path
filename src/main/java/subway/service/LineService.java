@@ -1,4 +1,4 @@
-package subway.application;
+package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
@@ -31,15 +31,6 @@ public class LineService {
 
     public List<Line> findLines() {
         return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

@@ -1,10 +1,12 @@
 package subway.dto;
 
 public class LineRequest {
-    private String name;
-    private String color;
+    private final String name;
+    private final String color;
 
-    public LineRequest() {
+    private LineRequest() {
+        this.name = null;
+        this.color = null;
     }
 
     public LineRequest(String name, String color) {

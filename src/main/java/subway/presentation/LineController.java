@@ -1,9 +1,9 @@
-package subway.ui;
+package subway.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.LineService;
-import subway.application.SectionService;
+import subway.service.LineService;
+import subway.service.SectionService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
