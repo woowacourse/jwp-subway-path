@@ -4,15 +4,15 @@ public class SectionRow {
 
     private final Long id;
     private final Long lineId;
-    private final String left;
-    private final String right;
+    private final Long upBound;
+    private final Long downBound;
     private final Integer distance;
 
-    public SectionRow(Long id, Long lineId, String left, String right, Integer distance) {
+    public SectionRow(Long id, Long lineId, Long upBound, Long downBound, Integer distance) {
         this.id = id;
         this.lineId = lineId;
-        this.left = left;
-        this.right = right;
+        this.upBound = upBound;
+        this.downBound = downBound;
         this.distance = distance;
     }
 
@@ -24,12 +24,12 @@ public class SectionRow {
         return lineId;
     }
 
-    public String getUpBound() {
-        return left;
+    public Long getUpBound() {
+        return upBound;
     }
 
-    public String getDownBound() {
-        return right;
+    public Long getDownBound() {
+        return downBound;
     }
 
     public Integer getDistance() {

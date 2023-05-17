@@ -50,13 +50,13 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Map<String, Long> selectKeyValueSetWhereNameIn(List<String> names) {
-        String inSql = String.join(",", Collections.nCopies(names.size(), "?"));
-        String sql = String.format("select id, name from station where name in (%s)", inSql);
+    public Map<Long, String> selectKeyValueSetWhereIdIn(List<Long> ids) {
+        String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
+        String sql = String.format("select id, name from station where id in (%s)", inSql);
 
-        List<Map.Entry<String, Long>> nameIdKeyValue = jdbcTemplate.query(sql,
-                (rs, cn) -> Map.entry(rs.getString("name"), rs.getLong("id")),
-                names.toArray());
+        List<Map.Entry<Long, String>> nameIdKeyValue = jdbcTemplate.query(sql,
+                (rs, cn) -> Map.entry(rs.getLong("id"), rs.getString("name")),
+                ids.toArray());
 
         return nameIdKeyValue.stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

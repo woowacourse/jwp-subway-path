@@ -17,8 +17,8 @@ public class SectionDao {
     private final RowMapper<SectionRow> rowMapper = (rs, cn) -> new SectionRow(
             rs.getLong("id"),
             rs.getLong("line_id"),
-            rs.getString("up_bound"),
-            rs.getString("down_bound"),
+            rs.getLong("up_bound"),
+            rs.getLong("down_bound"),
             rs.getInt("distance")
     );
 
@@ -26,7 +26,7 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<SectionRow> selectAllOfLinePropertyId(Long linePropertyId) {
+    public List<SectionRow> selectAllOfLineId(Long linePropertyId) {
         String sectionSql = "select id, line_id, up_bound, down_bound, distance from section where line_id = ?";
         return jdbcTemplate.query(sectionSql, rowMapper, linePropertyId);
     }
@@ -37,8 +37,8 @@ public class SectionDao {
         jdbcTemplate.batchUpdate(sql, rows, BATCH_SIZE,
                 (ps, entity) -> {
                     ps.setLong(1, entity.getLineId());
-                    ps.setString(2, entity.getUpBound());
-                    ps.setString(3, entity.getDownBound());
+                    ps.setLong(2, entity.getUpBound());
+                    ps.setLong(3, entity.getDownBound());
                     ps.setInt(4, entity.getDistance());
                 });
     }

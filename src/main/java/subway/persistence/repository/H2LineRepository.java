@@ -10,7 +10,7 @@ import subway.application.domain.Station;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
-import subway.persistence.row.LinePropertyRow;
+import subway.persistence.row.LineRow;
 import subway.persistence.row.SectionRow;
 
 import java.util.ArrayList;
@@ -34,15 +34,15 @@ public class H2LineRepository implements LineRepository {
         this.lineDao = lineDao;
     }
 
-    public Line findById(Long linePropertyId) {
-        List<SectionRow> sectionEntities = sectionDao.selectAllOfLinePropertyId(linePropertyId);
-        LineRow lineRow = lineDao.findById(linePropertyId);
+    public Line findById(Long lineId) {
+        List<SectionRow> sectionEntities = sectionDao.selectAllOfLineId(lineId);
+        LineRow lineRow = lineDao.findById(lineId);
 
-        Map<String, Long> stationIds = getStationNameIdSet(sectionEntities);
+        Map<Long, String> stationIdNameSet = getStationIdNameSet(sectionEntities);
         List<Section> sections = sectionEntities.stream()
                 .map(sectionRow -> new Section(
-                        new Station(stationIds.get(sectionRow.getUpBound()), sectionRow.getUpBound()),
-                        new Station(stationIds.get(sectionRow.getDownBound()), sectionRow.getDownBound()),
+                        new Station(sectionRow.getUpBound(), stationIdNameSet.get(sectionRow.getUpBound())),
+                        new Station(sectionRow.getDownBound(), stationIdNameSet.get(sectionRow.getDownBound())),
                         new Distance(sectionRow.getDistance())
                 )).collect(Collectors.toList());
 
@@ -50,15 +50,15 @@ public class H2LineRepository implements LineRepository {
                 lineRow.getColor()), sections);
     }
 
-    private Map<String, Long> getStationNameIdSet(List<SectionRow> sectionRows) {
+    private Map<Long, String> getStationIdNameSet(List<SectionRow> sectionRows) {
         if (sectionRows.isEmpty()) {
             return Collections.emptyMap();
         }
-        return stationDao.selectKeyValueSetWhereNameIn(getStationNames(sectionRows));
+        return stationDao.selectKeyValueSetWhereIdIn(getStationIds(sectionRows));
     }
 
-    private List<String> getStationNames(List<SectionRow> sectionEntities) {
-        Set<String> stationNames = new HashSet<>();
+    private List<Long> getStationIds(List<SectionRow> sectionEntities) {
+        Set<Long> stationNames = new HashSet<>();
         for (SectionRow sectionRow : sectionEntities) {
             stationNames.add(sectionRow.getUpBound());
             stationNames.add(sectionRow.getDownBound());
@@ -69,30 +69,30 @@ public class H2LineRepository implements LineRepository {
     public List<Line> findAll() {
         List<LineRow> lineRows = lineDao.selectAll();
         List<SectionRow> sectionRows = sectionDao.selectAll();
-        Map<String, Long> stationIds = getStationNameIdSet(sectionRows);
+        Map<Long, String> stationIds = getStationIdNameSet(sectionRows);
 
         return lineRows.stream()
-                .map(propertyRow -> new Line(
-                        new LineProperty(propertyRow.getId(), propertyRow.getName(), propertyRow.getColor()),
-                        findSectionsHasSamePropertyId(sectionRows, stationIds, propertyRow))
+                .map(lineRow -> new Line(
+                        new LineProperty(lineRow.getId(), lineRow.getName(), lineRow.getColor()),
+                        findSectionsWithLineId(sectionRows, stationIds, lineRow))
                 ).collect(Collectors.toList());
     }
 
-    private List<Section> findSectionsHasSamePropertyId(List<SectionRow> sectionRows,
-                                                        Map<String, Long> stationIds, LinePropertyRow propertyRow) {
+    private List<Section> findSectionsWithLineId(List<SectionRow> sectionRows,
+                                                 Map<Long, String> stationIds, LineRow lineRow) {
         return sectionRows.stream()
-                .filter(sectionRow -> propertyRow.getId().equals(sectionRow.getLineId()))
+                .filter(sectionRow -> lineRow.getId().equals(sectionRow.getLineId()))
                 .map(sectionRow -> new Section(
-                        new Station(stationIds.get(sectionRow.getUpBound()), sectionRow.getUpBound()),
-                        new Station(stationIds.get(sectionRow.getDownBound()), sectionRow.getDownBound()),
+                        new Station(sectionRow.getUpBound(), stationIds.get(sectionRow.getUpBound())),
+                        new Station(sectionRow.getDownBound(), stationIds.get(sectionRow.getDownBound())),
                         new Distance(sectionRow.getDistance())
                 )).collect(Collectors.toList());
     }
 
     public void insert(Line line) {
         List<SectionRow> sectionRows = line.getSections().stream()
-                .map(section -> new SectionRow(null, line.getId(), section.getUpBound().getName(),
-                        section.getDownBound().getName(), section.getDistance().value()))
+                .map(section -> new SectionRow(null, line.getId(), section.getUpBound().getId(),
+                        section.getDownBound().getId(), section.getDistance().value()))
                 .collect(Collectors.toList());
 
         sectionDao.removeSections(line.getId());
