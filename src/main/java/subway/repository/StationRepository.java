@@ -19,6 +19,11 @@ public class StationRepository {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
     }
 
+    public Station getStation(String stationName) {
+        return stationDao.findByName(stationName)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+    }
+
     public void checkStationIsExist(String stationName) {
         stationDao.findByName(stationName)
                 .ifPresent(station -> {
