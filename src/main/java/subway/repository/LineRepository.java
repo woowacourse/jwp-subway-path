@@ -2,7 +2,6 @@ package subway.repository;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
@@ -48,7 +47,7 @@ public class LineRepository {
         sectionDao.batchInsert(sectionEntities);
     }
 
-    public Optional<Line> findByName(final LineName lineName) {
+    public Line findByName(final LineName lineName) {
         return lineDao.findByName(lineName.name()).map(
                 it -> new Line(
                         it.getId(),
@@ -56,7 +55,7 @@ public class LineRepository {
                         new LineColor(it.getColor()),
                         findSectionsByLineId(it.getId())
                 )
-        );
+        ).orElseThrow(() -> new IllegalArgumentException("해당 이름을 가진 노선을 찾을 수 없습니다."));
     }
 
     private Sections findSectionsByLineId(final Long id) {
