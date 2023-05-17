@@ -3,7 +3,10 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import subway.exception.custom.StartStationNotExistException;
 
 public class Sections {
 
@@ -59,7 +62,7 @@ public class Sections {
             .orElseThrow(() -> new IllegalArgumentException("기준역을 하행역으로 가지는 구간이 존재하지 않습니다."));
     }
 
-    private boolean isStartStation(final Station station) {
+    private Optional<Station> getStartStation() {
         final List<Station> upStations = new ArrayList<>(sections.keySet());
         final List<Station> downStations = sections.values()
             .stream()
@@ -67,18 +70,28 @@ public class Sections {
             .collect(Collectors.toList());
 
         upStations.removeAll(downStations);
-        return upStations.get(0).equals(station);
+        return upStations.stream().findAny();
     }
 
-    private boolean isEndStation(final Station station) {
-        final List<Station> upStations = new ArrayList<>(sections.keySet());
+    private boolean isStartStation(final Station station) {
+        return getStartStation().map(value -> value.equals(station))
+            .orElse(false);
+    }
+
+    private Optional<Station> getEndStation() {
+        final List<Station> upStations = new ArrayList<>(Objects.requireNonNull(sections.keySet()));
         final List<Station> downStations = sections.values()
             .stream()
             .map(Section::getDownStation)
             .collect(Collectors.toList());
 
         downStations.removeAll(upStations);
-        return downStations.get(0).equals(station);
+        return downStations.stream().findAny();
+    }
+
+    private boolean isEndStation(final Station station) {
+        return getEndStation().map(value -> value.equals(station))
+            .orElse(false);
     }
 
     public void removeStation(final Station removeStation) {
@@ -103,5 +116,21 @@ public class Sections {
 
     public List<Section> getSections() {
         return new ArrayList<>(sections.values());
+    }
+
+    public List<Station> getSortedStations() {
+        final List<Station> sortedStations = new ArrayList<>();
+        final ArrayList<Station> upStations = new ArrayList<>(sections.keySet());
+
+        Station currentStation = getStartStation().orElseThrow(
+            () -> new StartStationNotExistException("상행종점이 존재하지 않습니다."));
+
+        while (upStations.contains(currentStation)) {
+            sortedStations.add(currentStation);
+            currentStation = sections.get(currentStation).getDownStation();
+        }
+        sortedStations.add(currentStation);
+        
+        return sortedStations;
     }
 }
