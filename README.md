@@ -80,7 +80,7 @@ docker-compose -p subway up -d
 # Step3
 
 - [ ] 노선 별 추가요금 적용
-    - [ ] LINE 테이블 수정
+    - [x] LINE 테이블 수정
     - [ ] 운임 계산시, 추가 요금 적용
 - [ ] 연령별 할인 금액 적용
   - [ ] 경로계산 API 수정
@@ -96,10 +96,10 @@ docker-compose -p subway up -d
 ```sql
 create table if not exists LINE
 (
-    id             bigint auto_increment not null,
-    name           varchar(255)          not null unique,
-    color          varchar(20)           not null,
-    additionalFare int(20)               not null,
+    id              bigint auto_increment not null,
+    name            varchar(255)          not null unique,
+    color           varchar(20)           not null,
+    additional_fare integer               not null,
     primary key (id)
 );
 ```

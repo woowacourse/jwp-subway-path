@@ -34,7 +34,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getAdditionalFare()));
         return LineResponse.of(persistLine);
     }
 
@@ -68,7 +68,8 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        final int updatedRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        final int updatedRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
+                lineUpdateRequest.getAdditionalFare()));
         if (updatedRow == 0) {
             throw new DomainException(ExceptionType.UN_EXISTED_LINE);
         }

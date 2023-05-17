@@ -27,7 +27,8 @@ public class LineDao {
             new Line(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("additional_fare")
             );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -42,22 +43,23 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("additional_fare", line.getAdditionalFare());
         try {
             Long lineId = insertAction.executeAndReturnKey(params).longValue();
-            return new Line(lineId, line.getName(), line.getColor());
+            return new Line(lineId, line.getName(), line.getColor(), line.getAdditionalFare());
         } catch (DataIntegrityViolationException exception) {
             throw new DatabaseException(ExceptionType.LINE_NAME_ALREADY_EXISTED);
         }
     }
 
     public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "select id, name, color, additional_fare from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<Line> findById(Long id) {
         try {
-            String sql = "select id, name, color from LINE WHERE id = ?";
+            String sql = "select id, name, color, additional_fare from LINE WHERE id = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (EmptyResultDataAccessException ex) {
             return Optional.empty();

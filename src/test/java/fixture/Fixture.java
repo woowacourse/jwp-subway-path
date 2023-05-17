@@ -7,9 +7,9 @@ import subway.domain.Section;
 import subway.domain.Station;
 
 public class Fixture {
-    public static final Line LINE_1 = new Line(1L, "1호선", "파랑");
-    public static final Line LINE_2 = new Line(2L, "2호선", "초록");
-    public static final Line LINE_3 = new Line(3L, "3호선", "주황");
+    public static final Line LINE_1 = new Line(1L, "1호선", "파랑", 900);
+    public static final Line LINE_2 = new Line(2L, "2호선", "초록", 500);
+    public static final Line LINE_3 = new Line(3L, "3호선", "주황",300);
     public static final List<Line> LINES = List.of(LINE_1, LINE_2, LINE_3);
     public static final Station STATION_1 = new Station(1L, "잠실");
     public static final Station STATION_2 = new Station(2L, "영등포");
