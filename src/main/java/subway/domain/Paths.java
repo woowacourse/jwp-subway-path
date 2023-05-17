@@ -50,11 +50,8 @@ public final class Paths {
     }
 
     private long countStationsInOriginalPaths(final Path newPath) {
-        final Station up = newPath.getUp();
-        final Station down = newPath.getDown();
-
         return getStations().stream()
-                .filter(station -> station.equals(up) || station.equals(down))
+                .filter(newPath::contains)
                 .count();
     }
 
