@@ -45,7 +45,7 @@ class StationRepositoryTest {
     @Test
     void 이름으로_검색한_뒤_있으면_그대로_반환한다() {
         // given
-        StationEntity station = stationRepository.save(new StationEntity("역삼역"));
+        StationEntity station = stationRepository.save("역삼역");
 
         // when
         StationEntity findStation = stationRepository.findOrSaveStation("역삼역");

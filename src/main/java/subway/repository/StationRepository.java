@@ -15,8 +15,8 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public StationEntity save(StationEntity station) {
-        return stationDao.insert(station);
+    public StationEntity save(String stationName) {
+        return stationDao.insert(new StationEntity(stationName));
     }
 
     public Station findById(Long stationId) {

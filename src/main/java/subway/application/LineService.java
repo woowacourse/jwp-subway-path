@@ -71,7 +71,7 @@ public class LineService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("추가하려는 역은 이미 노선에 존재합니다."));
 
-        stationRepository.save(new StationEntity(newStationName));
+        stationRepository.save(newStationName);
 
         subway.addStation(lineEntity.getName(),
                 stationRequest.getSourceStation(),
