@@ -19,6 +19,7 @@ public class StationDao {
             rs.getLong("id"),
             rs.getString("name")
     );
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 

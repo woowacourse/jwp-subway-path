@@ -30,6 +30,10 @@ public class Section {
                 || nextStation.equals(station);
     }
 
+    public boolean isPreviousStationThisStation(Station station) {
+        return previousStation.equals(station);
+    }
+
     public long getId() {
         return id;
     }
