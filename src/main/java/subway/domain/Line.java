@@ -10,7 +10,7 @@ public class Line {
     private final LineName name;
     private final Sections sections;
 
-    private Line(final Long id, final LineName name, final Sections sections) {
+    public Line(final Long id, final LineName name, final Sections sections) {
         this.id = id;
         this.name = name;
         this.sections = sections;
