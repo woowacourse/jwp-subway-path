@@ -26,13 +26,4 @@ public class SectionEdge extends DefaultWeightedEdge {
     public long getLineId() {
         return lineId;
     }
-
-    @Override
-    public String toString() {
-        return "SectionEdge{" +
-                "section=" + section +
-                ", surcharge=" + surcharge +
-                ", lineId=" + lineId +
-                '}';
-    }
 }

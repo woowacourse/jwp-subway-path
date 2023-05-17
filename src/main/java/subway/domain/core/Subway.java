@@ -76,12 +76,6 @@ public class Subway {
                 .orElseThrow(StationNotFoundException::new);
     }
 
-    public List<Section> getSections() {
-        return lines.stream()
-                .flatMap(line -> line.getSections().stream())
-                .collect(toList());
-    }
-
     public List<Station> getStations() {
         return lines.stream()
                 .flatMap(line -> line.findAllStation().stream())

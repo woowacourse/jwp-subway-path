@@ -205,29 +205,6 @@ class SubwayTest {
     }
 
     @Test
-    void 모든_구간을_반환한다() {
-        // given
-        final Subway subway = new Subway(List.of(
-                new Line("2호선", "BLUE", 0, List.of(
-                        new Section("A", "B", 3),
-                        new Section("B", "C", 5))
-                )
-        ));
-
-        // when
-        final List<Section> result = subway.getSections();
-
-        // then
-        assertThat(result)
-                .usingRecursiveComparison()
-                .ignoringExpectedNullFields()
-                .isEqualTo(List.of(
-                        new Section("A", "B", 3),
-                        new Section("B", "C", 5))
-                );
-    }
-
-    @Test
     void 모든_역을_반환한다() {
         // given
         final Subway subway = new Subway(List.of(
