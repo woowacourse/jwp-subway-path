@@ -8,40 +8,40 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import subway.domain.line.Line;
-import subway.domain.section.Sections;
-import subway.domain.section.SectionsByLine;
+import subway.domain.section.general.GeneralSections;
+import subway.domain.section.general.GeneralSectionsByLine;
 import subway.dto.LineFindResponse;
+import subway.repository.GeneralSectionRepository;
 import subway.repository.LineRepository;
-import subway.repository.SectionRepository;
 
 @Service
 public class LineService {
 
     private final LineRepository lineRepository;
-    private final SectionRepository sectionRepository;
+    private final GeneralSectionRepository generalSectionRepository;
 
-    public LineService(final LineRepository lineRepository, final SectionRepository sectionRepository) {
+    public LineService(final LineRepository lineRepository, final GeneralSectionRepository generalSectionRepository) {
         this.lineRepository = lineRepository;
-        this.sectionRepository = sectionRepository;
+        this.generalSectionRepository = generalSectionRepository;
     }
 
     public LineFindResponse findOrderedStationNamesByLineId(Long lineId) {
         Line findLine = lineRepository.findLineById(lineId);
-        Sections sections = new Sections(sectionRepository.findAllSectionByLineId(lineId));
+        GeneralSections generalSections = new GeneralSections(generalSectionRepository.findAllSectionByLineId(lineId));
 
-        return new LineFindResponse(findLine.getName(), sections.getSortedStationNames());
+        return new LineFindResponse(findLine.getName(), generalSections.getSortedStationNames());
     }
 
     public List<LineFindResponse> findAllLineOrderedStationNames() {
         List<Line> findLines = lineRepository.findAllLine();
-        Map<Line, Sections> findAllSectionsByLine = findLines.stream()
+        Map<Line, GeneralSections> findAllSectionsByLine = findLines.stream()
                 .collect(toMap(
                         line -> line,
-                        line -> new Sections(sectionRepository.findAllSectionByLineId(line.getId())))
+                        line -> new GeneralSections(generalSectionRepository.findAllSectionByLineId(line.getId())))
                 );
 
-        SectionsByLine sectionsByLine = new SectionsByLine(findAllSectionsByLine);
-        Map<Line, List<String>> allSortedStationNamesByLine = sectionsByLine.getAllSortedStationNamesByLine();
+        GeneralSectionsByLine generalSectionsByLine = new GeneralSectionsByLine(findAllSectionsByLine);
+        Map<Line, List<String>> allSortedStationNamesByLine = generalSectionsByLine.getAllSortedStationNamesByLine();
 
         return allSortedStationNamesByLine.keySet().stream()
                 .map(line -> new LineFindResponse(line.getName(), allSortedStationNamesByLine.get(line)))

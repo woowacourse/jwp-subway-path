@@ -1,7 +1,7 @@
 package subway.acceptance;
 
+import static fixtures.GeneralSectionFixtures.*;
 import static fixtures.LineFixtures.INITIAL_Line2;
-import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,7 +36,7 @@ class StationAcceptanceTest {
         jdbcTemplate.update("set FOREIGN_KEY_CHECKS = 0");
         jdbcTemplate.update("TRUNCATE TABLE LINE");
         jdbcTemplate.update("TRUNCATE TABLE STATION");
-        jdbcTemplate.update("TRUNCATE TABLE SUBWAY_SECTION");
+        jdbcTemplate.update("TRUNCATE TABLE GENERAL_SECTION");
         jdbcTemplate.update("set FOREIGN_KEY_CHECKS = 1");
     }
 
@@ -75,10 +75,10 @@ class StationAcceptanceTest {
                         () -> assertThat(jsonPath.getLong("savedStations[1].id")).isEqualTo(INITIAL_STATION_C.ID),
                         () -> assertThat(jsonPath.getString("savedStations[1].name")).isEqualTo(INITIAL_STATION_C.NAME),
 
-                        () -> assertThat(jsonPath.getLong("savedSections[0].id")).isEqualTo(INITIAL_SECTION_A_TO_C.ID),
+                        () -> assertThat(jsonPath.getLong("savedSections[0].id")).isEqualTo(INITIAL_GENERAL_SECTION_A_TO_C.ID),
                         () -> assertThat(jsonPath.getString("savedSections[0].upStationName")).isEqualTo(INITIAL_STATION_A.NAME),
                         () -> assertThat(jsonPath.getString("savedSections[0].downStationName")).isEqualTo(INITIAL_STATION_C.NAME),
-                        () -> assertThat(jsonPath.getInt("savedSections[0].distance")).isEqualTo(INITIAL_SECTION_A_TO_C.DISTANCE.getDistance())
+                        () -> assertThat(jsonPath.getInt("savedSections[0].distance")).isEqualTo(INITIAL_GENERAL_SECTION_A_TO_C.DISTANCE.getDistance())
                 );
             }
         }
@@ -92,7 +92,7 @@ class StationAcceptanceTest {
                 jdbcTemplate.update("INSERT INTO LINE (name) VALUES ('2호선')");
                 jdbcTemplate.update("INSERT INTO STATION (name, line_id) VALUES ('A역', 1)");
                 jdbcTemplate.update("INSERT INTO STATION (name, line_id) VALUES ('C역', 1)");
-                jdbcTemplate.update("INSERT INTO SUBWAY_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (1, 2, 1, 10)");
+                jdbcTemplate.update("INSERT INTO GENERAL_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (1, 2, 1, 10)");
             }
 
             @Test
@@ -154,12 +154,12 @@ class StationAcceptanceTest {
                         () -> assertThat(jsonPath.getLong("savedSections[0].id")).isEqualTo(2L),
                         () -> assertThat(jsonPath.getString("savedSections[0].upStationName")).isEqualTo(INITIAL_STATION_A.NAME),
                         () -> assertThat(jsonPath.getString("savedSections[0].downStationName")).isEqualTo(STATION_B.NAME),
-                        () -> assertThat(jsonPath.getInt("savedSections[0].distance")).isEqualTo(SECTION_A_TO_B.DISTANCE.getDistance()),
+                        () -> assertThat(jsonPath.getInt("savedSections[0].distance")).isEqualTo(GENERAL_SECTION_A_TO_B.DISTANCE.getDistance()),
 
                         () -> assertThat(jsonPath.getLong("savedSections[1].id")).isEqualTo(3L),
                         () -> assertThat(jsonPath.getString("savedSections[1].upStationName")).isEqualTo(STATION_B.NAME),
                         () -> assertThat(jsonPath.getString("savedSections[1].downStationName")).isEqualTo(INITIAL_STATION_C.NAME),
-                        () -> assertThat(jsonPath.getInt("savedSections[1].distance")).isEqualTo(SECTION_B_TO_C.DISTANCE.getDistance())
+                        () -> assertThat(jsonPath.getInt("savedSections[1].distance")).isEqualTo(GENERAL_SECTION_B_TO_C.DISTANCE.getDistance())
                 );
             }
 
@@ -190,7 +190,7 @@ class StationAcceptanceTest {
                         () -> assertThat(jsonPath.getLong("savedSections[0].id")).isEqualTo(2L),
                         () -> assertThat(jsonPath.getString("savedSections[0].upStationName")).isEqualTo(STATION_D.NAME),
                         () -> assertThat(jsonPath.getString("savedSections[0].downStationName")).isEqualTo(INITIAL_STATION_A.NAME),
-                        () -> assertThat(jsonPath.getInt("savedSections[0].distance")).isEqualTo(SECTION_D_TO_A.DISTANCE.getDistance())
+                        () -> assertThat(jsonPath.getInt("savedSections[0].distance")).isEqualTo(GENERAL_SECTION_D_TO_A.DISTANCE.getDistance())
                 );
             }
 
@@ -221,7 +221,7 @@ class StationAcceptanceTest {
                         () -> assertThat(jsonPath.getLong("savedSections[0].id")).isEqualTo(2L),
                         () -> assertThat(jsonPath.getString("savedSections[0].upStationName")).isEqualTo(INITIAL_STATION_C.NAME),
                         () -> assertThat(jsonPath.getString("savedSections[0].downStationName")).isEqualTo(STATION_E.NAME),
-                        () -> assertThat(jsonPath.getInt("savedSections[0].distance")).isEqualTo(SECTION_C_TO_E.DISTANCE.getDistance())
+                        () -> assertThat(jsonPath.getInt("savedSections[0].distance")).isEqualTo(GENERAL_SECTION_C_TO_E.DISTANCE.getDistance())
                 );
             }
         }
@@ -236,7 +236,7 @@ class StationAcceptanceTest {
             jdbcTemplate.update("INSERT INTO LINE (name) VALUES ('2호선')");
             jdbcTemplate.update("INSERT INTO STATION (name, line_id) VALUES ('A역', 1)");
             jdbcTemplate.update("INSERT INTO STATION (name, line_id) VALUES ('C역', 1)");
-            jdbcTemplate.update("INSERT INTO SUBWAY_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (1, 2, 1, 10)");
+            jdbcTemplate.update("INSERT INTO GENERAL_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (1, 2, 1, 10)");
         }
 
         @Test

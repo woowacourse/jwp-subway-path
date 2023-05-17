@@ -1,7 +1,7 @@
 package fixtures;
 
+import static fixtures.GeneralSectionFixtures.*;
 import static fixtures.LineFixtures.INITIAL_Line2;
-import static fixtures.SectionFixtures.*;
 
 import java.util.List;
 
@@ -66,23 +66,23 @@ public class StationFixtures {
      * Request
      */
     public static class INITIAL_STATION_REQUEST_A_TO_C {
-        public static final StationRequest REQUEST = new StationRequest(INITIAL_STATION_A.NAME, INITIAL_STATION_C.NAME, INITIAL_SECTION_A_TO_C.DISTANCE.getDistance(), INITIAL_Line2.NAME);
+        public static final StationRequest REQUEST = new StationRequest(INITIAL_STATION_A.NAME, INITIAL_STATION_C.NAME, INITIAL_GENERAL_SECTION_A_TO_C.DISTANCE.getDistance(), INITIAL_Line2.NAME);
     }
 
     public static class DOWN_MIDDLE_STATION_REQUEST_A_TO_B {
-        public static final StationRequest REQUEST = new StationRequest(INITIAL_STATION_A.NAME, STATION_B.NAME, SECTION_A_TO_B.DISTANCE.getDistance(), INITIAL_Line2.NAME);
+        public static final StationRequest REQUEST = new StationRequest(INITIAL_STATION_A.NAME, STATION_B.NAME, GENERAL_SECTION_A_TO_B.DISTANCE.getDistance(), INITIAL_Line2.NAME);
     }
 
     public static class UP_MIDDLE_STATION_REQUEST_B_TO_C {
-        public static final StationRequest REQUEST = new StationRequest(STATION_B.NAME, INITIAL_STATION_C.NAME, SECTION_B_TO_C.DISTANCE.getDistance(), INITIAL_Line2.NAME);
+        public static final StationRequest REQUEST = new StationRequest(STATION_B.NAME, INITIAL_STATION_C.NAME, GENERAL_SECTION_B_TO_C.DISTANCE.getDistance(), INITIAL_Line2.NAME);
     }
 
     public static class UP_END_STATION_REQUEST_D_TO_A {
-        public static final StationRequest REQUEST = new StationRequest(STATION_D.NAME, INITIAL_STATION_A.NAME, SECTION_D_TO_A.DISTANCE.getDistance(), INITIAL_Line2.NAME);
+        public static final StationRequest REQUEST = new StationRequest(STATION_D.NAME, INITIAL_STATION_A.NAME, GENERAL_SECTION_D_TO_A.DISTANCE.getDistance(), INITIAL_Line2.NAME);
     }
 
     public static class DOWN_END_STATION_REQUEST_C_TO_E {
-        public static final StationRequest REQUEST = new StationRequest(INITIAL_STATION_C.NAME, STATION_E.NAME, SECTION_C_TO_E.DISTANCE.getDistance(), INITIAL_Line2.NAME);
+        public static final StationRequest REQUEST = new StationRequest(INITIAL_STATION_C.NAME, STATION_E.NAME, GENERAL_SECTION_C_TO_E.DISTANCE.getDistance(), INITIAL_Line2.NAME);
     }
 
     public static class NOT_EXIST_ALL_STATION_REQUEST_D_TO_E {
@@ -97,7 +97,7 @@ public class StationFixtures {
                 new StationSaveResponse(
                         LineDto.from(INITIAL_Line2.FIND_LINE),
                         List.of(StationDto.from(INITIAL_STATION_A.FIND_STATION), StationDto.from(INITIAL_STATION_C.FIND_STATION)),
-                        List.of(SectionDto.from(INITIAL_SECTION_A_TO_C.FIND_SECTION))
+                        List.of(GeneralSectionDto.from(INITIAL_GENERAL_SECTION_A_TO_C.FIND_SECTION))
                 );
     }
 
@@ -113,8 +113,8 @@ public class StationFixtures {
                                 StationDto.from(dummyStationB)
                         ),
                         List.of(
-                                SectionDto.from(SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
-                                SectionDto.from(SECTION_B_TO_C.createDummy(dummyStationB, stationC, line2))
+                                GeneralSectionDto.from(GENERAL_SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
+                                GeneralSectionDto.from(GENERAL_SECTION_B_TO_C.createDummy(dummyStationB, stationC, line2))
                         )
                 );
     }
@@ -127,7 +127,7 @@ public class StationFixtures {
                 new StationSaveResponse(
                         LineDto.from(line2),
                         List.of(StationDto.from(dummyStationD)),
-                        List.of(SectionDto.from(SECTION_D_TO_A.createDummy(dummyStationD, stationA, line2)))
+                        List.of(GeneralSectionDto.from(GENERAL_SECTION_D_TO_A.createDummy(dummyStationD, stationA, line2)))
                 );
     }
 
@@ -141,8 +141,8 @@ public class StationFixtures {
                         LineDto.from(line2),
                         List.of(StationDto.from(dummyStationB)),
                         List.of(
-                                SectionDto.from(SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
-                                SectionDto.from(SECTION_B_TO_C.createDummy(dummyStationB, stationC, line2))
+                                GeneralSectionDto.from(GENERAL_SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
+                                GeneralSectionDto.from(GENERAL_SECTION_B_TO_C.createDummy(dummyStationB, stationC, line2))
                         )
                 );
     }
@@ -155,7 +155,7 @@ public class StationFixtures {
                 new StationSaveResponse(
                         LineDto.from(line2),
                         List.of(StationDto.from(dummyStationE)),
-                        List.of(SectionDto.from(SECTION_C_TO_E.createDummy(stationC, dummyStationE, line2)))
+                        List.of(GeneralSectionDto.from(GENERAL_SECTION_C_TO_E.createDummy(stationC, dummyStationE, line2)))
                 );
     }
 }

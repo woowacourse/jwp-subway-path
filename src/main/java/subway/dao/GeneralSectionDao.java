@@ -10,12 +10,12 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
 import subway.domain.section.Distance;
-import subway.domain.section.NearbyStations;
-import subway.domain.section.Section;
+import subway.domain.section.general.GeneralSection;
+import subway.domain.section.general.NearbyStations;
 import subway.domain.station.Station;
 
 @Repository
-public class SectionDao {
+public class GeneralSectionDao {
 
     private static final String LINE_AND_DUPLICATE_STATION_JOIN_SQL = "SELECT\n" +
             "section.id,\n" +
@@ -27,7 +27,7 @@ public class SectionDao {
             "section.distance,\n" +
             "line.name AS line_name\n" +
             "FROM\n" +
-            "subway_section section\n" +
+            "general_section section\n" +
             "INNER JOIN station up_station ON up_station.line_id = section.line_id AND up_station.id = section.up_station_id\n" +
             "INNER JOIN station down_station ON down_station.line_id = section.line_id AND down_station.id = section.down_station_id\n" +
             "INNER JOIN line ON line.id = section.line_id\n";
@@ -35,7 +35,7 @@ public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private final RowMapper<Section> rowMapper =
+    private final RowMapper<GeneralSection> rowMapper =
             (rs, rowNum) -> {
                 long sectionId = rs.getLong("id");
 
@@ -54,48 +54,48 @@ public class SectionDao {
                 NearbyStations nearbyStations = NearbyStations.createByUpStationAndDownStation(upStation, downStation);
 
                 Distance distance = new Distance(rs.getInt("distance"));
-                Section section = new Section(sectionId, nearbyStations, line, distance);
-                return section;
+                GeneralSection generalSection = new GeneralSection(sectionId, nearbyStations, line, distance);
+                return generalSection;
             };
 
-    public SectionDao(JdbcTemplate jdbcTemplate) {
+    public GeneralSectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("subway_section").usingGeneratedKeyColumns("id");
+                .withTableName("general_section").usingGeneratedKeyColumns("id");
     }
 
-    public Section insert(Section section) {
+    public GeneralSection insert(GeneralSection section) {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("up_station_id", section.getUpStationId())
                 .addValue("down_station_id", section.getDownStationId())
                 .addValue("line_id", section.getLine().getId())
-                .addValue("distance", section.getDistance().getDistance());
+                .addValue("distance", section.getDistance());
 
         long insertedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Section(insertedId, section.getNearbyStations(), section.getLine(), section.getDistance());
+        return new GeneralSection(insertedId, section.getNearbyStations(), section.getLine(), new Distance(section.getDistance()));
     }
 
-    public Optional<Section> selectByUpStationNameAndLineName(String upStationName, String lineName) {
+    public Optional<GeneralSection> selectByUpStationNameAndLineName(String upStationName, String lineName) {
         String sql = LINE_AND_DUPLICATE_STATION_JOIN_SQL + "WHERE up_station.name = ? AND line.name = ?";
         return jdbcTemplate.query(sql, rowMapper, upStationName, lineName).stream().findAny();
     }
 
-    public Optional<Section> selectByDownStationNameAndLineName(String downStationName, String lineName) {
+    public Optional<GeneralSection> selectByDownStationNameAndLineName(String downStationName, String lineName) {
         String sql = LINE_AND_DUPLICATE_STATION_JOIN_SQL + "WHERE down_station.name = ? AND line.name = ?";
         return jdbcTemplate.query(sql, rowMapper, downStationName, lineName).stream().findAny();
     }
 
     public void deleteById(Long id) {
-        String sql = "DELETE FROM subway_section WHERE id = ?";
+        String sql = "DELETE FROM general_section WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     public Boolean isNotExistById(Long id) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM SUBWAY_SECTION WHERE id = ?)";
+        String sql = "SELECT EXISTS(SELECT 1 FROM GENERAL_SECTION WHERE id = ?)";
         return Boolean.FALSE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
     }
 
-    public List<Section> selectAllSectionByLineId(Long lineId) {
+    public List<GeneralSection> selectAllSectionByLineId(Long lineId) {
         String sql = LINE_AND_DUPLICATE_STATION_JOIN_SQL + "WHERE line.id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, lineId);

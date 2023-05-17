@@ -9,21 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dao.SectionDao;
+import subway.dao.GeneralSectionDao;
 import subway.exception.SectionNotFoundException;
 
 @JdbcTest
 @Sql({"/test-schema.sql", "/test-data.sql"})
-class SectionRepositoryTest {
+class GeneralSectionRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private SectionRepository sectionRepository;
+    private GeneralSectionRepository generalSectionRepository;
 
     @BeforeEach
     void setUp() {
-        this.sectionRepository = new SectionRepository(new SectionDao(jdbcTemplate));
+        this.generalSectionRepository = new GeneralSectionRepository(new GeneralSectionDao(jdbcTemplate));
     }
 
     @Test
@@ -33,7 +33,7 @@ class SectionRepositoryTest {
         Long dummySectionId = -1L;
 
         // when, then
-        assertThatThrownBy(() -> sectionRepository.removeSectionById(dummySectionId))
+        assertThatThrownBy(() -> generalSectionRepository.removeSectionById(dummySectionId))
                 .isInstanceOf(SectionNotFoundException.class)
                 .hasMessage("구간 ID에 해당하는 구간이 존재하지 않습니다.");
     }

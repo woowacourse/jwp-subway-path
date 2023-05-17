@@ -6,9 +6,9 @@ public class StationSaveResponse {
 
     private final LineDto line;
     private final List<StationDto> savedStations;
-    private final List<SectionDto> savedSections;
+    private final List<GeneralSectionDto> savedSections;
 
-    public StationSaveResponse(LineDto line, List<StationDto> savedStations, List<SectionDto> savedSections) {
+    public StationSaveResponse(LineDto line, List<StationDto> savedStations, List<GeneralSectionDto> savedSections) {
         this.line = line;
         this.savedStations = savedStations;
         this.savedSections = savedSections;
@@ -22,7 +22,7 @@ public class StationSaveResponse {
         return savedStations;
     }
 
-    public List<SectionDto> getSavedSections() {
+    public List<GeneralSectionDto> getSavedSections() {
         return savedSections;
     }
 

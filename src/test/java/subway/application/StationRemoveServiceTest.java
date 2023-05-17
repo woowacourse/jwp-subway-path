@@ -1,7 +1,7 @@
 package subway.application;
 
+import static fixtures.GeneralSectionFixtures.*;
 import static fixtures.LineFixtures.INITIAL_Line2;
-import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -18,13 +18,13 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.line.Line;
 import subway.domain.section.Distance;
-import subway.domain.section.NearbyStations;
-import subway.domain.section.Section;
+import subway.domain.section.general.GeneralSection;
+import subway.domain.section.general.NearbyStations;
 import subway.domain.station.Station;
 import subway.exception.NotFoundException;
 import subway.exception.StationNotFoundException;
+import subway.repository.GeneralSectionRepository;
 import subway.repository.LineRepository;
-import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
 @SpringBootTest
@@ -42,7 +42,7 @@ class StationRemoveServiceTest {
     private LineRepository lineRepository;
 
     @Autowired
-    private SectionRepository sectionRepository;
+    private GeneralSectionRepository generalSectionRepository;
 
     @Nested
     @DisplayName("역 삭제 시 ")
@@ -72,7 +72,7 @@ class StationRemoveServiceTest {
 
                 // when
                 stationRemoveService.removeStationById(stationIdToRemove);
-                List<Section> allSectionByLineId = sectionRepository.findAllSectionByLineId(INITIAL_Line2.ID);
+                List<GeneralSection> allSectionByLineId = generalSectionRepository.findAllSectionByLineId(INITIAL_Line2.ID);
 
                 // then
                 assertAll(
@@ -95,14 +95,14 @@ class StationRemoveServiceTest {
                     Line line2 = INITIAL_Line2.FIND_LINE;
                     Station savedDownEndStationE = stationRepository.saveStation(STATION_E.createStationToInsert(line2));
                     Station stationC = INITIAL_STATION_C.FIND_STATION;
-                    Section savedDownEndSection = sectionRepository.saveSection(SECTION_C_TO_E.createSectionToInsert(
+                    GeneralSection savedDownEndSection = generalSectionRepository.saveSection(GENERAL_SECTION_C_TO_E.createSectionToInsert(
                             stationC, savedDownEndStationE, line2));
 
-                    List<Section> expectedSections = List.of(savedDownEndSection);
+                    List<GeneralSection> expectedSections = List.of(savedDownEndSection);
 
                     // when
                     stationRemoveService.removeStationById(stationIdToRemove);
-                    List<Section> allSectionByLineId = sectionRepository.findAllSectionByLineId(line2.getId());
+                    List<GeneralSection> allSectionByLineId = generalSectionRepository.findAllSectionByLineId(line2.getId());
 
                     // then
 
@@ -121,14 +121,14 @@ class StationRemoveServiceTest {
                     Line line2 = INITIAL_Line2.FIND_LINE;
                     Station savedUpEndStationD = stationRepository.saveStation(STATION_D.createStationToInsert(line2));
                     Station stationA = INITIAL_STATION_A.FIND_STATION;
-                    Section savedUpEndSection = sectionRepository.saveSection(SECTION_D_TO_A.createSectionToInsert(
+                    GeneralSection savedUpEndSection = generalSectionRepository.saveSection(GENERAL_SECTION_D_TO_A.createSectionToInsert(
                             savedUpEndStationD, stationA, line2));
 
-                    List<Section> expectedSections = List.of(savedUpEndSection);
+                    List<GeneralSection> expectedSections = List.of(savedUpEndSection);
 
                     // when
                     stationRemoveService.removeStationById(stationIdToRemove);
-                    List<Section> allSectionByLineId = sectionRepository.findAllSectionByLineId(line2.getId());
+                    List<GeneralSection> allSectionByLineId = generalSectionRepository.findAllSectionByLineId(line2.getId());
 
                     // then
                     assertAll(
@@ -146,22 +146,22 @@ class StationRemoveServiceTest {
                     Line line2 = INITIAL_Line2.FIND_LINE;
                     Station savedUpEndStationD = stationRepository.saveStation(STATION_D.createStationToInsert(line2));
                     Station stationA = INITIAL_STATION_A.FIND_STATION;
-                    sectionRepository.saveSection(SECTION_D_TO_A.createSectionToInsert(savedUpEndStationD, stationA, line2));
+                    generalSectionRepository.saveSection(GENERAL_SECTION_D_TO_A.createSectionToInsert(savedUpEndStationD, stationA, line2));
 
                     Station stationC = INITIAL_STATION_C.FIND_STATION;
 
                     // when
                     stationRemoveService.removeStationById(stationIdToRemove);
-                    List<Section> expectedSections =
+                    List<GeneralSection> expectedSections =
                             List.of(
-                                    new Section(-1L,
+                                    new GeneralSection(-1L,
                                             NearbyStations.createByUpStationAndDownStation(savedUpEndStationD, stationC),
                                             line2,
-                                            new Distance(INITIAL_SECTION_A_TO_C.DISTANCE.getDistance() + SECTION_D_TO_A.DISTANCE.getDistance())
+                                            new Distance(INITIAL_GENERAL_SECTION_A_TO_C.DISTANCE.getDistance() + GENERAL_SECTION_D_TO_A.DISTANCE.getDistance())
                                     )
                             );
 
-                    List<Section> allSectionByLineId = sectionRepository.findAllSectionByLineId(line2.getId());
+                    List<GeneralSection> allSectionByLineId = generalSectionRepository.findAllSectionByLineId(line2.getId());
 
                     // then
 

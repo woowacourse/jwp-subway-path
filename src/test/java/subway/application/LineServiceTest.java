@@ -1,7 +1,7 @@
 package subway.application;
 
+import static fixtures.GeneralSectionFixtures.*;
 import static fixtures.LineFixtures.*;
-import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.dto.LineFindResponse;
+import subway.repository.GeneralSectionRepository;
 import subway.repository.LineRepository;
-import subway.repository.SectionRepository;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +31,7 @@ class LineServiceTest {
     private LineRepository lineRepository;
 
     @Mock
-    private SectionRepository sectionRepository;
+    private GeneralSectionRepository generalSectionRepository;
 
     @Test
     @DisplayName("노선 ID로 해당 노선의 역 이름들을 순서대로 반환한다. (CASE : A-C-E)")
@@ -43,10 +43,10 @@ class LineServiceTest {
         Station dummyStationB = STATION_E.createDummyStation(-1L, line2);
 
         when(lineRepository.findLineById(initLineId)).thenReturn(line2);
-        when(sectionRepository.findAllSectionByLineId(initLineId))
+        when(generalSectionRepository.findAllSectionByLineId(initLineId))
                 .thenReturn(List.of(
-                        INITIAL_SECTION_A_TO_C.FIND_SECTION,
-                        SECTION_C_TO_E.createDummy(stationC, dummyStationB, line2))
+                        INITIAL_GENERAL_SECTION_A_TO_C.FIND_SECTION,
+                        GENERAL_SECTION_C_TO_E.createDummy(stationC, dummyStationB, line2))
                 );
 
         LineFindResponse expectedResponse = LINE_FIND_RESPONSE_LINE2_A_TO_C_AND_C_TO_E.RESPONSE;
@@ -70,17 +70,17 @@ class LineServiceTest {
         Station dummyLine2StationE = STATION_E.createDummyStation(-1L, line2);
 
         when(lineRepository.findAllLine()).thenReturn(List.of(line2, line7));
-        when(sectionRepository.findAllSectionByLineId(line2Id))
+        when(generalSectionRepository.findAllSectionByLineId(line2Id))
                 .thenReturn(List.of(
-                        INITIAL_SECTION_A_TO_C.FIND_SECTION,
-                        SECTION_C_TO_E.createDummy(line2StationC, dummyLine2StationE, line2))
+                        INITIAL_GENERAL_SECTION_A_TO_C.FIND_SECTION,
+                        GENERAL_SECTION_C_TO_E.createDummy(line2StationC, dummyLine2StationE, line2))
                 );
 
         Station dummyLine7StationB = STATION_B.createDummyStation(-1L, line7);
         Station dummyLine7StationD = STATION_D.createDummyStation(-1L, line7);
-        when(sectionRepository.findAllSectionByLineId(line7Id))
+        when(generalSectionRepository.findAllSectionByLineId(line7Id))
                 .thenReturn(List.of(
-                        SECTION_B_TO_D.createDummy(dummyLine7StationB, dummyLine7StationD, line7))
+                        GENERAL_SECTION_B_TO_D.createDummy(dummyLine7StationB, dummyLine7StationD, line7))
                 );
 
         List<LineFindResponse> expectedResponse = ALL_LINE_FIND_RESPONSE_LINE2_AND_LINE7.RESPONSE;

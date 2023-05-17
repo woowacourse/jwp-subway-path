@@ -37,7 +37,7 @@ public class LineAcceptanceTest {
         jdbcTemplate.update("set FOREIGN_KEY_CHECKS = 0");
         jdbcTemplate.update("TRUNCATE TABLE LINE");
         jdbcTemplate.update("TRUNCATE TABLE STATION");
-        jdbcTemplate.update("TRUNCATE TABLE SUBWAY_SECTION");
+        jdbcTemplate.update("TRUNCATE TABLE GENERAL_SECTION");
         jdbcTemplate.update("set FOREIGN_KEY_CHECKS = 1");
 
         jdbcTemplate.update("INSERT INTO LINE (name) VALUES ('2호선')");
@@ -47,9 +47,9 @@ public class LineAcceptanceTest {
         jdbcTemplate.update("INSERT INTO STATION (name, line_id) VALUES ('E역', 1)");
         jdbcTemplate.update("INSERT INTO STATION (name, line_id) VALUES ('B역', 2)");
         jdbcTemplate.update("INSERT INTO STATION (name, line_id) VALUES ('D역', 2)");
-        jdbcTemplate.update("INSERT INTO SUBWAY_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (1, 2, 1, 3)");
-        jdbcTemplate.update("INSERT INTO SUBWAY_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (2, 3, 1, 5)");
-        jdbcTemplate.update("INSERT INTO SUBWAY_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (4, 5, 2, 4)");
+        jdbcTemplate.update("INSERT INTO GENERAL_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (1, 2, 1, 3)");
+        jdbcTemplate.update("INSERT INTO GENERAL_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (2, 3, 1, 5)");
+        jdbcTemplate.update("INSERT INTO GENERAL_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (4, 5, 2, 4)");
     }
 
 

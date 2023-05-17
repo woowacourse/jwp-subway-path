@@ -1,21 +1,16 @@
 package subway.domain.section;
 
-import subway.domain.line.Line;
+import subway.domain.section.general.NearbyStations;
 import subway.domain.station.Station;
 
-public class Section {
+public abstract class Section {
 
     private final Long id;
     private final NearbyStations nearbyStations;
-    private final Line line;
-    private final Distance distance;
 
-    public Section(Long id, NearbyStations nearbyStations, Line line,
-                   Distance distance) {
+    public Section(final Long id, final NearbyStations nearbyStations) {
         this.id = id;
         this.nearbyStations = nearbyStations;
-        this.line = line;
-        this.distance = distance;
     }
 
     public boolean isSameDownStationName(String downStationName) {
@@ -26,9 +21,9 @@ public class Section {
         return nearbyStations.getUpStation().isSameStationName(upStationName);
     }
 
-    public boolean isSameLineId(Long lineId) {
-        return line.getId().equals(lineId);
-    }
+    public abstract boolean isSameLineId(Long lineId);
+
+    public abstract int getDistance();
 
     public Station getUpStation() {
         return nearbyStations.getUpStation();
@@ -52,23 +47,5 @@ public class Section {
 
     public NearbyStations getNearbyStations() {
         return nearbyStations;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public Distance getDistance() {
-        return distance;
-    }
-
-    @Override
-    public String toString() {
-        return "Section{" +
-                "id=" + id +
-                ", nearbyStations=" + nearbyStations +
-                ", line=" + line +
-                ", distance=" + distance +
-                '}';
     }
 }

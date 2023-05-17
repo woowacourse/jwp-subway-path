@@ -1,7 +1,7 @@
 package subway.dao;
 
+import static fixtures.GeneralSectionFixtures.*;
 import static fixtures.LineFixtures.INITIAL_Line2;
-import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -19,22 +19,22 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.line.Line;
-import subway.domain.section.Section;
+import subway.domain.section.general.GeneralSection;
 import subway.domain.station.Station;
 
 @JdbcTest
 @Sql({"/test-schema.sql", "/test-data.sql"})
-class SectionDaoTest {
+class GeneralSectionDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private SectionDao sectionDao;
+    private GeneralSectionDao generalSectionDao;
     private StationDao stationDao;
 
     @BeforeEach
     void setUp() {
-        this.sectionDao = new SectionDao(jdbcTemplate);
+        this.generalSectionDao = new GeneralSectionDao(jdbcTemplate);
         this.stationDao = new StationDao(jdbcTemplate);
     }
 
@@ -46,10 +46,10 @@ class SectionDaoTest {
         Station insertedStationB = stationDao.insert(STATION_B.createStationToInsert(line2));
         Station stationC = INITIAL_STATION_C.FIND_STATION;
 
-        Section sectionToInsert = SECTION_B_TO_C.createSectionToInsert(insertedStationB, stationC, line2);
+        GeneralSection sectionToInsert = GENERAL_SECTION_B_TO_C.createSectionToInsert(insertedStationB, stationC, line2);
 
         // when
-        Section insertedSectionBtoC = sectionDao.insert(sectionToInsert);
+        GeneralSection insertedSectionBtoC = generalSectionDao.insert(sectionToInsert);
 
         // then
         assertThat(insertedSectionBtoC).usingRecursiveComparison()
@@ -64,11 +64,11 @@ class SectionDaoTest {
         String lineName = INITIAL_Line2.NAME;
 
         // when
-        Optional<Section> findSection = sectionDao.selectByUpStationNameAndLineName(upStationName, lineName);
+        Optional<GeneralSection> findSection = generalSectionDao.selectByUpStationNameAndLineName(upStationName, lineName);
 
         // then
         assertThat(findSection.get()).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(INITIAL_SECTION_A_TO_C.FIND_SECTION);
+                .ignoringFields("id").isEqualTo(INITIAL_GENERAL_SECTION_A_TO_C.FIND_SECTION);
     }
 
     @ParameterizedTest
@@ -76,7 +76,7 @@ class SectionDaoTest {
     @DisplayName("상행역의 이름와 노선 이름에 해당하는 행이 없으면 빈 Optional을 반환한다.")
     void findByUpStationNameAndLindNameEmptyOptional(String upStationName, String lineName) {
         // when
-        Optional<Section> findSection = sectionDao.selectByUpStationNameAndLineName(upStationName, lineName);
+        Optional<GeneralSection> findSection = generalSectionDao.selectByUpStationNameAndLineName(upStationName, lineName);
 
         // then
         assertThat(findSection.isEmpty()).isTrue();
@@ -90,11 +90,11 @@ class SectionDaoTest {
         String lineName = INITIAL_Line2.NAME;
 
         // when
-        Optional<Section> findSection = sectionDao.selectByDownStationNameAndLineName(downStationName, lineName);
+        Optional<GeneralSection> findSection = generalSectionDao.selectByDownStationNameAndLineName(downStationName, lineName);
 
         // then
         assertThat(findSection.get()).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(INITIAL_SECTION_A_TO_C.FIND_SECTION);
+                .ignoringFields("id").isEqualTo(INITIAL_GENERAL_SECTION_A_TO_C.FIND_SECTION);
     }
 
     @ParameterizedTest
@@ -102,7 +102,7 @@ class SectionDaoTest {
     @DisplayName("하행역의 이름와 노선 이름에 해당하는 행이 없으면 빈 Optional을 반환한다.")
     void findByDownStationNameAndLindNameEmptyOptional(String downStationName, String lineName) {
         // when
-        Optional<Section> findSection = sectionDao.selectByDownStationNameAndLineName(downStationName, lineName);
+        Optional<GeneralSection> findSection = generalSectionDao.selectByDownStationNameAndLineName(downStationName, lineName);
 
         // then
         assertThat(findSection.isEmpty()).isTrue();
@@ -116,7 +116,7 @@ class SectionDaoTest {
         Long parsedId = Long.parseLong(id);
 
         // when, then
-        assertThat(sectionDao.isNotExistById(parsedId)).isEqualTo(expected);
+        assertThat(generalSectionDao.isNotExistById(parsedId)).isEqualTo(expected);
     }
 
     @Test
@@ -127,17 +127,17 @@ class SectionDaoTest {
         Station stationToInsert = STATION_B.createStationToInsert(line2);
 
         Station insertedStationB = stationDao.insert(stationToInsert);
-        Section insertedSectionAtoB =
-                sectionDao.insert(SECTION_A_TO_B.createSectionToInsert(INITIAL_STATION_A.FIND_STATION, insertedStationB, line2));
+        GeneralSection insertedSectionAtoB =
+                generalSectionDao.insert(GENERAL_SECTION_A_TO_B.createSectionToInsert(INITIAL_STATION_A.FIND_STATION, insertedStationB, line2));
 
         // when
-        List<Section> findSections = sectionDao.selectAllSectionByLineId(line2.getId());
+        List<GeneralSection> findSections = generalSectionDao.selectAllSectionByLineId(line2.getId());
 
         // then
         assertAll(
                 () -> assertThat(findSections.size()).isEqualTo(2),
                 () -> assertThat(findSections).usingRecursiveFieldByFieldElementComparator()
-                        .contains(INITIAL_SECTION_A_TO_C.FIND_SECTION, insertedSectionAtoB)
+                        .contains(INITIAL_GENERAL_SECTION_A_TO_C.FIND_SECTION, insertedSectionAtoB)
         );
     }
 
@@ -145,12 +145,12 @@ class SectionDaoTest {
     @DisplayName("구간 ID에 해당하는 행을 삭제한다.")
     void deleteBySectionIdTest() {
         // given
-        Long sectionIdToDelete = INITIAL_SECTION_A_TO_C.ID;
+        Long sectionIdToDelete = INITIAL_GENERAL_SECTION_A_TO_C.ID;
 
         // when
-        sectionDao.deleteById(sectionIdToDelete);
+        generalSectionDao.deleteById(sectionIdToDelete);
 
         // then
-        assertThat(sectionDao.selectAllSectionByLineId(INITIAL_Line2.ID)).isEmpty();
+        assertThat(generalSectionDao.selectAllSectionByLineId(INITIAL_Line2.ID)).isEmpty();
     }
 }
