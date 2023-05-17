@@ -41,9 +41,9 @@ public class StationService {
 		return StationResponse.of(stationRepository.findAll());
 	}
 
-	public StationResponse findById(final Long stationIdRequest) {
-		final Station station = stationRepository.findById(stationIdRequest);
-		return new StationResponse(stationIdRequest, station.getName());
+	public StationResponse findById(final Long stationId) {
+		final Station station = stationRepository.findById(stationId);
+		return new StationResponse(stationId, station.getName());
 	}
 
 	public StationResponse updateStation(final long stationId, final StationRequest request) {
