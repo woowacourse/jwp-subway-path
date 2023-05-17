@@ -158,7 +158,7 @@ public class Sections {
 
         final int insertIndex = sections.indexOf(prviousSection);
         updateSection.remove(prviousSection);
-        updateSection.remove(newSection);
+        updateSection.remove(nextSection);
         updateSection.add(insertIndex, newSection);
 
         return new Sections(updateSection);
