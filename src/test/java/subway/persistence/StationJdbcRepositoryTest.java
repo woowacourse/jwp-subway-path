@@ -8,18 +8,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.domain.Station;
 
 @SpringBootTest
+@Transactional
 class StationJdbcRepositoryTest {
 
 	@Autowired
 	StationJdbcRepository repository;
-
-	@Autowired
-	JdbcTemplate jdbcTemplate;
 
 	Station jamsil;
 	Station samsung;
@@ -28,9 +26,6 @@ class StationJdbcRepositoryTest {
 	void setUp() {
 		jamsil = new Station("잠실");
 		samsung = new Station("삼성");
-		jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0");
-		jdbcTemplate.execute("TRUNCATE TABLE station RESTART IDENTITY");
-		jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1");
 	}
 
 	@DisplayName("역 생성 테스트")
@@ -40,7 +35,7 @@ class StationJdbcRepositoryTest {
 		final long jamsilId = repository.createStation(jamsil);
 
 		// then
-		Assertions.assertThat(1L).isEqualTo(jamsilId);
+		Assertions.assertThat(4L).isEqualTo(jamsilId);
 	}
 
 	@DisplayName("역 전체 조회 테스트")
