@@ -38,7 +38,7 @@ public class PathIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("최단 경로검색에 실패한 경우 400을 던진다..")
+    @DisplayName("최단 경로검색에 실패한 경우 400을 던진다.")
     void findShortestPathFail() {
         //when
         ExtractableResponse<Response> response = RestAssured

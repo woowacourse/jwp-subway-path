@@ -1,6 +1,7 @@
 package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
@@ -21,6 +22,8 @@ import subway.domain.farecalculator.BasicFareCalculator;
 import subway.domain.pathfinder.JgraphtPathFinder;
 import subway.domain.pathfinder.LineWeightedEdge;
 import subway.dto.PathResponse;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
@@ -63,5 +66,13 @@ class PathServiceTest {
                 () -> assertThat(result.getPrice()).isEqualTo(1350),
                 () -> assertThat(result.getPath()).hasSize(3)
         );
+    }
+
+    @Test
+    @DisplayName("source 와 target이 같은 경우 예외가 발생한다.")
+    void computePathFailBySameStation() {
+        assertThatThrownBy(() -> pathService.computePath(1L, 1L))
+                .isInstanceOf(DomainException.class)
+                .hasMessage(ExceptionType.SOURCE_IS_SAME_WITH_TARGET.name());
     }
 }

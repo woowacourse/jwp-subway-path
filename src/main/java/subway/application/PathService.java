@@ -18,6 +18,8 @@ import subway.domain.farecalculator.FareCalculator;
 import subway.domain.pathfinder.PathFinder;
 import subway.dto.PathResponse;
 import subway.dto.SectionResponse;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,14 +45,15 @@ public class PathService {
     }
 
     public PathResponse computePath(Long sourceStationId, Long targetStationId) {
+        validate(sourceStationId, targetStationId);
         final List<Station> stations = stationDao.findAll();
         final List<Line> lines = lineDao.findAll();
         final List<Section> sections = sectionDao.findAll();
 
         pathFinder.addSections(sections);
+        final List<Section> path = pathFinder.computeShortestPath(sourceStationId, targetStationId);
         final int distance = pathFinder.computeShortestDistance(sourceStationId, targetStationId);
         final int fare = fareCalculator.calculateFare(distance);
-        final List<Section> path = pathFinder.computeShortestPath(sourceStationId, targetStationId);
 
         final Map<Long, Station> idToStationName = stations.stream()
                 .collect(Collectors.toMap(Station::getId, Function.identity()));
@@ -65,5 +68,11 @@ public class PathService {
                 )
                 .collect(Collectors.toUnmodifiableList());
         return new PathResponse(distance, fare, sectionResponses);
+    }
+
+    private void validate(Long sourceStationId, Long targetStationId) {
+        if (sourceStationId.equals(targetStationId)) {
+            throw new DomainException(ExceptionType.SOURCE_IS_SAME_WITH_TARGET);
+        }
     }
 }
