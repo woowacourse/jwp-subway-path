@@ -1,29 +1,20 @@
 package subway.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class StationRequest {
 
-    private String upStationName;
-    private String downStationName;
-    private Long distance;
+    @NotBlank(message = "이름을 입력해야 합니다")
+    private String name;
 
     public StationRequest() {
     }
 
-    public StationRequest(final String upStationName, final String downStationName, final Long distance) {
-        this.upStationName = upStationName;
-        this.downStationName = downStationName;
-        this.distance = distance;
+    public StationRequest(final String name) {
+        this.name = name;
     }
 
-    public String getUpStationName() {
-        return upStationName;
-    }
-
-    public String getDownStationName() {
-        return downStationName;
-    }
-
-    public Long getDistance() {
-        return distance;
+    public String getName() {
+        return name;
     }
 }
