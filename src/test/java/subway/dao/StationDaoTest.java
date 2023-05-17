@@ -79,7 +79,7 @@ class StationDaoTest {
         final StationEntity stationS = new StationEntity(id, "S");
 
         // when
-        stationDao.updateById(stationS);
+        stationDao.update(stationS);
         final StationEntity result = stationDao.findById(id).get();
 
         // then
