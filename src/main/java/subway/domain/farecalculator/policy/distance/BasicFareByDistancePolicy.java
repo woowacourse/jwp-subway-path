@@ -1,9 +1,9 @@
-package subway.domain.farecalculator;
+package subway.domain.farecalculator.policy.distance;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class BasicFareCalculator implements FareCalculator {
+public class BasicFareByDistancePolicy implements FareByDistancePolicy {
 
     public static final Integer BASIC_FARE = 1250;
     public static final Integer ADDITIONAL_FARE = 100;

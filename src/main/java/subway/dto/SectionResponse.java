@@ -6,14 +6,16 @@ import subway.domain.Station;
 public class SectionResponse {
     private final Long lineId;
     private final String lineName;
+    private final Integer additionalFare;
     private final Long sourceStationId;
     private final String sourceStationName;
     private final Long targetStationId;
     private final String targetStationName;
 
-    public SectionResponse(
+    private SectionResponse(
             Long lineId,
             String lineName,
+            Integer additionalFare,
             Long sourceStationId,
             String sourceStationName,
             Long targetStationId,
@@ -21,6 +23,7 @@ public class SectionResponse {
     ) {
         this.lineId = lineId;
         this.lineName = lineName;
+        this.additionalFare = additionalFare;
         this.sourceStationId = sourceStationId;
         this.sourceStationName = sourceStationName;
         this.targetStationId = targetStationId;
@@ -31,6 +34,7 @@ public class SectionResponse {
         return new SectionResponse(
                 line.getId(),
                 line.getName(),
+                line.getAdditionalFare(),
                 sourceStation.getId(),
                 sourceStation.getName(),
                 targetStation.getId(),
@@ -44,6 +48,10 @@ public class SectionResponse {
 
     public String getLineName() {
         return lineName;
+    }
+
+    public Integer getAdditionalFare() {
+        return additionalFare;
     }
 
     public Long getSourceStationId() {

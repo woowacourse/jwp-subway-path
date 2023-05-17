@@ -8,9 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class BasicFareCalculatorTest {
+import subway.domain.farecalculator.policy.distance.BasicFareByDistancePolicy;
+import subway.domain.farecalculator.policy.distance.FareByDistancePolicy;
 
-    FareCalculator fareCalculator = new BasicFareCalculator();
+class BasicFareByDistancePolicyTest {
+
+    FareByDistancePolicy fareByDistancePolicy = new BasicFareByDistancePolicy();
 
     public static Stream<Arguments> provideDistanceAndFare() {
         return Stream.of(
@@ -24,7 +27,7 @@ class BasicFareCalculatorTest {
     @MethodSource("provideDistanceAndFare")
     void calculateFare(int distance, int expected) {
         //when
-        final int result = fareCalculator.calculateFare(distance);
+        final int result = fareByDistancePolicy.calculateFare(distance);
 
         //then
         assertThat(result).isEqualTo(expected);
