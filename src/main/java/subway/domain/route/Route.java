@@ -1,22 +1,26 @@
-package subway.domain;
+package subway.domain.route;
+
+import subway.domain.vo.Distance;
+import subway.domain.vo.Money;
+import subway.domain.Station;
 
 import java.util.List;
 import java.util.Objects;
 
 public class Route {
 
-    private Station from;
-    private Station to;
-    private List<Station> transfers;
-    private List<Section> sections;
-    private Distance totalDistance;
-    private Money totalPrice;
+    private final Station from;
+    private final Station to;
+    private final List<Station> transfers;
+    private final List<RouteEdge> sections;
+    private final Distance totalDistance;
+    private final Money totalPrice;
 
     public Route(
             final Station from,
             final Station to,
             final List<Station> transfers,
-            final List<Section> sections,
+            final List<RouteEdge> sections,
             final Distance totalDistance,
             final Money totalPrice
     ) {
@@ -28,11 +32,11 @@ public class Route {
         this.totalPrice = totalPrice;
     }
 
-    public Station getFrom() {
+    public Station getStart() {
         return from;
     }
 
-    public Station getTo() {
+    public Station getEnd() {
         return to;
     }
 
@@ -40,7 +44,7 @@ public class Route {
         return transfers;
     }
 
-    public List<Section> getSections() {
+    public List<RouteEdge> getSections() {
         return sections;
     }
 
@@ -57,7 +61,12 @@ public class Route {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Route route = (Route) o;
-        return Objects.equals(from, route.from) && Objects.equals(to, route.to) && Objects.equals(transfers, route.transfers) && Objects.equals(sections, route.sections) && Objects.equals(totalDistance, route.totalDistance) && Objects.equals(totalPrice, route.totalPrice);
+        return Objects.equals(from, route.from)
+                && Objects.equals(to, route.to)
+                && Objects.equals(transfers, route.transfers)
+                && Objects.equals(sections, route.sections)
+                && Objects.equals(totalDistance, route.totalDistance)
+                && Objects.equals(totalPrice, route.totalPrice);
     }
 
     @Override
