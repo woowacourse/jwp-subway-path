@@ -3,7 +3,6 @@ package subway.domain.section;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -17,8 +16,7 @@ class DistanceTest {
 
     @ParameterizedTest(name = "길이로 {0}가 전달하면 예외가 발생한다.")
     @ValueSource(ints = {0, 101})
-    @DisplayName("만약 1 ~ 100 사이가 아닌 길이를 전달하면 예외가 발생한다.")
-    void given_invalidRangeDistance_when_callFromMethod_then_throwException(final int invalidDistance) {
+    void from_메소드는_1부터_100_사이가_아닌_길이를_전달하면_예외가_발생한다(final int invalidDistance) {
 
         assertThatThrownBy(() -> Distance.from(invalidDistance))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -26,19 +24,17 @@ class DistanceTest {
     }
 
     @Test
-    @DisplayName("만약 기존 거리에 더할 거리를 전달하면 합을 반환한다.")
-    void given_addDistance_when_callAddMethod_then_returnAddResult() {
+    void plus_메소드는_기존_거리에_더할_거리를_전달하면_합을_반환한다() {
         final Distance first = Distance.from(1);
         final Distance second = Distance.from(2);
 
-        final Distance actual = first.add(second);
+        final Distance actual = first.plus(second);
 
         assertThat(actual.getDistance()).isEqualTo(3);
     }
 
     @Test
-    @DisplayName("만약 기존 거리에 뺄 거리를 전달하면 합을 반환한다.")
-    void given_minusDistance_when_callMinusMethod_then_returnMinusResult() {
+    void minus_메소드는_기존_거리에_뺄_거리를_전달하면_차이를_반환한다() {
         final Distance first = Distance.from(2);
         final Distance second = Distance.from(1);
 
@@ -47,10 +43,9 @@ class DistanceTest {
         assertThat(actual.getDistance()).isEqualTo(1);
     }
 
-    @ParameterizedTest(name = "{0}을 전달하면 {1}을 반환한다.")
+    @ParameterizedTest(name = "{0}에 {1}을 전달하면 {2}를 반환한다.")
     @CsvSource(value = {"2:2:true", "1:2:false", "2:1:true"}, delimiter = ':')
-    @DisplayName("만약 기존 거리에 비교할 거리를 전달하면 기존 거리가 더 크거나 같은지 여부를 반환한다.")
-    void given_minusDistance_when_callMinusMethod_then_returnMinusResult(
+    void isGreaterThanOrEqualTo_메소드는_기존_거리에_비교할_거리를_전달하면_기존_거리가_더_크거나_같은지_여부를_반환한다(
             final int sourceDistanceValue,
             final int targetDistanceValue,
             final boolean expected
@@ -59,6 +54,21 @@ class DistanceTest {
         final Distance targetDistance = Distance.from(targetDistanceValue);
 
         final boolean actual = sourceDistance.isGreaterThanOrEqualTo(targetDistance);
+
+        assertThat(actual).isSameAs(expected);
+    }
+
+    @ParameterizedTest(name = "{0}에 {1}을 전달하면 {2}를 반환한다.")
+    @CsvSource(value = {"2:2:false", "1:2:true", "2:1:false"}, delimiter = ':')
+    void isGreaterThanOrEqualTo_메소드는_기존_거리에_비교할_거리를_전달하면_기존_거리가_작은지_여부를_반환한다(
+            final int sourceDistanceValue,
+            final int targetDistanceValue,
+            final boolean expected
+    ) {
+        final Distance sourceDistance = Distance.from(sourceDistanceValue);
+        final Distance targetDistance = Distance.from(targetDistanceValue);
+
+        final boolean actual = sourceDistance.isLessThan(targetDistance);
 
         assertThat(actual).isSameAs(expected);
     }

@@ -14,6 +14,7 @@ import subway.domain.station.Station;
 public class Sections {
 
     private static final int MINIMUM_SECTION_SIZE = 2;
+    private static final Distance MINIMUM_DISTANCE = Distance.from(1);
     private static final String INVALID_REMOVE_MIDDLE_STATION = "구간에서 삭제할 올바른 역을 선택해주세요.";
     private static final String INVALID_SECTION_INFO = "유효한 구간 정보가 아닙니다.";
 
@@ -48,7 +49,7 @@ public class Sections {
     private void validateDistance(final Section section, final Station targetStation) {
         final Distance distance = section.findDistanceByStation(targetStation);
 
-        if (distance.distance() <= 0) {
+        if (distance.isLessThan(MINIMUM_DISTANCE)) {
             throw new IllegalArgumentException(INVALID_SECTION_INFO);
         }
     }
@@ -143,6 +144,7 @@ public class Sections {
 
         sourceStationSection.delete(existsStation);
         existsStationSection.delete(sourceStation);
+
         sections.put(targetStation, targetStationSection);
     }
 
@@ -157,6 +159,7 @@ public class Sections {
 
         sourceStationSection.add(targetStation, distance, direction);
         targetStationSection.add(sourceStation, distance, direction.reverse());
+
         sections.put(sourceStation, sourceStationSection);
         sections.put(targetStation, targetStationSection);
     }
@@ -211,7 +214,7 @@ public class Sections {
         final Section section = sections.get(targetStation);
         final Distance upStationDistance = section.findDistanceByStation(upStation);
         final Distance downStationDistance = section.findDistanceByStation(downStation);
-        final Distance distance = upStationDistance.add(downStationDistance);
+        final Distance distance = upStationDistance.plus(downStationDistance);
 
         final Section upStationSection = sections.get(upStation);
         upStationSection.delete(targetStation);
