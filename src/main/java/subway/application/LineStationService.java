@@ -17,51 +17,51 @@ public class LineStationService {
     private final LineService lineService;
     private final StationService stationService;
 
-    public LineStationService(LineService lineService, StationService stationService) {
+    public LineStationService(final LineService lineService, final StationService stationService) {
         this.lineService = lineService;
         this.stationService = stationService;
     }
 
     public void addInitStations(final Long id, final Long upStationId, final Long downStationId, final int distance) {
-        Line line = lineService.findById(id);
-        Station upStation = stationService.findById(upStationId);
-        Station downStation = stationService.findById(downStationId);
+        final Line line = lineService.findById(id);
+        final Station upStation = stationService.findById(upStationId);
+        final Station downStation = stationService.findById(downStationId);
         line.addInitStations(upStation, downStation, distance);
         lineService.save(line);
     }
 
     public void addUpEndpoint(final Long id, final Long stationId, final int distance) {
-        Line line = lineService.findById(id);
-        Station station = stationService.findById(stationId);
+        final Line line = lineService.findById(id);
+        final Station station = stationService.findById(stationId);
         line.addUpEndpoint(station, distance);
         lineService.save(line);
     }
 
     public void addDownEndpoint(final Long id, final Long stationId, final int distance) {
-        Line line = lineService.findById(id);
-        Station station = stationService.findById(stationId);
+        final Line line = lineService.findById(id);
+        final Station station = stationService.findById(stationId);
         line.addDownEndpoint(station, distance);
         lineService.save(line);
     }
 
     public void addIntermediate(final Long id, final Long stationId, final Long prevStationId, final int distance) {
-        Line line = lineService.findById(id);
-        Station station = stationService.findById(stationId);
-        Station prevStation = stationService.findById(prevStationId);
+        final Line line = lineService.findById(id);
+        final Station station = stationService.findById(stationId);
+        final Station prevStation = stationService.findById(prevStationId);
         line.addIntermediate(station, prevStation, distance);
         lineService.save(line);
     }
 
     public void deleteStationInLine(final Long id, final Long stationId) {
-        Line line = lineService.findById(id);
-        Station station = stationService.findById(stationId);
+        final Line line = lineService.findById(id);
+        final Station station = stationService.findById(stationId);
         line.deleteSections(station);
         lineService.save(line);
     }
 
     public void deleteStation(final Long stationId) {
-        Lines lines = lineService.findAll();
-        Station station = stationService.findById(stationId);
+        final Lines lines = lineService.findAll();
+        final Station station = stationService.findById(stationId);
         lines.deleteStation(station);
         stationService.deleteStationById(stationId);
     }
@@ -72,18 +72,18 @@ public class LineStationService {
                 .collect(Collectors.toList());
     }
 
-    public LineStationResponse findByLineId(Long id) {
-        Line line = lineService.findById(id);
+    public LineStationResponse findByLineId(final Long id) {
+        final Line line = lineService.findById(id);
         return mapToResponse(line);
     }
 
-    private LineStationResponse mapToResponse(Line line) {
-        List<String> stations = stationsToString(line.getAllStations());
-        List<Integer> getDistances = line.getAllDistances();
+    private LineStationResponse mapToResponse(final Line line) {
+        final List<String> stations = stationsToString(line.getAllStations());
+        final List<Integer> getDistances = line.getAllDistances();
         return new LineStationResponse(stations, getDistances);
     }
 
-    private List<String> stationsToString(List<Station> stations) {
+    private List<String> stationsToString(final List<Station> stations) {
         return stations.stream()
                 .map(Station::getName)
                 .collect(Collectors.toList());

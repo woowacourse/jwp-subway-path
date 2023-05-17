@@ -44,8 +44,8 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
     }
 
-    public void deleteByLineId(Long lineId) {
-        String sql = "DELETE FROM section WHERE line_id = ?";
+    public void deleteByLineId(final Long lineId) {
+        final String sql = "DELETE FROM section WHERE line_id = ?";
 
         jdbcTemplate.update(sql, lineId);
     }

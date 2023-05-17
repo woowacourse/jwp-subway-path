@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 public class Lines {
     private final List<Line> lines;
 
-    public Lines(List<Line> lines) {
+    public Lines(final List<Line> lines) {
         this.lines = new ArrayList<>(lines);
     }
 
-    public void deleteStation(Station station) {
+    public void deleteStation(final Station station) {
         lines.forEach(line -> line.deleteSections(station));
     }
 

@@ -20,12 +20,12 @@ import java.util.List;
 public class LineStationController {
     private final LineStationService lineStationService;
 
-    public LineStationController(LineStationService lineStationService) {
+    public LineStationController(final LineStationService lineStationService) {
         this.lineStationService = lineStationService;
     }
 
     @PatchMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> connectStations(@PathVariable Long lineId, @PathVariable Long stationId, @RequestParam String type, @RequestBody ConnectRequest request) {
+    public ResponseEntity<Void> connectStations(@PathVariable final Long lineId, @PathVariable final Long stationId, @RequestParam final String type, @RequestBody final ConnectRequest request) {
         if (CreateType.INIT == CreateType.from(type)) {
             lineStationService.addInitStations(lineId, stationId, request.getNextStationId(), request.getDistance());
         }
@@ -42,7 +42,7 @@ public class LineStationController {
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> deleteStationById(@PathVariable Long lineId, @PathVariable Long stationId) {
+    public ResponseEntity<Void> deleteStationById(@PathVariable final Long lineId, @PathVariable final Long stationId) {
         lineStationService.deleteStationInLine(lineId, stationId);
         return ResponseEntity.noContent().build();
     }

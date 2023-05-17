@@ -17,23 +17,23 @@ public class LineService {
 
     private final LineRepository lineRepository;
 
-    public LineService(LineRepository lineRepository) {
+    public LineService(final LineRepository lineRepository) {
         this.lineRepository = lineRepository;
     }
 
     public LineResponse createLine(final LineRequest request) {
-        Line line = new Line(request);
-        Line savedLine = lineRepository.save(line);
+        final Line line = new Line(request);
+        final Line savedLine = lineRepository.save(line);
 
         return LineResponse.of(savedLine);
     }
 
-    public void save(Line line) {
+    public void save(final Line line) {
         lineRepository.save(line);
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        Line line = findById(id);
+        final Line line = findById(id);
 
         line.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
 
@@ -54,7 +54,7 @@ public class LineService {
         return LineResponse.of(findById(id));
     }
 
-    public Line findById(Long id) {
+    public Line findById(final Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 라인이 존재하지 않습니다."));
     }

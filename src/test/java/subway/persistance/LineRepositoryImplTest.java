@@ -51,7 +51,7 @@ class LineRepositoryImplTest {
         when(stationDao.findById(3L)).thenReturn(Optional.of(Fixture.stationC));
 
         // when
-        Line found = lineRepository.findById(1L).get();
+        final Line found = lineRepository.findById(1L).get();
 
         assertAll(
                 () -> assertThat(found.getName()).isEqualTo(Fixture.line1.getName()),
@@ -84,7 +84,7 @@ class LineRepositoryImplTest {
         when(stationDao.findById(3L)).thenReturn(Optional.of(Fixture.stationC));
 
         // when
-        List<Line> lines = lineRepository.findAll().getLines();
+        final List<Line> lines = lineRepository.findAll().getLines();
 
         // then
         assertThat(lines.size()).isEqualTo(3);
@@ -97,7 +97,7 @@ class LineRepositoryImplTest {
         when(lineDao.insert(any())).thenReturn(Fixture.line1);
 
         // when
-        Line saved = lineRepository.save(Fixture.line1);
+        final Line saved = lineRepository.save(Fixture.line1);
 
         assertAll(
                 () -> assertThat(saved.getName()).isEqualTo(Fixture.line1.getName()),

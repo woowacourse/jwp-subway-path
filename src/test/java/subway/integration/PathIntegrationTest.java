@@ -44,7 +44,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .body(lineRequest2)
                 .when().post("/lines");
 
-        Map<String, String> params1 = new HashMap<>();
+        final Map<String, String> params1 = new HashMap<>();
         params1.put("name", "강남역");
 
         RestAssured.given()
@@ -53,7 +53,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .when()
                 .post("/stations");
 
-        Map<String, String> params2 = new HashMap<>();
+        final Map<String, String> params2 = new HashMap<>();
         params2.put("name", "잠실역");
 
         RestAssured.given()
@@ -62,7 +62,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .when()
                 .post("/stations");
 
-        Map<String, String> params3 = new HashMap<>();
+        final Map<String, String> params3 = new HashMap<>();
         params3.put("name", "건대입구역");
 
         RestAssured.given()
@@ -71,7 +71,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .when()
                 .post("/stations");
 
-        Map<String, String> params4 = new HashMap<>();
+        final Map<String, String> params4 = new HashMap<>();
         params4.put("name", "선릉역");
 
         RestAssured.given()
@@ -80,7 +80,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .when()
                 .post("/stations");
 
-        Map<String, String> params5 = new HashMap<>();
+        final Map<String, String> params5 = new HashMap<>();
         params5.put("name", "구의역");
 
         RestAssured.given()
@@ -89,35 +89,35 @@ public class PathIntegrationTest extends IntegrationTest {
                 .when()
                 .post("/stations");
 
-        ConnectRequest connectRequest1 = new ConnectRequest(null, 2L, 10);
+        final ConnectRequest connectRequest1 = new ConnectRequest(null, 2L, 10);
         RestAssured.given()
                 .body(connectRequest1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/1/stations/1?type=init");
 
-        ConnectRequest connectRequest2 = new ConnectRequest(2L, null, 12);
+        final ConnectRequest connectRequest2 = new ConnectRequest(2L, null, 12);
         RestAssured.given()
                 .body(connectRequest2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/1/stations/3?type=down");
 
-        ConnectRequest connectRequest3 = new ConnectRequest(3L, null, 21);
+        final ConnectRequest connectRequest3 = new ConnectRequest(3L, null, 21);
         RestAssured.given()
                 .body(connectRequest3)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/1/stations/4?type=down");
 
-        ConnectRequest connectRequest4 = new ConnectRequest(null, 5L, 12);
+        final ConnectRequest connectRequest4 = new ConnectRequest(null, 5L, 12);
         RestAssured.given()
                 .body(connectRequest4)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/2/stations/1?type=init");
 
-        ConnectRequest connectRequest5 = new ConnectRequest(5L, null, 11);
+        final ConnectRequest connectRequest5 = new ConnectRequest(5L, null, 11);
         RestAssured.given()
                 .body(connectRequest5)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -129,7 +129,7 @@ public class PathIntegrationTest extends IntegrationTest {
     @Test
     void findShortestPath() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/path?source=1&target=4")
@@ -137,10 +137,10 @@ public class PathIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        PathResponse pathResponse = response.body().as(PathResponse.class);
-        List<String> stations = pathResponse.getStations();
-        int distance = pathResponse.getDistance();
-        int fare = pathResponse.getFare();
+        final PathResponse pathResponse = response.body().as(PathResponse.class);
+        final List<String> stations = pathResponse.getStations();
+        final int distance = pathResponse.getDistance();
+        final int fare = pathResponse.getFare();
 
         assertAll(
                 () -> Assertions.assertThat(stations).containsExactly("강남역", "구의역", "선릉역"),

@@ -27,10 +27,10 @@ class StationDaoTest {
     @DisplayName("A역을 저장한다")
     void insert() {
         // given & when
-        Station insert = stationDao.insert(Fixture.stationA);
+        final Station insert = stationDao.insert(Fixture.stationA);
 
         // then
-        Station station = stationDao.findById(insert.getId()).get();
+        final Station station = stationDao.findById(insert.getId()).get();
         assertThat(station).isEqualTo(insert);
     }
 
@@ -38,12 +38,12 @@ class StationDaoTest {
     @DisplayName("A,B,C역을 저장하고 모두 조회한다")
     void findAll() {
         // given
-        Station insertA = stationDao.insert(Fixture.stationA);
-        Station insertB = stationDao.insert(Fixture.stationB);
-        Station insertC = stationDao.insert(Fixture.stationC);
+        final Station insertA = stationDao.insert(Fixture.stationA);
+        final Station insertB = stationDao.insert(Fixture.stationB);
+        final Station insertC = stationDao.insert(Fixture.stationC);
 
         // when
-        List<Station> stations = stationDao.findAll();
+        final List<Station> stations = stationDao.findAll();
 
         // then
         Assertions.assertThat(stations).containsOnly(insertA, insertB, insertC);
@@ -53,12 +53,12 @@ class StationDaoTest {
     @DisplayName("A,B,C역을 저장하고 B를 Id로 조회한다")
     void findById() {
         // given
-        Station insertA = stationDao.insert(Fixture.stationA);
-        Station insertB = stationDao.insert(Fixture.stationB);
-        Station insertC = stationDao.insert(Fixture.stationC);
+        final Station insertA = stationDao.insert(Fixture.stationA);
+        final Station insertB = stationDao.insert(Fixture.stationB);
+        final Station insertC = stationDao.insert(Fixture.stationC);
 
         // when
-        Optional<Station> found = stationDao.findById(insertB.getId());
+        final Optional<Station> found = stationDao.findById(insertB.getId());
 
         // then
         Assertions.assertThat(found.get()).isEqualTo(insertB);
@@ -68,14 +68,14 @@ class StationDaoTest {
     @DisplayName("A역을 업데이트한다")
     void update() {
         // given
-        Station insertA = stationDao.insert(Fixture.stationA);
-        Station updatedStation = new Station(insertA.getId(), "잠실나루역");
+        final Station insertA = stationDao.insert(Fixture.stationA);
+        final Station updatedStation = new Station(insertA.getId(), "잠실나루역");
 
         // when
         stationDao.update(updatedStation);
 
         // then
-        Optional<Station> found = stationDao.findById(insertA.getId());
+        final Optional<Station> found = stationDao.findById(insertA.getId());
         Assertions.assertThat(found.get()).isEqualTo(updatedStation);
     }
 
@@ -83,7 +83,7 @@ class StationDaoTest {
     @DisplayName("A역을 삭제한다")
     void deleteById() {
         // given
-        Station insertA = stationDao.insert(Fixture.stationA);
+        final Station insertA = stationDao.insert(Fixture.stationA);
 
         // when
         stationDao.deleteById(insertA.getId());

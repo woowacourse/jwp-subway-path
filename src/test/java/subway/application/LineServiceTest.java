@@ -37,12 +37,12 @@ class LineServiceTest {
     @DisplayName("요청의 이름, 색깔에 해당하는 라인을 생성한다.")
     void createLine() {
         // given
-        LineRequest request = new LineRequest("2호선", "green");
-        Line expectedLine = new Line(1L, request.getName(), request.getColor());
+        final LineRequest request = new LineRequest("2호선", "green");
+        final Line expectedLine = new Line(1L, request.getName(), request.getColor());
         when(lineRepository.save(any())).thenReturn(expectedLine);
 
         // when
-        LineResponse response = lineService.createLine(request);
+        final LineResponse response = lineService.createLine(request);
 
         // then
         assertThat(response.getId()).isEqualTo(expectedLine.getId());
@@ -54,7 +54,7 @@ class LineServiceTest {
     @DisplayName("라인을 저장한다")
     void save() {
         // given
-        Line line = new Line(1L, "잠실역", "green");
+        final Line line = new Line(1L, "잠실역", "green");
 
         // when
         lineService.save(line);
@@ -67,15 +67,15 @@ class LineServiceTest {
     @DisplayName("id에 해당하는 라인을 요청의 이름과 색깔로 변경한다")
     void updateLine() {
         // given
-        LineRequest request = new LineRequest("선릉역", "green");
-        Line found = new Line(1L, "잠실역", "green");
+        final LineRequest request = new LineRequest("선릉역", "green");
+        final Line found = new Line(1L, "잠실역", "green");
         when(lineRepository.findById(found.getId())).thenReturn(Optional.of(found));
 
         // when
         lineService.updateLine(found.getId(), request);
 
         // then
-        Line updated = new Line(found.getId(), request.getName(), request.getColor());
+        final Line updated = new Line(found.getId(), request.getName(), request.getColor());
         verify(lineRepository, times(1)).save(refEq(updated, "sections"));
     }
 
@@ -83,7 +83,7 @@ class LineServiceTest {
     @DisplayName("id에 해당하는 라인을 삭제한다")
     void deleteLineById() {
         // given
-        Line line = new Line(1L, "잠실역", "green");
+        final Line line = new Line(1L, "잠실역", "green");
         when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
 
         // when
@@ -99,7 +99,7 @@ class LineServiceTest {
         when(lineRepository.findAll()).thenReturn(new Lines(List.of(Fixture.line1, Fixture.line2)));
 
         // when
-        List<LineResponse> lineResponses = lineService.findLineResponses();
+        final List<LineResponse> lineResponses = lineService.findLineResponses();
 
         // then
         assertThat(lineResponses.size()).isEqualTo(2);
@@ -111,7 +111,7 @@ class LineServiceTest {
     @DisplayName("id에 해당하는 라인을 조회한다")
     void findLineResponseById() {
         // given
-        Line line = new Line(1L, "잠실역", "green");
+        final Line line = new Line(1L, "잠실역", "green");
         when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
 
         // when
@@ -124,7 +124,7 @@ class LineServiceTest {
     @DisplayName("id에 해당하는 라인을 조회한다")
     void findById() {
         // given
-        Line line = new Line(1L, "잠실역", "green");
+        final Line line = new Line(1L, "잠실역", "green");
         when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
 
         // when

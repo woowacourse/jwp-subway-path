@@ -37,8 +37,8 @@ class LineStationControllerTest {
     @DisplayName("patch /lines/{lineId}/stations/{stationId}?type=init : noContent를 반환한다.")
     void connectStationsInit() throws Exception {
         // given
-        ConnectRequest request = new ConnectRequest(null, 2L, 1);
-        String jsonRequest = objectMapper.writeValueAsString(request);
+        final ConnectRequest request = new ConnectRequest(null, 2L, 1);
+        final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then
         mockMvc.perform(patch("/lines/1/stations/1?type=init")
@@ -59,8 +59,8 @@ class LineStationControllerTest {
     @DisplayName("patch /lines/{lineId}/stations/{stationId}?type=up : noContent를 반환한다.")
     void connectStationsUp() throws Exception {
         // given
-        ConnectRequest request = new ConnectRequest(null, 2L, 1);
-        String jsonRequest = objectMapper.writeValueAsString(request);
+        final ConnectRequest request = new ConnectRequest(null, 2L, 1);
+        final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then
         mockMvc.perform(patch("/lines/1/stations/1?type=up")
@@ -80,8 +80,8 @@ class LineStationControllerTest {
     @DisplayName("patch /lines/{lineId}/stations/{stationId}?type=down : noContent를 반환한다.")
     void connectStationsDown() throws Exception {
         // given
-        ConnectRequest request = new ConnectRequest(2L, null, 1);
-        String jsonRequest = objectMapper.writeValueAsString(request);
+        final ConnectRequest request = new ConnectRequest(2L, null, 1);
+        final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then
         mockMvc.perform(patch("/lines/1/stations/1?type=down")
@@ -101,8 +101,8 @@ class LineStationControllerTest {
     @DisplayName("patch /lines/{lineId}/stations/{stationId}?type=mid : noContent를 반환한다.")
     void connectStationsMid() throws Exception {
         // given
-        ConnectRequest request = new ConnectRequest(2L, 3L, 1);
-        String jsonRequest = objectMapper.writeValueAsString(request);
+        final ConnectRequest request = new ConnectRequest(2L, 3L, 1);
+        final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then
         mockMvc.perform(patch("/lines/1/stations/1?type=mid")
@@ -132,10 +132,10 @@ class LineStationControllerTest {
     @DisplayName("get /lines/{lineId}/stations : 라인에 해당하는 모든 역을 조회한다.")
     void showStationsByLineId() throws Exception {
         // given
-        List<String> stations = List.of("선릉역", "강남역", "잠실역");
-        List<Integer> distances = List.of(1, 3);
-        LineStationResponse response = new LineStationResponse(stations, distances);
-        String jsonResponse = objectMapper.writeValueAsString(response);
+        final List<String> stations = List.of("선릉역", "강남역", "잠실역");
+        final List<Integer> distances = List.of(1, 3);
+        final LineStationResponse response = new LineStationResponse(stations, distances);
+        final String jsonResponse = objectMapper.writeValueAsString(response);
 
         when(lineStationService.findByLineId(1L)).thenReturn(response);
 
@@ -152,14 +152,14 @@ class LineStationControllerTest {
     @Test
     void showStations() throws Exception {
         // given
-        List<String> stations1 = List.of("선릉역", "강남역", "잠실역");
-        List<Integer> distances1 = List.of(1, 3);
-        List<String> stations2 = List.of("구의역", "건대입구역", "신도림역");
-        List<Integer> distances2 = List.of(5, 8);
-        LineStationResponse response = new LineStationResponse(stations1, distances1);
-        LineStationResponse response2 = new LineStationResponse(stations2, distances2);
-        List<LineStationResponse> responses = List.of(response, response2);
-        String jsonResponse = objectMapper.writeValueAsString(responses);
+        final List<String> stations1 = List.of("선릉역", "강남역", "잠실역");
+        final List<Integer> distances1 = List.of(1, 3);
+        final List<String> stations2 = List.of("구의역", "건대입구역", "신도림역");
+        final List<Integer> distances2 = List.of(5, 8);
+        final LineStationResponse response = new LineStationResponse(stations1, distances1);
+        final LineStationResponse response2 = new LineStationResponse(stations2, distances2);
+        final List<LineStationResponse> responses = List.of(response, response2);
+        final String jsonResponse = objectMapper.writeValueAsString(responses);
 
         when(lineStationService.findAll()).thenReturn(responses);
 

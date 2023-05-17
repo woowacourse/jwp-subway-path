@@ -10,9 +10,9 @@ import subway.domain.fare.distance.ThirdChain;
 public class FareConfiguration {
     @Bean
     public FareCalculator fareCalculator() {
-        ThirdChain thirdChain = new ThirdChain();
-        SecondChain secondChain = new SecondChain(thirdChain);
-        FirstChain firstChain = new FirstChain(secondChain);
+        final ThirdChain thirdChain = new ThirdChain();
+        final SecondChain secondChain = new SecondChain(thirdChain);
+        final FirstChain firstChain = new FirstChain(secondChain);
         return new FareCalculator(firstChain);
     }
 }

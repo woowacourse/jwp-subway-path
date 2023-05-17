@@ -16,10 +16,10 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (getClass() != o.getClass()) return false;
-        Station station = (Station) o;
+        final Station station = (Station) o;
         if (id == null || station.id == null) {
             return Objects.equals(name, station.name);
         }

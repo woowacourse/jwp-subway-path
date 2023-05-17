@@ -23,14 +23,14 @@ public class StationController {
     private final StationService stationService;
     private final LineStationService lineStationService;
 
-    public StationController(StationService stationService, LineStationService lineStationService) {
+    public StationController(final StationService stationService, final LineStationService lineStationService) {
         this.stationService = stationService;
         this.lineStationService = lineStationService;
     }
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest stationRequest) {
-        StationResponse stationResponse = stationService.saveStation(stationRequest);
+        final StationResponse stationResponse = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + stationResponse.getId())).build();
     }
 

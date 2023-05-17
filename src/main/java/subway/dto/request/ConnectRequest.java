@@ -5,7 +5,7 @@ public class ConnectRequest {
     private final Long nextStationId;
     private final int distance;
 
-    public ConnectRequest(Long prevStationId, Long nextStationId, int distance) {
+    public ConnectRequest(final Long prevStationId, final Long nextStationId, final int distance) {
         this.prevStationId = prevStationId;
         this.nextStationId = nextStationId;
         this.distance = distance;

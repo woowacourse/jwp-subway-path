@@ -5,30 +5,30 @@ import java.util.Objects;
 public class Distance {
     private final int value;
 
-    public Distance(int value) {
+    public Distance(final int value) {
         validate(value);
         this.value = value;
     }
 
-    private void validate(int value) {
+    private void validate(final int value) {
         if (value < 1) {
             throw new IllegalArgumentException("거리는 1 이상만 가능합니다.");
         }
     }
 
-    public Distance sub(Distance distance) {
+    public Distance sub(final Distance distance) {
         return new Distance(value - distance.value);
     }
 
-    public Distance sum(Distance distance) {
+    public Distance sum(final Distance distance) {
         return new Distance(value + distance.value);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Distance distance = (Distance) o;
+        final Distance distance = (Distance) o;
         return value == distance.value;
     }
 

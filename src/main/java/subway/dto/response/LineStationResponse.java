@@ -6,7 +6,7 @@ public class LineStationResponse {
     private final List<String> stations;
     private final List<Integer> distances;
 
-    public LineStationResponse(List<String> stations, List<Integer> distances) {
+    public LineStationResponse(final List<String> stations, final List<Integer> distances) {
         this.stations = stations;
         this.distances = distances;
     }

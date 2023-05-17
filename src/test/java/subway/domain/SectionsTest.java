@@ -14,13 +14,13 @@ class SectionsTest {
     @Test
     void addInitStations() {
         // given
-        Sections sections = new Sections();
+        final Sections sections = new Sections();
 
         // when
         sections.addInitStations(Fixture.stationA, Fixture.stationB, Fixture.distance2);
 
         // then
-        Section section = sections.getSections().get(0);
+        final Section section = sections.getSections().get(0);
         assertThat(section.getUp()).isEqualTo(Fixture.stationA);
         assertThat(section.getDown()).isEqualTo(Fixture.stationB);
     }
@@ -29,13 +29,13 @@ class SectionsTest {
     @Test
     void addUpEndpoint() {
         // given
-        Sections sections = new Sections(List.of(Fixture.sectionBC));
+        final Sections sections = new Sections(List.of(Fixture.sectionBC));
 
         // when
         sections.addUpEndpoint(Fixture.stationA, Fixture.distance1);
 
         // then
-        Section section = sections.getSections().get(0);
+        final Section section = sections.getSections().get(0);
         assertThat(section.getUp()).isEqualTo(Fixture.stationA);
         assertThat(section.getDown()).isEqualTo(Fixture.stationB);
     }
@@ -44,13 +44,13 @@ class SectionsTest {
     @Test
     void addDownEndpoint() {
         // given
-        Sections sections = new Sections(List.of(Fixture.sectionAB));
+        final Sections sections = new Sections(List.of(Fixture.sectionAB));
 
         // when
         sections.addDownEndpoint(Fixture.stationC, Fixture.distance1);
 
         // then
-        Section section = sections.getSections().get(1);
+        final Section section = sections.getSections().get(1);
         assertThat(section.getUp()).isEqualTo(Fixture.stationB);
         assertThat(section.getDown()).isEqualTo(Fixture.stationC);
     }
@@ -59,14 +59,14 @@ class SectionsTest {
     @Test
     void addIntermediate() {
         // given
-        Sections sections = new Sections(List.of(Fixture.sectionAB));
+        final Sections sections = new Sections(List.of(Fixture.sectionAB));
 
         // when
         sections.addIntermediate(Fixture.stationC, Fixture.stationA, Fixture.distance1);
 
         // then
-        Section prevToThis = sections.getSections().get(0);
-        Section thisToNext = sections.getSections().get(1);
+        final Section prevToThis = sections.getSections().get(0);
+        final Section thisToNext = sections.getSections().get(1);
 
         assertThat(prevToThis.getUp()).isEqualTo(Fixture.stationA);
         assertThat(prevToThis.getDown()).isEqualTo(Fixture.stationC);
@@ -77,7 +77,7 @@ class SectionsTest {
     @DisplayName("구간 중간의 역을 삭제하면 앞의 역과 다음 역이 이어지고 거리는 두 구간 거리의 합이다")
     @Test
     void deleteMid() {
-        Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
+        final Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
 
         // when
         sections.delete(Fixture.stationB);
@@ -94,7 +94,7 @@ class SectionsTest {
     @DisplayName("역이 두 개이면 모든 구간을 삭제한다")
     @Test
     void deleteInit() {
-        Sections sections = new Sections(List.of(Fixture.sectionAB));
+        final Sections sections = new Sections(List.of(Fixture.sectionAB));
 
         // when
         sections.delete(Fixture.stationA);
@@ -106,7 +106,7 @@ class SectionsTest {
     @DisplayName("상행 종점을 삭제한다")
     @Test
     void deleteUp() {
-        Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
+        final Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
 
         // when
         sections.delete(Fixture.stationA);
@@ -118,7 +118,7 @@ class SectionsTest {
     @DisplayName("하행 종점을 삭제한다")
     @Test
     void deleteDown() {
-        Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
+        final Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
 
         // when
         sections.delete(Fixture.stationC);
@@ -131,10 +131,10 @@ class SectionsTest {
     @DisplayName("모든 역을 조회한다")
     @Test
     void getAllStations() {
-        Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
+        final Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
 
         // when
-        List<Station> stations = sections.getAllStations();
+        final List<Station> stations = sections.getAllStations();
 
         //then
         Assertions.assertThat(stations).containsOnly(Fixture.stationA, Fixture.stationB, Fixture.stationC);
@@ -143,10 +143,10 @@ class SectionsTest {
     @DisplayName("모든 구간의 거리를 조회한다")
     @Test
     void getAllDistances() {
-        Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
+        final Sections sections = new Sections(List.of(Fixture.sectionAB, Fixture.sectionBC));
 
         // when
-        List<Distance> distances = sections.getAllDistances();
+        final List<Distance> distances = sections.getAllDistances();
 
         //then
         Assertions.assertThat(distances).containsOnly(Fixture.sectionAB.getDistance(), Fixture.sectionBC.getDistance());

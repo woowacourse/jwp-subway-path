@@ -16,9 +16,9 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public void addInitStations(Station up, Station down, Distance distance) {
+    public void addInitStations(final Station up, final Station down, final Distance distance) {
         validateInit();
-        Section section = new Section(up, down, distance);
+        final Section section = new Section(up, down, distance);
         sections.add(section);
     }
 
@@ -28,30 +28,30 @@ public class Sections {
         }
     }
 
-    public void addUpEndpoint(Station station, Distance distance) {
+    public void addUpEndpoint(final Station station, final Distance distance) {
         validateHasSize();
 
-        Section section = sections.get(0);
-        Section connected = section.connectToUp(station, distance);
+        final Section section = sections.get(0);
+        final Section connected = section.connectToUp(station, distance);
         sections.add(0, connected);
     }
 
-    public void addDownEndpoint(Station station, Distance distance) {
+    public void addDownEndpoint(final Station station, final Distance distance) {
         validateHasSize();
 
-        Section section = sections.get(sections.size() - 1);
-        Section connected = section.connectToDown(station, distance);
+        final Section section = sections.get(sections.size() - 1);
+        final Section connected = section.connectToDown(station, distance);
         sections.add(connected);
     }
 
-    public void addIntermediate(Station station, Station prevStation, Distance distance) {
+    public void addIntermediate(final Station station, final Station prevStation, final Distance distance) {
         validateHasSize();
 
-        Section prevToNext = getSectionUpIs(prevStation);
-        Section prevToThis = prevToNext.connectIntermediate(station, distance);
-        Section thisToNext = new Section(station, prevToNext.getDown(), prevToNext.subDistance(distance)); // 42
+        final Section prevToNext = getSectionUpIs(prevStation);
+        final Section prevToThis = prevToNext.connectIntermediate(station, distance);
+        final Section thisToNext = new Section(station, prevToNext.getDown(), prevToNext.subDistance(distance)); // 42
 
-        int index = getIndex(prevToNext);
+        final int index = getIndex(prevToNext);
 
         sections.remove(index);
         sections.add(index, thisToNext);
@@ -64,7 +64,7 @@ public class Sections {
         }
     }
 
-    public void delete(Station station) {
+    public void delete(final Station station) {
         if (isInit()) {
             sections.clear();
             return;
@@ -76,7 +76,7 @@ public class Sections {
         }
 
         if (isEndpoint(station)) {
-            Section found = getSectionContains(station);
+            final Section found = getSectionContains(station);
             sections.remove(found);
         }
     }
@@ -85,49 +85,49 @@ public class Sections {
         return sections.size() < 2;
     }
 
-    private boolean isMid(Station station) {
+    private boolean isMid(final Station station) {
         return sections.stream()
                 .skip(1)
                 .anyMatch(section -> section.isUp(station));
     }
 
-    private boolean isEndpoint(Station station) {
+    private boolean isEndpoint(final Station station) {
         return sections.get(0).isUp(station) || sections.get(sections.size() - 1).isDown(station);
     }
 
-    private void deleteMidStation(Station station) {
-        Section upIsStation = getSectionUpIs(station);
-        Section downIsStation = getSectionDownIs(station);
+    private void deleteMidStation(final Station station) {
+        final Section upIsStation = getSectionUpIs(station);
+        final Section downIsStation = getSectionDownIs(station);
 
-        Section section = downIsStation.deleteStation(upIsStation);
-        int index = getIndex(downIsStation);
+        final Section section = downIsStation.deleteStation(upIsStation);
+        final int index = getIndex(downIsStation);
         sections.remove(index + 1);
         sections.remove(index);
         sections.add(index, section);
     }
 
-    private Section getSectionContains(Station station) {
+    private Section getSectionContains(final Station station) {
         return sections.stream()
                 .filter(section -> section.contains(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("역을 포함하고 있는 구간이 존재하지 않습니다."));
     }
 
-    private Section getSectionUpIs(Station station) {
+    private Section getSectionUpIs(final Station station) {
         return sections.stream()
                 .filter(section -> section.isUp(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 역입니다."));
     }
 
-    private Section getSectionDownIs(Station station) {
+    private Section getSectionDownIs(final Station station) {
         return sections.stream()
                 .filter(section -> section.isDown(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 역입니다."));
     }
 
-    private int getIndex(Section section) {
+    private int getIndex(final Section section) {
         return IntStream.range(0, sections.size())
                 .filter(i -> sections.get(i).equals(section))
                 .findAny()
@@ -135,7 +135,7 @@ public class Sections {
     }
 
     public List<Station> getAllStations() {
-        List<Station> stations = sections.stream()
+        final List<Station> stations = sections.stream()
                 .map(Section::getDown)
                 .collect(Collectors.toList());
 

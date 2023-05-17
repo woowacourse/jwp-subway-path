@@ -59,7 +59,7 @@ class LineControllerTest {
     @DisplayName("post /lines : created를 반환하고 Location에 uri를 저장한다")
     void createLine() throws Exception {
         // given
-        String jsonRequest = objectMapper.writeValueAsString(request1);
+        final String jsonRequest = objectMapper.writeValueAsString(request1);
         when(lineService.createLine(any())).thenReturn(response1);
 
         // when & then
@@ -76,8 +76,8 @@ class LineControllerTest {
     @DisplayName("get /lines : ok를 반환하고 모든 LineResponse를 반환한다")
     void findAllLines() throws Exception {
         // given
-        List<LineResponse> responses = List.of(response1, response2, response3);
-        String jsonResponses = objectMapper.writeValueAsString(responses);
+        final List<LineResponse> responses = List.of(response1, response2, response3);
+        final String jsonResponses = objectMapper.writeValueAsString(responses);
         when(lineService.findLineResponses()).thenReturn(responses);
 
         // when & then
@@ -94,7 +94,7 @@ class LineControllerTest {
     void findLineById() throws Exception {
         // given
         when(lineService.findLineResponseById(any())).thenReturn(response1);
-        String jsonResponse = objectMapper.writeValueAsString(response1);
+        final String jsonResponse = objectMapper.writeValueAsString(response1);
 
         // when & then
         mockMvc.perform(get("/lines/1")
@@ -109,7 +109,7 @@ class LineControllerTest {
     @DisplayName("put /lines/{id} : ok를 반환한다")
     void updateLine() throws Exception {
         // given
-        String jsonRequest = objectMapper.writeValueAsString(request1);
+        final String jsonRequest = objectMapper.writeValueAsString(request1);
 
         // when & then
         mockMvc.perform(put("/lines/1")

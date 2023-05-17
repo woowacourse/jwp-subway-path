@@ -13,7 +13,7 @@ class SectionTest {
     @DisplayName("역A를 구간BC의 상행 역인 B에 연결한다")
     void connectToUp() {
         // given & when
-        Section section = Fixture.sectionBC.connectToUp(Fixture.stationA, Fixture.distance1);
+        final Section section = Fixture.sectionBC.connectToUp(Fixture.stationA, Fixture.distance1);
 
         // then
         assertAll(
@@ -27,7 +27,7 @@ class SectionTest {
     @DisplayName("역C를 구간AB의 하행 역인 C에 연결한다")
     void connectToDown() {
         // given & when
-        Section section = Fixture.sectionAB.connectToDown(Fixture.stationC, Fixture.distance1);
+        final Section section = Fixture.sectionAB.connectToDown(Fixture.stationC, Fixture.distance1);
 
         // then
         assertAll(
@@ -41,7 +41,7 @@ class SectionTest {
     @DisplayName("역C를 구간AB의 사이에 연결한다")
     void connectIntermediate() {
         // given && when
-        Section section = Fixture.sectionAB.connectIntermediate(Fixture.stationC, Fixture.distance1);
+        final Section section = Fixture.sectionAB.connectIntermediate(Fixture.stationC, Fixture.distance1);
 
         // then
         assertAll(

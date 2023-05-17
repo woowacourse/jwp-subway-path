@@ -31,8 +31,8 @@ class StationServiceTest {
     @DisplayName("역을 저장한다")
     void saveStation() {
         // given
-        StationRequest request = new StationRequest("잠실역");
-        Station station = new Station(request.getName());
+        final StationRequest request = new StationRequest("잠실역");
+        final Station station = new Station(request.getName());
         when(stationDao.insert(refEq(station))).thenReturn(new Station(1L, station.getName()));
 
         // when
@@ -46,8 +46,8 @@ class StationServiceTest {
     @DisplayName("id에 해당하는 역을 수정한다")
     void updateStation() {
         // given
-        StationRequest request = new StationRequest("선릉역");
-        Station station = new Station(1L, "잠실역");
+        final StationRequest request = new StationRequest("선릉역");
+        final Station station = new Station(1L, "잠실역");
         when(stationDao.findById(1L)).thenReturn(Optional.of(station));
 
         // when
@@ -72,7 +72,7 @@ class StationServiceTest {
     @DisplayName("id에 해당하는 역을 조회한다")
     void findStationResponseById() {
         // given
-        Station station = new Station(1L, "잠실역");
+        final Station station = new Station(1L, "잠실역");
         when(stationDao.findById(1L)).thenReturn(Optional.of(station));
 
         // when
@@ -96,7 +96,7 @@ class StationServiceTest {
     @DisplayName("id에 해당하는 역을 조회한다")
     void findById() {
         // given
-        Station station = new Station(1L, "잠실역");
+        final Station station = new Station(1L, "잠실역");
         when(stationDao.findById(1L)).thenReturn(Optional.of(station));
 
         // when

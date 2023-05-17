@@ -10,11 +10,11 @@ public enum CreateType {
 
     private final String value;
 
-    CreateType(String value) {
+    CreateType(final String value) {
         this.value = value;
     }
 
-    public static CreateType from(String type) {
+    public static CreateType from(final String type) {
         return Arrays.stream(values())
                 .filter(createType -> createType.value.equals(type))
                 .findAny()

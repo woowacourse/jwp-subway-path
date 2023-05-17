@@ -18,27 +18,27 @@ public class PathService {
     private final StationService stationService;
     private final FareCalculator fareCalculator;
 
-    public PathService(LineService lineService, StationService stationService, FareCalculator fareCalculator) {
+    public PathService(final LineService lineService, final StationService stationService, final FareCalculator fareCalculator) {
         this.lineService = lineService;
         this.stationService = stationService;
         this.fareCalculator = fareCalculator;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
-        Lines lines = lineService.findAll();
-        Station sourceStation = stationService.findById(source);
-        Station targetStation = stationService.findById(target);
+    public PathResponse findShortestPath(final Long source, final Long target) {
+        final Lines lines = lineService.findAll();
+        final Station sourceStation = stationService.findById(source);
+        final Station targetStation = stationService.findById(target);
 
-        SubwayGraph subwayGraph = SubwayGraph.from(lines);
-        List<Station> shortestPaths = subwayGraph.findPath(sourceStation, targetStation);
-        int distanceSum = subwayGraph.calculateDistanceSum(sourceStation, targetStation);
+        final SubwayGraph subwayGraph = SubwayGraph.from(lines);
+        final List<Station> shortestPaths = subwayGraph.findPath(sourceStation, targetStation);
+        final int distanceSum = subwayGraph.calculateDistanceSum(sourceStation, targetStation);
 
-        int fareByDistance = fareCalculator.calculate(distanceSum);
+        final int fareByDistance = fareCalculator.calculate(distanceSum);
 
         return new PathResponse(mapToString(shortestPaths), distanceSum, fareByDistance);
     }
 
-    private List<String> mapToString(List<Station> shortestPaths) {
+    private List<String> mapToString(final List<Station> shortestPaths) {
         return shortestPaths.stream().map(Station::getName).collect(Collectors.toList());
     }
 }

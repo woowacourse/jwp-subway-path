@@ -26,7 +26,7 @@ class LineDaoTest {
     @DisplayName("노선을 추가한다")
     void insert() {
         // given & when
-        Line inserted = lineDao.insert(Fixture.line1);
+        final Line inserted = lineDao.insert(Fixture.line1);
 
         // then
         assertThat(inserted.getName()).isEqualTo(Fixture.line1.getName());
@@ -42,7 +42,7 @@ class LineDaoTest {
         lineDao.insert(Fixture.line3);
 
         // when
-        List<Line> lines = lineDao.findAll();
+        final List<Line> lines = lineDao.findAll();
 
         // then
         assertThat(lines.size()).isEqualTo(3);
@@ -52,12 +52,12 @@ class LineDaoTest {
     @DisplayName("id에 해당하는 노선을 조회한다")
     void findById() {
         // given
-        Line inserted1 = lineDao.insert(Fixture.line1);
-        Line inserted2 = lineDao.insert(Fixture.line2);
-        Line inserted3 = lineDao.insert(Fixture.line3);
+        final Line inserted1 = lineDao.insert(Fixture.line1);
+        final Line inserted2 = lineDao.insert(Fixture.line2);
+        final Line inserted3 = lineDao.insert(Fixture.line3);
 
         // when
-        Optional<Line> found = lineDao.findById(inserted2.getId());
+        final Optional<Line> found = lineDao.findById(inserted2.getId());
 
         // then
         assertThat(found.get().getName()).isEqualTo(Fixture.line2.getName());
@@ -68,9 +68,9 @@ class LineDaoTest {
     @DisplayName("id에 해당하는 노선을 삭제한다")
     void deleteById() {
         // given
-        Line inserted1 = lineDao.insert(Fixture.line1);
-        Line inserted2 = lineDao.insert(Fixture.line2);
-        Line inserted3 = lineDao.insert(Fixture.line3);
+        final Line inserted1 = lineDao.insert(Fixture.line1);
+        final Line inserted2 = lineDao.insert(Fixture.line2);
+        final Line inserted3 = lineDao.insert(Fixture.line3);
 
         // when
         lineDao.deleteById(inserted2.getId());

@@ -12,20 +12,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleIllegalArgumentException(RuntimeException e) {
+    public String handleIllegalArgumentException(final RuntimeException e) {
         e.printStackTrace();
         return e.getMessage();
     }
 
     @ExceptionHandler({DataAccessException.class, EmptyResultDataAccessException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handleSQLException(Exception e) {
+    public void handleSQLException(final Exception e) {
         e.printStackTrace();
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public void handleAll(Exception e) {
+    public void handleAll(final Exception e) {
         e.printStackTrace();
     }
 }

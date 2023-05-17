@@ -7,48 +7,48 @@ import java.util.stream.Collectors;
 
 public class Line {
     private final Long id;
+    private final Sections sections;
     private String name;
     private String color;
-    private final Sections sections;
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(final Long id, final String name, final String color, final Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
     }
 
-    public Line(LineRequest request) {
+    public Line(final LineRequest request) {
         this(null, request.getName(), request.getColor(), new Sections());
     }
 
-    public Line(Long id, String name, String color) {
+    public Line(final Long id, final String name, final String color) {
         this(id, name, color, new Sections());
     }
 
 
-    public void addInitStations(Station up, Station down, int distance) {
+    public void addInitStations(final Station up, final Station down, final int distance) {
         sections.addInitStations(up, down, new Distance(distance));
     }
 
 
-    public void addUpEndpoint(Station station, int distance) {
+    public void addUpEndpoint(final Station station, final int distance) {
         sections.addUpEndpoint(station, new Distance(distance));
     }
 
-    public void addDownEndpoint(Station station, int distance) {
+    public void addDownEndpoint(final Station station, final int distance) {
         sections.addDownEndpoint(station, new Distance(distance));
     }
 
-    public void addIntermediate(Station station, Station prevStation, int distance) {
+    public void addIntermediate(final Station station, final Station prevStation, final int distance) {
         sections.addIntermediate(station, prevStation, new Distance(distance));
     }
 
-    public void deleteSections(Station station) {
+    public void deleteSections(final Station station) {
         sections.delete(station);
     }
 
-    public void update(String name, String color) {
+    public void update(final String name, final String color) {
         this.name = name;
         this.color = color;
     }

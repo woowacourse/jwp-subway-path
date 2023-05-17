@@ -9,12 +9,12 @@ public class SecondChain implements DistancePolicy {
 
     private final DistancePolicy distanceChain;
 
-    public SecondChain(DistancePolicy distanceChain) {
+    public SecondChain(final DistancePolicy distanceChain) {
         this.distanceChain = distanceChain;
     }
 
     @Override
-    public int calculate(int distance) {
+    public int calculate(final int distance) {
         if (distance <= RANGE) {
             return (int) ((Math.ceil((distance - 1) / UNIT) + 1) * FARE);
         }

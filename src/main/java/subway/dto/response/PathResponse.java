@@ -7,7 +7,7 @@ public class PathResponse {
     private final int distance;
     private final int fare;
 
-    public PathResponse(List<String> stations, int distance, int fare) {
+    public PathResponse(final List<String> stations, final int distance, final int fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;

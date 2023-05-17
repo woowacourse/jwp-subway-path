@@ -23,39 +23,39 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate) {
+    public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("line_id");
     }
 
-    public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
+    public Line insert(final Line line) {
+        final Map<String, Object> params = new HashMap<>();
         params.put("line_id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
+        final Long lineId = insertAction.executeAndReturnKey(params).longValue();
         return new Line(lineId, line.getName(), line.getColor());
     }
 
-    public void update(Line line) {
-        String sql = "UPDATE LINE SET name = ?, color = ? WHERE line_id = ?";
+    public void update(final Line line) {
+        final String sql = "UPDATE LINE SET name = ?, color = ? WHERE line_id = ?";
         jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
     }
 
     public List<Line> findAll() {
-        String sql = "select line_id, name, color from LINE";
+        final String sql = "select line_id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Line> findById(Long id) {
-        String sql = "select line_id, name, color from LINE WHERE line_id = ?";
+    public Optional<Line> findById(final Long id) {
+        final String sql = "select line_id, name, color from LINE WHERE line_id = ?";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         jdbcTemplate.update("delete from Line where line_id = ?", id);
     }
 }

@@ -14,12 +14,12 @@ public class PathController {
 
     private final PathService pathService;
 
-    public PathController(PathService pathService) {
+    public PathController(final PathService pathService) {
         this.pathService = pathService;
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source, @RequestParam Long target) {
+    public ResponseEntity<PathResponse> findShortestPath(@RequestParam final Long source, @RequestParam final Long target) {
         return ResponseEntity.ok().body(pathService.findShortestPath(source, target));
     }
 }

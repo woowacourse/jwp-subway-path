@@ -7,7 +7,7 @@ import subway.domain.Station;
 public class Path extends DefaultWeightedEdge {
     private final Section section;
 
-    public Path(Section section) {
+    public Path(final Section section) {
         this.section = section;
     }
 

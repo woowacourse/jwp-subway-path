@@ -10,7 +10,7 @@ public class SectionEntity {
     private final Long lineId;
     private final int listOrder;
 
-    public SectionEntity(Long sectionId, Long upStationId, Long downStationId, int distance, Long lineId, int listOrder) {
+    public SectionEntity(final Long sectionId, final Long upStationId, final Long downStationId, final int distance, final Long lineId, final int listOrder) {
         this.sectionId = sectionId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
@@ -19,7 +19,7 @@ public class SectionEntity {
         this.listOrder = listOrder;
     }
 
-    public SectionEntity(Section section, Long lineId, int listOrder) {
+    public SectionEntity(final Section section, final Long lineId, final int listOrder) {
         this(null, section.getUp().getId(), section.getDown().getId(), section.getDistance().getValue(), lineId, listOrder);
     }
 

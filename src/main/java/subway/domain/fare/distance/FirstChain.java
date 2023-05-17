@@ -8,12 +8,12 @@ public class FirstChain implements DistancePolicy {
 
     private final DistancePolicy distanceChain;
 
-    public FirstChain(DistancePolicy distanceChain) {
+    public FirstChain(final DistancePolicy distanceChain) {
         this.distanceChain = distanceChain;
     }
 
     @Override
-    public int calculate(int distance) {
+    public int calculate(final int distance) {
         if (distance <= RANGE) {
             return BASIC_FARE;
         }
