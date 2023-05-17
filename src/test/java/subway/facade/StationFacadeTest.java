@@ -8,10 +8,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.entity.StationEntity;
-import subway.presentation.dto.StationResponse;
-import subway.service.SectionService;
-import subway.service.StationService;
+import subway.domain.section.service.SectionService;
+import subway.domain.station.domain.entity.StationEntity;
+import subway.domain.station.facade.StationFacade;
+import subway.domain.station.presentation.dto.response.StationResponse;
+import subway.domain.station.service.StationService;
 
 import java.util.List;
 

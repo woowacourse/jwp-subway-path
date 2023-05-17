@@ -12,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.facade.LineFacade;
-import subway.presentation.dto.LineRequest;
-import subway.presentation.dto.LineResponse;
+import subway.domain.line.facade.LineFacade;
+import subway.domain.line.presentation.dto.LineRequest;
+import subway.domain.line.presentation.dto.LineResponse;
 
 import java.util.List;
 

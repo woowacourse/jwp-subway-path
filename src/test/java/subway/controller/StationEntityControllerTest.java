@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.facade.StationFacade;
-import subway.presentation.dto.StationResponse;
+import subway.domain.station.facade.StationFacade;
+import subway.domain.station.presentation.dto.response.StationResponse;
 
 import java.util.List;
 

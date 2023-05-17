@@ -1,9 +1,9 @@
 package subway.global.util;
 
 import org.springframework.stereotype.Component;
-import subway.domain.FinalStation;
-import subway.domain.dao.StationDao;
-import subway.exception.StationNotFoundException;
+import subway.domain.line.dao.StationDao;
+import subway.domain.station.domain.FinalStation;
+import subway.domain.station.exception.StationNotFoundException;
 
 @Component
 public class FinalStationFactory {
