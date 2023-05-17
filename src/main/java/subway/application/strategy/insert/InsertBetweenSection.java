@@ -1,8 +1,8 @@
 package subway.application.strategy.insert;
 
 import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.SingleLineSections;
+import subway.domain.section.Section;
+import subway.domain.section.SingleLineSections;
 import subway.repository.SectionRepository;
 
 public abstract class InsertBetweenSection implements InsertStationStrategy {

@@ -6,10 +6,10 @@ import subway.dao.SectionStationDao;
 import subway.dao.dto.SectionStationResultMap;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
-import subway.domain.MultiLineSections;
-import subway.domain.Section;
-import subway.domain.SingleLineSections;
 import subway.domain.Station;
+import subway.domain.section.MultiLineSections;
+import subway.domain.section.Section;
+import subway.domain.section.SingleLineSections;
 
 import java.util.List;
 

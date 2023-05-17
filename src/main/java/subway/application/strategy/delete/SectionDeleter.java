@@ -1,8 +1,8 @@
 package subway.application.strategy.delete;
 
 import org.springframework.stereotype.Component;
-import subway.domain.SingleLineSections;
 import subway.domain.Station;
+import subway.domain.section.SingleLineSections;
 
 import java.util.List;
 

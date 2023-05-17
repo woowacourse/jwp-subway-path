@@ -1,6 +1,6 @@
 package subway.application.strategy.insert;
 
-import subway.domain.SingleLineSections;
+import subway.domain.section.SingleLineSections;
 
 public interface InsertStationStrategy {
 

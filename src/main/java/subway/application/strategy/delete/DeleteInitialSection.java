@@ -2,9 +2,9 @@ package subway.application.strategy.delete;
 
 import org.springframework.stereotype.Component;
 import subway.dao.LineDao;
-import subway.domain.Section;
-import subway.domain.SingleLineSections;
 import subway.domain.Station;
+import subway.domain.section.Section;
+import subway.domain.section.SingleLineSections;
 import subway.repository.SectionRepository;
 
 @Component

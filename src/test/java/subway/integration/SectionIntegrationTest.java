@@ -11,8 +11,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpHeaders;
 import subway.dao.entity.StationEntity;
 import subway.domain.Distance;
-import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.section.Section;
 import subway.dto.SectionRequest;
 
 import java.util.List;

@@ -13,7 +13,7 @@ import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.Distance;
-import subway.domain.Section;
+import subway.domain.section.Section;
 import subway.dto.SectionRequest;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;

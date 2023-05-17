@@ -6,10 +6,10 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.domain.Distance;
-import subway.domain.MultiLineSections;
-import subway.domain.Section;
 import subway.domain.ShortestPath;
 import subway.domain.Station;
+import subway.domain.section.MultiLineSections;
+import subway.domain.section.Section;
 
 import java.util.List;
 

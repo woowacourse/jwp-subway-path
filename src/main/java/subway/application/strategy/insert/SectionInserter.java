@@ -1,7 +1,7 @@
 package subway.application.strategy.insert;
 
 import org.springframework.stereotype.Component;
-import subway.domain.SingleLineSections;
+import subway.domain.section.SingleLineSections;
 
 import java.util.List;
 

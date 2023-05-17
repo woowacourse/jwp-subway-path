@@ -1,7 +1,7 @@
 package subway.application.strategy.delete;
 
-import subway.domain.SingleLineSections;
 import subway.domain.Station;
+import subway.domain.section.SingleLineSections;
 
 interface DeleteStationStrategy {
 

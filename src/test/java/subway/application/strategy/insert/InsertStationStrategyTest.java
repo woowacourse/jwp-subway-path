@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Import;
 import subway.application.strategy.StrategyFixture;
 import subway.dao.SectionStationDao;
 import subway.domain.Distance;
-import subway.domain.SingleLineSections;
 import subway.domain.Station;
+import subway.domain.section.SingleLineSections;
 import subway.repository.SectionRepository;
 
 import java.util.List;

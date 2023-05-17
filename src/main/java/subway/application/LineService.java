@@ -2,9 +2,9 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.SingleLineSections;
 import subway.domain.Station;
+import subway.domain.section.Section;
+import subway.domain.section.SingleLineSections;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.repository.LineRepository;

@@ -6,10 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import subway.domain.Distance;
 import subway.domain.Line;
-import subway.domain.MultiLineSections;
-import subway.domain.Section;
 import subway.domain.ShortestPath;
 import subway.domain.Station;
+import subway.domain.section.MultiLineSections;
+import subway.domain.section.Section;
 
 import java.util.List;
 
