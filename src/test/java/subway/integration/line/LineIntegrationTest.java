@@ -218,7 +218,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-            assertThat(errorMessage).isEqualTo("거리는 음수가 될 수 없습니다.");
+            assertThat(errorMessage).isEqualTo("거리는 음수가 될 수 없습니다 (입력값: -10)");
         }
     }
 

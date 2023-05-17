@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import subway.exception.LineUnconnectedException;
+import subway.exception.NegativeDistanceValueException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -104,8 +105,8 @@ class LineTest {
 
         // when, then
         assertThatThrownBy(() -> line.addSection(new Section("강남역", "선릉역", 20)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("거리는 음수가 될 수 없습니다.");
+                .isInstanceOf(NegativeDistanceValueException.class)
+                .hasMessage("거리는 음수가 될 수 없습니다 (입력값: -10)");
     }
 
     @Test

@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.exception.NegativeDistanceValueException;
 
 public class Distance {
 
@@ -13,7 +14,7 @@ public class Distance {
 
     private void validateMinValue(int value) {
         if (value < 0) {
-            throw new IllegalArgumentException("거리는 음수가 될 수 없습니다.");
+            throw new NegativeDistanceValueException(value);
         }
     }
 
