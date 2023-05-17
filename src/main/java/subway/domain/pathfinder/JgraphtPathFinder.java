@@ -24,10 +24,9 @@ public class JgraphtPathFinder implements PathFinder {
             final Long targetStationId = section.getTargetStationId();
             graph.addVertex(sourceStationId);
             graph.addVertex(targetStationId);
-            final LineWeightedEdge edge = graph.addEdge(sourceStationId, targetStationId);
-            edge.setLineId(section.getLineId());
-            edge.setDistance(section.getDistance());
-            graph.setEdgeWeight(edge, section.getDistance());
+            final LineWeightedEdge lineWeightedEdge = new LineWeightedEdge(section.getLineId(), section.getDistance());
+            graph.setEdgeWeight(lineWeightedEdge, section.getDistance());
+            graph.addEdge(sourceStationId, targetStationId, lineWeightedEdge);
         }
     }
 
