@@ -4,12 +4,12 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
-import subway.domain.Line;
+import subway.domain.Station;
 
 public class StationEntity {
-    private Long id;
-    private String name;
-    private Long lineId;
+    private final Long id;
+    private final String name;
+    private final Long lineId;
 
     public StationEntity(String name, Long lineId) {
         this(null, name, lineId);
@@ -21,8 +21,8 @@ public class StationEntity {
         this.lineId = lineId;
     }
 
-    public static List<StationEntity> of(final Line line, final Long lineId) {
-        return line.findAllStation().stream()
+    public static List<StationEntity> of(final List<Station> stations, final Long lineId) {
+        return stations.stream()
                 .map(station -> new StationEntity(station.getName(), lineId))
                 .collect(toList());
     }

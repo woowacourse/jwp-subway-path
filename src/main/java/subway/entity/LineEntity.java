@@ -3,9 +3,9 @@ package subway.entity;
 import java.util.Objects;
 
 public class LineEntity {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
 
     public LineEntity(String name, String color) {
         this(null, name, color);

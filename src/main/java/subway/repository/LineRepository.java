@@ -35,9 +35,9 @@ public class LineRepository {
         final Optional<LineEntity> lineEntity = lineDao.findByName(line.getName());
         lineEntity.ifPresent(entity -> lineDao.deleteById(entity.getId()));
         final LineEntity newLineEntity = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
-        final List<StationEntity> stations = StationEntity.of(line, newLineEntity.getId());
+        final List<StationEntity> stations = StationEntity.of(line.findAllStation(), newLineEntity.getId());
         stationDao.insertAll(stations);
-        final List<SectionEntity> sections = SectionEntity.of(line, newLineEntity.getId());
+        final List<SectionEntity> sections = SectionEntity.of(line.getSections(), newLineEntity.getId());
         sectionDao.insertAll(sections);
         return line;
     }

@@ -24,7 +24,7 @@ class StationEntityTest {
         ));
 
         // when
-        List<StationEntity> result = StationEntity.of(line, 1L);
+        List<StationEntity> result = StationEntity.of(line.findAllStation(), 1L);
 
         // then
         assertThat(result).extracting(StationEntity::getName).containsAll(List.of("A", "B", "C", "D", "E"));
