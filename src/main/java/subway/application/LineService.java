@@ -11,50 +11,54 @@ import subway.ui.dto.response.LineResponse;
 
 @Service
 public class LineService {
-    private final LineRepository lineRepository;
+	private final LineRepository lineRepository;
 
-    public LineService(final LineRepository lineRepository) {
-        this.lineRepository = lineRepository;
-    }
+	public LineService(final LineRepository lineRepository) {
+		this.lineRepository = lineRepository;
+	}
 
-    public LineResponse createLine(final LineRequest lineRequest) {
-        final List<LineResponse> lines = findAll();
-        for(LineResponse line : lines){
-            if(line.getName().equals(lineRequest.getName())){
-                throw new IllegalArgumentException("이미 존재하는 노선입니다");
-            }
-        }
-        final Line line = new Line(lineRequest.getName());
-        final long lineId = lineRepository.createLine(line);
+	public LineResponse createLine(final LineRequest lineRequest) {
+		final List<LineResponse> lines = findAll();
+		for (LineResponse line : lines) {
+			checkLineExist(lineRequest, line);
+		}
+		final Line line = new Line(lineRequest.getName());
+		final long lineId = lineRepository.createLine(line);
 
-        return new LineResponse(lineId, lineRequest.getName());
-    }
+		return new LineResponse(lineId, lineRequest.getName());
+	}
 
-    public List<LineResponse> findAll(){
-        return LineResponse.of(lineRepository.findAll());
-    }
+	private void checkLineExist(final LineRequest lineRequest, final LineResponse line) {
+		if (line.getName().equals(lineRequest.getName())) {
+			throw new IllegalArgumentException("이미 존재하는 노선입니다");
+		}
+	}
 
-    public LineResponse findById(final long lineId) {
-        final Line line = lineRepository.findById(lineId);
-        return new LineResponse(lineId, line.getName());
-    }
+	public List<LineResponse> findAll() {
+		return LineResponse.of(lineRepository.findAll());
+	}
 
-    public LineResponse updateLine(final long lineId, final LineRequest request) {
-        final boolean isUpdated = lineRepository.updateLine(lineId, new Line(request.getName()));
+	public LineResponse findById(final long lineId) {
+		final Line line = lineRepository.findById(lineId);
+		return new LineResponse(lineId, line.getName());
+	}
 
-        if(!isUpdated){
-            throw new IllegalStateException("노선 갱신에 실패했습니다");
-        }
+	public LineResponse updateLine(final long lineId, final LineRequest request) {
+		final boolean isUpdated = lineRepository.updateLine(lineId, new Line(request.getName()));
 
-        return new LineResponse(lineId, request.getName());
-    }
+		if (!isUpdated) {
+			throw new IllegalStateException("노선 갱신에 실패했습니다");
+		}
 
-    public long deleteLine(final Long lineIdRequest) {
-        final boolean isDeleted = lineRepository.deleteById(lineIdRequest);
+		return new LineResponse(lineId, request.getName());
+	}
 
-        if (!isDeleted) {
-            throw new NullPointerException("노선 삭제에 실패했습니다");
-        }
-        return lineIdRequest;
-    }
+	public long deleteLine(final Long lineIdRequest) {
+		final boolean isDeleted = lineRepository.deleteById(lineIdRequest);
+
+		if (!isDeleted) {
+			throw new NullPointerException("노선 삭제에 실패했습니다");
+		}
+		return lineIdRequest;
+	}
 }
