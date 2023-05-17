@@ -1,50 +1,48 @@
 package subway.dao;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.dao.dto.LineDto;
+import subway.entity.LineEntity;
 
 @Repository
 public class LineDao {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<LineDto> rowMapper = (rs, rowNum) ->
-            new LineDto(
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
+    private RowMapper<LineEntity> lineRowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
-
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(LineDto lineDto) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", lineDto.getName());
-
-        return insertAction.executeAndReturnKey(params).longValue();
+    public LineEntity save(LineEntity lineEntity) {
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(lineEntity);
+        long savedId = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
+        return new LineEntity(savedId, lineEntity.getName());
     }
 
-    public List<LineDto> findAll() {
-        String sql = "select id, name from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+    public List<LineEntity> findAll() {
+        String sql = "select * from LINE";
+        return jdbcTemplate.query(sql, lineRowMapper);
     }
 
-    public Optional<LineDto> findById(Long id) {
-        String sql = "select id, name from LINE WHERE id = ?";
-        return jdbcTemplate.query(sql, rowMapper, id)
+    public Optional<LineEntity> findById(Long id) {
+        String sql = "select * from LINE where id = ?";
+        return jdbcTemplate.query(sql, lineRowMapper, id)
                 .stream()
                 .findAny();
     }

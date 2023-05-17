@@ -18,7 +18,7 @@ create table if not exists SECTION
     line_id bigint not null,
     left_station_id bigint not null,
     right_station_id bigint not null,
-    distance bigint not null,
+    distance int not null,
 
     primary key(id),
     foreign key (line_id) references line (id),

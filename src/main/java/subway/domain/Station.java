@@ -6,20 +6,18 @@ public class Station {
 
     private static final String BLANK = " ";
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
-    public Station() {
+    public Station(String name) {
+        validateName(name);
+        this.id = null;
+        this.name = name;
     }
 
     public Station(Long id, String name) {
         validateName(name);
         this.id = id;
-        this.name = name;
-    }
-
-    public Station(String name) {
-        validateName(name);
         this.name = name;
     }
 

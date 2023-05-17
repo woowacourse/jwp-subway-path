@@ -10,12 +10,22 @@ public class Line {
 
     private final Long id;
     private final String name;
-    private final LinkedList<Section> sections;
+    private final List<Section> sections;
 
-    public Line(Long id, String name, LinkedList<Section> sections) {
+    public Line(final String name) {
+        this.id = null;
+        this.name = name;
+        this.sections = new LinkedList<>();
+    }
+
+    public Line(Long id, String name, List<Section> sections) {
         this.id = id;
         this.name = name;
         this.sections = sections;
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
     }
 
     public boolean hasStation(Station station) {

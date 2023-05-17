@@ -3,37 +3,39 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
 import subway.domain.Station;
+import subway.repository.StationRepository;
 import subway.ui.dto.StationRequest;
 import subway.ui.dto.StationResponse;
 
 @Service
 public class StationService {
-    private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    private final StationRepository stationRepository;
+
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        Station station = stationRepository.save(new Station(stationRequest.getName()));
+        return new StationResponse(station.getId(), station.getName());
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public StationResponse findStationById(Long id) {
+        Station station = stationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 존재하지 않습니다."));
+        return new StationResponse(station.getId(), station.getName());
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
+    public List<StationResponse> findAllStations() {
+        return stationRepository.findAll()
+                .stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteById(id);
     }
 }

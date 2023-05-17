@@ -33,12 +33,12 @@ public class StationController {
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
+        return ResponseEntity.ok().body(stationService.findAllStations());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
+        return ResponseEntity.ok().body(stationService.findStationById(id));
     }
 
     @DeleteMapping("/{id}")
