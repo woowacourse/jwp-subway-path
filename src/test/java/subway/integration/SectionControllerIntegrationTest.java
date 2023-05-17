@@ -186,6 +186,21 @@ class SectionControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("상행역과 하행역이 같으면 추가에 실패한다.")
+    void addSection_sameStationName() throws Exception {
+        // given
+        SectionCreateRequest request = new SectionCreateRequest("잠실역", "잠실역", 10);
+
+        // when
+        mockMvc.perform(post("/sections/{lineId}", lineId)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.validation.upBoundStationName").value("추가하려는 상행역과 하행역의 이름이 같습니다."))
+                .andExpect(jsonPath("$.validation.downBoundStationName").value("추가하려는 상행역과 하행역의 이름이 같습니다."));
+    }
+
+    @Test
     @DisplayName("구간의 중간에 있는 역을 삭제할 때, 두 구간이 합쳐진다.")
     void deleteStation_mergeSection_success() throws Exception {
         // given
