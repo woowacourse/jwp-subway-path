@@ -41,12 +41,12 @@ public class StationDao {
     }
 
     public List<StationRow> selectAll() {
-        String sql = "select * from STATION";
+        String sql = "select * from station";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public StationRow selectById(Long id) {
-        String sql = "select * from STATION where id = ?";
+        String sql = "select * from station where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
@@ -63,12 +63,12 @@ public class StationDao {
     }
 
     public void update(StationRow row) {
-        String sql = "update STATION set name = ? where id = ?";
+        String sql = "update station set name = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{row.getName(), row.getId()});
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
+        String sql = "delete from station where id = ?";
         jdbcTemplate.update(sql, id);
     }
 }
