@@ -2,6 +2,7 @@ package subway.repository;
 
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
+import subway.domain.Station;
 import subway.entity.StationEntity;
 import subway.repository.dao.StationDao;
 
@@ -18,8 +19,11 @@ public class StationRepository {
         return stationDao.insert(station);
     }
 
-    public Optional<StationEntity> findById(Long id) {
-        return stationDao.findById(id);
+    public Station findById(Long stationId) {
+        final StationEntity findStationEntity = stationDao.findById(stationId);
+        final Long id = findStationEntity.getId();
+        final String name = findStationEntity.getName();
+        return new Station(id, name);
     }
 
     public StationEntity findOrSaveStation(String stationName) {
@@ -29,5 +33,9 @@ public class StationRepository {
 
     public Optional<StationEntity> findByName(String name) {
         return stationDao.findByName(name);
+    }
+
+    public void delete(final Long stationId) {
+        stationDao.deleteById(stationId);
     }
 }

@@ -41,13 +41,10 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<StationEntity> findById(Long id) {
+
+    public StationEntity findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public void update(StationEntity newStation) {
@@ -74,12 +71,5 @@ public class StationDao {
         jdbcTemplate.batchUpdate(sql, stations, stations.size(), ((ps, station) -> {
             ps.setString(1, station.getName());
         }));
-    }
-
-    public void deleteByLineId(Long lineId) {
-        String sql = "delete from STATION as sta"
-                + "join SECTION as sec on sta.id = sec.source_station_id or sta.id = sec.target_station_id"
-                + "where sec.line_id = ?";
-        jdbcTemplate.update(sql, lineId);
     }
 }

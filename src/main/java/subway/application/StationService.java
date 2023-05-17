@@ -22,7 +22,7 @@ public class StationService {
     }
 
     public StationSelectResponse findStationResponseById(Long id) {
-        return StationSelectResponse.of(stationDao.findById(id).get());
+        return StationSelectResponse.of(stationDao.findById(id));
     }
 
     public List<StationSelectResponse> findAllStationResponses() {

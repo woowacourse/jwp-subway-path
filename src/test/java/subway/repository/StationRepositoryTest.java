@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.domain.Station;
 import subway.entity.StationEntity;
 import subway.repository.dao.StationDao;
 
@@ -36,10 +37,9 @@ class StationRepositoryTest {
         StationEntity station = stationRepository.findOrSaveStation("역삼역");
 
         //then
-        StationEntity findStation = stationRepository.findById(station.getId()).get();
+        Station findStation = stationRepository.findById(station.getId());
         assertThat(beforeSaveStation).isEmpty();
-        assertThat(station).usingRecursiveComparison()
-                .isEqualTo(findStation);
+        assertThat(station.getId()).isEqualTo(findStation.getId());
     }
 
     @Test
