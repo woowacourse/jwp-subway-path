@@ -5,7 +5,7 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dto.request.SectionRequest;
-import subway.entity.SectionEntity;
+import subway.dao.entity.SectionEntity;
 import subway.exception.InvalidSectionException;
 import subway.exception.NotFoundException;
 

@@ -8,9 +8,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.entity.SectionEntity;
+import subway.dao.entity.SectionEntity;
+import subway.dao.vo.SectionStationMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -19,12 +18,13 @@ import java.util.Optional;
 @Repository
 public class SectionDao {
 
-    private static final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
-            new Section(
-                    new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")),
-                    new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")),
-                    rs.getInt("distance")
-            );
+    private static final RowMapper<SectionStationMapper> sectionStationRowMapper = (rs, rowNum) ->
+            new SectionStationMapper(
+                    rs.getLong("up_station_id"),
+                    rs.getString("up_station_name"),
+                    rs.getLong("down_station_id"),
+                    rs.getString("down_station_name"),
+                    rs.getInt("distance"));
     private static final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("line_id"),
@@ -42,7 +42,7 @@ public class SectionDao {
                 .withTableName("section");
     }
 
-    public List<Section> findSectionsByLineId(Long lineId) {
+    public List<SectionStationMapper> findSectionsByLineId(Long lineId) {
         String sql = "SELECT up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance "
                 + "FROM SECTION AS s "
                 + "JOIN STATION AS up ON s.up_station_id = up.id "
@@ -52,7 +52,7 @@ public class SectionDao {
         SqlParameterSource source = new MapSqlParameterSource()
                 .addValue("line_id", lineId);
 
-        return jdbcTemplate.query(sql, source, sectionRowMapper);
+        return jdbcTemplate.query(sql, source, sectionStationRowMapper);
     }
 
     public Optional<List<SectionEntity>> findByLineId(Long lineId) {

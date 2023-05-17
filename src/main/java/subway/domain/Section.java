@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.dao.vo.SectionStationMapper;
+
 import java.util.Objects;
 
 public class Section {
@@ -8,10 +10,22 @@ public class Section {
     private final Station downStation;
     private final Integer distance;
 
-    public Section(Station upStation, Station downStation, Integer distance) {
+    private Section(Station upStation, Station downStation, Integer distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section from(SectionStationMapper sectionStationMapper) {
+        return new Section(
+                new Station(sectionStationMapper.getUpStationId(), sectionStationMapper.getUpStationName()),
+                new Station(sectionStationMapper.getDownStationId(), sectionStationMapper.getDownStationName()),
+                sectionStationMapper.getDistance()
+        );
+    }
+
+    public static Section of(Station upStation, Station downStation, Integer distance) {
+        return new Section(upStation, downStation, distance);
     }
 
     public Station getUpStation() {

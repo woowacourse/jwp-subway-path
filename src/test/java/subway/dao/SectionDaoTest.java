@@ -1,9 +1,5 @@
 package subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,9 +9,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.entity.SectionEntity;
+import subway.dao.entity.SectionEntity;
+import subway.dao.vo.SectionStationMapper;
+
+import javax.sql.DataSource;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
 @Sql("classpath:initializeTestDb.sql")
@@ -28,6 +28,7 @@ class SectionDaoTest {
                     rs.getLong("down_station_id"),
                     rs.getInt("distance")
             );
+
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
     @Autowired
@@ -42,11 +43,12 @@ class SectionDaoTest {
     @DisplayName("노선의 id를 입력했을 때, 해당 노선의 구간 정보를 section객체로 반환한다")
     @Test
     void findSectionsByLineId() {
-        List<Section> sections = sectionDao.findSectionsByLineId(1L);
+        List<SectionStationMapper> sections = sectionDao.findSectionsByLineId(1L);
         assertThat(sections)
                 .containsExactly(
-                        new Section(new Station(2L, "봉천역"), new Station(1L, "서울대입구역"), 5),
-                        new Section(new Station(1L, "서울대입구역"), new Station(4L, "사당역"), 7));
+                        new SectionStationMapper(2L, "봉천역", 1L, "서울대입구역", 5),
+                        new SectionStationMapper(1L, "서울대입구역", 4L, "사당역", 7)
+                );
     }
 
     @DisplayName("노선의 id를 입력했을 때, 해당 노선의 구간 정보를 SectionEntity 체로 반환한다")

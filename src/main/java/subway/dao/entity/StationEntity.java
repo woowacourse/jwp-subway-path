@@ -1,4 +1,4 @@
-package subway.entity;
+package subway.dao.entity;
 
 public class StationEntity {
 }

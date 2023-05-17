@@ -1,12 +1,10 @@
 package subway.application;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.entity.LineEntity;
 import subway.dao.SectionDao;
+import subway.dao.entity.LineEntity;
+import subway.dao.vo.SectionStationMapper;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -14,6 +12,10 @@ import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.exception.LineDuplicatedException;
 import subway.exception.NotFoundException;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -41,27 +43,27 @@ public class LineService {
     }
 
     private Line findLineById(Long lineId) {
-        LineEntity lineEntity = lineDao.findById(lineId).orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다"));
-        List<Section> sections = sectionDao.findSectionsByLineId(lineId);
+        LineEntity lineEntity = lineDao.findById(lineId)
+                                       .orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다"));
+        List<SectionStationMapper> sectionStationMappers = sectionDao.findSectionsByLineId(lineId);
+        List<Section> sections = sectionStationMappers.stream()
+                                                      .map(Section::from)
+                                                      .collect(Collectors.toList());
         return new Line(lineId, lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
     }
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLine = findLines();
         return persistLine.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+                          .map(LineResponse::of)
+                          .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
         List<LineEntity> lineEntities = lineDao.findAll();
         return lineEntities.stream()
-                .map(lineEntity ->
-                        new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
-                                new Sections(sectionDao.findSectionsByLineId(lineEntity.getId()))
-                        )
-                )
-                .collect(Collectors.toList());
+                           .map(lineEntity -> findLineById(lineEntity.getId()))
+                           .collect(Collectors.toList());
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -76,7 +78,8 @@ public class LineService {
     }
 
     private void checkIfExistLine(Long lineId) {
-        lineDao.findById(lineId).orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다."));
+        lineDao.findById(lineId)
+               .orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다."));
     }
 
     private void validateDuplicateLine(LineRequest request) {
