@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import subway.domain.exception.DuplicateSectionException;
+import subway.domain.exception.IllegalSectionException;
 import subway.domain.exception.NoSuchStationException;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -42,7 +43,7 @@ class LineTest {
         line.add(section);
 
         assertThatThrownBy(() -> line.add(disconnectedSection))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(IllegalSectionException.class);
     }
 
     @DisplayName("구간이 없을 땐 비연결 구간을 그대로 추가한다")

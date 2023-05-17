@@ -78,7 +78,7 @@ public class LineService {
         Station lower = stationDao.findById(sectionRequest.getLowerStationId());
 
         Distance distance = new Distance(sectionRequest.getDistance());
-        Section section = new Section(upper, lower, distance.getValue());
+        Section section = new Section(upper, lower, distance);
         line.add(section);
 
         lineRepository.save(line);

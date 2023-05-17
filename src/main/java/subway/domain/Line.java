@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import subway.domain.exception.DuplicateSectionException;
+import subway.domain.exception.IllegalSectionException;
 import subway.domain.exception.NoSuchStationException;
 
 public class Line {
@@ -122,7 +123,7 @@ public class Line {
 
     private void validateEmpty(List<Section> sections) {
         if (!sections.isEmpty()) {
-            throw new IllegalStateException("비연결 구간은 호선이 비어있을 때만 추가할 수 있습니다");
+            throw new IllegalSectionException("비연결 구간은 호선이 비어있을 때만 추가할 수 있습니다");
         }
     }
 
