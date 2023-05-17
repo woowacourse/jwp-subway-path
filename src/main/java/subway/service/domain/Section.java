@@ -2,28 +2,36 @@ package subway.service.domain;
 
 public class Section {
 
-    private final long id;
-    private final Line line;
+    private long id;
     private final Station previousStation;
     private final Station nextStation;
-    // TODO: 원시값 포장
-    private final int distance;
+    private final Distance distance;
 
-    public Section(final long id, final Line line, final Station previousStation,
-                   final Station nextStation, final int distance) {
-        this.id = id;
-        this.line = line;
+    public Section(Station previousStation,
+                   Station nextStation,
+                   Distance distance) {
         this.previousStation = previousStation;
         this.nextStation = nextStation;
         this.distance = distance;
     }
 
-    public long getId() {
-        return id;
+    public Section(long id,
+                   Station previousStation,
+                   Station nextStation,
+                   Distance distance) {
+        this.id = id;
+        this.previousStation = previousStation;
+        this.nextStation = nextStation;
+        this.distance = distance;
     }
 
-    public Line getLine() {
-        return line;
+    public boolean isContainsStation(Station station) {
+        return previousStation.equals(station)
+                || nextStation.equals(station);
+    }
+
+    public long getId() {
+        return id;
     }
 
     public Station getPreviousStation() {
@@ -35,14 +43,13 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getValue();
     }
 
     @Override
     public String toString() {
         return "Section{" +
                 "id=" + id +
-                ", line=" + line +
                 ", previousStation=" + previousStation +
                 ", nextStation=" + nextStation +
                 ", distance=" + distance +

@@ -12,10 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static subway.dao.rowmapper.util.RowMapperUtil.lineEntityRowMapper;
-
 @Repository
 public class LineDao {
+
+    public static final RowMapper<LineEntity> lineEntityRowMapper = (rs, rowNum) -> new LineEntity(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color")
+    );
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 

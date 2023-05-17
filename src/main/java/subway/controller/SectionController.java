@@ -26,24 +26,24 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @PostMapping
-    public ResponseEntity<List<SectionResponse>> add(@RequestBody SectionRequest request) {
-        final List<SectionResponse> responses = sectionService.save(
-                new SectionInsertDto(
-                        request.getLineName(),
-                        Direction.from(request.getDirection()),
-                        request.getStandardStationName(),
-                        request.getAdditionalStationName(),
-                        request.getDistance())
-        );
-
-        return ResponseEntity.created(URI.create("/sections")).body(responses);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<Void> remove(@RequestParam("lineid") Long lineId, @RequestParam("stationid") Long stationId) {
-        sectionService.remove(lineId, stationId);
-        return ResponseEntity.noContent().build();
-    }
+//    @PostMapping
+//    public ResponseEntity<List<SectionResponse>> add(@RequestBody SectionRequest request) {
+//        final List<SectionResponse> responses = sectionService.save(
+//                new SectionInsertDto(
+//                        request.getLineName(),
+//                        Direction.from(request.getDirection()),
+//                        request.getStandardStationName(),
+//                        request.getAdditionalStationName(),
+//                        request.getDistance())
+//        );
+//
+//        return ResponseEntity.created(URI.create("/sections")).body(responses);
+//    }
+//
+//    @DeleteMapping
+//    public ResponseEntity<Void> remove(@RequestParam("lineid") Long lineId, @RequestParam("stationid") Long stationId) {
+//        sectionService.remove(lineId, stationId);
+//        return ResponseEntity.noContent().build();
+//    }
 
 }

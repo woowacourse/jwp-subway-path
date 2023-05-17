@@ -28,35 +28,35 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody LineRequest request) {
-        final LineDto lineDto = new LineDto(request.getName(), request.getColor());
-        SectionCreateDto sectionCreateDto = new SectionCreateDto(
-                request.getDistance(), request.getFirstStation(), request.getSecondStation());
-        final long id = lineService.save(lineDto, sectionCreateDto);
-        return ResponseEntity.created(URI.create("/lines/" + id)).build();
-    }
-
-    @GetMapping
-    public ResponseEntity<List<SingleLineDetailResponse>> readAllLine() {
-        return ResponseEntity.ok(lineService.getAllLine());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<SingleLineDetailResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.getLine(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @PostMapping
+//    public ResponseEntity<Void> createLine(@RequestBody LineRequest request) {
+//        final LineDto lineDto = new LineDto(request.getName(), request.getColor());
+//        SectionCreateDto sectionCreateDto = new SectionCreateDto(
+//                request.getDistance(), request.getFirstStation(), request.getSecondStation());
+//        final long id = lineService.save(lineDto, sectionCreateDto);
+//        return ResponseEntity.created(URI.create("/lines/" + id)).build();
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<List<SingleLineDetailResponse>> readAllLine() {
+//        return ResponseEntity.ok(lineService.getAllLine());
+//    }
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<SingleLineDetailResponse> findLineById(@PathVariable Long id) {
+//        return ResponseEntity.ok(lineService.getLine(id));
+//    }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+//        lineService.updateLine(id, lineUpdateRequest);
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+//        lineService.deleteLineById(id);
+//        return ResponseEntity.noContent().build();
+//    }
 
 }

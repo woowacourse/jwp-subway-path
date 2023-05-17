@@ -14,14 +14,13 @@ import java.util.List;
 
 @Repository
 public class StationDao {
+
+    public static final RowMapper<StationEntity> stationEntityRowMapper = (rs, rn) -> new StationEntity(
+            rs.getLong("id"),
+            rs.getString("name")
+    );
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-
-    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
-            new StationEntity(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
 
     public StationDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -38,18 +37,18 @@ public class StationDao {
 
     public List<StationEntity> findAll() {
         String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, stationEntityRowMapper);
     }
 
     public StationEntity findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, id);
     }
 
     public StationEntity findByName(final String name) {
         String sql = "SELECT * FROM station WHERE name = ?";
 
-        List<StationEntity> result = jdbcTemplate.query(sql, rowMapper, name);
+        List<StationEntity> result = jdbcTemplate.query(sql, stationEntityRowMapper, name);
 
         if (result.isEmpty()) {
             throw new StationNotFoundException("존재하지 않는 역 이름입니다.");
@@ -67,4 +66,5 @@ public class StationDao {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
     }
+
 }
