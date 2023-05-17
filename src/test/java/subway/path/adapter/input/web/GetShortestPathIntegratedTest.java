@@ -244,4 +244,117 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
+    
+    @Test
+    void 최단_경로를_조회시_2개의_역이_이어져있지_않으면_예외_발생() {
+        // given
+        final Map<String, Object> params = new HashMap<>();
+        params.put("name", "1호선");
+        params.put("color", "파랑");
+        
+        final String locationStartsWith = "/lines/";
+        final ExtractableResponse<Response> response1 = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", startsWith(locationStartsWith))
+                .extract();
+        
+        final String lineId1 = response1.header("Location").substring(locationStartsWith.length());
+        params.clear();
+        params.put("firstStation", "잠실역");
+        params.put("secondStation", "선릉역");
+        params.put("distance", 32L);
+        params.put("lineId", Long.parseLong(lineId1));
+        
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/stations/init")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", is("/stations"));
+        
+        // 1호선 : 잠실역 (32) 선릉역
+        
+        params.clear();
+        params.put("lineId", Long.parseLong(lineId1));
+        params.put("baseStation", "잠실역");
+        params.put("direction", "RIGHT");
+        params.put("additionalStation", "청라역");
+        params.put("distance", 30L);
+        
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/stations")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", startsWith("/stations"));
+        
+        // 1호선 : 잠실역 (30) 청라역 (2) 선릉역
+        
+        params.clear();
+        params.put("name", "2호선");
+        params.put("color", "초록");
+        
+        final ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", startsWith(locationStartsWith))
+                .extract();
+        
+        final String lineId2 = response2.header("Location").substring(locationStartsWith.length());
+        params.clear();
+        params.put("firstStation", "김포공항역");
+        params.put("secondStation", "강남역");
+        params.put("distance", 5L);
+        params.put("lineId", Long.parseLong(lineId2));
+        
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/stations/init")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", is("/stations"));
+        
+        // 1호선 : 잠실역 (30) 청라역 (2) 선릉역
+        // 2호선 : 김포공항역 (5) 강남역
+        
+        params.clear();
+        params.put("lineId", Long.parseLong(lineId2));
+        params.put("baseStation", "강남역");
+        params.put("direction", "RIGHT");
+        params.put("additionalStation", "계양역");
+        params.put("distance", 29L);
+        
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/stations")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", startsWith("/stations"));
+        
+        // 1호선 : 잠실역 (30) 청라역 (2) 선릉역
+        // 2호선 : 김포공항역 (5) 강남역 (29) 계양역
+        
+        // expect
+        params.clear();
+        params.put("startStationName", "잠실역");
+        params.put("endStationName", "계양역");
+        
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().get("/path")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
 }
