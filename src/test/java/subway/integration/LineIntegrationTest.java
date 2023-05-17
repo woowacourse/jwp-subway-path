@@ -6,10 +6,18 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Distance;
+import subway.domain.Station;
+import subway.domain.Stations;
+import subway.dto.LineCreateRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationRequest;
+import subway.service.LineService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,9 +26,14 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
+@Transactional
 public class LineIntegrationTest extends IntegrationTest {
+
+    @Autowired
+    private LineService lineService;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
+    private Stations stations;
 
     @BeforeEach
     public void setUp() {
@@ -28,16 +41,24 @@ public class LineIntegrationTest extends IntegrationTest {
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        stations = lineService.getStations();
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
-        // when
+        //given
+        stations.addStation(new Station("역삼역", new Distance(10)));
+        stations.addStation(new Station("선릉역", new Distance(0)));
+
+        //when
+        LineCreateRequest lineCreateRequest =
+                new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
+
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineCreateRequest)
                 .when().post("/lines")
                 .then().log().all().
                 extract();

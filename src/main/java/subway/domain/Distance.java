@@ -4,9 +4,12 @@ import java.util.Objects;
 
 public class Distance {
 
+    private static Long sequence = 1L;
+    private Long id;
     private Integer value = 0;
 
     public Distance(Integer value) {
+        this.id = sequence++;
         this.value = value;
     }
 

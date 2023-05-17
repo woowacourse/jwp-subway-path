@@ -1,16 +1,16 @@
 package subway.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.LineService;
+import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
+import subway.service.LineService;
 
-import java.util.List;
+import java.net.URI;
 
 @RestController
-@RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
@@ -19,17 +19,17 @@ public class LineController {
         this.lineService = lineService;
     }
 
-
-//    @PostMapping
-//    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-//        LineResponse line = lineService.saveLine(lineRequest);
-//        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-//    }
-
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    @PostMapping("/lines")
+    public ResponseEntity<LineResponse> createLine(@RequestBody LineCreateRequest request) {
+        LineResponse line = lineService.addLine(request);
+        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
+
+    //TODO: 주석해제
+//    @GetMapping("/lines")
+//    public ResponseEntity<List<LineResponse>> findAllLines() {
+//        return ResponseEntity.ok(lineService.findLineResponses());
+//    }
 
 
 //    @GetMapping("/{id}")
