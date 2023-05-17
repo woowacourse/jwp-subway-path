@@ -4,11 +4,11 @@ import javax.validation.constraints.NotNull;
 
 public class AddStationRequest {
 
-    @NotNull
+    @NotNull(message = "추가하려는 역을 입력해주세요")
     private final String sourceStation;
-    @NotNull
+    @NotNull(message = "도착역을 입력해주세요")
     private final String targetStation;
-    @NotNull
+    @NotNull(message = "거리를 입력해주세요")
     private final Integer distance;
 
     public AddStationRequest(String sourceStation, String targetStation, Integer distance) {

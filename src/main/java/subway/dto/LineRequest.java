@@ -7,13 +7,13 @@ import subway.domain.Section;
 
 public class LineRequest {
 
-    @NotNull
+    @NotNull(message = "노선 이름을 입력해주세요")
     private String lineName;
-    @NotNull
+    @NotNull(message = "출발역을 입력해주세요")
     private String sourceStation;
-    @NotNull
+    @NotNull(message = "도착역을 입력해주세요")
     private String targetStation;
-    @NotNull
+    @NotNull(message = "거리를 입력해주세요")
     private Integer distance;
 
     public LineRequest(String lineName, String sourceStation, String targetStation, Integer distance) {

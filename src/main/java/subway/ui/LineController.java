@@ -58,19 +58,20 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/station")
-    public ResponseEntity<Void> addStation(@PathVariable Long lineId, @RequestBody AddStationRequest request) {
+    public ResponseEntity<Void> addStation(@PathVariable Long lineId, @RequestBody @Valid AddStationRequest request) {
         lineService.addStation(lineId, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/stations")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long lineId, @RequestBody DeleteStationRequest request) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long lineId,
+                                              @RequestBody @Valid DeleteStationRequest request) {
         lineService.deleteStation(lineId, request);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@RequestBody PathRequest request) {
+    public ResponseEntity<PathResponse> findPath(@RequestBody @Valid PathRequest request) {
         PathResponse shortestPath = pathService.findShortestPath(request);
         return ResponseEntity.ok(shortestPath);
     }
