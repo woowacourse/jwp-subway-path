@@ -16,21 +16,18 @@
 
 ### API
 
-- 노선(/lines)
-    - 등록 : Post
+- 노선
+    - 등록 : Post /lines
     - 조회 : Get
-        - 전체 조회
-        - 특정 노선 조회 : /{id}
-    - 수정 : Put /{id}
-    - 삭제 : Delete /{id}
+        - 전체 조회 /lines/stations
+        - 특정 노선 조회 : /lines/{lineId}/stations
 
-- 역(/stations)
-    - 등록 : Post
-    - 조회 : Get
-        - 전체 조회
-        - 특정 역 조회 : /{id}
-    - 수정 : Put /{id}
-    - 삭제 : Delete /{id}
+- 역
+    - 등록 : Post /stations
+
+- 노선과 역
+    - 등록 : Post /lines/{lineId}/stations
+    - 삭제 : Delete /lines/{lineId}/stations/{stationId}
 
 ### 비즈니스 규칙
 
@@ -47,7 +44,7 @@
             - `A-B 거리` + `B-C 거리` = 3km
             - `A-B 거리 > 0`  && `B-C 거리 > 0`
 
-- 노선에 역 제거
+- 노선의 역 제거
     - 노선에서 중간 역을 제거할 경우 노선의 역 순서와 거리정보가 재배치된다.
         - A-B-C-D 역이 있는 노선에서 C역이 제거되는 경우 A-B-D 순으로 재배치된다.
         - A-B가 2km, B-C가 3km, C-D가 4km인 경우 C역이 제거되면 B-D 거리가 7km가 된다.
@@ -77,23 +74,20 @@
     - [x] 이름을 갖는다.
     - [x] 색을 갖는다.
     - [x] 구간을 관리한다.
-- [x] 노선들 (Lines)
-    - [x] 노선들을 관리한다.
-    - [x] 노선을 추가한다.
 
 ### API
 
-- [ ] 노선에 역 등록
+- [x] 노선에 역 등록
     - Post `/lines/{lineId}/stations`
     - Request body : stationId
 
-- [ ] 노선의 역 제거
+- [x] 노선의 역 제거
     - Delete `/lines/{lineId}/stations/{stationId}`
 
-- [ ] 노선의 역 조회
+- [x] 노선의 역 조회
     - Get `/lines/{lineId}/stations`
 
-- [ ] 모든 노선의 역 조회
+- [x] 모든 노선의 역 조회
     - Get `/lines/stations`
 
 ## 📀 데이터베이스
@@ -101,58 +95,23 @@
 ```sql
 create table if not exists STATION
 (
-    id
-    bigint
-    auto_increment
-    not
-    null,
-    name
-    varchar
-(
-    255
-) not null unique
+    id   bigint auto_increment not null,
+    name varchar(255)          not null unique
     );
 
 create table if not exists LINE
 (
-    id
-    bigint
-    auto_increment
-    not
-    null,
-    name
-    varchar
-(
-    255
-) not null unique,
-    color varchar
-(
-    20
-) not null
+    id    bigint auto_increment not null,
+    name  varchar(255)          not null unique,
+    color varchar(20)           not null
     );
 
 create table if not exists SECTION
 (
-    id
-    bigint
-    auto_increment
-    not
-    null,
-    line_id
-    bigint
-    not
-    null,
-    from_id
-    bigint
-    not
-    null,
-    to_id
-    bigint
-    not
-    null,
-    distance
-    bigint
-    not
-    null
+    id       bigint auto_increment not null,
+    line_id  bigint                not null,
+    from_id  bigint                not null,
+    to_id    bigint                not null,
+    distance bigint                not null
 );
 ```
