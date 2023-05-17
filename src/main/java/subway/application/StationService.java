@@ -36,14 +36,14 @@ public class StationService {
         return StationResponse.of(findById(id));
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
-        final List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
+        return stationDao.findAll().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Station findById(final Long id) {
         return stationDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 역이 존재하지 않습니다."));

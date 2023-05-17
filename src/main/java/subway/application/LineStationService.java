@@ -26,21 +26,27 @@ public class LineStationService {
         final Line line = lineService.findById(id);
         final Station upStation = stationService.findById(upStationId);
         final Station downStation = stationService.findById(downStationId);
+
         line.addInitStations(upStation, downStation, distance);
+
         lineService.save(line);
     }
 
     public void addUpEndpoint(final Long id, final Long stationId, final int distance) {
         final Line line = lineService.findById(id);
         final Station station = stationService.findById(stationId);
+
         line.addUpEndpoint(station, distance);
+
         lineService.save(line);
     }
 
     public void addDownEndpoint(final Long id, final Long stationId, final int distance) {
         final Line line = lineService.findById(id);
         final Station station = stationService.findById(stationId);
+
         line.addDownEndpoint(station, distance);
+
         lineService.save(line);
     }
 
@@ -48,30 +54,38 @@ public class LineStationService {
         final Line line = lineService.findById(id);
         final Station station = stationService.findById(stationId);
         final Station prevStation = stationService.findById(prevStationId);
+
         line.addIntermediate(station, prevStation, distance);
+
         lineService.save(line);
     }
 
     public void deleteStationInLine(final Long id, final Long stationId) {
         final Line line = lineService.findById(id);
         final Station station = stationService.findById(stationId);
+
         line.deleteSections(station);
+
         lineService.save(line);
     }
 
     public void deleteStation(final Long stationId) {
         final Lines lines = lineService.findAll();
         final Station station = stationService.findById(stationId);
+
         lines.deleteStation(station);
+
         stationService.deleteStationById(stationId);
     }
 
+    @Transactional(readOnly = true)
     public List<LineStationResponse> findAll() {
         return lineService.findAll().getLines().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public LineStationResponse findByLineId(final Long id) {
         final Line line = lineService.findById(id);
         return mapToResponse(line);

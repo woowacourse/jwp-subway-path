@@ -44,6 +44,7 @@ public class LineService {
         lineRepository.findById(id).ifPresent(lineRepository::delete);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         return lineRepository.findAll().getLines().stream()
                 .map(LineResponse::of)
@@ -54,11 +55,13 @@ public class LineService {
         return LineResponse.of(findById(id));
     }
 
+    @Transactional(readOnly = true)
     public Line findById(final Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 라인이 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
     public Lines findAll() {
         return lineRepository.findAll();
     }
