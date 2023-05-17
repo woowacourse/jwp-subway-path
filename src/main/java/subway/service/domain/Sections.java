@@ -1,6 +1,7 @@
 package subway.service.domain;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -20,6 +21,18 @@ public class Sections {
     public boolean isContainsThisStation(Station station) {
         return sections.stream()
                 .anyMatch(section -> section.isContainsStation(station));
+    }
+
+    public Optional<Section> findPreviousStationThisStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isPreviousStationThisStation(station))
+                .findFirst();
+    }
+
+    public Optional<Section> findNextStationThisStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isNextStationThisStation(station))
+                .findFirst();
     }
 
     public List<Section> getSections() {

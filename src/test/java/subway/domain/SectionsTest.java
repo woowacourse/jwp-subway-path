@@ -8,6 +8,7 @@ import subway.service.domain.Sections;
 import subway.service.domain.Station;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,6 +59,46 @@ class SectionsTest {
         assertThat(sections.isContainsThisStation(previousStation)).isTrue();
         assertThat(sections.isContainsThisStation(standardStation)).isTrue();
         assertThat(sections.isContainsThisStation(notExistsStation)).isFalse();
+    }
+
+    @Test
+    @DisplayName("현재 Section 중 해당 Station 을 PreviousStation 으로 가진 Section 을 반환한다.")
+    void findPreviousStationThisStation() {
+        Distance IGNORED = Distance.from(10);
+        Station previousStation = new Station("previous");
+        Station standardStation = new Station("standard");
+        Station nextStation = new Station("next");
+        Sections sections = new Sections(List.of(
+                new Section(previousStation, standardStation, IGNORED),
+                new Section(standardStation, nextStation, IGNORED)));
+
+        Optional<Section> section = sections.findPreviousStationThisStation(standardStation);
+        Optional<Section> emptySection = sections.findPreviousStationThisStation(nextStation);
+
+        assertThat(emptySection).isEmpty();
+        assertThat(section).isPresent();
+        assertThat(section.get().getPreviousStation()).isEqualTo(standardStation);
+        assertThat(section.get().getNextStation()).isEqualTo(nextStation);
+    }
+
+    @Test
+    @DisplayName("현재 Section 중 해당 Station 을 PreviousStation 으로 가진 Section 을 반환한다.")
+    void findNextStationThisStation() {
+        Distance IGNORED = Distance.from(10);
+        Station previousStation = new Station("previous");
+        Station standardStation = new Station("standard");
+        Station nextStation = new Station("next");
+        Sections sections = new Sections(List.of(
+                new Section(previousStation, standardStation, IGNORED),
+                new Section(standardStation, nextStation, IGNORED)));
+
+        Optional<Section> section = sections.findNextStationThisStation(standardStation);
+        Optional<Section> emptySection = sections.findNextStationThisStation(previousStation);
+
+        assertThat(emptySection).isEmpty();
+        assertThat(section).isPresent();
+        assertThat(section.get().getNextStation()).isEqualTo(standardStation);
+        assertThat(section.get().getPreviousStation()).isEqualTo(previousStation);
     }
 
 }
