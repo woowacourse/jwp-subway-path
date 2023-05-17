@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.NormalFeeStrategy;
 import subway.domain.PathFinder;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -213,7 +214,7 @@ public class SectionService {
         Long departureId = pathFindingRequest.getDepartureId();
         Long destinationId = pathFindingRequest.getDestinationId();
 
-        PathFinder pathFinder = new PathFinder(allSections);
+        PathFinder pathFinder = new PathFinder(new NormalFeeStrategy(), allSections);
         List<Long> stationIds = pathFinder.findPath(departureId, destinationId);
         List<Station> path = stationIds.stream()
             .map(idsToStations::get)
@@ -221,6 +222,8 @@ public class SectionService {
 
         int distance = pathFinder.findTotalDistance(departureId, destinationId);
 
-        return PathResponse.of(distance, path);
+        int fee = pathFinder.findFee(departureId, destinationId);
+
+        return PathResponse.of(distance, path, fee);
     }
 }

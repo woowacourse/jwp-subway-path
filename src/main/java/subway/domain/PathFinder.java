@@ -15,9 +15,11 @@ import subway.exception.DomainException;
 import subway.exception.ExceptionType;
 
 public class PathFinder {
+    private final FeeStrategy feeStrategy;
     private final Graph<Long, DefaultWeightedEdge> graph;
 
-    public PathFinder(List<Section> allSections) {
+    public PathFinder(FeeStrategy feeStrategy, List<Section> allSections) {
+        this.feeStrategy = feeStrategy;
         Set<Section> sections = new HashSet<>(allSections);
         this.graph = makeGraph(sections);
     }
@@ -52,6 +54,12 @@ public class PathFinder {
         GraphPath<Long, DefaultWeightedEdge> path = getPath(departureId, destinationId);
 
         return (int)path.getWeight();
+    }
+
+    public int findFee(Long departureId, Long destinationId) {
+        int totalDistance = findTotalDistance(departureId, destinationId);
+        FeeCalculator feeCalculator = new FeeCalculator(feeStrategy);
+        return feeCalculator.calculate(totalDistance);
     }
 
     private GraphPath<Long, DefaultWeightedEdge> getPath(Long departureId, Long destinationId) {

@@ -8,17 +8,19 @@ import subway.domain.Station;
 public class PathResponse {
     private final int distance;
     private final List<StationResponse> path;
+    private final int fee;
 
-    private PathResponse(int distance, List<StationResponse> path) {
+    private PathResponse(int distance, List<StationResponse> path, int fee) {
         this.distance = distance;
         this.path = path;
+        this.fee = fee;
     }
 
-    public static PathResponse of(int distance, List<Station> path) {
+    public static PathResponse of(int distance, List<Station> path, int fee) {
         List<StationResponse> stationResponses = path.stream()
             .map(StationResponse::of)
             .collect(Collectors.toUnmodifiableList());
-        return new PathResponse(distance, stationResponses);
+        return new PathResponse(distance, stationResponses, fee);
     }
 
     public int getDistance() {
@@ -29,4 +31,7 @@ public class PathResponse {
         return path;
     }
 
+    public int getFee() {
+        return fee;
+    }
 }
