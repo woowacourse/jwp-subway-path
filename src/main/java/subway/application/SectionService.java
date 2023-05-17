@@ -4,13 +4,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,18 +19,19 @@ import java.util.stream.Stream;
 @Service
 @Transactional
 public class SectionService {
+    private final StationDao stationDao;
     private final SectionDao sectionDao;
     private final LineDao lineDao;
 
-    public SectionService(SectionDao sectionDao, LineDao lineDao) {
+    public SectionService(StationDao stationDao, SectionDao sectionDao, LineDao lineDao) {
+        this.stationDao = stationDao;
         this.sectionDao = sectionDao;
         this.lineDao = lineDao;
     }
 
     public Long insertSection(SectionRequest request) {
         validateInput(request);
-
-        final List<Section> sections = sectionDao.findAllByLineId(request.getLineId());
+        final List<Section> sections = getSections(request.getLineId());
         final Sections sortedSections = Sections.from(sections);
 
         checkCanInsert(request, sortedSections);
@@ -41,24 +43,27 @@ public class SectionService {
         return insertToMiddleSection(request, sortedSections);
     }
 
+    private List<Section> getSections(Long lineId) {
+        return sectionDao.findAllByLineId(lineId).stream()
+                .map(Section::of)
+                .collect(Collectors.toList());
+    }
+
     private void validateInput(SectionRequest request) {
         if (lineDao.findById(request.getLineId()).isEmpty()) {
             throw new IllegalArgumentException("존재 하지 않는 노선에는 구간을 추가 할 수 없습니다.");
         }
 
-        if (Objects.equals(request.getUpStationId(), request.getDownStationId())) {
-            throw new IllegalArgumentException("같은 역을 구간으로 등록할 수 없습니다.");
-        }
-
-        if (sectionDao.exists(request.getDownStationId(), request.getUpStationId())
-                || sectionDao.exists(request.getUpStationId(), request.getDownStationId())) {
+        if (sectionDao.exists(request.getDownStationId(), request.getUpStationId(),request.getLineId())
+                || sectionDao.exists(request.getUpStationId(), request.getDownStationId(),request.getLineId())) {
             throw new IllegalArgumentException("동일한 구간을 추가할 수 없습니다.");
         }
     }
 
     private static void checkCanInsert(SectionRequest request, Sections sortedSections) {
         final Set<Long> allStationIds = sortedSections.getSections().stream()
-                .flatMap(section -> Stream.of(section.getUpStationId(), section.getDownStationId()))
+                .flatMap(section -> Stream.of(
+                        section.getUpStationId(), section.getDownStationId()))
                 .collect(Collectors.toSet());
 
         final boolean haveUpStation = allStationIds.contains(request.getUpStationId());
@@ -70,19 +75,24 @@ public class SectionService {
     }
 
     private Long insertToEndPoint(SectionRequest request) {
-        final Section section = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), request.getLineId());
+        Station upStation = findStationById(request.getUpStationId());
+        Station downStation = findStationById(request.getDownStationId());
+        final Section section = new Section(request.getDistance(), upStation, downStation, request.getLineId());
         return sectionDao.insert(section);
     }
 
-    private Long insertToMiddleSection(SectionRequest request, Sections sortedSections) {
+    private Station findStationById(Long id) {
+        return new Station(id, stationDao.findById(id).getName());
+    }
 
+    private Long insertToMiddleSection(SectionRequest request, Sections sortedSections) {
         if (sortedSections.isUpStationPoint(request.getUpStationId())) {
-            final Section targetSection = sortedSections.getTargtUpStationSection(request.getUpStationId());
+            final Section targetSection = sortedSections.getTargetUpStationSection(request.getUpStationId());
 
             validateDistance(targetSection.getDistance(), request.getDistance());
 
-            final Section updateSection = new Section(request.getDistance(), targetSection.getUpStationId(), request.getDownStationId(), targetSection.getLineId());
-            final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), request.getDownStationId(), targetSection.getDownStationId(), targetSection.getLineId());
+            final Section updateSection = new Section(request.getDistance(), findStationById(targetSection.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
+            final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), findStationById(request.getDownStationId()), findStationById(targetSection.getDownStationId()), targetSection.getLineId());
             return insert(updateSection, newSection);
         }
 
@@ -90,8 +100,8 @@ public class SectionService {
 
         validateDistance(targetSection.getDistance(), request.getDistance());
 
-        final Section updateSection = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), targetSection.getLineId());
-        final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), targetSection.getUpStationId(), request.getUpStationId(), targetSection.getLineId());
+        final Section updateSection = new Section(request.getDistance(), findStationById(request.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
+        final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), findStationById(targetSection.getUpStationId()), findStationById(request.getUpStationId()), targetSection.getLineId());
         return insert(updateSection, newSection);
     }
 
@@ -106,8 +116,8 @@ public class SectionService {
         return sectionDao.insert(insertSection);
     }
 
-    public void deleteStation(Long stationId, SectionDeleteRequest request) {
-        final List<Section> sections = sectionDao.findAllByLineId(request.getLineId());
+    public void deleteStation(SectionDeleteRequest request) {
+        final List<Section> sections = getSections(request.getLineId());
         final Sections sortedSections = Sections.from(sections);
 
         if (sortedSections.isInitialState()) {
@@ -116,17 +126,17 @@ public class SectionService {
             return;
         }
 
-        if (sortedSections.isDownEndPoint(stationId)) {
+        if (sortedSections.isDownEndPoint(request.getStationId())) {
             sectionDao.delete(sortedSections.findFirstSectionId());
             return;
         }
 
-        if (sortedSections.isUpEndPoint(stationId)) {
+        if (sortedSections.isUpEndPoint(request.getStationId())) {
             sectionDao.delete(sortedSections.findLastSectionId());
             return;
         }
 
-        final List<Section> includeTargetSection = sortedSections.findIncludeTargetSection(stationId);
+        final List<Section> includeTargetSection = sortedSections.findIncludeTargetSection(request.getStationId());
         final int newDistance = includeTargetSection.stream()
                 .mapToInt(Section::getDistance)
                 .sum();
@@ -134,7 +144,7 @@ public class SectionService {
         final Section forwardSection = includeTargetSection.get(0);
         final Section backwardSection = includeTargetSection.get(1);
 
-        sectionDao.insert(new Section(newDistance, forwardSection.getUpStationId(), backwardSection.getDownStationId(), request.getLineId()));
+        sectionDao.insert(new Section(newDistance, findStationById(forwardSection.getUpStationId()), findStationById(backwardSection.getDownStationId()), request.getLineId()));
         for (Section section : includeTargetSection) {
             sectionDao.delete(section.getId());
         }

@@ -29,9 +29,9 @@ public class SectionController {
         return ResponseEntity.created(URI.create("/sections/" + sectionId)).build();
     }
 
-    @DeleteMapping("/stations/{stationId}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long stationId, @Valid @RequestBody SectionDeleteRequest sectionRequest) {
-        sectionService.deleteStation(stationId, sectionRequest);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteStation(@Valid @RequestBody SectionDeleteRequest sectionRequest) {
+        sectionService.deleteStation(sectionRequest);
         return ResponseEntity.noContent().build();
     }
 }

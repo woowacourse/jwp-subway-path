@@ -69,7 +69,7 @@ public class Sections {
                 .anyMatch(section -> Objects.equals(section.getUpStationId(), upStationId));
     }
 
-    public Section getTargtUpStationSection(Long upStationId) {
+    public Section getTargetUpStationSection(Long upStationId) {
         return sections.stream()
                 .filter(section -> Objects.equals(section.getUpStationId(), upStationId))
                 .findAny()

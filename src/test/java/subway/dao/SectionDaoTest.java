@@ -7,16 +7,20 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.test.context.jdbc.Sql;
+import subway.dao.dto.SectionStationResultMap;
 import subway.domain.Section;
+import subway.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SuppressWarnings("NonAsciiCharacters")
+@Sql("classpath:/remove-section-line.sql")
 @JdbcTest
 class SectionDaoTest {
 
@@ -27,23 +31,41 @@ class SectionDaoTest {
     private DataSource dataSource;
 
     private SectionDao sectionDao;
+    private StationDao stationDao;
 
     @BeforeEach
     void init() {
+        stationDao = new StationDao(jdbcTemplate, dataSource);
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
         save();
     }
 
     private void save() {
-        sectionDao.insert(new Section(3, 1L, 2L, 1L));
-        sectionDao.insert(new Section(3, 3L, 4L, 1L));
-        sectionDao.insert(new Section(3, 5L, 6L, 2L));
+        Station station1 = new Station(1L, "잠실역1");
+        Station station2 = new Station(2L, "잠실역2");
+        Station station3 = new Station(3L, "잠실역3");
+        Station station4 = new Station(4L, "잠실역4");
+        Station station5 = new Station(5L, "잠실역5");
+        Station station6 = new Station(6L, "잠실역6");
+
+        stationDao.insert(new Station(1L, "잠실역1"));
+        stationDao.insert(new Station(2L, "잠실역2"));
+        stationDao.insert(new Station(3L, "잠실역3"));
+        stationDao.insert(new Station(4L, "잠실역4"));
+        stationDao.insert(new Station(5L, "잠실역5"));
+        stationDao.insert(new Station(6L, "잠실역6"));
+
+        sectionDao.insert(new Section(3, station1, station2, 1L));
+        sectionDao.insert(new Section(3, station3, station4, 1L));
+        sectionDao.insert(new Section(3, station5, station6, 2L));
     }
 
     @Test
     void 구간을_저장한다() {
         // given
-        final Section section = new Section(3, 1L, 2L, 1L);
+        Station station7 = new Station(5L, "잠실역7");
+        Station station8 = new Station(6L, "잠실역8");
+        final Section section = new Section(3, station7, station8, 1L);
 
         // when
         final Long id = sectionDao.insert(section);
@@ -55,62 +77,82 @@ class SectionDaoTest {
     @Test
     void LineId로_구간을_조회한다() {
         // when
-        final List<Section> sections = sectionDao.findAllByLineId(1L);
-
+        List<SectionStationResultMap> resultMaps = sectionDao.findAllByLineId(1L);
         // then
-        assertThat(sections).hasSize(2);
+        assertThat(resultMaps).hasSize(2);
     }
 
     @Test
     void 구간을_수정한다() {
         // given
-        final Long targetId = sectionDao.insert(new Section(1, 7L, 6L, 1L));
-        final Section newSection = new Section(targetId, 3, 10L, 9L, 1L);
+        Station station7 = new Station(7L, "잠실역7");
+        Station station8 = new Station(8L, "잠실역8");
+        Station station9 = new Station(9L, "잠실역9");
+        Station station10 = new Station(10L, "잠실역10");
+
+        stationDao.insert(station7);
+        stationDao.insert(station8);
+        stationDao.insert(station9);
+        stationDao.insert(station10);
+
+        final Long targetId = sectionDao.insert(new Section(1, station7, station8, 1L));
+        final Section newSection = new Section(targetId, 3, station10, station9, 1L);
 
         // when
         sectionDao.update(newSection);
 
         // then
         assertAll(
-                () -> assertThat(findById(targetId).getUpStationId()).isEqualTo(10L),
-                () -> assertThat(findById(targetId).getDownStationId()).isEqualTo(9L)
+                () -> assertThat(findById(targetId).getUpStationId()).isEqualTo(station10.getId()),
+                () -> assertThat(findById(targetId).getDownStationId()).isEqualTo(station9.getId())
         );
     }
 
-    @Test
+        @Test
     void 같은_구간이_존재하면_예외가_발생한다() {
         // given
-        sectionDao.insert(new Section(3, 1L, 3L, 1L));
+            Station station1 = new Station(1L, "잠실역1");
+            Station station2 = new Station(2L, "잠실역2");
+            sectionDao.insert(new Section(3, station1, station2, 1L));
 
         // when, then
         assertAll(
-                () -> assertThat(sectionDao.exists(1L, 3L)).isTrue(),
-                () -> assertThat(sectionDao.exists(3L, 1L)).isFalse()
+                () -> assertThat(sectionDao.exists(1L, 2L,1L)).isTrue(),
+                () -> assertThat(sectionDao.exists(2L, 1L,2L)).isFalse()
         );
     }
 
     @Test
     void 구간을_삭제한다() {
-        // given
-        final Long id = sectionDao.insert(new Section(3, 3L, 11L, 1L));
-
         // when
-        sectionDao.delete(id);
+        sectionDao.delete(1L);
 
         // then
-        assertThatThrownBy(() -> findById(id))
+        assertThatThrownBy(() -> findById(1L))
                 .isInstanceOf(EmptyResultDataAccessException.class);
     }
 
-    private Section findById(Long sectionId) {
-        final String sql = "SELECT * FROM section where id = ?";
+    private SectionStationResultMap findById(Long sectionId) {
+        final String sql = "SELECT se.id sectionId, " +
+                "se.distance distance, " +
+                "se.up_station_id upStationId, " +
+                "st1.name upStationName, " +
+                "se.down_station_id downStationId, " +
+                "st2.name downStationName, " +
+                "se.line_id lineId " +
+                "FROM section se " +
+                "JOIN station st1 ON st1.id = se.up_station_id " +
+                "JOIN station st2 ON st2.id = se.down_station_id " +
+                "WHERE se.id = ?";
 
-        final RowMapper<Section> rowMapper = (rs, num) -> new Section(
-                rs.getLong("id"),
+        final RowMapper<SectionStationResultMap> rowMapper = (rs, num) -> new SectionStationResultMap(
+                rs.getLong("sectionId"),
                 rs.getInt("distance"),
-                rs.getLong("up_station_id"),
-                rs.getLong("down_station_id"),
-                rs.getLong("line_id")
+                rs.getLong("upStationId"),
+                rs.getString("upStationName"),
+                rs.getLong("downStationId"),
+                rs.getString("downStationName"),
+                rs.getLong("lineId")
         );
 
         return jdbcTemplate.queryForObject(sql, rowMapper, sectionId);

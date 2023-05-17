@@ -14,9 +14,13 @@ class SectionsTest {
 
     @BeforeEach
     void init() {
-        final Section section1 = new Section(3, 1L, 2L, 1L);
-        final Section section2 = new Section(3, 2L, 3L, 1L);
-        final Section section3 = new Section(3, 3L, 4L, 1L);
+        Station station1 = new Station(1L, "잠실역1");
+        Station station2 = new Station(2L, "잠실역2");
+        Station station3 = new Station(3L, "잠실역3");
+        Station station4 = new Station(4L, "잠실역4");
+        final Section section1 = new Section(3, station1, station2, 1L);
+        final Section section2 = new Section(3, station2, station3, 1L);
+        final Section section3 = new Section(3, station3, station4, 1L);
 
         this.sections = Sections.from(List.of(section3, section1, section2));
     }
@@ -46,7 +50,7 @@ class SectionsTest {
     @Test
     void 상행역_기준으로_구간을_찾아온다() {
         // when
-        final Section result = sections.getTargtUpStationSection(2L);
+        final Section result = sections.getTargetUpStationSection(2L);
 
         // then
         assertAll(

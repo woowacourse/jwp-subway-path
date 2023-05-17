@@ -12,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
@@ -28,12 +30,23 @@ class SectionIntegrationTest extends IntegrationTest {
     private LineDao lineDao;
     @Autowired
     private SectionDao sectionDao;
+    @Autowired
+    private StationDao stationDao;
+
     private Long 이호선;
 
     @BeforeEach
     void init() {
+        Station station1 = new Station(1L, "잠실역1");
+        Station station2 = new Station(2L, "잠실역2");
+        Station station3 = new Station(3L, "잠실역3");
+
+        stationDao.insert(station1);
+        stationDao.insert(station2);
+        stationDao.insert(station3);
+
         이호선 = lineDao.insert(new Line("2호선", "초록색"));
-        sectionDao.insert(new Section(10, 1L, 2L, 이호선));
+        sectionDao.insert(new Section(10, station1, station2, 이호선));
     }
 
     @Test
@@ -60,14 +73,14 @@ class SectionIntegrationTest extends IntegrationTest {
     @Test
     void 구간을_삭제한다() {
         // given
-        final SectionDeleteRequest request = new SectionDeleteRequest(1L);
+        final SectionDeleteRequest request = new SectionDeleteRequest(1L,2L);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when()
-                .delete("/sections/stations/{stationId}", 2L)
+                .delete("/sections")
                 .then().log().all()
                 .extract();
 

@@ -1,22 +1,42 @@
 package subway.domain;
 
-public class Section {
-    private final Long id;
-    private final int distance;
-    private final Long upStationId;
-    private final Long downStationId;
-    private final Long lineId;
+import subway.dao.dto.SectionStationResultMap;
 
-    public Section(int distance, Long upStationId, Long downStationId, Long lineId) {
-        this(null, distance, upStationId, downStationId, lineId);
+import java.util.Objects;
+
+public class Section {
+    private Long id;
+    private int distance;
+    private Station upStation;
+    private Station downStation;
+    private Long lineId;
+
+    public Section(int distance, Station upStation, Station downStation, Long lineId) {
+        this(null, distance, upStation, downStation, lineId);
     }
 
-    public Section(Long id, int distance, Long upStationId, Long downStationId, Long lineId) {
+    public Section(Long id, int distance, Station upStation, Station downStation, Long lineId) {
+        validateDuplicate(upStation, downStation);
         this.id = id;
         this.distance = distance;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
+        this.upStation = upStation;
+        this.downStation = downStation;
         this.lineId = lineId;
+    }
+
+    private void validateDuplicate(Station upStation, Station downStation) {
+        if (Objects.equals(upStation.getId(), downStation.getId())) {
+            throw new IllegalArgumentException("같은 역을 구간으로 등록할 수 없습니다.");
+        }
+    }
+
+    public static Section of(final SectionStationResultMap sectionStationResultMap) {
+        return new Section(
+                sectionStationResultMap.getSectionId(),
+                sectionStationResultMap.getDistance(),
+                new Station(sectionStationResultMap.getUpStationId(), sectionStationResultMap.getUpStationName()),
+                new Station(sectionStationResultMap.getDownStationId(), sectionStationResultMap.getDownStationName()),
+                sectionStationResultMap.getLineId());
     }
 
     public Long getId() {
@@ -27,12 +47,20 @@ public class Section {
         return distance;
     }
 
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
     public Long getUpStationId() {
-        return upStationId;
+        return upStation.getId();
     }
 
     public Long getDownStationId() {
-        return downStationId;
+        return downStation.getId();
     }
 
     public Long getLineId() {

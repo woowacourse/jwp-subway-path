@@ -31,7 +31,7 @@ public class LineService {
         final Line line = new Line(request.getName(), request.getColor());
         final Long lineId = lineDao.insert(line);
 
-        final Section section = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), lineId);
+        final Section section = new Section(request.getDistance(), findStationById(request.getUpStationId()), findStationById(request.getDownStationId()), lineId);
         sectionDao.insert(section);
 
         return lineId;
@@ -49,18 +49,21 @@ public class LineService {
         return lineDao.findAll();
     }
 
+    private List<Section> getSections(Long lineId) {
+        return sectionDao.findAllByLineId(lineId).stream()
+                .map(Section::of)
+                .collect(Collectors.toList());
+    }
+
     public LineResponse findLineResponseById(Long id) {
-        final List<Section> sections = sectionDao.findAllByLineId(id);
+        final List<Section> sections = getSections(id);
         List<Section> sortedSections = Sections.from(sections).getSections();
 
-        final List<Long> stationsIds = sortedSections.stream()
-                .map(Section::getUpStationId)
+        final List<Station> stations = sortedSections.stream()
+                .map(section -> new Station(section.getUpStationId(), section.getUpStation().getName()))
                 .collect(Collectors.toList());
-        stationsIds.add(sortedSections.get(sortedSections.size() - 1).getDownStationId());
-
-        final List<Station> stations = stationsIds.stream()
-                .map(stationDao::findById)
-                .collect(Collectors.toList());
+        final Section lastSection = sortedSections.get(sortedSections.size() - 1);
+        stations.add(new Station(lastSection.getDownStationId(), lastSection.getDownStation().getName()));
 
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine, stations);
@@ -73,6 +76,10 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+    }
+
+    private Station findStationById(Long id) {
+        return new Station(id, stationDao.findById(id).getName());
     }
 
 }
