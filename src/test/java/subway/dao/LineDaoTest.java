@@ -34,7 +34,7 @@ class LineDaoTest {
 
         // when
         Long 노선_ID = lineDao.save(노선);
-        LineEntity 찾은_노선 = lineDao.findById(노선_ID);
+        LineEntity 찾은_노선 = lineDao.findById(노선_ID).get();
 
         // expected
         assertThat(찾은_노선.getName()).isEqualTo(노선.getName());
@@ -59,7 +59,7 @@ class LineDaoTest {
         Long 노선_ID = lineDao.save(new LineEntity("2호선"));
 
         // when
-        LineEntity 찾은_노선 = lineDao.findById(노선_ID);
+        LineEntity 찾은_노선 = lineDao.findById(노선_ID).get();
 
         // expected
         assertThat(찾은_노선.getId()).isEqualTo(노선_ID);

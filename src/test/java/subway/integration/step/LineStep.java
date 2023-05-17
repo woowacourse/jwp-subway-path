@@ -28,4 +28,21 @@ public class LineStep {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 특정_노선_조회_요청(final Long 노선_ID) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{노선_ID}", 노선_ID)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 노선_삭제_요청(final Long 노선_ID, final Long 역_ID) {
+        return RestAssured.given().log().all()
+                .when().delete("/lines/" + 노선_ID + "/stations/" + 역_ID)
+                .then().log().all()
+                .extract();
+    }
+
 }

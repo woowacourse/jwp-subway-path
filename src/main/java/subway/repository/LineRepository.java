@@ -16,7 +16,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.exception.DuplicateException;
-import subway.exception.ErrorCode;
+import subway.exception.ErrorMessage;
 import subway.exception.NotFoundException;
 
 @Repository
@@ -35,14 +35,16 @@ public class LineRepository {
         boolean existName = lineDao.exists(line.getName());
 
         if (existName) {
-            throw new DuplicateException(ErrorCode.DUPLICATE_NAME);
+            throw new DuplicateException(ErrorMessage.DUPLICATE_NAME);
         }
 
         return lineDao.save(toEntity(line));
     }
 
     public Line findById(final Long id) {
-        LineEntity lineEntity = lineDao.findById(id);
+        LineEntity lineEntity = lineDao.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_LINE));
+
         return Line.of(id, lineEntity.getName(), findSectionsByLineId(id));
     }
 
@@ -59,7 +61,7 @@ public class LineRepository {
 
     private Station findStationByStationId(final Long stationId) {
         StationEntity stationEntity = stationDao.findById(stationId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_STATION));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_STATION));
 
         return new Station(stationEntity.getId(), stationEntity.getName());
     }

@@ -1,6 +1,6 @@
 package subway.exception;
 
-public enum ErrorCode {
+public enum ErrorMessage {
     DUPLICATE_NAME("중복된 이름입니다."),
     DUPLICATE_STATION("이미 존재하는 역입니다."),
     NOT_FOUND_STATION("존재하지 않는 역입니다."),
@@ -16,7 +16,7 @@ public enum ErrorCode {
 
     private final String errorMessage;
 
-    ErrorCode(final String errorMessage) {
+    ErrorMessage(final String errorMessage) {
         this.errorMessage = errorMessage;
     }
 

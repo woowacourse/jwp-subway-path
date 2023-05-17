@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.exception.DuplicateException;
-import subway.exception.ErrorCode;
+import subway.exception.ErrorMessage;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -101,7 +101,7 @@ class SectionsTest {
         // expected
         assertThatThrownBy(() -> 구간들.addSection(새로운_구간))
                 .isInstanceOf(DuplicateException.class)
-                .hasMessage(ErrorCode.DUPLICATE_STATION.getErrorMessage());
+                .hasMessage(ErrorMessage.DUPLICATE_STATION.getErrorMessage());
     }
 
     @Test

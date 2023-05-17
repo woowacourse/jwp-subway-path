@@ -1,7 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.exception.ErrorCode;
+import subway.exception.ErrorMessage;
 import subway.exception.InvalidException;
 
 public class Station {
@@ -21,13 +21,13 @@ public class Station {
 
     private void validateId(final Long id) {
         if (id <= 0) {
-            throw new InvalidException(ErrorCode.INVALID_NOT_POSITIVE_ID);
+            throw new InvalidException(ErrorMessage.INVALID_NOT_POSITIVE_ID);
         }
     }
 
     private void validateName(final String name) {
         if (name.isBlank()) {
-            throw new InvalidException(ErrorCode.INVALID_BLANK_NAME);
+            throw new InvalidException(ErrorMessage.INVALID_BLANK_NAME);
         }
     }
 

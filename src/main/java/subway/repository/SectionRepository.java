@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.SectionDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Section;
-import subway.exception.ErrorCode;
+import subway.exception.ErrorMessage;
 import subway.exception.NotFoundException;
 
 @Repository
@@ -32,7 +32,7 @@ public class SectionRepository {
         int affectedRow = sectionDao.delete(toEntity(lineId, deletedSection));
 
         if (affectedRow == 0) {
-            throw new NotFoundException(ErrorCode.NOT_FOUND_SECTION);
+            throw new NotFoundException(ErrorMessage.NOT_FOUND_SECTION);
         }
     }
 
@@ -40,7 +40,7 @@ public class SectionRepository {
         int affectedRow = sectionDao.deleteByLineId(lineId);
 
         if (affectedRow == 0) {
-            throw new NotFoundException(ErrorCode.NOT_FOUND_SECTION_BY_LINE_ID);
+            throw new NotFoundException(ErrorMessage.NOT_FOUND_SECTION_BY_LINE_ID);
         }
     }
 }

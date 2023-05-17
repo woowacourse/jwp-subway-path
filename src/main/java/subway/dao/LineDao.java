@@ -3,6 +3,7 @@ package subway.dao;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -58,9 +59,14 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public LineEntity findById(final Long id) {
+    public Optional<LineEntity> findById(final Long id) {
         final String sql = "SELECT * FROM line WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<LineWithSectionEntities> findLinesWithSections() {

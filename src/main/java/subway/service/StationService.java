@@ -6,7 +6,7 @@ import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
 import subway.dto.StationCreateRequest;
 import subway.exception.DuplicateException;
-import subway.exception.ErrorCode;
+import subway.exception.ErrorMessage;
 
 @Service
 @Transactional
@@ -21,7 +21,7 @@ public class StationService {
         StationEntity stationEntity = new StationEntity(stationCreateRequest.getName());
 
         if (stationDao.exists(stationEntity)) {
-            throw new DuplicateException(ErrorCode.DUPLICATE_NAME);
+            throw new DuplicateException(ErrorMessage.DUPLICATE_NAME);
         }
 
         return stationDao.save(stationEntity);

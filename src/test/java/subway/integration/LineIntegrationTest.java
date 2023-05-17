@@ -2,13 +2,14 @@ package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.integration.step.LineStep.노선_삭제_요청;
 import static subway.integration.step.LineStep.노선_생성_요청;
 import static subway.integration.step.LineStep.노선_조회_요청;
+import static subway.integration.step.LineStep.특정_노선_조회_요청;
 import static subway.integration.step.SectionStep.구간_생성_요청;
 import static subway.integration.step.SectionStep.구간_생성_요청을_생성한다;
 import static subway.integration.step.StationStep.역_생성_요청;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -21,19 +22,16 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionCreateRequest;
 import subway.dto.StationResponse;
-import subway.exception.ErrorCode;
+import subway.exception.ErrorMessage;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
-
-    @DisplayName("지하철 노선을 생성한다.")
     @Test
     void 지하철_노선을_생성한다() {
         // given
@@ -49,7 +47,6 @@ public class LineIntegrationTest extends IntegrationTest {
         );
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void 기존에_존재하는_지하철_노선_이름으로_노선을_생성하면_예외가_발생한다() {
         // given
@@ -63,13 +60,12 @@ public class LineIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.jsonPath().getString("message"))
-                        .isEqualTo(ErrorCode.DUPLICATE_NAME.getErrorMessage())
+                        .isEqualTo(ErrorMessage.DUPLICATE_NAME.getErrorMessage())
         );
     }
 
-    @DisplayName("지하철 노선을 조회한다.")
     @Test
-    void getLine() {
+    void 지하철_노선을_조회한다() {
         // given
         final LineRequest 노선_요청 = new LineRequest("2호선");
         ExtractableResponse<Response> 응답 = 노선_생성_요청(노선_요청);
@@ -79,12 +75,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // when
         Long 노선_ID = Long.parseLong(응답.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{노선_ID}", 노선_ID)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 특정_노선_조회_요청(노선_ID);
 
         // then
         LineResponse lineResponse = response.as(LineResponse.class);
@@ -99,9 +90,8 @@ public class LineIntegrationTest extends IntegrationTest {
         );
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
-    void getLines() {
+    void 지하철_노선_목록을_조회한다() {
         // given
         final LineRequest 이호선_생성_요청 = new LineRequest("2호선");
         ExtractableResponse<Response> 이호선_생성_응답 = 노선_생성_요청(이호선_생성_요청);
@@ -134,9 +124,8 @@ public class LineIntegrationTest extends IntegrationTest {
         );
     }
 
-    @DisplayName("지하철 구간을 생성한다.")
     @Test
-    void createSection() {
+    void 지하철_구간을_생성한다() {
         // given
         LineRequest 노선_생성_요청 = new LineRequest("2호선");
 
@@ -158,8 +147,7 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("기존에 존재하는 노선에 구간을 추가한다.")
-    void createSectionInExistLine() {
+    void 기존에_존재하는_노선에_구간을_추가한다() {
         // given
         LineRequest 노선_생성_요청 = new LineRequest("2호선");
 
@@ -182,9 +170,8 @@ public class LineIntegrationTest extends IntegrationTest {
         );
     }
 
-    @DisplayName("역이 두 개 존재하는 노선의 지하철역을 제거한다.")
     @Test
-    void deleteStation() {
+    void 역이_두_개_존재하는_노선의_지하철역을_제거한다() {
         // given
         LineRequest 노선_생성_요청 = new LineRequest("2호선");
         노선_생성_요청(노선_생성_요청);
@@ -194,12 +181,55 @@ public class LineIntegrationTest extends IntegrationTest {
         구간_생성_요청(구간_생성_요청을_생성한다(1L, 2L, 10), 1L);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when().delete("/lines/1/stations/1")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 노선_삭제_요청(1L, 1L);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 노선에_존재하지_않는_역을_삭제하는_경우_예외가_발생한다() {
+        // given
+        노선_생성_요청(new LineRequest("2호선"));
+
+        // when
+        ExtractableResponse<Response> response = 노선_삭제_요청(1L, 1L);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
+                () -> assertThat(response.jsonPath().getString("message"))
+                        .isEqualTo(ErrorMessage.NOT_FOUND_STATION.getErrorMessage())
+        );
+    }
+
+    @Test
+    void 존재하지_않는_노선에_구간을_추가하는_경우_예외가_발생한다() {
+        // given
+        역_생성_요청("잠실역", 1L);
+        역_생성_요청("잠실새내역", 1L);
+
+        // when
+        ExtractableResponse<Response> response = 구간_생성_요청(구간_생성_요청을_생성한다(1L, 2L, 10), 1L);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
+                () -> assertThat(response.jsonPath().getString("message"))
+                        .isEqualTo(ErrorMessage.NOT_FOUND_LINE.getErrorMessage())
+        );
+    }
+
+    @Test
+    void 존재하지_않는_노선을_조회하는_경우_예외가_발생한다() {
+        // when
+        ExtractableResponse<Response> response = 특정_노선_조회_요청(1L);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
+                () -> assertThat(response.jsonPath().getString("message"))
+                        .isEqualTo(ErrorMessage.NOT_FOUND_LINE.getErrorMessage())
+        );
     }
 }

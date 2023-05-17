@@ -1,7 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.exception.ErrorCode;
+import subway.exception.ErrorMessage;
 import subway.exception.InvalidException;
 
 public class Section {
@@ -19,13 +19,13 @@ public class Section {
 
     private void validatePositiveDistance(final int distance) {
         if (distance <= 0) {
-            throw new InvalidException(ErrorCode.INVALID_NOT_POSITIVE_DISTANCE);
+            throw new InvalidException(ErrorMessage.INVALID_NOT_POSITIVE_DISTANCE);
         }
     }
 
     private void validateDifferentUpAndDown(final Station upStation, final Station downStation) {
         if (upStation.equals(downStation)) {
-            throw new InvalidException(ErrorCode.INVALID_SAME_UP_AND_DOWN_STATION);
+            throw new InvalidException(ErrorMessage.INVALID_SAME_UP_AND_DOWN_STATION);
         }
     }
 
@@ -40,7 +40,7 @@ public class Section {
 
     private void validateDistance(final int distance) {
         if (this.distance <= distance) {
-            throw new InvalidException(ErrorCode.INVALID_DISTANCE);
+            throw new InvalidException(ErrorMessage.INVALID_DISTANCE);
         }
     }
 

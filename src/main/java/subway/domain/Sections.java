@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import subway.exception.DuplicateException;
-import subway.exception.ErrorCode;
+import subway.exception.ErrorMessage;
 import subway.exception.NotFoundException;
 
 public class Sections {
@@ -82,7 +82,7 @@ public class Sections {
     private void validateDuplicateSection(final Station upStation, final Station downStation) {
         List<Station> stations = getStations();
         if (stations.contains(upStation) && stations.contains(downStation)) {
-            throw new DuplicateException(ErrorCode.DUPLICATE_STATION);
+            throw new DuplicateException(ErrorMessage.DUPLICATE_STATION);
         }
     }
 
@@ -178,12 +178,12 @@ public class Sections {
         Section backSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getUpStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_STATION));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_STATION));
 
         Section frontSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getDownStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_STATION));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_STATION));
 
         Section newSection = new Section(frontSection.getUpStation(), backSection.getDownStation(), newDistance);
 
