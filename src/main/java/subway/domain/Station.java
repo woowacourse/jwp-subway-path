@@ -1,25 +1,23 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.controller.exception.StationException;
 
 public class Station {
-    private Long id;
-    private String name;
+    private static final int MIN_NAME_LENGTH = 3;
+    private static final int MAX_NAME_LENGTH = 10;
 
-    public Station() {
-    }
+    private final String name;
 
-    public Station(Long id, String name) {
-        this.id = id;
+    public Station(final String name) {
+        validate(name);
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
+    private void validate(final String name) {
+        if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
+            throw new StationException(String.format("역 이름은 %d~%d자 사이여야 합니다", MIN_NAME_LENGTH, MAX_NAME_LENGTH));
+        }
     }
 
     public String getName() {
@@ -27,15 +25,19 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Station)) {
+            return false;
+        }
+        final Station station = (Station) o;
+        return Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(name);
     }
 }

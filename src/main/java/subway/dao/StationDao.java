@@ -1,58 +1,66 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.dao.entity.StationEntity;
 import subway.domain.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 @Repository
 public class StationDao {
+    private static final RowMapper<StationEntity> ENTITY_MAPPER = (rs, rowNum) ->
+            new StationEntity(
+                    rs.getLong("id"),
+                    rs.getString("name"));
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
-
-
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    @Autowired
+    public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate).withTableName("station").usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public StationEntity insert(final String name) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        final Long id = insertAction.executeAndReturnKey(params).longValue();
+        return new StationEntity(id, name);
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+    public List<StationEntity> findAll() {
+        final String sql = "SELECT id, name FROM station";
+        return jdbcTemplate.query(sql, ENTITY_MAPPER);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<StationEntity> findById(final Long id) {
+        final String sql = "SELECT id, name FROM station where id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, ENTITY_MAPPER, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+    public Optional<StationEntity> findByName(final String name) {
+        final String sql = "SELECT id, name FROM station where name = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, ENTITY_MAPPER, name));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+    public int deleteByName(final String name) {
+        final String sql = "DELETE FROM station where name = ?";
+        return jdbcTemplate.update(sql, name);
     }
 }

@@ -1,0 +1,83 @@
+### Request (노선 등록 API)
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name" : "8호선",
+  "color" : "분홍색"
+}
+
+### Response (노선 등록 API)
+
+HTTP/1.1 201
+Location: /lines/{id}
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 16 May 2023 08:35:40 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+
+### Request (노선 조회 API)
+
+GET http://localhost:8080/lines/1
+Content-Type: application/json
+Accept: application/json
+
+
+### Response (노선 조회 API)
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Wed, 17 May 2023 05:26:24 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+  "name": "2호선",
+  "color": "분홍색",
+  "stations": [
+    "석촌역",
+    "송파역",
+    "몽촌토성역",
+    "잠실역"
+  ]
+}
+
+### Request (노선 전체 조회 API)
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Accept: application/json
+
+### Response (노선 전체 조회 API)
+
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Wed, 17 May 2023 05:30:10 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+[
+  {
+    "name": "2호선",
+    "color": "분홍색",
+    "stations": [
+      "송파역",
+      "석촌역",
+      "잠실역",
+      "몽촌토성역"
+    ]
+  },
+  {
+    "name": "2호선",
+    "color": "분홍색",
+    "stations": [
+      "잠실역",
+      "구의역"
+    ]
+  }
+]

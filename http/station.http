@@ -1,0 +1,32 @@
+### Request (역 등록 API)
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineId" : 1,
+  "sourceStation" : "석촌역",
+  "targetStation" : "송파역",
+  "distance" : 10
+}
+
+### Response (역 등록 API)
+
+NONE
+
+### Request (역 삭제 API)
+
+DELETE http://localhost:8080/stations
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineId" : 1,
+  "station" : "잠실역"
+}
+
+
+### Response (역 삭제 API)
+
+NONE
