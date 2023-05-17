@@ -155,7 +155,7 @@ Response Body {
 
 - [ ] 경로 조회 
 ```text
-GET /subway/path/{start_station]/{arrival_station}
+GET /subway/path/{start_station}/{arrival_station}
 
 Response Headers {
     Status : 200
@@ -172,7 +172,6 @@ Response Body {
             name : "청량리"
         }
     ],
-    distance : 3,
     cost : 1250
 }
 
