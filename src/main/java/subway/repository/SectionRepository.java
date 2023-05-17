@@ -49,11 +49,18 @@ public class SectionRepository {
     }
 
     public Sections findAllByLineId(Long lineId) {
-        final List<SectionStationResultMap> sectionEntities = sectionStationDao.findAllByLineId(lineId);
-        final List<Section> sections = sectionEntities.stream()
+        final List<SectionStationResultMap> resultMaps = sectionStationDao.findAllByLineId(lineId);
+        final List<Section> sections = resultMaps.stream()
                 .map(this::mapFrom)
                 .collect(toList());
         return Sections.from(sections);
+    }
+
+    public List<Section> findAll() {
+        final List<SectionStationResultMap> resultMaps = sectionStationDao.findAll();
+        return resultMaps.stream()
+                .map(this::mapFrom)
+                .collect(toList());
     }
 
     protected Section mapFrom(SectionStationResultMap resultMap) {
@@ -64,9 +71,5 @@ public class SectionRepository {
                 new Station(resultMap.getDownStationId(), resultMap.getDownStationName()),
                 resultMap.getLineId()
         );
-    }
-
-    public List<Sections> findAll() {
-        return null;
     }
 }

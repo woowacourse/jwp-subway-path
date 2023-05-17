@@ -24,10 +24,10 @@ public class Sections {
     }
 
     public boolean isBetweenStation(Station station) {
-        return !inDownTerminal(station) && !isUpTerminal(station);
+        return !isDownTerminal(station) && !isUpTerminal(station);
     }
 
-    public boolean inDownTerminal(Station station) {
+    public boolean isDownTerminal(Station station) {
         return Objects.equals(sections.get(sections.size() - 1).getDownStation(), station);
     }
 

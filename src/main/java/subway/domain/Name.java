@@ -33,6 +33,13 @@ public class Name {
         return Objects.hash(name);
     }
 
+    @Override
+    public String toString() {
+        return "Name{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
     public String getName() {
         return name;
     }

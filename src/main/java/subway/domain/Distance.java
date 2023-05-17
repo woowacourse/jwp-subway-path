@@ -13,8 +13,8 @@ public class Distance {
         this.distance = distance;
     }
 
-    public static Distance from(final int distance) {
-        return new Distance(distance);
+    public static Distance from(double distance) {
+        return new Distance((int) distance);
     }
 
     private static void validateDistance(int distance) {
@@ -29,6 +29,10 @@ public class Distance {
 
     public boolean isShorterThanAndEqual(Distance distance) {
         return this.distance <= distance.getDistance();
+    }
+
+    public boolean isShorterThan(Distance distance) {
+        return this.distance < distance.getDistance();
     }
 
     public Distance plus(Distance distance) {
@@ -50,6 +54,13 @@ public class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(distance);
+    }
+
+    @Override
+    public String toString() {
+        return "Distance{" +
+                "distance=" + distance +
+                '}';
     }
 
     public int getDistance() {

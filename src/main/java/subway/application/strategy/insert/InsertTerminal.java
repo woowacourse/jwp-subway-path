@@ -17,7 +17,7 @@ public class InsertTerminal implements InsertStationStrategy {
     @Override
     public boolean support(Sections sections, InsertSection insertSection) {
         return sections.isUpTerminal(insertSection.getDownStation())
-                || sections.inDownTerminal(insertSection.getUpStation());
+                || sections.isDownTerminal(insertSection.getUpStation());
     }
 
     @Override

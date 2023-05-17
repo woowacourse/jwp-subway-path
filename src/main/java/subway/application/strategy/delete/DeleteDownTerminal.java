@@ -16,7 +16,7 @@ public class DeleteDownTerminal implements DeleteStationStrategy {
 
     @Override
     public boolean support(Sections sections, Station targetStation) {
-        return sections.inDownTerminal(targetStation);
+        return sections.isDownTerminal(targetStation);
     }
 
     @Override

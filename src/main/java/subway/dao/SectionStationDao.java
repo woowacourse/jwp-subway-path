@@ -40,4 +40,19 @@ public class SectionStationDao {
 
         return jdbcTemplate.query(sql, resultMapRowMapper, lineId);
     }
+
+    public List<SectionStationResultMap> findAll() {
+        final String sql = "SELECT se.id sectionId, " +
+                "se.distance distance, " +
+                "se.up_station_id, " +
+                "st1.name upStationName, " +
+                "se.down_station_id, " +
+                "st2.name downStationName, " +
+                "se.line_id lineId " +
+                "FROM section se " +
+                "JOIN station st1 ON st1.id = se.up_station_id " +
+                "JOIN station st2 ON st2.id = se.down_station_id";
+
+        return jdbcTemplate.query(sql, resultMapRowMapper);
+    }
 }
