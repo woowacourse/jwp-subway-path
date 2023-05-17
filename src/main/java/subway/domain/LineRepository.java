@@ -24,12 +24,11 @@ public class LineRepository {
 
     public Line saveLine(final String name, final String color) {
         final LineEntity insert = lineDao.insert(new LineEntity(name, color));
-        return new Line(name, color);
+        return new Line(insert.getId(), insert.getName(), insert.getColor());
     }
 
-    public Section saveSection(final Long lineId, final Section section) {
-        sectionDao.insert(lineId, section);
-        return section;
+    public Long saveSection(final Line line, final Section section) {
+        return sectionDao.insert(line.getId(), section);
     }
 
     public List<Line> findLines() {
@@ -42,7 +41,11 @@ public class LineRepository {
     }
 
     private Line convertToLine(final LineEntity lineEntity, final List<Section> sections) {
-        final Station upEndpoint = stationDao.findById(lineEntity.getUpEndpointId());
+        final Long upEndpointId = lineEntity.getUpEndpointId();
+        if (upEndpointId == null || upEndpointId == 0) {
+            return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+        }
+        final Station upEndpoint = stationDao.findById(upEndpointId);
         final SectionMap sectionMap = SectionMap.generateBySections(sections, upEndpoint);
 
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sectionMap);
@@ -57,6 +60,10 @@ public class LineRepository {
 
     public void updateLine(final Long id, final String name, final String color) {
         lineDao.update(new Line(id, name, color));
+    }
+
+    public void updateUpEndpoint(final Line line, final Station station) {
+        lineDao.updateUpEndpointById(line.getId(), station.getId());
     }
 
     public void deleteLineById(final Long id) {

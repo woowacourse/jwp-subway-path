@@ -58,6 +58,11 @@ public class LineDao {
         jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
     }
 
+    public void updateUpEndpointById(final Long id, final Long upEndpointId) {
+        final String sql = "update LINE set up_endpoint_id = ? where id = ?";
+        jdbcTemplate.update(sql, upEndpointId, id);
+    }
+
     public void deleteById(final Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }

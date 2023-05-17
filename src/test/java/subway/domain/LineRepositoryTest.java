@@ -40,7 +40,7 @@ class LineRepositoryTest {
         given(sectionDao.insert(anyLong(), any())).willReturn(1L);
 
         // when & then
-        assertThat(lineRepository.saveSection(1L, Fixture.sectionAB)).isEqualTo(Fixture.sectionAB);
+        assertThat(lineRepository.saveSection(Fixture.line, Fixture.sectionAB)).isEqualTo(Fixture.sectionAB);
         verify(sectionDao, times(1)).insert(anyLong(), any());
     }
 
