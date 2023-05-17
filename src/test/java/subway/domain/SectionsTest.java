@@ -9,7 +9,6 @@ import subway.exeption.InvalidDistanceException;
 import subway.exeption.InvalidStationException;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -229,24 +228,5 @@ class SectionsTest {
 
         assertThat(sections.findDistanceBetween(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION))
                 .isEqualTo(5);
-    }
-
-    @Test
-    @DisplayName("저장된 역과 그 거리를 구할 수 있다.")
-    void findAllSectionsInOrderTest() {
-        final Sections sections = createSections();
-        sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
-
-        final Map<List<Station>, Integer> sectionsInOrder = sections.findAllSectionsInOrder();
-
-        assertAll(
-                () -> assertThat(sectionsInOrder.keySet())
-                        .containsExactly(
-                                List.of(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION),
-                                List.of(NEW_STATION, SAPYEONG_STATION)
-                        ),
-                () -> assertThat(sectionsInOrder.values())
-                        .containsExactly(3, 2)
-        );
     }
 }

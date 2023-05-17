@@ -4,7 +4,10 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.exeption.InvalidDistanceException;
 import subway.exeption.InvalidStationException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 public class Sections {
@@ -87,27 +90,6 @@ public class Sections {
             }
         }
         return allStationsInOrder;
-    }
-
-    public Map<List<Station>, Integer> findAllSectionsInOrder() {
-        final Map<List<Station>, Integer> sections = new LinkedHashMap<>();
-
-        Station currentStation = findUpEndStation();
-
-        while (currentStation != null) {
-            Set<DefaultWeightedEdge> outgoingEdges = getDownStationsOf(currentStation);
-            if (outgoingEdges.isEmpty()) {
-                currentStation = null;
-            } else {
-                final DefaultWeightedEdge edge = outgoingEdges.iterator().next();
-                final Station nextStation = graph.getDownStation(edge);
-                final int distance = (int) graph.getSectionDistance(edge);
-                sections.put(List.of(currentStation, nextStation), distance);
-                currentStation = graph.getDownStation(edge);
-            }
-        }
-
-        return sections;
     }
 
     public int findDistanceBetween(Station upLineStation, Station downLineStation) {
