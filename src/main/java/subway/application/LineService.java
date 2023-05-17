@@ -14,7 +14,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.SortedSingleLineSections;
 import subway.domain.Station;
 import subway.ui.dto.GetLineResponse;
 import subway.ui.dto.LineRequest;
@@ -64,8 +64,9 @@ public class LineService {
     }
 
     private GetLineResponse findLineResponse(Line line) {
-        Sections sections = new Sections(sectionDao.findAllByLineId(line.getId()));
-        List<Station> stations = sections.getStationsInOrder();
+        SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(
+            sectionDao.findAllByLineId(line.getId()));
+        List<Station> stations = sortedSingleLineSections.getStationsInOrder();
         return GetLineResponse.from(line, stations);
     }
 

@@ -10,7 +10,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.SortedSingleLineSections;
 import subway.domain.Station;
 import subway.domain.dto.ChangesByAddition;
 import subway.domain.dto.ChangesByDeletion;
@@ -34,46 +34,48 @@ public class SectionService {
 
     public SectionResponse saveSection(PostSectionRequest request) {
         List<Section> sectionList = sectionDao.findAllByLineId(request.getLineId());
-        Sections sections = new Sections(sectionList);
+        SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(sectionList);
 
-        Station upStation = getSavedStation(sections, request.getUpStationId());
-        Station downStation = getSavedStation(sections, request.getDownStationId());
+        Station upStation = getSavedStation(sortedSingleLineSections, request.getUpStationId());
+        Station downStation = getSavedStation(sortedSingleLineSections, request.getDownStationId());
         Line line = lineDao.findById(request.getLineId());
         int distance = request.getDistance();
 
-        ChangesByAddition changes = sections.findChangesWhenAdd(upStation, downStation, line, distance);
+        ChangesByAddition changes = sortedSingleLineSections.findChangesWhenAdd(upStation, downStation, line, distance);
         List<Section> added = sectionDao.insertAll(changes.getAddedSections());
         sectionDao.deleteGivenSections(changes.getDeletedSections());
         return SectionResponse.of(findRequestedSection(added, upStation, downStation));
     }
 
-    private Station getSavedStation(Sections sections, Long stationId) {
-        return sections.findStationById(stationId)
+    private Station getSavedStation(SortedSingleLineSections sortedSingleLineSections, Long stationId) {
+        return sortedSingleLineSections.findStationById(stationId)
             .orElse(stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 노선에 stationId = " + stationId + " 인 역이 존재하지 않습니다")));
+                .orElseThrow(
+                    () -> new IllegalArgumentException("해당 노선에 stationId = " + stationId + " 인 역이 존재하지 않습니다")));
     }
 
     private Section findRequestedSection(List<Section> addedSections, Station upStation, Station downStation) {
-        Sections sections = new Sections(addedSections);
-        return sections.findAnySectionWithGivenStations(upStation, downStation);
+        SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(addedSections);
+        return sortedSingleLineSections.findAnySectionWithGivenStations(upStation, downStation);
     }
 
     public void deleteSection(DeleteSectionRequest request) {
         Long lineId = request.getLineId();
         Long stationId = request.getStationId();
 
-        Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
-        deleteLineIfLastSection(sections, lineId);
-        Station station = sections.findStationById(stationId)
+        SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(
+            sectionDao.findAllByLineId(lineId));
+        deleteLineIfLastSection(sortedSingleLineSections, lineId);
+        Station station = sortedSingleLineSections.findStationById(stationId)
             .orElseThrow(() -> new IllegalArgumentException("해당 노선에 stationId = " + stationId + " 인 역이 존재하지 않습니다"));
 
-        ChangesByDeletion changes = sections.findChangesWhenDelete(station);
+        ChangesByDeletion changes = sortedSingleLineSections.findChangesWhenDelete(station);
         sectionDao.insertAll(changes.getAddedSections());
         sectionDao.deleteGivenSections(changes.getDeletedSections());
     }
 
-    private void deleteLineIfLastSection(Sections sections, Long lineId) {
-        if (sections.size() == 1) {
+    private void deleteLineIfLastSection(SortedSingleLineSections sortedSingleLineSections, Long lineId) {
+        if (sortedSingleLineSections.size() == 1) {
             lineDao.deleteById(lineId);
         }
     }

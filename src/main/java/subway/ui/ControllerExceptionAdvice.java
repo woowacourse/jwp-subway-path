@@ -12,18 +12,20 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import subway.domain.PathException;
+
 @ControllerAdvice
 public class ControllerExceptionAdvice {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @ExceptionHandler
-    public ResponseEntity<String> handleAuthorizationException(final IllegalArgumentException exception) {
+    @ExceptionHandler({IllegalArgumentException.class, PathException.class})
+    public ResponseEntity<String> handleAuthorizationException(Exception exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> handleDataBindException(final MethodArgumentNotValidException exception) {
+    public ResponseEntity<String> handleDataBindException(MethodArgumentNotValidException exception) {
         final List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         final String errorMessage = fieldErrors.stream()
             .map(FieldError::getDefaultMessage)
@@ -32,7 +34,7 @@ public class ControllerExceptionAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> handleOtherExceptions(final Exception exception) {
+    public ResponseEntity<String> handleOtherExceptions(Exception exception) {
         logger.error("Exception: " + exception.getMessage());
         return ResponseEntity.internalServerError().body("잠시 후 다시 시도해 주세요.");
     }

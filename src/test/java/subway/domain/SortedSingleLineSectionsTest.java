@@ -17,7 +17,7 @@ import subway.domain.dto.ChangesByDeletion;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class SectionsTest {
+public class SortedSingleLineSectionsTest {
 
     @Test
     void id로_역을_찾는다() {
@@ -26,18 +26,18 @@ public class SectionsTest {
         Station jamsil = new Station(2L, "잠실");
         Section cheonhoJamsil10 = new Section(cheonho, jamsil, new Line("8호선", "pink"), 10);
 
-        Sections sections = new Sections(List.of(cheonhoJamsil10));
+        SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(List.of(cheonhoJamsil10));
 
         // then
-        assertThat(sections.findStationById(1L)).isPresent();
-        assertThat(sections.findStationById(3L)).isEmpty();
+        assertThat(sortedSingleLineSections.findStationById(1L)).isPresent();
+        assertThat(sortedSingleLineSections.findStationById(3L)).isEmpty();
     }
 
     @Test
     void 두_역이_포함된_구간을_찾는다() {
         // given
         // 장지 - 10 - 잠실 - 10 - 천호
-        Sections line8 = line8source;
+        SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
         Station upStation = jamsil;
         Station downStation = jangji;
 
@@ -51,7 +51,7 @@ public class SectionsTest {
     void 두_역이_포함된_구간이_없으면_예외가_발생한다() {
         // given
         // 장지 - 10 - 잠실 - 10 - 천호
-        Sections line8 = line8source;
+        SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
         // then
         assertThatThrownBy(() -> line8.findAnySectionWithGivenStations(cheonho, jangji))
@@ -66,7 +66,7 @@ public class SectionsTest {
         void 보유한_역을_상행_종점부터_순서대로_반환한다() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = line8source;
+            SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
             // when
             List<Station> stations = line8.getStationsInOrder();
@@ -78,10 +78,10 @@ public class SectionsTest {
         @Test
         void 보유한_역이_없다면_empty_list를_반환한다() {
             // given
-            Sections sections = new Sections(Collections.emptyList());
+            SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(Collections.emptyList());
 
             // when
-            List<Station> stations = sections.getStationsInOrder();
+            List<Station> stations = sortedSingleLineSections.getStationsInOrder();
 
             // then
             assertThat(stations.size()).isZero();
@@ -93,14 +93,14 @@ public class SectionsTest {
 
         @Test
         void 새로운_두_역을_추가한다() {
-            assertDoesNotThrow(() -> new Sections(List.of(new Section(cheonho, jangji, pink, 10))));
+            assertDoesNotThrow(() -> new SortedSingleLineSections(List.of(new Section(cheonho, jangji, pink, 10))));
         }
 
         @Test
         void 상행_종점의_하행_방향으로_역을_추가한다() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = line8source;
+            SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
             // when
             Station mongchon = new Station(10L, "몽촌토성");
@@ -119,7 +119,7 @@ public class SectionsTest {
         void 하행_종점의_상행_방향으로_역을_추가한다() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = line8source;
+            SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
             // when
             Station seokchon = new Station(10L, "석촌");
@@ -138,7 +138,7 @@ public class SectionsTest {
         void 상행_종점_이후에_새로운_상행_종점을_추가한다() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = new Sections(List.of(cheonhoJamsil10, jamsilJangji10));
+            SortedSingleLineSections line8 = new SortedSingleLineSections(List.of(cheonhoJamsil10, jamsilJangji10));
 
             // when
             Station amsa = new Station(10L, "암사");
@@ -156,7 +156,7 @@ public class SectionsTest {
         void 하행_종점_이후에_새로운_하행_종점을_추가한다() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = line8source;
+            SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
             // when
             Station moran = new Station(10L, "모란");
@@ -174,7 +174,7 @@ public class SectionsTest {
         void 중간_역의_상행_방향으로_역을_추가한다() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = new Sections(List.of(cheonhoJamsil10, jamsilJangji10));
+            SortedSingleLineSections line8 = new SortedSingleLineSections(List.of(cheonhoJamsil10, jamsilJangji10));
 
             // when
             Station mongchon = new Station(10L, "몽촌토성");
@@ -193,7 +193,7 @@ public class SectionsTest {
         void 중간_역의_하행_방향으로_역을_추가한다() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = line8source;
+            SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
             // when
             Station seokchon = new Station(4L, "석촌");
@@ -216,7 +216,7 @@ public class SectionsTest {
         void 입력된_두_역이_이미_같은_노선에_존재하는_경우() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = line8source;
+            SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
             // when & then
             assertThatThrownBy(() -> line8.findChangesWhenAdd(cheonho, jamsil, pink, 10))
@@ -228,7 +228,7 @@ public class SectionsTest {
         void 최초_등록이_아니며_두_역이_모두_존재하지_않는_경우() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = line8source;
+            SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
             // when
             Station mongchon = new Station(10L, "몽촌토성");
@@ -247,7 +247,7 @@ public class SectionsTest {
             void 포함되지_않은_역을_삭제한다() {
                 // given
                 // 장지 - 10 - 잠실 - 10 - 천호
-                Sections line8 = line8source;
+                SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
                 // when
                 ChangesByDeletion changes = line8.findChangesWhenDelete(gangnam);
@@ -261,7 +261,7 @@ public class SectionsTest {
             void 종점을_삭제한다() {
                 // given
                 // 장지 - 10 - 잠실 - 10 - 천호
-                Sections line8 = line8source;
+                SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
                 // when
                 ChangesByDeletion changes = line8.findChangesWhenDelete(cheonho);
@@ -276,7 +276,7 @@ public class SectionsTest {
             void 종점이_아닌_역을_삭제한다() {
                 // given
                 // 장지 - 10 - 잠실 - 10 - 천호
-                Sections line8 = line8source;
+                SortedSingleLineSections line8 = new SortedSingleLineSections(line8Sections);
 
                 // when
                 ChangesByDeletion changes = line8.findChangesWhenDelete(jamsil);

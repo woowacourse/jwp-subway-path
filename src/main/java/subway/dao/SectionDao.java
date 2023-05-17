@@ -38,6 +38,16 @@ public class SectionDao {
             .usingGeneratedKeyColumns("id");
     }
 
+    public List<Section> findAll() {
+        String sql = "SELECT se.id, station1.id AS up_station_id, station1.name AS up_station_name,"
+            + " station2.id AS down_station_id, station2.name AS down_station_name,"
+            + " l.id AS line_id, l.name AS line_name, l.color AS line_color, se.distance FROM section AS se"
+            + " LEFT JOIN station AS station1 ON se.up_station_id = station1.id"
+            + " LEFT JOIN station AS station2 ON se.down_station_id = station2.id"
+            + " LEFT JOIN line AS l ON se.line_id = l.id";
+        return jdbcTemplate.query(sql, sectionRowMapper);
+    }
+
     public List<Section> findAllByLineId(long lineId) {
         String sql = "SELECT se.id, station1.id AS up_station_id, station1.name AS up_station_name,"
             + " station2.id AS down_station_id, station2.name AS down_station_name,"
