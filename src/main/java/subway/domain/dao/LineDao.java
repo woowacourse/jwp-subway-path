@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.domain.dao;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

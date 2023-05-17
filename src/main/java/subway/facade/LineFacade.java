@@ -1,52 +1,59 @@
 package subway.facade;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
 import subway.domain.entity.LineEntity;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.exception.LineNotFoundException;
+import subway.domain.entity.SectionEntity;
+import subway.presentation.dto.LineRequest;
+import subway.presentation.dto.LineResponse;
+import subway.presentation.dto.SectionSaveRequest;
+import subway.service.LineService;
+import subway.service.SectionService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Component
+@Transactional(readOnly = true)
+@Service
 public class LineFacade {
 
-    private final LineDao lineDao;
+    private final LineService lineService;
+    private final SectionService sectionService;
 
-    public LineFacade(final LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineFacade(final LineService lineService, final SectionService sectionService) {
+        this.lineService = lineService;
+        this.sectionService = sectionService;
     }
 
     @Transactional
-    public Long insert(final LineEntity line) {
-        return lineDao.insert(line);
-    }
-
-    public List<LineResponse> findAll() {
-        return lineDao.findAll().stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public LineResponse findById(final Long id) {
-        return LineResponse.of(lineDao.findById(id)
-                .orElseThrow(() -> LineNotFoundException.THROW));
+    public Long createLine(final LineRequest request, final Long finalUpStationId, final Long finalDownStationId) {
+        Long lineId = lineService.insert(LineEntity.of(request.getName(), request.getColor()));
+        SectionEntity sectionEntity = SectionEntity.of(lineId, finalUpStationId, finalDownStationId, request.getDistance());
+        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
+        return lineId;
     }
 
     @Transactional
-    public void update(final Long id, final LineRequest request) {
-        LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> LineNotFoundException.THROW);
-        lineEntity.updateInfo(request.getName(), request.getColor());
-        lineDao.updateById(id, lineEntity);
+    public void registerStation(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+        SectionEntity sectionEntity = SectionEntity.of(lineId, upStationId, downStationId, distance);
+        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
+    }
+
+    public List<LineResponse> getAll() {
+        return lineService.findAll();
+    }
+
+    public LineResponse getLineResponseById(Long id) {
+        return lineService.findById(id);
     }
 
     @Transactional
-    public void deleteById(final Long id) {
-        lineDao.deleteById(id);
+    public void updateLine(Long id, LineRequest request) {
+        lineService.update(id, request);
+    }
+
+    @Transactional
+    public void deleteLineById(Long id) {
+        lineService.deleteById(id);
     }
 
 }

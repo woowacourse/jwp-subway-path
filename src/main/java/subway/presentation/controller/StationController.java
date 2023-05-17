@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.presentation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.StationService;
-import subway.dto.StationResponse;
+import subway.facade.StationFacade;
+import subway.presentation.dto.StationResponse;
 
 import java.net.URI;
 import java.util.List;
@@ -19,23 +19,23 @@ import java.util.List;
 @RequestMapping("/stations")
 public class StationController {
 
-    private final StationService stationService;
+    private final StationFacade stationFacade;
 
-    public StationController(final StationService stationService) {
-        this.stationService = stationService;
+    public StationController(final StationFacade stationFacade) {
+        this.stationFacade = stationFacade;
     }
 
     @PostMapping
     public ResponseEntity<Void> createStation(
             @RequestParam String name
     ) {
-        Long stationId = stationService.createStation(name);
+        Long stationId = stationFacade.createStation(name);
         return ResponseEntity.created(URI.create("/stations/" + stationId)).build();
     }
 
     @GetMapping("/{lineId}")
     public ResponseEntity<List<StationResponse>> showStations(@PathVariable Long lineId) {
-        return ResponseEntity.ok().body(stationService.getAllByLineId(lineId));
+        return ResponseEntity.ok().body(stationFacade.getAllByLineId(lineId));
     }
 
     @PutMapping("/{stationId}")
@@ -43,7 +43,7 @@ public class StationController {
             @PathVariable Long stationId,
             @RequestParam String name
     ) {
-        stationService.updateById(stationId, name);
+        stationFacade.updateById(stationId, name);
         return ResponseEntity.ok().build();
     }
 
@@ -52,7 +52,7 @@ public class StationController {
             @PathVariable Long lineId,
             @PathVariable Long stationId
     ) {
-        stationService.deleteById(lineId, stationId);
+        stationFacade.deleteById(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 

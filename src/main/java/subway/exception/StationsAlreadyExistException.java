@@ -1,7 +1,7 @@
 package subway.exception;
 
-import subway.error.exception.ErrorCode;
-import subway.error.exception.SubwayException;
+import subway.global.error.exception.ErrorCode;
+import subway.global.error.exception.SubwayException;
 
 public class StationsAlreadyExistException extends SubwayException {
 

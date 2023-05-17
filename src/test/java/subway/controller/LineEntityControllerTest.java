@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -12,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.facade.LineFacade;
+import subway.presentation.dto.LineRequest;
+import subway.presentation.dto.LineResponse;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LineEntityControllerTest {
 
     @MockBean
-    private LineService lineService;
+    private LineFacade lineFacade;
 
     @Autowired
     private MockMvc mockMvc;
@@ -68,7 +68,7 @@ class LineEntityControllerTest {
                 new LineResponse(1L, "1호선", "파랑"),
                 new LineResponse(2L, "2호선", "초록")
         );
-        when(lineService.getAll()).thenReturn(responses);
+        when(lineFacade.getAll()).thenReturn(responses);
         final String responseJson = objectMapper.writeValueAsString(responses);
 
         // when, then
@@ -85,7 +85,7 @@ class LineEntityControllerTest {
         final Long id = 1L;
         final LineResponse lineResponse = new LineResponse(id, "1호선", "파랑");
 
-        when(lineService.getLineResponseById(id)).thenReturn(lineResponse);
+        when(lineFacade.getLineResponseById(id)).thenReturn(lineResponse);
         final String responseJson = objectMapper.writeValueAsString(lineResponse);
 
         // when, then
@@ -110,7 +110,7 @@ class LineEntityControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(lineService, times(1)).updateLine(id, request);
+        verify(lineFacade, times(1)).updateLine(id, request);
     }
 
     @Test
@@ -118,7 +118,7 @@ class LineEntityControllerTest {
         // given
         final Long id = 1L;
         final LineRequest request = new LineRequest("1호선", "파랑", 10);
-        lineService.createLine(request, 1L, 2L);
+        lineFacade.createLine(request, 1L, 2L);
 
         // when, then
         mockMvc.perform(delete("/lines/" + id)
@@ -126,6 +126,6 @@ class LineEntityControllerTest {
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        verify(lineService, times(1)).deleteLineById(id);
+        verify(lineFacade, times(1)).deleteLineById(id);
     }
 }

@@ -1,4 +1,4 @@
-package subway.error;
+package subway.global.error;
 
 public class ErrorResponse {
 

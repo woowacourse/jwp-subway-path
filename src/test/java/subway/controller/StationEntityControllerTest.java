@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.StationService;
-import subway.dto.StationResponse;
+import subway.facade.StationFacade;
+import subway.presentation.dto.StationResponse;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class StationEntityControllerTest {
 
     @MockBean
-    private StationService stationService;
+    private StationFacade stationFacade;
 
     @Autowired
     private MockMvc mockMvc;
@@ -61,7 +61,7 @@ class StationEntityControllerTest {
                 new StationResponse(1L, "잠실역"),
                 new StationResponse(2L, "선릉역")
         );
-        when(stationService.getAllByLineId(1L)).thenReturn(responses);
+        when(stationFacade.getAllByLineId(1L)).thenReturn(responses);
         final String responseJson = objectMapper.writeValueAsString(responses);
 
         // when, then
@@ -76,7 +76,7 @@ class StationEntityControllerTest {
     void id와_saveRequest를_받아_해당_역을_수정한다() throws Exception {
         // given
         final Long id = 1L;
-        stationService.createStation("잠실역");
+        stationFacade.createStation("잠실역");
 
         // when, then
         mockMvc.perform(put("/stations/" + id)
@@ -84,7 +84,7 @@ class StationEntityControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(stationService, times(1)).updateById(id, "잠실역");
+        verify(stationFacade, times(1)).updateById(id, "잠실역");
     }
 
     @Test
@@ -92,7 +92,7 @@ class StationEntityControllerTest {
         // given
         final Long lineId = 1L;
         final Long stationId = 1L;
-        stationService.createStation("잠실역");
+        stationFacade.createStation("잠실역");
 
         // when, then
         mockMvc.perform(delete("/stations/" + lineId + "/" + stationId)
@@ -100,6 +100,6 @@ class StationEntityControllerTest {
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        verify(stationService, times(1)).deleteById(lineId, stationId);
+        verify(stationFacade, times(1)).deleteById(lineId, stationId);
     }
 }

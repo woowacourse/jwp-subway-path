@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.presentation.dto;
 
 import subway.domain.entity.LineEntity;
 

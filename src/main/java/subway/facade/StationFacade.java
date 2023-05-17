@@ -1,76 +1,64 @@
 package subway.facade;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.StationDao;
 import subway.domain.entity.SectionEntity;
 import subway.domain.entity.StationEntity;
-import subway.exception.StationNotFoundException;
+import subway.global.util.FinalStationFactory;
+import subway.presentation.dto.SectionSaveRequest;
+import subway.presentation.dto.StationResponse;
+import subway.service.SectionService;
+import subway.service.StationService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Component
+@Transactional(readOnly = true)
+@Service
 public class StationFacade {
 
-    private final StationDao stationDao;
+    private final FinalStationFactory finalStationFactory;
+    private final StationService stationService;
+    private final SectionService sectionService;
 
-    public StationFacade(final StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationFacade(final StationService stationService, final SectionService sectionService, final FinalStationFactory finalStationFactory) {
+        this.stationService = stationService;
+        this.sectionService = sectionService;
+        this.finalStationFactory = finalStationFactory;
     }
 
     @Transactional
-    public Long insert(final StationEntity stationEntity) {
-        return stationDao.insert(stationEntity);
+    public Long createStation(final String name) {
+        return stationService.insert(StationEntity.of(name));
     }
 
-    public StationEntity findFinalUpStation(final Long lineId) {
-        return stationDao.findFinalUpStation(lineId)
-                .orElseThrow(() -> StationNotFoundException.THROW);
-    }
-
-    public StationEntity findById(final Long stationId) {
-        return stationDao.findById(stationId)
-                .orElseThrow(() -> StationNotFoundException.THROW);
-    }
-
-    public List<StationEntity> findAll(final Long lineId, final List<SectionEntity> sectionEntities) {
-        StationEntity finalUpStationEntity = findFinalUpStation(lineId);
-
-        List<StationEntity> results = new ArrayList<>();
-        results.add(finalUpStationEntity);
-
-        Long beforeStationId = finalUpStationEntity.getId();
-
-        int totalSections = sectionEntities.size();
-        while (results.size() < totalSections + 1) {
-            for (SectionEntity sectionEntity : sectionEntities) {
-                beforeStationId = IfSameStationUpdateStationId(results, beforeStationId, sectionEntity);
-            }
-        }
-        return results;
-    }
-
-    private Long IfSameStationUpdateStationId(final List<StationEntity> results, Long beforeStationId, final SectionEntity sectionEntity) {
-        if (sectionEntity.getUpStationId() == beforeStationId) {
-            StationEntity stationEntity = findById(sectionEntity.getDownStationId());
-            results.add(stationEntity);
-            beforeStationId = stationEntity.getId();
-        }
-        return beforeStationId;
+    public List<StationResponse> getAllByLineId(final Long lineId) {
+        List<SectionEntity> sections = sectionService.findAll();
+        List<StationEntity> stations = stationService.findAll(lineId, sections);
+        return stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void updateById(final Long stationId, final String name) {
-        StationEntity stationEntity = stationDao.findById(stationId)
-                .orElseThrow(() -> StationNotFoundException.THROW);
-        stationEntity.updateName(name);
-        stationDao.updateById(stationId, stationEntity);
+        stationService.updateById(stationId, name);
     }
 
     @Transactional
-    public void deleteById(final Long stationId) {
-        stationDao.deleteById(stationId);
+    public void deleteById(final Long lineId, final Long stationId) {
+        StationEntity stationEntity = stationService.findById(stationId);
+        if (finalStationFactory.getFinalStation(lineId).isFinalStation(stationEntity.getName())) {
+            stationService.deleteById(stationId);
+            return;
+        }
+        final SectionEntity leftSectionEntity = sectionService.findLeftSectionByStationId(stationId);
+        final SectionEntity rightSectionEntity = sectionService.findRightSectionByStationId(stationId);
+        int newDistance = leftSectionEntity.getDistance() + rightSectionEntity.getDistance();
+        SectionEntity sectionEntity = SectionEntity.of(lineId, leftSectionEntity.getUpStationId(), rightSectionEntity.getDownStationId(), newDistance);
+
+        stationService.deleteById(stationId);
+        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
     }
 
 }

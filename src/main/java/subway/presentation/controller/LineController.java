@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.presentation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.facade.LineFacade;
+import subway.presentation.dto.LineRequest;
+import subway.presentation.dto.LineResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -22,10 +22,10 @@ import java.util.List;
 @RequestMapping("/lines")
 public class LineController {
 
-    private final LineService lineService;
+    private final LineFacade lineFacade;
 
-    public LineController(final LineService lineService) {
-        this.lineService = lineService;
+    public LineController(final LineFacade lineFacade) {
+        this.lineFacade = lineFacade;
     }
 
     @PostMapping("/{finalUpStationId}/{finalDownStationId}")
@@ -34,7 +34,7 @@ public class LineController {
             @PathVariable Long finalUpStationId,
             @PathVariable Long finalDownStationId
     ) {
-        final Long lineId = lineService.createLine(lineRequest, finalUpStationId, finalDownStationId);
+        final Long lineId = lineFacade.createLine(lineRequest, finalUpStationId, finalDownStationId);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
@@ -45,18 +45,18 @@ public class LineController {
             @PathVariable Long downStationId,
             @RequestParam int distance
     ) {
-        lineService.registerStation(lineId, upStationId, downStationId, distance);
+        lineFacade.registerStation(lineId, upStationId, downStationId, distance);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.getAll());
+        return ResponseEntity.ok(lineFacade.getAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.getLineResponseById(id));
+        return ResponseEntity.ok(lineFacade.getLineResponseById(id));
     }
 
     @PutMapping("/{id}")
@@ -64,13 +64,13 @@ public class LineController {
             @PathVariable Long id,
             @RequestBody LineRequest lineUpdateRequest
     ) {
-        lineService.updateLine(id, lineUpdateRequest);
+        lineFacade.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
+        lineFacade.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
 

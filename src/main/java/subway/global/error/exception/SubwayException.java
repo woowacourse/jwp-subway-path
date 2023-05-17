@@ -1,4 +1,4 @@
-package subway.error.exception;
+package subway.global.error.exception;
 
 public class SubwayException extends RuntimeException {
 

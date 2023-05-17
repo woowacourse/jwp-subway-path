@@ -1,21 +1,21 @@
-package subway.facade;
+package subway.service;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.SectionDao;
+import subway.domain.dao.SectionDao;
 import subway.domain.entity.SectionEntity;
-import subway.dto.SectionSaveRequest;
 import subway.exception.SectionNotFoundException;
+import subway.presentation.dto.SectionSaveRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class SectionFacade {
+public class SectionService {
 
     private final SectionDao sectionDao;
 
-    public SectionFacade(final SectionDao sectionDao) {
+    public SectionService(final SectionDao sectionDao) {
         this.sectionDao = sectionDao;
     }
 

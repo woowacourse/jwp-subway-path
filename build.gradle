@@ -24,6 +24,12 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 }
 
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
 test {
     useJUnitPlatform()
 }

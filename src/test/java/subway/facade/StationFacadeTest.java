@@ -1,4 +1,4 @@
-package subway.application;
+package subway.facade;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,10 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.entity.StationEntity;
-import subway.dto.StationResponse;
-import subway.facade.SectionFacade;
-import subway.facade.StationFacade;
-import subway.util.FinalStationFactory;
+import subway.global.util.FinalStationFactory;
+import subway.presentation.dto.StationResponse;
+import subway.service.SectionService;
+import subway.service.StationService;
 
 import java.util.List;
 
@@ -24,29 +24,29 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class StationServiceTest {
+class StationFacadeTest {
 
     @InjectMocks
-    StationService stationService;
+    StationFacade stationFacade;
 
     @Mock
     FinalStationFactory finalStationFactory;
 
     @Mock
-    StationFacade stationFacade;
+    StationService stationService;
 
     @Mock
-    SectionFacade sectionFacade;
+    SectionService sectionService;
 
     @DisplayName("이름을 입력받아 역을 생성한다.")
     @Test
     void createStation() {
         // given
         final String name = "잠실역";
-        when(stationFacade.insert(StationEntity.of(name))).thenReturn(1L);
+        when(stationService.insert(StationEntity.of(name))).thenReturn(1L);
 
         // when
-        Long stationId = stationService.createStation(name);
+        Long stationId = stationFacade.createStation(name);
 
         // then
         assertThat(stationId).isEqualTo(1L);
@@ -60,11 +60,11 @@ class StationServiceTest {
         StationEntity station1 = StationEntity.of(1L, "잠실역");
         StationEntity station2 = StationEntity.of(2L, "잠실새내역");
         List<StationEntity> stations = List.of(station1, station2);
-        when(sectionFacade.findAll()).thenReturn(null);
-        doReturn(stations).when(stationFacade).findAll(lineId, null);
+        when(sectionService.findAll()).thenReturn(null);
+        doReturn(stations).when(stationService).findAll(lineId, null);
 
         // when
-        List<StationResponse> responses = stationService.getAllByLineId(lineId);
+        List<StationResponse> responses = stationFacade.getAllByLineId(lineId);
 
         // then
         assertAll(
@@ -78,10 +78,10 @@ class StationServiceTest {
     @CsvSource(value = {"1,잠실역"})
     void updateById(final Long stationId, final String name) {
         // when
-        stationService.updateById(stationId, name);
+        stationFacade.updateById(stationId, name);
 
         // then
-        verify(stationFacade, times(1)).updateById(stationId, name);
+        verify(stationService, times(1)).updateById(stationId, name);
     }
 
 }
