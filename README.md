@@ -136,6 +136,12 @@ DELETE /sections/{lineId}/{stationId} HTTP/1.1
 HTTP/1.1 204
 ```
 
+### 경로 조회
+
+```http request
+GET /routes?sourceStationId={sourceStationId}&target={targetStationId} HTTP/1.1
+```
+
 ## 코드리뷰 피드백 및 리팩터링 목록
 
 ## 1단계
