@@ -1,37 +1,34 @@
 package subway.service.domain;
 
+import java.util.List;
+
 public class Line {
 
-    // TODO: id 빼는거 고려
-    private final long id;
-    private final String name;
-    private final String color;
+    private final LineProperty lineProperty;
+    private final Sections sections;
 
-    public Line(final long id, final String name, final String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+    public Line(LineProperty lineProperty, Sections sections) {
+        this.lineProperty = lineProperty;
+        this.sections = sections;
     }
 
-    public long getId() {
-        return id;
+    public List<Section> findSectionByStation(Station station) {
+        return sections.findContainsThisStation(station);
     }
 
-    public String getName() {
-        return name;
+    public LineProperty getLineProperty() {
+        return lineProperty;
     }
 
-    public String getColor() {
-        return color;
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     @Override
     public String toString() {
         return "Line{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", color='" + color + '\'' +
+                "lineProperty=" + lineProperty +
+                ", sections=" + sections +
                 '}';
     }
-
 }
