@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.List;
+
 public class Line {
 
     private Long id;
@@ -39,6 +41,10 @@ public class Line {
         if (color.length() < 5 || color.length() > 20) {
             throw new IllegalArgumentException("호선 색깔은 5자 이상 20자 이하만 가능합니다.");
         }
+    }
+
+    public List<Station> sortStations() {
+        return sections.sortStations();
     }
 
     public Long getId() {

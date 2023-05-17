@@ -313,7 +313,8 @@ HTTP/1.1 204 No Content
 - [x] 초기 데이터를 가지지 않도록 schema.sql에서 INSERT문 제거
 - [x] Domain, Entity 분리
 - [x] Service 내 메서드의 역할과 책임 분리
-- [ ] Collections.emptyList() 활용
+- [x] Line 조회 기능 변경
+- [x] Collections.emptyList() 활용
 - [ ] exists 쿼리 활용
 - [ ] 조회 쿼리에서 필요한 데이터만 조회하도록 쿼리문 변경
 - [ ] 테스트 시, Map 타입 대신 실제 요청 객체 생성해서 사용하도록 변경

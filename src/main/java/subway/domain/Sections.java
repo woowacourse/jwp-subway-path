@@ -1,6 +1,9 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -9,10 +12,6 @@ public class Sections {
 
     public Sections(final List<Section> sections) {
         this.sections = sections;
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     public void addSection(final Section section) {
@@ -104,5 +103,35 @@ public class Sections {
         if (relatedSections.isEmpty()) {
             throw new IllegalArgumentException("구간이 존재하지 않습니다.");
         }
+    }
+
+    public List<Station> sortStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        final Map<Station, Station> stationRelation = sections.stream()
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+
+        final Station rootStation = stationRelation.keySet().stream()
+                .filter(it -> !stationRelation.containsValue(it))
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
+
+        return linkStations(stationRelation, rootStation);
+    }
+
+    private List<Station> linkStations(final Map<Station, Station> stationRelation, final Station rootStation) {
+        final List<Station> stations = new ArrayList<>();
+        Station nextStation = rootStation;
+        while (nextStation != null) {
+            stations.add(nextStation);
+            nextStation = stationRelation.get(nextStation);
+        }
+        return stations;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
