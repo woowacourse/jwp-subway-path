@@ -13,6 +13,10 @@ public class Line {
         this(null, lineName, lineColor, Sections.emptySections());
     }
 
+    public Line(final Long id, final LineName lineName, final LineColor lineColor) {
+        this(id, lineName, lineColor, Sections.emptySections());
+    }
+
     public Line(final Long id, final LineName lineName, final LineColor lineColor, final Sections sections) {
         validateLineName(lineName);
         validateLineColor(lineColor);
@@ -44,5 +48,21 @@ public class Line {
 
     public boolean isSectionsEmpty() {
         return sections.isEmpty();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LineName getLineName() {
+        return lineName;
+    }
+
+    public LineColor getLineColor() {
+        return lineColor;
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 }
