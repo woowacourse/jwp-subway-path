@@ -5,5 +5,5 @@ import subway.domain.subway.Subway;
 
 public interface FareStrategy {
 
-    long calculateFare(final long fare, final Passenger passenger, final Subway subway);
+    double calculateFare(final double fare, final Passenger passenger, final Subway subway);
 }

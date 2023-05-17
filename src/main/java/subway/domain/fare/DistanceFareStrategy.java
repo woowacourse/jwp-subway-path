@@ -5,10 +5,10 @@ import subway.domain.subway.Subway;
 
 public class DistanceFareStrategy implements FareStrategy {
 
-    private static final long DEFAULT_FARE = 1250;
+    private static final int DEFAULT_FARE = 1250;
 
     @Override
-    public long calculateFare(final long fare, final Passenger passenger, final Subway subway) {
+    public double calculateFare(final double fare, final Passenger passenger, final Subway subway) {
         final long distance = subway.calculateShortestDistance(passenger.getStart(), passenger.getEnd());
 
         long totalFare = DEFAULT_FARE;

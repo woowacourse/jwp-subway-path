@@ -25,7 +25,7 @@ class DistanceFareStrategyTest {
         final Subway subway = new Subway(new SubwayJgraphtGraph(List.of(lineOfTwo)));
         final Passenger passenger = new Passenger(26, GANGNAM, YANGJAE);
 
-        final long result = distanceFareStrategy.calculateFare(0, passenger, subway);
+        final double result = distanceFareStrategy.calculateFare(0, passenger, subway);
 
         assertThat(result).isEqualTo(1250);
     }
@@ -42,7 +42,7 @@ class DistanceFareStrategyTest {
             final Subway subway = new Subway(new SubwayJgraphtGraph(List.of(lineOfTwo)));
             final Passenger passenger = new Passenger(26, GANGNAM, YANGJAE);
 
-            final long result = distanceFareStrategy.calculateFare(0, passenger, subway);
+            final double result = distanceFareStrategy.calculateFare(0, passenger, subway);
 
             assertThat(result).isEqualTo(1350);
         }
@@ -55,7 +55,7 @@ class DistanceFareStrategyTest {
             final Subway subway = new Subway(new SubwayJgraphtGraph(List.of(lineOfTwo)));
             final Passenger passenger = new Passenger(26, GANGNAM, YANGJAE);
 
-            final long result = distanceFareStrategy.calculateFare(0, passenger, subway);
+            final double result = distanceFareStrategy.calculateFare(0, passenger, subway);
 
             assertThat(result).isEqualTo(1450);
         }
@@ -73,7 +73,7 @@ class DistanceFareStrategyTest {
             final Subway subway = new Subway(new SubwayJgraphtGraph(List.of(lineOfTwo)));
             final Passenger passenger = new Passenger(26, GANGNAM, YANGJAE);
 
-            final long result = distanceFareStrategy.calculateFare(0, passenger, subway);
+            final double result = distanceFareStrategy.calculateFare(0, passenger, subway);
 
             assertThat(result).isEqualTo(2150);
         }
@@ -86,7 +86,7 @@ class DistanceFareStrategyTest {
             final Subway subway = new Subway(new SubwayJgraphtGraph(List.of(lineOfTwo)));
             final Passenger passenger = new Passenger(26, GANGNAM, YANGJAE);
 
-            final long result = distanceFareStrategy.calculateFare(0, passenger, subway);
+            final double result = distanceFareStrategy.calculateFare(0, passenger, subway);
 
             assertThat(result).isEqualTo(2250);
         }

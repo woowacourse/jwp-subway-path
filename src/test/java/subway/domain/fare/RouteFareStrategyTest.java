@@ -26,7 +26,7 @@ class RouteFareStrategyTest {
         final Subway subway = new Subway(new SubwayJgraphtGraph(List.of(lineOfTwo)));
         final Passenger passenger = new Passenger(26, GANGNAM, YANGJAE);
 
-        final long result = routeFareStrategy.calculateFare(1250, passenger, subway);
+        final double result = routeFareStrategy.calculateFare(1250, passenger, subway);
 
         assertThat(result).isEqualTo(2150);
     }
@@ -43,7 +43,7 @@ class RouteFareStrategyTest {
         final Subway subway = new Subway(new SubwayJgraphtGraph(List.of(lineOfOne, lineOfTwo, lineOfThree)));
         final Passenger passenger = new Passenger(26, GANGNAM, NAMBU);
 
-        final long result = routeFareStrategy.calculateFare(1250, passenger, subway);
+        final double result = routeFareStrategy.calculateFare(1250, passenger, subway);
 
         assertThat(result).isEqualTo(2150);
     }
