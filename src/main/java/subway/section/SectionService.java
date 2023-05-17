@@ -81,14 +81,14 @@ public class SectionService {
 
     private void updateLine(Line line) {
         sectionDao.deleteAllByLineId(line.getId());
-        line.getSections().forEach((section) -> sectionDao.insert(
-                new SectionEntity(
-                    line.getId(),
-                    section.getUpStation().getId(),
-                    section.getDownStation().getId(),
-                    section.getDistance())
-            )
-        );
+
+        sectionDao.insertAll(line.getSections().stream()
+            .map((section) -> new SectionEntity(
+                line.getId(),
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                section.getDistance()))
+            .collect(Collectors.toList()));
     }
 
     public List<StationResponseDto> findSortedStations(final Long lineId) {

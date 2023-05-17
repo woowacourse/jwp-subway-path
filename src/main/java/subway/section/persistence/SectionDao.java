@@ -1,6 +1,7 @@
 package subway.section.persistence;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -37,6 +38,14 @@ public class SectionDao {
     public Long insert(final SectionEntity sectionEntity) {
         return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(sectionEntity))
             .longValue();
+    }
+
+    public void insertAll(List<SectionEntity> sectionEntities) {
+        final BeanPropertySqlParameterSource[] beanPropertySqlParameterSources = sectionEntities.stream()
+            .map(BeanPropertySqlParameterSource::new)
+            .toArray(BeanPropertySqlParameterSource[]::new);
+
+        simpleJdbcInsert.executeBatch(beanPropertySqlParameterSources);
     }
 
     public List<SectionStationDto> findAllByLineId(final Long lineId) {
