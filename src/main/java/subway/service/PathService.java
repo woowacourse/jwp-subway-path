@@ -3,6 +3,7 @@ package subway.service;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.core.Line;
 import subway.domain.core.Section;
 import subway.domain.core.Subway;
@@ -18,6 +19,7 @@ import subway.dto.ShortestPathResponse;
 import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
 
+@Transactional(readOnly = true)
 @Service
 public class PathService {
 
