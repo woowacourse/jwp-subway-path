@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import subway.exception.AlreadyExistSectionException;
 import subway.exception.LineUnconnectedException;
 import subway.exception.NegativeDistanceValueException;
+import subway.exception.StationNotFoundException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -133,7 +134,7 @@ class LineTest {
 
         // when
         assertThatThrownBy(() -> line.removeStation(nonExistStation))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(StationNotFoundException.class)
                 .hasMessage("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
     }
 

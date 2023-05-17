@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import subway.exception.AlreadyExistSectionException;
 import subway.exception.LineUnconnectedException;
+import subway.exception.StationNotFoundException;
 
 public class Line {
     private final Long id;
@@ -123,7 +124,7 @@ public class Line {
 
     private void validateStationExistence(final Station station) {
         if (!containsStation(station)) {
-            throw new IllegalArgumentException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
+            throw new StationNotFoundException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
         }
     }
 
@@ -167,7 +168,7 @@ public class Line {
         Set<Station> sources = new HashSet<>(sourceToTarget.keySet());
         sources.removeAll(sourceToTarget.values());
         return sources.stream()
-                .findAny().orElseThrow(() -> new IllegalArgumentException("종점역을 찾지 못했습니다"));
+                .findAny().orElseThrow(() -> new StationNotFoundException("종점역을 찾지 못했습니다"));
     }
 
     public boolean isEmpty() {
