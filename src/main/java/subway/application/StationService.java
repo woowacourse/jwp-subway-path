@@ -2,11 +2,13 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.entity.StationEntity;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,28 +19,31 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public Long save(StationRequest stationRequest) {
+        return stationDao.insert(new StationEntity(stationRequest.getName()));
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public StationResponse findById(Long id) {
+        Optional<StationEntity> station = stationDao.findById(id);
+        if (station.isEmpty()) {
+            throw new NoSuchElementException("해당하는 역이 존재하지 않습니다.");
+        }
+        return StationResponse.of(station.get());
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+    public List<StationResponse> findAll() {
+        List<StationEntity> stationEntities = stationDao.findAll();
 
-        return stations.stream()
+        return stationEntities.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+    public void update(Long id, StationRequest stationRequest) {
+        stationDao.update(id, new StationEntity(stationRequest.getName()));
     }
 
-    public void deleteStationById(Long id) {
+    public void deleteById(Long id) {
         stationDao.deleteById(id);
     }
 }
