@@ -52,11 +52,4 @@ public class LineH2Dao implements LineDao {
         final Map<String, Long> parameter = Map.of("id", id);
         return namedParameterJdbcTemplate.queryForObject(sql, parameter, lineEntityRowMapper);
     }
-
-    @Override
-    public LineEntity findByName(final String name) {
-        final String sql = "SELECT * FROM line WHERE name = :name";
-        final Map<String, String> parameter = Map.of("name", name);
-        return namedParameterJdbcTemplate.queryForObject(sql, parameter, lineEntityRowMapper);
-    }
 }

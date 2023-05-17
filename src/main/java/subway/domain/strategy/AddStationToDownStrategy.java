@@ -26,6 +26,7 @@ public class AddStationToDownStrategy implements AddStationStrategy {
         DefaultWeightedEdge edge = graph.getSection(existingStation, adjacentStation);
 
         final int existingDistance = (int) graph.getSectionDistance(edge);
+
         if (existingDistance <= distance) {
             throw new InvalidDistanceException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
         }

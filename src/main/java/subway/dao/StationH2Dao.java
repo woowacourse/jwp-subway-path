@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.StationEntity;
 
-import javax.sql.DataSource;
 import java.util.Map;
 
 @Repository
@@ -39,13 +38,6 @@ public class StationH2Dao implements StationDao {
     public StationEntity findBy(final Long id) {
         final String sql = "SELECT * FROM station WHERE id = :id";
         final Map<String, Long> parameter = Map.of("id", id);
-        return namedParameterJdbcTemplate.queryForObject(sql, parameter, STATION_ENTITY_ROW_MAPPER);
-    }
-
-    @Override
-    public StationEntity findBy(final String name) {
-        final String sql = "SELECT * FROM station WHERE name = :name";
-        final Map<String, String> parameter = Map.of("name", name);
         return namedParameterJdbcTemplate.queryForObject(sql, parameter, STATION_ENTITY_ROW_MAPPER);
     }
 }

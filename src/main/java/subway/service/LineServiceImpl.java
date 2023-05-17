@@ -4,10 +4,10 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import subway.domain.*;
 import subway.dto.*;
+import subway.exeption.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
-import subway.exeption.StationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,6 @@ public class LineServiceImpl implements LineService {
     @Override
     public LineResponse createNewLine(final LineCreateRequest request) {
         final Subway subway = findSubway();
-        // TODO: 이미 존재하는 노선을 추가로 생성하는 경우 예외 처리
         final Line line = lineRepository.save(Line.of(request.getName(), request.getColor()));
         subway.createSectionsOf(line, new SubwayGraph());
         return LineResponse.of(line);
@@ -126,7 +125,6 @@ public class LineServiceImpl implements LineService {
         sectionRepository.save(line.getId(), new Section(id, newStation, downStation, updatedDistance));
         sectionRepository.delete(line.getId(), new Section(id, upStation, downStation, currentDistance));
 
-        // query stations in order to create line response
         final List<StationResponse> stationResponse = mapToStationResponse(line);
 
         return LineResponse.of(line, stationResponse);

@@ -11,6 +11,4 @@ public interface LineDao {
     List<LineEntity> findAll();
 
     LineEntity findById(Long id);
-
-    LineEntity findByName(String name);
 }
