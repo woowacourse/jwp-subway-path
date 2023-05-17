@@ -35,10 +35,9 @@ class GetShortestPathControllerTest {
     
     @BeforeEach
     void setUp() {
-        final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
         RestAssuredMockMvc.standaloneSetup(
                 MockMvcBuilders.standaloneSetup(new GetShortestPathController(useCase))
-                        .setControllerAdvice(new GlobalExceptionHandler(logger))
+                        .setControllerAdvice(new GlobalExceptionHandler())
         );
     }
     

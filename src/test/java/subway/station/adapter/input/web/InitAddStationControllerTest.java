@@ -32,10 +32,9 @@ class InitAddStationControllerTest {
     
     @BeforeEach
     void setUp() {
-        final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
         RestAssuredMockMvc.standaloneSetup(
                 MockMvcBuilders.standaloneSetup(new InitAddStationController(initAddStationUseCase))
-                        .setControllerAdvice(new GlobalExceptionHandler(logger))
+                        .setControllerAdvice(new GlobalExceptionHandler())
         );
     }
     

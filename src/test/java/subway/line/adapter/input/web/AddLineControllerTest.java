@@ -32,10 +32,9 @@ class AddLineControllerTest {
     
     @BeforeEach
     void setUp() {
-        final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
         RestAssuredMockMvc.standaloneSetup(
                 MockMvcBuilders.standaloneSetup(new AddLineController(addLineUseCase))
-                        .setControllerAdvice(new GlobalExceptionHandler(logger))
+                        .setControllerAdvice(new GlobalExceptionHandler())
         );
     }
     

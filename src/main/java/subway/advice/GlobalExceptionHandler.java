@@ -2,6 +2,7 @@ package subway.advice;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +13,9 @@ import subway.dto.ExceptionResponse;
 
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     
     private ResponseEntity<ExceptionResponse> logAndRespond(final String message, final HttpStatus status) {
         logger.error(message);
@@ -24,8 +24,7 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
-        System.out.println(exception.getMessage());
-        return logAndRespond(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return logAndRespond("서버가 응답할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
     @ExceptionHandler

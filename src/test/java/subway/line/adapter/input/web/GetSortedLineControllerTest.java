@@ -35,10 +35,9 @@ class GetSortedLineControllerTest {
     
     @BeforeEach
     void setUp() {
-        final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
         RestAssuredMockMvc.standaloneSetup(
                 MockMvcBuilders.standaloneSetup(new GetSortedLineController(useCase))
-                        .setControllerAdvice(new GlobalExceptionHandler(logger))
+                        .setControllerAdvice(new GlobalExceptionHandler())
         );
     }
     

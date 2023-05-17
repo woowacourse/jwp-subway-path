@@ -29,10 +29,9 @@ class DeleteStationControllerTest {
     
     @BeforeEach
     void setUp() {
-        final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
         RestAssuredMockMvc.standaloneSetup(
                 MockMvcBuilders.standaloneSetup(new DeleteStationController(deleteStationUseCase))
-                        .setControllerAdvice(new GlobalExceptionHandler(logger))
+                        .setControllerAdvice(new GlobalExceptionHandler())
         );
     }
     
