@@ -1,9 +1,8 @@
 package subway.domain.fare;
 
-import java.util.List;
-import subway.domain.section.Section;
+import subway.domain.Distance;
 
 public interface FarePolicy {
 
-    Fare calculate(List<Section> sections);
+    Fare calculate(final Distance distance);
 }

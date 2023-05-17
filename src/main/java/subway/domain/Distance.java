@@ -31,6 +31,10 @@ public class Distance {
         return new Distance(this.value + distance.value);
     }
 
+    public boolean isBigger(final Distance distance) {
+        return this.value > distance.value;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

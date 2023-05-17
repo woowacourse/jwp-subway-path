@@ -50,7 +50,7 @@ public class PathService {
                 .collect(Collectors.toUnmodifiableList());
         final Sections sections = createSections(path.getSections());
         final Distance distance = sections.getTotalDistance();
-        final Fare fare = farePolicy.calculate(sections.getSections());
+        final Fare fare = farePolicy.calculate(distance);
         return new PathResponse(stationResponses, fare.getValue(), distance.getValue());
     }
 
