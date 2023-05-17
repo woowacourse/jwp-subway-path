@@ -77,6 +77,21 @@ public class LineRepository {
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
     }
 
+    public List<Line> readAll() {
+        List<LineEntity> lineEntities = lineDao.findAll();
+        List<SectionStationEntity> sectionStationEntities = sectionDao.findAll();
+        List<Line> lines = new ArrayList<>();
+
+        for (LineEntity lineEntity : lineEntities) {
+            List<SectionStationEntity> lineSections = sectionStationEntities.stream().
+                    filter(sectionStationEntity -> sectionStationEntity.getLineId() == lineEntity.getId())
+                    .collect(Collectors.toList());
+            Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), getSections(lineSections));
+            lines.add(line);
+        }
+        return lines;
+    }
+
     private static List<Section> getSections(List<SectionStationEntity> sectionStationEntities) {
         List<Section> sections = new ArrayList<>();
         for (SectionStationEntity sectionStationEntity : sectionStationEntities) {
@@ -101,10 +116,10 @@ public class LineRepository {
                 new StationEntity(section.getRightStation().getName(), lineId));
         List<StationEntity> insertedStationEntities = stationDao.insertInit(stationEntities);
 
-        sectionDao.insert(new SectionEntity(insertedStationEntities.get(UPBOUND_STATION_INDEX).getId()
-                , insertedStationEntities.get(DOWNBOUND_STATION_INDEX).getId()
-                , lineId
-                , section.getDistance()));
+        sectionDao.insert(new SectionEntity(insertedStationEntities.get(UPBOUND_STATION_INDEX).getId(),
+                insertedStationEntities.get(DOWNBOUND_STATION_INDEX).getId(),
+                lineId,
+                section.getDistance()));
 
         return List.of(
                 new Station(insertedStationEntities.get(UPBOUND_STATION_INDEX).getId(),

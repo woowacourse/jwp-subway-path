@@ -69,8 +69,53 @@ class SectionDaoTest {
     }
 
     @Test
-    @DisplayName("구간 정보를 불러온다.")
-    void station_data_load() {
+    @DisplayName("전체 노선 정보를 불러온다.")
+    void section_all_data_load() {
+        // given
+        LineEntity insertedLine = lineDao.insert(LINE2_ENTITY);
+
+        StationEntity jamsil = new StationEntity("잠실", insertedLine.getId());
+        StationEntity seolleung = new StationEntity("선릉", insertedLine.getId());
+        StationEntity gangnam = new StationEntity("강남", insertedLine.getId());
+        StationEntity insertedJamsil = stationDao.insert(jamsil);
+        StationEntity insertedSeolleung = stationDao.insert(seolleung);
+        StationEntity insertedGangnam = stationDao.insert(gangnam);
+
+        SectionEntity jamsilSeolleung = new SectionEntity(insertedJamsil.getId(), insertedSeolleung.getId(), insertedLine.getId(), 10);
+        SectionEntity seolleungGangnam = new SectionEntity(insertedSeolleung.getId(), insertedGangnam.getId(), insertedLine.getId(), 10);
+        SectionEntity insertedJamsilSeolleung = sectionDao.insert(jamsilSeolleung);
+        SectionEntity insertedSeolleungGangnam = sectionDao.insert(seolleungGangnam);
+
+        List<SectionStationEntity> expect = List.of(
+                new SectionStationEntity(
+                        insertedJamsilSeolleung.getId(),
+                        insertedJamsil.getId(),
+                        insertedJamsil.getName(),
+                        insertedSeolleung.getId(),
+                        insertedSeolleung.getName(),
+                        insertedLine.getId(),
+                        insertedJamsilSeolleung.getDistance()),
+                new SectionStationEntity(
+                        insertedSeolleungGangnam.getId(),
+                        insertedSeolleung.getId(),
+                        insertedSeolleung.getName(),
+                        insertedGangnam.getId(),
+                        insertedGangnam.getName(),
+                        insertedLine.getId(), insertedSeolleungGangnam.getDistance())
+        );
+
+        // when
+        List<SectionStationEntity> result = sectionDao.findAll();
+
+        // then
+        assertThat(result).usingRecursiveComparison().isEqualTo(expect);
+
+    }
+
+
+    @Test
+    @DisplayName("해당 노선의 구간 정보를 불러온다.")
+    void section_data_load_by_line_id() {
         // given
         LineEntity insertedLine = lineDao.insert(LINE2_ENTITY);
 
@@ -107,7 +152,7 @@ class SectionDaoTest {
         StationEntity insertedGangnam = stationDao.insert(gangnam);
 
         SectionEntity jamsilSeolleung = new SectionEntity(insertedJamsil.getId(), insertedSeolleung.getId(), insertedLine.getId(), 10);
-        SectionEntity seolleungGangNam = new SectionEntity(insertedSeolleung.getId(), insertedGangnam.getId(),insertedLine.getId(), 10);
+        SectionEntity seolleungGangNam = new SectionEntity(insertedSeolleung.getId(), insertedGangnam.getId(), insertedLine.getId(), 10);
         SectionEntity insertedJamsilSeolleung = sectionDao.insert(jamsilSeolleung);
         SectionEntity insertedSeolleungGangNam = sectionDao.insert(seolleungGangNam);
 

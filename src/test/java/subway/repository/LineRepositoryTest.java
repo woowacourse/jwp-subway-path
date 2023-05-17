@@ -9,8 +9,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.line.Color;
 import subway.domain.line.Line;
+import subway.domain.line.Name;
 import subway.domain.section.Section;
+import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionStationEntity;
@@ -61,7 +64,7 @@ class LineRepositoryTest {
     void load_line_by_Name() {
         // given
         LineEntity lineEntity = new LineEntity(1L, "2호선", "#123456");
-        List<SectionStationEntity> sectionEntities = List.of(new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 10));
+        List<SectionStationEntity> sectionEntities = List.of(new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 1L,10));
         doReturn(Optional.of(lineEntity)).when(lineDao)
                 .findByName(any(String.class));
         doReturn(sectionEntities).when(sectionDao)
@@ -120,7 +123,7 @@ class LineRepositoryTest {
         // given
         Station station = new Station(1L, "잠실역");
         LineEntity lineEntity = new LineEntity(1L, "2호선", "#123456");
-        List<SectionStationEntity> sectionEntities = List.of(new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 10));
+        List<SectionStationEntity> sectionEntities = List.of(new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 1L,10));
         doReturn(Optional.of(lineEntity)).when(lineDao)
                 .findByStationId(any(Long.class));
         doReturn(sectionEntities).when(sectionDao)
@@ -134,5 +137,49 @@ class LineRepositoryTest {
         assertThat(result.getName()).isEqualTo(lineEntity.getName());
         assertThat(result.getColor()).isEqualTo(lineEntity.getColor());
         assertThat(result.getSections().getSections().size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("노선 전체를 가져온다.")
+    void find_all_line() {
+        // given
+        List<LineEntity> lineEntities = List.of(
+                new LineEntity(1L, "2호선", "#123456"),
+                new LineEntity(2L, "3호선", "#abcdef")
+        );
+        doReturn(lineEntities).when(lineDao).findAll();
+
+        List<SectionStationEntity> sectionStationEntities = List.of(
+                new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉",1L, 10),
+                new SectionStationEntity(2L, 2L, "선릉", 3L, "강남", 1L, 10),
+                new SectionStationEntity(3L, 4L, "수서", 5L, "가락시장", 2L, 15)
+        );
+        doReturn(sectionStationEntities).when(sectionDao).findAll();
+
+        List<Line> expect = List.of(
+                new Line(
+                        1L,
+                        new Name("2호선"),
+                        new Color("#123456"),
+                        new Sections(List.of(
+                                new Section(1L, new Station(1L, "잠실"), new Station(2L, "선릉"), 10),
+                                new Section(2L, new Station(2L, "선릉"), new Station(3L, "강남"), 10))
+                        )),
+                new Line(
+                        2L,
+                        new Name("3호선"),
+                        new Color("#abcdef"),
+                        new Sections(List.of(
+                                new Section(3L, new Station(4L, "수서"), new Station(5L, "가락시장"), 15)
+                        ))
+                )
+        );
+
+        // when
+        List<Line> result = lineRepository.readAll();
+
+        // then
+        assertThat(result).usingRecursiveComparison().isEqualTo(expect);
+
     }
 }

@@ -34,6 +34,7 @@ public class SectionDao {
             rs.getNString(3),
             rs.getLong("right_station_id"),
             rs.getNString(5),
+            rs.getLong("line_id"),
             rs.getInt("distance")
     );
 
@@ -78,8 +79,15 @@ public class SectionDao {
         });
     }
 
+    public List<SectionStationEntity> findAll() {
+        String sql = "SELECT s.id, s.left_station_id, t1.name, s.right_station_id, t2.name, s.line_id, s.distance FROM SECTION s " +
+                "JOIN station t1 ON s.left_station_id = t1.id " +
+                "JOIN station t2 ON s.right_station_id = t2.id ";
+        return jdbcTemplate.query(sql, sectionStationrowMapper);
+    }
+
     public List<SectionStationEntity> findByLineId(final Long lindId) {
-        String sql = "SELECT s.id, s.left_station_id, t1.name, s.right_station_id, t2.name, s.distance FROM SECTION s " +
+        String sql = "SELECT s.id, s.left_station_id, t1.name, s.right_station_id, t2.name, s.line_id, s.distance FROM SECTION s " +
                 "JOIN station t1 ON s.left_station_id = t1.id " +
                 "JOIN station t2 ON s.right_station_id = t2.id " +
                 "WHERE s.line_id= ? ";

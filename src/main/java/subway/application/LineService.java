@@ -9,6 +9,7 @@ import subway.dto.StationResponse;
 import subway.entity.StationEntity;
 import subway.repository.LineRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,10 +28,22 @@ public class LineService {
 
     public LineResponse readLine(Long id) {
         Line line = lineRepository.findById(id);
-        List<StationResponse> stations = line.sortStation().stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
-                .collect(Collectors.toList());
+        List<StationResponse> stations = sectionToStationResponse(line);
 
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+    }
+
+    public List<LineResponse> readAllLine() {
+        List<Line> lines = lineRepository.readAll();
+
+        return lines.stream()
+                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor(), sectionToStationResponse(line)))
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    private static List<StationResponse> sectionToStationResponse(Line line) {
+        return line.sortStation().stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
     }
 }

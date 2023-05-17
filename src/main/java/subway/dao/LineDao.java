@@ -1,6 +1,7 @@
 package subway.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.sql.DataSource;
@@ -68,5 +69,10 @@ public class  LineDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public List<LineEntity> findAll() {
+        String sql = "SELECT id, name, color FROM LINE";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 }
