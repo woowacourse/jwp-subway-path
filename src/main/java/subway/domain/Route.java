@@ -12,6 +12,10 @@ public class Route {
         this.distance = distance;
     }
     
+    public int calculateFare(final FarePolicy farePolicy) {
+        return farePolicy.calculateFare(this.distance);
+    }
+    
     public List<Long> getStationIds() {
         return this.stationIds;
     }
@@ -19,4 +23,5 @@ public class Route {
     public int getDistance() {
         return this.distance;
     }
+    
 }

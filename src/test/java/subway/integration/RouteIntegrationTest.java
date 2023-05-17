@@ -33,6 +33,9 @@ public class RouteIntegrationTest extends IntegrationTest {
         Assertions.assertThat(stations.get(5).getName()).isEqualTo("뚝섬역");
         Assertions.assertThat(stations.get(6).getName()).isEqualTo("한양대역");
         Assertions.assertThat(stations.get(7).getName()).isEqualTo("왕십리역");
+        
+        Assertions.assertThat(routeResponse.getDistance()).isEqualTo(35);
+        Assertions.assertThat(routeResponse.getFare()).isEqualTo(1750);
     }
     
     @Test
@@ -56,7 +59,8 @@ public class RouteIntegrationTest extends IntegrationTest {
         Assertions.assertThat(stations.get(5).getName()).isEqualTo("몽촌토성역");
         Assertions.assertThat(stations.get(6).getName()).isEqualTo("강동구청역");
         Assertions.assertThat(stations.get(7).getName()).isEqualTo("천호역");
+        
+        Assertions.assertThat(routeResponse.getDistance()).isEqualTo(29);
+        Assertions.assertThat(routeResponse.getFare()).isEqualTo(1650);
     }
-    
-    
 }

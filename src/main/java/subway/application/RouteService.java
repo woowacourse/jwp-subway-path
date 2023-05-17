@@ -3,6 +3,8 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import subway.domain.DiscountPolicy;
+import subway.domain.FarePolicy;
 import subway.domain.Route;
 import subway.domain.Section;
 import subway.domain.SubwayGraph;
@@ -34,6 +36,7 @@ public class RouteService {
                 .stream()
                 .map(this.stationService::findStationResponseById)
                 .collect(Collectors.toUnmodifiableList());
-        return RouteResponse.of(stationResponses, route.getDistance());
+        return RouteResponse.of(stationResponses, route.getDistance(), route.calculateFare(new FarePolicy(
+                DiscountPolicy.NO_DISCOUNT)));
     }
 }
