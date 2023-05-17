@@ -16,7 +16,7 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
@@ -71,5 +71,10 @@ public class StationDao {
         jdbcTemplate.batchUpdate(sql, stations, stations.size(), ((ps, station) -> {
             ps.setString(1, station.getName());
         }));
+    }
+
+    public boolean existsByName(final String name) {
+        String sql = "select exists (select * from station where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 }
