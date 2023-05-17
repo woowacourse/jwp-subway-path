@@ -2,7 +2,7 @@ package subway.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Station;
+import subway.entity.StationEntity;
 
 public class StationResponse {
     
@@ -14,12 +14,12 @@ public class StationResponse {
         this.name = name;
     }
     
-    public static StationResponse of(final Station station) {
-        return new StationResponse(station.getId(), station.getName());
+    public static StationResponse of(final StationEntity stationEntity) {
+        return new StationResponse(stationEntity.getId(), stationEntity.getName());
     }
     
-    public static List<StationResponse> listOf(final List<Station> stations) {
-        return stations.stream()
+    public static List<StationResponse> listOf(final List<StationEntity> stationEntities) {
+        return stationEntities.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }

@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDAO;
 import subway.dao.StationDao;
-import subway.domain.Line;
+import subway.entity.LineEntity;
 import subway.domain.LineSections;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 import subway.dto.SubwayResponse;
 
 @Service
@@ -30,27 +30,27 @@ public class SubwayService {
     }
     
     public SubwayResponse findAllStationsInLine(final long lineId) {
-        final Line line = this.lineDao.findById(lineId);
-        final List<Section> sections = this.sectionDAO.findSectionsBy(lineId);
-        final LineSections lineSections = LineSections.from(sections);
+        final LineEntity lineEntity = this.lineDao.findById(lineId);
+        final List<SectionEntity> sectionEntities = this.sectionDAO.findSectionsBy(lineId);
+        final LineSections lineSections = LineSections.from(sectionEntities);
         
         if (lineSections.isEmpty()) {
-            return SubwayResponse.of(line, List.of());
+            return SubwayResponse.of(lineEntity, List.of());
         }
         
         final long upTerminalStationId = lineSections.getUpTerminalStationId();
         final long downTerminalStationId = lineSections.getDownTerminalStationId();
         
-        final List<Station> orderedStations = this.generateOrderedStations(sections, upTerminalStationId,
+        final List<StationEntity> orderedStationEntities = this.generateOrderedStations(sectionEntities, upTerminalStationId,
                 downTerminalStationId);
         
-        return SubwayResponse.of(line, orderedStations);
+        return SubwayResponse.of(lineEntity, orderedStationEntities);
     }
     
-    private List<Station> generateOrderedStations(final List<Section> sections, final long upTerminalStationId,
-            final long downTerminalStationId) {
+    private List<StationEntity> generateOrderedStations(final List<SectionEntity> sectionEntities, final long upTerminalStationId,
+                                                        final long downTerminalStationId) {
         final Graph<Long, DefaultWeightedEdge> subwayMap = this.generateSubwayMap(
-                sections);
+                sectionEntities);
         final List<Long> orderedStationIds = new DijkstraShortestPath<>(subwayMap)
                 .getPath(upTerminalStationId, downTerminalStationId)
                 .getVertexList();
@@ -59,21 +59,21 @@ public class SubwayService {
                 .collect(Collectors.toUnmodifiableList());
     }
     
-    private Graph<Long, DefaultWeightedEdge> generateSubwayMap(final List<Section> sections) {
+    private Graph<Long, DefaultWeightedEdge> generateSubwayMap(final List<SectionEntity> sectionEntities) {
         final Graph<Long, DefaultWeightedEdge> subwayMap = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-        for (final Section section : sections) {
-            subwayMap.addVertex(section.getUpStationId());
-            subwayMap.addVertex(section.getDownStationId());
-            final DefaultWeightedEdge edge = subwayMap.addEdge(section.getUpStationId(),
-                    section.getDownStationId());
-            subwayMap.setEdgeWeight(edge, section.getDistance());
+        for (final SectionEntity sectionEntity : sectionEntities) {
+            subwayMap.addVertex(sectionEntity.getUpStationId());
+            subwayMap.addVertex(sectionEntity.getDownStationId());
+            final DefaultWeightedEdge edge = subwayMap.addEdge(sectionEntity.getUpStationId(),
+                    sectionEntity.getDownStationId());
+            subwayMap.setEdgeWeight(edge, sectionEntity.getDistance());
         }
         return subwayMap;
     }
     
     public List<SubwayResponse> findAllStations() {
-        final List<Line> lines = this.lineDao.findAll();
-        return lines.stream()
+        final List<LineEntity> lineEntities = this.lineDao.findAll();
+        return lineEntities.stream()
                 .map(line -> this.findAllStationsInLine(line.getId()))
                 .collect(Collectors.toUnmodifiableList());
     }

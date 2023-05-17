@@ -1,8 +1,9 @@
-package subway.domain;
+package subway.entity;
 
+import subway.domain.Direction;
 import subway.dto.SectionRequest;
 
-public class Section {
+public class SectionEntity {
     
     private final long lineId;
     private final long upStationId;
@@ -10,15 +11,15 @@ public class Section {
     private final int distance;
     private long id;
     
-    public Section(final long lineId, final long upStationId, final long downStationId, final int distance) {
+    public SectionEntity(final long lineId, final long upStationId, final long downStationId, final int distance) {
         this.lineId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
     }
     
-    public Section(final long id, final long lineId, final long upStationId, final long downStationId,
-            final int distance) {
+    public SectionEntity(final long id, final long lineId, final long upStationId, final long downStationId,
+                         final int distance) {
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
@@ -26,13 +27,13 @@ public class Section {
         this.distance = distance;
     }
     
-    public static Section from(final SectionRequest sectionRequest) {
+    public static SectionEntity from(final SectionRequest sectionRequest) {
         final Direction direction = Direction.of(sectionRequest.getDirection());
         if (direction.isDown()) {
-            return new Section(sectionRequest.getLineId(), sectionRequest.getBaseStationId(),
+            return new SectionEntity(sectionRequest.getLineId(), sectionRequest.getBaseStationId(),
                     sectionRequest.getNewStationId(), sectionRequest.getDistance());
         }
-        return new Section(sectionRequest.getLineId(), sectionRequest.getNewStationId(),
+        return new SectionEntity(sectionRequest.getLineId(), sectionRequest.getNewStationId(),
                 sectionRequest.getBaseStationId(),
                 sectionRequest.getDistance());
     }

@@ -17,7 +17,7 @@ import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
 import subway.dto.StationRequest;
 
-public class AddSectionIntegrationTest extends IntegrationTest {
+public class AddSectionIntegrationTestEntity extends IntegrationTest {
     
     @Nested
     public class InitializedTest extends IntegrationTest {
