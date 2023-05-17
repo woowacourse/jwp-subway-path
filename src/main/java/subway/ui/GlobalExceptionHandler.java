@@ -27,6 +27,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body("존재하지 않는 데이터에 관한 요청이 발생했습니다");
     }
 
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<String> handleIllegalArgumentException(final Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<String> handleSQLException() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("데이터베이스 관련 오류가 발생했습니다.");

@@ -8,6 +8,7 @@ import subway.dto.LineResponse;
 import subway.entity.LineEntity;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -41,7 +42,11 @@ public class LineService {
     }
 
     public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
+        Optional<LineEntity> lineEntity = lineDao.findById(id);
+        if (lineEntity.isPresent()) {
+            return lineEntity.get();
+        }
+        throw new IllegalArgumentException("존재하지 않는 노선입니다");
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

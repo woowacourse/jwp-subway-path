@@ -8,6 +8,7 @@ import subway.dto.StationResponse;
 import subway.entity.StationEntity;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -26,7 +27,11 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        Optional<StationEntity> stationEntity = stationDao.findById(id);
+        if (stationEntity.isPresent()) {
+            return StationResponse.of(stationEntity.get());
+        }
+        throw new IllegalArgumentException("존재하지 않는 역입니다");
     }
 
     public List<StationResponse> findAllStationResponses() {

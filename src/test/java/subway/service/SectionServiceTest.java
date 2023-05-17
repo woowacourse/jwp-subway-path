@@ -18,6 +18,7 @@ import subway.entity.StationEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,9 +46,9 @@ class SectionServiceTest {
         LineEntity lineEntity = new LineEntity(lineId, "경의중앙선", "청록");
         StationEntity stationEntity1 = new StationEntity("이촌");
         StationEntity stationEntity2 = new StationEntity("서빙고");
-        when(lineDao.findById(lineId)).thenReturn(lineEntity);
-        when(stationDao.findById(lineStationRequest.getPreStationId())).thenReturn(stationEntity1);
-        when(stationDao.findById(lineStationRequest.getStationId())).thenReturn(stationEntity2);
+        when(lineDao.findById(lineId)).thenReturn(Optional.of(lineEntity));
+        when(stationDao.findById(lineStationRequest.getPreStationId())).thenReturn(Optional.of(stationEntity1));
+        when(stationDao.findById(lineStationRequest.getStationId())).thenReturn(Optional.of(stationEntity2));
         when(sectionDao.findAllByLineId(lineId)).thenReturn(new ArrayList<>());
 
         //when
@@ -64,10 +65,10 @@ class SectionServiceTest {
         Long lineId = 1L;
         Long stationId = 1L;
         LineEntity lineEntity = new LineEntity(lineId, "경의중앙선", "청록");
-        when(lineDao.findById(lineId)).thenReturn(lineEntity);
+        when(lineDao.findById(lineId)).thenReturn(Optional.of(lineEntity));
         when(sectionDao.findAllByLineId(lineId)).thenReturn(
                 new ArrayList<>(List.of(new SectionWithStationNameEntity(lineId, "이촌", "서빙고", 10L))));
-        when(stationDao.findById(stationId)).thenReturn(new StationEntity("이촌"));
+        when(stationDao.findById(stationId)).thenReturn(Optional.of(new StationEntity("이촌")));
 
         //when
         sectionService.removeStation(lineId, stationId);
@@ -82,7 +83,7 @@ class SectionServiceTest {
         //given
         Long lineId = 1L;
         LineEntity lineEntity = new LineEntity(lineId, "경의중앙선", "청록");
-        when(lineDao.findById(lineId)).thenReturn(lineEntity);
+        when(lineDao.findById(lineId)).thenReturn(Optional.of(lineEntity));
         when(sectionDao.findAllByLineId(lineId)).thenReturn(
                 new ArrayList<>(
                         List.of(new SectionWithStationNameEntity(lineId, "이촌", "서빙고", 10L),
