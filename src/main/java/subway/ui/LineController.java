@@ -1,22 +1,13 @@
 package subway.ui;
 
-import java.net.URI;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import subway.business.service.LineService;
-import subway.business.service.dto.LineResponse;
-import subway.business.service.dto.LineSaveRequest;
-import subway.business.service.dto.LineStationsResponse;
-import subway.business.service.dto.StationAddToLineRequest;
-import subway.ui.dto.StationDeleteRequest;
+import subway.business.service.dto.*;
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
@@ -44,7 +35,7 @@ public class LineController {
     @DeleteMapping("/{lineId}/station")
     public ResponseEntity<Void> deleteStation(@PathVariable Long lineId,
                                               @RequestBody StationDeleteRequest stationDeleteRequest) {
-        lineService.deleteStation(lineId, stationDeleteRequest.getStation());
+        lineService.deleteStation(lineId, stationDeleteRequest);
         return ResponseEntity.ok().build();
     }
 

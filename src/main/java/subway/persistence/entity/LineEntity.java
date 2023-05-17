@@ -5,18 +5,18 @@ import java.util.Objects;
 public class LineEntity {
     private final Long id;
     private final String name;
-    private final String upwardTerminus;
-    private final String downwardTerminus;
+    private final Long upwardTerminusId;
+    private final Long downwardTerminusId;
 
-    public LineEntity(String name, String upwardTerminus, String downwardTerminus) {
-        this(null, name, upwardTerminus, downwardTerminus);
+    public LineEntity(String name, Long upwardTerminusId, Long downwardTerminusId) {
+        this(null, name, upwardTerminusId, downwardTerminusId);
     }
 
-    public LineEntity(Long id, String name, String upwardTerminus, String downwardTerminus) {
+    public LineEntity(Long id, String name, Long upwardTerminusId, Long downwardTerminusId) {
         this.id = id;
         this.name = name;
-        this.upwardTerminus = upwardTerminus;
-        this.downwardTerminus = downwardTerminus;
+        this.upwardTerminusId = upwardTerminusId;
+        this.downwardTerminusId = downwardTerminusId;
     }
 
     public Long getId() {
@@ -27,12 +27,12 @@ public class LineEntity {
         return name;
     }
 
-    public String getUpwardTerminus() {
-        return upwardTerminus;
+    public Long getUpwardTerminusId() {
+        return upwardTerminusId;
     }
 
-    public String getDownwardTerminus() {
-        return downwardTerminus;
+    public Long getDownwardTerminusId() {
+        return downwardTerminusId;
     }
 
     @Override

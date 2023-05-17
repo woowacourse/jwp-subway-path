@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS line
 (
-    id                  BIGINT AUTO_INCREMENT  NOT NULL,
-    name                VARCHAR(255)           NOT NULL,
-    upward_terminus     VARCHAR(255)           NOT NULL,
-    downward_terminus   VARCHAR(255)           NOT NULL,
-    created_at          TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id                      BIGINT AUTO_INCREMENT  NOT NULL,
+    name                    VARCHAR(255)           NOT NULL,
+    upward_terminus_id      BIGINT                 NOT NULL,
+    downward_terminus_id    BIGINT                 NOT NULL,
+    created_at             TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 

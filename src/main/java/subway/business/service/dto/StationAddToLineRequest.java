@@ -1,24 +1,24 @@
 package subway.business.service.dto;
 
 public class StationAddToLineRequest {
-    private final String station;
-    private final String neighborhoodStation;
+    private final Long stationId;
+    private final Long neighborhoodStationId;
     private final String addDirection;
     private final Integer distance;
 
-    public StationAddToLineRequest(String station, String neighborhoodStation, String addDirection, Integer distance) {
-        this.station = station;
-        this.neighborhoodStation = neighborhoodStation;
+    public StationAddToLineRequest(Long stationId, Long neighborhoodStationId, String addDirection, Integer distance) {
+        this.stationId = stationId;
+        this.neighborhoodStationId = neighborhoodStationId;
         this.addDirection = addDirection;
         this.distance = distance;
     }
 
-    public String getStation() {
-        return station;
+    public Long getStationId() {
+        return stationId;
     }
 
-    public String getNeighborhoodStation() {
-        return neighborhoodStation;
+    public Long getNeighborhoodStationId() {
+        return neighborhoodStationId;
     }
 
     public String getAddDirection() {

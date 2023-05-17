@@ -1,8 +1,5 @@
 package subway.ui;
 
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +11,17 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.business.service.LineService;
 import subway.business.service.dto.LineResponse;
 import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.StationAddToLineRequest;
-import subway.ui.dto.StationDeleteRequest;
+import subway.business.service.dto.StationDeleteRequest;
 
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+
+@Sql("classpath:station_data.sql")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class LineControllerIntegratedTest {
     @Autowired
@@ -42,8 +44,8 @@ public class LineControllerIntegratedTest {
     void shouldCreateLineWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                1L,
+                2L,
                 5
         );
 
@@ -60,15 +62,15 @@ public class LineControllerIntegratedTest {
     void shouldAddStationToLineWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                1L,
+                2L,
                 5
         );
         LineResponse lineResponse = lineService.createLine(lineSaveRequest);
 
         StationAddToLineRequest stationAddToLineRequest = new StationAddToLineRequest(
-                "강남역",
-                "몽촌토성역",
+                3L,
+                2L,
                 "상행",
                 3
         );
@@ -85,21 +87,21 @@ public class LineControllerIntegratedTest {
     void shouldRemoveStationFromLineWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                1L,
+                2L,
                 5
         );
         lineService.createLine(lineSaveRequest);
 
         StationAddToLineRequest stationAddToLineRequest = new StationAddToLineRequest(
-                "강남역",
-                "몽촌토성역",
+                3L,
+                2L,
                 "상행",
                 3
         );
         lineService.addStationToLine(1L, stationAddToLineRequest);
 
-        StationDeleteRequest stationDeleteRequest = new StationDeleteRequest("강남역");
+        StationDeleteRequest stationDeleteRequest = new StationDeleteRequest(3L);
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(stationDeleteRequest)
@@ -114,8 +116,8 @@ public class LineControllerIntegratedTest {
     void shouldReturnLineAndStationsWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                1L,
+                2L,
                 5
         );
         LineResponse lineResponse = lineService.createLine(lineSaveRequest);
@@ -126,7 +128,7 @@ public class LineControllerIntegratedTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
                 .body("name", is("2호선"))
-                .body("stations", hasItems("잠실역", "몽촌토성역"));
+                .body("stations", hasItems("강남역", "역삼역"));
     }
 
     @DisplayName("모든 노선의 이름과 포함된 모든 역을 조회한다.")
@@ -134,16 +136,16 @@ public class LineControllerIntegratedTest {
     void shouldReturnAllLinesAndStationsWhenRequest() {
         LineSaveRequest lineSaveRequest1 = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                1L,
+                2L,
                 5
         );
         lineService.createLine(lineSaveRequest1);
 
         LineSaveRequest lineSaveRequest2 = new LineSaveRequest(
                 "3호선",
-                "매봉역",
-                "교대역",
+                3L,
+                4L,
                 5
         );
         lineService.createLine(lineSaveRequest2);
@@ -154,8 +156,8 @@ public class LineControllerIntegratedTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
                 .body("[0].name", is("2호선"))
-                .body("[0].stations", hasItems("잠실역", "몽촌토성역"))
+                .body("[0].stations", hasItems("강남역", "역삼역"))
                 .body("[1].name", is("3호선"))
-                .body("[1].stations", hasItems("매봉역", "교대역"));
+                .body("[1].stations", hasItems("잠실역", "성수역"));
     }
 }
