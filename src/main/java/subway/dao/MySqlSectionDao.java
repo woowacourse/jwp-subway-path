@@ -96,4 +96,16 @@ public class MySqlSectionDao implements SectionDao {
         String sql = "DELETE FROM SECTION WHERE id = ?";
         jdbcTemplate.update(sql, sectionEntity.getId());
     }
+
+    @Override
+    public List<SectionEntity> findAll() {
+        String sql = "SELECT id, line_id, start_station_name, end_station_name, distance FROM SECTION";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    @Override
+    public boolean doesNotExistByStationName(String stationName) {
+        String sql = "SELECT COUNT(*) FROM SECTION WHERE start_station_name = ? OR end_station_name = ? LIMIT 1";
+        return jdbcTemplate.queryForObject(sql, Long.class, stationName, stationName) <= 0;
+    }
 }

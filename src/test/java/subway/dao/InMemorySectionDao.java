@@ -2,6 +2,7 @@ package subway.dao;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,5 +78,17 @@ public class InMemorySectionDao implements SectionDao {
     @Override
     public void deleteBy(SectionEntity sectionEntity) {
         sections.remove(sectionEntity.getId());
+    }
+
+    @Override
+    public List<SectionEntity> findAll() {
+        return new ArrayList<>(sections.values());
+    }
+
+    @Override
+    public boolean doesNotExistByStationName(String stationName) {
+        return sections.values().stream()
+                .noneMatch(sectionEntity -> stationName.equals(sectionEntity.getUpBoundStation().getName())
+                        || stationName.equals(sectionEntity.getDownBoundStation().getName()));
     }
 }

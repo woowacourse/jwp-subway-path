@@ -24,4 +24,8 @@ public interface SectionDao {
     Optional<SectionEntity> findByEndStationNameAndLineId(String downBoundStationName, Long lineId);
 
     void deleteBy(SectionEntity sectionEntity);
+
+    List<SectionEntity> findAll();
+
+    boolean doesNotExistByStationName(String stationName);
 }

@@ -10,6 +10,7 @@ import subway.dto.response.Response;
 import subway.exception.DuplicateLineException;
 import subway.exception.DuplicateStationException;
 import subway.exception.IllegalDistanceException;
+import subway.exception.IllegalPathException;
 import subway.exception.IllegalSectionException;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
@@ -81,6 +82,13 @@ public class GlobalExceptionHandler {
         return Response.badRequest()
                 .message(BAD_REQUEST_MESSAGE)
                 .validation("lineId", e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(IllegalPathException.class)
+    public ResponseEntity<Response> handleIllegalPathException(IllegalPathException e) {
+        return Response.badRequest()
+                .message(e.getMessage())
                 .build();
     }
 }
