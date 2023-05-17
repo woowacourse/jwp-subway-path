@@ -19,19 +19,15 @@ public class Sections {
         Station preStation = newSection.getPreStation();
         Station station = newSection.getStation();
 
-        if (isExistStation(preStation) && !isExistStation(station)) {
-            if (addDownEndStation(newSection, preStation)) return null;
-
-            return addAfterExistingStation(newSection, preStation);
+        if (isExistStation(preStation) && isExistStation(station)) {
+            throw new SectionInsertionException("이미 존재하는 구간입니다");
         }
 
-        if (!isExistStation(preStation) && isExistStation(station)) {
-            if (addUpEndStation(newSection, station)) return null;
-
-            return addBeforeExistingStation(newSection, station);
+        if (!isExistStation(preStation) && !isExistStation(station)) {
+            throw new SectionInsertionException("노선에서 기준역을 찾을 수 없어 새롭게 역을 추가할 수 없습니다");
         }
 
-        throw new SectionInsertionException("추가할 수 없는 구간입니다");
+        return getModifiedSectionAfterInsertion(newSection, preStation, station);
     }
 
     public boolean isExistStation(Station station) {
@@ -42,6 +38,30 @@ public class Sections {
 
     public boolean isDownEndStation(Station station) {
         return sections.stream().noneMatch(section -> Objects.equals(section.getPreStation(), station));
+    }
+
+    private Section getModifiedSectionAfterInsertion(Section newSection, Station preStation, Station station) {
+        if (isExistStation(preStation)) {
+            return getModifiedSectionAfterAddingAfterExistingStation(newSection, preStation);
+        }
+
+        if (isExistStation(station)) {
+            return getModifiedSectionAfterAddingBeforeExistingStation(newSection, station);
+        }
+
+        throw new SectionInsertionException("구간을 추가할 수 없습니다");
+    }
+
+    private Section getModifiedSectionAfterAddingBeforeExistingStation(Section newSection, Station station) {
+        if (addUpEndStation(newSection, station)) return null;
+
+        return addBeforeExistingStation(newSection, station);
+    }
+
+    private Section getModifiedSectionAfterAddingAfterExistingStation(Section newSection, Station preStation) {
+        if (addDownEndStation(newSection, preStation)) return null;
+
+        return addAfterExistingStation(newSection, preStation);
     }
 
     private boolean addUpEndStation(Section newSection, Station station) {

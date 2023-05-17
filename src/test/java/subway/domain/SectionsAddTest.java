@@ -112,6 +112,6 @@ class SectionsAddTest {
         //given,when,then
         assertThatThrownBy(() -> sections.add(SECTION_1))
                 .isInstanceOf(SectionException.class)
-                .hasMessageContaining("추가할 수 없는 구간입니다");
+                .hasMessageContaining("이미 존재하는 구간입니다");
     }
 }
