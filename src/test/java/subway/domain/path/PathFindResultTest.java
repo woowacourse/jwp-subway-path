@@ -14,20 +14,30 @@ import subway.domain.core.Section;
 class PathFindResultTest {
 
     @Test
-    void 경로_상의_모든_구간을_반환한다() {
+    void 경로_상의_모든_구간을_라인_기준으로_반환한다() {
         // given
         final PathFindResult pathFindResult = new PathFindResult(new Distance(5), List.of(
-                new SectionEdge(new Section("A", "B", 5), 500),
-                new SectionEdge(new Section("B", "C", 10), 500)
+                new SectionEdge(new Section("A", "B", 5), 500, 1),
+                new SectionEdge(new Section("B", "C", 10), 500, 1),
+                new SectionEdge(new Section("C", "T", 10), 500, 2),
+                new SectionEdge(new Section("T", "D", 10), 500, 1)
         ));
 
         // when
-        final List<Section> sections = pathFindResult.toSections();
+        final List<List<Section>> result = pathFindResult.toSections();
 
         // then
-        assertThat(sections).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(List.of(
-                new Section("A", "B", 5),
-                new Section("B", "C", 10)
+        assertThat(result).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(List.of(
+                List.of(
+                        new Section("A", "B", 5),
+                        new Section("B", "C", 10)
+                ),
+                List.of(
+                        new Section("C", "T", 10)
+                ),
+                List.of(
+                        new Section("T", "D", 10)
+                )
         ));
     }
 }

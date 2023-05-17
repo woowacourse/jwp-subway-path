@@ -1,7 +1,6 @@
 package subway.domain.path;
 
-import static java.util.stream.Collectors.toList;
-
+import java.util.ArrayList;
 import java.util.List;
 import subway.domain.core.Distance;
 import subway.domain.core.Section;
@@ -16,14 +15,24 @@ public class PathFindResult {
         this.path = path;
     }
 
-    public List<Section> toSections() {
-        return path.stream()
-                .map(SectionEdge::toSection)
-                .collect(toList());
+    public List<List<Section>> toSections() {
+        final List<List<Section>> result = new ArrayList<>();
+
+        List<Section> currentLine = new ArrayList<>();
+        long currentLineId = 0;
+        for (SectionEdge sectionEdge : path) {
+            if (currentLine.isEmpty() || currentLineId != sectionEdge.getLineId()) {
+                currentLine = new ArrayList<>();
+                currentLineId = sectionEdge.getLineId();
+                result.add(currentLine);
+            }
+            currentLine.add(sectionEdge.toSection());
+        }
+        return result;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistanceValue() {
+        return distance.getValue();
     }
 
     public List<SectionEdge> getPath() {

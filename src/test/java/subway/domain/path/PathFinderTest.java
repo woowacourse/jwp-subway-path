@@ -35,7 +35,7 @@ class PathFinderTest {
 
         // then
         assertAll(
-                () -> assertThat(pathFindResult.getDistance().getValue()).isEqualTo(7),
+                () -> assertThat(pathFindResult.getDistanceValue()).isEqualTo(7),
                 () -> assertThat(pathFindResult.getPath())
                         .usingRecursiveComparison()
                         .ignoringExpectedNullFields()

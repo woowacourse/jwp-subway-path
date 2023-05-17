@@ -14,7 +14,7 @@ class SectionEdgeTest {
     @Test
     void Section을_반환한다() {
         // given
-        final SectionEdge sectionEdge = new SectionEdge(new Section("A", "B", 5), 500);
+        final SectionEdge sectionEdge = new SectionEdge(new Section("A", "B", 5), 500, 1);
 
         // when
         final Section result = sectionEdge.toSection();

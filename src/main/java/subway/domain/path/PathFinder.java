@@ -44,7 +44,7 @@ public class PathFinder {
 
     private void addEdgeByLine(final WeightedMultigraph<String, SectionEdge> graph, final Line line) {
         for (final Section section : line.getSections()) {
-            final SectionEdge sectionEdge = new SectionEdge(section, line.getSurcharge());
+            final SectionEdge sectionEdge = new SectionEdge(section, line.getSurcharge(), line.getId());
             graph.addEdge(section.getStartName(), section.getEndName(), sectionEdge);
             graph.setEdgeWeight(sectionEdge, section.getDistanceValue());
         }

@@ -7,10 +7,12 @@ public class SectionEdge extends DefaultWeightedEdge {
 
     private final Section section;
     private final int surcharge;
+    private final long lineId;
 
-    public SectionEdge(final Section section, int amount) {
+    public SectionEdge(final Section section, final int surcharge, final long lineId) {
         this.section = section;
-        this.surcharge = amount;
+        this.surcharge = surcharge;
+        this.lineId = lineId;
     }
 
     public Section toSection() {
@@ -19,5 +21,18 @@ public class SectionEdge extends DefaultWeightedEdge {
 
     public int getSurcharge() {
         return surcharge;
+    }
+
+    public long getLineId() {
+        return lineId;
+    }
+
+    @Override
+    public String toString() {
+        return "SectionEdge{" +
+                "section=" + section +
+                ", surcharge=" + surcharge +
+                ", lineId=" + lineId +
+                '}';
     }
 }
