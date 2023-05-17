@@ -89,7 +89,6 @@ public class StationControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isBadRequest());
         }
-
     }
 
     @Nested
@@ -117,7 +116,6 @@ public class StationControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().json(responseBody));
         }
-
     }
 
     @Nested
@@ -150,7 +148,6 @@ public class StationControllerTest {
             mockMvc.perform(get("/stations/{id}", id))
                     .andExpect(status().isNotFound());
         }
-
     }
 
     @Nested
@@ -189,7 +186,6 @@ public class StationControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isNotFound());
         }
-
     }
 
     @Nested
@@ -220,7 +216,5 @@ public class StationControllerTest {
             mockMvc.perform(delete("/stations/{id}", id))
                     .andExpect(status().isNotFound());
         }
-
     }
-
 }

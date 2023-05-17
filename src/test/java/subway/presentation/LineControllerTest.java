@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.business.LineService;
 import subway.exception.bad_request.DuplicatedLineNameException;
 import subway.exception.not_found.LineNotFoundException;
+import subway.exception.not_found.StationNotFoundException;
 import subway.presentation.dto.request.LineRequest;
 import subway.presentation.dto.request.StationRegisterInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
@@ -72,6 +73,21 @@ class LineControllerTest {
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("실패 - 존재하지 않는 역")
+        void fail_station_not_found() throws Exception {
+            // given
+            final LineRequest requestDto = new LineRequest("신분당선", "bg-red-600", 10, "하이염", "신논현");
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+            given(lineService.save(any(), any())).willThrow(StationNotFoundException.class);
+
+            // when, then
+            mockMvc.perform(post("/lines")
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isNotFound());
         }
     }
 
