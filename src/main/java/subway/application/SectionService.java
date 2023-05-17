@@ -28,7 +28,7 @@ public class SectionService {
         this.sectionRepository = sectionRepository;
     }
 
-    public void addTwoStations(final Long lineId, final AddOneSectionRequest addOneSectionRequest) {
+    public void addOneSection(final Long lineId, final AddOneSectionRequest addOneSectionRequest) {
         Line line = lineDao.findById(lineId);
         Station upStation = stationDao.findById(addOneSectionRequest.getUpStationId());
         Station downStation = stationDao.findById(addOneSectionRequest.getDownStationId());
@@ -43,7 +43,7 @@ public class SectionService {
         sectionRepository.save(section);
     }
 
-    public void addOneStation(final Long lineId, final AddTwoSectionRequest addTwoSectionRequest) {
+    public void addTwoSections(final Long lineId, final AddTwoSectionRequest addTwoSectionRequest) {
         Line line = lineDao.findById(lineId);
         Station newStation = stationDao.findById(addTwoSectionRequest.getNewStationId());
         Station upStation = stationDao.findById(addTwoSectionRequest.getUpStationId());

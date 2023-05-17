@@ -20,15 +20,15 @@ public class SectionController {
     }
 
     @PostMapping("/lines/{lineId}")
-    public ResponseEntity<Void> addTwoStation(@PathVariable Long lineId, @RequestBody AddOneSectionRequest addOneSectionRequest) {
-        sectionService.addTwoStations(lineId, addOneSectionRequest);
+    public ResponseEntity<Void> addOneSection(@PathVariable Long lineId, @RequestBody AddOneSectionRequest addOneSectionRequest) {
+        sectionService.addOneSection(lineId, addOneSectionRequest);
 
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
     @PostMapping("/lines/{lineId}/stations")
     public ResponseEntity<Void> addTwoSection(@PathVariable Long lineId, @RequestBody AddTwoSectionRequest addTwoSectionRequest) {
-        sectionService.addOneStation(lineId, addTwoSectionRequest);
+        sectionService.addTwoSections(lineId, addTwoSectionRequest);
 
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }

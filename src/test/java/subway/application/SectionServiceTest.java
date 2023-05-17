@@ -50,7 +50,7 @@ class SectionServiceTest {
 
         // when
         AddOneSectionRequest addOneSectionRequest = new AddOneSectionRequest(1L, 2L, 10);
-        sectionService.addTwoStations(1L, addOneSectionRequest);
+        sectionService.addOneSection(1L, addOneSectionRequest);
 
         // then
         assertAll(
