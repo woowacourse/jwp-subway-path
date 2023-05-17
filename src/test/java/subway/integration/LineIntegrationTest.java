@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Distance;
+import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Station;
 import subway.domain.Stations;
 import subway.dto.LineCreateRequest;
@@ -34,6 +36,7 @@ public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
     private Stations stations;
+    private Lines lines;
 
     @BeforeEach
     public void setUp() {
@@ -42,6 +45,7 @@ public class LineIntegrationTest extends IntegrationTest {
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
         stations = lineService.getStations();
+        lines = lineService.getLines();
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -97,10 +101,27 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLines() {
         // given
+        Station station = new Station("역삼역", new Distance(10));
+        stations.addStation(station);
+        Station nextStation = new Station("선릉역", new Distance(0));
+        stations.addStation(nextStation);
+
+
+        //when
+        LineCreateRequest lineCreateRequest =
+                new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
+
+        LineCreateRequest lineCreateRequest2 =
+                new LineCreateRequest(lineRequest2, new StationRequest("역삼역", "선릉역", 10));
+
+        lines.addLine(new Line(lineRequest1.getName(), lineRequest1.getColor(), new Stations(List.of(station, nextStation))));
+        lines.addLine(new Line(lineRequest2.getName(), lineRequest2.getColor(), new Stations(List.of(station, nextStation))));
+
+
         ExtractableResponse<Response> createResponse1 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineCreateRequest)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -108,7 +129,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> createResponse2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
+                .body(lineCreateRequest2)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -129,6 +150,7 @@ public class LineIntegrationTest extends IntegrationTest {
         List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
+
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 

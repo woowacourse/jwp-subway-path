@@ -16,13 +16,3 @@ create table if not exists LINE
     head_station bigint,
     primary key(id)
 );
-
-INSERT INTO LINE (name, color, head_station)
-values('1호선', '파란색', 1);
-
-INSERT INTO STATION (name, next_station, distance, line_id)
-values('강남역', 2, 10, 1);
-INSERT INTO STATION (name, next_station, distance, line_id)
-values('역삼역', 3, 5, 1);
-INSERT INTO STATION (name, next_station, distance, line_id)
-values('잠실역', 0, null, 1);

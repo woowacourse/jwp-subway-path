@@ -8,6 +8,7 @@ import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
+import java.util.List;
 
 @Repository
 public class LineDao {
@@ -31,5 +32,19 @@ public class LineDao {
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
+    }
+
+    public List<LineEntity> findAll() {
+        String sql = "SELECT * FROM LINE";
+
+        return jdbcTemplate.query(sql,
+                (resultSet, rowNum) -> {
+                    Long id = resultSet.getLong("id");
+                    String name = resultSet.getString("name");
+                    String color = resultSet.getString("color");
+                    Long headStationId = resultSet.getLong("head_station");
+
+                    return new LineEntity(id, name, color, headStationId);
+                });
     }
 }
