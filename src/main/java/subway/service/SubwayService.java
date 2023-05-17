@@ -1,12 +1,10 @@
 package subway.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
-import subway.domain.ShortestRoute;
-import subway.domain.ShortestRouteWithStation;
+import subway.domain.Path;
 import subway.domain.Station;
 import subway.domain.Subway;
 import subway.repository.LineRepository;
@@ -23,7 +21,7 @@ public class SubwayService {
     }
 
     @Transactional(readOnly = true)
-    public ShortestRouteWithStation findShortestRoute(Long startStationId, Long endStationId) {
+    public Path findShortestRoute(Long startStationId, Long endStationId) {
         // TODO : 존재하는 역이지만 노선에 등록되지 않았을 경우는 어떻게 해야할까?
         Station startStation = stationRepository.getStation(startStationId);
         Station endStation = stationRepository.getStation(endStationId);
@@ -33,11 +31,6 @@ public class SubwayService {
         Subway subway = Subway.create(stations, lines);
 
         // TODO : 노선에 등록되어 있지만, 경로를 찾을 수 없을 때는 어떻게 해야할까? -> NPE 터지네
-        ShortestRoute shortestRoute = subway.findShortestRoute(startStation, endStation);
-        List<Station> stationsInRoute = shortestRoute.getStationNamesInRoute().stream()
-                .map(name -> stationRepository.getStation(name))
-                .collect(Collectors.toList());
-
-        return new ShortestRouteWithStation(stationsInRoute, shortestRoute.getTotalDistance(), 0);
+        return subway.findShortestRoute(startStation, endStation);
     }
 }

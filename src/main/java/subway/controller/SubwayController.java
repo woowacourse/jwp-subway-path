@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.domain.ShortestRouteWithStation;
+import subway.domain.Path;
 import subway.dto.request.FindShortestRouteRequest;
 import subway.dto.response.FindShortestRouteResponse;
 import subway.service.SubwayService;
@@ -21,9 +21,9 @@ public class SubwayController {
 
     @PostMapping
     public ResponseEntity<FindShortestRouteResponse> findShortestRoute(@RequestBody FindShortestRouteRequest request) {
-        ShortestRouteWithStation shortestRoute = subwayService.findShortestRoute(request.getStartStationId(), request.getEndStationId());
+        Path path = subwayService.findShortestRoute(request.getStartStationId(), request.getEndStationId());
 
-        FindShortestRouteResponse response = FindShortestRouteResponse.from(shortestRoute);
+        FindShortestRouteResponse response = FindShortestRouteResponse.from(path);
         return ResponseEntity.ok(response);
     }
 }

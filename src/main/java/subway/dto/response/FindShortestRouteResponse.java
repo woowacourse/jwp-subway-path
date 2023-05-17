@@ -2,6 +2,7 @@ package subway.dto.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import subway.domain.Path;
 import subway.domain.ShortestRouteWithStation;
 
 public class FindShortestRouteResponse {
@@ -15,13 +16,12 @@ public class FindShortestRouteResponse {
         this.totalCharge = totalCharge;
     }
 
-    public static FindShortestRouteResponse from(ShortestRouteWithStation shortestRoute) {
-        List<StationInfoResponse> stationInfos = shortestRoute.getStations()
+    public static FindShortestRouteResponse from(Path path) {
+        List<StationInfoResponse> stationInfos = path.getStations()
                 .stream()
                 .map(station -> new StationInfoResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
-        return new FindShortestRouteResponse(stationInfos, shortestRoute.getTotalDistance(),
-                shortestRoute.getTotalFare());
+        return new FindShortestRouteResponse(stationInfos, path.getTotalDistance(), path.getTotalCharge());
     }
 
     public List<StationInfoResponse> getShortestRoute() {
