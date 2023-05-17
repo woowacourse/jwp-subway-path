@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import subway.domain.DiscountPolicy;
 import subway.domain.FarePolicy;
 import subway.domain.Route;
+import subway.domain.RouteGraph;
 import subway.domain.Section;
-import subway.domain.SubwayGraph;
 import subway.dto.RouteRequest;
 import subway.dto.RouteResponse;
 import subway.dto.StationResponse;
@@ -29,9 +29,9 @@ public class RouteService {
                 .stream()
                 .map(Section::from)
                 .collect(Collectors.toUnmodifiableList());
-        final SubwayGraph subwayGraph = SubwayGraph.from(sections, routeRequest.getSourceStationId(),
+        final RouteGraph routeGraph = RouteGraph.from(sections, routeRequest.getSourceStationId(),
                 routeRequest.getTargetStationId());
-        final Route route = subwayGraph.getRoute();
+        final Route route = routeGraph.getRoute();
         final List<StationResponse> stationResponses = route.getStationIds()
                 .stream()
                 .map(this.stationService::findStationResponseById)

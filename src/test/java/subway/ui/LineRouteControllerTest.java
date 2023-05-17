@@ -9,12 +9,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import subway.application.SubwayService;
+import subway.application.LineRouteService;
 import subway.dto.LineResponse;
+import subway.dto.LineRouteResponse;
 import subway.dto.StationResponse;
-import subway.dto.SubwayResponse;
 
-class SubwayControllerTest {
+class LineRouteControllerTest {
     
     @Test
     @DisplayName("호선에 추가된 역 조회 테스트")
@@ -25,15 +25,15 @@ class SubwayControllerTest {
         final List<StationResponse> stationResponses = List.of(new StationResponse(1L, "교대역"),
                 new StationResponse(2L, "강남역"),
                 new StationResponse(3L, "역삼역"));
-        final SubwayResponse subwayResponse = new SubwayResponse(lineResponse, stationResponses);
-        final SubwayService subwayServiceMock = mock(SubwayService.class);
-        final SubwayController subwayController = new SubwayController(subwayServiceMock);
+        final LineRouteResponse lineRouteResponse = new LineRouteResponse(lineResponse, stationResponses);
+        final LineRouteService lineRouteServiceMock = mock(LineRouteService.class);
+        final LineRouteController lineRouteController = new LineRouteController(lineRouteServiceMock);
         // when
-        when(subwayServiceMock.findAllStationsInLine(lineId)).thenReturn(subwayResponse);
-        final ResponseEntity<SubwayResponse> subwayResponseEntity = subwayController.getStations(lineId);
+        when(lineRouteServiceMock.findAllStationsInLine(lineId)).thenReturn(lineRouteResponse);
+        final ResponseEntity<LineRouteResponse> subwayResponseEntity = lineRouteController.getStations(lineId);
         
         // then
-        Assertions.assertThat(subwayResponseEntity.getBody()).isEqualTo(subwayResponse);
+        Assertions.assertThat(subwayResponseEntity.getBody()).isEqualTo(lineRouteResponse);
         Assertions.assertThat(subwayResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
     
@@ -45,15 +45,15 @@ class SubwayControllerTest {
                 new StationResponse(2L, "강남역"),
                 new StationResponse(3L, "역삼역"));
         final LineResponse lineResponse = new LineResponse(1L, "2호선", "초록색");
-        final SubwayResponse subwayResponse = new SubwayResponse(lineResponse, stationResponses);
-        final SubwayService subwayServiceMock = mock(SubwayService.class);
-        final SubwayController subwayController = new SubwayController(subwayServiceMock);
+        final LineRouteResponse lineRouteResponse = new LineRouteResponse(lineResponse, stationResponses);
+        final LineRouteService lineRouteServiceMock = mock(LineRouteService.class);
+        final LineRouteController lineRouteController = new LineRouteController(lineRouteServiceMock);
         // when
-        when(subwayServiceMock.findAllStations()).thenReturn(List.of(subwayResponse));
-        final ResponseEntity<List<SubwayResponse>> subwayResponseEntity = subwayController.getStations();
+        when(lineRouteServiceMock.findAllStations()).thenReturn(List.of(lineRouteResponse));
+        final ResponseEntity<List<LineRouteResponse>> subwayResponseEntity = lineRouteController.getStations();
         
         // then
-        Assertions.assertThat(subwayResponseEntity.getBody()).isEqualTo(List.of(subwayResponse));
+        Assertions.assertThat(subwayResponseEntity.getBody()).isEqualTo(List.of(lineRouteResponse));
         Assertions.assertThat(subwayResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

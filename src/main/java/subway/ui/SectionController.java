@@ -23,7 +23,7 @@ public class SectionController {
         this.sectionService = sectionService;
     }
     
-    @GetMapping("/line/{lineId}/sections")
+    @GetMapping("/lines/{lineId}/sections")
     public ResponseEntity<List<SectionResponse>> getSections(@PathVariable final long lineId) {
         final List<SectionResponse> sectionResponses = this.sectionService.findSectionsByLineId(lineId);
         return ResponseEntity.ok(sectionResponses);

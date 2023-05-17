@@ -7,20 +7,20 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-public final class SubwayGraph {
+public final class RouteGraph {
     
     private final GraphPath<Long, DefaultWeightedEdge> graphPath;
     
-    private SubwayGraph(final GraphPath<Long, DefaultWeightedEdge> graphPath) {
+    private RouteGraph(final GraphPath<Long, DefaultWeightedEdge> graphPath) {
         this.graphPath = graphPath;
     }
     
-    public static SubwayGraph from(final List<Section> sections, final long upTerminalStationId,
+    public static RouteGraph from(final List<Section> sections, final long upTerminalStationId,
             final long downTerminalStationId) {
         final Graph<Long, DefaultWeightedEdge> subwayMap = generateGraph(sections);
         final GraphPath<Long, DefaultWeightedEdge> path = new DijkstraShortestPath<>(subwayMap)
                 .getPath(upTerminalStationId, downTerminalStationId);
-        return new SubwayGraph(path);
+        return new RouteGraph(path);
     }
     
     private static Graph<Long, DefaultWeightedEdge> generateGraph(final List<Section> sections) {

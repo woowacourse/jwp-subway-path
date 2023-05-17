@@ -8,13 +8,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.dto.LineRequest;
+import subway.dto.LineRouteResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.dto.SubwayResponse;
 import subway.util.Request;
 
-public class SubwayIntegrationTest extends IntegrationTest {
+public class LineRouteIntegrationTest extends IntegrationTest {
     
     private long lastStationId;
     private long lastLineId;
@@ -48,12 +48,12 @@ public class SubwayIntegrationTest extends IntegrationTest {
     @DisplayName("한 노선의 지하철 역들을 순서대로 출력한다")
     @Test
     void findAllStationsInLine() {
-        final SubwayResponse subwayResponse = RestAssured.given().log().all()
+        final LineRouteResponse lineRouteResponse = RestAssured.given().log().all()
                 .when().get("/lines/" + this.lastLineId + "/stations")
                 .then().log().all()
-                .extract().as(SubwayResponse.class);
+                .extract().as(LineRouteResponse.class);
         
-        final List<StationResponse> orderedStations = subwayResponse.getStationResponses();
+        final List<StationResponse> orderedStations = lineRouteResponse.getStationResponses();
         Assertions.assertThat(orderedStations.size()).isEqualTo(3);
         Assertions.assertThat(orderedStations.get(0).getName()).isEqualTo("맨 앞 테스트역");
         Assertions.assertThat(orderedStations.get(1).getName()).isEqualTo("테스트역");
@@ -65,11 +65,11 @@ public class SubwayIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선도를 출력한다")
     @Test
     void findAllLines() {
-        final List<SubwayResponse> subwayResponse = RestAssured.given().log().all()
+        final List<LineRouteResponse> lineRouteResponse = RestAssured.given().log().all()
                 .when().get("/lines/stations")
                 .then().log().all()
-                .extract().jsonPath().getList(".", SubwayResponse.class);
-        final Optional<Long> response = subwayResponse.stream()
+                .extract().jsonPath().getList(".", LineRouteResponse.class);
+        final Optional<Long> response = lineRouteResponse.stream()
                 .filter(subway -> subway.getLineResponse().getId() == this.lastLineId)
                 .findFirst()
                 .map(subway -> {

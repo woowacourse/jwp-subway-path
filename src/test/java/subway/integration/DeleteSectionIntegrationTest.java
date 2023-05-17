@@ -70,7 +70,7 @@ public class DeleteSectionIntegrationTest extends IntegrationTest {
         final int initialSize = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .get("/line/" + this.lastLineId + "/sections")
+                .get("/lines/" + this.lastLineId + "/sections")
                 .then().log().all()
                 .extract()
                 .jsonPath()
@@ -89,7 +89,7 @@ public class DeleteSectionIntegrationTest extends IntegrationTest {
         final int finalSize = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .get("/line/" + this.lastLineId + "/sections")
+                .get("/lines/" + this.lastLineId + "/sections")
                 .then().log().all()
                 .extract()
                 .jsonPath()
@@ -106,7 +106,7 @@ public class DeleteSectionIntegrationTest extends IntegrationTest {
         final int initialSize = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .get("/line/" + this.lastLineId + "/sections")
+                .get("/lines/" + this.lastLineId + "/sections")
                 .then().log().all()
                 .extract()
                 .jsonPath()
@@ -126,7 +126,7 @@ public class DeleteSectionIntegrationTest extends IntegrationTest {
         final int finalSize = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .get("/line/" + this.lastLineId + "/sections")
+                .get("/lines/" + this.lastLineId + "/sections")
                 .then().log().all()
                 .extract()
                 .jsonPath()
@@ -162,7 +162,7 @@ public class DeleteSectionIntegrationTest extends IntegrationTest {
         final int finalSize = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .get("/line/" + this.lastLineId + "/sections")
+                .get("/lines/" + this.lastLineId + "/sections")
                 .then().log().all()
                 .extract()
                 .jsonPath()
