@@ -17,11 +17,6 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(SubwayException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
