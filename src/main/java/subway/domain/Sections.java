@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -122,19 +123,19 @@ public class Sections {
     }
 
     public List<Station> getSortedStations() {
-        Station nowStation = findUpEndPoint();
-        List<Station> sortStation = new ArrayList<>();
-        sortStation.add(nowStation);
 
-        for (int j = 0; j < sections.size(); j++) {
-            for (Section section : sections) {
-                if (section.isNowStation(nowStation)) {
-                    sortStation.add(section.getDownStation());
-                    nowStation = section.getDownStation();
-                }
-            }
+        Map<Station, Station> upToDown = sections.stream()
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+
+        List<Station> orderedStations = new ArrayList<>();
+        Station now = findUpEndPoint();
+
+        while (now != null) {
+            orderedStations.add(now);
+            now = upToDown.get(now);
         }
-        return sortStation;
+
+        return orderedStations;
     }
 
     public List<Section> getSections() {
