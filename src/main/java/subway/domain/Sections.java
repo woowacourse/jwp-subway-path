@@ -39,7 +39,7 @@ public class Sections {
         return newSection;
     }
 
-    public Sections addTwoSections(final Section upSection, final Section downSection) {
+    public void addTwoSections(final Section upSection, final Section downSection) {
         validateTwoSection(upSection, downSection);
 
         Section originSection = findSectionBy(upSection, downSection);
@@ -48,7 +48,7 @@ public class Sections {
             sections.remove(originSection);
             sections.add(upSection);
             sections.add(downSection);
-            return new Sections(this.sections);
+            return;
         }
         throw new IllegalAddSectionException();
     }
@@ -201,7 +201,7 @@ public class Sections {
         return section.getDownStation();
     }
 
-    public Section removeStation(final Line targetLine, final Station targetStation) {
+    public void removeStation(final Line targetLine, final Station targetStation) {
         List<Section> sectionsContainStation = sections.stream()
                 .filter(section -> section.hasSameStation(targetLine, targetStation))
                 .collect(toList());
@@ -211,27 +211,25 @@ public class Sections {
             throw new IllegalRemoveSectionException();
         }
         if (sectionSize == ONLY_ONE_SECTION_SIZE) {
-            return removeOneSection(sectionsContainStation);
+            removeOneSection(sectionsContainStation);
+            return;
         }
-        return removeTwoSections(targetLine, targetStation);
+        removeTwoSections(targetLine, targetStation);
     }
 
-    private Section removeOneSection(final List<Section> sectionsContainStation) {
+    private void removeOneSection(final List<Section> sectionsContainStation) {
         Section section = sectionsContainStation.get(ONLY_ONE_SECTION_INDEX);
         sections.remove(section);
-        return section;
     }
 
-    private Section removeTwoSections(final Line targetLine, final Station targetStation) {
+    private void removeTwoSections(final Line targetLine, final Station targetStation) {
         Section upSection = findSectionByDownStation(targetLine, targetStation);
         Section downSection = findSectionByUpStation(targetLine, targetStation);
-
         Section newSection = Section.combineSection(upSection, downSection);
 
         sections.remove(upSection);
         sections.remove(downSection);
         sections.add(newSection);
-        return newSection;
     }
 
     private Section findSectionByUpStation(final Line line, final Station upStation) {
@@ -248,13 +246,6 @@ public class Sections {
                 .findFirst();
 
         return foundSection.orElseThrow(SectionNotFoundException::new);
-    }
-
-    public List<Section> removeDuplicate(final Sections other) {
-        Set<Section> nonDuplicateSections = new HashSet<>(other.sections);
-        nonDuplicateSections.removeAll(this.sections);
-
-        return List.copyOf(nonDuplicateSections);
     }
 
     public List<Section> getSections() {

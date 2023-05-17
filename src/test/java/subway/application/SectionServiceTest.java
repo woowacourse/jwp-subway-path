@@ -17,9 +17,11 @@ import subway.dao.StationDao;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.AddOneSectionRequest;
 import subway.repository.SectionRepository;
+import java.util.Collections;
 
 @MockitoSettings
 @ExtendWith(MockitoExtension.class)
@@ -47,6 +49,8 @@ class SectionServiceTest {
         when(stationDao.findById(2L)).thenReturn(봉천역);
         Distance distance = new Distance(10);
         Section section = new Section(_2호선, 신림역, 봉천역, distance);
+        when(sectionRepository.findByLine(new Line(1L, "2호선", "초록색")))
+                .thenReturn(new Sections(Collections.emptyList()));
 
         // when
         AddOneSectionRequest addOneSectionRequest = new AddOneSectionRequest(1L, 2L, 10);

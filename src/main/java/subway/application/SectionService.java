@@ -12,7 +12,6 @@ import subway.domain.Station;
 import subway.dto.AddOneSectionRequest;
 import subway.dto.AddTwoSectionRequest;
 import subway.repository.SectionRepository;
-import java.util.List;
 
 @Service
 @Transactional
@@ -36,8 +35,7 @@ public class SectionService {
 
         Section section = new Section(line, upStation, downStation, distance);
 
-        List<Section> savedSections = sectionRepository.findAll();
-        Sections sections = new Sections(savedSections);
+        Sections sections = sectionRepository.findByLine(line);
         sections.add(section);
 
         sectionRepository.save(section);
@@ -54,10 +52,20 @@ public class SectionService {
         Section upSection = new Section(line, upStation, newStation, upDistance);
         Section downSection = new Section(line, newStation, downStation, downDistance);
 
-        Sections sections = new Sections(sectionRepository.findAll());
-        Sections addedSections = sections.addTwoSections(upSection, downSection);
+        Sections sections = sectionRepository.findAll();
+        sections.addTwoSections(upSection, downSection);
 
-        List<Section> changedSections = addedSections.removeDuplicate(sections);
-        sectionRepository.saveSections(changedSections);
+        sectionRepository.update(lineId, sections);
+    }
+
+    public void removeStation(final Long lineId, final Long stationId) {
+        Line line = lineDao.findById(lineId);
+        Station station = stationDao.findById(stationId);
+
+        Sections sections = sectionRepository.findByLine(line);
+
+        sections.removeStation(line, station);
+
+        sectionRepository.update(lineId, sections);
     }
 }
