@@ -52,7 +52,7 @@ class LineControllerTest {
         @Test
         @DisplayName("유효한 노선 정보라면 새로운 노선을 추가한다.")
         void createLine() throws Exception {
-            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색");
+            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색", 300);
 
             given(lineService.createLine(any(LineCreateRequest.class))).willReturn(1L);
 
@@ -67,7 +67,7 @@ class LineControllerTest {
         @Test
         @DisplayName("이름이 공백이라면 400 상태를 반환한다.")
         void createLineWithInvalidName() throws Exception {
-            final LineCreateRequest request = new LineCreateRequest(" ", "초록색");
+            final LineCreateRequest request = new LineCreateRequest(" ", "초록색", 300);
 
             mockMvc.perform(post("/lines")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -80,7 +80,7 @@ class LineControllerTest {
         @Test
         @DisplayName("색이 공백이라면 400 상태를 반환한다.")
         void createLineWithInvalidColor() throws Exception {
-            final LineCreateRequest request = new LineCreateRequest("2호선", " ");
+            final LineCreateRequest request = new LineCreateRequest("2호선", " ", 300);
 
             mockMvc.perform(post("/lines")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +102,7 @@ class LineControllerTest {
                     new StationResponse(1L, "잠실역"),
                     new StationResponse(2L, "잠실새내역")
             );
-            final LineResponse response = new LineResponse(1L, "2호선", "초록색", stations);
+            final LineResponse response = new LineResponse(1L, "2호선", "초록색", 300, stations);
 
             given(lineService.findLineById(1L)).willReturn(response);
 
@@ -112,6 +112,7 @@ class LineControllerTest {
                     .andExpect(jsonPath("$.id").value(1))
                     .andExpect(jsonPath("$.name").value("2호선"))
                     .andExpect(jsonPath("$.color").value("초록색"))
+                    .andExpect(jsonPath("$.extraFare").value(300))
                     .andExpect(jsonPath("$.stations", hasSize(2)))
                     .andExpect(jsonPath("$.stations[0].id").value(1))
                     .andExpect(jsonPath("$.stations[0].name").value("잠실역"))
@@ -143,8 +144,8 @@ class LineControllerTest {
         );
 
         final List<LineResponse> lines = List.of(
-                new LineResponse(1L, "2호선", "초록색", stationsOfLineTwo),
-                new LineResponse(2L, "4호선", "하늘색", stationsOfLineFour));
+                new LineResponse(1L, "2호선", "초록색", 300, stationsOfLineTwo),
+                new LineResponse(2L, "4호선", "하늘색", 400, stationsOfLineFour));
         final LinesResponse response = new LinesResponse(lines);
 
         given(lineService.findLines()).willReturn(response);
@@ -156,6 +157,7 @@ class LineControllerTest {
                 .andExpect(jsonPath("$.lines[0].id").value(1))
                 .andExpect(jsonPath("$.lines[0].name").value("2호선"))
                 .andExpect(jsonPath("$.lines[0].color").value("초록색"))
+                .andExpect(jsonPath("$.lines[0].extraFare").value(300))
                 .andExpect(jsonPath("$.lines[0].stations", hasSize(2)))
                 .andExpect(jsonPath("$.lines[0].stations[0].id").value(1))
                 .andExpect(jsonPath("$.lines[0].stations[0].name").value("잠실역"))
@@ -164,6 +166,7 @@ class LineControllerTest {
                 .andExpect(jsonPath("$.lines[1].id").value(2))
                 .andExpect(jsonPath("$.lines[1].name").value("4호선"))
                 .andExpect(jsonPath("$.lines[1].color").value("하늘색"))
+                .andExpect(jsonPath("$.lines[1].extraFare").value(400))
                 .andExpect(jsonPath("$.lines[1].stations", hasSize(2)))
                 .andExpect(jsonPath("$.lines[1].stations[0].id").value(3))
                 .andExpect(jsonPath("$.lines[1].stations[0].name").value("이수역"))

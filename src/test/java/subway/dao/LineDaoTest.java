@@ -35,7 +35,7 @@ class LineDaoTest {
         @DisplayName("존재하는 ID라면 노선 정보를 반환한다.")
         void findById() {
             //given
-            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
+            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색", 300));
 
             //when
             final Optional<LineEntity> line = lineDao.findById(lineEntity.getId());
@@ -44,7 +44,8 @@ class LineDaoTest {
             assertAll(
                     () -> assertThat(line.get().getId()).isEqualTo(lineEntity.getId()),
                     () -> assertThat(line.get().getName()).isEqualTo(lineEntity.getName()),
-                    () -> assertThat(line.get().getColor()).isEqualTo(lineEntity.getColor())
+                    () -> assertThat(line.get().getColor()).isEqualTo(lineEntity.getColor()),
+                    () -> assertThat(line.get().getExtraFare()).isEqualTo(lineEntity.getExtraFare())
             );
         }
 
@@ -64,8 +65,8 @@ class LineDaoTest {
     @DisplayName("모든 노선을 조회한다.")
     void findAll() {
         //given
-        final LineEntity lineTwo = lineDao.save(new LineEntity("2호선", "초록색"));
-        final LineEntity lineFour = lineDao.save(new LineEntity("4호선", "하늘색"));
+        final LineEntity lineTwo = lineDao.save(new LineEntity("2호선", "초록색", 300));
+        final LineEntity lineFour = lineDao.save(new LineEntity("4호선", "하늘색", 400));
 
         //when
         final List<LineEntity> lines = lineDao.findAll();
@@ -76,9 +77,11 @@ class LineDaoTest {
                 () -> assertThat(lines.get(0).getId()).isEqualTo(lineTwo.getId()),
                 () -> assertThat(lines.get(0).getName()).isEqualTo(lineTwo.getName()),
                 () -> assertThat(lines.get(0).getColor()).isEqualTo(lineTwo.getColor()),
+                () -> assertThat(lines.get(0).getExtraFare()).isEqualTo(lineTwo.getExtraFare()),
                 () -> assertThat(lines.get(1).getId()).isEqualTo(lineFour.getId()),
                 () -> assertThat(lines.get(1).getName()).isEqualTo(lineFour.getName()),
-                () -> assertThat(lines.get(1).getColor()).isEqualTo(lineFour.getColor())
+                () -> assertThat(lines.get(1).getColor()).isEqualTo(lineFour.getColor()),
+                () -> assertThat(lines.get(1).getExtraFare()).isEqualTo(lineFour.getExtraFare())
         );
     }
 
@@ -90,17 +93,18 @@ class LineDaoTest {
         @DisplayName("존재하는 노선이라면 정보를 업데이트한다.")
         void update() {
             //given
-            final LineEntity line = lineDao.save(new LineEntity("2호선", "초록색"));
+            final LineEntity line = lineDao.save(new LineEntity("2호선", "초록색", 300));
 
             //when
-            final int numberOfUpdatedRow = lineDao.update(new LineEntity(line.getId(), "4호선", "하늘색"));
+            final int numberOfUpdatedRow = lineDao.update(new LineEntity(line.getId(), "4호선", "하늘색", 300));
 
             //then
             final LineEntity updatedLine = lineDao.findById(line.getId()).get();
             assertAll(
                     () -> assertThat(numberOfUpdatedRow).isEqualTo(1),
                     () -> assertThat(updatedLine.getName()).isEqualTo("4호선"),
-                    () -> assertThat(updatedLine.getColor()).isEqualTo("하늘색")
+                    () -> assertThat(updatedLine.getColor()).isEqualTo("하늘색"),
+                    () -> assertThat(updatedLine.getExtraFare()).isEqualTo(300)
             );
         }
 
@@ -109,7 +113,7 @@ class LineDaoTest {
         void updateWithNotExistLine() {
             //given
             //when
-            final int numberOfUpdatedRow = lineDao.update(new LineEntity(1L, "4호선", "하늘색"));
+            final int numberOfUpdatedRow = lineDao.update(new LineEntity(1L, "4호선", "하늘색", 300));
 
             //then
             assertThat(numberOfUpdatedRow).isEqualTo(0);

@@ -1,9 +1,9 @@
 package subway.domain.subway.routeMap;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.domain.Path;
 import subway.domain.line.Line;
@@ -13,37 +13,44 @@ import subway.exception.InvalidStationException;
 
 public final class DijkstraRouteMap implements RouteMap {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> paths;
+    private final DijkstraShortestPath<Station, SubwayWeightedEdge> paths;
 
     public DijkstraRouteMap(final List<Line> lines) {
         this.paths = new DijkstraShortestPath<>(setUpGraph(lines));
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> setUpGraph(List<Line> lines) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
-                DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, SubwayWeightedEdge> setUpGraph(List<Line> lines) {
+        final WeightedMultigraph<Station, SubwayWeightedEdge> graph = new WeightedMultigraph<>(
+                SubwayWeightedEdge.class);
         for (Line line : lines) {
-            addSectionsIntoGraph(line.getSections(), graph);
+            addSectionsIntoGraph(line, graph);
         }
         return graph;
     }
 
-    private void addSectionsIntoGraph(final List<Section> sections,
-                                      final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Section section : sections) {
+    private void addSectionsIntoGraph(final Line line,
+                                      final WeightedMultigraph<Station, SubwayWeightedEdge> graph) {
+        for (Section section : line.getSections()) {
             final Station upward = section.getUpward();
             final Station downward = section.getDownward();
             graph.addVertex(upward);
             graph.addVertex(downward);
-            graph.setEdgeWeight(graph.addEdge(upward, downward), section.getDistance());
+            final SubwayWeightedEdge edge = graph.addEdge(upward, downward);
+            edge.setLine(line);
+            graph.setEdgeWeight(edge, section.getDistance());
         }
     }
 
     @Override
     public Path findShortestPath(final Station source, final Station destination) {
         try {
-            final GraphPath<Station, DefaultWeightedEdge> path = paths.getPath(source, destination);
-            return new Path(path.getVertexList(), (int) path.getWeight());
+            final GraphPath<Station, SubwayWeightedEdge> path = paths.getPath(source, destination);
+            final List<SubwayWeightedEdge> edges = path.getEdgeList();
+            final List<Line> borderedLines = edges.stream()
+                    .map(SubwayWeightedEdge::getLine)
+                    .distinct()
+                    .collect(Collectors.toUnmodifiableList());
+            return new Path(path.getVertexList(), borderedLines, (int) path.getWeight());
         } catch (IllegalArgumentException e) {
             throw new InvalidStationException("노선에 등록되지 않은 역 정보입니다.");
         }

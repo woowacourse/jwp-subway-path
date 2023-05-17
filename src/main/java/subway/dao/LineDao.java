@@ -17,8 +17,8 @@ public class LineDao {
     private static final RowMapper<LineEntity> ROW_MAPPER = (rs, rowNum) -> new LineEntity(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
-    );
+            rs.getString("color"),
+            rs.getInt("extra_fare"));
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -27,18 +27,18 @@ public class LineDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
-                .usingColumns("name", "color")
+                .usingColumns("name", "color", "extra_fare")
                 .usingGeneratedKeyColumns("id");
     }
 
     public LineEntity save(final LineEntity lineEntity) {
         final SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(lineEntity);
         final Long lineId = jdbcInsert.executeAndReturnKey(parameterSource).longValue();
-        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraFare());
     }
 
     public Optional<LineEntity> findById(final Long lineId) {
-        final String sql = "SELECT id, name, color FROM line WHERE id = ?";
+        final String sql = "SELECT id, name, color, extra_fare FROM line WHERE id = ?";
         try {
             final LineEntity result = jdbcTemplate.queryForObject(
                     sql,
@@ -52,7 +52,7 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        final String sql = "SELECT id, name, color FROM line";
+        final String sql = "SELECT id, name, color, extra_fare FROM line";
         return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 

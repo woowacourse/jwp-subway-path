@@ -17,7 +17,7 @@ class BillingPolicyByDistanceTest {
     @CsvSource(value = {"5:1250", "11:1250", "15:1350", "55:2050", "58:2150"}, delimiter = ':')
     void calculateFare(int distance, int expected) {
         //given
-        Path path = new Path(Collections.emptyList(), distance);
+        Path path = new Path(Collections.emptyList(), Collections.emptyList(), distance);
         BillingPolicyByDistance billingPolicyByDistance = new BillingPolicyByDistance();
 
         //when

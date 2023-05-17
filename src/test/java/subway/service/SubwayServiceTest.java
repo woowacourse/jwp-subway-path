@@ -51,8 +51,8 @@ class SubwayServiceTest {
             downward = new Station(3L, "서울역");
             final List<Section> sectionForLineTwo = List.of(new Section(upward, middle, 3));
             final List<Section> sectionsForLineFour = List.of(new Section(middle, downward, 4));
-            final Line lineTwo = new Line(1L, "2호선", "초록색", new LinkedList<>(sectionForLineTwo));
-            final Line lineFour = new Line(2L, "4호선", "하늘색", new LinkedList<>(sectionsForLineFour));
+            final Line lineTwo = new Line(1L, "2호선", "초록색", 300, new LinkedList<>(sectionForLineTwo));
+            final Line lineFour = new Line(2L, "4호선", "하늘색", 400, new LinkedList<>(sectionsForLineFour));
             given(lineRepository.findAll()).willReturn(List.of(lineTwo, lineFour));
         }
 

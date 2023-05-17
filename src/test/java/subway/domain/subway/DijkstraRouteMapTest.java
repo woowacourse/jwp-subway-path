@@ -2,7 +2,7 @@ package subway.domain.subway;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,8 +37,8 @@ class DijkstraRouteMapTest {
             final List<Section> sectionForLineTwo = List.of(new Section(upward, middle, 3));
             final List<Section> sectionsForLineFour = List.of(new Section(middle, downward, 4));
 
-            final Line lineTwo = new Line(1L, "2호선", "초록색", new LinkedList<>(sectionForLineTwo));
-            final Line lineFour = new Line(2L, "4호선", "하늘색", new LinkedList<>(sectionsForLineFour));
+            final Line lineTwo = new Line(1L, "2호선", "초록색", 300, new LinkedList<>(sectionForLineTwo));
+            final Line lineFour = new Line(2L, "4호선", "하늘색", 400, new LinkedList<>(sectionsForLineFour));
 
             routeMap = new DijkstraRouteMap(List.of(lineTwo, lineFour));
         }

@@ -34,8 +34,8 @@ class SubwayControllerIntegrationTest extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            final Line lineTwo = lineRepository.save(new Line("2호선", "초록색"));
-            final Line lineFour = lineRepository.save(new Line("4호선", "하늘색"));
+            final Line lineTwo = lineRepository.save(new Line("2호선", "초록색", 300));
+            final Line lineFour = lineRepository.save(new Line("4호선", "하늘색", 400));
             upward = stationRepository.save(new Station("잠실역"));
             middle = stationRepository.save(new Station("사당역"));
             downward = stationRepository.save(new Station("서울역"));

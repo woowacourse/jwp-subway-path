@@ -23,8 +23,13 @@ public class LineRepository {
     }
 
     public Line save(final Line line) {
-        final LineEntity entity = lineDao.save(new LineEntity(line.getId(), line.getName(), line.getColor()));
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
+        final LineEntity entity = lineDao.save(new LineEntity(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                line.getExtraFare()
+        ));
+        return new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare());
     }
 
     public Line findById(final Long lineId) {
@@ -42,7 +47,7 @@ public class LineRepository {
     }
 
     public void update(final Line line) {
-        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor()));
+        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare()));
         sectionDao.deleteAllByLineId(line.getId());
         final List<SectionEntity> entities = generateSectionEntities(line);
         sectionDao.saveAll(entities);
@@ -53,6 +58,7 @@ public class LineRepository {
                 lineEntity.getId(),
                 lineEntity.getName(),
                 lineEntity.getColor(),
+                lineEntity.getExtraFare(),
                 generateSections(sectionEntities)
         );
     }
