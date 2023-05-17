@@ -1,7 +1,7 @@
 package subway.station.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -29,6 +29,14 @@ class H2StationRepositoryTest {
     final Station station = h2StationRepository.findById(any());
 
     assertThat(station).isNotNull();
+  }
+
+  @Test
+  void findByExistedId() {
+    given(stationDao.findById(any())).willReturn(Optional.empty());
+
+    assertThatThrownBy(() -> h2StationRepository.findById(any()))
+        .isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
