@@ -1,6 +1,7 @@
 package subway.dto.api;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import subway.domain.Line;
 import subway.domain.Station;
@@ -17,6 +18,16 @@ public class LineResponse {
         this.name = name;
         this.color = color;
         this.stations = stations;
+    }
+
+    public static LineResponse of(Line line, Map<Long, Station> stationIdToStation) {
+        List<Station> stations = line.getStationEdges().stream()
+                .map(stationEdge -> {
+                    Long downStationId = stationEdge.getDownStationId();
+                    return stationIdToStation.get(downStationId);
+                })
+                .collect(Collectors.toList());
+        return LineResponse.of(line, stations);
     }
 
     public static LineResponse of(Line line, List<Station> stations) {

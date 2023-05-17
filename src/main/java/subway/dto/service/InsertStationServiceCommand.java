@@ -7,9 +7,9 @@ public class InsertStationServiceCommand {
     private final String direction;
     private final Integer distance;
 
-    public InsertStationServiceCommand(Long AddStationId, Long lineId, Long adjacentStationId, String direction,
+    public InsertStationServiceCommand(Long addStationId, Long lineId, Long adjacentStationId, String direction,
                                        Integer distance) {
-        this.stationId = AddStationId;
+        this.stationId = addStationId;
         this.lineId = lineId;
         this.adjacentStationId = adjacentStationId;
         this.direction = direction;

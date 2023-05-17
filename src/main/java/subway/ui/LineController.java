@@ -73,19 +73,9 @@ public class LineController {
 
     private List<LineResponse> buildLineResponses(List<Line> lines, Map<Long, Station> stationIdToStation) {
         List<LineResponse> lineResponses = lines.stream()
-                .map(line -> buildResponseOf(line, stationIdToStation))
+                .map(line -> LineResponse.of(line, stationIdToStation))
                 .collect(Collectors.toList());
         return lineResponses;
-    }
-
-    private LineResponse buildResponseOf(Line line, Map<Long, Station> stationIdToStation) {
-        List<Station> stations = line.getStationEdges().stream()
-                .map(stationEdge -> {
-                    Long downStationId = stationEdge.getDownStationId();
-                    return stationIdToStation.get(downStationId);
-                })
-                .collect(Collectors.toList());
-        return LineResponse.of(line, stations);
     }
 
     @GetMapping("/{id}")

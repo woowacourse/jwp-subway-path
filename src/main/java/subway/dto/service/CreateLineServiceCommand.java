@@ -1,5 +1,7 @@
 package subway.dto.service;
 
+import subway.domain.Line;
+
 public class CreateLineServiceCommand {
     private final String name;
     private final String color;
@@ -12,6 +14,10 @@ public class CreateLineServiceCommand {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public Line toLine() {
+        return Line.of(name, color, upStationId, downStationId, distance);
     }
 
     public String getName() {

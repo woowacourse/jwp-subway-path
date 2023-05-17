@@ -32,8 +32,7 @@ public class LineService {
         validate(command.getUpStationId());
         validate(command.getDownStationId());
 
-        final Line line = Line.of(command.getName(), command.getColor(),
-                command.getUpStationId(), command.getDownStationId(), command.getDistance());
+        final Line line = command.toLine();
 
         return lineRepository.create(line);
     }
