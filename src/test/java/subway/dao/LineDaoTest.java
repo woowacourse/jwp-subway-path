@@ -1,24 +1,29 @@
 package subway.dao;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.Line;
+import org.springframework.test.context.jdbc.Sql;
+import subway.persistence.dao.LineDao;
+import subway.persistence.entity.LineEntity;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
+@Sql("/testdata.sql")
 @JdbcTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class LineDaoTest {
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
     private LineDao lineDao;
 
     @BeforeEach
@@ -26,56 +31,75 @@ class LineDaoTest {
         lineDao = new LineDao(jdbcTemplate);
     }
 
-    @DisplayName("노선을 저장할 수 있다")
     @Test
-    void insert() {
-        //given
-        final Line line = new Line("1호선", "blue");
+    void 이름과_색으로_호선을_등록한다() {
+        ///given
+        final LineEntity lineEntity = new LineEntity("2호선", "green");
 
-        //when
-        lineDao.insert(line);
+        ///when
+        final LineEntity newLineEntity = lineDao.insert(lineEntity);
 
-        //then
-        final int count = countRowsInTableWhere(jdbcTemplate, "line", "name='1호선' AND color='blue'");
-        assertThat(count).isOne();
+        ///then
+        assertThat(newLineEntity.getId()).isSameAs(1L);
     }
 
-    @DisplayName("중복된 이름을 넣었을 때 예외 발생")
     @Test
-    void insertDuplicatedNameException() {
-        //given
-        final Line line = new Line("1호선", "blue");
-        lineDao.insert(line);
-
-        //when,then
-        assertThatThrownBy(() -> lineDao.insert(line))
-                .isInstanceOf(DataIntegrityViolationException.class);
-    }
-
-    @DisplayName("모든 노선을 조회한다.")
-    @Test
-    void findAll() {
-        //given
-        final Line line = new Line("1호선", "blue");
-        final Line line2 = new Line("2호선", "green");
-        lineDao.insert(line);
+    void 전체_노선을_조회한다() {
+        ///given
+        final LineEntity line1 = new LineEntity("1호선", "blue");
+        final LineEntity line2 = new LineEntity("2호선", "green");
+        final LineEntity line3 = new LineEntity("3호선", "orange");
+        lineDao.insert(line1);
         lineDao.insert(line2);
+        lineDao.insert(line3);
 
-        //when
-        final List<Line> lines = lineDao.findAll();
+        ///when
+        final List<LineEntity> allLines = lineDao.findAll();
 
-        //then
-        assertThat(lines).hasSize(2);
+        ///then
+        assertThat(allLines.size()).isSameAs(3);
     }
 
-    @DisplayName("노선 id를 통해 특정 노선을 조회한다")
     @Test
-    void findById() {
-        //given
-        final Line line = new Line("1호선", "blue");
-        final Line insertedLine = lineDao.insert(line);
+    void 식별자를_통해_특정노선을_조회한다() {
+        ///given
+        lineDao.insert(new LineEntity("1호선", "blue"));
 
-        //when, then
-        assertThat(lineDao.findById(insertedLine.getId())).isPresent();
+        ///when
+        final LineEntity line = lineDao.findById(1L);
+
+        ///then
+        assertThat(line.getId()).isSameAs(1L);
+    }
+
+    @Test
+    void 노선_정보를_수정한다(){
+        ///given
+        lineDao.insert(new LineEntity("구1호선", "darkblue"));
+        LineEntity lineEntity = new LineEntity(1L,"새1호선","blue");
+
+        ///when
+        lineDao.update(lineEntity);
+        final LineEntity updated = lineDao.findById(1L);
+
+        ///then
+        assertThat(updated.getId()).isSameAs(1L);
+        assertThat(updated.getName()).isEqualTo("새1호선");
+        assertThat(updated.getColor()).isEqualTo("blue");
+    }
+
+    @Test
+    void 노선을_삭제한다(){
+        ///given
+        lineDao.insert(new LineEntity("구1호선", "darkblue"));
+        assertThat(lineDao.findById(1L)).isNotNull();
+
+        ///when
+        lineDao.deleteById(1L);
+
+        ///then
+        assertThatThrownBy(
+                () -> lineDao.findById(1L)
+        ).isInstanceOf(EmptyResultDataAccessException.class);
     }
 }
