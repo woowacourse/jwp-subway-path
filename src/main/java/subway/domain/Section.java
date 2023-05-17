@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Section {
@@ -98,5 +100,26 @@ public class Section {
                 ", downStation=" + downStation +
                 ", distance=" + distance +
                 '}';
+    }
+
+    public List<Section> divide(final Section other) {
+        if (other.upStation.equals(this.upStation) && other.downStation.equals(this.downStation)) {
+            throw new IllegalArgumentException("나누는 구간과 역이 같습니다.");
+        }
+        if (!other.upStation.equals(this.upStation) && !other.downStation.equals(this.downStation)) {
+            throw new IllegalArgumentException("구간을 나눌 수 없는 역입니다.");
+        }
+        if (other.distance.isSameOrOverThan(this.distance)) {
+            throw new IllegalArgumentException("나누는 구간의 길이보다 깁니다.");
+        }
+        List<Section> sections = new ArrayList<>();
+        sections.add(other);
+        if (other.upStation.equals(this.upStation)) {
+            sections.add(Section.of(other.downStation, this.downStation, this.distance.minus(other.distance)));
+        }
+        if (other.downStation.equals(this.downStation)) {
+            sections.add(Section.of(this.upStation, other.upStation, this.distance.minus(other.distance)));
+        }
+        return sections;
     }
 }

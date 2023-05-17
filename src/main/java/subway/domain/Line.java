@@ -24,26 +24,14 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line addSection(final Section upSection, final Section downSection) {
-        if (upSection.equals(Section.EMPTY_SECTION) && downSection.equals(Section.EMPTY_SECTION)) {
-            throw new IllegalArgumentException("추가할 구간이 존재하지 않습니다.");
-        }
-        if (upSection.equals(Section.EMPTY_SECTION)) {
-            return new Line(id, name, color, sections.addFirstSection(downSection));
-        }
-        if (downSection.equals(Section.EMPTY_SECTION)) {
-            return new Line(id, name, color, sections.addLastSection(upSection));
-        }
-        return new Line(id, name, color, sections.addMiddleSection(upSection, downSection));
+    public Line addSection(final Section section) {
+        Sections updateSections = sections.addSection(section);
+        return new Line (id, name, color, updateSections);
     }
 
-    // TODO: 5/16/23 Section이 가지고 있는 분기 좀 나눠 갖기
     public Line removeStation(final Station station) {
-        return new Line(id, name, color, sections.removeStation(station));
-    }
-
-    public Line addInitSection(final Section newSection) {
-        return new Line(id, name, color, sections.addInitSection(newSection));
+        Sections updateSections = sections.removeStation(station);
+        return new Line(id, name, color, updateSections);
     }
 
     public List<Station> findAllStation() {

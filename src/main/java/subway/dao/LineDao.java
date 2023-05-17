@@ -44,23 +44,6 @@ public class LineDao {
                 .longValue();
     }
 
-    public void saveAll(final List<LineEntity> lines) {
-        final String sql = "INSERT INTO lines (name, color) VALUES (?, ?) ";
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                LineEntity line = lines.get(i);
-                ps.setString(1, line.getName());
-                ps.setString(1, line.getColor());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return lines.size();
-            }
-        });
-    }
-
     public List<LineEntity> findAll() {
         String sql = "select id, name, color from lines";
         return jdbcTemplate.query(sql, rowMapper);
@@ -75,13 +58,9 @@ public class LineDao {
         }
     }
 
-    public Optional<LineEntity> findByName(final String lineName) {
-        final String sql = "SELECT id, name, color FROM lines WHERE name = ?";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineName));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
+    public void update(final LineEntity lineEntity) {
+        final String sql = "UPDATE lines SET name = ?, color = ? WHERE id = ?";
+        jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
     }
 
     public void delete(LineEntity lineEntity) {
@@ -89,19 +68,4 @@ public class LineDao {
         jdbcTemplate.update(sql, lineEntity.getId());
     }
 
-    public void deleteAll(final List<LineEntity> lines) {
-        final String sql = "delete from lines where id = ?";
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                LineEntity line = lines.get(i);
-                ps.setLong(1, line.getId());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return lines.size();
-            }
-        });
-    }
 }

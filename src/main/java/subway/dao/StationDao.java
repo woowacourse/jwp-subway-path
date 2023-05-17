@@ -33,22 +33,6 @@ public class StationDao {
                     resultSet.getString("name")
             );
 
-    public void save(final List<StationEntity> stations) {
-        final String sql = "INSERT INTO stations (name) VALUES (?)";
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                StationEntity station = stations.get(i);
-                ps.setString(1, station.getName());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return stations.size();
-            }
-        });
-    }
-
     public Long save(final String stationName) {
         final MapSqlParameterSource name = new MapSqlParameterSource().addValue("name", stationName);
         return insertAction.executeAndReturnKeyHolder(name).getKey().longValue();
@@ -75,7 +59,7 @@ public class StationDao {
     }
 
     public Optional<StationEntity> findByName(final String upStationName) {
-        final String sql = "SELECT id, name FROM STATIONS WHERE name = ?";
+        final String sql = "SELECT id, name FROM stations WHERE name = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, upStationName));
         } catch (EmptyResultDataAccessException exception) {
@@ -84,28 +68,12 @@ public class StationDao {
     }
 
     public void update(final StationEntity stationEntity) {
-        final String sql = "UPDATE stations SET name = ? WHERE = ? ";
+        final String sql = "UPDATE stations SET name = ? WHERE id = ? ";
         jdbcTemplate.update(sql, stationEntity.getName(), stationEntity.getId());
     }
 
     public void deleteById(Long id) {
         final String sql = "DELETE FROM stations WHERE id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    public void delete(final List<StationEntity> stations) {
-        final String sql = "DELETE FROM stations WHERE id = ?";
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                StationEntity station = stations.get(i);
-                ps.setLong(1, station.getId());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return stations.size();
-            }
-        });
     }
 }

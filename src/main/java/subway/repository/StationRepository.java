@@ -3,7 +3,6 @@ package subway.repository;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
-import subway.domain.Line;
 import subway.domain.Station;
 
 import java.util.List;
@@ -34,18 +33,6 @@ public class StationRepository {
                 id,
                 station.getName()
         );
-    }
-
-    public void updateByLine(final Line beforeLine, final Line updateLine) {
-        List<Station> beforeStations = beforeLine.findAllStation();
-        beforeStations.removeAll(updateLine.findAllStation());
-        List<StationEntity> beforeStationEntities = convertToStationEntities(beforeStations);
-        stationDao.delete(beforeStationEntities);
-
-        List<Station> updateStations = updateLine.findAllStation();
-        updateStations.removeAll(beforeLine.findAllStation());
-        List<StationEntity> updateStationEntities = convertToStationEntities(updateStations);
-        stationDao.save(updateStationEntities);
     }
 
     public void update(final Station before, final Station after) {

@@ -22,6 +22,10 @@ public class Distance {
         }
     }
 
+    public Distance minus(final Distance other) {
+        return new Distance(this.value - other.value);
+    }
+
     public Distance sum(final Distance other) {
         return new Distance(this.value + other.value);
     }
@@ -30,7 +34,7 @@ public class Distance {
         return this.value == upDistance.value + downDistance.value;
     }
 
-    public boolean isSameOrOver(final Distance other) {
+    public boolean isSameOrOverThan(final Distance other) {
         return this.value >= other.value;
     }
 

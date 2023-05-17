@@ -68,17 +68,11 @@ public class LineRepository {
         return allSectionsByLindId;
     }
 
-    public void updateBySubway(final Subway beforeSubway, final Subway updateSubway) {
-        List<Line> beforeLines = beforeSubway.getLines();
-        beforeLines.removeAll(updateSubway.getLines());
-        List<LineEntity> beforeLineEntities = convertToLineEntities(beforeLines);
-        lineDao.deleteAll(beforeLineEntities);
-
-        List<Line> updateLines = updateSubway.getLines();
-        updateLines.removeAll(beforeSubway.getLines());
-        List<LineEntity> updateLineEntities = convertToLineEntities(updateLines);
-        lineDao.saveAll(updateLineEntities);
+    public void update(final Line updateLine) {
+        LineEntity lineEntity = LineEntity.from(updateLine);
+        lineDao.update(lineEntity);
     }
+
 
     private List<LineEntity> convertToLineEntities(final List<Line> lines) {
         return lines.stream()

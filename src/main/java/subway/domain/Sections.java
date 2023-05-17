@@ -15,45 +15,62 @@ public class Sections {
         return new Sections(new ArrayList<>());
     }
 
-    public Sections addMiddleSection(final Section upSection, final Section downSection) {
-        Map<Station, Section> upToDown = getUpToDown();
-        if (!upToDown.containsKey(upSection.getUpStation())) {
-            throw new IllegalArgumentException("해당 노선에 존재하지 않는 상행역입니다.");
+    public Sections addSection(final Section section) {
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+        Optional<Section> maybeSectionByUpStation = findSectionByUpStation(upStation);
+        Optional<Section> maybeSectionByDownStation = findSectionByDownStation(downStation);
+        if (maybeSectionByUpStation.isPresent() && maybeSectionByDownStation.isPresent()) {
+            throw new IllegalArgumentException("이미 해당 구간이 존재합니다.");
         }
-        Section targetSection = upToDown.get(upSection.getUpStation());
-        if (targetSection.isPossibleDivideTo(upSection, downSection)) {
-            List<Section> editSections = new ArrayList<>(sections);
-            editSections.remove(targetSection);
-            editSections.add(upSection);
-            editSections.add(downSection);
-            return new Sections(editSections);
+        if (maybeSectionByUpStation.isPresent()) {
+            Section beforeSection = maybeSectionByUpStation.get();
+            return addMiddleSection(beforeSection, section);
         }
-        throw new IllegalArgumentException("역을 추가할 수 없습니다.");
+        if ( maybeSectionByDownStation.isPresent()) {
+            Section beforeSection = maybeSectionByDownStation.get();
+            return addMiddleSection(beforeSection, section);
+        }
+        if (downStation.equals(getFirstStation())) {
+            return addEdgeSection(section);
+        }
+        if (upStation.equals(getLastStation())) {
+            return addEdgeSection(section);
+        }
+        return addInitSection(section);
     }
 
-    public Sections addFirstSection(final Section section) {
-        if (!getFirstStation().equals(section.getDownStation())) {
-            throw new IllegalArgumentException("기존 상행종점과 이을 수 없는 구간입니다.");
-        }
-        List<Section> editSections = new ArrayList<>(sections);
-        editSections.add(section);
-        return new Sections(editSections);
+    private Sections addEdgeSection(final Section section) {
+        List<Section> updateSections = new ArrayList<>(sections);
+        updateSections.add(section);
+        return new Sections(updateSections);
     }
 
-    public Sections addLastSection(final Section section) {
-        if (!getLastStation().equals(section.getUpStation())) {
-            throw new IllegalArgumentException("기존 하행종점과 이을 수 없는 구간입니다.");
-        }
-        List<Section> editSections = new ArrayList<>(sections);
-        editSections.add(section);
-        return new Sections(editSections);
+    private Sections addMiddleSection(final Section beforeSection, final Section section) {
+        List<Section> updateSection = new ArrayList<>(sections);
+        List<Section> dividedSections = beforeSection.divide(section);
+        updateSection.remove(beforeSection);
+        updateSection.addAll(dividedSections);
+        return new Sections(updateSection);
     }
 
-    public Sections addInitSection(final Section section) {
+    private Optional<Section> findSectionByUpStation(final Station upStation) {
+        return sections.stream()
+                .filter(section -> section.getUpStation().equals(upStation))
+                .findAny();
+    }
+
+    private Optional<Section> findSectionByDownStation(final Station downStation) {
+        return sections.stream()
+                .filter(section -> section.getDownStation().equals(downStation))
+                .findAny();
+    }
+
+    private Sections addInitSection(final Section section) {
         if (!sections.isEmpty()) {
-            throw new IllegalArgumentException("이미 구간이 있는 노선입니다.");
+            throw new IllegalArgumentException("추가할 수 없는 구간입니다.");
         }
-        List<Section> editSections = new ArrayList<>(sections);
+        List<Section> editSections = new ArrayList<>();
         editSections.add(section);
         return new Sections(editSections);
     }
