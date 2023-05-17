@@ -1,4 +1,4 @@
-package subway.line;
+package subway.line.presentation;
 
 import java.net.URI;
 import java.util.List;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.line.dto.LineCreateDto;
 import subway.line.dto.LineResponseDto;
+import subway.line.service.LineService;
 import subway.section.dto.SectionCreateDto;
 import subway.station.dto.StationResponseDto;
 

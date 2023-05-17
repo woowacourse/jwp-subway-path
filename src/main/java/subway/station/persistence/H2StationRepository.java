@@ -1,8 +1,10 @@
 package subway.station.persistence;
 
+import org.springframework.stereotype.Repository;
 import subway.station.domain.Station;
 import subway.station.domain.StationRepository;
 
+@Repository
 public class H2StationRepository implements StationRepository {
 
   private final StationDao stationDao;
