@@ -346,7 +346,7 @@ HTTP/1.1 204 No Content
 - [x] exists 쿼리 활용
 - [x] 조회 쿼리에서 필요한 데이터만 조회하도록 쿼리문 변경
 - [x] 구간 정보 조회 기능 추가
+- [x] @Transactional 적용
 - [ ] 테스트 시, Map 타입 대신 실제 요청 객체 생성해서 사용하도록 변경
 - [ ] @AutoConfigureTestDatabase의 default 옵션 제거
 - [ ] 가독성을 위해 개행 추가 및 제거
-- [ ] 필요없는 주석문 제거
