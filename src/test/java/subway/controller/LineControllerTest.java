@@ -21,7 +21,6 @@ import subway.application.LineService;
 import subway.domain.exception.EmptySectionException;
 import subway.domain.exception.NoSuchStationException;
 import subway.dto.SectionRequest;
-import subway.dto.StationDeleteRequest;
 import subway.ui.LineController;
 
 @WebMvcTest(LineController.class)
@@ -69,25 +68,16 @@ class LineControllerTest {
     @DisplayName("노선의 역을 제거한다")
     @Test
     void deleteStation() throws Exception {
-        String body = objectMapper.writeValueAsString(
-                new StationDeleteRequest(1L));
-
-        this.mockMvc.perform(delete("/lines/1/station")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
+        this.mockMvc.perform(delete("/lines/1/stations/1"))
                 .andExpect(status().isNoContent());
     }
 
     @DisplayName("노선 역 제거에 실패한다")
     @Test
     void deleteStations() throws Exception {
-        String body = objectMapper.writeValueAsString(
-                new StationDeleteRequest(1L));
         doThrow(new NoSuchStationException()).when(lineService).deleteStation(anyLong(), any());
 
-        this.mockMvc.perform(delete("/lines/1/station")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
+        this.mockMvc.perform(delete("/lines/1/stations/1"))
                 .andExpect(status().isBadRequest());
     }
 }

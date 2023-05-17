@@ -14,7 +14,6 @@ import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
-import subway.dto.StationDeleteRequest;
 
 @Service
 public class LineService {
@@ -85,9 +84,9 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public void deleteStation(Long lineId, StationDeleteRequest request) {
+    public void deleteStation(Long lineId, Long stationId) {
         Line line = lineRepository.findBy(lineId);
-        Station station = stationDao.findById(request.getStationId());
+        Station station = stationDao.findById(stationId);
 
         line.remove(station);
 

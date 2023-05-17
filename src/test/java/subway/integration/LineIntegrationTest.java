@@ -25,7 +25,6 @@ import io.restassured.response.Response;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
-import subway.dto.StationDeleteRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 class LineIntegrationTest extends IntegrationTest {
@@ -411,9 +410,7 @@ class LineIntegrationTest extends IntegrationTest {
         // when
         RestAssured
                 .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationDeleteRequest(JAMSIL_ID))
-                .when().delete("/lines/{lineId}/station", lineId)
+                .when().delete("/lines/{lineId}/stations/{stationId}", lineId, JAMSIL_ID)
                 .then().log().all()
                 .extract();
 

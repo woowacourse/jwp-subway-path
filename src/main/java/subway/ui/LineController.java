@@ -19,7 +19,6 @@ import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
-import subway.dto.StationDeleteRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -65,10 +64,9 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}/station")
-    public ResponseEntity<Void> deleteStations(@PathVariable Long id,
-            @RequestBody StationDeleteRequest request) {
-        lineService.deleteStation(id, request);
+    @DeleteMapping("/{lineId}/stations/{stationId}")
+    public ResponseEntity<Void> deleteStations(@PathVariable Long lineId, @PathVariable Long stationId) {
+        lineService.deleteStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 
