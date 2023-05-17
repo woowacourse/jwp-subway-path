@@ -1,4 +1,4 @@
-package subway.ui.line;
+package subway.adapter.in.web.line;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -7,43 +7,45 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import subway.adapter.out.persistence.repository.LineJdbcAdapter;
+import subway.adapter.out.persistence.repository.SectionJdbcAdapter;
+import subway.adapter.out.persistence.repository.StationJdbcAdapter;
+import subway.application.dto.StationResponse;
 import subway.common.IntegrationTest;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.domain.repository.StationRepository;
-import subway.application.dto.StationResponse;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FindLineControllerTest extends IntegrationTest {
 
     @Autowired
-    private LineRepository lineRepository;
+    private LineJdbcAdapter lineJdbcAdapter;
     @Autowired
-    private StationRepository stationRepository;
+    private StationJdbcAdapter stationJdbcAdapter;
     @Autowired
-    private SectionRepository sectionRepository;
+    private SectionJdbcAdapter sectionJdbcAdapter;
 
     @Test
     @DisplayName("get /lines/{id}  정렬된 구간이 출력됩니다.")
     void findStationsByLine() {
-        Long lineId = lineRepository.createLine(new Line("1호선"));
+        Long lineId = lineJdbcAdapter.createLine(new Line("1호선"));
 
-        stationRepository.createStation(new Station("비버"));
-        stationRepository.createStation(new Station("라빈"));
-        stationRepository.createStation(new Station("허브신"));
-        stationRepository.createStation(new Station("허브신도"));
+        stationJdbcAdapter.createStation(new Station("비버"));
+        stationJdbcAdapter.createStation(new Station("라빈"));
+        stationJdbcAdapter.createStation(new Station("허브신"));
+        stationJdbcAdapter.createStation(new Station("허브신도"));
 
         List<Section> sections = List.of(
                 new Section(lineId, new Station("비버"), new Station("라빈"), 5L),
                 new Section(lineId, new Station("허브신"), new Station("허브신도"), 5L),
                 new Section(lineId, new Station("라빈"), new Station("허브신"), 5L));
 
-        sectionRepository.saveSection(lineId, sections);
+        sectionJdbcAdapter.saveSection(lineId, sections);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when().get("/lines/" + lineId)
                 .then().log().all()

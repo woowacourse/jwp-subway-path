@@ -16,6 +16,7 @@ public class DeleteLineController {
     public DeleteLineController(final DeleteLineUseCase deleteLineUseCase) {
         this.deleteLineUseCase = deleteLineUseCase;
     }
+
     @DeleteMapping("/{line_id}")
     public ResponseEntity<Void> deleteLine(@PathVariable("line_id") @NonNull Long lineId) {
         deleteLineUseCase.deleteLine(lineId);

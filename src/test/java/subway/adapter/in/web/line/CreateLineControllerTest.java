@@ -1,4 +1,4 @@
-package subway.ui.line;
+package subway.adapter.in.web.line;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import subway.adapter.in.web.line.dto.LineRequest;
+import subway.application.port.out.line.LineQueryPort;
 import subway.common.IntegrationTest;
 import subway.domain.Line;
-import subway.adapter.out.persistence.repository.LineJdbcAdapter;
-import subway.adapter.in.web.line.dto.LineRequest;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class CreateLineControllerTest extends IntegrationTest {
 
     @Autowired
-    private LineJdbcAdapter lineRepository;
+    private LineQueryPort lineQueryPort;
 
     @Test
     @DisplayName("post /lines  노선을 추가한다.")
@@ -40,7 +40,7 @@ class CreateLineControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
-                () -> assertThat(lineRepository.findAll()).usingRecursiveComparison().ignoringFields("id").isEqualTo(List.of(new Line(1L, "1호선"))
+                () -> assertThat(lineQueryPort.findAll()).usingRecursiveComparison().ignoringFields("id").isEqualTo(List.of(new Line(1L, "1호선"))
                 ));
     }
 }

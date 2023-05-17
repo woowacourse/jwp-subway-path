@@ -3,9 +3,10 @@ package subway.application.service.line;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.adapter.in.web.line.dto.LineRequest;
-import subway.adapter.out.persistence.repository.LineJdbcAdapter;
 import subway.application.port.in.line.CreateLineUseCase;
 import subway.application.port.in.line.DeleteLineUseCase;
+import subway.application.port.out.line.LineCommandPort;
+import subway.application.port.out.line.LineQueryPort;
 import subway.domain.Line;
 
 import java.util.Optional;
@@ -14,24 +15,26 @@ import java.util.Optional;
 @Transactional
 public class LineCommandService implements CreateLineUseCase, DeleteLineUseCase {
 
-    private final LineJdbcAdapter lineJdbcAdapter;
+    private final LineCommandPort lineCommandPort;
+    private final LineQueryPort lineQueryPort;
 
-    public LineCommandService(final LineJdbcAdapter lineJdbcAdapter) {
-        this.lineJdbcAdapter = lineJdbcAdapter;
+    public LineCommandService(final LineCommandPort lineCommandPort, final LineQueryPort lineQueryPort) {
+        this.lineCommandPort = lineCommandPort;
+        this.lineQueryPort = lineQueryPort;
     }
 
     public Long createLine(final LineRequest lineRequest) {
         final Line createLine = new Line(lineRequest.getName());
 
-        Optional<Line> line = lineJdbcAdapter.findByName(createLine);
+        Optional<Line> line = lineQueryPort.findByName(createLine);
 
         if (line.isPresent()) {
             throw new IllegalArgumentException("이미 저장되어있는 노선입니다.");
         }
 
-        return lineJdbcAdapter.createLine(line.get());
+        return lineCommandPort.createLine(createLine);
     }
     public void deleteLine(final Long lineIdRequest) {
-        lineJdbcAdapter.deleteById(lineIdRequest);
+        lineCommandPort.deleteById(lineIdRequest);
     }
 }

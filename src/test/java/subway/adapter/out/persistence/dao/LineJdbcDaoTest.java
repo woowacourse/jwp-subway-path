@@ -1,4 +1,4 @@
-package subway.persistence.dao;
+package subway.adapter.out.persistence.dao;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.adapter.out.persistence.dao.LineJdbcDao;
 import subway.adapter.out.persistence.entity.LineEntity;
 
 import java.util.List;

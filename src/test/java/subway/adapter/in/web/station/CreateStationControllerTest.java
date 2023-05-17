@@ -1,4 +1,4 @@
-package subway.ui.station;
+package subway.adapter.in.web.station;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -8,10 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import subway.adapter.in.web.station.dto.StationCreateRequest;
+import subway.adapter.out.persistence.repository.StationJdbcAdapter;
 import subway.common.IntegrationTest;
 import subway.domain.Station;
-import subway.adapter.out.persistence.repository.StationJdbcAdapter;
-import subway.adapter.in.web.station.dto.StationCreateRequest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

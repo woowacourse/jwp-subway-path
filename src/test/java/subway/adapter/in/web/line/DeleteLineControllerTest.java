@@ -1,4 +1,4 @@
-package subway.ui.line;
+package subway.adapter.in.web.line;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import subway.adapter.out.persistence.repository.LineJdbcAdapter;
 import subway.common.IntegrationTest;
 import subway.domain.Line;
-import subway.adapter.out.persistence.repository.LineJdbcAdapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -25,7 +25,7 @@ class DeleteLineControllerTest extends IntegrationTest {
         final Long lineId = lineRepository.createLine(new Line("1호선"));
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when().delete("/lines/"+lineId)
+                .when().delete("/lines/" + lineId)
                 .then().log().all()
                 .extract();
 
