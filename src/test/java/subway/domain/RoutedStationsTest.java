@@ -14,7 +14,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class RoutedStationsFactoryTest {
+class RoutedStationsTest {
 
     @DisplayName("구간 목록을 전달받아 하행 기준으로 연결된 역 연결 정보를 생성한다")
     @Test
@@ -27,7 +27,7 @@ class RoutedStationsFactoryTest {
                 LINE1_SECTION_ST5_ST6
         );
 
-        RoutedStations result = RoutedStationsFactory.create(sections);
+        RoutedStations result = RoutedStations.from(sections);
 
         for (Section section : sections) {
             assertThat(result.containsEdge(section.getLeft(), section.getRight()))
@@ -47,7 +47,7 @@ class RoutedStationsFactoryTest {
                 LINE1_SECTION_ST5_ST6
         );
 
-        assertThatThrownBy(() -> RoutedStationsFactory.create(sections))
+        assertThatThrownBy(() -> RoutedStations.from(sections))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("하행 종점은 1개여야 합니다.");
     }
@@ -63,7 +63,7 @@ class RoutedStationsFactoryTest {
                 new Section(FIXTURE_STATION_4, FIXTURE_STATION_6, new Distance(10))
         );
 
-        assertThatThrownBy(() -> RoutedStationsFactory.create(sections))
+        assertThatThrownBy(() -> RoutedStations.from(sections))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("상행 종점은 1개여야 합니다.");
     }

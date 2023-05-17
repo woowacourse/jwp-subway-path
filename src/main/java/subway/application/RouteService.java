@@ -9,8 +9,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.MultiRoutedStations;
-import subway.domain.MultiRoutedStationsFactory;
-import subway.domain.Section;
+import subway.domain.RoutedStations;
 import subway.domain.Station;
 import subway.domain.exception.RequestDataNotFoundException;
 import subway.dto.RouteResponse;
@@ -33,13 +32,14 @@ public class RouteService {
         Station sourceStation = stationDao.findById(sourceStationId)
                 .orElseThrow(() -> new RequestDataNotFoundException("출발 역이 존재하지 않습니다."));
         Station targetStation = stationDao.findById(targetStationId)
-                .orElseThrow(() -> new RequestDataNotFoundException("출발 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new RequestDataNotFoundException("도착 역이 존재하지 않습니다."));
 
-        Map<Line, List<Section>> sectionsByLine = lineDao.findAll()
+        Map<Line, RoutedStations> sectionsByLine = lineDao.findAll()
                 .stream()
-                .collect(Collectors.toMap(line -> line, line -> sectionDao.findByLineId(line.getId())));
+                .collect(Collectors.toMap(line -> line,
+                        line -> RoutedStations.from(sectionDao.findByLineId(line.getId()))));
 
-        MultiRoutedStations multiRoutedStations = MultiRoutedStationsFactory.create(sectionsByLine);
+        MultiRoutedStations multiRoutedStations = MultiRoutedStations.from(sectionsByLine);
 
         // TODO 최단경로 구해서 거리, 요금 계산 후 반환
         // TODO 해당 역의 어느 호선 열차를 타는지도 알려줘야 할까?

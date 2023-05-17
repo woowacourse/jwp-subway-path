@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.domain.exception.EmptyRoutedStationsSearchResult;
 import subway.domain.exception.EmptySectionOperationException;
@@ -25,7 +24,7 @@ public class LineMap {
     }
 
     public static LineMap of(final List<Section> sections) {
-        return new LineMap(RoutedStationsFactory.create(sections));
+        return new LineMap(RoutedStations.from(sections));
     }
 
     public void add(final Station base,
@@ -153,11 +152,7 @@ public class LineMap {
     }
 
     public List<Section> extractSections() {
-        return routedStations.edgeSet()
-                .stream()
-                .map(edge -> new Section(routedStations.getEdgeSource(edge), routedStations.getEdgeTarget(edge),
-                        new Distance((int) routedStations.getEdgeWeight(edge))))
-                .collect(Collectors.toList());
+        return routedStations.extractSections();
     }
 
     public List<Station> getOrderedStations() {
