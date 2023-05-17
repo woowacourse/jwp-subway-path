@@ -164,7 +164,7 @@ Host: localhost:8080
 
 #### Response example
 ```text
-HTTP/1.1 200 OK
+HTTP/1.1 204 No Content
 Content-Type: application/json
 ```
 

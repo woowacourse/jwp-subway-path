@@ -112,7 +112,7 @@ public class LineControllerIntegratedTest {
                 .body(stationDeleteRequest)
                 .when().delete("/lines/1/station")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.NO_CONTENT.value());
 
     }
 

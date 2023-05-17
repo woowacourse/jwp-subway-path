@@ -89,7 +89,7 @@ public class LineControllerTest {
         mockMvc.perform(delete("/lines/1/station")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @DisplayName("노선의 이름과 모든 역의 이름을 반환한다.")
