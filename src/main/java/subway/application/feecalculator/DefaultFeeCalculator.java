@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultFeeCalculator implements FeeCalculator {
     private static final int DEFAULT_FEE = 1250;
+    private static final int ADDITIONAL_FEE = 100;
     private static final int BASIC_DISTANCE = 10;
     private static final int ADDITIONAL_DISTANCE = 50;
-    private static final int ADDITIONAL_FEE = 100;
     private static final double UNIT_DISTANCE = 5d;
     private static final double LONGER_UNIT_DISTANCE = 8d;
 
@@ -15,8 +15,8 @@ public class DefaultFeeCalculator implements FeeCalculator {
     public int calculateFee(final int distance) {
 
         int fee = DEFAULT_FEE;
-        int distanceBeforeFifty = 0;
-        int distanceAfterFifty = 0;
+        int distanceBeforeFifty;
+        int distanceAfterFifty;
 
         distanceBeforeFifty = distance - BASIC_DISTANCE;
         distanceAfterFifty = distance - ADDITIONAL_DISTANCE;
