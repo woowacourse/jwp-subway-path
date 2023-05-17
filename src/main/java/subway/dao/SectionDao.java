@@ -2,7 +2,6 @@ package subway.dao;
 
 import java.sql.PreparedStatement;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
 
@@ -12,14 +11,6 @@ import java.util.List;
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
-            new SectionEntity(
-                    rs.getLong("line_id"),
-                    rs.getObject("up_station_id", Long.class),
-                    rs.getObject("down_station_id", Long.class),
-                    rs.getInt("distance")
-            );
 
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -38,7 +29,13 @@ public class SectionDao {
 
     public List<SectionEntity> findByLineId(final Long lineId) {
         final String sql = "SELECT up_station_id, down_station_id, distance FROM section WHERE line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                new SectionEntity(
+                        lineId,
+                        rs.getLong("up_station_id"),
+                        rs.getLong("down_station_id"),
+                        rs.getInt("distance")
+                ), lineId);
     }
 
     public void deleteAllByLineId(final Long lineId) {

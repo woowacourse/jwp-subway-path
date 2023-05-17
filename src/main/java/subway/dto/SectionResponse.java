@@ -1,14 +1,32 @@
 package subway.dto;
 
+import subway.entity.SectionEntity;
+
 public class SectionResponse {
 
-    private final Long id;
+    private final Long upStationId;
+    private final Long downStationId;
+    private final int distance;
 
-    public SectionResponse(final Long id) {
-        this.id = id;
+    private SectionResponse(final Long upStationId, final Long downStationId, final int distance) {
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
+    public static SectionResponse of(final SectionEntity section) {
+        return new SectionResponse(section.getUpStationId(), section.getDownStationId(), section.getDistance());
+    }
+
+    public Long getUpStationId() {
+        return upStationId;
+    }
+
+    public Long getDownStationId() {
+        return downStationId;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }

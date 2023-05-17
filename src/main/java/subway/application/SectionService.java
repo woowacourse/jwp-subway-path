@@ -9,6 +9,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionRequest;
+import subway.dto.SectionResponse;
 import subway.entity.SectionEntity;
 
 import java.util.List;
@@ -79,5 +80,11 @@ public class SectionService {
                                 stationDao.findById(it.getDownStationId()).orElseThrow().toDomain()))
                         .collect(Collectors.toList())
         );
+    }
+
+    public List<SectionResponse> findByLineId(final Long lineId) {
+        return sectionDao.findByLineId(lineId).stream()
+                .map(SectionResponse::of)
+                .collect(Collectors.toList());
     }
 }

@@ -262,6 +262,34 @@ Response
 HTTP/1.1 201 Created
 ```
 
+### Section 조회
+
+Request
+```http
+GET /sections?lineId=1 HTTP/1.1
+Host: localhost:8080
+...
+```
+
+Response
+```http
+HTTP/1.1 200 OK
+...
+
+[
+    {
+        "upStationId": 1,
+        "downStationId": 3,
+        "distance": 6
+    },
+    {
+        "upStationId": 3,
+        "downStationId": 2,
+        "distance": 4
+    }
+]
+```
+
 ### Section 삭제
 
 Request
@@ -317,6 +345,7 @@ HTTP/1.1 204 No Content
 - [x] Collections.emptyList() 활용
 - [x] exists 쿼리 활용
 - [x] 조회 쿼리에서 필요한 데이터만 조회하도록 쿼리문 변경
+- [x] 구간 정보 조회 기능 추가
 - [ ] 테스트 시, Map 타입 대신 실제 요청 객체 생성해서 사용하도록 변경
 - [ ] @AutoConfigureTestDatabase의 default 옵션 제거
 - [ ] 가독성을 위해 개행 추가 및 제거
