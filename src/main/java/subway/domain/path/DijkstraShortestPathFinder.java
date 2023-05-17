@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
@@ -15,17 +16,19 @@ import subway.domain.section.Section;
 public class DijkstraShortestPathFinder implements ShortestPathFinder {
 
     @Override
-    public List<Section> findShortestPath(final List<Section> sections, final Station startStation,
-                                          final Station endStation) {
-        WeightedMultigraph<Station, SectionDijkstraEdge> graph
+    public Path findShortestPath(final List<Section> sections, final Station startStation,
+                                 final Station endStation) {
+        final WeightedMultigraph<Station, SectionDijkstraEdge> graph
                 = new WeightedMultigraph<>(SectionDijkstraEdge.class);
         initGraph(sections, graph);
         final DijkstraShortestPath<Station, SectionDijkstraEdge> shortestPath
                 = new DijkstraShortestPath<>(graph);
-        return shortestPath.getPath(startStation, endStation)
-                .getEdgeList().stream()
+
+        final GraphPath<Station, SectionDijkstraEdge> graphPath = shortestPath.getPath(startStation, endStation);
+        final List<Section> sectionList = graphPath.getEdgeList().stream()
                 .map(SectionDijkstraEdge::getSection)
                 .collect(toUnmodifiableList());
+        return new Path(graphPath.getVertexList(), sectionList);
     }
 
     private void initGraph(final List<Section> sections, final WeightedMultigraph<Station, SectionDijkstraEdge> graph) {
