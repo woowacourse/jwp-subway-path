@@ -2,6 +2,7 @@ package subway.dao;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Line;
 import subway.domain.SectionEntity;
 import subway.domain.Station;
+import java.util.List;
 
 @JdbcTest
 @Sql("/schema.sql")
@@ -86,5 +88,22 @@ class SectionDaoTest {
 
         // then
         assertThatThrownBy(() -> sectionDao.findById(savedId));
+    }
+
+    @Test
+    void 특정_호선ID와_일치하는_모든_Section_조회() {
+        // given
+        SectionEntity sectionEntity = new SectionEntity(1L, 1L, 2L, 10);
+        sectionDao.insert(sectionEntity);
+
+        // when
+        List<SectionEntity> result = sectionDao.findByLineId(1L);
+        List<SectionEntity> result2 = sectionDao.findByLineId(2L);
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(1),
+                () -> assertThat(result2).hasSize(0)
+        );
     }
 }
