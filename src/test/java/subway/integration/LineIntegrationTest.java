@@ -1,18 +1,21 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
+import subway.dto.LineResponse;
+import subway.dto.StationResponse;
+import subway.dto.StationsByLineResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -73,59 +76,83 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선과 해당하는 역을 조회한다.")
     @Test
     void findStationsByLineId() {
-        RestAssured
-                .given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines/{lineId}", 1)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("lineResponse.id", equalTo(1))
-                .body("lineResponse.name", equalTo("2호선"))
-                .body("lineResponse.color", equalTo("Green"))
-                .body("stationResponses.size()", equalTo(4))
-                .body("stationResponses[0].id", equalTo(1))
-                .body("stationResponses[0].name", equalTo("후추"))
-                .body("stationResponses[1].id", equalTo(2))
-                .body("stationResponses[1].name", equalTo("디노"))
-                .body("stationResponses[2].id", equalTo(3))
-                .body("stationResponses[2].name", equalTo("조앤"))
-                .body("stationResponses[3].id", equalTo(4))
-                .body("stationResponses[3].name", equalTo("로운"));
+                .extract();
+
+        StationsByLineResponse stationsByLineResponse = response.as(StationsByLineResponse.class);
+        LineResponse lineResponse = stationsByLineResponse.getLineResponse();
+        List<StationResponse> stationResponses = stationsByLineResponse.getStationResponses();
+
+        assertSoftly(softly -> {
+            softly.assertThat(lineResponse.getId()).isEqualTo(1L);
+            softly.assertThat(lineResponse.getName()).isEqualTo("2호선");
+            softly.assertThat(lineResponse.getColor()).isEqualTo("Green");
+
+            softly.assertThat(stationResponses.size()).isEqualTo(4);
+            softly.assertThat(stationResponses.get(0).getId()).isEqualTo(1L);
+            softly.assertThat(stationResponses.get(0).getName()).isEqualTo("후추");
+            softly.assertThat(stationResponses.get(1).getId()).isEqualTo(2L);
+            softly.assertThat(stationResponses.get(1).getName()).isEqualTo("디노");
+            softly.assertThat(stationResponses.get(2).getId()).isEqualTo(3L);
+            softly.assertThat(stationResponses.get(2).getName()).isEqualTo("조앤");
+            softly.assertThat(stationResponses.get(3).getId()).isEqualTo(4L);
+            softly.assertThat(stationResponses.get(3).getName()).isEqualTo("로운");
+        });
     }
 
     @DisplayName("모든 지하철 노선과 해당하는 역을 차례로 조회한다.")
     @Test
     void findLines() {
-        RestAssured
-                .given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body("$", hasSize(2))
-                .body("[0].lineResponse.id", equalTo(1))
-                .body("[0].lineResponse.name", equalTo("2호선"))
-                .body("[0].lineResponse.color", equalTo("Green"))
-                .body("[0].stationResponses", hasSize(4))
-                .body("[0].stationResponses[0].id", equalTo(1))
-                .body("[0].stationResponses[0].name", equalTo("후추"))
-                .body("[0].stationResponses[1].id", equalTo(2))
-                .body("[0].stationResponses[1].name", equalTo("디노"))
-                .body("[0].stationResponses[2].id", equalTo(3))
-                .body("[0].stationResponses[2].name", equalTo("조앤"))
-                .body("[0].stationResponses[3].id", equalTo(4))
-                .body("[0].stationResponses[3].name", equalTo("로운"))
-                .body("[1].lineResponse.id", equalTo(2))
-                .body("[1].lineResponse.name", equalTo("8호선"))
-                .body("[1].lineResponse.color", equalTo("pink"))
-                .body("[1].stationResponses", hasSize(3))
-                .body("[1].stationResponses[0].id", equalTo(3))
-                .body("[1].stationResponses[0].name", equalTo("조앤"))
-                .body("[1].stationResponses[1].id", equalTo(5))
-                .body("[1].stationResponses[1].name", equalTo("포비"))
-                .body("[1].stationResponses[2].id", equalTo(4))
-                .body("[1].stationResponses[2].name", equalTo("로운"));
+                .extract();
+
+        List<StationsByLineResponse> stationsByLineResponses = response.jsonPath()
+                .getList(".", StationsByLineResponse.class);
+
+        assertSoftly(softly -> {
+            softly.assertThat(stationsByLineResponses.size()).isEqualTo(2);
+
+            StationsByLineResponse stationsByLineResponse1 = stationsByLineResponses.get(0);
+            LineResponse line1 = stationsByLineResponse1.getLineResponse();
+            List<StationResponse> stations1 = stationsByLineResponse1.getStationResponses();
+
+            softly.assertThat(line1.getId()).isEqualTo(1L);
+            softly.assertThat(line1.getName()).isEqualTo("2호선");
+            softly.assertThat(line1.getColor()).isEqualTo("Green");
+            softly.assertThat(stations1.size()).isEqualTo(4);
+            softly.assertThat(stations1.get(0).getId()).isEqualTo(1L);
+            softly.assertThat(stations1.get(0).getName()).isEqualTo("후추");
+            softly.assertThat(stations1.get(1).getId()).isEqualTo(2L);
+            softly.assertThat(stations1.get(1).getName()).isEqualTo("디노");
+            softly.assertThat(stations1.get(2).getId()).isEqualTo(3L);
+            softly.assertThat(stations1.get(2).getName()).isEqualTo("조앤");
+            softly.assertThat(stations1.get(3).getId()).isEqualTo(4L);
+            softly.assertThat(stations1.get(3).getName()).isEqualTo("로운");
+
+            StationsByLineResponse stationsByLineResponse2 = stationsByLineResponses.get(1);
+            LineResponse line2 = stationsByLineResponse2.getLineResponse();
+            List<StationResponse> stations2 = stationsByLineResponse2.getStationResponses();
+
+            softly.assertThat(line2.getId()).isEqualTo(2L);
+            softly.assertThat(line2.getName()).isEqualTo("8호선");
+            softly.assertThat(line2.getColor()).isEqualTo("pink");
+            softly.assertThat(stations2.size()).isEqualTo(3);
+            softly.assertThat(stations2.get(0).getId()).isEqualTo(3L);
+            softly.assertThat(stations2.get(0).getName()).isEqualTo("조앤");
+            softly.assertThat(stations2.get(1).getId()).isEqualTo(5L);
+            softly.assertThat(stations2.get(1).getName()).isEqualTo("포비");
+            softly.assertThat(stations2.get(2).getId()).isEqualTo(4L);
+            softly.assertThat(stations2.get(2).getName()).isEqualTo("로운");
+        });
     }
 
 
@@ -134,8 +161,7 @@ public class LineIntegrationTest extends IntegrationTest {
     void updateLine() {
         // given
         ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
                 .then().log().all().
