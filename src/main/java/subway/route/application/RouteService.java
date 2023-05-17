@@ -3,7 +3,6 @@ package subway.route.application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import subway.line.domain.Lines;
 import subway.line.repository.LineRepository;
 import subway.route.application.dto.RouteDto;
@@ -31,7 +30,7 @@ public class RouteService {
         this.lineRepository = lineRepository;
     }
 
-    public RouteDto findRoute(@RequestParam("source") Long sourceStationId, @RequestParam("destination") Long destinationStationId) {
+    public RouteDto findRoute(Long sourceStationId, Long destinationStationId) {
         final Station source = stationService.findStationById(sourceStationId);
         final Station destination = stationService.findStationById(destinationStationId);
 

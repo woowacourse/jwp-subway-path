@@ -7,7 +7,10 @@ import java.util.List;
 
 class DtoMapper {
 
-    public static RouteDto toRouteDto(List<RouteSegment> route, int calculate) {
-        return null;
+    private DtoMapper() {
+    }
+
+    public static RouteDto toRouteDto(List<RouteSegment> route, int fare) {
+        return new RouteDto(route, fare);
     }
 }
