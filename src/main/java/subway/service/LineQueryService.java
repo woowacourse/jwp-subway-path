@@ -6,7 +6,6 @@ import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.domain.Line;
 import subway.global.exception.line.CanNotFoundLineException;
-import subway.service.dto.SearchLineRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,13 +22,13 @@ public class LineQueryService {
         this.sectionQueryService = sectionQueryService;
     }
 
-    public List<Line> searchLines(final SearchLineRequest searchLineRequest) {
+    public List<Line> searchLines(final String lineName) {
 
-        if (searchLineRequest == null) {
+        if (lineName == null) {
             return searchAllLine();
         }
 
-        return List.of(searchSpecificLine(searchLineRequest));
+        return List.of(searchSpecificLine(lineName));
     }
 
     public List<Line> searchAllLine() {
@@ -44,8 +43,7 @@ public class LineQueryService {
                            .collect(Collectors.toList());
     }
 
-    private Line searchSpecificLine(final SearchLineRequest searchLineRequest) {
-        final String lineName = searchLineRequest.getLineName();
+    private Line searchSpecificLine(final String lineName) {
         return searchByLineName(lineName);
     }
 
@@ -59,5 +57,9 @@ public class LineQueryService {
                 lineEntity.getName(),
                 sectionQueryService.searchSectionsByLineId(lineEntity.getId())
         );
+    }
+
+    public boolean isExistLine(final String lineName) {
+        return lineDao.findByLineName(lineName).isPresent();
     }
 }

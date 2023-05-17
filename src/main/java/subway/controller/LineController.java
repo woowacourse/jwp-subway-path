@@ -2,9 +2,9 @@ package subway.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import subway.domain.Line;
@@ -12,7 +12,6 @@ import subway.service.LineCommandService;
 import subway.service.LineQueryService;
 import subway.service.dto.LineResponse;
 import subway.service.dto.RegisterLineRequest;
-import subway.service.dto.SearchLineRequest;
 import subway.service.dto.SectionResponse;
 
 import java.util.List;
@@ -31,8 +30,8 @@ public class LineController {
 
     @GetMapping("/lines")
     @ResponseStatus(HttpStatus.OK)
-    public List<LineResponse> showLines(@ModelAttribute SearchLineRequest searchLineRequest) {
-        final List<Line> lines = lineQueryService.searchLines(searchLineRequest);
+    public List<LineResponse> showLines(@RequestParam(value = "lineName", required = false) String lineName) {
+        final List<Line> lines = lineQueryService.searchLines(lineName);
 
         return lines.stream()
                     .map(line -> new LineResponse(line.getName(), mapToSectionResponseFrom(line)))
