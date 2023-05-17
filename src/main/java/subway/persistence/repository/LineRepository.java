@@ -9,7 +9,6 @@ import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionEntity;
 import subway.ui.request.LineRequest;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +45,9 @@ public class LineRepository {
         return new Line(line.getId(), new LineName(line.getName()), sections);
     }
 
+    // TODO: Line 검색 로직 리팩터링
     private Sections findByLineId(final Long lineId) {
-        final List<Section> sections = sectionDao.findByLineId(lineId).stream()
+        final List<Section> sectionList = sectionDao.findByLineId(lineId).stream()
                 .map(sectionEntity -> new Section(
                                 sectionEntity.getId(),
                                 new Station(sectionEntity.getBeforeStation()),
@@ -56,42 +56,18 @@ public class LineRepository {
                         )
                 )
                 .collect(Collectors.toList());
+        if (sectionList.size() == 0) {
+            return new Sections(new LinkedList<>());
+        }
 
-        // TODO: 정렬 로직 리팩터링
-        final List<Section> sortedSections = getSortedSections(sections);
+        final Sections sections = new Sections(sectionList);
 
-        final List<Long> stationIds = serializeToStationIds(sortedSections);
+        final List<Long> stationIds = serializeToStationIds(sections.getSections());
         final Map<Long, Station> stations = findStationsById(stationIds);
-        return joinStationsToSections(sortedSections, stations);
-    }
-
-    private List<Section> getSortedSections(final List<Section> sections) {
-        if (sections.size() == 0) {
-            return new LinkedList<>();
-        }
-
-        final List<Section> sortedSections = new LinkedList<>();
-        sortedSections.add(sections.get(0));
-        while (sortedSections.size() < sections.size()) {
-            final Station head = sortedSections.get(0).getBeforeStation();
-            final Station tail = sortedSections.get(sortedSections.size() - 1).getNextStation();
-            for (final Section section : sections) {
-                if (section.getNextStation().equals(head)) {
-                    sortedSections.add(0, section);
-                    break;
-                } else if (section.getBeforeStation().equals(tail)) {
-                    sortedSections.add(section);
-                    break;
-                }
-            }
-        }
-        return sortedSections;
+        return joinStationsToSections(sections.getSections(), stations);
     }
 
     private List<Long> serializeToStationIds(final List<Section> sections) {
-        if (sections.isEmpty()) {
-            return new LinkedList<>();
-        }
         final List<Long> stationIds = sections.stream()
                 .map(section -> section.getBeforeStation().getId())
                 .collect(Collectors.toList());
@@ -100,9 +76,6 @@ public class LineRepository {
     }
 
     private Map<Long, Station> findStationsById(final List<Long> stationIds) {
-        if (stationIds.isEmpty()) {
-            return new HashMap<>();
-        }
         return stationDao.findAllById(stationIds).stream()
                 .map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName()))
                 .collect(Collectors.toMap(Station::getId, Function.identity()));

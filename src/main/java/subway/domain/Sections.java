@@ -9,7 +9,32 @@ public class Sections {
     private final List<Section> sections;
 
     public Sections(final List<Section> sections) {
-        this.sections = sections;
+        this.sections = sort(sections);
+    }
+
+    // TODO: 정렬 로직 리팩터링
+    private static List<Section> sort(final List<Section> sections) {
+        if (sections.size() == 0) {
+            return sections;
+        }
+
+        final List<Section> sortedSections = new LinkedList<>();
+        sortedSections.add(sections.get(0));
+        while (sortedSections.size() < sections.size()) {
+            final Station head = sortedSections.get(0).getBeforeStation();
+            final Station tail = sortedSections.get(sortedSections.size() - 1).getNextStation();
+            for (final Section section : sections) {
+                if (section.getNextStation().equals(head)) {
+                    sortedSections.add(0, section);
+                    break;
+                } else if (section.getBeforeStation().equals(tail)) {
+                    sortedSections.add(section);
+                    break;
+                }
+            }
+        }
+
+        return sortedSections;
     }
 
     public List<Section> getSections() {
@@ -52,7 +77,7 @@ public class Sections {
     }
 
     public Sections addCentral(final Section section) {
-        final LinkedList<Section> newSections = new LinkedList<>(sections);
+        final List<Section> newSections = new LinkedList<>(sections);
 
         final Section originSection = findOriginSection(section, newSections);
 
@@ -70,7 +95,7 @@ public class Sections {
         return new Sections(newSections);
     }
 
-    private static Section findOriginSection(final Section section, final LinkedList<Section> newSections) {
+    private Section findOriginSection(final Section section, final List<Section> newSections) {
         return newSections.stream()
                 .filter(element -> element.getBeforeStation().equals(section.getBeforeStation()))
                 .findAny()
