@@ -1,4 +1,4 @@
-package subway.integration;
+package subway.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.LineFixture;
+import subway.fixture.LineFixture;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.StationFixture.JAMSIL_NO_ID;
-import static subway.domain.StationFixture.JANGJI_NO_ID;
-import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
-import static subway.domain.StationFixture.YUKSAM_NO_ID;
+import static subway.fixture.StationFixture.JAMSIL_NO_ID;
+import static subway.fixture.StationFixture.JANGJI_NO_ID;
+import static subway.fixture.StationFixture.SEONLEUNG_NO_ID;
+import static subway.fixture.StationFixture.YUKSAM_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StationIntegrationTest extends IntegrationTest {

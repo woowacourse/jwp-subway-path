@@ -1,4 +1,4 @@
-package subway.integration;
+package subway.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,13 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.LineFixture.EIGHT_LINE_NO_ID;
-import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
-import static subway.domain.StationFixture.GANGNAM_NO_ID;
-import static subway.domain.StationFixture.JAMSIL_NO_ID;
-import static subway.domain.StationFixture.JANGJI_NO_ID;
-import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
-import static subway.domain.StationFixture.YUKSAM_NO_ID;
+import static subway.fixture.LineFixture.EIGHT_LINE_NO_ID;
+import static subway.fixture.LineFixture.SECOND_LINE_NO_ID;
+import static subway.fixture.StationFixture.GANGNAM_NO_ID;
+import static subway.fixture.StationFixture.JAMSIL_NO_ID;
+import static subway.fixture.StationFixture.JANGJI_NO_ID;
+import static subway.fixture.StationFixture.SEONLEUNG_NO_ID;
+import static subway.fixture.StationFixture.YUKSAM_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class SectionIntegrationTest extends IntegrationTest {

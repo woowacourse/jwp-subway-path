@@ -1,12 +1,16 @@
-package subway.service.section.domain;
+package subway.domain;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import subway.service.section.domain.Distance;
+import subway.service.section.domain.DistanceFeePolicy;
+import subway.service.section.domain.SectionEdge;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("NonAsciiCharacters")
 class DistanceFeePolicyTest {
     @ParameterizedTest
     @CsvSource(value = {"1,2,1", "3,4,2"})

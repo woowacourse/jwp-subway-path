@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.LineEntityFixture.EIGHT_LINE_NO_ID_ENTITY;
-import static subway.domain.LineEntityFixture.SECOND_LINE_NO_ID_ENTITY;
-import static subway.domain.StationEntityFixture.GANGNAM_NO_ID_ENTITY;
-import static subway.domain.StationEntityFixture.JAMSIL_NO_ID_ENTITY;
-import static subway.domain.StationEntityFixture.SEOKCHON_NO_ID_ENTITY;
-import static subway.domain.StationEntityFixture.YUKSAM_NO_ID_ENTITY;
+import static subway.fixture.LineEntityFixture.EIGHT_LINE_NO_ID_ENTITY;
+import static subway.fixture.LineEntityFixture.SECOND_LINE_NO_ID_ENTITY;
+import static subway.fixture.StationEntityFixture.GANGNAM_NO_ID_ENTITY;
+import static subway.fixture.StationEntityFixture.JAMSIL_NO_ID_ENTITY;
+import static subway.fixture.StationEntityFixture.SEOKCHON_NO_ID_ENTITY;
+import static subway.fixture.StationEntityFixture.YUKSAM_NO_ID_ENTITY;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest

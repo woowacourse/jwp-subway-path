@@ -1,4 +1,4 @@
-package subway.domain.repository;
+package subway.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.LineFixture.EIGHT_LINE_NO_ID;
-import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
-import static subway.domain.StationFixture.GANGNAM_NO_ID;
-import static subway.domain.StationFixture.JAMSIL_NO_ID;
-import static subway.domain.StationFixture.SEOKCHON;
-import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
-import static subway.domain.StationFixture.YUKSAM_NO_ID;
+import static subway.fixture.LineFixture.EIGHT_LINE_NO_ID;
+import static subway.fixture.LineFixture.SECOND_LINE_NO_ID;
+import static subway.fixture.StationFixture.GANGNAM_NO_ID;
+import static subway.fixture.StationFixture.JAMSIL_NO_ID;
+import static subway.fixture.StationFixture.SEOKCHON;
+import static subway.fixture.StationFixture.SEONLEUNG_NO_ID;
+import static subway.fixture.StationFixture.YUKSAM_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest

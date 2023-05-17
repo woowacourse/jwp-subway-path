@@ -1,4 +1,4 @@
-package subway.integration;
+package subway.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -20,13 +20,13 @@ import subway.service.station.StationRepository;
 import subway.service.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.LineFixture.EIGHT_LINE_NO_ID;
-import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
-import static subway.domain.StationFixture.GANGNAM_NO_ID;
-import static subway.domain.StationFixture.JAMSIL_NO_ID;
-import static subway.domain.StationFixture.JANGJI_NO_ID;
-import static subway.domain.StationFixture.MONGCHON_NO_ID;
-import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
+import static subway.fixture.LineFixture.EIGHT_LINE_NO_ID;
+import static subway.fixture.LineFixture.SECOND_LINE_NO_ID;
+import static subway.fixture.StationFixture.GANGNAM_NO_ID;
+import static subway.fixture.StationFixture.JAMSIL_NO_ID;
+import static subway.fixture.StationFixture.JANGJI_NO_ID;
+import static subway.fixture.StationFixture.MONGCHON_NO_ID;
+import static subway.fixture.StationFixture.SEONLEUNG_NO_ID;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {

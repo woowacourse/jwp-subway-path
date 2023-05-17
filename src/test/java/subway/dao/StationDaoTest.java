@@ -13,8 +13,8 @@ import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.StationEntityFixture.JAMSIL_NO_ID_ENTITY;
-import static subway.domain.StationEntityFixture.YUKSAM_NO_ID_ENTITY;
+import static subway.fixture.StationEntityFixture.JAMSIL_NO_ID_ENTITY;
+import static subway.fixture.StationEntityFixture.YUKSAM_NO_ID_ENTITY;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest

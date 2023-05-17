@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.fixture;
 
 import subway.service.line.domain.Line;
 

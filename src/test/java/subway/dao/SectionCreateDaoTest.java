@@ -16,10 +16,10 @@ import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.LineEntityFixture.SECOND_LINE_NO_ID_ENTITY;
-import static subway.domain.StationEntityFixture.GANGNAM_NO_ID_ENTITY;
-import static subway.domain.StationEntityFixture.JAMSIL_NO_ID_ENTITY;
-import static subway.domain.StationEntityFixture.SEONLEUNG_NO_ID_ENTITY;
+import static subway.fixture.LineEntityFixture.SECOND_LINE_NO_ID_ENTITY;
+import static subway.fixture.StationEntityFixture.GANGNAM_NO_ID_ENTITY;
+import static subway.fixture.StationEntityFixture.JAMSIL_NO_ID_ENTITY;
+import static subway.fixture.StationEntityFixture.SEONLEUNG_NO_ID_ENTITY;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest

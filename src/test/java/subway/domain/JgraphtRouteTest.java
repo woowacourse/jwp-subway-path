@@ -1,16 +1,20 @@
-package subway.service.section.domain;
+package subway.domain;
 
 import org.junit.jupiter.api.Test;
+import subway.service.section.domain.Distance;
+import subway.service.section.domain.JgraphtRoute;
+import subway.service.section.domain.Section;
 import subway.service.station.domain.Station;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.StationFixture.GANGNAM;
-import static subway.domain.StationFixture.JAMSIL;
-import static subway.domain.StationFixture.JANGJI;
-import static subway.domain.StationFixture.SEONLEUNG;
+import static subway.fixture.StationFixture.GANGNAM;
+import static subway.fixture.StationFixture.JAMSIL;
+import static subway.fixture.StationFixture.JANGJI;
+import static subway.fixture.StationFixture.SEONLEUNG;
 
+@SuppressWarnings("NonAsciiCharacters")
 class JgraphtRouteTest {
 
     @Test

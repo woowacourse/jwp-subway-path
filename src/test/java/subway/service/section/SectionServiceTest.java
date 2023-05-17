@@ -1,4 +1,4 @@
-package subway.application.section;
+package subway.service.section;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.controller.section.dto.LineStationDeleteRequest;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
-import subway.service.section.SectionService;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
 import subway.service.section.dto.SectionCreateRequest;
@@ -21,13 +20,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static subway.domain.LineFixture.EIGHT_LINE_NO_ID;
-import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
-import static subway.domain.StationFixture.GANGNAM_NO_ID;
-import static subway.domain.StationFixture.JAMSIL_NO_ID;
-import static subway.domain.StationFixture.SEOKCHON_NO_ID;
-import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
-import static subway.domain.StationFixture.YUKSAM_NO_ID;
+import static subway.fixture.LineFixture.EIGHT_LINE_NO_ID;
+import static subway.fixture.LineFixture.SECOND_LINE_NO_ID;
+import static subway.fixture.StationFixture.GANGNAM_NO_ID;
+import static subway.fixture.StationFixture.JAMSIL_NO_ID;
+import static subway.fixture.StationFixture.SEOKCHON_NO_ID;
+import static subway.fixture.StationFixture.SEONLEUNG_NO_ID;
+import static subway.fixture.StationFixture.YUKSAM_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest
