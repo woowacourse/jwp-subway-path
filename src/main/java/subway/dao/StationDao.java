@@ -23,7 +23,7 @@ public class StationDao {
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("STATIONS")
+                .withTableName("stations")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -42,7 +42,7 @@ public class StationDao {
     public Optional<StationEntity> findByStationId(final Long stationId) {
         final String sql = sqlHelper()
                 .select().columns("id, name")
-                .from().table("STATIONS")
+                .from().table("stations")
                 .where().condition("id = ?")
                 .toString();
 
@@ -60,7 +60,7 @@ public class StationDao {
 
         final String sql = sqlHelper()
                 .select().columns("id, name")
-                .from().table("STATIONS")
+                .from().table("stations")
                 .where().in("id", ids)
                 .toString();
 
@@ -70,7 +70,7 @@ public class StationDao {
     public Optional<StationEntity> findByStationName(final String stationName) {
         final String sql = sqlHelper()
                 .select().columns("id, name")
-                .from().columns("STATIONS")
+                .from().columns("stations")
                 .where().condition("name = ?")
                 .toString();
 

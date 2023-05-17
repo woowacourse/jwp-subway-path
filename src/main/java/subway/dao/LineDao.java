@@ -23,7 +23,7 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("lines")
+                .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -35,6 +35,8 @@ public class LineDao {
             );
 
     public Long insert(final String lineName, final String lineColor) {
+        System.out.println("lineName = " + lineName);
+        System.out.println("lineColor = " + lineColor);
         final SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue("name", lineName)
                 .addValue("color", lineColor);
@@ -45,7 +47,7 @@ public class LineDao {
     public Optional<LineEntity> findByLineId(Long lineId) {
         final String sql = sqlHelper()
                 .select().columns("id, name, color")
-                .from().table("LINES")
+                .from().table("line")
                 .where().condition("id = ?")
                 .toString();
 
@@ -59,7 +61,7 @@ public class LineDao {
     public Optional<LineEntity> findByLineName(final String lineName) {
         final String sql = sqlHelper()
                 .select().columns("id, name, color")
-                .from().table("LINES")
+                .from().table("line")
                 .where().condition("name = ?")
                 .toString();
 
@@ -73,7 +75,7 @@ public class LineDao {
     public List<LineEntity> findAll() {
         final String sql = sqlHelper()
                 .select().columns("id, name, color")
-                .from().table("LINES")
+                .from().table("line")
                 .toString();
 
         return jdbcTemplate.query(sql, rowMapper);
@@ -82,7 +84,7 @@ public class LineDao {
     public void deleteByLineId(Long lineId) {
         final String sql = sqlHelper()
                 .delete()
-                .from().table("LINES")
+                .from().table("line")
                 .where().condition("id = ?")
                 .toString();
 

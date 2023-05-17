@@ -17,8 +17,8 @@ public abstract class DaoTestConfig {
 
     @AfterEach
     void tearDown() {
-        jdbcTemplate.update("TRUNCATE TABLE STATIONS");
-        jdbcTemplate.update("TRUNCATE TABLE SECTIONS");
-        jdbcTemplate.update("TRUNCATE TABLE LINES");
+        jdbcTemplate.update("TRUNCATE TABLE stations");
+        jdbcTemplate.update("TRUNCATE TABLE sections");
+        jdbcTemplate.update("TRUNCATE TABLE line");
     }
 }
