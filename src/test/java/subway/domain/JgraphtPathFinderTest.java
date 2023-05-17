@@ -1,12 +1,15 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,6 +17,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import fixture.Fixture;
 import subway.domain.pathfinder.JgraphtPathFinder;
 import subway.domain.pathfinder.LineWeightedEdge;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
 
 class JgraphtPathFinderTest {
     JgraphtPathFinder jgraphtPathFinder = new JgraphtPathFinder(new WeightedMultigraph<>(LineWeightedEdge.class));
@@ -47,6 +52,14 @@ class JgraphtPathFinderTest {
 
         //then
         assertThat(result).containsExactlyElementsOf(expected);
+    }
+
+    @Test
+    @DisplayName("station이 line에 존재하지 않아 경로 조회가 실패히면 예외가 발생한다.")
+    void computeShortestPathFail1() {
+        assertThatThrownBy(() -> jgraphtPathFinder.computeShortestPath(1L, 9L))
+                .isInstanceOf(DomainException.class)
+                .hasMessage(ExceptionType.STATION_IS_NOT_IN_SECTION.name());
     }
 
 

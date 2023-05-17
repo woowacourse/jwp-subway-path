@@ -8,6 +8,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 import subway.domain.Section;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
 
 @Component
 public class JgraphtPathFinder implements PathFinder {
@@ -32,14 +34,17 @@ public class JgraphtPathFinder implements PathFinder {
 
     @Override
     public List<Section> computeShortestPath(Long sourceStationId, Long targetStationId) {
-        final var dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(sourceStationId, targetStationId)
-                .getEdgeList()
-                .stream()
-                .map(edge -> new Section(graph.getEdgeSource(edge), graph.getEdgeTarget(edge), edge.getLineId(),
-                        edge.getDistance()))
-                .collect(Collectors.toUnmodifiableList());
-
+        try {
+            final var dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+            return dijkstraShortestPath.getPath(sourceStationId, targetStationId)
+                    .getEdgeList()
+                    .stream()
+                    .map(edge -> new Section(graph.getEdgeSource(edge), graph.getEdgeTarget(edge), edge.getLineId(),
+                            edge.getDistance()))
+                    .collect(Collectors.toUnmodifiableList());
+        } catch(IllegalArgumentException exception) {
+            throw new DomainException(ExceptionType.STATION_IS_NOT_IN_SECTION);
+        }
     }
 
     @Override
