@@ -1,6 +1,5 @@
 package subway.application;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.*;
@@ -23,7 +22,6 @@ public class SubwayService {
 
     private final SubwayRepository subwayRepository;
 
-    @Autowired
     public SubwayService(SubwayRepository subwayRepository) {
         this.subwayRepository = subwayRepository;
     }

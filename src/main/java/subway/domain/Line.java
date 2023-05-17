@@ -112,6 +112,7 @@ public class Line {
         return new LinkedList<>(sections.subList(1, sections.size() - 1));
     }
 
+    // TODO : 네이밍 변경
     public List<String> getStationNamesInOrder() {
         return sections.subList(0, sections.size() - 1).stream()
                 .map(section -> section.getDownstream().getName())

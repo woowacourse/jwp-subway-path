@@ -17,14 +17,14 @@ public class LineName {
         this.name = strippedName;
     }
 
-    public String getName() {
-        return name;
-    }
-
     private void validateNameLength(String name) {
         if (name.length() < MINIMUM_NAME_LENGTH || name.length() > MAXIMUM_NAME_LENGTH) {
             throw new NameLengthException("이름 길이는 " + MINIMUM_NAME_LENGTH + "자 이상 " + MAXIMUM_NAME_LENGTH + "자 이하입니다.");
         }
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
