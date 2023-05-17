@@ -20,6 +20,9 @@ import java.util.NoSuchElementException;
 @Transactional
 public class SectionService {
 
+    private static final String NO_SUCH_STATION_MESSAGE = "해당하는 역이 존재하지 않습니다.";
+    private static final String NO_SUCH_LINE_MESSAGE = "해당하는 호선이 존재하지 않습니다.";
+
     private final SectionDao sectionDao;
     private final StationDao stationDao;
     private final LineDao lineDao;
@@ -35,10 +38,10 @@ public class SectionService {
         final Sections sections = findSections(sectionRequest.getLineId());
 
         final Station upStation = stationDao.findById(sectionRequest.getUpStationId())
-                .orElseThrow(() -> new NoSuchElementException("해당하는 역이 존재하지 않습니다."))
+                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_STATION_MESSAGE))
                 .toDomain();
         final Station downStation = stationDao.findById(sectionRequest.getDownStationId())
-                .orElseThrow(() -> new NoSuchElementException("해당하는 역이 존재하지 않습니다."))
+                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_STATION_MESSAGE))
                 .toDomain();
         final Section section = new Section(upStation, downStation, sectionRequest.getDistance());
         sections.addSection(section);
@@ -52,18 +55,18 @@ public class SectionService {
 
     private void validateExists(final SectionRequest sectionRequest) {
         if (lineDao.notExistsById(sectionRequest.getLineId())) {
-            throw new NoSuchElementException("해당하는 호선이 존재하지 않습니다.");
+            throw new NoSuchElementException(NO_SUCH_LINE_MESSAGE);
         }
         if (stationDao.notExistsById(sectionRequest.getUpStationId())
                 || stationDao.notExistsById(sectionRequest.getDownStationId())) {
-            throw new NoSuchElementException("해당하는 역이 존재하지 않습니다.");
+            throw new NoSuchElementException(NO_SUCH_STATION_MESSAGE);
         }
     }
 
     public void delete(final Long lineId, final Long stationId) {
         final Sections sections = findSections(lineId);
         final Station station = stationDao.findById(stationId)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 역이 존재하지 않습니다."))
+                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_STATION_MESSAGE))
                 .toDomain();
         sections.removeSectionByStation(station);
 

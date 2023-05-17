@@ -20,6 +20,8 @@ import java.util.*;
 @Service
 @Transactional
 public class LineService {
+    private static final String NO_SUCH_ID_MESSAGE = "해당하는 ID가 없습니다.";
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -45,7 +47,7 @@ public class LineService {
 
     public LineStationResponse findById(final Long id) {
         final LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 ID가 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_ID_MESSAGE));
         final List<Section> sections = sectionDao.findByLineId(id).stream()
                 .map(it -> it.toDomain(
                         stationDao.findById(it.getUpStationId()).orElseThrow(NoSuchElementException::new).toDomain(),

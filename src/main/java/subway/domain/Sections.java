@@ -8,6 +8,11 @@ import java.util.stream.Collectors;
 
 public class Sections {
 
+    private static final String DUPLICATE_SECTION_MESSAGE = "이미 존재하는 구간입니다.";
+    private static final String EMPTY_TARGET_SECTION_MESSAGE = "노선에 기준이 되는 역이 존재하지 않습니다.";
+    private static final String EMPTY_SECTIONS_MESSAGE = "구간이 존재하지 않습니다.";
+    private static final int TERMINAL_CHECK_NUMBER = 1;
+
     private final List<Section> sections;
 
     public Sections(final List<Section> sections) {
@@ -43,20 +48,20 @@ public class Sections {
 
     private void validateSection(final Section section, final List<Section> upSections, final List<Section> downSections) {
         if (sections.contains(section)) {
-            throw new IllegalArgumentException("이미 존재하는 구간입니다.");
+            throw new IllegalArgumentException(DUPLICATE_SECTION_MESSAGE);
         }
         if (upSections.isEmpty() && downSections.isEmpty()) {
-            throw new IllegalArgumentException("노선에 기준이 되는 역이 존재하지 않습니다.");
+            throw new IllegalArgumentException(EMPTY_TARGET_SECTION_MESSAGE);
         }
     }
 
     private boolean isUpSectionInMiddle(final List<Section> upSections, final Section section) {
-        return upSections.size() >= 1 &&
+        return upSections.size() >= TERMINAL_CHECK_NUMBER &&
                 upSections.stream().anyMatch(it -> it.getUpStation().getId().equals(section.getUpStation().getId()));
     }
 
     private boolean isDownSectionInMiddle(final List<Section> downSections, final Section section) {
-        return downSections.size() >= 1 &&
+        return downSections.size() >= TERMINAL_CHECK_NUMBER &&
                 downSections.stream().anyMatch(it -> it.getDownStation().getId().equals(section.getDownStation().getId()));
     }
 
@@ -82,7 +87,7 @@ public class Sections {
                 .collect(Collectors.toList());
         validateEmptySections(relatedSections);
 
-        if (relatedSections.size() == 1) {
+        if (relatedSections.size() == TERMINAL_CHECK_NUMBER) {
             sections.remove(relatedSections.get(0));
             return;
         }
@@ -101,7 +106,7 @@ public class Sections {
 
     private void validateEmptySections(final List<Section> relatedSections) {
         if (relatedSections.isEmpty()) {
-            throw new IllegalArgumentException("구간이 존재하지 않습니다.");
+            throw new IllegalArgumentException(EMPTY_SECTIONS_MESSAGE);
         }
     }
 

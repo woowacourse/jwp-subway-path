@@ -2,6 +2,9 @@ package subway.domain;
 
 public class Section {
 
+    private static final String NEGATIVE_DISTANCE_ERROR_MESSAGE = "거리는 양의 정수만 가능합니다.";
+    private static final int DISTANCE_LOWER_BOUND = 0;
+
     private final Station upStation;
     private final Station downStation;
     private final int distance;
@@ -14,8 +17,8 @@ public class Section {
     }
 
     private void validateDistance(final int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("거리는 양의 정수만 가능합니다.");
+        if (distance <= DISTANCE_LOWER_BOUND) {
+            throw new IllegalArgumentException(NEGATIVE_DISTANCE_ERROR_MESSAGE);
         }
     }
 

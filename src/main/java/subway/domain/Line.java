@@ -4,6 +4,15 @@ import java.util.List;
 
 public class Line {
 
+    private static final String BLANK_NAME_ERROR_MESSAGE = "호선 이름은 공백을 입력할 수 없습니다.";
+    private static final String NAME_LENGTH_BOUNDARY_MESSAGE = "호선 이름은 1자 이상 5자 이하만 가능합니다.";
+    private static final String BLANK_COLOR_ERROR_MESSAGE = "호선 색깔은 공백을 입력할 수 없습니다.";
+    private static final String COLOR_LENGTH_BOUNDARY_MESSAGE = "호선 색깔은 5자 이상 20자 이하만 가능합니다.";
+    private static final int NAME_LOWER_BOUND = 1;
+    private static final int NAME_UPPER_BOUND = 5;
+    private static final int COLOR_LOWER_BOUND = 5;
+    private static final int COLOR_UPPER_BOUND = 20;
+
     private Long id;
     private final String name;
     private final String color;
@@ -27,19 +36,19 @@ public class Line {
 
     private void validateName(final String name) {
         if (name.isBlank()) {
-            throw new IllegalArgumentException("호선 이름은 공백을 입력할 수 없습니다.");
+            throw new IllegalArgumentException(BLANK_NAME_ERROR_MESSAGE);
         }
-        if (name.length() < 1 || name.length() > 5) {
-            throw new IllegalArgumentException("호선 이름은 1자 이상 5자 이하만 가능합니다.");
+        if (name.length() < NAME_LOWER_BOUND || name.length() > NAME_UPPER_BOUND) {
+            throw new IllegalArgumentException(NAME_LENGTH_BOUNDARY_MESSAGE);
         }
     }
 
     private void validateColor(final String color) {
         if (color.isBlank()) {
-            throw new IllegalArgumentException("호선 색깔은 공백을 입력할 수 없습니다.");
+            throw new IllegalArgumentException(BLANK_COLOR_ERROR_MESSAGE);
         }
-        if (color.length() < 5 || color.length() > 20) {
-            throw new IllegalArgumentException("호선 색깔은 5자 이상 20자 이하만 가능합니다.");
+        if (color.length() < COLOR_LOWER_BOUND || color.length() > COLOR_UPPER_BOUND) {
+            throw new IllegalArgumentException(COLOR_LENGTH_BOUNDARY_MESSAGE);
         }
     }
 

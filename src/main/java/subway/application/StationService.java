@@ -15,6 +15,9 @@ import subway.entity.StationEntity;
 @Service
 @Transactional
 public class StationService {
+
+    private static final String NO_SUCH_STATION_MESSAGE = "해당하는 역이 존재하지 않습니다.";
+
     private final StationDao stationDao;
 
     public StationService(final StationDao stationDao) {
@@ -28,7 +31,7 @@ public class StationService {
 
     public StationResponse findById(final Long id) {
         final Station station = stationDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 역이 존재하지 않습니다."))
+                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_STATION_MESSAGE))
                 .toDomain();
         return StationResponse.of(station);
     }
