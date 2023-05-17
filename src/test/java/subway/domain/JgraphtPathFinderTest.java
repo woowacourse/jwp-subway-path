@@ -58,7 +58,7 @@ class JgraphtPathFinderTest {
     }
 
     @Test
-    void 이어지지않은_경로를_요청시_예외() {
+    void 이어지지않은_경로를_요청시_예외_역이_이어진_노선은_있으나_연결되지않은_경우() {
         // given
         List<Section> sections1 = List.of(
                 new Section(ONE, TWO, 10),
@@ -73,6 +73,24 @@ class JgraphtPathFinderTest {
         List<Line> lines = List.of(
                 new Line("1호선", new Sections(sections1)),
                 new Line("2호선", new Sections(sections2))
+        );
+
+        // when & then
+        assertThatThrownBy(() -> jgraphtPathFinder.findShortestPath(ONE, FIVE, lines))
+                .isInstanceOf(NotFoundPathException.class);
+    }
+
+    @Test
+    void 이어지지않은_경로를_요청시_예외_역은_존재하나_노선상에_없는_경우() {
+        // given
+        List<Section> sections1 = List.of(
+                new Section(ONE, TWO, 10),
+                new Section(TWO, THREE, 11),
+                new Section(THREE, FOUR, 12)
+        );
+
+        List<Line> lines = List.of(
+                new Line("1호선", new Sections(sections1))
         );
 
         // when & then

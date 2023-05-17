@@ -15,16 +15,18 @@ import subway.exception.NotFoundPathException;
 public class JgraphtPathFinder implements PathFinder {
 
     @Override
-    public Path findShortestPath(final Station startStation, final Station endStation, List<Line> lines) {
-        DijkstraShortestPath path = getPath(lines);
-        GraphPath<Station, SectionProxy> shortestGraph = findShortestGraph(startStation, endStation, path);
+    public Path findShortestPath(final Station startStation,
+                                 final Station endStation,
+                                 final List<Line> lines) {
+        DijkstraShortestPath pathMap = getPathMap(lines);
+        GraphPath<Station, SectionProxy> shortestGraph = findShortestGraph(startStation, endStation, pathMap);
         Sections sections = shortestGraph.getEdgeList().stream()
                 .map(SectionProxy::toSection)
                 .collect(collectingAndThen(toList(), Sections::new));
         return new Path(sections, (int) shortestGraph.getWeight());
     }
 
-    private DijkstraShortestPath getPath(List<Line> lines) {
+    private DijkstraShortestPath getPathMap(List<Line> lines) {
         WeightedMultigraph<Station, SectionProxy> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
 
@@ -41,11 +43,20 @@ public class JgraphtPathFinder implements PathFinder {
         return new DijkstraShortestPath(graph);
     }
 
-    private static GraphPath findShortestGraph(Station startStation, Station endStation, DijkstraShortestPath path) {
-        GraphPath shortestPath = path.getPath(startStation, endStation);
+    private GraphPath findShortestGraph(Station startStation, Station endStation, DijkstraShortestPath path) {
+        GraphPath shortestPath = getPath(startStation, endStation, path);
+
         if (shortestPath == null) {
             throw new NotFoundPathException();
         }
         return shortestPath;
+    }
+
+    private GraphPath getPath(Station startStation, Station endStation, DijkstraShortestPath path) {
+        try {
+            return path.getPath(startStation, endStation);
+        } catch (IllegalArgumentException e) {
+            throw new NotFoundPathException();
+        }
     }
 }

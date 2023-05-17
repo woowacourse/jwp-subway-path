@@ -11,6 +11,7 @@ import java.util.List;
 import subway.dto.request.LineCreateRequest;
 import subway.dto.response.LineQueryResponse;
 import subway.dto.response.SectionQueryResponse;
+import subway.dto.response.ShortestPathResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineSteps {
@@ -103,6 +104,19 @@ public class LineSteps {
             final int distance
     ) {
         final List<SectionQueryResponse> responses = response.getStationQueryResponseList();
+        assertThat(responses.get(index).getUpStationName()).isEqualTo(upStationName);
+        assertThat(responses.get(index).getDownStationName()).isEqualTo(downStationName);
+        assertThat(responses.get(index).getDistance()).isEqualTo(distance);
+    }
+
+    public static void 노선에_포함된_N번째_구간을_검증한다(
+            final ShortestPathResponse response,
+            final int index,
+            final String upStationName,
+            final String downStationName,
+            final int distance
+    ) {
+        List<SectionQueryResponse> responses = response.getSectionQueryResponses();
         assertThat(responses.get(index).getUpStationName()).isEqualTo(upStationName);
         assertThat(responses.get(index).getDownStationName()).isEqualTo(downStationName);
         assertThat(responses.get(index).getDistance()).isEqualTo(distance);

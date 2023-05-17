@@ -6,9 +6,12 @@ import subway.domain.Path;
 
 public class ShortestPathResponse {
 
-    private final List<SectionQueryResponse> sectionQueryResponses;
-    private final int totalDistance;
-    private final int fee;
+    private List<SectionQueryResponse> sectionQueryResponses;
+    private int totalDistance;
+    private int fee;
+
+    public ShortestPathResponse() {
+    }
 
     public ShortestPathResponse(final List<SectionQueryResponse> sectionQueryResponses, int totalDistance, int fee) {
         this.sectionQueryResponses = sectionQueryResponses;
