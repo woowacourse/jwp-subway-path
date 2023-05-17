@@ -2,58 +2,39 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.entity.LineEntity;
+import subway.persistence.LineRepository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+
+    public LineService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        LineEntity persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+        return lineRepository.saveLine(request);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public List<LineResponse> findAllLines() {
+        return lineRepository.findLineResponses();
     }
 
-    public List<LineEntity> findLines() {
-        return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(Long id) {
-        LineEntity persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public LineEntity findLineById(Long id) {
-        Optional<LineEntity> lineEntity = lineDao.findById(id);
-        if (lineEntity.isPresent()) {
-            return lineEntity.get();
-        }
-        throw new IllegalArgumentException("존재하지 않는 노선입니다");
+    public LineResponse findLineById(Long id) {
+        return lineRepository.findLineResponseById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new LineEntity(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineRepository.updateLine(id, lineUpdateRequest);
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteLineById(id);
     }
 }

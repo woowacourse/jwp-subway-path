@@ -2,51 +2,38 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.StationDao;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.entity.StationEntity;
+import subway.persistence.StationRepository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
 public class StationService {
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
-
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        StationEntity station = stationDao.insert(new StationEntity(stationRequest.getName()));
-        return StationResponse.of(station);
+        return stationRepository.saveStation(stationRequest);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        Optional<StationEntity> stationEntity = stationDao.findById(id);
-        if (stationEntity.isPresent()) {
-            return StationResponse.of(stationEntity.get());
-        }
-        throw new IllegalArgumentException("존재하지 않는 역입니다");
+    public StationResponse findStationById(Long id) {
+        return stationRepository.findStationResponseById(id);
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<StationEntity> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public List<StationResponse> findAllStations() {
+        return stationRepository.findAllStationResponses();
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new StationEntity(id, stationRequest.getName()));
+        stationRepository.updateStation(id, stationRequest);
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteStationById(id);
     }
 }
