@@ -89,6 +89,32 @@ Content-Type: application/json
 
 
 ###
+# @name getShortestPath
+# @description Retrieve shortest path
+GET http://localhost:8080/path
+Content-Type: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "가정역"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "선릉역",
+>     "가정역"
+>   ],
+>   "shortestDistance": 8,
+>   "fee": 1250
+> }
+
+
+###
 # @name addLine
 # @description Create a new line
 POST http://localhost:8080/lines
@@ -219,6 +245,50 @@ Accept: application/json
 
 
 ###
+# @name addStation
+# @description Create a new station
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineId": 2,
+  "baseStation": "신도림역",
+  "direction": "RIGHT",
+  "additionalStation": "청라역",
+  "distance": 2
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/stations/{stationId}
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest path
+GET http://localhost:8080/path
+Content-Type: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "신길역"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "신길역"
+>   ],
+>   "shortestDistance": 8,
+>   "fee": 1250
+> }
+
+
+###
 # @name deleteLine
 # @description Delete a line with specified ID
 DELETE http://localhost:8080/lines/1
@@ -243,6 +313,7 @@ Accept: application/json
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
+>         "청라역",
 >         "신길역"
 >       ]
 >     }

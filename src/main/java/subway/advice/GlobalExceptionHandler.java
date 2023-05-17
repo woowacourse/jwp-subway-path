@@ -24,7 +24,8 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
-        return logAndRespond("서버가 응답할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        System.out.println(exception.getMessage());
+        return logAndRespond(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
     @ExceptionHandler

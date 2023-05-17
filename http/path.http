@@ -1,0 +1,24 @@
+###
+# @name getShortestPath
+# @description Retrieve shortest path
+GET http://localhost:8080/path
+Content-Type: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "가정역"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "선릉역",
+>     "가정역"
+>   ],
+>   "shortestDistance": 8,
+>   "fee": 1250
+> }
