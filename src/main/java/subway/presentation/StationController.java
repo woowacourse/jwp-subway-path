@@ -35,7 +35,11 @@ public class StationController {
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> readAll() {
-        return ResponseEntity.ok().body(stationService.findAll());
+        final List<StationResponse> responses = stationService.findAll();
+        if (responses.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(responses);
     }
 
     @GetMapping("/{id}")
