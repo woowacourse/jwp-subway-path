@@ -106,4 +106,16 @@ class SectionDaoTest {
                 () -> assertThat(result2).hasSize(0)
         );
     }
+
+    @Test
+    void 특정_호선ID와_일치하는_모든_Section_삭제() {
+        long lineId = 1L;
+
+        SectionEntity sectionEntity = new SectionEntity(lineId, 1L, 2L, 10);
+        sectionDao.insert(sectionEntity);
+        assertThat(sectionDao.findAll()).hasSize(1);
+
+        sectionDao.deleteAllByLineId(lineId);
+        assertThat(sectionDao.findByLineId(lineId)).hasSize(0);
+    }
 }
