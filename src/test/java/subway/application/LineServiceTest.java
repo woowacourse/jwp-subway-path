@@ -21,6 +21,7 @@ import subway.repository.StationRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -57,6 +58,18 @@ class LineServiceTest {
             softly.assertThat(lineResponse.getName()).isEqualTo("일호선");
             softly.assertThat(lineResponse.getColor()).isEqualTo("남색");
         });
+    }
+
+    @Test
+    void 동일한_호선을_저장하면_예외를_던진다() {
+        //given
+        when(lineRepository.contains(any(LineEntity.class)))
+                .thenReturn(true);
+
+        //expect
+        assertThatThrownBy(() -> lineService.saveLine(일호선_남색_요청))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 존재하는 호선입니다.");
     }
 
     @Test

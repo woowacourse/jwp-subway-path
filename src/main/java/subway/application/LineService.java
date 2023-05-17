@@ -31,8 +31,15 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest request) {
-        final Line line = lineRepository.save(new LineEntity(request.getName(), request.getColor()));
-        return LineResponse.of(line);
+        final LineEntity lineEntity = new LineEntity(request.getName(), request.getColor());
+        validateDuplication(lineEntity);
+        return LineResponse.of(lineRepository.save(lineEntity));
+    }
+
+    private void validateDuplication(final LineEntity lineEntity) {
+        if (lineRepository.contains(lineEntity)) {
+            throw new IllegalArgumentException("이미 존재하는 호선입니다.");
+        }
     }
 
     public List<LineAndStationsResponse> findLines() {
