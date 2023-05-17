@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,9 +12,20 @@ public class Line {
 
     private Long id;
     private String name;
+    private Integer extraCharge;
+
     private List<Section> sections;
 
-    public Line() {
+    public Line(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Line(Long id, String name, Integer extraCharge, List<Section> sections) {
+        this.id = id;
+        this.name = name;
+        this.extraCharge = extraCharge;
+        this.sections = sections;
     }
 
     public Line(Long id, String name, List<Section> sections) {
@@ -123,15 +135,24 @@ public class Line {
         return sections;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public int getExtraCharge() {
+        return extraCharge;
     }
 
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(id, line.id);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

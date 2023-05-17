@@ -3,14 +3,14 @@ package subway.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.domain.Path;
-import subway.domain.ShortestRouteWithStation;
 
 public class FindShortestRouteResponse {
     private final List<StationInfoResponse> shortestRoute;
     private final Double totalDistance;
     private final Integer totalCharge;
 
-    public FindShortestRouteResponse(List<StationInfoResponse> shortestRoute, Double totalDistance, Integer totalCharge) {
+    public FindShortestRouteResponse(List<StationInfoResponse> shortestRoute, Double totalDistance,
+                                     Integer totalCharge) {
         this.shortestRoute = shortestRoute;
         this.totalDistance = totalDistance;
         this.totalCharge = totalCharge;

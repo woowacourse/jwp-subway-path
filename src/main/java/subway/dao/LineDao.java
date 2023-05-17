@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
@@ -14,11 +14,15 @@ import subway.domain.Line;
 @Repository
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
-    private final BeanPropertyRowMapper<Line> lineMapper;
+    private final RowMapper<Line> lineMapper;
 
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.lineMapper = BeanPropertyRowMapper.newInstance(Line.class);
+        this.lineMapper = (resultSet, rowNum) -> {
+            return new Line(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"));
+        };
     }
 
     public Long insert(Line line) {
