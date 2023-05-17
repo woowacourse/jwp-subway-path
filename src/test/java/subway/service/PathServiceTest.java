@@ -3,6 +3,7 @@ package subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.integration.TestFixture.GANGNAM;
+import static subway.integration.TestFixture.JAMSIL;
 import static subway.integration.TestFixture.SAMSUNG;
 import static subway.integration.TestFixture.SEONGLENUG;
 
@@ -28,9 +29,9 @@ class PathServiceTest {
     @Autowired
     private PathService pathService;
 
-    @DisplayName("출발지와 목적지를 입력하면, 최단 경로와 거리와 요금을 반환하는 기능 테스트")
+    @DisplayName("출발지와 목적지를 입력하면, 최단 경로와 거리와 요금을 반환하는 기능 테스트, 단일 노선")
     @Test
-    void findPath() {
+    void findPathSingLine() {
         final PathRequest pathRequest = new PathRequest("강남", "삼성");
 
         final PathResponse pathResponse = pathService.findPath(pathRequest);
@@ -43,6 +44,24 @@ class PathServiceTest {
                 () -> assertThat(pathResponse)
                         .extracting(PathResponse::getTotalDistance, PathResponse::getTotalFare)
                         .containsExactly(10, 1250)
+        );
+    }
+
+    @DisplayName("출발지와 목적지를 입력하면, 최단 경로와 거리와 요금을 반환하는 기능 테스트")
+    @Test
+    void findPathTransferCase() {
+        final PathRequest pathRequest = new PathRequest("삼성", "잠실");
+
+        final PathResponse pathResponse = pathService.findPath(pathRequest);
+
+        final List<StationResponse> stationResponses = pathResponse.getPathStations();
+        assertAll(
+                () -> assertThat(stationResponses)
+                        .extracting(StationResponse::getName)
+                        .containsExactly(SAMSUNG.getName(), SEONGLENUG.getName(), GANGNAM.getName(), JAMSIL.getName()),
+                () -> assertThat(pathResponse)
+                        .extracting(PathResponse::getTotalDistance, PathResponse::getTotalFare)
+                        .containsExactly(11, 1350)
         );
     }
 }
