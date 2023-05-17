@@ -1,12 +1,12 @@
 package subway.persistence.row;
 
-public class LinePropertyRow {
+public class LineRow {
 
     private final Long id;
     private final String name;
     private final String color;
 
-    public LinePropertyRow(Long id, String name, String color) {
+    public LineRow(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;

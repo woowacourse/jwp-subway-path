@@ -7,7 +7,7 @@ import subway.application.domain.Line;
 import subway.application.domain.LineProperty;
 import subway.application.domain.Section;
 import subway.application.domain.Station;
-import subway.persistence.dao.LinePropertyDao;
+import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.row.LinePropertyRow;
@@ -26,17 +26,17 @@ public class H2LineRepository implements LineRepository {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
-    private final LinePropertyDao linePropertyDao;
+    private final LineDao lineDao;
 
-    public H2LineRepository(SectionDao sectionDao, LinePropertyDao linePropertyDao, StationDao stationDao) {
+    public H2LineRepository(SectionDao sectionDao, LineDao lineDao, StationDao stationDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
-        this.linePropertyDao = linePropertyDao;
+        this.lineDao = lineDao;
     }
 
     public Line findById(Long linePropertyId) {
         List<SectionRow> sectionEntities = sectionDao.selectAllOfLinePropertyId(linePropertyId);
-        LinePropertyRow linePropertyRow = linePropertyDao.findById(linePropertyId);
+        LineRow lineRow = lineDao.findById(linePropertyId);
 
         Map<String, Long> stationIds = getStationNameIdSet(sectionEntities);
         List<Section> sections = sectionEntities.stream()
@@ -46,8 +46,8 @@ public class H2LineRepository implements LineRepository {
                         new Distance(sectionRow.getDistance())
                 )).collect(Collectors.toList());
 
-        return new Line(new LineProperty(linePropertyRow.getId(), linePropertyRow.getName(),
-                linePropertyRow.getColor()), sections);
+        return new Line(new LineProperty(lineRow.getId(), lineRow.getName(),
+                lineRow.getColor()), sections);
     }
 
     private Map<String, Long> getStationNameIdSet(List<SectionRow> sectionRows) {
@@ -67,11 +67,11 @@ public class H2LineRepository implements LineRepository {
     }
 
     public List<Line> findAll() {
-        List<LinePropertyRow> linePropertyRows = linePropertyDao.selectAll();
+        List<LineRow> lineRows = lineDao.selectAll();
         List<SectionRow> sectionRows = sectionDao.selectAll();
         Map<String, Long> stationIds = getStationNameIdSet(sectionRows);
 
-        return linePropertyRows.stream()
+        return lineRows.stream()
                 .map(propertyRow -> new Line(
                         new LineProperty(propertyRow.getId(), propertyRow.getName(), propertyRow.getColor()),
                         findSectionsHasSamePropertyId(sectionRows, stationIds, propertyRow))
