@@ -168,7 +168,7 @@ public class Sections {
         return this.sections.isEmpty();
     }
 
-    public List<Section> getSections() {
+    public List<Section> sections() {
         return new ArrayList<>(sections);
     }
 }

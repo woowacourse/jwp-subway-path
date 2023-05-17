@@ -50,7 +50,7 @@ class SectionsTest {
         final Sections updatedSections = emptySections().addSection(section);
 
         // then
-        final List<Section> sections = updatedSections.getSections();
+        final List<Section> sections = updatedSections.sections();
         assertAll(() -> assertThat(sections).hasSize(1),
                 () -> assertThat(sections.get(0).getUpStation().getName().name()).isEqualTo("종합운동장"),
                 () -> assertThat(sections.get(0).getDownStation().getName().name()).isEqualTo("잠실새내"),
@@ -72,7 +72,7 @@ class SectionsTest {
         final Sections updatedSections = AB.sections.addSection(other);
 
         // then
-        final List<Section> linkedSections = updatedSections.getSections();
+        final List<Section> linkedSections = updatedSections.sections();
         assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(C.stationC)).isTrue(),
                 () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(A.stationA)).isTrue(),
                 () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(B.stationB)).isTrue());
@@ -92,7 +92,7 @@ class SectionsTest {
         final Sections updatedSections = AB.sections.addSection(other);
 
         // then
-        final List<Section> linkedSections = updatedSections.getSections();
+        final List<Section> linkedSections = updatedSections.sections();
         assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(A.stationA)).isTrue(),
                 () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(B.stationB)).isTrue(),
                 () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(C.stationC)).isTrue());
@@ -116,7 +116,7 @@ class SectionsTest {
         final Sections updatedSections = ABC.sections.addSection(other);
 
         // then
-        final List<Section> linkedSections = updatedSections.getSections();
+        final List<Section> linkedSections = updatedSections.sections();
         assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(A.stationA)).isTrue(),
                 () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(B.stationB)).isTrue(),
                 () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(stationD)).isTrue(),
@@ -142,7 +142,7 @@ class SectionsTest {
         final Sections updatedSections = ABC.sections.addSection(other);
 
         // then
-        final List<Section> linkedSections = updatedSections.getSections();
+        final List<Section> linkedSections = updatedSections.sections();
         assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(A.stationA)).isTrue(),
                 () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(stationD)).isTrue(),
                 () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(B.stationB)).isTrue(),
@@ -186,7 +186,7 @@ class SectionsTest {
     @Test
     void 구간들에서_상행종점을_제거한다() {
         // expect
-        assertThat(ABC.sections.removeStation(A.stationA).getSections().get(0).getUpStation()).isEqualTo(B.stationB);
+        assertThat(ABC.sections.removeStation(A.stationA).sections().get(0).getUpStation()).isEqualTo(B.stationB);
     }
 
     /*
@@ -196,7 +196,7 @@ class SectionsTest {
     @Test
     void 구간들에서_하행종점을_제거한다() {
         // expect
-        assertThat(ABC.sections.removeStation(C.stationC).getSections().get(0).getDownStation()).isEqualTo(B.stationB);
+        assertThat(ABC.sections.removeStation(C.stationC).sections().get(0).getDownStation()).isEqualTo(B.stationB);
     }
 
     /*
@@ -209,9 +209,9 @@ class SectionsTest {
         final Sections removedSections = ABC.sections.removeStation(B.stationB);
 
         assertAll(
-                () -> assertThat(removedSections.getSections()).hasSize(1),
-                () -> assertThat(removedSections.getSections().get(0).getDownStation()).isEqualTo(C.stationC),
-                () -> assertThat(removedSections.getSections().get(0).getUpStation()).isEqualTo(A.stationA));
+                () -> assertThat(removedSections.sections()).hasSize(1),
+                () -> assertThat(removedSections.sections().get(0).getDownStation()).isEqualTo(C.stationC),
+                () -> assertThat(removedSections.sections().get(0).getUpStation()).isEqualTo(A.stationA));
     }
 
     /*
@@ -221,6 +221,6 @@ class SectionsTest {
     @Test
     void 구간들에_역이_한개_남았다면_남은_구간_자체를_삭제한다() {
         // expect
-        assertThat(sections.removeStation(A.stationA).getSections()).hasSize(0);
+        assertThat(sections.removeStation(A.stationA).sections()).hasSize(0);
     }
 }
