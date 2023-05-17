@@ -23,7 +23,7 @@ import static subway.TestFixtures.잠실새내;
 import static subway.TestFixtures.종합운동장;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql({"/schema.sql", "/dummyData.sql"})
+@Sql({"/dropTable.sql", "/schema.sql", "/dummyData.sql"})
 @DisplayName("SectionController 테스트")
 class SectionControllerTest {
 

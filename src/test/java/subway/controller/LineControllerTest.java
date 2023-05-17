@@ -13,7 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.dto.request.LineRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql({"/schema.sql", "/dummyData.sql"})
+@Sql({"/dropTable.sql", "/schema.sql", "/dummyData.sql"})
 @DisplayName("LineController 테스트")
 class LineControllerTest {
 
