@@ -53,15 +53,6 @@ public class LineDao {
         }
     }
 
-    public Optional<LineEntity> findByName(final String lineName) {
-        String sql = "SELECT id, name, color FROM LINES WHERE name = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineName));
-        } catch (DataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
     public void updateById(final LineEntity line) {
         String sql = "UPDATE LINES set name = ?, color = ? WHERE id = ?";
         jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());

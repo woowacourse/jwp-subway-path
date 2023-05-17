@@ -40,22 +40,22 @@ public class LineRepository {
     public void updateSections(final Line line) {
         sectionDao.deleteAllByLineId(line.getId());
         final List<SectionEntity> sectionEntities = line.getSections()
-                .getSections()
+                .sections()
                 .stream()
                 .map(section -> SectionEntity.of(section, line.getId()))
                 .collect(Collectors.toUnmodifiableList());
         sectionDao.batchInsert(sectionEntities);
     }
 
-    public Line findByName(final LineName lineName) {
-        return lineDao.findByName(lineName.name()).map(
+    public Line findById(final Long lineId) {
+        return lineDao.findById(lineId).map(
                 it -> new Line(
                         it.getId(),
                         new LineName(it.getName()),
                         new LineColor(it.getColor()),
                         findSectionsByLineId(it.getId())
                 )
-        ).orElseThrow(() -> new IllegalArgumentException("해당 이름을 가진 노선을 찾을 수 없습니다."));
+        ).orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 노선을 찾을 수 없습니다."));
     }
 
     private Sections findSectionsByLineId(final Long id) {
@@ -96,8 +96,8 @@ public class LineRepository {
         lineDao.updateById(LineEntity.from(line));
     }
 
-    public void delete(final Line line) {
-        lineDao.deleteById(line.getId());
+    public void delete(final Long id) {
+        lineDao.deleteById(id);
     }
 }
 

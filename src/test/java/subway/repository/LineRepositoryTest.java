@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -58,10 +57,10 @@ class LineRepositoryTest {
         final Line line = Line1.line;
 
         //when
-        lineRepository.save(line);
+        final Long id = lineRepository.save(line);
 
         //then
-        assertThat(lineDao.findByName("1호선").get().getName()).isEqualTo("1호선");
+        assertThat(lineDao.findById(id).get().getName()).isEqualTo("1호선");
         ;
     }
 
@@ -119,10 +118,10 @@ class LineRepositoryTest {
     @Test
     void 노선을_노선이름으로_조회한다() {
         // given
-        lineDao.insert(Line1.entity);
+        final Long id = lineDao.insert(Line1.entity);
 
         // expect
-        assertThat(lineRepository.findByName(new LineName("1호선")).get().getLineName().name())
+        assertThat(lineRepository.findById(id).getLineName().name())
                 .isEqualTo("1호선");
     }
 
@@ -166,10 +165,11 @@ class LineRepositoryTest {
         final Long id = lineDao.insert(Line1.entity);
 
         // when
-        lineRepository.delete(new Line(id, Line1.name, Line1.color));
+        lineRepository.delete(id);
 
         // then
-        assertThatThrownBy(() -> lineRepository.findByName(new LineName("1호선")).get())
-                .isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> lineRepository.findById(id))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 ID를 가진 노선을 찾을 수 없습니다.");
     }
 }

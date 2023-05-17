@@ -112,10 +112,10 @@ class LineDaoTest {
     @Test
     void 등록된_호선을_이름으로_조회한다() {
         // given
-        lineDao.insert(Line1.entity);
+        final Long id = lineDao.insert(Line1.entity);
 
         // when
-        final LineEntity result = lineDao.findByName("1호선").get();
+        final LineEntity result = lineDao.findById(id).get();
 
         // then
         assertThat(result.getName()).isEqualTo("1호선");
