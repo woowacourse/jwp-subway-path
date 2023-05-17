@@ -29,5 +29,7 @@ create table if not exists SECTION
     CONSTRAINT up_station_id
         foreign key (up_station_id) references STATION (id) ON DELETE CASCADE,
     CONSTRAINT down_station_id
-        foreign key (down_station_id) references STATION (id) ON DELETE CASCADE
+        foreign key (down_station_id) references STATION (id) ON DELETE CASCADE,
+    CONSTRAINT unique_stations
+        UNIQUE (up_station_id, down_station_id)
 );
