@@ -1,21 +1,21 @@
 package subway.dto;
 
-import subway.domain.Line;
+import java.util.List;
 
-public class LineResponse {
+import subway.domain.Station;
+
+public class LineSearchResponse {
 
     private final Long id;
     private final String name;
     private final String color;
+    private final List<Station> stations;
 
-    private LineResponse(final Long id, final String name, final String color) {
+    public LineSearchResponse(final Long id, final String name, final String color, final List<Station> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
-    }
-
-    public static LineResponse of(final Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+        this.stations = stations;
     }
 
     public Long getId() {
@@ -28,5 +28,9 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public List<Station> getStations() {
+        return stations;
     }
 }
