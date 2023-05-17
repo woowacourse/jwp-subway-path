@@ -47,14 +47,14 @@ public class Sections {
         throw new InvalidStationException("부적절한 입력입니다.");
     }
 
-    private Station addStation2(final Direction down, final Station downStation, final Station upStation, final int distance) {
-        if (graph.isTerminal(down, upStation)) {
-            addStationTo(down, upStation, downStation, distance);
+    private Station addStation2(final Direction direction, final Station downStation, final Station upStation, final int distance) {
+        if (graph.isTerminal(direction, upStation)) {
+            direction.addStationToTerminal(graph, upStation, downStation, distance);
             return downStation;
         }
 
-        final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(down, upStation);
-        addStationTo(down, upStation, downStation, findAdjacentStation(down, adjacentSections), distance);
+        final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(direction, upStation);
+        addStationTo(direction, upStation, downStation, findAdjacentStation(direction, adjacentSections), distance);
         return downStation;
     }
 
@@ -65,10 +65,10 @@ public class Sections {
             final Station adjacentStation,
             final int distance) {
         if (direction == DOWN) {
-            addStationToDownLine(existingStation, newStation, adjacentStation, distance);
+            updateSectionBy(DOWN, existingStation, newStation, adjacentStation, distance);
         }
         if (direction == UP) {
-            addStationToUpLine(adjacentStation, newStation, existingStation, distance);
+            updateSectionBy(UP, adjacentStation, newStation, existingStation, distance);
         }
     }
 
@@ -144,14 +144,20 @@ public class Sections {
         return graph.getDownStation(defaultWeightedEdges.iterator().next());
     }
 
-    private void addStationToUpLine(final Station adjacentStation, final Station newStation, final Station existingStation, final int distance) {
-        final int updatedDistance = calculateUpdatedDistance(UP, adjacentStation, existingStation, distance);
-        updateSection(adjacentStation, newStation, existingStation, distance, updatedDistance);
-    }
-
-    private void addStationToDownLine(final Station existingStation, final Station newStation, final Station adjacentStation, final int distance) {
-        final int updatedDistance = calculateUpdatedDistance(DOWN, adjacentStation, existingStation, distance);
-        updateSection(existingStation, newStation, adjacentStation, updatedDistance, distance);
+    private void updateSectionBy(
+            final Direction direction,
+            final Station upStation,
+            final Station newStation,
+            final Station downStation,
+            final int distance) {
+        if (direction == UP) {
+            final int updatedDistance = calculateUpdatedDistance(UP, upStation, downStation, distance);
+            updateSection(upStation, newStation, downStation, distance, updatedDistance);
+        }
+        if (direction == DOWN) {
+            final int updatedDistance = calculateUpdatedDistance(DOWN, downStation, upStation, distance);
+            updateSection(upStation, newStation, downStation, updatedDistance, distance);
+        }
     }
 
     private int calculateUpdatedDistance(final Direction direction, final Station adjacentStation, final Station existingStation, final int newDistance) {
@@ -163,11 +169,11 @@ public class Sections {
         return existingDistance - newDistance;
     }
 
-    private DefaultWeightedEdge findSectionBy(final Direction direction, final Station adjacentStation, final Station existingStation) {
+    private DefaultWeightedEdge findSectionBy(final Direction direction, final Station upStation, final Station downStation) {
         if (direction == UP) {
-            return graph.getSection(adjacentStation, existingStation);
+            return graph.getSection(upStation, downStation);
         }
-        return graph.getSection(existingStation, adjacentStation);
+        return graph.getSection(downStation, upStation);
     }
 
     private void updateSection(final Station upStation, final Station newStation, final Station downStation, final int distance, final int updatedDistance) {
