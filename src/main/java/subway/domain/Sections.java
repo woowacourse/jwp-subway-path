@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 public class Sections {
     private static final int ONE_SECTION = 1;
     private static final int END_POINT_SIZE = 1;
+    private static final int FIND_END_POINT_INDEX = 0;
+    private static final int ORIGIN_INDEX = 0;
     private List<Section> sections;
 
     public Sections(final List<Section> sections) {
@@ -52,7 +54,7 @@ public class Sections {
         }
         upStations.removeAll(downStations);
 
-        return upStations.get(0);
+        return upStations.get(FIND_END_POINT_INDEX);
     }
 
     private Station findDownEndPoint() {
@@ -65,7 +67,7 @@ public class Sections {
         }
         downStations.removeAll(upStations);
 
-        return downStations.get(0);
+        return downStations.get(FIND_END_POINT_INDEX);
     }
 
     public void remove(final Station station) {
@@ -93,7 +95,7 @@ public class Sections {
     }
 
     private void removeMiddleStation(final List<Section> stationSection, final Station station) {
-        Section section = stationSection.get(0).mergedSection(stationSection.get(1), station);
+        Section section = stationSection.get(ORIGIN_INDEX).mergedSection(stationSection.get(ORIGIN_INDEX + 1), station);
 
         sections.removeAll(stationSection);
         sections.add(section);
