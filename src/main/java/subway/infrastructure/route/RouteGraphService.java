@@ -3,23 +3,23 @@ package subway.infrastructure.route;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import subway.domain.*;
+import org.springframework.stereotype.Component;
 import subway.domain.Line;
-import subway.domain.vo.Distance;
-import subway.domain.vo.Money;
-import subway.domain.route.RouteService;
+import subway.domain.Payment;
+import subway.domain.Section;
+import subway.domain.Station;
 import subway.domain.route.Route;
 import subway.domain.route.RouteEdge;
+import subway.domain.route.RouteService;
+import subway.domain.vo.Distance;
+import subway.domain.vo.Money;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-@Transactional(readOnly = true)
-@Service
+@Component
 public class RouteGraphService implements RouteService {
 
     @Override
