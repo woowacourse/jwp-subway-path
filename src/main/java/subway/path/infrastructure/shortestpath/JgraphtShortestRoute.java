@@ -46,7 +46,7 @@ public class JgraphtShortestRoute implements ShortestRouteService {
     private List<SectionAdapter> findPath(final Path path, final Station start, final Station end) {
         final LinesGraphAdapter graph = graphCache.linesGraphAdapter(path);
         final GraphPath<Station, SectionAdapter> graphPath = validPath(graph, start, end);
-        if (path == null) {
+        if (graphPath == null) {
             throw new PathException(NO_PATH);
         }
         return graphPath.getEdgeList();
