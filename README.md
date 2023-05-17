@@ -110,20 +110,20 @@ Content-Type: application/json
 }
 ```
 ### POST /stations
-- 요청 
+- 요청
 ```http request 
 POST /stations
 Content-Type: application/json
 
 {
   "name" : "잠실",
-  "postion" : [
+  "position" : [
     {
       "lineId" : 1 (2호선),
       "upStationId" : 1 (잠실나루), (null 허용)
-      "upDistance" : 5, (null 허용)
+      "upStationDistance" : 5, (null 허용)
       "downStationId" : 2 (잠실새내), (null 허용)
-      "downDistance" : 5 (null 허용)
+      "dowStationnDistance" : 5 (null 허용)
     },
     {
       "lineId" : 2 (8호선),
@@ -133,6 +133,23 @@ Content-Type: application/json
       "downDistance" : 5 (null 허용)
     }
   ]
+}
+```
+- 응답
+```http request
+HTTP /1.1 201 CREATED
+```
+### POST /stations/init
+- 요청
+```http request 
+POST /stations
+Content-Type: application/json
+
+{
+  "firstStationName" : "잠실",
+  "lastStationName" : "잠실나루,
+  "lineId" : 1, (2호선)
+  "distance" : 10
 }
 ```
 - 응답

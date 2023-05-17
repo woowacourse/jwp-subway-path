@@ -6,6 +6,7 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.InitStationRequest;
 import subway.dto.StationRequest;
 import subway.dto.StationPositionRequest;
 import subway.repository.LineRepository;
@@ -52,6 +53,22 @@ public class StationService {
     }
 
     @Transactional
+    public void saveInitStation(final InitStationRequest request) {
+        Station firstStation = new Station(request.getFirstStationName());
+        Station lastStation = new Station(request.getLastStationName());
+        Distance distance = new Distance(request.getDistance());
+
+        Line line = lineRepository.findById(request.getLineId());
+        Station saveFirstStation = stationRepository.save(firstStation);
+        Station saveLastStation = stationRepository.save(lastStation);
+
+        Section section = Section.of(saveFirstStation, saveLastStation, distance);
+        Line updateLine = line.addInitSection(section);
+
+        sectionRepository.updateByLine(line, updateLine);
+    }
+
+    @Transactional
     public void deleteStation(final Long stationId) {
         Station station = stationRepository.findById(stationId);
         List<Line> findLines = lineRepository.findAll();
@@ -61,6 +78,7 @@ public class StationService {
             updateLines.add(updateLine);
             sectionRepository.updateByLine(findLine, updateLine);
         }
+        // TODO: 5/17/23  수정 필요
         for (int index = 0; index < findLines.size(); index++) {
             stationRepository.updateByLine(findLines.get(index), updateLines.get(index));
         }

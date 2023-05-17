@@ -11,6 +11,10 @@ public class Sections {
         this.sections = sections;
     }
 
+    public static Sections create() {
+        return new Sections(new ArrayList<>());
+    }
+
     public Sections addMiddleSection(final Section upSection, final Section downSection) {
         Map<Station, Section> upToDown = getUpToDown();
         if (!upToDown.containsKey(upSection.getUpStation())) {

@@ -32,7 +32,7 @@ public class LineRepository {
                 .collect(Collectors.toMap(Station::getId, station -> station));
         Map<Long, List<Section>> allSectionsByLindId = getAllSectionsByLineId(allStationsById);
         return allLines.stream()
-                .map(lineEntity -> lineEntity.convertToLine(allSectionsByLindId.get(lineEntity.getId())))
+                .map(lineEntity -> lineEntity.convertToLine(allSectionsByLindId.getOrDefault(lineEntity.getId(), new ArrayList<>())))
                 .collect(Collectors.toList());
     }
 
@@ -42,7 +42,7 @@ public class LineRepository {
                 .map(StationEntity::convertToStation)
                 .collect(Collectors.toMap(Station::getId, station -> station));
         Map<Long, List<Section>> allSectionsByLindId = getAllSectionsByLineId(allStationsById);
-        return lineEntity.convertToLine(allSectionsByLindId.get(lineEntity.getId()));
+        return lineEntity.convertToLine(allSectionsByLindId.getOrDefault(lineEntity.getId(), new ArrayList<>()));
     }
 
     private Map<Long, List<Section>> getAllSectionsByLineId(final Map<Long, Station> allStationsById) {

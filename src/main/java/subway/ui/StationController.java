@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.StationService;
+import subway.dto.InitStationRequest;
 import subway.dto.StationRequest;
-import subway.dto.StationResponse;
 
 import java.net.URI;
 
@@ -20,12 +20,21 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest request) {
+    public ResponseEntity<Void> createStation(@RequestBody StationRequest request) {
         final Long savedSectionId = stationService.saveStation(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .location(URI.create("/stations/" + savedSectionId))
+                .build();
+    }
+
+    @PostMapping("/inits")
+    public ResponseEntity<Void> createInitStation(@RequestBody InitStationRequest request) {
+        stationService.saveInitStation(request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .build();
     }
 
