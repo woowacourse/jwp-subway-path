@@ -216,10 +216,10 @@ class SectionsTest {
         @Test
         void 역을_정렬해서_반환한다() {
             //given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤, 조앤_로운)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤, 조앤_로운));
 
             //when
-            final List<Station> orderedStations = sections.getOrderedStations(후추);
+            final List<Station> orderedStations = sections.getOrderedStations();
 
             //then
             assertThat(orderedStations).containsExactly(후추, 디노, 조앤, 로운);

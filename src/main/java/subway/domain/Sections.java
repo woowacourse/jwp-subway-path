@@ -1,9 +1,6 @@
 package subway.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -138,11 +135,31 @@ public class Sections {
                 .sum();
     }
 
-    public List<Station> getOrderedStations(final Station first) {
-        final List<Station> orderedStations = new ArrayList<>();
-        orderedStations.add(first);
+    public List<Station> getOrderedStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+        final Station first = findFirstStation();
+        return generateOrderedStations(first);
+    }
 
-        Station station = first;
+    private Station findFirstStation() {
+        Set<Station> toStations = sections.stream()
+                .map(Section::getTo)
+                .collect(Collectors.toSet());
+
+        return sections.stream()
+                .map(Section::getFrom)
+                .filter(from -> !toStations.contains(from))
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
+    }
+
+    private List<Station> generateOrderedStations(final Station start) {
+        final List<Station> orderedStations = new ArrayList<>();
+        orderedStations.add(start);
+
+        Station station = start;
         while (orderedStations.size() <= sections.size()) {
             final Station nextStation = getRightStation(station, sections);
             if (nextStation == null) {
