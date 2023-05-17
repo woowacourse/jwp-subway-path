@@ -3,7 +3,9 @@ package subway.dto;
 
 public class StationRequest {
 
-    private final String name;
+    private String name;
+
+    public StationRequest() {}
 
     public StationRequest(final String name) {
         this.name = name;

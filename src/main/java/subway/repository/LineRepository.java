@@ -85,4 +85,10 @@ public class LineRepository {
                 .map(LineEntity::from)
                 .collect(Collectors.toList());
     }
+
+    public void delete(final Line line) {
+        LineEntity lineEntity = LineEntity.from(line);
+        sectionDao.deleteByLineId(lineEntity.getId());
+        lineDao.delete(lineEntity);
+    }
 }

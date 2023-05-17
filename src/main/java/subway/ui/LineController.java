@@ -4,11 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
-import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LineRequest;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
@@ -22,29 +21,38 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
-        Long savedId = lineService.save(lineRequest);
+        Long savedId = lineService.saveLine(lineRequest);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .location(URI.create("/lines/"+savedId+"/stations"))
+                .location(URI.create("/lines/" + savedId))
                 .build();
     }
 
-    @GetMapping("/stations")
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        final List<LineResponse> findAllLines = lineService.findAllLines();
+    @GetMapping("/{lineId}")
+    public ResponseEntity<LineResponse> readLine(@PathVariable Long lineId) {
+        LineResponse line = lineService.findLine(lineId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(findAllLines);
+                .body(line);
     }
 
-    @GetMapping("/{lineId}/stations")
-    public ResponseEntity<LineResponse> findLineStations(@PathVariable Long lineId) {
-        final LineResponse lineResponse = lineService.findStations(lineId);
+    @PutMapping("/{lineId}")
+    public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody LineRequest request) {
+        lineService.editLine(lineId, request);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(lineResponse);
+                .status(HttpStatus.CREATED)
+                .location(URI.create("/lines/" + lineId))
+                .build();
+    }
+
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
+        lineService.deleteLine(lineId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

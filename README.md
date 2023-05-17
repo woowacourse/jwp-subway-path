@@ -70,12 +70,14 @@
 
 ## `station` 관련
 
-## GET /stations/{stationId}
+### GET /stations/{stationId}
+ 
 - 요청
 ```http request
 GET /stations/1
 ```
 
+- 응답
 ```http request
 HTTP /1.1 200 OK
 Content-Type: application/json
@@ -86,10 +88,9 @@ Content-Type: application/json
 }
 ```
 
-## POST /stations
-```
 ### POST /stations
 - 요청
+```
 ```http request 
 POST /stations
 Content-Type: application/json

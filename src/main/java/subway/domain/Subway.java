@@ -13,26 +13,6 @@ public class Subway {
         this.lines = lines;
     }
 
-    public Subway addStationBySections(final Section upSection, final Section downSection) {
-        validate(upSection);
-        validate(downSection);
-        return new Subway(null);
-    }
-
-    private void validate(final Section section) {
-        if (section.equals(Section.EMPTY_SECTION)) {
-            return;
-        }
-        List<String> names = findAllStations().stream()
-                .map(Station::getName)
-                .collect(Collectors.toList());
-        if (names.contains(section.getUpStation().getName())) {
-            throw new IllegalArgumentException("중복된 지하철 이름이 존재합니다.");
-        }
-        if (names.contains(section.getDownStation().getName())) {
-            throw new IllegalArgumentException("중복된 지하철 이름이 존재합니다.");
-        }
-    }
 
     public Subway addLine(final Line line) {
         validate(line);
@@ -51,7 +31,7 @@ public class Subway {
     }
 
     // TODO: 5/17/23 처음 도메인의 아이디를 이용해본 시도
-    public Subway deleteLine(final Long lineId) {
+    public Subway deleteById(final Long lineId) {
         Line targetLine = lines.stream()
                 .filter(line -> line.getId().equals(lineId))
                 .findAny()
@@ -101,5 +81,31 @@ public class Subway {
         return "Subway{" +
                 "lines=" + lines +
                 '}';
+    }
+
+    public void validateStation(final Station station) {
+        List<Station> allStations = findAllStations();
+        List<String> names = allStations.stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+        if (names.contains(station.getName())) {
+            throw new IllegalArgumentException("중복된 역명이 존재합니다.");
+        }
+    }
+
+    public void validateLine(final Line line) {
+        List<String> names = lines.stream()
+                .map(Line::getName)
+                .collect(Collectors.toList());
+        if (names.contains(line.getName())) {
+            throw new IllegalArgumentException("중복된 노선명이 존재합니다.");
+        }
+
+        List<String> colors = lines.stream()
+                .map(Line::getColor)
+                .collect(Collectors.toList());
+        if (colors.contains(line.getColor())) {
+            throw new IllegalArgumentException("중복된 노선색이 존재합니다.");
+        }
     }
 }
