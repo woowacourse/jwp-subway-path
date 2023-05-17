@@ -46,10 +46,11 @@ public class CreateSectionService {
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_LINE));
         final Line line = sectionRepository.findAllByLine(persistLine);
 
-        line.createSection(stations.get(sourceStationId), stations.get(targetStationId), Distance.from(distance), direction);
-        sectionRepository.insert(line);
+        final Line createdLine = line.createSection(stations.get(sourceStationId), stations.get(targetStationId),
+                Distance.from(distance), direction);
+        sectionRepository.insert(createdLine);
 
-        return CreateSectionDto.from(line);
+        return CreateSectionDto.from(createdLine);
     }
 
     private Map<Long, Station> findStations(final Long sourceStationId, final Long targetStationId) {
