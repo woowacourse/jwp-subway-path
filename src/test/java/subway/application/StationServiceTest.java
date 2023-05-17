@@ -8,7 +8,7 @@ import subway.application.request.DeleteStationRequest;
 import subway.application.response.StationResponse;
 import subway.config.ServiceTestConfig;
 import subway.dao.entity.StationEntity;
-import subway.domain.Distance;
+import subway.domain.vo.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -154,7 +154,7 @@ class StationServiceTest extends ServiceTestConfig {
     @Test
     void 여러_구간이_있을_때_역명과_노선명으로_역을_삭제한다() {
         // given
-        final Distance 거리20 = new Distance(20);
+        final Distance 거리20 = Distance.from(20);
         final Long 노선1_식별자값 = lineDao.insert("1", "파랑");
 
         final CreateSectionRequest 방학_창동_요청

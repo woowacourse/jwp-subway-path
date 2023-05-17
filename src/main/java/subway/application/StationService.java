@@ -8,7 +8,7 @@ import subway.application.request.DeleteStationRequest;
 import subway.application.response.StationResponse;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.domain.Distance;
+import subway.domain.vo.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -47,8 +47,7 @@ public class StationService {
         final Station upStation = saveStationWhenNameIsNotExist(request.getUpStationName());
         final Station downStation = saveStationWhenNameIsNotExist(request.getDownStationName());
 
-        final Section section = new Section(
-                new Distance(request.getDistance()), false, upStation, downStation);
+        final Section section = new Section(new Distance(request.getDistance()), false, upStation, downStation);
         line.addSection(section);
 
         deleteAllThenSaveAllSections(line);

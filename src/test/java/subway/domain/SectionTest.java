@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import subway.domain.vo.Distance;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class SectionTest {
-    private static final Distance 거리10 = new Distance(10);
+    private static final Distance 거리10 = Distance.from(10);
 
     @Test
     void 상행종점이_아닌_구간을_생성한다() {
@@ -33,7 +34,7 @@ class SectionTest {
         // given
         final Station 헤나역 = new Station("헤나");
         final Station 루카역 = new Station("루카");
-        final Distance 거리10 = new Distance(10);
+        final Distance 거리10 = Distance.from(10);
 
         // expect
         assertDoesNotThrow(() -> new Section(거리10, true, 헤나역, 루카역));
@@ -43,7 +44,7 @@ class SectionTest {
     void 상행역이_null일_경우_예외가_발생한다() {
         // given
         final Station 루카역 = new Station("루카");
-        final Distance 거리10 = new Distance(10);
+        final Distance 거리10 = Distance.from(10);
 
         // expect
         assertThatThrownBy(() -> new Section(거리10, true, null, 루카역))
@@ -54,7 +55,7 @@ class SectionTest {
     void 하행역이_null일_경우_예외가_발생한다() {
         // given
         final Station 헤나역 = new Station("헤나");
-        final Distance 거리10 = new Distance(10);
+        final Distance 거리10 = Distance.from(10);
 
         // expect
         assertThatThrownBy(() -> new Section(거리10, true, 헤나역, null))
@@ -152,8 +153,8 @@ class SectionTest {
         final Station 기존_하행역 = new Station("기존_하행역");
 
         final Station 새로운_상행역 = new Station("새로운_상행역");
-        final Distance 거리10 = new Distance(10);
-        final Distance 거리5 = new Distance(5);
+        final Distance 거리10 = Distance.from(10);
+        final Distance 거리5 = Distance.from(5);
 
         final Section 기존_구간 = new Section(거리10, true, 기존_상행역, 기존_하행역);
         final Section 새로운_구간 = new Section(거리5, false, 새로운_상행역, 기존_상행역);
@@ -175,8 +176,8 @@ class SectionTest {
         final Station 기존_하행역 = new Station("기존_하행역");
 
         final Station 새로운_하행역 = new Station("새로운_하행역");
-        final Distance 거리10 = new Distance(10);
-        final Distance 거리5 = new Distance(5);
+        final Distance 거리10 = Distance.from(10);
+        final Distance 거리5 = Distance.from(5);
 
         final Section 기존_구간 = new Section(거리10, true, 기존_상행역, 기존_하행역);
         final Section 새로운_구간 = new Section(거리5, false, 기존_하행역, 새로운_하행역);
@@ -198,8 +199,8 @@ class SectionTest {
         final Station 기존_하행역 = new Station("기존_하행역");
 
         final Station 새로운_하행역 = new Station("새로운_하행역");
-        final Distance 거리10 = new Distance(10);
-        final Distance 거리5 = new Distance(5);
+        final Distance 거리10 = Distance.from(10);
+        final Distance 거리5 = Distance.from(5);
 
         final Section 기존_구간 = new Section(거리10, true, 기존_상행역, 기존_하행역);
         final Section 새로운_구간 = new Section(거리5, false, 기존_상행역, 새로운_하행역);
@@ -221,8 +222,8 @@ class SectionTest {
         final Station 기존_하행역 = new Station("기존_하행역");
 
         final Station 새로운_상행역 = new Station("새로운_상행역");
-        final Distance 거리10 = new Distance(10);
-        final Distance 거리5 = new Distance(5);
+        final Distance 거리10 = Distance.from(10);
+        final Distance 거리5 = Distance.from(5);
 
         final Section 기존_구간 = new Section(거리10, true, 기존_상행역, 기존_하행역);
         final Section 새로운_구간 = new Section(거리5, false, 새로운_상행역, 기존_하행역);

@@ -1,11 +1,13 @@
 package subway.domain;
 
+import subway.domain.vo.Name;
+
 import java.util.Objects;
 
 public class Station {
 
-    private Long id;
-    private Name name;
+    private final Long id;
+    private final Name name;
 
     public Station(final String name) {
         this(null, name);

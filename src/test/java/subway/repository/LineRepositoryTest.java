@@ -6,6 +6,8 @@ import subway.config.RepositoryTestConfig;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.*;
+import subway.domain.Line;
+import subway.domain.vo.Distance;
 
 import java.util.List;
 
@@ -43,7 +45,7 @@ class LineRepositoryTest extends RepositoryTestConfig {
                 () -> assertThat(findSections)
                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                         .containsExactly(new Section(
-                                new Distance(10),
+                                Distance.from(10),
                                 true,
                                 new Station(saveUpStationId, "잠실"),
                                 new Station(saveDownStationId, "잠실나루")
@@ -73,7 +75,7 @@ class LineRepositoryTest extends RepositoryTestConfig {
                 () -> assertThat(findSections)
                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                         .containsExactly(new Section(
-                                new Distance(10),
+                                Distance.from(10),
                                 true,
                                 new Station(saveUpStationId, "잠실"),
                                 new Station(saveDownStationId, "잠실나루")
@@ -104,7 +106,7 @@ class LineRepositoryTest extends RepositoryTestConfig {
                 () -> assertThat(findSections)
                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                         .containsExactly(new Section(
-                                new Distance(10),
+                                Distance.from(10),
                                 true,
                                 new Station(saveUpStationId, "잠실"),
                                 new Station(saveDownStationId, "잠실나루")
