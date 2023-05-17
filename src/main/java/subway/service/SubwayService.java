@@ -16,8 +16,8 @@ import subway.domain.subway.SubwayJgraphtGraph;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
-@Transactional(readOnly = true)
 @Service
+@Transactional(readOnly = true)
 public class SubwayService {
 
     private final LineRepository lineRepository;
@@ -58,3 +58,4 @@ public class SubwayService {
         return new Passenger(request.getAge(), start, end);
     }
 }
+

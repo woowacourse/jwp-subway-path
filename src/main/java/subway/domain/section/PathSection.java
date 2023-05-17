@@ -1,5 +1,6 @@
 package subway.domain.section;
 
+import subway.domain.line.Fare;
 import subway.domain.station.Station;
 import subway.domain.subway.LineWeightedEdge;
 
@@ -8,8 +9,8 @@ public class PathSection {
     private final Long lineId;
     private final Station source;
     private final Station target;
-    private final int distance;
-    private final int fareOfLine;
+    private final Distance distance;
+    private final Fare fareOfLine;
 
     public PathSection(
             final Long lineId,
@@ -21,8 +22,8 @@ public class PathSection {
         this.lineId = lineId;
         this.source = source;
         this.target = target;
-        this.distance = distance;
-        this.fareOfLine = fareOfLine;
+        this.distance = new Distance(distance);
+        this.fareOfLine = new Fare(fareOfLine);
     }
 
     public static PathSection from(final LineWeightedEdge edge) {
@@ -48,10 +49,10 @@ public class PathSection {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getValue();
     }
 
     public int getFareOfLine() {
-        return fareOfLine;
+        return fareOfLine.getValue();
     }
 }

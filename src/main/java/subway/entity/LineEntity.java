@@ -8,13 +8,13 @@ public class LineEntity {
     private final Long id;
     private final String name;
     private final String color;
-    private final int fare;
+    private final Integer fare;
 
-    public LineEntity(final String name, final String color, final int fare) {
+    public LineEntity(final String name, final String color, final Integer fare) {
         this(null, name, color, fare);
     }
 
-    public LineEntity(final Long id, final String name, final String color, final int fare) {
+    public LineEntity(final Long id, final String name, final String color, final Integer fare) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -37,7 +37,7 @@ public class LineEntity {
         return color;
     }
 
-    public int getFare() {
+    public Integer getFare() {
         return fare;
     }
 
