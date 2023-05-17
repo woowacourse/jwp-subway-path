@@ -144,7 +144,6 @@ public class Sections {
 
         sourceStationSection.delete(existsStation);
         existsStationSection.delete(sourceStation);
-
         sections.put(targetStation, targetStationSection);
     }
 
@@ -230,7 +229,7 @@ public class Sections {
         final List<Station> stations = section.findAllStation();
 
         for (Station station : stations) {
-            validateConnected(station);
+            validateRegisterStation(station);
             sections.get(station)
                     .delete(targetStation);
         }
@@ -238,9 +237,16 @@ public class Sections {
         sections.remove(targetStation);
     }
 
-    private void validateConnected(final Station station) {
+    public List<Station> findAllAdjustStationByStation(final Station station) {
+        validateRegisterStation(station);
+
+        return sections.get(station)
+                .findAllStation();
+    }
+
+    private void validateRegisterStation(final Station station) {
         if (!sections.containsKey(station)) {
-            throw new IllegalArgumentException("해당 역은 연결되지 않은 역입니다.");
+            throw new IllegalArgumentException("해당 역은 해당 노선에 등록되지 않은 역입니다.");
         }
     }
 
@@ -252,7 +258,7 @@ public class Sections {
         final Queue<Station> queue = new LinkedList<>();
         final Set<Station> visited = new LinkedHashSet<>();
 
-        final Station upStation = findStartStation();
+        final Station upStation = findTerminalStation(sections, Direction.DOWN);
         queue.add(upStation);
         visited.add(upStation);
 
@@ -267,14 +273,6 @@ public class Sections {
         }
 
         return new ArrayList<>(visited);
-    }
-
-    private Station findStartStation() {
-        return sections.keySet().stream()
-                .filter(station -> sections.get(station).isTerminalStation())
-                .filter(station -> sections.get(station).findEndStationPathDirection().matches(Direction.DOWN))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("아직 노선에 역이 등록되지 않았습니다."));
     }
 
     public Map<Station, Section> sections() {
