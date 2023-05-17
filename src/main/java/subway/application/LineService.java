@@ -1,5 +1,7 @@
 package subway.application;
 
+import static java.util.Comparator.*;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,9 +14,11 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
+import subway.ui.dto.GetLineResponse;
 import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
+import subway.ui.dto.PostLineResponse;
 
 @Service
 @Transactional
@@ -30,14 +34,14 @@ public class LineService {
         this.sectionDao = sectionDao;
     }
 
-    public LineResponse saveLine(LineRequest request) {
+    public PostLineResponse saveLine(LineRequest request) {
         Optional<Station> upStation = stationDao.findById(request.getUpStationId());
         Optional<Station> downStation = stationDao.findById(request.getDownStationId());
         validateStationsPresence(upStation, downStation);
 
         Line line = lineDao.insert(new Line(request.getName(), request.getColor()));
         sectionDao.insert(new Section(upStation.get(), downStation.get(), line, request.getDistance()));
-        return LineResponse.of(line);
+        return PostLineResponse.of(line);
     }
 
     private void validateStationsPresence(Optional<Station> upStation, Optional<Station> downStation) {
@@ -46,24 +50,23 @@ public class LineService {
         }
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-            .map(LineResponse::of)
+    public List<GetLineResponse> findAllLines() {
+        List<Line> lines = lineDao.findAll();
+        return lines.stream()
+            .sorted(comparing(Line::getId))
+            .map(this::findLineResponse)
             .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    public GetLineResponse findLineById(Long id) {
+        Line line = lineDao.findById(id);
+        return findLineResponse(line);
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+    private GetLineResponse findLineResponse(Line line) {
+        Sections sections = new Sections(sectionDao.findAllByLineId(line.getId()));
+        List<Station> stations = sections.getStationsInOrder();
+        return GetLineResponse.from(line, stations);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

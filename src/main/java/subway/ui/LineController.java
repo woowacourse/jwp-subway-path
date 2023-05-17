@@ -1,17 +1,23 @@
 package subway.ui;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import subway.application.LineService;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
-
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import subway.application.LineService;
+import subway.ui.dto.GetLineResponse;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.PostLineResponse;
 
 @RestController
 public class LineController {
@@ -23,19 +29,19 @@ public class LineController {
     }
 
     @PostMapping("/lines")
-    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    public ResponseEntity<PostLineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
+        PostLineResponse line = lineService.saveLine(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + line.getLineId())).body(line);
     }
 
     @GetMapping("/lines")
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<GetLineResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findAllLines());
     }
 
     @GetMapping("/lines/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<GetLineResponse> findLineById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.findLineById(id));
     }
 
     @PutMapping("/lines/{id}")

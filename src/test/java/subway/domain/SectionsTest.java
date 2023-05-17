@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static subway.TestSource.*;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -56,6 +57,35 @@ public class SectionsTest {
         assertThatThrownBy(() -> line8.findAnySectionWithGivenStations(cheonho, jangji))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("주어진 역으로 구성된 구간이 존재하지 않습니다.");
+    }
+
+    @Nested
+    class getStationsInOrder_테스트 {
+
+        @Test
+        void 보유한_역을_상행_종점부터_순서대로_반환한다() {
+            // given
+            // 장지 - 10 - 잠실 - 10 - 천호
+            Sections line8 = line8source;
+
+            // when
+            List<Station> stations = line8.getStationsInOrder();
+
+            // then
+            assertThat(stations).containsExactly(cheonho, jamsil, jangji);
+        }
+
+        @Test
+        void 보유한_역이_없다면_empty_list를_반환한다() {
+            // given
+            Sections sections = new Sections(Collections.emptyList());
+
+            // when
+            List<Station> stations = sections.getStationsInOrder();
+
+            // then
+            assertThat(stations.size()).isZero();
+        }
     }
 
     @Nested

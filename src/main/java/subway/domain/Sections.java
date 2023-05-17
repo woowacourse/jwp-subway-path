@@ -181,6 +181,17 @@ public class Sections {
         return sections.get(sections.size() - 1);
     }
 
+    public List<Station> getStationsInOrder() {
+        if (sections.size() == 0) {
+            return Collections.emptyList();
+        }
+        List<Station> stations = sections.stream()
+            .map(Section::getUpStation)
+            .collect(Collectors.toList());
+        stations.add(getTailSection().getDownStation());
+        return stations;
+    }
+
     public int size() {
         return sections.size();
     }
