@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.exception.InvalidSectionDirectionException;
 
 public class Section {
 
@@ -25,7 +26,7 @@ public class Section {
 
     private void validateTarget(Station source, Station target) {
         if (source.isSameName(target)) {
-            throw new IllegalArgumentException("출발지와 도착지는 같을 수 없습니다");
+            throw new InvalidSectionDirectionException("출발지와 도착지는 같을 수 없습니다");
         }
     }
 

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.exception.InvalidSectionDirectionException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -16,7 +17,7 @@ class SectionTest {
     @Test
     void 출발지와_도착지가_같으면_예외가_발생한다() {
         assertThatThrownBy(() -> new Section("A", "A", 10))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidSectionDirectionException.class)
                 .hasMessage("출발지와 도착지는 같을 수 없습니다");
     }
 
