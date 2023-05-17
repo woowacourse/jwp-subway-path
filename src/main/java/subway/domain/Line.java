@@ -16,7 +16,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, null);
+        this(id, name, color, new Sections(Collections.emptyList()));
     }
 
     public Line(Long id, String name, String color, Sections sections) {
