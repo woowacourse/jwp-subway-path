@@ -123,7 +123,6 @@ public class Sections {
     }
 
     public List<Station> getSortedStations() {
-
         Map<Station, Station> upToDown = sections.stream()
                 .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
 
