@@ -3,13 +3,13 @@ package subway.dto.line;
 import subway.domain.Line;
 
 public class LineResponse {
-    private Long lineId;
-    private String lineName;
+    private Long id;
+    private String name;
     private String color;
 
-    public LineResponse(Long lineId, String lineName, String color) {
-        this.lineId = lineId;
-        this.lineName = lineName;
+    public LineResponse(Long id, String name, String color) {
+        this.id = id;
+        this.name = name;
         this.color = color;
     }
 
@@ -17,12 +17,12 @@ public class LineResponse {
         return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 
-    public Long getLineId() {
-        return lineId;
+    public Long getId() {
+        return id;
     }
 
-    public String getLineName() {
-        return lineName;
+    public String getName() {
+        return name;
     }
 
     public String getColor() {

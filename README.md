@@ -54,18 +54,18 @@
   ```json
   [
     {
-        "lineId": 1,
-        "lineName": "2호선",
+        "id": 1,
+        "name": "2호선",
         "color": "green"
     },
     {
-        "lineId": 2,
-        "lineName": "3호선",
+        "id": 2,
+        "name": "3호선",
         "color": "orange"
     },
     {
-        "lineId": 3,
-        "lineName": "4호선",
+        "id": 3,
+        "name": "4호선",
         "color": "blue"
     }
   ]
@@ -78,8 +78,8 @@
   [
     {
         "line": {
-            "lineId": 1,
-            "lineName": "2호선",
+            "id": 1,
+            "name": "2호선",
             "color": "green"
         },
         "sections": [
@@ -105,8 +105,8 @@
     },
     {
         "line": {
-            "lineId": 2,
-            "lineName": "3호선",
+            "id": 2,
+            "name": "3호선",
             "color": "orange"
         },
         "sections": [
@@ -138,8 +138,8 @@
     },
     {
         "line": {
-            "lineId": 3,
-            "lineName": "4호선",
+            "id": 3,
+            "name": "4호선",
             "color": "blue"
         },
         "sections": [
