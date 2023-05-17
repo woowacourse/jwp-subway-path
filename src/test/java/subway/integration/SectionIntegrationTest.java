@@ -10,6 +10,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.AddOneSectionRequest;
@@ -21,6 +22,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     private static final long 신림역ID = 1L;
     private static final long 봉천역ID = 2L;
+    private static final long 서울대입구역ID = 3L;
     private static final long _2호선ID = 1L;
 
     private void insert_신림역_봉천역_2호선() {
@@ -55,7 +57,16 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(addOneSectionRequest)
                 .when()
-                .post("/lines/1");
+                .post("/lines/" + _2호선ID);
+    }
+
+    private void insert_section_2호선_봉천역_서울대입구역_거리10() {
+        AddOneSectionRequest addOneSectionRequest = new AddOneSectionRequest(봉천역ID, 서울대입구역ID, 10);
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(addOneSectionRequest)
+                .when()
+                .post("/lines/" + _2호선ID);
     }
 
     @Test
@@ -190,59 +201,70 @@ public class SectionIntegrationTest extends IntegrationTest {
         );
     }
 
-    //    @DisplayName("노선에서 역을 제거한다.")
-//    @Test
-//    void removeStation_success() {
-//        //given
-//        ExtractableResponse<Response> enrollResponse = enrollLine(lineRequest1);
-//        long lineId = Long.parseLong(enrollResponse.header("Location").split("/")[2]);
-//
-//        long stationId = 1L;
-//
-//        RestAssured
-//                .given().log().all()
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .body(ADD_TWO_STATION_REQUEST)
-//                .when().post("/lines/{lineId}", lineId)
-//                .then().log().all()
-//                .extract();
-//
-//        //when
-//        ExtractableResponse<Response> response = RestAssured
-//                .when()
-//                .delete("/lines/{lineId}/stations/{stationId}", lineId, stationId)
-//                .then().log().all()
-//                .extract();
-//
-//        //then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-//    }
-//
-//    @DisplayName("노선에서 역을 제거한다.")
-//    @Test
-//    void removeStation_success_noStation() {
-//        //given
-//        ExtractableResponse<Response> enrollResponse = enrollLine(lineRequest1);
-//        long lineId = Long.parseLong(enrollResponse.header("Location").split("/")[2]);
-//
-//        //when
-//        ExtractableResponse<Response> response = RestAssured
-//                .when()
-//                .delete("/lines/{lineId}/stations/{stationId}", lineId, 1L)
-//                .then().log().all()
-//                .extract();
-//
-//        //then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-//    }
-//
-//    private ExtractableResponse<Response> enrollLine(final LineRequest lineRequest) {
-//        return RestAssured
-//                .given().log().all()
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .body(lineRequest)
-//                .when().post("/lines")
-//                .then().log().all().
-//                extract();
-//    }
+    @Test
+    void 노선에_역이_2개_존재할_때_하나의_역을_제거한다() {
+        //given
+        insert_신림역_봉천역_2호선();
+        insert_section_2호선_신림_봉천_거리10();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .when().delete("/lines/{lineId}/stations/{stationId}", _2호선ID, 봉천역ID)
+                .then().extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1L, 2L, 3L})
+    void 노선에_역이_3개_존재할_때_모든_역을_각각_제거할_수_있다(final long deleteStationId) {
+        //given
+        insert_신림역_봉천역_2호선();
+        postStation(new StationRequest("서울대입구역"));
+        insert_section_2호선_신림_봉천_거리10();
+        insert_section_2호선_봉천역_서울대입구역_거리10();
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .when()
+                .delete("/lines/{lineId}/stations/{stationId}", _2호선ID, deleteStationId)
+                .then()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 존재하지_않은_역을_제거하면_BAD_REQUEST를_응답한다() {
+        //given
+        insert_신림역_봉천역_2호선();
+        insert_section_2호선_신림_봉천_거리10();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .when()
+                .delete("/lines/{lineId}/stations/{stationId}", _2호선ID, 4L)
+                .then().extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 존재하지_않는_호선으로_역_제거를_요청하면_BAD_REQUEST를_응답한다() {
+        //given
+        insert_신림역_봉천역_2호선();
+        insert_section_2호선_신림_봉천_거리10();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .when()
+                .delete("/lines/{lineId}/stations/{stationId}", 4L, 신림역ID)
+                .then().extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }
