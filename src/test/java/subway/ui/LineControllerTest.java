@@ -10,7 +10,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
-import subway.application.SectionService;
 import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
 
@@ -31,8 +30,6 @@ class LineControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private LineService lineService;
-    @MockBean
-    private SectionService sectionService;
 
     @Test
     @DisplayName("POST /lines/{id}/station/init")
@@ -41,7 +38,7 @@ class LineControllerTest {
         final SectionRequest sectionRequest = new SectionRequest(1L, 2L, 10);
         final String request = objectMapper.writeValueAsString(sectionRequest);
         final SectionResponse sectionResponse = new SectionResponse(1L, 1L, 2L, 10);
-        given(sectionService.saveInitialSection(any())).willReturn(sectionResponse);
+        given(lineService.saveInitialSection(anyLong(), any())).willReturn(sectionResponse);
 
         // when & then
         mockMvc.perform(post("/lines/1/station/init")
@@ -50,7 +47,7 @@ class LineControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "/lines/1/station/init/1"));
 
-        verify(sectionService, times(1)).saveInitialSection(any());
+        verify(lineService, times(1)).saveInitialSection(anyLong(), any());
     }
 
     @Test
@@ -60,7 +57,7 @@ class LineControllerTest {
         final SectionRequest sectionRequest = new SectionRequest(1L, 2L, 10);
         final String request = objectMapper.writeValueAsString(sectionRequest);
         final SectionResponse sectionResponse = new SectionResponse(1L, 1L, 2L, 10);
-        given(sectionService.saveSection(any())).willReturn(sectionResponse);
+        given(lineService.saveSection(anyLong(), any())).willReturn(sectionResponse);
 
         // when & then
         mockMvc.perform(post("/lines/1/station")
@@ -69,18 +66,18 @@ class LineControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "/lines/1/station/1"));
 
-        verify(sectionService, times(1)).saveSection(any());
+        verify(lineService, times(1)).saveSection(anyLong(), any());
     }
 
     @Test
     @DisplayName("DELETE /lines/{id}/station/{stationId}")
     void deleteStationInLine() throws Exception {
         // given
-        doNothing().when(sectionService).deleteSectionByStationId(anyLong(), anyLong());
+        doNothing().when(lineService).deleteSectionByStationId(anyLong(), anyLong());
 
         // when & then
         mockMvc.perform(delete("/lines/1/station/1"))
                 .andExpect(status().isNoContent());
-        verify(sectionService, times(1)).deleteSectionByStationId(anyLong(), anyLong());
+        verify(lineService, times(1)).deleteSectionByStationId(anyLong(), anyLong());
     }
 }

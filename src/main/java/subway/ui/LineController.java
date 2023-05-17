@@ -3,7 +3,6 @@ package subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
-import subway.application.SectionService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
@@ -18,11 +17,9 @@ import java.util.List;
 public class LineController {
 
     private final LineService lineService;
-    private final SectionService sectionService;
 
-    public LineController(final LineService lineService, final SectionService sectionService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
-        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -34,18 +31,18 @@ public class LineController {
     @PostMapping("/{id}/station/init")
     public ResponseEntity<SectionResponse> createInitialSection(@PathVariable final Long id,
                                                                 @RequestBody final SectionRequest sectionRequest) {
-        final SectionResponse section = sectionService.saveInitialSection(sectionRequest);
+        final SectionResponse section = lineService.saveInitialSection(id, sectionRequest);
         final URI uri = URI.create("/lines/" + id + "/station/init/" + section.getId());
         return ResponseEntity.created(uri).body(section);
     }
-
-    @PostMapping("/{id}/station")
-    public ResponseEntity<SectionResponse> createSection(@PathVariable final Long id,
-                                                         @RequestBody final SectionRequest sectionRequest) {
-        final SectionResponse section = sectionService.saveSection(sectionRequest);
-        final URI uri = URI.create("/lines/" + id + "/station/" + section.getId());
-        return ResponseEntity.created(uri).body(section);
-    }
+//
+//    @PostMapping("/{id}/station")
+//    public ResponseEntity<SectionResponse> createSection(@PathVariable final Long id,
+//                                                         @RequestBody final SectionRequest sectionRequest) {
+//        final SectionResponse section = lineService.saveSection(id, sectionRequest);
+//        final URI uri = URI.create("/lines/" + id + "/station/" + section.getId());
+//        return ResponseEntity.created(uri).body(section);
+//    }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
@@ -72,12 +69,13 @@ public class LineController {
     @DeleteMapping("/{id}/station/{stationId}")
     public ResponseEntity<Void> deleteStationInLine(@PathVariable final Long id,
                                                     @PathVariable final Long stationId) {
-        sectionService.deleteSectionByStationId(id, stationId);
+        lineService.deleteSectionByStationId(id, stationId);
         return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
+    public ResponseEntity<Void> handleSQLException(final Exception e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest().build();
     }
 }

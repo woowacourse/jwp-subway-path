@@ -1,5 +1,7 @@
 package subway.dto;
 
+import subway.domain.Section;
+
 public class SectionResponse {
 
     private final Long id;
@@ -12,6 +14,10 @@ public class SectionResponse {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public static SectionResponse of(final Long id, final Section section) {
+        return new SectionResponse(id, section.getUpStation().getId(), section.getDownStation().getId(), section.getDistance());
     }
 
     public Long getId() {
