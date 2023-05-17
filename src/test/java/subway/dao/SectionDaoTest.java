@@ -36,7 +36,7 @@ public class SectionDaoTest {
     @Test
     void 구간을_전체_저장한다() {
         // given
-        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED", 0));
         final StationEntity station1 = stationDao.insert(new StationEntity("A", line.getId()));
         final StationEntity station2 = stationDao.insert(new StationEntity("B", line.getId()));
         final StationEntity station3 = stationDao.insert(new StationEntity("C", line.getId()));
@@ -57,7 +57,7 @@ public class SectionDaoTest {
     @Test
     void 구간을_전체_조회한다() {
         // given
-        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED", 0));
         final StationEntity station1 = stationDao.insert(new StationEntity("A", line.getId()));
         final StationEntity station2 = stationDao.insert(new StationEntity("B", line.getId()));
         final StationEntity station3 = stationDao.insert(new StationEntity("C", line.getId()));
@@ -78,7 +78,7 @@ public class SectionDaoTest {
     @Test
     void 입력받은_노선_id에_해당하는_구간을_전체_삭제한다() {
         // given
-        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED", 0));
         final StationEntity station1 = stationDao.insert(new StationEntity("A", line.getId()));
         final StationEntity station2 = stationDao.insert(new StationEntity("B", line.getId()));
         final StationEntity station3 = stationDao.insert(new StationEntity("C", line.getId()));
@@ -99,7 +99,7 @@ public class SectionDaoTest {
     @Test
     void 라인_id를_받아_구간을_조회한다() {
         // given
-        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED", 0));
         final StationEntity station1 = stationDao.insert(new StationEntity("A", line.getId()));
         final StationEntity station2 = stationDao.insert(new StationEntity("B", line.getId()));
         final StationEntity station3 = stationDao.insert(new StationEntity("C", line.getId()));
@@ -120,7 +120,7 @@ public class SectionDaoTest {
     @Test
     void 구간_id를_받아_제거한다() {
         // given
-        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED", 0));
         final StationEntity station1 = stationDao.insert(new StationEntity("A", line.getId()));
         final StationEntity station2 = stationDao.insert(new StationEntity("B", line.getId()));
 

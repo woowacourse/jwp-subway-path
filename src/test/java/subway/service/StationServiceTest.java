@@ -33,10 +33,10 @@ public class StationServiceTest {
     @Test
     void 역을_등록한다() {
         // given
-        lineRepository.save(new Line("1호선", "RED", List.of(
+        lineRepository.save(new Line("1호선", "RED", 0, List.of(
                 new Section("A", "B", 2)
         )));
-        lineRepository.save(new Line("2호선", "BLUE", List.of(
+        lineRepository.save(new Line("2호선", "BLUE", 0, List.of(
                 new Section("Z", "B", 2),
                 new Section("B", "Y", 3)
         )));
@@ -60,11 +60,11 @@ public class StationServiceTest {
     @Test
     void 역을_제거한다() {
         // given
-        lineRepository.save(new Line("1호선", "RED", List.of(
+        lineRepository.save(new Line("1호선", "RED", 0, List.of(
                 new Section("A", "B", 2),
                 new Section("B", "C", 3)
         )));
-        lineRepository.save(new Line("2호선", "BLUE", List.of(
+        lineRepository.save(new Line("2호선", "BLUE", 0, List.of(
                 new Section("Z", "B", 2),
                 new Section("B", "Y", 3)
         )));
@@ -87,7 +87,7 @@ public class StationServiceTest {
     @Test
     void 라인이_비어있을_때_초기_역을_등록한다() {
         // given
-        lineRepository.save(new Line("1호선", "RED", Collections.emptyList()));
+        lineRepository.save(new Line("1호선", "RED", 0, Collections.emptyList()));
         final StationInitialSaveRequest request = new StationInitialSaveRequest("1호선", "A", "B", 3);
 
         // when

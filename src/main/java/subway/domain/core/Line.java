@@ -23,16 +23,24 @@ public class Line {
     private final Long id;
     private String name;
     private String color;
+    private final Integer surcharge;
     private final List<Section> sections;
 
-    public Line(final String name, final String color, final List<Section> sections) {
-        this(null, name, color, sections);
+    public Line(final String name, final String color, final Integer surcharge, final List<Section> sections) {
+        this(null, name, color, surcharge, sections);
     }
 
-    public Line(final Long id, final String name, final String color, final List<Section> sections) {
+    public Line(
+            final Long id,
+            final String name,
+            final String color,
+            final Integer surcharge,
+            final List<Section> sections
+    ) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.surcharge = surcharge;
         this.sections = new ArrayList<>(sections);
     }
 
@@ -172,6 +180,7 @@ public class Line {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", surcharge=" + surcharge +
                 ", sections=" + sections +
                 '}';
     }
@@ -186,6 +195,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getSurcharge() {
+        return surcharge;
     }
 
     public List<Section> getSections() {

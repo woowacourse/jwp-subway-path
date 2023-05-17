@@ -24,7 +24,7 @@ class LineMapperTest {
     void Line을_입력받아_SectionEntity_리스트를_반환한다() {
         // given
         final Long lineId = 1L;
-        final Line line = new Line("2호선", "BLUE", List.of(
+        final Line line = new Line("2호선", "BLUE", 0, List.of(
                 new Section("Z", "B", 2),
                 new Section("B", "Y", 3)
         ));
@@ -48,7 +48,7 @@ class LineMapperTest {
     void Line을_입력받아_StationEntity_리스트를_반환한다() {
         // given
         final Long lineId = 1L;
-        final Line line = new Line("2호선", "BLUE", List.of(
+        final Line line = new Line("2호선", "BLUE", 0, List.of(
                 new Section("Z", "B", 2),
                 new Section("B", "Y", 3)
         ));
@@ -67,7 +67,7 @@ class LineMapperTest {
     @Test
     void 엔티티들을_입력받아_Line을_반환한다() {
         // given
-        final LineEntity lineEntity = new LineEntity(1L, "2호선", "BLUE");
+        final LineEntity lineEntity = new LineEntity(1L, "2호선", "BLUE", 0);
         final Long lineId = 1L;
         final List<SectionEntity> sectionEntities = List.of(
                 new SectionEntity(1L, 1L, 2L, 3, lineId),
@@ -84,7 +84,7 @@ class LineMapperTest {
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(
-                new Line(1L, "2호선", "BLUE", List.of(
+                new Line(1L, "2호선", "BLUE", 0, List.of(
                         new Section(
                                 1L,
                                 new Station(1L, "Z"),

@@ -30,7 +30,7 @@ public class StationControllerTest extends IntegrationTest {
     @Test
     void 역을_추가한다() {
         // given
-        lineRepository.save(new Line("1호선", "RED", List.of(
+        lineRepository.save(new Line("1호선", "RED", 0, List.of(
                 new Section("A", "B", 2)
         )));
         final StationSaveRequest request = new StationSaveRequest("1호선", "B", "C", RIGHT, 3);
@@ -61,7 +61,7 @@ public class StationControllerTest extends IntegrationTest {
     @Test
     void 역을_제거한다() {
         // given
-        lineRepository.save(new Line("1호선", "RED", List.of(
+        lineRepository.save(new Line("1호선", "RED", 0, List.of(
                 new Section("A", "B", 2)
         )));
         final StationDeleteRequest request = new StationDeleteRequest("1호선", "B");
@@ -86,7 +86,7 @@ public class StationControllerTest extends IntegrationTest {
     @Test
     void 노선의_역이_없을_때_역을_추가한다() {
         // given
-        lineRepository.save(new Line("1호선", "RED", Collections.emptyList()));
+        lineRepository.save(new Line("1호선", "RED", 0, Collections.emptyList()));
         final StationInitialSaveRequest request = new StationInitialSaveRequest("1호선", "A", "B", 3);
 
         // when

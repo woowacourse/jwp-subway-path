@@ -52,7 +52,9 @@ public class LineRepository {
     }
 
     private Line saveLine(final Line line) {
-        final LineEntity lineEntity = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
+        final LineEntity lineEntity = lineDao.insert(
+                new LineEntity(line.getName(), line.getColor(), line.getSurcharge())
+        );
 
         final List<StationEntity> stationEntities = lineMapper.toStationEntities(line, lineEntity.getId());
         stationDao.insertAll(stationEntities);
@@ -70,7 +72,7 @@ public class LineRepository {
     }
 
     private void updateLine(final Line line, final Line savedLine) {
-        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor()));
+        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor(), line.getSurcharge()));
         addNewStation(line);
         addNewSection(line);
         deleteRemovedSection(line, savedLine);

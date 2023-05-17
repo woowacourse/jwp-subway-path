@@ -36,7 +36,7 @@ class LineServiceTest {
     @Test
     void 라인을_저장한다() {
         // given
-        final LineAddRequest request = new LineAddRequest("1호선", "RED");
+        final LineAddRequest request = new LineAddRequest("1호선", "RED", 0);
 
         // when
         final Long id = lineService.add(request);
@@ -51,7 +51,7 @@ class LineServiceTest {
     @Test
     void 라인을_저장할_때_이미_라인이_존재하는_경우_예외를_던진다() {
         // given
-        final LineAddRequest request = new LineAddRequest("1호선", "RED");
+        final LineAddRequest request = new LineAddRequest("1호선", "RED", 0);
         lineService.add(request);
 
         // expect
@@ -63,7 +63,7 @@ class LineServiceTest {
     @Test
     void 라인id를_받아서_라인을_삭제한다() {
         // given
-        final LineAddRequest request = new LineAddRequest("1호선", "RED");
+        final LineAddRequest request = new LineAddRequest("1호선", "RED", 0);
         final Long id = lineService.add(request);
 
         // when
@@ -84,7 +84,7 @@ class LineServiceTest {
     @Test
     void 라인을_수정한다() {
         // given
-        final Long id = lineService.add(new LineAddRequest("1호선", "RED"));
+        final Long id = lineService.add(new LineAddRequest("1호선", "RED", 0));
         final LineUpdateRequest request = new LineUpdateRequest("2호선", "BLACK");
 
         // when
@@ -112,7 +112,7 @@ class LineServiceTest {
     @Test
     void 라인id로_라인을_조회한다() {
         // given
-        final Long id = lineService.add(new LineAddRequest("1호선", "RED"));
+        final Long id = lineService.add(new LineAddRequest("1호선", "RED", 0));
 
         // when
         final LineResponse result = lineService.findById(id);
@@ -121,6 +121,7 @@ class LineServiceTest {
         assertAll(
                 () -> assertThat(result.getName()).isEqualTo("1호선"),
                 () -> assertThat(result.getColor()).isEqualTo("RED"),
+                () -> assertThat(result.getSurcharge()).isEqualTo(0),
                 () -> assertThat(result.getStations()).isEmpty()
         );
     }
@@ -136,13 +137,13 @@ class LineServiceTest {
     @Test
     void 라인을_전체_조회한다() {
         // given
-        lineRepository.save(new Line("1호선", "RED", List.of(
+        lineRepository.save(new Line("1호선", "RED", 0, List.of(
                 new Section("B", "C", 3),
                 new Section("A", "B", 2),
                 new Section("D", "E", 5),
                 new Section("C", "D", 4)
         )));
-        lineRepository.save(new Line("2호선", "BLUE", List.of(
+        lineRepository.save(new Line("2호선", "BLUE", 0, List.of(
                 new Section("Z", "B", 3),
                 new Section("B", "Y", 2)
         )));
@@ -152,8 +153,8 @@ class LineServiceTest {
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(List.of(
-                new LineResponse("1호선", "RED", List.of("A", "B", "C", "D", "E")),
-                new LineResponse("2호선", "BLUE", List.of("Z", "B", "Y"))
+                new LineResponse("1호선", "RED", 0, List.of("A", "B", "C", "D", "E")),
+                new LineResponse("2호선", "BLUE", 0, List.of("Z", "B", "Y"))
         ));
     }
 }

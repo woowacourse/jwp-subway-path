@@ -16,8 +16,8 @@ import subway.dto.LineUpdateRequest;
 @SuppressWarnings("NonAsciiCharacters")
 public class LineSteps {
 
-    public static ExtractableResponse<Response> 노선_생성_요청(final String 노선명, final String 색상) {
-        final LineAddRequest request = new LineAddRequest(노선명, 색상);
+    public static ExtractableResponse<Response> 노선_생성_요청(final String 노선명, final String 색상, final Integer 추가운임) {
+        final LineAddRequest request = new LineAddRequest(노선명, 색상, 추가운임);
 
         return RestAssured
                 .given().log().all()
@@ -76,17 +76,18 @@ public class LineSteps {
             final ExtractableResponse<Response> 요청_결과,
             final String 노선명,
             final String 색상,
+            final Integer 추가운임,
             final String... 역
     ) {
         final List<String> 역_모음 = Arrays.stream(역).collect(Collectors.toList());
         assertThat(요청_결과.jsonPath().getObject(".", LineResponse.class))
                 .usingRecursiveComparison()
-                .isEqualTo(new LineResponse(노선명, 색상, 역_모음));
+                .isEqualTo(new LineResponse(노선명, 색상, 추가운임, 역_모음));
     }
 
-    public static LineResponse 노선_정보(final String 노선명, final String 색상, final String... 역) {
+    public static LineResponse 노선_정보(final String 노선명, final String 색상, final Integer 추가운임, final String... 역) {
         final List<String> 역_모음 = Arrays.stream(역).collect(Collectors.toList());
-        return new LineResponse(노선명, 색상, 역_모음);
+        return new LineResponse(노선명, 색상, 추가운임, 역_모음);
     }
 
     public static void 노선_전체_조회_결과를_확인한다(

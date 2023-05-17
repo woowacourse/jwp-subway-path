@@ -57,7 +57,13 @@ public class LineMapper {
                 .map(sectionEntity -> toSection(stationIdByStationName, sectionEntity))
                 .collect(toList());
 
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor(),
+                lineEntity.getSurcharge(),
+                sections
+        );
     }
 
     private static Section toSection(

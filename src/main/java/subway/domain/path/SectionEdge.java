@@ -6,18 +6,18 @@ import subway.domain.core.Section;
 public class SectionEdge extends DefaultWeightedEdge {
 
     private final Section section;
-    private final int amount;
+    private final int surcharge;
 
     public SectionEdge(final Section section, int amount) {
         this.section = section;
-        this.amount = amount;
+        this.surcharge = amount;
     }
 
     public Section toSection() {
         return section;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getSurcharge() {
+        return surcharge;
     }
 }

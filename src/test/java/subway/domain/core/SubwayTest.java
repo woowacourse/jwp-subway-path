@@ -21,11 +21,11 @@ class SubwayTest {
     @Test
     void 역_추가시_전체_라인에서_등록할_구간이_존재하면_예외를_던진다() {
         // given
-        final Line line1 = new Line("1호선", "RED", List.of(
+        final Line line1 = new Line("1호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
-        final Line line2 = new Line("2호선", "RED", List.of(
+        final Line line2 = new Line("2호선", "RED", 0, List.of(
                 new Section("Z", "B", 5),
                 new Section("B", "Y", 5)
         ));
@@ -52,11 +52,11 @@ class SubwayTest {
     void 노선에_구간이_정상적으로_등록된다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("1호선", "RED", List.of(
+                new Line("1호선", "RED", 0, List.of(
                         new Section("A", "B", 5),
                         new Section("B", "C", 5)
                 )),
-                new Line("2호선", "RED", List.of(
+                new Line("2호선", "RED", 0, List.of(
                         new Section("Z", "B", 5),
                         new Section("B", "Y", 5)
                 ))
@@ -90,7 +90,7 @@ class SubwayTest {
     void 노선에_구간이_정상적으로_제거된다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("1호선", "RED", List.of(
+                new Line("1호선", "RED", 0, List.of(
                         new Section("A", "B", 5),
                         new Section("B", "C", 5)
                 ))
@@ -109,7 +109,7 @@ class SubwayTest {
     void 노선에_비어있을_때_초기_구간을_추가한다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("2호선", "RED", Collections.emptyList())
+                new Line("2호선", "RED", 0, Collections.emptyList())
         ));
 
         // when
@@ -125,7 +125,7 @@ class SubwayTest {
     void 초기_구간을_추가할_때_노선이_비어있지_않은_경우_예외를_던진다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("2호선", "RED", List.of(
+                new Line("2호선", "RED", 0, List.of(
                         new Section("B", "C", 3)
                 ))
         ));
@@ -140,7 +140,7 @@ class SubwayTest {
     void 초기_구간을_추가할_때_이름이_같은_역을_추가하려는_경우_예외를_던진다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("2호선", "RED", Collections.emptyList())
+                new Line("2호선", "RED", 0, Collections.emptyList())
         ));
 
         // expect
@@ -153,8 +153,8 @@ class SubwayTest {
     void 노선의_이름을_입력받아_해당_이름에_해당되는_노선을_반환한다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("1호선", "RED", Collections.emptyList()),
-                new Line("2호선", "BLUE", Collections.emptyList())
+                new Line("1호선", "RED", 0, Collections.emptyList()),
+                new Line("2호선", "BLUE", 0, Collections.emptyList())
         ));
 
         // when
@@ -168,7 +168,7 @@ class SubwayTest {
     void 노선의_이름을_입력받아_해당_이름에_해당되는_노선이_존재하지_않는다면_예외를_던진다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("2호선", "BLUE", Collections.emptyList())
+                new Line("2호선", "BLUE", 0, Collections.emptyList())
         ));
 
         // expect
@@ -181,7 +181,7 @@ class SubwayTest {
     void 역_이름을_입력받아_해당_이름에_해당되는_역이_존재하지_않는다면_예외를_던진다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("2호선", "BLUE", List.of(new Section("A", "B", 3)))
+                new Line("2호선", "BLUE", 0, List.of(new Section("A", "B", 3)))
         ));
 
         // expect
@@ -194,7 +194,7 @@ class SubwayTest {
     void 역_이름을_입력받아_해당_이름에_해당되는_역을_반환한다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("2호선", "BLUE", List.of(new Section("A", "B", 3)))
+                new Line("2호선", "BLUE", 0, List.of(new Section("A", "B", 3)))
         ));
 
         // when
@@ -208,7 +208,7 @@ class SubwayTest {
     void 모든_구간을_반환한다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("2호선", "BLUE", List.of(
+                new Line("2호선", "BLUE", 0, List.of(
                         new Section("A", "B", 3),
                         new Section("B", "C", 5))
                 )
@@ -231,7 +231,7 @@ class SubwayTest {
     void 모든_역을_반환한다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("2호선", "BLUE", List.of(new Section("A", "B", 3)))
+                new Line("2호선", "BLUE", 0, List.of(new Section("A", "B", 3)))
         ));
 
         // when

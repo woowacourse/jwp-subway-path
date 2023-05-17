@@ -30,7 +30,7 @@ class LineTest {
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         );
-        final Line line = new Line("2호선", "RED", sections);
+        final Line line = new Line("2호선", "RED", 0, sections);
 
         // expect
         assertThat(line.containsAll(new Station(start), new Station(end))).isEqualTo(result);
@@ -39,7 +39,7 @@ class LineTest {
     @Test
     void 노선에_기준_역이_없으면_예외를_던진다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -53,7 +53,7 @@ class LineTest {
     @Test
     void 노선에_등록할_역이_있으면_예외를_던진다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -68,7 +68,7 @@ class LineTest {
     @ParameterizedTest(name = "{displayName} 입력: {0}")
     void 하행방향으로_등록시_기준역이_구간의_시작에_존재할_경우_등록할_구간의_거리가_기존_구간의_거리보다_같거나_크면_예외를_던진다(final int value) {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -83,7 +83,7 @@ class LineTest {
     @ParameterizedTest(name = "{displayName} 입력: {0}")
     void 상행방향으로_등록시_기준역이_구간의_끝에_존재할_경우_등록할_구간의_거리가_기존_구간의_거리보다_같거나_크면_예외를_던진다(final int value) {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -97,7 +97,7 @@ class LineTest {
     @Test
     void 이미_존재하는_구간_사이에_오른쪽으로_역을_새로_등록하는_경우_거리가_재계산된다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -116,7 +116,7 @@ class LineTest {
     @Test
     void 이미_존재하는_구간_사이에_왼쪽으로_역을_새로_등록하는_경우_거리가_재계산된다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -135,7 +135,7 @@ class LineTest {
     @Test
     void 노선_오른쪽_끝에_구간을_등록한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -154,7 +154,7 @@ class LineTest {
     @Test
     void 노선_왼쪽_끝에_구간을_등록한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -174,7 +174,7 @@ class LineTest {
     @CsvSource({"1호선, true", "2호선, false"})
     void 입력받은_노선명과_동일한지_확인한다(final String name, final boolean result) {
         // given
-        final Line line = new Line("1호선", "RED", Collections.emptyList());
+        final Line line = new Line("1호선", "RED", 0, Collections.emptyList());
 
         // expect
         assertThat(line.isSameName(name)).isEqualTo(result);
@@ -183,7 +183,7 @@ class LineTest {
     @Test
     void 제거하려는_역이_없는_경우_예외를_던진다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -197,7 +197,7 @@ class LineTest {
     @Test
     void 중간에_있는_역을_제거한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -214,7 +214,7 @@ class LineTest {
     @Test
     void 상행_종점역을_제거한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -231,7 +231,7 @@ class LineTest {
     @Test
     void 하행_종점역을_제거한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
@@ -248,7 +248,7 @@ class LineTest {
     @Test
     void 남아있는_역이_두개인_경우_두_역_모두_제거한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("A", "B", 5)
         ));
 
@@ -262,7 +262,7 @@ class LineTest {
     @Test
     void 노선에_포함된_역을_순서대로_보여줘야_한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("B", "C", 3),
                 new Section("A", "B", 2),
                 new Section("D", "E", 5),
@@ -285,7 +285,7 @@ class LineTest {
     @Test
     void 노선에_비어있는_경우_빈_리스트를_반환한다() {
         // given
-        final Line line = new Line("2호선", "RED", Collections.emptyList());
+        final Line line = new Line("2호선", "RED", 0, Collections.emptyList());
 
         // when
         List<Station> stations = line.findAllStation();
@@ -297,7 +297,7 @@ class LineTest {
     @Test
     void 노선에_비어있을_때_초기_구간을_추가한다() {
         // given
-        final Line line = new Line("2호선", "RED", Collections.emptyList());
+        final Line line = new Line("2호선", "RED", 0, Collections.emptyList());
 
         // when
         line.initialAdd(new Section("A", "B", 3));
@@ -309,7 +309,7 @@ class LineTest {
     @Test
     void 초기_구간을_추가할_때_노선이_비어있지_않은_경우_예외를_던진다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("B", "C", 3)
         ));
 
@@ -322,7 +322,7 @@ class LineTest {
     @Test
     void 이름과_색을_변경한다() {
         // given
-        final Line line = new Line("2호선", "RED", Collections.emptyList());
+        final Line line = new Line("2호선", "RED", 0, Collections.emptyList());
 
         // when
         line.changeNameAndColor("3호선", "ORANGE");

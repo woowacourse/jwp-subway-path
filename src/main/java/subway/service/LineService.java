@@ -1,8 +1,8 @@
 package subway.service;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,8 @@ public class LineService {
         if (lineId.isPresent()) {
             throw new LineAlreadyExistsException();
         }
-        return lineRepository.save(new Line(request.getName(), request.getColor(), Collections.emptyList()))
-                .getId();
+        final Line line = new Line(request.getName(), request.getColor(), request.getSurcharge(), emptyList());
+        return lineRepository.save(line).getId();
     }
 
     public void delete(final Long id) {
