@@ -7,7 +7,6 @@ import subway.application.strategy.insert.InsertSection;
 import subway.application.strategy.insert.SectionInserter;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
@@ -39,25 +38,25 @@ public class SectionService {
         this.sectionDeleter = sectionDeleter;
     }
 
-    public Long insertSection(SectionRequest request) {
-        validateInput(request);
+    public Long insertSection(Long lineId, SectionRequest request) {
+        validateInput(request, lineId);
 
         final Station upStation = findById(request.getUpStationId());
         final Station downStation = findById(request.getDownStationId());
-        final Sections sections = sectionRepository.findAllByLineId(request.getLineId());
+        final Sections sections = sectionRepository.findAllByLineId(lineId);
 
         validateInsert(upStation, downStation, sections);
 
-        final InsertSection insertSection = new InsertSection(upStation, downStation, request.getDistance(), request.getLineId());
+        final InsertSection insertSection = new InsertSection(upStation, downStation, request.getDistance(), lineId);
         return sectionInserter.insert(sections, insertSection);
     }
 
-    private void validateInput(SectionRequest request) {
+    private void validateInput(SectionRequest request, Long lineId) {
         if (Objects.equals(request.getUpStationId(), request.getDownStationId())) {
             throw new IllegalArgumentException("같은 역을 구간으로 등록할 수 없습니다.");
         }
 
-        if (!lineRepository.exists(request.getLineId())) {
+        if (!lineRepository.exists(lineId)) {
             throw new IllegalArgumentException("존재 하지 않는 노선에는 구간을 추가 할 수 없습니다.");
         }
     }
@@ -76,9 +75,9 @@ public class SectionService {
         }
     }
 
-    public void deleteStation(Long targetId, SectionDeleteRequest request) {
+    public void deleteStation(Long lineId, Long targetId) {
         final Station targetStation = stationRepository.findById(targetId);
-        final Sections sections = sectionRepository.findAllByLineId(request.getLineId());
+        final Sections sections = sectionRepository.findAllByLineId(lineId);
 
         sectionDeleter.delete(sections, targetStation);
     }

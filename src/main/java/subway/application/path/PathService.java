@@ -1,9 +1,10 @@
 package subway.application.path;
 
 import org.springframework.stereotype.Service;
-import subway.application.fare.Fare;
 import subway.application.fare.FareCalculator;
+import subway.domain.Fare;
 import subway.domain.Section;
+import subway.domain.ShortestPath;
 import subway.domain.Station;
 import subway.dto.ShortestPathResponse;
 import subway.repository.SectionRepository;

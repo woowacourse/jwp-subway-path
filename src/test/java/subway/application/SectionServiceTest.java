@@ -14,7 +14,6 @@ import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.Distance;
 import subway.domain.Section;
-import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
@@ -58,7 +57,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
             final Long 역삼역 = 역을_추가한다("역삼역");
 
             // when
-            final Long id = sectionService.insertSection(new SectionRequest(3, 선릉역, 역삼역, 이호선));
+            final Long id = sectionService.insertSection(이호선, new SectionRequest(3, 선릉역, 역삼역));
 
             // then
             assertThat(id).isNotNull();
@@ -70,7 +69,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
             final Long 잠실나루역 = 역을_추가한다("잠실나루역");
 
             // when
-            final Long id = sectionService.insertSection(new SectionRequest(3, 잠실나루역, 잠실역, 이호선));
+            final Long id = sectionService.insertSection(이호선, new SectionRequest(3, 잠실나루역, 잠실역));
 
             // 4 -> 1 -> 2 -> 3
             assertThat(id).isNotNull();
@@ -87,7 +86,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
             final Long 하행역 = 역을_추가한다("하행역");
 
             // when
-            final Long id = sectionService.insertSection(new SectionRequest(3, 잠실역, 하행역, 이호선));
+            final Long id = sectionService.insertSection(이호선, new SectionRequest(3, 잠실역, 하행역));
 
             // then
             assertThat(id).isNotNull();
@@ -98,10 +97,10 @@ class SectionServiceTest extends SubwayJdbcFixture {
         void 상행역_기준으로_추가하려는_거리는_기존_거리보다_클_수_없다(final int distance) {
             // given
             final Long 삽입역 = 역을_추가한다("삽입역");
-            final SectionRequest request = new SectionRequest(distance, 잠실역, 삽입역, 이호선);
+            final SectionRequest request = new SectionRequest(distance, 잠실역, 삽입역);
 
             // when, then
-            assertThatThrownBy(() -> sectionService.insertSection(request))
+            assertThatThrownBy(() -> sectionService.insertSection(이호선, request))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -111,7 +110,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
             final Long 상행역 = 역을_추가한다("상행역");
 
             // when
-            final Long id = sectionService.insertSection(new SectionRequest(3, 상행역, 잠실새내역, 이호선));
+            final Long id = sectionService.insertSection(이호선, new SectionRequest(3, 상행역, 잠실새내역));
 
             // then
             assertThat(id).isNotNull();
@@ -122,10 +121,10 @@ class SectionServiceTest extends SubwayJdbcFixture {
         void 하행역_기준으로_추가하려는_거리는_기존_거리보다_클_수_없다(final int distance) {
             // given
             final Long 삽입역 = 역을_추가한다("삽입역");
-            final SectionRequest request = new SectionRequest(distance, 삽입역, 잠실새내역, 이호선);
+            final SectionRequest request = new SectionRequest(distance, 삽입역, 잠실새내역);
 
             // when, then
-            assertThatThrownBy(() -> sectionService.insertSection(request))
+            assertThatThrownBy(() -> sectionService.insertSection(이호선, request))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
@@ -134,10 +133,10 @@ class SectionServiceTest extends SubwayJdbcFixture {
     void 같은_역_두_개를_등록할_수_없다() {
         // given
         final Long 같은역 = 역을_추가한다("같은역");
-        final SectionRequest request = new SectionRequest(3, 같은역, 같은역, 이호선);
+        final SectionRequest request = new SectionRequest(3, 같은역, 같은역);
 
         // when, then
-        assertThatThrownBy(() -> sectionService.insertSection(request))
+        assertThatThrownBy(() -> sectionService.insertSection(이호선, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -147,20 +146,20 @@ class SectionServiceTest extends SubwayJdbcFixture {
         @Test
         void 동일한_구간은_등록할_수_없다() {
             // given
-            final SectionRequest request = new SectionRequest(3, 잠실역, 잠실새내역, 이호선);
+            final SectionRequest request = new SectionRequest(3, 잠실역, 잠실새내역);
 
             // when, then
-            assertThatThrownBy(() -> sectionService.insertSection(request))
+            assertThatThrownBy(() -> sectionService.insertSection(이호선, request))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 역이_존재하지_않으면_등록할_수_없다() {
             // given
-            final SectionRequest request = new SectionRequest(3, 잠실역, 50L, 이호선);
+            final SectionRequest request = new SectionRequest(3, 잠실역, 50L);
 
             // when, then
-            assertThatThrownBy(() -> sectionService.insertSection(request))
+            assertThatThrownBy(() -> sectionService.insertSection(이호선, request))
                     .isInstanceOf(NoSuchElementException.class);
         }
 
@@ -168,10 +167,10 @@ class SectionServiceTest extends SubwayJdbcFixture {
         @Test
         void 노선이_없으면_등록할_수_없다() {
             // given
-            final SectionRequest request = new SectionRequest(1, 잠실역, 선릉역, 3L);
+            final SectionRequest request = new SectionRequest(1, 잠실역, 선릉역);
 
             // when, then
-            assertThatThrownBy(() -> sectionService.insertSection(request))
+            assertThatThrownBy(() -> sectionService.insertSection(10L, request))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
@@ -190,7 +189,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
             sectionDao.insert(new SectionEntity(10, 잠실역, 선릉역, 삼호선));
 
             //when
-            sectionService.deleteStation(잠실역, new SectionDeleteRequest(삼호선));
+            sectionService.deleteStation(삼호선, 잠실역);
 
             //then
             assertAll(
@@ -202,7 +201,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
         @Test
         void 구간이_두_개_이상이고_상행_종점이면_해당_구간만_삭제한다() {
             //when
-            sectionService.deleteStation(잠실역, new SectionDeleteRequest(이호선));
+            sectionService.deleteStation(이호선, 잠실역);
 
             //then
             assertThat(sectionStationDao.findAllByLineId(이호선)).hasSize(2);
@@ -211,7 +210,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
         @Test
         void 구간이_두_개_이상이고_하행_종점이면_해당_구간만_삭제한다() {
             //when
-            sectionService.deleteStation(선릉역, new SectionDeleteRequest(이호선));
+            sectionService.deleteStation(이호선, 선릉역);
 
             //then
             assertThat(sectionStationDao.findAllByLineId(이호선)).hasSize(2);
@@ -220,7 +219,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
         @Test
         void 구간이_두_개_이상이고_중간이면_겹치는_구간을_삭제하고_이어주기를_한다() {
             //when
-            sectionService.deleteStation(잠실새내역, new SectionDeleteRequest(이호선));
+            sectionService.deleteStation(이호선, 잠실새내역);
 
             //then
             final List<Section> sections = sectionRepository.findAllByLineId(이호선).getSections();

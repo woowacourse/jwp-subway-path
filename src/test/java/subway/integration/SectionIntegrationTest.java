@@ -34,10 +34,10 @@ class SectionIntegrationTest extends SubwayFixture {
         void 상행_종점을_기준으로_구간을_추가한다() {
             // given
             final Long 역삼역 = stationDao.insert(new StationEntity("역삼역")).getId();
-            final SectionRequest request = new SectionRequest(10, 선릉역, 역삼역, 이호선);
+            final SectionRequest request = new SectionRequest(10, 선릉역, 역삼역);
 
             // when
-            final ExtractableResponse<Response> response = 구간을_추가한다(request);
+            final ExtractableResponse<Response> response = 구간을_추가한다(이호선, request);
 
             // then
             assertAll(
@@ -50,10 +50,10 @@ class SectionIntegrationTest extends SubwayFixture {
         void 하행_종점을_기준으로_구간을_추가한다() {
             // given
             final Long 건대입구 = stationDao.insert(new StationEntity("건대입구")).getId();
-            final SectionRequest request = new SectionRequest(10, 건대입구, 잠실역, 이호선);
+            final SectionRequest request = new SectionRequest(10, 건대입구, 잠실역);
 
             // when
-            final ExtractableResponse<Response> response = 구간을_추가한다(request);
+            final ExtractableResponse<Response> response = 구간을_추가한다(이호선, request);
 
             // then
             assertAll(
@@ -70,10 +70,10 @@ class SectionIntegrationTest extends SubwayFixture {
         void 구간을_추가을_추가할_수_있다() {
             // given
             final Long 건대입구 = stationDao.insert(new StationEntity("건대입구")).getId();
-            final SectionRequest request = new SectionRequest(7, 잠실새내역, 건대입구, 이호선);
+            final SectionRequest request = new SectionRequest(7, 잠실새내역, 건대입구);
 
             // when
-            final ExtractableResponse<Response> response = 구간을_추가한다(request);
+            final ExtractableResponse<Response> response = 구간을_추가한다(이호선, request);
 
             // then
             assertAll(
@@ -87,10 +87,10 @@ class SectionIntegrationTest extends SubwayFixture {
         void 구간을_추가할_때_기존_거리보다_크거나_같으면_추가할_수_없다(final int distance) {
             // given
             final Long 건대입구 = stationDao.insert(new StationEntity("건대입구")).getId();
-            final SectionRequest request = new SectionRequest(distance, 잠실새내역, 건대입구, 이호선);
+            final SectionRequest request = new SectionRequest(distance, 잠실새내역, 건대입구);
 
             // when
-            final ExtractableResponse<Response> response = 구간을_추가한다(request);
+            final ExtractableResponse<Response> response = 구간을_추가한다(이호선, request);
 
             // then
             assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
@@ -104,10 +104,10 @@ class SectionIntegrationTest extends SubwayFixture {
         void 구간을_추가할_수_있다() {
             // given
             final Long 건대입구 = stationDao.insert(new StationEntity("건대입구")).getId();
-            final SectionRequest request = new SectionRequest(7, 건대입구, 잠실새내역, 이호선);
+            final SectionRequest request = new SectionRequest(7, 건대입구, 잠실새내역);
 
             // when
-            final ExtractableResponse<Response> response = 구간을_추가한다(request);
+            final ExtractableResponse<Response> response = 구간을_추가한다(이호선, request);
 
             // then
             assertAll(
@@ -121,10 +121,10 @@ class SectionIntegrationTest extends SubwayFixture {
         void 구간을_추가할_때_기존_거리보다_크거나_같으면_추가할_수_없다(final int distance) {
             // given
             final Long 건대입구 = stationDao.insert(new StationEntity("건대입구")).getId();
-            final SectionRequest request = new SectionRequest(distance, 건대입구, 잠실새내역, 이호선);
+            final SectionRequest request = new SectionRequest(distance, 건대입구, 잠실새내역);
 
             // when
-            final ExtractableResponse<Response> response = 구간을_추가한다(request);
+            final ExtractableResponse<Response> response = 구간을_추가한다(이호선, request);
 
             // then
             assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());

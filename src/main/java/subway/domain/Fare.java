@@ -1,4 +1,4 @@
-package subway.application.fare;
+package subway.domain;
 
 import java.util.Objects;
 

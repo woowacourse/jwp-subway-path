@@ -1,7 +1,7 @@
 package subway.dto;
 
-import subway.application.fare.Fare;
-import subway.application.path.ShortestPath;
+import subway.domain.Fare;
+import subway.domain.ShortestPath;
 
 import java.util.List;
 

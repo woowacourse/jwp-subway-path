@@ -2,6 +2,7 @@ package subway.application.path;
 
 
 import subway.domain.Section;
+import subway.domain.ShortestPath;
 import subway.domain.Station;
 
 import java.util.List;

@@ -2,6 +2,7 @@ package subway.application.fare;
 
 import org.springframework.stereotype.Component;
 import subway.domain.Distance;
+import subway.domain.Fare;
 
 @Component
 public class DistanceRateFareCalculator implements FareCalculator {

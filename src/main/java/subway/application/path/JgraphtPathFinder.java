@@ -7,6 +7,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.domain.Distance;
 import subway.domain.Section;
+import subway.domain.ShortestPath;
 import subway.domain.Station;
 
 import java.util.List;

@@ -27,11 +27,11 @@ public abstract class IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
     }
 
-    public ExtractableResponse<Response> 구간을_추가한다(SectionRequest request) {
+    public ExtractableResponse<Response> 구간을_추가한다(Long lineId, SectionRequest request) {
         return given()
                 .body(request)
                 .when()
-                .post("/sections")
+                .post("/lines/{lineId}/stations/", lineId)
                 .then().log().all()
                 .extract();
     }
@@ -41,7 +41,7 @@ public abstract class IntegrationTest {
         return given()
                 .body(request)
                 .when()
-                .delete("/sections/stations/{stationId}", stationId)
+                .delete("/lines/{lineId}/stations/{stationId}", lineId, stationId)
                 .then().log().all()
                 .extract();
     }
