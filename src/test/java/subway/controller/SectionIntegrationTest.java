@@ -6,6 +6,8 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,7 @@ import static subway.fixture.LineFixture.SECOND_LINE_NO_ID;
 import static subway.fixture.StationFixture.GANGNAM_NO_ID;
 import static subway.fixture.StationFixture.JAMSIL_NO_ID;
 import static subway.fixture.StationFixture.JANGJI_NO_ID;
+import static subway.fixture.StationFixture.MONGCHON_NO_ID;
 import static subway.fixture.StationFixture.SEONLEUNG_NO_ID;
 import static subway.fixture.StationFixture.YUKSAM_NO_ID;
 
@@ -48,17 +51,26 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    Line savedSecondLine;
+    Station savedUpStation;
+    Station savedDownStation;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        savedSecondLine = lineRepository.insert(SECOND_LINE_NO_ID);
+
+        savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
+        savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
+    }
+
     @Test
     void 노선에_아무것도_없는_경우_섹션_추가() throws JsonProcessingException {
-        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
-        Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
-        Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
-
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedUpStation.getId(),
                 savedDownStation.getId(),
                 10,
-                savedLine.getId()
+                savedSecondLine.getId()
         );
         String jsonRequestParam = objectMapper.writeValueAsString(requestParam);
 
@@ -75,14 +87,11 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 동일한_역_2개를_저장_입력으로_작성하면_예외() throws JsonProcessingException {
-        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
-        Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
-
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedUpStation.getId(),
                 savedUpStation.getId(),
                 10,
-                savedLine.getId()
+                savedSecondLine.getId()
         );
         String jsonRequestParam = objectMapper.writeValueAsString(requestParam);
 
@@ -102,12 +111,8 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 노선에_역이_있을_때_입력으로_들어온_역이_모두_노선에_존재하지_않으면_예외() throws JsonProcessingException {
-        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
-        Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
-        Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
-
         Section section = new Section(savedUpStation, savedDownStation, new Distance(10));
-        sectionRepository.insertSection(section, savedLine);
+        sectionRepository.insertSection(section, savedSecondLine);
 
         Station gangnam = stationRepository.insert(GANGNAM_NO_ID);
         Station seonleung = stationRepository.insert(SEONLEUNG_NO_ID);
@@ -115,7 +120,7 @@ public class SectionIntegrationTest extends IntegrationTest {
                 gangnam.getId(),
                 seonleung.getId(),
                 10,
-                savedLine.getId()
+                savedSecondLine.getId()
         );
         String jsonRequestParam = objectMapper.writeValueAsString(requestParam);
 
@@ -135,18 +140,14 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 추가하려는_역이_모두_노선에_있으면_예외() throws JsonProcessingException {
-        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
-        Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
-        Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
-
         Section section = new Section(savedUpStation, savedDownStation, new Distance(10));
-        sectionRepository.insertSection(section, savedLine);
+        sectionRepository.insertSection(section, savedSecondLine);
 
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedUpStation.getId(),
                 savedDownStation.getId(),
                 10,
-                savedLine.getId()
+                savedSecondLine.getId()
         );
         String jsonRequestParam = objectMapper.writeValueAsString(requestParam);
 
@@ -166,19 +167,15 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 추가하려는_경로의_길이가_기존_경로의_길이보다_크면_예외() throws JsonProcessingException {
-        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
-        Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
-        Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
-
         Section section = new Section(savedUpStation, savedDownStation, new Distance(10));
-        sectionRepository.insertSection(section, savedLine);
+        sectionRepository.insertSection(section, savedSecondLine);
 
         Station gangnam = stationRepository.insert(GANGNAM_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedUpStation.getId(),
                 gangnam.getId(),
                 10,
-                savedLine.getId()
+                savedSecondLine.getId()
         );
         String jsonRequestParam = objectMapper.writeValueAsString(requestParam);
 
@@ -198,19 +195,15 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 하행종점_추가() throws JsonProcessingException {
-        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
-        Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
-        Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
-
         Section section = new Section(savedUpStation, savedDownStation, new Distance(10));
-        sectionRepository.insertSection(section, savedLine);
+        sectionRepository.insertSection(section, savedSecondLine);
 
         Station gangnam = stationRepository.insert(GANGNAM_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedDownStation.getId(),
                 gangnam.getId(),
                 10,
-                savedLine.getId()
+                savedSecondLine.getId()
         );
         String jsonRequestParam = objectMapper.writeValueAsString(requestParam);
 
@@ -227,19 +220,15 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 상행종점_추가() throws JsonProcessingException {
-        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
-        Station savedUpStation = stationRepository.insert(SEONLEUNG_NO_ID);
-        Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
-
         Section section = new Section(savedUpStation, savedDownStation, new Distance(10));
-        sectionRepository.insertSection(section, savedLine);
+        sectionRepository.insertSection(section, savedSecondLine);
 
-        Station jamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station mongchon = stationRepository.insert(MONGCHON_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
-                jamsil.getId(),
+                mongchon.getId(),
                 savedUpStation.getId(),
                 10,
-                savedLine.getId()
+                savedSecondLine.getId()
         );
         String jsonRequestParam = objectMapper.writeValueAsString(requestParam);
 
@@ -256,19 +245,15 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 상행역이_존재하고_하행역을_중간에_추가() throws JsonProcessingException {
-        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
-        Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
-        Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
-
         Section section = new Section(savedUpStation, savedDownStation, new Distance(10));
-        sectionRepository.insertSection(section, savedLine);
+        sectionRepository.insertSection(section, savedSecondLine);
 
         Station seonleung = stationRepository.insert(SEONLEUNG_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedUpStation.getId(),
                 seonleung.getId(),
                 5,
-                savedLine.getId()
+                savedSecondLine.getId()
         );
         String jsonRequestParam = objectMapper.writeValueAsString(requestParam);
 
@@ -285,19 +270,15 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 하행역이_존재하고_상행역을_중간에_추가() throws JsonProcessingException {
-        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
-        Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
-        Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
-
         Section section = new Section(savedUpStation, savedDownStation, new Distance(10));
-        sectionRepository.insertSection(section, savedLine);
+        sectionRepository.insertSection(section, savedSecondLine);
 
         Station seonleung = stationRepository.insert(SEONLEUNG_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 seonleung.getId(),
                 savedDownStation.getId(),
                 5,
-                savedLine.getId()
+                savedSecondLine.getId()
         );
         String jsonRequestParam = objectMapper.writeValueAsString(requestParam);
 
@@ -314,19 +295,18 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 최단경로_요금_조회() {
-        Line savedSecondLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Line savedEightLine = lineRepository.insert(EIGHT_LINE_NO_ID);
 
-        Station jamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station mongchon = stationRepository.insert(MONGCHON_NO_ID);
         Station seonleung = stationRepository.insert(SEONLEUNG_NO_ID);
         Station jangji = stationRepository.insert(JANGJI_NO_ID);
         Station gangnam = stationRepository.insert(GANGNAM_NO_ID);
 
-        Section jangjiJamsil = new Section(jamsil, jangji, new Distance(5));
+        Section jangjiJamsil = new Section(mongchon, jangji, new Distance(5));
         Section gangnamJangji = new Section(jangji, gangnam, new Distance(10));
 
-        // gangnam ->(3) seonleung ->(7) jamsil
-        Section seonleungJamsil = new Section(jamsil, seonleung, new Distance(7));
+        // gangnam ->(3) seonleung ->(7) mongchon
+        Section seonleungJamsil = new Section(mongchon, seonleung, new Distance(7));
         Section gangnamSeonleung = new Section(seonleung, gangnam, new Distance(3));
 
         sectionRepository.insertSection(jangjiJamsil, savedEightLine);
@@ -337,7 +317,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         Map<String, Long> params = new HashMap<>();
         params.put("sourceStationId", gangnam.getId());
-        params.put("targetStationId", jamsil.getId());
+        params.put("targetStationId", mongchon.getId());
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(params)
@@ -348,11 +328,14 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .extract();
 
         PathResult result = response.body().as(PathResult.class);
-        assertThat(result.getFee()).isEqualTo(1250);
-        assertThat(result.getStations()).containsExactlyInAnyOrder(
-                new StationResponse(gangnam.getId(), gangnam.getName()),
-                new StationResponse(seonleung.getId(), seonleung.getName()),
-                new StationResponse(jamsil.getId(), jamsil.getName())
+
+        Assertions.assertAll(
+                () -> assertThat(result.getFee()).isEqualTo(1250),
+                () -> assertThat(result.getStations()).containsExactlyInAnyOrder(
+                        new StationResponse(gangnam.getId(), gangnam.getName()),
+                        new StationResponse(seonleung.getId(), seonleung.getName()),
+                        new StationResponse(mongchon.getId(), mongchon.getName())
+                )
         );
     }
 }

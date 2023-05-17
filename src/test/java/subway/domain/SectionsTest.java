@@ -54,7 +54,6 @@ class SectionsTest {
 
             Assertions.assertAll(
                     () -> assertThat(addedResults).hasSize(1),
-//                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
                     () -> assertThat(newSection.getUpStation()).isEqualTo(JAMSIL),
                     () -> assertThat(newSection.getDownStation()).isEqualTo(SEONLEUNG),
                     () -> assertThat(newSection.getDistance()).isEqualTo(distance),
@@ -95,7 +94,6 @@ class SectionsTest {
 
             Assertions.assertAll(
                     () -> assertThat(addedResults).hasSize(1),
-//                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
                     () -> assertThat(newSection.getUpStation()).isEqualTo(JAMSIL),
                     () -> assertThat(newSection.getDownStation()).isEqualTo(YUKSAM),
                     () -> assertThat(newSection.getDistance()).isEqualTo(jamsilYuksamDistance),
@@ -123,7 +121,6 @@ class SectionsTest {
 
             Assertions.assertAll(
                     () -> assertThat(addedResults).hasSize(1),
-//                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
                     () -> assertThat(newSection.getUpStation()).isEqualTo(GANGNAM),
                     () -> assertThat(newSection.getDownStation()).isEqualTo(YUKSAM),
                     () -> assertThat(newSection.getDistance()).isEqualTo(gangnamYuksamDistance),

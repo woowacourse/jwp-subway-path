@@ -20,6 +20,7 @@ import subway.service.station.StationRepository;
 import subway.service.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.fixture.LineFixture.EIGHT_LINE_NO_ID;
 import static subway.fixture.LineFixture.SECOND_LINE_NO_ID;
 import static subway.fixture.StationFixture.GANGNAM_NO_ID;
@@ -50,10 +51,14 @@ public class LineIntegrationTest extends IntegrationTest {
     Station jangji;
     Station mongchon;
 
+    // 강남 -> 선릉
     Section gangnamSeonleung;
+    // 선릉 -> 잠실
     Section seonleungJamsil;
 
+    // 장지 -> 잠실
     Section jangjiJamsil;
+    // 잠실 -> 몽촌
     Section jamsilMongchon;
 
     @BeforeEach
@@ -93,23 +98,16 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then().log().all().
                 extract();
 
-        // when
-//        List<StationWebResponse> stations = List.of(
-//                new StationWebResponse(gangnam.getId(), gangnam.getName()),
-//                new StationWebResponse(seonleung.getId(), seonleung.getName()),
-//                new StationWebResponse(jamsil.getId(), jamsil.getName())
-//        );
-
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         LineStationsResponse lineStationsResponse = response.as(LineStationsResponse.class);
-
-        assertThat(lineStationsResponse.getId()).isEqualTo(secondLine.getId());
-        assertThat(lineStationsResponse.getStations()).containsExactly(
-                new StationWebResponse(jamsil.getId(), jamsil.getName()),
-                new StationWebResponse(seonleung.getId(), seonleung.getName()),
-                new StationWebResponse(gangnam.getId(), gangnam.getName())
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(lineStationsResponse.getId()).isEqualTo(secondLine.getId()),
+                () -> assertThat(lineStationsResponse.getStations()).containsExactly(
+                        new StationWebResponse(jamsil.getId(), jamsil.getName()),
+                        new StationWebResponse(seonleung.getId(), seonleung.getName()),
+                        new StationWebResponse(gangnam.getId(), gangnam.getName())
+                )
         );
-
     }
 }
