@@ -3,6 +3,8 @@ package fixtures.path;
 import static fixtures.path.PathLineFixtures.INITIAL_LINE2;
 import static fixtures.path.PathLineFixtures.INITIAL_LINE7;
 
+import java.util.List;
+
 import subway.domain.station.Station;
 
 public class PathStationFixtures {
@@ -34,6 +36,7 @@ public class PathStationFixtures {
 
         public static final Station FIND_STATION = new Station(ID, NAME, INITIAL_LINE2.FIND_LINE);
     }
+
     public static class INITIAL_STATION_LINE3_C {
         public static final Long ID = 5L;
         public static final String NAME = "C역";
@@ -60,4 +63,15 @@ public class PathStationFixtures {
         public static final String NAME = "E역";
         public static final Station DUMMY = new Station(ID, NAME, INITIAL_LINE7.FIND_LINE);
     }
+
+    public static final List<Station> ALL_INITIAL_STATION =
+            List.of(
+                    INITIAL_STATION_LINE2_A.FIND_STATION,
+                    INITIAL_STATION_LINE2_C.FIND_STATION,
+                    INITIAL_STATION_LINE7_A.FIND_STATION,
+                    INITIAL_STATION_LINE7_D.FIND_STATION,
+                    INITIAL_STATION_LINE3_C.FIND_STATION,
+                    INITIAL_STATION_LINE3_D.FIND_STATION,
+                    INITIAL_STATION_LINE3_E.FIND_STATION
+            );
 }

@@ -26,13 +26,3 @@ CREATE TABLE IF NOT EXISTS GENERAL_SECTION
     FOREIGN KEY (up_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
     FOREIGN KEY (down_station_id) REFERENCES STATION (id) ON DELETE CASCADE
 );
-
-CREATE TABLE IF NOT EXISTS TRANSFER_SECTION
-(
-    id bigint auto_increment not null,
-    up_station_id bigint not null,
-    down_station_id bigint not null,
-    primary key(id),
-    FOREIGN KEY (up_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
-    FOREIGN KEY (down_station_id) REFERENCES STATION (id) ON DELETE CASCADE
-)

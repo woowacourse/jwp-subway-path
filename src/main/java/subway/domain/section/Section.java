@@ -5,11 +5,9 @@ import subway.domain.station.Station;
 
 public abstract class Section {
 
-    private final Long id;
     private final NearbyStations nearbyStations;
 
-    public Section(final Long id, final NearbyStations nearbyStations) {
-        this.id = id;
+    public Section(final NearbyStations nearbyStations) {
         this.nearbyStations = nearbyStations;
     }
 
@@ -24,6 +22,8 @@ public abstract class Section {
     public abstract boolean isSameLineId(Long lineId);
 
     public abstract int getDistance();
+
+    public abstract boolean isTransferSection();
 
     public Station getUpStation() {
         return nearbyStations.getUpStation();
@@ -41,11 +41,14 @@ public abstract class Section {
         return nearbyStations.getDownStation().getId();
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public NearbyStations getNearbyStations() {
         return nearbyStations;
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "nearbyStations=" + nearbyStations +
+                '}';
     }
 }

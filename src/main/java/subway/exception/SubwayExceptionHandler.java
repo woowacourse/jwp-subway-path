@@ -17,6 +17,13 @@ public class SubwayExceptionHandler {
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalArgumentException exception) {
+        log.error("error message = " + exception.getMessage());
+        log.error("error stackTrace = " + exception.getStackTrace().toString());
+        return ResponseEntity.internalServerError().body("서버 관리자에게 문의하세요.");
+    }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> handleNotFoundException(NotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());

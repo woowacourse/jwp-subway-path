@@ -54,20 +54,22 @@
 
 ### 5. 최단 경로 조회 API
 
-- [ ] GET '/stations/short-path?start=&end='
+- [ ] GET '/stations/short-path?startLine=?&startStation=?endLine=?&endStation=?
     - Request : Query String
-      - start (출발역 이름)
-      - end (도착역 이름)
+      - startLine (출발역 노선 이름)
+      - startStation (출발역 이름)
+      - endLine (도착역 노선 이름)
+      - endStation (도착역 이름)
         
     - Response 
       - 경로 정보 리스트
-      - 현재역 정보
-        - 노선 이름
-        - 역 이름
-      - 다음역 정보
-        - 노선 이름
-        - 역 이름
-      - 거리
+        - 현재역 정보
+          - 노선 이름
+          - 역 이름
+        - 다음역 정보
+          - 노선 이름
+          - 역 이름
+        - 거리
       - 총 거리
       - 요금
 
@@ -96,7 +98,7 @@
 - [x] 노선 하나의 모든 역을 순서에 맞게 조회한다.
 - [x] 모든 노선의 모든 역을 순서에 맞게 조회한다.
 
-- [ ] 출발역과 도착역 사이의 최단 거리 경로를 구한다.
+- [x] 출발역과 도착역 사이의 최단 거리 경로를 구한다.
   - 여러 노선의 환승도 고려한다.
   - [ ] 경로 계산 시 요금도 함께 계산한다.
     - 경로의 이동 거리에 따라 요금이 계산된다.
@@ -108,12 +110,13 @@
 
 ## DB
 
-![지하철 ERD](https://github.com/woowacourse-precourse/java-menu/assets/96688810/d33cfc2a-1fe9-4eb5-852d-1e586bffef8e)
+!![지하철 노선도 ERD](https://github.com/woowacourse-precourse/java-menu/assets/95729738/092690ea-a094-4877-93a1-1d7f9c9b713b)
 
-### 테스트 시 DB Situation
+---
+
+## 역 등록, 제거, 조회 테스트 시 DB Situation
 ```java
-* Default Situation
-`test-schema.sql` & `test-data.sql`을 적용하면 '2호선 / A역 & C역 / A-C 구간'이 등록된다.
+`test-schema.sql` & `test-data.sql`을 적용하면 '2호선 & 7호선 / 2호선 - A역 & 2호선 - C역 & 7호선 - A역 / A-C 구간'이 등록된다.
 - 이후 Case들은 TestFixtures를 이용하여 테스트한다.
         
 Case 1 (가운데 역 등록) : A-B 등록 요청으로 B역이 등록된다.
@@ -132,4 +135,30 @@ Case 3 (하행 종점 역 등록) : C-E 등록 요청으로 E역이 등록된다
     - E역 삽입 
     - C - E 구간 삽입 
     - 최종 구간 : A - C - E
+```
+
+---
+## 경로 조회 테스트 시 DB Situation
+```java
+요청 : Line2 A역 -> Line3 E역 
+
+Line2, Line7 환승역 : A
+Line2, Line3 환승역 : C
+Line3, Line7 환승역 : D
+
+
+CASE 1.
+    - Line2 A -> Line2 C : 거리 10
+    - * Line2 C -> Line3 C : 환승 (거리 0)
+    - Line3 C-> Line3 E : 거리 8
+    - 총 거리 : 10 + 8 = 18
+        
+CASE 2. 
+    - * Line2 A -> Line7 A : 환승 (거리 0)
+    - Line7 A -> Line7 D : 거리 12
+    - * Line7 D -> Line3 D : 환승 (거리 0) 
+    - Line3 D -> Line3 E : 거리 5
+    - 총 거리 : 12 + 5 = 17
+
+CASE 2이 최단 경로
 ```
