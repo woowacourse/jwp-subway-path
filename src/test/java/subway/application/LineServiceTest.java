@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineSaveResponse;
@@ -21,6 +22,7 @@ import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
+import subway.repository.StationRepository;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -32,6 +34,8 @@ class LineServiceTest {
     private LineService lineService;
     @Autowired
     private LineRepository lineRepository;
+    @Autowired
+    private StationRepository stationRepository;
 
     @Test
     void 노선을_추가한다() {
@@ -73,9 +77,10 @@ class LineServiceTest {
                 new Section("X", "B", 2),
                 new Section("B", "Y", 3)
         )));
+        stationRepository.save(new Station("Z"));
 
         //when
-        lineService.addStation(savedLineId, new SectionAddRequest("Y", "Z", 10));
+        lineService.addSection(savedLineId, new SectionAddRequest("Y", "Z", 10));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)

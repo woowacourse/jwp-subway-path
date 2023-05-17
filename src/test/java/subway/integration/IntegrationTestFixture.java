@@ -103,14 +103,14 @@ public class IntegrationTestFixture {
                 .isEqualTo(전체_노선_정보);
     }
 
-    public static ExtractableResponse<Response> 역_추가_요청(Long lineId, String source, String target, int distance) {
+    public static ExtractableResponse<Response> 구간_추가_요청(Long lineId, String source, String target, int distance) {
         SectionAddRequest request = new SectionAddRequest(source, target, distance);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/lines/{lineId}/station", lineId)
+                .when().post("/lines/{lineId}/sections", lineId)
                 .then().log().all()
                 .extract();
     }

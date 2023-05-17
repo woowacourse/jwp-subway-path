@@ -74,4 +74,13 @@ public class StationDao {
                 + " WHERE sec.line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, id);
     }
+
+    public Optional<StationEntity> findById(Long id) {
+        String sql = "select * from STATION where id = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
 }

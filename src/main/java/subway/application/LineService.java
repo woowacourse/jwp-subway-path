@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
+import subway.domain.Station;
 import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
@@ -13,15 +14,18 @@ import subway.dto.SectionAddRequest;
 import subway.dto.StationDeleteRequest;
 import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
+import subway.repository.StationRepository;
 
 @Transactional
 @Service
 public class LineService {
 
     private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
     }
 
     public LineSaveResponse saveLine(LineRequest request) {
@@ -33,13 +37,15 @@ public class LineService {
         return new LineSaveResponse(saveId);
     }
 
-    public void addStation(Long lineId, SectionAddRequest request) {
+    public void addSection(Long lineId, SectionAddRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
         Line line = lineRepository.findById(lineId);
+        Station source = stationRepository.findByName(request.getSourceStation());
+        Station target = stationRepository.findByName(request.getTargetStation());
         subway.addStation(
                 line.getName(),
-                request.getSourceStation(),
-                request.getTargetStation(),
+                source,
+                target,
                 request.getDistance()
         );
         lineRepository.save(subway.findLineByName(line.getName()));

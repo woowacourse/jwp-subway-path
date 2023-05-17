@@ -47,7 +47,7 @@ public class Subway {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 노선입니다."));
     }
 
-    public void addStation(String name, String sourceStation, String targetStation, int distance) {
+    public void addStation(String name, Station sourceStation, Station targetStation, int distance) {
         Line line = findLineByName(name);
         line.addSection(new Section(sourceStation, targetStation, distance));
     }
