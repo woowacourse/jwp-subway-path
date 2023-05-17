@@ -12,6 +12,7 @@ import subway.domain.repository.StationRepository;
 import subway.ui.dto.request.SectionDeleteRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -27,11 +28,14 @@ public class DetachStationService {
     }
 
     public void deleteStation(final Long lineId, final SectionDeleteRequest sectionDeleteRequest) {
-        final Line line = lineRepository.findById(lineId);
+        final Optional<Line> optionalLine = lineRepository.findById(lineId);
+        if (optionalLine.isEmpty()) {
+            throw new IllegalArgumentException("노선이 없습니다");
+        }
         final Station station = stationRepository.findByName(new Station(sectionDeleteRequest.getStationName()))
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 없습니다."));
 
-        final List<Section> findSections = sectionRepository.findAllByLineId(line.getId());
+        final List<Section> findSections = sectionRepository.findAllByLineId(optionalLine.get().getId());
         if (findSections.isEmpty()) {
             throw new IllegalArgumentException("노선의 역이 없습니다.");
         }

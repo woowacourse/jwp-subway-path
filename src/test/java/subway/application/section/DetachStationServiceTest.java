@@ -43,7 +43,7 @@ class DetachStationServiceTest {
                 new Section(1L, new Station("비버"), new Station("허브신"), 5L));
 
         given(lineRepository.findById(1L))
-                .willReturn(new Line(1L, "1호선"));
+                .willReturn(Optional.of(new Line(1L, "1호선")));
         given(stationRepository.findByName(new Station("비버")))
                 .willReturn(Optional.of(new Station("비버")));
         given(sectionRepository.findAllByLineId(1L))
@@ -59,7 +59,7 @@ class DetachStationServiceTest {
                 new Section(1L, new Station("아코"), new Station("허브신"), 5L));
 
         given(lineRepository.findById(1L))
-                .willReturn(new Line(1L, "1호선"));
+                .willReturn(Optional.of(new Line(1L, "1호선")));
         given(stationRepository.findByName(new Station("비버")))
                 .willReturn(Optional.empty());
         given(sectionRepository.findAllByLineId(1L))
@@ -72,7 +72,7 @@ class DetachStationServiceTest {
     @DisplayName("일치하는 노선이 없으면 예외처리")
     void deleteStation_lineNotFoundException() {
         given(lineRepository.findById(1L))
-                .willReturn(new Line(1L, "1호선"));
+                .willReturn(Optional.of(new Line(1L, "1호선")));
         given(stationRepository.findByName(new Station("비버")))
                 .willReturn(Optional.of(new Station("비버")));
         given(sectionRepository.findAllByLineId(1L))

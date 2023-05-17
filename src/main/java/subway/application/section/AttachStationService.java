@@ -11,6 +11,8 @@ import subway.domain.repository.SectionRepository;
 import subway.domain.repository.StationRepository;
 import subway.ui.dto.request.SectionCreateRequest;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class AttachStationService {
@@ -28,9 +30,12 @@ public class AttachStationService {
 
 
     public void createSection(final Long lineId, final SectionCreateRequest sectionCreateRequest) {
-        final Line line = lineRepository.findById(lineId);
+        final Optional<Line> optionalLine = lineRepository.findById(lineId);
+        if (optionalLine.isEmpty()) {
+            throw new IllegalArgumentException("노선이 없습니다.");
+        }
         final Section section = createBy(lineId, sectionCreateRequest);
-        Sections sections = new Sections(sectionRepository.findAllByLineId(line.getId()));
+        Sections sections = new Sections(sectionRepository.findAllByLineId(optionalLine.get().getId()));
 
         sections.addSection(section);
         sectionRepository.saveSection(lineId, sections.getSections());

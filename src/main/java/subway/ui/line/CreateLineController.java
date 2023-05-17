@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import subway.application.line.CreateLineService;
 import subway.ui.dto.request.LineRequest;
-import subway.ui.dto.response.LineResponse;
 
 import javax.validation.Valid;
 
@@ -24,13 +23,13 @@ public class CreateLineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
+    public ResponseEntity<Void> createLine(@RequestBody @Valid LineRequest lineRequest) {
         final Long lineId = lineService.createLine(lineRequest);
 
         String createLineUri = generateCreateUri(lineId);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header(HttpHeaders.CONTENT_LOCATION, createLineUri)
+                .header(HttpHeaders.LOCATION, createLineUri)
                 .build();
     }
 

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import subway.application.station.CreateStationService;
 import subway.ui.dto.request.StationCreateRequest;
-import subway.ui.dto.response.StationResponse;
 
 import javax.validation.Valid;
 
@@ -24,14 +23,14 @@ public class CreateStationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
+    public ResponseEntity<Void> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
         final Long stationId = stationService.createStation(stationCreateRequest);
 
         String createStationUri = generateCreateUri(stationId);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header(HttpHeaders.CONTENT_LOCATION, createStationUri)
+                .header(HttpHeaders.LOCATION, createStationUri)
                 .build();
     }
 

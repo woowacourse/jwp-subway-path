@@ -27,7 +27,7 @@ class CreateStationServiceTest {
 
     @Test
     @DisplayName("역을 정상적으로 만든다.")
-    void createLine() {
+    void createStation() {
         given(stationRepository.findByName(any()))
                 .willReturn(Optional.empty());
 
@@ -38,7 +38,7 @@ class CreateStationServiceTest {
 
     @Test
     @DisplayName("존재하는 역이면 예외처리")
-    void createStation() {
+    void createStationException() {
         given(stationRepository.findByName(any()))
                 .willReturn(Optional.of(new Station("라빈")));
 

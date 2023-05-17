@@ -39,7 +39,7 @@ class CreateLineServiceTest {
 
     @Test
     @DisplayName("존재하는 노선이면 예외처리")
-    void createLine_createLineException() {
+    void createLineException() {
         given(lineRepository.findByName(any()))
                 .willReturn(Optional.of(new Line(1L, "1호선")));
 

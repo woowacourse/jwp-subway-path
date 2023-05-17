@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 public class StationResponse {
     private String name;
 
+    public StationResponse() {
+    }
+
     public StationResponse(final String name) {
         this.name = name;
     }

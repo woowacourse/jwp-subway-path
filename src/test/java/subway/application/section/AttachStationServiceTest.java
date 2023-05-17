@@ -36,14 +36,14 @@ class AttachStationServiceTest {
 
     @Test
     @DisplayName("구간이 잘 저장되는지 테스트")
-    void createSection1() {
+    void createSection() {
 
         List<Section> sections = List.of(
                 new Section(1L, new Station("라빈"), new Station("비버"), 5L),
                 new Section(1L, new Station("비버"), new Station("허브신"), 5L));
 
-        given(lineRepository.findById(1l))
-                .willReturn(new Line(1L, "1호선"));
+        given(lineRepository.findById(1L))
+                .willReturn(Optional.of(new Line(1L, "1호선")));
         given(stationRepository.findByName(new Station("허브신")))
                 .willReturn(Optional.of(new Station("허브신")));
         given(stationRepository.findByName(new Station("나루토")))
@@ -63,8 +63,8 @@ class AttachStationServiceTest {
                 new Section(1L, new Station("라빈"), new Station("비버"), 5L),
                 new Section(1L, new Station("비버"), new Station("허브신"), 5L));
 
-        given(lineRepository.findById(1l))
-                .willReturn(new Line(1L, "1호선"));
+        given(lineRepository.findById(1L))
+                .willReturn(Optional.of(new Line(1L, "1호선")));
         given(sectionRepository.findAllByLineId(1L))
                 .willReturn(sections);
 

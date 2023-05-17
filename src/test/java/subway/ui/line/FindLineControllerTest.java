@@ -14,6 +14,7 @@ import subway.domain.Station;
 import subway.domain.repository.LineRepository;
 import subway.domain.repository.SectionRepository;
 import subway.domain.repository.StationRepository;
+import subway.ui.dto.response.StationResponse;
 
 import java.util.List;
 
@@ -51,11 +52,11 @@ class FindLineControllerTest extends IntegrationTest {
                 .extract();
 
 
-        List<Station> result = List.of(new Station("비버"), new Station("라빈"), new Station("허브신"), new Station("허브신도"));
+        List<StationResponse> result = List.of(new StationResponse("비버"), new StationResponse("라빈"), new StationResponse("허브신"), new StationResponse("허브신도"));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.body().jsonPath().getList(".", Station.class))
+                () -> assertThat(response.body().jsonPath().getList(".", StationResponse.class))
                         .usingRecursiveComparison()
                         .isEqualTo(result)
         );
