@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.section;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import subway.domain.station.Station;
 
 public class Sections {
     private final List<Section> sections;

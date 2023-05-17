@@ -1,6 +1,6 @@
 package subway.dao.entity;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class SectionEntity {
     private final Long id;

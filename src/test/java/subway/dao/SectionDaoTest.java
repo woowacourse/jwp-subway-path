@@ -13,9 +13,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 @JdbcTest
 @Sql("/line_data_initialize.sql")

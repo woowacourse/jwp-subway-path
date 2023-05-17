@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Section;
+import subway.domain.section.Section;
 
-public class MemorySectionDao implements SectionDao {
+public class InMemorySectionDao implements SectionDao {
     private final Map<Long, SectionEntity> sections = new HashMap<>();
     private long sectionId = 1;
 

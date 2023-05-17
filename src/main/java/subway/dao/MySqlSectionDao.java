@@ -9,8 +9,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 @Repository
 public class MySqlSectionDao implements SectionDao {

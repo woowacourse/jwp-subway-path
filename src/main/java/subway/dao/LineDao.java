@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.LineEntity;
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 @Repository
 public class LineDao {

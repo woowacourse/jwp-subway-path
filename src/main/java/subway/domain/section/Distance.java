@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.section;
 
 public class Distance {
     private static final int MAX_DISTANCE = 100;

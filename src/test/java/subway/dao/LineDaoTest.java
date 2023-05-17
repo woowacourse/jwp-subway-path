@@ -1,6 +1,6 @@
 package subway.dao;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.entity.LineEntity;
-import subway.domain.Line;
-import subway.domain.LineColor;
-import subway.domain.LineName;
+import subway.domain.line.Line;
+import subway.domain.line.LineColor;
+import subway.domain.line.LineName;
 
 @JdbcTest
 class LineDaoTest {

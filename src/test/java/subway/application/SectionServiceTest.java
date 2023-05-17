@@ -16,9 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.MemorySectionDao;
+import subway.dao.InMemorySectionDao;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionResponse;
 import subway.exception.IllegalDistanceException;
@@ -31,7 +31,7 @@ class SectionServiceTest {
     SectionService sectionService;
 
     @Spy
-    MemorySectionDao sectionDao;
+    InMemorySectionDao sectionDao;
 
     @Mock
     StationDao stationDao;

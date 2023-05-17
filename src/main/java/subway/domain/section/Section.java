@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.section;
 
 import subway.dao.entity.SectionEntity;
+import subway.domain.station.Station;
 
 public class Section {
     private final Station upBoundStation;

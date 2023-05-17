@@ -1,6 +1,6 @@
 package subway.dto.section;
 
-import subway.domain.Section;
+import subway.domain.section.Section;
 
 public class SectionResponse {
     private String startStationName;

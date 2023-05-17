@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.regex.Pattern;
 import org.springframework.util.Assert;

@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationUpdateRequest;
