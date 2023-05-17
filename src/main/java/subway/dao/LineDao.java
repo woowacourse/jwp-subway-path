@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.LineWithSectionEntities;
 import subway.dao.entity.SectionEntity;
-import subway.repository.LineWithSectionEntity;
+import subway.dao.entity.LineWithSectionEntity;
 
 @Repository
 public class LineDao {

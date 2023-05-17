@@ -2,7 +2,6 @@ package subway.dao.entity;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.repository.LineWithSectionEntity;
 
 public class LineWithSectionEntities {
     private final LineEntity lineEntity;

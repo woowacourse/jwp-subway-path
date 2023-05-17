@@ -1,7 +1,4 @@
-package subway.repository;
-
-import subway.dao.entity.LineEntity;
-import subway.dao.entity.SectionEntity;
+package subway.dao.entity;
 
 public class LineWithSectionEntity {
     private final LineEntity lineEntity;
