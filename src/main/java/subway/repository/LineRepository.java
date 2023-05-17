@@ -54,4 +54,9 @@ public class LineRepository {
     public Line findLineById(final Long id) {
         return generateLine(lineDao.findById(id));
     }
+
+    public boolean contains(final LineEntity lineEntity) {
+        return lineDao.findAll().stream()
+                .anyMatch(it -> it.getName().equals(lineEntity.getName()));
+    }
 }
