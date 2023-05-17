@@ -29,7 +29,7 @@ public class BasicFareCalculator implements FareCalculator {
         return calculateBasicFare(distance);
     }
 
-    private static int calculateBasicFare(Integer distance) {
+    private int calculateBasicFare(Integer distance) {
         final double factor = Math.ceil((distance - MINIMUM_DISTANCE) / BASIC_ADDITIONAL_CHARGED_DISTANCE);
         return (int) factor * ADDITIONAL_FARE + BASIC_FARE;
     }
