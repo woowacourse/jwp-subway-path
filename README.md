@@ -64,30 +64,18 @@
 - [x] 노선에 대한 역 정보를 `상행종점~하행종점` 순서대로 반환한다.
 
 
-## 시나리오
+# API  설계
 
-- 역 등록
-    - 기존 노선이 없을 경우
-        - A, B와 새로운 노선을 함께 등록한다.
-    - 기존 노선이 있을 경우
-        - 새로운 역 C를 등록할 경우
-            - C가 기존 노선일 경우
-                - 등록한다.
-            - C가 기존 노선이 아닐 경우
-                - C의 노선이 없을 경우
-                    - 새로운 노선을 만들고, 등록한다.
-                - C의 노선이 있을 경우
-                    - 등록한다.
+---
 
-
-# API (적용 X, 확정 X)
 ## `station` 관련
-### GET /stations/{stationId}
+
+## GET /stations/{stationId}
 - 요청
 ```http request
 GET /stations/1
 ```
-- 응답
+
 ```http request
 HTTP /1.1 200 OK
 Content-Type: application/json
@@ -95,19 +83,10 @@ Content-Type: application/json
 {
   "id" : "1",
   "name" : "잠실",
-  "lines" : [
-    {
-      "lineName" : "2",
-      "upStationName" : "잠실나루",
-      "downStationName" : "잠실새내",
-    }, 
-    {
-      "lineName" : "8",
-      "upStationName" : "몽촌토성",
-      "downStationName" : "석촌",
-    }
-  ]
 }
+```
+
+## POST /stations
 ```
 ### POST /stations
 - 요청
@@ -116,40 +95,7 @@ POST /stations
 Content-Type: application/json
 
 {
-  "name" : "잠실",
-  "position" : [
-    {
-      "lineId" : 1 (2호선),
-      "upStationId" : 1 (잠실나루), (null 허용)
-      "upStationDistance" : 5, (null 허용)
-      "downStationId" : 2 (잠실새내), (null 허용)
-      "dowStationnDistance" : 5 (null 허용)
-    },
-    {
-      "lineId" : 2 (8호선),
-      "upStationId" : 3 (몽촌토성), (null 허용)
-      "upDistance" : 5, (null 허용)
-      "downStationId" : 4 (석촌), (null 허용)
-      "downDistance" : 5 (null 허용)
-    }
-  ]
-}
-```
-- 응답
-```http request
-HTTP /1.1 201 CREATED
-```
-### POST /stations/init
-- 요청
-```http request 
-POST /stations
-Content-Type: application/json
-
-{
-  "firstStationName" : "잠실",
-  "lastStationName" : "잠실나루,
-  "lineId" : 1, (2호선)
-  "distance" : 10
+  "name" : "잠실"
 }
 ```
 - 응답
@@ -159,44 +105,82 @@ HTTP /1.1 201 CREATED
 ### PUT /stations/{stationId}
 - 요청
 ```http request 
-POST /stations
+PUT /stations/{stationId}
 Content-Type: application/json
 
 {
-  "name" : "잠실",
-  "postion" : [
-    {
-      "lineId" : 1 (2호선),
-      "upStationId" : 1 (잠실나루),
-      "downStationId" : 2 (잠실새내),
-    },
-    {
-      "lineId" : 2 (8호선),
-      "upStationId" : 3 (몽촌토성),
-      "downStationId" : 4 (석촌),
-    }
-  ]
+  "name" : "잠실"
 }
 ```
 - 응답
 ```http request
 HTTP /1.1 201 CREATED
 ```
+
 ### DELETE /stations/{stationId}
 - 요청
 ```http request 
-DELETE /stations/1
+DELETE /stations/{stationId}
 ```
 - 응답
 ```http request
 HTTP /1.1 204 NO CONTENT
 ```
 
+---
+
 ## `line` 관련
+### GET /lines/{lineId}
+- 요청
+```http request
+GET /lines/1
+```
+- 응답
+```http request
+HTTP /1.1 200 OK
+
+{
+  "lineId" : 1,
+  "lineName" : "2호선",
+  "lineColor" : "초록"
+}
+```
+
+### POST /lines
+
+- 요청
+```http request 
+POST /lines
+Content-Type: application/json
+
+{
+  "lineName" : "4호선",
+  "lineColor" : "파랑"
+}
+```
+- 응답
+```http request
+HTTP /1.1 201 CREATED
+```
+
+### DELETE /lines/{lineId}
+
+- 요청
+```http request 
+DELETE /lines
+```
+- 응답
+```http request
+HTTP /1.1 204 NO CONTENT
+```
+
+---
+## `line station` 관련
+
 ### GET /lines/{lineId}/stations
 - 요청
 ```http request 
-GET /lines/1
+GET /lines/1/stations
 ```
 - 응답
 ```http request
@@ -222,10 +206,11 @@ HTTP /1.1 200 OK
   ]
 }
 ```
+
 ### GET /lines/stations
 - 요청
 ```http request 
-GET /lines
+GET /lines/stations
 ```
 - 응답
 ```http request
@@ -272,46 +257,33 @@ HTTP /1.1 200 OK
     }
 ]}
 ```
-### POST /lines
+
+### POST /lines/{lineId}/stations
 
 - 요청
-```http request 
-POST /lines
-Content-Type: application/json
+```http request
+POST /lines/1/stations
 
 {
-  "lineName" : "4호선",
-  "lineColor" : "파랑"
+  "upStationId" : 1,
+  "downStationId" : 2,
+  "distance" : 5
 }
 ```
+
 - 응답
 ```http request
 HTTP /1.1 201 CREATED
 ```
-### PUT /lines/{lineId}
+
+### DELETE lines/{lineId}/stations/{stationId}
 
 - 요청
-```http request 
-PUT /lines/3
-Content-Type: application/json
-
-{
-  "lineName" : "4호선",
-  "lineColor" : "하늘"
-}
+```http request
+DELETE /lines/1/stations/1
 ```
+
 - 응답
 ```http request
-HTTP /1.1 201 CREATED
+HTTP /1.1 201 NO CONTENT
 ```
-### DELETE /lines/{lineId}
-
-- 요청
-```http request 
-DELETE /lines
-```
-- 응답
-```http request
-HTTP /1.1 204 NO CONTENT
-```
-
