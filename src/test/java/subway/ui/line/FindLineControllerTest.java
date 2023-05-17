@@ -11,10 +11,8 @@ import subway.common.IntegrationTest;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.domain.repository.LineRepository;
-import subway.domain.repository.SectionRepository;
 import subway.domain.repository.StationRepository;
-import subway.ui.dto.response.StationResponse;
+import subway.application.dto.StationResponse;
 
 import java.util.List;
 

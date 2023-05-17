@@ -5,8 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import subway.domain.Line;
-import subway.domain.repository.LineRepository;
-import subway.ui.dto.request.LineRequest;
+import subway.adapter.in.web.line.dto.LineRequest;
 
 import java.util.Optional;
 

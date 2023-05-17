@@ -8,10 +8,8 @@ import org.mockito.Mockito;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.domain.repository.LineRepository;
-import subway.domain.repository.SectionRepository;
 import subway.domain.repository.StationRepository;
-import subway.ui.dto.request.SectionDeleteRequest;
+import subway.adapter.in.web.section.dto.SectionDeleteRequest;
 
 import java.util.Collections;
 import java.util.List;

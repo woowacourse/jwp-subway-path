@@ -12,10 +12,10 @@ import subway.common.IntegrationTest;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.persistence.repository.LineRepositoryImpl;
-import subway.persistence.repository.SectionRepositoryImpl;
-import subway.persistence.repository.StationRepositoryImpl;
-import subway.ui.dto.request.SectionDeleteRequest;
+import subway.adapter.out.persistence.repository.LineJdbcAdapter;
+import subway.adapter.out.persistence.repository.SectionJdbcAdapter;
+import subway.adapter.out.persistence.repository.StationJdbcAdapter;
+import subway.adapter.in.web.section.dto.SectionDeleteRequest;
 
 import java.util.List;
 
@@ -25,11 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class DetachStationControllerTest extends IntegrationTest {
 
     @Autowired
-    private LineRepositoryImpl lineRepository;
+    private LineJdbcAdapter lineRepository;
     @Autowired
-    private StationRepositoryImpl stationRepository;
+    private StationJdbcAdapter stationRepository;
     @Autowired
-    private SectionRepositoryImpl sectionRepository;
+    private SectionJdbcAdapter sectionRepository;
 
     @Test
     @DisplayName("delete /line/{id}/station 구간의 역을 삭제한다.")

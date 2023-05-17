@@ -10,15 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import subway.common.IntegrationTest;
 import subway.domain.Station;
-import subway.persistence.repository.StationRepositoryImpl;
-import subway.ui.dto.request.StationCreateRequest;
+import subway.adapter.out.persistence.repository.StationJdbcAdapter;
+import subway.adapter.in.web.station.dto.StationCreateRequest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class CreateStationControllerTest extends IntegrationTest {
     @Autowired
-    private StationRepositoryImpl stationRepository;
+    private StationJdbcAdapter stationRepository;
 
     @Test
     @DisplayName("post /stations  역을 등록한다.")

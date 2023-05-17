@@ -6,9 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.persistence.entity.LineEntity;
-import subway.persistence.entity.SectionEntity;
-import subway.persistence.entity.StationEntity;
+import subway.adapter.out.persistence.dao.LineJdbcDao;
+import subway.adapter.out.persistence.dao.SectionJdbcDao;
+import subway.adapter.out.persistence.dao.StationJdbcDao;
+import subway.adapter.out.persistence.entity.LineEntity;
+import subway.adapter.out.persistence.entity.SectionEntity;
+import subway.adapter.out.persistence.entity.StationEntity;
 
 import java.util.List;
 

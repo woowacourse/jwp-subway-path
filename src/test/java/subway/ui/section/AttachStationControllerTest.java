@@ -12,10 +12,10 @@ import subway.common.IntegrationTest;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.persistence.repository.LineRepositoryImpl;
-import subway.persistence.repository.SectionRepositoryImpl;
-import subway.persistence.repository.StationRepositoryImpl;
-import subway.ui.dto.request.SectionCreateRequest;
+import subway.adapter.out.persistence.repository.LineJdbcAdapter;
+import subway.adapter.out.persistence.repository.SectionJdbcAdapter;
+import subway.adapter.out.persistence.repository.StationJdbcAdapter;
+import subway.adapter.in.web.section.dto.SectionCreateRequest;
 
 import java.util.List;
 
@@ -25,11 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class AttachStationControllerTest extends IntegrationTest {
 
     @Autowired
-    private LineRepositoryImpl lineRepository;
+    private LineJdbcAdapter lineRepository;
     @Autowired
-    private StationRepositoryImpl stationRepository;
+    private StationJdbcAdapter stationRepository;
     @Autowired
-    private SectionRepositoryImpl sectionRepository;
+    private SectionJdbcAdapter sectionRepository;
 
     @Test
     @DisplayName("post /line/{id}/station  구간을 추가한다.")

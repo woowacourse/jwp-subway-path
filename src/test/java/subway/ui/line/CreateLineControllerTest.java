@@ -11,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import subway.common.IntegrationTest;
 import subway.domain.Line;
-import subway.persistence.repository.LineRepositoryImpl;
-import subway.ui.dto.request.LineRequest;
+import subway.adapter.out.persistence.repository.LineJdbcAdapter;
+import subway.adapter.in.web.line.dto.LineRequest;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class CreateLineControllerTest extends IntegrationTest {
 
     @Autowired
-    private LineRepositoryImpl lineRepository;
+    private LineJdbcAdapter lineRepository;
 
     @Test
     @DisplayName("post /lines  노선을 추가한다.")

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import subway.common.IntegrationTest;
 import subway.domain.Line;
-import subway.persistence.repository.LineRepositoryImpl;
+import subway.adapter.out.persistence.repository.LineJdbcAdapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class DeleteLineControllerTest extends IntegrationTest {
 
     @Autowired
-    private LineRepositoryImpl lineRepository;
+    private LineJdbcAdapter lineRepository;
 
     @Test
     @DisplayName("delete  /lines/{id} 노선을 삭제한다.")

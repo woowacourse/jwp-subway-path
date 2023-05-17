@@ -7,9 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.domain.repository.LineRepository;
-import subway.domain.repository.SectionRepository;
-import subway.ui.dto.response.StationResponse;
+import subway.application.dto.StationResponse;
 
 import java.util.Collections;
 import java.util.List;

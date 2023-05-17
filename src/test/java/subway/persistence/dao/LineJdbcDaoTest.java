@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.persistence.entity.LineEntity;
+import subway.adapter.out.persistence.dao.LineJdbcDao;
+import subway.adapter.out.persistence.entity.LineEntity;
 
 import java.util.List;
 
