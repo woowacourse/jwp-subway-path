@@ -2,7 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.controller.dto.request.FindShortestPathRequest;
 import subway.controller.dto.response.FindShortestPathResponse;
 import subway.domain.CostPolicy;
 import subway.domain.Lines;
@@ -30,9 +29,9 @@ public class PathService {
         this.costPolicy = costPolicy;
     }
 
-    public FindShortestPathResponse findShortestPath(final FindShortestPathRequest request) {
-        final Station startStation = getStation(request.getStartStationName());
-        final Station endStation = getStation(request.getEndStationName());
+    public FindShortestPathResponse findShortestPath(final String startStationName, final String endStationName) {
+        final Station startStation = getStation(startStationName);
+        final Station endStation = getStation(endStationName);
         final Lines lines = new Lines(lineRepository.findAll());
         final Navigation navigation = new Navigation(lines);
         final Path shortestPath = navigation.findShortestPath(startStation, endStation);

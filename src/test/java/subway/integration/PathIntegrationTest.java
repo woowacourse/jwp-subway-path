@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import subway.controller.dto.AddStationLocation;
 import subway.controller.dto.request.AddInitStationToLineRequest;
 import subway.controller.dto.request.AddStationToLineRequest;
-import subway.controller.dto.request.FindShortestPathRequest;
 import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.response.FindShortestPathResponse;
 import subway.controller.dto.response.LineResponse;
@@ -137,14 +136,11 @@ public class PathIntegrationTest extends IntegrationTest {
             .then().log().all()
             .extract();
 
-        final FindShortestPathRequest request = new FindShortestPathRequest(stationResponse1.getName(),
-            stationResponse3.getName());
-
         final ExtractableResponse<Response> response = given().log().all()
-            .body(request)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .get("/shortest-path")
+            .get("/shortest-path?startStationName=" + stationResponse1.getName() + "&endStationName="
+                + stationResponse3.getName())
             .then().log().all()
             .extract();
 
@@ -172,7 +168,7 @@ public class PathIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(findShortestPathResponse.getTotalCost()).isEqualTo(expectedResponse.getTotalCost());
         assertThat(findShortestPathResponse.getTotalDistance()).isEqualTo(expectedResponse.getTotalDistance());
-        
+
         final List<StationInformationResponse> stationInformations = findShortestPathResponse.getStationInformations();
         for (int i = 0; i < stationInformations.size(); i++) {
             final StationInformationResponse stationInformationResponse = stationInformations.get(i);

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.controller.dto.request.FindShortestPathRequest;
 import subway.controller.dto.response.FindShortestPathResponse;
 import subway.controller.dto.response.StationInformationResponse;
 import subway.domain.CostPolicy;
@@ -64,11 +63,9 @@ class PathServiceTest {
         given(costPolicy.calculate(any()))
             .willReturn(1250L);
 
-        final FindShortestPathRequest request = new FindShortestPathRequest(firstStation.getName(),
-            fourthStation.getName());
-
         //when
-        final FindShortestPathResponse response = pathService.findShortestPath(request);
+        final FindShortestPathResponse response = pathService.findShortestPath(firstStation.getName(),
+            fourthStation.getName());
 
         //then
         final List<StationInformationResponse> stationResponses = response.getStationInformations();
