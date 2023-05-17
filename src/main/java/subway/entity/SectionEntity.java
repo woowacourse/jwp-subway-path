@@ -2,13 +2,13 @@ package subway.entity;
 
 public class SectionEntity {
 
-    private final Long id;
-    private final Long upstreamId;
-    private final Long downstreamId;
-    private final Long lineId;
-    private final Integer distance;
+    private final long id;
+    private final long upstreamId;
+    private final long downstreamId;
+    private final long lineId;
+    private final int distance;
 
-    public SectionEntity(Long id, Long upstreamId, Long downstreamId, Long lineId, Integer distance) {
+    public SectionEntity(long id, long upstreamId, long downstreamId, long lineId, int distance) {
         this.id = id;
         this.upstreamId = upstreamId;
         this.downstreamId = downstreamId;
@@ -16,33 +16,33 @@ public class SectionEntity {
         this.distance = distance;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public Long getUpstreamId() {
+    public long getUpstreamId() {
         return upstreamId;
     }
 
-    public Long getDownstreamId() {
+    public long getDownstreamId() {
         return downstreamId;
     }
 
-    public Long getLineId() {
+    public long getLineId() {
         return lineId;
     }
 
-    public Integer getDistance() {
+    public int getDistance() {
         return distance;
     }
 
     public static class Builder {
 
-        private Long id;
-        private Long upstreamId;
-        private Long downstreamId;
-        private Long lineId;
-        private Integer distance;
+        private long id;
+        private long upstreamId;
+        private long downstreamId;
+        private long lineId;
+        private int distance;
 
         public Builder id(long id) {
             this.id = id;
