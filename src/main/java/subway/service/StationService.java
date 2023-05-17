@@ -39,7 +39,7 @@ public class StationService {
 
     public void updateStation(final long id, final StationRequest stationRequest) {
         Station oldStation = stationDao.findById(id)
-                .orElseThrow(() -> new IllegalStateException("[ERROR] 존재하지 않는 역을 수정할 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 역을 수정할 수 없습니다."));
         Station updatedStation = Station.of(id, stationRequest.getName());
         if (!oldStation.isSameName(updatedStation)) {
             validateDuplicatedName(updatedStation);
@@ -55,7 +55,7 @@ public class StationService {
 
     public void deleteStationById(final long id) {
         stationDao.findById(id)
-                .orElseThrow(() -> new IllegalStateException("[ERROR] 존재하지 않는 역을 삭제할 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 역을 삭제할 수 없습니다."));
         stationDao.deleteById(id);
     }
 }

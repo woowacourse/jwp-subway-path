@@ -43,7 +43,7 @@ class LineControllerTest {
 
             // then
             RestAssured.given()
-                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .when().get("/lines")
                     .then().log().all()
                     .statusCode(HttpStatus.OK.value());
@@ -63,7 +63,7 @@ class LineControllerTest {
         @Test
         void successTest() {
             RestAssured.given()
-                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .when().get("/lines/1")
                     .then().log().all()
                     .statusCode(HttpStatus.OK.value());
@@ -73,7 +73,7 @@ class LineControllerTest {
         @Test
         void failTest() {
             RestAssured.given()
-                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .when().get("/lines/5")
                     .then().log().all()
                     .statusCode(HttpStatus.BAD_REQUEST.value());

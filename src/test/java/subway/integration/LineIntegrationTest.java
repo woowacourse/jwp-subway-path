@@ -95,7 +95,7 @@ public class LineIntegrationTest extends IntegrationTest {
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines")
                 .then().log().all()
                 .extract();
@@ -127,7 +127,7 @@ public class LineIntegrationTest extends IntegrationTest {
         Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines/{lineId}", lineId)
                 .then().log().all()
                 .extract();
