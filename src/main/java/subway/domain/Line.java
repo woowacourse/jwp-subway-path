@@ -1,5 +1,7 @@
 package subway.domain;
 
+import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toMap;
 import static subway.domain.Direction.LEFT;
 import static subway.domain.Direction.RIGHT;
 
@@ -11,7 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import subway.domain.strategy.AddInMiddleStrategy;
 import subway.domain.strategy.AddLeftInMiddleStrategy;
 import subway.domain.strategy.AddRightInMiddleStrategy;
@@ -20,6 +21,8 @@ import subway.exception.LineNotEmptyException;
 import subway.exception.StationNotFoundException;
 
 public class Line {
+
+    private static final int EXIST_ONLY_ONE_SECTION = 1;
 
     private final String name;
     private final String color;
@@ -70,11 +73,6 @@ public class Line {
         }
     }
 
-    private boolean contains(final Station station) {
-        return sections.stream()
-                .anyMatch(section -> section.contains(station));
-    }
-
     private boolean isNotValidDistanceToAddRight(
             final Station base,
             final Distance distance,
@@ -83,7 +81,7 @@ public class Line {
         if (direction == LEFT) {
             return false;
         }
-        final Optional<Section> findSection = findSectionAtEdge(section -> section.isStart(base));
+        final Optional<Section> findSection = findSection(section -> section.isStart(base));
         return findSection.map(section -> section.canNotAddStationInMiddle(distance))
                 .orElse(false);
     }
@@ -96,48 +94,55 @@ public class Line {
         if (direction == RIGHT) {
             return false;
         }
-        final Optional<Section> findSection = findSectionAtEdge(section -> section.isEnd(base));
+        final Optional<Section> findSection = findSection(section -> section.isEnd(base));
         return findSection.map(section -> section.canNotAddStationInMiddle(distance))
                 .orElse(false);
     }
 
-    private Optional<Section> findSectionAtEdge(final Function<Section, Boolean> isEdge) {
+    private Optional<Section> findSection(final Function<Section, Boolean> filter) {
         return sections.stream()
-                .filter(isEdge::apply)
+                .filter(filter::apply)
                 .findFirst();
     }
 
-    public boolean isSameName(final String lineName) {
-        return name.equals(lineName);
+    private List<Section> findAllSections(final Function<Section, Boolean> filter) {
+        return sections.stream()
+                .filter(filter::apply)
+                .collect(toList());
     }
 
     public void remove(final Station station) {
         if (!contains(station)) {
             throw new StationNotFoundException();
         }
-
-        final Optional<Section> sectionAtStart = findSectionAtEdge(section -> section.isStart(station));
-        final Optional<Section> sectionAtEnd = findSectionAtEdge(section -> section.isEnd(station));
-
-        if (sectionAtStart.isPresent() && sectionAtEnd.isPresent()) {
-            final Section left = sectionAtEnd.get();
-            final Section right = sectionAtStart.get();
-            sections.add(new Section(left.getStart(), right.getEnd(), left.add(right.getDistance())));
-            sections.remove(left);
-            sections.remove(right);
+        final List<Section> findSections = findAllSections(section -> section.contains(station));
+        if (findSections.size() == EXIST_ONLY_ONE_SECTION) {
+            sections.remove(findSections.get(0));
             return;
         }
+        removeMiddleStation(findSections, station);
+    }
 
-        if (sectionAtStart.isPresent()) {
-            sections.remove(sectionAtStart.get());
+    private void removeMiddleStation(List<Section> findSections, Station station) {
+        final Section section = findSections.get(0);
+        final Section otherSection = findSections.get(1);
+        sections.remove(section);
+        sections.remove(otherSection);
+        if (section.isEnd(station)) {
+            sections.add(new Section(section.getStart(), otherSection.getEnd(), section.add(otherSection.getDistance())));
             return;
         }
-        sectionAtEnd.ifPresent(sections::remove);
+        sections.add(new Section(otherSection.getStart(), section.getEnd(), otherSection.add(section.getDistance())));
+    }
+
+    private boolean contains(final Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.contains(station));
     }
 
     public List<Station> findAllStation() {
         final Map<Station, Station> stationToStation = sections.stream()
-                .collect(Collectors.toMap(Section::getStart, Section::getEnd));
+                .collect(toMap(Section::getStart, Section::getEnd));
 
         final Optional<Station> firstStation = findFirstStation(stationToStation);
         return firstStation.map(station -> orderStations(stationToStation, station))
@@ -165,6 +170,10 @@ public class Line {
             throw new LineNotEmptyException();
         }
         sections.add(new Section(left, right, distance));
+    }
+
+    public boolean isSameName(final String lineName) {
+        return name.equals(lineName);
     }
 
     @Override
