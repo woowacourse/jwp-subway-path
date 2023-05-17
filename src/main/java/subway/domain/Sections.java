@@ -62,20 +62,20 @@ public class Sections {
         if (isTargetDistanceUnRegistrable(existence, distance)) {
             throw new SectionException("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
         }
-        final Optional<Section> foundSection = findSourceSection(existence);
-        if (foundSection.isPresent()) {
-            changeDistance(additional, foundSection.get().getTarget(), foundSection.get(), distance);
+        final Optional<Section> section = getSourceSection(existence);
+        if (section.isPresent()) {
+            changeDistance(additional, section.get().getTarget(), section.get(), distance);
         }
         sections.add(new Section(existence, additional, distance));
     }
 
     private boolean isTargetDistanceUnRegistrable(final Station existence, final int distance) {
-        final Optional<Section> foundSourceSection = findSourceSection(existence);
-        return foundSourceSection.map(section -> section.isLongOrEqualThan(distance))
+        final Optional<Section> sourceSection = getSourceSection(existence);
+        return sourceSection.map(section -> section.isLongOrEqualThan(distance))
                 .orElse(false);
     }
 
-    private Optional<Section> findSourceSection(final Station existence) {
+    private Optional<Section> getSourceSection(final Station existence) {
         return sections.stream()
                 .filter(section -> section.isSource(existence))
                 .findAny();
@@ -90,20 +90,20 @@ public class Sections {
         if (isSourceDistanceUnRegistrable(existence, distance)) {
             throw new SectionException("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
         }
-        final Optional<Section> foundSection = findTargetSection(existence);
-        if (foundSection.isPresent()) {
-            changeDistance(foundSection.get().getSource(), additional, foundSection.get(), distance);
+        final Optional<Section> section = getTargetSection(existence);
+        if (section.isPresent()) {
+            changeDistance(section.get().getSource(), additional, section.get(), distance);
         }
         sections.add(new Section(additional, existence, distance));
     }
 
     private boolean isSourceDistanceUnRegistrable(final Station existence, final int distance) {
-        final Optional<Section> foundSection = findTargetSection(existence);
-        return foundSection.map(section -> section.isLongOrEqualThan(distance))
+        final Optional<Section> targetSection = getTargetSection(existence);
+        return targetSection.map(section -> section.isLongOrEqualThan(distance))
                 .orElse(false);
     }
 
-    private Optional<Section> findTargetSection(final Station existence) {
+    private Optional<Section> getTargetSection(final Station existence) {
         return sections.stream()
                 .filter(section -> section.isTarget(existence))
                 .findAny();
@@ -121,20 +121,20 @@ public class Sections {
     }
 
     private void handleSections(final Station station) {
-        final Optional<Section> foundTargetSection = findTargetSection(station);
-        final Optional<Section> foundSourceSection = findSourceSection(station);
-        if (foundSourceSection.isPresent() && foundTargetSection.isPresent()) {
-            mergeSections(foundTargetSection, foundSourceSection);
+        final Optional<Section> sourceSection = getSourceSection(station);
+        final Optional<Section> targetSection = getTargetSection(station);
+        if (sourceSection.isPresent() && targetSection.isPresent()) {
+            mergeSections(targetSection, sourceSection);
             return;
         }
-        deleteLastStation(foundTargetSection, foundSourceSection);
+        deleteLastStation(targetSection, sourceSection);
     }
 
-    private void mergeSections(final Optional<Section> foundTargetSection, final Optional<Section> foundSourceSection) {
-        final int newDistance = foundTargetSection.get().getDistance() + foundSourceSection.get().getDistance();
-        sections.add(new Section(foundTargetSection.get().getSource(), foundSourceSection.get().getTarget(), newDistance));
-        sections.remove(foundTargetSection.get());
-        sections.remove(foundSourceSection.get());
+    private void mergeSections(final Optional<Section> targetSection, final Optional<Section> sourceSection) {
+        final int newDistance = targetSection.get().getDistance() + sourceSection.get().getDistance();
+        sections.add(new Section(targetSection.get().getSource(), sourceSection.get().getTarget(), newDistance));
+        sections.remove(targetSection.get());
+        sections.remove(sourceSection.get());
     }
 
     private void deleteLastStation(final Optional<Section> upSection, final Optional<Section> downSection) {
