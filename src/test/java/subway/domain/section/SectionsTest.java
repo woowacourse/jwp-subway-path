@@ -208,7 +208,9 @@ class SectionsTest {
         // expect
         final Sections removedSections = ABC.sections.removeStation(B.stationB);
 
-        assertAll(() -> assertThat(removedSections.getSections().get(0).getDownStation()).isEqualTo(C.stationC),
+        assertAll(
+                () -> assertThat(removedSections.getSections()).hasSize(1),
+                () -> assertThat(removedSections.getSections().get(0).getDownStation()).isEqualTo(C.stationC),
                 () -> assertThat(removedSections.getSections().get(0).getUpStation()).isEqualTo(A.stationA));
     }
 
