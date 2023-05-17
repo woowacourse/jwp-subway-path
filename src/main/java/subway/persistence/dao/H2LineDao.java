@@ -1,15 +1,18 @@
 package subway.persistence.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
+import subway.persistence.NullChecker;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class H2LineDao implements LineDao {
@@ -30,6 +33,7 @@ public class H2LineDao implements LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    @Override
     public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());
@@ -40,22 +44,34 @@ public class H2LineDao implements LineDao {
         return Line.of(lineId, line.getName(), line.getColor());
     }
 
+    @Override
     public List<Line> findAll() {
         String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
+    @Override
+    public Optional<Line> findById(Long id) {
+        NullChecker.isNull(id);
         String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
+    @Override
     public void update(Line newLine) {
+        NullChecker.isNull(newLine);
         String sql = "update LINE set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
+    @Override
     public void deleteById(Long id) {
+        NullChecker.isNull(id);
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }

@@ -3,9 +3,12 @@ package subway.persistence.repository;
 import org.springframework.stereotype.Repository;
 import subway.Entity.EntityMapper;
 import subway.Entity.SectionEntity;
+import subway.controller.exception.OptionalHasNoLineException;
+import subway.controller.exception.OptionalHasNoStationException;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.section.SectionRepository;
+import subway.persistence.NullChecker;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
@@ -28,12 +31,15 @@ public class H2SectionRepository implements SectionRepository {
 
     @Override
     public void updateAllSectionsInLine(Line line, List<Section> lineSections) {
+        NullChecker.isNull(line);
+        NullChecker.isNull(lineSections);
         sectionDao.deleteAllByLineId(line.getId());
         sectionDao.insertAll(EntityMapper.convertToSectionEntities(lineSections));
     }
 
     @Override
     public List<Section> readSectionsByLine(Line line) {
+        NullChecker.isNull(line);
         return mapToSections(sectionDao.selectSectionsByLineId(line.getId()));
     }
 
@@ -41,9 +47,9 @@ public class H2SectionRepository implements SectionRepository {
         return sectionEntities.stream()
                 .map(entity -> Section.of(
                         entity.getId(),
-                        lineDao.findById(entity.getLineId()),
-                        stationDao.findById(entity.getUpwardId()),
-                        stationDao.findById(entity.getDownwardId()),
+                        lineDao.findById(entity.getLineId()).orElseThrow(OptionalHasNoLineException::new),
+                        stationDao.findById(entity.getUpwardId()).orElseThrow(OptionalHasNoStationException::new),
+                        stationDao.findById(entity.getDownwardId()).orElseThrow(OptionalHasNoStationException::new),
                         entity.getDistance())
                 ).collect(Collectors.toList());
     }

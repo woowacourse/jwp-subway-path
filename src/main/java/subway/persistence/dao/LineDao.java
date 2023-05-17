@@ -3,6 +3,7 @@ package subway.persistence.dao;
 import subway.domain.line.Line;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LineDao {
 
@@ -10,7 +11,7 @@ public interface LineDao {
 
     List<Line> findAll();
 
-    Line findById(Long id);
+    Optional<Line> findById(Long id);
 
     void update(Line newLine);
 

@@ -2,10 +2,10 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.controller.exception.OptionalHasNoStationException;
 import subway.domain.station.Station;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
-import subway.persistence.dao.H2StationDao;
 import subway.persistence.dao.StationDao;
 
 import java.util.List;
@@ -26,7 +26,9 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        Station station = stationDao.findById(id)
+                .orElseThrow(OptionalHasNoStationException::new);
+        return StationResponse.of(station);
     }
 
     public List<StationResponse> findAllStationResponses() {

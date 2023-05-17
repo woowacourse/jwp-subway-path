@@ -2,10 +2,10 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.controller.exception.OptionalHasNoLineException;
 import subway.domain.line.Line;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
-import subway.persistence.dao.H2LineDao;
 import subway.persistence.dao.LineDao;
 
 import java.util.List;
@@ -42,7 +42,8 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+                .orElseThrow(OptionalHasNoLineException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

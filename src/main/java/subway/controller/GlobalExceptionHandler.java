@@ -5,6 +5,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import subway.controller.exception.OptionalHasNoLineException;
+import subway.controller.exception.OptionalHasNoStationException;
 import subway.dto.response.ErrorResponse;
 
 import java.sql.SQLException;
@@ -35,5 +37,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler({OptionalHasNoLineException.class, OptionalHasNoStationException.class})
+    public ResponseEntity<ErrorResponse> handleNoSuchElementException(Exception exception) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 }

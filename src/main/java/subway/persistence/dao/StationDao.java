@@ -3,6 +3,7 @@ package subway.persistence.dao;
 import subway.domain.station.Station;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StationDao {
 
@@ -10,11 +11,9 @@ public interface StationDao {
 
     List<Station> findAll();
 
-    Station findById(Long id);
+    Optional<Station> findById(Long id);
 
     void update(Station newStation);
 
     void deleteById(Long id);
-
-    Station findByName(String name);
 }

@@ -3,6 +3,7 @@ package subway.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -192,5 +193,19 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("존재하지 않는 지하철 역을 조회하는 경우 예외가 발생한다.")
+    @Test
+    void validateOptionalHasNoLineException() {
+        ExtractableResponse<Response> response = RestAssured
+                .given()
+                .when().get("/stations/0")
+                .then().extract();
+
+        JsonPath responseBody = response.body().jsonPath();
+
+        assertThat(responseBody.getString("message"))
+                .isEqualTo("[ERROR] 해당하는 역이 존재하지 않습니다.");
     }
 }
