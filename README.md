@@ -173,7 +173,7 @@ Response Body {
         }
     ],
     distance : 3,
-    fare : 1250
+    cost : 1250
 }
 
 ```
