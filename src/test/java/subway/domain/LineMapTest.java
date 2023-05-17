@@ -20,9 +20,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class LineRouteTest {
+class LineMapTest {
 
-    private static final LineRoute FIXTURE_LINE_ROUTE = LineRoute.of(List.of(
+    private static final LineMap FIXTURE_LINE_ROUTE = LineMap.of(List.of(
             SECTION_START,
             SECTION_MIDDLE_1,
             SECTION_MIDDLE_2,
@@ -33,12 +33,12 @@ class LineRouteTest {
     @DisplayName("노선에 역이 존재하지 않으면 두 역을 모두 새로 등록할 수 있다")
     @Test
     void addStationsToEmpty() {
-        LineRoute lineRoute = LineRoute.of(Collections.emptyList());
+        LineMap lineMap = LineMap.of(Collections.emptyList());
 
         Station adding = new Station(7L, "추가역");
-        lineRoute.add(FIXTURE_STATION_1, adding, new Distance(6), DOWN);
+        lineMap.add(FIXTURE_STATION_1, adding, new Distance(6), DOWN);
 
-        assertThat(lineRoute.extractSections())
+        assertThat(lineMap.extractSections())
                 .containsExactly(
                         new Section(FIXTURE_STATION_1, adding, new Distance(6))
                 );
@@ -47,7 +47,7 @@ class LineRouteTest {
     @DisplayName("기존 역 간 거리를 조정하여 새 역을 등록할 수 있다")
     @Test
     void addStationByDownDirection() {
-        LineRoute lineRoute = LineRoute.of(List.of(
+        LineMap lineMap = LineMap.of(List.of(
                 SECTION_START,
                 SECTION_MIDDLE_1,
                 SECTION_MIDDLE_2,
@@ -56,9 +56,9 @@ class LineRouteTest {
         ));
 
         Station adding = new Station(7L, "추가역");
-        lineRoute.add(FIXTURE_STATION_1, new Station(7L, "추가역"), new Distance(6), DOWN);
+        lineMap.add(FIXTURE_STATION_1, new Station(7L, "추가역"), new Distance(6), DOWN);
 
-        assertThat(lineRoute.extractSections())
+        assertThat(lineMap.extractSections())
                 .containsOnly(
                         new Section(FIXTURE_STATION_1, adding, new Distance(6)),
                         new Section(adding, FIXTURE_STATION_2, new Distance(4)),
@@ -72,7 +72,7 @@ class LineRouteTest {
     @DisplayName("새 역을 기존 하행 종점 앞에 등록할 수 있다")
     @Test
     void addStationAtHead() {
-        LineRoute lineRoute = LineRoute.of(List.of(
+        LineMap lineMap = LineMap.of(List.of(
                 SECTION_START,
                 SECTION_MIDDLE_1,
                 SECTION_MIDDLE_2,
@@ -81,9 +81,9 @@ class LineRouteTest {
         ));
 
         Station adding = new Station(7L, "추가역");
-        lineRoute.add(FIXTURE_STATION_1, new Station(7L, "추가역"), new Distance(6), UP);
+        lineMap.add(FIXTURE_STATION_1, new Station(7L, "추가역"), new Distance(6), UP);
 
-        assertThat(lineRoute.extractSections())
+        assertThat(lineMap.extractSections())
                 .containsOnly(
                         new Section(adding, FIXTURE_STATION_1, new Distance(6)),
                         SECTION_START,
@@ -97,7 +97,7 @@ class LineRouteTest {
     @DisplayName("새 역을 기존 상행 종점 다음에 등록할 수 있다")
     @Test
     void addStationAtTail() {
-        LineRoute lineRoute = LineRoute.of(List.of(
+        LineMap lineMap = LineMap.of(List.of(
                 SECTION_START,
                 SECTION_MIDDLE_1,
                 SECTION_MIDDLE_2,
@@ -106,9 +106,9 @@ class LineRouteTest {
         ));
 
         Station adding = new Station(7L, "추가역");
-        lineRoute.add(FIXTURE_STATION_6, new Station(7L, "추가역"), new Distance(6), DOWN);
+        lineMap.add(FIXTURE_STATION_6, new Station(7L, "추가역"), new Distance(6), DOWN);
 
-        assertThat(lineRoute.extractSections())
+        assertThat(lineMap.extractSections())
                 .containsOnly(
                         SECTION_START,
                         SECTION_MIDDLE_1,
@@ -122,7 +122,7 @@ class LineRouteTest {
     @DisplayName("기존 역 간 거리를 조정하여 역을 삭제할 수 있다")
     @Test
     void deleteStation() {
-        LineRoute lineRoute = LineRoute.of(List.of(
+        LineMap lineMap = LineMap.of(List.of(
                 SECTION_START,
                 SECTION_MIDDLE_1,
                 SECTION_MIDDLE_2,
@@ -130,9 +130,9 @@ class LineRouteTest {
                 SECTION_END
         ));
 
-        lineRoute.delete(FIXTURE_STATION_2);
+        lineMap.delete(FIXTURE_STATION_2);
 
-        assertThat(lineRoute.extractSections())
+        assertThat(lineMap.extractSections())
                 .containsOnly(
                         new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20)),
                         SECTION_MIDDLE_2,
@@ -144,7 +144,7 @@ class LineRouteTest {
     @DisplayName("하행 종점의 역을 삭제할 수 있다")
     @Test
     void deleteTailStation() {
-        LineRoute lineRoute = LineRoute.of(List.of(
+        LineMap lineMap = LineMap.of(List.of(
                 SECTION_START,
                 SECTION_MIDDLE_1,
                 SECTION_MIDDLE_2,
@@ -152,9 +152,9 @@ class LineRouteTest {
                 SECTION_END
         ));
 
-        lineRoute.delete(FIXTURE_STATION_1);
+        lineMap.delete(FIXTURE_STATION_1);
 
-        assertThat(lineRoute.extractSections())
+        assertThat(lineMap.extractSections())
                 .containsOnly(
                         SECTION_MIDDLE_1,
                         SECTION_MIDDLE_2,
@@ -166,7 +166,7 @@ class LineRouteTest {
     @DisplayName("상행 종점의 역을 삭제할 수 있다")
     @Test
     void deleteHeadStation() {
-        LineRoute lineRoute = LineRoute.of(List.of(
+        LineMap lineMap = LineMap.of(List.of(
                 SECTION_START,
                 SECTION_MIDDLE_1,
                 SECTION_MIDDLE_2,
@@ -174,9 +174,9 @@ class LineRouteTest {
                 SECTION_END
         ));
 
-        lineRoute.delete(FIXTURE_STATION_6);
+        lineMap.delete(FIXTURE_STATION_6);
 
-        assertThat(lineRoute.extractSections())
+        assertThat(lineMap.extractSections())
                 .containsOnly(
                         SECTION_START,
                         SECTION_MIDDLE_1,
@@ -188,13 +188,13 @@ class LineRouteTest {
     @DisplayName("노선의 역이 두 개이면, 역을 삭제할 때 모두 삭제한다")
     @Test
     void deleteAllWhenTwoStationsLeft() {
-        LineRoute lineRoute = LineRoute.of(List.of(
+        LineMap lineMap = LineMap.of(List.of(
                 SECTION_START
         ));
 
-        lineRoute.delete(FIXTURE_STATION_1);
+        lineMap.delete(FIXTURE_STATION_1);
 
-        assertThat(lineRoute.extractSections())
+        assertThat(lineMap.extractSections())
                 .isEmpty();
     }
 

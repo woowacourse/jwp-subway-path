@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.Line;
-import subway.domain.LineRoute;
+import subway.domain.LineMap;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineRequest;
@@ -47,8 +47,8 @@ public class LineService {
     }
 
     private List<StationResponse> extractStationResponses(final List<Section> sections) {
-        LineRoute lineRoute = LineRoute.of(sections);
-        List<Station> orderedStations = lineRoute.getOrderedStations();
+        LineMap lineMap = LineMap.of(sections);
+        List<Station> orderedStations = lineMap.getOrderedStations();
         List<StationResponse> stationResponses = orderedStations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());

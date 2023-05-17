@@ -16,16 +16,16 @@ import subway.domain.exception.EmptySectionOperationException;
 import subway.domain.exception.IllegalDistanceArgumentException;
 import subway.domain.exception.IllegalLineRouteArgumentException;
 
-public class LineRoute {
+public class LineMap {
 
     private final RoutedStations routedStations;
 
-    private LineRoute(final RoutedStations routedStations) {
+    private LineMap(final RoutedStations routedStations) {
         this.routedStations = routedStations;
     }
 
-    public static LineRoute of(final List<Section> sections) {
-        return new LineRoute(RoutedStationsFactory.create(sections));
+    public static LineMap of(final List<Section> sections) {
+        return new LineMap(RoutedStationsFactory.create(sections));
     }
 
     public void add(final Station base,

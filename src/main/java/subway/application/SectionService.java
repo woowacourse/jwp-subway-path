@@ -7,7 +7,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Direction;
 import subway.domain.Distance;
-import subway.domain.LineRoute;
+import subway.domain.LineMap;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.exception.RequestDataNotFoundException;
@@ -38,11 +38,11 @@ public class SectionService {
         Distance addingDistance = new Distance(sectionRequest.getSectionStations().getDistance());
         Direction direction = sectionRequest.getDirection();
 
-        LineRoute lineRoute = LineRoute.of(sections);
-        lineRoute.add(baseStation, nextStation, addingDistance, direction);
+        LineMap lineMap = LineMap.of(sections);
+        lineMap.add(baseStation, nextStation, addingDistance, direction);
 
         sectionDao.deleteByLineId(lineId);
-        sectionDao.insertAllByLineId(lineId, lineRoute.extractSections());
+        sectionDao.insertAllByLineId(lineId, lineMap.extractSections());
     }
 
     @Transactional
@@ -52,10 +52,10 @@ public class SectionService {
         Station station = stationDao.findById(stationId)
                 .orElseThrow(() -> new RequestDataNotFoundException(EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
 
-        LineRoute lineRoute = LineRoute.of(sections);
-        lineRoute.delete(station);
+        LineMap lineMap = LineMap.of(sections);
+        lineMap.delete(station);
 
         sectionDao.deleteByLineId(lineId);
-        sectionDao.insertAllByLineId(lineId, lineRoute.extractSections());
+        sectionDao.insertAllByLineId(lineId, lineMap.extractSections());
     }
 }
