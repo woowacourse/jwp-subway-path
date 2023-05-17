@@ -23,10 +23,6 @@ public final class Distance {
         return value >= targetValue;
     }
 
-    public Distance subtract(final int targetValue) {
-        return new Distance(value - targetValue);
-    }
-
     public int getValue() {
         return value;
     }
