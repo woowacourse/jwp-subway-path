@@ -38,4 +38,27 @@ class StationDaoTest {
         assertThat(stationDao.findAll()).hasSize(2);
     }
 
+    @Test
+    void 역이_존재하면_true를_반환한다() {
+        // given
+        stationDao.insert(new StationEntity("강남역"));
+
+        // when
+        final boolean exists = stationDao.existsByName("강남역");
+
+        // then
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    void 역이_존재하지_않으면_false를_반환한다() {
+        // given
+        stationDao.insert(new StationEntity("강남역"));
+
+        // when
+        final boolean exists = stationDao.existsByName("역삼역");
+
+        // then
+        assertThat(exists).isFalse();
+    }
 }
