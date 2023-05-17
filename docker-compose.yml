@@ -1,0 +1,29 @@
+services:
+    db:
+        container_name: subway-db
+        image: mysql
+        environment:
+            MYSQL_DATABASE: db
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - '13306:3306'
+
+    subway:
+        container_name: subway-app
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        command:
+            -  ./gradlew test --debug --info --stacktrace
+
+        restart: always
+        links:
+            - db
+        depends_on:
+            - db
+        ports:
+            - "8080:8080"
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:mysql://db/db?useUnicode=true&characterEncoding=utf8
+            SPRING_DATASOURCE_USERNAME: root
+            SPRING_DATASOURCE_PASSWORD: root
