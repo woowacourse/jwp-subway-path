@@ -5,11 +5,11 @@ import subway.entity.LineEntity;
 public class LineResponse {
     private Long id;
 
-    public LineResponse(Long id) {
-        this.id = id;
+    private LineResponse() {
     }
 
-    public LineResponse() {
+    public LineResponse(Long id) {
+        this.id = id;
     }
 
     public static LineResponse of(LineEntity line) {

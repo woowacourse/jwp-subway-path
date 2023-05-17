@@ -10,9 +10,6 @@ public class LineSelectResponse {
     private String lineName;
     private List<StationSelectResponse> stations;
 
-    private LineSelectResponse() {
-    }
-
     private LineSelectResponse(Long lineId, String lineName, List<StationSelectResponse> stations) {
         this.lineId = lineId;
         this.lineName = lineName;

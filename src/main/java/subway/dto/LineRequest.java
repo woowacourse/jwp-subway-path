@@ -23,9 +23,6 @@ public class LineRequest {
         this.distance = distance;
     }
 
-    public LineRequest() {
-    }
-
     public String getLineName() {
         return lineName;
     }

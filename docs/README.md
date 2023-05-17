@@ -3,7 +3,7 @@
 ## 리뷰 내용
 - [ ] 기존에 Line 객체가 가지고 있던 color 필드는 없어져도 되는가? 
 - [x] `Line.addSection()` 메서드 분리
-- [ ] `LineRequest`의 불필요한 기본 생성자 제거
+- [x] `LineRequest`의 불필요한 기본 생성자 제거
 - [ ] Response 객체에서의 `to`, `from` 사용 기준이 있는가?
 - [ ] 일관성 있게 커스텀 예외 사용하도록 수정
 - [ ] ControllerAdvice의 크기가 너무 커지지 않도록 부모 예외 설정

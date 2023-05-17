@@ -3,7 +3,7 @@ package subway.dto;
 public class ErrorResponse {
     private String message;
 
-    public ErrorResponse() {
+    private ErrorResponse() {
     }
 
     public ErrorResponse(String message) {
