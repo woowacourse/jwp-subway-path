@@ -1,0 +1,28 @@
+package subway.application;
+
+import java.util.List;
+import org.springframework.stereotype.Component;
+import subway.domain.line.Line;
+import subway.domain.path.Path;
+import subway.domain.path.PathSections;
+import subway.domain.path.ShortestPathCalculator;
+import subway.domain.station.Station;
+
+@Component
+public class JGraphtShortestPathCalculator implements ShortestPathCalculator {
+
+    @Override
+    public List<PathSections> findPath(final List<Line> lines, final Station sourceStation, final Station targetStation) {
+        validateDuplicateStation(sourceStation, targetStation);
+
+        final Path path = Path.from(lines);
+
+        return path.findShortestPathSections(sourceStation, targetStation);
+    }
+
+    private void validateDuplicateStation(final Station sourceStation, final Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발지와 목적지가 동일할 수 없습니다.");
+        }
+    }
+}
