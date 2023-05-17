@@ -5,12 +5,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Stations;
-import subway.domain.Station;
-import subway.domain.Line;
-import subway.domain.LineName;
-import subway.domain.Section;
-import subway.domain.Lines;
+import subway.domain.*;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
@@ -65,7 +60,7 @@ public class SubwayRepository {
         return stationDao.findIdByName(name);
     }
 
-    public Long updateLine(Line line) {
+    public long updateLine(Line line) {
         long lineId = lineDao.findIdByName(line.getName().getName())
                 .orElseThrow(() -> new NoSuchElementException("디버깅: 노선 이름에 해당하는 노선이 없습니다."));
         sectionDao.deleteAll(lineId);
@@ -94,7 +89,7 @@ public class SubwayRepository {
                 .build();
     }
 
-    public Optional<Line> getLineById(Long id) {
+    public Optional<Line> getLineById(long id) {
         List<SectionEntity> sections = sectionDao.findSectionsByLineId(id);
         Optional<LineEntity> lineEntity = lineDao.findById(id);
         return lineEntity.map(entity -> toLine(entity.getName(), sections));

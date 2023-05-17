@@ -44,27 +44,27 @@ public class SectionEntity {
         private Long lineId;
         private Integer distance;
 
-        public Builder id(Long id) {
+        public Builder id(long id) {
             this.id = id;
             return this;
         }
 
-        public Builder upstreamId(Long upstreamId) {
+        public Builder upstreamId(long upstreamId) {
             this.upstreamId = upstreamId;
             return this;
         }
 
-        public Builder downstreamId(Long downstreamId) {
+        public Builder downstreamId(long downstreamId) {
             this.downstreamId = downstreamId;
             return this;
         }
 
-        public Builder lineId(Long lineId) {
+        public Builder lineId(long lineId) {
             this.lineId = lineId;
             return this;
         }
 
-        public Builder distance(Integer distance) {
+        public Builder distance(int distance) {
             this.distance = distance;
             return this;
         }

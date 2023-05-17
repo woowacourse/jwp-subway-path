@@ -33,7 +33,7 @@ public class StationDao {
 
     public StationEntity insert(StationEntity stationEntity) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
+        long id = insertAction.executeAndReturnKey(params).longValue();
         return new StationEntity.Builder()
                 .id(id)
                 .name(stationEntity.getName())
@@ -45,7 +45,7 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findById(Long id) {
+    public StationEntity findById(long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }

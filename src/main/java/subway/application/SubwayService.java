@@ -3,12 +3,7 @@ package subway.application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Section;
-import subway.domain.Line;
-import subway.domain.Station;
-import subway.domain.LineName;
-import subway.domain.Stations;
-import subway.domain.Lines;
+import subway.domain.*;
 import subway.dto.AddLineRequest;
 import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
@@ -72,7 +67,7 @@ public class SubwayService {
     }
 
     @Transactional
-    public Long addNewLine(AddLineRequest addLineRequest) {
+    public long addNewLine(AddLineRequest addLineRequest) {
         LineName lineNameToAdd = new LineName(addLineRequest.getName());
         Station upstream = getStation(addLineRequest.getUpstreamName()).orElseGet(() -> createNewStation(addLineRequest.getUpstreamName()));
         Station downstream = getStation(addLineRequest.getDownstreamName()).orElseGet(() -> createNewStation(addLineRequest.getDownstreamName()));
@@ -83,7 +78,7 @@ public class SubwayService {
         return subwayRepository.addNewLine(newLine);
     }
 
-    public LineResponse findLineById(Long id) {
+    public LineResponse findLineById(long id) {
         Line line = subwayRepository.getLineById(id)
                 .orElseThrow(() -> new LineNotFoundException("조회하고자 하는 노선이 없습니다"));
         return toLineResponse(line);

@@ -31,13 +31,13 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(LineEntity lineEntity) {
+    public long insert(LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getName());
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public Optional<LineEntity> findById(Long id) {
+    public Optional<LineEntity> findById(long id) {
         String sql = "select id, name from LINE WHERE id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
