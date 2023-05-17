@@ -19,7 +19,7 @@ class DistanceFarePolicyTest {
     void 입력받은_거리가_10키로_이하인_경우_추가운임이_발생하지_않는다() {
         // given
         final PathFindResult pathFindResult = new PathFindResult(new Distance(9), Collections.emptyList());
-        final Passenger passenger = new Passenger();
+        final Passenger passenger = new Passenger(20);
 
         // when
         final int result = farePolicy.calculate(pathFindResult, passenger, 1250);
@@ -32,7 +32,7 @@ class DistanceFarePolicyTest {
     void 입력받은_거리가_10키로를_초과하고_50키로_이하인_경우_추가운임이_5KM당_100원이_발생한다() {
         // given
         final PathFindResult pathFindResult = new PathFindResult(new Distance(27), Collections.emptyList());
-        final Passenger passenger = new Passenger();
+        final Passenger passenger = new Passenger(20);
 
         // when
         final int result = farePolicy.calculate(pathFindResult, passenger, 1250);
@@ -45,7 +45,7 @@ class DistanceFarePolicyTest {
     void 입력받은_거리가_50키로를_초과하는_경우_추가운임이_8KM당_100원이_발생한다() {
         // given
         final PathFindResult pathFindResult = new PathFindResult(new Distance(61), Collections.emptyList());
-        final Passenger passenger = new Passenger();
+        final Passenger passenger = new Passenger(20);
 
         // when
         final int result = farePolicy.calculate(pathFindResult, passenger, 1250);

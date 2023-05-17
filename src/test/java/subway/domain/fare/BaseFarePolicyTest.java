@@ -22,7 +22,7 @@ class BaseFarePolicyTest {
     void 기본운임은_입력받은_운임에_1250원을_더한값을_반환한다() {
         // given
         final PathFindResult pathFindResult = new PathFindResult(new Distance(9), Collections.emptyList());
-        final Passenger passenger = new Passenger();
+        final Passenger passenger = new Passenger(20);
 
         // when
         final int result = baseFarePolicy.calculate(pathFindResult, passenger, 0);
@@ -40,7 +40,7 @@ class BaseFarePolicyTest {
                 new SectionEdge(new Section("C", "T", 10), 300, 2),
                 new SectionEdge(new Section("T", "D", 10), 100, 1)
         ));
-        final Passenger passenger = new Passenger();
+        final Passenger passenger = new Passenger(20);
 
         // when
         final int result = baseFarePolicy.calculate(pathFindResult, passenger, 0);
