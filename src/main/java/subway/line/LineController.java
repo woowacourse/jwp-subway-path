@@ -34,7 +34,7 @@ public class LineController {
     }
 
     @GetMapping("/{lineId}")
-    public ResponseEntity<List<StationResponseDto>> getStation(@PathVariable(name = "lineId") final Long lineId) {
+    public ResponseEntity<List<StationResponseDto>> getStation(@PathVariable final Long lineId) {
         return ResponseEntity.ok(sectionService.findSortedStations(lineId));
     }
 
@@ -51,8 +51,7 @@ public class LineController {
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> delete(@PathVariable(name = "lineId") final Long lineId,
-        @PathVariable(name = "stationId") final Long stationId) {
+    public ResponseEntity<Void> delete(@PathVariable final Long lineId, final Long stationId) {
         sectionService.removeStationBy(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
