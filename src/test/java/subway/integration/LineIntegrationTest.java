@@ -7,6 +7,7 @@ import static subway.TestFixture.JAMSILSAENAE_ID;
 import static subway.TestFixture.JAMSIL_ID;
 import static subway.TestFixture.JEONGJA_ID;
 import static subway.TestFixture.PANKYO_ID;
+import static subway.TestFixture.종합운동장역_ID;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,9 +24,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.SectionRequest;
 import subway.dto.StationDeleteRequest;
-import subway.dto.StationRegisterRequest;
-import subway.dto.StationsRegisterRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 class LineIntegrationTest extends IntegrationTest {
@@ -107,15 +107,15 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JEONGJA_ID, PANKYO_ID, 10))
-                .when().post("/lines/{lineId}/stations", lineId1)
+                .body(new SectionRequest(JEONGJA_ID, PANKYO_ID, 10))
+                .when().post("/lines/{lineId}/sections", lineId1)
                 .then().log().all().
                 extract();
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
-                .when().post("/lines/{lineId}/stations", lineId2)
+                .body(new SectionRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
+                .when().post("/lines/{lineId}/sections", lineId2)
                 .then().log().all().
                 extract();
 
@@ -172,8 +172,8 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSILSAENAE_ID, 10))
-                .when().post("/lines/{lineId}/stations", lineId)
+                .body(new SectionRequest(JAMSILNARU_ID, JAMSILSAENAE_ID, 10))
+                .when().post("/lines/{lineId}/sections", lineId)
                 .then().log().all().
                 extract();
 
@@ -247,15 +247,15 @@ class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("빈 노선에 두 역을 등록한다")
+    @DisplayName("빈 노선에 구간을 등록한다")
     @Test
-    void registerStationsSuccess() {
+    void addSectionToEmptyLine() {
         //when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/stations")
+                .body(new SectionRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -263,15 +263,15 @@ class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("역이 등록된 노선에 두 역을 등록하면 예외가 발생한다")
+    @DisplayName("구간이 있는 노선에 비연결 구간을 추가하면 예외가 발생한다")
     @Test
-    void registerStationsFail() {
+    void addingUnlinkedSection_toLineThatHasSection_() {
         //given
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/stations")
+                .body(new SectionRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -279,8 +279,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSIL_ID, JAMSILSAENAE_ID, 10))
-                .when().post("/lines/2/stations")
+                .body(new SectionRequest(JAMSILSAENAE_ID, 종합운동장역_ID, 10))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -288,15 +288,15 @@ class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("노선에서 기준 역의 상행에 하나의 역을 등록한다")
+    @DisplayName("구간이 있는 노선에 기점과 이어지는 구간을 추가한다")
     @Test
-    void registerUpperStation() {
+    void addUpperLinkedSection() {
         //given
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/stations")
+                .body(new SectionRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -304,8 +304,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("UPPER", JAMSILSAENAE_ID, JAMSILNARU_ID, 5))
-                .when().post("/lines/2/station")
+                .body(new SectionRequest(JAMSILSAENAE_ID, JAMSILNARU_ID, 5))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -313,15 +313,15 @@ class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("노선에서 기준 역의 하행에 하나의 역을 등록한다")
+    @DisplayName("구간이 있는 노선에 종점과 이어지는 구간을 등록한다")
     @Test
-    void registerLowerStation() {
+    void addLowerLinkedSection() {
         //given
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/stations")
+                .body(new SectionRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -329,8 +329,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("LOWER", JAMSILSAENAE_ID, JAMSILNARU_ID, 5))
-                .when().post("/lines/2/station")
+                .body(new SectionRequest(JAMSIL_ID, JAMSILSAENAE_ID, 5))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -338,15 +338,15 @@ class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("노선에 잘못된 거리 정보를 가지는 하나의 역을 등록하면 예외가 발생한다.")
+    @DisplayName("노선에 잘못된 거리 정보를 가지는 구간을 추가할 수 없다")
     @Test
-    void registerStationFailWhenWrongDistance() {
+    void addSectionWithWrongDistance_fails() {
         //given
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/stations")
+                .body(new SectionRequest(JAMSILNARU_ID, JAMSILSAENAE_ID, 15))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -354,8 +354,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("LOWER", JAMSILSAENAE_ID, JAMSILNARU_ID, 15))
-                .when().post("/lines/2/station")
+                .body(new SectionRequest(JAMSILNARU_ID, JAMSIL_ID, 15))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -363,15 +363,15 @@ class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("노선에 이미 등록된 역을 등록하면 예외가 발생한다.")
+    @DisplayName("노선에 이미 있는 구간을 등록하면 예외가 발생한다.")
     @Test
-    void registerStationFailWhenStationExist() {
+    void addDuplicateSection_fails() {
         //given
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/stations")
+                .body(new SectionRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -379,24 +379,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("UPPER", JAMSIL_ID, JAMSILNARU_ID, 5))
-                .when().post("/lines/2/station")
-                .then().log().all().
-                extract();
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("빈 노선에 하나의 역을 등록하면 예외가 발생한다")
-    @Test
-    void registerStationFailWhenRegisterStationToEmptyLine() {
-        //when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("UPPER", JAMSIL_ID, JAMSILNARU_ID, 10))
-                .when().post("/lines/2/station")
+                .body(new SectionRequest(JAMSIL_ID, JAMSILNARU_ID, 5))
+                .when().post("/lines/2/sections")
                 .then().log().all().
                 extract();
 
@@ -420,14 +404,14 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
-                .when().post("/lines/{lineId}/station", lineId)
-                .then().log().all().
-                extract();
+                .body(new SectionRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
+                .when().post("/lines/{lineId}/sections", lineId)
+                .then().statusCode(HttpStatus.OK.value());
 
         // when
         RestAssured
                 .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationDeleteRequest(JAMSIL_ID))
                 .when().delete("/lines/{lineId}/station", lineId)
                 .then().log().all()

@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import subway.domain.exception.DuplicateSectionException;
+import subway.domain.exception.NoSuchStationException;
 
 public class Line {
 
@@ -46,6 +47,7 @@ public class Line {
     }
 
     public void remove(Station station) {
+        validateContains(station);
         List<Section> nearBys = findNearBysOf(station);
         if (canMerge(nearBys)) {
             Section one = firstOf(nearBys);
@@ -54,6 +56,12 @@ public class Line {
             sections.add(target, one.mergeWith(other));
         }
         sections.removeAll(nearBys);
+    }
+
+    private void validateContains(Station station) {
+        if (findNearBysOf(station).isEmpty()) {
+            throw new NoSuchStationException();
+        }
     }
 
     private boolean hasOverlapWith(Section child) {

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import subway.domain.exception.DuplicateSectionException;
+import subway.domain.exception.NoSuchStationException;
 
 @SuppressWarnings("NonAsciiCharacters")
 class LineTest {
@@ -135,5 +136,15 @@ class LineTest {
 
         assertThat(line.getStations())
                 .containsExactly(잠실나루역, 잠실새내역, 종합운동장역);
+    }
+
+    @DisplayName("없는 역은 제거할 수 없다")
+    @Test
+    void deleteNotContainedStation_throws() {
+        var section = new Section(잠실새내역, 종합운동장역, 5);
+        line.add(section);
+
+        assertThatThrownBy(() -> line.remove(잠실역))
+                .isInstanceOf(NoSuchStationException.class);
     }
 }

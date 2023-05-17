@@ -15,8 +15,6 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationDeleteRequest;
-import subway.dto.StationRegisterRequest;
-import subway.dto.StationsRegisterRequest;
 
 @Service
 public class LineService {
@@ -73,27 +71,6 @@ public class LineService {
     public void deleteLineById(Long id) {
         Line line = lineRepository.findBy(id);
         lineRepository.delete(line);
-    }
-
-    public void registerStations(Long id, StationsRegisterRequest request) {
-        Line line = lineRepository.findBy(id);
-        Station upper = stationDao.findById(request.getTopId());
-        Station lower = stationDao.findById(request.getBottomId());
-
-        Section section = new Section(upper, lower, request.getDistance());
-        line.add(section);
-
-        lineRepository.save(line);
-    }
-
-    public void registerStation(Long id, StationRegisterRequest request) {
-        Line line = lineRepository.findBy(id);
-        Station upper = stationDao.findById(request.getStationId());
-        Station lower = stationDao.findById(request.getBaseId());
-
-        line.add(new Section(upper, lower, request.getDistance()));
-
-        lineRepository.save(line);
     }
 
     public void addSection(Long lineId, SectionRequest sectionRequest) {
