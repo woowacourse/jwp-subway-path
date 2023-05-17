@@ -22,7 +22,7 @@ public class FindAllLineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findSingleLine() {
+    public ResponseEntity<List<LineResponse>> findAllLines() {
         final List<LineResponse> allLines = findAllLineService.findAllLines();
 
         return ResponseEntity.ok(allLines);
