@@ -15,11 +15,50 @@ public class Sections {
 
     private static final int MINIMUM_SECTION_SIZE = 2;
     private static final String INVALID_REMOVE_MIDDLE_STATION = "구간에서 삭제할 올바른 역을 선택해주세요.";
+    private static final String INVALID_SECTION_INFO = "유효한 구간 정보가 아닙니다.";
 
     private final Map<Station, Section> sections;
 
     public Sections(final Map<Station, Section> sections) {
+        if (!sections.isEmpty()) {
+            validateSections(sections);
+        }
+
         this.sections = sections;
+    }
+
+    private void validateSections(final Map<Station, Section> sections) {
+        validateTargetDirectionSection(sections, Direction.UP);
+        validateTargetDirectionSection(sections, Direction.DOWN);
+    }
+
+    private void validateTargetDirectionSection(final Map<Station, Section> sections, final Direction direction) {
+        int count = 0;
+        Station targetStation = findTerminalStation(sections, direction);
+
+        while (count++ < sections.size() - 1) {
+            final Section section = sections.get(targetStation);
+            final Station nowStation = section.findStationByDirection(direction)
+                    .orElseThrow(() -> new IllegalArgumentException(INVALID_SECTION_INFO));
+            validateDistance(section, nowStation);
+            targetStation = nowStation;
+        }
+    }
+
+    private void validateDistance(final Section section, final Station targetStation) {
+        final Distance distance = section.findDistanceByStation(targetStation);
+
+        if (distance.distance() <= 0) {
+            throw new IllegalArgumentException(INVALID_SECTION_INFO);
+        }
+    }
+
+    private Station findTerminalStation(final Map<Station, Section> sections, final Direction direction) {
+        return sections.keySet().stream()
+                .filter(station -> sections.get(station).isTerminalStation())
+                .filter(station -> sections.get(station).findEndStationPathDirection().matches(direction))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_SECTION_INFO));
     }
 
     public static Sections create() {
