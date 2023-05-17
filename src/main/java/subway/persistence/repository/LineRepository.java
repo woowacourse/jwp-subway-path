@@ -137,7 +137,7 @@ public class LineRepository {
                         lineId
                 ))
                 .collect(Collectors.toList());
-        sectionDao.insert(lineId, sectionEntities);
+        sectionDao.insert(sectionEntities);
     }
 
     public Station findStationByName(final String name) {

@@ -2,25 +2,26 @@ package subway.persistence.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import subway.persistence.entity.LineEntity;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class LineDao {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<LineEntity> lineEntityRowMapper = (rs, rowNum) ->
+    private static final RowMapper<LineEntity> lineEntityRowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -30,10 +31,8 @@ public class LineDao {
     }
 
     public long insert(final LineEntity newLine) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("name", newLine.getName());
-
-        return insertAction.executeAndReturnKey(params).longValue();
+        final SqlParameterSource source = new BeanPropertySqlParameterSource(newLine);
+        return insertAction.executeAndReturnKey(source).longValue();
     }
 
     public List<LineEntity> findAll() {
