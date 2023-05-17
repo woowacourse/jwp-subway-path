@@ -9,14 +9,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StationTest {
 
     @Test
-    @DisplayName("두 Station 이 동일한 이름을 가지고 있는지 확인한다.")
-    void compareTwoStationsName() {
-        Station ditoo = new Station("ditoo");
-        Station matthew = new Station("matthew");
-        Station sameNameAsDitoo = new Station("ditoo");
+    @DisplayName("Station 의 equals, hashCode 를 확인한다. (Name 만을 가지고 비교하는지)")
+    void equalsAndHashCodeTest() {
+        Station originStation = new Station(1, "hello");
+        Station sameNameStation = new Station(2, "hello");
+        Station otherNameStation = new Station(3, "hell");
 
-        assertThat(ditoo.hasSameName(matthew)).isFalse();
-        assertThat(ditoo.hasSameName(sameNameAsDitoo)).isTrue();
+        assertThat(originStation.equals(sameNameStation)).isTrue();
+        assertThat(originStation.equals(otherNameStation)).isFalse();
+        assertThat(originStation.hashCode()).isEqualTo(sameNameStation.hashCode());
+        assertThat(originStation.hashCode()).isNotEqualTo(otherNameStation.hashCode());
     }
 
 }
