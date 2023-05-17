@@ -25,6 +25,13 @@ public class GlobalExceptionHandler {
                 .body(new ExceptionResponse("서버가 응답할 수 없습니다."));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(final IllegalArgumentException e) {
+        logger.warn("WARN: ", e);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse("올바르지 않은 요청입니다."));
+    }
+
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<ExceptionResponse> handleSubwayException(final SubwayException e) {
         logger.warn(e.getMessage());
