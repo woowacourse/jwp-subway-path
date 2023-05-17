@@ -145,31 +145,35 @@ public class Sections {
     }
 
     private void addStationToUpLine(final Station adjacentStation, final Station newStation, final Station existingStation, final int distance) {
-        final DefaultWeightedEdge edge = graph.getSection(adjacentStation, existingStation);
-        final int distanceBetweenDownLinePreviousStationAndDownLineStation = (int) graph.getSectionDistance(edge);
-        if (distanceBetweenDownLinePreviousStationAndDownLineStation <= distance) {
-            throw new InvalidDistanceException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
-        }
-
-        final int distanceBetweenDownLinePreviousStationAndNewStation = distanceBetweenDownLinePreviousStationAndDownLineStation - distance;
-
-        graph.removeSection(adjacentStation, existingStation);
-        graph.setSectionDistance(graph.addSection(adjacentStation, newStation), distanceBetweenDownLinePreviousStationAndNewStation);
-        graph.setSectionDistance(graph.addSection(newStation, existingStation), distance);
+        final int updatedDistance = calculateUpdatedDistance(UP, adjacentStation, existingStation, distance);
+        updateSection(adjacentStation, newStation, existingStation, distance, updatedDistance);
     }
 
     private void addStationToDownLine(final Station existingStation, final Station newStation, final Station adjacentStation, final int distance) {
-        DefaultWeightedEdge edge = graph.getSection(existingStation, adjacentStation);
-        int distanceBetweenUpLineStationAndUpLineNextStation = (int) graph.getSectionDistance(edge);
-        if (distanceBetweenUpLineStationAndUpLineNextStation <= distance) {
+        final int updatedDistance = calculateUpdatedDistance(DOWN, adjacentStation, existingStation, distance);
+        updateSection(existingStation, newStation, adjacentStation, updatedDistance, distance);
+    }
+
+    private int calculateUpdatedDistance(final Direction direction, final Station adjacentStation, final Station existingStation, final int newDistance) {
+        DefaultWeightedEdge edge = findSectionBy(direction, adjacentStation, existingStation);
+        final int existingDistance = (int) graph.getSectionDistance(edge);
+        if (existingDistance <= newDistance) {
             throw new InvalidDistanceException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
         }
+        return existingDistance - newDistance;
+    }
 
-        final int distanceBetweenNewStationAndUpLineNextStation = distanceBetweenUpLineStationAndUpLineNextStation - distance;
+    private DefaultWeightedEdge findSectionBy(final Direction direction, final Station adjacentStation, final Station existingStation) {
+        if (direction == UP) {
+            return graph.getSection(adjacentStation, existingStation);
+        }
+        return graph.getSection(existingStation, adjacentStation);
+    }
 
-        graph.removeSection(existingStation, adjacentStation);
-        graph.setSectionDistance(graph.addSection(existingStation, newStation), distance);
-        graph.setSectionDistance(graph.addSection(newStation, adjacentStation), distanceBetweenNewStationAndUpLineNextStation);
+    private void updateSection(final Station upStation, final Station newStation, final Station downStation, final int distance, final int updatedDistance) {
+        graph.removeSection(upStation, downStation);
+        graph.setSectionDistance(graph.addSection(upStation, newStation), updatedDistance);
+        graph.setSectionDistance(graph.addSection(newStation, downStation), distance);
     }
 
     public void deleteStation(Station station) {
