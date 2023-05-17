@@ -2,11 +2,11 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.SectionFixture.SECTION_END;
-import static subway.domain.SectionFixture.SECTION_MIDDLE_1;
-import static subway.domain.SectionFixture.SECTION_MIDDLE_2;
-import static subway.domain.SectionFixture.SECTION_MIDDLE_3;
-import static subway.domain.SectionFixture.SECTION_START;
+import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST2_ST3;
+import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST3_ST4;
+import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST4_ST5;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST5_ST6;
 import static subway.domain.StationFixture.FIXTURE_STATION_4;
 import static subway.domain.StationFixture.FIXTURE_STATION_6;
 
@@ -22,11 +22,11 @@ class RoutedStationsFactoryTest {
     @Test
     void create() {
         List<Section> sections = List.of(
-                SECTION_START,
-                SECTION_MIDDLE_1,
-                SECTION_MIDDLE_2,
-                SECTION_MIDDLE_3,
-                SECTION_END
+                LINE1_SECTION_ST1_ST2,
+                LINE1_SECTION_MIDDLE_ST2_ST3,
+                LINE1_SECTION_MIDDLE_ST3_ST4,
+                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST5_ST6
         );
 
         SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> result = RoutedStationsFactory.create(sections);
@@ -43,10 +43,10 @@ class RoutedStationsFactoryTest {
     @Test
     void createFailDisconnected() {
         List<Section> sections = List.of(
-                SECTION_START,
-                SECTION_MIDDLE_2,
-                SECTION_MIDDLE_3,
-                SECTION_END
+                LINE1_SECTION_ST1_ST2,
+                LINE1_SECTION_MIDDLE_ST3_ST4,
+                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST5_ST6
         );
 
         assertThatThrownBy(() -> RoutedStationsFactory.create(sections))
@@ -58,10 +58,10 @@ class RoutedStationsFactoryTest {
     @Test
     void createFailForked() {
         List<Section> sections = List.of(
-                SECTION_START,
-                SECTION_MIDDLE_1,
-                SECTION_MIDDLE_2,
-                SECTION_MIDDLE_3,
+                LINE1_SECTION_ST1_ST2,
+                LINE1_SECTION_MIDDLE_ST2_ST3,
+                LINE1_SECTION_MIDDLE_ST3_ST4,
+                LINE1_SECTION_MIDDLE_ST4_ST5,
                 new Section(FIXTURE_STATION_4, FIXTURE_STATION_6, new Distance(10))
         );
 

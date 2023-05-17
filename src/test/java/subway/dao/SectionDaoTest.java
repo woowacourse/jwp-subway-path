@@ -2,8 +2,8 @@ package subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.domain.LineFixture.FIXTURE_LINE_1;
-import static subway.domain.SectionFixture.SECTION_MIDDLE_1;
-import static subway.domain.SectionFixture.SECTION_START;
+import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST2_ST3;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -28,25 +28,26 @@ class SectionDaoTest {
     @DisplayName("노선에 해당하는 구간 목록을 저장할 수 있다.")
     @Test
     void insertAllByLineId() {
-        sectionDao.insertAllByLineId(FIXTURE_LINE_1.getId(), List.of(SECTION_START));
+        sectionDao.insertAllByLineId(FIXTURE_LINE_1.getId(), List.of(LINE1_SECTION_ST1_ST2));
 
         assertThat(sectionDao.findByLineId(FIXTURE_LINE_1.getId()))
-                .containsExactlyInAnyOrder(SECTION_START);
+                .containsExactlyInAnyOrder(LINE1_SECTION_ST1_ST2);
     }
 
     @DisplayName("노선에 해당하는 구간 목록을 조회할 수 있다.")
     @Test
     void findByLineId() {
-        sectionDao.insertAllByLineId(FIXTURE_LINE_1.getId(), List.of(SECTION_START, SECTION_MIDDLE_1));
+        sectionDao.insertAllByLineId(FIXTURE_LINE_1.getId(), List.of(LINE1_SECTION_ST1_ST2,
+                LINE1_SECTION_MIDDLE_ST2_ST3));
 
         assertThat(sectionDao.findByLineId(FIXTURE_LINE_1.getId()))
-                .containsExactlyInAnyOrder(SECTION_START, SECTION_MIDDLE_1);
+                .containsExactlyInAnyOrder(LINE1_SECTION_ST1_ST2, LINE1_SECTION_MIDDLE_ST2_ST3);
     }
 
     @DisplayName("노선에 해당하는 구간을 모두 삭제할 수 있다.")
     @Test
     void deleteByLineId() {
-        sectionDao.insertAllByLineId(FIXTURE_LINE_1.getId(), List.of(SECTION_START));
+        sectionDao.insertAllByLineId(FIXTURE_LINE_1.getId(), List.of(LINE1_SECTION_ST1_ST2));
 
         sectionDao.deleteByLineId(FIXTURE_LINE_1.getId());
 
