@@ -8,14 +8,14 @@ public class PathSection {
     private final Long lineId;
     private final Station source;
     private final Station target;
-    private final double distance;
+    private final int distance;
     private final int fareOfLine;
 
     public PathSection(
             final Long lineId,
             final Station source,
             final Station target,
-            final double distance,
+            final int distance,
             final int fareOfLine
     ) {
         this.lineId = lineId;
@@ -30,7 +30,7 @@ public class PathSection {
                 edge.getLineId(),
                 edge.getSource(),
                 edge.getTarget(),
-                edge.getWeight(),
+                (int) edge.getWeight(),
                 edge.getFareOfLine()
         );
     }
@@ -47,7 +47,7 @@ public class PathSection {
         return target;
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 

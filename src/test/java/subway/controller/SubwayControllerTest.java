@@ -1,5 +1,7 @@
 package subway.controller;
 
+import static fixtures.StationFixtures.GANGNAM;
+import static fixtures.StationFixtures.YANGJAE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -9,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fixtures.StationFixtures;
 import java.nio.charset.Charset;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import subway.controller.dto.request.PassengerRequest;
 import subway.controller.dto.response.ShortestPathResponse;
-import subway.controller.dto.response.StationResponse;
+import subway.domain.section.PathSection;
 import subway.service.SubwayService;
 
 @WebMvcTest(SubwayController.class)
@@ -48,13 +49,12 @@ class SubwayControllerTest {
         @DisplayName("유효한 요청이라면 최단 경로 정보를 반환한다.")
         void findShortestPath() throws Exception {
             final PassengerRequest request = new PassengerRequest(10, 1L, 2L);
-            final ShortestPathResponse response = new ShortestPathResponse(
+            final ShortestPathResponse response = ShortestPathResponse.of(
                     List.of(
-                            StationResponse.from(StationFixtures.GANGNAM),
-                            StationResponse.from(StationFixtures.YANGJAE)
+                            new PathSection(1L, GANGNAM, YANGJAE, 10, 1000)
                     ),
                     10,
-                    1250
+                    100
             );
 
             given(subwayService.findShortestPath(any(PassengerRequest.class))).willReturn(response);
