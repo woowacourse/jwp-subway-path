@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import subway.exception.AlreadyExistSectionException;
 import subway.exception.LineUnconnectedException;
 
 public class Line {
@@ -60,7 +61,7 @@ public class Line {
 
     private void validateDuplicatedName(Section section) {
         if (isDuplicatedName(section.getSource()) && isDuplicatedName(section.getTarget())) {
-            throw new IllegalArgumentException("두 역이 이미 모두 존재합니다.");
+            throw new AlreadyExistSectionException();
         }
     }
 

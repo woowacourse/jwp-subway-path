@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import subway.exception.AlreadyExistSectionException;
 import subway.exception.LineUnconnectedException;
 import subway.exception.NegativeDistanceValueException;
 
@@ -46,8 +47,8 @@ class LineTest {
 
         // when, then
         assertThatThrownBy(() -> line.addSection(new Section("강남역", "선릉역", 15)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("두 역이 이미 모두 존재합니다.");
+                .isInstanceOf(AlreadyExistSectionException.class)
+                .hasMessage("이미 존재하는 구간입니다.");
     }
 
     @Test
