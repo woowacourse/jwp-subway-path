@@ -3,10 +3,7 @@
 ### 더미 데이터
 
 ```sql
-INSERT INTO line(name, color)
-VALUES ('1호선', '남색');
-INSERT INTO section(upward_id, downward_id, distance, line_id)
-VALUES (null, null, null, 1);
+INSERT INTO line(name, color, extra_fare) VALUES ('1호선', '남색', 400);
 
 INSERT INTO station(name)
 VALUES ('강변');
@@ -25,6 +22,11 @@ INSERT INTO station(name)
 VALUES ('용산');
 INSERT INTO station(name)
 VALUES ('서울역');
+
+INSERT INTO section(upward_id, downward_id, distance, line_id) VALUES (null, 6, null, 1);
+INSERT INTO section(upward_id, downward_id, distance, line_id) VALUES (6,7, 12, 1);
+INSERT INTO section(upward_id, downward_id, distance, line_id) VALUES (7,8, 20, 1);
+INSERT INTO section(upward_id, downward_id, distance, line_id) VALUES (8, null, null, 1);
 ```
 
 ### 요청과 응답
@@ -34,7 +36,8 @@ VALUES ('서울역');
 ```json
 {
   "name": "2호선",
-  "color": "초록색"
+  "color": "초록색",
+  "extraFare": 0
 }
 ```
 
@@ -55,6 +58,7 @@ VALUES ('서울역');
   "id": 2,
   "name": "2호선",
   "color": "초록색",
+  "extraFare": 0,
   "stations": [
     {
       "id": 1,
@@ -142,8 +146,8 @@ VALUES ('서울역');
     - [x] 이용 거리 초과 시 추가운임 부과한다.
         - [x] 10km~50km: 5km 까지 마다 100원 추가
         - [x] 50km 초과: 8km 까지 마다 100원 추가
-    - [ ] 추가 요금 정책을 반영한다.
-        - [ ] 노선별 추가 요금 정책을 반영한다.
+    - [x] 추가 요금 정책을 반영한다.
+        - [x] 노선별 추가 요금 정책을 반영한다.
             - 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가한다.
                 - ex) 900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원
                 - ex) 900원 추가 요금이 있는 노선 12km 이용 시 1,350원 -> 2,250원

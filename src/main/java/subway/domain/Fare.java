@@ -38,6 +38,10 @@ public class Fare {
         return (int) ((Math.ceil((leftDistance -1) / specified) + 1) * ADDITIONAL_FARE);
     }
 
+    public Fare applyExtraFare(final int extraFare){
+        return new Fare(fare + extraFare);
+    }
+
     public Fare applyDiscountRateOfAge(final Age age){
         int discountedFare = (int)((fare - age.getDeduction()) * (1 - age.getDiscountRate()));
         return new Fare(discountedFare);

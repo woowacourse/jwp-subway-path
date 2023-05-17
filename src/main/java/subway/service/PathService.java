@@ -29,8 +29,8 @@ public class PathService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역이 도착역으로 지정되어 있습니다."));
         SubwayGuide subwayGuide = SubwayGuide.from(lineRepository.findAll());
 
-        List<Station> stations = subwayGuide.getPathStations(departureStation, arrivalStation);
-        int fare = subwayGuide.getFare(departureStation, arrivalStation, validAge);
+        List<Station> stations = subwayGuide.findPath(departureStation, arrivalStation);
+        int fare = subwayGuide.calculateFare(departureStation, arrivalStation, validAge);
 
         return PathResponse.of(fare, stations);
     }

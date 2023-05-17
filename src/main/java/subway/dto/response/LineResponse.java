@@ -9,8 +9,8 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
-    private List<StationResponse> stations;
     private int extraFare;
+    private List<StationResponse> stations;
 
     private LineResponse() {
     }
@@ -19,14 +19,14 @@ public class LineResponse {
             final Long id,
             final String name,
             final String color,
-            final List<StationResponse> stations,
-            final int extraFare
+            final int extraFare,
+            final List<StationResponse> stations
     ) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.stations = stations;
         this.extraFare = extraFare;
+        this.stations = stations;
     }
 
     public static LineResponse from(final Line line) {
@@ -35,8 +35,8 @@ public class LineResponse {
                 line.getId(),
                 line.getName(),
                 line.getColor(),
-                StationResponse.from(orderedStations),
-                line.getExtraFare()
+                line.getExtraFare(),
+                StationResponse.from(orderedStations)
         );
     }
 
