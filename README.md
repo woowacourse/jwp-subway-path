@@ -71,6 +71,26 @@ INSERT INTO section(upward_id, downward_id, distance, line_id) VALUES (8, null, 
   ]
 }
 ```
+#### Response GET /paths?from=6&to=8&age=adult
+```sql
+{
+    "fare": 2150,
+    "stations": [
+        {
+            "id": 6,
+            "name": "노량진"
+        },
+        {
+            "id": 7,
+            "name": "용산"
+        },
+        {
+            "id": 8,
+            "name": "서울역"
+        }
+    ]
+}
+```
 
 ### 기능 목록
 
@@ -94,7 +114,7 @@ INSERT INTO section(upward_id, downward_id, distance, line_id) VALUES (8, null, 
     - [x] 노선에 포함된 역을 순서대로 보여주도록 응답을 개선한다.
 - [x] 경로 조회 API 기능 구현
     - [x] GET `/paths?from={stationId}&to={stationId}&age={age}`
-        - age는 adult, teenager, child가 있다.
+        - age는 adult, teenager, children 이 있다.
     - [x] 출발역과 도착역 사이의 최단 거리 경로를 구한다.
     - [x] 최단 거리 경로와 함께 총 거리 정보를 함께 응답한다.
     - [x] 한 노선에서 경로 찾기 뿐만 아니라 여러 노선의 환승도 고려한다.
