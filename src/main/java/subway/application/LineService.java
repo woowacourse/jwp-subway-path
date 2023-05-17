@@ -30,8 +30,8 @@ public class LineService {
     }
 
     public LineResponse findLineById(final Long id) {
-        Line persistLine = configureLine(id);
-        return LineResponse.from(persistLine);
+        Line line = configureLine(id);
+        return LineResponse.from(line);
     }
 
     public List<LineResponse> findLines() {
@@ -42,10 +42,10 @@ public class LineService {
     }
 
     private Line configureLine(final Long id) {
-        Line rawLine = lineDao.findById(id);
+        Line persistLine = lineDao.findById(id);
         List<SectionDto> sectionsDtos = sectionDao.findAllByLineId(id);
         if (sectionsDtos.isEmpty()) {
-            return rawLine;
+            return persistLine;
         }
 
         Sections sections = new Sections(sectionsDtos.stream()
@@ -62,7 +62,7 @@ public class LineService {
                 .map(Section::getLower)
                 .collect(Collectors.toList()));
 
-        return new Line(rawLine.getId(), rawLine.getName(), rawLine.getColor(), new LinkedList<>(stations), sections);
+        return new Line(persistLine.getId(), persistLine.getName(), persistLine.getColor(), new LinkedList<>(stations), sections);
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
