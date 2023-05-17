@@ -158,4 +158,33 @@ class SectionsTest {
                 () -> assertThat(linkedSections.get(1).getDistance().distance()).isEqualTo(5)
         );
     }
+
+    @Test
+    void 요청된_구간의_거리가_기존보다_길다면_예외가_발생한다() {
+        // given
+        final StationName stationNameD = new StationName("D");
+        final Station stationD = new Station(stationNameD);
+        final Distance otherDistance = new Distance(10);
+        final Section other = new Section(stationD, AB.stationB, otherDistance);
+
+        // expect
+        assertThatThrownBy(() -> ABC.sections.addSection(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("길이는 1 이상이어야합니다.");
+    }
+
+    /*
+        기존 구간: A-B-C
+    */
+    @Test
+    void 새로운_구간의_모든_역이_이미_해당_구간들에_존재하면_새로운_구간을_추가할_수_없다() {
+        // given
+        final Distance otherDistance = new Distance(5);
+        final Section other = new Section(AB.stationA, ABC.stationC, otherDistance);
+
+        // when
+        assertThatThrownBy(() -> ABC.sections.addSection(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("두 역이 이미 존재합니다.");
+    }
 }

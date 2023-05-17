@@ -25,6 +25,8 @@ public class Sections {
     }
 
     public Sections addSection(final Section section) {
+        validateContains(section);
+
         if (isEmpty()) {
             sections.add(section);
             return new Sections(sections);
@@ -39,6 +41,17 @@ public class Sections {
         }
 
         return addSectionInMiddle(section);
+    }
+
+    private void validateContains(final Section other) {
+        if (isContainAllSectionStations(other)) {
+            throw new IllegalArgumentException("두 역이 이미 존재합니다.");
+        }
+    }
+
+    private boolean isContainAllSectionStations(final Section other) {
+        return sections.stream().anyMatch(section -> section.isSameUpStation(other)) &&
+                sections.stream().anyMatch(section -> section.isSameDownStation(other));
     }
 
     private boolean isAddableOnFrontOfUpTerminal(final Section other) {
@@ -70,10 +83,13 @@ public class Sections {
 
     private Sections addNewSectionToNext(final Section other) {
         final Section originalSection = getOriginalSection((section) -> section.isSameUpStation(other));
+
+        Section nextSection = originalSection.createDownToDownSection(other);
+
         return new Sections(addNewSection(
                 originalSection,
                 other,
-                originalSection.createDownToDownSection(other)
+                nextSection
         ));
     }
 
@@ -105,6 +121,10 @@ public class Sections {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("기준역을 찾을 수 없습니다."));
     }
+
+//    public Sections removeStation(final Station station) {
+//
+//    }
 
     public boolean isEmpty() {
         return this.sections.isEmpty();
