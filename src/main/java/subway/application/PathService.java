@@ -14,11 +14,11 @@ import subway.repository.LineRepository;
 public class PathService {
 
     private final LineRepository lineRepository;
-    private final ChargePolicy feePolicy;
+    private final ChargePolicy chargePolicy;
 
-    public PathService(LineRepository lineRepository, ChargePolicy feePolicy) {
+    public PathService(LineRepository lineRepository, ChargePolicy chargePolicy) {
         this.lineRepository = lineRepository;
-        this.feePolicy = feePolicy;
+        this.chargePolicy = chargePolicy;
     }
 
     public PathResponse findShortestPath(PathRequest request) {
@@ -27,8 +27,8 @@ public class PathService {
         validatePath(source, target);
         SubwayGraph graph = SubwayGraph.from(new Subway(lineRepository.findAll()));
         ShortestPath path = graph.findPath(source, target);
-        int fee = feePolicy.calculateFee(path.getDistance());
-        return PathResponse.of(path, fee);
+        int charge = chargePolicy.calculateFee(path.getDistance());
+        return PathResponse.of(path, charge);
     }
 
     private void validatePath(Station source, Station target) {

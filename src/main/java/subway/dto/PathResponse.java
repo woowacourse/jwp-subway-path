@@ -8,12 +8,12 @@ public class PathResponse {
 
     private final List<StationResponse> stations;
     private final int distance;
-    private final int fee;
+    private final int charge;
 
-    public PathResponse(List<StationResponse> stations, int distance, int fee) {
+    public PathResponse(List<StationResponse> stations, int distance, int charge) {
         this.stations = stations;
         this.distance = distance;
-        this.fee = fee;
+        this.charge = charge;
     }
 
     public static PathResponse of(ShortestPath path, int fee) {
@@ -27,8 +27,8 @@ public class PathResponse {
         return distance;
     }
 
-    public int getFee() {
-        return fee;
+    public int getCharge() {
+        return charge;
     }
 
     public List<StationResponse> getStations() {
