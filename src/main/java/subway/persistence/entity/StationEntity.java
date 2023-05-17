@@ -24,7 +24,7 @@ public class StationEntity {
         return new StationEntity(id, name);
     }
 
-    public Station to() {
+    public Station toDomain() {
         return Station.of(id, name);
     }
 

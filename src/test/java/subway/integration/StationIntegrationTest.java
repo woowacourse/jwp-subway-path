@@ -15,9 +15,8 @@ import subway.ui.dto.response.ReadStationResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@SuppressWarnings("NonAsciiCharacters")
 @DisplayName("지하철역 관련 기능")
+@SuppressWarnings("NonAsciiCharacters")
 public class StationIntegrationTest extends IntegrationTest {
 
     @Test

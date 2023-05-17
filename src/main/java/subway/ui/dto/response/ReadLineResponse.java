@@ -27,7 +27,7 @@ public class ReadLineResponse {
     public static ReadLineResponse of(final Line line) {
         final List<Station> stations = line.findStationsByOrdered();
         final List<ReadStationResponse> stationResponses = stations.stream()
-                .map(ReadStationResponse::of)
+                .map(ReadStationResponse::from)
                 .collect(Collectors.toList());
 
         return new ReadLineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);

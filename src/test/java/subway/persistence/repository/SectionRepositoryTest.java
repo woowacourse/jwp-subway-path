@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Station;
+import subway.domain.section.Section;
 
 import java.util.List;
 
@@ -34,13 +35,13 @@ class SectionRepositoryTest extends RepositoryTest {
         final Distance distance = Distance.from(10);
         final Station station1 = stationRepository.insert(dataStation1);
         final Station station2 = stationRepository.insert(dataStation2);
-        final Line persistantLine = lineRepository.insert(line);
-        persistantLine.addInitialStations(station1, station2, distance);
-        sectionRepository.insert(persistantLine);
+        final Line persistLine = lineRepository.insert(line);
+        persistLine.addSection(Section.of(station1, station2, distance));
+        sectionRepository.insert(persistLine);
 
         // when
-        final Line actualLine = lineRepository.findById(persistantLine.getId());
-        sectionRepository.findAllByLine(actualLine);
+        final Line tempLine = lineRepository.findById(persistLine.getId());
+        final Line actualLine = sectionRepository.findAllSectionByLine(tempLine);
         final List<Station> actual = actualLine.findStationsByOrdered();
 
         // then

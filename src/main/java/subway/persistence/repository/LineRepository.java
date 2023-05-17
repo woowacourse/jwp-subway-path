@@ -28,14 +28,13 @@ public class LineRepository {
     }
 
     public Line findById(final Long id) {
-        return lineDao.findById(id)
-                .to();
+        return lineDao.findById(id).toDomain();
     }
 
     public List<Line> findAll() {
         return lineDao.findAll()
                 .stream()
-                .map(LineEntity::to)
+                .map(LineEntity::toDomain)
                 .collect(Collectors.toList());
     }
 

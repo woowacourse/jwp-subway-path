@@ -28,14 +28,14 @@ public class StationRepository {
     }
 
     public Station findById(final Long id) {
-        return stationDao.findById(id).to();
+        return stationDao.findById(id).toDomain();
     }
 
     public void deleteById(final Long id) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByStationId(id);
 
         if (!sectionEntities.isEmpty()) {
-            throw new IllegalArgumentException("노선에 등록되어 있는 역입니다.");
+            throw new IllegalArgumentException("노선에 추가되어 있는 역이라 삭제할 수 없습니다");
         }
 
         stationDao.deleteById(id);

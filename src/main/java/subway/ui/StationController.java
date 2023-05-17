@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
-import subway.application.dto.CreationStationDto;
+import subway.domain.Station;
 import subway.ui.dto.request.CreationStationRequest;
 import subway.ui.dto.response.CreationStationResponse;
 import subway.ui.dto.response.ReadStationResponse;
@@ -27,14 +27,16 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<CreationStationResponse> createStation(@RequestBody final CreationStationRequest request) {
-        final CreationStationDto stationDto = stationService.saveStation(request.getName());
-        final CreationStationResponse response = CreationStationResponse.from(stationDto);
+        final Station station = stationService.saveStation(request.getName());
+        final CreationStationResponse response = CreationStationResponse.from(station);
         return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReadStationResponse> showStation(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(stationService.findStationById(id));
+        final Station station = stationService.findStationById(id);
+        final ReadStationResponse response = ReadStationResponse.from(station);
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{id}")

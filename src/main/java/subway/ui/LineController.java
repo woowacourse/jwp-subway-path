@@ -8,44 +8,73 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.LineService;
-import subway.application.dto.CreationLineDto;
+import subway.application.LineCommandService;
+import subway.application.LineQueryService;
+import subway.domain.Line;
+import subway.ui.dto.request.AddSectionRequest;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.response.CreationLineResponse;
 import subway.ui.dto.response.ReadLineResponse;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
-    private final LineService lineService;
+    private final LineQueryService lineQueryService;
+    private final LineCommandService lineCommandService;
 
-    public LineController(LineService lineService) {
-        this.lineService = lineService;
+    public LineController(final LineQueryService lineQueryService, final LineCommandService lineCommandService) {
+        this.lineQueryService = lineQueryService;
+        this.lineCommandService = lineCommandService;
     }
 
     @PostMapping
     public ResponseEntity<CreationLineResponse> createLine(@RequestBody final CreationLineRequest request) {
-        final CreationLineDto lineDto = lineService.saveLine(request);
-        return ResponseEntity.created(URI.create("/lines/" + lineDto.getId())).body(CreationLineResponse.from(lineDto));
+        final Line line = lineCommandService.saveLine(request.getName(), request.getColor());
+        final CreationLineResponse response = CreationLineResponse.from(line);
+        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(response);
     }
 
     @GetMapping
     public ResponseEntity<List<ReadLineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findAllLine());
+        final List<Line> lines = lineQueryService.findAllLine();
+
+        final List<ReadLineResponse> responses = lines.stream()
+                .map(ReadLineResponse::of)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ReadLineResponse> findLineById(@PathVariable final Long id) {
-        return ResponseEntity.ok(lineService.findLineById(id));
+    @GetMapping("/{lineId}")
+    public ResponseEntity<ReadLineResponse> findLineById(@PathVariable final Long lineId) {
+        final Line line = lineQueryService.findLineById(lineId);
+        final ReadLineResponse response = ReadLineResponse.of(line);
+
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable final Long id) {
-        lineService.deleteLineById(id);
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteLine(@PathVariable final Long lineId) {
+        lineCommandService.deleteLineById(lineId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{lineId}/sections")
+    public ResponseEntity<Void> postAddSection(@PathVariable final Long lineId,
+                                               @RequestBody final AddSectionRequest request) {
+        lineCommandService.saveSection(lineId, request.getUpStationId(), request.getDownStationId(), request.getDistance());
+        return ResponseEntity.created(URI.create("/lines/" + lineId + "/sections")).build();
+    }
+
+    @DeleteMapping("/{lineId}/stations/{stationId}")
+    public ResponseEntity<Void> deleteStation(@PathVariable final Long lineId,
+                                              @PathVariable final Long stationId) {
+        lineCommandService.deleteSection(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -31,10 +31,6 @@ public class Distance {
         return new Distance(this.distance - other.distance);
     }
 
-    public boolean isGreaterThanOrEqualTo(final Distance target) {
-        return this.distance >= target.distance;
-    }
-
     public int getDistance() {
         return distance;
     }

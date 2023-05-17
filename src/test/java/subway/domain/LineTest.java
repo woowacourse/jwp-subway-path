@@ -1,6 +1,5 @@
 package subway.domain;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -9,10 +8,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.domain.section.Section;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -68,11 +67,6 @@ class LineTest {
         }
     }
 
-    /**
-     * 양 끝에 넣는 케이스
-     * 중간에 넣는 케이스
-     */
-
     @Nested
     class LineAddTest {
 
@@ -102,86 +96,40 @@ class LineTest {
             final Distance distanceOneTwo = Distance.from(10);
 
             SoftAssertions.assertSoftly(softAssertions -> {
-                assertDoesNotThrow(() -> line.addInitialStations(stationOne, stationTwo, distanceOneTwo));
-                final Station findStationOne = line.findStation(stationOne);
-                final Distance actual = findStationOne.findDistanceByStation(stationTwo);
-                assertThat(actual.getDistance()).isEqualTo(distanceOneTwo.getDistance());
+                assertDoesNotThrow(() -> line.addSection(Section.of(stationOne, stationTwo, distanceOneTwo)));
             });
         }
 
         @Test
         void 성공적으로_종점을_추가한다() {
-            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
+            line.addSection(Section.of(stationOne, stationTwo, distanceOneTwo));
 
             final Station station = Station.from("서울역");
             final Distance distance = Distance.from(5);
 
-            line.addEndStation(stationOne, station, distance);
-
-            final Station newStationOne = line.findStation(stationOne);
-            final Station newStation = line.findStation(station);
-
-            SoftAssertions.assertSoftly(softAssertions -> {
-                softAssertions.assertThat(newStationOne.isEnd()).isFalse();
-                softAssertions.assertThat(newStation.isEnd()).isTrue();
-            });
-        }
-
-        @Test
-        void 종점이_아닌_역에_종점_추가를_진행할_경우_예외가_발생한다() {
-            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
-            line.addEndStation(stationTwo, stationThree, distanceTwoThree);
-
-            final Station station = Station.from("서울역");
-            final Distance distance = Distance.from(5);
-
-            assertThatThrownBy(() -> line.addEndStation(stationTwo, station, distance))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("해당 역은 종점역이 아닙니다.");
+            line.addSection(Section.of(stationTwo, station, distance));
         }
 
         @Test
         void 역과_역_사이에_새로운_역을_추가한다() {
-            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
+            line.addSection(Section.of(stationOne, stationTwo, distanceOneTwo));
 
             final Station station = Station.from("서울역");
             final Distance distance = Distance.from(3);
 
-            line.addMiddleStation(stationOne, stationTwo, station, distance);
-
-            final Station newStationOne = line.findStation(stationOne);
-            final Station newStationTwo = line.findStation(stationTwo);
-            final Station newStation = line.findStation(station);
-
-            SoftAssertions.assertSoftly(softAssertions -> {
-                assertThat(newStation.findDistanceByStation(newStationOne).getDistance()).isEqualTo(3);
-                assertThat(newStation.findDistanceByStation(newStationTwo).getDistance()).isEqualTo(7);
-            });
-        }
-
-        @Test
-        void 역과_역_사이에_새로운_역을_추가할_때_역이_서로_연결되어_있지_않으면_예외가_발생한다() {
-            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
-            line.addEndStation(stationTwo, stationThree, distanceTwoThree);
-
-            final Station station = Station.from("서울역");
-            final Distance distance = Distance.from(3);
-
-            Assertions.assertThatThrownBy(() -> line.addMiddleStation(stationOne, stationThree, station, distance))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("역이 서로 연결되어 있지 않습니다.");
+            line.addSection(Section.of(stationOne, station, distance));
         }
 
         @Test
         void 역과_역_사이에_새로운_역을_추가할_때_원래_역_사이의_거리_이상의_거리를_추가할_경우_예외가_발생한다() {
-            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
+            line.addSection(Section.of(stationOne, stationTwo, distanceOneTwo));
 
             final Station station = Station.from("서울역");
             final Distance distance = Distance.from(15);
 
-            Assertions.assertThatThrownBy(() -> line.addMiddleStation(stationOne, stationTwo, station, distance))
+            assertThatThrownBy(() -> line.addSection(Section.of(stationOne, station, distance)))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("등록되는 역 중간에 다른 역이 존재합니다.");
+                    .hasMessage("등록하려는 구간의 길이는 원본 구간의 길이 미만이어야 합니다.");
         }
     }
 
@@ -204,10 +152,10 @@ class LineTest {
             final Station stationFive = Station.from("신논현역");
             final Distance distanceFourFive = Distance.from(5);
 
-            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
-            line.addEndStation(stationTwo, stationThree, distanceTwoThree);
-            line.addEndStation(stationThree, stationFour, distanceThreeFour);
-            line.addEndStation(stationFour, stationFive, distanceFourFive);
+            line.addSection(Section.of(stationOne, stationTwo, distanceOneTwo));
+            line.addSection(Section.of(stationTwo, stationThree, distanceTwoThree));
+            line.addSection(Section.of(stationThree, stationFour, distanceThreeFour));
+            line.addSection(Section.of(stationFour, stationFive, distanceFourFive));
         }
 
         @Test

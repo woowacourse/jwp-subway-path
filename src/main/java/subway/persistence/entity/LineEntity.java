@@ -22,7 +22,7 @@ public class LineEntity {
         return new LineEntity(null, name, color);
     }
 
-    public Line to() {
+    public Line toDomain() {
         return Line.of(id, name, color);
     }
 
