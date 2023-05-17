@@ -22,7 +22,7 @@ public class ExceptionAdvice {
         logger.warn(e.getMessage(), e);
 
         return ResponseEntity.badRequest()
-                .build();
+                .body(new ExceptionResponse("유효하지 않은 입력입니다."));
     }
 
     @ExceptionHandler(ExpectedException.class)
