@@ -13,6 +13,7 @@ public class LineDto {
     public LineDto(final String name, final String color) {
         this(null, name, color);
     }
+
     public LineDto(final Long id, final String name, final String color) {
         this.id = id;
         this.name = name;
