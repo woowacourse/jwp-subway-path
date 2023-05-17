@@ -18,7 +18,7 @@ public class JgraphtRoute {
         this.edges = edges;
     }
 
-    public static JgraphtRoute from(List<Section> sections, Station source, Station target) {
+    public static JgraphtRoute of(List<Section> sections, Station source, Station target) {
         Graph<Station, SectionEdge> weightedGraph = new WeightedMultigraph<>(SectionEdge.class);
         for (Section section : sections) {
             Station upStation = section.getUpStation();

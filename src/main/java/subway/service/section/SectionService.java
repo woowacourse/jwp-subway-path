@@ -69,7 +69,7 @@ public class SectionService {
     private void insertNewSection(Line line, AddResult addResult, List<SectionResponse> addedSectionResponses) {
         for (Section section : addResult.getAddedResults()) {
             Section savedSection = sectionRepository.insertSection(section, line);
-            addedSectionResponses.add(SectionResponse.of(savedSection));
+            addedSectionResponses.add(SectionResponse.from(savedSection));
         }
     }
 
@@ -105,7 +105,7 @@ public class SectionService {
         List<Station> stationsInOrder = sections.orderStations();
 
         return stationsInOrder.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -114,7 +114,7 @@ public class SectionService {
         Station source = stationRepository.findById(sourceStationId);
         Station target = stationRepository.findById(targetStationId);
 
-        JgraphtRoute shortestPath = JgraphtRoute.from(sections, source, target);
+        JgraphtRoute shortestPath = JgraphtRoute.of(sections, source, target);
         List<SectionEdge> edges = shortestPath.getEdges();
         int fee = feePolicy.calculateFee(edges);
 

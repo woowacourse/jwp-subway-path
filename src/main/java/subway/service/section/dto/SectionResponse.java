@@ -14,7 +14,7 @@ public class SectionResponse {
         this.downStationName = downStationName;
     }
 
-    public static SectionResponse of(Section section) {
+    public static SectionResponse from(Section section) {
         return new SectionResponse(section.getId(), section.getUpStation().getName(), section.getDownStation().getName());
     }
 

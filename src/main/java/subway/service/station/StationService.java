@@ -18,11 +18,11 @@ public class StationService {
     public StationCreateResponse saveStation(StationCreateRequest stationCreateRequest) {
         Station station = new Station(stationCreateRequest.getName());
         Station savedStation = stationRepository.insert(station);
-        return StationCreateResponse.of(savedStation);
+        return StationCreateResponse.from(savedStation);
     }
 
     @Transactional(readOnly = true)
     public StationCreateResponse findStationById(Long id) {
-        return StationCreateResponse.of(stationRepository.findById(id));
+        return StationCreateResponse.from(stationRepository.findById(id));
     }
 }

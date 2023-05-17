@@ -29,7 +29,7 @@ class JgraphtRouteTest {
         Section gangnamSeonleung = new Section(SEONLEUNG, GANGNAM, new Distance(3));
 
         List<Section> sections = List.of(jangjiJamsil, seonleungJamsil, gangnamJangji, gangnamSeonleung);
-        JgraphtRoute shortestPath = JgraphtRoute.from(sections, GANGNAM, JAMSIL);
+        JgraphtRoute shortestPath = JgraphtRoute.of(sections, GANGNAM, JAMSIL);
 
         List<Station> pathStations = shortestPath.getStations();
 

@@ -12,7 +12,7 @@ public class StationCreateResponse {
         this.name = name;
     }
 
-    public static StationCreateResponse of(Station station) {
+    public static StationCreateResponse from(Station station) {
         return new StationCreateResponse(station.getId(), station.getName());
     }
 

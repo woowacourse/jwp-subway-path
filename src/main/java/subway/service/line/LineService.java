@@ -33,7 +33,7 @@ public class LineService {
         List<Station> stationsInOrder = sections.orderStations();
 
         return stationsInOrder.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
