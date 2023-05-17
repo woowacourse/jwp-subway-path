@@ -1,5 +1,8 @@
 package subway.domain;
 
+import subway.domain.vo.Color;
+import subway.domain.vo.Name;
+
 import java.util.List;
 import java.util.Objects;
 

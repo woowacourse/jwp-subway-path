@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import subway.domain.vo.Distance;
 
 import java.util.List;
 
@@ -14,9 +15,9 @@ import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class SectionsTest {
-    private static final Distance 거리1 = new Distance(1);
-    private static final Distance 거리10 = new Distance(10);
-    private static final Distance 거리20 = new Distance(20);
+    private static final Distance 거리1 = Distance.from(1);
+    private static final Distance 거리10 = Distance.from(10);
+    private static final Distance 거리20 = Distance.from(20);
 
 
     @Test

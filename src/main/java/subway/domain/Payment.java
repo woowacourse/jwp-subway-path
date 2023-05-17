@@ -1,7 +1,7 @@
-package subway.domain.pay;
+package subway.domain;
 
-import subway.domain.Distance;
-import subway.domain.Money;
+import subway.domain.vo.Distance;
+import subway.domain.vo.Money;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -32,8 +32,11 @@ public enum Payment {
     }
 
     public static Money calculate(final Distance totalDistance) {
-        final Payment pay = findByDistance(totalDistance);
+        if (DEFAULT_DISTANCE.isEqualsOrGreaterThan(totalDistance)) {
+            return DEFAULT_PRICE;
+        }
 
+        final Payment pay = findByDistance(totalDistance);
         final Distance additionalDistance = totalDistance.minus(DEFAULT_DISTANCE);
         final Money additionalPrice = pay.distancePrice.impose(additionalDistance);
         return DEFAULT_PRICE.plus(additionalPrice);

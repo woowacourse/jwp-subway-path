@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.vo;
 
 import java.util.Objects;
 
@@ -11,9 +11,13 @@ public class Distance {
         this.value = value;
     }
 
+    public static Distance from(final int value) {
+        return new Distance(value);
+    }
+
     private void validate(final int value) {
         if (value < 0) {
-            throw new IllegalArgumentException("길이는 1이상이어야 합니다.");
+            throw new IllegalArgumentException("길이는 0이상이어야 합니다.");
         }
     }
 
@@ -21,16 +25,12 @@ public class Distance {
         return new Distance(this.value - otherDistance.value);
     }
 
-    public boolean isSameOrOver(final Distance other) {
-        return this.value >= other.value;
-    }
-
-    public boolean isOver(final Distance other) {
-        return this.value > other.value;
-    }
-
     public Distance quotient(final Distance otherDistance) {
         return new Distance(value / otherDistance.value);
+    }
+
+    public boolean isEqualsOrGreaterThan(final Distance other) {
+        return value >= other.value;
     }
 
     public int getValue() {

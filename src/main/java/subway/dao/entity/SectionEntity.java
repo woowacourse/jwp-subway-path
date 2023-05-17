@@ -1,6 +1,6 @@
 package subway.dao.entity;
 
-import subway.domain.Distance;
+import subway.domain.vo.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
 

@@ -7,10 +7,10 @@ import subway.dao.StationDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.vo.Distance;
 
 import java.util.Collections;
 import java.util.List;
@@ -93,7 +93,7 @@ public class LineRepository {
         return sectionEntities.stream()
                 .map(sectionEntity -> new Section(
                         sectionEntity.getId(),
-                        new Distance(sectionEntity.getDistance()),
+                        Distance.from(sectionEntity.getDistance()),
                         sectionEntity.getStart(),
                         upStations.get(sectionEntity.getUpStationId()).toDomain(),
                         downStations.get(sectionEntity.getDownStationId()).toDomain()

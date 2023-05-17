@@ -1,6 +1,6 @@
 package subway.fixture;
 
-import subway.domain.Money;
+import subway.domain.vo.Money;
 
 public abstract class MoneyFixture {
 

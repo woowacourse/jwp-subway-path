@@ -1,7 +1,7 @@
-package subway.domain.pay;
+package subway.domain;
 
-import subway.domain.Distance;
-import subway.domain.Money;
+import subway.domain.vo.Distance;
+import subway.domain.vo.Money;
 
 public class DistancePrice {
 

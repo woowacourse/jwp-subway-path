@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.domain.vo.Distance;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
