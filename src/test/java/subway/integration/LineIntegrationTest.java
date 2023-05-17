@@ -1,69 +1,184 @@
 package subway.integration;
 
-import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
+import subway.dto.LineAndStationsResponse;
+import subway.dto.StationAddRequest;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.List;
 
-@DisplayName("지하철 노선 관련 기능")
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.common.fixture.WebFixture.*;
+import static subway.common.step.LineStep.*;
+import static subway.common.step.StationStep.createStationAndGetId;
+
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
 
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
-    }
-
-    @DisplayName("지하철 노선을 생성한다.")
     @Test
-    void createLine() {
+    void 지하철_노선을_생성한다() {
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+        final ExtractableResponse<Response> response = given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+                .body(일호선_남색_요청)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        assertSoftly(softly -> {
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+            softly.assertThat(response.header("Location")).isNotBlank();
+        });
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
-    void createLineWithDuplicateName() {
+    void 동일한_이름의_노선을_생성하면_예외를_던진다() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+        createLine(일호선_남색_요청);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+        final ExtractableResponse<Response> response = createLine(일호선_남색_요청);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertSoftly(softly -> {
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            softly.assertThat(response.body().asString()).isEqualTo("이미 존재하는 호선입니다.");
+        });
+    }
+
+
+    @Test
+    void 호선의_역을_조회한다() {
+        //given
+        final Long lineId = createLineAndGetId(일호선_남색_요청);
+        final Long fromStationId = createStationAndGetId(후추_요청);
+        final Long toStationId = createStationAndGetId(디노_요청);
+        addStationToLine(new StationAddRequest(fromStationId, toStationId, 7), lineId);
+
+        //when
+        final ExtractableResponse<Response> response = given().log().all()
+                .pathParam("lineId", lineId)
+                .when()
+                .get("/lines/{lineId}/stations")
+                .then().log().all()
+                .extract();
+
+        //then
+        final LineAndStationsResponse lineAndStationsResponse = response.as(LineAndStationsResponse.class);
+        assertSoftly(softly -> {
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softly.assertThat(lineAndStationsResponse.getLineResponse().getId()).isEqualTo(1L);
+            softly.assertThat(lineAndStationsResponse.getLineResponse().getName()).isEqualTo("일호선");
+            softly.assertThat(lineAndStationsResponse.getLineResponse().getColor()).isEqualTo("남색");
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(0).getId()).isEqualTo(1L);
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(0).getName()).isEqualTo("후추");
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(1).getId()).isEqualTo(2L);
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(1).getName()).isEqualTo("디노");
+        });
+    }
+
+    @Test
+    void 모든_호선의_역을_조회한다() {
+        //given
+        final Long lineId = createLineAndGetId(일호선_남색_요청);
+        final Long fromStationId = createStationAndGetId(후추_요청);
+        final Long toStationId = createStationAndGetId(디노_요청);
+        addStationToLine(new StationAddRequest(fromStationId, toStationId, 7), lineId);
+
+        //when
+        final ExtractableResponse<Response> response = given().log().all()
+                .when()
+                .get("/lines/stations")
+                .then().log().all()
+                .extract();
+
+        //then
+        final List<LineAndStationsResponse> lineAndStationsResponses = response.as(new TypeRef<List<LineAndStationsResponse>>() {
+        });
+        assertSoftly(softly -> {
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            final LineAndStationsResponse lineAndStationsResponse = lineAndStationsResponses.get(0);
+            softly.assertThat(lineAndStationsResponse.getLineResponse().getId()).isEqualTo(1L);
+            softly.assertThat(lineAndStationsResponse.getLineResponse().getName()).isEqualTo("일호선");
+            softly.assertThat(lineAndStationsResponse.getLineResponse().getColor()).isEqualTo("남색");
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(0).getId()).isEqualTo(1L);
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(0).getName()).isEqualTo("후추");
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(1).getId()).isEqualTo(2L);
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(1).getName()).isEqualTo("디노");
+        });
+    }
+
+    @Test
+    void 호선의_역을_제거한다() {
+        //given
+        final Long lineId = createLineAndGetId(일호선_남색_요청);
+        final Long 후추_id = createStationAndGetId(후추_요청);
+        final Long 디노_id = createStationAndGetId(디노_요청);
+        final Long 조앤_id = createStationAndGetId(조앤_요청);
+        addStationToLine(new StationAddRequest(후추_id, 디노_id, 7), lineId);
+        addStationToLine(new StationAddRequest(디노_id, 조앤_id, 4), lineId);
+
+        //when
+        final ExtractableResponse<Response> response = given().log().all()
+                .pathParam("lineId", lineId)
+                .pathParam("stationId", 디노_id)
+                .when()
+                .delete("/lines/{lineId}/stations/{stationId}")
+                .then().log().all()
+                .extract();
+
+        //then
+        final LineAndStationsResponse lineAndStationsResponse = findStationsByLineId(lineId).as(LineAndStationsResponse.class);
+        assertSoftly(softly -> {
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softly.assertThat(lineAndStationsResponse.getStationResponses()).hasSize(2);
+            softly.assertThat(doesNotContain(lineAndStationsResponse, "디노")).isTrue();
+        });
+    }
+
+    private boolean doesNotContain(final LineAndStationsResponse lineAndStationsResponse, final String stationName) {
+        return lineAndStationsResponse.getStationResponses().stream()
+                .noneMatch(stationResponse -> stationName.equals(stationResponse.getName()));
+    }
+
+    @Test
+    void 호선에_역을_추가한다() {
+        //given
+        final Long lineId = createLineAndGetId(일호선_남색_요청);
+        final Long 후추_id = createStationAndGetId(후추_요청);
+        final Long 디노_id = createStationAndGetId(디노_요청);
+
+        //when
+        final ExtractableResponse<Response> response = given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .pathParam("lineId", lineId)
+                .body(new StationAddRequest(후추_id, 디노_id, 7))
+                .when()
+                .post("/lines/{lineId}/stations")
+                .then().log().all()
+                .extract();
+
+        //then
+        final LineAndStationsResponse lineAndStationsResponse = findStationsByLineId(lineId).as(LineAndStationsResponse.class);
+        assertSoftly(softly -> {
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softly.assertThat(lineAndStationsResponse.getLineResponse().getId()).isEqualTo(1L);
+            softly.assertThat(lineAndStationsResponse.getLineResponse().getName()).isEqualTo("일호선");
+            softly.assertThat(lineAndStationsResponse.getLineResponse().getColor()).isEqualTo("남색");
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(0).getId()).isEqualTo(1L);
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(0).getName()).isEqualTo("후추");
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(1).getId()).isEqualTo(2L);
+            softly.assertThat(lineAndStationsResponse.getStationResponses().get(1).getName()).isEqualTo("디노");
+        });
     }
 }

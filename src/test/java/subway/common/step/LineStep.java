@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.common.step;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
@@ -11,15 +11,18 @@ import static io.restassured.RestAssured.given;
 
 public class LineStep {
 
-    public static Long createLine(final LineRequest lineRequest) {
-        final ExtractableResponse<Response> response = given().log().all()
+    public static ExtractableResponse<Response> createLine(final LineRequest lineRequest) {
+        return given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest)
                 .when()
                 .post("/lines")
                 .then().log().all()
                 .extract();
+    }
 
+    public static Long createLineAndGetId(final LineRequest lineRequest) {
+        final ExtractableResponse<Response> response = createLine(lineRequest);
         final JsonPath jsonPath = response.jsonPath();
         return jsonPath.getLong("id");
     }

@@ -16,8 +16,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static subway.fixture.DomainFixture.후추;
-import static subway.fixture.WebFixture.후추_요청;
+import static subway.common.fixture.DomainFixture.후추;
+import static subway.common.fixture.WebFixture.후추_요청;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

@@ -12,7 +12,7 @@ import subway.integration.IntegrationTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static subway.fixture.EntityFixture.후추_Entity;
+import static subway.common.fixture.EntityFixture.후추_Entity;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

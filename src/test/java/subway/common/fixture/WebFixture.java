@@ -1,4 +1,4 @@
-package subway.fixture;
+package subway.common.fixture;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;

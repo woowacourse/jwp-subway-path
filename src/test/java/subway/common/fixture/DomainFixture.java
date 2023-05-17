@@ -1,4 +1,4 @@
-package subway.fixture;
+package subway.common.fixture;
 
 import subway.domain.line.Line;
 import subway.domain.section.Section;

@@ -86,7 +86,7 @@ public class Sections {
                             sections.remove(section);
                             return section.changeLeft(to, distance);
                         })
-                        .orElseThrow(IllegalStateException::new));
+                        .orElseThrow(() -> new IllegalStateException("수정된 구간을 찾을 수 없습니다.")));
 
         sections.add(changedSection);
     }
@@ -154,7 +154,7 @@ public class Sections {
                 .map(Section::getFrom)
                 .filter(from -> !toStations.contains(from))
                 .findFirst()
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(() -> new IllegalStateException("첫번째 역을 찾을 수 없습니다."));
     }
 
     private List<Station> generateOrderedStations(final Station start) {

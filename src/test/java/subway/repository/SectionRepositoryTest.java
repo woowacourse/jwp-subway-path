@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static subway.fixture.DomainFixture.*;
+import static subway.common.fixture.DomainFixture.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

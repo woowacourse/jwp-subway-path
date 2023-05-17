@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.step;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +9,6 @@ import subway.dto.LineResponse;
 import subway.dto.StationAddRequest;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -48,20 +47,5 @@ public class LineController {
     public ResponseEntity<Void> deleteStationFromLineByIds(@PathVariable Long lineId, @PathVariable Long stationId) {
         lineService.deleteStationFromLine(lineId, stationId);
         return ResponseEntity.ok().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(final Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(final Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
