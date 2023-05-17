@@ -10,10 +10,6 @@ public class Sections {
 	private static final int END_POINT_SIZE = 1;
 	private List<Section> sections;
 
-	public Sections() {
-		this.sections = new ArrayList<>();
-	}
-
 	public Sections(final List<Section> sections) {
 		this.sections = sections;
 	}
