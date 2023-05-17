@@ -1,7 +1,6 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 import static subway.integration.TestFixture.OBJECT_MAPPER;
 import static subway.integration.TestFixture.SAMSUNG;
 import static subway.integration.TestFixture.SEONGLENUG;
@@ -30,7 +29,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(jsonSerialize(pathRequest))
-                .when().post("/path")
+                .when().get("/path")
                 .then().log().all().extract();
 
         // then
@@ -38,6 +37,6 @@ public class PathIntegrationTest extends IntegrationTest {
         final PathResponse pathResponse = OBJECT_MAPPER.readValue(response.asString(), PathResponse.class);
         assertThat(pathResponse)
                 .extracting(PathResponse::getTotalDistance, PathResponse::getTotalFare)
-                .containsExactly(tuple(10, 1250));
+                .containsExactly(5, 1250);
     }
 }
