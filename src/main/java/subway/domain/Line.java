@@ -6,19 +6,25 @@ import subway.exception.ErrorCode;
 import subway.exception.InvalidException;
 
 public class Line {
+    private final Long id;
     private final String name;
     private final Sections sections;
 
-    private Line(final String name, final Sections sections) {
+    private Line(final Long id, final String name, final Sections sections) {
+        this.id = id;
         this.name = name;
         this.sections = sections;
     }
 
-    public static Line of(final String name, final List<Section> sections) {
+    public static Line createWithoutId(final String name, final List<Section> sections) {
+        return Line.of(null, name, sections);
+    }
+
+    public static Line of(final Long id, final String name, final List<Section> sections) {
         if (sections.isEmpty()) {
-            return new Line(name, new Sections(sections));
+            return new Line(id, name, new Sections(sections));
         }
-        return new Line(name, Sections.from(sections));
+        return new Line(id, name, Sections.from(sections));
     }
 
     public void addSection(final Station upStation, final Station downStation, final int distance) {
@@ -33,16 +39,20 @@ public class Line {
         sections.deleteStation(station);
     }
 
-    public String getName() {
-        return name;
-    }
-
     public List<Section> getSectionsByList() {
         return new ArrayList<>(sections.getSections());
     }
 
     public List<Station> getStations() {
         return new ArrayList<>(sections.getStations());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public boolean isEmpty() {

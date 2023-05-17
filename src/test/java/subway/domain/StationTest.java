@@ -14,7 +14,7 @@ class StationTest {
     @DisplayName("생성 테스트")
     void create() {
         // expected
-        assertDoesNotThrow(() -> new Station("잠실역"));
+        assertDoesNotThrow(() -> new Station(1L, "잠실역"));
     }
 
     @ParameterizedTest(name = "{displayName}[{index}] = ''{0}''")
@@ -22,6 +22,6 @@ class StationTest {
     @DisplayName(value = "이름에 공백이 입력되면 예외가 발생한다.")
     void createEmpty(String name) {
         // expected
-        Assertions.assertThatThrownBy(() -> new Station(name)).isInstanceOf(InvalidException.class);
+        Assertions.assertThatThrownBy(() -> new Station(1L, name)).isInstanceOf(InvalidException.class);
     }
 }

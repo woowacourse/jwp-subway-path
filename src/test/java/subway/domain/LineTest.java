@@ -14,7 +14,7 @@ class LineTest {
     @DisplayName("of() : 입력되는 구간이 없는 경우, 생성되는 Line은 빈 Sections를 갖는다.")
     void ofWhenEmptySections() {
         // given
-        Line line = Line.of("2호선", List.of());
+        Line line = Line.of(1L, "2호선", List.of());
 
         // then
         assertAll(
@@ -27,8 +27,8 @@ class LineTest {
     @DisplayName("deleteStation() : 노선이 비어 있을 때 역을 지우면 예외를 던진다.")
     void deleteStationWhenEmptySectionThrowsInvalidException() {
         // given
-        Line line = Line.of("2호선", List.of());
-        Station stationForDelete = new Station("존재하지않는역");
+        Line line = Line.of(1L, "2호선", List.of());
+        Station stationForDelete = new Station(1L, "존재하지않는역");
 
         // then
         assertThatThrownBy(() -> line.deleteStation(stationForDelete))

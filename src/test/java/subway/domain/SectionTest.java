@@ -16,8 +16,8 @@ class SectionTest {
     @DisplayName("생성 테스트")
     void create() {
         // given
-        Station upStation = new Station("잠실역");
-        Station downStation = new Station("잠실새내역");
+        Station upStation = new Station(1L, "잠실역");
+        Station downStation = new Station(2L, "잠실새내역");
 
         // expected
         assertDoesNotThrow(() -> new Section(upStation, downStation, 10));
@@ -28,8 +28,8 @@ class SectionTest {
     @DisplayName("거리가 양수가 아닐 때 예외가 발생한다.")
     void createNotPositiveDistance(int distance) {
         // given
-        Station upStation = new Station("잠실역");
-        Station downStation = new Station("잠실새내역");
+        Station upStation = new Station(1L, "잠실역");
+        Station downStation = new Station(2L, "잠실새내역");
 
         // expected
         assertThatThrownBy(() -> new Section(upStation, downStation, distance))
@@ -40,7 +40,7 @@ class SectionTest {
     @DisplayName("시작역과 도착역이 같을 때 예외가 발생한다.")
     void createDuplicateStations() {
         // given
-        Station upStation = new Station("잠실역");
+        Station upStation = new Station(1L, "잠실역");
 
         // expected
         assertThatThrownBy(() -> new Section(upStation, upStation, 10))
@@ -51,15 +51,15 @@ class SectionTest {
     @DisplayName("역이 구간 사이에 추가될 때 기존 구간의 거리보다 크거나 같으면 예외가 발생한다.")
     void validateDistance() {
         // given
-        Station upStation = new Station("잠실역");
-        Station downStation = new Station("잠실새내역");
+        Station upStation = new Station(1L, "잠실역");
+        Station downStation = new Station(2L, "잠실새내역");
         Section originalSection = new Section(upStation, downStation, 10);
 
         // expected
         assertThatThrownBy(() -> originalSection.getDividedSection(
                 new Section(
-                        new Station("잠실새내역"),
-                        new Station("신림역"),
+                        new Station(1L, "잠실새내역"),
+                        new Station(2L, "신림역"),
                         20)))
                 .isInstanceOf(InvalidException.class);
     }
@@ -68,11 +68,11 @@ class SectionTest {
     @DisplayName("새로운 구간이 뒤에 추가될 때 나누어지는 구간을 리턴한다.")
     void getDividedSectionBack() {
         // given
-        Station upStation = new Station("잠실역");
-        Station downStation = new Station("잠실새내역");
+        Station upStation = new Station(1L, "잠실역");
+        Station downStation = new Station(2L, "잠실새내역");
         Section originalSection = new Section(upStation, downStation, 10);
 
-        Station newUpStation = new Station("봉천역");
+        Station newUpStation = new Station(3L, "봉천역");
         Section newSection = new Section(newUpStation, downStation, 4);
 
         // when
@@ -90,11 +90,11 @@ class SectionTest {
     @DisplayName("새로운 구간이 앞에 추가될 때 나누어지는 구간을 리턴한다.")
     void getDividedSectionFront() {
         // given
-        Station upStation = new Station("잠실역");
-        Station downStation = new Station("잠실새내역");
+        Station upStation = new Station(1L, "잠실역");
+        Station downStation = new Station(2L, "잠실새내역");
         Section originalSection = new Section(upStation, downStation, 10);
 
-        Station newDownStation = new Station("봉천역");
+        Station newDownStation = new Station(3L, "봉천역");
         Section newSection = new Section(upStation, newDownStation, 4);
 
         // when
