@@ -142,7 +142,7 @@ class LineControllerTest {
                             .content(objectMapper.writeValueAsString(request)))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().string("노선 추가 요금은 0보다 커야합니다."));
+                    .andExpect(content().string("노선 추가 요금은 0원 이상 가능합니다."));
         }
     }
 

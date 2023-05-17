@@ -17,7 +17,7 @@ public class LineCreateRequest {
 
     @Schema(description = "노선 추가 요금")
     @NotNull(message = "노선 추가 요금은 존재해야 합니다.")
-    @Min(value = 0, message = "노선 추가 요금은 0보다 커야합니다.")
+    @Min(value = 0, message = "노선 추가 요금은 0원 이상 가능합니다.")
     private Integer fare;
 
     private LineCreateRequest() {

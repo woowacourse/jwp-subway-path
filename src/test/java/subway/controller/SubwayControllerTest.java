@@ -15,13 +15,15 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import subway.controller.dto.request.ShortestPathFindRequest;
+import subway.controller.dto.request.PassengerRequest;
 import subway.controller.dto.response.ShortestPathResponse;
 import subway.controller.dto.response.StationResponse;
 import subway.service.SubwayService;
@@ -45,7 +47,7 @@ class SubwayControllerTest {
         @Test
         @DisplayName("유효한 요청이라면 최단 경로 정보를 반환한다.")
         void findShortestPath() throws Exception {
-            final ShortestPathFindRequest request = new ShortestPathFindRequest(1L, 2L);
+            final PassengerRequest request = new PassengerRequest(10, 1L, 2L);
             final ShortestPathResponse response = new ShortestPathResponse(
                     List.of(
                             StationResponse.from(StationFixtures.GANGNAM),
@@ -55,7 +57,7 @@ class SubwayControllerTest {
                     1250
             );
 
-            given(subwayService.findShortestPath(any(ShortestPathFindRequest.class))).willReturn(response);
+            given(subwayService.findShortestPath(any(PassengerRequest.class))).willReturn(response);
 
             final MvcResult mvcResult = mockMvc.perform(get("/subways/shortest-path")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +74,7 @@ class SubwayControllerTest {
         @Test
         @DisplayName("출발역 ID가 존재하지 않으면 400 상태를 반환한다.")
         void findShortestPathWithInvalidStartStation() throws Exception {
-            final ShortestPathFindRequest request = new ShortestPathFindRequest(null, 2L);
+            final PassengerRequest request = new PassengerRequest(10, null, 2L);
 
             mockMvc.perform(get("/subways/shortest-path")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +87,7 @@ class SubwayControllerTest {
         @Test
         @DisplayName("도착역 ID가 존재하지 않으면 400 상태를 반환한다.")
         void findShortestPathWithInvalidEndStation() throws Exception {
-            final ShortestPathFindRequest request = new ShortestPathFindRequest(1L, null);
+            final PassengerRequest request = new PassengerRequest(10, 1L, null);
 
             mockMvc.perform(get("/subways/shortest-path")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -93,6 +95,33 @@ class SubwayControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().string("도착역 ID는 존재해야 합니다."));
+        }
+
+        @Test
+        @DisplayName("탑승자 나이가 존재하지 않으면 400 상태를 반환한다.")
+        void findShortestPathWithEmptyAge() throws Exception {
+            final PassengerRequest request = new PassengerRequest(null, 1L, 2L);
+
+            mockMvc.perform(get("/subways/shortest-path")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("탑승자 나이는 입력해야 합니다."));
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = {Integer.MIN_VALUE, -1, 0})
+        @DisplayName("탑승자 나이가 0보다 작거나 같으면 400 상태를 반환한다.")
+        void findShortestPathWithInvalidAge(final int age) throws Exception {
+            final PassengerRequest request = new PassengerRequest(age, 1L, 2L);
+
+            mockMvc.perform(get("/subways/shortest-path")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("탑승자 나이는 0보다 커야합니다."));
         }
     }
 }
