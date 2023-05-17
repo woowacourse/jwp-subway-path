@@ -10,7 +10,6 @@ public class SectionEntity {
     private final Long downStationId;
     private final int distance;
 
-
     public SectionEntity(
             final Long lineId,
             final Long upStationId,

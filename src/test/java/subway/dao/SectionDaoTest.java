@@ -40,11 +40,11 @@ class SectionDaoTest {
     @Test
     void 여러_구간을_받아_저장한다() {
         // given
-        final Long stationAid = stationDao.insert(A.stationA);
-        final Long stationBid = stationDao.insert(B.stationB);
-        final Long stationCid = stationDao.insert(C.stationC);
+        final Long stationAid = stationDao.insert(A.entity);
+        final Long stationBid = stationDao.insert(B.entity);
+        final Long stationCid = stationDao.insert(C.entity);
 
-        final Long lineId = lineDao.insert(Line1.line);
+        final Long lineId = lineDao.insert(Line1.entity);
 
         final List<SectionEntity> sectionEntities = List.of(
                 new SectionEntity(lineId, stationAid, stationBid, 5),
@@ -61,16 +61,18 @@ class SectionDaoTest {
     @Test
     void 저장된_모든_구간을_삭제한다() {
         // given
-        final Long stationAid = stationDao.insert(A.stationA);
-        final Long stationBid = stationDao.insert(B.stationB);
-        final Long stationCid = stationDao.insert(C.stationC);
+        final Long stationAid = stationDao.insert(A.entity);
+        final Long stationBid = stationDao.insert(B.entity);
+        final Long stationCid = stationDao.insert(C.entity);
 
-        final Long lineId = lineDao.insert(Line1.line);
+        final Long lineId = lineDao.insert(Line1.entity);
 
         final List<SectionEntity> sectionEntities = List.of(
                 new SectionEntity(lineId, stationAid, stationBid, 5),
                 new SectionEntity(lineId, stationBid, stationCid, 6)
         );
+
+        sectionDao.batchInsert(sectionEntities);
 
         // when
         sectionDao.deleteAllByLineName("1호선");
