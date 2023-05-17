@@ -4,15 +4,21 @@ import java.util.Objects;
 
 public class Section {
 
+    private final Long id;
     private final Station from;
     private final Station to;
     private final Distance distance;
 
-    public Section(final Station from, final Station to, final int distance) {
+    public Section(final Long id, final Station from, final Station to, final int distance) {
         validateDuplication(from, to);
+        this.id = id;
         this.from = from;
         this.to = to;
         this.distance = new Distance(distance);
+    }
+
+    public Section(final Station from, final Station to, final int distance) {
+        this(null, from, to, distance);
     }
 
     private void validateDuplication(final Station from, final Station to) {
@@ -43,6 +49,10 @@ public class Section {
 
     public Section changeRight(final Station station, final int distance) {
         return new Section(from, station, this.distance.subtract(distance));
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Station getFrom() {
