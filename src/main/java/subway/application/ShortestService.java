@@ -54,7 +54,7 @@ public class ShortestService {
                     .map(PathEdgeProxy::toPath)
                     .collect(Collectors.toList());
             return new Paths(paths);
-        } catch (final NullPointerException e) {
+        } catch (final Exception e) {
             throw new IllegalStateException("경로가 존재하지 않습니다.");
         }
     }

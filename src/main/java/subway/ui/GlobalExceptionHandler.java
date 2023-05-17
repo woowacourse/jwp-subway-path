@@ -23,7 +23,7 @@ public final class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<String> handle(final IllegalStateException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.ok(e.getMessage());
     }
 
     @ExceptionHandler
