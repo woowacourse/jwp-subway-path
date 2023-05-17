@@ -1,4 +1,4 @@
-package subway.line.adapter.input.web;
+package subway.line.adapter.input.web.unit;
 
 import config.TestConfig;
 import io.restassured.RestAssured;
@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
+import subway.line.adapter.input.web.GetAllSortedLineController;
 import subway.line.application.port.input.GetAllSortedLineUseCase;
 import subway.line.dto.GetAllSortedLineResponse;
 import subway.line.dto.GetSortedLineResponse;

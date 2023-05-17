@@ -1,4 +1,4 @@
-package subway.station.adapter.input.web;
+package subway.station.adapter.input.web.integrated;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

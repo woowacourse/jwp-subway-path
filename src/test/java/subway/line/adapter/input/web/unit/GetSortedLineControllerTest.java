@@ -1,7 +1,11 @@
-package subway.line.adapter.input.web;
+package subway.line.adapter.input.web.unit;
 
 import config.TestConfig;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -12,40 +16,51 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
-import subway.line.application.port.input.DeleteLineUseCase;
+import subway.line.adapter.input.web.GetSortedLineController;
+import subway.line.application.port.input.GetSortedLineUseCase;
+import subway.line.dto.GetSortedLineResponse;
 
-import static org.hamcrest.Matchers.is;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.*;
+import static org.mockito.BDDMockito.given;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ContextConfiguration(classes = TestConfig.class)
-@WebMvcTest(DeleteLineController.class)
-class DeleteLineControllerTest {
+@WebMvcTest(GetSortedLineController.class)
+class GetSortedLineControllerTest {
     @MockBean
-    private DeleteLineUseCase useCase;
+    private GetSortedLineUseCase useCase;
     
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.standaloneSetup(
-                MockMvcBuilders.standaloneSetup(new DeleteLineController(useCase))
+                MockMvcBuilders.standaloneSetup(new GetSortedLineController(useCase))
                         .setControllerAdvice(new GlobalExceptionHandler())
         );
     }
     
     @Test
-    void lineId로_노선을_삭제한다() {
+    void lineId로_해당_노선의_정렬된_역들을_가져오기() {
+        // given
+        given(useCase.getSortedLine(1L)).willReturn(new GetSortedLineResponse(List.of("잠실역", "선릉역")));
+        
         // expect
         RestAssuredMockMvc.given().log().all()
-                .when().delete("/lines/1")
+                .when().get("/lines/1")
                 .then().log().all()
                 .assertThat()
-                .status(HttpStatus.NO_CONTENT);
+                .status(HttpStatus.OK)
+                .body("sortedStations", contains("잠실역", "선릉역"));
     }
     
     @Test
-    void lineId가_null일_시_예외_발생() {
+    void lineId가_null이면_예외_발생() {
         // expect
         RestAssuredMockMvc.given().log().all()
-                .when().delete("/lines/" + null)
+                .when().get("/lines/" + null)
                 .then().log().all()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("message", is("[ERROR] 서버가 응답할 수 없습니다."));

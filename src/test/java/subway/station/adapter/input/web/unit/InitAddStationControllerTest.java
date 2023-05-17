@@ -1,4 +1,4 @@
-package subway.station.adapter.input.web;
+package subway.station.adapter.input.web.unit;
 
 import config.TestConfig;
 import io.restassured.http.ContentType;
@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
+import subway.station.adapter.input.web.InitAddStationController;
 import subway.station.application.port.input.InitAddStationUseCase;
 
 import java.util.HashMap;

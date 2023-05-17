@@ -1,4 +1,4 @@
-package subway.path.adapter.input.web;
+package subway.path.adapter.input.web.unit;
 
 import config.TestConfig;
 import io.restassured.http.ContentType;
@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
+import subway.path.adapter.input.web.GetShortestPathController;
 import subway.path.application.port.input.GetShortestPathUseCase;
 import subway.path.dto.GetShortestPathResponse;
 
