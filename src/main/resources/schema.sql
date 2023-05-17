@@ -21,8 +21,5 @@ CREATE TABLE IF NOT EXISTS section
     second_station_id BIGINT          NOT NULL,
     distance       BIGINT,
     line_id        BIGINT,
-    FOREIGN KEY (line_id) REFERENCES line (id) ON DELETE CASCADE,
-    FOREIGN KEY (first_station_id) REFERENCES station (id) ON DELETE CASCADE,
-    FOREIGN KEY (second_station_id) REFERENCES station (id) ON DELETE CASCADE,
     PRIMARY KEY (id)
 );

@@ -9,6 +9,7 @@ import subway.line.application.port.output.GetAllLinePort;
 import subway.line.application.port.output.GetLineByIdPort;
 import subway.line.domain.Line;
 import subway.line.domain.Subway;
+import subway.section.application.port.output.DeleteSectionByLineIdPort;
 
 @RequiredArgsConstructor
 @Transactional
@@ -17,6 +18,7 @@ public class DeleteLineService implements DeleteLineUseCase {
     private final GetAllLinePort getAllLinePort;
     private final GetLineByIdPort getLineByIdPort;
     private final DeleteLinePort deleteLinePort;
+    private final DeleteSectionByLineIdPort deleteSectionByLineIdPort;
     
     @Override
     public void deleteLine(final Long lineId) {
@@ -25,5 +27,6 @@ public class DeleteLineService implements DeleteLineUseCase {
         subway.removeLine(lineById.getName());
         
         deleteLinePort.deleteById(lineId);
+        deleteSectionByLineIdPort.deleteSectionByLineId(lineId);
     }
 }

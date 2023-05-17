@@ -9,6 +9,7 @@ import subway.line.application.port.output.DeleteLinePort;
 import subway.line.application.port.output.GetAllLinePort;
 import subway.line.application.port.output.GetLineByIdPort;
 import subway.line.domain.Line;
+import subway.section.application.port.output.DeleteSectionByLineIdPort;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +27,8 @@ class DeleteLineServiceTest {
     private GetLineByIdPort getLineByIdPort;
     @Mock
     private DeleteLinePort deleteLinePort;
+    @Mock
+    private DeleteSectionByLineIdPort deleteSectionByLineIdPort;
     
     @InjectMocks
     private DeleteLineService deleteLineService;
