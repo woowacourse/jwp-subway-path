@@ -51,10 +51,6 @@ public class LineService {
         return LineSelectResponse.from(line);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new LineEntity(id, lineUpdateRequest.getLineName()));
-    }
-
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }

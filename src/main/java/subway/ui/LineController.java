@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -75,17 +74,6 @@ public class LineController {
     @GetMapping
     public ResponseEntity<LinesSelectResponse> findAllLines() {
         return ResponseEntity.ok(lineService.findAllLine());
-    }
-
-    /**
-     * (요구사항 X) 한 노선의 정보를 수정한다.
-     * @param lineId
-     * @param lineUpdateRequest -> Line 수정에 어떤 정보가 필요할지 더 고민해보고 나중에 결정
-     */
-    @PutMapping("/{lineId}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(lineId, lineUpdateRequest);
-        return ResponseEntity.ok().build();
     }
 
     /**
