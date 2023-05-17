@@ -51,7 +51,9 @@ public class LineService {
         Sections sections = new Sections(sectionsDtos.stream()
                 .collect(Collectors.toMap(
                         section -> stationDao.findById(section.getUpperStation()),
-                        section -> new Section(stationDao.findById(section.getUpperStation()),
+                        section -> new Section(
+                                id,
+                                stationDao.findById(section.getUpperStation()),
                                 stationDao.findById(section.getLowerStation()),
                                 new Distance(section.getDistance()))
                 )));

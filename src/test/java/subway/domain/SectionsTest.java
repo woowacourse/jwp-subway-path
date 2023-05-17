@@ -28,8 +28,8 @@ class SectionsTest {
     @DisplayName("올바른 역 간 거리를 계산한다.")
     @Test
     void getDistanceBetween() {
-        sections.insertSectionBetween(JAMSIL_NARU, JAMSIL, DISTANCE_10);
-        sections.insertSectionBetween(JAMSIL_SAENAE, JAMSIL_NARU, DISTANCE_6);
+        sections.insertSectionBetween(2L, JAMSIL_NARU, JAMSIL, DISTANCE_10);
+        sections.insertSectionBetween(2L, JAMSIL_SAENAE, JAMSIL_NARU, DISTANCE_6);
         Distance distance = sections.getDistanceBetween(JAMSIL_SAENAE, JAMSIL);
 
         assertThat(distance.getValue()).isEqualTo(16);
@@ -38,8 +38,8 @@ class SectionsTest {
     @DisplayName("상행 종점에서 하행 종점까지 정렬된 순서로 Section 리스트를 반환한다")
     @Test
     void getSections() {
-        sections.insertSectionBetween(JAMSIL_NARU, JAMSIL, DISTANCE_10);
-        sections.insertSectionBetween(JAMSIL_SAENAE, JAMSIL_NARU, DISTANCE_6);
+        sections.insertSectionBetween(2L, JAMSIL_NARU, JAMSIL, DISTANCE_10);
+        sections.insertSectionBetween(2L, JAMSIL_SAENAE, JAMSIL_NARU, DISTANCE_6);
         List<Station> stations = sections.getSections()
                 .stream()
                 .map(section -> section.getUpper())

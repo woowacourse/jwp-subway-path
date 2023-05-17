@@ -1,11 +1,13 @@
 package subway.domain;
 
 public class Section {
+    private final Long lindId;
     private final Station upper;
     private final Station lower;
     private final Distance distance;
 
-    public Section(final Station upper, final Station lower, final Distance distance) {
+    public Section(Long lindId, Station upper, Station lower, Distance distance) {
+        this.lindId = lindId;
         this.upper = upper;
         this.lower = lower;
         this.distance = distance;
@@ -16,6 +18,10 @@ public class Section {
             return true;
         }
         return false;
+    }
+
+    public Long getLindId() {
+        return lindId;
     }
 
     public Station getUpper() {

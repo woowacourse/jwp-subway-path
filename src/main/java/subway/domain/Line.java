@@ -52,12 +52,12 @@ public class Line {
     private void insertBoth(final Station top, final Station bottom, final Distance distance) {
         stations.add(top);
         stations.add(bottom);
-        sections.insertSectionBetween(top, bottom, distance);
+        sections.insertSectionBetween(id, top, bottom, distance);
     }
 
     private void insertUpper(final Station station, final Station base, final Distance distance) {
         stations.add(stations.indexOf(base), station);
-        sections.insertSectionBetween(station, base, distance);
+        sections.insertSectionBetween(id, station, base, distance);
 
         if (isTop(station)) {
             return;
@@ -65,21 +65,21 @@ public class Line {
 
         Distance previousDistance = sections.getDistanceBetween(getUpperOf(station), base);
         Distance upperDistance = previousDistance.minus(distance);
-        sections.insertSectionBetween(getUpperOf(station), station, upperDistance);
+        sections.insertSectionBetween(id, getUpperOf(station), station, upperDistance);
     }
 
     private void insertLower(final Station station, final Station base, final Distance distance) {
         stations.add(stations.indexOf(base) + 1, station);
 
         if (isBottom(station)) {
-            sections.insertSectionBetween(base, station, distance);
+            sections.insertSectionBetween(id, base, station, distance);
             return;
         }
 
         Distance previousDistance = sections.getDistanceBetween(base, getLowerOf(station));
         Distance lowerDistance = previousDistance.minus(distance);
-        sections.insertSectionBetween(base, station, distance);
-        sections.insertSectionBetween(station, getLowerOf(station), lowerDistance);
+        sections.insertSectionBetween(id, base, station, distance);
+        sections.insertSectionBetween(id, station, getLowerOf(station), lowerDistance);
     }
 
     public void delete(final Station station) {
@@ -109,7 +109,7 @@ public class Line {
         Distance lowerDistance = sections.getDistanceBetween(station, getLowerOf(station));
         sections.deleteSection(getUpperOf(station));
         sections.deleteSection(station);
-        sections.insertSectionBetween(getUpperOf(station), getLowerOf(station), upperDistance.plus(lowerDistance));
+        sections.insertSectionBetween(id, getUpperOf(station), getLowerOf(station), upperDistance.plus(lowerDistance));
         stations.remove(station);
     }
 

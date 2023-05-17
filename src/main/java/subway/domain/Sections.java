@@ -12,8 +12,8 @@ public class Sections {
         this.sections = sections;
     }
 
-    public void insertSectionBetween(final Station upper, final Station lower, final Distance distance) {
-        Section section = new Section(upper, lower, distance);
+    public void insertSectionBetween(final Long lineId, final Station upper, final Station lower, final Distance distance) {
+        Section section = new Section(lineId, upper, lower, distance);
         sections.put(upper, section);
     }
 
@@ -59,7 +59,7 @@ public class Sections {
                 .stream()
                 .filter(station -> !notTop.contains(station))
                 .findFirst()
-                .get();
+                .orElseThrow();
 
         List<Section> sortedSections = new LinkedList<>();
         while (sections.get(start) != null) {
