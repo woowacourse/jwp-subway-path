@@ -17,12 +17,21 @@ class PathFinderTest {
             new Section(1L, 1L, 2L, 1L, 5),
             new Section(1L, 2L, 3L, 1L, 5),
             new Section(1L, 3L, 4L, 1L, 5),
-            new Section(1L, 1L, 3L, 2L, 2)
+            new Section(1L, 1L, 3L, 2L, 2),
+            new Section(1L, 4L, 5L, 1L, 5),
+            new Section(1L, 5L, 6L, 1L, 5)
         );
-        PathFinder pathFinder = new PathFinder(sections);
+        PathFinder pathFinder = new PathFinder(new NormalFeeStrategy(), sections);
         assertAll(
             () -> assertThat(pathFinder.findPath(1L, 4L)).containsExactly(1L, 3L, 4L),
-            () -> assertThat(pathFinder.findTotalDistance(1L, 4L)).isEqualTo(7));
+            () -> assertThat(pathFinder.findTotalDistance(1L, 4L)).isEqualTo(7),
+            () -> assertThat(pathFinder.findTotalDistance(1L, 5L)).isEqualTo(12),
+            () -> assertThat(pathFinder.findTotalDistance(1L, 6L)).isEqualTo(17),
+            () -> assertThat(pathFinder.findFee(1L, 4L)).isEqualTo(1250),
+            () -> assertThat(pathFinder.findFee(1L, 5L)).isEqualTo(1350),
+            () -> assertThat(pathFinder.findFee(1L, 6L)).isEqualTo(1450)
+        );
+
     }
 
 }
