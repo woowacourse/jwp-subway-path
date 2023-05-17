@@ -16,32 +16,15 @@
 
 ### API
 
-- 노선(/lines)
-    - 등록 : Post
-    - 조회 : Get
-        - 전체 조회
-        - 특정 노선 조회 : /{id}
-    - 수정 : Put /{id}
-    - 삭제 : Delete /{id}
+-GET
+- `/lines` : 전체 노선과 해당 역 조회 ex) 1호선 역 정보, 2호선 역 정보, ...
+- `/lines/{lineId}` : 해당 노선의 역 전체 조회 ex) 합정 -> 홍대 -> 신촌 -> 이대 ...
 
-- 역(/stations)
-    - 등록 : Post
-    - 조회 : Get
-        - 전체 조회
-        - 특정 역 조회 : /{id}
-    - 수정 : Put /{id}
-    - 삭제 : Delete /{id}
+-POST
+- `/sections/{lineId}` : 역 추가 (구간 추가)
 
-
-- URI Mapping 예시 -GET
-    - `/lines` : 전체 노선 조회 ex) 1호선, 2호선, ...
-    - `/lines/{lineId}` : 해당 노선의 역 전체 조회 ex) 합정 -> 홍대 -> 신촌 -> 이대 ...
-
-- URI Mapping 예시 -POST
-    - `/sections/lineId=?` : 역 추가 (구간 추가)
-
-- URI Mapping 예시 -DELETE
-    - `/sections/lineId=?&&stationId=?` : 역 삭제 (해당 구간 삭제 및 재배치)
+-DELETE
+- `/sections/{lineId}/stationId=?` : 역 삭제 (해당 구간 삭제 및 재배치)
 
 ### 비즈니스 규칙
 
