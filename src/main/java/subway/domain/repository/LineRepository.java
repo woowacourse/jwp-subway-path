@@ -12,7 +12,7 @@ public interface LineRepository {
 
     List<Line> findAll();
 
-    Line findById(Long lineIdRequest);
+    Optional<Line> findById(Long lineIdRequest);
 
     Optional<Line> findByName(final Line line);
 }

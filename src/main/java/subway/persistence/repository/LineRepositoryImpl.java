@@ -43,11 +43,10 @@ public class LineRepositoryImpl implements LineRepository {
     }
 
     @Override
-    public Line findById(final Long lineIdRequest) {
-        final LineEntity lineEntity = lineDao.findById(lineIdRequest)
-                .orElseThrow(() -> new IllegalArgumentException("원하는 노선이 없습니다."));
+    public Optional<Line> findById(final Long lineIdRequest) {
+        final Optional<LineEntity> lineEntity = lineDao.findById(lineIdRequest);
 
-        return new Line(lineEntity.getId(), lineEntity.getName());
+        return lineEntity.map(line -> new Line(line.getId(), line.getName()));
     }
 
     @Override

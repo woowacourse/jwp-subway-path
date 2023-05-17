@@ -1,9 +1,5 @@
 package subway.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
 public class Section {
     private Long lineId;
     private Station upStation;
@@ -66,7 +62,7 @@ public class Section {
     }
 
     public Section mergedSection(final Section section, final Station station) {
-        final Long distance = this.distance + section.getDistance();
+        final Long distance = this.distance + section.distance;
 
         if (this.downStation.equals(station)) {
             return new Section(this.upStation, section.downStation, distance);
@@ -74,11 +70,27 @@ public class Section {
         return new Section(this.downStation, section.upStation, distance);
     }
 
-    public boolean validateEqualEndPoint(final Station upEndPoint,final Station downEndPoint) {
+    public boolean validateEqualEndPoint(final Station upEndPoint, final Station downEndPoint) {
         return upEndPoint.equals(this.downStation) ^ downEndPoint.equals(this.upStation);
     }
 
     public boolean isNowStation(final Station station) {
         return station.equals(this.upStation);
+    }
+
+    public Long getLineId() {
+        return lineId;
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public Long getDistance() {
+        return distance;
     }
 }

@@ -1,14 +1,13 @@
 package subway.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.util.Objects;
 
-@Getter
-@AllArgsConstructor
 public class Station {
-    private String name;
+    private final String name;
+
+    public Station(final String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
