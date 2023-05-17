@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import subway.domain.exception.DuplicateSectionException;
+
 public class Line2 {
 
     private static final int FIRST = 0;
@@ -30,6 +32,7 @@ public class Line2 {
     }
 
     public void add(Section section) {
+        validateNoDuplicate(section);
         if (this.hasOverlapWith(section)) {
             splitParentOf(section);
             return;
@@ -101,6 +104,12 @@ public class Line2 {
         return sections.stream()
                 .filter(that -> that.hasOverlapWith(section))
                 .findAny();
+    }
+
+    private void validateNoDuplicate(Section section) {
+        if (sections.contains(section)) {
+            throw new DuplicateSectionException();
+        }
     }
 
     private void validateEmpty(List<Section> sections) {

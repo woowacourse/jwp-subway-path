@@ -11,6 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import subway.domain.exception.DuplicateSectionException;
+
+@SuppressWarnings("NonAsciiCharacters")
 class Line2Test {
 
     private Line2 line;
@@ -18,6 +21,16 @@ class Line2Test {
     @BeforeEach
     void setUp() {
         this.line = new Line2("2호선", "green");
+    }
+
+    @DisplayName("이미 등록된 구간을 추가하면 예외를 던진다")
+    @Test
+    void addExistingSection_throws() {
+        var section = new Section(잠실나루역, 잠실역, 10);
+        line.add(section);
+
+        assertThatThrownBy(() -> line.add(section))
+                .isInstanceOf(DuplicateSectionException.class);
     }
 
     @DisplayName("구간이 있을 때, 비연결 구간을 추가하면 예외를 던진다")
