@@ -34,7 +34,8 @@ class SectionTest {
                 new Section(FIXTURE_STATION_1, adding, new Distance(6)));
 
         assertThat(result.get())
-                .isEqualTo(new Section(adding, FIXTURE_STATION_2, new Distance(4)));
+                .isEqualTo(new Section(adding, FIXTURE_STATION_2,
+                        new Distance(LINE1_SECTION_ST1_ST2.getDistance().getValue() - 6)));
     }
 
     @DisplayName("구간에서 전달받은 구간만큼 뺀 구간을 반환한다 (상행 방향 구간 전달)")
@@ -46,7 +47,8 @@ class SectionTest {
                 new Section(adding, FIXTURE_STATION_2, new Distance(6)));
 
         assertThat(result.get())
-                .isEqualTo(new Section(FIXTURE_STATION_1, adding, new Distance(4)));
+                .isEqualTo(new Section(FIXTURE_STATION_1, adding,
+                        new Distance(LINE1_SECTION_ST1_ST2.getDistance().getValue() - 6)));
     }
 
     @DisplayName("전달받은 구간이 계산하는 구간보다 거리가 크거나 같으면 예외가 발생한다")
@@ -78,7 +80,9 @@ class SectionTest {
         Optional<Section> result = LINE1_SECTION_ST1_ST2.merge(LINE1_SECTION_ST2_ST3);
 
         assertThat(result.get())
-                .isEqualTo(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20)));
+                .isEqualTo(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3,
+                        new Distance(LINE1_SECTION_ST1_ST2.getDistance().getValue()
+                                + LINE1_SECTION_ST2_ST3.getDistance().getValue())));
     }
 
     @DisplayName("합치기 위한 구간과 전달받은 구간에 상관 없이 합친 구간을 반환한다")
@@ -87,7 +91,9 @@ class SectionTest {
         Optional<Section> result = LINE1_SECTION_ST2_ST3.merge(LINE1_SECTION_ST1_ST2);
 
         assertThat(result.get())
-                .isEqualTo(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20)));
+                .isEqualTo(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3,
+                        new Distance(LINE1_SECTION_ST2_ST3.getDistance().getValue()
+                                + LINE1_SECTION_ST1_ST2.getDistance().getValue())));
     }
 
     @DisplayName("구간과 전달받은 구간 사이에 교점이 없으면 빈 값을 반환한다")

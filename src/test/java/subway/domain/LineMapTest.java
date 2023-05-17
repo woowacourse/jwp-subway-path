@@ -61,7 +61,8 @@ class LineMapTest {
         assertThat(lineMap.extractSections())
                 .containsOnly(
                         new Section(FIXTURE_STATION_1, adding, new Distance(6)),
-                        new Section(adding, FIXTURE_STATION_2, new Distance(4)),
+                        new Section(adding, FIXTURE_STATION_2,
+                                new Distance(LINE1_SECTION_ST1_ST2.getDistance().getValue() - 6)),
                         LINE1_SECTION_ST2_ST3,
                         LINE1_SECTION_ST3_ST4,
                         LINE1_SECTION_ST4_ST5,
@@ -134,7 +135,9 @@ class LineMapTest {
 
         assertThat(lineMap.extractSections())
                 .containsOnly(
-                        new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20)),
+                        new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(
+                                LINE1_SECTION_ST1_ST2.getDistance().getValue()
+                                        + LINE1_SECTION_ST2_ST3.getDistance().getValue())),
                         LINE1_SECTION_ST3_ST4,
                         LINE1_SECTION_ST4_ST5,
                         LINE1_SECTION_ST5_ST6

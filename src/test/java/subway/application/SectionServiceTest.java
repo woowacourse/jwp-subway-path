@@ -56,7 +56,8 @@ class SectionServiceTest {
         inOrder.verify(sectionDao)
                 .insertAllByLineId(1L, List.of(
                         new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(6)),
-                        new Section(FIXTURE_STATION_3, FIXTURE_STATION_2, new Distance(4))
+                        new Section(FIXTURE_STATION_3, FIXTURE_STATION_2,
+                                LINE1_SECTION_ST1_ST2.getDistance().minus(new Distance(6)))
                 ));
     }
 
