@@ -109,16 +109,6 @@ public class Sections {
         return endPoints;
     }
 
-    public <K, V> List<K> getKeysByValue(Map<K, V> map, V value) {
-        List<K> keyList = new ArrayList<>();
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            if (entry.getValue().equals(value)) {
-                keyList.add(entry.getKey());
-            }
-        }
-        return keyList;
-    }
-
     public List<Station> getOrderedStations(final Station station) {
         final List<Station> orderedStations = new ArrayList<>();
         Station targetStation = station;
@@ -146,7 +136,6 @@ public class Sections {
         return null;
     }
 
-
     private boolean isRightEndId(final Long id) {
         return sections.stream()
                 .noneMatch(section -> section.existLeftById(id));
@@ -169,10 +158,6 @@ public class Sections {
 
     public int getSize() {
         return sections.size();
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     @Override
