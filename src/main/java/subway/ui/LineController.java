@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.PathService;
-import subway.dto.AddStationRequest;
-import subway.dto.DeleteStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LineSaveResponse;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
-import subway.dto.SaveResponse;
+import subway.dto.StationAddRequest;
+import subway.dto.StationDeleteRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -34,8 +34,8 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<SaveResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
-        SaveResponse line = lineService.saveLine(lineRequest);
+    public ResponseEntity<LineSaveResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
+        LineSaveResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
@@ -58,14 +58,14 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/station")
-    public ResponseEntity<Void> addStation(@PathVariable Long lineId, @RequestBody @Valid AddStationRequest request) {
+    public ResponseEntity<Void> addStation(@PathVariable Long lineId, @RequestBody @Valid StationAddRequest request) {
         lineService.addStation(lineId, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/stations")
     public ResponseEntity<Void> deleteStation(@PathVariable Long lineId,
-                                              @RequestBody @Valid DeleteStationRequest request) {
+                                              @RequestBody @Valid StationDeleteRequest request) {
         lineService.deleteStation(lineId, request);
         return ResponseEntity.noContent().build();
     }

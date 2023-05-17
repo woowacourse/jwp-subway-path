@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Subway;
-import subway.dto.AddStationRequest;
-import subway.dto.DeleteStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.SaveResponse;
+import subway.dto.LineSaveResponse;
+import subway.dto.StationAddRequest;
+import subway.dto.StationDeleteRequest;
 import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
 
@@ -24,16 +24,16 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    public SaveResponse saveLine(LineRequest request) {
+    public LineSaveResponse saveLine(LineRequest request) {
         if (lineRepository.existsByName(request.getLineName())) {
             throw new DuplicatedNameException(request.getLineName());
         }
         Line line = request.toDomain();
         Long saveId = lineRepository.save(line);
-        return new SaveResponse(saveId);
+        return new LineSaveResponse(saveId);
     }
 
-    public void addStation(Long lineId, AddStationRequest request) {
+    public void addStation(Long lineId, StationAddRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
         Line line = lineRepository.findById(lineId);
         subway.addStation(
@@ -45,7 +45,7 @@ public class LineService {
         lineRepository.save(subway.findLineByName(line.getName()));
     }
 
-    public void deleteStation(Long lineId, DeleteStationRequest request) {
+    public void deleteStation(Long lineId, StationDeleteRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
         Line line = lineRepository.findById(lineId);
         subway.removeStation(line.getName(), request.getStationName());

@@ -13,11 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Section;
-import subway.dto.AddStationRequest;
-import subway.dto.DeleteStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.SaveResponse;
+import subway.dto.LineSaveResponse;
+import subway.dto.StationAddRequest;
+import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
@@ -39,7 +39,7 @@ class LineServiceTest {
         LineRequest request = new LineRequest("2호선", "A", "B", 10);
 
         //when
-        SaveResponse saveResponse = lineService.saveLine(request);
+        LineSaveResponse saveResponse = lineService.saveLine(request);
 
         //then
         assertAll(
@@ -75,7 +75,7 @@ class LineServiceTest {
         )));
 
         //when
-        lineService.addStation(savedLineId, new AddStationRequest("Y", "Z", 10));
+        lineService.addStation(savedLineId, new StationAddRequest("Y", "Z", 10));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
@@ -99,7 +99,7 @@ class LineServiceTest {
         )));
 
         //when
-        lineService.deleteStation(savedLineId, new DeleteStationRequest("Y"));
+        lineService.deleteStation(savedLineId, new StationDeleteRequest("Y"));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
@@ -117,7 +117,7 @@ class LineServiceTest {
         )));
 
         //when
-        lineService.deleteStation(savedLineId, new DeleteStationRequest("A"));
+        lineService.deleteStation(savedLineId, new StationDeleteRequest("A"));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getStations)

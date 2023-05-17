@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.AddStationRequest;
-import subway.dto.DeleteStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
+import subway.dto.StationAddRequest;
+import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -97,7 +97,7 @@ public class IntegrationTestFixture {
     }
 
     public static ExtractableResponse<Response> 역_추가_요청(Long lineId, String source, String target, int distance) {
-        AddStationRequest request = new AddStationRequest(source, target, distance);
+        StationAddRequest request = new StationAddRequest(source, target, distance);
 
         return RestAssured
                 .given().log().all()
@@ -109,7 +109,7 @@ public class IntegrationTestFixture {
     }
 
     public static ExtractableResponse<Response> 역_삭제_요청(Long lineId, String stationName) {
-        DeleteStationRequest request = new DeleteStationRequest(stationName);
+        StationDeleteRequest request = new StationDeleteRequest(stationName);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

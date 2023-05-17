@@ -1,12 +1,12 @@
 package subway.dto;
 
-public class SaveResponse {
+public class LineSaveResponse {
     private Long id;
 
-    public SaveResponse() {
+    public LineSaveResponse() {
     }
 
-    public SaveResponse(Long id) {
+    public LineSaveResponse(Long id) {
         this.id = id;
     }
 

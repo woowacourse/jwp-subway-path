@@ -2,7 +2,7 @@ package subway.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class AddStationRequest {
+public class StationAddRequest {
 
     @NotNull(message = "추가하려는 역을 입력해주세요")
     private final String sourceStation;
@@ -11,7 +11,7 @@ public class AddStationRequest {
     @NotNull(message = "거리를 입력해주세요")
     private final Integer distance;
 
-    public AddStationRequest(String sourceStation, String targetStation, Integer distance) {
+    public StationAddRequest(String sourceStation, String targetStation, Integer distance) {
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
         this.distance = distance;
