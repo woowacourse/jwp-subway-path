@@ -236,7 +236,7 @@ public class Sections {
     public List<Station> findStationsInOrder(Line line) {
         List<Section> lineSections = findLineSections(line);
 
-        if(lineSections.isEmpty()) {
+        if (lineSections.isEmpty()) {
             return new ArrayList<>();
         }
 

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.request.LineRequest;
-import subway.dto.response.ErrorResponse;
 import subway.dto.response.LineResponse;
 
 import java.util.List;
