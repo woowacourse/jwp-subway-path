@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -22,7 +23,6 @@ public class Path {
         for (Station station : stations) {
             graph.addVertex(station);
         }
-
         for (Section section : sections) {
             Station upwardStation = section.getUpwardStation();
             Station downwardStation = section.getDownwardStation();
@@ -54,11 +54,27 @@ public class Path {
     }
 
     public List<Station> getShortestPathStations(final Station from, final Station to) {
+        validateSameStations(from, to);
+        validateUnconnectedStations(from, to);
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return dijkstraShortestPath.getPath(from, to).getVertexList();
     }
 
+    private void validateUnconnectedStations(final Station from, final Station to) {
+        if(!graph.containsVertex(from) || !graph.containsVertex(to)) {
+            throw new IllegalArgumentException("[ERROR] 출발역과 도착역이 연결되어있지 않습니다.");
+        }
+    }
+
+    private static void validateSameStations(final Station from, final Station to) {
+        if(from.equals(to)){
+            throw new IllegalArgumentException("[ERROR] 출발역과 도착역이 같아 조회할 경로가 없습니다.");
+        }
+    }
+
     public List<Section> getShortestPathSections(final Station from, final Station to) {
+        validateSameStations(from, to);
+        validateUnconnectedStations(from, to);
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return dijkstraShortestPath.getPath(from, to)
                 .getEdgeList()
@@ -68,6 +84,8 @@ public class Path {
     }
 
     public int getShortestPathDistance(final Station from, final Station to) {
+        validateSameStations(from, to);
+        validateUnconnectedStations(from, to);
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return (int) dijkstraShortestPath.getPath(from, to).getWeight();
     }

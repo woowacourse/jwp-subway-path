@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql({"/schema.sql", "/dummyDataForPath.sql"})
+@Sql({"/dropTable.sql", "/schema.sql", "/dummyDataForPath.sql"})
 @DisplayName("PathController 테스트")
 class PathControllerTest {
 
@@ -28,14 +28,34 @@ class PathControllerTest {
             RestAssured.port = port;
         }
 
-        @DisplayName("최단 경로를 성공적으로 조회하면 상태코드 200 OK를 반환하는지 확인한다.")
+        @DisplayName("존재하는 최단 경로를 성공적으로 조회하면 상태코드 200 OK를 반환하는지 확인한다.")
         @Test
         void successTest() {
             RestAssured.given()
                     .accept(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/paths?from=1&to=2&age=adult")
+                    .when().get("/paths?from=8&to=6&age=adult")
                     .then().log().all()
                     .statusCode(HttpStatus.OK.value());
+        }
+
+        @DisplayName("최단 경로가 존재하지 않으면 상태코드 400 BadRequest 를 반환하는지 확인한다.")
+        @Test
+        void failTest1() {
+            RestAssured.given()
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .when().get("/paths?from=8&to=2&age=adult")
+                    .then().log().all()
+                    .statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+
+        @DisplayName("출발역과 도착역이 같다면 상태코드 400 BadRequest 를 반환하는지 확인한다.")
+        @Test
+        void failTest2() {
+            RestAssured.given()
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .when().get("/paths?from=8&to=8&age=adult")
+                    .then().log().all()
+                    .statusCode(HttpStatus.BAD_REQUEST.value());
         }
     }
 
