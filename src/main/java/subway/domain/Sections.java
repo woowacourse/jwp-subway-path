@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -69,12 +70,10 @@ public class Sections {
             sections.clear();
             return;
         }
-
         if (isMid(station)) {
             deleteMidStation(station);
             return;
         }
-
         if (isEndpoint(station)) {
             final Section found = getSectionContains(station);
             sections.remove(found);
@@ -92,18 +91,23 @@ public class Sections {
     }
 
     private boolean isEndpoint(final Station station) {
-        return sections.get(0).isUp(station) || sections.get(sections.size() - 1).isDown(station);
+        return sections.get(0).isUp(station)
+                || sections.get(sections.size() - 1).isDown(station);
     }
 
     private void deleteMidStation(final Station station) {
         final Section upIsStation = getSectionUpIs(station);
         final Section downIsStation = getSectionDownIs(station);
+        final Section updatedSection = downIsStation.deleteStation(upIsStation);
 
-        final Section section = downIsStation.deleteStation(upIsStation);
+        update(downIsStation, updatedSection);
+    }
+
+    private void update(final Section downIsStation, final Section updatedSection) {
         final int index = getIndex(downIsStation);
         sections.remove(index + 1);
         sections.remove(index);
-        sections.add(index, section);
+        sections.add(index, updatedSection);
     }
 
     private Section getSectionContains(final Station station) {
@@ -114,15 +118,16 @@ public class Sections {
     }
 
     private Section getSectionUpIs(final Station station) {
-        return sections.stream()
-                .filter(section -> section.isUp(station))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 역입니다."));
+        return getSectionFrom(section -> section.isUp(station));
     }
 
     private Section getSectionDownIs(final Station station) {
+        return getSectionFrom(section -> section.isDown(station));
+    }
+
+    private Section getSectionFrom(final Predicate<Section> direction) {
         return sections.stream()
-                .filter(section -> section.isDown(station))
+                .filter(direction)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 역입니다."));
     }
@@ -138,7 +143,6 @@ public class Sections {
         final List<Station> stations = sections.stream()
                 .map(Section::getDown)
                 .collect(Collectors.toList());
-
         if (sections.size() != 0) {
             stations.add(0, sections.get(0).getUp());
         }

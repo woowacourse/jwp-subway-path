@@ -17,7 +17,7 @@ public class Lines {
         lines.forEach(line -> line.deleteSections(station));
     }
 
-    public List<Path> findPath() {
+    public List<Path> getAllPaths() {
         return lines.stream()
                 .flatMap(line -> line.getSections().stream()
                         .map(Path::new))

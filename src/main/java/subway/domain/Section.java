@@ -8,9 +8,16 @@ public class Section {
     private final Distance distance;
 
     public Section(final Station up, final Station down, final Distance distance) {
-        this.distance = distance;
+        validateSameStation(up, down);
         this.up = up;
         this.down = down;
+        this.distance = distance;
+    }
+
+    private void validateSameStation(final Station up, final Station down) {
+        if (up.equals(down)) {
+            throw new IllegalArgumentException("구간의 두 역이 같을 수 없습니다.");
+        }
     }
 
     public Section connectToUp(final Station station, final Distance distance) {
@@ -31,7 +38,7 @@ public class Section {
 
     public Section deleteStation(final Section upIsStation) {
         if (!down.equals(upIsStation.up)) {
-            throw new RuntimeException("삭제하려는 두 구간이 이어져있지 않습니다.");
+            throw new IllegalStateException("삭제하려는 두 구간이 이어져있지 않습니다.");
         }
         return new Section(up, upIsStation.down, distance.sum(upIsStation.distance));
     }

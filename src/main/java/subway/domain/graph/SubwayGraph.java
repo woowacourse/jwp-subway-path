@@ -19,7 +19,8 @@ public class SubwayGraph {
 
     public static SubwayGraph from(final Lines lines) {
         final List<Station> stations = lines.getAllStations();
-        final List<Path> paths = lines.findPath();
+        final List<Path> paths = lines.getAllPaths();
+
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph =
                 new WeightedMultigraph<>(DefaultWeightedEdge.class);
         stations.forEach(graph::addVertex);
