@@ -1,10 +1,10 @@
-package subway.persistence;
+package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.entity.StationEntity;
+import subway.persistence.entity.StationEntity;
 
 import java.util.List;
 import java.util.Optional;

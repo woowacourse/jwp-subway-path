@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.persistence.StationRepository;
+import subway.persistence.repository.StationRepository;
 
 import java.util.List;
 

@@ -9,7 +9,7 @@ import subway.domain.Station;
 import subway.dto.LineStationRequest;
 import subway.dto.LineStationResponse;
 import subway.exception.SectionRemovalException;
-import subway.persistence.SectionRepository;
+import subway.persistence.repository.SectionRepository;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package subway.persistence;
+package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
@@ -9,10 +9,10 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.LineStationRequest;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.SectionWithStationNameEntity;
-import subway.entity.StationEntity;
+import subway.persistence.entity.LineEntity;
+import subway.persistence.entity.SectionEntity;
+import subway.persistence.entity.SectionWithStationNameEntity;
+import subway.persistence.entity.StationEntity;
 
 import java.util.ArrayList;
 import java.util.List;

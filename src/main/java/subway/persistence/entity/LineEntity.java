@@ -1,4 +1,4 @@
-package subway.entity;
+package subway.persistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

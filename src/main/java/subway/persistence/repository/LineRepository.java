@@ -1,10 +1,10 @@
-package subway.persistence;
+package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.entity.LineEntity;
+import subway.persistence.entity.LineEntity;
 
 import java.util.List;
 import java.util.Optional;

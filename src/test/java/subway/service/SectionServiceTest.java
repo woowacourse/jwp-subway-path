@@ -10,7 +10,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.dto.LineStationRequest;
 import subway.dto.LineStationResponse;
-import subway.persistence.SectionRepository;
+import subway.persistence.repository.SectionRepository;
 
 import java.util.ArrayList;
 import java.util.List;

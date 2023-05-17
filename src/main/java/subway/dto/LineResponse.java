@@ -2,7 +2,7 @@ package subway.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import subway.entity.LineEntity;
+import subway.persistence.entity.LineEntity;
 
 @Getter
 @AllArgsConstructor
