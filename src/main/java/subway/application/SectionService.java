@@ -1,15 +1,23 @@
 package subway.application;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.SectionDao;
+import subway.dao.StationDao;
+import subway.domain.PathFinder;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.Station;
 import subway.dto.InitialSectionAddRequest;
+import subway.dto.PathFindingRequest;
+import subway.dto.PathResponse;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
 import subway.dto.SectionDeleteRequest;
@@ -19,9 +27,11 @@ import subway.exception.ExceptionType;
 @Service
 @Transactional(readOnly = true)
 public class SectionService {
+    private final StationDao stationDao;
     private final SectionDao sectionDao;
 
-    public SectionService(SectionDao sectionDao) {
+    public SectionService(StationDao stationDao, SectionDao sectionDao) {
+        this.stationDao = stationDao;
         this.sectionDao = sectionDao;
     }
 
@@ -191,5 +201,20 @@ public class SectionService {
             .sum();
 
         sectionDao.insert(new Section(null, sourceStationId, targetStationId, lineId, distanceSum));
+    }
+
+    public PathResponse findPath(PathFindingRequest pathFindingRequest) {
+        List<Station> allStations = stationDao.findAll();
+        Map<Long, Station> idsToStations = allStations.stream()
+            .collect(Collectors.toMap(Station::getId, Function.identity()));
+
+        List<Section> allSections = sectionDao.findAll();
+
+        Long departureId = pathFindingRequest.getDepartureId();
+        Long destinationId = pathFindingRequest.getDestinationId();
+
+        PathFinder pathFinder = new PathFinder(allSections);
+        List<Long> stationIds = pathFinder.find(departureId, destinationId);
+        return PathResponse.of(stationIds.stream().map(idsToStations::get).collect(Collectors.toUnmodifiableList()));
     }
 }

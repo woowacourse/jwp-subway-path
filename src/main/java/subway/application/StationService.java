@@ -41,7 +41,7 @@ public class StationService {
 
         return stations.stream()
             .map(StationResponse::of)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 
     @Transactional

@@ -88,7 +88,7 @@ public class Sections {
     public List<Section> findSectionsIncludeStation(Long stationId) {
         return sections.stream()
             .filter(section -> section.includeStation(stationId))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public boolean hasStation(Long stationId) {

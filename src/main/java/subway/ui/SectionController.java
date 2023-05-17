@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.SectionService;
 import subway.dto.InitialSectionAddRequest;
+import subway.dto.PathFindingRequest;
+import subway.dto.PathResponse;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
 import subway.dto.SectionDeleteRequest;
+import subway.dto.StationResponse;
 
 @RequestMapping("/sections")
 @RestController
@@ -38,6 +41,12 @@ public class SectionController {
     public ResponseEntity<List<SectionAddResponse>> addSection(@RequestBody SectionAddRequest sectionAddRequest) {
         List<SectionAddResponse> sectionAddResponse = sectionService.addSection(sectionAddRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(sectionAddResponse);
+    }
+
+    @PostMapping("/path")
+    public ResponseEntity<PathResponse> findPath(@RequestBody PathFindingRequest pathFindingRequest) {
+        PathResponse path = sectionService.findPath(pathFindingRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(path);
     }
 
     @DeleteMapping
