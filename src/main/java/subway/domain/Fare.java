@@ -15,7 +15,7 @@ public class Fare {
         this.fare = fare;
     }
 
-    public static Fare from(final int distance){
+    public static Fare from(final int distance) {
         return new Fare(calculateFareOfDistance(distance));
     }
 
@@ -27,7 +27,7 @@ public class Fare {
     }
 
     private static int calculateOverBasicFareOfDistance(final int leftDistance) {
-        if(leftDistance <= DISTANCE_CHARGED_PER_5_KM) {
+        if (leftDistance <= DISTANCE_CHARGED_PER_5_KM) {
             return calculateAdditionalFareOfDistance(PER_5_KM, leftDistance);
         }
         return calculateAdditionalFareOfDistance(PER_5_KM, DISTANCE_CHARGED_PER_5_KM)
@@ -35,15 +35,15 @@ public class Fare {
     }
 
     private static int calculateAdditionalFareOfDistance(final int specified, final int leftDistance) {
-        return (int) ((Math.ceil((leftDistance -1) / specified) + 1) * ADDITIONAL_FARE);
+        return (int) ((Math.ceil((leftDistance - 1) / specified) + 1) * ADDITIONAL_FARE);
     }
 
-    public Fare applyExtraFare(final int extraFare){
+    public Fare applyExtraFare(final int extraFare) {
         return new Fare(fare + extraFare);
     }
 
-    public Fare applyDiscountRateOfAge(final Age age){
-        int discountedFare = (int)((fare - age.getDeduction()) * (1 - age.getDiscountRate()));
+    public Fare applyDiscountRateOfAge(final Age age) {
+        int discountedFare = (int) ((fare - age.getDeduction()) * (1 - age.getDiscountRate()));
         return new Fare(discountedFare);
     }
 

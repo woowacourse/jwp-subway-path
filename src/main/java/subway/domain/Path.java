@@ -1,6 +1,5 @@
 package subway.domain;
 
-import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -61,13 +60,13 @@ public class Path {
     }
 
     private void validateUnconnectedStations(final Station from, final Station to) {
-        if(!graph.containsVertex(from) || !graph.containsVertex(to)) {
+        if (!graph.containsVertex(from) || !graph.containsVertex(to)) {
             throw new IllegalArgumentException("[ERROR] 출발역과 도착역이 연결되어있지 않습니다.");
         }
     }
 
     private static void validateSameStations(final Station from, final Station to) {
-        if(from.equals(to)){
+        if (from.equals(to)) {
             throw new IllegalArgumentException("[ERROR] 출발역과 도착역이 같아 조회할 경로가 없습니다.");
         }
     }

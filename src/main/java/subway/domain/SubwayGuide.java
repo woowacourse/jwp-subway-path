@@ -16,8 +16,8 @@ public class SubwayGuide {
 
     public static SubwayGuide from(final List<Line> lines) {
         Map<Section, Line> sectionLines = new HashMap<>();
-        for(Line line : lines){
-            for(Section section : line.getSectionsExceptEmpty()){
+        for (Line line : lines) {
+            for (Section section : line.getSectionsExceptEmpty()) {
                 sectionLines.put(section, line);
             }
         }

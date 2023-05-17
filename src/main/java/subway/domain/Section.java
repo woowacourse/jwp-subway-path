@@ -53,11 +53,11 @@ public class Section {
         return List.of(upwardSection, downwardSection);
     }
 
-    private void validateDistanceLessThanZero(final Integer distance){
-        if(distance == null){
+    private void validateDistanceLessThanZero(final Integer distance) {
+        if (distance == null) {
             return;
         }
-        if(distance <= 0){
+        if (distance <= 0) {
             throw new IllegalArgumentException("[ERROR] 기존 구간에 역을 삽입한 결과로 거리가 0 이하인 구간이 발생하게 됩니다.");
         }
     }

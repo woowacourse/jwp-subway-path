@@ -221,7 +221,7 @@ public class Line {
         return sections;
     }
 
-    public List<Section> getSectionsExceptEmpty(){
+    public List<Section> getSectionsExceptEmpty() {
         List<Section> sections = new ArrayList<>(this.sections);
         sections.removeAll(List.of(getDownwardEndSection(), getUpwardEndSection()));
         return sections;

@@ -17,7 +17,7 @@ class FareTest {
 
     @Nested
     @DisplayName("거리에 따른 요금을 계산하는 calculateFare 메서드 테스트")
-    class CalculateFareOfDistanceTest{
+    class CalculateFareOfDistanceTest {
 
         @DisplayName("10km 이하 거리가 주어지면 기본 요금으로 계산한다.")
         @ParameterizedTest
@@ -64,7 +64,7 @@ class FareTest {
 
     @Nested
     @DisplayName("연령대에 따른 요금을 계산하는 applyDiscountRateOfAge 메서드 테스트")
-    class ApplyDiscountRateOfAgeTest{
+    class ApplyDiscountRateOfAgeTest {
 
         @DisplayName("연령대가 성인이면 요금을 그대로 유지한다.")
         @Test
@@ -89,7 +89,7 @@ class FareTest {
             int fareValue = fare.applyDiscountRateOfAge(Age.TEENAGER).getFare();
 
             //then
-            assertThat(fareValue).isEqualTo((int)((BASIC_FARE - 350) * 0.8));
+            assertThat(fareValue).isEqualTo((int) ((BASIC_FARE - 350) * 0.8));
         }
 
         @DisplayName("연령대가 어린이이면 요금에서 350원을 빼고 50% 할인한다.")
@@ -102,7 +102,7 @@ class FareTest {
             int fareValue = fare.applyDiscountRateOfAge(Age.CHILDREN).getFare();
 
             //then
-            assertThat(fareValue).isEqualTo((int)((BASIC_FARE - 350) * 0.5));
+            assertThat(fareValue).isEqualTo((int) ((BASIC_FARE - 350) * 0.5));
         }
     }
 }
