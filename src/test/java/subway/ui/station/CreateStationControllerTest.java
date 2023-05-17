@@ -21,7 +21,7 @@ class CreateStationControllerTest extends IntegrationTest {
     private StationRepositoryImpl stationRepository;
 
     @Test
-    @DisplayName("역을 등록한다.")
+    @DisplayName("post /stations  역을 등록한다.")
     void createStation() {
         StationCreateRequest 라빈 = new StationCreateRequest("라빈");
 

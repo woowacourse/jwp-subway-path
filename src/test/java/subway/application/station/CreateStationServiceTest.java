@@ -26,7 +26,7 @@ class CreateStationServiceTest {
     }
 
     @Test
-    @DisplayName("역을 정상적으로 만든다.")
+    @DisplayName("저장된 역이 없으면 역을 정상적으로 만든다.")
     void createStation() {
         given(stationRepository.findByName(any()))
                 .willReturn(Optional.empty());

@@ -26,7 +26,7 @@ class CreateLineControllerTest extends IntegrationTest {
     private LineRepositoryImpl lineRepository;
 
     @Test
-    @DisplayName("노선을 추가한다.")
+    @DisplayName("post /lines  노선을 추가한다.")
     void createLine() {
         final LineRequest lineRequest = new LineRequest("1호선");
 

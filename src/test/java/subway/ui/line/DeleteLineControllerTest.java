@@ -20,7 +20,7 @@ class DeleteLineControllerTest extends IntegrationTest {
     private LineRepositoryImpl lineRepository;
 
     @Test
-    @DisplayName("노선을 삭제한다.")
+    @DisplayName("delete  /lines/{id} 노선을 삭제한다.")
     void deleteLine() {
         final Long lineId = lineRepository.createLine(new Line("1호선"));
 

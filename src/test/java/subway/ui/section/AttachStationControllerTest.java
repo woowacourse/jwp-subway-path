@@ -32,7 +32,7 @@ class AttachStationControllerTest extends IntegrationTest {
     private SectionRepositoryImpl sectionRepository;
 
     @Test
-    @DisplayName("구간을 추가한다.")
+    @DisplayName("post /line/{id}/station  구간을 추가한다.")
     void createSection() {
         final Long lineId = lineRepository.createLine(new Line("1호선"));
         stationRepository.createStation(new Station("비버"));

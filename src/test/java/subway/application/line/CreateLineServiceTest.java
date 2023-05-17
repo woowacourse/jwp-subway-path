@@ -27,7 +27,7 @@ class CreateLineServiceTest {
     }
 
     @Test
-    @DisplayName("노선을 정상적으로 만든다.")
+    @DisplayName("노선이 중복되지않으면 정상적으로 노선을 만든다.")
     void createLine() {
         given(lineRepository.findByName(any()))
                 .willReturn(Optional.empty());

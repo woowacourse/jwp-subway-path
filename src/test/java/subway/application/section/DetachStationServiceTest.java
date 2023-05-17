@@ -36,7 +36,7 @@ class DetachStationServiceTest {
     }
 
     @Test
-    @DisplayName("삭제가 잘 되는지 테스트")
+    @DisplayName("저장된 구간이 삭제가 정상적으로 되는지 테스트")
     void deleteStation() {
         List<Section> sections = List.of(
                 new Section(1L, new Station("라빈"), new Station("비버"), 5L),

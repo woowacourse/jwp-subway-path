@@ -31,7 +31,7 @@ class FindLineControllerTest extends IntegrationTest {
     private SectionRepository sectionRepository;
 
     @Test
-    @DisplayName("정렬된 구간이 출력됩니다.")
+    @DisplayName("get /lines/{id}  정렬된 구간이 출력됩니다.")
     void findStationsByLine() {
         Long lineId = lineRepository.createLine(new Line("1호선"));
 

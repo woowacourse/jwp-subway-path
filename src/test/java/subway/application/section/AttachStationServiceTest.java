@@ -35,7 +35,7 @@ class AttachStationServiceTest {
     }
 
     @Test
-    @DisplayName("구간이 잘 저장되는지 테스트")
+    @DisplayName("저장된 역으로 구간을 저장할 때 구간이 정상적으로 저장되는지 테스트")
     void createSection() {
 
         List<Section> sections = List.of(
