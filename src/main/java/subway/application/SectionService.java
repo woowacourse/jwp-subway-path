@@ -41,23 +41,28 @@ public class SectionService {
 
         Station requestStartStation = new Station(request.getStartStation());
         Station requestEndStation = new Station(request.getEndStation());
-        if (!stationDao.isExistStationByName(requestStartStation.getName())) {
-            stationDao.insert(new StationEntity(requestStartStation.getName()));
-        }
-
-        if (!stationDao.isExistStationByName(requestEndStation.getName())) {
-            stationDao.insert(new StationEntity(requestEndStation.getName()));
-        }
+        saveNewStationIfNotExists(requestStartStation);
+        saveNewStationIfNotExists(requestEndStation);
         Distance requestDistance = new Distance(request.getDistance());
         Section requestSection = new Section(requestStartStation, requestEndStation, requestDistance);
 
         sections.add(requestSection);
 
+        updateSections(lineId, sections);
+    }
+
+    private void updateSections(Long lineId, Sections sections) {
         sectionDao.deleteAllByLineId(lineId);
 
         List<SectionEntity> makeSectionEntitiesByAddedSections = makeSectionEntities(lineId, sections.getSections());
 
         sectionDao.insertAll(makeSectionEntitiesByAddedSections);
+    }
+
+    private void saveNewStationIfNotExists(Station station) {
+        if (!stationDao.isExistStationByName(station.getName())) {
+            stationDao.insert(new StationEntity(station.getName()));
+        }
     }
 
     private List<SectionEntity> makeSectionEntities(Long lineId, List<Section> sections) {
@@ -91,11 +96,7 @@ public class SectionService {
         Station removedStation = toStation(stationDao.findById(stationId));
         sections.remove(removedStation);
 
-        sectionDao.deleteAllByLineId(lineId);
-
-        List<SectionEntity> makeSectionEntitiesByAddedSections = makeSectionEntities(lineId, sections.getSections());
-
-        sectionDao.insertAll(makeSectionEntitiesByAddedSections);
+        updateSections(lineId, sections);
     }
 
     private Sections getSections(final List<SectionEntity> sectionEntitiesOfLine) {
