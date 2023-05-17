@@ -1,11 +1,17 @@
 package subway.controller.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import subway.domain.section.PathSection;
 
 public class SectionResponse {
 
+    @Schema(description = "상행역 이름")
     private String upwardStationName;
+
+    @Schema(description = "하행역 이름")
     private String downwardStationName;
+
+    @Schema(description = "상행역과 하행역 사이의 거리")
     private int distance;
 
     public SectionResponse(final String upwardStationName, final String downwardStationName, final int distance) {

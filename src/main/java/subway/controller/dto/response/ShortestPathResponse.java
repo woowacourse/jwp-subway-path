@@ -1,14 +1,22 @@
 package subway.controller.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 import subway.domain.section.PathSection;
 
 public class ShortestPathResponse {
 
+    @Schema(description = "환승 횟수")
     private int transferCount;
+
+    @Schema(description = "구간 경로 목록")
     private List<LineSectionResponse> path;
+
+    @Schema(description = "출발역에서 도착역까지의 총 거리")
     private long totalDistance;
+
+    @Schema(description = "출발역에서 도착역까지 운임 요금")
     private long subwayFare;
 
     public ShortestPathResponse(
