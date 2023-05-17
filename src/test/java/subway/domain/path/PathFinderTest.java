@@ -19,11 +19,11 @@ class PathFinderTest {
     void 최단_경로를_탐색한다() {
         // given
         final Subway subway = new Subway(List.of(
-                new Line("1호선", "RED", 0, List.of(
+                new Line(1L, "1호선", "RED", 0, List.of(
                         new Section("A", "B", 2),
                         new Section("B", "C", 3)
                 )),
-                new Line("2호선", "RED", 0, List.of(
+                new Line(2L, "2호선", "RED", 300, List.of(
                         new Section("Z", "B", 4),
                         new Section("B", "Y", 5)
                 ))
@@ -37,6 +37,7 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(pathFindResult.getDistanceValue()).isEqualTo(7),
                 () -> assertThat(pathFindResult.getPath())
+                        .extracting(SectionEdge::toSection)
                         .usingRecursiveComparison()
                         .ignoringExpectedNullFields()
                         .isEqualTo(List.of(
