@@ -1,6 +1,7 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.integration.TestFixture.OBJECT_MAPPER;
 import static subway.integration.TestFixture.SAMSUNG;
 import static subway.integration.TestFixture.SEONGLENUG;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.service.dto.PathRequest;
 import subway.service.dto.PathResponse;
+import subway.service.dto.StationResponse;
 
 @DisplayName("경로 조회 기능 테스트")
 public class PathIntegrationTest extends IntegrationTest {
@@ -35,8 +37,13 @@ public class PathIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         final PathResponse pathResponse = OBJECT_MAPPER.readValue(response.asString(), PathResponse.class);
-        assertThat(pathResponse)
-                .extracting(PathResponse::getTotalDistance, PathResponse::getTotalFare)
-                .containsExactly(5, 1250);
+        assertAll(
+                () -> assertThat(pathResponse)
+                        .extracting(PathResponse::getTotalDistance, PathResponse::getTotalFare)
+                        .containsExactly(5, 1250),
+                () -> assertThat(pathResponse.getPathStations())
+                        .extracting(StationResponse::getName)
+                        .containsExactly(SAMSUNG.getName(), SEONGLENUG.getName())
+        );
     }
 }
