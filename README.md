@@ -48,31 +48,8 @@
   ]
   ```
 
-- [x] 전체 노선 조회
-  - `/lines`
-  - GET
-  ```json
-  [
-    {
-        "id": 1,
-        "name": "2호선",
-        "color": "green"
-    },
-    {
-        "id": 2,
-        "name": "3호선",
-        "color": "orange"
-    },
-    {
-        "id": 3,
-        "name": "4호선",
-        "color": "blue"
-    }
-  ]
-  ```
-
 - [x] 전체 노선 구간 조회
-  - `/lines/detail`
+  - `/lines`
   - GET
   ```json
   [
