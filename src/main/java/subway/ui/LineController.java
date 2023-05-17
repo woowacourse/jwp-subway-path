@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LIneService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.SectionResponse;
 import subway.dto.StationEnrollRequest;
 
 import java.net.URI;
@@ -57,16 +58,14 @@ public class LineController {
     }
 
     @PostMapping("{lineId}/stations")
-    public ResponseEntity<Void> enrollStation(@PathVariable final Long lineId,
-                                              @RequestBody final StationEnrollRequest request) {
-        lineService.enrollStation(lineId, request);
-        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
+    public ResponseEntity<SectionResponse> enrollStation(@PathVariable final Long lineId,
+                                                         @RequestBody final StationEnrollRequest request) {
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).body(lineService.enrollStation(lineId, request));
     }
 
     @PutMapping("/{lineId}")
-    public ResponseEntity<Void> updateLine(@PathVariable final Long lineId, @RequestBody final LineRequest lineUpdateRequest) {
-        lineService.updateLine(lineId, lineUpdateRequest);
-        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
+    public ResponseEntity<LineResponse> updateLine(@PathVariable final Long lineId, @RequestBody final LineRequest lineUpdateRequest) {
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).body(lineService.updateLine(lineId, lineUpdateRequest));
     }
 
     @DeleteMapping("/{lineId}")

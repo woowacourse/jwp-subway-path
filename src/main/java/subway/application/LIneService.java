@@ -61,8 +61,10 @@ public class LIneService {
         return lineDao.findById(id);
     }
 
-    public void updateLine(final Long lineId, final LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(lineId, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public LineResponse updateLine(final Long lineId, final LineRequest lineUpdateRequest) {
+        final Line updateLine = new Line(lineId, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        lineDao.update(updateLine);
+        return LineResponse.of(updateLine);
     }
 
     public void deleteLineById(final Long lineId) {
