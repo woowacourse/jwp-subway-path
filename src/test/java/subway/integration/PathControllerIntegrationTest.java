@@ -56,6 +56,7 @@ public class PathControllerIntegrationTest {
         노선_생성_요청("2호선", "사당역", "경북대북문역", 2);
         노선에_역_추가_요청("2호선", "경북대북문역", "경북대정문역", 3);
         final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역");
+
         // when
         final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 

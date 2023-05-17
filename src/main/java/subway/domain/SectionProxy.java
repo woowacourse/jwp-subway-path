@@ -29,7 +29,7 @@ public class SectionProxy extends DefaultWeightedEdge {
     }
 
     @Override
-    protected double getWeight() {
+    public double getWeight() {
         return section.getDistance();
     }
 }

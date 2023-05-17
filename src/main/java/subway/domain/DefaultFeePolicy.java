@@ -3,7 +3,7 @@ package subway.domain;
 
 import org.springframework.stereotype.Component;
 
-//TODO: 상수명 및 클래스 명 변경
+//TODO: 상수명 변경
 @Component
 public class DefaultFeePolicy implements FeePolicy {
 
