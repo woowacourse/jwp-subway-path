@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import subway.presentation.dto.request.converter.StringToSubwayDirectionConverter;
 
 @Configuration
-public class EnumMappingConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(final FormatterRegistry registry) {
