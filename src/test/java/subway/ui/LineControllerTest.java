@@ -9,11 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.business.service.LineService;
-import subway.business.service.dto.LineResponse;
-import subway.business.service.dto.LineSaveRequest;
-import subway.business.service.dto.LineStationsResponse;
-import subway.business.service.dto.StationAddToLineRequest;
-import subway.ui.dto.StationDeleteRequest;
+import subway.business.service.dto.*;
 
 import java.util.List;
 
@@ -41,8 +37,8 @@ public class LineControllerTest {
 
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "강남역",
-                "잠실역",
+                1L,
+                2L,
                 10
         );
         String jsonRequest = objectMapper.writeValueAsString(lineSaveRequest);
@@ -57,8 +53,8 @@ public class LineControllerTest {
     @Test
     void shouldAddStationToLineWhenRequest() throws Exception {
         StationAddToLineRequest stationAddToLineRequest = new StationAddToLineRequest(
-                "잠실역",
-                "몽촌토성역",
+                3L,
+                2L,
                 "상행",
                 3
         );
@@ -73,7 +69,7 @@ public class LineControllerTest {
     @DisplayName("노선에 포함된 역 한 개를 제외한다.")
     @Test
     void shouldRemoveStationFromLineWhenRequest() throws Exception {
-        StationDeleteRequest stationDeleteRequest = new StationDeleteRequest("잠실역");
+        StationDeleteRequest stationDeleteRequest = new StationDeleteRequest(1L);
         String jsonRequest = objectMapper.writeValueAsString(stationDeleteRequest);
 
         mockMvc.perform(delete("/lines/1/station")
@@ -87,13 +83,13 @@ public class LineControllerTest {
     void shouldReturnLineNameAndAllStationsOfLineWhenRequest() throws Exception {
         given(lineService.findLineResponseById(any())).willReturn(new LineStationsResponse(
                 "2호선",
-                List.of("몽촌토성역", "잠실역")
+                List.of("강남역", "잠실역")
         ));
 
         mockMvc.perform(get("/lines/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("2호선"))
-                .andExpect(jsonPath("$.stations[0]").value("몽촌토성역"))
+                .andExpect(jsonPath("$.stations[0]").value("강남역"))
                 .andExpect(jsonPath("$.stations[1]").value("잠실역"));
     }
 

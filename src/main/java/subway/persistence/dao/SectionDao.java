@@ -1,6 +1,5 @@
 package subway.persistence.dao;
 
-import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -10,6 +9,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.persistence.entity.SectionEntity;
 
+import java.util.List;
+
 @Repository
 public class SectionDao {
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -17,8 +18,8 @@ public class SectionDao {
     private final RowMapper<SectionEntity> rowMapper = (resultSet, rowNumber) -> new SectionEntity(
             resultSet.getLong("id"),
             resultSet.getLong("line_id"),
-            resultSet.getString("upward_station"),
-            resultSet.getString("downward_station"),
+            resultSet.getLong("upward_station_id"),
+            resultSet.getLong("downward_station_id"),
             resultSet.getInt("distance")
     );
 
@@ -26,7 +27,7 @@ public class SectionDao {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("section")
-                .usingColumns("line_id", "upward_station", "downward_station", "distance")
+                .usingColumns("line_id", "upward_station_id", "downward_station_id", "distance")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -36,7 +37,7 @@ public class SectionDao {
     }
 
     public List<SectionEntity> findAllByLineId(Long id) {
-        String sql = "SELECT id, line_id, upward_station, downward_station, distance FROM section WHERE line_id=:lineId";
+        String sql = "SELECT id, line_id, upward_station_id, downward_station_id, distance FROM section WHERE line_id=:lineId";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", id);
         return namedParameterJdbcTemplate.query(sql, sqlParameterSource, rowMapper);
     }

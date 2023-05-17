@@ -23,17 +23,13 @@ public class Line {
         this(id, new Name(name), sections);
     }
 
-    public static Line of(String name, String upwardStationName, String downwardStationName, int distance) {
-        Station upwardStation = new Station(upwardStationName);
-        Station downwardStation = new Station(downwardStationName);
+    public static Line of(String name, Station upwardStation, Station downwardStation, int distance) {
         List<Section> sections = new LinkedList<>();
         sections.add(new Section(upwardStation, downwardStation, distance));
         return new Line(new Name(name), sections);
     }
 
-    public void addStation(String stationName, String neighborhoodStationName, Direction direction, int distance) {
-        Station station = new Station(stationName);
-        Station neighborhoodStation = new Station(neighborhoodStationName);
+    public void addStation(Station station, Station neighborhoodStation, Direction direction, int distance) {
         validateAlreadyExist(station);
 
         if (isTerminusOfDirection(neighborhoodStation, direction)) {
@@ -44,8 +40,7 @@ public class Line {
         addStationOfDirection(station, neighborhoodStation, distance, direction);
     }
 
-    public void deleteStation(String stationName) {
-        Station stationToDelete = new Station(stationName);
+    public void deleteStation(Station stationToDelete) {
         validateNotExist(stationToDelete);
         validateOnlyTwoStations();
 

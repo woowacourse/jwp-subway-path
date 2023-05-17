@@ -5,19 +5,19 @@ import java.util.Objects;
 public class SectionEntity {
     private final Long id;
     private final Long lineId;
-    private final String upwardStation;
-    private final String downwardStation;
+    private final Long upwardStationId;
+    private final Long downwardStationId;
     private final Integer distance;
 
-    public SectionEntity(Long lineId, String upwardStation, String downwardStation, Integer distance) {
-        this(null, lineId, upwardStation, downwardStation, distance);
+    public SectionEntity(Long lineId, Long upwardStationId, Long downwardStationId, Integer distance) {
+        this(null, lineId, upwardStationId, downwardStationId, distance);
     }
 
-    public SectionEntity(Long id, Long lineId, String upwardStation, String downwardStation, Integer distance) {
+    public SectionEntity(Long id, Long lineId, Long upwardStationId, Long downwardStationId, Integer distance) {
         this.id = id;
         this.lineId = lineId;
-        this.upwardStation = upwardStation;
-        this.downwardStation = downwardStation;
+        this.upwardStationId = upwardStationId;
+        this.downwardStationId = downwardStationId;
         this.distance = distance;
     }
 
@@ -29,12 +29,12 @@ public class SectionEntity {
         return lineId;
     }
 
-    public String getUpwardStation() {
-        return upwardStation;
+    public Long getUpwardStationId() {
+        return upwardStationId;
     }
 
-    public String getDownwardStation() {
-        return downwardStation;
+    public Long getDownwardStationId() {
+        return downwardStationId;
     }
 
     public Integer getDistance() {

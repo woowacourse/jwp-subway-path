@@ -10,6 +10,7 @@ import subway.business.domain.Line;
 import subway.business.domain.Section;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
+import subway.persistence.dao.StationDao;
 import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionEntity;
 
@@ -21,8 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static subway.fixtures.station.StationFixture.강남역;
-import static subway.fixtures.station.StationFixture.잠실역;
+import static subway.fixtures.station.StationFixture.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DbLineRepositoryTest {
@@ -35,11 +35,14 @@ public class DbLineRepositoryTest {
     @Mock
     private SectionDao sectionDao;
 
+    @Mock
+    private StationDao stationDao;
+
     @DisplayName("새 라인을 추가한다.")
     @Test
     void shouldCreateLineWhenRequest() {
         when(lineDao.insert(any())).thenReturn(1L);
-        Line line = Line.of("2호선", "강남역", "잠실역", 10);
+        Line line = Line.of("2호선", 강남역, 잠실역, 10);
         assertThat(dbLineRepository.create(line)).isEqualTo(1L);
     }
 
@@ -49,26 +52,29 @@ public class DbLineRepositoryTest {
         LineEntity lineEntity = new LineEntity(
                 1L,
                 "2호선",
-                "강남역",
-                "잠실역"
+                1L,
+                3L
         );
-        when(lineDao.findById(1L)).thenReturn(lineEntity);
 
         SectionEntity upwardSection = new SectionEntity(
                 1L,
                 1L,
-                "강남역",
-                "역삼역",
+                1L,
+                2L,
                 10
         );
         SectionEntity downwardSection = new SectionEntity(
                 2L,
                 1L,
-                "역삼역",
-                "잠실역",
+                2L,
+                3L,
                 10
         );
+        when(lineDao.findById(any())).thenReturn(new LineEntity(1L, "2호선", 1L, 3L));
         when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(downwardSection, upwardSection));
+        when(stationDao.findById(1L)).thenReturn(강남역Entity);
+        when(stationDao.findById(2L)).thenReturn(역삼역Entity);
+        when(stationDao.findById(3L)).thenReturn(잠실역Entity);
 
         Line line = dbLineRepository.findById(1L);
 
@@ -86,26 +92,26 @@ public class DbLineRepositoryTest {
         LineEntity lineEntity1 = new LineEntity(
                 1L,
                 "2호선",
-                "강남역",
-                "잠실역"
+                1L,
+                3L
         );
         SectionEntity sectionEntity1 = new SectionEntity(
                 1L,
-                "강남역",
-                "잠실역",
+                1L,
+                3L,
                 10
         );
 
         LineEntity lineEntity2 = new LineEntity(
                 2L,
                 "1호선",
-                "인천역",
-                "부평역"
+                3L,
+                4L
         );
         SectionEntity sectionEntity2 = new SectionEntity(
                 1L,
-                "인천역",
-                "부평역",
+                3L,
+                4L,
                 10
         );
 
@@ -114,6 +120,9 @@ public class DbLineRepositoryTest {
         when(lineDao.findById(2L)).thenReturn(lineEntity2);
         when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(sectionEntity1));
         when(sectionDao.findAllByLineId(2L)).thenReturn(List.of(sectionEntity2));
+        when(stationDao.findById(1L)).thenReturn(강남역Entity);
+        when(stationDao.findById(3L)).thenReturn(잠실역Entity);
+        when(stationDao.findById(4L)).thenReturn(성수역Entity);
         List<Line> lines = dbLineRepository.findAll();
 
         assertAll(

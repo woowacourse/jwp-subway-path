@@ -1,5 +1,7 @@
 package subway.business.domain;
 
+import subway.persistence.entity.StationEntity;
+
 import java.util.Objects;
 
 public class Station {
@@ -21,6 +23,10 @@ public class Station {
         this(null, new Name(name), null);
     }
 
+    public static Station from(StationEntity stationEntity) {
+        return new Station(stationEntity.getId(), stationEntity.getName());
+    }
+
     public Long getId() {
         return id;
     }
@@ -35,18 +41,14 @@ public class Station {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return name.equals(station.name);
+        return Objects.equals(id, station.id) && Objects.equals(name, station.name) && Objects.equals(sectionId, station.sectionId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id, name, sectionId);
     }
 }

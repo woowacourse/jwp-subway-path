@@ -1,6 +1,5 @@
 package subway.persistence.dao;
 
-import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -11,6 +10,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.persistence.entity.LineEntity;
 
+import java.util.List;
+
 @Repository
 public class LineDao {
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -18,15 +19,15 @@ public class LineDao {
     private final RowMapper<LineEntity> rowMapper = (resultSet, rowNumber) -> new LineEntity(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("upward_terminus"),
-            resultSet.getString("downward_terminus")
+            resultSet.getLong("upward_terminus_id"),
+            resultSet.getLong("downward_terminus_id")
     );
 
     public LineDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("line")
-                .usingColumns("name", "upward_terminus", "downward_terminus")
+                .usingColumns("name", "upward_terminus_id", "downward_terminus_id")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -37,7 +38,7 @@ public class LineDao {
 
     public LineEntity findById(Long id) {
         try {
-            String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line WHERE id=:id";
+            String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id FROM line WHERE id=:id";
             SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
             return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
         } catch (EmptyResultDataAccessException exception) {
@@ -48,16 +49,16 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line";
+        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id FROM line";
         return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
 
     public void update(LineEntity lineEntity) {
-        String sql = "UPDATE line SET name=:name, upward_terminus=:upwardTerminus, downward_terminus=:downwardTerminus WHERE id=:id";
+        String sql = "UPDATE line SET name=:name, upward_terminus_id=:upwardTerminusId, downward_terminus_id=:downwardTerminusId WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("name", lineEntity.getName())
-                .addValue("upwardTerminus", lineEntity.getUpwardTerminus())
-                .addValue("downwardTerminus", lineEntity.getDownwardTerminus())
+                .addValue("upwardTerminusId", lineEntity.getUpwardTerminusId())
+                .addValue("downwardTerminusId", lineEntity.getDownwardTerminusId())
                 .addValue("id", lineEntity.getId());
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }

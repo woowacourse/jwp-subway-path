@@ -1,8 +1,5 @@
 package subway.persistence.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.business.domain.Line;
 import subway.business.domain.LineRepository;
@@ -10,26 +7,33 @@ import subway.business.domain.Section;
 import subway.business.domain.Station;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
+import subway.persistence.dao.StationDao;
 import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class DbLineRepository implements LineRepository {
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
+    private final StationDao stationDao;
 
-    public DbLineRepository(LineDao lineDao, SectionDao sectionDao) {
+    public DbLineRepository(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
     }
 
     @Override
     public long create(Line line) {
         LineEntity lineEntityToSave = new LineEntity(
                 line.getName(),
-                line.getUpwardTerminus().getName(),
-                line.getDownwardTerminus().getName()
+                line.getUpwardTerminus().getId(),
+                line.getDownwardTerminus().getId()
         );
         long lineId = lineDao.insert(lineEntityToSave);
 
@@ -63,8 +67,8 @@ public class DbLineRepository implements LineRepository {
         LineEntity lineEntityToUpdate = new LineEntity(
                 line.getId(),
                 line.getName(),
-                line.getUpwardTerminus().getName(),
-                line.getDownwardTerminus().getName()
+                line.getUpwardTerminus().getId(),
+                line.getDownwardTerminus().getId()
         );
         lineDao.update(lineEntityToUpdate);
 
@@ -78,8 +82,8 @@ public class DbLineRepository implements LineRepository {
     private void createSection(long lineId, Section section) {
         SectionEntity sectionEntityToSave = new SectionEntity(
                 lineId,
-                section.getUpwardStation().getName(),
-                section.getDownwardStation().getName(),
+                section.getUpwardStation().getId(),
+                section.getDownwardStation().getId(),
                 section.getDistance()
         );
         sectionDao.insert(sectionEntityToSave);
@@ -88,15 +92,15 @@ public class DbLineRepository implements LineRepository {
     private List<Section> mapSectionEntitiesToSections(List<SectionEntity> sectionEntities) {
         return sectionEntities.stream()
                 .map(sectionEntity -> new Section(
-                        new Station(sectionEntity.getUpwardStation()),
-                        new Station(sectionEntity.getDownwardStation()),
+                        Station.from(stationDao.findById(sectionEntity.getUpwardStationId())),
+                        Station.from(stationDao.findById(sectionEntity.getDownwardStationId())),
                         sectionEntity.getDistance()))
                 .collect(Collectors.toList());
     }
 
     private List<Section> getOrderedSections(LineEntity lineEntity, List<Section> sections) {
-        Station upwardTerminus = new Station(lineEntity.getUpwardTerminus());
-        Station downwardTerminus = new Station(lineEntity.getDownwardTerminus());
+        Station upwardTerminus = Station.from(stationDao.findById(lineEntity.getUpwardTerminusId()));
+        Station downwardTerminus = Station.from(stationDao.findById(lineEntity.getDownwardTerminusId()));
         return getOrderedSectionsByTerminus(sections, upwardTerminus,
                 downwardTerminus);
     }
