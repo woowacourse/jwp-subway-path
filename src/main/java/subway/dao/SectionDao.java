@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import subway.dto.SectionDto;
+import subway.dao.dto.SectionDto;
 
 @Repository
 public class SectionDao {

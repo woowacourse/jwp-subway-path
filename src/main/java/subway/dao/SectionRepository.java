@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import subway.domain.Section;
-import subway.dto.SectionDto;
+import subway.dao.dto.SectionDto;
 
 @Repository
 public class SectionRepository {

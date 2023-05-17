@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.dao.dto;
 
 public class SectionDto {
 

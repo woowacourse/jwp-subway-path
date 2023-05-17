@@ -1,211 +1,167 @@
 package subway.domain;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import subway.domain.exception.DuplicateSectionException;
 
 public class Line {
-    private Long id;
+
+    private static final int FIRST = 0;
+
+    private final Long id;
     private String name;
     private String color;
-
-    private final LinkedList<Station> stations;
-    private final Map<Map.Entry<Station, Station>, Integer> distances;
+    private final List<Section> sections;
 
     public Line(String name, String color) {
-        this(null, name, color, new LinkedList<>(), new HashMap<>());
+        this(null, name, color, new ArrayList<>());
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, new LinkedList<>(), new HashMap<>());
+        this(id, name, color, new ArrayList<>());
     }
 
-    public Line(Long id, String name, String color, LinkedList<Station> stations, Map<Map.Entry<Station, Station>, Integer> distances) {
+    public Line(Long id, String name, String color, List<Section> sections) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.stations = stations;
-        this.distances = distances;
+        this.sections = sections;
     }
 
-    public void insertBoth(Station top, Station bottom, int distance) {
-        validateEmptyStations();
-        if (distance <= 0) {
-            throw new IllegalArgumentException("등록하려는 역의 거리 정보가 잘못되어 등록에 실패했습니다.");
-        }
-
-        stations.add(top);
-        stations.add(bottom);
-
-        insertDistanceBetween(top, bottom, distance);
-    }
-
-    private void validateEmptyStations() {
-        if (!stations.isEmpty()) {
-            throw new IllegalStateException("빈 노선에만 한 번에 두 역을 추가할 수 있습니다");
-        }
-    }
-
-    public void insertUpper(Station station, Station base, int distance) {
-        validateStation(station, base);
-        stations.add(stations.indexOf(base), station);
-        insertDistanceBetween(station, base, distance);
-
-        if (isTop(station)) {
+    public void add(Section section) {
+        validateNoDuplicate(section);
+        if (this.hasOverlapWith(section)) {
+            splitParentOf(section);
             return;
         }
-
-        int previousDistance = getDistanceBetween(getUpperOf(station), base);
-        int upperDistance = Math.abs(previousDistance - distance);
-        if (previousDistance <= distance || distance <= 0) {
-            throw new IllegalArgumentException("등록하려는 역의 거리 정보가 잘못되어 등록에 실패했습니다.");
-        }
-
-        insertDistanceBetween(getUpperOf(station), station, upperDistance);
-        deleteDistanceBetween(getUpperOf(station), base);
-    }
-
-    public void insertLower(Station station, Station base, int distance) {
-        validateStation(station, base);
-        stations.add(stations.indexOf(base) + 1, station);
-        insertDistanceBetween(base, station, distance);
-
-        if (isBottom(station)) {
+        if (this.hasLinkWith(section)) {
+            connect(section);
             return;
         }
-
-        int previousDistance = getDistanceBetween(getLowerOf(station), base);
-        int lowerDistance = Math.abs(previousDistance - distance);
-        if (previousDistance <= distance || distance <= 0) {
-            throw new IllegalArgumentException("등록하려는 역의 거리 정보가 잘못되어 등록에 실패했습니다.");
-        }
-
-        insertDistanceBetween(station, getLowerOf(station), lowerDistance);
-        deleteDistanceBetween(base, getLowerOf(station));
+        validateEmpty(sections);
+        sections.add(section);
     }
 
-    private void validateStation(Station station, Station base) {
-        if(stations.contains(station)) {
-            throw new IllegalArgumentException("이미 등록된 역을 등록할 수 없습니다.");
+    public void remove(Station station) {
+        List<Section> nearBys = findNearBysOf(station);
+        if (canMerge(nearBys)) {
+            Section one = firstOf(nearBys);
+            Section other = lastOf(nearBys);
+            int target = sections.indexOf(one);
+            sections.add(target, one.mergeWith(other));
         }
+        sections.removeAll(nearBys);
+    }
 
-        if(!stations.contains(base)) {
-            throw new IllegalArgumentException("노선에 기준 역이 존재하지 않아 등록할 수 없습니다.");
+    private boolean hasOverlapWith(Section child) {
+        return sections.stream()
+                .anyMatch(that -> that.hasOverlapWith(child));
+    }
+
+    private boolean hasLinkWith(Section section) {
+        return sections.stream()
+                .anyMatch(that -> that.hasLinkWith(section));
+    }
+
+    private boolean canMerge(List<Section> nearBys) {
+        if (nearBys.size() == 2) {
+            return firstOf(nearBys).hasLinkWith(lastOf(nearBys));
+        }
+        return false;
+    }
+
+    private void splitParentOf(Section child) {
+        findParentOf(child).ifPresent(parent ->
+                split(parent, parent.splitIntoOneAnd(child))
+        );
+    }
+
+    private void connect(Section section) {
+        if (section.contains(getDepartureStation())) {
+            sections.add(FIRST, section);
+        }
+        if (section.contains(getArrivalStation())) {
+            sections.add(section);
         }
     }
 
-    public void delete(Station station) {
+    private void split(Section section, List<Section> parts) {
+        int target = sections.indexOf(section);
+        sections.remove(target);
+        sections.addAll(target, parts);
+    }
 
-        if (!stations.contains(station)) {
-            throw new IllegalArgumentException("등록되지 않은 역입니다.");
+    private List<Section> findNearBysOf(Station station) {
+        return sections.stream()
+                .filter(that -> that.contains(station))
+                .collect(Collectors.toList());
+    }
+
+    private Optional<Section> findParentOf(Section section) {
+        return sections.stream()
+                .filter(that -> that.hasOverlapWith(section))
+                .findAny();
+    }
+
+    private void validateNoDuplicate(Section section) {
+        if (sections.contains(section)) {
+            throw new DuplicateSectionException();
         }
+    }
 
-        if (stations.size() == 2) {
-            stations.clear();
-            distances.clear();
-            return;
+    private void validateEmpty(List<Section> sections) {
+        if (!sections.isEmpty()) {
+            throw new IllegalStateException("비연결 구간은 호선이 비어있을 때만 추가할 수 있습니다");
         }
-
-        if (isTop(station)) {
-            deleteDistanceBetween(station, getLowerOf(station));
-            stations.remove(station);
-            return;
-        }
-
-        if (isBottom(station)) {
-            deleteDistanceBetween(getUpperOf(station), station);
-            stations.remove(station);
-            return;
-        }
-
-        int upperDistance = getDistanceBetween(station, getUpperOf(station));
-        int lowerDistance = getDistanceBetween(station, getLowerOf(station));
-        deleteDistanceBetween(getUpperOf(station), station);
-        deleteDistanceBetween(station, getLowerOf(station));
-        insertDistanceBetween(getUpperOf(station), getLowerOf(station), upperDistance + lowerDistance);
-        stations.remove(station);
     }
 
-    public int getDistanceBetween(Station from, Station to) {
-        int startInclusive = Math.min(stations.indexOf(from), stations.indexOf(to));
-        int endInclusive = Math.max(stations.indexOf(from), stations.indexOf(to));
-
-        if (distances.get(Map.entry(stations.get(startInclusive), stations.get(endInclusive))) != null) {
-            return distances.get(Map.entry(stations.get(startInclusive), stations.get(endInclusive)));
-        }
-
-        int distance = 0;
-        for (int i = startInclusive; i < endInclusive; i++) {
-            Station station = stations.get(i);
-            Station other = stations.get(i + 1);
-            distance += distances.get(Map.entry(station, other));
-        }
-
-        return distance;
+    private Section firstOf(List<Section> sections) {
+        return sections.get(FIRST);
     }
 
-    private void insertDistanceBetween(Station upper, Station lower, int distance) {
-        distances.put(Map.entry(upper, lower), distance);
+    private Section lastOf(List<Section> sections) {
+        return sections.get(sections.size() - 1);
     }
 
-    private void deleteDistanceBetween(Station upper, Station lower) {
-        distances.remove(Map.entry(upper, lower));
+    private Station getDepartureStation() {
+        return firstOf(sections).getUpperStation();
     }
 
-    private boolean isTop(Station station) {
-        return stations.getFirst().equals(station);
+    private Station getArrivalStation() {
+        return lastOf(sections).getLowerStation();
     }
 
-    private boolean isBottom(Station station) {
-        return stations.getLast().equals(station);
-    }
-
-    private Station getUpperOf(Station station) {
-        int index = stations.indexOf(station);
-        return stations.get(index - 1);
-    }
-
-    private Station getLowerOf(Station station) {
-        int index = stations.indexOf(station);
-        return stations.get(index + 1);
+    public List<Station> getStations() {
+        return sections.stream()
+                .flatMap(section -> section.getStations().stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public String getColor() {
         return color;
     }
 
-    public List<Station> getStations() {
-        return Collections.unmodifiableList(stations);
+    public String getName() {
+        return name;
     }
 
-    public Set<Map.Entry<Station, Station>> getAdjacentStations() {
-        return distances.keySet();
+    public List<Section> getSections() {
+        return new ArrayList<>(sections);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Line line = (Line)o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
+    public void setColor(String color) {
+        this.color = color;
     }
 }

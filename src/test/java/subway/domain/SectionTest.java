@@ -25,11 +25,20 @@ class SectionTest {
 
     @DisplayName("어떤 구간과 연결되는지 알 수 있다")
     @Test
-    void isConnectedToOtherSection() {
+    void hasLinkWithOtherSection() {
         var section = new Section(잠실나루역, 잠실역, 10);
         var otherSection = new Section(잠실역, 잠실새내역, 5);
 
         assertThat(section.hasLinkWith(otherSection)).isTrue();
+    }
+
+    @DisplayName("서로 대칭인 경우는 연결된 것이 아니다.")
+    @Test
+    void mirroredSectionsAreNotLinked() {
+        var section = new Section(잠실나루역, 잠실역, 10);
+        var otherSection = new Section(잠실역, 잠실나루역, 10);
+
+        assertThat(section.hasLinkWith(otherSection)).isFalse();
     }
 
     @DisplayName("일부 구간을 포함하는지 알 수 있다")

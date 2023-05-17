@@ -30,6 +30,9 @@ public class Section {
     }
 
     public boolean hasLinkWith(Section other) {
+        if (hasLoopWith(other)) {
+            return false;
+        }
         return hasUpperLinkWith(other) || hasLowerLinkWith(other);
     }
 
@@ -71,6 +74,10 @@ public class Section {
         if (!this.hasOverlapWith(other)) {
             throw new IllegalSectionException("겹치는 구간이 아닙니다");
         }
+    }
+
+    private boolean hasLoopWith(Section other) {
+        return hasUpperLinkWith(other) && hasLowerLinkWith(other);
     }
 
     private boolean hasLowerLinkWith(Section other) {
@@ -119,19 +126,18 @@ public class Section {
             return false;
 
         Section section = (Section)o;
-
-        if (!upperStation.equals(section.upperStation))
+        if (!Objects.equals(upperStation, section.upperStation))
             return false;
-        if (!lowerStation.equals(section.lowerStation))
+        if (!Objects.equals(lowerStation, section.lowerStation))
             return false;
-        return distance.equals(section.distance);
+        return Objects.equals(distance, section.distance);
     }
 
     @Override
     public int hashCode() {
-        int result = upperStation.hashCode();
-        result = 31 * result + lowerStation.hashCode();
-        result = 31 * result + distance.hashCode();
+        int result = upperStation != null ? upperStation.hashCode() : 0;
+        result = 31 * result + (lowerStation != null ? lowerStation.hashCode() : 0);
+        result = 31 * result + (distance != null ? distance.hashCode() : 0);
         return result;
     }
 }

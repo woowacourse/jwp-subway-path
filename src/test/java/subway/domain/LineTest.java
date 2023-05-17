@@ -1,174 +1,139 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static subway.TestFixture.잠실나루역;
+import static subway.TestFixture.잠실새내역;
+import static subway.TestFixture.잠실역;
+import static subway.TestFixture.종합운동장역;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class LineTest {
-    private static final Station STATION_JAMSIL_NARU = new Station("잠실나루");
-    private static final Station STATION_JAMSIL = new Station("잠실");
-    private static final Station STATION_JAMSIL_SAENAE = new Station("잠실새내");
+import subway.domain.exception.DuplicateSectionException;
+
+@SuppressWarnings("NonAsciiCharacters")
+class LineTest {
 
     private Line line;
 
     @BeforeEach
     void setUp() {
-        this.line = new Line("1호선", "blue");
+        this.line = new Line("2호선", "green");
     }
 
-    @DisplayName("한 번에 두 역을 등록했을 때 그 호선에 두 개의 역만 존재한다")
+    @DisplayName("이미 등록된 구간을 추가하면 예외를 던진다")
     @Test
-    void insertTwoStationsAndStoreTwoStations() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
-        List<Station> stations = line.getStations();
+    void addExistingSection_throws() {
+        var section = new Section(잠실나루역, 잠실역, 10);
+        line.add(section);
 
-        assertThat(stations).hasSize(2);
+        assertThatThrownBy(() -> line.add(section))
+                .isInstanceOf(DuplicateSectionException.class);
     }
 
-    @DisplayName("한 번에 두 역을 등록했을 때 두 역 사이의 거리를 저장한다")
+    @DisplayName("구간이 있을 때, 비연결 구간을 추가하면 예외를 던진다")
     @Test
-    void insertTwoStationsAndStoreDistanceBetweenTwoStations() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
-        int distance = line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE);
+    void addDisconnectedSectionWhenAnySectionExistsThrows() {
+        var section = new Section(잠실나루역, 잠실역, 10);
+        var disconnectedSection = new Section(잠실새내역, 종합운동장역, 5);
+        line.add(section);
 
-        assertThat(distance).isEqualTo(10);
+        assertThatThrownBy(() -> line.add(disconnectedSection))
+                .isInstanceOf(IllegalStateException.class);
     }
 
-    @DisplayName("빈 라인에만 한 번에 두 역을 등록할 수 있다")
+    @DisplayName("구간이 없을 땐 비연결 구간을 그대로 추가한다")
     @Test
-    void insertTwoStationsFail() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+    void addDisconnectedSectionWhenNoSectionExists() {
+        var section = new Section(잠실역, 잠실새내역, 10);
 
-        assertThatIllegalStateException()
-                .isThrownBy(() -> line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10));
+        line.add(section);
+
+        assertThat(line.getStations()).contains(잠실역, 잠실새내역);
     }
 
-    @DisplayName("라인의 상행 종점에 역을 등록한다")
+    @DisplayName("종점 뒤에 구간을 추가한다")
     @Test
-    void insertStationTop() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+    void addToLowerOfArrival() {
+        var upperSection = new Section(잠실나루역, 잠실역, 10);
+        var lowerSection = new Section(잠실역, 잠실새내역, 5);
+        line.add(upperSection);
 
-        line.insertUpper(STATION_JAMSIL, STATION_JAMSIL_NARU, 5);
+        line.add(lowerSection);
 
-        assertSoftly(softly -> {
-            softly.assertThat(line.getStations()).first().isEqualTo(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(5);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(15);
-        });
+        assertThat(line.getStations())
+                .containsExactly(잠실나루역, 잠실역, 잠실새내역);
     }
 
-    @DisplayName("라인의 상행에 역을 등록한다")
+    @DisplayName("기점 앞에 구간을 추가한다")
     @Test
-    void insertStationUpper() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+    void addToUpperOfDeparture() {
+        var lowerSection = new Section(잠실역, 잠실새내역, 5);
+        var upperSection = new Section(잠실나루역, 잠실역, 10);
+        line.add(lowerSection);
 
-        line.insertUpper(STATION_JAMSIL, STATION_JAMSIL_SAENAE, 6);
+        line.add(upperSection);
 
-        assertSoftly(softly -> {
-            softly.assertThat(line.getStations()).contains(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(4);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(6);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE)).isEqualTo(10);
-        });
+        assertThat(line.getStations())
+                .containsExactly(잠실나루역, 잠실역, 잠실새내역);
     }
 
-    @DisplayName("라인의 하행 종점에 역을 등록한다")
+    @DisplayName("역 사이에 추가할 수 있다")
     @Test
-    void insertStationBottom() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+    void addBetweenStations() {
+        var existingSection = new Section(잠실나루역, 잠실새내역, 15);
+        var newSection = new Section(잠실역, 잠실새내역, 5);
+        line.add(existingSection);
 
-        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_SAENAE, 5);
+        line.add(newSection);
 
-        assertSoftly(softly -> {
-            softly.assertThat(line.getStations()).last().isEqualTo(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(5);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(15);
-        });
+        assertThat(line.getStations())
+                .containsExactly(잠실나루역, 잠실역, 잠실새내역);
     }
 
-    @DisplayName("라인의 하행에 역을 등록한다")
+    @DisplayName("기점 역을 제거한다")
     @Test
-    void insertStationLower() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+    void removeDepartureStation() {
+        var section = new Section(잠실나루역, 잠실역, 10);
+        var other = new Section(잠실역, 잠실새내역, 5);
+        line.add(section);
+        line.add(other);
 
-        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_NARU, 6);
+        line.remove(잠실나루역);
 
-        assertSoftly(softly -> {
-            softly.assertThat(line.getStations()).contains(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(6);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(4);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE)).isEqualTo(10);
-        });
+        assertThat(line.getStations())
+                .containsExactly(잠실역, 잠실새내역);
     }
 
-    @DisplayName("상행 종점을 제거한다")
+    @DisplayName("종점 역을 제거한다")
     @Test
-    void deleteTop() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
-        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_NARU, 6);
+    void removeArrivalStation() {
+        var section = new Section(잠실나루역, 잠실역, 10);
+        var other = new Section(잠실역, 잠실새내역, 5);
+        line.add(section);
+        line.add(other);
 
-        line.delete(STATION_JAMSIL_NARU);
+        line.remove(잠실새내역);
 
-        assertSoftly(softly -> {
-            softly.assertThat(line.getStations()).doesNotContain(STATION_JAMSIL_NARU);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(4);
-        });
+        assertThat(line.getStations())
+                .containsExactly(잠실나루역, 잠실역);
     }
 
-    @DisplayName("하행 종점을 제거한다")
+    @DisplayName("중간 역을 제거한다")
     @Test
-    void deleteBottom() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
-        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_NARU, 6);
+    void removeStation() {
+        var section = new Section(잠실나루역, 잠실역, 10);
+        var other = new Section(잠실역, 잠실새내역, 5);
+        var another = new Section(잠실새내역, 종합운동장역, 5);
+        line.add(section);
+        line.add(other);
+        line.add(another);
 
-        line.delete(STATION_JAMSIL_SAENAE);
+        line.remove(잠실역);
 
-        assertSoftly(softly -> {
-            softly.assertThat(line.getStations()).doesNotContain(STATION_JAMSIL_SAENAE);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(6);
-        });
-    }
-
-    @DisplayName("중간에 있는 역을 제거한다")
-    @Test
-    void deleteStationInBetween() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
-        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_NARU, 6);
-
-        line.delete(STATION_JAMSIL);
-
-        assertSoftly(softly -> {
-            softly.assertThat(line.getStations()).doesNotContain(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE)).isEqualTo(10);
-        });
-    }
-
-    @DisplayName("역이 두 개 뿐인 경우 모두 제거한다")
-    @Test
-    void deleteStationWhenTwoStationsLeft() {
-        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
-
-        line.delete(STATION_JAMSIL_SAENAE);
-
-        assertThat(line.getStations()).isEmpty();
-    }
-
-    @DisplayName("두 역 사이의 거리를 알 수 있다")
-    @Test
-    void getDistanceBetweenTwoStations() {
-        line.insertBoth(
-                STATION_JAMSIL_NARU,
-                STATION_JAMSIL_SAENAE,
-                10);
-
-        line.insertUpper(STATION_JAMSIL, STATION_JAMSIL_SAENAE, 6);
-
-        assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL)).isEqualTo(4);
+        assertThat(line.getStations())
+                .containsExactly(잠실나루역, 잠실새내역, 종합운동장역);
     }
 }

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.exception.NoSuchLineException;
+import subway.dao.dto.LineDto;
 import subway.domain.Line;
-import subway.domain.Line2;
 
 /* 학습용 주석입니다 :)
 Repository 도입은 도메인 객체의 저장에 대한 관심사를 분리하기 위함이다.
@@ -38,7 +38,7 @@ public class LineRepository {
     지금은 필요하지 않은 것 같다.
      */
     @Transactional
-    public Line2 save(Line2 line) {
+    public Line save(Line line) {
         if (Objects.isNull(line.getId())) {
             return create(line);
         }
@@ -46,20 +46,20 @@ public class LineRepository {
     }
 
     @Transactional(readOnly = true)
-    public Line2 findBy(Long id) {
-        Line lineDto = lineDao.findById(id);
+    public Line findBy(Long id) {
+        LineDto lineDto = lineDao.findById(id);
         return toLine(lineDto);
     }
 
     @Transactional(readOnly = true)
-    public List<Line2> findAll() {
+    public List<Line> findAll() {
         return lineDao.findAll().stream()
                 .map(this::toLine)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void delete(Line2 line) {
+    public void delete(Line line) {
         sectionRepository.deleteAllBy(line.getId());
         int deletedCount = lineDao.deleteById(line.getId());
         validateChangedBy(deletedCount);
@@ -71,19 +71,19 @@ public class LineRepository {
         }
     }
 
-    private Line2 create(Line2 line) {
-        Line inserted = lineDao.insert(toDto(line));
+    private Line create(Line line) {
+        LineDto inserted = lineDao.insert(toDto(line));
         sectionRepository.saveAll(inserted.getId(), line.getSections());
         return putIdOn(line, inserted.getId());
     }
 
-    private Line2 update(Line2 line) {
+    private Line update(Line line) {
         sectionRepository.saveAll(line.getId(), line.getSections());
         return line;
     }
 
-    private Line2 putIdOn(Line2 line, Long id) {
-        return new Line2(
+    private Line putIdOn(Line line, Long id) {
+        return new Line(
                 id,
                 line.getName(),
                 line.getColor(),
@@ -91,16 +91,16 @@ public class LineRepository {
         );
     }
 
-    private Line toDto(Line2 line) {
-        return new Line(
+    private LineDto toDto(Line line) {
+        return new LineDto(
                 line.getId(),
                 line.getName(),
                 line.getColor()
         );
     }
 
-    private Line2 toLine(Line lineDto) {
-        return new Line2(
+    private Line toLine(LineDto lineDto) {
+        return new Line(
                 lineDto.getId(),
                 lineDto.getName(),
                 lineDto.getColor(),

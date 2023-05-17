@@ -27,8 +27,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.dao.exception.NoSuchLineException;
+import subway.dao.dto.LineDto;
 import subway.domain.Line;
-import subway.domain.Line2;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
@@ -47,11 +47,11 @@ class LineRepositoryTest {
     @Mock
     private SectionRepository sectionRepository;
 
-    private Line2 line;
+    private Line line;
 
     @BeforeEach
     void setUp() {
-        Line2 line = new Line2(LINE_NAME, LINE_COLOR);
+        Line line = new Line(LINE_NAME, LINE_COLOR);
         line.add(잠실나루역_잠실역);
         line.add(잠실역_잠실새내역);
         this.line = line;
@@ -60,10 +60,10 @@ class LineRepositoryTest {
     @DisplayName("호선을 저장한다")
     @Test
     void save() {
-        doReturn(new Line(LINE_ID, LINE_NAME, LINE_COLOR)).when(lineDao).insert(any());
+        doReturn(new LineDto(LINE_ID, LINE_NAME, LINE_COLOR)).when(lineDao).insert(any());
         doNothing().when(sectionRepository).saveAll(anyLong(), anyList());
 
-        Line2 saved = lineRepository.save(line);
+        Line saved = lineRepository.save(line);
 
         verify(sectionRepository, times(1)).saveAll(anyLong(), eq(line.getSections()));
         assertThat(saved.getId()).isEqualTo(LINE_ID);
@@ -73,7 +73,7 @@ class LineRepositoryTest {
     @Test
     void update() {
         doNothing().when(sectionRepository).saveAll(anyLong(), anyList());
-        Line2 savedLine = new Line2(LINE_ID, LINE_NAME, LINE_COLOR, line.getSections());
+        Line savedLine = new Line(LINE_ID, LINE_NAME, LINE_COLOR, line.getSections());
 
         lineRepository.save(savedLine);
 
@@ -84,13 +84,13 @@ class LineRepositoryTest {
     @DisplayName("id로 호선을 조회한다")
     @Test
     void findById() {
-        doReturn(new Line(LINE_ID, LINE_NAME, LINE_COLOR)).when(lineDao).findById(any());
+        doReturn(new LineDto(LINE_ID, LINE_NAME, LINE_COLOR)).when(lineDao).findById(any());
         doReturn(List.of(
                 잠실나루역_잠실역,
                 잠실역_잠실새내역
         )).when(sectionRepository).findAllBy(anyLong());
 
-        Line2 found = lineRepository.findBy(LINE_ID);
+        Line found = lineRepository.findBy(LINE_ID);
 
         verify(sectionRepository, times(1)).findAllBy(eq(LINE_ID));
         assertThat(found.getSections()).containsExactly(
@@ -103,8 +103,8 @@ class LineRepositoryTest {
     @Test
     void findAll() {
         doReturn(List.of(
-                new Line(LINE_ID, LINE_NAME, LINE_COLOR),
-                new Line(OTHER_LINE_ID, OTHER_LINE_NAME, OTHER_LINE_COLOR)
+                new LineDto(LINE_ID, LINE_NAME, LINE_COLOR),
+                new LineDto(OTHER_LINE_ID, OTHER_LINE_NAME, OTHER_LINE_COLOR)
         )).when(lineDao).findAll();
         doReturn(List.of(
                 잠실나루역_잠실역,
@@ -115,7 +115,7 @@ class LineRepositoryTest {
                 잠실역_석촌역
         )).when(sectionRepository).findAllBy(eq(OTHER_LINE_ID));
 
-        List<Line2> lines = lineRepository.findAll();
+        List<Line> lines = lineRepository.findAll();
 
         verify(sectionRepository, times(1)).findAllBy(eq(LINE_ID));
         verify(sectionRepository, times(1)).findAllBy(eq(OTHER_LINE_ID));
@@ -134,7 +134,7 @@ class LineRepositoryTest {
     void deleteById() {
         doReturn(1).when(lineDao).deleteById(any());
         doNothing().when(sectionRepository).deleteAllBy(any());
-        Line2 savedLine = new Line2(LINE_ID, LINE_NAME, LINE_COLOR, line.getSections());
+        Line savedLine = new Line(LINE_ID, LINE_NAME, LINE_COLOR, line.getSections());
 
         lineRepository.delete(savedLine);
 
@@ -147,7 +147,7 @@ class LineRepositoryTest {
     void deleteById_fail_throws() {
         doReturn(0).when(lineDao).deleteById(any());
         doNothing().when(sectionRepository).deleteAllBy(any());
-        Line2 savedLine = new Line2(LINE_ID, LINE_NAME, LINE_COLOR, line.getSections());
+        Line savedLine = new Line(LINE_ID, LINE_NAME, LINE_COLOR, line.getSections());
 
         assertThatThrownBy(() -> lineRepository.delete(savedLine))
                 .isInstanceOf(NoSuchLineException.class);
