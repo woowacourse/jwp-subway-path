@@ -14,6 +14,8 @@ import subway.domain.station.Station;
 public class Sections {
 
     private static final int MINIMUM_SECTION_SIZE = 2;
+    private static final String INVALID_REMOVE_MIDDLE_STATION = "구간에서 삭제할 올바른 역을 선택해주세요.";
+
     private final Map<Station, Section> sections;
 
     public Sections(final Map<Station, Section> sections) {
@@ -49,12 +51,13 @@ public class Sections {
     ) {
         validateStation(sourceStation, targetStation);
 
-        final Section adjustPath = sections.get(sourceStation);
+        final Section section = sections.get(sourceStation);
 
-        adjustPath.findStationByDirection(direction).ifPresentOrElse(
-                station -> addSectionToMiddleStation(sourceStation, targetStation, distance, station),
-                () -> addSectionToTerminalStation(sourceStation, targetStation, distance, direction)
-        );
+        section.findStationByDirection(direction)
+                .ifPresentOrElse(
+                        station -> addSectionToMiddleStation(sourceStation, targetStation, distance, station),
+                        () -> addSectionToTerminalStation(sourceStation, targetStation, distance, direction)
+                );
     }
 
     private void validateStation(final Station sourceStation, final Station targetStation) {
@@ -72,8 +75,8 @@ public class Sections {
             final Distance distance,
             final Direction direction
     ) {
-        final Section adjustPath = sections.get(sourceStation);
-        adjustPath.add(targetStation, distance, direction);
+        final Section section = sections.get(sourceStation);
+        section.add(targetStation, distance, direction);
 
         final Section targetStationSection = Section.create();
         targetStationSection.add(sourceStation, distance, direction.reverse());
@@ -108,7 +111,8 @@ public class Sections {
             final Station sourceStation,
             final Station targetStation,
             final Distance distance,
-            final Direction direction) {
+            final Direction direction
+    ) {
         final Section sourceStationSection = Section.create();
         final Section targetStationSection = Section.create();
 
@@ -119,22 +123,17 @@ public class Sections {
     }
 
     public void removeStation(final Station targetStation) {
-        if (sections.isEmpty()) {
-            throw new IllegalArgumentException("해당 역은 구간이 존재하지 않습니다.");
-        }
-
-        if (!isRegisterStation(targetStation)) {
-            throw new IllegalArgumentException("해당 역은 노선에 등록되어 있지 않습니다.");
-        }
+        validateSection();
+        validateRemoveTargetStation(targetStation);
 
         if (sections.values().size() == MINIMUM_SECTION_SIZE) {
             sections.clear();
-            return ;
+            return;
         }
 
-        final Section adjustPath = sections.get(targetStation);
+        final Section section = sections.get(targetStation);
 
-        if (adjustPath.isTerminalStation()) {
+        if (section.isTerminalStation()) {
             removeSectionToTerminalStation(targetStation);
             return ;
         }
@@ -142,25 +141,37 @@ public class Sections {
         removeSectionToMiddleStation(targetStation);
     }
 
+    private void validateRemoveTargetStation(final Station targetStation) {
+        if (!isRegisterStation(targetStation)) {
+            throw new IllegalArgumentException("해당 역은 노선에 등록되어 있지 않습니다.");
+        }
+    }
+
+    private void validateSection() {
+        if (sections.isEmpty()) {
+            throw new IllegalArgumentException("해당 역은 구간이 존재하지 않습니다.");
+        }
+    }
+
     private boolean isRegisterStation(final Station targetStation) {
         return sections.containsKey(targetStation);
     }
 
     private void removeSectionToMiddleStation(final Station targetStation) {
-        final Section adjustPath = sections.get(targetStation);
-        final Station upStation = adjustPath.findStationByDirection(Direction.UP)
-                .orElseThrow(() -> new IllegalArgumentException("해당 역은 종점역 입니다."));
-        final Station downStation = adjustPath.findStationByDirection(Direction.DOWN)
-                .orElseThrow(() -> new IllegalArgumentException("해당 역은 종점역 입니다."));
+        final Section section = sections.get(targetStation);
+        final Station upStation = section.findStationByDirection(Direction.UP)
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_REMOVE_MIDDLE_STATION));
+        final Station downStation = section.findStationByDirection(Direction.DOWN)
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_REMOVE_MIDDLE_STATION));
 
         removeSectionInfo(targetStation, upStation, downStation);
         sections.remove(targetStation);
     }
 
     private void removeSectionInfo(final Station targetStation, final Station upStation, final Station downStation) {
-        final Section adjustPath = sections.get(targetStation);
-        final Distance upStationDistance = adjustPath.findDistanceByStation(upStation);
-        final Distance downStationDistance = adjustPath.findDistanceByStation(downStation);
+        final Section section = sections.get(targetStation);
+        final Distance upStationDistance = section.findDistanceByStation(upStation);
+        final Distance downStationDistance = section.findDistanceByStation(downStation);
         final Distance distance = upStationDistance.add(downStationDistance);
 
         final Section upStationSection = sections.get(upStation);
@@ -173,12 +184,13 @@ public class Sections {
     }
 
     private void removeSectionToTerminalStation(final Station targetStation) {
-        final Section adjustPath = sections.get(targetStation);
-        final List<Station> stations = adjustPath.findAllStation();
+        final Section section = sections.get(targetStation);
+        final List<Station> stations = section.findAllStation();
 
         for (Station station : stations) {
             validateConnected(station);
-            sections.get(station).delete(targetStation);
+            sections.get(station)
+                    .delete(targetStation);
         }
 
         sections.remove(targetStation);

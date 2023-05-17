@@ -69,11 +69,9 @@ public class SectionRepository {
         final Map<Long, Station> stations = stationDao.findAllByIds(stationIds)
                 .stream()
                 .collect(Collectors.toMap(StationEntity::getId, StationEntity::to));
+        final Map<Station, Section> sections = mapToSection(sectionEntities, stations);
 
-        final Map<Station, Section> adjustPath = mapToSection(sectionEntities, stations);
-
-        final Sections sections = Sections.of(adjustPath);
-        return Line.of(line, sections);
+        return Line.of(line, Sections.of(sections));
     }
 
     private Map<Station, Section> mapToSection(final List<SectionEntity> sectionEntities, final Map<Long, Station> stations) {
