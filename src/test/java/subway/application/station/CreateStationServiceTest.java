@@ -10,6 +10,7 @@ import subway.ui.dto.request.StationCreateRequest;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -22,6 +23,17 @@ class CreateStationServiceTest {
     void setUp() {
         stationRepository = Mockito.mock(StationRepository.class);
         createStationService = new CreateStationService(stationRepository);
+    }
+
+    @Test
+    @DisplayName("역을 정상적으로 만든다.")
+    void createLine() {
+        given(stationRepository.findByName(any()))
+                .willReturn(Optional.empty());
+
+        assertThatNoException().isThrownBy(
+                () -> createStationService.createStation(new StationCreateRequest("비버"))
+        );
     }
 
     @Test
