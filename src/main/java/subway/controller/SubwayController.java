@@ -21,7 +21,7 @@ public class SubwayController {
 
     @PostMapping
     public ResponseEntity<FindShortestRouteResponse> findShortestRoute(@RequestBody FindShortestRouteRequest request) {
-        Path path = subwayService.findShortestRoute(request.getStartStationId(), request.getEndStationId());
+        Path path = subwayService.findShortestRoute(request.getPassengerAge(), request.getStartStationId(), request.getEndStationId());
 
         FindShortestRouteResponse response = FindShortestRouteResponse.from(path);
         return ResponseEntity.ok(response);

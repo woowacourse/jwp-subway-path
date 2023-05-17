@@ -7,10 +7,10 @@ import subway.domain.Path;
 public class FindShortestRouteResponse {
     private final List<StationInfoResponse> shortestRoute;
     private final Double totalDistance;
-    private final Integer totalCharge;
+    private final Double totalCharge;
 
     public FindShortestRouteResponse(List<StationInfoResponse> shortestRoute, Double totalDistance,
-                                     Integer totalCharge) {
+                                     Double totalCharge) {
         this.shortestRoute = shortestRoute;
         this.totalDistance = totalDistance;
         this.totalCharge = totalCharge;
@@ -32,7 +32,7 @@ public class FindShortestRouteResponse {
         return totalDistance;
     }
 
-    public Integer getTotalCharge() {
+    public Double getTotalCharge() {
         return totalCharge;
     }
 }

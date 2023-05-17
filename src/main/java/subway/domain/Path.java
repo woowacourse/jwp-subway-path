@@ -5,9 +5,9 @@ import java.util.List;
 public class Path {
     private final List<Station> stations;
     private final double totalDistance;
-    private final int totalCharge;
+    private final double totalCharge;
 
-    public Path(List<Station> stations, double totalDistance, int totalCharge) {
+    public Path(List<Station> stations, double totalDistance, double totalCharge) {
         this.stations = stations;
         this.totalDistance = totalDistance;
         this.totalCharge = totalCharge;
@@ -21,7 +21,7 @@ public class Path {
         return totalDistance;
     }
 
-    public int getTotalCharge() {
+    public double getTotalCharge() {
         return totalCharge;
     }
 
