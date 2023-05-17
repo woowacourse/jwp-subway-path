@@ -33,9 +33,9 @@ public class LineRepository {
         this.stationDao = stationDao;
     }
 
-    public void save(final Line line) {
+    public Long save(final Line line) {
         final LineEntity lineEntity = LineEntity.from(line);
-        final Long id = lineDao.insert(lineEntity);
+        return lineDao.insert(lineEntity);
     }
 
     public void updateSections(final Line line) {
