@@ -22,12 +22,6 @@ public class LineJdbcAdapter implements LineCommandPort, LineQueryPort {
         this.lineDao = lineDao;
     }
 
-
-    public boolean checkExistById(final long lineId) {
-        Optional<LineEntity> entity = lineDao.findById(lineId);
-        return entity.isPresent();
-    }
-
     @Override
     public Long createLine(final Line line) {
         final LineEntity lineEntity = new LineEntity(line.getName());
