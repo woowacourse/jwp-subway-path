@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
+// TODO 노선 별 요금 적용을 위해 StationEdge로 변경, 생성할 때 Line 전달받아 Edge에 저장하기 or Section이 Line을 가지면 해결되는 문제 아닌가?
 public class RoutedStations extends SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> {
 
     private RoutedStations(final Class<? extends DefaultWeightedEdge> edgeClass) {
@@ -94,5 +95,12 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
                 .map(edge -> new Section(getEdgeSource(edge), getEdgeTarget(edge),
                         new Distance((int) getEdgeWeight(edge))))
                 .collect(Collectors.toList());
+    }
+
+    public Distance totalDistance() {
+        int sum = edgeSet().stream()
+                .mapToInt(edge -> (int) getEdgeWeight(edge))
+                .sum();
+        return new Distance(sum);
     }
 }

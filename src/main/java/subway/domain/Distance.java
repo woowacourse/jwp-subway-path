@@ -26,6 +26,10 @@ public class Distance {
         return new Distance(value + distance.value);
     }
 
+    public boolean isWithIn(Distance distance) {
+        return value <= distance.value;
+    }
+
     public int getValue() {
         return value;
     }
