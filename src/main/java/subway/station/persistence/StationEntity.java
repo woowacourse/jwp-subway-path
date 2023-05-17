@@ -5,13 +5,13 @@ public class StationEntity {
     private final Long id;
     private final String stationName;
 
+    public StationEntity(String stationName) {
+        this(null, stationName);
+    }
+
     public StationEntity(final Long id, final String stationName) {
         this.id = id;
         this.stationName = stationName;
-    }
-
-    public StationEntity(String stationName) {
-        this(null, stationName);
     }
 
     public Long getId() {

@@ -11,14 +11,14 @@ public class Line {
     private final String lineName;
     private final Sections sections;
 
+    public Line(String lineName) {
+        this(null, lineName, Sections.empty());
+    }
+
     public Line(Long id, String lineName, Sections sections) {
         this.id = id;
         this.lineName = lineName;
         this.sections = sections;
-    }
-
-    public Line(String lineName) {
-        this(null, lineName, Sections.empty());
     }
 
     public boolean isEmpty() {
