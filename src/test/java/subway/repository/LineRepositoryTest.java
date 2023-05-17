@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.Subway;
 import subway.repository.dao.LineDao;
 import subway.repository.dao.SectionDao;
 import subway.repository.dao.StationDao;
@@ -24,12 +25,11 @@ class LineRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private StationDao stationDao;
     private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate);
+        StationDao stationDao = new StationDao(jdbcTemplate);
         lineRepository = new LineRepository(new SectionDao(jdbcTemplate), new LineDao(jdbcTemplate),
                 stationDao);
     }
@@ -76,5 +76,81 @@ class LineRepositoryTest {
                         "역삼역",
                         "박스터역"
                 );
+    }
+
+    @Test
+    void 노선의_하행종점을_삭제한다() {
+        // given
+        List<Section> sections = List.of(
+                new Section("서울역", "명동역", 10),
+                new Section("명동역", "광화문역", 7),
+                new Section("광화문역", "민트역", 5)
+        );
+        Line line = new Line(null, "1호선", sections);
+        final Long lineId = lineRepository.save(line);
+
+        final Subway subway = new Subway(lineRepository.findAll());
+        final Line saveLine = subway.findLineById(lineId);
+        final int lineSize = saveLine.getStations().size();
+        final Station lastStation = saveLine.getStations().get(lineSize - 1);
+
+        // when
+        lineRepository.deleteStation(saveLine.getId(), lastStation.getId());
+        final Line findLine = lineRepository.findById(lineId);
+
+        // then
+        assertThat(findLine.getSections()).hasSize(2);
+        assertThat(findLine.getStations()).flatMap(Station::getName)
+                .containsExactly("서울역", "명동역", "광화문역");
+    }
+
+    @Test
+    void 노선의_상행종점을_삭제한다() {
+        // given
+        List<Section> sections = List.of(
+                new Section("서울역", "명동역", 10),
+                new Section("명동역", "광화문역", 7),
+                new Section("광화문역", "민트역", 5)
+        );
+        Line line = new Line(null, "1호선", sections);
+        final Long lineId = lineRepository.save(line);
+
+        final Subway subway = new Subway(lineRepository.findAll());
+        final Line saveLine = subway.findLineById(lineId);
+        final Station firstStation = saveLine.getStations().get(0);
+
+        // when
+        lineRepository.deleteStation(saveLine.getId(), firstStation.getId());
+        final Line findLine = lineRepository.findById(lineId);
+
+        // then
+        assertThat(findLine.getSections()).hasSize(2);
+        assertThat(findLine.getStations()).flatMap(Station::getName)
+                .containsExactly("명동역", "광화문역", "민트역");
+    }
+
+    @Test
+    void 노선의_중간_역을_삭제한다() {
+        // given
+        List<Section> sections = List.of(
+                new Section("서울역", "명동역", 10),
+                new Section("명동역", "광화문역", 7),
+                new Section("광화문역", "민트역", 5)
+        );
+        Line line = new Line(null, "1호선", sections);
+        final Long lineId = lineRepository.save(line);
+
+        final Subway subway = new Subway(lineRepository.findAll());
+        final Line saveLine = subway.findLineById(lineId);
+        final Station secondStation = saveLine.getStations().get(1);
+
+        // when
+        lineRepository.deleteStation(saveLine.getId(), secondStation.getId());
+        final Line findLine = lineRepository.findById(lineId);
+
+        // then
+        assertThat(findLine.getSections()).hasSize(2);
+        assertThat(findLine.getStations()).flatMap(Station::getName)
+                .containsExactly("서울역", "광화문역", "민트역");
     }
 }

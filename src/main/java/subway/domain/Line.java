@@ -45,10 +45,6 @@ public class Line {
         return name.equals(otherName);
     }
 
-    public void addSections(List<Section> saveSections) {
-        sections.addAll(saveSections);
-    }
-
     public void addSection(Section newSection) {
         validateDuplicatedName(newSection);
 
@@ -154,6 +150,11 @@ public class Line {
         sources.removeAll(sourceToTarget.values());
         return sources.stream()
                 .findAny().orElseThrow(() -> new IllegalArgumentException("종점역을 찾지 못했습니다"));
+    }
+
+    public boolean containsStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.contains(station));
     }
 
     public Long getId() {

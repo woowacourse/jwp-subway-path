@@ -118,4 +118,38 @@ public class LineRepository {
         sectionDao.deleteAll(lineId);
         saveSections(lineId, updatedLine);
     }
+
+    public void deleteStation(final Long lineId, final Long stationId) {
+        List<SectionEntity> connectedSections = sectionDao.findByStationId(stationId);
+        final int deletedRowCount = sectionDao.deleteByLineIdAndStationId(lineId, stationId);
+
+        if (deletedRowCount == 2) {
+            final Long newSourceStationId = extractSourceStation(connectedSections, stationId);
+            final Long newTargetStationId = extractTargetStation(connectedSections, stationId);
+            final int newDistance = connectedSections.get(0).getDistance() + connectedSections.get(1).getDistance();
+            final SectionEntity newSection = new SectionEntity(newSourceStationId, newTargetStationId, lineId,
+                    newDistance);
+            sectionDao.insert(newSection);
+        }
+    }
+
+    private Long extractSourceStation(final List<SectionEntity> connectedSections, final Long stationId) {
+        return connectedSections.stream()
+                .filter(sectionEntity -> sectionEntity.getTargetStationId().equals(stationId))
+                .findFirst()
+                .map(SectionEntity::getSourceStationId)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    private Long extractTargetStation(final List<SectionEntity> connectedSections, final Long stationId) {
+        return connectedSections.stream()
+                .filter(sectionEntity -> sectionEntity.getSourceStationId().equals(stationId))
+                .findFirst()
+                .map(SectionEntity::getTargetStationId)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    public void delete(final Long lineId) {
+        lineDao.deleteById(lineId);
+    }
 }

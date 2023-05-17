@@ -109,4 +109,21 @@ public class LineService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 Line 이름입니다."));
         lineRepository.updateLine(lineId, updatedLine);
     }
+
+    public void deleteStation(final Long lineId, final Long stationId) {
+        final Subway subway = new Subway(lineRepository.findAll());
+        final Line line = subway.findLineById(lineId);
+        final Station findStation = stationRepository.findById(stationId);
+
+        line.removeStation(findStation);
+        lineRepository.deleteStation(lineId, stationId);
+
+        if (line.getStations().isEmpty()) {
+            lineRepository.delete(lineId);
+        }
+
+        if (subway.notContainsStation(findStation)) {
+            stationRepository.delete(stationId);
+        }
+    }
 }

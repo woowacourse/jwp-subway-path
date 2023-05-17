@@ -119,6 +119,8 @@ public class LineIntegrationTest extends IntegrationTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(lineSelectResponse.getLineId()).isEqualTo(lineId);
+            assertThat(lineSelectResponse.getLineName()).isEqualTo("2호선");
             assertThat(lineSelectResponse.getStations()).map(StationSelectResponse::getName)
                     .containsExactly("교대역", "강남역", "역삼역");
         }

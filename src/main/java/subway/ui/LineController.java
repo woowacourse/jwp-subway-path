@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.LinesSelectResponse;
-import subway.dto.StationSelectResponse;
-import subway.dto.StationSaveRequest;
 import subway.dto.LineSelectResponse;
+import subway.dto.LinesSelectResponse;
+import subway.dto.StationSaveRequest;
+import subway.dto.StationSelectResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -63,6 +63,11 @@ public class LineController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{lineId}/stations/{stationId}")
+    public ResponseEntity<Void> deleteStation(@PathVariable Long lineId, @PathVariable Long stationId) {
+        lineService.deleteStation(lineId, stationId);
+        return ResponseEntity.noContent().build();
+    }
     /**
      * 노선을 여러개 생성한다.
      * @return 생성한 노선들의 Id 목록

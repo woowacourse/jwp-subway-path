@@ -1,5 +1,6 @@
 package subway.repository.dao;
 
+import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,5 +54,34 @@ public class SectionDao {
     public List<SectionEntity> findAll() {
         String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public void insertAll(final List<SectionEntity> sections) {
+        String sql = "insert into SECTION (source_station_id, target_station_id, line_id, distance) values (?, ?, ?, ?)";
+
+        jdbcTemplate.batchUpdate(
+                sql,
+                sections,
+                sections.size(),
+                (PreparedStatement ps, SectionEntity section) -> {
+                    ps.setLong(1, section.getSourceStationId());
+                    ps.setLong(2, section.getTargetStationId());
+                    ps.setLong(3, section.getLineId());
+                    ps.setInt(4, section.getDistance());
+                });
+    }
+
+    public int deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
+        String sql = "delete from SECTION "
+                + "where line_id = ? and (source_station_id = ? or target_station_id = ?)";
+
+        return jdbcTemplate.update(sql, lineId, stationId, stationId);
+    }
+
+    public List<SectionEntity> findByStationId(final Long stationId) {
+        String sql = "select id, source_station_id, target_station_id, line_id, distance FROM section"
+                + " WHERE source_station_id = ? or target_station_id = ?";
+
+        return jdbcTemplate.query(sql, rowMapper, stationId, stationId);
     }
 }

@@ -33,6 +33,10 @@ public class Section {
         return source.isSameName(station) || target.isSameName(station);
     }
 
+    public boolean contains(Station station) {
+        return source.equals(station) || target.equals(station);
+    }
+
     public Station getSource() {
         return source;
     }

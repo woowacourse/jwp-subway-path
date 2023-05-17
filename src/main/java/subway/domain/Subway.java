@@ -42,6 +42,13 @@ public class Subway {
         }
     }
 
+    public Line findLineById(final Long lineId) {
+        return lines.stream()
+                .filter(line -> line.getId().equals(lineId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+    }
+
     public Line findLineByName(String lineName) {
         return lines.stream()
                 .filter(line -> line.getName().equals(lineName))
@@ -52,5 +59,10 @@ public class Subway {
     public void addStation(String name, String sourceStation, String targetStation, int distance) {
         Line line = findLineByName(name);
         line.addSection(new Section(sourceStation, targetStation, distance));
+    }
+
+    public boolean notContainsStation(final Station station) {
+        return lines.stream()
+                .noneMatch(line -> line.containsStation(station));
     }
 }
