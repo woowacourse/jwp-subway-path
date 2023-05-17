@@ -2,9 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.DbEdgeDao;
-import subway.dao.DbLineDao;
-import subway.dao.StationDao;
+import subway.dao.*;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.SubwayGraphs;
@@ -24,13 +22,13 @@ import java.util.stream.Collectors;
 public class LineService {
 
     private final SubwayGraphs subwayGraphs;
-    private final DbLineDao dbLineDao;
+    private final LineDao lineDao;
     private final StationDao stationDao;
-    private final DbEdgeDao edgeDao;
+    private final EdgeDao edgeDao;
 
-    public LineService(final SubwayGraphs subwayGraphs, final DbLineDao dbLineDao, final StationDao stationDao, final DbEdgeDao edgeDao) {
+    public LineService(final SubwayGraphs subwayGraphs, final LineDao lineDao, final StationDao stationDao, final EdgeDao edgeDao) {
         this.subwayGraphs = subwayGraphs;
-        this.dbLineDao = dbLineDao;
+        this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.edgeDao = edgeDao;
     }
@@ -39,7 +37,7 @@ public class LineService {
     public LineResponse createLine(final LineCreateRequest lineCreateRequest) {
         final Line line = new Line(lineCreateRequest.getLineName());
 
-        if (dbLineDao.findByName(line.getName()).isPresent()) {
+        if (lineDao.findByName(line.getName()).isPresent()) {
             throw new LineAlreadyExistException();
         }
 
@@ -55,7 +53,7 @@ public class LineService {
                 .orElseGet(() -> stationDao.saveStation(downLineStation.toEntity()))
                 .toDomain();
 
-        final Line savedLine = dbLineDao.saveLine(line.toEntity()).toDomain();
+        final Line savedLine = lineDao.saveLine(line.toEntity()).toDomain();
 
         subwayGraphs.createLine(savedLine, savedUpLineStation, savedDownLineStation, distance);
 
@@ -75,17 +73,17 @@ public class LineService {
 
     @Transactional
     public String deleteLine(Long lineId) {
-        Line line = dbLineDao.findById(lineId)
+        Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
         subwayGraphs.remove(line);
         edgeDao.deleteAllEdgesOf(lineId);
-        dbLineDao.deleteLine(lineId);
+        lineDao.deleteLine(lineId);
         return line.getName();
     }
 
     public LineResponse findLine(Long lineId) {
-        Line line = dbLineDao.findById(lineId)
+        Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
         List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
@@ -98,7 +96,7 @@ public class LineService {
     }
 
     public List<LineResponse> findAllLines() {
-        List<Line> lines = dbLineDao.findAll().stream()
+        List<Line> lines = lineDao.findAll().stream()
                 .map(LineEntity::toDomain)
                 .collect(Collectors.toList());
 

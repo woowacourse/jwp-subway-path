@@ -2,10 +2,8 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.dao.*;
 import subway.dto.StationDeleteRequest;
-import subway.dao.DbEdgeDao;
-import subway.dao.DbLineDao;
-import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.SubwayGraphs;
@@ -22,20 +20,20 @@ import java.util.List;
 @Service
 public class StationService {
     private final SubwayGraphs subwayGraphs;
-    private final DbLineDao dbLineDao;
+    private final LineDao lineDao;
     private final StationDao stationDao;
-    private final DbEdgeDao dbEdgeDao;
+    private final EdgeDao edgeDao;
 
-    public StationService(final SubwayGraphs subwayGraphs, final DbLineDao dbLineDao, final StationDao stationDao, final DbEdgeDao dbEdgeDao) {
+    public StationService(final SubwayGraphs subwayGraphs, final LineDao lineDao, final StationDao stationDao, final EdgeDao edgeDao) {
         this.subwayGraphs = subwayGraphs;
-        this.dbLineDao = dbLineDao;
+        this.lineDao = lineDao;
         this.stationDao = stationDao;
-        this.dbEdgeDao = dbEdgeDao;
+        this.edgeDao = edgeDao;
     }
 
     @Transactional
     public StationResponse addStation(final StationAddRequest stationAddRequest) {
-        final Line line = dbLineDao.findByName(stationAddRequest.getLineName())
+        final Line line = lineDao.findByName(stationAddRequest.getLineName())
                 .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
 
@@ -55,11 +53,11 @@ public class StationService {
 
         final List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 
-        dbEdgeDao.deleteAllEdgesOf(line.getId());
+        edgeDao.deleteAllEdgesOf(line.getId());
 
         for (Station station : allStationsInOrder) {
             EdgeEntity edgeEntity = subwayGraphs.findEdge(line, station);
-            dbEdgeDao.save(edgeEntity);
+            edgeDao.save(edgeEntity);
         }
 
         return StationResponse.of(addedStation);
@@ -67,7 +65,7 @@ public class StationService {
 
     @Transactional
     public List<StationResponse> deleteStation(StationDeleteRequest stationDeleteRequest) {
-        Line line = dbLineDao.findByName(stationDeleteRequest.getLineName()).
+        Line line = lineDao.findByName(stationDeleteRequest.getLineName()).
                 orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
 
@@ -84,7 +82,7 @@ public class StationService {
     private List<StationResponse> deleteLine(Line line) {
         List<Station> removedStations = subwayGraphs.deleteAll(line);
 
-        dbEdgeDao.deleteAllEdgesOf(line.getId());
+        edgeDao.deleteAllEdgesOf(line.getId());
 
         List<StationResponse> stationResponses = new ArrayList<>();
 
@@ -94,7 +92,7 @@ public class StationService {
                 stationDao.delete(removedStation.getId());
             }
         }
-        dbLineDao.deleteLine(line.getId());
+        lineDao.deleteLine(line.getId());
 
         return stationResponses;
     }
@@ -104,11 +102,11 @@ public class StationService {
 
         List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 
-        dbEdgeDao.deleteAllEdgesOf(line.getId());
+        edgeDao.deleteAllEdgesOf(line.getId());
 
         for (Station remainStation : allStationsInOrder) {
             EdgeEntity edgeEntity = subwayGraphs.findEdge(line, remainStation);
-            dbEdgeDao.save(edgeEntity);
+            edgeDao.save(edgeEntity);
         }
 
         if (!subwayGraphs.isStationExistInAnyLine(station)) {
