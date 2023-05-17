@@ -93,6 +93,7 @@ Content-Type: application/json
 # @description Retrieve shortest path
 GET http://localhost:8080/path
 Content-Type: application/json
+Accept: application/json
 
 {
   "startStationName": "잠실역",
@@ -268,6 +269,7 @@ Content-Type: application/json
 # @description Retrieve shortest path
 GET http://localhost:8080/path
 Content-Type: application/json
+Accept: application/json
 
 {
   "startStationName": "잠실역",
