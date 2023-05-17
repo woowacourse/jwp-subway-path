@@ -3,10 +3,8 @@ package subway.domain;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.entity.EdgeEntity;
-import subway.exception.LineAlreadyExistException;
 import subway.exception.StationAlreadyExistException;
 
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.*;
 
 public class SubwayGraph {
@@ -17,7 +15,7 @@ public class SubwayGraph {
         this.line = line;
     }
 
-    public void createInitStations(Station upLineEndStation, Station downLineEndStation, int distance) {
+    private void createInitStations(Station upLineEndStation, Station downLineEndStation, int distance) {
         validateDistance(distance);
         graph.addVertex(upLineEndStation);
         graph.addVertex(downLineEndStation);
@@ -88,7 +86,7 @@ public class SubwayGraph {
         return this.line.equals(line);
     }
 
-    public int findOrderOf(final Station station) {
+    private int findOrderOf(final Station station) {
         return findAllStationsInOrder().indexOf(station);
     }
 
@@ -96,7 +94,7 @@ public class SubwayGraph {
         return new EdgeEntity(line.getId(), station.getId(), findOrderOf(station), findDistance(station));
     }
 
-    public int findDistance(Station sourceStation, Station targetStation) {
+    private int findDistance(Station sourceStation, Station targetStation) {
         final DefaultWeightedEdge edge = graph.getEdge(sourceStation, targetStation);
         return (int) graph.getEdgeWeight(edge);
     }

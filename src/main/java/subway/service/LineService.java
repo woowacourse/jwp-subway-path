@@ -60,11 +60,11 @@ public class LineService {
                 .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
 
-        if (subwayGraphs.findSubwayGraphOf(line).getStationSize() == 0) {
+        if (subwayGraphs.findSubwayGraph(line).getStationSize() == 0) {
             return LineResponse.of(line, List.of());
         }
 
-        List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
+        List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrder(line);
         List<StationResponse> stationResponses = allStationsInOrder.stream()
                 .map(station -> StationResponse.of(station))
                 .collect(Collectors.toList());
@@ -80,11 +80,11 @@ public class LineService {
         List<LineResponse> lineResponses = new ArrayList<>();
 
         for (Line line : lines) {
-            if (subwayGraphs.findSubwayGraphOf(line).getStationSize() == 0) {
+            if (subwayGraphs.findSubwayGraph(line).getStationSize() == 0) {
                 lineResponses.add(LineResponse.of(line, List.of()));
                 continue;
             }
-            List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
+            List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrder(line);
 
             List<StationResponse> stationResponses = allStationsInOrder.stream()
                     .map(station -> StationResponse.of(station))

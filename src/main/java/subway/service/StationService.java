@@ -50,9 +50,9 @@ public class StationService {
 
         final int distance = stationAddRequest.getDistance();
 
-        List<Station> addedStations = subwayGraphs.addstation2(line, upLineStation, downLineStation, distance);
+        List<Station> addedStations = subwayGraphs.addStation(line, upLineStation, downLineStation, distance);
 
-        final List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
+        final List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrder(line);
 
         edgeDao.deleteAllEdgesOf(line.getId());
 
@@ -76,14 +76,14 @@ public class StationService {
                 orElseThrow(() -> new StationNotFoundException())
                 .toDomain();
 
-        if (subwayGraphs.findAllStationsInOrderOf(line).size() == 2) {
+        if (subwayGraphs.findAllStationsInOrder(line).size() == 2) {
             return deleteLine(line);
         }
         return deleteStation(line, targetStation);
     }
 
     private List<StationResponse> deleteLine(Line line) {
-        List<Station> removedStations = subwayGraphs.deleteAll(line);
+        List<Station> removedStations = subwayGraphs.remove(line);
 
         edgeDao.deleteAllEdgesOf(line.getId());
 
@@ -103,7 +103,7 @@ public class StationService {
     private List<StationResponse> deleteStation(Line line, Station station) {
         subwayGraphs.deleteStation(line, station);
 
-        List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
+        List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrder(line);
 
         edgeDao.deleteAllEdgesOf(line.getId());
 

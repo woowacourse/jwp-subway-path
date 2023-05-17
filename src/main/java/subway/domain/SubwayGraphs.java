@@ -1,7 +1,6 @@
 package subway.domain;
 
 import org.springframework.stereotype.Component;
-import subway.dto.LineDto;
 import subway.entity.EdgeEntity;
 import subway.exception.LineNotFoundException;
 
@@ -17,46 +16,27 @@ public class SubwayGraphs {
         this.subwayGraphs = new ArrayList<>();
     }
 
-
     public void addLine(Line line) {
         SubwayGraph subwayGraph = new SubwayGraph(line);
         subwayGraphs.add(subwayGraph);
     }
 
-    // TODO: 반환 타입 어떤걸로
-    public LineDto addLine(Line line, Station upLineStation, Station downLineStation, int distance) {
-        final SubwayGraph newLineGraph = new SubwayGraph(line);
-        newLineGraph.createInitStations(upLineStation, downLineStation, distance);
-        final List<Station> allStationsInOrder = newLineGraph.findAllStationsInOrder();
-        subwayGraphs.add(newLineGraph);
-        return new LineDto(line, allStationsInOrder);
-    }
-
     public EdgeEntity findEdge(Line line, Station station) {
-        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
+        final SubwayGraph subwayGraph = findSubwayGraph(line);
         return subwayGraph.findEdgeEntity(station);
     }
 
-    public List<Station> findAllStationsInOrderOf(Line line) {
-        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
+    public List<Station> findAllStationsInOrder(Line line) {
+        final SubwayGraph subwayGraph = findSubwayGraph(line);
         return subwayGraph.findAllStationsInOrder();
     }
 
-    public LineDto addStation1(Line line, Station upLineStation, Station downLineStation, int distance) {
-        final SubwayGraph lineGraph = findSubwayGraphOf(line);
-
-        lineGraph.addStation(upLineStation, downLineStation, distance);
-        final List<Station> allStationsInOrder = lineGraph.findAllStationsInOrder();
-        return new LineDto(line, allStationsInOrder);
-    }
-
-    public List<Station> addstation2(final Line line, final Station upLineStation, final Station downLineStation, final int distance) {
-        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
-
+    public List<Station> addStation(final Line line, final Station upLineStation, final Station downLineStation, final int distance) {
+        final SubwayGraph subwayGraph = findSubwayGraph(line);
         return subwayGraph.addStation(upLineStation, downLineStation, distance);
     }
 
-    public SubwayGraph findSubwayGraphOf(final Line line) {
+    public SubwayGraph findSubwayGraph(final Line line) {
         final SubwayGraph lineGraph = subwayGraphs.stream()
                 .filter(s -> s.isSameLine(line))
                 .findFirst()
@@ -65,7 +45,7 @@ public class SubwayGraphs {
     }
 
     public Optional<Station> findStationByName(Line line, String name) {
-        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
+        final SubwayGraph subwayGraph = findSubwayGraph(line);
         return subwayGraph.findStationByName(name);
     }
 
@@ -74,20 +54,15 @@ public class SubwayGraphs {
                 .anyMatch(subwayGraph -> subwayGraph.isStationExist(station));
     }
 
-    public void remove(Line line) {
-        SubwayGraph subwayGraph = findSubwayGraphOf(line);
-        subwayGraphs.remove(subwayGraph);
-    }
-
-    public void deleteStation(Line line, Station station) {
-        SubwayGraph subwayGraph = findSubwayGraphOf(line);
-        subwayGraph.delete(station);
-    }
-
-    public List<Station> deleteAll(Line line) {
-        SubwayGraph subwayGraph = findSubwayGraphOf(line);
+    public List<Station> remove(Line line) {
+        SubwayGraph subwayGraph = findSubwayGraph(line);
         List<Station> removedStations = subwayGraph.clear();
         subwayGraphs.remove(subwayGraph);
         return removedStations;
+    }
+
+    public void deleteStation(Line line, Station station) {
+        SubwayGraph subwayGraph = findSubwayGraph(line);
+        subwayGraph.delete(station);
     }
 }

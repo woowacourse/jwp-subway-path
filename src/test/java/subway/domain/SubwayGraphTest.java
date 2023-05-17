@@ -20,7 +20,7 @@ class SubwayGraphTest {
 
     private SubwayGraph createSubwayGraph() {
         final SubwayGraph subwayGraph = new SubwayGraph(LINE_999);
-        subwayGraph.createInitStations(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
+        subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
         return subwayGraph;
     }
 
@@ -28,7 +28,7 @@ class SubwayGraphTest {
     @DisplayName("새로운 노선(2개의 역)을 등록한다")
     void createNewLine() {
         final SubwayGraph subwayGraph = new SubwayGraph(LINE_999);
-        subwayGraph.createInitStations(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
+        subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
 
         assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
                 EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION);
@@ -59,9 +59,9 @@ class SubwayGraphTest {
             assertAll(
                     () -> assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
                             EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, SAPYEONG_STATION),
-                    () -> assertThat(subwayGraph.findDistance(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION))
+                    () -> assertThat(subwayGraph.findEdgeEntity(EXPRESS_BUS_TERMINAL_STATION).getDistanceToNext())
                             .isEqualTo(3),
-                    () -> assertThat(subwayGraph.findDistance(NEW_STATION, SAPYEONG_STATION))
+                    () -> assertThat(subwayGraph.findEdgeEntity(NEW_STATION).getDistanceToNext())
                             .isEqualTo(2)
             );
         }
@@ -166,7 +166,7 @@ class SubwayGraphTest {
         @DisplayName("입력한 두 역이 같은 역이면 예외가 발생한다.")
         void sameStations() {
             final SubwayGraph subwayGraph = new SubwayGraph(LINE_999);
-            subwayGraph.createInitStations(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
+            subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
             assertThatThrownBy(
                     () -> subwayGraph.addStation(SAPYEONG_STATION, SAPYEONG_STATION, 2))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -177,7 +177,7 @@ class SubwayGraphTest {
         @DisplayName("입력한 두 역이 모두 새로운 역이면 예외가 발생한다.")
         void onlyNewStations() {
             final SubwayGraph subwayGraph = new SubwayGraph(LINE_999);
-            subwayGraph.createInitStations(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
+            subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
             assertThatThrownBy(
                     () -> subwayGraph.addStation(SAPYEONG_STATION, SINNONHYEON_STATION, 2))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -188,7 +188,7 @@ class SubwayGraphTest {
         @DisplayName("입력한 두 역이 모두 이미 존재하는 역이면 예외가 발생한다.")
         void onlyExistingStations() {
             final SubwayGraph subwayGraph = new SubwayGraph(LINE_999);
-            subwayGraph.createInitStations(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
+            subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
             assertThatThrownBy(
                     () -> subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 2)).isInstanceOf(StationAlreadyExistException.class)
                     .hasMessageContaining("해당 역이 이미 존재 합니다.");
@@ -200,7 +200,7 @@ class SubwayGraphTest {
         void createNewLineDistanceNegativeTest(int distance) {
             final SubwayGraph subwayGraph = new SubwayGraph(LINE_999);
             assertThatThrownBy(
-                    () -> subwayGraph.createInitStations(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, distance))
+                    () -> subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, distance))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("역 사이 거리는 양의 정수로 입력해 주세요.");
         }
@@ -211,7 +211,7 @@ class SubwayGraphTest {
         void addStationDistanceNegativeTest(int distance) {
             final SubwayGraph subwayGraph = createSubwayGraph();
             assertThatThrownBy(
-                    () -> subwayGraph.createInitStations(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance))
+                    () -> subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("역 사이 거리는 양의 정수로 입력해 주세요.");
         }
@@ -244,7 +244,7 @@ class SubwayGraphTest {
         assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
                 EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION);
 
-        assertThat(subwayGraph.findDistance(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION))
+        assertThat(subwayGraph.findEdgeEntity(EXPRESS_BUS_TERMINAL_STATION).getDistanceToNext())
                 .isEqualTo(5);
     }
 
