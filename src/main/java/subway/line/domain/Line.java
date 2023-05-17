@@ -15,6 +15,10 @@ public class Line {
         this(null, lineName, Sections.empty());
     }
 
+    public Line(Long id, String lineName) {
+        this(id, lineName, Sections.empty());
+    }
+
     public Line(Long id, String lineName, Sections sections) {
         this.id = id;
         this.lineName = lineName;
