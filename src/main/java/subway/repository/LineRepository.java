@@ -105,8 +105,10 @@ public class LineRepository {
                         Map<Long, StationEntity> idByStation) {
         List<Section> sections = sectionEntities.stream()
                 .map(sectionEntity -> new Section(
-                        idByStation.get(sectionEntity.getSourceStationId()).getName(),
-                        idByStation.get(sectionEntity.getTargetStationId()).getName(),
+                        new Station(sectionEntity.getSourceStationId(),
+                                idByStation.get(sectionEntity.getSourceStationId()).getName()),
+                        new Station(sectionEntity.getTargetStationId(),
+                                idByStation.get(sectionEntity.getTargetStationId()).getName()),
                         sectionEntity.getDistance()
                 ))
                 .collect(toList());
@@ -144,7 +146,7 @@ public class LineRepository {
 
     public Station findStationByStationName(String stationName) {
         return stationDao.findByName(stationName)
-                .map(it -> new Station(it.getName()))
+                .map(it -> new Station(it.getId(), it.getName()))
                 .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
     }
 }

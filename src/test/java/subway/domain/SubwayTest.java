@@ -24,7 +24,11 @@ class SubwayTest {
 
         //then
         assertThat(subway.getLines()).flatExtracting(Line::getSections)
-                .containsExactly(new Section("강남역", "역삼역", 10));
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("강남역", "역삼역", 10)
+                ));
     }
 
     @Test
@@ -56,7 +60,11 @@ class SubwayTest {
         Line findLine = subway.findLineByName("2호선");
 
         // then
-        assertThat(findLine.getSections()).contains(new Section("교대역", "강남역", 10));
+        assertThat(findLine.getSections()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("교대역", "강남역", 10)
+                ));
     }
 
     @Test
@@ -113,7 +121,12 @@ class SubwayTest {
         Line findLine = subway.findLineByName("1호선");
 
         // then
-        assertThat(findLine.getSections()).containsExactly(new Section("서울역", "명동역", 10));
+        assertThat(findLine.getSections())
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("서울역", "명동역", 10)
+                ));
     }
 
     @Test
@@ -150,11 +163,17 @@ class SubwayTest {
         Line findSecondLine = subway.findLineByName("2호선");
 
         // then
-        assertThat(findFirstLine.getSections()).containsExactly(new Section("서울역", "명동역", 15));
-        assertThat(findSecondLine.getSections()).containsExactly(
-                new Section("교대역", "강남역", 7),
-                new Section("강남역", "역삼역", 9)
-        );
+        assertThat(findFirstLine.getSections()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("서울역", "명동역", 15)
+                ));
+        assertThat(findSecondLine.getSections()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("교대역", "강남역", 7),
+                        new Section("강남역", "역삼역", 9)
+                ));
     }
 
 }

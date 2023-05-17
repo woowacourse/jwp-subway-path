@@ -79,12 +79,14 @@ class LineServiceTest {
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
-                .containsOnly(
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
                         new Section("A", "B", 2),
                         new Section("X", "B", 2),
                         new Section("B", "Y", 3),
                         new Section("Y", "Z", 10)
-                );
+                ));
     }
 
     @Test
@@ -103,10 +105,12 @@ class LineServiceTest {
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
-                .containsOnly(
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
                         new Section("A", "B", 2),
                         new Section("X", "B", 2)
-                );
+                ));
     }
 
     @Test

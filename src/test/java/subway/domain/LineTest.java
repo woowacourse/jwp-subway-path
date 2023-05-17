@@ -58,11 +58,13 @@ class LineTest {
         line.addSection(new Section("역삼역", "선릉역", 2));
 
         // then
-        assertThat(line.getSections()).contains(
-                new Section("강남역", "역삼역", 10),
-                new Section("역삼역", "선릉역", 2),
-                new Section("선릉역", "삼성역", 3)
-        );
+        assertThat(line.getSections()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("강남역", "역삼역", 10),
+                        new Section("역삼역", "선릉역", 2),
+                        new Section("선릉역", "삼성역", 3)
+                ));
     }
 
     @Test
@@ -74,11 +76,14 @@ class LineTest {
         line.addSection(new Section("교대역", "강남역", 20));
 
         // then
-        assertThat(line.getSections()).contains(
-                new Section("교대역", "강남역", 20),
-                new Section("강남역", "역삼역", 10),
-                new Section("역삼역", "삼성역", 5)
-        );
+        assertThat(line.getSections())
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("강남역", "역삼역", 10),
+                        new Section("역삼역", "삼성역", 5),
+                        new Section("교대역", "강남역", 20)
+                ));
     }
 
     @Test
@@ -90,11 +95,13 @@ class LineTest {
         line.addSection(new Section("삼성역", "종합운동장역", 20));
 
         // then
-        assertThat(line.getSections()).contains(
-                new Section("강남역", "역삼역", 10),
-                new Section("역삼역", "삼성역", 5),
-                new Section("삼성역", "종합운동장역", 20)
-        );
+        assertThat(line.getSections()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("강남역", "역삼역", 10),
+                        new Section("역삼역", "삼성역", 5),
+                        new Section("삼성역", "종합운동장역", 20)
+                ));
     }
 
     @Test
@@ -118,9 +125,17 @@ class LineTest {
 
         // then
         assertThat(line.getSections()).map(Section::getSource)
-                .containsExactly(new Station("강남역"));
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Station("강남역")
+                ));
         assertThat(otherLine.getSections()).map(Section::getSource)
-                .containsExactly(new Station("강남역"));
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Station("강남역")
+                ));
     }
 
     @Test
@@ -145,9 +160,12 @@ class LineTest {
         line.removeStation(new Station("역삼역"));
 
         //then
-        assertThat(line.getSections()).contains(
-                new Section("강남역", "삼성역", 15)
-        );
+        assertThat(line.getSections())
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("강남역", "삼성역", 15)
+                ));
     }
 
     @Test
@@ -162,9 +180,12 @@ class LineTest {
         line.removeStation(new Station("강남역"));
 
         //then
-        assertThat(line.getSections()).containsExactly(
-                new Section("역삼역", "삼성역", 5)
-        );
+        assertThat(line.getSections())
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("역삼역", "삼성역", 5)
+                ));
     }
 
     @Test
@@ -179,9 +200,11 @@ class LineTest {
         line.removeStation(new Station("삼성역"));
 
         //then
-        assertThat(line.getSections()).containsExactly(
-                new Section("강남역", "역삼역", 10)
-        );
+        assertThat(line.getSections()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("강남역", "역삼역", 10)
+                ));
     }
 
     @Test
@@ -197,12 +220,14 @@ class LineTest {
         List<Station> stations = line.getStations();
 
         // then
-        assertThat(stations).containsExactly(
-                new Station("신림역"),
-                new Station("강남역"),
-                new Station("역삼역"),
-                new Station("삼성역")
-        );
+        assertThat(stations).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Station("신림역"),
+                        new Station("강남역"),
+                        new Station("역삼역"),
+                        new Station("삼성역")
+                ));
     }
 
     @Test

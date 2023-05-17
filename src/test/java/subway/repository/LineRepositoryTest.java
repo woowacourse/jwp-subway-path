@@ -66,16 +66,18 @@ class LineRepositoryTest {
         // then
         assertThat(lines).hasSize(2);
         assertThat(lines).flatExtracting(Line::getStations)
-                .containsOnly(
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Station("민트역"),
                         new Station("서울역"),
                         new Station("명동역"),
                         new Station("광화문역"),
-                        new Station("민트역"),
+                        new Station("박스터역"),
                         new Station("교대역"),
                         new Station("강남역"),
-                        new Station("역삼역"),
-                        new Station("박스터역")
-                );
+                        new Station("역삼역")
+                ));
     }
 
     @Test
@@ -93,11 +95,13 @@ class LineRepositoryTest {
 
         // then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getStations)
-                .containsOnly(
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
                         new Station("X"),
-                        new Station("Y"),
-                        new Station("A")
-                );
+                        new Station("A"),
+                        new Station("Y")
+                ));
     }
 
     @Test
@@ -113,11 +117,13 @@ class LineRepositoryTest {
 
         // then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
-                .containsOnly(
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
                         new Section("A", "B", 10),
                         new Section("B", "D", 5),
                         new Section("D", "C", 2)
-                );
+                ));
     }
 
     @Test
@@ -133,9 +139,11 @@ class LineRepositoryTest {
 
         // then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
-                .containsOnly(
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
                         new Section("A", "C", 17)
-                );
+                ));
     }
 
     @Test
@@ -150,11 +158,13 @@ class LineRepositoryTest {
 
         // then
         assertThat(findLine.getStations())
-                .containsOnly(
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
                         new Station("A"),
                         new Station("B"),
                         new Station("C")
-                );
+                ));
     }
 
     @Test
