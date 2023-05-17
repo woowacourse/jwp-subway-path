@@ -1,18 +1,25 @@
 package subway.fixture;
 
-import subway.entity.Station;
+import subway.domain.station.Station;
+import subway.domain.station.StationName;
 
 public class StationFixture {
 
-    public static class JamsilStation {
-        private static final String name = "잠실역";
+    public static class A {
+        private static final StationName name = new StationName("A");
 
-        public static final Station jamsilStation = Station.of(name);
+        public static final Station stationA = new Station(name);
     }
 
-    public static class GangnamStation {
-        private static final String name = "강남역";
+    public static class B {
+        private static final StationName name = new StationName("B");
 
-        public static final Station gangnamStation = Station.of(name);
+        public static final Station stationB = new Station(name);
+    }
+
+    public static class C {
+        private static final StationName name = new StationName("C");
+
+        public static final Station stationC = new Station(name);
     }
 }
