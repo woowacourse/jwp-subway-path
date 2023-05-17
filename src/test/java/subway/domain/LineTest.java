@@ -10,6 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.domain.section.Section;
+import subway.exception.AlreadyHasStationsException;
+import subway.exception.StationNotFoundInSectionsException;
 
 class LineTest {
 
@@ -111,8 +113,7 @@ class LineTest {
                     .addSection(SECTION_2);
 
             assertThatThrownBy(() -> line.removeStation(STATION_D))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("삭제하려는 Station은 해당 노선에 존재하지 않습니다.");
+                    .isInstanceOf(StationNotFoundInSectionsException.class);
         }
     }
 
@@ -122,7 +123,6 @@ class LineTest {
         final Line newLine = LINE.addSection(SECTION_1);
 
         assertThatThrownBy(() -> newLine.addSection(SECTION_1))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 등록되어 있는 역들입니다.");
+                .isInstanceOf(AlreadyHasStationsException.class);
     }
 }

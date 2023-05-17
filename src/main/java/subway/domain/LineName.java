@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exception.LineNameValidateLengthException;
+
 public class LineName {
 
     private static final int MAX_LENGTH = 20;
@@ -13,7 +15,7 @@ public class LineName {
 
     private void validateName(final String name) {
         if (name.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("노선의 이름의 길이는 20자 이하여야 합니다.");
+            throw new LineNameValidateLengthException();
         }
     }
 

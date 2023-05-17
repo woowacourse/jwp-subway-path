@@ -3,6 +3,7 @@ package subway.domain.section;
 import java.util.List;
 import subway.domain.Distance;
 import subway.domain.Station;
+import subway.exception.SectionHasSameStationsException;
 
 public class Section {
 
@@ -21,7 +22,7 @@ public class Section {
 
     private void validateSameStation(final Station prevStation, final Station nextStation) {
         if (prevStation.equals(nextStation)) {
-            throw new IllegalArgumentException("구간은 서로 다른 두 역이어야 합니다.");
+            throw new SectionHasSameStationsException();
         }
     }
 

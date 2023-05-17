@@ -10,6 +10,8 @@ import subway.domain.section.strategy.UpdateHeadStrategy;
 import subway.domain.section.strategy.UpdateMiddleStrategy;
 import subway.domain.section.strategy.UpdateSectionsStrategy;
 import subway.domain.section.strategy.UpdateTailStrategy;
+import subway.exception.AlreadyHasStationsException;
+import subway.exception.StationNotFoundInSectionsException;
 
 public class FilledSections extends Sections {
 
@@ -57,7 +59,7 @@ public class FilledSections extends Sections {
 
     private void validateDuplicateSection(final Section newSection) {
         if (containSection(newSection)) {
-            throw new IllegalArgumentException("이미 등록되어 있는 역들입니다.");
+            throw new AlreadyHasStationsException();
         }
     }
 
@@ -85,7 +87,7 @@ public class FilledSections extends Sections {
 
     private void validateIsExist(final Station station) {
         if (notContainStation(station)) {
-            throw new IllegalArgumentException("삭제하려는 Station은 해당 노선에 존재하지 않습니다.");
+            throw new StationNotFoundInSectionsException();
         }
     }
 

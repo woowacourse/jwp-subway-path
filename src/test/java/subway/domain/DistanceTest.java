@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.DistanceValueValidateException;
 
 class DistanceTest {
 
@@ -12,8 +13,7 @@ class DistanceTest {
     @Test
     void whenDistanceUnderOneThrowException() {
         assertThatThrownBy(() -> new Distance(0))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("거리는 1이상의 정수여야합니다.");
+                .isInstanceOf(DistanceValueValidateException.class);
     }
 
     @DisplayName("distance에 값을 더히는 기능 테스트")

@@ -12,6 +12,7 @@ import subway.domain.path.ShortestPathFinder;
 import subway.domain.section.EmptySections;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
+import subway.exception.StationNotFoundException;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.service.dto.PathRequest;
@@ -37,9 +38,9 @@ public class PathService {
     public PathResponse findPath(final PathRequest pathRequest) {
         final List<Section> allSections = sectionDao.findAll();
         final Station startStation = stationDao.findByName(pathRequest.getStartStationName())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(StationNotFoundException::new);
         final Station endStation = stationDao.findByName(pathRequest.getEndStationName())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(StationNotFoundException::new);
         final Path path = finder.findShortestPath(allSections, startStation, endStation);
         return toPathResponse(path);
     }

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.section.Section;
+import subway.exception.SectionHasSameStationsException;
 
 class SectionTest {
 
@@ -29,8 +30,7 @@ class SectionTest {
     @Test
     void validateSameStation() {
         assertThatThrownBy(() -> new Section(A_STATION, A_STATION, new Distance(10)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("구간은 서로 다른 두 역이어야 합니다.");
+                .isInstanceOf(SectionHasSameStationsException.class);
     }
 
     @DisplayName("section의 prevStation이 같은지 확인한다.")

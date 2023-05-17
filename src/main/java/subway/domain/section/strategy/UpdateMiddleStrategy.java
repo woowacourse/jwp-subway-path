@@ -3,6 +3,7 @@ package subway.domain.section.strategy;
 import java.util.List;
 import subway.domain.Station;
 import subway.domain.section.Section;
+import subway.exception.StationNotFoundInSectionsException;
 
 public class UpdateMiddleStrategy implements UpdateSectionsStrategy {
 
@@ -44,7 +45,7 @@ public class UpdateMiddleStrategy implements UpdateSectionsStrategy {
                 .filter(element -> element.getPrevStation().equals(section.getPrevStation())
                         || element.getNextStation().equals(section.getNextStation()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("이전 역을 찾을 수 없습니다."));
+                .orElseThrow(StationNotFoundInSectionsException::new);
     }
 
     @Override
@@ -63,14 +64,14 @@ public class UpdateMiddleStrategy implements UpdateSectionsStrategy {
         return newSections.stream()
                 .filter(section -> section.isEqualNextStation(station))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+                .orElseThrow(StationNotFoundInSectionsException::new);
     }
 
     private static Section findNextSection(final List<Section> newSections, final Station station) {
         return newSections.stream()
                 .filter(section -> section.isEqualPrevStation(station))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+                .orElseThrow(StationNotFoundInSectionsException::new);
     }
 
     @Override

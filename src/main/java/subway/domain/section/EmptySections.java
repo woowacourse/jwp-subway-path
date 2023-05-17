@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import subway.domain.Distance;
 import subway.domain.Station;
+import subway.exception.EmptySectionsCanNotRemoveSection;
+import subway.exception.EmptySectionsHasNotDistance;
 
 public class EmptySections extends Sections {
 
@@ -26,7 +28,7 @@ public class EmptySections extends Sections {
 
     @Override
     public Sections removeStation(final Station station) {
-        throw new IllegalArgumentException("비어있는 Line에서 역을 지울순 없습니다.");
+        throw new EmptySectionsCanNotRemoveSection();
     }
 
     @Override
@@ -36,6 +38,6 @@ public class EmptySections extends Sections {
 
     @Override
     public Distance getTotalDistance() {
-        throw new IllegalStateException("빈 구간은 Distance가 존재하지 않습니다.");
+        throw new EmptySectionsHasNotDistance();
     }
 }

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
+import subway.exception.StationNotFoundException;
 import subway.persistence.dao.StationDao;
 import subway.service.dto.StationRequest;
 import subway.service.dto.StationResponse;
@@ -48,6 +49,6 @@ public class StationService {
 
     public Station findStationByName(final String name) {
         return stationDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
+                .orElseThrow(StationNotFoundException::new);
     }
 }
