@@ -208,7 +208,7 @@ response
 
 request
 ```http request
-GET /shortest-paths?sourceStationId={sourceStationId}&destinationStationId={destinationStationId}
+GET /subways/shortest-paths?sourceStationId={sourceStationId}&destinationStationId={destinationStationId}
 ```
 
 response

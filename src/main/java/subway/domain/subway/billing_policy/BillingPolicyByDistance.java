@@ -1,5 +1,8 @@
 package subway.domain.subway.billing_policy;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import subway.domain.Path;
 import subway.domain.section.Distance;
 
@@ -7,27 +10,44 @@ public final class BillingPolicyByDistance implements BillingPolicy {
 
     private static final int DEFAULT_FARE = 1250;
     private static final int EXTRA_FARE_UNIT = 100;
-    private static final int LEVEL_ONE_DISTANCE_THRESHOLD = 10;
-    private static final int LEVEL_ONE_DISTANCE_UNIT = 5;
-    private static final int LEVEL_TWO_DISTANCE_THRESHOLD = 50;
-    private static final int LEVEL_TWO_DISTANCE_UNIT = 8;
+
+    enum DistanceLevel {
+
+        LEVEL_ONE(10, 5),
+        LEVEL_TWO(50, 8),
+        ;
+
+        private final int threshold;
+        private final int distanceUnitForChargeFare;
+
+        DistanceLevel(final int threshold, final int distanceUnitForChargeFare) {
+            this.threshold = threshold;
+            this.distanceUnitForChargeFare = distanceUnitForChargeFare;
+        }
+
+        private static List<DistanceLevel> getValuesSortedByAscendingThreshold() {
+            return Arrays.stream(values())
+                    .sorted((o1, o2) -> o2.threshold - o1.threshold)
+                    .collect(Collectors.toUnmodifiableList());
+        }
+
+        private int calculateExtraFare(int distance) {
+            final int extraDistance = distance - threshold;
+            return EXTRA_FARE_UNIT * (extraDistance / distanceUnitForChargeFare);
+        }
+    }
 
     @Override
     public Fare calculateFare(final Path path) {
         Distance distance = path.getDistance();
         Fare fare = new Fare(DEFAULT_FARE);
 
-        if (distance.isGreaterThanOrEqualTo(LEVEL_TWO_DISTANCE_THRESHOLD)) {
-            final Distance levelTwoExtraDistance = distance.subtract(LEVEL_TWO_DISTANCE_THRESHOLD);
-            fare = fare.add(EXTRA_FARE_UNIT * (levelTwoExtraDistance.getValue() / LEVEL_TWO_DISTANCE_UNIT));
-            distance = new Distance(LEVEL_TWO_DISTANCE_THRESHOLD);
+        for (DistanceLevel distanceLevel : DistanceLevel.getValuesSortedByAscendingThreshold()) {
+            if (distance.isGreaterThanOrEqualTo(distanceLevel.threshold)) {
+                fare = fare.add(distanceLevel.calculateExtraFare(distance.getValue()));
+                distance = new Distance(distanceLevel.threshold);
+            }
         }
-
-        if (distance.isGreaterThanOrEqualTo(LEVEL_ONE_DISTANCE_THRESHOLD)) {
-            final Distance levelOneExtraDistance = distance.subtract(LEVEL_ONE_DISTANCE_THRESHOLD);
-            fare = fare.add(EXTRA_FARE_UNIT * (levelOneExtraDistance.getValue() / LEVEL_ONE_DISTANCE_UNIT));
-        }
-
         return fare;
     }
 }

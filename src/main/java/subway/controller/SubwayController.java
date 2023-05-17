@@ -23,8 +23,7 @@ public class SubwayController {
             @RequestParam Long sourceStationId,
             @RequestParam Long destinationStationId
     ) {
-        final SubwayShortestPathResponse response = subwayService.findShortestPath(sourceStationId,
-                destinationStationId);
+        final SubwayShortestPathResponse response = subwayService.findShortestPath(sourceStationId, destinationStationId);
         return ResponseEntity.ok(response);
     }
 }
