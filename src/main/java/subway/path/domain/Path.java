@@ -38,11 +38,19 @@ public class Path {
         final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
         final DijkstraShortestPath<Station, Section> path = new DijkstraShortestPath<>(graph);
         lines.forEach(line -> line.addLineToGraph(graph));
+        validateExistStation(startStationName, graph);
+        validateExistStation(endStationName, graph);
         final GraphPath<Station, Section> graphPath = path.getPath(new Station(startStationName), new Station(endStationName));
         
         final List<String> shortestPath = getShortestPath(graphPath);
         final Long shortestDistance = (long) graphPath.getWeight();
         return new ShortestPathResult(shortestPath, shortestDistance, calculateFee(shortestDistance));
+    }
+    
+    private void validateExistStation(final String stationName, final WeightedMultigraph<Station, Section> graph) {
+        if (!graph.containsVertex(new Station(stationName))) {
+            throw new IllegalArgumentException(stationName + "은 노선에 등록되지 않은 역입니다.");
+        }
     }
     
     private List<String> getShortestPath(final GraphPath<Station, Section> graphPath) {
