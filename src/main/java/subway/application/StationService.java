@@ -1,33 +1,38 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.exception.AlreadyExistStationException;
+import subway.repository.StationRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    private final StationRepository stationRepository;
+
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        if (stationRepository.existByName(stationRequest.getName())) {
+            throw new AlreadyExistStationException();
+        }
+        Station station = stationRepository.save(new Station(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        return StationResponse.of(stationRepository.findById(id));
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
                 .map(StationResponse::of)
@@ -35,10 +40,15 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        Station station = stationRepository.findById(id);
+        Station update = new Station(station.getId(), stationRequest.getName());
+        stationRepository.save(update);
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        if (stationRepository.registeredLineById(id)) {
+            throw new IllegalArgumentException("노선에 등록된 상태에서는 역을 제거할 수 없습니다.");
+        }
+        stationRepository.deleteById(id);
     }
 }
