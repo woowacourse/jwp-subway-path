@@ -15,6 +15,7 @@ class PathTest {
     @DisplayName("Path 를 생성한다.")
     void createPath() {
         Station station = new Station("pathTest");
+
         Path path = new Path(Direction.UP, station, Distance.from(10));
 
         assertThat(path.getDirection()).isEqualTo(Direction.UP);
