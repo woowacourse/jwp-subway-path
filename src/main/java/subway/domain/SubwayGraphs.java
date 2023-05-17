@@ -18,6 +18,11 @@ public class SubwayGraphs {
     }
 
 
+    public void createLine(Line line) {
+        SubwayGraph subwayGraph = new SubwayGraph(line);
+        subwayGraphs.add(subwayGraph);
+    }
+
     // TODO: 반환 타입 어떤걸로
     public LineDto createLine(Line line, Station upLineStation, Station downLineStation, int distance) {
         final SubwayGraph newLineGraph = new SubwayGraph(line);
@@ -37,7 +42,7 @@ public class SubwayGraphs {
         return subwayGraph.findAllStationsInOrder();
     }
 
-    public LineDto addStation(Line line, Station upLineStation, Station downLineStation, int distance) {
+    public LineDto addStation1(Line line, Station upLineStation, Station downLineStation, int distance) {
         final SubwayGraph lineGraph = findSubwayGraphOf(line);
 
         lineGraph.addStation(upLineStation, downLineStation, distance);
@@ -45,13 +50,13 @@ public class SubwayGraphs {
         return new LineDto(line, allStationsInOrder);
     }
 
-    public Station createStation(final Line line, final Station upLineStation, final Station downLineStation, final int distance) {
+    public List<Station> addstation2(final Line line, final Station upLineStation, final Station downLineStation, final int distance) {
         final SubwayGraph subwayGraph = findSubwayGraphOf(line);
 
         return subwayGraph.addStation(upLineStation, downLineStation, distance);
     }
 
-    private SubwayGraph findSubwayGraphOf(final Line line) {
+    public SubwayGraph findSubwayGraphOf(final Line line) {
         final SubwayGraph lineGraph = subwayGraphs.stream()
                 .filter(s -> s.isSameLine(line))
                 .findFirst()

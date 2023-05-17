@@ -19,12 +19,13 @@ public class StationController {
         this.stationService = stationService;
     }
 
+    // TODO: 2023/05/17 헤더값 문제
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> addStation(@Valid @RequestBody StationAddRequest stationRequest) {
-        StationResponse station = stationService.addStation(stationRequest);
+    public ResponseEntity<List<StationResponse>> addStation(@Valid @RequestBody StationAddRequest stationRequest) {
+        List<StationResponse> stationResponses = stationService.addStation(stationRequest);
         return ResponseEntity
-                .created(URI.create("/stations/" + station.getId()))
-                .body(station);
+                .created(URI.create("/stations/" + stationResponses.get(0).getId()))
+                .body(stationResponses);
     }
 
     @DeleteMapping("/stations/station")

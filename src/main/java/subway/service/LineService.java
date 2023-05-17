@@ -7,6 +7,7 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.SubwayGraphs;
 import subway.dto.LineCreateRequest;
+import subway.dto.LineCreateRequestt;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
 import subway.entity.EdgeEntity;
@@ -72,6 +73,21 @@ public class LineService {
     }
 
     @Transactional
+    public LineResponse createLine1(final LineCreateRequestt lineCreateRequest) {
+        final Line line = new Line(lineCreateRequest.getLineName());
+
+        if (lineDao.findByName(line.getName()).isPresent()) {
+            throw new LineAlreadyExistException();
+        }
+
+        final Line savedLine = lineDao.saveLine(line.toEntity()).toDomain();
+        subwayGraphs.createLine(savedLine);
+
+
+        return LineResponse.of(savedLine, List.of());
+    }
+
+    @Transactional
     public String deleteLine(Long lineId) {
         Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new LineNotFoundException())
@@ -103,6 +119,10 @@ public class LineService {
         List<LineResponse> lineResponses = new ArrayList<>();
 
         for (Line line : lines) {
+            if (subwayGraphs.findSubwayGraphOf(line).getStationSize() == 0) {
+                lineResponses.add(LineResponse.of(line, List.of()));
+                break;
+            }
             List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 
             List<StationResponse> stationResponses = allStationsInOrder.stream()

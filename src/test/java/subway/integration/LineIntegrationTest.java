@@ -9,80 +9,61 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.Station;
-import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.integration.Utils.*;
 
 public class LineIntegrationTest extends IntegrationTest {
-    private LineCreateRequest lineCreateRequest;
-
     @BeforeEach
     public void setUp() {
         super.setUp();
-        lineCreateRequest = new LineCreateRequest(
-                "2호선",
-                "잠실역",
-                "잠실새내역",
-                5);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLineTest() {
-        // when
-        ExtractableResponse<Response> response = createLine(lineCreateRequest);
+        ExtractableResponse<Response> response = createLine("2호선");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    private ExtractableResponse<Response> createLine(LineCreateRequest lineCreateRequest) {
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineCreateRequest)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-        return response;
-    }
-
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void findLine() {
-
-        ExtractableResponse<Response> createResponse = createLine(lineCreateRequest);
+        ExtractableResponse<Response> createResponse = createLine("2호선");
+        addStation("2호선",
+                "잠실역",
+                "잠실새내역",
+                5);
         LineResponse lineResponse = createResponse.as(LineResponse.class);
         Long id = lineResponse.getId();
 
-        // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineCreateRequest)
-                .when().get("/lines/" + id)
+                .when().get("/line/" + id)
                 .then().log().all().
                 extract();
 
-        // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("모든 지하철 노선을 조회한다.")
     @Test
-    void findALlLines() {
-        createLine(lineCreateRequest);
-        LineCreateRequest lineCreateRequest1 = new LineCreateRequest(
-                "3호선",
+    void findAllLines() {
+        initLine("2호선",
+                "잠실역",
+                "잠실새내역",
+                3);
+        initLine("3호선",
                 "1번",
                 "2번",
                 5);
-        createLine(lineCreateRequest1);
 
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -94,7 +75,6 @@ public class LineIntegrationTest extends IntegrationTest {
         List<LineResponse> lineResponses = response.as(
                 new ParameterizedTypeReference<List<LineResponse>>() {
                 }.getType());
-        // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(lineResponses.get(0).getName()).isEqualTo("2호선");
         assertThat(lineResponses.get(0).getStations().get(0).getName()).isEqualTo("잠실역");
@@ -104,19 +84,32 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(lineResponses.get(1).getStations().get(1).getName()).isEqualTo("2번");
     }
 
+    @DisplayName("모든 지하철 노선을 조회한다. 노선에 station이없는 경우")
+    @Test
+    void findALlLines1() {
+        createLine("2호선");
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/")
+                .then().log().all().
+                extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
     @Test
     @DisplayName("중복된 노선을 생성하는 경우 CONFLICT 에러가 발생한다.")
     void createDuplicateLine() {
-        createLine(lineCreateRequest);
-        LineCreateRequest lineCreateRequest1 = new LineCreateRequest(
-                "2호선",
+        initLine("3호선",
                 "1번",
                 "2번",
                 5);
-        ExtractableResponse<Response> response = createLine(lineCreateRequest1);
+
+        ExtractableResponse<Response> response = createLine("3호선");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
-
 
 }

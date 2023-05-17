@@ -16,6 +16,7 @@ import subway.exception.StationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -32,7 +33,7 @@ public class StationService {
     }
 
     @Transactional
-    public StationResponse addStation(final StationAddRequest stationAddRequest) {
+    public List<StationResponse> addStation(final StationAddRequest stationAddRequest) {
         final Line line = lineDao.findByName(stationAddRequest.getLineName())
                 .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
@@ -49,7 +50,7 @@ public class StationService {
 
         final int distance = stationAddRequest.getDistance();
 
-        Station addedStation = subwayGraphs.createStation(line, upLineStation, downLineStation, distance);
+        List<Station> addedStations = subwayGraphs.addstation2(line, upLineStation, downLineStation, distance);
 
         final List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 
@@ -60,7 +61,9 @@ public class StationService {
             edgeDao.save(edgeEntity);
         }
 
-        return StationResponse.of(addedStation);
+        return addedStations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Transactional

@@ -26,7 +26,7 @@ class SubwayGraphsTest {
         final SubwayGraphs subwayGraphs = new SubwayGraphs();
         subwayGraphs.createLine(LINE_999, EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
 
-        final LineDto lineDto = subwayGraphs.addStation(LINE_999, EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 2);
+        final LineDto lineDto = subwayGraphs.addStation1(LINE_999, EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 2);
 
         assertThat(lineDto.getLine()).isEqualTo(LINE_999);
         assertThat(lineDto.getAllStationsInOrder()).containsExactly(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, SAPYEONG_STATION);

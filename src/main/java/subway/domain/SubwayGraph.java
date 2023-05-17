@@ -19,9 +19,6 @@ public class SubwayGraph {
 
     public void createInitStations(Station upLineEndStation, Station downLineEndStation, int distance) {
         validateDistance(distance);
-        if (!graph.vertexSet().isEmpty()) {
-            throw new LineAlreadyExistException();
-        }
         graph.addVertex(upLineEndStation);
         graph.addVertex(downLineEndStation);
         linkStation(upLineEndStation, downLineEndStation, distance);
@@ -33,39 +30,44 @@ public class SubwayGraph {
         }
     }
 
-    public Station addStation(Station upLineStation, Station downLineStation, int distance) {
+    public List<Station> addStation(Station upLineStation, Station downLineStation, int distance) {
         validateStations(upLineStation, downLineStation);
         validateDistance(distance);
+
+        if (getStationSize() == 0) {
+            createInitStations(upLineStation, downLineStation, distance);
+            return List.of(upLineStation, downLineStation);
+        }
 
         // A-B -> A-B=N
         if (isNewStation(downLineStation) && isDownEndStation(upLineStation)) {
             graph.addVertex(downLineStation);
             linkStation(upLineStation, downLineStation, distance);
-            return downLineStation;
+            return List.of(downLineStation);
         }
 
         // A-B -> N=A-B
         if (isNewStation(upLineStation) && isUpEndStation(downLineStation)) {
             graph.addVertex(upLineStation);
             linkStation(upLineStation, downLineStation, distance);
-            return upLineStation;
+            return List.of(upLineStation);
         }
 
         // A-B -> A=N-B
         if (isNewStation(downLineStation) && !isDownEndStation(upLineStation)) {
             Station upLineNextStation = findNextStation(upLineStation);
             addStationToUpLine(upLineStation, downLineStation, upLineNextStation, distance);
-            return downLineStation;
+            return List.of(downLineStation);
         }
 
         // A-B -> A-N=B
         if (isNewStation(upLineStation) && !isUpEndStation(downLineStation)) {
             Station previousStation = findPreviousStation(downLineStation);
             addStationToDownLine(previousStation, upLineStation, downLineStation, distance);
-            return upLineStation;
+            return List.of(upLineStation);
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("예외 발생");
     }
 
     private void validateStations(final Station upLineStation, final Station downLineStation) {
@@ -73,7 +75,7 @@ public class SubwayGraph {
             throw new IllegalArgumentException("서로 다른 역을 입력해 주세요.");
         }
 
-        if (isNewStation(upLineStation) && isNewStation(downLineStation)) {
+        if (isNewStation(upLineStation) && isNewStation(downLineStation) && getStationSize() != 0) {
             throw new IllegalArgumentException("모두 새로운 역입니다. 새로운 역과 기존 역을 입력해 주세요.");
         }
 
