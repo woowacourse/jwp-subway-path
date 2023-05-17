@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql({"/dropTable.sql", "/schema.sql", "/dummyDataForPath.sql"})
+@Sql({"/dropTable.sql", "/schema.sql", "/dummyData.sql"})
 @DisplayName("PathController 테스트")
 class PathControllerTest {
 
