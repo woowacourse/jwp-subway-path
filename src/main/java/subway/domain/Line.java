@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import subway.exception.LineUnconnectedException;
 
 public class Line {
     private final Long id;
@@ -33,7 +34,7 @@ public class Line {
 
     private void validateIsLinked(List<Section> sections) {
         if (sections.size() + 1 != getStations().size()) {
-            throw new IllegalArgumentException("연결되지 않은 역이 있습니다");
+            throw new LineUnconnectedException();
         }
     }
 
@@ -54,7 +55,7 @@ public class Line {
             sections.add(newSection);
             return;
         }
-        throw new IllegalArgumentException("연결되지 않은 역이 있습니다");
+        throw new LineUnconnectedException();
     }
 
     private void validateDuplicatedName(Section section) {

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import subway.exception.LineUnconnectedException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -212,7 +213,7 @@ class LineTest {
                         of(new Section("역삼역", "삼성역", 5), new Section("교대역", "강남역", 10))
                 )
         )
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(LineUnconnectedException.class)
                 .hasMessage("연결되지 않은 역이 있습니다");
     }
 
@@ -227,7 +228,7 @@ class LineTest {
 
         // when , then
         assertThatThrownBy(() -> line.addSection(new Section("서면역", "부암역", 10)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(LineUnconnectedException.class)
                 .hasMessage("연결되지 않은 역이 있습니다");
     }
 }
