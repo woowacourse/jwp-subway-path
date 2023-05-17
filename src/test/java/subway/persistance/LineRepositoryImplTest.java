@@ -56,7 +56,7 @@ class LineRepositoryImplTest {
         assertAll(
                 () -> assertThat(found.getName()).isEqualTo(Fixture.line1.getName()),
                 () -> assertThat(found.getColor()).isEqualTo(Fixture.line1.getColor()),
-                () -> Assertions.assertThat(found.getSections().getSections()).containsAll(Fixture.line1.getSections().getSections())
+                () -> Assertions.assertThat(found.getSections()).containsAll(Fixture.line1.getSections())
         );
     }
 
@@ -84,7 +84,7 @@ class LineRepositoryImplTest {
         when(stationDao.findById(3L)).thenReturn(Optional.of(Fixture.stationC));
 
         // when
-        List<Line> lines = lineRepository.findAll();
+        List<Line> lines = lineRepository.findAll().getLines();
 
         // then
         assertThat(lines.size()).isEqualTo(3);
@@ -102,7 +102,7 @@ class LineRepositoryImplTest {
         assertAll(
                 () -> assertThat(saved.getName()).isEqualTo(Fixture.line1.getName()),
                 () -> assertThat(saved.getColor()).isEqualTo(Fixture.line1.getColor()),
-                () -> Assertions.assertThat(saved.getSections().getSections()).containsAll(Fixture.line1.getSections().getSections())
+                () -> Assertions.assertThat(saved.getSections()).containsAll(Fixture.line1.getSections())
         );
     }
 

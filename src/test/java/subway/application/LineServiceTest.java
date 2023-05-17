@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import subway.Fixture;
 import subway.domain.Line;
 import subway.domain.LineRepository;
+import subway.domain.Lines;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -93,10 +96,14 @@ class LineServiceTest {
     @Test
     @DisplayName("모든 라인을 조회한다")
     void findLineResponses() {
+        when(lineRepository.findAll()).thenReturn(new Lines(List.of(Fixture.line1, Fixture.line2)));
+
         // when
-        lineService.findLineResponses();
+        List<LineResponse> lineResponses = lineService.findLineResponses();
 
         // then
+        assertThat(lineResponses.size()).isEqualTo(2);
+
         verify(lineRepository, times(1)).findAll();
     }
 

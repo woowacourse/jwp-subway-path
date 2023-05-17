@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.LineRepository;
+import subway.domain.Lines;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 
@@ -44,8 +45,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        final List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
+        return lineRepository.findAll().getLines().stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
@@ -59,7 +59,7 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 라인이 존재하지 않습니다."));
     }
 
-    public List<Line> findAll() {
+    public Lines findAll() {
         return lineRepository.findAll();
     }
 }

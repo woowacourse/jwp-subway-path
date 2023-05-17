@@ -3,6 +3,7 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Station;
 import subway.dto.response.LineStationResponse;
 
@@ -51,7 +52,7 @@ public class LineStationService {
         lineService.save(line);
     }
 
-    public void deleteStationById(final Long id, final Long stationId) {
+    public void deleteStationInLine(final Long id, final Long stationId) {
         Line line = lineService.findById(id);
         Station station = stationService.findById(stationId);
         line.deleteSections(station);
@@ -59,22 +60,20 @@ public class LineStationService {
     }
 
     public void deleteStation(final Long stationId) {
-        List<Line> lines = lineService.findAll();
-        lines.forEach(line -> deleteStationById(line.getId(), stationId));
+        Lines lines = lineService.findAll();
+        Station station = stationService.findById(stationId);
+        lines.deleteStation(station);
         stationService.deleteStationById(stationId);
     }
 
     public List<LineStationResponse> findAll() {
-        List<Line> lines = lineService.findAll();
-
-        return lines.stream()
+        return lineService.findAll().getLines().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
     public LineStationResponse findByLineId(Long id) {
         Line line = lineService.findById(id);
-
         return mapToResponse(line);
     }
 

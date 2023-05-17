@@ -125,7 +125,7 @@ class LineStationControllerTest {
         mockMvc.perform(delete("/lines/1/stations/1"))
                 .andExpect(status().isNoContent());
 
-        verify(lineStationService, times(1)).deleteStationById(1L, 1L);
+        verify(lineStationService, times(1)).deleteStationInLine(1L, 1L);
     }
 
     @Test

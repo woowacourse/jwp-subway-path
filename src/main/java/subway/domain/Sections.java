@@ -139,7 +139,9 @@ public class Sections {
                 .map(Section::getDown)
                 .collect(Collectors.toList());
 
-        stations.add(0, sections.get(0).getUp());
+        if (sections.size() != 0) {
+            stations.add(0, sections.get(0).getUp());
+        }
 
         return stations;
     }

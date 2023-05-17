@@ -43,7 +43,7 @@ public class LineStationController {
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
     public ResponseEntity<Void> deleteStationById(@PathVariable Long lineId, @PathVariable Long stationId) {
-        lineStationService.deleteStationById(lineId, stationId);
+        lineStationService.deleteStationInLine(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 

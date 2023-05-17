@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.LineRepository;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -57,11 +58,12 @@ public class LineRepositoryImpl implements LineRepository {
     }
 
     @Override
-    public List<Line> findAll() {
-        return lineDao.findAll().stream()
+    public Lines findAll() {
+        List<Line> lines = lineDao.findAll().stream()
                 .map(line -> findById(line.getId())
                         .orElseThrow(() -> new RuntimeException("라인을 불러오는 데 실패했습니다.")))
                 .collect(Collectors.toList());
+        return new Lines(lines);
     }
 
     @Override
@@ -70,11 +72,11 @@ public class LineRepositoryImpl implements LineRepository {
 
         sectionDao.deleteByLineId(line.getId());
 
-        List<Section> sections = line.getSections().getSections();
+        List<Section> sections = line.getSections();
         List<SectionEntity> sectionEntities = mapToSectionEntities(insertedLine, sections);
         sectionEntities.forEach(sectionDao::insertSection);
 
-        return new Line(insertedLine.getId(), line.getName(), line.getColor(), line.getSections());
+        return new Line(insertedLine.getId(), line.getName(), line.getColor(), new Sections(sections));
     }
 
     private Line updateIfExistOrElseInsert(Line line) {
