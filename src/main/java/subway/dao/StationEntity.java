@@ -1,5 +1,7 @@
 package subway.dao;
 
+import subway.domain.Station;
+
 public class StationEntity {
 
     private final Long id;
@@ -12,6 +14,10 @@ public class StationEntity {
 
     public StationEntity(final String name) {
         this(null, name);
+    }
+
+    public Station toStation() {
+        return new Station(id, name);
     }
 
     public Long getId() {

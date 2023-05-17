@@ -3,7 +3,7 @@ package subway.dao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -30,7 +30,8 @@ public class StationDao {
     }
 
     public StationEntity insert(final StationEntity stationEntity) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
+        final SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("name", stationEntity.getName());
         Long id = insertAction.executeAndReturnKey(params).longValue();
         return new StationEntity(id, stationEntity.getName());
     }
