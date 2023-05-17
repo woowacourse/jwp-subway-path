@@ -45,6 +45,19 @@ class SectionsTest {
                         || section.getNextStation().equals(nextStation));
     }
 
+    @Test
+    @DisplayName("현재 Section 중 해당 Station 을 가지고 있는 Station 이 있는지 boolean 형으로 반환한다.")
+    void isContainsThisStation() {
+        Distance IGNORED = Distance.from(10);
+        Station previousStation = new Station("previous");
+        Station standardStation = new Station("standard");
+        Station notExistsStation = new Station("notExists");
+        Sections sections = new Sections(List.of(
+                new Section(previousStation, standardStation, IGNORED)));
 
+        assertThat(sections.isContainsThisStation(previousStation)).isTrue();
+        assertThat(sections.isContainsThisStation(standardStation)).isTrue();
+        assertThat(sections.isContainsThisStation(notExistsStation)).isFalse();
+    }
 
 }

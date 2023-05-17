@@ -17,6 +17,11 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
+    public boolean isContainsThisStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.isContainsStation(station));
+    }
+
     public List<Section> getSections() {
         return sections;
     }
