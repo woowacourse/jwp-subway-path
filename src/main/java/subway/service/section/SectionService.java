@@ -53,17 +53,24 @@ public class SectionService {
 
         AddResult addResult = sections.add(upStation, downStation, distance);
         List<SectionResponse> addedSectionResponses = new ArrayList<>();
+        insertNewSection(line, addResult, addedSectionResponses);
+        deleteExistSection(addResult);
+
+        return new SectionCreateResponse(sectionCreateRequest.getLineId(), addedSectionResponses, List.of());
+
+    }
+
+    private void deleteExistSection(AddResult addResult) {
+        for (Section section : addResult.getDeletedResults()) {
+            sectionRepository.deleteSection(section);
+        }
+    }
+
+    private void insertNewSection(Line line, AddResult addResult, List<SectionResponse> addedSectionResponses) {
         for (Section section : addResult.getAddedResults()) {
             Section savedSection = sectionRepository.insertSection(section, line);
             addedSectionResponses.add(SectionResponse.of(savedSection));
         }
-
-        for (Section section : addResult.getDeletedResults()) {
-            sectionRepository.deleteSection(section);
-        }
-
-        return new SectionCreateResponse(sectionCreateRequest.getLineId(), addedSectionResponses, List.of());
-
     }
 
     public void delete(LineStationDeleteRequest lineStationDeleteRequest) {
@@ -72,20 +79,24 @@ public class SectionService {
 
         for (Line perLine : sectionsPerLine.keySet()) {
             Sections sections = sectionsPerLine.get(perLine);
-            boolean isLastSection = sectionRepository.isLastSectionInLine(perLine);
-            if (isLastSection) {
-                Section lastSection = sections.getSections().get(0);
-                deleteStationsInLastSection(station, lastSection);
-                continue;
-            }
-            DeleteResult deleteResult = sections.deleteSection(station);
-
-            for (Section addedSection : deleteResult.getAddedSections()) {
-                sectionRepository.insertSection(addedSection, perLine);
-            }
+            deleteSection(station, perLine, sections);
         }
         stationRepository.deleteById(station.getId());
 
+    }
+
+    private void deleteSection(Station station, Line perLine, Sections sections) {
+        boolean isLastSection = sectionRepository.isLastSectionInLine(perLine);
+        if (isLastSection) {
+            Section lastSection = sections.getSections().get(0);
+            deleteStationsInLastSection(station, lastSection);
+            return;
+        }
+        DeleteResult deleteResult = sections.deleteSection(station);
+
+        for (Section addedSection : deleteResult.getAddedSections()) {
+            sectionRepository.insertSection(addedSection, perLine);
+        }
     }
 
     public List<StationResponse> findStationsByLine(long lineId) {
