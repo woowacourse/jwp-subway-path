@@ -19,12 +19,12 @@ class StationJdbcRepositoryTest {
 	@Autowired
 	StationJdbcRepository repository;
 
-	Station jamsil;
+	Station kyodae;
 	Station samsung;
 
 	@BeforeEach
 	void setUp() {
-		jamsil = new Station("잠실");
+		kyodae = new Station("교대");
 		samsung = new Station("삼성");
 	}
 
@@ -32,7 +32,8 @@ class StationJdbcRepositoryTest {
 	@Test
 	void createStation() {
 		// when
-		final long jamsilId = repository.createStation(jamsil);
+		final long kyodaeId = repository.createStation(kyodae);
+		final Station foundStation = repository.findById(kyodaeId);
 
 		// then
 		Assertions.assertThat(4L).isEqualTo(jamsilId);
@@ -42,7 +43,7 @@ class StationJdbcRepositoryTest {
 	@Test
 	void findAll() {
 		// when
-		repository.createStation(jamsil);
+		repository.createStation(kyodae);
 		repository.createStation(samsung);
 		final List<Station> stations = repository.findAll();
 
@@ -54,18 +55,18 @@ class StationJdbcRepositoryTest {
 	@Test
 	void findById() {
 		// when
-		final long stationId = repository.createStation(jamsil);
+		final long stationId = repository.createStation(kyodae);
 		final Station station = repository.findById(stationId);
 
 		// then
-		Assertions.assertThat(jamsil).isEqualTo(station);
+		Assertions.assertThat(kyodae).isEqualTo(station);
 	}
 
 	@DisplayName("역 수정 테스트")
 	@Test
 	void updateStation() {
 		// given
-		final long jamsilId = repository.createStation(jamsil);
+		final long jamsilId = repository.createStation(kyodae);
 
 		// when
 		repository.updateStation(jamsilId, samsung);
@@ -79,7 +80,7 @@ class StationJdbcRepositoryTest {
 	@Test
 	void deleteById() {
 		// given
-		final long jamsilId = repository.createStation(jamsil);
+		final long jamsilId = repository.createStation(kyodae);
 
 		// when
 		final boolean isDelete = repository.deleteById(jamsilId);
