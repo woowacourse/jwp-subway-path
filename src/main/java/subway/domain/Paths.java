@@ -136,10 +136,6 @@ public final class Paths {
                 .sum();
     }
 
-    public int calculateCost(final FareStrategy fareStrategy) {
-        return fareStrategy.calculate(getTotalDistance());
-    }
-
     public List<Path> toList() {
         return new ArrayList<>(paths);
     }

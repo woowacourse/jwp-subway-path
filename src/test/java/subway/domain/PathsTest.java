@@ -136,17 +136,4 @@ class PathsTest {
         //then
         assertThat(totalDistance).isEqualTo(9);
     }
-
-    @DisplayName("요금을 계산할 수 있다")
-    @Test
-    void calculateCost() {
-        //given
-        final Paths paths = new Paths();
-
-        //when
-        final int cost = paths.calculateCost(distance -> 5);
-
-        //then
-        assertThat(cost).isEqualTo(5);
-    }
 }

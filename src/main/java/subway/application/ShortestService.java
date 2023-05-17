@@ -33,8 +33,9 @@ public class ShortestService {
         final Station start = stationDao.findById(startId);
         final Station end = stationDao.findById(endId);
 
-        Paths shortest = findOrThrow(graph, start, end);
-        return ShortestResponse.of(shortest, fareStrategy);
+        final Paths shortest = findOrThrow(graph, start, end);
+        final int fare = fareStrategy.calculate(shortest.getTotalDistance());
+        return ShortestResponse.of(shortest, fare);
     }
 
     private DijkstraShortestPath<Station, PathEdgeProxy> makeGraph(final Paths paths) {
