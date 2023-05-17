@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.station.domain.Station;
 
@@ -154,17 +153,14 @@ public class Sections {
     }
     
     private List<Station> sort(final Station frontStation, final Station endStation) {
-        final WeightedMultigraph<Station, Section> graph = initGraph(sections);
-        
+        final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
+        addSectionsToGraph(graph);
         final DijkstraShortestPath<Station, Section> path = new DijkstraShortestPath<>(graph);
+        
         return path.getPath(frontStation, endStation).getVertexList();
     }
     
-    private WeightedMultigraph<Station, Section> initGraph(final Set<Section> sections) {
-        final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(
-                Section.class);
-        
+    public void addSectionsToGraph(final WeightedMultigraph<Station, Section> graph) {
         sections.forEach(section -> section.addStationsAndDistanceToGraph(graph));
-        return graph;
     }
 }

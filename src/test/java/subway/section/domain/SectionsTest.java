@@ -1,6 +1,10 @@
 package subway.section.domain;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.Test;
+import subway.station.domain.Station;
 
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +12,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SectionsTest {
@@ -290,5 +295,42 @@ class SectionsTest {
         final Section additionalFirstSection = new Section(second, additionalStation, additionalDistance);
         final Section additionalSecondSection = new Section(additionalStation, third, distance - additionalDistance);
         assertThat(sections.getSections()).contains(firstSection, thirdSection, additionalFirstSection, additionalSecondSection);
+    }
+    
+    @Test
+    void 전달받은_그래프에_자신의_모든_구간을_추가한다() {
+        // given
+        final String first = "잠실역";
+        final String second = "가양역";
+        final String third = "화정역";
+        final String fourth = "종합운동장";
+        final String fifth = "선릉역";
+        
+        final int distance1 = 3;
+        final int distance2 = 2;
+        final int distance3 = 6;
+        final int distance4 = 7;
+        final Section firstSection = new Section(first, second, distance1);
+        final Section secondSection = new Section(second, third, distance2);
+        final Section thirdSection = new Section(third, fourth, distance3);
+        final Section fourthSection = new Section(fourth, fifth, distance4);
+        
+        final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
+        final Sections sections = new Sections(new HashSet<>(initSections));
+        
+        final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
+        final DijkstraShortestPath<Station, Section> path = new DijkstraShortestPath<>(graph);
+        
+        // when
+        sections.addSectionsToGraph(graph);
+        
+        // then
+        final GraphPath<Station, Section> resultPath = path.getPath(new Station("선릉역"), new Station("가양역"));
+        assertAll(
+                () -> assertThat(resultPath.getVertexList().stream().map(Station::getName))
+                        .containsExactly("선릉역", "종합운동장", "화정역", "가양역"),
+                () -> assertThat(resultPath.getEdgeList()).containsExactly(fourthSection, thirdSection, secondSection),
+                () -> assertThat(resultPath.getWeight()).isEqualTo(distance4 + distance3 + distance2)
+        );
     }
 }
