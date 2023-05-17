@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> ha가ndleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         log.error("잘못된 입력 정보 입니다 : {}", exception.getMessage());
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
