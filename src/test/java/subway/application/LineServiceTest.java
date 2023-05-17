@@ -13,7 +13,8 @@ import subway.dto.SectionRequest;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -34,12 +35,10 @@ class LineServiceTest {
         given(lineRepository.findLineById(1L)).willReturn(Fixture.line);
         given(stationService.findStationById(1L)).willReturn(Fixture.stationA);
         given(stationService.findStationById(2L)).willReturn(Fixture.stationB);
-        given(lineRepository.saveSection(Fixture.line, Fixture.sectionAB)).willReturn(1L);
-        doNothing().when(lineRepository).updateUpEndpoint(any());
+        given(lineRepository.saveInitialSection(Fixture.line, Fixture.sectionAB)).willReturn(1L);
 
         // when & then
         assertDoesNotThrow(() -> lineService.saveInitialSection(1L, sectionRequest));
-        verify(lineRepository, times(1)).saveSection(any(), any());
-        verify(lineRepository, times(1)).updateUpEndpoint(any());
+        verify(lineRepository, times(1)).saveInitialSection(any(), any());
     }
 }

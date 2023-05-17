@@ -10,7 +10,6 @@ import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,8 +35,7 @@ public class LineService {
         final int distance = sectionRequest.getDistance();
 
         final Section section = line.addInitialSection(upStation, downStation, distance);
-        final Long sectionId = lineRepository.saveSection(line, section);
-        lineRepository.updateUpEndpoint(line);
+        final Long sectionId = lineRepository.saveInitialSection(line, section);
 
         return SectionResponse.of(sectionId, section);
     }
@@ -50,23 +48,10 @@ public class LineService {
 
         final Section section = line.addSection(upStation, downStation, distance);
 
-        final List<Long> sectionIds = resaveSectionsInLine(line);
+        final List<Long> sectionIds = lineRepository.updateSectionsInLine(line);
 
         final Long lastSectionId = sectionIds.get(sectionIds.size() - 1);
         return SectionResponse.of(lastSectionId, section);
-    }
-
-    private List<Long> resaveSectionsInLine(final Line line) {
-        lineRepository.deleteSectionsByLine(line);
-
-        final List<Long> sectionIds = new ArrayList<>();
-        line.getSections().forEach(s ->
-                sectionIds.add(lineRepository.saveSection(line, s))
-        );
-
-        lineRepository.updateUpEndpoint(line);
-
-        return sectionIds;
     }
 
     public List<LineResponse> findLineResponses() {
@@ -90,7 +75,7 @@ public class LineService {
         final Station station = stationService.findStationById(stationId);
 
         line.deleteStation(station);
-        resaveSectionsInLine(line);
+        lineRepository.updateSectionsInLine(line);
     }
 
     public void deleteLineById(final Long id) {

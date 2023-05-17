@@ -6,6 +6,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dto.LineEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,10 +27,6 @@ public class LineRepository {
     public Line saveLine(final String name, final String color) {
         final LineEntity insert = lineDao.insert(new LineEntity(name, color));
         return new Line(insert.getId(), insert.getName(), insert.getColor());
-    }
-
-    public Long saveSection(final Line line, final Section section) {
-        return sectionDao.insert(line.getId(), section);
     }
 
     public List<Line> findLines() {
@@ -59,8 +56,15 @@ public class LineRepository {
         return convertToLine(lineEntity, sections);
     }
 
-    public void updateLine(final Long id, final String name, final String color) {
-        lineDao.update(new Line(id, name, color));
+    public Long saveInitialSection(final Line line, final Section section) {
+        final Long sectionId = saveSection(line, section);
+        updateUpEndpoint(line);
+
+        return sectionId;
+    }
+
+    private Long saveSection(final Line line, final Section section) {
+        return sectionDao.insert(line.getId(), section);
     }
 
     public void updateUpEndpoint(final Line line) {
@@ -72,8 +76,25 @@ public class LineRepository {
         lineDao.updateUpEndpointById(line.getId(), null);
     }
 
-    public void deleteSectionsByLine(final Line line) {
+    public List<Long> updateSectionsInLine(final Line line) {
+        deleteSectionsByLine(line);
+
+        final List<Long> sectionIds = new ArrayList<>();
+        line.getSections().forEach(s ->
+                sectionIds.add(saveSection(line, s))
+        );
+
+        updateUpEndpoint(line);
+
+        return sectionIds;
+    }
+
+    private void deleteSectionsByLine(final Line line) {
         sectionDao.deleteByLineId(line.getId());
+    }
+
+    public void updateLine(final Long id, final String name, final String color) {
+        lineDao.update(new Line(id, name, color));
     }
 
     public void deleteLineById(final Long id) {
