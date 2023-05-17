@@ -1,16 +1,18 @@
 package subway.ui.station;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import subway.application.station.CreateStationService;
 import subway.ui.dto.request.StationCreateRequest;
 import subway.ui.dto.response.StationResponse;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/stations")
@@ -25,6 +27,19 @@ public class CreateStationController {
     public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
         final Long stationId = stationService.createStation(stationCreateRequest);
 
-        return ResponseEntity.created(URI.create("/stations/" + stationId)).build();
+        String createStationUri = generateCreateUri(stationId);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header(HttpHeaders.CONTENT_LOCATION, createStationUri)
+                .build();
+    }
+
+    private String generateCreateUri(final Long stationId) {
+        return ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(stationId)
+                .toUriString();
     }
 }
