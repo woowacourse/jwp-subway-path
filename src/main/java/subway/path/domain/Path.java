@@ -42,7 +42,7 @@ public class Path {
         validateExistStation(endStationName, graph);
         final GraphPath<Station, Section> graphPath = path.getPath(new Station(startStationName), new Station(endStationName));
         
-        final List<String> shortestPath = getShortestPath(graphPath);
+        final List<String> shortestPath = getShortestPath(graphPath, startStationName, endStationName);
         final Long shortestDistance = (long) graphPath.getWeight();
         return new ShortestPathResult(shortestPath, shortestDistance, calculateFee(shortestDistance));
     }
@@ -53,10 +53,18 @@ public class Path {
         }
     }
     
-    private List<String> getShortestPath(final GraphPath<Station, Section> graphPath) {
-        return graphPath.getVertexList().stream()
-                .map(Station::getName)
-                .collect(Collectors.toUnmodifiableList());
+    private List<String> getShortestPath(
+            final GraphPath<Station, Section> graphPath,
+            final String startStationName,
+            final String endStationName
+    ) {
+        try {
+            return graphPath.getVertexList().stream()
+                    .map(Station::getName)
+                    .collect(Collectors.toUnmodifiableList());
+        } catch (final NullPointerException ne) {
+            throw new IllegalArgumentException(startStationName + "과 " + endStationName + "은 이어져있지 않습니다.");
+        }
     }
     
     private long calculateFee(final Long distance) {
