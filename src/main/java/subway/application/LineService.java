@@ -58,18 +58,16 @@ public class LineService {
         final Line line = subway.findLineById(lineId);
 
         List<Optional<String>> requestStations = extractNullableStation(stationRequest, line);
-        final String newStationName = requestStations.stream()
-                .filter(Optional::isPresent)
-                .flatMap(Optional::stream)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("추가하려는 역은 이미 노선에 존재합니다."));
+        final String newStationName = extractStationNameToAdd(requestStations);
 
         stationRepository.save(newStationName);
 
-        subway.addStation(line.getName(),
+        subway.addStation(
+                line.getName(),
                 stationRequest.getSourceStation(),
                 stationRequest.getTargetStation(),
-                stationRequest.getDistance());
+                stationRequest.getDistance()
+        );
         saveUpdatedLine(subway, line.getName(), lineId);
         return new StationSelectResponse(newStationName);
     }
@@ -80,6 +78,14 @@ public class LineService {
         requestStations.add(filterNonExistStation(stations, stationRequest.getSourceStation()));
         requestStations.add(filterNonExistStation(stations, stationRequest.getTargetStation()));
         return requestStations;
+    }
+
+    private String extractStationNameToAdd(final List<Optional<String>> requestStations) {
+        return requestStations.stream()
+                .filter(Optional::isPresent)
+                .flatMap(Optional::stream)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("추가하려는 역은 이미 노선에 존재합니다."));
     }
 
     private Optional<String> filterNonExistStation(List<Station> stations, String requestStationName) {
