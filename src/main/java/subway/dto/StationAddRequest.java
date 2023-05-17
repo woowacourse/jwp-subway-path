@@ -1,15 +1,15 @@
 package subway.dto;
 
-public class SectionRequest {
+public class StationAddRequest {
 
     private Long fromId;
     private Long toId;
     private Integer distance;
 
-    public SectionRequest() {
+    public StationAddRequest() {
     }
 
-    public SectionRequest(final Long fromId, final Long toId, final Integer distance) {
+    public StationAddRequest(final Long fromId, final Long toId, final Integer distance) {
         this.fromId = fromId;
         this.toId = toId;
         this.distance = distance;
