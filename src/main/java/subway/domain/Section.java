@@ -17,6 +17,7 @@ public class Section {
     public Section(final Long id, final Station upStation, final Station downStation,
             final int distance) {
         validateStations(upStation, downStation);
+        validateDistance(distance);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -26,6 +27,12 @@ public class Section {
     private void validateStations(final Station upStation, final Station downStation) {
         if (upStation.equals(downStation)) {
             throw new SubwayIllegalArgumentException("상행역과 하행역은 달라야합니다.");
+        }
+    }
+
+    private void validateDistance(final int distance) {
+        if (distance <= 0) {
+            throw new SubwayIllegalArgumentException("거리는 0보다 커야합니다.");
         }
     }
 
