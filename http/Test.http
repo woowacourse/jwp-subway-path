@@ -4,7 +4,7 @@ POST http://localhost:8080/stations
 Content-Type: application/json
 
 {
-  "name": "잠실새내역"
+  "name": "A"
 }
 
 ###
@@ -12,7 +12,7 @@ POST http://localhost:8080/stations
 Content-Type: application/json
 
 {
-  "name": "잠실역"
+  "name": "B"
 }
 
 ###
@@ -20,9 +20,24 @@ POST http://localhost:8080/stations
 Content-Type: application/json
 
 {
-  "name": "잠실나루역"
+  "name": "C"
 }
 
+###
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "D"
+}
+
+###
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "E"
+}
 
 ###
 POST http://localhost:8080/lines
@@ -45,3 +60,38 @@ Content-Type: application/json
 
 ### GET /lines/{id}
 GET http://localhost:8080/lines/1
+
+
+### POST /lines/{id}/station : 중간 역(3) 삽입
+POST http://localhost:8080/lines/1/station
+Content-Type: application/json
+
+{
+  "upStationId": 1,
+  "downStationId": 3,
+  "distance": 4
+}
+
+### POST /lines/{id}/station : 상행종점 역(4) 삽입
+POST http://localhost:8080/lines/1/station
+Content-Type: application/json
+
+{
+  "upStationId": 4,
+  "downStationId": 1,
+  "distance": 3
+}
+
+### POST /lines/{id}/station : 하행종점 역(5) 삽입
+POST http://localhost:8080/lines/1/station
+Content-Type: application/json
+
+{
+  "upStationId": 2,
+  "downStationId": 5,
+  "distance": 7
+}
+
+### GET /lines/{id}
+GET http://localhost:8080/lines/1
+

@@ -37,8 +37,8 @@ public class Line {
         sectionMap.deleteStation(station);
     }
 
-    public Station getUpEndstation() {
-        return sectionMap.findUpEndstation();
+    public Station getUpEndpoint() {
+        return sectionMap.getUpEndpoint();
     }
 
     public List<Section> getSections() {

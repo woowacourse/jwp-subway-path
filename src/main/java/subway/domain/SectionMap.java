@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SectionMap {
 
@@ -62,10 +63,10 @@ public class SectionMap {
         if (isUpStationExist && isDownStationExist) {
             throw new IllegalArgumentException(STATION_ALREADY_EXIST_IN_LINE_EXCEPTION);
         }
-        if (upStation.equals(findDownEndstation())) {
+        if (upStation.equals(findLastStation())) {
             return addEndSection(upStation, downStation, distance);
         }
-        if (downStation.equals(findUpEndstation())) {
+        if (downStation.equals(findFirstStation())) {
             return addEndSection(upStation, downStation, distance);
         }
         if (isUpStationExist) {
@@ -78,10 +79,10 @@ public class SectionMap {
     }
 
     private boolean isStationExist(final Station station) {
-        return sectionMap.containsKey(station) || findDownEndstation().equals(station);
+        return sectionMap.containsKey(station) || findLastStation().equals(station);
     }
 
-    private Station findDownEndstation() {
+    private Station findLastStation() {
         final Optional<Station> lastKey = sectionMap.keySet().stream()
                 .reduce((first, second) -> second);
         if (lastKey.isEmpty()) {
@@ -90,7 +91,7 @@ public class SectionMap {
         return sectionMap.get(lastKey.get()).getDownStation();
     }
 
-    public Station findUpEndstation() {
+    private Station findFirstStation() {
         return sectionMap.keySet().stream()
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(SECTION_MAP_EMPTY_EXCEPTION));
@@ -144,11 +145,11 @@ public class SectionMap {
             sectionMap.clear();
             return;
         }
-        if (station.equals(findUpEndstation())) {
-            sectionMap.remove(findUpEndstation());
+        if (station.equals(findFirstStation())) {
+            sectionMap.remove(findFirstStation());
             return;
         }
-        if (station.equals(findDownEndstation())) {
+        if (station.equals(findLastStation())) {
             sectionMap.remove(findPreviousStation(station));
             return;
         }
@@ -167,13 +168,24 @@ public class SectionMap {
         sectionMap.replace(previousStation, newSection);
     }
 
-    public Map<Station, Section> getSectionMap() {
-        return new LinkedHashMap<>(sectionMap);
+    public Station getUpEndpoint() {
+        final List<Station> downStations = sectionMap.values().stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+
+        return sectionMap.keySet().stream()
+                .filter(station -> !downStations.contains(station))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("상행 종점을 찾을 수 없습니다."));
     }
 
     public List<Station> getAllStations() {
         final List<Station> stations = new ArrayList<>(sectionMap.keySet());
-        stations.add(findDownEndstation());
+        stations.add(findLastStation());
         return Collections.unmodifiableList(stations);
+    }
+
+    public Map<Station, Section> getSectionMap() {
+        return new LinkedHashMap<>(sectionMap);
     }
 }

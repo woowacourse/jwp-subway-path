@@ -63,7 +63,7 @@ public class LineRepository {
     }
 
     public void updateUpEndpoint(final Line line) {
-        lineDao.updateUpEndpointById(line.getId(), line.getUpEndstation().getId());
+        lineDao.updateUpEndpointById(line.getId(), line.getUpEndpoint().getId());
     }
 
     public void deleteSectionsByLine(final Line line) {

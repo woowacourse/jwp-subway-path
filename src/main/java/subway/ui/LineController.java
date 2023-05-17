@@ -35,14 +35,14 @@ public class LineController {
         final URI uri = URI.create("/lines/" + id + "/station/init/" + section.getId());
         return ResponseEntity.created(uri).body(section);
     }
-//
-//    @PostMapping("/{id}/station")
-//    public ResponseEntity<SectionResponse> createSection(@PathVariable final Long id,
-//                                                         @RequestBody final SectionRequest sectionRequest) {
-//        final SectionResponse section = lineService.saveSection(id, sectionRequest);
-//        final URI uri = URI.create("/lines/" + id + "/station/" + section.getId());
-//        return ResponseEntity.created(uri).body(section);
-//    }
+
+    @PostMapping("/{id}/station")
+    public ResponseEntity<SectionResponse> createSection(@PathVariable final Long id,
+                                                         @RequestBody final SectionRequest sectionRequest) {
+        final SectionResponse section = lineService.saveSection(id, sectionRequest);
+        final URI uri = URI.create("/lines/" + id + "/station/" + section.getId());
+        return ResponseEntity.created(uri).body(section);
+    }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
