@@ -17,6 +17,7 @@ import subway.dao.StationDao;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
 import java.util.List;
 
@@ -47,7 +48,7 @@ class SectionRepositoryTest {
         this._2호선 = new Line(1L, "2호선", "초록색");
     }
 
-    private void insertDummyData() {
+    private void insert_신림역_봉천역_2호선() {
         stationDao.insert(신림역);
         stationDao.insert(봉천역);
         lineDao.insert(_2호선);
@@ -61,7 +62,7 @@ class SectionRepositoryTest {
     @Test
     void Section을_성공적으로_저장한다() {
         // given
-        insertDummyData();
+        insert_신림역_봉천역_2호선();
         Section section = new Section(_2호선, 신림역, 봉천역, new Distance(10));
 
         // when
@@ -80,7 +81,7 @@ class SectionRepositoryTest {
     @Test
     void 여러_Section들을_성공적으로_저장한다() {
         // given
-        insertDummyData();
+        insert_신림역_봉천역_2호선();
 
         Station 낙성대역 = new Station(3L, "낙성대역");
         stationDao.insert(낙성대역);
@@ -94,7 +95,7 @@ class SectionRepositoryTest {
         sectionRepository.saveSections(sections);
 
         // then
-        assertThat(sectionRepository.findAll()).hasSize(2);
+        assertThat(sectionRepository.findAll().getSections()).hasSize(2);
     }
 
     @Test
@@ -110,12 +111,12 @@ class SectionRepositoryTest {
     @Test
     void 모든_Section을_조회한다() {
         // given
-        insertDummyData();
+        insert_신림역_봉천역_2호선();
         saveSection();
 
         // when
-        List<Section> sections = sectionRepository.findAll();
-        Section savedSection = sections.get(0);
+        Sections sections = sectionRepository.findAll();
+        Section savedSection = sections.getSections().get(0);
 
         // then
         assertAll(
@@ -130,7 +131,7 @@ class SectionRepositoryTest {
     @Test
     void Section을_삭제한다() {
         // given
-        insertDummyData();
+        insert_신림역_봉천역_2호선();
         Section section = new Section(1L, _2호선, 신림역, 봉천역, new Distance(10));
         sectionRepository.save(section);
 
@@ -138,6 +139,26 @@ class SectionRepositoryTest {
         sectionRepository.delete(section);
 
         // then
-        assertThat(sectionRepository.findAll()).hasSize(0);
+        assertThat(sectionRepository.findAll().getSections()).hasSize(0);
+    }
+
+    @Test
+    void 특정_Line에_존재하는_모든_Section을_반환한다() {
+        // given
+        insert_신림역_봉천역_2호선();
+        Section section = new Section(1L, _2호선, 신림역, 봉천역, new Distance(10));
+        sectionRepository.save(section);
+
+        Line 신림선 = lineDao.insert(new Line("신림선", "청록색"));
+
+        // when
+        Sections sections_2호선 = sectionRepository.findByLine(_2호선);
+        Sections sections_신림선 = sectionRepository.findByLine(신림선);
+
+        // then
+        assertAll(
+                () -> assertThat(sections_2호선.getSections()).hasSize(1),
+                () -> assertThat(sections_신림선.getSections()).hasSize(0)
+        );
     }
 }

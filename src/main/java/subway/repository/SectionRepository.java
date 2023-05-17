@@ -7,8 +7,10 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.SectionEntity;
+import subway.domain.Sections;
 import java.util.List;
 
 @Repository
@@ -42,12 +44,20 @@ public class SectionRepository {
         }
     }
 
-    public List<Section> findAll() {
+    public Sections findAll() {
         List<SectionEntity> sectionEntities = sectionDao.findAll();
 
-        return sectionEntities.stream()
+        return new Sections(sectionEntities.stream()
                 .map(this::toDomain)
-                .collect(toList());
+                .collect(toList()));
+    }
+
+    public Sections findByLine(final Line line) {
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(line.getId());
+
+        return new Sections(sectionEntities.stream()
+                .map(this::toDomain)
+                .collect(toList()));
     }
 
     public void delete(final Section section) {
