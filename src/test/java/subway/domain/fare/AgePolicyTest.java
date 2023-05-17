@@ -24,43 +24,43 @@ class AgePolicyTest {
     class CalculateDiscountFare {
 
         @Test
-        @DisplayName("BABY는 할인 금액이 0원이다.")
+        @DisplayName("BABY는 할인되지 않는다.")
         void baby() {
             final AgePolicy agePolicy = AgePolicy.BABY;
 
             final double result = agePolicy.calculateDiscountFare(1000);
 
-            assertThat(result).isEqualTo(0);
+            assertThat(result).isEqualTo(1000);
         }
 
         @Test
-        @DisplayName("KID는 50% 할인 금액을 반환한다.")
+        @DisplayName("KID는 350원 공제 후, 50% 할인된 금액을 반환한다.")
         void kid() {
             final AgePolicy agePolicy = AgePolicy.KID;
 
-            final double result = agePolicy.calculateDiscountFare(1000);
+            final double result = agePolicy.calculateDiscountFare(1350);
 
             assertThat(result).isEqualTo(500);
         }
 
         @Test
-        @DisplayName("TEEN은 20% 할인 금액을 반환한다.")
+        @DisplayName("TEEN은 350원 공제 후, 20% 할인된 금액을 반환한다.")
         void teen() {
             final AgePolicy agePolicy = AgePolicy.TEEN;
 
-            final double result = agePolicy.calculateDiscountFare(1000);
+            final double result = agePolicy.calculateDiscountFare(1350);
 
-            assertThat(result).isEqualTo(200);
+            assertThat(result).isEqualTo(800);
         }
 
         @Test
-        @DisplayName("ADULT는 할인 금액이 0원이다.")
+        @DisplayName("ADULT는 할인되지 않는다.")
         void adult() {
             final AgePolicy agePolicy = AgePolicy.ADULT;
 
             final double result = agePolicy.calculateDiscountFare(1000);
 
-            assertThat(result).isEqualTo(0);
+            assertThat(result).isEqualTo(1000);
         }
     }
 }

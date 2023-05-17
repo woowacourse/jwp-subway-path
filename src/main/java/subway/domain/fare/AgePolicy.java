@@ -6,10 +6,16 @@ import subway.exception.InvalidPolicyException;
 
 public enum AgePolicy {
 
-    BABY(age -> age < 6, fare -> 0d),
-    KID(age -> 6 <= age && age < 13, fare -> fare * 0.5),
-    TEEN(age -> 13 <= age && age < 19, fare -> fare * 0.2),
-    ADULT(age -> age >= 19, fare -> 0d);
+    BABY(age -> age < 6, fare -> fare),
+    KID(age -> 6 <= age && age < 13, fare -> {
+        final double deductionFare = Math.max(0, fare - 350);
+        return Math.max(0, deductionFare - deductionFare * 0.5);
+    }),
+    TEEN(age -> 13 <= age && age < 19, fare -> {
+        final double deductionFare = Math.max(0, fare - 350);
+        return Math.max(0, deductionFare - deductionFare * 0.2);
+    }),
+    ADULT(age -> age >= 19, fare -> fare);
 
     private final Function<Integer, Boolean> validTarget;
     private final Function<Double, Double> discount;
