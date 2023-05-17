@@ -18,7 +18,10 @@ import fixture.Fixture;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.farecalculator.BasicFareCalculator;
+import subway.domain.farecalculator.FareCalculatorImpl;
+import subway.domain.farecalculator.policy.additional.LineAdditionalFarePolicy;
+import subway.domain.farecalculator.policy.discount.AgeDiscountPolicy;
+import subway.domain.farecalculator.policy.distance.BasicFareByDistancePolicy;
 import subway.domain.pathfinder.JgraphtPathFinder;
 import subway.domain.pathfinder.LineWeightedEdge;
 import subway.dto.PathResponse;
@@ -41,11 +44,16 @@ class PathServiceTest {
     void setUp() {
         pathService = new PathService(
                 new JgraphtPathFinder(new WeightedMultigraph<>(LineWeightedEdge.class)),
-                new BasicFareCalculator(),
+                new FareCalculatorImpl(
+                        new BasicFareByDistancePolicy(),
+                        new LineAdditionalFarePolicy(),
+                        new AgeDiscountPolicy()
+                ),
                 lineDao,
                 stationDao,
                 sectionDao
         );
+
     }
 
 
@@ -63,7 +71,13 @@ class PathServiceTest {
         //then
         assertAll(
                 () -> assertThat(result.getDistance()).isEqualTo(15),
-                () -> assertThat(result.getPrice()).isEqualTo(1350),
+                () -> assertThat(result.getFareResponses()).hasSize(3),
+                () -> assertThat(result.getFareResponses().get(0).getType()).isEqualTo("DEFAULT"),
+                () -> assertThat(result.getFareResponses().get(0).getFare()).isEqualTo(1650),
+                () -> assertThat(result.getFareResponses().get(1).getType()).isEqualTo("YOUTH"),
+                () -> assertThat(result.getFareResponses().get(1).getFare()).isEqualTo(1040),
+                () -> assertThat(result.getFareResponses().get(2).getType()).isEqualTo("CHILD"),
+                () -> assertThat(result.getFareResponses().get(2).getFare()).isEqualTo(650),
                 () -> assertThat(result.getPath()).hasSize(3)
         );
     }

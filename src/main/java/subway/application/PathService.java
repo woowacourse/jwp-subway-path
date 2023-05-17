@@ -13,6 +13,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.farecalculator.FareCalculator;
 import subway.domain.pathfinder.PathFinder;
+import subway.dto.FareResponse;
 import subway.dto.PathResponse;
 import subway.dto.SectionMapper;
 import subway.dto.SectionResponse;
@@ -51,12 +52,12 @@ public class PathService {
         pathFinder.addSections(sections);
         final List<Section> path = pathFinder.computeShortestPath(sourceStationId, targetStationId);
         final int distance = pathFinder.computeShortestDistance(sourceStationId, targetStationId);
-        final int fare = fareCalculator.calculateFare(distance);
 
         final SectionMapper sectionMapper = SectionMapper.from(stations, lines);
         final List<SectionResponse> sectionResponses = sectionMapper.convertToSectionResponse(path);
+        final List<FareResponse> calculate = fareCalculator.calculate(sectionResponses, distance);
 
-        return new PathResponse(distance, fare, sectionResponses);
+        return new PathResponse(distance, calculate, sectionResponses);
     }
 
     private void validate(Long sourceStationId, Long targetStationId) {

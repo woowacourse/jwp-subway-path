@@ -4,12 +4,12 @@ import java.util.List;
 
 public class PathResponse {
     private final Integer distance;
-    private final Integer price;
+    private final List<FareResponse> fareResponses;
     private final List<SectionResponse> path;
 
-    public PathResponse(Integer distance, Integer price, List<SectionResponse> path) {
+    public PathResponse(Integer distance, List<FareResponse> fareResponses, List<SectionResponse> path) {
         this.distance = distance;
-        this.price = price;
+        this.fareResponses = fareResponses;
         this.path = path;
     }
 
@@ -17,8 +17,8 @@ public class PathResponse {
         return distance;
     }
 
-    public Integer getPrice() {
-        return price;
+    public List<FareResponse> getFareResponses() {
+        return fareResponses;
     }
 
     public List<SectionResponse> getPath() {
