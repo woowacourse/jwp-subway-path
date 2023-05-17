@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
@@ -24,12 +26,14 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("sections")
                 .usingGeneratedKeyColumns("id");
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
     public void batchInsert(final List<SectionEntity> sectionEntities) {
@@ -39,6 +43,13 @@ public class SectionDao {
                 .toArray(new SqlParameterSource[sectionEntities.size()]);
 
         simpleJdbcInsert.executeBatch(array);
+    }
+
+    public void batchDelete(final List<SectionEntity> sectionEntities) {
+        final String sql = "DELETE FROM SECTIONS WHERE id=:id";
+        final SqlParameterSource[] batchArgs = SqlParameterSourceUtils.createBatch(sectionEntities.toArray());
+        final int[] ints = namedParameterJdbcTemplate.batchUpdate(sql, batchArgs);
+        System.out.println(ints.length);
     }
 
     public void deleteAllByLineName(final String lineName) {
