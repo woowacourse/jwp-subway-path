@@ -1,6 +1,5 @@
 package subway.domain;
 
-import java.util.Map;
 import java.util.Objects;
 
 public class Line {
@@ -48,8 +47,8 @@ public class Line {
         return color;
     }
 
-    public Map<Station, Section> getSectionMap() {
-        return sectionMap.getSectionMap();
+    public SectionMap getSectionMap() {
+        return sectionMap;
     }
 
     @Override

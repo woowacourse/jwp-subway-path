@@ -1,8 +1,11 @@
 package subway.dto;
 
 import subway.domain.Line;
+import subway.domain.SectionMap;
+import subway.domain.Station;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LineResponse {
     private final Long id;
@@ -22,7 +25,14 @@ public class LineResponse {
     }
 
     public static LineResponse of(final Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+        final List<String> stations = sectionMapToStations(line.getSectionMap());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+    }
+
+    private static List<String> sectionMapToStations(final SectionMap sectionMap) {
+        return sectionMap.getAllStations().stream()
+                .map(Station::getName)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public Long getId() {

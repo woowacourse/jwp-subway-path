@@ -170,4 +170,10 @@ public class SectionMap {
     public Map<Station, Section> getSectionMap() {
         return new LinkedHashMap<>(sectionMap);
     }
+
+    public List<Station> getAllStations() {
+        final List<Station> stations = new ArrayList<>(sectionMap.keySet());
+        stations.add(findDownEndstation());
+        return Collections.unmodifiableList(stations);
+    }
 }
