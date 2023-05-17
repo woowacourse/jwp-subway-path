@@ -9,7 +9,6 @@ import subway.route.application.RouteService;
 import subway.route.application.dto.RouteDto;
 
 @RestController
-// TODO: 2023/05/16 validated 붙어야 하는지 확인하기
 public class RouteController {
 
     private final RouteService routeService;

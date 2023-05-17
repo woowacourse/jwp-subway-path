@@ -72,8 +72,8 @@
 - Request
   - GET /routes
   - Parameters
-    - from(required): 시작 역의 id
-    - to(required): 도착 역의 id
+    - source(required): 시작 역의 id
+    - destination(required): 도착 역의 id
 
 - Response
   - 200 OK
@@ -113,12 +113,12 @@
     - [x] Line에 존재하지 않는 Station을 삭제할 경우 예외를 던진다.
   - [x] 역이 두개 뿐이면 한 역을 삭제하면 노선 자체를 삭제한다. 
 
-- [ ] RouteFinderBuilder
-  - [ ] RouteFinder를 생성한다. 
+- [x] RouteFinderBuilder
+  - [x] RouteFinder를 생성한다. 
 
-- [ ] RouteFinder
-  - [ ] 최적의 경로를 찾아낸다. 
-  - [ ] 경로의 전체 거리를 계산한다.
+- [x] RouteFinder
+  - [x] 최적의 경로를 찾아낸다. 
+  - [x] 경로의 전체 거리를 계산한다.
 
-- [ ] FareCalculator
-  - [ ] 요금을 계산한다. 
+- [x] FareCalculator
+  - [x] 요금을 계산한다. 

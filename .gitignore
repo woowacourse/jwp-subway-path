@@ -33,3 +33,4 @@ out/
 .vscode/
 
 src/test/java/study/*
+*.db
