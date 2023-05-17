@@ -1,6 +1,7 @@
 package subway.service.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Subway {
 
@@ -8,6 +9,12 @@ public class Subway {
 
     public Subway(List<Line> lines) {
         this.lines = lines;
+    }
+
+    public List<SingleLine> getAllLine() {
+        return lines.stream()
+                .map(this::getSingleLine)
+                .collect(Collectors.toList());
     }
 
     public SingleLine getSingleLine(Long lineId) {

@@ -27,4 +27,12 @@ public class SingleLine {
         return stations.getStations();
     }
 
+    @Override
+    public String toString() {
+        return "SingleLine{" +
+                "lineProperty=" + lineProperty +
+                ", stations=" + stations +
+                '}';
+    }
+
 }
