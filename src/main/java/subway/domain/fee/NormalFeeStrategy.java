@@ -18,10 +18,11 @@ public class NormalFeeStrategy implements FeeStrategy {
             return BASE_FEE + ((int)(Math.ceil((double)(distance - BASE_FEE_DISTANCE) / ADDITIONAL_FEE_FIRST_UNIT))
                 * ADDITIONAL_FEE_PER_UNIT);
         }
-        return BASE_FEE +
-            (ADDITIONAL_FEE_UNIT_CHANGE_DISTANCE - BASE_FEE_DISTANCE / ADDITIONAL_FEE_FIRST_UNIT)
-                * ADDITIONAL_FEE_PER_UNIT +
-            ((int)(Math.ceil((double)(distance - ADDITIONAL_FEE_UNIT_CHANGE_DISTANCE) / ADDITIONAL_FEE_SECOND_UNIT))
-                * ADDITIONAL_FEE_PER_UNIT);
+        return
+            (BASE_FEE +
+                ((ADDITIONAL_FEE_UNIT_CHANGE_DISTANCE - BASE_FEE_DISTANCE) / ADDITIONAL_FEE_FIRST_UNIT)
+                    * ADDITIONAL_FEE_PER_UNIT +
+                ((int)(Math.ceil((double)(distance - ADDITIONAL_FEE_UNIT_CHANGE_DISTANCE) / ADDITIONAL_FEE_SECOND_UNIT))
+                    * ADDITIONAL_FEE_PER_UNIT));
     }
 }
