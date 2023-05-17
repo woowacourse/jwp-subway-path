@@ -18,18 +18,17 @@ public class Sections {
 
     public void createInitialSection(Station upStation, Station downStation, int distance) {
         validateDistance(distance);
-        final Section section = new Section(upStation, downStation, distance);
-        graph.createInitialSection(section);
+        graph.addStation(upStation);
+        graph.addStation(downStation);
+        graph.addSection(upStation, downStation);
+        graph.setSectionDistance(graph.getSection(upStation, downStation), distance);
     }
 
     public Station addStation(Station upLineStation, Station downLineStation, int distance) {
         validateStations(upLineStation, downLineStation);
         validateDistance(distance);
 
-        // 기존 역: upLineStation, 새로운 역: downLineStation
         if (isNewStation(upLineStation)) {
-
-            // upLineStation[하행종점] -> downLineStation (새 역) -> nothing!
             final boolean isDownLastStation = graph.isDownLastStation(upLineStation);
 
             if (isDownLastStation) {
@@ -37,16 +36,13 @@ public class Sections {
                 return downLineStation;
             }
 
-            // upLineStation -> downLineStation (새 역) -> 기존 다음 역
             final Set<DefaultWeightedEdge> outgoingEdges = getDownStationsOf(upLineStation);
             addStationToDownLine(upLineStation, downLineStation, findNextStation(outgoingEdges), distance);
             return downLineStation;
         }
 
-        // 기존 역: downLineStation, 새로운 역: upLineStation
         if (isNewStation(downLineStation)) {
 
-            // nothing -> upLineStation (새 역) -> downLineStation
             final boolean isUpFirstStation = graph.isUpFirstStation(downLineStation);
 
             if (isUpFirstStation) {
@@ -54,7 +50,6 @@ public class Sections {
                 return upLineStation;
             }
 
-            // 기존 상행 역 -> upLineStation (새 역) -> downLineStation
             final Set<DefaultWeightedEdge> defaultWeightedEdges = getUpStationsOf(downLineStation);
             final Station previousStation = findPreviousStation(defaultWeightedEdges);
             addStationToUpLine(previousStation, upLineStation, downLineStation, distance);
