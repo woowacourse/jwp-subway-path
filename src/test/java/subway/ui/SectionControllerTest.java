@@ -32,7 +32,7 @@ class SectionControllerTest {
     SectionService sectionService;
 
     @Test
-    @DisplayName("/sections/{lineId}로 POST 요청과 함께 station의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
+    @DisplayName("/lines/{lineId}/sections 로 POST 요청과 함께 station의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void addSection_success() throws Exception {
         // given
         Long lineId = 1L;
@@ -47,7 +47,7 @@ class SectionControllerTest {
     }
 
     @Test
-    @DisplayName("/sections/{lineId}로 DELETE 요청과 함께 station의 정보를 보내면, HTTP 204 코드와 응답이 반환 되어야 한다.")
+    @DisplayName("/lines/{lineId}/sections 로 DELETE 요청과 함께 station의 정보를 보내면, HTTP 204 코드와 응답이 반환 되어야 한다.")
     void deleteSection_success() throws Exception {
         // given
         Long lineId = 1L;
