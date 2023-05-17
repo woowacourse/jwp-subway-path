@@ -280,4 +280,71 @@ public class LineDaoTest {
                 tuple(저장된_팔호선_엔티티_아이디, "팔호선", "bg-pink-600", 저장된_복정역_엔티티_아이디, "복정역",
                     저장된_삼성역_엔티티_아이디, "삼성역", 2));
     }
+
+    @Test
+    @DisplayName("출발역에서 도착역으로 갈 수 있는 노선들이 가진 모든 구간 정보를 역방향 노선을 고려하여 구한다.")
+    void getAllLineSectionsBySourceAndStationId_reversed_section() {
+        // given
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
+        final LineEntity 사호선_엔티티 = new LineEntity("사호선", "bg-blue-600", 0);
+        final LineEntity 팔호선_엔티티 = new LineEntity("팔호선", "bg-pink-600", 0);
+        final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
+        final Long 저장된_사호선_엔티티_아이디 = lineDao.insert(사호선_엔티티);
+        final Long 저장된_팔호선_엔티티_아이디 = lineDao.insert(팔호선_엔티티);
+
+        final StationEntity 잠실역_엔티티 = new StationEntity("잠실역");
+        final StationEntity 선릉역_엔티티 = new StationEntity("선릉역");
+        final StationEntity 강남역_엔티티 = new StationEntity("강남역");
+        final StationEntity 잠실새내역_엔티티 = new StationEntity("잠실새내역");
+        final StationEntity 삼성역_엔티티 = new StationEntity("삼성역");
+        final StationEntity 복정역_엔티티 = new StationEntity("복정역");
+        final StationEntity 사당역_엔티티 = new StationEntity("사당역");
+        final Long 저장된_잠실역_엔티티_아이디 = stationDao.insert(잠실역_엔티티);
+        final Long 저장된_선릉역_엔티티_아이디 = stationDao.insert(선릉역_엔티티);
+        final Long 저장된_강남역_엔티티_아이디 = stationDao.insert(강남역_엔티티);
+        final Long 저장된_잠실새내역_엔티티_아이디 = stationDao.insert(잠실새내역_엔티티);
+        final Long 저장된_삼성역_엔티티_아이디 = stationDao.insert(삼성역_엔티티);
+        final Long 저장된_복정역_엔티티_아이디 = stationDao.insert(복정역_엔티티);
+        final Long 저장된_사당역_엔티티_아이디 = stationDao.insert(사당역_엔티티);
+
+        final SectionEntity 이호선_잠실_선릉 = new SectionEntity(저장된_이호선_엔티티_아이디, 저장된_잠실역_엔티티_아이디, 저장된_선릉역_엔티티_아이디, 10);
+        final SectionEntity 이호선_선릉_강남 = new SectionEntity(저장된_이호선_엔티티_아이디, 저장된_선릉역_엔티티_아이디, 저장된_강남역_엔티티_아이디, 6);
+        final SectionEntity 이호선_강남_잠실새내 = new SectionEntity(저장된_이호선_엔티티_아이디, 저장된_강남역_엔티티_아이디, 저장된_잠실새내역_엔티티_아이디, 3);
+        final SectionEntity 이호선_잠실새내_삼성 = new SectionEntity(저장된_이호선_엔티티_아이디, 저장된_잠실새내역_엔티티_아이디, 저장된_삼성역_엔티티_아이디, 5);
+        final SectionEntity 팔호선_선릉_복정 = new SectionEntity(저장된_팔호선_엔티티_아이디, 저장된_선릉역_엔티티_아이디, 저장된_복정역_엔티티_아이디, 20);
+        final SectionEntity 팔호선_복정_삼성 = new SectionEntity(저장된_팔호선_엔티티_아이디, 저장된_복정역_엔티티_아이디, 저장된_삼성역_엔티티_아이디, 2);
+        final SectionEntity 사호선_강남_사당 = new SectionEntity(저장된_사호선_엔티티_아이디, 저장된_강남역_엔티티_아이디, 저장된_사당역_엔티티_아이디, 7);
+        sectionDao.insert(이호선_잠실_선릉);
+        sectionDao.insert(이호선_선릉_강남);
+        sectionDao.insert(이호선_강남_잠실새내);
+        sectionDao.insert(이호선_잠실새내_삼성);
+        sectionDao.insert(팔호선_선릉_복정);
+        sectionDao.insert(팔호선_복정_삼성);
+        sectionDao.insert(사호선_강남_사당);
+
+        // when
+        final List<LineWithSection> possibleSections = lineDao.getAllLineSectionsBySourceAndStationId(
+            저장된_삼성역_엔티티_아이디, 저장된_잠실역_엔티티_아이디);
+
+        // then
+        assertThat(possibleSections).hasSize(6);
+        assertThat(possibleSections)
+            .extracting(LineWithSection::getLineId, LineWithSection::getLineName, LineWithSection::getLineColor,
+                LineWithSection::getSourceStationId, LineWithSection::getSourceStationName,
+                LineWithSection::getTargetStationId,
+                LineWithSection::getTargetStationName, LineWithSection::getDistance)
+            .containsExactly(
+                tuple(저장된_이호선_엔티티_아이디, "이호선", "bg-green-600", 저장된_잠실역_엔티티_아이디, "잠실역",
+                    저장된_선릉역_엔티티_아이디, "선릉역", 10),
+                tuple(저장된_이호선_엔티티_아이디, "이호선", "bg-green-600", 저장된_선릉역_엔티티_아이디, "선릉역",
+                    저장된_강남역_엔티티_아이디, "강남역", 6),
+                tuple(저장된_이호선_엔티티_아이디, "이호선", "bg-green-600", 저장된_강남역_엔티티_아이디, "강남역",
+                    저장된_잠실새내역_엔티티_아이디, "잠실새내역", 3),
+                tuple(저장된_이호선_엔티티_아이디, "이호선", "bg-green-600", 저장된_잠실새내역_엔티티_아이디, "잠실새내역",
+                    저장된_삼성역_엔티티_아이디, "삼성역", 5),
+                tuple(저장된_팔호선_엔티티_아이디, "팔호선", "bg-pink-600", 저장된_선릉역_엔티티_아이디, "선릉역",
+                    저장된_복정역_엔티티_아이디, "복정역", 20),
+                tuple(저장된_팔호선_엔티티_아이디, "팔호선", "bg-pink-600", 저장된_복정역_엔티티_아이디, "복정역",
+                    저장된_삼성역_엔티티_아이디, "삼성역", 2));
+    }
 }

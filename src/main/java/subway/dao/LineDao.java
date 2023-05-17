@@ -121,8 +121,11 @@ public class LineDao {
             + "WHERE line_id IN ( "
             + "    SELECT DISTINCT s.line_id "
             + "    FROM section s "
-            + "    WHERE s.source_station_id = ? OR s.target_station_id = ?)";
+            + "    WHERE (s.source_station_id = ? OR s.target_station_id = ?) "
+            + "    OR (s.source_station_id = ? OR s.target_station_id = ?)"
+            + ") "
+            + "ORDER BY sec.id";
 
-        return jdbcTemplate.query(sql, lineWithSectionMapper, sourceStationId, targetStationId);
+        return jdbcTemplate.query(sql, lineWithSectionMapper, sourceStationId, targetStationId, targetStationId, sourceStationId);
     }
 }

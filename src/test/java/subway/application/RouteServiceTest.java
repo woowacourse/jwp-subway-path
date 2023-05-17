@@ -26,7 +26,6 @@ import subway.domain.fare.Fare;
 import subway.domain.line.LineRepository;
 import subway.domain.station.StationRepository;
 import subway.exception.BadRequestException;
-import subway.exception.ErrorCode;
 
 @ExtendWith(MockitoExtension.class)
 class RouteServiceTest {
@@ -71,6 +70,40 @@ class RouteServiceTest {
                 tuple(2L, "선릉역"),
                 tuple(6L, "남위례역"),
                 tuple(4L, "신림역"));
+
+        assertThat(routeResponse.getFare())
+            .extracting(FareResponse::getNormalFare, FareResponse::getTeenagerFare, FareResponse::getChildFare)
+            .containsExactly(1450, 880, 550);
+    }
+
+    @Test
+    @DisplayName("요청받은 출발역에서 도착역까지 도달하는데 사용되는 최소 비용의 구간 및 연령별 비용 정보를 계산하여 반환한다. (하행에서 상행으로 이동 고려)")
+    void getShortestRouteAndFare_reversed_success() {
+        // given
+        doReturn(잠실역)
+            .when(stationRepository).findById(1L);
+        doReturn(신림역)
+            .when(stationRepository).findById(4L);
+        when(lineRepository.getPossibleSections(anyLong(), anyLong()))
+            .thenReturn(잠실_신림_이동_가능한_구간들());
+        when(fareCalculator.calculateFare(any()))
+            .thenReturn(new Fare(1450));
+        when(fareCalculator.calculateTeenagerFare(any()))
+            .thenReturn(new Fare(880));
+        when(fareCalculator.calculateChildFare(any()))
+            .thenReturn(new Fare(550));
+
+        // when
+        final RouteResponse routeResponse = routeService.getShortestRouteAndFare(4L, 1L);
+
+        // then
+        assertThat(routeResponse.getStations())
+            .extracting(StationResponse::getId, StationResponse::getName)
+            .containsExactly(
+                tuple(4L, "신림역"),
+                tuple(6L, "남위례역"),
+                tuple(2L, "선릉역"),
+                tuple(1L, "잠실역"));
 
         assertThat(routeResponse.getFare())
             .extracting(FareResponse::getNormalFare, FareResponse::getTeenagerFare, FareResponse::getChildFare)
