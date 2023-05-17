@@ -14,6 +14,7 @@ public class TestFixture {
 
     public static final Line LINE_2 = new Line(1L, new LineName("2호선"));
     public static final Line LINE_3 = new Line(2L, new LineName("3호선"));
+    public static final Line LINE_4 = new Line(3L, new LineName("4호선"));
     public static final Station JAMSIL = new Station(1L, "잠실");
     public static final Station GANGNAM = new Station(2L, "강남");
     public static final Station SEONGLENUG = new Station(3L, "선릉");

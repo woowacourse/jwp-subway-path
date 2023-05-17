@@ -9,6 +9,8 @@ INSERT INTO LINE (id, name)
 VALUES (1, '2호선');
 INSERT INTO LINE (id, name)
 VALUES (2, '3호선');
+INSERT INTO LINE (id, name)
+VALUES (3, '4호선');
 
 INSERT INTO STATION (id, name)
 VALUES (1, '잠실');

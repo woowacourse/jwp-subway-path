@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static subway.integration.TestFixture.GANGNAM;
 import static subway.integration.TestFixture.JAMSIL;
+import static subway.integration.TestFixture.LINE_2;
+import static subway.integration.TestFixture.LINE_4;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,7 @@ class LineServiceTest {
     @DisplayName("노선에 역을 등록한다.")
     @Test
     void registerLine() {
-        final long lineId = 1L;
+        final long lineId = LINE_4.getId();
         final SectionRequest sectionRequest =
                 new SectionRequest(JAMSIL.getName(), GANGNAM.getName(), 10);
 
@@ -50,10 +52,7 @@ class LineServiceTest {
     @Test
     void unregisterLine() {
         //given
-        final long lineId = 1L;
-        final SectionRequest sectionRequest =
-                new SectionRequest(JAMSIL.getName(), GANGNAM.getName(), 10);
-        lineService.registerStation(lineId, sectionRequest);
+        final long lineId = LINE_2.getId();
         final StationRequest stationRequest = new StationRequest(JAMSIL.getName());
 
         lineService.unregisterStation(lineId, stationRequest);

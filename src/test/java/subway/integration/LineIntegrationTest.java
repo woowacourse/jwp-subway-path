@@ -162,7 +162,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().patch("/lines/{lineId}/register", LINE_2.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().statusCode(HttpStatus.CREATED.value());
         }
 

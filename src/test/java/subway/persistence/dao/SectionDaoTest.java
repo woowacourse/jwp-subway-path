@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static subway.integration.TestFixture.GANGNAM;
 import static subway.integration.TestFixture.JAMSIL;
-import static subway.integration.TestFixture.LINE_2;
 import static subway.integration.TestFixture.LINE_3;
 import static subway.integration.TestFixture.SECTION_1;
 import static subway.integration.TestFixture.SECTION_2;
@@ -30,7 +29,7 @@ class SectionDaoTest {
     void delete() {
         sectionDao.delete(List.of(SECTION_1, SECTION_2));
 
-        final List<Section> emptySections = sectionDao.findByLineId(LINE_2.getId());
+        final List<Section> emptySections = sectionDao.findByLineId(LINE_3.getId());
         assertThat(emptySections)
                 .isEmpty();
     }
