@@ -36,6 +36,7 @@ public class StationService {
         return StationResponse.of(registeredLine, registeredLine.stations());
     }
 
+
     private void updateLine(final Station source, final Station target) {
         final List<Station> stations = subwayRepository.findStations();
 
@@ -44,6 +45,7 @@ public class StationService {
                 .forEach(subwayRepository::registerStation);
     }
 
+    @Transactional
     public void delete(final StationDto stationDto) {
         final Line line = subwayRepository.findLineById(stationDto.getLineId());
 

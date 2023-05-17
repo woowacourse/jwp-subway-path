@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.controller.exception.SubwayException;
 import subway.domain.Line;
 import subway.domain.Station;
@@ -22,6 +23,7 @@ public class LineService {
         this.subwayRepository = subwayRepository;
     }
 
+    @Transactional
     public Long register(final LineDto lineDto) {
         validateDuplicatedName(lineDto.getName());
         return subwayRepository.registerLine(lineDto.getName(), lineDto.getColor());
@@ -33,6 +35,7 @@ public class LineService {
         }
     }
 
+    @Transactional(readOnly = true)
     public LineResponse read(final Long id) {
         final Line line = subwayRepository.findLineById(id);
         final List<Station> stations = line.stations();
@@ -42,6 +45,7 @@ public class LineService {
         return LineResponse.of(line, stationResponses);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> readAll() {
         final Subway subway = subwayRepository.findSubway();
         final List<Line> lines = subway.getLines();
