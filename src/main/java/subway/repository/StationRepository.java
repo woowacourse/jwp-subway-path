@@ -21,4 +21,9 @@ public class StationRepository {
     public Station findStationById(final Long id) {
         return stationDao.findById(id).toStation();
     }
+
+    public boolean contains(final StationEntity stationEntity) {
+        return stationDao.findAll().stream()
+                .anyMatch(it -> it.getName().equals(stationEntity.getName()));
+    }
 }
