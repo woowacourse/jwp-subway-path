@@ -1,9 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:13306/local
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: local
-    password: password
-  sql:
-    init:
-      mode: always
