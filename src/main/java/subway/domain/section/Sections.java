@@ -236,6 +236,10 @@ public class Sections {
     public List<Station> findStationsInOrder(Line line) {
         List<Section> lineSections = findLineSections(line);
 
+        if(lineSections.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         Station upwardEndStation = findUpwardEndStation(line);
         List<Station> inOrderLineStations = new ArrayList<>(List.of(upwardEndStation));
 
