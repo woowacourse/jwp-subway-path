@@ -31,7 +31,7 @@ public class LineService {
         if (lineEntity.isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 노선 이름입니다.");
         }
-        final Line line = new Line(lineCreateDto.getName(), Sections.empty());
+        final Line line = new Line(lineCreateDto.getName());
         return lineDao.insert(new LineEntity(line.getLineName()));
     }
 

@@ -10,6 +10,6 @@ class LineTest {
 
   @Test
   void instance() {
-    Assertions.assertDoesNotThrow(() -> new Line("2호선역", Sections.empty()));
+    Assertions.assertDoesNotThrow(() -> new Line("2호선역"));
   }
 }

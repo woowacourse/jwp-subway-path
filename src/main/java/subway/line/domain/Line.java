@@ -17,8 +17,8 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line(String lineName, Sections sections) {
-        this(null, lineName, sections);
+    public Line(String lineName) {
+        this(null, lineName, Sections.empty());
     }
 
     public boolean isEmpty() {
