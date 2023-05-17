@@ -33,7 +33,7 @@ class LineControllerTest {
         @Test
         void successTest() {
             // given
-            LineRequest request = new LineRequest("2호선", "초록색");
+            LineRequest request = new LineRequest("2호선", "초록색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -92,7 +92,7 @@ class LineControllerTest {
         @DisplayName("노선을 성공적으로 등록하면 상태코드 201 CREATED 를 반환하는지 확인한다.")
         @Test
         void successTest() {
-            LineRequest request = new LineRequest("2호선", "초록색");
+            LineRequest request = new LineRequest("2호선", "초록색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -104,7 +104,7 @@ class LineControllerTest {
         @DisplayName("중복된 노선 이름을 등록할 경우 상태코드 400 BadRequest 를 반환하는지 확인한다.")
         @Test
         void failTest1() {
-            LineRequest request = new LineRequest("1호선", "초록색");
+            LineRequest request = new LineRequest("1호선", "초록색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -116,7 +116,7 @@ class LineControllerTest {
         @DisplayName("중복된 노선 색상을 등록할 경우 상태코드 400 BadRequest 를 반환하는지 확인한다.")
         @Test
         void failTest2() {
-            LineRequest request = new LineRequest("2호선", "남색");
+            LineRequest request = new LineRequest("2호선", "남색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -133,7 +133,7 @@ class LineControllerTest {
         @BeforeEach
         void setUp() {
             RestAssured.port = port;
-            LineRequest request = new LineRequest("2호선", "초록색");
+            LineRequest request = new LineRequest("2호선", "초록색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -145,7 +145,7 @@ class LineControllerTest {
         @DisplayName("노선을 성공적으로 수정하면 상태코드 204 NoContent 를 반환하는지 확인한다.")
         @Test
         void successTest() {
-            LineRequest request = new LineRequest("2호선", "파랑색");
+            LineRequest request = new LineRequest("2호선", "파랑색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -157,7 +157,7 @@ class LineControllerTest {
         @DisplayName("중복된 노선 이름으로 수정할 경우 상태코드 400 BadRequest 를 반환하는지 확인한다.")
         @Test
         void failTest1() {
-            LineRequest request = new LineRequest("1호선", "초록색");
+            LineRequest request = new LineRequest("1호선", "초록색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -169,7 +169,7 @@ class LineControllerTest {
         @DisplayName("중복된 노선 색상으로 수정할 경우 상태코드 400 BadRequest 를 반환하는지 확인한다.")
         @Test
         void failTest2() {
-            LineRequest request = new LineRequest("2호선", "남색");
+            LineRequest request = new LineRequest("2호선", "남색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -186,7 +186,7 @@ class LineControllerTest {
         @BeforeEach
         void setUp() {
             RestAssured.port = port;
-            LineRequest request = new LineRequest("2호선", "초록색");
+            LineRequest request = new LineRequest("2호선", "초록색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)

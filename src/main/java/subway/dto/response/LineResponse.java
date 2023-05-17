@@ -10,24 +10,34 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
+    private int extraFare;
 
     private LineResponse() {
     }
 
-    private LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations) {
+    private LineResponse(
+            final Long id,
+            final String name,
+            final String color,
+            final List<StationResponse> stations,
+            final int extraFare
+    ) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stations = stations;
+        this.extraFare = extraFare;
     }
 
     public static LineResponse from(final Line line) {
         List<Station> orderedStations = line.getStationsUpwardToDownward();
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), StationResponse.from(orderedStations));
-    }
-
-    public static LineResponse of(final Long id, final String name, final String color, final List<StationResponse> stations) {
-        return new LineResponse(id, name, color, stations);
+        return new LineResponse(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                StationResponse.from(orderedStations),
+                line.getExtraFare()
+        );
     }
 
     public Long getId() {
@@ -44,5 +54,9 @@ public class LineResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

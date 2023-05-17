@@ -37,7 +37,7 @@ class SectionControllerTest {
         @BeforeEach
         void setUp() {
             RestAssured.port = port;
-            LineRequest request = new LineRequest("2호선", "초록색");
+            LineRequest request = new LineRequest("2호선", "초록색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -193,7 +193,7 @@ class SectionControllerTest {
         @BeforeEach
         void setUp() {
             RestAssured.port = port;
-            LineRequest request = new LineRequest("2호선", "초록색");
+            LineRequest request = new LineRequest("2호선", "초록색", 0);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)

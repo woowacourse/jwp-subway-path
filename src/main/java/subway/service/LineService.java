@@ -21,7 +21,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest request) {
-        Line newLine = Line.of(request.getName(), request.getColor());
+        Line newLine = Line.of(request.getName(), request.getColor(), request.getExtraFare());
         validateDuplicatedName(newLine);
         validateDuplicatedColor(newLine);
         return LineResponse.from(lineRepository.insert(newLine));
@@ -55,7 +55,7 @@ public class LineService {
     public void updateLine(final long id, final LineRequest request) {
         Line oldLine = lineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 노선입니다."));
-        Line updatedLine = Line.of(id, request.getName(), request.getColor(), oldLine.getSections());
+        Line updatedLine = Line.of(id, request.getName(), request.getColor(), oldLine.getSections(), oldLine.getExtraFare());
         if (!oldLine.isSameName(updatedLine)) {
             validateDuplicatedName(updatedLine);
         }
