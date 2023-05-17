@@ -44,7 +44,7 @@ public class SectionService {
         final Section section = createSection(sectionCreateDto, upStationEntity, downStationEntity);
 
         final Line line = new Line(lineEntity.getId(), lineEntity.getLineName(), generateSections(lineEntity.getId()));
-        addSectionByCondition(section, line);
+        line.add(section);
         updateLine(line);
         return line.getId();
     }
@@ -77,14 +77,6 @@ public class SectionService {
                 new Station(sectionStationDto.getUpStationId(), sectionStationDto.getUpStationName()),
                 new Station(sectionStationDto.getDownStationId(), sectionStationDto.getDownStationName())
                 , sectionStationDto.getDistance())).collect(Collectors.toList());
-    }
-
-    private void addSectionByCondition(Section section, Line line) {
-        if (line.isEmpty()) {
-            line.initializeLine(section.getUpStation(), section.getDownStation(), section.getDistance());
-            return;
-        }
-        line.addStation(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
     private void updateLine(Line line) {

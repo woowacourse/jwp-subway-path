@@ -21,15 +21,19 @@ public class Line {
         this.sections = sections;
     }
 
-    public boolean isEmpty() {
-        return sections.isEmpty();
+    public void add(Section section) {
+        if (sections.isEmpty()) {
+            initializeLine(section.getUpStation(), section.getDownStation(), section.getDistance());
+            return;
+        }
+        addStation(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
-    public void initializeLine(final Station upStation, final Station downStation, final int distance) {
+    private void initializeLine(final Station upStation, final Station downStation, final int distance) {
         sections.initializeSections(upStation, downStation, distance);
     }
 
-    public void addStation(final Station upStation, final Station downStation, final int distance) {
+    private void addStation(final Station upStation, final Station downStation, final int distance) {
         sections.addSection(upStation, downStation, distance);
     }
 
@@ -47,6 +51,10 @@ public class Line {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 
 }
