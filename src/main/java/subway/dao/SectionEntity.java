@@ -1,6 +1,6 @@
 package subway.dao;
 
-import subway.domain.Section;
+import subway.domain.section.Section;
 
 public class SectionEntity {
 

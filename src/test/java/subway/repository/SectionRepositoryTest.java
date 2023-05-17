@@ -9,8 +9,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import subway.dao.SectionEntity;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 import subway.integration.IntegrationTest;
 
 import javax.sql.DataSource;

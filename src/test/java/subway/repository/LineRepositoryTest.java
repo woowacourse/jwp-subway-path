@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.integration.IntegrationTest;
 
 import java.util.List;

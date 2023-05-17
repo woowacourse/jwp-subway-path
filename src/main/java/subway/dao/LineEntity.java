@@ -1,7 +1,7 @@
 package subway.dao;
 
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
 
 import java.util.ArrayList;
 import java.util.List;

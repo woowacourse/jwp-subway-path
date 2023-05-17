@@ -1,8 +1,8 @@
 package subway.fixture;
 
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 import java.util.List;
 

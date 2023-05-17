@@ -1,6 +1,6 @@
 package subway.dao;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationEntity {
 

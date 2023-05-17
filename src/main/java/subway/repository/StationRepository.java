@@ -3,7 +3,7 @@ package subway.repository;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.dao.StationEntity;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 @Repository
 public class StationRepository {

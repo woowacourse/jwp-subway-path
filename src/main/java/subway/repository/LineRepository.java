@@ -2,8 +2,8 @@ package subway.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.dao.*;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
 
 import java.util.List;
 import java.util.stream.Collectors;
