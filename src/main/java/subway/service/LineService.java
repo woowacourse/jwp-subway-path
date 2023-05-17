@@ -1,19 +1,22 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.line.Line;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.persistence.dao.H2LineDao;
+import subway.persistence.dao.LineDao;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class LineService {
-    private final H2LineDao lineDao;
+    private final LineDao lineDao;
 
-    public LineService(H2LineDao lineDao) {
+    public LineService(LineDao lineDao) {
         this.lineDao = lineDao;
     }
 

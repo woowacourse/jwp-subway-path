@@ -1,19 +1,22 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.station.Station;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
 import subway.persistence.dao.H2StationDao;
+import subway.persistence.dao.StationDao;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StationService {
-    private final H2StationDao stationDao;
+    private final StationDao stationDao;
 
-    public StationService(H2StationDao stationDao) {
+    public StationService(StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
