@@ -7,6 +7,10 @@ public class LineResponse {
     private String name;
     private String color;
 
+    public LineResponse(Line line) {
+        this(line.getId(), line.getName(), line.getColor());
+    }
+
     public LineResponse(Long id, String name, String color) {
         this.id = id;
         this.name = name;
