@@ -35,11 +35,11 @@ class LineServiceTest {
         given(stationService.findStationById(1L)).willReturn(Fixture.stationA);
         given(stationService.findStationById(2L)).willReturn(Fixture.stationB);
         given(lineRepository.saveSection(Fixture.line, Fixture.sectionAB)).willReturn(1L);
-        doNothing().when(lineRepository).updateUpEndpoint(any(), any());
+        doNothing().when(lineRepository).updateUpEndpoint(any());
 
         // when & then
         assertDoesNotThrow(() -> lineService.saveInitialSection(1L, sectionRequest));
         verify(lineRepository, times(1)).saveSection(any(), any());
-        verify(lineRepository, times(1)).updateUpEndpoint(any(), any());
+        verify(lineRepository, times(1)).updateUpEndpoint(any());
     }
 }

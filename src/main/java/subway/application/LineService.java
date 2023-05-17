@@ -10,6 +10,7 @@ import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,15 +37,36 @@ public class LineService {
 
         final Section section = line.addInitialSection(upStation, downStation, distance);
         final Long sectionId = lineRepository.saveSection(line, section);
-        lineRepository.updateUpEndpoint(line, upStation);
+        lineRepository.updateUpEndpoint(line);
 
         return SectionResponse.of(sectionId, section);
     }
 
-    public SectionResponse saveSection(final Long LineId, final SectionRequest sectionRequest) {
-        return new SectionResponse(null, sectionRequest.getUpStationId(), sectionRequest.getDownStationId(), sectionRequest.getDistance());
+    public SectionResponse saveSection(final Long lineId, final SectionRequest sectionRequest) {
+        final Line line = lineRepository.findLineById(lineId);
+        final Station upStation = stationService.findStationById(sectionRequest.getUpStationId());
+        final Station downStation = stationService.findStationById(sectionRequest.getDownStationId());
+        final int distance = sectionRequest.getDistance();
 
+        final Section section = line.addSection(upStation, downStation, distance);
 
+        final List<Long> sectionIds = saveSectionsInLine(line);
+
+        final Long lastSectionId = sectionIds.get(sectionIds.size() - 1);
+        return SectionResponse.of(lastSectionId, section);
+    }
+
+    private List<Long> saveSectionsInLine(final Line line) {
+        lineRepository.deleteSectionsByLine(line);
+
+        final List<Long> sectionIds = new ArrayList<>();
+        line.getSections().forEach(s ->
+                sectionIds.add(lineRepository.saveSection(line, s))
+        );
+
+        lineRepository.updateUpEndpoint(line);
+
+        return sectionIds;
     }
 
     public List<LineResponse> findLineResponses() {

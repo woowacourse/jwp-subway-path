@@ -62,8 +62,12 @@ public class LineRepository {
         lineDao.update(new Line(id, name, color));
     }
 
-    public void updateUpEndpoint(final Line line, final Station station) {
-        lineDao.updateUpEndpointById(line.getId(), station.getId());
+    public void updateUpEndpoint(final Line line) {
+        lineDao.updateUpEndpointById(line.getId(), line.getUpEndstation().getId());
+    }
+
+    public void deleteSectionsByLine(final Line line) {
+        sectionDao.deleteByLineId(line.getId());
     }
 
     public void deleteLineById(final Long id) {

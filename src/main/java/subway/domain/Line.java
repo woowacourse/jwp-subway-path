@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Line {
@@ -33,6 +35,14 @@ public class Line {
 
     public void deleteStation(final Station station) {
         sectionMap.deleteStation(station);
+    }
+
+    public Station getUpEndstation() {
+        return sectionMap.findUpEndstation();
+    }
+
+    public List<Section> getSections() {
+        return new ArrayList<>(sectionMap.getSectionMap().values());
     }
 
     public Long getId() {

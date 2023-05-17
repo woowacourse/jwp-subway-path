@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LineResponse {
-    private final Long id;
-    private final String name;
-    private final String color;
-    private final List<String> stations;
+    private Long id;
+    private String name;
+    private String color;
+    private List<String> stations;
+
+    public LineResponse() {
+    }
 
     public LineResponse(final Long id, final String name, final String color) {
         this(id, name, color, List.of());
@@ -25,7 +28,12 @@ public class LineResponse {
     }
 
     public static LineResponse of(final Line line) {
-        final List<String> stations = sectionMapToStations(line.getSectionMap());
+        final SectionMap sectionMap = line.getSectionMap();
+        if (sectionMap.getSectionMap().isEmpty()) {
+            return new LineResponse(line.getId(), line.getName(), line.getColor());
+        }
+
+        final List<String> stations = sectionMapToStations(sectionMap);
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
     }
 

@@ -90,7 +90,7 @@ public class SectionMap {
         return sectionMap.get(lastKey.get()).getDownStation();
     }
 
-    private Station findUpEndstation() {
+    public Station findUpEndstation() {
         return sectionMap.keySet().stream()
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(SECTION_MAP_EMPTY_EXCEPTION));
