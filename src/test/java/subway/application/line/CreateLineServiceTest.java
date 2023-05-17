@@ -10,6 +10,7 @@ import subway.ui.dto.request.LineRequest;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -26,8 +27,19 @@ class CreateLineServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 노선이면 예외처리")
+    @DisplayName("노선을 정상적으로 만든다.")
     void createLine() {
+        given(lineRepository.findByName(any()))
+                .willReturn(Optional.empty());
+
+        assertThatNoException().isThrownBy(
+                () -> createLineService.createLine(new LineRequest("1호선"))
+        );
+    }
+
+    @Test
+    @DisplayName("존재하는 노선이면 예외처리")
+    void createLine_createLineException() {
         given(lineRepository.findByName(any()))
                 .willReturn(Optional.of(new Line(1L, "1호선")));
 
