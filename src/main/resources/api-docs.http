@@ -1,0 +1,51 @@
+## Station
+
+### 역 추가
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineName": "2호선",
+  "currentStationName": "F",
+  "nextStationName": "K",
+  "distance": 6
+}
+
+### 역 삭제
+DELETE http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineName": "2호선",
+  "stationName": "F"
+}
+
+###
+
+## Line
+
+### 호선(라인) 전체 조회
+GET http://localhost:8080/lines
+
+### 호선(라인) 단건 조회
+GET http://localhost:8080/lines?lineName=2호선
+
+### 새로운 호선(라인) 등록
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "lineName": "8호선",
+  "currentStationName": "1역",
+  "nextStationName": "2역",
+  "distance": 1
+}
+
+###
+
+## Route
+
+### 최단 경로 조회
+GET http://localhost:8080/lines?startStation=B&endStation=D
+
+
