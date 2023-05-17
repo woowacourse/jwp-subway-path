@@ -1,6 +1,9 @@
 package subway.service.domain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,8 +38,53 @@ public class Sections {
                 .findFirst();
     }
 
+    public RouteMap createMap() {
+        Map<Station, List<Path>> map = new HashMap<>();
+
+        for (Section section : sections) {
+            putIfNotContains(map, section);
+            map.get(section.getPreviousStation()).add(createPath(Direction.UP, section));
+            map.get(section.getNextStation()).add(createPath(Direction.DOWN, section));
+        }
+
+        return new RouteMap(map);
+    }
+
+    private Path createPath(Direction direction, Section section) {
+        if (Direction.UP == direction) {
+            return new Path(
+                    direction,
+                    section.getNextStation(),
+                    Distance.from(section.getDistance())
+            );
+        }
+
+        return new Path(
+                direction,
+                section.getPreviousStation(),
+                Distance.from(section.getDistance())
+        );
+    }
+
+    private void putIfNotContains(Map<Station, List<Path>> lineMap, Section section) {
+        if (!lineMap.containsKey(section.getPreviousStation())) {
+            lineMap.put(section.getPreviousStation(), new ArrayList<>());
+        }
+
+        if (!lineMap.containsKey(section.getNextStation())) {
+            lineMap.put(section.getNextStation(), new ArrayList<>());
+        }
+    }
+
     public List<Section> getSections() {
         return sections;
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "sections=" + sections +
+                '}';
     }
 
 }

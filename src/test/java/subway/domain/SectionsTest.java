@@ -2,12 +2,16 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.service.domain.Direction;
 import subway.service.domain.Distance;
+import subway.service.domain.Path;
+import subway.service.domain.RouteMap;
 import subway.service.domain.Section;
 import subway.service.domain.Sections;
 import subway.service.domain.Station;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,7 +64,7 @@ class SectionsTest {
         assertThat(sections.isContainsThisStation(standardStation)).isTrue();
         assertThat(sections.isContainsThisStation(notExistsStation)).isFalse();
     }
-
+    
     @Test
     @DisplayName("현재 Section 중 해당 Station 을 PreviousStation 으로 가진 Section 을 반환한다.")
     void findPreviousStationThisStation() {
@@ -99,6 +103,26 @@ class SectionsTest {
         assertThat(section).isPresent();
         assertThat(section.get().getNextStation()).isEqualTo(standardStation);
         assertThat(section.get().getPreviousStation()).isEqualTo(previousStation);
+    }
+
+    @Test
+    @DisplayName("Sections 가 Section 을 이용해 움직일 수 있는 Map 을 반환한다.")
+    void createMap() {
+        Distance IGNORED = Distance.from(10);
+        Station previousStation = new Station("previous");
+        Station nextStation = new Station("next");
+        Sections sections = new Sections(List.of(
+                new Section(previousStation, nextStation, IGNORED)));
+
+        Map<Station, List<Path>> map = sections.createMap().getMap();
+        Path previousToNext = map.get(previousStation).get(0);
+        Path nextToPrevious = map.get(nextStation).get(0);
+
+        assertThat(map).hasSize(2);
+        assertThat(previousToNext.getDirection()).isEqualTo(Direction.UP);
+        assertThat(previousToNext.getNextStation()).isEqualTo(nextStation);
+        assertThat(nextToPrevious.getDirection()).isEqualTo(Direction.DOWN);
+        assertThat(nextToPrevious.getNextStation()).isEqualTo(previousStation);
     }
 
 }
