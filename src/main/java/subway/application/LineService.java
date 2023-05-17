@@ -41,13 +41,13 @@ public class LineService {
         System.out.println("persistLines = " + persistLines);
         List<Line> lines = toLines(persistLines);
         return lines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
     private List<Line> toLines(final List<LineEntity> persistLines) {
         return persistLines.stream()
-                .map(lineEntity -> toLine(lineEntity))
+                .map(this::toLine)
                 .collect(Collectors.toList());
     }
 
@@ -58,7 +58,7 @@ public class LineService {
     private Sections toSections(final LineEntity lineEntity) {
         return new Sections(
                 findSectionEntitiesByLine(lineEntity).stream()
-                        .map(sectionEntity -> toSection(sectionEntity))
+                        .map(this::toSection)
                         .collect(Collectors.toList())
         );
     }

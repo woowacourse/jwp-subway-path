@@ -75,24 +75,22 @@ public class Sections {
         final List<Section> nowSections = getSections();
         final List<Station> nowUpStations = getUpStations(nowSections);
         final List<Station> nowDownStations = getDownStations(nowSections);
-        //삭제하려는 역이 존재하지 않으면 예외
+
         validateStationIsExists(targetStation, nowUpStations, nowDownStations);
         if (getSections().size() == 1) {
             return new Sections(new ArrayList<>());
         }
-        //종점 역이 제거되는 경우
-        //상행역/하행역 차집합 통해 상행/하행 종점 구함
         Station lastUpstation = getLastUpstation(nowSections, nowUpStations);
         Station lastDownStation = getLastDownStation(nowSections, nowDownStations);
-        //지우려는 역이 종점 상행역이면
+
         if (lastUpstation.equals(targetStation)) {
             return deleteEndSection(nowSections, targetStation, UP);
         }
-        //종점 하행역이 제거되는 경우
+
         if (lastDownStation.equals(targetStation)) {
             return deleteEndSection(nowSections, targetStation, DOWN);
         }
-        //사이 역이 제거되는 경우
+
         deleteBetweenSection(targetStation, nowSections);
         return new Sections(nowSections);
 
@@ -184,13 +182,13 @@ public class Sections {
 
     private List<Station> getDownStations(final List<Section> nowSections) {
         return nowSections.stream()
-                .map(innerSection -> innerSection.getDownStation())
+                .map(Section::getDownStation)
                 .collect(Collectors.toList());
     }
 
     private List<Station> getUpStations(final List<Section> nowSections) {
         return nowSections.stream()
-                .map(innerSection -> innerSection.getUpStation())
+                .map(Section::getUpStation)
                 .collect(Collectors.toList());
     }
 

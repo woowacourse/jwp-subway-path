@@ -26,25 +26,23 @@ public class StationService {
     }
 
     public void saveStation(Long lineId, SectionRequest sectionRequest) {
-        //저장하려는 노선에 해당된 거리 정보가 포함된 Line 객체를 생성한다
         final Line line = toLine(stationRepository.findLineById(lineId));
-        //상행역과 하행역을 도메인으로 변환
+
         final Station upStation = new Station(sectionRequest.getUpStation());
         final Station downStation = new Station(sectionRequest.getDownStation());
-        //경로를 도메인으로 변환
+
         final Section newSection = new Section(upStation, downStation, sectionRequest.getDistance());
-        //전체 도메인 경로에 저장
+
         final Sections sections = line.getSections();
         final Sections newSections = sections.addSection(newSection);
-        //문제가 없으면 역을 db에 저장
-        //기존에 존재하지 않는 역만 저장
+
         saveStationIfDoesntExists(upStation, sectionRequest.getUpStation());
         saveStationIfDoesntExists(downStation, sectionRequest.getDownStation());
-        //기존 db 경로 모두 삭제
+
         if (stationRepository.findAllStation().size() > 0) {
             stationRepository.deleteAllSection();
         }
-        //경로 생성해 db 저장
+
         final List<SectionEntity> sectionEntities = newSections.getSections().stream()
                 .map(section -> toSectionEntity(lineId, section)
                 )
@@ -78,7 +76,7 @@ public class StationService {
 
     private Sections toSections(final LineEntity lineEntity) {
         return new Sections(findSectionEntityById(lineEntity).stream()
-                .map(sectionEntity -> toSection(sectionEntity))
+                .map(this::toSection)
                 .collect(Collectors.toList()));
     }
 
