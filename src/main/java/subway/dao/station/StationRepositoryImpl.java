@@ -18,16 +18,6 @@ public class StationRepositoryImpl implements StationRepository {
         this.stationDao = stationDao;
     }
 
-    @Override
-    public Optional<Station> findByName(final String name) {
-        final Set<StationEntity> stations = new HashSet<>(stationDao.findAll());
-
-        return stations.stream()
-                .filter(stationEntity -> stationEntity.getName().equals(name))
-                .map(this::toStation)
-                .findFirst();
-    }
-
     private Station toStation(final StationEntity stationEntity) {
         return new Station(
                 stationEntity.getStationId(),
@@ -45,6 +35,15 @@ public class StationRepositoryImpl implements StationRepository {
 
         final StationEntity stationEntity = new StationEntity(station.getStationName());
         return stationDao.insert(stationEntity).toStation();
+    }
+
+    private Optional<Station> findByName(final String name) {
+        final Set<StationEntity> stations = new HashSet<>(stationDao.findAll());
+
+        return stations.stream()
+                .filter(stationEntity -> stationEntity.getName().equals(name))
+                .map(this::toStation)
+                .findFirst();
     }
 
     @Override
