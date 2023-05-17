@@ -25,6 +25,17 @@ public class LineRepository {
         this.lineDao = lineDao;
     }
 
+    public Line save(final Line line) {
+        LineEntity lineEntity = LineEntity.from(line);
+        Long savedId = lineDao.save(lineEntity);
+        return new Line(
+                savedId,
+                new LineName(line.getName()),
+                new LineColor(line.getColor()),
+                Sections.create()
+        );
+    }
+
     public List<Line> findAll() {
         List<LineEntity> allLines = lineDao.findAll();
         Map<Long, Station> allStationsById = stationDao.findAll().stream()
@@ -55,5 +66,23 @@ public class LineRepository {
             allSectionsByLindId.put(lineId, sections);
         }
         return allSectionsByLindId;
+    }
+
+    public void updateBySubway(final Subway beforeSubway, final Subway updateSubway) {
+        List<Line> beforeLines = beforeSubway.getLines();
+        beforeLines.removeAll(updateSubway.getLines());
+        List<LineEntity> beforeLineEntities = convertToLineEntities(beforeLines);
+        lineDao.deleteAll(beforeLineEntities);
+
+        List<Line> updateLines = updateSubway.getLines();
+        updateLines.removeAll(beforeSubway.getLines());
+        List<LineEntity> updateLineEntities = convertToLineEntities(updateLines);
+        lineDao.saveAll(updateLineEntities);
+    }
+
+    private List<LineEntity> convertToLineEntities(final List<Line> lines) {
+        return lines.stream()
+                .map(LineEntity::from)
+                .collect(Collectors.toList());
     }
 }

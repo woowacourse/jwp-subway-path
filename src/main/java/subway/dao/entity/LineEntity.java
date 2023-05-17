@@ -16,6 +16,14 @@ public class LineEntity {
         this.color = color;
     }
 
+    public static LineEntity from(final Line line) {
+        return new LineEntity(
+                line.getId(),
+                line.getName(),
+                line.getColor()
+        );
+    }
+
     public Line convertToLine(final List<Section> sections) {
         return new Line(
                 this.id,

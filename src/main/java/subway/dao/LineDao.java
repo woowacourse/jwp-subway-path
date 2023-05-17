@@ -1,6 +1,7 @@
 package subway.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +12,8 @@ import subway.domain.Line;
 import subway.domain.LineColor;
 import subway.domain.LineName;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +37,28 @@ public class LineDao {
             resultSet.getString("color")
     );
 
-    public Long save(final String lineName, final String lineColor) {
-        return insertAction.executeAndReturnKey(new MapSqlParameterSource("name", lineName).addValue("color", lineColor)).longValue();
+    public Long save(final LineEntity lineEntity) {
+        return insertAction.executeAndReturnKey(
+                    new MapSqlParameterSource("name", lineEntity.getName())
+                        .addValue("color", lineEntity.getColor()))
+                .longValue();
+    }
+
+    public void saveAll(final List<LineEntity> lines) {
+        final String sql = "INSERT INTO lines (name, color) VALUES (?, ?) ";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                LineEntity line = lines.get(i);
+                ps.setString(1, line.getName());
+                ps.setString(1, line.getColor());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return lines.size();
+            }
+        });
     }
 
     public List<LineEntity> findAll() {
@@ -62,6 +85,23 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from lines where id = ?", id);
+        final String sql = "delete from lines where id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public void deleteAll(final List<LineEntity> lines) {
+        final String sql = "delete from lines where id = ?";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                LineEntity line = lines.get(i);
+                ps.setLong(1, line.getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return lines.size();
+            }
+        });
     }
 }
