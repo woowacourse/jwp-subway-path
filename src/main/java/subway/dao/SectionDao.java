@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
@@ -45,20 +44,13 @@ public class SectionDao {
         simpleJdbcInsert.executeBatch(array);
     }
 
-    public void batchDelete(final List<SectionEntity> sectionEntities) {
-        final String sql = "DELETE FROM SECTIONS WHERE id=:id";
-        final SqlParameterSource[] batchArgs = SqlParameterSourceUtils.createBatch(sectionEntities.toArray());
-        final int[] ints = namedParameterJdbcTemplate.batchUpdate(sql, batchArgs);
-        System.out.println(ints.length);
+    public void deleteAllByLineId(final Long sectionId) {
+        String sql = "DELETE FROM SECTIONS WHERE line_id = ?";
+        jdbcTemplate.update(sql, sectionId);
     }
 
-    public void deleteAllByLineName(final String lineName) {
-        String sql = "DELETE FROM SECTIONS WHERE LINE_ID IN (SELECT id FROM LINES WHERE name = ?)";
-        jdbcTemplate.update(sql, lineName);
-    }
-
-    public List<SectionEntity> findAllByLineName(final String lineName) {
-        String sql = "SELECT * FROM SECTIONS JOIN LINES ON LINES.id=SECTIONS.line_id WHERE LINES.name = ?";
-        return jdbcTemplate.query(sql, sectionRowMapper, lineName);
+    public List<SectionEntity> findAllByLineId(final Long lineId) {
+        String sql = "SELECT * FROM SECTIONS WHERE line_id = ?";
+        return jdbcTemplate.query(sql, sectionRowMapper, lineId);
     }
 }
