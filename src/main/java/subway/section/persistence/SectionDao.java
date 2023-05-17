@@ -50,8 +50,8 @@ public class SectionDao {
 
     public List<SectionStationDto> findAllByLineId(final Long lineId) {
         final String query =
-            "SELECT sec.id AS section_id, s1.id AS up_station_id, s1.stationName AS up_station_name, s2.id AS "
-                + "down_station_id, s2.stationName AS "
+            "SELECT sec.id AS section_id, s1.id AS up_station_id, s1.station_name AS up_station_name, s2.id AS "
+                + "down_station_id, s2.station_name AS "
                 + "down_station_name, sec.distance AS distance "
                 + "FROM SECTION sec "
                 + "JOIN STATION s1 ON sec.up_station_id = s1.id "

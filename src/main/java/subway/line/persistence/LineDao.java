@@ -15,7 +15,7 @@ public class LineDao {
 
     private static final RowMapper<LineEntity> LINE_ENTITY_ROW_MAPPER = (rs, rowNum) -> {
         final long id = rs.getLong("id");
-        final String findName = rs.getString("lineName");
+        final String findName = rs.getString("line_name");
         return new LineEntity(id, findName);
     };
     private final JdbcTemplate jdbcTemplate;
@@ -50,7 +50,7 @@ public class LineDao {
     }
 
     public Optional<LineEntity> findByName(String name) {
-        final String sql = "SELECT * FROM LINE WHERE lineName = :name";
+        final String sql = "SELECT * FROM LINE WHERE line_name = :name";
         final MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("name", name);
 
