@@ -10,8 +10,6 @@ import subway.line.domain.Line;
 import subway.line.domain.Subway;
 import subway.line.dto.GetSortedLineResponse;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Transactional
 @Service
