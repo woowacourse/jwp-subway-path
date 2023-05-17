@@ -1,6 +1,7 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Stream;
 
@@ -17,6 +18,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.dto.InitialSectionAddRequest;
+import subway.dto.PathFindingRequest;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionDeleteRequest;
 
@@ -53,8 +55,9 @@ public class SectionIntegrationTest extends IntegrationTest {
             .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+            () -> assertThat(response.header("Location")).isNotBlank());
     }
 
     @ParameterizedTest(name = "구간이 있는 노선에 첫 구간을 추가하면 400을 응답한다.")
@@ -136,5 +139,23 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("최단 경로를 조회한다.")
+    void findPathTest() {
+        PathFindingRequest pathFindingRequest = new PathFindingRequest(1L, 2L);
+
+        ExtractableResponse<Response> response = RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(pathFindingRequest)
+            .when().post("/sections/path")
+            .then().log().all()
+            .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
     }
 }

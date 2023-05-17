@@ -95,7 +95,7 @@ public class LineIntegrationTest extends IntegrationTest {
         assertAll(
             () -> assertThat(result.stream()
                 .map(lineStationsResponse -> lineStationsResponse.getLine().getId())
-                .collect(Collectors.toList()))
+                .collect(Collectors.toUnmodifiableList()))
                 .containsAll(expectedLineIds),
 
             () -> assertThat(result.stream()

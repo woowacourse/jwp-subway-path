@@ -104,10 +104,10 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<Long> expectedStationIds = Stream.of(createResponse1, createResponse2)
             .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
         List<Long> resultStationIds = response.jsonPath().getList(".", StationResponse.class).stream()
             .map(StationResponse::getId)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
         assertThat(resultStationIds).containsAll(expectedStationIds);
     }
 
