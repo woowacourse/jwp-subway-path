@@ -16,7 +16,7 @@ import subway.domain.Section;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineSaveResponse;
-import subway.dto.StationAddRequest;
+import subway.dto.SectionAddRequest;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 import subway.exception.DuplicatedNameException;
@@ -75,7 +75,7 @@ class LineServiceTest {
         )));
 
         //when
-        lineService.addStation(savedLineId, new StationAddRequest("Y", "Z", 10));
+        lineService.addStation(savedLineId, new SectionAddRequest("Y", "Z", 10));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)

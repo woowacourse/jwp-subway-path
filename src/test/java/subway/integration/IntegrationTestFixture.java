@@ -14,6 +14,7 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
+import subway.dto.SectionAddRequest;
 import subway.dto.StationAddRequest;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
@@ -27,6 +28,11 @@ public class IntegrationTestFixture {
 
     public static void 정상_응답인지_검증한다(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 정상_생성이라는_응답인지_검증한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotEmpty();
     }
 
     public static void 반환값이_없는지_검증한다(ExtractableResponse<Response> response) {
@@ -74,7 +80,8 @@ public class IntegrationTestFixture {
     }
 
     public static LineResponse 노선_정보(String lineName, String... stationName) {
-        List<StationResponse> stations = Arrays.stream(stationName).map(StationResponse::new)
+        List<StationResponse> stations = Arrays.stream(stationName)
+                .map(StationResponse::new)
                 .collect(Collectors.toList());
         return new LineResponse(lineName, stations);
     }
@@ -97,7 +104,7 @@ public class IntegrationTestFixture {
     }
 
     public static ExtractableResponse<Response> 역_추가_요청(Long lineId, String source, String target, int distance) {
-        StationAddRequest request = new StationAddRequest(source, target, distance);
+        SectionAddRequest request = new SectionAddRequest(source, target, distance);
 
         return RestAssured
                 .given().log().all()
@@ -137,5 +144,16 @@ public class IntegrationTestFixture {
                 .collect(Collectors.toList());
         assertThat(response.as(PathResponse.class)).usingRecursiveComparison()
                 .isEqualTo(new PathResponse(stations, distance, fee));
+    }
+
+    public static ExtractableResponse<Response> 역_생성_요청(String stationName) {
+        StationAddRequest request = new StationAddRequest(stationName);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/stations")
+                .then().log().all()
+                .extract();
     }
 }

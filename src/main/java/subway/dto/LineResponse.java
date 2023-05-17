@@ -3,6 +3,7 @@ package subway.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.domain.Line;
+import subway.domain.Station;
 
 public class LineResponse {
     private final String name;
@@ -14,8 +15,9 @@ public class LineResponse {
     }
 
     public static LineResponse from(Line line) {
-        List<StationResponse> stations = line.getStations()
-                .stream().map(station -> new StationResponse(station.getName()))
+        List<StationResponse> stations = line.getStations().stream()
+                .map(Station::getName)
+                .map(StationResponse::new)
                 .collect(Collectors.toList());
         return new LineResponse(line.getName(), stations);
     }

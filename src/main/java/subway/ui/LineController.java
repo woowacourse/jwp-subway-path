@@ -18,7 +18,7 @@ import subway.dto.LineResponse;
 import subway.dto.LineSaveResponse;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
-import subway.dto.StationAddRequest;
+import subway.dto.SectionAddRequest;
 import subway.dto.StationDeleteRequest;
 
 @RestController
@@ -58,7 +58,7 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/station")
-    public ResponseEntity<Void> addStation(@PathVariable Long lineId, @RequestBody @Valid StationAddRequest request) {
+    public ResponseEntity<Void> addStation(@PathVariable Long lineId, @RequestBody @Valid SectionAddRequest request) {
         lineService.addStation(lineId, request);
         return ResponseEntity.ok().build();
     }

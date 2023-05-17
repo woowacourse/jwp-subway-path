@@ -31,6 +31,10 @@ public class Station {
         return name;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

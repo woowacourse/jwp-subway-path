@@ -9,7 +9,7 @@ import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineSaveResponse;
-import subway.dto.StationAddRequest;
+import subway.dto.SectionAddRequest;
 import subway.dto.StationDeleteRequest;
 import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
@@ -33,7 +33,7 @@ public class LineService {
         return new LineSaveResponse(saveId);
     }
 
-    public void addStation(Long lineId, StationAddRequest request) {
+    public void addStation(Long lineId, SectionAddRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
         Line line = lineRepository.findById(lineId);
         subway.addStation(

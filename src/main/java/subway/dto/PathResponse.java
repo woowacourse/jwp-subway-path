@@ -2,6 +2,7 @@ package subway.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import subway.domain.Station;
 import subway.domain.path.ShortestPath;
 
 public class PathResponse {
@@ -18,7 +19,8 @@ public class PathResponse {
 
     public static PathResponse of(ShortestPath path, int fee) {
         List<StationResponse> stations = path.passingStation().stream()
-                .map(it -> new StationResponse(it.getName()))
+                .map(Station::getName)
+                .map(StationResponse::new)
                 .collect(Collectors.toList());
         return new PathResponse(stations, path.getDistance(), fee);
     }
