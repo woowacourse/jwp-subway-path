@@ -12,7 +12,7 @@ import subway.repository.dao.StationDao;
 public class StationService {
     private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    private StationService(StationDao stationDao) {
         this.stationDao = stationDao;
     }
 

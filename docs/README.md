@@ -10,8 +10,8 @@
 - [x] LineController의 API URL 설계 시, PathVariable 변수명을 Id -> lineId로 수정
 - [x] station, section 테이블 참조 관계에 대한 제약 추가
 - [x] 서비스에서는 도메인만 다룰 수 있도록 수정
-- [ ] 실패하는 테스트 복구
-- [ ] LineService 생성자 public?? 
+- [x] 실패하는 테스트 복구
+- [x] LineService 생성자 public?? 
 - [ ] `created_at`, `updated_at`, `audit` 데이터 생성
 
 ## 미완성 기능 구현

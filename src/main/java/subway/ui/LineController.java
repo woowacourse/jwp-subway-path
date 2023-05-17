@@ -24,7 +24,7 @@ public class LineController {
 
     private final LineService lineService;
 
-    public LineController(LineService lineService) {
+    private LineController(LineService lineService) {
         this.lineService = lineService;
     }
 

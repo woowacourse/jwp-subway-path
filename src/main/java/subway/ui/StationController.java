@@ -15,7 +15,7 @@ import java.util.List;
 public class StationController {
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    private StationController(StationService stationService) {
         this.stationService = stationService;
     }
 
