@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import subway.domain.exception.EmptySectionException;
+import subway.domain.exception.IllegalSectionException;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SectionTest {
@@ -59,7 +60,7 @@ class SectionTest {
         assertThat(parent.splitIntoOneAnd(part)).contains(expectedPart);
     }
 
-    @DisplayName("상행 역 기준으로 정렬되어 반환된다.")
+    @DisplayName("쪼갠 후 상행 역 기준으로 정렬되어 반환된다.")
     @Test
     void splitIntoOneAndOtherPart_orderedByUpperToLower() {
         var parent = new Section(잠실나루역, 잠실새내역, 15);
@@ -80,7 +81,7 @@ class SectionTest {
         var notOverlappedSection = new Section(잠실새내역, 종합운동장역, 5);
 
         assertThatThrownBy(() -> section.splitIntoOneAnd(notOverlappedSection))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalSectionException.class);
     }
 
     @DisplayName("이어지는 두 구간을 하나로 병합한다")
@@ -101,7 +102,7 @@ class SectionTest {
         var disconnectedSection = new Section(잠실새내역, 종합운동장역, 5);
 
         assertThatThrownBy(() -> section.mergeWith(disconnectedSection))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalSectionException.class);
     }
 
     @DisplayName("기점 쪽 역을 알 수 있다")

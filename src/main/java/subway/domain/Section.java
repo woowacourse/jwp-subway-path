@@ -4,14 +4,19 @@ import java.util.List;
 import java.util.Objects;
 
 import subway.domain.exception.EmptySectionException;
+import subway.domain.exception.IllegalSectionException;
 
 public class Section {
 
     private final Station upperStation;
     private final Station lowerStation;
-    private final int distance;
+    private final Distance distance;
 
     public Section(Station upperStation, Station lowerStation, int distance) {
+        this(upperStation, lowerStation, new Distance(distance));
+    }
+
+    public Section(Station upperStation, Station lowerStation, Distance distance) {
         validateNonNull(upperStation, lowerStation);
         this.upperStation = upperStation;
         this.lowerStation = lowerStation;
@@ -28,11 +33,8 @@ public class Section {
         return hasUpperLinkWith(other) || hasLowerLinkWith(other);
     }
 
-    public boolean hasOverlapWith(Section other) {
-        if (other.distance <= distance) {
-            return hasUpperOverlapWith(other) || hasLowerOverlapWith(other);
-        }
-        return false;
+    public boolean hasOverlapWith(Section part) {
+        return hasUpperOverlapWith(part) || hasLowerOverlapWith(part);
     }
 
     public boolean contains(Station station) {
@@ -44,30 +46,30 @@ public class Section {
         if (hasUpperOverlapWith(other)) {
             return List.of(
                     other,
-                    new Section(other.lowerStation, lowerStation, distance - other.distance));
+                    new Section(other.lowerStation, lowerStation, distance.gapBetween(other.distance)));
         }
         return List.of(
-                new Section(upperStation, other.upperStation, distance - other.distance),
+                new Section(upperStation, other.upperStation, distance.gapBetween(other.distance)),
                 other);
     }
 
     public Section mergeWith(Section other) {
         validateHasLinkWith(other);
         if (hasUpperLinkWith(other)) {
-            return new Section(this.lowerStation, other.upperStation, this.distance + other.distance);
+            return new Section(this.lowerStation, other.upperStation, this.distance.sum(other.distance));
         }
-        return new Section(this.upperStation, other.lowerStation, this.distance + other.distance);
+        return new Section(this.upperStation, other.lowerStation, this.distance.sum(other.distance));
     }
 
     private void validateHasLinkWith(Section other) {
         if (!this.hasLinkWith(other)) {
-            throw new IllegalArgumentException("연결되는 구간이 아닙니다");
+            throw new IllegalSectionException("연결되는 구간이 아닙니다");
         }
     }
 
     private void validateHasOverlapWith(Section other) {
         if (!this.hasOverlapWith(other)) {
-            throw new IllegalArgumentException("겹치는 구간이 아닙니다");
+            throw new IllegalSectionException("겹치는 구간이 아닙니다");
         }
     }
 
@@ -79,16 +81,22 @@ public class Section {
         return upperStation.equals(other.lowerStation);
     }
 
-    private boolean hasUpperOverlapWith(Section other) {
-        return upperStation.equals(other.upperStation);
+    private boolean hasUpperOverlapWith(Section part) {
+        if (this.distance.isLongerThan(part.distance)) {
+            return upperStation.equals(part.upperStation);
+        }
+        return false;
     }
 
-    private boolean hasLowerOverlapWith(Section other) {
-        return lowerStation.equals(other.lowerStation);
+    private boolean hasLowerOverlapWith(Section part) {
+        if (this.distance.isLongerThan(part.distance)) {
+            return lowerStation.equals(part.lowerStation);
+        }
+        return false;
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getValue();
     }
 
     public List<Station> getStations() {
@@ -112,18 +120,18 @@ public class Section {
 
         Section section = (Section)o;
 
-        if (distance != section.distance)
+        if (!upperStation.equals(section.upperStation))
             return false;
-        if (!Objects.equals(upperStation, section.upperStation))
+        if (!lowerStation.equals(section.lowerStation))
             return false;
-        return Objects.equals(lowerStation, section.lowerStation);
+        return distance.equals(section.distance);
     }
 
     @Override
     public int hashCode() {
-        int result = upperStation != null ? upperStation.hashCode() : 0;
-        result = 31 * result + (lowerStation != null ? lowerStation.hashCode() : 0);
-        result = 31 * result + distance;
+        int result = upperStation.hashCode();
+        result = 31 * result + lowerStation.hashCode();
+        result = 31 * result + distance.hashCode();
         return result;
     }
 }
