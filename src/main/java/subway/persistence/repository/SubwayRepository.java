@@ -74,7 +74,7 @@ public class SubwayRepository {
     }
 
     public void saveLine(final Line line) {
-        pathDao.clear(line.getId());
+        pathDao.deleteByLineId(line.getId());
         final List<Station> stations = line.sortStations();
         if (stations.isEmpty()) {
             return;

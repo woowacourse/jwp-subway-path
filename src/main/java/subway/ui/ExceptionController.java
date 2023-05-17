@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import subway.exception.DuplicatedNameException;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 
 @RestControllerAdvice
 public class ExceptionController extends ResponseEntityExceptionHandler {
@@ -16,8 +17,8 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
-    @ExceptionHandler
-    public ResponseEntity<String> handleLineNotFoundException(final LineNotFoundException exception) {
+    @ExceptionHandler({StationNotFoundException.class, LineNotFoundException.class})
+    public ResponseEntity<String> handleLineNotFoundException() {
         return ResponseEntity.notFound().build();
     }
 

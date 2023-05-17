@@ -50,7 +50,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .body("stations.name", containsInAnyOrder("의왕", "수원"));
     }
 
-    @DisplayName("경로에 역을 추가한다.")
+    @DisplayName("경로에 하행역을 추가한다.")
     @Test
     void addStationsOnPathTest() throws JsonProcessingException {
         final AddPathRequest request = new AddPathRequest(2L, 4L, 10, "down");
@@ -71,6 +71,29 @@ public class PathIntegrationTest extends IntegrationTest {
                 .body("name", is("1호선"))
                 .body("stations", hasSize(3))
                 .body("stations[2].name", is("선릉"));
+    }
 
+    @DisplayName("경로에 상행역을 추가한다.")
+    @Test
+    void addStationsOnPathTest2() throws JsonProcessingException {
+        final AddPathRequest request = new AddPathRequest(2L, 4L, 3, "up");
+        final String json = objectMapper.writeValueAsString(request);
+        given().log().all()
+                .body(json)
+                .contentType(JSON)
+                .when()
+                .post("/lines/1/stations")
+                .then().log().all()
+                .statusCode(SC_OK);
+
+        given().log().all()
+                .when()
+                .get("/lines/1")
+                .then().log().all()
+                .assertThat()
+                .body("name", is("1호선"))
+                .body("stations", hasSize(3))
+                .body("stations[2].name", is("잠실나루"))
+                .body("stations[1].name", is("선릉"));
     }
 }

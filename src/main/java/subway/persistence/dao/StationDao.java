@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
+import subway.exception.StationNotFoundException;
 
 import java.util.List;
 
@@ -52,6 +53,10 @@ public class StationDao {
 
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        final int affected = jdbcTemplate.update(sql, id);
+
+        if (affected == 0) {
+            throw new StationNotFoundException();
+        }
     }
 }

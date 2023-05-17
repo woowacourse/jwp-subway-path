@@ -174,4 +174,13 @@ public class StationIntegrationTest extends IntegrationTest {
                 .statusCode(SC_NOT_FOUND);
     }
 
+    @Test
+    void 없는_역을_삭제한다() {
+        given().log().all()
+                .when()
+                .delete("stations/100")
+                .then().log().all()
+                .statusCode(SC_NOT_FOUND);
+    }
+
 }
