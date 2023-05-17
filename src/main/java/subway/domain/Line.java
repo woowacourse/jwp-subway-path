@@ -25,24 +25,16 @@ public class Line {
         validateIsLinked(sections);
     }
 
-    private void validateIsLinked(List<Section> sections) {
-        if (sections.size() + 1 != getStations().size()) {
-            throw new IllegalArgumentException("연결되지 않은 역이 있습니다");
-        }
-    }
-
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("아름에는 빈 문자가 들어올 수 없습니다.");
         }
     }
 
-    public boolean isSame(Line other) {
-        return name.equals(other.getName());
-    }
-
-    public boolean isSameName(String otherName) {
-        return name.equals(otherName);
+    private void validateIsLinked(List<Section> sections) {
+        if (sections.size() + 1 != getStations().size()) {
+            throw new IllegalArgumentException("연결되지 않은 역이 있습니다");
+        }
     }
 
     public void addSection(Section newSection) {
@@ -51,19 +43,11 @@ public class Line {
         Optional<Section> downSection = findBySource(newSection.getSource());
         Optional<Section> upSection = findByTarget(newSection.getTarget());
         if (downSection.isPresent()) {
-            Section section = downSection.get();
-            sections.remove(section);
-            sections.add(new Section(section.getSource(), newSection.getTarget(), newSection.getDistance()));
-            sections.add(new Section(newSection.getTarget(), section.getTarget(),
-                    section.getDistance() - newSection.getDistance()));
+            addAsUpSection(newSection, downSection.get());
             return;
         }
         if (upSection.isPresent()) {
-            Section section = upSection.get();
-            sections.remove(section);
-            sections.add(new Section(section.getSource(), newSection.getSource(),
-                    section.getDistance() - newSection.getDistance()));
-            sections.add(new Section(newSection.getSource(), section.getTarget(), newSection.getDistance()));
+            addAsDownSection(newSection, upSection.get());
             return;
         }
         if (sections.isEmpty() || isLastSection(newSection)) {
@@ -71,22 +55,6 @@ public class Line {
             return;
         }
         throw new IllegalArgumentException("연결되지 않은 역이 있습니다");
-    }
-
-    private boolean isLastSection(Section newSection) {
-        return findByTarget(newSection.getSource()).isPresent() || findBySource(newSection.getTarget()).isPresent();
-    }
-
-    private Optional<Section> findByTarget(Station target) {
-        return sections.stream()
-                .filter(section -> section.getTarget().isSameName(target))
-                .findAny();
-    }
-
-    private Optional<Section> findBySource(Station source) {
-        return sections.stream()
-                .filter(section -> section.getSource().isSameName(source))
-                .findAny();
     }
 
     private void validateDuplicatedName(Section section) {
@@ -100,30 +68,78 @@ public class Line {
                 .anyMatch(it -> it.isAnySame(station));
     }
 
+    private Optional<Section> findBySource(Station source) {
+        return sections.stream()
+                .filter(section -> section.getSource().isSameName(source))
+                .findAny();
+    }
+
+    private Optional<Section> findByTarget(Station target) {
+        return sections.stream()
+                .filter(section -> section.getTarget().isSameName(target))
+                .findAny();
+    }
+
+    private void addAsUpSection(final Section newSection, final Section downSection) {
+        sections.remove(downSection);
+        sections.add(new Section(downSection.getSource(), newSection.getTarget(), newSection.getDistance()));
+        sections.add(new Section(newSection.getTarget(), downSection.getTarget(),
+                downSection.getDistance() - newSection.getDistance()));
+    }
+
+    private void addAsDownSection(final Section newSection, final Section upSection) {
+        sections.remove(upSection);
+        sections.add(new Section(upSection.getSource(), newSection.getSource(),
+                upSection.getDistance() - newSection.getDistance()));
+        sections.add(new Section(newSection.getSource(), upSection.getTarget(), newSection.getDistance()));
+    }
+
+    private boolean isLastSection(Section newSection) {
+        return findByTarget(newSection.getSource()).isPresent() || findBySource(newSection.getTarget()).isPresent();
+    }
+
+    public boolean isSame(Line other) {
+        return name.equals(other.getName());
+    }
+
+    public boolean isSameName(String otherName) {
+        return name.equals(otherName);
+    }
+
     public void removeStation(Station station) {
-        if (!isDuplicatedName(station)) {
-            throw new IllegalArgumentException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
-        }
+        validateStationExistence(station);
         Optional<Section> findSource = findBySource(station);
         Optional<Section> findTarget = findByTarget(station);
 
         if (findSource.isPresent() && findTarget.isPresent()) {
-            Section downSection = findSource.get();
-            Section upSection = findTarget.get();
-
-            sections.remove(downSection);
-            sections.remove(upSection);
-
-            sections.add(new Section(upSection.getSource(), downSection.getTarget(), downSection.getDistance()
-                    + upSection.getDistance()));
+            removeStationExistsBetweenStation(findSource.get(), findTarget.get());
             return;
         }
         findSource.ifPresent(sections::remove);
         findTarget.ifPresent(sections::remove);
         }
 
-    public boolean isEmpty() {
-        return sections.isEmpty();
+    private void validateStationExistence(final Station station) {
+        if (!containsStation(station)) {
+            throw new IllegalArgumentException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
+        }
+    }
+
+    public boolean containsStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.contains(station));
+    }
+
+    private void removeStationExistsBetweenStation(final Section downSection, final Section upSection) {
+        sections.remove(downSection);
+        sections.remove(upSection);
+
+        final Section mergedSection = new Section(
+                upSection.getSource(),
+                downSection.getTarget(),
+                downSection.getDistance() + upSection.getDistance()
+        );
+        sections.add(mergedSection);
     }
 
     public List<Station> getStations() {
@@ -152,9 +168,8 @@ public class Line {
                 .findAny().orElseThrow(() -> new IllegalArgumentException("종점역을 찾지 못했습니다"));
     }
 
-    public boolean containsStation(Station station) {
-        return sections.stream()
-                .anyMatch(section -> section.contains(station));
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 
     public Long getId() {
