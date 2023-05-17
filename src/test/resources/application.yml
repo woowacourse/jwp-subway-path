@@ -1,0 +1,6 @@
+spring:
+  sql:
+    init:
+      data-locations: classpath:truncate.sql
+      schema-locations: classpath:schema.sql
+      mode: always
