@@ -36,7 +36,7 @@ class StationJdbcRepositoryTest {
 		final Station foundStation = repository.findById(kyodaeId);
 
 		// then
-		Assertions.assertThat(4L).isEqualTo(jamsilId);
+		Assertions.assertThat(foundStation.getName()).isEqualTo("교대");
 	}
 
 	@DisplayName("역 전체 조회 테스트")
