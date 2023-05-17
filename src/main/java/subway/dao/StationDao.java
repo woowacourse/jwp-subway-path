@@ -18,7 +18,7 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<StationEntity> stationEntityRowMapper = (rs, rowNum) ->
             new StationEntity.Builder()
                     .id(rs.getLong("id"))
                     .name(rs.getString("name"))
@@ -42,12 +42,12 @@ public class StationDao {
 
     public List<StationEntity> findAll() {
         String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, stationEntityRowMapper);
     }
 
     public StationEntity findById(long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, id);
     }
 
     public Optional<Long> findIdByName(String name) {

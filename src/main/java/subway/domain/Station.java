@@ -9,7 +9,7 @@ public class Station {
     public static final int MINIMUM_NAME_LENGTH = 2;
     public static final int MAXIMUM_NAME_LENGTH = 15;
 
-    private static final String EMPTY_ENDPOINT_NAME = "";
+    private static final String INPUT_FOR_END_POINT = "";
     private static final Station EMPTY_ENDPOINT_STATION = Station.from("종점");
 
     private final String name;
@@ -21,7 +21,7 @@ public class Station {
     }
 
     public static Station from(String stationName) {
-        if (Objects.equals(stationName, EMPTY_ENDPOINT_NAME)) {
+        if (Objects.equals(stationName, INPUT_FOR_END_POINT)) {
             return EMPTY_ENDPOINT_STATION;
         }
         return new Station(stationName);

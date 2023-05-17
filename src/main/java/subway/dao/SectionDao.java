@@ -16,7 +16,7 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rowNum) ->
             new SectionEntity.Builder()
                     .id(rs.getLong("id"))
                     .upstreamId(rs.getLong("upstream_id"))
@@ -32,7 +32,7 @@ public class SectionDao {
 
     public List<SectionEntity> findSectionsByLineId(long lineId) {
         String sql = "select * from SECTION where line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
     }
 
     public void deleteAll(long lineId) {

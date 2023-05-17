@@ -18,10 +18,10 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<LineEntity> lineEntityRowMapper = (resultSet, rowNum) ->
             new LineEntity.Builder()
-                    .id(rs.getLong("id"))
-                    .name(rs.getString("name"))
+                    .id(resultSet.getLong("id"))
+                    .name(resultSet.getString("name"))
                     .build();
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -40,7 +40,7 @@ public class LineDao {
     public Optional<LineEntity> findById(long id) {
         String sql = "select id, name from LINE WHERE id = ?";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+            return Optional.of(jdbcTemplate.queryForObject(sql, lineEntityRowMapper, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -48,7 +48,7 @@ public class LineDao {
 
     public List<LineEntity> findAll() {
         String sql = "select id, name from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, lineEntityRowMapper);
     }
 
     public Optional<Long> findIdByName(String name) {

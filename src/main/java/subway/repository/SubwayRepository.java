@@ -45,6 +45,16 @@ public class SubwayRepository {
         return toLine(lineName.getName(), sectionsOfLineName);
     }
 
+    private Line toLine(String lineName, List<SectionEntity> sectionsOfLineName) {
+        return sectionsOfLineName.stream()
+                .map(sectionEntity -> {
+                    long upstreamId = sectionEntity.getUpstreamId();
+                    long downstreamId = sectionEntity.getDownstreamId();
+                    return new Section(findStation(upstreamId), findStation(downstreamId), sectionEntity.getDistance());
+                })
+                .collect(collectingAndThen(toList(), (sections) -> new Line(new LineName(lineName), sections)));
+    }
+
     private Station findStation(long stationId) {
         return Station.from(stationDao.findById(stationId).getName());
     }
@@ -77,9 +87,9 @@ public class SubwayRepository {
     }
 
     private SectionEntity toSectionEntity(Section section, long lineId) {
-        Long upstreamId = findStationIdByName(section.getUpstream().getName())
+        long upstreamId = findStationIdByName(section.getUpstream().getName())
                 .orElseThrow(() -> new IllegalArgumentException("디버깅: 등록되지 않은 역이 section으로 만들어졌습니다"));
-        Long downstreamId = findStationIdByName(section.getDownstream().getName())
+        long downstreamId = findStationIdByName(section.getDownstream().getName())
                 .orElseThrow(() -> new IllegalArgumentException("디버깅: 등록되지 않은 역이 section으로 만들어졌습니다"));
         return new SectionEntity.Builder()
                 .upstreamId(upstreamId)
@@ -93,16 +103,6 @@ public class SubwayRepository {
         List<SectionEntity> sections = sectionDao.findSectionsByLineId(id);
         Optional<LineEntity> lineEntity = lineDao.findById(id);
         return lineEntity.map(entity -> toLine(entity.getName(), sections));
-    }
-
-    private Line toLine(String lineName, List<SectionEntity> sectionsOfLineName) {
-        return sectionsOfLineName.stream()
-                .map(sectionEntity -> {
-                    long upstreamId = sectionEntity.getUpstreamId();
-                    long downstreamId = sectionEntity.getDownstreamId();
-                    return new Section(findStation(upstreamId), findStation(downstreamId), sectionEntity.getDistance());
-                })
-                .collect(collectingAndThen(toList(), (sections) -> new Line(new LineName(lineName), sections)));
     }
 
     public Lines getLines() {

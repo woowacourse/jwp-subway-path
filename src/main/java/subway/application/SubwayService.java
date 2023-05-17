@@ -68,7 +68,7 @@ public class SubwayService {
 
     @Transactional
     public long addNewLine(AddLineRequest addLineRequest) {
-        LineName lineNameToAdd = new LineName(addLineRequest.getName());
+        LineName lineNameToAdd = new LineName(addLineRequest.getLineName());
         Station upstream = getStation(addLineRequest.getUpstreamName()).orElseGet(() -> createNewStation(addLineRequest.getUpstreamName()));
         Station downstream = getStation(addLineRequest.getDownstreamName()).orElseGet(() -> createNewStation(addLineRequest.getDownstreamName()));
         Section section = new Section(upstream, downstream, addLineRequest.getDistance());
