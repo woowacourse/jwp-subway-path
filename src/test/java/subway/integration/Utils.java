@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
-import subway.dto.LineCreateRequestt;
+import subway.dto.LineCreateRequest;
 import subway.dto.StationAddRequest;
 
 public class Utils {
@@ -20,7 +20,7 @@ public class Utils {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new LineCreateRequestt(lineName))
+                .body(new LineCreateRequest(lineName))
                 .when().post("/line")
                 .then().log().all().
                 extract();

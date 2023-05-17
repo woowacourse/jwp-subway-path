@@ -18,13 +18,13 @@ public class SubwayGraphs {
     }
 
 
-    public void createLine(Line line) {
+    public void addLine(Line line) {
         SubwayGraph subwayGraph = new SubwayGraph(line);
         subwayGraphs.add(subwayGraph);
     }
 
     // TODO: 반환 타입 어떤걸로
-    public LineDto createLine(Line line, Station upLineStation, Station downLineStation, int distance) {
+    public LineDto addLine(Line line, Station upLineStation, Station downLineStation, int distance) {
         final SubwayGraph newLineGraph = new SubwayGraph(line);
         newLineGraph.createInitStations(upLineStation, downLineStation, distance);
         final List<Station> allStationsInOrder = newLineGraph.findAllStationsInOrder();

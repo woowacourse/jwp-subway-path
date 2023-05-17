@@ -7,10 +7,8 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.SubwayGraphs;
 import subway.dto.LineCreateRequest;
-import subway.dto.LineCreateRequestt;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
-import subway.entity.EdgeEntity;
 import subway.entity.LineEntity;
 import subway.exception.LineAlreadyExistException;
 import subway.exception.LineNotFoundException;
@@ -24,13 +22,11 @@ public class LineService {
 
     private final SubwayGraphs subwayGraphs;
     private final LineDao lineDao;
-    private final StationDao stationDao;
     private final EdgeDao edgeDao;
 
-    public LineService(final SubwayGraphs subwayGraphs, final LineDao lineDao, final StationDao stationDao, final EdgeDao edgeDao) {
+    public LineService(final SubwayGraphs subwayGraphs, final LineDao lineDao, final EdgeDao edgeDao) {
         this.subwayGraphs = subwayGraphs;
         this.lineDao = lineDao;
-        this.stationDao = stationDao;
         this.edgeDao = edgeDao;
     }
 
@@ -42,47 +38,8 @@ public class LineService {
             throw new LineAlreadyExistException();
         }
 
-        final Station upLineStation = new Station(lineCreateRequest.getUpLineStationName());
-        final Station downLineStation = new Station(lineCreateRequest.getDownLineStationName());
-        final int distance = lineCreateRequest.getDistance();
-
-        final Station savedUpLineStation = stationDao.findByName(upLineStation.getName())
-                .orElseGet(() -> stationDao.saveStation(upLineStation.toEntity()))
-                .toDomain();
-
-        final Station savedDownLineStation = stationDao.findByName(downLineStation.getName())
-                .orElseGet(() -> stationDao.saveStation(downLineStation.toEntity()))
-                .toDomain();
-
         final Line savedLine = lineDao.saveLine(line.toEntity()).toDomain();
-
-        subwayGraphs.createLine(savedLine, savedUpLineStation, savedDownLineStation, distance);
-
-        EdgeEntity edgeEntity1 = subwayGraphs.findEdge(savedLine, savedUpLineStation);
-        EdgeEntity edgeEntity2 = subwayGraphs.findEdge(savedLine, savedDownLineStation);
-
-        edgeDao.save(edgeEntity1);
-        edgeDao.save(edgeEntity2);
-
-        List<StationResponse> stations = List.of(
-                StationResponse.of(savedUpLineStation),
-                StationResponse.of(savedDownLineStation)
-        );
-
-        return LineResponse.of(savedLine, stations);
-    }
-
-    @Transactional
-    public LineResponse createLine1(final LineCreateRequestt lineCreateRequest) {
-        final Line line = new Line(lineCreateRequest.getLineName());
-
-        if (lineDao.findByName(line.getName()).isPresent()) {
-            throw new LineAlreadyExistException();
-        }
-
-        final Line savedLine = lineDao.saveLine(line.toEntity()).toDomain();
-        subwayGraphs.createLine(savedLine);
-
+        subwayGraphs.addLine(savedLine);
 
         return LineResponse.of(savedLine, List.of());
     }
@@ -102,8 +59,12 @@ public class LineService {
         Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
-        List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 
+        if (subwayGraphs.findSubwayGraphOf(line).getStationSize() == 0) {
+            return LineResponse.of(line, List.of());
+        }
+
+        List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
         List<StationResponse> stationResponses = allStationsInOrder.stream()
                 .map(station -> StationResponse.of(station))
                 .collect(Collectors.toList());
@@ -121,7 +82,7 @@ public class LineService {
         for (Line line : lines) {
             if (subwayGraphs.findSubwayGraphOf(line).getStationSize() == 0) {
                 lineResponses.add(LineResponse.of(line, List.of()));
-                break;
+                continue;
             }
             List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 

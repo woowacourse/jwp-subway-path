@@ -7,8 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineCreateRequestt;
-import subway.dto.StationAddRequest;
 import subway.dto.StationDeleteRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;

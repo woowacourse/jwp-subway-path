@@ -14,7 +14,7 @@ class SubwayGraphsTest {
     @DisplayName("새로운 노선을 추가할 수 있다.")
     void createLineTest() {
         SubwayGraphs subwayGraphs = new SubwayGraphs();
-        LineDto lineDto = subwayGraphs.createLine(LINE_999, EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
+        LineDto lineDto = subwayGraphs.addLine(LINE_999, EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
 
         assertThat(lineDto.getLine()).isEqualTo(LINE_999);
         assertThat(lineDto.getAllStationsInOrder()).containsExactly(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION);
@@ -24,7 +24,7 @@ class SubwayGraphsTest {
     @DisplayName("기존 노선에 새로운 역을 추가할 수 있다.")
     void addStationTest() {
         final SubwayGraphs subwayGraphs = new SubwayGraphs();
-        subwayGraphs.createLine(LINE_999, EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
+        subwayGraphs.addLine(LINE_999, EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
 
         final LineDto lineDto = subwayGraphs.addStation1(LINE_999, EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 2);
 

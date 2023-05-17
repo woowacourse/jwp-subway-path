@@ -18,17 +18,9 @@ public class LineController {
         this.lineService = lineService;
     }
 
-//    @PostMapping("/lines")
-//    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineCreateRequest lineCreateRequest) {
-//        final LineResponse lineResponse = lineService.createLine(lineCreateRequest);
-//        return ResponseEntity
-//                .created(URI.create("/lines/" + lineResponse.getId()))
-//                .body(lineResponse);
-//    }
-
     @PostMapping("/line")
-    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineCreateRequestt lineCreateRequestt) {
-        final LineResponse lineResponse = lineService.createLine1(lineCreateRequestt);
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineCreateRequest lineCreateRequest) {
+        final LineResponse lineResponse = lineService.createLine(lineCreateRequest);
         return ResponseEntity
                 .created(URI.create("/lines/" + lineResponse.getId()))
                 .body(lineResponse);
