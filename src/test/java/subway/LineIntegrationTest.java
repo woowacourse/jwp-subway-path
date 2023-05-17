@@ -3,15 +3,7 @@ package subway;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.Graph;
-import subway.domain.SubwayGraph;
 import subway.dto.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -23,30 +15,11 @@ import static subway.fixture.StationFixture.SAPYEONG_STATION;
 import static subway.steps.LineSteps.*;
 import static subway.steps.StationSteps.역_생성하고_아이디_반환;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class LineIntegrationTest {
+class LineIntegrationTest extends IntegrationTest {
     public static final LineCreateRequest LINE_NINE_CREATE_REQUEST = new LineCreateRequest("9호선", "BROWN");
     public static final StationCreateRequest EXPRESS_BUS_TERMINAL_REQUEST = new StationCreateRequest(EXPRESS_BUS_TERMINAL_STATION.getName());
     public static final StationCreateRequest SAPYEONG_STATION_REQUEST = new StationCreateRequest(SAPYEONG_STATION.getName());
     public static final StationCreateRequest NEW_STATION_REQUEST = new StationCreateRequest("새 역");
-
-    @LocalServerPort
-    int port;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @BeforeEach
-    public void setUp() {
-        RestAssured.port = port;
-    }
-
-    @AfterEach
-    void tearDown() {
-        jdbcTemplate.update("DELETE FROM station");
-        jdbcTemplate.update("DELETE FROM line");
-        jdbcTemplate.update("DELETE FROM section");
-    }
 
     @Test
     void findAllLinesTest() {
