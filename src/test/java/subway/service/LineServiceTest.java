@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.controller.exception.SubwayException;
 import subway.domain.Line;
 import subway.domain.Subway;
 import subway.dto.LineDto;
@@ -36,7 +37,6 @@ class LineServiceTest {
 
     @Autowired
     private SubwayRepository subwayRepository;
-
 
     @BeforeEach
     void setUp() {
@@ -63,7 +63,7 @@ class LineServiceTest {
 
         // expect
         assertThatThrownBy(() -> lineService.register(new LineDto("8호선", "분홍색")))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayException.class)
                 .hasMessageContaining("중복된 이름의 노선이 존재합니다.");
     }
 
@@ -81,7 +81,19 @@ class LineServiceTest {
                 () -> assertThat(lineResponse.getName()).isEqualTo("8호선"),
                 () -> assertThat(lineResponse.getColor()).isEqualTo("분홍색"),
                 () -> assertThat(lineResponse.getStations()).hasSize(2)
-                );
+        );
+    }
+
+    @Test
+    void 존재하지_않는_노선_조회시_예외가_발생한다() {
+        // given
+        final Long lineId = lineService.register(new LineDto("8호선", "분홍색"));
+        stationService.register(new SectionDto(lineId, "잠실역", "석촌역", 10));
+
+        // expect
+        assertThatThrownBy(() -> lineService.read(100000L))
+                .isInstanceOf(SubwayException.class)
+                .hasMessageContaining("노선 정보가 잘못되었습니다.");
     }
 
     @Test

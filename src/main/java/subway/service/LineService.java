@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import subway.controller.exception.SubwayException;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.Subway;
@@ -28,7 +29,7 @@ public class LineService {
 
     private void validateDuplicatedName(final String name) {
         if (subwayRepository.isDuplicatedName(name)) {
-            throw new IllegalArgumentException("중복된 이름의 노선이 존재합니다.");
+            throw new SubwayException("중복된 이름의 노선이 존재합니다.");
         }
     }
 
