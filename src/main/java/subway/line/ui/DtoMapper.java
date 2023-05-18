@@ -16,7 +16,8 @@ class DtoMapper {
                 lineCreationRequest.getLineName(),
                 lineCreationRequest.getUpstreamName(),
                 lineCreationRequest.getDownstreamName(),
-                lineCreationRequest.getDistance()
+                lineCreationRequest.getDistance(),
+                lineCreationRequest.getAdditionalFare()
         );
     }
 

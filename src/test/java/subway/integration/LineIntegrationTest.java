@@ -38,7 +38,7 @@ public class LineIntegrationTest extends StationIntegrationTest {
     void addLineSuccess() {
         given().log().all()
                .contentType(MediaType.APPLICATION_JSON_VALUE)
-               .body(toJson(new LineCreationRequest("3호선", "장산", "서울대입구서울15자이름입니다", 1)))
+               .body(toJson(new LineCreationRequest("3호선", "장산", "서울대입구서울15자이름입니다", 1, 0)))
                .when().post(LINE_URL)
                .then().log().all()
                .statusCode(HttpStatus.CREATED.value())
@@ -50,7 +50,7 @@ public class LineIntegrationTest extends StationIntegrationTest {
     void addLineFail1(String invalidStationName) {
         given().log().all()
                .contentType(ContentType.JSON)
-               .body(toJson(new LineCreationRequest(VALID_LINE_NAME, VALID_UPSTREAM_NAME, invalidStationName, FIVE_DISTANCE)))
+               .body(toJson(new LineCreationRequest(VALID_LINE_NAME, VALID_UPSTREAM_NAME, invalidStationName, FIVE_DISTANCE, 0)))
                .when()
                .post(LINE_URL)
                .then()
@@ -63,7 +63,7 @@ public class LineIntegrationTest extends StationIntegrationTest {
     void addLineFail2(String invalidStationName) {
         given().log().all()
                .contentType(ContentType.JSON)
-               .body(toJson(new LineCreationRequest(VALID_LINE_NAME, invalidStationName, VALID_DOWNSTREAM_NAME, FIVE_DISTANCE)))
+               .body(toJson(new LineCreationRequest(VALID_LINE_NAME, invalidStationName, VALID_DOWNSTREAM_NAME, FIVE_DISTANCE, 0)))
                .when()
                .post(LINE_URL)
                .then()
@@ -76,7 +76,7 @@ public class LineIntegrationTest extends StationIntegrationTest {
     void addLineFail3(String invalidLineName) {
         given().log().all()
                .contentType(ContentType.JSON)
-               .body(toJson(new LineCreationRequest(invalidLineName, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, FIVE_DISTANCE)))
+               .body(toJson(new LineCreationRequest(invalidLineName, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, FIVE_DISTANCE, 0)))
                .when()
                .post(LINE_URL)
                .then()
@@ -89,7 +89,7 @@ public class LineIntegrationTest extends StationIntegrationTest {
     void addLineFail4() {
         given().log().all()
                .contentType(ContentType.JSON)
-               .body(toJson(new LineCreationRequest(VALID_LINE_NAME, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, 0)))
+               .body(toJson(new LineCreationRequest(VALID_LINE_NAME, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, 0, 0)))
                .when()
                .post(LINE_URL)
                .then()
@@ -102,7 +102,7 @@ public class LineIntegrationTest extends StationIntegrationTest {
     void addLineFail5() {
         given().log().all()
                .contentType(ContentType.JSON)
-               .body(toJson(new LineCreationRequest(super.SET_UP_LINE_NAME, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, FIVE_DISTANCE)))
+               .body(toJson(new LineCreationRequest(super.SET_UP_LINE_NAME, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, FIVE_DISTANCE, 0)))
                .when()
                .post(LINE_URL)
                .then()

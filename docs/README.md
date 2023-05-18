@@ -29,6 +29,7 @@
       - upstreamName
       - downstreamName
       - distance
+      - additionalFare
 
 - Response
   - 400 BAD REQUEST
@@ -37,6 +38,7 @@
     - (lineName < 2 || lineName > 15)
     - (distance < 1인 경우)
     - (lineName의 노선이 이미 존재하는 경우)
+    - (additionalFare < 0인 경우)
   - 201 CREATED
 
 ### 역 삭제 

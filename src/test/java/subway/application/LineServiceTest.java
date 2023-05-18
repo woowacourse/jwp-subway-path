@@ -170,7 +170,7 @@ class LineServiceTest {
     void createLine1() {
         final Station upstream = new Station(1L, "서울대입구");
         final Station downstream = new Station(2L, "잠실나루");
-        final LineCreationDto lineCreationDto = new LineCreationDto("2호선", upstream.getName(), downstream.getName(), DISTANCE);
+        final LineCreationDto lineCreationDto = new LineCreationDto("2호선", upstream.getName(), downstream.getName(), DISTANCE, 0);
 
         doReturn(upstream).when(stationService).createStationIfNotExist(upstream.getName());
         doReturn(downstream).when(stationService).createStationIfNotExist(downstream.getName());
