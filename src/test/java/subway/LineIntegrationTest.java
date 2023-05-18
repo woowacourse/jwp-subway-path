@@ -4,10 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import subway.dto.InitialSectionCreateRequest;
-import subway.dto.LineCreateRequest;
-import subway.dto.SectionCreateRequest;
-import subway.dto.StationCreateRequest;
+import subway.dto.*;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -75,18 +74,18 @@ class LineIntegrationTest extends IntegrationTest {
                         lineId, station1Id, station2Id, 5
                 ));
 
-//        final List<StationResponse> expectedStations = List.of(
-//                new StationResponse(1L, "고속터미널"),
-//                new StationResponse(2L, "사평역")
-//        );
-//
-//        final List<StationResponse> receivedStations = response.jsonPath()
-//                .getList("stations", StationResponse.class);
+        final List<StationResponse> expectedStations = List.of(
+                new StationResponse(station1Id, "고속터미널"),
+                new StationResponse(station2Id, "사평역")
+        );
+
+        final List<StationResponse> receivedStations = response.jsonPath()
+                .getList("stations", StationResponse.class);
 
         assertAll(
-//                () -> assertThat(receivedStations)
-//                        .usingRecursiveComparison()
-//                        .isEqualTo(expectedStations),
+                () -> assertThat(receivedStations)
+                        .usingRecursiveComparison()
+                        .isEqualTo(expectedStations),
                 () -> assertThat(response.statusCode()).isEqualTo(CREATED.value()));
     }
 
@@ -152,7 +151,7 @@ class LineIntegrationTest extends IntegrationTest {
 
         노선에_최초의_역_2개_추가_요청(lineId,
                 new InitialSectionCreateRequest(
-                        lineId, station1Id, station1Id, 3
+                        lineId, station1Id, station2Id, 3
                 ));
 
         final ExtractableResponse<Response> response = 존재하는_노선에_역_1개_추가_요청(
