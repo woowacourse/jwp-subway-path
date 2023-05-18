@@ -14,7 +14,7 @@ public class Path {
     }
 
     // TODO: ENUM 리팩터링
-    public int calculateFair() {
+    public int calculateFare() {
         int distance = getDistanceOf(sections);
         if (distance <= 10) {
             return 1250;
