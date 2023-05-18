@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
 
-    private static final int FIRST_ELEMENT_INDEX_OF_RELATED_SECTIONS = 0;
-    private static final int SECOND_ELEMENT_INDEX_OF_RELATED_SECTIONS = 1;
     private static final int SIZE_OF_END_POINT_STATION = 1;
 
     private final LineDao lineDao;
@@ -142,27 +140,32 @@ public class LineService {
     @Transactional
     public Optional<LineResponse> unregisterStation(final Long lineId, final StationUnregisterInLineRequest request) {
         final List<SectionEntity> relatedSectionEntities = sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, request.getStationName());
-        sectionDao.delete(relatedSectionEntities.get(FIRST_ELEMENT_INDEX_OF_RELATED_SECTIONS));
         if (relatedSectionEntities.size() == SIZE_OF_END_POINT_STATION) {
-            return cascadeLine(lineId);
+            final List<SectionDetailEntity> sectionDetailEntities = unregisterEndStation(relatedSectionEntities.get(0));
+            return Optional.of(convertToResponse(sectionDetailEntities));
         }
-        sectionDao.delete(relatedSectionEntities.get(SECOND_ELEMENT_INDEX_OF_RELATED_SECTIONS));
-        final SectionEntity boundSectionEntity = SectionEntity.createBoundOf(
-                relatedSectionEntities.get(FIRST_ELEMENT_INDEX_OF_RELATED_SECTIONS),
-                relatedSectionEntities.get(SECOND_ELEMENT_INDEX_OF_RELATED_SECTIONS)
-        );
-        sectionDao.insert(boundSectionEntity);
-        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(lineId);
+        final List<SectionDetailEntity> sectionDetailEntities = unregisterMidStation(relatedSectionEntities.get(0), relatedSectionEntities.get(1));
         return Optional.of(convertToResponse(sectionDetailEntities));
     }
 
-    private Optional<LineResponse> cascadeLine(final long lineId) {
-        try {
-            final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(lineId);
-            return Optional.of(convertToResponse(sectionDetailEntities));
-        } catch (LineNotFoundException e) {
+    private List<SectionDetailEntity> unregisterEndStation(final SectionEntity sectionEntity) {
+        final long lineId = sectionEntity.getLineId();
+        sectionDao.delete(sectionEntity);
+        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(lineId);
+        deleteLineIfSectionNonExist(lineId, sectionDetailEntities);
+        return sectionDetailEntities;
+    }
+
+    private void deleteLineIfSectionNonExist(final long lineId, final List<SectionDetailEntity> sectionDetailEntities) {
+        if (sectionDetailEntities.isEmpty()) {
             lineDao.deleteById(lineId);
-            return Optional.empty();
         }
+    }
+
+    private List<SectionDetailEntity> unregisterMidStation(final SectionEntity previous, final SectionEntity next) {
+        sectionDao.deleteAll(List.of(previous, next));
+        final SectionEntity boundSectionEntity = SectionEntity.createBoundOf(previous, next);
+        sectionDao.insert(boundSectionEntity);
+        return sectionDao.findSectionDetailByLineId(previous.getLineId());
     }
 }

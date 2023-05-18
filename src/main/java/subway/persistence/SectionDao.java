@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.exception.bad_request.DuplicatedSectionException;
-import subway.exception.bad_request.DuplicatedStationNameException;
 import subway.exception.not_found.LineNotFoundException;
 import subway.exception.not_found.LineOrStationNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
