@@ -1,53 +1,84 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
 import subway.domain.Line;
+import subway.domain.LineRepository;
+import subway.domain.Section;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.SectionRequest;
+import subway.dto.SectionResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineService(final LineRepository lineRepository, final StationService stationService) {
+        this.lineRepository = lineRepository;
+        this.stationService = stationService;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+    public LineResponse saveLine(final LineRequest request) {
+        final Line persistLine = lineRepository.saveLine(request.getName(), request.getColor());
         return LineResponse.of(persistLine);
     }
 
+    public SectionResponse saveInitialSection(final Long lineId, final SectionRequest sectionRequest) {
+        final Line line = lineRepository.findLineById(lineId);
+        final Station upStation = stationService.findStationById(sectionRequest.getUpStationId());
+        final Station downStation = stationService.findStationById(sectionRequest.getDownStationId());
+        final int distance = sectionRequest.getDistance();
+
+        final Section section = line.addInitialSection(upStation, downStation, distance);
+        final Long sectionId = lineRepository.saveInitialSection(line, section);
+
+        return SectionResponse.of(sectionId, section);
+    }
+
+    public SectionResponse saveSection(final Long lineId, final SectionRequest sectionRequest) {
+        final Line line = lineRepository.findLineById(lineId);
+        final Station upStation = stationService.findStationById(sectionRequest.getUpStationId());
+        final Station downStation = stationService.findStationById(sectionRequest.getDownStationId());
+        final int distance = sectionRequest.getDistance();
+
+        final Section section = line.addSection(upStation, downStation, distance);
+
+        final List<Long> sectionIds = lineRepository.updateSectionsInLine(line);
+
+        final Long lastSectionId = sectionIds.get(sectionIds.size() - 1);
+        return SectionResponse.of(lastSectionId, section);
+    }
+
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
+        final List<Line> persistLines = lineRepository.findLines();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+    public LineResponse findLineResponseById(final Long id) {
+        final Line persistLine = lineRepository.findLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
+        lineRepository.updateLine(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public void deleteStationById(final Long lineId, final Long stationId) {
+        final Line line = lineRepository.findLineById(lineId);
+        final Station station = stationService.findStationById(stationId);
+
+        line.deleteStation(station);
+        lineRepository.updateSectionsInLine(line);
     }
 
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+    public void deleteLineById(final Long id) {
+        lineRepository.deleteLineById(id);
     }
-
 }
