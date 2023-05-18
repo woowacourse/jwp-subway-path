@@ -33,10 +33,6 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new StationEntity(id, stationRequest.getName()));
-    }
-
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
     }

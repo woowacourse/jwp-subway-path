@@ -2,7 +2,6 @@ package subway.integration.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.integration.station.StationSteps.역_단건_삭제_요청;
-import static subway.integration.station.StationSteps.역_단건_수정_요청;
 import static subway.integration.station.StationSteps.역_단건_조회_요청;
 import static subway.integration.station.StationSteps.역_등록_요청;
 import static subway.integration.station.StationSteps.역_전체_조회_요청;
@@ -98,24 +97,6 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         StationSelectResponse stationSelectResponse = response.as(StationSelectResponse.class);
         assertThat(stationSelectResponse.getId()).isEqualTo(stationId);
-    }
-
-    @DisplayName("지하철역을 수정한다.")
-    @Test
-    void updateStation() {
-        // given
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
-        ExtractableResponse<Response> createResponse = 역_등록_요청(params);
-
-        // when
-        Map<String, String> otherParams = new HashMap<>();
-        otherParams.put("name", "삼성역");
-        String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = 역_단건_수정_요청(otherParams, uri);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("지하철역을 제거한다.")

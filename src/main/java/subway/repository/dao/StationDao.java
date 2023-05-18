@@ -22,7 +22,6 @@ public class StationDao {
                     rs.getString("name")
             );
 
-
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
@@ -41,15 +40,9 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-
     public StationEntity findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public void update(StationEntity newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
 
     public void deleteById(Long id) {
