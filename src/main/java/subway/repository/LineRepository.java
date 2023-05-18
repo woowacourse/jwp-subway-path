@@ -29,15 +29,6 @@ public class LineRepository {
         this.lineStationDao = lineStationDao;
     }
 
-    public Line findByName(final String name) {
-        LineEntity lineEntity = lineDao.findByName(name).orElseThrow(NoSuchLineException::new);
-        Station upBoundStation = fetchStationById(lineEntity.getUpBoundStationId());
-        Station downBoundStation = fetchStationById(lineEntity.getDownBoundStationId());
-        List<Section> sections = sectionRepository.findByLineId(lineEntity.getId());
-
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections), upBoundStation, downBoundStation);
-    }
-
     private Station fetchStationById(Long stationId) {
         if (stationId == null) {
             return null;

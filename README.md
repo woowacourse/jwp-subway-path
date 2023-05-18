@@ -43,11 +43,11 @@ LineRequest에 정보를 담아 노선을 생성
 put /lines/{lineId}
 lineId, LineRequest에 정보를 담아 노선을 갱신
 
-post /lines/{name}/init
-name, InitStationsRequest에 정보를 담아 노선에 역 두개를 추가해 초기화
+post /lines/{id}/init
+id, InitStationsRequest에 정보를 담아 노선에 역 두개를 추가해 초기화
 
-post /lines/{name}/stations
-name, RegisterStationRequest에 정보를 담아 역을 노선에 등록
+post /lines/{id}/stations
+id, RegisterStationRequest에 정보를 담아 역을 노선에 등록
 
 get /lines/{id}
 id를 기준으로 노선을 조회
@@ -55,8 +55,8 @@ id를 기준으로 노선을 조회
 get /lines
 모든 노선을 조회
 
-delete /lines/{lineName}/stations/{stationName}
-lineName의 노선에서 stationName의 역을 제거
+delete /lines/{lineId}/stations/{stationId}
+lineId의 노선에서 stationId의 역을 제거
 
 delete /lines/{lineId}
 lineId의 노선을 제거

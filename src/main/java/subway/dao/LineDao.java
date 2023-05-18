@@ -52,15 +52,6 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<LineEntity> findByName(final String name) {
-        String sql = "SELECT id, name, color, upbound_station_id, downbound_station_id FROM LINE WHERE name = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
     public boolean existsById(Long id) {
         String sql = "select count(*) from LINE where id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, id) == 1;

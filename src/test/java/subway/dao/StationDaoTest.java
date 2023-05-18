@@ -34,36 +34,6 @@ public class StationDaoTest {
         assertThat(insertedStation.getName()).isEqualTo(stationName);
     }
 
-    @DisplayName("이름을 기준으로 조회한다.")
-    @Test
-    public void find_by_name() {
-        // given
-        String stationName1 = "잠실역";
-        StationEntity station1 = new StationEntity(null, stationName1);
-        String stationName2 = "강남역";
-        StationEntity station2 = new StationEntity(null, stationName2);
-        stationDao.insert(station1);
-        stationDao.insert(station2);
-
-        // when
-        Optional<StationEntity> foundStation = stationDao.findByName(stationName2);
-
-        // then
-        assertThat(foundStation).isPresent();
-        assertThat(foundStation.get().getName()).isEqualTo(stationName2);
-    }
-
-    @DisplayName("없는 것을 이름으로 조회하면 찾을 수 없다.")
-    @Test
-    public void find_by_name_if_station_not_found() {
-        // when
-        String stationName = "존재하지 않는 역";
-        Optional<StationEntity> foundStation = stationDao.findByName(stationName);
-
-        // then
-        assertThat(foundStation).isEmpty();
-    }
-
     @DisplayName("전부 조회한다.")
     @Test
     public void find_all() {

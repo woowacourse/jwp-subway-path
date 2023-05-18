@@ -2,27 +2,27 @@ package subway.dto;
 
 public class RegisterStationRequest {
 
-    private String newStationName;
-    private String baseStationName;
+    private Long newStationId;
+    private Long baseStationId;
     private String direction;
     private int distance;
 
     public RegisterStationRequest() {
     }
 
-    public RegisterStationRequest(String newStationName, String baseStationName, String direction, int distance) {
-        this.newStationName = newStationName;
-        this.baseStationName = baseStationName;
+    public RegisterStationRequest(Long newStationId, Long baseStationId, String direction, int distance) {
+        this.newStationId = newStationId;
+        this.baseStationId = baseStationId;
         this.direction = direction;
         this.distance = distance;
     }
 
-    public String getNewStationName() {
-        return newStationName;
+    public Long getNewStationId() {
+        return newStationId;
     }
 
-    public String getBaseStationName() {
-        return baseStationName;
+    public Long getBaseStationId() {
+        return baseStationId;
     }
 
     public String getDirection() {

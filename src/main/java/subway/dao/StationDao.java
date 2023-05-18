@@ -38,15 +38,6 @@ public class StationDao {
         return new StationEntity(id, station.getName());
     }
 
-    public Optional<StationEntity> findByName(final String name) {
-        String sql = "select id, name from STATION WHERE name = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
     public List<StationEntity> findAll() {
         String sql = "select id, name from STATION";
         return jdbcTemplate.query(sql, rowMapper);
