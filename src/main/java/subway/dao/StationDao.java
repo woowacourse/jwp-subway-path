@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.StationEntity;
-import subway.domain.Station;
 
 @Repository
 public class StationDao {
@@ -57,10 +56,5 @@ public class StationDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-    }
-
-    public int deleteByName(final String name) {
-        final String sql = "DELETE FROM station where name = ?";
-        return jdbcTemplate.update(sql, name);
     }
 }
