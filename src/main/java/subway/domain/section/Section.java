@@ -29,7 +29,8 @@ public class Section {
     }
 
     public boolean isSameSection(final Section section) {
-        return equalToSource(section.source) && equalToTarget(section.target);
+        return (equalToSource(section.source) && equalToTarget(section.target)) ||
+            (equalToSource(section.target) && equalToTarget(section.source));
     }
 
     public Station getSource() {

@@ -3,6 +3,7 @@ package subway.domain.fare;
 import java.util.Objects;
 
 public class Fare {
+
     private final double fare;
 
     public Fare(final double fare) {

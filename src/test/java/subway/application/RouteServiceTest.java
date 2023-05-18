@@ -3,7 +3,6 @@ package subway.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
@@ -22,16 +21,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.dto.FareResponse;
 import subway.application.dto.RouteResponse;
 import subway.application.dto.StationResponse;
-import subway.domain.fare.Fare;
 import subway.domain.line.LineRepository;
 import subway.domain.station.StationRepository;
 import subway.exception.BadRequestException;
 
 @ExtendWith(MockitoExtension.class)
 class RouteServiceTest {
-
-    @Mock
-    private FareCalculator fareCalculator;
 
     @Mock
     private LineRepository lineRepository;
@@ -52,12 +47,6 @@ class RouteServiceTest {
             .when(stationRepository).findById(4L);
         when(lineRepository.getPossibleSections(anyLong(), anyLong()))
             .thenReturn(잠실_신림_이동_가능한_구간들());
-        when(fareCalculator.calculateFare(any()))
-            .thenReturn(new Fare(1450));
-        when(fareCalculator.calculateTeenagerFare(any()))
-            .thenReturn(new Fare(880));
-        when(fareCalculator.calculateChildFare(any()))
-            .thenReturn(new Fare(550));
 
         // when
         final RouteResponse routeResponse = routeService.getShortestRouteAndFare(1L, 4L);
@@ -86,12 +75,6 @@ class RouteServiceTest {
             .when(stationRepository).findById(4L);
         when(lineRepository.getPossibleSections(anyLong(), anyLong()))
             .thenReturn(잠실_신림_이동_가능한_구간들());
-        when(fareCalculator.calculateFare(any()))
-            .thenReturn(new Fare(1450));
-        when(fareCalculator.calculateTeenagerFare(any()))
-            .thenReturn(new Fare(880));
-        when(fareCalculator.calculateChildFare(any()))
-            .thenReturn(new Fare(550));
 
         // when
         final RouteResponse routeResponse = routeService.getShortestRouteAndFare(4L, 1L);

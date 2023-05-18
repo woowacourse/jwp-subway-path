@@ -6,17 +6,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import subway.domain.route.Distance;
 
-class TotalDistanceTest {
+class DistanceTest {
 
     @Test
     @DisplayName("거리의 합을 구한다.")
     void add() {
         // given
-        final TotalDistance distance = new TotalDistance(0);
+        final Distance distance = new Distance(0);
 
         // when
-        final TotalDistance result = distance.add(new TotalDistance(10));
+        final Distance result = distance.add(new Distance(10));
 
         // then
         assertThat(result.distance())
@@ -27,10 +28,10 @@ class TotalDistanceTest {
     @DisplayName("거리의 차를 구한다.")
     void subtract() {
         // given
-        final TotalDistance distance = new TotalDistance(7);
+        final Distance distance = new Distance(7);
 
         // when
-        final TotalDistance result = distance.subtract(new TotalDistance(3));
+        final Distance result = distance.subtract(new Distance(3));
 
         // then
         assertThat(result.distance())
@@ -41,10 +42,10 @@ class TotalDistanceTest {
     @DisplayName("거리에 대해 나눈 뒤, 올림한 값을 반환한다.")
     void divideAndCeil() {
         // given
-        final TotalDistance distance = new TotalDistance(11);
+        final Distance distance = new Distance(11);
 
         // when
-        final TotalDistance result = distance.divideAndCeil(new TotalDistance(3));
+        final Distance result = distance.divideAndCeil(new Distance(3));
 
         // then
         assertThat(result.distance())
@@ -55,10 +56,10 @@ class TotalDistanceTest {
     @CsvSource(value = {"10:true", "3:false", "5:false"}, delimiter = ':')
     void lessThan(final int distance, final boolean expected) {
         // given
-        final TotalDistance target = new TotalDistance(5);
+        final Distance target = new Distance(5);
 
         // expected
-        assertThat(target.lessThan(new TotalDistance(distance)))
+        assertThat(target.lessThan(new Distance(distance)))
             .isSameAs(expected);
     }
 
@@ -66,10 +67,10 @@ class TotalDistanceTest {
     @CsvSource(value = {"5:true", "10:true", "3:false"}, delimiter = ':')
     void lessAndEqualsThan(final int distance, final boolean expected) {
         // given
-        final TotalDistance target = new TotalDistance(5);
+        final Distance target = new Distance(5);
 
         // expected
-        assertThat(target.lessAndEqualsThan(new TotalDistance(distance)))
+        assertThat(target.lessAndEqualsThan(new Distance(distance)))
             .isSameAs(expected);
     }
 }

@@ -1,6 +1,7 @@
 package subway.application.dto;
 
 public class FareResponse {
+
     private final int normalFare;
     private final int teenagerFare;
     private final int childFare;

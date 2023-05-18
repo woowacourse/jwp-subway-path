@@ -126,6 +126,7 @@ public class LineDao {
             + ") "
             + "ORDER BY sec.id";
 
-        return jdbcTemplate.query(sql, lineWithSectionMapper, sourceStationId, targetStationId, targetStationId, sourceStationId);
+        return jdbcTemplate.query(sql, lineWithSectionMapper, sourceStationId, targetStationId, targetStationId,
+            sourceStationId);
     }
 }

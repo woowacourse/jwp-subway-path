@@ -6,6 +6,7 @@ import java.util.Objects;
 import subway.exception.BadRequestException;
 
 public class LineExtraFare {
+
     private final static int MIN_FARE = 0;
 
     private final int fare;

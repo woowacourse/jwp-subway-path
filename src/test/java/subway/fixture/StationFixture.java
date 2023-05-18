@@ -21,7 +21,11 @@ public final class StationFixture {
     public static final Station 신림역 = new Station(신림역_엔티티.getName());
 
     public static final StationEntity 복정역_엔티티 = new StationEntity(5L, "복정역");
+    public static final Station 복정역 = new Station(복정역_엔티티.getName());
+
     public static final StationEntity 남위례역_엔티티 = new StationEntity(6L, "남위례역");
+    public static final Station 남위례역 = new Station(남위례역_엔티티.getName());
+
     public static final StationEntity 산성역_엔티티 = new StationEntity(7L, "산성역");
     public static final Station 산성역 = new Station(산성역_엔티티.getName());
 

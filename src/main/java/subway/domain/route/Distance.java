@@ -1,32 +1,33 @@
-package subway.domain.fare;
+package subway.domain.route;
 
 import java.util.Objects;
 
-public class TotalDistance {
+public class Distance {
+
     private final int distance;
 
-    public TotalDistance(final int distance) {
+    public Distance(final int distance) {
         this.distance = distance;
     }
 
-    public TotalDistance add(final TotalDistance distance) {
-        return new TotalDistance(this.distance + distance.distance());
+    public Distance add(final Distance distance) {
+        return new Distance(this.distance + distance.distance());
     }
 
-    public TotalDistance subtract(final TotalDistance distance) {
-        return new TotalDistance(this.distance - distance.distance);
+    public Distance subtract(final Distance distance) {
+        return new Distance(this.distance - distance.distance);
     }
 
-    public TotalDistance divideAndCeil(final TotalDistance distance) {
+    public Distance divideAndCeil(final Distance distance) {
         final double dividedDistance = (double) this.distance / distance.distance;
-        return new TotalDistance((int) Math.ceil(dividedDistance));
+        return new Distance((int) Math.ceil(dividedDistance));
     }
 
-    public boolean lessThan(final TotalDistance distance) {
+    public boolean lessThan(final Distance distance) {
         return this.distance < distance.distance;
     }
 
-    public boolean lessAndEqualsThan(final TotalDistance distance) {
+    public boolean lessAndEqualsThan(final Distance distance) {
         return this.distance <= distance.distance;
     }
 
@@ -38,7 +39,7 @@ public class TotalDistance {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final TotalDistance that = (TotalDistance) o;
+        final Distance that = (Distance) o;
         return distance == that.distance;
     }
 
