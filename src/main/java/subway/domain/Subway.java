@@ -7,6 +7,7 @@ import subway.domain.station.Stations;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Subway {
@@ -72,6 +73,10 @@ public class Subway {
 
     public Line getLine(final Long lineId) {
         return lines.get(lineId);
+    }
+
+    public Set<Line> getLines() {
+        return lines.toSet();
     }
 
     public Station getStation(final Long stationId) {

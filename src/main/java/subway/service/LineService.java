@@ -2,23 +2,23 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.line.Line;
 import subway.domain.LineDirection;
-import subway.domain.station.Station;
 import subway.domain.Subway;
-import subway.exception.LineNotFoundException;
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
+import subway.service.dto.LineDto;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.StationInsertRequest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
 
     private final LineRepository lineRepository;
-
     private final StationRepository stationRepository;
 
     public LineService(final LineRepository lineRepository, final StationRepository stationRepository) {
@@ -34,9 +34,15 @@ public class LineService {
 
         final Line line = Line.of(lineRequest.getName(), lineRequest.getColor(),
                 upStation.getId(), downStation.getId(), lineRequest.getDistance());
-        subway.addLine(line);
+        final Long lineId = lineRepository.create(line);
+        subway.addLine(Line.of(
+                lineId,
+                line.getName(),
+                line.getColor(),
+                line.getStationEdges().toSet()
+        ));
 
-        return lineRepository.create(line);
+        return lineId;
     }
 
     @Transactional
@@ -61,9 +67,20 @@ public class LineService {
     }
 
     @Transactional
-    public Line findLineById(final Long id) {
-        return lineRepository.findById(id)
-                .orElseThrow(LineNotFoundException::new);
+    public LineDto findLineById(final Long id) {
+        final Subway subway = loadSubwayFromRepository();
+
+        final Line line = subway.getLine(id);
+        return getLineDto(subway, line);
+    }
+
+    private LineDto getLineDto(final Subway subway, final Line line) {
+        final List<Long> stationIdsByOrder = line.getStationIdsByOrder();
+        final List<Station> stationsByOrder = stationIdsByOrder.stream()
+                .map(subway::getStation)
+                .collect(Collectors.toUnmodifiableList());
+
+        return LineDto.of(line, stationsByOrder);
     }
 
     @Transactional
@@ -78,7 +95,10 @@ public class LineService {
     }
 
     @Transactional
-    public List<Line> findAll() {
-        return lineRepository.findAll();
+    public List<LineDto> findAll() {
+        final Subway subway = loadSubwayFromRepository();
+        return subway.getLines().stream()
+                .map(line -> getLineDto(subway, line))
+                .collect(Collectors.toUnmodifiableList());
     }
 }

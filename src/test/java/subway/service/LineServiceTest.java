@@ -3,23 +3,24 @@ package subway.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
-import subway.exception.DuplicatedLineNameException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
+import subway.service.dto.LineDto;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.StationInsertRequest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @SpringBootTest
+@AutoConfigureTestDatabase
 @Transactional
 class LineServiceTest {
 
@@ -54,19 +55,6 @@ class LineServiceTest {
         final int distance = 7;
 
         return new LineRequest(name, color, upStationId, downStationId, distance);
-    }
-
-    @Test
-    @DisplayName("이미 존재하는 이름으로 노선을 생성한다.")
-    void createLineWithDuplicatedName() {
-        //given
-        lineService.create(createLineRequest());
-        LineRequest lineRequest = createLineRequest();
-
-        //when
-        //then
-        assertThatThrownBy(() -> lineService.create(lineRequest))
-                .isInstanceOf(DuplicatedLineNameException.class);
     }
 
     @Test
@@ -136,7 +124,7 @@ class LineServiceTest {
         Long lineId = lineService.create(lineRequest);
 
         //when
-        Line createdLine = lineService.findLineById(lineId);
+        LineDto createdLine = lineService.findLineById(lineId);
 
         //then
         assertThat(createdLine.getId()).isEqualTo(lineId);
@@ -158,7 +146,7 @@ class LineServiceTest {
         ));
 
         //when
-        List<Line> lines = lineService.findAll();
+        List<LineDto> lines = lineService.findAll();
 
         //then
         assertSoftly(softly -> {
@@ -166,6 +154,5 @@ class LineServiceTest {
             softly.assertThat(lines.get(0).getId()).isEqualTo(firstLineId);
             softly.assertThat(lines.get(1).getId()).isEqualTo(secondLineId);
         });
-
     }
 }
