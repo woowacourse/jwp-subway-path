@@ -15,6 +15,8 @@ public class Path {
         return new Path(stations, distance);
     }
 
-
+    public double getDistance() {
+        return distance;
+    }
 
 }
