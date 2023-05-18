@@ -148,19 +148,19 @@ public class Subway {
     }
 
     private Section findRightSection(final Station station) {
-        Set<DefaultWeightedEdge> edge = stations.outgoingEdgesOf(station);
-        return edge.stream()
-                .map(x -> new Section(station, stations.getEdgeTarget(x),
-                        new Distance((int) stations.getEdgeWeight(x))))
+        Set<DefaultWeightedEdge> edges = stations.outgoingEdgesOf(station);
+        return edges.stream()
+                .map(edge -> new Section(station, stations.getEdgeTarget(edge),
+                        new Distance((int) stations.getEdgeWeight(edge))))
                 .findFirst()
                 .orElseThrow(() -> new SubwayInternalServerException(INVALID_NOT_FOUND_RIGHT_SIDE_SECTION_MESSAGE));
     }
 
     private Section findLeftSection(final Station station) {
-        Set<DefaultWeightedEdge> edge = stations.incomingEdgesOf(station);
-        return edge.stream()
-                .map(x -> new Section(stations.getEdgeSource(x), station,
-                        new Distance((int) stations.getEdgeWeight(x))))
+        Set<DefaultWeightedEdge> edges = stations.incomingEdgesOf(station);
+        return edges.stream()
+                .map(edge -> new Section(stations.getEdgeSource(edge), station,
+                        new Distance((int) stations.getEdgeWeight(edge))))
                 .findFirst()
                 .orElseThrow(() -> new SubwayInternalServerException(INVALID_NOT_FOUND_LEFT_SIDE_SECTION_MESSAGE));
     }
