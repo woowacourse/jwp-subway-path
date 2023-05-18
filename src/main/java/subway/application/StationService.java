@@ -1,7 +1,10 @@
 package subway.application;
 
 import java.util.ArrayList;
+import java.util.DuplicateFormatFlagsException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
@@ -42,7 +45,7 @@ public class StationService {
 
     private void validateBothExist(Long lineId, StationRequest request) {
         if (isExistBoth(lineId, request)) {
-            throw new IllegalArgumentException("이미 존재하는 역입니다.");
+            throw new DuplicateKeyException("이미 존재하는 역입니다.");
         }
     }
 
@@ -53,7 +56,7 @@ public class StationService {
 
     private void validateBothNotExist(Long lineId, StationRequest request) {
         if (isNotExistBoth(lineId, request)) {
-            throw new IllegalArgumentException("해당 노선에 기준이 될 역이 없습니다");
+            throw new NoSuchElementException("해당 노선에 기준이 될 역이 없습니다");
         }
     }
 
@@ -157,7 +160,7 @@ public class StationService {
 
     private void validateStationCount(Long lineId) {
         if (stationDao.findByLineId(lineId).size() <= MIN_STATION_COUNT) {
-            throw new IllegalArgumentException("노선에는 최소 2개 이상의 역이 존재해야 합니다.");
+            throw new IllegalStateException("노선에는 최소 2개 이상의 역이 존재해야 합니다.");
         }
     }
 

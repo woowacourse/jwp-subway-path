@@ -1,6 +1,7 @@
 package subway.application;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import javax.sql.DataSource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -116,7 +117,7 @@ class PathServiceTest {
 
         // when, then
         Assertions.assertThatThrownBy(() -> pathService.findPath(request))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(IllegalStateException.class)
             .hasMessage("두 역은 연결되어 있지 않습니다");
 
     }
@@ -130,7 +131,7 @@ class PathServiceTest {
 
         // when, then
         Assertions.assertThatThrownBy(() -> pathService.findPath(request))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(NoSuchElementException.class)
             .hasMessage("존재하지 않는 역이 포함되어 있습니다");
     }
 

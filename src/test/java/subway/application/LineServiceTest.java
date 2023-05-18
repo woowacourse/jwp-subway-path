@@ -2,7 +2,9 @@ package subway.application;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.DuplicateFormatFlagsException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import javax.sql.DataSource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
@@ -87,7 +90,7 @@ class LineServiceTest {
 
             // when, then
             Assertions.assertThatThrownBy(() -> lineService.saveLine(request))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(DuplicateKeyException.class)
                 .hasMessage("이미 같은 이름의 노선이 존재합니다");
         }
 
@@ -159,7 +162,7 @@ class LineServiceTest {
         // then
         assertAll(
             () -> Assertions.assertThatThrownBy(() -> lineService.findLineResponseById(lineId))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 노선입니다."),
             () -> Assertions.assertThat(afterStations).isEmpty()
         );

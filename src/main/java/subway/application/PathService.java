@@ -1,6 +1,7 @@
 package subway.application;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import org.jgrapht.GraphPath;
@@ -66,7 +67,7 @@ public class PathService {
     private void validateExist(PathRequest request) {
         if (stationDao.isNotExist(request.getStartStation()) || stationDao.isNotExist(
             request.getEndStation())) {
-            throw new IllegalArgumentException("존재하지 않는 역이 포함되어 있습니다");
+            throw new NoSuchElementException("존재하지 않는 역이 포함되어 있습니다");
         }
     }
 
@@ -100,7 +101,7 @@ public class PathService {
 
     private void validateReachable(GraphPath<String, DefaultWeightedEdge> path) {
         if (path == null) {
-            throw new IllegalArgumentException("두 역은 연결되어 있지 않습니다");
+            throw new IllegalStateException("두 역은 연결되어 있지 않습니다");
         }
     }
 

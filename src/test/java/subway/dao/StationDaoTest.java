@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import javax.sql.DataSource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,7 +107,7 @@ class StationDaoTest {
         // given, when, then
         Assertions.assertThatThrownBy(
                 () -> stationDao.findByNextStationId(lineId, notExistPreviousStation))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(NoSuchElementException.class)
             .hasMessage("노선에 존재하지 않는 역이거나 이전 역이 존재하지 않는 역입니다.");
     }
 
@@ -278,7 +279,7 @@ class StationDaoTest {
 
         // then
         Assertions.assertThatThrownBy(() -> stationDao.findByLineIdAndName(lineId, stationName))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(NoSuchElementException.class)
             .hasMessage(String.format("노선에 %s이 존재하지 않습니다.", stationName));
     }
 

@@ -2,6 +2,8 @@ package subway.application;
 
 import static subway.application.StationService.EMPTY_STATION_ID;
 
+import java.util.DuplicateFormatFlagsException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
@@ -44,7 +46,7 @@ public class LineService {
 
     private void validateExistLine(LineRequest request) {
         if (lineDao.isExist(request.getName())) {
-            throw new IllegalArgumentException("이미 같은 이름의 노선이 존재합니다");
+            throw new DuplicateKeyException("이미 같은 이름의 노선이 존재합니다");
         }
     }
 

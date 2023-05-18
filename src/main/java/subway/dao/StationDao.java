@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.util.NoSuchElementException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -70,7 +71,7 @@ public class StationDao {
                 + "where S1.line_id = ? and S2.name = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, lineId, nextStationName);
         } catch (EmptyResultDataAccessException exception) {
-            throw new IllegalArgumentException("노선에 존재하지 않는 역이거나 이전 역이 존재하지 않는 역입니다.");
+            throw new NoSuchElementException("노선에 존재하지 않는 역이거나 이전 역이 존재하지 않는 역입니다.");
         }
     }
 
@@ -79,7 +80,7 @@ public class StationDao {
             String sql = "select * from STATION where line_id = ? AND name = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, lineId, name);
         } catch (EmptyResultDataAccessException exception) {
-            throw new IllegalArgumentException(String.format("노선에 %s이 존재하지 않습니다.", name));
+            throw new NoSuchElementException(String.format("노선에 %s이 존재하지 않습니다.", name));
         }
     }
 
