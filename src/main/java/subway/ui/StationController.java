@@ -31,7 +31,7 @@ public class StationController {
      * @param request
      * @return
      */
-    @PostMapping("/lines/{lineId}")
+    @PostMapping("/in/{lineId}")
     public ResponseEntity<Long> createStation(@PathVariable Long lineId,
         @RequestBody StationRequest request) {
         Long newStationId = stationService.saveStation(lineId, request);
@@ -44,7 +44,7 @@ public class StationController {
      * @param lineId
      * @return
      */
-    @GetMapping("/lines/{lineId}")
+    @GetMapping("/in/{lineId}")
     public ResponseEntity<List<StationResponse>> findLineStationsById(@PathVariable Long lineId) {
         return ResponseEntity.ok(stationService.findLineStationResponsesById(lineId));
     }
@@ -56,7 +56,7 @@ public class StationController {
      * @param lineId
      * @return
      */
-    @DeleteMapping("/lines/{lineId}")
+    @DeleteMapping("/in/{lineId}")
     public ResponseEntity<List<StationResponse>> deleteStation(@RequestBody String name,
         @PathVariable Long lineId) {
         stationService.deleteStation(lineId, name);
