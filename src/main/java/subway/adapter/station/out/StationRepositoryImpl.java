@@ -3,6 +3,7 @@ package subway.adapter.station.out;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import subway.application.station.port.out.StationRepository;
@@ -20,27 +21,32 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     public List<Station> findAll() {
         return stationDao.findAll()
-            .stream()
-            .map(StationEntity::toStation)
-            .collect(Collectors.toList());
+                .stream()
+                .map(StationEntity::toStation)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Station> findById(final long id) {
         return stationDao.findById(id)
-            .map(StationEntity::toStation);
+                .map(StationEntity::toStation);
     }
 
     @Override
     public Optional<Station> findByName(final String name) {
         return stationDao.findByName(name)
-            .map(StationEntity::toStation);
+                .map(StationEntity::toStation);
     }
 
     @Override
     public Station save(final Station station) {
-        return stationDao.insert(StationEntity.from(station))
-            .toStation();
+        try {
+            stationDao.insert(StationEntity.from(station));
+            return stationDao.insert(StationEntity.from(station))
+                    .toStation();
+        } catch (final DuplicateKeyException e) {
+            throw new StationAlreadyRegisteredException();
+        }
     }
 
     @Override
