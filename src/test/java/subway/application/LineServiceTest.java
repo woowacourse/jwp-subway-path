@@ -125,32 +125,28 @@ class LineServiceTest {
     void findLineResponses() {
         // given
         int expectSize = 3;
+        LineResponse expected=new LineResponse(1L, "1호선","파란색",0);
 
         // when
         List<LineResponse> lines = lineService.findLineResponses();
 
         // then
         assertAll(
-            () -> Assertions.assertThat(lines.size()).isEqualTo(expectSize),
-            () -> Assertions.assertThat(lines.get(0).getId()).isEqualTo(1L),
-            () -> Assertions.assertThat(lines.get(0).getName()).isEqualTo("1호선"),
-            () -> Assertions.assertThat(lines.get(0).getColor()).isEqualTo("파란색"),
-            () -> Assertions.assertThat(lines.get(0).getExtraCharge()).isEqualTo(0)
+            ()->Assertions.assertThat(lines.get(0)).usingRecursiveComparison().isEqualTo(expected),
+            () -> Assertions.assertThat(lines.size()).isEqualTo(expectSize)
         );
     }
 
     @Test
     @DisplayName("findLineResponseById()를 호출하면 특정 노선의 정보를 반환한다.")
     void findLineResponseById() {
-        // given, when
-        LineResponse line = lineService.findLineResponseById(lineId);
+        // given
+        LineResponse expected=new LineResponse(1L, "1호선","파란색",0);
+        // when
+        LineResponse actual = lineService.findLineResponseById(lineId);
 
         // then
-        assertAll(
-            () -> Assertions.assertThat(line.getId()).isEqualTo(1L),
-            () -> Assertions.assertThat(line.getName()).isEqualTo("1호선"),
-            () -> Assertions.assertThat(line.getColor()).isEqualTo("파란색")
-        );
+        Assertions.assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
     @Test

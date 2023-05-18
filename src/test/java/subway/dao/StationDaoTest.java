@@ -115,18 +115,13 @@ class StationDaoTest {
     void findByLineIdAndName() {
         // given
         String stationName = "역삼역";
+        StationEntity expected=new StationEntity(2L, stationName,4L,5,lineId);
 
         // when
-        StationEntity entity = stationDao.findByLineIdAndName(lineId, stationName);
+        StationEntity actual = stationDao.findByLineIdAndName(lineId, stationName);
 
         // then
-        assertAll(
-            () -> Assertions.assertThat(entity.getId()).isEqualTo(2L),
-            () -> Assertions.assertThat(entity.getName()).isEqualTo(stationName),
-            () -> Assertions.assertThat(entity.getNext()).isEqualTo(4L),
-            () -> Assertions.assertThat(entity.getDistance()).isEqualTo(5),
-            () -> Assertions.assertThat(entity.getLineId()).isEqualTo(lineId)
-        );
+        Assertions.assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
 
     }
 
