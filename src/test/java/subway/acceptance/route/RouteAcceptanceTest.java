@@ -1,6 +1,6 @@
 package subway.acceptance.route;
 
-import static subway.acceptance.CommonSteps.비정상_요청;
+import static subway.acceptance.CommonSteps.비정상_요청_요청한_리소스_찾을_수_없음;
 import static subway.acceptance.CommonSteps.요청_결과의_상태를_검증한다;
 import static subway.acceptance.CommonSteps.정상_요청;
 import static subway.acceptance.line.LineSteps.노선_생성_결과에서_id_가져오기;
@@ -60,7 +60,7 @@ class RouteAcceptanceTest extends IntegrationTest {
         void 역이_존재하지_않으면_예외를_발생한다() {
             final var 역_거리_계산_요청_결과 = 역_거리_계산_요청(1L, 2L);
 
-            요청_결과의_상태를_검증한다(역_거리_계산_요청_결과, 비정상_요청);
+            요청_결과의_상태를_검증한다(역_거리_계산_요청_결과, 비정상_요청_요청한_리소스_찾을_수_없음);
         }
     }
 }

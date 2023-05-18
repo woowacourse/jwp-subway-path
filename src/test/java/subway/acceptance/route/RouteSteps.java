@@ -24,6 +24,6 @@ class RouteSteps {
     }
 
     public static void 경로_금액_계산_결과_확인(final ExtractableResponse<Response> 역_거리_계산_요청_결과, final int 금액) {
-        assertThat(역_거리_계산_요청_결과.as(RouteFindResponse.class).getFee()).isEqualTo(금액);
+        assertThat(역_거리_계산_요청_결과.as(RouteFindResponse.class).getFare()).isEqualTo(금액);
     }
 }
