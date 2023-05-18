@@ -2,7 +2,9 @@ package subway.dto;
 
 import subway.domain.Line;
 import subway.domain.LineRouteMap;
+import subway.entity.LineEntity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,11 @@ public class LineResponse {
 
     public static LineResponse of(final Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationsOf(line.routeMap()));
+    }
+
+    public static LineResponse of(final LineEntity line) {
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), Collections.emptyList());
+
     }
 
     private static List<StationResponse> getStationsOf(final LineRouteMap lineRouteMap) {

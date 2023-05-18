@@ -12,6 +12,7 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionResponse;
 import subway.dto.StationEnrollRequest;
+import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        final LineEntity persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }
 
@@ -46,18 +47,19 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<Line> findLines() {
-        return lineDao.findAll();
+        return lineDao.findAll().stream()
+                .map(LineEntity::toLine)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(final Long lineId) {
-        final Line persistLine = findLineById(lineId);
-        return LineResponse.of(persistLine);
+        return LineResponse.of(lineDao.findById(lineId));
     }
 
     @Transactional(readOnly = true)
     public Line findLineById(final Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id).toLine();
     }
 
     public LineResponse updateLine(final Long lineId, final LineRequest lineUpdateRequest) {

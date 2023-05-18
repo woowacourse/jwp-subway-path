@@ -8,10 +8,10 @@ import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.PathResponse;
 import subway.dto.StationResponse;
+import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.integration.IntegrationTest;
 
@@ -77,8 +77,8 @@ class SubwayControllerTest extends IntegrationTest {
     }
 
     private void prepareLine() {
-        lineDao.insert(new Line(1L, "1호선", "red"));
-        lineDao.insert(new Line(2L, "2호선", "blue"));
+        lineDao.insert(new LineEntity(1L, "1호선", "red"));
+        lineDao.insert(new LineEntity(2L, "2호선", "blue"));
     }
 
     private void prepareSection() {
