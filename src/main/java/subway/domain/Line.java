@@ -54,8 +54,12 @@ public class Line {
         return id;
     }
 
-    public List<Section> getSections() {
+    public List<Section> getSectionsByList() {
         return Collections.unmodifiableList(sections.getSections());
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 
     @Override

@@ -46,6 +46,7 @@ public class SectionService {
             return;
         }
         addSectionByExistence(line, sectionToAdd);
+        // TODO: 2023-05-18 저장이라는 행위를 함 -> 여기서 생성된 Section 객체를 반환하기
     }
 
     private void addSectionByExistence(Line line, Section sectionToAdd) {
@@ -134,7 +135,7 @@ public class SectionService {
     @Transactional(readOnly = true)
     public List<SectionResponse> findSectionsByLineId(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        return line.getSections().stream()
+        return line.getSectionsByList().stream()
                 .map(SectionResponse::from)
                 .collect(toList());
     }

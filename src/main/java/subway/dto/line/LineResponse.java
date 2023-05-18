@@ -26,7 +26,7 @@ public class LineResponse {
 
     public static LineResponse from(Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(),
-                mapToSectionResponses(line.getSections()));
+                mapToSectionResponses(line.getSectionsByList()));
     }
 
     private static List<SectionResponse> mapToSectionResponses(List<Section> sections) {
