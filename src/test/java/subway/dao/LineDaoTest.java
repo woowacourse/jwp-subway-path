@@ -39,10 +39,6 @@ class LineDaoTest {
         lineDao = new LineDao(dataSource);
     }
 
-    /**
-     * INSERT INTO line(name, color)
-     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
-     */
     @Test
     @DisplayName("Line 을 저장한다.")
     void save() {
@@ -59,6 +55,55 @@ class LineDaoTest {
                 .anyMatch(entity -> entity.getColor().equals(color));
     }
 
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    // findById
+    @Test
+    @DisplayName("Line 을 ID 를 통해서 찾는다. (조회 성공)")
+    @Sql("/line_test_data.sql")
+    void findById_notEmpty() {
+        List<LineEntity> lineEntity = lineDao.findById(1L);
+
+        assertThat(lineEntity).hasSize(1)
+                .anyMatch(entity -> entity.getId() == 1
+                        && entity.getName().equals("2호선")
+                        && entity.getColor().equals("bg-green-600"));
+    }
+
+    @Test
+    @DisplayName("Line 을 ID 를 통해서 찾는다. (조회 실패)")
+    @Sql("/line_test_data.sql")
+    void findById_empty() {
+        List<LineEntity> lineEntity = lineDao.findById(3L);
+
+        assertThat(lineEntity).isEmpty();
+    }
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    // findByName
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    // findAll
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    // update
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    // deleteById
 //    @Test
 //    @DisplayName("이름으로 id 조회 성공")
 //    @Sql("/line_test_data.sql")
