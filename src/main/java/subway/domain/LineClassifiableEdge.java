@@ -2,11 +2,11 @@ package subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class StationEdge extends DefaultWeightedEdge {
+public class LineClassifiableEdge extends DefaultWeightedEdge {
 
     private Line line;
 
-    public StationEdge(final Line line) {
+    public LineClassifiableEdge(final Line line) {
         this.line = line;
     }
 

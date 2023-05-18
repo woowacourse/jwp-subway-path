@@ -20,16 +20,16 @@ public class SubwayMap {
         // 외부 라이브러리에서 던져주는 예외에 의존하면, 추후 라이브러리 변경 시 어려움이 클 것 같다.
         validateSourceAndTargetStation(sourceStation, targetStation);
 
-        DijkstraShortestPath<Station, StationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+        DijkstraShortestPath<Station, LineClassifiableEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
                 multiRoutedStations);
-        List<StationEdge> shortestPathEdges = dijkstraShortestPath.getPath(sourceStation, targetStation)
+        List<LineClassifiableEdge> shortestPathEdges = dijkstraShortestPath.getPath(sourceStation, targetStation)
                 .getEdgeList();
         List<Section> sectionsFromShortestPath = sectionsFromShortestPath(shortestPathEdges);
 
         return RoutedStations.from(sectionsFromShortestPath);
     }
 
-    private List<Section> sectionsFromShortestPath(List<StationEdge> shortestPathEdges) {
+    private List<Section> sectionsFromShortestPath(List<LineClassifiableEdge> shortestPathEdges) {
         return shortestPathEdges.stream()
                 .map(edge -> new Section(multiRoutedStations.getEdgeSource(edge),
                         multiRoutedStations.getEdgeTarget(edge),

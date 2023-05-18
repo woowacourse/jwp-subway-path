@@ -38,7 +38,8 @@ class MultiRoutedStationsTest {
                              final List<Section> expectedSections,
                              final MultiRoutedStations result) {
         for (Section section : expectedSections) {
-            StationEdge edge = getEdgeByLine(section.getLeft(), section.getRight(), expectedLine, result).get();
+            LineClassifiableEdge edge = getEdgeByLine(section.getLeft(), section.getRight(), expectedLine,
+                    result).get();
             assertThat(edge.getLine())
                     .isEqualTo(expectedLine);
             assertThat(result.getEdgeWeight(edge))
@@ -46,11 +47,11 @@ class MultiRoutedStationsTest {
         }
     }
 
-    private Optional<StationEdge> getEdgeByLine(final Station sourceVertex,
-                                                final Station targetVertex,
-                                                final Line line,
-                                                final MultiRoutedStations result) {
-        Set<StationEdge> allEdges = result.getAllEdges(sourceVertex, targetVertex);
+    private Optional<LineClassifiableEdge> getEdgeByLine(final Station sourceVertex,
+                                                         final Station targetVertex,
+                                                         final Line line,
+                                                         final MultiRoutedStations result) {
+        Set<LineClassifiableEdge> allEdges = result.getAllEdges(sourceVertex, targetVertex);
         if (allEdges.isEmpty()) {
             return Optional.empty();
         }
