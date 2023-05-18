@@ -1,6 +1,7 @@
 package subway.repository.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.entity.LineEntity;
 
@@ -27,7 +29,7 @@ class LineDaoTest {
     }
 
     @Test
-    void Line을_저장한다() {
+    void 노선을_저장한다() {
         // given
         LineEntity line = new LineEntity("2호선");
 
@@ -39,7 +41,7 @@ class LineDaoTest {
     }
 
     @Test
-    void Line을_전체_조회한다() {
+    void 노선을_전체_조회한다() {
         // given
         final LineEntity firstLine = new LineEntity("1호선");
         final LineEntity secondLine = new LineEntity("2호선");
@@ -56,7 +58,7 @@ class LineDaoTest {
     }
 
     @Test
-    void Line을_ID_기준으로_단건_조회한다() {
+    void 노선을_ID_기준으로_단건_조회한다() {
         // given
         final LineEntity saveLine1 = lineDao.insert(new LineEntity("1호선"));
         final LineEntity saveLine2 = lineDao.insert(new LineEntity("2호선"));
@@ -68,5 +70,42 @@ class LineDaoTest {
         // then
         assertThat(findLine1).isEqualTo(saveLine1);
         assertThat(findLine2).isEqualTo(saveLine2);
+    }
+
+    @Test
+    void 노선을_ID_기준으로_삭제한다() {
+        // given
+        final LineEntity saveLine = lineDao.insert(new LineEntity("1호선"));
+
+        // when
+        lineDao.deleteById(saveLine.getId());
+
+        // then
+        assertThatThrownBy(() -> lineDao.findById(saveLine.getId()))
+                .isInstanceOf(EmptyResultDataAccessException.class);
+    }
+
+    @Test
+    void 특정_이름의_노선이_존재하면_true를_반환한다() {
+        // given
+        final LineEntity saveLine = lineDao.insert(new LineEntity("1호선"));
+
+        // when
+        final boolean exists = lineDao.existsByName(saveLine.getName());
+
+        // then
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    void 특정_이름의_노선이_존재하지_않으면_false를_반환한다() {
+        // given
+        String nonExistLineName = "존재하지 않는 노선 이름";
+
+        // when
+        final boolean exists = lineDao.existsByName(nonExistLineName);
+
+        // then
+        assertThat(exists).isFalse();
     }
 }
