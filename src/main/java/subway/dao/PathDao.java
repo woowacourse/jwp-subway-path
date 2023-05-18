@@ -2,7 +2,6 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import subway.domain.Station;
 import subway.domain.path.Path;
@@ -15,13 +14,9 @@ import static java.util.stream.Collectors.*;
 @Component
 public class PathDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public PathDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("path")
-                .usingGeneratedKeyColumns("id");
     }
 
     private final RowMapper<Path> rowMapper = (rs, rowNum) -> {
