@@ -29,6 +29,9 @@
     - 등록 : Post /lines/{lineId}/stations
     - 삭제 : Delete /lines/{lineId}/stations/{stationId}
 
+- 경로 조회
+    - 최단 경로 조회 : Get /routes/shortest
+
 ### 비즈니스 규칙
 
 - 노선에 역 등록
@@ -49,6 +52,16 @@
         - A-B-C-D 역이 있는 노선에서 C역이 제거되는 경우 A-B-D 순으로 재배치된다.
         - A-B가 2km, B-C가 3km, C-D가 4km인 경우 C역이 제거되면 B-D 거리가 7km가 된다.
     - 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거된다.
+
+- 경로 조회
+    - 최단 거리 경로를 반환한다.
+    - 총 거리 정보와 요금을 함께 반환한다.
+
+- 요금 계산
+    - 기본운임(10㎞ 이내): 기본운임 1,250원
+    - 이용 거리 초과 시 추가운임 부과
+    - 10km~50km: 5km 까지 마다 100원 추가
+    - 50km 초과: 8km 까지 마다 100원 추가
 
 ## 🧂 구현할 기능 목록
 
@@ -90,28 +103,66 @@
 - [x] 모든 노선의 역 조회
     - Get `/lines/stations`
 
+- [ ] 최단 경로 조회
+    - Get `/routes/shortest`
+
 ## 📀 데이터베이스
 
 ```sql
 create table if not exists STATION
 (
-    id   bigint auto_increment not null,
-    name varchar(255)          not null unique
+    id
+    bigint
+    auto_increment
+    not
+    null,
+    name
+    varchar
+(
+    255
+) not null unique
     );
 
 create table if not exists LINE
 (
-    id    bigint auto_increment not null,
-    name  varchar(255)          not null unique,
-    color varchar(20)           not null
+    id
+    bigint
+    auto_increment
+    not
+    null,
+    name
+    varchar
+(
+    255
+) not null unique,
+    color varchar
+(
+    20
+) not null
     );
 
 create table if not exists SECTION
 (
-    id       bigint auto_increment not null,
-    line_id  bigint                not null,
-    from_id  bigint                not null,
-    to_id    bigint                not null,
-    distance bigint                not null
+    id
+    bigint
+    auto_increment
+    not
+    null,
+    line_id
+    bigint
+    not
+    null,
+    from_id
+    bigint
+    not
+    null,
+    to_id
+    bigint
+    not
+    null,
+    distance
+    bigint
+    not
+    null
 );
 ```
