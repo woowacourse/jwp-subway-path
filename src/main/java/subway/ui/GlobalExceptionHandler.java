@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import subway.domain.exception.SubwayResponsibleException;
+import subway.domain.exception.ClientResponsibleException;
 import subway.dto.ErrorResponse;
 
 @RestControllerAdvice
@@ -33,8 +33,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorResponse(errorMessages));
     }
 
-    @ExceptionHandler(SubwayResponsibleException.class)
-    public ResponseEntity<ErrorResponse> handleSubwayResponsibleException(SubwayResponsibleException exception) {
+    @ExceptionHandler(ClientResponsibleException.class)
+    public ResponseEntity<ErrorResponse> handleClientResponsibleException(ClientResponsibleException exception) {
         return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 

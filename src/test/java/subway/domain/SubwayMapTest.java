@@ -19,7 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.entity.Line;
 import subway.domain.exception.EmptyRoutedStationsSearchResultException;
-import subway.domain.exception.IllegalSubwayMapArgumentException;
+import subway.domain.exception.IllegalClientMapArgumentException;
 
 @DisplayName("지하철 노선도 단위 테스트")
 class SubwayMapTest {
@@ -83,7 +83,7 @@ class SubwayMapTest {
         // when, then
         assertThatThrownBy(
                 () -> subwayMap.findShortestRoutedStations(FIXTURE_STATION_1, FIXTURE_STATION_1))
-                .isInstanceOf(IllegalSubwayMapArgumentException.class)
+                .isInstanceOf(IllegalClientMapArgumentException.class)
                 .hasMessageContaining("출발 역과 도착 역이 동일한 경로를 찾을 수 없습니다.");
     }
 }
