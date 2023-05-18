@@ -16,11 +16,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
+@Sql({"/schema-test.sql", "/data-test.sql"})
 @JdbcTest
 class StationServiceTest {
 

@@ -12,12 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.entity.StationEntity;
 
+@Sql({"/schema-test.sql", "/data-test.sql"})
 @JdbcTest
 class LineServiceTest {
 

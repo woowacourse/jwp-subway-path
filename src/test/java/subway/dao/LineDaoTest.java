@@ -16,8 +16,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.entity.LineEntity;
 
+@Sql({"/schema-test.sql", "/data-test.sql"})
 @JdbcTest
 class LineDaoTest {
 
