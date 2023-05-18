@@ -7,6 +7,9 @@ public class SectionResponse {
     private StationResponse downStationResponse;
     private int distance;
 
+    public SectionResponse() {
+    }
+
     public SectionResponse(
             final Long id,
             final StationResponse upStationResponse,
