@@ -12,6 +12,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SubwayRouteMap {
+    private static final int DEFAULT_FARE_DISTANCE = 10;
+    private static final int DEFAULT_FARE = 1250;
+    private static final int PER_FIVE_KILOMETER = 5;
+    private static final int ADDITIONAL_FARE = 100;
+    private static final int TEN_TO_FIFTY = 40;
+    private static final int PER_EIGHT_KILOMETER = 8;
+
     private final WeightedMultigraph<String, DefaultWeightedEdge> graph;
     private final DijkstraShortestPath shortestPath;
     private final Map<String, Station> stations;
@@ -63,5 +70,44 @@ public class SubwayRouteMap {
         return pathNames.stream()
                 .map(stations::get)
                 .collect(Collectors.toList());
+    }
+
+    public int fareBetween(final Station from, final Station to) {
+        final long distance = shortestDistanceBetween(from, to);
+        if (distance <= DEFAULT_FARE_DISTANCE) {
+            return DEFAULT_FARE;
+        }
+        return DEFAULT_FARE + calculateOverFare(distance);
+    }
+
+    private int calculateOverFare(final long distance) {
+        return tenToFifty(distance) + overFifty(distance);
+    }
+
+    private int tenToFifty(final long distance) {
+        final long overDistance = distance - DEFAULT_FARE_DISTANCE;
+        if (overDistance <= 0) {
+            return 0;
+        }
+        if (overDistance < TEN_TO_FIFTY) {
+            return fareFor(overDistance, PER_FIVE_KILOMETER);
+        }
+        return fareFor(TEN_TO_FIFTY, PER_FIVE_KILOMETER);
+    }
+
+    private int fareFor(final long distance, final int unit) {
+        final long includeEndUnitDistance = distance - 1;
+        final long additionalFareCount = includeEndUnitDistance / unit;
+        final long calculateFareWhenStart = additionalFareCount + 1;
+
+        return (int) calculateFareWhenStart * ADDITIONAL_FARE;
+    }
+
+    private int overFifty(final long distance) {
+        final long overDistance = distance - 50;
+        if (overDistance <= 0) {
+            return 0;
+        }
+        return fareFor(overDistance, PER_EIGHT_KILOMETER);
     }
 }
