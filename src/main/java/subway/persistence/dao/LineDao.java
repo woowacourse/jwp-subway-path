@@ -16,7 +16,8 @@ public class LineDao {
 
     private static final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) -> new LineEntity(
             rs.getLong("id"),
-            rs.getString("name")
+            rs.getString("name"),
+            rs.getInt("additional_fee")
     );
 
     private final JdbcTemplate template;

@@ -60,7 +60,7 @@ public class LineControllerIntegrationTest {
             역_생성_요청("사당역");
 
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10, 100);
 
             // then
             assertThat(response.statusCode()).isEqualTo(CREATED.value());
@@ -72,10 +72,10 @@ public class LineControllerIntegrationTest {
             // given
             역_생성_요청("잠실역");
             역_생성_요청("사당역");
-            노선_생성_요청("1호선", "잠실역", "사당역", 10);
+            노선_생성_요청("1호선", "잠실역", "사당역", 10, 100);
 
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 20);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 20, 100);
 
             // then
             assertThat(response.statusCode()).isEqualTo(CONFLICT.value());
@@ -87,7 +87,7 @@ public class LineControllerIntegrationTest {
             역_생성_요청("사당역");
 
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10, 100);
 
             // then
             assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
@@ -99,7 +99,7 @@ public class LineControllerIntegrationTest {
             역_생성_요청("잠실역");
 
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10, 100);
 
             // then
             assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
@@ -112,7 +112,7 @@ public class LineControllerIntegrationTest {
             역_생성_요청("사당역");
 
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 0);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 0, 100);
 
             // then
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
@@ -122,7 +122,7 @@ public class LineControllerIntegrationTest {
         @NullAndEmptySource
         void 호선이_공백이거나_널이면_예외(final String nullAndEmpty) {
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(nullAndEmpty, "잠실역", "사당역", 0);
+            final ExtractableResponse<Response> response = 노선_생성_요청(nullAndEmpty, "잠실역", "사당역", 0, 100);
 
             // then
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
@@ -133,7 +133,7 @@ public class LineControllerIntegrationTest {
         @NullAndEmptySource
         void 상행역이_공백이거나_널이면_예외(final String nullAndEmpty) {
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", nullAndEmpty, "사당역", 0);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", nullAndEmpty, "사당역", 0, 100);
 
             // then
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
@@ -143,7 +143,7 @@ public class LineControllerIntegrationTest {
         @NullAndEmptySource
         void 하행역이_공백이거나_널이면_예외(final String nullAndEmpty) {
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", nullAndEmpty, 0);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", nullAndEmpty, 0, 100);
 
             // then
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
@@ -152,7 +152,17 @@ public class LineControllerIntegrationTest {
         @Test
         void 거리가_널이면_예외() {
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", null);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", null, 100);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
+
+
+        @Test
+        void 추가요금이_널이면_예외() {
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10, null);
 
             // then
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
@@ -168,7 +178,7 @@ public class LineControllerIntegrationTest {
             역_생성_요청("잠실역");
             역_생성_요청("사당역");
             final Long 생성된_노선_아이디 =
-                    노선_생성하고_아이디_반환("1호선", "잠실역", "사당역", 5);
+                    노선_생성하고_아이디_반환("1호선", "잠실역", "사당역", 5, 100);
 
             // when
             final ExtractableResponse<Response> response = 노선_조회_요청(생성된_노선_아이디);
@@ -194,11 +204,11 @@ public class LineControllerIntegrationTest {
         // given
         역_생성_요청("잠실역");
         역_생성_요청("사당역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 5);
+        노선_생성_요청("1호선", "잠실역", "사당역", 5, 100);
 
         역_생성_요청("건대역");
         역_생성_요청("홍대역");
-        노선_생성_요청("2호선", "건대역", "홍대역", 10);
+        노선_생성_요청("2호선", "건대역", "홍대역", 10, 100);
 
         // when
         final ExtractableResponse<Response> response = 노선_전체_조회_요청();

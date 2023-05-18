@@ -17,8 +17,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -48,7 +46,8 @@ class LineServiceTest {
                 "1호선",
                 "잠실역",
                 "사당역",
-                10);
+                10,
+                0);
 
         @Test
         void 성공한다() {

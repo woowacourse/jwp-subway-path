@@ -9,22 +9,24 @@ public class LineEntity {
 
     private Long id;
     private String name;
+    private int additionalFee;
 
-    public LineEntity(final String name) {
-        this(null, name);
+    public LineEntity(String name, int additionalFee) {
+        this(null, name, additionalFee);
     }
 
-    public LineEntity(final Long id, final String name) {
+    public LineEntity(Long id, String name, int additionalFee) {
         this.id = id;
         this.name = name;
+        this.additionalFee = additionalFee;
     }
 
     public static LineEntity from(final Line line) {
-        return new LineEntity(line.getId(), line.getName());
+        return new LineEntity(line.getId(), line.getName(), line.getAdditionalFee());
     }
 
     public Line toDomain(final List<Section> sections) {
-        return new Line(id, name, new Sections(sections));
+        return new Line(id, name, new Sections(sections), additionalFee);
     }
 
     public Long getId() {
@@ -33,5 +35,9 @@ public class LineEntity {
 
     public String getName() {
         return name;
+    }
+
+    public int getAdditionalFee() {
+        return additionalFee;
     }
 }

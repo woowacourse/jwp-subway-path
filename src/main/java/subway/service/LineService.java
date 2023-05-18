@@ -35,7 +35,7 @@ public class LineService {
         final Station up = findStationByName(request.getUpTerminalName());
         final Station down = findStationByName(request.getDownTerminalName());
         final Sections sections = new Sections(new Section(up, down, request.getDistance()));
-        return lineRepository.save(new Line(request.getLineName(), sections));
+        return lineRepository.save(new Line(request.getLineName(), sections, request.getAdditionalFee()));
     }
 
     private Station findStationByName(final String name) {

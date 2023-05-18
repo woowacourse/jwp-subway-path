@@ -31,12 +31,13 @@ import subway.dto.response.ShortestPathResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
-@DisplayName("pathControllerIntegration 은(는)")
+@DisplayName("pathController 통합테스트 은(는)")
 @Sql("/truncate.sql")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class PathControllerIntegrationTest {
 
     private static final String API_URL = "/path-shorted";
+
     @LocalServerPort
     private int port;
 
@@ -52,8 +53,8 @@ public class PathControllerIntegrationTest {
         역_생성_요청("사당역");
         역_생성_요청("경북대북문역");
         역_생성_요청("경북대정문역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 1);
-        노선_생성_요청("2호선", "사당역", "경북대북문역", 2);
+        노선_생성_요청("1호선", "잠실역", "사당역", 1, 0);
+        노선_생성_요청("2호선", "사당역", "경북대북문역", 2, 0);
         노선에_역_추가_요청("2호선", "경북대북문역", "경북대정문역", 3);
         final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역");
 
@@ -71,14 +72,14 @@ public class PathControllerIntegrationTest {
     }
 
     @Test
-    void 최단_거리_조회_성공_추가_요금() {
+    void 최단_거리_조회_성공_추가__요금() {
         // given
         역_생성_요청("잠실역");
         역_생성_요청("사당역");
         역_생성_요청("경북대북문역");
         역_생성_요청("경북대정문역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 5);
-        노선_생성_요청("2호선", "사당역", "경북대북문역", 5);
+        노선_생성_요청("1호선", "잠실역", "사당역", 5, 100);
+        노선_생성_요청("2호선", "사당역", "경북대북문역", 5, 200);
         노선에_역_추가_요청("2호선", "경북대북문역", "경북대정문역", 10);
         final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역");
         // when
@@ -91,7 +92,7 @@ public class PathControllerIntegrationTest {
         노선에_포함된_N번째_구간을_검증한다(responseDto, 2, "경북대북문역", "경북대정문역", 10);
         assertThat(response.statusCode()).isEqualTo(OK.value());
         assertThat(responseDto.getTotalDistance()).isEqualTo(20);
-        assertThat(responseDto.getFee()).isEqualTo(1450);
+        assertThat(responseDto.getFee()).isEqualTo(1650);
     }
 
     @Test
@@ -126,7 +127,7 @@ public class PathControllerIntegrationTest {
         역_생성_요청("사당역");
         역_생성_요청("잠실역");
         역_생성_요청("경북대입구역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 10);
+        노선_생성_요청("1호선", "잠실역", "사당역", 10, 100);
         final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역");
 
         // when
@@ -143,8 +144,8 @@ public class PathControllerIntegrationTest {
         역_생성_요청("잠실역");
         역_생성_요청("경북대입구역");
         역_생성_요청("경북대북문역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 10);
-        노선_생성_요청("2호선", "경북대입구역", "경북대북문역", 10);
+        노선_생성_요청("1호선", "잠실역", "사당역", 10, 100);
+        노선_생성_요청("2호선", "경북대입구역", "경북대북문역", 10, 100);
         final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역");
 
         // when

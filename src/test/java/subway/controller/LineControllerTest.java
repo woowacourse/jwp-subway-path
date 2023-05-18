@@ -54,7 +54,7 @@ class LineControllerTest {
         @Test
         void 성공한다() throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10);
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10, 0);
             given(lineService.create(any()))
                     .willReturn(1L);
 
@@ -68,7 +68,7 @@ class LineControllerTest {
         @NullAndEmptySource
         void 노선이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest(nullAndEmpty, "잠실역", "사당역", 10);
+            final LineCreateRequest request = new LineCreateRequest(nullAndEmpty, "잠실역", "사당역", 10, 0);
 
             // when & then
             노선을_생성한다(request)
@@ -79,7 +79,7 @@ class LineControllerTest {
         @NullAndEmptySource
         void 상행역이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", nullAndEmpty, "사당역", 10);
+            final LineCreateRequest request = new LineCreateRequest("1호선", nullAndEmpty, "사당역", 10, 0);
 
             // when & then
             노선을_생성한다(request)
@@ -90,7 +90,7 @@ class LineControllerTest {
         @NullAndEmptySource
         void 하행역이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", nullAndEmpty, 10);
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", nullAndEmpty, 10, 0);
 
             // when & then
             노선을_생성한다(request)
@@ -100,7 +100,17 @@ class LineControllerTest {
         @Test
         void 거리가_널이면_예외() throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", null);
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", null, 0);
+
+            // when & then
+            노선을_생성한다(request)
+                    .andExpect(status().isUnprocessableEntity());
+        }
+
+        @Test
+        void 추가요금이_널이면_예외() throws Exception {
+            // given
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10, null);
 
             // when & then
             노선을_생성한다(request)

@@ -1,14 +1,12 @@
 package subway.persistence.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import subway.persistence.RepositoryTest;
 import subway.persistence.entity.LineEntity;
@@ -39,7 +37,7 @@ class SectionDaoTest {
         final Long 역4 = stationDao.save(new StationEntity("역4"));
         final Long 역5 = stationDao.save(new StationEntity("역5"));
 
-        final Long lineId = lineDao.save(new LineEntity("1호선"));
+        final Long lineId = lineDao.save(new LineEntity("1호선", 200));
 
         final List<SectionEntity> sectionEntities = List.of(
                 new SectionEntity(역1, 역2, 1, lineId),
@@ -64,7 +62,7 @@ class SectionDaoTest {
         final Long 역4 = stationDao.save(new StationEntity("역4"));
         final Long 역5 = stationDao.save(new StationEntity("역5"));
 
-        final Long lineId = lineDao.save(new LineEntity("1호선"));
+        final Long lineId = lineDao.save(new LineEntity("1호선", 400));
 
         final List<SectionEntity> sectionEntities = List.of(
                 new SectionEntity(역1, 역2, 1, lineId),
@@ -90,7 +88,7 @@ class SectionDaoTest {
         final Long 역4 = stationDao.save(new StationEntity("역4"));
         final Long 역5 = stationDao.save(new StationEntity("역5"));
 
-        final Long lineId = lineDao.save(new LineEntity("1호선"));
+        final Long lineId = lineDao.save(new LineEntity("1호선", 200));
 
         final List<SectionEntity> sectionEntities = List.of(
                 new SectionEntity(역1, 역2, 1, lineId),

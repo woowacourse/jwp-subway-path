@@ -22,9 +22,10 @@ public class LineSteps {
             final String lineName,
             final String upTerminalName,
             final String downTerminalName,
-            final Integer distance
+            final Integer distance,
+            final Integer additionalFee
     ) {
-        final LineCreateRequest request = new LineCreateRequest(lineName, upTerminalName, downTerminalName, distance);
+        final LineCreateRequest request = new LineCreateRequest(lineName, upTerminalName, downTerminalName, distance,additionalFee);
         return 노선_생성_요청(request);
     }
 
@@ -44,9 +45,10 @@ public class LineSteps {
             final String lineName,
             final String upTerminalName,
             final String downTerminalName,
-            final Integer distance
+            final Integer distance,
+            final Integer additionalFee
     ) {
-        final LineCreateRequest request = new LineCreateRequest(lineName, upTerminalName, downTerminalName, distance);
+        final LineCreateRequest request = new LineCreateRequest(lineName, upTerminalName, downTerminalName, distance,additionalFee);
         final ExtractableResponse<Response> response = 노선_생성_요청(request);
         return 응답_헤더에_담긴_노선_아이디(response);
     }
