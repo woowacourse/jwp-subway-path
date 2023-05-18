@@ -1,3 +1,21 @@
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 76
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "lineId": 1,
+  "upStationId": 1,
+  "downStationId": 2,
+  "distance": 3
+}
+
+<> 2023-05-18T145215.201.json
+
+###
+
 POST http://localhost:8080/lines/1/stations
 Content-Type: application/json
 Content-Length: 61
@@ -738,22 +756,6 @@ Accept-Encoding: br,deflate,gzip,x-gzip
 }
 
 <> 2023-05-18T132115.201.json
-
-###
-
-POST http://localhost:8080/lines
-Content-Type: application/json
-Content-Length: 43
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "name": "9호선",
-  "color": "BROWN"
-}
-
-<> 2023-05-18T132114.201.json
 
 ###
 
