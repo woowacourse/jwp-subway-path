@@ -16,6 +16,7 @@ class RouteTest {
     @DisplayName("최단 경로와, 역에 해당하는 노선의 이름을 포함하는 Map을 반환해준다.")
     void find_shortest_route_with_lines_name() {
         // given
+        int defaultFee = 1250;
         Route route = Route.from(createLines());
 
         // when
@@ -25,7 +26,8 @@ class RouteTest {
         // then
         assertAll(
                 () -> assertThat(result.keySet().size()).isEqualTo(3),
-                () -> assertThat(stations.contains(new Station("잠실역"))).isTrue()
+                () -> assertThat(stations.contains(new Station("잠실역"))).isTrue(),
+                () -> assertThat(route.getFee()).isEqualTo(defaultFee)
         );
 
     }
