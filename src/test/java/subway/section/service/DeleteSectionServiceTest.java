@@ -5,12 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
+import subway.domain.section.entity.SectionEntity;
 import subway.domain.section.service.DeleteSectionService;
 import subway.section.dao.StubSectionDao;
-import subway.domain.section.entity.SectionEntity;
 
 import java.util.Optional;
 
@@ -23,9 +21,6 @@ public class DeleteSectionServiceTest {
 
     private StubSectionDao stubSectionDao;
     private DeleteSectionService deleteSectionService;
-
-    @Mock
-    private ApplicationEventPublisher publisher;
 
     @BeforeEach
     void setUp() {
