@@ -17,6 +17,9 @@ public class Distance {
     }
 
     public Distance sub(final Distance distance) {
+        if (value - distance.value < 1) {
+            throw new IllegalArgumentException("거리 계산 결과는 음수가 될 수 없습니다");
+        }
         return new Distance(value - distance.value);
     }
 
