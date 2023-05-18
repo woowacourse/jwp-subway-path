@@ -122,5 +122,4 @@ public class LineControllerTest {
                 .andExpect(jsonPath("$[0].sections[0].upwardStation.name").value("인천역"))
                 .andExpect(jsonPath("$[1].sections[0].downwardStation.name").value("몽촌토성역"));
     }
-
 }

@@ -3,6 +3,7 @@ package subway.business.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.business.domain.line.LineRepository;
 import subway.business.domain.line.Station;
 import subway.business.domain.transfer.Transfer;
@@ -10,6 +11,7 @@ import subway.business.domain.transfer.TransferRepository;
 import subway.business.service.dto.TransferRequest;
 import subway.business.service.dto.TransferResponse;
 
+@Transactional
 @Service
 public class TransferService {
     private final LineRepository lineRepository;
@@ -29,6 +31,7 @@ public class TransferService {
         return TransferResponse.from(transferAfterCreate);
     }
 
+    @Transactional(readOnly = true)
     public List<TransferResponse> findAllTransfers() {
         return transferRepository.findAll().stream()
                 .map(transfer -> TransferResponse.from(transfer))
