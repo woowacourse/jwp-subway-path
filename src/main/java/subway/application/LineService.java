@@ -53,7 +53,7 @@ public class LineService {
 		return new LineResponse(lineId, request.getName());
 	}
 
-	public long deleteLine(final Long lineId) {
+	public long deleteLine(final long lineId) {
 		final boolean isDeleted = lineRepository.deleteById(lineId);
 
 		if (!isDeleted) {

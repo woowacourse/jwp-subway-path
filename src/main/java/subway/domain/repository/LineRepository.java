@@ -7,11 +7,11 @@ import java.util.List;
 public interface LineRepository {
     long createLine(Line line);
 
-    boolean deleteById(Long lineId);
+    boolean deleteById(long lineId);
 
     List<Line> findAll();
 
-    Line findById(Long lineId);
+    Line findById(long lineId);
 
     boolean updateLine(long lineId, Line line);
 
