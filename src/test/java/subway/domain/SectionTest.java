@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import static org.junit.jupiter.params.provider.Arguments.*;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class SectionTest {
@@ -89,13 +90,13 @@ class SectionTest {
 
     static Stream<Arguments> isBaseStationExistDummy() {
         return Stream.of(
-                Arguments.arguments(new Section(거리10, false,
+                arguments(new Section(거리10, false,
                         new Station("잠실"), new Station("잠실나루")), true),
-                Arguments.arguments(new Section(거리10, false,
+                arguments(new Section(거리10, false,
                         new Station("잠실새내"), new Station("잠실나루")), true),
-                Arguments.arguments(new Section(거리10, false,
+                arguments(new Section(거리10, false,
                         new Station("잠실"), new Station("잠실새내")), true),
-                Arguments.arguments(new Section(거리10, false,
+                arguments(new Section(거리10, false,
                         new Station("잠실새내"), new Station("강변")), false)
         );
     }
@@ -116,10 +117,10 @@ class SectionTest {
 
     static Stream<Arguments> isSameUpStationByDummy() {
         return Stream.of(
-                Arguments.arguments(new Station("잠실"), true),
-                Arguments.arguments(new Station("잠실나루"), false),
-                Arguments.arguments(new Station("잠실새내"), false),
-                Arguments.arguments(new Station("강변"), false)
+                arguments(new Station("잠실"), true),
+                arguments(new Station("잠실나루"), false),
+                arguments(new Station("잠실새내"), false),
+                arguments(new Station("강변"), false)
         );
     }
 
@@ -139,10 +140,10 @@ class SectionTest {
 
     static Stream<Arguments> isSameDownStationByDummy() {
         return Stream.of(
-                Arguments.arguments(new Station("잠실나루"), true),
-                Arguments.arguments(new Station("잠실"), false),
-                Arguments.arguments(new Station("잠실새내"), false),
-                Arguments.arguments(new Station("강변"), false)
+                arguments(new Station("잠실나루"), true),
+                arguments(new Station("잠실"), false),
+                arguments(new Station("잠실새내"), false),
+                arguments(new Station("강변"), false)
         );
     }
 
@@ -160,7 +161,7 @@ class SectionTest {
         final Section 새로운_구간 = new Section(거리5, false, 새로운_상행역, 기존_상행역);
 
         // when
-        final List<Section> 분리된_두_구간 = 기존_구간.separateBy(새로운_구간);
+        final List<Section> 분리된_두_구간 = 기존_구간.divide(새로운_구간);
 
         // then
         assertThat(분리된_두_구간)
@@ -183,7 +184,7 @@ class SectionTest {
         final Section 새로운_구간 = new Section(거리5, false, 기존_하행역, 새로운_하행역);
 
         // when
-        final List<Section> 분리된_두_구간 = 기존_구간.separateBy(새로운_구간);
+        final List<Section> 분리된_두_구간 = 기존_구간.divide(새로운_구간);
 
         // then
         assertThat(분리된_두_구간)
@@ -206,7 +207,7 @@ class SectionTest {
         final Section 새로운_구간 = new Section(거리5, false, 기존_상행역, 새로운_하행역);
 
         // when
-        final List<Section> 분리된_두_구간 = 기존_구간.separateBy(새로운_구간);
+        final List<Section> 분리된_두_구간 = 기존_구간.divide(새로운_구간);
 
         // then
         assertThat(분리된_두_구간)
@@ -229,7 +230,7 @@ class SectionTest {
         final Section 새로운_구간 = new Section(거리5, false, 새로운_상행역, 기존_하행역);
 
         // when
-        final List<Section> 분리된_두_구간 = 기존_구간.separateBy(새로운_구간);
+        final List<Section> 분리된_두_구간 = 기존_구간.divide(새로운_구간);
 
         // then
         assertThat(분리된_두_구간)

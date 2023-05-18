@@ -236,7 +236,7 @@ class SectionsTest {
         // when
         구간_목록.removeStation(잠실역);
 
-        final List<Section> 구간_목록들 = 구간_목록.getSections();
+        final List<Section> 구간_목록들 = 구간_목록.getOldSections();
 
         // then
         assertThat(구간_목록들)
@@ -263,7 +263,7 @@ class SectionsTest {
         // when
         구간_목록.removeStation(잠실새내역);
 
-        final List<Section> 구간_목록들 = 구간_목록.getSections();
+        final List<Section> 구간_목록들 = 구간_목록.getOldSections();
 
         // then
         assertThat(구간_목록들)

@@ -2,10 +2,11 @@ package subway.domain;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Sections {
 
-    private final List<Section> sections = new ArrayList<>();
+    private final List<Section> oldSections = new ArrayList<>();
 
     public static Sections from(final List<Section> newSections) {
         final Sections sections = new Sections();
@@ -28,96 +29,58 @@ public class Sections {
     }
 
     private boolean isNotEmpty() {
-        return !sections.isEmpty();
+        return !oldSections.isEmpty();
     }
 
     private boolean isBaseStationNotExist(final Section newSection) {
-        return sections.stream().noneMatch(section -> section.isBaseStationExist(newSection));
+        return oldSections.stream().noneMatch(section -> section.isBaseStationExist(newSection));
     }
 
     private boolean isAlreadyExist(final Section newSection) {
-        return sections.contains(newSection);
+        return oldSections.contains(newSection);
     }
 
     private void addSectionBy(final Section newSection) {
-        if (addWhenInnerSectionBaseIsUpStation(newSection)) {
+        final Optional<Section> maybeNewInnerSection = findOldInnerSection(newSection);
+        final Optional<Section> maybeOldOuterSection = findOldOuterSection(newSection);
+
+        if (maybeNewInnerSection.isPresent()) {
+            addSectionAfterRemoveOld(newSection, maybeNewInnerSection.get());
             return;
         }
-        if (addInnerSectionBaseIsDownStation(newSection)) {
+        if (maybeOldOuterSection.isPresent()) {
+            addSectionAfterRemoveOld(newSection, maybeOldOuterSection.get());
             return;
         }
-        if (addOuterSectionBaseIsUpStation(newSection)) {
-            return;
-        }
-        if (addOuterSectionBaseIsDownStation(newSection)) {
-            return;
-        }
-        sections.add(newSection);
+        oldSections.add(newSection);
     }
 
-    private boolean addWhenInnerSectionBaseIsUpStation(final Section newSection) {
-        final Optional<Section> maybeInnerSectionBaseIsUp = findSectionWithOldUpStation(newSection.getUpStation());
-
-        if (maybeInnerSectionBaseIsUp.isPresent()) {
-            addInnerSection(newSection, maybeInnerSectionBaseIsUp.get());
-            return true;
-        }
-        return false;
-    }
-
-    private void addInnerSection(final Section newSection, final Section oldInnerSection) {
-        if (newSection.isDistanceEqualsOrGreaterThan(oldInnerSection)) {
-            throw new IllegalArgumentException("기존 구간 내부에 들어올 새로운 구간이 더 길 수 없습니다.");
-        }
-        addNewSectionAfterRemoveOldSection(newSection, oldInnerSection);
-    }
-
-    private Optional<Section> findSectionWithOldUpStation(final Station station) {
-        return sections.stream()
-                .dropWhile(section -> !section.isSameUpStationBy(station))
+    private Optional<Section> findOldInnerSection(final Section newSection) {
+        return oldSections.stream()
+                .dropWhile(oldSection -> isNotInnerSection(newSection, oldSection))
                 .findFirst();
     }
 
-    private void addNewSectionAfterRemoveOldSection(final Section newSection, final Section oldSection) {
-        final int oldSectionIndex = sections.indexOf(oldSection);
-        sections.remove(oldSection);
-        sections.addAll(oldSectionIndex, oldSection.separateBy(newSection));
+    private boolean isNotInnerSection(final Section newSection, final Section oldSection) {
+        return !(oldSection.isSameDownStationBy(newSection.getDownStation())
+                || oldSection.isSameUpStationBy(newSection.getUpStation()));
     }
 
-    private boolean addInnerSectionBaseIsDownStation(final Section newSection) {
-        final Optional<Section> maybeInnerSectionBaseIsDown = findSectionWithOldDownStation(newSection.getDownStation());
-
-        if (maybeInnerSectionBaseIsDown.isPresent()) {
-            addInnerSection(newSection, maybeInnerSectionBaseIsDown.get());
-            return true;
-        }
-        return false;
-    }
-
-    private Optional<Section> findSectionWithOldDownStation(final Station station) {
-        return sections.stream()
-                .dropWhile(section -> !section.isSameDownStationBy(station))
+    private Optional<Section> findOldOuterSection(final Section newSection) {
+        return oldSections.stream()
+                .dropWhile(oldSection -> isNotOuterSection(newSection, oldSection))
                 .findFirst();
     }
 
-    private boolean addOuterSectionBaseIsUpStation(final Section newSection) {
-        final Optional<Section> maybeOuterSectionBaseIsUp = findSectionWithOldUpStation(newSection.getDownStation());
-
-        if (maybeOuterSectionBaseIsUp.isPresent()) {
-            addNewSectionAfterRemoveOldSection(newSection, maybeOuterSectionBaseIsUp.get());
-            return true;
-        }
-        return false;
+    private boolean isNotOuterSection(final Section newSection, final Section oldSection) {
+        return !(oldSection.isSameDownStationBy(newSection.getUpStation())
+                || oldSection.isSameUpStationBy(newSection.getDownStation()));
     }
 
-    private boolean addOuterSectionBaseIsDownStation(final Section newSection) {
-        final Optional<Section> maybeOuterSectionBaseIsDown = findSectionWithOldDownStation(newSection.getUpStation());
-
-        if (maybeOuterSectionBaseIsDown.isPresent()) {
-            addNewSectionAfterRemoveOldSection(newSection, maybeOuterSectionBaseIsDown.get());
-            return true;
-        }
-        return false;
+    private void addSectionAfterRemoveOld(final Section newSection, final Section oldSection) {
+        final int oldSectionIndex = oldSections.indexOf(oldSection);
+        oldSections.remove(oldSection);
+        oldSections.addAll(oldSectionIndex, oldSection.divide(newSection));
     }
 
     public void removeStation(final Station removeStation) {
@@ -125,12 +88,12 @@ public class Sections {
         if (isStationBetween(removeSections)) {
             addCombineSection(removeSections);
         }
-        sections.removeAll(removeSections);
+        oldSections.removeAll(removeSections);
     }
 
     private List<Section> collectRemoveSections(final Station removeStation) {
-        return sections.stream()
-                .filter(section -> section.isSameUpStationBy(removeStation) || section.isSameDownStationBy(removeStation))
+        return oldSections.stream()
+                .filter(oldSection -> oldSection.isSameUpStationBy(removeStation) || oldSection.isSameDownStationBy(removeStation))
                 .collect(Collectors.toList());
     }
 
@@ -142,30 +105,22 @@ public class Sections {
         final Deque<Section> currentSections = new ArrayDeque<>(removeSections);
         final Section leftSection = currentSections.pollFirst();
         final Section rightSection = currentSections.pollFirst();
-        final Section newSection = leftSection.combine(rightSection);
-        final int targetIndex = sections.indexOf(leftSection);
+        final Section newSection = leftSection.merge(rightSection);
+        final int targetIndex = oldSections.indexOf(leftSection);
 
-        sections.add(targetIndex, newSection);
+        oldSections.add(targetIndex, newSection);
     }
 
     public List<Station> collectAllStations() {
-        final List<Station> stations = new ArrayList<>();
-
-        stations.addAll(sections.stream()
-                .map(Section::getUpStation)
-                .collect(Collectors.toList()));
-
-        stations.addAll(sections.stream()
-                .map(Section::getDownStation)
-                .collect(Collectors.toList()));
-
-        return stations.stream()
+        return oldSections.stream()
+                .map(oldSection -> Stream.of(oldSection.getUpStation(), oldSection.getDownStation()))
+                .flatMap(Stream::distinct)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-    public List<Section> getSections() {
-        return new ArrayList<>(sections);
+    public List<Section> getOldSections() {
+        return new ArrayList<>(oldSections);
     }
 
     @Override
@@ -173,11 +128,11 @@ public class Sections {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Sections sections1 = (Sections) o;
-        return Objects.equals(sections, sections1.sections);
+        return Objects.equals(oldSections, sections1.oldSections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sections);
+        return Objects.hash(oldSections);
     }
 }

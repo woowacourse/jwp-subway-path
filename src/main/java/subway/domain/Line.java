@@ -67,7 +67,7 @@ public class Line {
     }
 
     public List<Section> getSections() {
-        return sections.getSections();
+        return sections.getOldSections();
     }
 
     @Override
