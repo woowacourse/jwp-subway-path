@@ -34,13 +34,13 @@ class SectionControllerTest {
     @Test
     void section_추가_테스트() throws Exception {
         // given
-        PostSectionRequest request = new PostSectionRequest(1L, 2L, 1L, 10);
+        PostSectionRequest request = new PostSectionRequest(1L, 2L, 10);
         String jsonRequest = new ObjectMapper().writeValueAsString(request);
         SectionResponse response = new SectionResponse(1L);
-        given(sectionService.saveSection(any(PostSectionRequest.class))).willReturn(response);
+        given(sectionService.saveSection(any(Long.class), any(PostSectionRequest.class))).willReturn(response);
 
         // when & then
-        mockMvc.perform(post("/sections")
+        mockMvc.perform(post("/lines/" + 1L)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequest))
             .andExpect(status().isCreated())
@@ -50,11 +50,11 @@ class SectionControllerTest {
     @Test
     void section_삭제_테스트() throws Exception {
         // given
-        DeleteSectionRequest request = new DeleteSectionRequest(1L, 1L);
+        DeleteSectionRequest request = new DeleteSectionRequest(1L);
         String jsonRequest = new ObjectMapper().writeValueAsString(request);
 
         // when & then
-        mockMvc.perform(delete("/sections")
+        mockMvc.perform(delete("/lines/" + 1L)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequest))
             .andExpect(status().isNoContent());

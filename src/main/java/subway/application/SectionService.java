@@ -32,13 +32,13 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public SectionResponse saveSection(PostSectionRequest request) {
-        List<Section> sectionList = sectionDao.findAllByLineId(request.getLineId());
+    public SectionResponse saveSection(Long lineId, PostSectionRequest request) {
+        List<Section> sectionList = sectionDao.findAllByLineId(lineId);
         SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(sectionList);
 
         Station upStation = getSavedStation(sortedSingleLineSections, request.getUpStationId());
         Station downStation = getSavedStation(sortedSingleLineSections, request.getDownStationId());
-        Line line = lineDao.findById(request.getLineId());
+        Line line = lineDao.findById(lineId);
         int distance = request.getDistance();
 
         ChangesByAddition changes = sortedSingleLineSections.findChangesWhenAdd(upStation, downStation, line, distance);
@@ -59,8 +59,7 @@ public class SectionService {
         return sortedSingleLineSections.findAnySectionWithGivenStations(upStation, downStation);
     }
 
-    public void deleteSection(DeleteSectionRequest request) {
-        Long lineId = request.getLineId();
+    public void deleteSection(Long lineId, DeleteSectionRequest request) {
         Long stationId = request.getStationId();
 
         SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(

@@ -36,22 +36,20 @@ DELETE http://localhost:8080/lines/1
 
 
 ### 구간 등록
-POST http://localhost:8080/sections
+POST http://localhost:8080/lines/1
 Content-Type: application/json
 
 {
   "upStationId": 1,
   "downStationId": 2,
-  "lineId": 1,
   "distance": 10
 }
 
 ### 구간 삭제
-DELETE http://localhost:8080/sections
+DELETE http://localhost:8080/lines/1
 Content-Type: application/json
 
 {
-  "lineId": 1,
   "stationId": 1
 }
 

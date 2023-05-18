@@ -50,7 +50,6 @@ public class SectionIntegrationTest {
 
     private Station persistCheonho;
     private Station persistJamsil;
-    private Station persistJangji;
     private Line persistLine8;
     private Section jamsilJangji10;
 
@@ -60,7 +59,7 @@ public class SectionIntegrationTest {
         // 장지 - 10 - 잠실 - 10 - 천호
         persistCheonho = stationDao.insert(cheonho);
         persistJamsil = stationDao.insert(jamsil);
-        persistJangji = stationDao.insert(jangji);
+        Station persistJangji = stationDao.insert(jangji);
         persistLine8 = lineDao.insert(new Line("8호선", "pink"));
         sectionDao.insert(new Section(persistCheonho, persistJamsil, persistLine8, 10));
         jamsilJangji10 = sectionDao.insert(new Section(persistJamsil, persistJangji, persistLine8, 10));
@@ -71,8 +70,7 @@ public class SectionIntegrationTest {
         // given
         // 장지 - 10 - 잠실 - 10 - 천호
         Station persistMongchon = stationDao.insert(mongchon);
-        PostSectionRequest postSectionRequest = new PostSectionRequest(persistMongchon.getId(), persistJamsil.getId(),
-            persistLine8.getId(), 5);
+        PostSectionRequest postSectionRequest = new PostSectionRequest(persistMongchon.getId(), persistJamsil.getId(), 5);
 
         // when
         // 장지 - 10 - 잠실 - 5 - 몽촌 - 5 - 천호
@@ -80,7 +78,7 @@ public class SectionIntegrationTest {
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(postSectionRequest)
-            .when().post("/sections")
+            .when().post("/lines/" + persistLine8.getId())
             .then()
             .extract();
 
@@ -95,7 +93,7 @@ public class SectionIntegrationTest {
     @Test
     void 마지막이_아닌_구간을_삭제한다() {
         // given
-        DeleteSectionRequest request = new DeleteSectionRequest(persistLine8.getId(), persistJamsil.getId());
+        DeleteSectionRequest request = new DeleteSectionRequest(persistJamsil.getId());
 
         // when
         // 장지 - 20 - 천호
@@ -103,7 +101,7 @@ public class SectionIntegrationTest {
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/sections")
+            .when().delete("/lines/" + persistLine8.getId())
             .then()
             .extract();
 
@@ -120,15 +118,15 @@ public class SectionIntegrationTest {
     void 노선의_마지막_구간을_삭제한다() {
         // given
         // 장지 - 10 - 잠실
-        sectionService.deleteSection(new DeleteSectionRequest(persistLine8.getId(), persistCheonho.getId()));
+        sectionService.deleteSection(persistLine8.getId(), new DeleteSectionRequest(persistCheonho.getId()));
 
         // when
-        DeleteSectionRequest request = new DeleteSectionRequest(persistLine8.getId(), persistJamsil.getId());
+        DeleteSectionRequest request = new DeleteSectionRequest(persistJamsil.getId());
         ExtractableResponse<Response> response = RestAssured
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/sections")
+            .when().delete("/lines/" + persistLine8.getId())
             .then()
             .extract();
 
@@ -163,12 +161,12 @@ public class SectionIntegrationTest {
         ));
 
         // when
-        DeleteSectionRequest request = new DeleteSectionRequest(persistLine8.getId(), persistJamsil.getId());
+        DeleteSectionRequest request = new DeleteSectionRequest(persistJamsil.getId());
         ExtractableResponse<Response> response = RestAssured
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/sections")
+            .when().delete("/lines/" + persistLine8.getId())
             .then()
             .extract();
 
@@ -189,15 +187,15 @@ public class SectionIntegrationTest {
     void 등록되지_않은_노선에_등록된_역을_삭제하면_예외가_발생한다() {
         // given
         // 장지 - 10 - 잠실 - 10 - 천호
-        Long wrongLineId = 2L;
+        long wrongLineId = 2L;
 
         // when
-        DeleteSectionRequest request = new DeleteSectionRequest(wrongLineId, persistJamsil.getId());
+        DeleteSectionRequest request = new DeleteSectionRequest(persistJamsil.getId());
         ExtractableResponse<Response> response = RestAssured
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/sections")
+            .when().delete("/lines/" + wrongLineId)
             .then()
             .extract();
 
@@ -215,15 +213,15 @@ public class SectionIntegrationTest {
     void 등록된_노선에_등록되지_않은_역을_삭제하면_예외가_발생한다() {
         // given
         // 장지 - 10 - 잠실 - 10 - 천호
-        Long wrongStationId = 999L;
+        long wrongStationId = 999L;
 
         // when
-        DeleteSectionRequest request = new DeleteSectionRequest(persistLine8.getId(), wrongStationId);
+        DeleteSectionRequest request = new DeleteSectionRequest(wrongStationId);
         ExtractableResponse<Response> response = RestAssured
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/sections")
+            .when().delete("/lines/" + persistLine8.getId())
             .then()
             .extract();
 
