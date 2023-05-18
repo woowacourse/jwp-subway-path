@@ -3,7 +3,11 @@ package subway.domain.section;
 import java.util.List;
 import subway.domain.Distance;
 import subway.domain.Station;
+import subway.exception.CanNotSplitSectionByNextStationException;
+import subway.exception.CanNotSplitSectionByPrevStationException;
+import subway.exception.DistanceValueValidateException;
 import subway.exception.SectionHasSameStationsException;
+import subway.exception.SplitSectionIsSmallerThanSplitterException;
 
 public class Section {
 
@@ -63,16 +67,30 @@ public class Section {
     }
 
     public List<Section> splitByPrev(final Section section) {
-        return List.of(
-                section,
-                new Section(section.nextStation, nextStation, distance.minusValue(section.distance))
-        );
+        if (!section.isEqualPrevStation(prevStation)) {
+            throw new CanNotSplitSectionByPrevStationException();
+        }
+        try {
+            return List.of(
+                    section,
+                    new Section(section.nextStation, nextStation, distance.minusValue(section.distance))
+            );
+        } catch (final DistanceValueValidateException exception) {
+            throw new SplitSectionIsSmallerThanSplitterException();
+        }
     }
 
     public List<Section> splitByNext(final Section section) {
-        return List.of(
-                new Section(prevStation, section.prevStation, distance.minusValue(section.distance))
-                , section
-        );
+        if (!section.isEqualNextStation(nextStation)) {
+            throw new CanNotSplitSectionByNextStationException();
+        }
+        try {
+            return List.of(
+                    new Section(prevStation, section.prevStation, distance.minusValue(section.distance))
+                    , section
+            );
+        } catch (final DistanceValueValidateException exception) {
+            throw new SplitSectionIsSmallerThanSplitterException();
+        }
     }
 }
