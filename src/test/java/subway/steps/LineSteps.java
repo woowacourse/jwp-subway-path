@@ -13,7 +13,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class LineSteps {
 
     public static ExtractableResponse<Response> 전체_노선_조회_요청() {
-        final ExtractableResponse<Response> response = RestAssured
+        return RestAssured
                 .given()
                 .contentType(APPLICATION_JSON_VALUE)
 
@@ -23,7 +23,6 @@ public class LineSteps {
                 .then()
                 .log().all()
                 .extract();
-        return response;
     }
 
     public static ExtractableResponse<Response> 노선_생성_요청(final LineCreateRequest request) {
@@ -39,21 +38,26 @@ public class LineSteps {
                 .extract();
     }
 
-    public static long 노선_생성하고_아이디_반환(final LineCreateRequest request) {
-        return 노선_생성_요청(request).as(LineResponse.class).getId();
-    }
+    private ExtractableResponse<Response> 노선에_역_1개_추가_요청(final Long station1Id, final Long station2Id, final Long lineId, final int distance) {
+        final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(
+                station1Id,
+                station2Id,
+                distance);
 
-    public static ExtractableResponse<Response> 노선에_최초의_역_2개_추가_요청(final LineResponse lineResponse, final InitialSectionCreateRequest initialSectionCreateRequest) {
         return RestAssured
                 .given()
                 .contentType(APPLICATION_JSON_VALUE)
-                .body(initialSectionCreateRequest)
+                .body(sectionCreateRequest)
 
                 .when()
-                .post("/lines/" + lineResponse.getId() + "/station-init")
+                .post("/lines/" + lineId + "/stations")
 
                 .then()
                 .extract();
+    }
+
+    public static long 노선_생성하고_아이디_반환(final LineCreateRequest request) {
+        return 노선_생성_요청(request).as(LineResponse.class).getId();
     }
 
     public static ExtractableResponse<Response> 노선에_최초의_역_2개_추가_요청(final Long lineId, final InitialSectionCreateRequest initialSectionCreateRequest) {
@@ -69,16 +73,11 @@ public class LineSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 존재하는_노선에_역_1개_추가_요청(final long station1Id, final long station2Id, final Long lineId) {
-        final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(
-                station1Id,
-                station2Id,
-                3);
-
+    public static ExtractableResponse<Response> 존재하는_노선에_역_1개_추가_요청(final Long lineId, final SectionCreateRequest request) {
         return RestAssured
                 .given()
                 .contentType(APPLICATION_JSON_VALUE)
-                .body(sectionCreateRequest)
+                .body(request)
 
                 .when()
                 .post("/lines/" + lineId + "/stations")
