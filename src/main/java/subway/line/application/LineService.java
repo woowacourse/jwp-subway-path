@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.line.application.dto.LineCreationDto;
 import subway.line.application.dto.StationAdditionToLineDto;
 import subway.line.application.dto.StationDeletionFromLineDto;
-import subway.line.domain.DummyTerminalStation;
 import subway.line.domain.Line;
 import subway.line.domain.Lines;
 import subway.line.domain.MiddleSection;
@@ -36,20 +35,13 @@ public class LineService {
         final Station stationToAdd = stationService.createStationIfNotExist(stationAdditionToLineDto.getStationName());
 
         final Line line = findLineOrThrow(stationAdditionToLineDto.getLineId());
-        final Station upstream = findExistingStationByName(stationAdditionToLineDto.getUpstreamName());
-        final Station downstream = findExistingStationByName(stationAdditionToLineDto.getDownstreamName());
+        final Station upstream = stationService.findStationByName(stationAdditionToLineDto.getUpstreamName());
+        final Station downstream = stationService.findStationByName(stationAdditionToLineDto.getDownstreamName());
 
         line.addStation(stationToAdd, upstream, downstream, stationAdditionToLineDto.getDistanceToUpstream());
         lineRepository.updateLine(line);
 
         return stationToAdd.getId();
-    }
-
-    private Station findExistingStationByName(String stationName) {
-        if (stationName.equals(DummyTerminalStation.STATION_NAME)) {
-            return DummyTerminalStation.getInstance();
-        }
-        return stationService.findStationByName(stationName);
     }
 
     public void deleteStationFromLine(StationDeletionFromLineDto stationDeletionFromLineDto) {
@@ -65,11 +57,14 @@ public class LineService {
     }
 
     public long createLine(LineCreationDto lineCreationDto) {
+        final String lineName = lineCreationDto.getLineName();
+        final int additionalFare = lineCreationDto.getAdditionalFare();
+
         Station upstream = stationService.createStationIfNotExist(lineCreationDto.getUpstreamName());
         Station downstream = stationService.createStationIfNotExist(lineCreationDto.getDownstreamName());
-
         MiddleSection section = new MiddleSection(upstream, downstream, lineCreationDto.getDistance());
-        Line lineToAdd = new Line(lineCreationDto.getLineName(), lineCreationDto.getAdditionalFare(), List.of(section));
+
+        Line lineToAdd = new Line(lineName, additionalFare, List.of(section));
 
         final Lines allLines = lineRepository.findAllLines();
         allLines.addLine(lineToAdd);

@@ -2,8 +2,12 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.line.domain.*;
+import subway.line.domain.AbstractSection;
+import subway.line.domain.DownstreamTerminalSection;
+import subway.line.domain.MiddleSection;
+import subway.line.domain.UpstreamTerminalSection;
 import subway.line.exception.DuplicateStationInLineException;
+import subway.station.domain.DummyTerminalStation;
 
 import java.util.List;
 

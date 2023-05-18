@@ -9,12 +9,12 @@ import subway.line.application.LineService;
 import subway.line.application.dto.LineCreationDto;
 import subway.line.application.dto.StationAdditionToLineDto;
 import subway.line.application.dto.StationDeletionFromLineDto;
-import subway.line.domain.DummyTerminalStation;
 import subway.line.domain.Line;
 import subway.line.domain.Lines;
 import subway.line.domain.MiddleSection;
 import subway.line.repository.LineRepository;
 import subway.station.application.StationService;
+import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -74,6 +74,7 @@ class LineServiceTest {
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(line.getId());
         doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
+        doReturn(DummyTerminalStation.getInstance()).when(stationService).findStationByName(DummyTerminalStation.STATION_NAME);
         doReturn(SULLEUNG_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getDownstreamName());
 
         final LineService lineService = new LineService(lineRepository, stationService);
@@ -97,8 +98,8 @@ class LineServiceTest {
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(line.getId());
         doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
-        doReturn(JAMSIL_NARU_STATION).when(stationService)
-                                     .findStationByName(stationAdditionToLineDto.getUpstreamName());
+        doReturn(DummyTerminalStation.getInstance()).when(stationService).findStationByName(DummyTerminalStation.STATION_NAME);
+        doReturn(JAMSIL_NARU_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getUpstreamName());
 
         final LineService lineService = new LineService(lineRepository, stationService);
 

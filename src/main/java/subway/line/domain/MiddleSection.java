@@ -2,6 +2,7 @@ package subway.line.domain;
 
 import subway.line.exception.InvalidDistanceException;
 import subway.line.exception.InvalidStationNameException;
+import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 
 import java.util.ArrayList;

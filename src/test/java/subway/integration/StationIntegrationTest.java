@@ -15,10 +15,10 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
-import subway.line.domain.DummyTerminalStation;
 import subway.line.domain.Line;
 import subway.line.repository.LineRepository;
 import subway.line.ui.dto.StationAdditionRequest;
+import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 import subway.station.repository.StationRepository;
 

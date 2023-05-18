@@ -1,6 +1,7 @@
 package subway.line.domain;
 
 import subway.line.exception.DuplicateStationInLineException;
+import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 
 import java.util.List;

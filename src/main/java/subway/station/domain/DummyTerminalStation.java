@@ -1,6 +1,4 @@
-package subway.line.domain;
-
-import subway.station.domain.Station;
+package subway.station.domain;
 
 public class DummyTerminalStation extends Station {
 
