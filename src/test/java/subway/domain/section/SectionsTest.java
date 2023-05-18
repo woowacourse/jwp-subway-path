@@ -32,6 +32,14 @@ class SectionsTest {
                 .containsExactly(SECTION_2);
     }
 
+    @DisplayName("Sections간의 차집합을 구하는데, 차집합이 없는 경우")
+    @Test
+    void getDifferenceOfSethNoDifference() {
+        final Sections emptySections = ORIGIN_FILLED_SECTIONS.getDifferenceOfSet(ORIGIN_FILLED_SECTIONS);
+
+        assertThat(emptySections.getSections()).isEmpty();
+    }
+
     @DisplayName("Sections의 상행종점에 section을 추가한다.")
     @Test
     void addHead() {
