@@ -1,5 +1,7 @@
 package subway.persistence.entity;
 
+import subway.exception.bad_request.InvalidDistanceException;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -44,6 +46,23 @@ public class SectionEntity {
 
     private boolean isPreviousOf(final SectionEntity source) {
         return Objects.equals(nextStationId, source.previousStationId);
+    }
+
+    public SectionEntity getSplitPreviousBy(final SectionEntity splitNext) {
+        final int subtractedDistance = subtractDistance(splitNext.distance);
+        return new SectionEntity(lineId, subtractedDistance, previousStationId, splitNext.previousStationId);
+    }
+
+    public SectionEntity getSplitNextBy(final SectionEntity splitPrevious) {
+        final int subtractedDistance = subtractDistance(splitPrevious.distance);
+        return new SectionEntity(lineId, subtractedDistance, splitPrevious.nextStationId, nextStationId);
+    }
+
+    private int subtractDistance(final int subtraction) {
+        if (distance > subtraction) {
+            return distance - subtraction;
+        }
+        throw new InvalidDistanceException();
     }
 
     public Long getId() {

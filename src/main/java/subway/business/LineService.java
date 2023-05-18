@@ -74,12 +74,10 @@ public class LineService {
         validateNewStationNotExistInLine(lineId, newStationId);
         final int distance = request.getDistance();
         if (request.getDirection() == SubwayDirection.UP) {
-            final List<SectionDetailEntity> registeredUpperEntity =
-                    registerUpperStation(new SectionEntity(lineId, distance, standardStationId, newStationId));
+            final List<SectionDetailEntity> registeredUpperEntity = registerUpperStation(new SectionEntity(lineId, distance, standardStationId, newStationId));
             return convertToResponse(registeredUpperEntity);
         }
-        final List<SectionDetailEntity> registeredDownEntity =
-                registerDownStation(new SectionEntity(lineId, distance, newStationId, standardStationId));
+        final List<SectionDetailEntity> registeredDownEntity = registerDownStation(new SectionEntity(lineId, distance, newStationId, standardStationId));
         return convertToResponse(registeredDownEntity);
     }
 
@@ -90,22 +88,14 @@ public class LineService {
     }
 
     private List<SectionDetailEntity> registerUpperStation(final SectionEntity newSectionEntity) {
-        Optional<SectionEntity> baseSection =
+        final Optional<SectionEntity> baseSection =
                 sectionDao.findByLineIdAndPreviousStationId(newSectionEntity.getLineId(), newSectionEntity.getPreviousStationId());
         return baseSection.map(sectionEntity -> registerUpperMidStation(sectionEntity, newSectionEntity))
                 .orElseGet(() -> registerEndStation(newSectionEntity));
     }
 
-    private List<SectionDetailEntity> registerEndStation(final SectionEntity newSectionEntity) {
-        sectionDao.insert(newSectionEntity);
-        return sectionDao.findSectionDetailByLineId(newSectionEntity.getLineId());
-    }
-
     private List<SectionDetailEntity> registerUpperMidStation(final SectionEntity base, final SectionEntity newPrevious) {
-        validateDistance(base.getDistance(), newPrevious.getDistance());
-        final int newNextDistance = base.getDistance() - newPrevious.getDistance();
-        final SectionEntity newNext = new SectionEntity(base.getLineId(), newNextDistance,
-                newPrevious.getNextStationId(), base.getNextStationId());
+        final SectionEntity newNext = base.getSplitNextBy(newPrevious);
         return mergeSections(base, newPrevious, newNext);
     }
 
@@ -116,6 +106,11 @@ public class LineService {
         return sectionDao.findSectionDetailByLineId(base.getLineId());
     }
 
+    private List<SectionDetailEntity> registerEndStation(final SectionEntity newSectionEntity) {
+        sectionDao.insert(newSectionEntity);
+        return sectionDao.findSectionDetailByLineId(newSectionEntity.getLineId());
+    }
+
     private List<SectionDetailEntity> registerDownStation(final SectionEntity newSectionEntity) {
         Optional<SectionEntity> baseSection =
                 sectionDao.findByLineIdAndNextStationId(newSectionEntity.getLineId(), newSectionEntity.getNextStationId());
@@ -124,17 +119,8 @@ public class LineService {
     }
 
     private List<SectionDetailEntity> registerDownMidStation(final SectionEntity base, final SectionEntity newNext) {
-        validateDistance(base.getDistance(), newNext.getDistance());
-        final int newPreviousDistance = base.getDistance() - newNext.getDistance();
-        final SectionEntity newPrevious = new SectionEntity(base.getLineId(), newPreviousDistance,
-                base.getPreviousStationId(), newNext.getPreviousStationId());
+        final SectionEntity newPrevious = base.getSplitPreviousBy(newNext);
         return mergeSections(base, newPrevious, newNext);
-    }
-
-    private void validateDistance(final int originalDistance, final int newDistance) {
-        if (originalDistance <= newDistance) {
-            throw new InvalidDistanceException();
-        }
     }
 
     @Transactional
