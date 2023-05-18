@@ -121,7 +121,7 @@ public class IntegrationTestFixture {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().delete("/lines/{lineId}/stations", lineId)
+                .when().delete("/lines/{lineId}/sections", lineId)
                 .then().log().all()
                 .extract();
     }
