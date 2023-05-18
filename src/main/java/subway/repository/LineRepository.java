@@ -115,7 +115,7 @@ public class LineRepository {
     }
 
     public void updateLine(Long lineId, Line updatedLine) {
-        sectionDao.deleteAll(lineId);
+        sectionDao.deleteByLineId(lineId);
         saveSections(lineId, updatedLine);
     }
 
