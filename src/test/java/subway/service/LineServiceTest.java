@@ -19,12 +19,14 @@ import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.repository.LineRepository;
+import subway.persistence.repository.StationRepository;
 import subway.service.dto.SectionRequest;
 import subway.service.dto.StationRequest;
 
 @JdbcTest
-@Import({LineService.class, LineDao.class, StationDao.class, SectionDao.class, StationService.class,
-        SectionService.class, LineRepository.class})
+@Import({LineService.class, StationService.class, SectionService.class,
+        LineDao.class, StationDao.class, SectionDao.class,
+        StationRepository.class, LineRepository.class})
 class LineServiceTest {
 
     @Autowired

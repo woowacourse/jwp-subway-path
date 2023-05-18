@@ -56,8 +56,8 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Optional<Station> findByName(final String name) {
+    public Station findByName(final String name) {
         final String sql = "select id, name from STATION where name = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 }
