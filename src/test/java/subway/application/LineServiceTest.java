@@ -123,7 +123,7 @@ class LineServiceTest {
     @DisplayName("findLineResponses()를 호출하면 존재하는 모든 노선의 정보를 반환한다.")
     void findLineResponses() {
         // given
-        int expectSize = 2;
+        int expectSize = 3;
 
         // when
         List<LineResponse> lines = lineService.findLineResponses();

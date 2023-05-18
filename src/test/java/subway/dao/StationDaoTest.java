@@ -57,6 +57,20 @@ class StationDaoTest {
     }
 
     @Test
+    @DisplayName("findAll()를 호출하면 모든 역을 반환한다")
+    void findAll() {
+        // given
+        int expected = 14;
+
+        // when
+        List<StationEntity> entities = stationDao.findAll();
+        int actual = entities.size();
+
+        // then
+        Assertions.assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
     @DisplayName("findByLineId()를 호출하면 노선의 모든 역을 반환한다")
     void findByLineId() {
         // given

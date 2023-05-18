@@ -1,7 +1,12 @@
 package subway.application;
 
-import java.util.ArrayList;
 import java.util.List;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Charge;
@@ -9,7 +14,11 @@ import subway.domain.DiscountRate;
 import subway.domain.Distance;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
+import subway.entity.LineEntity;
+import subway.entity.StationEntity;
 
+@Transactional
+@Service
 public class PathService {
 
     Distance FIVE = new Distance(5);
@@ -30,12 +39,50 @@ public class PathService {
 
     public PathResponse findPath(PathRequest request) {
         validateStation(request);
-        List<String> path = new ArrayList<>(List.of("성수역", "뚝섬역", "잠실역", "건대입구역"));
-        Distance distance = new Distance(26);
-        Charge charge = calculateCharge(distance);
+        GraphPath<String, DefaultWeightedEdge> path = find(request);
+        validateCanConnect(path);
+        List<LineEntity> lines = lineDao.findAll();
+        List<String> trace = path.getVertexList();
+        int maxExtraCharge = lines.stream().filter(line -> {
+            List<StationEntity> stations = stationDao.findByLineId(line.getId());
+            return stations.stream().filter((station) -> trace.contains(station.getName())).count()
+                > 1;
+        }).mapToInt(LineEntity::getExtraCharge).max().getAsInt();
+        Distance distance = new Distance((int) path.getWeight());
+        Charge charge = calculateCharge(distance, maxExtraCharge);
         Charge teenagerCharge = charge.discount(DiscountRate.TEENAGER_DISCOUNT_RATE);
         Charge childCharge = charge.discount(DiscountRate.CHILD_DISCOUNT_RATE);
-        return PathResponse.of(path, distance, charge,teenagerCharge,childCharge);
+        return PathResponse.of(trace, distance, charge, teenagerCharge, childCharge);
+    }
+
+    private static void validateCanConnect(GraphPath<String, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new IllegalArgumentException("두 역은 연결되어 있지 않습니다");
+        }
+    }
+
+    private GraphPath<String, DefaultWeightedEdge> find(PathRequest request) {
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+            DefaultWeightedEdge.class);
+        List<StationEntity> stations = stationDao.findAll();
+        stations.forEach(station -> {
+            if (!graph.containsVertex(station.getName())) {
+                graph.addVertex(station.getName());
+            }
+            if (stations.stream().anyMatch((s) -> s.getId() == station.getNext())) {
+                String nextStationName = stations.stream()
+                    .filter((s) -> s.getId() == station.getNext()).findFirst().get().getName();
+                graph.addVertex(nextStationName);
+                graph.setEdgeWeight(graph.addEdge(station.getName(), nextStationName),
+                    station.getDistance());
+            }
+        });
+
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+            graph);
+
+        return dijkstraShortestPath.getPath(request.getStartStation(),
+            request.getEndStation());
     }
 
     private void validateStation(PathRequest request) {
@@ -56,9 +103,8 @@ public class PathService {
         }
     }
 
-    // TODO: 2023-05-18 private으로 바꾸기
-    public Charge calculateCharge(Distance distance) {
-        Charge charge = new Charge(BASIC_CHARGE);
+    private Charge calculateCharge(Distance distance, int extraCharge) {
+        Charge charge = new Charge(BASIC_CHARGE + extraCharge);
         if (distance.isLessThan(TEN)) {
             return charge;
         }

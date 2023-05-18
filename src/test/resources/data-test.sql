@@ -41,3 +41,12 @@ values('왕십리역', 12, 4, 2);
 
 INSERT INTO STATION (name, next_station, distance, line_id)
 values('용답역', 0, null, 2);
+
+INSERT INTO LINE (name, color,extra_charge, head_station)
+values('3호선', '주황색',700, 13);
+
+INSERT INTO STATION (name, next_station, distance, line_id)
+values('노포역', 14, 40, 3);
+
+INSERT INTO STATION (name, next_station, distance, line_id)
+values('서면역', 0, null, 3);

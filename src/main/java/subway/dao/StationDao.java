@@ -53,6 +53,11 @@ public class StationDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
+    public List<StationEntity> findAll() {
+        String sql = "select * from STATION";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public List<StationEntity> findByLineId(Long lineId) {
         String sql = "select * from STATION where line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);

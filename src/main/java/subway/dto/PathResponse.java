@@ -36,4 +36,12 @@ public class PathResponse {
     public int getCharge() {
         return charge;
     }
+
+    public int getTeenagerCharge() {
+        return teenagerCharge;
+    }
+
+    public int getChildCharge() {
+        return childCharge;
+    }
 }
