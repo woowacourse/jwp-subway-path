@@ -47,4 +47,9 @@ public class SectionDao {
                 "from section where line_id = ?";
         return jdbcTemplate.query(sql, SECTION_ENTITY_ROW_MAPPER, lineId);
     }
+
+    public List<SectionEntity> findAll() {
+        final String sql = "select id, before_station, next_station, distance, line_id from section";
+        return jdbcTemplate.query(sql, SECTION_ENTITY_ROW_MAPPER);
+    }
 }
