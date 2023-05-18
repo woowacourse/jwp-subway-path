@@ -1,38 +1,24 @@
-package subway.application;
+package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.PathDao;
-import subway.dao.StationDao;
-import subway.domain.FareStrategy;
-import subway.domain.Station;
 import subway.domain.path.Path;
 import subway.domain.path.Paths;
-import subway.dto.ShortestResponse;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@ExtendWith(MockitoExtension.class)
-class ShortestServiceTest {
+class ShortestTest {
 
-    @InjectMocks
-    private ShortestService shortestService;
-    @Mock
-    private PathDao pathDao;
-    @Mock
-    private StationDao stationDao;
-    @Mock
-    private FareStrategy fareStrategy;
+    @DisplayName("Paths를 받아서 그래프를 만들 수 있다.")
+    @Test
+    void construct() {
+        assertDoesNotThrow(() -> Shortest.from(new Paths()));
+    }
 
     @Nested
     @DisplayName("최단 경로 찾기 테스트")
@@ -60,25 +46,20 @@ class ShortestServiceTest {
             final Path path3 = new Path(source, station2, 2);
             final Path path4 = new Path(station2, station3, 1);
             final Path path5 = new Path(station3, target, 1);
-            
+
             final Paths paths = new Paths(List.of(path1, path2, path3, path4, path5));
-            when(pathDao.findAll()).thenReturn(paths);
-            when(stationDao.findById(any()))
-                    .thenReturn(source)
-                    .thenReturn(target);
-            when(fareStrategy.calculate(anyLong())).thenReturn(1250);
+            final Shortest shortest = Shortest.from(paths);
 
             //when
-            final ShortestResponse shortest = shortestService.findShortest(source.getId(), target.getId());
+            final Paths found = shortest.findShortest(source, target);
 
             //then
             assertAll(
-                    () -> assertThat(shortest.getTotalDistance()).isEqualTo(4),
-                    () -> assertThat(shortest.getPaths()).hasSize(3),
-                    () -> assertThat(shortest.getTotalCost()).isEqualTo(1250));
+                    () -> assertThat(found.getTotalDistance()).isEqualTo(4),
+                    () -> assertThat(found.toList()).hasSize(3));
         }
 
-        @DisplayName("존재하지 않는 경로로 최단 경로를 조회하면 예외가 발생한다")
+        @DisplayName("존재하지 않는 경로로 최단 경로를 조회하면 빈 경로가 반환된다")
         @Test
         void findShortest_fail() {
             //given
@@ -92,15 +73,15 @@ class ShortestServiceTest {
             final Path path2 = new Path(target, station2, 5);
 
             final Paths paths = new Paths(List.of(path1, path2));
-            when(pathDao.findAll()).thenReturn(paths);
-            when(stationDao.findById(any()))
-                    .thenReturn(source)
-                    .thenReturn(target);
+            final Shortest shortest = Shortest.from(paths);
 
-            //when, then
-            assertThatThrownBy(() -> shortestService.findShortest(source.getId(), target.getId()))
-                    .isInstanceOf(IllegalStateException.class)
-                    .hasMessage("경로가 존재하지 않습니다.");
+            //when
+            final Paths found = shortest.findShortest(source, target);
+
+            //then
+            assertAll(
+                    () -> assertThat(found.getTotalDistance()).isZero(),
+                    () -> assertThat(found.toList()).isEmpty());
         }
     }
 }
