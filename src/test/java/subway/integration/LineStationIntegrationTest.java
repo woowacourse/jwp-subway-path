@@ -93,7 +93,6 @@ public class LineStationIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations");
-
     }
 
     @Test
@@ -125,7 +124,6 @@ public class LineStationIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/1/stations/1");
-
 
         // when
         final ConnectionRequest request = new ConnectionRequest("up", null, 1L, 12);
