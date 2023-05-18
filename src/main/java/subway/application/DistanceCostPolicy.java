@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.application;
 
 import org.springframework.stereotype.Component;
+import subway.domain.Path;
 
 @Component
 public class DistanceCostPolicy implements CostPolicy {

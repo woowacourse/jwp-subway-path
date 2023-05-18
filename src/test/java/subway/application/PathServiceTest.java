@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.response.FindShortestPathResponse;
 import subway.controller.dto.response.StationInformationResponse;
-import subway.domain.CostPolicy;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
