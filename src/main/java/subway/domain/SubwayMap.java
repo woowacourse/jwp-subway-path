@@ -7,7 +7,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import subway.domain.entity.Section;
 import subway.domain.entity.Station;
 import subway.domain.exception.EmptyRoutedStationsSearchResultException;
-import subway.domain.exception.IllegalClientMapArgumentException;
+import subway.domain.exception.IllegalSubwayMapArgumentException;
 import subway.domain.vo.Distance;
 
 public class SubwayMap {
@@ -48,7 +48,7 @@ public class SubwayMap {
             throw new EmptyRoutedStationsSearchResultException("지하철 노선도에 도착 역이 존재하지 않습니다.");
         }
         if (Objects.equals(sourceStation, targetStation)) {
-            throw new IllegalClientMapArgumentException("출발 역과 도착 역이 동일한 경로를 찾을 수 없습니다.");
+            throw new IllegalSubwayMapArgumentException("출발 역과 도착 역이 동일한 경로를 찾을 수 없습니다.");
         }
     }
 }
