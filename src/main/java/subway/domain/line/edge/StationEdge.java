@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.line.edge;
 
 import subway.exception.IllegalStationEdgeException;
 

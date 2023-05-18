@@ -3,6 +3,7 @@ package subway.domain;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.edge.StationEdge;
 import subway.exception.IllegalStationEdgeException;
 
 import java.util.Set;

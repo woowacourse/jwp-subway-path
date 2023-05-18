@@ -2,7 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.exception.DuplicatedStationNameException;
 import subway.repository.StationRepository;
 

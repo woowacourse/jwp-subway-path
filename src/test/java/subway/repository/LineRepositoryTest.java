@@ -9,9 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dao.StationEdgeDao;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.domain.LineDirection;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 import java.util.Optional;
 

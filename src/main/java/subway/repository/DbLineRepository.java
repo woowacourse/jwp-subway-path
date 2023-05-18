@@ -3,8 +3,8 @@ package subway.repository;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.StationEdgeDao;
-import subway.domain.Line;
-import subway.domain.StationEdge;
+import subway.domain.line.Line;
+import subway.domain.line.edge.StationEdge;
 import subway.entity.LineEntity;
 import subway.entity.StationEdgeEntity;
 

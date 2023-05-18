@@ -1,5 +1,10 @@
 package subway.domain;
 
+import subway.domain.line.Line;
+import subway.domain.line.Lines;
+import subway.domain.station.Station;
+import subway.domain.station.Stations;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package subway.ui.dto;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationResponse {
 

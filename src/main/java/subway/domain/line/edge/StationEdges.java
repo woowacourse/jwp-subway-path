@@ -1,5 +1,6 @@
-package subway.domain;
+package subway.domain.line.edge;
 
+import subway.domain.LineDirection;
 import subway.exception.IllegalStationEdgeStateException;
 import subway.exception.StationAlreadyExistsException;
 import subway.exception.StationNotFoundException;

@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.entity.StationEntity;
 
 @Repository
