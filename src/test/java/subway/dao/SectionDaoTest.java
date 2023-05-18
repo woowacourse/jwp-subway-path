@@ -23,11 +23,10 @@ class SectionDaoTest {
 
     public static final Station station1 = new Station(1L, "st1");
     public static final Station station2 = new Station(2L, "st2");
-    public static final Station station3 = new Station(3L, "st3");
     public static final Station station4 = new Station(4L, "st4");
 
     private SectionDao sectionDao;
-    private long lineId = 1L;
+    private final long lineId = 1L;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
