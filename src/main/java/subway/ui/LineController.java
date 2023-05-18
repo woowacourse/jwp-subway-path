@@ -40,7 +40,7 @@ public class LineController {
     }
 
     @Operation(summary = "노선에 역 추가", description = "노선 사이에 역을 추가합니다. 기준 역과, 추가될 방향을 지정해야 합니다.")
-    @PostMapping("/{lineId}/station")
+    @PostMapping("/{lineId}/stations")
     public ResponseEntity<LineResponse> addStationToLine(
             @NonNull @PathVariable Long lineId,
             @RequestBody StationAddToLineRequest stationAddToLineRequest
@@ -50,7 +50,7 @@ public class LineController {
     }
 
     @Operation(summary = "노선에서 역 제거", description = "노선의 역을 제거합니다.")
-    @DeleteMapping("/{lineId}/station")
+    @DeleteMapping("/{lineId}/stations")
     public ResponseEntity<Void> deleteStation(@PathVariable Long lineId,
                                               @RequestBody StationDeleteRequest stationDeleteRequest) {
         lineService.deleteStation(lineId, stationDeleteRequest.getStation());
