@@ -1,5 +1,7 @@
 package subway.entity;
 
+import static subway.application.StationService.EMPTY_STATION_ID;
+
 import java.util.Objects;
 
 public class StationEntity {
@@ -19,11 +21,10 @@ public class StationEntity {
     }
 
     public StationEntity(String name, Long next, Integer distance, Long lineId) {
-        this.id = 0L;
-        this.name = name;
-        this.next = next;
-        this.distance = distance;
-        this.lineId = lineId;
+        this(0L, name, next, distance, lineId);
+    }
+    public StationEntity(String name, Long lineId) {
+        this(0L, name, EMPTY_STATION_ID, null, lineId);
     }
 
     public Long getId() {

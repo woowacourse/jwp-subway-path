@@ -20,6 +20,10 @@ public class LineEntity {
         this(0L, name, color, extraCharge, headStation);
     }
 
+    public LineEntity(String name, String color, int extraCharge) {
+        this(0L, name, color, extraCharge,null);
+    }
+
     public String getName() {
         return name;
     }

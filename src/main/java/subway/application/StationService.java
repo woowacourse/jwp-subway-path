@@ -64,8 +64,7 @@ public class StationService {
 
     private Long saveDownEndStation(Long lineId, StationRequest request) {
         Long originTailId = stationDao.findTailStationByLineId(lineId);
-        StationEntity newStation = new StationEntity(request.getDownStation(),
-            EMPTY_STATION_ID, null, lineId);
+        StationEntity newStation = new StationEntity(request.getDownStation(), lineId);
         Long newHeadId = stationDao.insert(newStation);
         stationDao.updateDistanceById(originTailId, request.getDistance());
         stationDao.updateNextStationById(originTailId, newHeadId);
