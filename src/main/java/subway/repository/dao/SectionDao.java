@@ -41,21 +41,6 @@ public class SectionDao {
         return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
-    public void deleteAll(final Long lineId) {
-        String sql = "DELETE FROM section WHERE line_id = ?";
-        jdbcTemplate.update(sql, lineId);
-    }
-
-    public List<SectionEntity> findByLineId(final Long lineId) {
-        String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section WHERE line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
-    }
-
-    public List<SectionEntity> findAll() {
-        String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section";
-        return jdbcTemplate.query(sql, rowMapper);
-    }
-
     public void insertAll(final List<SectionEntity> sections) {
         String sql = "insert into SECTION (source_station_id, target_station_id, line_id, distance) values (?, ?, ?, ?)";
 
@@ -71,11 +56,14 @@ public class SectionDao {
                 });
     }
 
-    public int deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
-        String sql = "delete from SECTION "
-                + "where line_id = ? and (source_station_id = ? or target_station_id = ?)";
+    public List<SectionEntity> findAll() {
+        String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
 
-        return jdbcTemplate.update(sql, lineId, stationId, stationId);
+    public List<SectionEntity> findByLineId(final Long lineId) {
+        String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section WHERE line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     public List<SectionEntity> findByStationId(final Long stationId) {
@@ -83,5 +71,17 @@ public class SectionDao {
                 + " WHERE source_station_id = ? or target_station_id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, stationId, stationId);
+    }
+
+    public void deleteAll(final Long lineId) {
+        String sql = "DELETE FROM section WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public int deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
+        String sql = "delete from SECTION "
+                + "where line_id = ? and (source_station_id = ? or target_station_id = ?)";
+
+        return jdbcTemplate.update(sql, lineId, stationId, stationId);
     }
 }
