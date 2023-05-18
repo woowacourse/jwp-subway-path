@@ -37,8 +37,8 @@ class StationServiceTest {
         when(lineRepository.findAll())
                 .thenReturn(
                         List.of(
-                                new Line(new LineName("2호선"), new LineColor("초록"), Sections.create()),
-                                new Line(new LineName("8호선"), new LineColor("핑크"), Sections.create())
+                                new Line(1L, new LineName("2호선"), new LineColor("초록"), Sections.create()),
+                                new Line(2L, new LineName("8호선"), new LineColor("핑크"), Sections.create())
                         ));
         //when
         Long saveId = stationService.saveStation(request);
