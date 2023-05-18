@@ -72,8 +72,7 @@ public class LineRepositoryImpl implements LineRepository {
 
     private void removeInterStations(final LineProxy lineProxy) {
         if (!lineProxy.getRemovedInterStations().isEmpty()) {
-            lineDao.deleteInterStations(lineProxy.getId(),
-                    toInterStationEntities(lineProxy.getRemovedInterStations(), lineProxy.getId()));
+            lineDao.deleteInterStations(toInterStationEntities(lineProxy.getRemovedInterStations(), lineProxy.getId()));
         }
     }
 

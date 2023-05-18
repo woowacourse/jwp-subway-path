@@ -21,9 +21,9 @@ class LineDao {
     public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         lineInsertAction = new SimpleJdbcInsert(jdbcTemplate)
-            .withTableName("line")
-            .usingColumns("name", "color")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("line")
+                .usingColumns("name", "color")
+                .usingGeneratedKeyColumns("id");
         interStationDao = new InterStationDao(jdbcTemplate);
         optionalRowMapper = getOptionalRowMapper();
         rowMapper = getRowMapper();
@@ -49,19 +49,22 @@ class LineDao {
 
     public void updateInformation(final LineEntity entity) {
         jdbcTemplate.update("update Line set name = ?, color = ? where id = ?",
-            entity.getName(), entity.getColor(), entity.getId());
+                entity.getName(), entity.getColor(), entity.getId());
     }
 
     public void insertInterStations(final List<InterStationEntity> interStationEntities) {
         interStationDao.insertAll(interStationEntities);
     }
 
-    public void deleteInterStations(final Long lineId, final List<InterStationEntity> toInterStationEntities) {
+    public void deleteInterStations(final List<InterStationEntity> toInterStationEntities) {
         final List<Long> toInterStationIds = toInterStationEntities.stream()
-            .map(InterStationEntity::getId)
-            .collect(Collectors.toList());
-
-        jdbcTemplate.update("delete from InterStation where line_id = ? and id not in (?)", lineId, toInterStationIds);
+                .map(InterStationEntity::getId)
+                .collect(Collectors.toList());
+        final String inClause = toInterStationIds.stream()
+                .map(id -> "?")
+                .collect(Collectors.joining(","));
+        final String sql = String.format("delete from InterStation where id in (%s)", inClause);
+        jdbcTemplate.update(sql, toInterStationIds.toArray());
     }
 
     public List<LineEntity> findAll() {
@@ -70,11 +73,11 @@ class LineDao {
 
     public LineEntity insert(final LineEntity lineEntity) {
         final long id = lineInsertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(lineEntity))
-            .longValue();
+                .longValue();
         final List<InterStationEntity> interStationEntities = lineEntity.getInterStationEntities()
-            .stream()
-            .map(interStationEntity -> InterStationEntity.of(interStationEntity, id))
-            .collect(Collectors.toList());
+                .stream()
+                .map(interStationEntity -> InterStationEntity.of(interStationEntity, id))
+                .collect(Collectors.toList());
 
         interStationDao.insertAll(interStationEntities);
         return findById(id).orElseThrow(IllegalStateException::new);
@@ -83,7 +86,7 @@ class LineDao {
     public Optional<LineEntity> findById(final long id) {
         try {
             return jdbcTemplate.queryForObject("select id,name,color from Line where id = ?",
-                optionalRowMapper, id);
+                    optionalRowMapper, id);
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }
