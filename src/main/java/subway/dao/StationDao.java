@@ -3,56 +3,74 @@ package subway.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.entity.StationEntity;
 
-import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class StationDao {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
+public class StationDao implements Dao<StationEntity> {
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private static final RowMapper<StationEntity> stationRowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    @Override
+    public Long insert(final StationEntity stationEntity) {
+        final SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+    @Override
+    public Optional<StationEntity> findById(final Long id) {
+        final String sql = "SELECT * FROM station WHERE id = ?";
+        return findInOptional(jdbcTemplate, sql, stationRowMapper, id);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    @Override
+    public List<StationEntity> findAll() {
+        final String sql = "SELECT * FROM station";
+        return jdbcTemplate.query(sql, stationRowMapper);
     }
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+    @Override
+    public void update(final StationEntity stationEntity) {
+        final String sql = "UPDATE station SET name = ? WHERE id = ?";
+        jdbcTemplate.update(sql, stationEntity.getName(), stationEntity.getId());
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+    @Override
+    public void deleteById(final Long id) {
+        jdbcTemplate.update("DELETE FROM station WHERE id = ?", id);
+    }
+
+    public List<StationEntity> findById(final List<Long> ids) {
+        final String sql = "SELECT * FROM station WHERE id IN (:ids)";
+        final SqlParameterSource params = new MapSqlParameterSource("ids", ids);
+        return namedParameterJdbcTemplate.query(sql, params, stationRowMapper);
+    }
+
+    public Optional<StationEntity> findByName(final String name) {
+        final String sql = "SELECT * FROM station WHERE name = ?";
+        return findInOptional(jdbcTemplate, sql, stationRowMapper, name);
     }
 }

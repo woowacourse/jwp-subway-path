@@ -3,59 +3,69 @@ package subway.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import subway.domain.Line;
+import org.springframework.stereotype.Component;
+import subway.entity.LineEntity;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-@Repository
-public class LineDao {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
+@Component
+public class LineDao implements Dao<LineEntity> {
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+    private static final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
+
+    public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
+    @Override
+    public Long insert(final LineEntity line) {
+        final Map<String, Object> params = new HashMap<>();
         params.put("name", line.getName());
         params.put("color", line.getColor());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+    @Override
+    public Optional<LineEntity> findById(final Long id) {
+        final String sql = "SELECT id, name, color FROM line WHERE id = ?";
+        return findInOptional(jdbcTemplate, sql, lineRowMapper, id);
     }
 
-    public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    @Override
+    public List<LineEntity> findAll() {
+        final String sql = "SELECT id, name, color FROM line";
+        return jdbcTemplate.query(sql, lineRowMapper);
     }
 
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    @Override
+    public void update(final LineEntity lineEntity) {
+        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
+        jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+
+    @Override
+    public void deleteById(final Long id) {
+        jdbcTemplate.update("DELETE FROM Line WHERE id = ?", id);
+    }
+
+    public Optional<LineEntity> findByName(final String name) {
+        final String sql = "SELECT id, name, color FROM line WHERE name = ?";
+        return findInOptional(jdbcTemplate, sql, lineRowMapper, name);
     }
 }
