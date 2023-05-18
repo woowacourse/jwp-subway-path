@@ -1,5 +1,6 @@
 package subway.persistence.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SectionEntity {
@@ -30,6 +31,21 @@ public class SectionEntity {
                 sectionEntity.previousStationId, sectionEntity.nextStationId);
     }
 
+    public static SectionEntity createBoundOf(final SectionEntity firstElement, final SectionEntity secondElement) {
+        final int distance = firstElement.distance + secondElement.distance;
+        if (firstElement.isPreviousOf(secondElement)) {
+            return new SectionEntity(firstElement.lineId, distance, firstElement.previousStationId, secondElement.nextStationId);
+        }
+        if (secondElement.isPreviousOf(firstElement)) {
+            return new SectionEntity(secondElement.lineId, distance, secondElement.previousStationId, firstElement.nextStationId);
+        }
+        throw new RuntimeException("연결할 수 없는 SectionEntity 입니다.");
+    }
+
+    private boolean isPreviousOf(final SectionEntity source) {
+        return Objects.equals(nextStationId, source.previousStationId);
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,10 +64,6 @@ public class SectionEntity {
 
     public Long getNextStationId() {
         return nextStationId;
-    }
-
-    public boolean nextStationIdEqualWithPreviousStationIdFrom(final SectionEntity other) {
-        return Objects.equals(nextStationId, other.previousStationId);
     }
 
     @Override

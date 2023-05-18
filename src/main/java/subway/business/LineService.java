@@ -22,13 +22,14 @@ import subway.presentation.dto.request.converter.SubwayDirection;
 import subway.presentation.dto.response.LineResponse;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class LineService {
 
+    private static final int FIRST_ELEMENT_INDEX_OF_RELATED_SECTIONS = 0;
+    private static final int SECOND_ELEMENT_INDEX_OF_RELATED_SECTIONS = 1;
     private static final int SIZE_OF_END_POINT_STATION = 1;
 
     private final LineDao lineDao;
@@ -140,14 +141,17 @@ public class LineService {
 
     @Transactional
     public Optional<LineResponse> unregisterStation(final Long lineId, final StationUnregisterInLineRequest request) {
-        final List<SectionEntity> relatedSectionEntities =
-                sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, request.getStationName());
-        sectionDao.delete(relatedSectionEntities.get(0));
+        final List<SectionEntity> relatedSectionEntities = sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, request.getStationName());
+        sectionDao.delete(relatedSectionEntities.get(FIRST_ELEMENT_INDEX_OF_RELATED_SECTIONS));
         if (relatedSectionEntities.size() == SIZE_OF_END_POINT_STATION) {
             return cascadeLine(lineId);
         }
-        sectionDao.delete(relatedSectionEntities.get(1));
-        bindSections(lineId, relatedSectionEntities);
+        sectionDao.delete(relatedSectionEntities.get(SECOND_ELEMENT_INDEX_OF_RELATED_SECTIONS));
+        final SectionEntity boundSectionEntity = SectionEntity.createBoundOf(
+                relatedSectionEntities.get(FIRST_ELEMENT_INDEX_OF_RELATED_SECTIONS),
+                relatedSectionEntities.get(SECOND_ELEMENT_INDEX_OF_RELATED_SECTIONS)
+        );
+        sectionDao.insert(boundSectionEntity);
         final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(lineId);
         return Optional.of(convertToResponse(sectionDetailEntities));
     }
@@ -160,24 +164,5 @@ public class LineService {
             lineDao.deleteById(lineId);
             return Optional.empty();
         }
-    }
-
-    private void bindSections(final long lineId, final List<SectionEntity> relatedSectionEntities) {
-        final List<SectionEntity> sectionEntities = matchOrderOfTwoSectionEntities(relatedSectionEntities);
-        final SectionEntity previousSectionEntity = sectionEntities.get(0);
-        final SectionEntity nextSectionEntity = sectionEntities.get(1);
-        final int distance = previousSectionEntity.getDistance() + nextSectionEntity.getDistance();
-        final SectionEntity concatSectionEntity = new SectionEntity(lineId, distance,
-                previousSectionEntity.getPreviousStationId(), nextSectionEntity.getNextStationId());
-        sectionDao.insert(concatSectionEntity);
-    }
-
-    private List<SectionEntity> matchOrderOfTwoSectionEntities(final List<SectionEntity> source) {
-        final SectionEntity sourcePreviousEntity = source.get(0);
-        final SectionEntity sourceNextEntity = source.get(1);
-        if (sourcePreviousEntity.nextStationIdEqualWithPreviousStationIdFrom(sourceNextEntity)) {
-            return List.copyOf(source);
-        }
-        return List.of(sourceNextEntity, sourcePreviousEntity);
     }
 }
