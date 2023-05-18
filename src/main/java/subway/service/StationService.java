@@ -28,25 +28,25 @@ public class StationService {
         return StationResponse.from(stationResponse);
     }
 
-//    public StationResponse findStationResponseById(Long id) {
-//        Station station = stationRepository.findById(id);
-//        return StationResponse.from(station);
-//    }
-//
-//    public List<StationResponse> findAllStationResponses() {
-//        List<Station> stationEntities = stationRepository.findAll();
-//
-//        return stationEntities.stream()
-//                .map(StationResponse::from)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public void updateStation(Long id, StationRequest stationRequest) {
-//        stationRepository.update(new Station(id, stationRequest.getName()));
-//    }
-//
-//    public void deleteStationById(Long id) {
-//        stationRepository.deleteById(id);
-//    }
+    public StationResponse findStationResponseById(Long id) {
+        Station station = stationRepository.findById(id);
+        return StationResponse.from(station);
+    }
+
+    public List<StationResponse> findAllStationResponses() {
+        List<Station> stationEntities = stationRepository.findAll();
+
+        return stationEntities.stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    public void updateStation(Long id, StationRequest stationRequest) {
+        stationRepository.update(new Station(id, stationRequest.getName()));
+    }
+
+    public void deleteStationById(Long id) {
+        stationRepository.deleteById(id);
+    }
 
 }
