@@ -59,19 +59,16 @@ public class LineService {
         final Station station = stationRepository.findById(stationId);
 
         final Line updateSection = line.deleteStation(station);
-
         lineRepository.updateSections(updateSection);
     }
 
     public LineResponse findLineById(final Long id) {
         final Line line = lineRepository.findById(id);
-        final List<SectionResponse> sectionResponses = createSectionResponses(line);
-
         return new LineResponse(
                 line.getId(),
                 line.getLineName().name(),
                 line.getLineColor().color(),
-                sectionResponses
+                createSectionResponses(line)
         );
     }
 
