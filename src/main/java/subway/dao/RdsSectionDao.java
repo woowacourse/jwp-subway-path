@@ -78,7 +78,8 @@ public class RdsSectionDao implements SectionDao {
 
     @Override
     public List<Section> findAll() {
-        final String sql = "SELECT s1.id AS up_station_id," +
+        final String sql = "SELECT sec.id," +
+                "s1.id AS up_station_id," +
                 "s1.name AS up_station_name," +
                 "s2.id AS down_station_id," +
                 "s2.name AS down_station_name," +
