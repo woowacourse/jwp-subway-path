@@ -2,6 +2,8 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static subway.fixture.LineFixture.line2WithOneSection;
+import static subway.fixture.LineFixture.line2WithTwoSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ class LineTest {
     @DisplayName("추가하려는 역이 이미 존재하는 경우 예외가 발생한다.")
     @Test
     void shouldThrowExceptionWhenInputStationToAddAlreadyExist() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
 
         assertThatThrownBy(() -> line.addStation("잠실역", "몽촌토성역", Direction.UPWARD, 3))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -29,7 +31,7 @@ class LineTest {
     @DisplayName("이웃역이 존재하지 않는 경우 예외가 발생한다.")
     @Test
     void shouldThrowExceptionWhenInputNeighborhoodStationDoesNotExist() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
 
         assertThatThrownBy(() -> line.addStation("까치산역", "신도림역", Direction.UPWARD, 3))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -40,7 +42,7 @@ class LineTest {
     @DisplayName("저장하려는 위치의 구간 거리보다 입력한 거리가 더 큰 경우 예외가 발생한다.")
     @Test
     void shouldThrowExceptionWhenDistanceToSaveIsSameOrOverExistingDistance() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
 
         assertThatThrownBy(() -> line.addStation("강남역", "몽촌토성역", Direction.UPWARD, 5))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -50,7 +52,7 @@ class LineTest {
     @DisplayName("이웃 역 기준 상행 방향에 역을 추가한다.")
     @Test
     void shouldAddSectionAlongUpwardWhenInputStationToAdd() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
         line.addStation("강남역", "몽촌토성역", Direction.UPWARD, 2);
 
         assertThat(line.getSections()).hasSize(2);
@@ -60,7 +62,7 @@ class LineTest {
     @DisplayName("이웃 역 기준 하행 방향에 역을 추가한다.")
     @Test
     void shouldAddSectionAlongDownwardWhenInputStationToAdd() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
         line.addStation("강남역", "잠실역", Direction.DOWNWARD, 2);
 
         assertThat(line.getSections()).hasSize(2);
@@ -70,7 +72,7 @@ class LineTest {
     @DisplayName("상행 종점에 역을 추가한다.")
     @Test
     void shouldAddUpwardTerminusWhenInputStationToAdd() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
         line.addStation("까치산역", "잠실역", Direction.UPWARD, 2);
 
         assertThat(line.getSections()).hasSize(2);
@@ -80,7 +82,7 @@ class LineTest {
     @DisplayName("하행 종점에 역을 추가한다.")
     @Test
     void shouldAddDownwardTerminusWhenInputStationToAdd() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
         line.addStation("까치산역", "몽촌토성역", Direction.DOWNWARD, 2);
 
         assertThat(line.getSections()).hasSize(2);
@@ -90,8 +92,7 @@ class LineTest {
     @DisplayName("삭제하려는 역이 노선에 존재하지 않는 경우 예외가 발생한다.")
     @Test
     void shouldThrowExceptionWhenInputStationToDeleteAlreadyExist() {
-        Line line = getDummyLine();
-        line.addStation("까치산역", "몽촌토성역", Direction.DOWNWARD, 2);
+        Line line = line2WithTwoSection();
         // 현재 노선 상태 : (상행) 잠실역 - 몽촌토성역 - 까치산역 (하행)
 
         assertThatThrownBy(() -> line.deleteStation("신도림역"))
@@ -103,7 +104,7 @@ class LineTest {
     @DisplayName("역 삭제 시, 노선에 두 개의 역만 존재하는 경우 예외가 발생한다.")
     @Test
     void shouldThrowExceptionWhenDeleteStationFromLineHaveOnly2Stations() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
 
         assertThatThrownBy(() -> line.deleteStation("잠실역"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -113,7 +114,7 @@ class LineTest {
     @DisplayName("노선의 가운데에 있는 역을 삭제한다.")
     @Test
     void shouldDeleteStationWhenInputStationInMiddle() {
-        Line line = getDummyLineHasTwoSection();
+        Line line = line2WithTwoSection();
 
         line.deleteStation("몽촌토성역");
         // 현재 노선 상태 : (상행) 잠실역 - 까치산역 (하행)
@@ -125,7 +126,7 @@ class LineTest {
     @DisplayName("상행 종점에 있는 역을 삭제한다.")
     @Test
     void shouldDeleteStationWhenInputStationIsUpwardTerminus() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
         line.addStation("까치산역", "몽촌토성역", Direction.DOWNWARD, 2);
         // 현재 노선 상태 : (상행) 잠실역 - 몽촌토성역 - 까치산역 (하행)
 
@@ -139,7 +140,7 @@ class LineTest {
     @DisplayName("하행 종점에 있는 역을 삭제한다.")
     @Test
     void shouldDeleteStationWhenInputStationIsDownwardTerminus() {
-        Line line = getDummyLine();
+        Line line = line2WithOneSection();
         line.addStation("까치산역", "몽촌토성역", Direction.DOWNWARD, 2);
         // 현재 노선 상태 : (상행) 잠실역 - 몽촌토성역 - 까치산역 (하행)
 
@@ -195,19 +196,6 @@ class LineTest {
         }
     }
 
-    private Line getDummyLine() {
-        return new Line(
-                1L,
-                "2호선",
-                new ArrayList<>(List.of(new Section(
-                        1L,
-                        new Station(1L, "잠실역"),
-                        new Station(2L, "몽촌토성역"),
-                        5))
-                )
-        );
-    }
-
     private Line getDummyLineOfId(Long id) {
         return new Line(
                 id,
@@ -218,28 +206,6 @@ class LineTest {
                         new Station(2L, "몽촌토성역"),
                         5))
                 )
-        );
-    }
-
-    private Line getDummyLineHasTwoSection() {
-        Section section1 = new Section(
-                1L,
-                new Station(1L, "잠실역"),
-                new Station(2L, "몽촌토성역"),
-                5
-        );
-        Section section2 = new Section(
-                2L,
-                new Station(3L, "몽촌토성역"),
-                new Station(4L, "까치산역"),
-                5
-        );
-        return new Line(
-                1L,
-                "2호선",
-                new ArrayList<>(List.of(
-                        section1, section2
-                ))
         );
     }
 }
