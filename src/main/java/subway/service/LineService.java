@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.response.LineResponse;
 import subway.controller.dto.response.SingleLineResponse;
 import subway.exception.LineDuplicateException;
@@ -17,6 +18,7 @@ import subway.service.dto.LineDto;
 import subway.service.dto.SectionCreateDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -51,10 +53,30 @@ public class LineService {
         );
     }
 
+    public List<SingleLineResponse> getAllLine() {
+        Subway subway = new Subway(lineRepository.findAll());
+
+        return subway.getAllLine()
+                .stream()
+                .map(SingleLineResponse::from)
+                .collect(Collectors.toList());
+    }
+
     public SingleLineResponse getLineById(Long id) {
         Subway subway = new Subway(lineRepository.findAll());
 
         return SingleLineResponse.from(subway.getSingleLine(id));
+    }
+
+    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        lineRepository.updateLineProperty(new LineProperty(
+                id,
+                lineUpdateRequest.getName(),
+                lineUpdateRequest.getColor()));
+    }
+
+    public void deleteLineById(Long id) {
+        lineRepository.deleteById(id);
     }
 
 }
