@@ -29,19 +29,19 @@ public class Route {
         return new Route(null, Fee.createDefault());
     }
 
-    public Map<Station, Set<String>> findShortestPath(final String start, final String destination) {
+    public Map<Station, Set<String>> findShortestRouteWithLineNames(final String start, final String destination) {
         validateEmptyLines();
 
         WeightedMultigraph<String, DefaultWeightedEdge> graph = initGraph();
 
-        GraphPath<String, DefaultWeightedEdge> path = calculateShortestPath(graph, start, destination);
-        fee.calculateFromDistance((int) path.getWeight());
+        GraphPath<String, DefaultWeightedEdge> route = calculateShortestPath(graph, start, destination);
+        fee.calculateFromDistance((int) route.getWeight());
 
-        return getStationWithLineNames(path);
+        return getStationWithLineNames(route);
     }
 
     private void validateEmptyLines() {
-        if(this.lines == null) {
+        if (this.lines == null) {
             throw new LinesEmptyException();
         }
     }
@@ -68,11 +68,11 @@ public class Route {
         }
     }
 
-    private Map<Station, Set<String>> getStationWithLineNames(final GraphPath<String, DefaultWeightedEdge> path) {
+    private Map<Station, Set<String>> getStationWithLineNames(final GraphPath<String, DefaultWeightedEdge> route) {
         Map<String, Station> stationsFromName = lines.getStationsFromNameMap();
         Map<Station, Set<String>> lineNamesFromStation = new LinkedHashMap<>();
 
-        for (String stationName : path.getVertexList()) {
+        for (String stationName : route.getVertexList()) {
             Station station = stationsFromName.get(stationName);
             lineNamesFromStation.put(station, lines.getLinesNameFromStation(station));
         }

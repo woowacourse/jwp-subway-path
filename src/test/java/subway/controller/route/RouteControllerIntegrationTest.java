@@ -43,7 +43,7 @@ class RouteControllerIntegrationTest {
 
     @Test
     @DisplayName("최단 경로를 조회한다.")
-    void find_shortest_path() {
+    void find_shortest_route() {
         // given
         ShortestPathRequest req = new ShortestPathRequest("잠실역", "종합운동장역");
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");

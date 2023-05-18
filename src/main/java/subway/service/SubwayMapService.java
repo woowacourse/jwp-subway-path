@@ -48,7 +48,7 @@ public class SubwayMapService {
     public ShortestPathResponse findShortestPath(final ShortestPathRequest req) {
         Route route = RouteCache.getRoute();
 
-        Map<Station, Set<String>> StationWithLinesMap = route.findShortestPath(req.getStart(), req.getDestination());
+        Map<Station, Set<String>> StationWithLinesMap = route.findShortestRouteWithLineNames(req.getStart(), req.getDestination());
 
         return ShortestPathResponse.from(StationWithLinesMap, route.getFee());
     }

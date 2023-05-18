@@ -33,7 +33,7 @@ public class RouteControllerUnitTest {
 
     @Test
     @DisplayName("최단 경로를 조회한다.")
-    void find_shortest_path() throws Exception {
+    void find_shortest_route() throws Exception {
         // given
         ShortestPathRequest req = new ShortestPathRequest("잠실역", "종합운동장역");
 
