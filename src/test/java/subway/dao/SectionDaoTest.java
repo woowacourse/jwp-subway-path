@@ -12,7 +12,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
 import subway.entity.SectionEntity;
 import subway.fixture.LineFixture.Line1;
 import subway.fixture.StationFixture.A;
@@ -23,7 +22,6 @@ import subway.fixture.StationFixture.C;
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @JdbcTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Sql({"classpath:schema-test.sql"})
 class SectionDaoTest {
 
     private LineDao lineDao;

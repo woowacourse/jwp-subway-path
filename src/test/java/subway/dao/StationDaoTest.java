@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
 import subway.entity.StationEntity;
 import subway.fixture.StationFixture.A;
 import subway.fixture.StationFixture.B;
@@ -21,7 +20,6 @@ import subway.fixture.StationFixture.B;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @JdbcTest
-@Sql({"classpath:schema-test.sql"})
 class StationDaoTest {
 
     @Autowired
