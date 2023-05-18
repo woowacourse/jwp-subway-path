@@ -2,10 +2,10 @@ package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.integration.TestFixture.OBJECT_MAPPER;
-import static subway.integration.TestFixture.SAMSUNG;
-import static subway.integration.TestFixture.SEONGLENUG;
-import static subway.integration.TestFixture.jsonSerialize;
+import static subway.TestFixture.OBJECT_MAPPER;
+import static subway.TestFixture.SAMSUNG;
+import static subway.TestFixture.SEONGLENUG;
+import static subway.TestFixture.jsonSerialize;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;

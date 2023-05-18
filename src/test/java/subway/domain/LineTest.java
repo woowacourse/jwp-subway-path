@@ -3,7 +3,7 @@ package subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
-import static subway.integration.TestFixture.LINE_2;
+import static subway.TestFixture.LINE_2;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

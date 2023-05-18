@@ -1,10 +1,10 @@
 package subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.integration.TestFixture.GANGNAM;
-import static subway.integration.TestFixture.SAMSUNG;
-import static subway.integration.TestFixture.SECTIONS;
-import static subway.integration.TestFixture.SEONGLENUG;
+import static subway.TestFixture.GANGNAM;
+import static subway.TestFixture.SAMSUNG;
+import static subway.TestFixture.SECTIONS;
+import static subway.TestFixture.SEONGLENUG;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

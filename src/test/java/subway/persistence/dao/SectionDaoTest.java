@@ -2,11 +2,11 @@ package subway.persistence.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static subway.integration.TestFixture.GANGNAM;
-import static subway.integration.TestFixture.JAMSIL;
-import static subway.integration.TestFixture.LINE_3;
-import static subway.integration.TestFixture.SECTION_1;
-import static subway.integration.TestFixture.SECTION_2;
+import static subway.TestFixture.GANGNAM;
+import static subway.TestFixture.JAMSIL;
+import static subway.TestFixture.LINE_3;
+import static subway.TestFixture.SECTION_1;
+import static subway.TestFixture.SECTION_2;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

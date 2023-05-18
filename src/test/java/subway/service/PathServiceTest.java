@@ -2,10 +2,10 @@ package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.integration.TestFixture.GANGNAM;
-import static subway.integration.TestFixture.JAMSIL;
-import static subway.integration.TestFixture.SAMSUNG;
-import static subway.integration.TestFixture.SEONGLENUG;
+import static subway.TestFixture.GANGNAM;
+import static subway.TestFixture.JAMSIL;
+import static subway.TestFixture.SAMSUNG;
+import static subway.TestFixture.SEONGLENUG;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
