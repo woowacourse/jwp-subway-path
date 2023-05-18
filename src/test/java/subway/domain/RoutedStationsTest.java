@@ -13,6 +13,7 @@ import static subway.domain.StationFixture.FIXTURE_STATION_6;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.exception.AbnormalRoutedStationsException;
 
 class RoutedStationsTest {
 
@@ -37,6 +38,22 @@ class RoutedStationsTest {
         }
     }
 
+    @DisplayName("동일한 두 점을 연결하는 구간이 2개 이상이면 역 연결 그래프를 생성할 수 없다")
+    @Test
+    void createFailSectionsDuplicated() {
+        List<Section> sections = List.of(
+                LINE1_SECTION_ST1_ST2,
+                LINE1_SECTION_ST1_ST2,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
+                LINE1_SECTION_ST5_ST6
+        );
+
+        assertThatThrownBy(() -> RoutedStations.from(sections))
+                .isInstanceOf(AbnormalRoutedStationsException.class)
+                .hasMessageContaining("동일한 두 점을 연결하는 구간이 존재합니다.");
+    }
+
     @DisplayName("중간에 연결이 끊기는 구간 목록일 경우 예외를 발생한다")
     @Test
     void createFailDisconnected() {
@@ -48,7 +65,7 @@ class RoutedStationsTest {
         );
 
         assertThatThrownBy(() -> RoutedStations.from(sections))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(AbnormalRoutedStationsException.class)
                 .hasMessageContaining("하행 종점은 1개여야 합니다.");
     }
 
@@ -64,7 +81,7 @@ class RoutedStationsTest {
         );
 
         assertThatThrownBy(() -> RoutedStations.from(sections))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(AbnormalRoutedStationsException.class)
                 .hasMessageContaining("상행 종점은 1개여야 합니다.");
     }
 }

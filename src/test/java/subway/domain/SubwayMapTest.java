@@ -17,7 +17,8 @@ import static subway.domain.StationFixture.FIXTURE_STATION_9;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.exception.EmptyRoutedStationsSearchResult;
+import subway.domain.exception.EmptyRoutedStationsSearchResultException;
+import subway.domain.exception.IllegalSubwayMapArgumentException;
 
 class SubwayMapTest {
 
@@ -52,7 +53,7 @@ class SubwayMapTest {
         // when, then
         assertThatThrownBy(
                 () -> subwayMap.findShortestRoutedStations(FIXTURE_STATION_7, FIXTURE_STATION_1))
-                .isInstanceOf(EmptyRoutedStationsSearchResult.class)
+                .isInstanceOf(EmptyRoutedStationsSearchResultException.class)
                 .hasMessageContaining("지하철 노선도에 출발 역이 존재하지 않습니다.");
     }
 
@@ -66,7 +67,21 @@ class SubwayMapTest {
         // when, then
         assertThatThrownBy(
                 () -> subwayMap.findShortestRoutedStations(FIXTURE_STATION_1, FIXTURE_STATION_7))
-                .isInstanceOf(EmptyRoutedStationsSearchResult.class)
+                .isInstanceOf(EmptyRoutedStationsSearchResultException.class)
                 .hasMessageContaining("지하철 노선도에 도착 역이 존재하지 않습니다.");
+    }
+
+    @DisplayName("출발 역과 도착 역이 동일하면 예외를 발생한다")
+    @Test
+    void findShortestRoutedStationsFailSourceTargetSame() {
+        // given
+        Map<Line, RoutedStations> sectionsByLine = Map.of(FIXTURE_LINE_1, RoutedStations.from(LINE1_SECTIONS));
+        SubwayMap subwayMap = new SubwayMap(MultiRoutedStations.from(sectionsByLine));
+
+        // when, then
+        assertThatThrownBy(
+                () -> subwayMap.findShortestRoutedStations(FIXTURE_STATION_1, FIXTURE_STATION_1))
+                .isInstanceOf(IllegalSubwayMapArgumentException.class)
+                .hasMessageContaining("출발 역과 도착 역이 동일한 경로를 찾을 수 없습니다.");
     }
 }

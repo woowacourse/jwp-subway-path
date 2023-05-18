@@ -10,10 +10,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import subway.domain.exception.EmptyRoutedStationsSearchResult;
+import subway.domain.exception.EmptyRoutedStationsSearchResultException;
 import subway.domain.exception.EmptySectionOperationException;
 import subway.domain.exception.IllegalDistanceArgumentException;
-import subway.domain.exception.IllegalLineRouteArgumentException;
+import subway.domain.exception.IllegalLineMapArgumentException;
 
 public class LineMap {
 
@@ -45,7 +45,7 @@ public class LineMap {
 
     private void updateVertexForStations(final Station base, final Station adding) {
         if (Objects.equals(base, adding)) {
-            throw new IllegalLineRouteArgumentException("기준 역과 등록할 역은 동일할 수 없습니다.");
+            throw new IllegalLineMapArgumentException("기준 역과 등록할 역은 동일할 수 없습니다.");
         }
         if (isStationsEmpty()) {
             routedStations.addVertex(base);
@@ -57,13 +57,13 @@ public class LineMap {
 
     private void validateNonExisting(final Station station) {
         if (hasStation(station)) {
-            throw new IllegalLineRouteArgumentException(station.getName() + ": 해당 역이 노선에 이미 존재합니다.");
+            throw new IllegalLineMapArgumentException(station.getName() + ": 해당 역이 노선에 이미 존재합니다.");
         }
     }
 
     private void validateExisting(final Station station) {
         if (!hasStation(station)) {
-            throw new IllegalLineRouteArgumentException(station.getName() + ": 해당 역이 노선에 존재하지 않습니다.");
+            throw new IllegalLineMapArgumentException(station.getName() + ": 해당 역이 노선에 존재하지 않습니다.");
         }
     }
 
@@ -161,7 +161,8 @@ public class LineMap {
             return orderedStations;
         }
 
-        Station station = findStart().orElseThrow(() -> new EmptyRoutedStationsSearchResult("하행 종점을 찾을 수 없습니다."));
+        Station station = findStart().orElseThrow(
+                () -> new EmptyRoutedStationsSearchResultException("하행 종점을 찾을 수 없습니다."));
         while (!routedStations.outgoingEdgesOf(station).isEmpty()) {
             orderedStations.add(station);
             Section rightSection = findRightSection(station).get();
