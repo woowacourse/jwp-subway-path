@@ -3,11 +3,11 @@ package subway.application;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
-import static subway.domain.StationFixture.FIXTURE_STATION_1;
-import static subway.domain.StationFixture.FIXTURE_STATION_2;
-import static subway.domain.StationFixture.FIXTURE_STATION_3;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST2_ST3;
+import static subway.fixture.StationFixture.FIXTURE_STATION_1;
+import static subway.fixture.StationFixture.FIXTURE_STATION_2;
+import static subway.fixture.StationFixture.FIXTURE_STATION_3;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +26,7 @@ import subway.domain.exception.RequestDataNotFoundException;
 import subway.dto.SectionRequest;
 import subway.dto.SectionStations;
 
+@DisplayName("지하철 구간 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
 

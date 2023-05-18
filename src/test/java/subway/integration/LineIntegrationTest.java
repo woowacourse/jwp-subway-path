@@ -2,9 +2,9 @@ package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.StationFixture.FIXTURE_STATION_1;
-import static subway.domain.StationFixture.FIXTURE_STATION_2;
-import static subway.domain.StationFixture.FIXTURE_STATION_3;
+import static subway.fixture.StationFixture.FIXTURE_STATION_1;
+import static subway.fixture.StationFixture.FIXTURE_STATION_2;
+import static subway.fixture.StationFixture.FIXTURE_STATION_3;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -28,7 +28,7 @@ import subway.dto.SectionRequest;
 import subway.dto.SectionStations;
 import subway.dto.StationResponse;
 
-@DisplayName("지하철 노선 관련 기능")
+@DisplayName("지하철 노선 관련 기능 통합 테스트")
 public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;

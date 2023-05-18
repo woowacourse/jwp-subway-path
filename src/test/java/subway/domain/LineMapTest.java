@@ -4,17 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.domain.Direction.DOWN;
 import static subway.domain.Direction.UP;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST3_ST4;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST4_ST5;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST5_ST6;
-import static subway.domain.StationFixture.FIXTURE_STATION_1;
-import static subway.domain.StationFixture.FIXTURE_STATION_2;
-import static subway.domain.StationFixture.FIXTURE_STATION_3;
-import static subway.domain.StationFixture.FIXTURE_STATION_4;
-import static subway.domain.StationFixture.FIXTURE_STATION_5;
-import static subway.domain.StationFixture.FIXTURE_STATION_6;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST2_ST3;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST3_ST4;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST4_ST5;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST5_ST6;
+import static subway.fixture.StationFixture.FIXTURE_STATION_1;
+import static subway.fixture.StationFixture.FIXTURE_STATION_2;
+import static subway.fixture.StationFixture.FIXTURE_STATION_3;
+import static subway.fixture.StationFixture.FIXTURE_STATION_4;
+import static subway.fixture.StationFixture.FIXTURE_STATION_5;
+import static subway.fixture.StationFixture.FIXTURE_STATION_6;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import subway.domain.exception.IllegalDistanceArgumentException;
 import subway.domain.exception.IllegalLineMapArgumentException;
 
+@DisplayName("역 개별 노선도 단위 테스트")
 class LineMapTest {
 
     @DisplayName("노선에 역이 존재하지 않으면 두 역을 모두 새로 등록할 수 있다")

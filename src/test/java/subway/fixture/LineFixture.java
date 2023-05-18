@@ -1,4 +1,6 @@
-package subway.domain;
+package subway.fixture;
+
+import subway.domain.Line;
 
 public class LineFixture {
 

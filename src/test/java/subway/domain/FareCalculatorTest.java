@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+@DisplayName("요금 계산기 단위 테스트")
 class FareCalculatorTest {
 
     @DisplayName("전달받은 이용 거리에 따른 요금을 계산해 반환한다")

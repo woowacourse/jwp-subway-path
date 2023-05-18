@@ -1,17 +1,19 @@
-package subway.domain;
+package subway.fixture;
 
-import static subway.domain.StationFixture.FIXTURE_STATION_1;
-import static subway.domain.StationFixture.FIXTURE_STATION_10;
-import static subway.domain.StationFixture.FIXTURE_STATION_2;
-import static subway.domain.StationFixture.FIXTURE_STATION_3;
-import static subway.domain.StationFixture.FIXTURE_STATION_4;
-import static subway.domain.StationFixture.FIXTURE_STATION_5;
-import static subway.domain.StationFixture.FIXTURE_STATION_6;
-import static subway.domain.StationFixture.FIXTURE_STATION_7;
-import static subway.domain.StationFixture.FIXTURE_STATION_8;
-import static subway.domain.StationFixture.FIXTURE_STATION_9;
+import static subway.fixture.StationFixture.FIXTURE_STATION_1;
+import static subway.fixture.StationFixture.FIXTURE_STATION_10;
+import static subway.fixture.StationFixture.FIXTURE_STATION_2;
+import static subway.fixture.StationFixture.FIXTURE_STATION_3;
+import static subway.fixture.StationFixture.FIXTURE_STATION_4;
+import static subway.fixture.StationFixture.FIXTURE_STATION_5;
+import static subway.fixture.StationFixture.FIXTURE_STATION_6;
+import static subway.fixture.StationFixture.FIXTURE_STATION_7;
+import static subway.fixture.StationFixture.FIXTURE_STATION_8;
+import static subway.fixture.StationFixture.FIXTURE_STATION_9;
 
 import java.util.List;
+import subway.domain.Distance;
+import subway.domain.Section;
 
 public class SectionFixture {
 

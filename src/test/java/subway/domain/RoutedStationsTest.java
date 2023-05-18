@@ -2,19 +2,20 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST3_ST4;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST4_ST5;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST5_ST6;
-import static subway.domain.StationFixture.FIXTURE_STATION_4;
-import static subway.domain.StationFixture.FIXTURE_STATION_6;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST2_ST3;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST3_ST4;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST4_ST5;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST5_ST6;
+import static subway.fixture.StationFixture.FIXTURE_STATION_4;
+import static subway.fixture.StationFixture.FIXTURE_STATION_6;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.exception.AbnormalRoutedStationsException;
 
+@DisplayName("하행 단선 역 연결 그래프 단위 테스트")
 class RoutedStationsTest {
 
     @DisplayName("구간 목록을 전달받아 하행 기준으로 연결된 역 연결 정보를 생성한다")

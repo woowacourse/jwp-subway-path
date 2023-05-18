@@ -2,12 +2,12 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST4_ST5;
-import static subway.domain.StationFixture.FIXTURE_STATION_1;
-import static subway.domain.StationFixture.FIXTURE_STATION_2;
-import static subway.domain.StationFixture.FIXTURE_STATION_3;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST2_ST3;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST4_ST5;
+import static subway.fixture.StationFixture.FIXTURE_STATION_1;
+import static subway.fixture.StationFixture.FIXTURE_STATION_2;
+import static subway.fixture.StationFixture.FIXTURE_STATION_3;
 
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import subway.domain.exception.IllegalDistanceArgumentException;
 import subway.domain.exception.IllegalSectionArgumentException;
 
+@DisplayName("구간 단위 테스트")
 class SectionTest {
 
     @DisplayName("구간은 동일한 두 역으로 이루어질 수 없다")

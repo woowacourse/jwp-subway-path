@@ -1,9 +1,9 @@
 package subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.LineFixture.FIXTURE_LINE_1;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
+import static subway.fixture.LineFixture.FIXTURE_LINE_1;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST2_ST3;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+@DisplayName("지하철 구간 DAO 테스트")
 @JdbcTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 class SectionDaoTest {

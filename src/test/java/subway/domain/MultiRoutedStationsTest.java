@@ -1,10 +1,10 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.LineFixture.FIXTURE_LINE_1;
-import static subway.domain.LineFixture.FIXTURE_LINE_2;
-import static subway.domain.SectionFixture.LINE1_SECTIONS;
-import static subway.domain.SectionFixture.LINE2_SECTIONS;
+import static subway.fixture.LineFixture.FIXTURE_LINE_1;
+import static subway.fixture.LineFixture.FIXTURE_LINE_2;
+import static subway.fixture.SectionFixture.LINE1_SECTIONS;
+import static subway.fixture.SectionFixture.LINE2_SECTIONS;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +15,7 @@ import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("무방향 다중 역 연결 그래프 단위 테스트")
 class MultiRoutedStationsTest {
 
     @DisplayName("노선 별 역 연결 정보를 전달받아 모든 노선의 역을 연결하는 그래프를 생성한다")

@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.exception.IllegalDistanceArgumentException;
 
+@DisplayName("거리 단위 테스트")
 class DistanceTest {
 
     @DisplayName("거리는 0 또는 음의 정수일 수 없다")

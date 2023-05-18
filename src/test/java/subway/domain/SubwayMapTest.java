@@ -2,17 +2,17 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.LineFixture.FIXTURE_LINE_1;
-import static subway.domain.LineFixture.FIXTURE_LINE_2;
-import static subway.domain.LineFixture.FIXTURE_LINE_3;
-import static subway.domain.SectionFixture.LINE1_SECTIONS;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.domain.SectionFixture.LINE2_SECTIONS;
-import static subway.domain.SectionFixture.LINE3_SECTIONS;
-import static subway.domain.SectionFixture.LINE3_SECTION_ST2_ST9;
-import static subway.domain.StationFixture.FIXTURE_STATION_1;
-import static subway.domain.StationFixture.FIXTURE_STATION_7;
-import static subway.domain.StationFixture.FIXTURE_STATION_9;
+import static subway.fixture.LineFixture.FIXTURE_LINE_1;
+import static subway.fixture.LineFixture.FIXTURE_LINE_2;
+import static subway.fixture.LineFixture.FIXTURE_LINE_3;
+import static subway.fixture.SectionFixture.LINE1_SECTIONS;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.LINE2_SECTIONS;
+import static subway.fixture.SectionFixture.LINE3_SECTIONS;
+import static subway.fixture.SectionFixture.LINE3_SECTION_ST2_ST9;
+import static subway.fixture.StationFixture.FIXTURE_STATION_1;
+import static subway.fixture.StationFixture.FIXTURE_STATION_7;
+import static subway.fixture.StationFixture.FIXTURE_STATION_9;
 
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import subway.domain.exception.EmptyRoutedStationsSearchResultException;
 import subway.domain.exception.IllegalSubwayMapArgumentException;
 
+@DisplayName("지하철 노선도 단위 테스트")
 class SubwayMapTest {
 
     // TODO 어떻게 하면 다양한 테스트 케이스를 확인할 수 있을까?
