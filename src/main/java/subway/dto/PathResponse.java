@@ -1,20 +1,24 @@
 package subway.dto;
 
 import java.util.List;
+import subway.domain.Charge;
+import subway.domain.Distance;
 
 public class PathResponse {
 
     private List<String> path;
     private int distance;
-    private int cost;
+    private int charge;
 
     public PathResponse() {
     }
-
-    public PathResponse(List<String> path, int distance, int cost) {
+    public static PathResponse of(List<String> path, Distance distance, Charge charge) {
+        return new PathResponse(path, distance.getValue(), charge.getValue());
+    }
+    public PathResponse(List<String> path, int distance, int charge) {
         this.path = path;
         this.distance = distance;
-        this.cost = cost;
+        this.charge = charge;
     }
 
     public List<String> getPath() {
@@ -25,7 +29,7 @@ public class PathResponse {
         return distance;
     }
 
-    public int getCost() {
-        return cost;
+    public int getCharge() {
+        return charge;
     }
 }
