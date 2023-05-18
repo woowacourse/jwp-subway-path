@@ -4,6 +4,8 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import subway.domain.Station;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -22,6 +24,22 @@ class StationRepositoryTest extends RepositoryTest {
         SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(actual.getId()).isPositive();
             softAssertions.assertThat(actual.getName()).isEqualTo("잠실역");
+        });
+    }
+
+    @Test
+    void 모든_역을_조회한다() {
+        // given
+        final Station data = Station.from("잠실역");
+        final Station expected = stationRepository.insert(data);
+
+        // when
+        final List<Station> actual = stationRepository.findAll();
+
+        // then
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(actual).hasSize(1);
+            softAssertions.assertThat(actual.get(0)).isEqualTo(expected);
         });
     }
 

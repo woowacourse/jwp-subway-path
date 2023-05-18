@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.Station;
 import subway.persistence.repository.StationRepository;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -38,6 +40,20 @@ class StationServiceTest {
         SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(actual.getId()).isEqualTo(station.getId());
             softAssertions.assertThat(actual.getName()).isEqualTo(station.getName());
+        });
+    }
+
+    @Test
+    void 모든_역을_검색하다() {
+        final Station station = Station.of(1L, "잠실역");
+        when(stationRepository.findAll()).thenReturn(List.of(station));
+
+        final List<Station> actual = stationService.findAll();
+
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(actual).hasSize(1);
+            softAssertions.assertThat(actual.get(0).getId()).isEqualTo(station.getId());
+            softAssertions.assertThat(actual.get(0).getName()).isEqualTo(station.getName());
         });
     }
 
