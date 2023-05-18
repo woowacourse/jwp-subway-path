@@ -9,6 +9,7 @@ import subway.domain.station.entity.StationEntity;
 import subway.domain.station.service.StationService;
 import subway.global.common.ResultResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<ResultResponse> createStation(@RequestBody final StationRequest stationRequest) {
+    public ResponseEntity<ResultResponse> createStation(@RequestBody @Valid final StationRequest stationRequest) {
         StationEntity stationEntity = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + stationEntity.getId())).body(ResultResponse.of(HttpStatus.CREATED, stationEntity));
     }
@@ -46,7 +47,7 @@ public class StationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResultResponse> updateStation(@PathVariable final Long id, @RequestBody final StationRequest stationRequest) {
+    public ResponseEntity<ResultResponse> updateStation(@PathVariable final Long id, @RequestBody @Valid final StationRequest stationRequest) {
         stationService.updateStation(id, stationRequest);
         return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, id));
     }

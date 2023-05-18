@@ -1,11 +1,18 @@
 package subway.domain.section.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class SectionCreateRequest {
 
+    @NotNull
     private Long lineId;
+    @NotNull
     private Long baseId;
+    @NotNull
     private Long addedId;
+    @NotNull
     private Boolean direction;
+    @NotNull
     private Integer distance;
 
     private SectionCreateRequest() {

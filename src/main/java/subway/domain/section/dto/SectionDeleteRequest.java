@@ -1,8 +1,12 @@
 package subway.domain.section.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class SectionDeleteRequest {
 
+    @NotNull
     private Long lineId;
+    @NotNull
     private Long stationId;
 
     private SectionDeleteRequest() {

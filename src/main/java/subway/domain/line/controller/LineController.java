@@ -9,6 +9,7 @@ import subway.domain.line.entity.LineEntity;
 import subway.domain.line.service.LineService;
 import subway.global.common.ResultResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -22,14 +23,14 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<ResultResponse> createLine(@RequestBody final LineRequest lineRequest) {
+    public ResponseEntity<ResultResponse> createLine(@RequestBody @Valid final LineRequest lineRequest) {
         LineEntity lineEntity = lineService.saveLine(lineRequest);
         LineResponse lineResponse = LineResponse.of(lineEntity);
         return ResponseEntity.created(URI.create("/line/" + lineResponse.getId())).body(ResultResponse.of(HttpStatus.CREATED, lineResponse));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResultResponse> updateLine(@PathVariable final Long id, @RequestBody final LineRequest lineUpdateRequest) {
+    public ResponseEntity<ResultResponse> updateLine(@PathVariable final Long id, @RequestBody @Valid final LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, id));
     }

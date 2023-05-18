@@ -1,7 +1,10 @@
 package subway.domain.station.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class StationRequest {
 
+    @NotBlank
     private String name;
 
     private StationRequest() {

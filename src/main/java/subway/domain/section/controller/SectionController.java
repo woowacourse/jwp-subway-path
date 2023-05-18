@@ -10,6 +10,7 @@ import subway.domain.section.entity.SectionEntity;
 import subway.domain.section.service.SectionService;
 import subway.global.common.ResultResponse;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<ResultResponse> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
+    public ResponseEntity<ResultResponse> createSection(@RequestBody @Valid final SectionCreateRequest sectionCreateRequest) {
         final List<SectionEntity> sectionEntities = sectionService.createSection(sectionCreateRequest);
         final List<SectionResponse> sectionResponses = sectionEntities.stream()
                 .map(SectionResponse::of)
@@ -33,7 +34,7 @@ public class SectionController {
     }
 
     @DeleteMapping
-    public ResponseEntity<ResultResponse> deleteSection(@RequestBody final SectionDeleteRequest sectionDeleteRequest) {
+    public ResponseEntity<ResultResponse> deleteSection(@RequestBody @Valid final SectionDeleteRequest sectionDeleteRequest) {
         sectionService.deleteSection(sectionDeleteRequest.getLineId(), sectionDeleteRequest.getStationId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResultResponse.of(HttpStatus.NO_CONTENT, sectionDeleteRequest.getStationId()));
     }
