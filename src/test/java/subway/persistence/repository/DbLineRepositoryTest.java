@@ -1,6 +1,7 @@
 package subway.persistence.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static subway.fixture.Fixture.line2WithOneSection;
@@ -15,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.business.domain.line.Line;
+import subway.business.domain.line.Station;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
@@ -106,5 +108,31 @@ class DbLineRepositoryTest {
         assertThat(expectedLine.getId()).isEqualTo(1L);
         assertThat(expectedLine.getName()).isEqualTo("2호선");
         assertThat(expectedLine.getSections().get(0).getUpwardStation().getName()).isEqualTo("잠실역");
+    }
+
+    @DisplayName("Station을 ID로 조회한다.")
+    @Test
+    void shouldFindStationWhenInputId() {
+        given(stationDao.findById(1L)).willReturn(
+                Optional.of(new StationEntity(1L, 1L, "잠실역"))
+        );
+
+        Station expectedStation = lineRepository.findStationById(1L);
+
+        assertThat(expectedStation.getId()).isEqualTo(1L);
+        assertThat(expectedStation.getName()).isEqualTo("잠실역");
+    }
+
+    @DisplayName("존재하지 않는 ID로 Station을 조회하면 예외가 발생한다.")
+    @Test
+    void shouldThrowExceptionWhenFindStationByNotExistingId() {
+        given(stationDao.findById(100L)).willReturn(
+                Optional.empty()
+        );
+
+        assertThatThrownBy(() -> lineRepository.findStationById(100L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("입력한 ID와 일치하는 Station이 존재하지 않습니다. "
+                        + "(입력한 ID : 100)");
     }
 }

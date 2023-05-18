@@ -80,6 +80,14 @@ public class DbLineRepository implements LineRepository {
         return findById(updatedLineEntity.getId());
     }
 
+    @Override
+    public Station findStationById(long id) {
+        StationEntity stationEntity = stationDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("입력한 ID와 일치하는 Station이 존재하지 않습니다. "
+                        + "(입력한 ID : %s)", id)));
+        return new Station(stationEntity.getId(), stationEntity.getName());
+    }
+
     private void saveSectionIncludingStations(long lineId, Section section) {
         long savedUpwardStationId = stationDao.insert(
                 new StationEntity(lineId, section.getUpwardStation().getName())
@@ -105,13 +113,6 @@ public class DbLineRepository implements LineRepository {
                         findStationById(sectionEntity.getDownwardStationId()),
                         sectionEntity.getDistance()))
                 .collect(Collectors.toList());
-    }
-
-    private Station findStationById(long id) {
-        StationEntity stationEntity = stationDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("입력한 ID와 일치하는 Station이 존재하지 않습니다. "
-                        + "(입력한 ID : %s)", id)));
-        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
     private List<Section> getOrderedSections(List<Section> sections) {

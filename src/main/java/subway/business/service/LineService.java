@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.business.domain.direction.Direction;
 import subway.business.domain.line.Line;
 import subway.business.domain.line.LineRepository;
+import subway.business.domain.line.Station;
 import subway.business.service.dto.LineResponse;
 import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.StationAddToLineRequest;
@@ -60,5 +61,9 @@ public class LineService {
         return lines.stream()
                 .map(LineResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public Station findStationById(long stationId) {
+        return lineRepository.findStationById(stationId);
     }
 }

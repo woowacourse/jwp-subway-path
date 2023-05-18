@@ -11,4 +11,6 @@ public interface LineRepository {
     List<Line> findAll();
 
     Line update(Line line);
+
+    Station findStationById(long stationId);
 }
