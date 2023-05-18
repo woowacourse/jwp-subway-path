@@ -23,7 +23,7 @@ public class ApiExceptionHandler {
         logger.error("예기치 못한 오류: " + e);
         e.printStackTrace();
 
-        return ResponseEntity.badRequest()
+        return ResponseEntity.internalServerError()
                 .body(ExceptionResponse.withoutMessage());
     }
 
