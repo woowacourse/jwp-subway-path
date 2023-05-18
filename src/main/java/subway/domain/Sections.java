@@ -155,10 +155,10 @@ public class Sections {
 			sections.removeAll(sectionInLine);
 
 			final Section firstSection = sectionInLine.get(0);
-			final Section secondSection = sectionInLine.get(1);
+			final Section nextSection = sectionInLine.get(1);
 
-			addIfDownSame(firstSection, secondSection, station, line);
-			addIfDownSame(secondSection, firstSection, station, line );
+			addIfDownSame(firstSection, nextSection, station, line);
+			addIfDownSame(nextSection, firstSection, station, line );
 		}
 
 		return distributeByLine(sections);
