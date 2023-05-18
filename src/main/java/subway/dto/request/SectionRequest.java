@@ -1,29 +1,27 @@
-package subway.dto;
+package subway.dto.request;
 
-public class SectionSaveRequest {
+import org.jetbrains.annotations.NotNull;
 
-    private Long lineId;
+public class SectionRequest {
+
+    @NotNull("상행선은 비어있을 수 없습니다.")
     private Long upStationId;
+    @NotNull("하행선은 비어있을 수 없습니다.")
     private Long downStationId;
+    @NotNull("거리는 비어있을 수 없습니다.")
     private int distance;
 
-    public SectionSaveRequest() {
+    public SectionRequest() {
     }
 
-    public SectionSaveRequest(
-            final Long lineId,
+    public SectionRequest(
             final Long upStationId,
             final Long downStationId,
             final int distance
     ) {
-        this.lineId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
-    }
-
-    public Long getLineId() {
-        return lineId;
     }
 
     public Long getUpStationId() {

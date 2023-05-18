@@ -1,20 +1,18 @@
-package subway.dto;
+package subway.dto.response;
 
-import subway.entity.Line;
+import java.util.List;
 
 public class LineResponse {
+
     private Long id;
     private String name;
     private String color;
+    private List<SectionResponse> sectionResponses;
 
-    public LineResponse(Long id, String name, String color) {
+    public LineResponse(Long id, String name, String color, List<SectionResponse> sections) {
         this.id = id;
         this.name = name;
         this.color = color;
-    }
-
-    public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 
     public Long getId() {
@@ -27,5 +25,9 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public List<SectionResponse> getSectionResponses() {
+        return sectionResponses;
     }
 }
