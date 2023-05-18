@@ -2,33 +2,35 @@ package subway.application.charge;
 
 import org.springframework.stereotype.Component;
 
+import static subway.application.charge.ChargeDistance.LONG;
+import static subway.application.charge.ChargeDistance.SHORT;
+
 @Component
 public class DefaultChargePolicy implements ChargePolicy {
 
     private static final int DEFAULT_CHARGE = 1250;
-    private static final int SHORT_DISTANCE = 10;
-    private static final int LONG_DISTANCE = 50;
-    private static final int SHORT_DISTANCE_UNIT = 5;
-    private static final int LONG_DISTANCE_UNIT = 8;
+    private static final int UNIT_CHARGE = 100;
+    private static final int ENSURE_MINIMUM = 1;
+    private static final int ADJUST = -1;
 
     @Override
     public int calculateFee(int distance) {
-        if (distance > SHORT_DISTANCE) {
+        if (distance > SHORT.getDistance()) {
             return calculateAdditionalFee(distance);
         }
         return DEFAULT_CHARGE;
     }
 
     private int calculateAdditionalFee(int distance) {
-        if (distance <= LONG_DISTANCE) {
-            return DEFAULT_CHARGE + calculateDistanceFee(distance - SHORT_DISTANCE, SHORT_DISTANCE_UNIT);
+        if (distance <= LONG.getDistance()) {
+            return DEFAULT_CHARGE + calculateDistanceFee(distance - SHORT.getDistance(), SHORT.getUnit());
         }
         return DEFAULT_CHARGE +
-                calculateDistanceFee(LONG_DISTANCE - SHORT_DISTANCE, SHORT_DISTANCE_UNIT)
-                + calculateDistanceFee(distance - LONG_DISTANCE, LONG_DISTANCE_UNIT);
+                calculateDistanceFee(LONG.getDistance() - SHORT.getDistance(), SHORT.getUnit())
+                + calculateDistanceFee(distance - LONG.getDistance(), LONG.getUnit());
     }
 
     private int calculateDistanceFee(int distance, int unit) {
-        return (int) ((Math.ceil((distance - 1) / unit) + 1) * 100);
+        return (((distance + ADJUST) / unit) + ENSURE_MINIMUM) * UNIT_CHARGE;
     }
 }
