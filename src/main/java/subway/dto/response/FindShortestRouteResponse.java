@@ -20,7 +20,7 @@ public class FindShortestRouteResponse {
         List<RouteDto> lines = path.getRoutes().stream()
                 .map(it -> RouteDto.from(it))
                 .collect(Collectors.toList());
-        return new FindShortestRouteResponse(lines, path.getTotalDistance(), path.getTotalCharge().getValue());
+        return new FindShortestRouteResponse(lines, path.getTotalDistance().getValue(), path.getTotalCharge().getValue());
     }
 
     public List<RouteDto> getPath() {

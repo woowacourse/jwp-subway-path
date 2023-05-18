@@ -3,6 +3,7 @@ package subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.charge.Charge;
@@ -28,7 +29,7 @@ public class LineService {
         Station upStation = stationRepository.getStation(dto.getUpStationId());
         Station downStation = stationRepository.getStation(dto.getDownStationId());
 
-        Line createdLine = Line.createLine(dto.getLineName(), new Charge(dto.getExtraCharge()), upStation, downStation, dto.getDistance());
+        Line createdLine = Line.createLine(dto.getLineName(), new Charge(dto.getExtraCharge()), upStation, downStation, new Distance(dto.getDistance()));
 
         return lineRepository.insertNewLine(createdLine);
     }
@@ -38,7 +39,7 @@ public class LineService {
         Station upStation = stationRepository.getStation(dto.getUpStationId());
         Station downStation = stationRepository.getStation(dto.getDownStationId());
 
-        line.addSection(upStation, downStation, dto.getDistance());
+        line.addSection(upStation, downStation, new Distance(dto.getDistance()));
 
         return lineRepository.updateLine(line);
     }

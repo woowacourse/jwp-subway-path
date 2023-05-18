@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Route;
 import subway.domain.Section;
@@ -66,16 +67,16 @@ public class SubwayIntegrationTest extends IntegrationTest {
         LINEC = lineRepository.assembleLine(lineDao.insert(new Line("LINEC", new Charge(500))));
 
         // a-b-c
-        sectionDao.insert(LINEA.getId(), new Section(STATION_A, STATION_B, 3));
-        sectionDao.insert(LINEA.getId(), new Section(STATION_B, STATION_C, 25));
+        sectionDao.insert(LINEA.getId(), new Section(STATION_A, STATION_B, new Distance(3)));
+        sectionDao.insert(LINEA.getId(), new Section(STATION_B, STATION_C, new Distance(25)));
 
         // d-b-e-c
-        sectionDao.insert(LINEB.getId(), new Section(STATION_D, STATION_B, 4));
-        sectionDao.insert(LINEB.getId(), new Section(STATION_B, STATION_E, 3));
-        sectionDao.insert(LINEB.getId(), new Section(STATION_E, STATION_C, 1));
+        sectionDao.insert(LINEB.getId(), new Section(STATION_D, STATION_B, new Distance(4)));
+        sectionDao.insert(LINEB.getId(), new Section(STATION_B, STATION_E, new Distance(3)));
+        sectionDao.insert(LINEB.getId(), new Section(STATION_E, STATION_C, new Distance(1)));
 
         // c-f
-        sectionDao.insert(LINEC.getId(), new Section(STATION_C, STATION_F, 2));
+        sectionDao.insert(LINEC.getId(), new Section(STATION_C, STATION_F, new Distance(2)));
     }
 
     @Test

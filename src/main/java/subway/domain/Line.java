@@ -35,13 +35,13 @@ public class Line {
         this.extraCharge = extraCharge;
     }
 
-    public static Line createLine(String name, Charge extraCharge, Station upStation, Station downStation, int distance) {
+    public static Line createLine(String name, Charge extraCharge, Station upStation, Station downStation, Distance distance) {
         List<Section> sections = new ArrayList<>();
         sections.add(new Section(upStation, downStation, distance));
         return new Line(null, name, extraCharge, sections);
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
+    public void addSection(Station upStation, Station downStation, Distance distance) {
         validateStations(upStation, downStation);
         Direction direction = findDirection(upStation);
         direction.add(sections, upStation, downStation, distance);
@@ -85,7 +85,7 @@ public class Line {
             Section section2 = targetSections.get(1);
 
             Section newSection = new Section(section1.getUpStation(), section2.getDownStation(),
-                    section1.getDistance() + section2.getDistance());
+                    section1.getDistance().add(section2.getDistance()));
             int removedIndex = sections.indexOf(section1);
             sections.remove(section1);
             sections.remove(section2);

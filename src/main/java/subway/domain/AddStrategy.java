@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AddStrategy {
-    void activate(List<Section> sections, Station upStation, Station downStation, int distance);
+    void activate(List<Section> sections, Station upStation, Station downStation, Distance distance);
 
     default Optional<Section> findSectionByStationExistsAtDirection(
             final List<Section> sections,

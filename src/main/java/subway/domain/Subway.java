@@ -27,7 +27,7 @@ public class Subway {
             for (Section section : sections) {
                 WeightedEdgeWithLine edge = new WeightedEdgeWithLine(line);
                 graph.addEdge(section.getUpStation(), section.getDownStation(), edge);
-                graph.setEdgeWeight(edge, section.getDistance());
+                graph.setEdgeWeight(edge, section.getDistance().getValue());
             }
         }
         return new Subway(graph, new ChargeBooth());
@@ -38,7 +38,7 @@ public class Subway {
         GraphPath<Station, WeightedEdgeWithLine> shortestRoute = dijkstraShortestPath.getPath(startStation, endStation);
 
         List<Route> routes = getRoutes(shortestRoute.getEdgeList());
-        double totalDistance = shortestRoute.getWeight();
+        Distance totalDistance = new Distance(shortestRoute.getWeight());
         Charge totalCharge = chargeBooth.calculateCharge(passengerAge, shortestRoute);
 
         return new Path(routes, totalDistance, totalCharge);

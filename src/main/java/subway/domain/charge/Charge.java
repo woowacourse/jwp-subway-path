@@ -3,23 +3,23 @@ package subway.domain.charge;
 import java.util.Objects;
 
 public class Charge {
-    private final double charge;
+    private final double value;
 
-    public Charge(double charge) {
-        validate(charge);
-        this.charge = charge;
+    public Charge(double value) {
+        validate(value);
+        this.value = value;
     }
 
     public Charge add(Charge other) {
-        return new Charge(this.charge + other.charge);
+        return new Charge(this.value + other.value);
     }
 
     public Charge substract(Charge other) {
-        return new Charge(this.charge - other.charge);
+        return new Charge(this.value - other.value);
     }
 
     public Charge multiply(double rate) {
-        return new Charge(this.charge * rate);
+        return new Charge(this.value * rate);
     }
 
     private void validate(double charge) {
@@ -37,15 +37,15 @@ public class Charge {
             return false;
         }
         Charge charge1 = (Charge) o;
-        return Double.compare(charge1.charge, charge) == 0;
+        return Double.compare(charge1.value, value) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(charge);
+        return Objects.hash(value);
     }
 
     public double getValue() {
-        return charge;
+        return value;
     }
 }

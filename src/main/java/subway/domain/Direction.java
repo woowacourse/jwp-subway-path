@@ -12,7 +12,7 @@ public enum Direction {
         this.addStrategy = addStrategy;
     }
 
-    public void add(List<Section> sections, Station upStation, Station downStation, int distance) {
+    public void add(List<Section> sections, Station upStation, Station downStation, Distance distance) {
         addStrategy.activate(sections, upStation, downStation, distance);
     }
 }
