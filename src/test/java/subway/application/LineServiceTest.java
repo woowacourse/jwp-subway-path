@@ -88,10 +88,15 @@ class LineServiceTest {
 		assertThat(deletedId).isEqualTo(lineId);
 	}
 
-	// @DisplayName("같은 이름의 노선을 생성하면 예외가 발생한다")
-	// @Test
-	// void exceptionWhenDuplicateName(){
-	// 	// given
-	// 	given(repository.createLine(any())).willReturn(1L);
-	// }
+	@DisplayName("같은 이름의 노선을 생성하면 예외가 발생한다")
+	@Test
+	void exceptionWhenDuplicateName() {
+		// given
+		final String newLineName = "2호선";
+		final LineCreateRequest newRequest = new LineCreateRequest(newLineName);
+
+		// then
+		assertThatThrownBy(() -> lineService.createLine(newRequest)).isInstanceOf(
+			IllegalArgumentException.class).hasMessage("이미 존재하는 노선입니다");
+	}
 }
