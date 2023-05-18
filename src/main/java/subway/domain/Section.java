@@ -5,7 +5,7 @@ import subway.application.exception.SubwayServiceException;
 import java.util.Iterator;
 import java.util.Objects;
 
-public class Section implements Iterator {
+public class Section {
 
     public static final String INVALID_SECTION_MESSAGE = "동일한 역 간 구간을 생성할 수 없습니다.";
     private final Station left;
@@ -71,15 +71,5 @@ public class Section implements Iterator {
                 ", right=" + right +
                 ", distance=" + distance +
                 '}';
-    }
-
-    @Override
-    public boolean hasNext() {
-        return false;
-    }
-
-    @Override
-    public Object next() {
-        return null;
     }
 }
