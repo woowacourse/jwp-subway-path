@@ -14,7 +14,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class MultiRoutedStations extends WeightedMultigraph<Station, StationEdge> {
 
-    private MultiRoutedStations(final Class<? extends StationEdge> edgeClass) {
+    private MultiRoutedStations(final Class<StationEdge> edgeClass) {
         super(edgeClass);
     }
 
