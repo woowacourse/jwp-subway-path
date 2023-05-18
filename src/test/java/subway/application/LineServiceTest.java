@@ -73,14 +73,14 @@ class LineServiceTest {
         lineRepository.save(new Line("1호선", List.of(
                 new Section("A", "B", 2)
         )));
-        Long savedLineId = lineRepository.save(new Line("2호선", List.of(
+        Line savedLine = lineRepository.save(new Line("2호선", List.of(
                 new Section("X", "B", 2),
                 new Section("B", "Y", 3)
         )));
         stationRepository.save(new Station("Z"));
 
         //when
-        lineService.addSection(savedLineId, new SectionAddRequest("Y", "Z", 10));
+        lineService.addSection(savedLine.getId(), new SectionAddRequest("Y", "Z", 10));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
@@ -100,13 +100,13 @@ class LineServiceTest {
         lineRepository.save(new Line("1호선", List.of(
                 new Section("A", "B", 2)
         )));
-        Long savedLineId = lineRepository.save(new Line("2호선", List.of(
+        Line savedLine = lineRepository.save(new Line("2호선", List.of(
                 new Section("X", "B", 2),
                 new Section("B", "Y", 3)
         )));
 
         //when
-        lineService.deleteStation(savedLineId, new StationDeleteRequest("Y"));
+        lineService.deleteStation(savedLine.getId(), new StationDeleteRequest("Y"));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
@@ -121,12 +121,12 @@ class LineServiceTest {
     @Test
     void 노선에_역이_하나_남으면_전체를_삭제한다() {
         //given
-        Long savedLineId = lineRepository.save(new Line("1호선", List.of(
+        Line savedLine = lineRepository.save(new Line("1호선", List.of(
                 new Section("A", "B", 2)
         )));
 
         //when
-        lineService.deleteStation(savedLineId, new StationDeleteRequest("A"));
+        lineService.deleteStation(savedLine.getId(), new StationDeleteRequest("A"));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getStations)
@@ -162,13 +162,13 @@ class LineServiceTest {
         lineRepository.save(new Line("1호선", List.of(
                 new Section("A", "B", 2)
         )));
-        Long savedLineId = lineRepository.save(new Line("2호선", List.of(
+        Line savedLine = lineRepository.save(new Line("2호선", List.of(
                 new Section("X", "B", 2),
                 new Section("B", "Y", 3)
         )));
 
         //when
-        LineResponse line = lineService.findLineById(savedLineId);
+        LineResponse line = lineService.findLineById(savedLine.getId());
 
         //then
         assertThat(line.getStations())

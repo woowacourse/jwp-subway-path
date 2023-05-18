@@ -42,10 +42,10 @@ class LineRepositoryTest {
         Line line = new Line("2호선", sections);
 
         // when
-        Long saveId = lineRepository.save(line);
+        Line savedLine = lineRepository.save(line);
 
         // then
-        assertThat(saveId).isPositive();
+        assertThat(savedLine.getId()).isPositive();
     }
 
     @Test
@@ -87,11 +87,11 @@ class LineRepositoryTest {
         Line firstLine = new Line("1호선", firstSections);
         List<Section> secondSections = List.of(new Section("X", "A", 10), new Section("A", "Y", 5));
         Line secondLine = new Line("2호선", secondSections);
-        Long firstLineId = lineRepository.save(firstLine);
+        Line savedLine = lineRepository.save(firstLine);
         lineRepository.save(secondLine);
 
         // when
-        lineRepository.deleteById(firstLineId);
+        lineRepository.deleteById(savedLine.getId());
 
         // then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getStations)
@@ -131,11 +131,11 @@ class LineRepositoryTest {
         // given
         List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
         Line firstLine = new Line("1호선", firstSections);
-        lineRepository.save(firstLine);
-        firstLine.removeStation(new Station("B"));
+        Line savedLine = lineRepository.save(firstLine);
+        savedLine.removeStation(new Station("B"));
 
         // when
-        lineRepository.save(firstLine);
+        lineRepository.save(savedLine);
 
         // then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
@@ -151,10 +151,10 @@ class LineRepositoryTest {
         // given
         List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
         Line firstLine = new Line("1호선", firstSections);
-        Long savedId = lineRepository.save(firstLine);
+        Line savedLine = lineRepository.save(firstLine);
 
         // when
-        Line findLine = lineRepository.findById(savedId);
+        Line findLine = lineRepository.findById(savedLine.getId());
 
         // then
         assertThat(findLine.getStations())

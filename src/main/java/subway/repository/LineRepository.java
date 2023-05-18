@@ -33,16 +33,17 @@ public class LineRepository {
         this.stationDao = stationDao;
     }
 
-    public Long save(Line line) {
+
+    public Line save(Line line) {
         Optional<LineEntity> lineEntity = lineDao.findByName(line.getName());
         if (lineEntity.isEmpty()) {
             LineEntity savedLineEntity = lineDao.insert(new LineEntity(line.getName()));
             updateSections(line, savedLineEntity.getId());
-            return savedLineEntity.getId();
+            return findById(savedLineEntity.getId());
         }
         LineEntity savedLineEntity = lineEntity.get();
         updateLine(line, savedLineEntity.getId());
-        return savedLineEntity.getId();
+        return findById(savedLineEntity.getId());
     }
 
     private void updateLine(Line line, Long lineId) {
@@ -56,7 +57,6 @@ public class LineRepository {
         List<Long> collect = savedStations.stream().map(StationEntity::getId).collect(toList());
         stationDao.deleteByIds(collect);
     }
-
 
     private void updateSections(Line line, Long lineId) {
         Map<String, StationEntity> nameByStations = line.getStations().stream()
@@ -77,6 +77,7 @@ public class LineRepository {
         }
     }
 
+
     private StationEntity findOrSaveStation(String name) {
         return stationDao.findByName(name)
                 .orElseGet(() -> stationDao.insert(new StationEntity(name)));
@@ -85,8 +86,8 @@ public class LineRepository {
     public List<Line> findAll() {
         List<LineEntity> lineEntities = lineDao.findAll();
 
-        Map<Long, StationEntity> idByStations = stationDao.findAll().stream()
-                .collect(toMap(StationEntity::getId, stationEntity -> stationEntity));
+        Map<Long, Station> idByStations = stationDao.findAll().stream()
+                .collect(toMap(StationEntity::getId, this::toStation));
         Map<Long, List<SectionEntity>> idBySections = sectionDao.findAll().stream()
                 .collect(Collectors.groupingBy(SectionEntity::getLineId));
 
@@ -101,26 +102,27 @@ public class LineRepository {
                 .collect(toList());
     }
 
-    private Line toLine(LineEntity lineEntity, List<SectionEntity> sectionEntities,
-                        Map<Long, StationEntity> idByStation) {
+    private Line toLine(LineEntity lineEntity, List<SectionEntity> sectionEntities, Map<Long, Station> idByStation) {
         List<Section> sections = sectionEntities.stream()
                 .map(sectionEntity -> new Section(
-                        new Station(sectionEntity.getSourceStationId(),
-                                idByStation.get(sectionEntity.getSourceStationId()).getName()),
-                        new Station(sectionEntity.getTargetStationId(),
-                                idByStation.get(sectionEntity.getTargetStationId()).getName()),
+                        idByStation.get(sectionEntity.getSourceStationId()),
+                        idByStation.get(sectionEntity.getTargetStationId()),
                         sectionEntity.getDistance()
                 ))
                 .collect(toList());
 
-        return new Line(lineEntity.getName(), sections);
+        return new Line(lineEntity.getId(), lineEntity.getName(), sections);
+    }
+
+    private Station toStation(StationEntity stationEntity) {
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
     public Line findById(Long id) {
         LineEntity lineEntity = lineDao.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("없습니다"));
-        Map<Long, StationEntity> idByStations = stationDao.findByLineId(lineEntity.getId()).stream()
-                .collect(toMap(StationEntity::getId, stationEntity -> stationEntity));
+        Map<Long, Station> idByStations = stationDao.findByLineId(lineEntity.getId()).stream()
+                .collect(toMap(StationEntity::getId, this::toStation));
 
         return toLine(lineEntity, sectionDao.findByLineId(id), idByStations);
     }

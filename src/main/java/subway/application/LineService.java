@@ -32,9 +32,8 @@ public class LineService {
         if (lineRepository.existsByName(request.getLineName())) {
             throw new DuplicatedNameException(request.getLineName());
         }
-        Line line = request.toDomain();
-        Long saveId = lineRepository.save(line);
-        return new LineSaveResponse(saveId);
+        Line savedLine = lineRepository.save(request.toDomain());
+        return new LineSaveResponse(savedLine.getId());
     }
 
     public void addSection(Long lineId, SectionAddRequest request) {
