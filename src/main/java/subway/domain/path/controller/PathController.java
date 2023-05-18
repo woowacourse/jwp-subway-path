@@ -1,5 +1,6 @@
 package subway.domain.path.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,18 +32,18 @@ public class PathController {
         List<PathResponse> pathResponse = linePaths.stream()
                 .map(PathResponse::of)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok().body(new ResultResponse(200, "전체 노선도 조회 성공", pathResponse));
+        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, pathResponse));
     }
 
     @GetMapping("/line/{id}")
     public ResponseEntity<ResultResponse> findLineById(@PathVariable final Long id) {
         LinePath linePath = pathService.findById(id);
-        return ResponseEntity.ok().body(new ResultResponse(200, "단일 노선도 조회 성공", PathResponse.of(linePath)));
+        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, PathResponse.of(linePath)));
     }
 
     @GetMapping
     public ResponseEntity<ResultResponse> findPath(@RequestParam final Long startLineId, @RequestParam final Long endLineId) {
         ShortestPath shortestPath = pathService.findShortestPath(startLineId, endLineId);
-        return ResponseEntity.ok().body(new ResultResponse(200, "최단 거리 조회 성공", shortestPath));
+        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, shortestPath));
     }
 }
