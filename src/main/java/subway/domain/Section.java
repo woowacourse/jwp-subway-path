@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static subway.domain.Line.EMPTY_ENDPOINT_STATION;
+
 public class Section {
 
     public static final int MINIMUM_DISTANCE = 1;
@@ -36,7 +38,7 @@ public class Section {
         List<Section> split = new ArrayList<>();
         int distanceToDownstream = distance - distanceToUpstream;
 
-        if (upstream.equals(Station.getEmptyEndpoint())) {
+        if (upstream.equals(EMPTY_ENDPOINT_STATION)) {
             distanceToDownstream = distanceToUpstream;
             distanceToUpstream = Integer.MAX_VALUE;
         }

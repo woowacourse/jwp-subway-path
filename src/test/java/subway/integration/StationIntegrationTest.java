@@ -28,6 +28,7 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
+import static subway.domain.Line.EMPTY_ENDPOINT_STATION;
 import static subway.utils.SectionFixture.JAMSIL_TO_JAMSILNARU;
 import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
 import static subway.utils.StationFixture.JAMSIL_STATION;
@@ -178,8 +179,8 @@ public class StationIntegrationTest {
     @DisplayName("/line/stations에 상행역과 하행역이 Section을 이루지 않는 경우 추가할 수 없다.")
     void addStationFail7() {
         Line newLine = new Line(line);
-        Station newStation = Station.from("건대입구");
-        newLine.addStation(newStation, downstream, Station.getEmptyEndpoint(), DISTANCE);
+        Station newStation = new Station("건대입구");
+        newLine.addStation(newStation, downstream, EMPTY_ENDPOINT_STATION, DISTANCE);
         subwayRepository.addStation(newStation);
         subwayRepository.updateLine(newLine);
 

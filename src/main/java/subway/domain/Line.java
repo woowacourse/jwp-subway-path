@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public class Line {
 
     private static final int NONE = 0;
+    public static final Station EMPTY_ENDPOINT_STATION = new Station("종점역에 연결된 더미 데이터");
 
     private final LineName name;
     private final LinkedList<Section> sections;
@@ -41,8 +42,8 @@ public class Line {
         Station upstreamEmptyEndpoint = sections.get(0).getUpstream();
         Station downstreamEmptyEndpoint = sections.get(sections.size() - 1).getDownstream();
 
-        this.sections.addFirst(new Section(Station.getEmptyEndpoint(), upstreamEmptyEndpoint, Integer.MAX_VALUE));
-        this.sections.addLast(new Section(downstreamEmptyEndpoint, Station.getEmptyEndpoint(), Integer.MAX_VALUE));
+        this.sections.addFirst(new Section(EMPTY_ENDPOINT_STATION, upstreamEmptyEndpoint, Integer.MAX_VALUE));
+        this.sections.addLast(new Section(downstreamEmptyEndpoint, EMPTY_ENDPOINT_STATION, Integer.MAX_VALUE));
     }
 
     public List<Section> addStation(Station newStation, Station upstream, Station downstream, int distanceToUpstream) {
@@ -112,6 +113,9 @@ public class Line {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Line 저장시 자동으로 추가되는 더미 Station을 제외한 나머지 Sections를 반환합니다.
+     */
     public List<Section> getSectionsWithoutEndPoints() {
         return new LinkedList<>(sections.subList(1, sections.size() - 1));
     }

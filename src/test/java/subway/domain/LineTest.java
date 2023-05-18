@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.domain.Line.EMPTY_ENDPOINT_STATION;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
 import static subway.utils.SectionFixture.JAMSIL_TO_JAMSILNARU;
 import static subway.utils.StationFixture.*;
@@ -46,24 +47,24 @@ class LineTest {
      */
     @Test
     void 추가하려는_Station이_이미_존재하는_경우_예외를_던진다() {
-        assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(JAMSIL_STATION, Station.getEmptyEndpoint(), SULLEUNG_STATION, 2))
+        assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(JAMSIL_STATION, EMPTY_ENDPOINT_STATION, SULLEUNG_STATION, 2))
                 .isInstanceOf(DuplicateStationInLineException.class);
     }
 
     @Test
     void 삭제하려는_Station이_없는_경우_예외를_던진다() {
-        assertThatThrownBy(() -> LINE_NUMBER_TWO.deleteStation(Station.from("메리")))
+        assertThatThrownBy(() -> LINE_NUMBER_TWO.deleteStation(new Station("메리")))
                 .isInstanceOf(StationNotFoundException.class);
     }
 
     @Test
     void Station을_추가할_때_Upstream과_Downstream이_Section으로_등록되지_않은_경우_예외를_던진다() {
-        Station newStation = Station.from("에밀");
+        Station newStation = new Station("에밀");
 
         assertSoftly(softly -> {
             softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, SULLEUNG_STATION, JAMSIL_NARU_STATION, 3))
                     .isInstanceOf(SectionNotFoundException.class);
-            softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, JAMSIL_STATION, Station.getEmptyEndpoint(), 3))
+            softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, JAMSIL_STATION, EMPTY_ENDPOINT_STATION, 3))
                     .isInstanceOf(SectionNotFoundException.class);
         });
     }
@@ -110,8 +111,8 @@ class LineTest {
     void Station을_추가할_수_있다() {
         Line lineNumberTwo = new Line(LINE_NUMBER_TWO);
 
-        Station newStation = Station.from("건대입구");
-        lineNumberTwo.addStation(newStation, Station.getEmptyEndpoint(), SULLEUNG_STATION, 2);
+        Station newStation = new Station("건대입구");
+        lineNumberTwo.addStation(newStation, EMPTY_ENDPOINT_STATION, SULLEUNG_STATION, 2);
 
         assertThat(lineNumberTwo.getSectionsWithoutEndPoints())
                 .contains(new Section(newStation, SULLEUNG_STATION, 2));

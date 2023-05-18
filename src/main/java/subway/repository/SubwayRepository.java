@@ -5,12 +5,12 @@ import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Stations;
-import subway.domain.Station;
 import subway.domain.Line;
 import subway.domain.LineName;
-import subway.domain.Section;
 import subway.domain.Lines;
+import subway.domain.Section;
+import subway.domain.Station;
+import subway.domain.Stations;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
@@ -40,7 +40,7 @@ public class SubwayRepository {
     public Stations getStations() {
         List<StationEntity> stationEntities = stationDao.findAll();
         return stationEntities.stream()
-                .map(stationEntity -> Station.from(stationEntity.getName()))
+                .map(stationEntity -> new Station(stationEntity.getName()))
                 .collect(collectingAndThen(toSet(), Stations::new));
     }
 
@@ -64,7 +64,7 @@ public class SubwayRepository {
     private Station findStation(long stationId) {
         StationEntity stationEntity = stationDao.findById(stationId)
                 .orElseThrow(() -> new StationNotFoundException("찾는 역이 존재하지 않습니다."));
-        return Station.from(stationEntity.getName());
+        return new Station(stationEntity.getName());
     }
 
     public void addStation(Station stationToAdd) {

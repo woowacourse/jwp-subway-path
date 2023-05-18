@@ -3,11 +3,11 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
-import subway.domain.Station;
 import subway.domain.LineName;
-import subway.domain.Stations;
-import subway.domain.Section;
 import subway.domain.Lines;
+import subway.domain.Section;
+import subway.domain.Station;
+import subway.domain.Stations;
 import subway.dto.AddLineRequest;
 import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
@@ -54,7 +54,7 @@ public class SubwayService {
     }
 
     private Station createNewStation(String stationName) {
-        Station newStation = Station.from(stationName);
+        Station newStation = new Station(stationName);
         subwayRepository.addStation(newStation);
         return newStation;
     }

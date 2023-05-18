@@ -46,7 +46,7 @@ class SubwayServiceTest {
      */
     @Nested
     class addStation_메서드는 {
-        Station newStation = Station.from("서울대입구");
+        Station newStation = new Station("서울대입구");
         int distanceToUpstream = 3;
         AddStationRequest addStationRequest = new AddStationRequest(
                 newStation.getName(),
@@ -100,7 +100,7 @@ class SubwayServiceTest {
             DeleteStationRequest deleteStationRequest = new DeleteStationRequest(lineName.getName(), stationNameToDelete);
 
             doReturn(line).when(subwayRepository).getLineByName(new LineName(lineName.getName()));
-            doReturn(new Stations(Set.of(Station.from(stationNameToDelete)))).when(subwayRepository).getStations();
+            doReturn(new Stations(Set.of(new Station(stationNameToDelete)))).when(subwayRepository).getStations();
 
             assertThatNoException()
                     .isThrownBy(() -> subwayService.deleteStation(deleteStationRequest));
@@ -156,8 +156,8 @@ class SubwayServiceTest {
         }
 
         private Line createLine(String upStreamName, String downStreamName, int distance, String lineNameToAdd) {
-            Station upstreamToAdd = Station.from(upStreamName);
-            Station downstreamToAdd = Station.from(downStreamName);
+            Station upstreamToAdd = new Station(upStreamName);
+            Station downstreamToAdd = new Station(downStreamName);
             Section section = new Section(upstreamToAdd, downstreamToAdd, distance);
             LineName lineName = new LineName(lineNameToAdd);
             return new Line(lineName, section);
