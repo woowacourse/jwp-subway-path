@@ -2,18 +2,18 @@ package subway.dto;
 
 import subway.domain.station.Station;
 
-public class StationDto {
+public class StationSaveDto {
 
     private final Long id;
     private final String name;
 
-    private StationDto(Long id, String name) {
+    private StationSaveDto(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationDto from(Station station) {
-        return new StationDto(station.getId(), station.getName());
+    public static StationSaveDto from(Station station) {
+        return new StationSaveDto(station.getId(), station.getName());
     }
 
     public Long getId() {

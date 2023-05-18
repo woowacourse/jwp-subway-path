@@ -62,7 +62,7 @@ public class StationSaveService {
 
         return new StationSaveResponse(
                 LineDto.from(savedLine),
-                List.of(StationDto.from(savedUpStation), StationDto.from(SavedDownStation)),
+                List.of(StationSaveDto.from(savedUpStation), StationSaveDto.from(SavedDownStation)),
                 List.of(GeneralSectionDto.from(savedSection))
         );
     }
@@ -104,7 +104,7 @@ public class StationSaveService {
         GeneralSection savedNewUpSection = generalSectionRepository.saveSection(newUpSection);
         GeneralSection savedNewDownSection = generalSectionRepository.saveSection(sectionToSave);
         return new StationSaveResponse(LineDto.from(line),
-                List.of(StationDto.from(savedUpStation)),
+                List.of(StationSaveDto.from(savedUpStation)),
                 List.of(GeneralSectionDto.from(savedNewUpSection), GeneralSectionDto.from(savedNewDownSection)));
     }
 
@@ -112,7 +112,7 @@ public class StationSaveService {
         GeneralSection savedNewSection = generalSectionRepository.saveSection(sectionToSave);
 
         return new StationSaveResponse(LineDto.from(line),
-                List.of(StationDto.from(savedDownStation)),
+                List.of(StationSaveDto.from(savedDownStation)),
                 List.of(GeneralSectionDto.from(savedNewSection)));
     }
 
@@ -141,7 +141,7 @@ public class StationSaveService {
         GeneralSection newDownSection = NewGeneralSectionMaker.makeNewDownSection(sectionToSave, currentSection);
         GeneralSection savedNewDownSection = generalSectionRepository.saveSection(newDownSection);
         return new StationSaveResponse(LineDto.from(line),
-                List.of(StationDto.from(savedDownStation)),
+                List.of(StationSaveDto.from(savedDownStation)),
                 List.of(GeneralSectionDto.from(savedNewUpSection), GeneralSectionDto.from(savedNewDownSection)));
     }
 }

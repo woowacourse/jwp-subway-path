@@ -96,7 +96,7 @@ public class StationFixtures {
         public static final StationSaveResponse RESPONSE =
                 new StationSaveResponse(
                         LineDto.from(INITIAL_Line2.FIND_LINE),
-                        List.of(StationDto.from(INITIAL_STATION_A.FIND_STATION), StationDto.from(INITIAL_STATION_C.FIND_STATION)),
+                        List.of(StationSaveDto.from(INITIAL_STATION_A.FIND_STATION), StationSaveDto.from(INITIAL_STATION_C.FIND_STATION)),
                         List.of(GeneralSectionDto.from(INITIAL_GENERAL_SECTION_A_TO_C.FIND_SECTION))
                 );
     }
@@ -110,7 +110,7 @@ public class StationFixtures {
                 new StationSaveResponse(
                         LineDto.from(line2),
                         List.of(
-                                StationDto.from(dummyStationB)
+                                StationSaveDto.from(dummyStationB)
                         ),
                         List.of(
                                 GeneralSectionDto.from(GENERAL_SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
@@ -126,7 +126,7 @@ public class StationFixtures {
         public static final StationSaveResponse RESPONSE =
                 new StationSaveResponse(
                         LineDto.from(line2),
-                        List.of(StationDto.from(dummyStationD)),
+                        List.of(StationSaveDto.from(dummyStationD)),
                         List.of(GeneralSectionDto.from(GENERAL_SECTION_D_TO_A.createDummy(dummyStationD, stationA, line2)))
                 );
     }
@@ -139,7 +139,7 @@ public class StationFixtures {
         public static final StationSaveResponse RESPONSE =
                 new StationSaveResponse(
                         LineDto.from(line2),
-                        List.of(StationDto.from(dummyStationB)),
+                        List.of(StationSaveDto.from(dummyStationB)),
                         List.of(
                                 GeneralSectionDto.from(GENERAL_SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
                                 GeneralSectionDto.from(GENERAL_SECTION_B_TO_C.createDummy(dummyStationB, stationC, line2))
@@ -154,7 +154,7 @@ public class StationFixtures {
         public static final StationSaveResponse RESPONSE =
                 new StationSaveResponse(
                         LineDto.from(line2),
-                        List.of(StationDto.from(dummyStationE)),
+                        List.of(StationSaveDto.from(dummyStationE)),
                         List.of(GeneralSectionDto.from(GENERAL_SECTION_C_TO_E.createDummy(stationC, dummyStationE, line2)))
                 );
     }

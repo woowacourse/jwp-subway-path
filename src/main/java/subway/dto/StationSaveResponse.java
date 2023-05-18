@@ -5,10 +5,10 @@ import java.util.List;
 public class StationSaveResponse {
 
     private final LineDto line;
-    private final List<StationDto> savedStations;
+    private final List<StationSaveDto> savedStations;
     private final List<GeneralSectionDto> savedSections;
 
-    public StationSaveResponse(LineDto line, List<StationDto> savedStations, List<GeneralSectionDto> savedSections) {
+    public StationSaveResponse(LineDto line, List<StationSaveDto> savedStations, List<GeneralSectionDto> savedSections) {
         this.line = line;
         this.savedStations = savedStations;
         this.savedSections = savedSections;
@@ -18,7 +18,7 @@ public class StationSaveResponse {
         return line;
     }
 
-    public List<StationDto> getSavedStations() {
+    public List<StationSaveDto> getSavedStations() {
         return savedStations;
     }
 
