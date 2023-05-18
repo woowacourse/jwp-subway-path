@@ -18,26 +18,26 @@ public class RouteAssured {
     }
 
     public static QueryShortestRouteResponse 최종_경로_정보_응답(
-            final String startStationName,
-            final String endStationName,
-            final List<String> transferStations,
-            final List<RouteEdgeResponse> routeEdges,
-            final Integer totalDistance,
-            final Integer totalPrice
+            final String 출발역명,
+            final String 도착역명,
+            final List<String> 환승역_목록,
+            final List<RouteEdgeResponse> 구간_목록,
+            final Integer 총거리,
+            final Integer 총금액
     ) {
-        return new QueryShortestRouteResponse(startStationName, endStationName, transferStations, routeEdges, totalDistance, totalPrice);
+        return new QueryShortestRouteResponse(출발역명, 도착역명, 환승역_목록, 구간_목록, 총거리, 총금액);
     }
 
     public static RouteEdgeResponse 중간_경로_응답(
-            final String startStationName,
-            final String endStationName,
-            final String lineName,
-            final Integer distance
+            final String 출발역명,
+            final String 도착역명,
+            final String 노선명,
+            final Integer 거리
     ) {
-        return new RouteEdgeResponse(startStationName, endStationName, lineName, distance);
+        return new RouteEdgeResponse(출발역명, 도착역명, 노선명, 거리);
     }
 
-    public static RouteRequestBuilder request() {
+    public static RouteRequestBuilder 클라이언트_요청() {
         return new RouteRequestBuilder();
     }
 
@@ -45,15 +45,15 @@ public class RouteAssured {
 
         private ExtractableResponse<Response> response;
 
-        public RouteRequestBuilder 출발역과_도착역의_최단경로를_조회한다(final String startStationName, final String endStationName) {
+        public RouteRequestBuilder 출발역과_도착역의_최단경로를_조회한다(final String 출발역명, final String 도착역명) {
             response = RestAssuredFixture.get("/route", Map.of(
-                    "startStationName", startStationName,
-                    "endStationName", endStationName
+                    "startStationName", 출발역명,
+                    "endStationName", 도착역명
             ));
             return this;
         }
 
-        public RouteResponseBuilder response() {
+        public RouteResponseBuilder 서버_응답_검증() {
             return new RouteResponseBuilder(response);
         }
     }
@@ -69,18 +69,18 @@ public class RouteAssured {
             return response.as(cls);
         }
 
-        public RouteResponseBuilder 최단_경로가_조회된다(final QueryShortestRouteResponse expect) {
+        public RouteResponseBuilder 최단_경로_조회_검증(final QueryShortestRouteResponse 최단_경로_응답) {
             final QueryShortestRouteResponse response = toBody(QueryShortestRouteResponse.class);
 
             assertAll(
-                    () -> assertThat(response.getStartStation()).isEqualTo(expect.getStartStation()),
-                    () -> assertThat(response.getEndStation()).isEqualTo(expect.getEndStation()),
-                    () -> assertThat(response.getTotalDistance()).isEqualTo(expect.getTotalDistance()),
-                    () -> assertThat(response.getTotalPrice()).isEqualTo(expect.getTotalPrice()),
-                    () -> assertThat(response.getTransferStations()).isEqualTo(expect.getTransferStations()),
+                    () -> assertThat(response.getStartStation()).isEqualTo(최단_경로_응답.getStartStation()),
+                    () -> assertThat(response.getEndStation()).isEqualTo(최단_경로_응답.getEndStation()),
+                    () -> assertThat(response.getTotalDistance()).isEqualTo(최단_경로_응답.getTotalDistance()),
+                    () -> assertThat(response.getTotalPrice()).isEqualTo(최단_경로_응답.getTotalPrice()),
+                    () -> assertThat(response.getTransferStations()).isEqualTo(최단_경로_응답.getTransferStations()),
                     () -> assertThat(response.getSections())
                             .usingRecursiveFieldByFieldElementComparatorIgnoringFields()
-                            .isEqualTo(expect.getSections())
+                            .isEqualTo(최단_경로_응답.getSections())
             );
 
             return this;

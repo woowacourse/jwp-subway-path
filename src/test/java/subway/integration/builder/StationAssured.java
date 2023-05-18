@@ -17,23 +17,23 @@ public class StationAssured {
     private StationAssured() {
     }
 
-    public static CreateSectionRequest 상행역_하행역_노선_거리_요청(
-            final String upStationName,
-            final String downStationName,
-            final Long lineId,
-            final Integer distance
+    public static CreateSectionRequest 구간_요청_데이터(
+            final String 상행역명,
+            final String 하행역명,
+            final Long 노선_식별자값,
+            final Integer 거리
     ) {
-        return new CreateSectionRequest(upStationName, downStationName, lineId, distance);
+        return new CreateSectionRequest(상행역명, 하행역명, 노선_식별자값, 거리);
     }
 
-    public static DeleteStationRequest 역_삭제_요청(
-            final String stationName,
-            final String lineName
+    public static DeleteStationRequest 역_삭제_요청_데이터(
+            final String 역명,
+            final String 노선명
     ) {
-        return new DeleteStationRequest(stationName, lineName);
+        return new DeleteStationRequest(역명, 노선명);
     }
 
-    public static StationRequestBuilder request() {
+    public static StationRequestBuilder 클라이언트_요청() {
         return new StationRequestBuilder();
     }
 
@@ -41,8 +41,8 @@ public class StationAssured {
 
         private ExtractableResponse<Response> response;
 
-        public StationRequestBuilder 역과_구간을_등록한다(final CreateSectionRequest request) {
-            response = post("/stations", request);
+        public StationRequestBuilder 역과_구간을_등록한다(final CreateSectionRequest 구간_요청_데이터) {
+            response = post("/stations", 구간_요청_데이터);
             return this;
         }
 
@@ -56,7 +56,7 @@ public class StationAssured {
             return this;
         }
 
-        public StationResponseBuilder response() {
+        public StationResponseBuilder 서버_응답_검증() {
             return new StationResponseBuilder(response);
         }
     }
@@ -68,21 +68,21 @@ public class StationAssured {
             this.response = response;
         }
 
-        public <T> T toBody(Class<T> cls) {
-            return response.as(cls);
+        public <T> T toBody(Class<T> 응답_추출_타입) {
+            return response.as(응답_추출_타입);
         }
 
         public <T> List<T> toBodies(Class<T> cls) {
             return response.jsonPath().getList("", cls);
         }
 
-        public StationResponseBuilder 등록된_역이_조회된다(final String stationName) {
+        public StationResponseBuilder 등록된_역이_조회된다(final String 역명) {
             final StationResponse response = toBody(StationResponse.class);
 
             assertThat(response)
                     .usingRecursiveComparison()
                     .ignoringFields("id")
-                    .isEqualTo(new StationResponse(0L, stationName));
+                    .isEqualTo(new StationResponse(0L, 역명));
 
             return this;
         }

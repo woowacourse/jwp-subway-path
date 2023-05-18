@@ -19,11 +19,11 @@ public class LineAssured {
     private LineAssured() {
     }
 
-    public static CreateLineRequest 노선_요청(final String lineName, final String lineColor) {
-        return new CreateLineRequest(lineName, lineColor);
+    public static CreateLineRequest 노선_요청_데이터(final String 노선명, final String 노선_색상) {
+        return new CreateLineRequest(노선명, 노선_색상);
     }
 
-    public static LineRequestBuilder request() {
+    public static LineRequestBuilder 클라이언트_요청() {
         return new LineRequestBuilder();
     }
 
@@ -31,17 +31,17 @@ public class LineAssured {
 
         private ExtractableResponse<Response> response;
 
-        public LineRequestBuilder 노선을_등록한다(final CreateLineRequest request) {
-            response = post("/lines", request);
+        public LineRequestBuilder 노선을_등록한다(final CreateLineRequest 노선_요청_데이터) {
+            response = post("/lines", 노선_요청_데이터);
             return this;
         }
 
-        public LineRequestBuilder 노선을_조회한다(final Long lineId) {
-            response = RestAssuredFixture.get("/lines/" + lineId);
+        public LineRequestBuilder 노선을_조회한다(final Long 노선_식별자값) {
+            response = RestAssuredFixture.get("/lines/" + 노선_식별자값);
             return this;
         }
 
-        public LineResponseBuilder response() {
+        public LineResponseBuilder 서버_응답_검증() {
             return new LineResponseBuilder(response);
         }
     }
@@ -53,12 +53,12 @@ public class LineAssured {
             this.response = response;
         }
 
-        public <T> T toBody(Class<T> cls) {
+        public <T> T 서버_응답_추출(Class<T> cls) {
             return response.as(cls);
         }
 
-        public void 노선이_조회된다(final Long lineId, final String lineName, final String lineColor, final List<String> stationNames) {
-            final LineResponse response = toBody(LineResponse.class);
+        public void 노선이_조회된다(final Long 노선_식별자값, final String 노선명, final String 노선_색상, final List<String> 노선_역_목록) {
+            final LineResponse response = 서버_응답_추출(LineResponse.class);
 
             final List<String> responseStationNames = response.getStations()
                     .stream()
@@ -66,10 +66,10 @@ public class LineAssured {
                     .collect(Collectors.toList());
 
             assertAll(
-                    () -> assertThat(response.getId()).isEqualTo(lineId),
-                    () -> assertThat(response.getName()).isEqualTo(lineName),
-                    () -> assertThat(response.getColor()).isEqualTo(lineColor),
-                    () -> assertThat(responseStationNames).containsExactlyElementsOf(stationNames)
+                    () -> assertThat(response.getId()).isEqualTo(노선_식별자값),
+                    () -> assertThat(response.getName()).isEqualTo(노선명),
+                    () -> assertThat(response.getColor()).isEqualTo(노선_색상),
+                    () -> assertThat(responseStationNames).containsExactlyElementsOf(노선_역_목록)
             );
         }
     }

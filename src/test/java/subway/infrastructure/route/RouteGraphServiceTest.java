@@ -3,13 +3,16 @@ package subway.infrastructure.route;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import subway.domain.*;
 import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
+import subway.domain.route.Route;
+import subway.domain.route.RouteEdge;
+import subway.domain.route.RouteService;
 import subway.domain.vo.Distance;
 import subway.domain.vo.Money;
-import subway.domain.route.Route;
-import subway.domain.route.RouteService;
-import subway.domain.route.RouteEdge;
+import subway.fixture.SectionsFixture;
 
 import java.util.List;
 
@@ -38,7 +41,7 @@ class RouteGraphServiceTest {
     void 출발역A에서_도착역B의_최단경로목록이_AB일_경우() {
         // given
         final Section 구간_AB = 구간(거리(10), 역("A"), 역("B"));
-        final Sections 구간_목록 = 구간_목록(List.of(구간_AB));
+        final Sections 구간_목록 = SectionsFixture.구간_목록(List.of(구간_AB));
         final Line 노선1 = 노선("1", "파랑", 구간_목록);
 
         // when
@@ -65,10 +68,10 @@ class RouteGraphServiceTest {
         final Section 구간_BC = 구간(거리(10), 역("B"), 역("C"));
         final Section 구간_CD = 구간(거리(10), 역("C"), 역("D"));
         final Section 구간_DE = 구간(거리(10), 역("D"), 역("E"));
-        final Line 노선1 = 노선("1", "파랑", 구간_목록(List.of(구간_AB, 구간_BC, 구간_CD, 구간_DE)));
+        final Line 노선1 = 노선("1", "파랑", SectionsFixture.구간_목록(List.of(구간_AB, 구간_BC, 구간_CD, 구간_DE)));
 
         final Section 구간_AF = 상행_종점_구간(거리(10), 역("A"), 역("F"));
-        final Line 노선2 = 노선("2", "초록", 구간_목록(List.of(구간_AF)));
+        final Line 노선2 = 노선("2", "초록", SectionsFixture.구간_목록(List.of(구간_AF)));
 
 
         // when
@@ -95,10 +98,10 @@ class RouteGraphServiceTest {
         final Section 구간_BC = 구간(거리(10), 역("B"), 역("C"));
         final Section 구간_CD = 구간(거리(10), 역("C"), 역("D"));
         final Section 구간_DE = 구간(거리(10), 역("D"), 역("E"));
-        final Line 노선1 = 노선("1", "파랑", 구간_목록(List.of(구간_AB, 구간_BC, 구간_CD, 구간_DE)));
+        final Line 노선1 = 노선("1", "파랑", SectionsFixture.구간_목록(List.of(구간_AB, 구간_BC, 구간_CD, 구간_DE)));
 
         final Section 구간_BF = 상행_종점_구간(거리(1), 역("B"), 역("F"));
-        final Line 노선2 = 노선("2", "초록", 구간_목록(List.of(구간_BF)));
+        final Line 노선2 = 노선("2", "초록", SectionsFixture.구간_목록(List.of(구간_BF)));
 
 
         // when
@@ -127,14 +130,14 @@ class RouteGraphServiceTest {
         final Section 구간_AB = 상행_종점_구간(거리(1), 역("A"), 역("B"));
         final Section 구간_BC = 구간(거리(10), 역("B"), 역("C"));
         final Section 구간_CD = 구간(거리(10), 역("C"), 역("D"));
-        final Line 노선1 = 노선("1", "파랑", 구간_목록(List.of(구간_AB, 구간_BC, 구간_CD)));
+        final Line 노선1 = 노선("1", "파랑", SectionsFixture.구간_목록(List.of(구간_AB, 구간_BC, 구간_CD)));
 
         final Section 구간_BD = 상행_종점_구간(거리(2), 역("B"), 역("D"));
         final Section 구간_DE = 구간(거리(3), 역("D"), 역("E"));
-        final Line 노선2 = 노선("2", "초록", 구간_목록(List.of(구간_BD, 구간_DE)));
+        final Line 노선2 = 노선("2", "초록", SectionsFixture.구간_목록(List.of(구간_BD, 구간_DE)));
 
         final Section 구간_EF = 상행_종점_구간(거리(4), 역("E"), 역("F"));
-        final Line 노선3 = 노선("3", "주황", 구간_목록(List.of(구간_EF)));
+        final Line 노선3 = 노선("3", "주황", SectionsFixture.구간_목록(List.of(구간_EF)));
 
 
         // when
@@ -165,14 +168,14 @@ class RouteGraphServiceTest {
         final Section 구간_AB = 상행_종점_구간(거리(1), 역("A"), 역("B"));
         final Section 구간_BC = 구간(거리(10), 역("B"), 역("C"));
         final Section 구간_CD = 구간(거리(10), 역("C"), 역("D"));
-        final Line 노선1 = 노선("1", "파랑", 구간_목록(List.of(구간_AB, 구간_BC, 구간_CD)));
+        final Line 노선1 = 노선("1", "파랑", SectionsFixture.구간_목록(List.of(구간_AB, 구간_BC, 구간_CD)));
 
         final Section 구간_BD = 상행_종점_구간(거리(2), 역("B"), 역("D"));
         final Section 구간_DE = 구간(거리(3), 역("D"), 역("E"));
-        final Line 노선2 = 노선("2", "초록", 구간_목록(List.of(구간_BD, 구간_DE)));
+        final Line 노선2 = 노선("2", "초록", SectionsFixture.구간_목록(List.of(구간_BD, 구간_DE)));
 
         final Section 구간_EF = 상행_종점_구간(거리(4), 역("E"), 역("F"));
-        final Line 노선3 = 노선("3", "주황", 구간_목록(List.of(구간_EF)));
+        final Line 노선3 = 노선("3", "주황", SectionsFixture.구간_목록(List.of(구간_EF)));
 
 
         // when
