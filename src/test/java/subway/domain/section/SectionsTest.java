@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SectionsTest {
 
@@ -82,6 +83,17 @@ class SectionsTest {
         assertEquals(section2, sections.getSectionByLeftStation(innerStation));
     }
 
+    @DisplayName("왼쪽 역을 기준으로 하는 영역이 없는 경우 조회를 실패한다.")
+    @Test
+    void fail_get_not_exist_section_by_left() {
+        //given
+        Station leftStation = new Station(1L, "left");
+        Sections sections = new Sections(List.of());
+
+        //when + then
+        assertThrows(IllegalArgumentException.class, () -> sections.getSectionByLeftStation(leftStation));
+    }
+
     @DisplayName("오른쪽 역을 기준으로 영역을 가져온다.")
     @Test
     void get_section_by_right() {
@@ -96,6 +108,17 @@ class SectionsTest {
         //when + then
         assertEquals(section1, sections.getSectionByRightStation(innerStation));
         assertEquals(section2, sections.getSectionByRightStation(rightStation));
+    }
+
+    @DisplayName("오른쪽 역을 기준으로 하는 영역이 없는 경우 조회를 실패한다.")
+    @Test
+    void fail_get_not_exist_section_by_right() {
+        //given
+        Station rightStation = new Station(1L, "right");
+        Sections sections = new Sections(List.of());
+
+        //when + then
+        assertThrows(IllegalArgumentException.class, () -> sections.getSectionByLeftStation(rightStation));
     }
 
     @DisplayName("가장자리 역을 제거해 영역을 제거한다.")

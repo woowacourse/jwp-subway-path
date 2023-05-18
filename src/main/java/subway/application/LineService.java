@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service;
 import subway.domain.line.Direction;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
+import subway.dto.InitStationsRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.RegisterStationRequest;
-import subway.dto.InitStationsRequest;
 import subway.dto.StationResponse;
 import subway.exception.AlreadyExistLineException;
 import subway.repository.LineRepository;
@@ -47,9 +47,6 @@ public class LineService {
 
     public void registerStationByLineId(Long lineId, RegisterStationRequest registerStationRequest) {
         Line line = lineRepository.findById(lineId);
-        if (line.getSections().isEmpty()) {
-            throw new IllegalArgumentException("두 개의 역이 초기화 되지 않은 노선에 새로운 역을 추가할 수 없습니다.");
-        }
         Station newStation = stationRepository.findById(registerStationRequest.getNewStationId());
         Station baseStation = stationRepository.findById(registerStationRequest.getBaseStationId());
         line.addStation(newStation, baseStation, Direction.of(registerStationRequest.getDirection()), registerStationRequest.getDistance());

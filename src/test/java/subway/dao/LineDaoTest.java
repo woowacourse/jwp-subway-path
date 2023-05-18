@@ -120,7 +120,7 @@ public class LineDaoTest {
     @Test
     public void find_by_id() {
         //given
-        LineEntity inserted = lineDao.insert(new LineEntity(null,"test", "#DDDDDD", null, null));
+        LineEntity inserted = lineDao.insert(new LineEntity(null, "test", "#DDDDDD", null, null));
         Long id = inserted.getId();
 
         //when

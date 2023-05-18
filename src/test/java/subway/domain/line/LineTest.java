@@ -3,8 +3,10 @@ package subway.domain.line;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.station.Station;
+import subway.exception.NotInitializedLineException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LineTest {
 
@@ -38,6 +40,8 @@ class LineTest {
         assertEquals(lineName, line.getName());
         assertEquals(colorCode, line.getColor());
         assertEquals(2, line.getStations().size());
+        assertEquals(leftStation.getName(), line.getUpBoundStation().getName());
+        assertEquals(rightStation.getName(), line.getDownBoundStation().getName());
     }
 
     @Test
@@ -59,6 +63,7 @@ class LineTest {
         assertEquals(lineName, line.getName());
         assertEquals(colorCode, line.getColor());
         assertEquals(3, line.getStations().size());
+        assertEquals(lastStation.getName(), line.getDownBoundStation().getName());
     }
 
     @Test
@@ -101,6 +106,7 @@ class LineTest {
         assertEquals(lineName, line.getName());
         assertEquals(colorCode, line.getColor());
         assertEquals(3, line.getStations().size());
+        assertEquals(lastStation.getName(), line.getUpBoundStation().getName());
     }
 
     @Test
@@ -125,6 +131,20 @@ class LineTest {
     }
 
     @Test
+    @DisplayName("초기화되지 않는 노선에 역을 추가할 수 없습니다.")
+    void cant_add_station_not_init_line() {
+        // given
+        String lineName = "2";
+        String colorCode = "#FFFFFF";
+        Line line = new Line(lineName, colorCode);
+        Station leftStation = new Station(1L, "left");
+        Station rightStation = new Station(2L, "right");
+
+        // when + then
+        assertThrows(NotInitializedLineException.class, () -> line.addStation(leftStation, rightStation, Direction.RIGHT, 10));
+    }
+
+    @Test
     @DisplayName("노선의 가운데 역을 삭제합니다.")
     void delete_station() {
         // given
@@ -135,7 +155,7 @@ class LineTest {
         Station rightStation = new Station(2L, "right");
         Station centerStation = new Station(3L, "last");
         line.initStations(leftStation, rightStation, 10);
-        line.addStation(centerStation, leftStation,Direction.RIGHT,5);
+        line.addStation(centerStation, leftStation, Direction.RIGHT, 5);
 
         // when
         line.deleteStation(centerStation);
@@ -144,5 +164,18 @@ class LineTest {
         assertEquals(lineName, line.getName());
         assertEquals(colorCode, line.getColor());
         assertEquals(2, line.getStations().size());
+    }
+
+    @Test
+    @DisplayName("초기화되지 않은 노선의 역을 삭제할 수 없습니다.")
+    void cant_delete_station_not_init_line() {
+        // given
+        String lineName = "2";
+        String colorCode = "#FFFFFF";
+        Line line = new Line(lineName, colorCode);
+        Station centerStation = new Station(3L, "last");
+
+        // when + then
+        assertThrows(NotInitializedLineException.class, () -> line.deleteStation(centerStation));
     }
 }
