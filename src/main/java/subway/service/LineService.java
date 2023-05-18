@@ -80,13 +80,11 @@ public class LineService {
     @Transactional
     public void deleteStation(final Long lineId, final Long stationId) {
         final Line line = findLineById(lineId);
-        if (line.size() == 2 && line.contains(stationId)) {
-            lineRepository.deleteById(line.getId());
-            return;
-        }
-
         line.deleteStation(stationId);
         lineRepository.updateStationEdges(line);
+        if (line.size() == 0) {
+            lineRepository.deleteById(line.getId());
+        }
     }
 
     @Transactional

@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 class LineTest {
 
@@ -37,12 +38,10 @@ class LineTest {
 
     @ParameterizedTest(name = "역 추가 방향 : {1}")
     @DisplayName("노선에 역을 추가한다")
-    @CsvSource(value = {"2:UP:3:2", "1:DOWN:2:3"}, delimiter = ':')
+    @CsvSource(value = {"2:UP", "1:DOWN"}, delimiter = ':')
     void insertStation(
             final Long adjacentStationId,
-            final LineDirection lineDirection,
-            final int expectedMiddleEdgeDistance,
-            final int expectedDownEndEdgeDistance
+            final LineDirection lineDirection
     ) {
         //given
         Line line = createLine();
@@ -50,14 +49,10 @@ class LineTest {
         //when
         Long newStationId = 3L;
         line.insertStation(newStationId, adjacentStationId, lineDirection, 2);
-        final StationEdge middle = line.getStationEdges().get(1);
-        final StationEdge downEnd = line.getStationEdges().get(2);
 
         //then
-        assertSoftly(softly -> {
-            softly.assertThat(middle.getDistance()).isEqualTo(expectedMiddleEdgeDistance);
-            softly.assertThat(downEnd.getDistance()).isEqualTo(expectedDownEndEdgeDistance);
-        });
+        final List<Long> stationIdsByOrder = line.getStationIdsByOrder();
+        assertThat(stationIdsByOrder).containsExactly(1L, 3L, 2L);
     }
 
     private Line createLine() {
@@ -73,9 +68,10 @@ class LineTest {
         //when
         Long newStationId = 3L;
         line.insertStation(newStationId, stationId2, LineDirection.DOWN, 2);
-        final StationEdge downEnd = line.getStationEdges().get(2);
+
         //then
-        assertThat(downEnd.getDistance()).isEqualTo(2);
+        final Long downEndStationId = line.getStationEdges().findDownEndStationId();
+        assertThat(downEndStationId).isEqualTo(3L);
     }
 
     @Test
@@ -86,13 +82,11 @@ class LineTest {
         line.insertStation(3L, stationId1, LineDirection.DOWN, 2);
 
         //when
-        StationEdge changedStationEdge = line.deleteStation(3L);
+        line.deleteStation(2L);
 
         //then
-        assertSoftly(softly -> {
-            softly.assertThat(changedStationEdge.getDownStationId()).isEqualTo(stationId2);
-            softly.assertThat(changedStationEdge.getDistance()).isEqualTo(distance);
-        });
+        final List<Long> stationIdsByOrder = line.getStationIdsByOrder();
+        assertThat(stationIdsByOrder).containsExactly(1L, 3L);
     }
 
     @Test

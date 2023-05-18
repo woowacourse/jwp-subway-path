@@ -60,23 +60,19 @@ public class LineController {
 
     private Map<Long, Station> getIdToStation(final List<Station> stations) {
         return stations.stream()
-                .collect(toMap(station -> station.getId(), Function.identity()));
+                .collect(toMap(Station::getId, Function.identity()));
     }
 
     private List<LineResponse> getLineResponses(final List<Line> lines, final Map<Long, Station> stationIdToStation) {
-        final List<LineResponse> lineResponses = lines.stream()
+        return lines.stream()
                 .map(lineToLineResponse(stationIdToStation))
                 .collect(Collectors.toList());
-        return lineResponses;
     }
 
     private Function<Line, LineResponse> lineToLineResponse(final Map<Long, Station> stationIdToStation) {
         return line -> {
-            List<Station> stations = line.getStationEdges().stream()
-                    .map(stationEdge -> {
-                        Long downStationId = stationEdge.getDownStationId();
-                        return stationIdToStation.get(downStationId);
-                    })
+            List<Station> stations = line.getStationIdsByOrder().stream()
+                    .map(stationIdToStation::get)
                     .collect(Collectors.toList());
             return LineResponse.of(line, stations);
         };
@@ -85,7 +81,7 @@ public class LineController {
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable final Long id) {
         final Line line = lineService.findLineById(id);
-        final List<Station> stations = stationService.findById(line.getStationIds());
+        final List<Station> stations = stationService.findById(line.getStationIdsByOrder());
         return ResponseEntity.ok(LineResponse.of(line, stations));
     }
 
