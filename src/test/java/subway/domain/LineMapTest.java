@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.domain.Direction.DOWN;
 import static subway.domain.Direction.UP;
 import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
@@ -19,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.exception.IllegalDistanceArgumentException;
+import subway.domain.exception.IllegalLineMapArgumentException;
 
 class LineMapTest {
 
@@ -110,6 +113,40 @@ class LineMapTest {
                         LINE1_SECTION_ST5_ST6,
                         new Section(FIXTURE_STATION_6, adding, new Distance(6))
                 );
+    }
+
+    @DisplayName("기존 역 간 거리보다 새 역 간 거리가 크거나 같으면 예외를 발생한다")
+    @Test
+    void addStationByDownDirectionFailInvalidDistance() {
+        LineMap lineMap = LineMap.of(List.of(
+                LINE1_SECTION_ST1_ST2,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
+                LINE1_SECTION_ST5_ST6
+        ));
+
+        assertThatThrownBy(() -> lineMap.add(FIXTURE_STATION_1, new Station(7L, "추가역"),
+                new Distance(LINE1_SECTION_ST1_ST2.getDistance().getValue() + 1), DOWN))
+                .isInstanceOf(IllegalDistanceArgumentException.class)
+                .hasMessageContaining("기존 역 간 거리보다 크거나 같은 거리에 위치하는 새 역을 등록할 수 없습니다.");
+    }
+
+    @DisplayName("기준 역과 등록할 역이 동일하면 예외를 발생한다")
+    @Test
+    void addStationByDownDirectionFailInvalidSection() {
+        LineMap lineMap = LineMap.of(List.of(
+                LINE1_SECTION_ST1_ST2,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
+                LINE1_SECTION_ST5_ST6
+        ));
+
+        assertThatThrownBy(() -> lineMap.add(FIXTURE_STATION_1, FIXTURE_STATION_1,
+                new Distance(6), DOWN))
+                .isInstanceOf(IllegalLineMapArgumentException.class)
+                .hasMessageContaining("기준 역과 등록할 역은 동일할 수 없습니다.");
     }
 
     @DisplayName("기존 역 간 거리를 조정하여 역을 삭제할 수 있다")

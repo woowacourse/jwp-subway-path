@@ -123,7 +123,7 @@ public class LineMap {
             return currentSection.subtract(addingSection)
                     .orElseThrow(() -> new EmptySectionOperationException("겹치는 영역이 없는 구간의 뺀 값을 구할 수 없습니다."));
         } catch (IllegalDistanceArgumentException exception) {
-            throw new IllegalDistanceArgumentException("기존 역 간 거리보다 큰 거리에 위치하는 새 역을 등록할 수 없습니다.");
+            throw new IllegalDistanceArgumentException("기존 역 간 거리보다 크거나 같은 거리에 위치하는 새 역을 등록할 수 없습니다.");
         }
     }
 
