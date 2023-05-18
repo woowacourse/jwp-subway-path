@@ -1,8 +1,8 @@
 package subway.domain.path;
 
 import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.jgrapht.GraphPath;
@@ -41,11 +41,9 @@ public class DijkstraShortestPathFinder implements ShortestPathFinder {
     }
 
     private Set<Station> findAllStation(final List<Section> sections) {
-        final Set<Station> stations = new HashSet<>();
-        for (final Section section : sections) {
-            stations.add(section.getPrevStation());
-            stations.add(section.getNextStation());
-        }
-        return stations;
+        return sections.stream()
+                .map(section -> List.of(section.getNextStation(), section.getPrevStation()))
+                .flatMap(List::stream)
+                .collect(toUnmodifiableSet());
     }
 }

@@ -42,11 +42,11 @@ public class FilledSections extends Sections {
 
     @Override
     public List<Station> getAllStations() {
-        final List<Station> stations = sections.stream()
-                .map(Section::getPrevStation)
-                .collect(Collectors.toList());
-        stations.add(sections.get(sections.size() - 1).getNextStation());
-        return stations;
+        return sections.stream()
+                .map(section -> List.of(section.getPrevStation(), section.getNextStation()))
+                .flatMap(List::stream)
+                .distinct()
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
