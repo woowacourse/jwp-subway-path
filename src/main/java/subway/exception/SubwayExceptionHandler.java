@@ -20,7 +20,7 @@ public class SubwayExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handleIllegalStateException(IllegalArgumentException exception) {
         log.error("error message = " + exception.getMessage());
-        log.error("error stackTrace = " + exception.getStackTrace().toString());
+        exception.printStackTrace();
         return ResponseEntity.internalServerError().body("서버 관리자에게 문의하세요.");
     }
 
@@ -32,7 +32,7 @@ public class SubwayExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleUnExpectedException(Exception exception) {
         log.error("error message = " + exception.getMessage());
-        log.error("error stackTrace = " + exception.getStackTrace().toString());
+        exception.printStackTrace();
         return ResponseEntity.internalServerError().body("서버 관리자에게 문의하세요.");
     }
 }
