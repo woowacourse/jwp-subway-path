@@ -1,6 +1,5 @@
 package subway.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.SubwayService;
+import subway.application.SubwayMapService;
 import subway.dto.PathRequest;
 import subway.ui.SubwayController;
 
@@ -26,7 +25,7 @@ class SubwayControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private SubwayService subwayService;
+    private SubwayMapService subwayMapService;
 
     @DisplayName("두 역을 전달받았을 때 두 역 사이의 최단경로와 관련된 정보와 요금을 반환한다")
     @Test

@@ -1,6 +1,7 @@
 package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -23,6 +24,14 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    private RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+            new SectionEntity(
+                    rs.getLong("line_id"),
+                    rs.getLong("upper_station"),
+                    rs.getLong("lower_station"),
+                    rs.getInt("distance")
+            );
+
     public Long insert(final SectionDto sectionDto) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(sectionDto);
         return simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
@@ -39,16 +48,13 @@ public class SectionDao {
     public List<SectionEntity> findAllByLineId(final Long lineId) {
         String sql = "SELECT * FROM section WHERE line_id = ?";
 
-        return jdbcTemplate.query(
-                sql,
-                (rs, rowNum) -> new SectionEntity(
-                        rs.getLong("line_id"),
-                        rs.getLong("upper_station"),
-                        rs.getLong("lower_station"),
-                        rs.getInt("distance")
-                ),
-                lineId
-        );
+        return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
+
+    public List<SectionEntity> findAll() {
+        String sql = "SELECT * FROM section";
+
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public int deleteAllByLineId(final Long lineId) {

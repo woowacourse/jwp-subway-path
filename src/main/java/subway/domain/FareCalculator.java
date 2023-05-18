@@ -8,7 +8,7 @@ public class FareCalculator {
     private static final int ADDITIONAL_FARE = 100;
 
     private FareCalculator(){
-        
+
     }
 
     public static int calculateFare(final int distance) {

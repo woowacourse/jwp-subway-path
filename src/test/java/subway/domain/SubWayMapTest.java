@@ -28,11 +28,12 @@ class SubWayMapTest {
         SubwayMap subwayMap = new SubwayMap(
                 List.of(JAMSIL, JAMSIL_NARU, GANGBYEON, GUUI, GUNDAE),
                 List.of(section1, section2, section3, section4));
-        List<Section> shortestPath = subwayMap.getShortestPath(JAMSIL, GUNDAE);
+        Sections shortestPath = subwayMap.getShortestPath(JAMSIL, GUNDAE);
 
         assertSoftly(softly -> {
-            softly.assertThat(shortestPath).hasSize(4);
-            softly.assertThat(shortestPath).containsExactly(section1, section2, section3, section4);
+            softly.assertThat(shortestPath.getSections()).hasSize(4);
+            softly.assertThat(shortestPath.getSections()).containsExactly(section1, section2, section3, section4);
+            softly.assertThat(shortestPath.getDistanceBetween(JAMSIL, GUNDAE).getValue()).isEqualTo(22);
         });
     }
 }
