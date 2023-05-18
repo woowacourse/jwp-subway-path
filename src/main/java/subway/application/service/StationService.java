@@ -4,6 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.domain.Station;
 import subway.application.repository.StationRepository;
+import subway.application.service.command.in.IdCommand;
+import subway.application.service.command.in.SaveStationCommand;
+import subway.application.service.command.in.UpdateStationCommand;
 import subway.presentation.dto.StationRequest;
 import subway.presentation.dto.StationResponse;
 
@@ -20,13 +23,13 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.insert(new Station(null, stationRequest.getName()));
+    public StationResponse saveStation(SaveStationCommand command) {
+        Station station = stationRepository.insert(command.toEntity());
         return StationResponse.of(station);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationRepository.findById(id));
+    public StationResponse findStationResponseById(IdCommand command) {
+        return StationResponse.of(stationRepository.findById(command.getId()));
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -37,11 +40,11 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationRepository.update(new Station(id, stationRequest.getName()));
+    public void updateStation(UpdateStationCommand command) {
+        stationRepository.update(command.toEntity());
     }
 
-    public void deleteStationById(Long id) {
-        stationRepository.deleteById(id);
+    public void deleteStationById(IdCommand command) {
+        stationRepository.deleteById(command.getId());
     }
 }

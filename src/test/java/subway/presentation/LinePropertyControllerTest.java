@@ -42,7 +42,7 @@ public class LinePropertyControllerTest {
         LineResponse lineResponse = new LineResponse(1L, "1호선", "파랑");
 
         String body = objectMapper.writeValueAsString(lineRequest);
-        when(linePropertyService.saveLine(any())).thenReturn(lineResponse);
+        when(linePropertyService.saveLineProperty(any())).thenReturn(lineResponse);
 
         // when
         mockMvc.perform(post("/lines")
@@ -65,7 +65,7 @@ public class LinePropertyControllerTest {
                 new LineResponse(2L, "2호선", "초록")
         );
 
-        when(linePropertyService.findLineResponses()).thenReturn(lineResponses);
+        when(linePropertyService.findLinePropertyResponses()).thenReturn(lineResponses);
 
         // when
         mockMvc.perform(get("/lines"))
@@ -84,7 +84,7 @@ public class LinePropertyControllerTest {
         // given
         LineResponse lineResponse = new LineResponse(1L, "1호선", "파랑");
 
-        when(linePropertyService.findLineResponseById(any())).thenReturn(lineResponse);
+        when(linePropertyService.findLinePropertyResponseById(any())).thenReturn(lineResponse);
 
         // when
         mockMvc.perform(get("/lines/{id}", 1L))
@@ -103,7 +103,7 @@ public class LinePropertyControllerTest {
         LineRequest lineRequest = new LineRequest("1호선", "파랑");
 
         String body = objectMapper.writeValueAsString(lineRequest);
-        doNothing().when(linePropertyService).updateLine(any(), any());
+        doNothing().when(linePropertyService).updateLineProperty(any());
 
         // when
         mockMvc.perform(get("/lines/{id}", 1L)
@@ -118,7 +118,7 @@ public class LinePropertyControllerTest {
     @DisplayName("/lines/{id} 로 DELETE 요청을 보낼 시, 특정 노선을 삭제한다")
     void deleteLine() throws Exception {
         // given
-        doNothing().when(linePropertyService).deleteLineById(any());
+        doNothing().when(linePropertyService).deleteLinePropertyById(any());
 
         // when
         mockMvc.perform(delete("/lines/{id}", 1L))

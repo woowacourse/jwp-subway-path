@@ -100,7 +100,7 @@ public class StationControllerTest {
         StationRequest stationRequest = new StationRequest("잠실역");
         String body = objectMapper.writeValueAsString(stationRequest);
 
-        doNothing().when(stationService).updateStation(any(), any());
+        doNothing().when(stationService).updateStation(any());
 
         // when
         mockMvc.perform(get("/stations/{id}", 1L)

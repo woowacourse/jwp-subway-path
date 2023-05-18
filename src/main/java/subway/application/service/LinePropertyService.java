@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.domain.LineProperty;
 import subway.application.repository.LinePropertyRepository;
-import subway.presentation.dto.LineRequest;
+import subway.application.service.command.in.IdCommand;
+import subway.application.service.command.in.SaveLinePropertyCommand;
+import subway.application.service.command.in.UpdateLinePropertyCommand;
 import subway.presentation.dto.LineResponse;
 
 import java.util.List;
@@ -20,33 +22,32 @@ public class LinePropertyService {
         this.linePropertyRepository = linePropertyRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        LineProperty lineProperty = linePropertyRepository.insert(
-                new LineProperty(null, request.getName(), request.getColor()));
+    public LineResponse saveLineProperty(SaveLinePropertyCommand command) {
+        LineProperty lineProperty = linePropertyRepository.insert(command.toEntity());
         return LineResponse.of(lineProperty);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<LineProperty> allLineProperties = findLines();
+    public List<LineResponse> findLinePropertyResponses() {
+        List<LineProperty> allLineProperties = findLineProperties();
         return allLineProperties.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<LineProperty> findLines() {
+    public List<LineProperty> findLineProperties() {
         return linePropertyRepository.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        LineProperty lineProperty = linePropertyRepository.findById(id);
+    public LineResponse findLinePropertyResponseById(IdCommand command) {
+        LineProperty lineProperty = linePropertyRepository.findById(command.getId());
         return LineResponse.of(lineProperty);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        linePropertyRepository.update(new LineProperty(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public void updateLineProperty(UpdateLinePropertyCommand command) {
+        linePropertyRepository.update(command.toEntity());
     }
 
-    public void deleteLineById(Long id) {
-        linePropertyRepository.deleteById(id);
+    public void deleteLinePropertyById(IdCommand command) {
+        linePropertyRepository.deleteById(command.getId());
     }
 }

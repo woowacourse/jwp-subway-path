@@ -3,6 +3,7 @@ package subway.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -43,7 +44,7 @@ class LineControllerTest {
         // given
         StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(1L, 2L, 1);
         String body = objectMapper.writeValueAsString(stationEnrollRequest);
-        doNothing().when(lineService).enrollStation(any(), any());
+        doNothing().when(lineService).enrollStation(any());
 
         // when
         mockMvc.perform(post("/subway/{lineId}", 1)
@@ -58,7 +59,7 @@ class LineControllerTest {
     @DisplayName("/subway/stations/{lineId}로 DELETE 요청을 보낼 수 있다")
     void deleteStation() throws Exception {
         // given
-        doNothing().when(lineService).deleteStation(any(), any());
+        doNothing().when(lineService).deleteStation(any());
         Integer lineId = 1;
 
         // when
