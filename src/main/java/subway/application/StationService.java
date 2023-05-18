@@ -8,6 +8,7 @@ import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
+import subway.exception.StationNotFoundException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +31,13 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public StationResponse findStationResponseById(final Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        final StationEntity stationEntity = findStation(id);
+        return StationResponse.of(stationEntity);
+    }
+
+    private StationEntity findStation(final Long id) {
+        return stationDao.findById(id)
+                .orElseThrow(() -> new StationNotFoundException(id + " 값을 가진 역은 없습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -42,11 +49,14 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(final Long id, final StationRequest stationRequest) {
-        stationDao.update(new StationEntity(id, stationRequest.getName()));
+    public StationResponse updateStation(final Long id, final StationRequest stationRequest) {
+        findStation(id);
+        final long stationId = stationDao.update(new StationEntity(id, stationRequest.getName()));
+        return new StationResponse(stationId, stationRequest.getName());
     }
 
     public void deleteStationById(final Long id) {
+        findStation(id);
         stationDao.deleteById(id);
     }
 
@@ -65,7 +75,8 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public Station findById(final Long fromStation) {
-        return stationDao.findById(fromStation).toStation();
+    public Station findById(final Long lineId) {
+        final StationEntity stationEntity = findStation(lineId);
+        return stationEntity.toStation();
     }
 }
