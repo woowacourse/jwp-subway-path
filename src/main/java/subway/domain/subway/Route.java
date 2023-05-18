@@ -22,7 +22,11 @@ public class Route {
     }
 
     public static Route from(final Lines lines) {
-        return new Route(lines, Fee.from());
+        return new Route(lines, Fee.createDefault());
+    }
+
+    public static Route createCache() {
+        return new Route(null, Fee.createDefault());
     }
 
     public Map<Station, Set<String>> findShortestPath(final String start, final String destination) {
