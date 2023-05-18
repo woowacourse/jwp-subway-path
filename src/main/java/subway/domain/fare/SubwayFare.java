@@ -20,7 +20,7 @@ public class SubwayFare {
     }
 
     public static SubwayFare generateFareByDistance(int distance) {
-        if (distance > MIN_CALCULABLE_DISTANCE && distance <= FIRST_RANGE_START_DISTANCE) {
+        if (distance >= MIN_CALCULABLE_DISTANCE && distance <= FIRST_RANGE_START_DISTANCE) {
             return new SubwayFare(DEFAULT_FARE);
         }
         if (distance > FIRST_RANGE_START_DISTANCE && distance <= SECOND_RANGE_START_DISTANCE) {
