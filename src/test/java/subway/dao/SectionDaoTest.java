@@ -164,4 +164,49 @@ class SectionDaoTest {
         assertThat(result.size()).isEqualTo(0);
     }
 
+    @Test
+    @DisplayName("여러개의 구간을 저장한다.")
+    void insert_sections() {
+        // given
+        LineEntity insertedLine = lineDao.insert(LINE2_ENTITY);
+
+        StationEntity jamsil = new StationEntity("잠실", insertedLine.getId());
+        StationEntity seolleung = new StationEntity("선릉", insertedLine.getId());
+        StationEntity gangnam = new StationEntity("강남", insertedLine.getId());
+        StationEntity insertedJamsil = stationDao.insert(jamsil);
+        StationEntity insertedSeolleung = stationDao.insert(seolleung);
+        StationEntity insertedGangnam = stationDao.insert(gangnam);
+
+        SectionEntity jamsilSeolleung = new SectionEntity(insertedJamsil.getId(), insertedSeolleung.getId(), insertedLine.getId(), 10);
+        SectionEntity seolleungGangNam = new SectionEntity(insertedSeolleung.getId(), insertedGangnam.getId(), insertedLine.getId(), 10);
+
+        // when
+        sectionDao.insertBoth(List.of(jamsilSeolleung, seolleungGangNam));
+        List<SectionStationEntity> result = sectionDao.findAll();
+
+        // then
+        assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("구간을 id로 삭제한다.")
+    void delete_section_by_id() {
+        // given
+        LineEntity insertedLine = lineDao.insert(LINE2_ENTITY);
+
+        StationEntity jamsil = new StationEntity("잠실", insertedLine.getId());
+        StationEntity seolleung = new StationEntity("선릉", insertedLine.getId());
+        StationEntity insertedJamsil = stationDao.insert(jamsil);
+        StationEntity insertedSeolleung = stationDao.insert(seolleung);
+
+        SectionEntity jamsilSeolleung = new SectionEntity(insertedJamsil.getId(), insertedSeolleung.getId(), insertedLine.getId(), 10);
+        SectionEntity insertedJamsilSeolleung = sectionDao.insert(jamsilSeolleung);
+
+        // when
+        sectionDao.deleteById(insertedJamsilSeolleung.getId());
+        List<SectionStationEntity> result = sectionDao.findAll();
+
+        // then
+        assertThat(result.size()).isEqualTo(0);
+    }
 }
