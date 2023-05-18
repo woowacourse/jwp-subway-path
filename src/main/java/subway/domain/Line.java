@@ -1,6 +1,6 @@
 package subway.domain;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static subway.domain.Direction.LEFT;
 import static subway.domain.Direction.RIGHT;
@@ -13,9 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import subway.domain.strategy.AddStationStrategy;
-import subway.domain.strategy.AddStationLeftStrategy;
-import subway.domain.strategy.AddStationRightStrategy;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
 import subway.exception.StationNotFoundException;
@@ -27,15 +24,11 @@ public class Line {
     private final String name;
     private final String color;
     private final List<Section> sections;
-    private final AddStationStrategy addStationRightStrategy;
-    private final AddStationStrategy addStationLeftStrategy;
 
-    public Line(final String name, final String color, final List<Section> sections) {
+    public Line(String name, String color, List<Section> sections) {
         this.name = name;
         this.color = color;
         this.sections = new ArrayList<>(sections);
-        this.addStationRightStrategy = new AddStationRightStrategy();
-        this.addStationLeftStrategy = new AddStationLeftStrategy();
     }
 
     public boolean containsAll(final Station start, final Station end) {
@@ -45,14 +38,7 @@ public class Line {
 
     public void add(final Station base, final Station additional, final Distance distance, final Direction direction) {
         validate(base, additional, distance, direction);
-
-        if (direction == RIGHT) {
-            addStationRightStrategy.addStation(sections, base, additional, distance);
-        }
-
-        if (direction == LEFT) {
-            addStationLeftStrategy.addStation(sections, base, additional, distance);
-        }
+        direction.addStation(sections, base, additional, distance);
     }
 
     private void validate(
