@@ -50,4 +50,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
     }
+
+    @ExceptionHandler(InvalidSectionConnectException.class)
+    public ResponseEntity<ErrorResponse> sectionNotFound(InvalidSectionLengthException e) {
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.INVALID_SECTION_CONNECTION.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
 }

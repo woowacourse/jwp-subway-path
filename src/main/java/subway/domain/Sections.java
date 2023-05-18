@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.exception.EndStationNotExistException;
+import subway.exception.InvalidSectionConnectException;
 import subway.exception.InvalidSectionLengthException;
 import subway.exception.SectionNotFoundException;
 
@@ -11,12 +12,43 @@ import java.util.stream.Collectors;
 public class Sections {
     public static final int DOWN_END_ID = 0;
     public static final int ONE_REMAINED = 1;
+
     private final long lineId;
     private final List<Section> sections;
 
     public Sections(final long lineId, final List<Section> sections) {
         this.lineId = lineId;
         this.sections = new ArrayList<>(sections);
+        assignNextSectionIds();
+    }
+
+    private void assignNextSectionIds() {
+        Map<Long, Section> upStationToSection = new HashMap<>();
+        for (Section section : sections) {
+            upStationToSection.put(section.getUpStation().getId(), section);
+        }
+
+        assignMatchingNext(upStationToSection);
+    }
+
+    private void assignMatchingNext(Map<Long, Section> upStationToSectionMap) {
+        for (Section section : sections) {
+            Section nextSection = upStationToSectionMap.getOrDefault(section.getDownStation().getId(), null);
+            if (nextSection != null) {
+                section.setNextSectionId(nextSection.getId());
+                continue;
+            }
+            section.setNextSectionId(null);
+        }
+        validateNextConnections();
+    }
+
+    private void validateNextConnections() {
+        Set<UUID> nextIds = sections.stream().map(section -> section.getNextSectionId()).collect(Collectors.toSet());
+
+        if (sections.size() != nextIds.size()) {
+            throw new InvalidSectionConnectException();
+        }
     }
 
     public Section getIncludeSection(Section newSection) {
@@ -46,12 +78,12 @@ public class Sections {
 
     public Section getDownEndSection() {
         return sections.stream()
-                .filter(existingSection -> existingSection.getNextSectionId() == 0)
+                .filter(existingSection -> existingSection.getNextSectionId() == null)
                 .findFirst().orElseThrow(EndStationNotExistException::new);
     }
 
     public Section getUpEndSection() {
-        List<Long> downSectionIds = sections.stream()
+        List<UUID> downSectionIds = sections.stream()
                 .map(Section::getNextSectionId)
                 .collect(Collectors.toList());
 
@@ -61,7 +93,7 @@ public class Sections {
                 .orElseThrow(EndStationNotExistException::new);
     }
 
-    private static Predicate<Section> isNotContainedId(List<Long> sectionIds) {
+    private static Predicate<Section> isNotContainedId(List<UUID> sectionIds) {
         return existingSection -> !sectionIds.contains(existingSection.getId());
     }
 
@@ -69,48 +101,37 @@ public class Sections {
         return sections.isEmpty();
     }
 
-    public int size() {
-        return this.sections.size();
-    }
-
     public List<Section> getSections() {
         return sections;
     }
 
-    public Section findPreviousSection(Section section) {
-        return sections.stream()
-                .filter(existingSection -> existingSection.getNextSectionId().equals(section.getId()))
-                .findFirst().orElseThrow(SectionNotFoundException::new);
-    }
-
-    public Section findSectionByUpStation(final long stationId) {
-        return sections.stream().filter(section -> section.isSameUpStationId(stationId))
+    public Section findSectionByUpStation(Station station) {
+        return sections.stream().filter(section -> section.isSameUpStation(station))
                 .findFirst()
                 .orElseThrow(SectionNotFoundException::new);
     }
 
-    public Section findSectionByDownStation(final long stationId) {
-        return sections.stream().filter(section -> section.isSameDownStationId(stationId))
+    private Section findSectionByDownStation(final Station station) {
+        return sections.stream().filter(section -> section.isSameDownStation(station))
                 .findFirst()
                 .orElseThrow(SectionNotFoundException::new);
     }
 
-    public boolean isNotExistStation(final long stationId) {
+    public boolean isNotExistStation(final Station station) {
         return sections.stream()
-                .noneMatch(section -> section.containsStation(stationId));
+                .noneMatch(section -> section.containsStation(station));
     }
 
-
-    public boolean isUpEnd(long stationId) {
-        return this.getUpEndSection().isSameUpStationId(stationId);
+    private boolean isUpEnd(Station station) {
+        return this.getUpEndSection().isSameUpStation(station);
     }
 
-    public boolean isDownEnd(long stationId) {
-        return this.getDownEndSection().isSameDownStationId(stationId);
+    private boolean isDownEnd(Station station) {
+        return this.getDownEndSection().isSameDownStation(station);
     }
 
     public List<Station> getStationsInOrder() {
-        if (sections.isEmpty()) {
+        if (this.sections.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -125,18 +146,18 @@ public class Sections {
     }
 
     private List<Section> getSorted() {
-        Map<Long, Section> sectionIdMappings = new HashMap<>();
+        Map<UUID, Section> sectionIdMappings = new HashMap<>();
         sections.forEach(section -> sectionIdMappings.put(section.getId(), section));
 
         return sortSections(sectionIdMappings);
     }
 
-    private List<Section> sortSections(Map<Long, Section> sectionIdMapping) {
+    private List<Section> sortSections(Map<UUID, Section> sectionIdMapping) {
         Section upEndSection = getUpEndSection();
         List<Section> result = new ArrayList<>();
         result.add(upEndSection);
         Section currentSection = upEndSection;
-        while (currentSection != null && currentSection.getNextSectionId() != DOWN_END_ID) {
+        while (currentSection != null && currentSection.getNextSectionId() != null) {
             Section nextSection = sectionIdMapping.getOrDefault(currentSection.getNextSectionId(), null);
             result.add(nextSection);
             currentSection = nextSection;
@@ -144,16 +165,104 @@ public class Sections {
         return result;
     }
 
-
-    public boolean isLastRemained() {
+    private boolean isLastRemained() {
         return sections.size() == ONE_REMAINED;
     }
 
-    @Override
-    public String toString() {
-        return "Sections{" +
-                "lineId=" + lineId +
-                ", sections=" + sections +
-                '}';
+    public Sections add(Section requestedSection) {
+        List<Section> sections = new ArrayList<>(this.sections);
+
+        if (this.isInitialSave()) {
+            sections.add(requestedSection);
+            return new Sections(this.lineId, sections);
+        }
+        if (this.isDownEndAppend(requestedSection)) {
+            Section downEndSection = this.getDownEndSection();
+            sections.remove(downEndSection);
+            Section updated = downEndSection.updateDuplicateStation(requestedSection);
+            sections.add(updated);
+            sections.add(requestedSection);
+
+            return new Sections(this.lineId, sections);
+        }
+        if (this.isUpEndAppend(requestedSection)) {
+            Section upEndSection = this.getUpEndSection();
+            sections.remove(upEndSection);
+            Section updated = upEndSection.updateDuplicateStation(requestedSection);
+            sections.add(updated);
+            sections.add(requestedSection);
+            assignNextSectionIds();
+
+            return new Sections(this.lineId, sections);
+        }
+
+        Section includeSection = this.getIncludeSection(requestedSection);
+        sections.remove(includeSection);
+        sections.add(requestedSection);
+        Section updated = includeSection.updateDuplicateStation(requestedSection);
+        sections.add(updated);
+        return new Sections(this.lineId, sections);
+    }
+
+    public Sections delete(Station station) {
+        if (this.isNotExistStation(station)) {
+            throw new SectionNotFoundException();
+        }
+
+        if (this.isLastRemained()) {
+            List<Section> temp = new ArrayList<>(this.sections);
+            temp.clear();
+            return new Sections(this.lineId, temp);
+        }
+
+        if (this.isUpEnd(station)) {
+            List<Section> temp = new ArrayList<>(this.sections);
+            Section upEndSection = this.getUpEndSection();
+            temp.remove(upEndSection);
+            return new Sections(this.lineId, temp);
+        }
+
+        if (this.isDownEnd(station)) {
+            List<Section> temp = new ArrayList<>(this.sections);
+            Section downEndSection = this.getDownEndSection();
+            temp.remove(downEndSection);
+            return new Sections(this.lineId, temp);
+        }
+
+        return deleteMiddle(station);
+    }
+
+    private Sections deleteMiddle(Station station) {
+        List<Section> temp = new ArrayList<>(this.sections);
+
+        Section innerRight = this.findSectionByUpStation(station);
+        Section innerLeft = this.findSectionByDownStation(station);
+        temp.remove(innerLeft);
+        temp.remove(innerRight);
+
+        Section mergedSection = new Section(innerLeft.getUpStation(), innerRight.getDownStation(),
+                innerLeft.getDistance() + innerRight.getDistance(),
+                innerRight.getNextSectionId());
+        temp.add(mergedSection);
+        return new Sections(this.lineId, temp);
+    }
+
+    public List<Section> getAdded(Sections other) {
+        List<Section> temp = new ArrayList<>(this.sections);
+        temp.removeAll(other.sections);
+        if (temp.isEmpty()) {
+            return Collections.emptyList();
+        }
+       return temp;
+    }
+
+    public List<Section> getRemoved(Sections other) {
+        Sections temp = new Sections(other.lineId, other.sections);
+        temp.sections.removeAll(this.sections);
+        return new ArrayList<>(temp.sections);
+    }
+
+    public int size() {
+        return sections.size();
     }
 }

@@ -19,13 +19,13 @@ public class SectionController {
 
     @GetMapping("lines/{lineId}/stations")
     public ResponseEntity<List<StationResponse>> findStationsInLine(@PathVariable long lineId) {
-        List<StationResponse> stationsInOrder = sectionService.findStationsInOrder(lineId);
+        List<StationResponse> stationsInOrder = sectionService.findByLineId(lineId);
         return ResponseEntity.status(HttpStatus.OK).body(stationsInOrder);
     }
 
     @PostMapping("lines/{lineId}/stations")
     public ResponseEntity<Void> addSection(@PathVariable long lineId, @RequestBody SectionSaveRequest request) {
-        long savedSectionId = sectionService.addSection(lineId, request);
+        sectionService.addSection(lineId, request);
         String location1 = "/stations/"+request.getUpStationId();
         String location2 = "/stations/"+request.getDownStationId();
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", location1, location2).build();

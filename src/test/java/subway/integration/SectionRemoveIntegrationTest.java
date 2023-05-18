@@ -44,7 +44,6 @@ public class SectionRemoveIntegrationTest extends IntegrationTest {
                 .when().get("/lines/{lineId}/stations", LINE_ID)
                 .then().extract();
 
-
         List<Long> resultStationIds = findResponse.jsonPath()
                 .getList(".", StationResponse.class).stream()
                 .map(StationResponse::getId)

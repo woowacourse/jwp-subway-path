@@ -1,6 +1,5 @@
 package subway.dao;
 
-import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -10,6 +9,10 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class SectionDao {
@@ -26,7 +29,7 @@ public class SectionDao {
 
     public Sections findSectionsByLineId(final long lineId) {
 
-        String sql = "SELECT SEC.id, S1.id, S1.name, S2.id, S2.name, SEC.distance, SEC.next_id"
+        String sql = "SELECT SEC.uuid, S1.id, S1.name, S2.id, S2.name, SEC.distance"
                 + " FROM SECTIONS AS SEC "
                 + "INNER JOIN STATION AS S1 ON SEC.up_id = S1.id "
                 + "INNER JOIN STATION AS S2 ON SEC.down_id = S2.id "
@@ -39,67 +42,39 @@ public class SectionDao {
 
     private RowMapper<Section> upStationMapper() {
         return (rs, rowNum) -> new Section(
-                rs.getLong(1),
+                java.util.UUID.fromString(rs.getString(1)),
                 new Station(rs.getLong(2), rs.getString(3)),
                 new Station(rs.getLong(4), rs.getString(5)),
-                rs.getInt(6),
-                rs.getLong(7));
+                rs.getInt(6));
     }
 
-    public long save(final Section section, final long lineId) {
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue("id", null)
-                .addValue("up_id", section.getUpStationId())
-                .addValue("down_id", section.getDownStationId())
-                .addValue("distance", section.getDistance())
-                .addValue("line_id", lineId)
-                .addValue("next_id", section.getNextSectionId());
+    public void save(List<Section> added, final long lineId) throws IllegalArgumentException {
+        List<SqlParameterSource> entries = new ArrayList<>();
 
-        return simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
+        if (added.isEmpty()) {return;}
+
+        for (Section section : added) {
+            SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                    .addValue("uuid", section.getId())
+                    .addValue("up_id", section.getUpStation().getId())
+                    .addValue("down_id", section.getDownStation().getId())
+                    .addValue("distance", section.getDistance())
+                    .addValue("line_id", lineId);
+
+            entries.add(sqlParameterSource);
+        }
+
+        SqlParameterSource[] sources = entries.toArray(new SqlParameterSource[entries.size()]);
+        simpleJdbcInsert.executeBatch(sources);
     }
 
-    public void updateSectionNext(Long nextId, long sectionId) {
-        String sql = "UPDATE SECTIONS SET next_id = ? WHERE id = ?";
-        jdbcTemplate.update(sql, nextId, sectionId);
-    }
+    public void delete(List<Section> removed) {
+        String sql = "delete from SECTIONS where uuid = ?";
 
-    public void update(final Section section) {
-        String sql = "UPDATE SECTIONS SET up_id = ?, down_id = ?, distance = ?, next_id = ? WHERE id = ?";
-        jdbcTemplate.update(sql,
-                section.getUpStationId(),
-                section.getDownStationId(),
-                section.getDistance(),
-                section.getNextSectionId(),
-                section.getId());
-    }
+        List<Object[]> removeIds = removed.stream()
+                .map(section -> new Object[]{section.getId().toString()})
+                .collect(Collectors.toList());
 
-    public void deleteById(final long sectionId) {
-        String sql = "delete SECTIONS where id = ?";
-        jdbcTemplate.update(sql, sectionId);
-    }
-
-    public void deleteSectionByUpStationId(final long stationId, final long lineId) {
-        String sql = "delete SECTIONS where up_id = ? AND line_id = ?";
-        jdbcTemplate.update(sql, stationId, lineId);
-    }
-
-    public void deleteSectionByDownStationId(final long stationId, final long lineId) {
-        String sql = "delete SECTIONS where down_id = ? AND line_id = ?";
-        jdbcTemplate.update(sql, stationId, lineId);
-    }
-
-    public void deleteAllByLineId(long lineId) {
-        String sql = "delete SECTIONS where line_id = ?";
-        jdbcTemplate.update(sql, lineId);
-    }
-
-    public Section findById(long sectionId) {
-        String sql = "SELECT SEC.id, S1.id, S1.name, S2.id, S2.name, SEC.distance, SEC.next_id"
-                + " FROM SECTIONS AS SEC "
-                + " JOIN STATION AS S1 ON SEC.up_id = S1.id "
-                + " JOIN STATION AS S2 ON SEC.down_id = S2.id "
-                + " WHERE SEC.id = ?";
-
-        return jdbcTemplate.queryForObject(sql, upStationMapper(), sectionId);
+        jdbcTemplate.batchUpdate(sql, removeIds);
     }
 }

@@ -24,11 +24,11 @@ create table if not exists LINE
 create table if not exists SECTIONS
 (
     id bigint auto_increment not null,
+    uuid varchar(36) not null,
     up_id bigint not null,
     down_id bigint not null,
     line_id bigint not null,
     distance int not null,
-    next_id bigint null,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
     primary key(id),
