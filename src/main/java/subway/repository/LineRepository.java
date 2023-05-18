@@ -109,4 +109,21 @@ public class LineRepository {
         return StationConverter.entityToDomain(stationEntity);
     }
 
+    public void updateLineProperty(LineProperty lineProperty) {
+        LineEntity lineEntity = LinePropertyConverter.domainToEntity(lineProperty);
+        int updateCount = lineDao.update(lineEntity);
+
+        if (updateCount == 0) {
+            throw new IllegalArgumentException("노선이 업데이트 되지 않았습니다.");
+        }
+    }
+
+    public void deleteById(Long id) {
+        int removeCount = lineDao.deleteById(id);
+
+        if (removeCount == 0) {
+            throw new IllegalArgumentException("노선이 삭제되지 않았습니다.");
+        }
+    }
+
 }

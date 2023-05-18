@@ -16,8 +16,9 @@ import subway.service.domain.Station;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -129,6 +130,55 @@ class LineRepositoryTest {
     void findById_fail() {
         assertThatThrownBy(() -> lineRepository.findById(3L))
                 .isInstanceOf(LineNotFoundException.class);
+    }
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    @Test
+    @DisplayName("LineProperty 를 update 한다.")
+    @Sql("/line_test_data.sql")
+    void updateLineProperty() {
+        LineProperty lineProperty = new LineProperty(1L, "2호선", "bg-green-600");
+        assertDoesNotThrow(() -> lineRepository.updateLineProperty(lineProperty));
+    }
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    @Test
+    @DisplayName("LineProperty 를 update 한다. (실패)")
+    @Sql("/line_test_data.sql")
+    void updateLineProperty_fail() {
+        LineProperty lineProperty = new LineProperty(100L, "2호선", "bg-green-600");
+
+        assertThatThrownBy(() -> lineRepository.updateLineProperty(lineProperty))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    @Test
+    @DisplayName("Line 을 삭제한다.")
+    @Sql("/line_test_data.sql")
+    void deleteById() {
+        assertDoesNotThrow(() -> lineRepository.deleteById(1L));
+    }
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    @Test
+    @DisplayName("Line 을 삭제한다. (실패)")
+    @Sql("/line_test_data.sql")
+    void deleteById_fail() {
+        assertThatThrownBy(() -> lineRepository.deleteById(4L))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }
