@@ -1,9 +1,9 @@
 package subway.application;
 
-import subway.dto.response.PathResponse;
+import subway.dto.PathDto;
 
 public interface PathService {
-    public PathResponse findShortest(long startId, long endId);
+    public PathDto findShortest(long startId, long endId);
 
 
 }

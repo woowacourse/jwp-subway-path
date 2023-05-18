@@ -20,7 +20,7 @@ insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 4
 insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 5, 6, 2, 5);
 insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 6, 8, 2, 5);
 insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 8, 9, 2, 5);
-insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 9, 7, 2, 5);
+insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 9, 7, 2, 10);
 
 -- 1 - 2 - 3 - 7
 --     |       |

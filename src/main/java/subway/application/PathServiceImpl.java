@@ -9,7 +9,7 @@ import subway.dao.StationDao;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.response.PathResponse;
+import subway.dto.PathDto;
 import subway.dto.response.StationResponse;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class PathServiceImpl implements PathService {
     }
 
     @Override
-    public PathResponse findShortest(long startId, long endId) {
+    public PathDto findShortest(long startId, long endId) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         List<Sections> allSections = sectionDao.findAllSections();
 
@@ -35,7 +35,7 @@ public class PathServiceImpl implements PathService {
 
         Station start = stationDao.findById(startId);
         Station end = stationDao.findById(endId);
-        return new PathResponse(findPath(start, end, graph), findDistance(start, end, graph));
+        return new PathDto(findPath(start, end, graph), findDistance(start, end, graph));
     }
 
     private List<StationResponse> findPath(Station start, Station end, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
