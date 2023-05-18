@@ -4,11 +4,11 @@ import subway.exception.InvalidDistanceException;
 
 public class Fee {
 
+    private static final int NOT_MOVE_DISTANCE = 0;
     private static final int DEFAULT_DISTANCE = 10;
     private static final int MAX_MIDDLE_DISTANCE = 50;
     private static final int DEFAULT_FEE = 1250;
     private static final int MIDDLE_MAX_FEE = 2050;
-    private static final int NOT_MOVE_DISTANCE = 0;
 
     private int fee;
 
@@ -16,7 +16,7 @@ public class Fee {
         this.fee = fee;
     }
 
-    public static Fee from() {
+    public static Fee createDefault() {
         return new Fee(DEFAULT_FEE);
     }
 
@@ -31,7 +31,7 @@ public class Fee {
         }
     }
 
-    public int calculateFee(int distance) {
+    private int calculateFee(int distance) {
         if (distance <= DEFAULT_DISTANCE) {
             return DEFAULT_FEE;
         }
@@ -51,7 +51,6 @@ public class Fee {
     private int getEndOfDistanceFee(final int distance) {
         return MIDDLE_MAX_FEE + (int) ((Math.ceil((double) (distance - 50) / 8)) * 100);
     }
-
 
     public int getFee() {
         return fee;

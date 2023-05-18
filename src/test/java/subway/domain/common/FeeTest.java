@@ -16,7 +16,7 @@ class FeeTest {
     @DisplayName("거리 기준으로 요금을 계산한다.")
     void calculate_fee_from_distance_success(final int distance, final int expected) {
         // given
-        Fee fee = Fee.from();
+        Fee fee = Fee.createDefault();
 
         // when
         fee.calculateFromDistance(distance);
@@ -29,7 +29,7 @@ class FeeTest {
     @DisplayName("역 사이의 거리가 1보다 작으면 예외를 발생시킨다.")
     void throws_exception_when_move_distance_invalid() {
         // when & then
-        assertThatThrownBy(() -> Fee.from().calculateFromDistance(0))
+        assertThatThrownBy(() -> Fee.createDefault().calculateFromDistance(0))
                 .isInstanceOf(InvalidDistanceException.class);
     }
 }
