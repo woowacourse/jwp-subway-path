@@ -38,8 +38,8 @@ public class TestFixture {
     public static final Station STATION_C = new Station(11L, "C");
     public static final Station STATION_D = new Station(12L, "D");
     public static final Station STATION_E = new Station(13L, "E");
-    public static final Line LINE_A = new Line(1L, "99호선", "blue");
-    public static final Line LINE_B = new Line(1L, "100호선", "blue");
+    public static final Line LINE_A = new Line(4L, "99호선", "gray");
+    public static final Line LINE_B = new Line(5L, "100호선", "white");
 
     static {
         LINE_A.add(new Section(STATION_A, STATION_C, 1));
@@ -54,9 +54,12 @@ public class TestFixture {
             new Section(STATION_A, STATION_C, 1),
             new Section(STATION_C, STATION_E, 6)
     );
+    public static final List<Station> SHORTEST_PATH_STATIONS_IN_LINE_A_AND_B_STATION_A_TO_E = List.of(
+            STATION_A, STATION_C, STATION_E
+    );
 
-    public static final Line LINE_C = new Line(1L, "99호선", "blue");
-    public static final Line LINE_D = new Line(1L, "100호선", "blue");
+    public static final Line LINE_C = new Line(1L, "101호선", "blue");
+    public static final Line LINE_D = new Line(1L, "102호선", "blue");
 
     static {
         LINE_C.add(new Section(STATION_A, STATION_C, 1));

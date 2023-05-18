@@ -6,6 +6,7 @@ import static subway.TestFixture.LINE_A;
 import static subway.TestFixture.LINE_B;
 import static subway.TestFixture.SHORTEST_PATH_IN_LINE_A_AND_B_STATION_A_TO_E;
 import static subway.TestFixture.SHORTEST_PATH_IN_LINE_C_AND_D_STATION_A_TO_E;
+import static subway.TestFixture.SHORTEST_PATH_STATIONS_IN_LINE_A_AND_B_STATION_A_TO_E;
 import static subway.TestFixture.STATION_A;
 import static subway.TestFixture.STATION_E;
 
@@ -44,7 +45,7 @@ class SubwayServiceTest {
         )).when(lineRepository).findAll();
         doReturn(STATION_A).when(stationDao).findById(STATION_A.getId());
         doReturn(STATION_E).when(stationDao).findById(STATION_E.getId());
-        var expectedIds = new Path(SHORTEST_PATH_IN_LINE_A_AND_B_STATION_A_TO_E).getStations().stream()
+        var expectedIds = SHORTEST_PATH_STATIONS_IN_LINE_A_AND_B_STATION_A_TO_E.stream()
                 .map(Station::getId)
                 .collect(Collectors.toList());
 
