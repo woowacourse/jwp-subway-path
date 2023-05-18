@@ -16,9 +16,11 @@ import subway.entity.SectionStationEntity;
 import subway.entity.StationEntity;
 import subway.exception.common.NotFoundLineException;
 import subway.exception.common.NotFoundStationException;
+import subway.exception.line.AlreadyExistLineException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -38,7 +40,11 @@ public class LineRepository {
         this.stationDao = stationDao;
     }
 
-    public Line save(Line line) {
+    public Line save(final Line line) {
+        Optional<LineEntity> findedLine = lineDao.findByName(line.getName());
+        if (findedLine.isPresent()) {
+            throw new AlreadyExistLineException();
+        }
         LineEntity insertedLineEntity = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
         return new Line(
                 insertedLineEntity.getId(),
@@ -48,7 +54,7 @@ public class LineRepository {
         );
     }
 
-    public Line findByName(String name) {
+    public Line findByName(final String name) {
         LineEntity lineEntity = lineDao.findByName(name)
                 .orElseThrow(NotFoundLineException::new);
 
@@ -61,7 +67,7 @@ public class LineRepository {
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
     }
 
-    public Line findByStationId(Long id) {
+    public Line findByStationId(final Long id) {
         LineEntity lineEntity = lineDao.findByStationId(id).orElseThrow(NotFoundLineException::new);
         List<SectionStationEntity> sectionStationEntities = sectionDao.findByLineId(lineEntity.getId());
 
@@ -69,7 +75,7 @@ public class LineRepository {
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
     }
 
-    public Line findById(Long id) {
+    public Line findById(final Long id) {
         LineEntity lineEntity = lineDao.findById(id)
                 .orElseThrow(NotFoundLineException::new);
         List<SectionStationEntity> sectionStationEntities = sectionDao.findByLineId(lineEntity.getId());
