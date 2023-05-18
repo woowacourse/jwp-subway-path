@@ -13,6 +13,7 @@ import subway.dto.PathResponse;
 import subway.dto.StationResponse;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 import subway.integration.IntegrationTest;
 
 import java.util.List;
@@ -69,11 +70,11 @@ class SubwayControllerTest extends IntegrationTest {
     }
 
     private void prepareStation() {
-        stationDao.insert(new Station(1L, "수성"));
-        stationDao.insert(new Station(2L, "금성"));
-        stationDao.insert(new Station(3L, "지구"));
-        stationDao.insert(new Station(4L, "화성"));
-        stationDao.insert(new Station(5L, "잠실"));
+        stationDao.insert(new StationEntity(1L, "수성"));
+        stationDao.insert(new StationEntity(2L, "금성"));
+        stationDao.insert(new StationEntity(3L, "지구"));
+        stationDao.insert(new StationEntity(4L, "화성"));
+        stationDao.insert(new StationEntity(5L, "잠실"));
     }
 
     private void prepareLine() {

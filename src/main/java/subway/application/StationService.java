@@ -7,6 +7,7 @@ import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +24,7 @@ public class StationService {
     }
 
     public StationResponse saveStation(final StationRequest stationRequest) {
-        final Station station = stationDao.insert(new Station(stationRequest.getName()));
+        final StationEntity station = stationDao.insert(new StationEntity(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
@@ -34,7 +35,7 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
-        final List<Station> stations = stationDao.findAll();
+        final List<StationEntity> stations = stationDao.findAll();
 
         return stations.stream()
                 .map(StationResponse::of)
@@ -42,7 +43,7 @@ public class StationService {
     }
 
     public void updateStation(final Long id, final StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        stationDao.update(new StationEntity(id, stationRequest.getName()));
     }
 
     public void deleteStationById(final Long id) {
@@ -59,10 +60,12 @@ public class StationService {
     }
 
     private List<Station> findStationsOf(final Set<String> stationNames) {
-        return stationDao.findByName(stationNames);
+        return stationDao.findByName(stationNames)
+                .stream().map(StationEntity::toStation)
+                .collect(Collectors.toList());
     }
 
     public Station findById(final Long fromStation) {
-        return stationDao.findById(fromStation);
+        return stationDao.findById(fromStation).toStation();
     }
 }
