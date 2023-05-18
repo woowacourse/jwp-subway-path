@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-// TODO 여러 통합 테스트에서 일관성 있게 더미 데이터를 다루도록 하기
+@DisplayName("지하철 경로 관련 기능 통합 테스트")
 @Sql(scripts = {"classpath:data.sql", "classpath:data-sections.sql"})
 public class RouteIntegrationTest extends IntegrationTest {
 
@@ -42,9 +42,10 @@ public class RouteIntegrationTest extends IntegrationTest {
 
     @DisplayName("잘못된 요청 정보로 조회 시 404 상태코드와 적절한 에러 메시지를 반환한다.")
     @ParameterizedTest
-    @CsvSource(value = {
-            "100:1:출발 역이 존재하지 않습니다.", "1:100:도착 역이 존재하지 않습니다.",
-            "1:1:출발 역과 도착 역이 동일한 경로를 찾을 수 없습니다.", "100:100:출발 역이 존재하지 않습니다."}, delimiter = ':')
+    @CsvSource(value = {"100:1:출발 역이 존재하지 않습니다.",
+            "1:100:도착 역이 존재하지 않습니다.",
+            "1:1:출발 역과 도착 역이 동일한 경로를 찾을 수 없습니다.",
+            "100:100:출발 역이 존재하지 않습니다."}, delimiter = ':')
     void findShortestRouteBadRequest(final int sourceStationId,
                                      final int targetStationId,
                                      final String errorMessage) {

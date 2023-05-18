@@ -1,6 +1,5 @@
 package subway.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotNull;
 
 public class StationRequest {
@@ -8,7 +7,9 @@ public class StationRequest {
     @NotNull
     private String name;
 
-    @JsonCreator
+    public StationRequest() {
+    }
+
     public StationRequest(String name) {
         this.name = name;
     }

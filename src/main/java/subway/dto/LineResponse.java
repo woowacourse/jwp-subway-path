@@ -10,7 +10,6 @@ public class LineResponse {
     private List<StationResponse> stationResponses;
 
     public LineResponse() {
-
     }
 
     public LineResponse(Long id, String name, String color) {

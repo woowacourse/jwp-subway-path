@@ -6,9 +6,12 @@ import subway.domain.Direction;
 public class SectionRequest {
 
     @NotNull
-    private final SectionStations sectionStations;
+    private SectionStations sectionStations;
     @NotNull
-    private final Direction direction;
+    private Direction direction;
+
+    public SectionRequest() {
+    }
 
     public SectionRequest(final SectionStations sectionStations, final String direction) {
         this.sectionStations = sectionStations;
