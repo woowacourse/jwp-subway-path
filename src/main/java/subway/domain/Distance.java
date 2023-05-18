@@ -38,6 +38,7 @@ public class Distance {
     public boolean isLessThanOrEqualTo(final Distance value) {
         return distance <= value.getDistance();
     }
+
     public int getDistance() {
         return distance;
     }

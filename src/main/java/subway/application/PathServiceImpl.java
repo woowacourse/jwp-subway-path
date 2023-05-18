@@ -6,7 +6,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import subway.domain.Distance;
 import subway.domain.Line;
-import subway.domain.Price;
 import subway.domain.SectionWeightEdge;
 import subway.domain.Station;
 import subway.domain.section.Section;
@@ -35,13 +34,12 @@ public class PathServiceImpl implements PathService {
 
     @Override
     public Distance getDistanceByShortestPath(final Station sourceStation,
-                                           final Station targetStation,
-                                           final List<Line> lines) {
+                                              final Station targetStation,
+                                              final List<Line> lines) {
 
         final double shortestLength = getShortestPath(sourceStation, targetStation, lines).getWeight();
-        final Distance distance = Distance.from(shortestLength);
 
-        return distance;
+        return Distance.from(shortestLength);
     }
 
     private GraphPath<Station, SectionWeightEdge> getShortestPath(

@@ -63,7 +63,7 @@ class DistanceTest {
         final Distance largeDistance = Distance.from(1_000_000);
 
         // when, then
-        SoftAssertions.assertSoftly(softAssertions ->  {
+        SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(distance.isLessThanOrEqualTo(smallDistance)).isFalse();
             softAssertions.assertThat(distance.isLessThanOrEqualTo(largeDistance)).isTrue();
         });
