@@ -31,7 +31,12 @@ public class StationDao {
     public Long insert(final StationEntity station) {
         final Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", station.getName());
-        return insertAction.executeAndReturnKey(parameters).longValue();
+
+        try {
+            return insertAction.executeAndReturnKey(parameters).longValue();
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("동일한 역을 추가할 수 없습니다.");
+        }
     }
 
     public List<StationEntity> findAll() {
