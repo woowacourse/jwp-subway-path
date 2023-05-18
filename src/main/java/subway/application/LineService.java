@@ -1,6 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.line.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
@@ -18,6 +19,7 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
