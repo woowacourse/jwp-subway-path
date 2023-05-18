@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import subway.persistence.entity.StationEntity;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +66,10 @@ public class StationDao {
     }
 
     public List<StationEntity> findAllById(final List<Long> stationIds) {
+        if (stationIds.isEmpty()) {
+            return new LinkedList<>();
+        }
+
         final String sql = "select id, name from STATION where id IN (:id)";
         final MapSqlParameterSource source = new MapSqlParameterSource("id", stationIds);
         return namedParameterJdbcTemplate.query(sql, source, rowMapper);

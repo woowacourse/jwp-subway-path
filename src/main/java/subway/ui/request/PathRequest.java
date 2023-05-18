@@ -15,6 +15,10 @@ public class PathRequest {
         this.endStationName = endStationName;
     }
 
+    private PathRequest() {
+        this(null, null);
+    }
+
     public String getStartStationName() {
         return startStationName;
     }
