@@ -2,6 +2,7 @@ package subway.domain.path;
 
 import subway.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -88,6 +89,10 @@ public final class Path {
         final Path up = new Path(this.up, down.up, distance - down.distance);
 
         return List.of(up, down);
+    }
+
+    public List<Station> getStations() {
+        return new ArrayList<>(List.of(up, down));
     }
 
     public Long getId() {

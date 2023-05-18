@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 public final class Paths {
+    private static final int ALREADY_EXIST_PATH_SIZE = 2;
+
     private final List<Path> paths;
 
     public Paths(final List<Path> paths) {
@@ -31,7 +33,7 @@ public final class Paths {
     }
 
     public Paths addPath(final Path path) {
-        validatePathInsertionAvailable(path);
+        validatePathInsertionAvailable(path.getStations());
 
         final List<Path> result = new ArrayList<>(paths);
         findOverlappedOriginalPath(path)
@@ -44,29 +46,23 @@ public final class Paths {
         return new Paths(result);
     }
 
-    private void validatePathInsertionAvailable(final Path newPath) {
-        if (paths.isEmpty()) {
+    private void validatePathInsertionAvailable(final List<Station> pathStations) {
+        if (pathStations.isEmpty() || paths.isEmpty()) {
             return;
         }
 
-        final long countExisted = countStationsInOriginalPaths(newPath);
-        if (countExisted == 2) {
+        pathStations.retainAll(getStations());
+        if (pathStations.size() == ALREADY_EXIST_PATH_SIZE) {
             throw new IllegalArgumentException("이미 존재하는 경로입니다.");
         }
-        if (countExisted == 0) {
+        if (pathStations.isEmpty()) {
             throw new IllegalArgumentException("기존의 역과 이어져야 합니다.");
         }
     }
 
-    private long countStationsInOriginalPaths(final Path newPath) {
-        return getStations().stream()
-                .filter(newPath::contains)
-                .count();
-    }
-
     private Optional<Path> findOverlappedOriginalPath(final Path newPath) {
         return paths.stream()
-                .filter(path -> path.isOverlapped(newPath))
+                .filter(newPath::isOverlapped)
                 .findAny();
     }
 
@@ -85,7 +81,7 @@ public final class Paths {
     }
 
     private List<Path> findAffectedPaths(final Station station) {
-        return this.paths.stream()
+        return paths.stream()
                 .filter(path -> path.contains(station))
                 .collect(Collectors.toList());
     }
@@ -126,7 +122,7 @@ public final class Paths {
 
     public List<Station> getStations() {
         return paths.stream()
-                .flatMap(path -> Stream.of(path.getUp(), path.getDown()))
+                .flatMap(path -> path.getStations().stream())
                 .distinct()
                 .collect(Collectors.toList());
     }
