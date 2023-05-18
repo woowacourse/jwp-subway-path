@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.dto.response.ErrorResponse;
-import subway.exception.*;
+import subway.exception.business.*;
 import subway.ui.ErrorCode;
 
 @RestControllerAdvice

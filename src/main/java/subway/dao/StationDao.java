@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
-import subway.exception.StationNotFoundException;
+import subway.exception.business.StationNotFoundException;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package subway.domain;
 
-import subway.exception.InvalidSectionConnectException;
-import subway.exception.InvalidSectionLengthException;
+import subway.exception.business.InvalidSectionConnectException;
+import subway.exception.business.InvalidSectionLengthException;
 
 import java.util.UUID;
 

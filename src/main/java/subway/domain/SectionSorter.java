@@ -1,6 +1,6 @@
 package subway.domain;
 
-import subway.exception.InvalidSectionConnectException;
+import subway.exception.business.InvalidSectionConnectException;
 
 import java.util.*;
 import java.util.stream.Collectors;

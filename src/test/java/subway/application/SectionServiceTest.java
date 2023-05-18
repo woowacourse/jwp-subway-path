@@ -13,9 +13,9 @@ import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dto.request.SectionSaveRequest;
 import subway.dto.response.StationResponse;
-import subway.exception.InvalidSectionLengthException;
-import subway.exception.SectionNotFoundException;
-import subway.exception.StationNotFoundException;
+import subway.exception.business.InvalidSectionLengthException;
+import subway.exception.business.SectionNotFoundException;
+import subway.exception.business.StationNotFoundException;
 import subway.integration.IntegrationTest;
 
 import java.util.List;

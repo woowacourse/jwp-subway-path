@@ -1,8 +1,8 @@
 package subway.domain;
 
-import subway.exception.EndStationNotExistException;
-import subway.exception.InvalidSectionLengthException;
-import subway.exception.SectionNotFoundException;
+import subway.exception.business.EndStationNotExistException;
+import subway.exception.business.InvalidSectionLengthException;
+import subway.exception.business.SectionNotFoundException;
 
 import java.util.*;
 import java.util.function.Predicate;
