@@ -62,7 +62,7 @@ class SectionServiceTest {
         sectionService.addSection(sectionRequest);
 
         assertAll(
-                () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 1L, 2L),
+                () -> verify(sectionDao).deleteByStationIds(1L, 1L, 2L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_1, FIXTURE_STATION_2, new Distance(3)))
         );
     }
@@ -81,7 +81,7 @@ class SectionServiceTest {
         sectionService.addSection(sectionRequest);
 
         assertAll(
-                () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 2L, 3L),
+                () -> verify(sectionDao).deleteByStationIds(1L, 2L, 3L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(3)))
         );
     }
@@ -100,7 +100,7 @@ class SectionServiceTest {
         sectionService.addSection(sectionRequest);
 
         assertAll(
-                () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 1L, 3L),
+                () -> verify(sectionDao).deleteByStationIds(1L, 1L, 3L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3)))
         );
     }
@@ -119,7 +119,7 @@ class SectionServiceTest {
         sectionService.addSection(sectionRequest);
 
         assertAll(
-                () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 2L, 3L),
+                () -> verify(sectionDao).deleteByStationIds(1L, 2L, 3L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3))),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_2, FIXTURE_STATION_1, new Distance(7)))
         );
@@ -139,7 +139,7 @@ class SectionServiceTest {
         sectionService.addSection(sectionRequest);
 
         assertAll(
-                () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 3L, 4L),
+                () -> verify(sectionDao).deleteByStationIds(1L, 3L, 4L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_3, FIXTURE_STATION_5, new Distance(3))),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_5, FIXTURE_STATION_4, new Distance(7)))
         );

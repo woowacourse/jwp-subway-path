@@ -42,9 +42,9 @@ public class SectionService {
         Integer distance = sectionRequest.distance();
         Sections addedSections = subway.findAddSections(new Section(baseStation, nextStation, new Distance(distance)));
 
-        sectionDao.deleteByLeftStationIdAndRightStationId(lineId, addedSections.getLeftStationId(), addedSections.getRightStationId());
+        sectionDao.deleteByStationIds(line.getId(), addedSections.getLeftStationId(), addedSections.getRightStationId());
         for (Section section : addedSections.getSections()) {
-            sectionDao.insert(lineId, section);
+            sectionDao.insert(line.getId(), section);
         }
     }
 

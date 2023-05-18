@@ -66,7 +66,7 @@ public class SectionDao {
         jdbcTemplate.update(sql, stationId, stationId, lineId);
     }
 
-    public void deleteByLeftStationIdAndRightStationId(final Long lineId, final Long leftStationId, final Long rightStationId) {
+    public void deleteByStationIds(final Long lineId, final Long leftStationId, final Long rightStationId) {
         String sql = "delete from SECTIONS where (left_station_id = ? and right_station_id = ?) and line_id = ?";
         jdbcTemplate.update(sql, leftStationId, rightStationId, lineId);
     }
