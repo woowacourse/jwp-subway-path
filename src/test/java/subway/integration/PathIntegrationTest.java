@@ -91,8 +91,8 @@ public class PathIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void 구간_목록을_가져오는지_확인하다() {
-        final GetPathRequest request = GetPathRequest.of(stationOneId, stationFiveId);
+    void 기본_구간의_경로와_요금을_가져오는지_확인한다() {
+        final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationTwoId);
 
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -103,68 +103,81 @@ public class PathIntegrationTest extends IntegrationTest {
                 .extract();
 
         final JsonPath responseJsonData = response.body().jsonPath();
-        final List<Object> stationResponses = responseJsonData.getList("stationResponses");
-        final ReadStationResponse responseOne = responseJsonData.getObject("stationResponses[0]", ReadStationResponse.class);
-        final ReadStationResponse responseTwo = responseJsonData.getObject("stationResponses[1]", ReadStationResponse.class);
-        final ReadStationResponse responseThree = responseJsonData.getObject("stationResponses[2]", ReadStationResponse.class);
-        final ReadStationResponse responseFour = responseJsonData.getObject("stationResponses[3]", ReadStationResponse.class);
-        final ReadStationResponse responseFive = responseJsonData.getObject("stationResponses[4]", ReadStationResponse.class);
-        final ReadStationResponse responseSix = responseJsonData.getObject("stationResponses[5]", ReadStationResponse.class);
+        final List<Object> stationResponses = responseJsonData.getList("stations");
+        final ReadStationResponse responseStationOne = responseJsonData.getObject("stations[0]", ReadStationResponse.class);
+        final ReadStationResponse responseStationTwo = responseJsonData.getObject("stations[1]", ReadStationResponse.class);
+        final int responsePriceOne = responseJsonData.getInt("price");
 
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(stationResponses).hasSize(6);
-            softAssertions.assertThat(responseOne.getName()).isEqualTo("양재시민의숲역");
-            softAssertions.assertThat(responseTwo.getName()).isEqualTo("청계산입구역");
-            softAssertions.assertThat(responseThree.getName()).isEqualTo("판교역");
-            softAssertions.assertThat(responseFour.getName()).isEqualTo("정자역");
-            softAssertions.assertThat(responseFive.getName()).isEqualTo("선릉역");
-            softAssertions.assertThat(responseSix.getName()).isEqualTo("미금역");
+            softAssertions.assertThat(stationResponses).hasSize(2);
+            softAssertions.assertThat(responseStationOne.getName()).isEqualTo("양재시민의숲역");
+            softAssertions.assertThat(responseStationTwo.getName()).isEqualTo("청계산입구역");
+            softAssertions.assertThat(responsePriceOne).isEqualTo(1250);
         });
     }
 
     @Test
-    void 기본_구간_요금을_가져오는지_확인한다() {
-        final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationTwoId);
-
-        final ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().get("/path/price")
-                .then().log().all()
-                .extract();
-
-        assertThat(response.body().jsonPath().getInt("price")).isEqualTo(1250);
-    }
-
-    @Test
-    void 구간_10km_50km의_과금을_포함한_요금을_가져오는지_확인한다() {
+    void 구간_10km_50km의_경로와_과금을_포함한_요금을_가져오는지_확인한다() {
         final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationFourId);
 
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().get("/path/price")
+                .when().get("/path")
                 .then().log().all()
                 .extract();
 
-        assertThat(response.body().jsonPath().getInt("price")).isEqualTo(2050);
+        final JsonPath responseJsonData = response.body().jsonPath();
+        final List<Object> stationResponses = responseJsonData.getList("stations");
+        final ReadStationResponse responseStationOne = responseJsonData.getObject("stations[0]", ReadStationResponse.class);
+        final ReadStationResponse responseStationTwo = responseJsonData.getObject("stations[1]", ReadStationResponse.class);
+        final ReadStationResponse responseStationThree = responseJsonData.getObject("stations[2]", ReadStationResponse.class);
+        final ReadStationResponse responseStationFour = responseJsonData.getObject("stations[3]", ReadStationResponse.class);
+        final int responsePriceOne = responseJsonData.getInt("price");
+
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(stationResponses).hasSize(4);
+            softAssertions.assertThat(responseStationOne.getName()).isEqualTo("양재시민의숲역");
+            softAssertions.assertThat(responseStationTwo.getName()).isEqualTo("청계산입구역");
+            softAssertions.assertThat(responseStationThree.getName()).isEqualTo("판교역");
+            softAssertions.assertThat(responseStationFour.getName()).isEqualTo("정자역");
+            softAssertions.assertThat(responsePriceOne).isEqualTo(2050);
+        });
     }
 
     @Test
-    void 구간_10km_50km의_과금과_50km이상의_과금을_포함한_요금을_가져오는지_확인한다() {
+    void 구간_10km_50km의_과금과_50km이상의_과금을_포함한_경로와_요금을_가져오는지_확인한다() {
         final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationFiveId);
 
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().get("/path/price")
+                .when().get("/path")
                 .then().log().all()
                 .extract();
 
-        assertThat(response.body().jsonPath().getInt("price")).isEqualTo(2250);
+        final JsonPath responseJsonData = response.body().jsonPath();
+        final List<Object> stationResponses = responseJsonData.getList("stations");
+        final ReadStationResponse responseStationOne = responseJsonData.getObject("stations[0]", ReadStationResponse.class);
+        final ReadStationResponse responseStationTwo = responseJsonData.getObject("stations[1]", ReadStationResponse.class);
+        final ReadStationResponse responseStationThree = responseJsonData.getObject("stations[2]", ReadStationResponse.class);
+        final ReadStationResponse responseStationFour = responseJsonData.getObject("stations[3]", ReadStationResponse.class);
+        final ReadStationResponse responseStationFive = responseJsonData.getObject("stations[4]", ReadStationResponse.class);
+        final ReadStationResponse responseStationSix = responseJsonData.getObject("stations[5]", ReadStationResponse.class);
+        final int responsePriceOne = responseJsonData.getInt("price");
+
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(stationResponses).hasSize(6);
+            softAssertions.assertThat(responseStationOne.getName()).isEqualTo("양재시민의숲역");
+            softAssertions.assertThat(responseStationTwo.getName()).isEqualTo("청계산입구역");
+            softAssertions.assertThat(responseStationThree.getName()).isEqualTo("판교역");
+            softAssertions.assertThat(responseStationFour.getName()).isEqualTo("정자역");
+            softAssertions.assertThat(responseStationFive.getName()).isEqualTo("선릉역");
+            softAssertions.assertThat(responseStationSix.getName()).isEqualTo("미금역");
+            softAssertions.assertThat(responsePriceOne).isEqualTo(2250);
+        });
     }
 
     private ExtractableResponse<Response> postLine(final CreationLineRequest lineRequest) {
