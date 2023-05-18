@@ -26,8 +26,8 @@ public class SectionDto {
     public static SectionDto from(Section section) {
         return new SectionDto(
                 section.getId(),
-                new StationDto(section.getUpwardStation().getId(), section.getUpwardStation().getName()),
-                new StationDto(section.getDownwardStation().getId(), section.getDownwardStation().getName()),
+                StationDto.from(section.getUpwardStation()),
+                StationDto.from(section.getDownwardStation()),
                 section.getDistance()
         );
     }

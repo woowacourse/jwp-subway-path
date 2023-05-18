@@ -7,6 +7,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static subway.fixture.Fixture.line2WithOneSection;
+import static subway.fixture.Fixture.station1;
+import static subway.fixture.Fixture.station2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -20,10 +23,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.business.domain.line.Line;
 import subway.business.domain.line.Section;
 import subway.business.domain.line.Station;
+import subway.business.domain.transfer.Transfer;
 import subway.business.service.LineService;
+import subway.business.service.TransferService;
 import subway.business.service.dto.LineResponse;
 import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.StationAddToLineRequest;
+import subway.business.service.dto.TransferRequest;
+import subway.business.service.dto.TransferResponse;
 import subway.ui.dto.StationDeleteRequest;
 
 @WebMvcTest(LineController.class)
@@ -37,13 +44,13 @@ public class LineControllerTest {
     @MockBean
     private LineService lineService;
 
+    @MockBean
+    private TransferService transferService;
+
     @DisplayName("노선과 두 개의 역을 추가한다")
     @Test
     void shouldCreateLineWhenRequest() throws Exception {
-        Line line = new Line(
-                1L,
-                "2호선",
-                List.of(new Section(1L, Station.from("잠실역"), Station.from("몽촌토성역"), 5)));
+        Line line = line2WithOneSection();
         given(lineService.createLine(any())).willReturn(LineResponse.from(line));
 
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
@@ -74,7 +81,7 @@ public class LineControllerTest {
         );
         String jsonRequest = objectMapper.writeValueAsString(stationAddToLineRequest);
 
-        mockMvc.perform(post("/lines/1/station")
+        mockMvc.perform(post("/lines/1/stations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isOk());
@@ -86,7 +93,7 @@ public class LineControllerTest {
         StationDeleteRequest stationDeleteRequest = new StationDeleteRequest("잠실역");
         String jsonRequest = objectMapper.writeValueAsString(stationDeleteRequest);
 
-        mockMvc.perform(delete("/lines/1/station")
+        mockMvc.perform(delete("/lines/1/stations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isNoContent());
@@ -95,17 +102,14 @@ public class LineControllerTest {
     @DisplayName("노선의 이름과 모든 역의 이름을 반환한다.")
     @Test
     void shouldReturnLineNameAndAllStationsOfLineWhenRequest() throws Exception {
-        Line line = new Line(
-                1L,
-                "2호선",
-                List.of(new Section(1L, Station.from("몽촌토성역"), Station.from("잠실역"), 5)));
+        Line line = line2WithOneSection();
         given(lineService.findLineResponseById(any())).willReturn(LineResponse.from(line));
 
         mockMvc.perform(get("/lines/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("2호선"))
-                .andExpect(jsonPath("$.sections[0].upwardStation.name").value("몽촌토성역"))
-                .andExpect(jsonPath("$.sections[0].downwardStation.name").value("잠실역"));
+                .andExpect(jsonPath("$.sections[0].upwardStation.name").value("잠실역"))
+                .andExpect(jsonPath("$.sections[0].downwardStation.name").value("몽촌토성역"));
     }
 
     @DisplayName("모든 노선의 이름과 모든 역의 이름을 반환한다.")
@@ -118,13 +122,31 @@ public class LineControllerTest {
         Line line2 = new Line(
                 2L,
                 "2호선",
-                List.of(new Section(2L, Station.from("몽촌토성역"), Station.from("잠실역"), 5)));
+                List.of(new Section(2L, Station.from("잠실역"), Station.from("몽촌토성역"), 5)));
         given(lineService.findLineResponses()).willReturn(List.of(LineResponse.from(line1), LineResponse.from(line2)));
 
         mockMvc.perform(get("/lines"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("1호선"))
                 .andExpect(jsonPath("$[0].sections[0].upwardStation.name").value("인천역"))
-                .andExpect(jsonPath("$[1].sections[0].downwardStation.name").value("잠실역"));
+                .andExpect(jsonPath("$[1].sections[0].downwardStation.name").value("몽촌토성역"));
+    }
+
+    @DisplayName("환승역을 등록한다.")
+    @Test
+    void shouldCreateTransferWhenRequest() throws Exception {
+        Transfer transfer = new Transfer(1L, station1(), station2());
+        given(transferService.createTransfer(any())).willReturn(TransferResponse.from(transfer));
+
+        TransferRequest transferRequest = new TransferRequest(1L, 2L);
+        String jsonRequest = objectMapper.writeValueAsString(transferRequest);
+
+        mockMvc.perform(post("/lines/transfers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.firstStation.name").value("잠실역"))
+                .andExpect(jsonPath("$.lastStation.name").value("몽촌토성역"))
+                .andExpect(status().isOk());
     }
 }

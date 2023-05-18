@@ -77,7 +77,7 @@ public class LineControllerIntegratedTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(stationAddToLineRequest)
-                .when().post("/lines/" + lineResponse.getId() + "/station")
+                .when().post("/lines/" + lineResponse.getId() + "/stations")
                 .then().log().all()
                 .body("name", is("2호선"))
                 .body("sections[0].upwardStation.name", is("잠실역"))
@@ -110,7 +110,7 @@ public class LineControllerIntegratedTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(stationDeleteRequest)
-                .when().delete("/lines/1/station")
+                .when().delete("/lines/1/stations")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
