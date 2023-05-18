@@ -65,7 +65,7 @@ public class StationIntegrationTest {
         RestAssured.port = port;
         upstream = JAMSIL_STATION;
         downstream = JAMSIL_NARU_STATION;
-        line = new Line(VALID_LINE_NAME, List.of(JAMSIL_TO_JAMSILNARU));
+        line = new Line(VALID_LINE_NAME, 0, List.of(JAMSIL_TO_JAMSILNARU));
 
         upstreamId = stationRepository.createStation(upstream).getId();
         downstreamId = stationRepository.createStation(downstream).getId();

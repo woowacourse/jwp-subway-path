@@ -8,6 +8,7 @@ import subway.line.domain.DummyTerminalStation;
 import subway.line.domain.Line;
 import subway.line.domain.MiddleSection;
 import subway.line.exception.DuplicateStationInLineException;
+import subway.line.exception.InvalidAdditionalFareException;
 import subway.line.exception.SectionNotFoundException;
 import subway.station.domain.Station;
 import subway.station.exception.NameLengthException;
@@ -27,22 +28,22 @@ class LineTest {
     @ValueSource(strings = {"잠실", "서울대입구서울15자이름입니다"})
     void LineSuccess(String validLineName) {
         assertThatNoException().isThrownBy(
-                () -> new Line(validLineName, List.of(JAMSIL_TO_JAMSILNARU), 0)
+                () -> new Line(validLineName, 0, List.of(JAMSIL_TO_JAMSILNARU))
         );
     }
 
     @ParameterizedTest(name = "이름이 2이상 15이하가 아니면 예외를 던진다")
     @ValueSource(strings = {"가", "서울대입구서울대16자이름입니다"})
     void LineFail1(String invalidLineName) {
-        assertThatThrownBy(() -> new Line(invalidLineName, List.of(JAMSIL_TO_JAMSILNARU), 0))
+        assertThatThrownBy(() -> new Line(invalidLineName, 0, List.of(JAMSIL_TO_JAMSILNARU)))
                 .isInstanceOf(NameLengthException.class);
     }
 
     @Test
     @DisplayName("추가 요금이 음수이면 예외를 던진다")
     void LineFail2() {
-        assertThatThrownBy(() -> new Line(LINE_NUMBER_TWO.getName(), List.of(JAMSIL_TO_JAMSILNARU), -1))
-                .isInstanceOf(NameLengthException.class);
+        assertThatThrownBy(() -> new Line(LINE_NUMBER_TWO.getName(), -1, List.of(JAMSIL_TO_JAMSILNARU)))
+                .isInstanceOf(InvalidAdditionalFareException.class);
     }
 
     /**

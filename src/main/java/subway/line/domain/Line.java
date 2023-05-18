@@ -13,24 +13,22 @@ import java.util.stream.Collectors;
 public class Line {
 
     private final Long id;
-    private final LineName name;
+    private final LineInfo lineInfo;
     private final LinkedList<AbstractSection> sections;
-    private final int additionalFare;
 
-    public Line(Long id, String name, List<MiddleSection> sections, int additionalFare) {
+    public Line(Long id, String name, int additionalFare, List<MiddleSection> sections) {
         this.id = id;
-        this.name = new LineName(name);
+        this.lineInfo = new LineInfo(name, additionalFare);
         this.sections = new LinkedList<>(sections);
-        this.additionalFare = additionalFare;
         addTerminalSections();
     }
 
-    public Line(String name, List<MiddleSection> sections, int additionalFare) {
-        this(null, name, sections, additionalFare);
+    public Line(String name, int additionalFare, List<MiddleSection> sections) {
+        this(null, name, additionalFare, sections);
     }
 
     public Line(Line otherLine) {
-        this(otherLine.getId(), otherLine.getName(), otherLine.getSections(), otherLine.getAdditionalFare());
+        this(otherLine.getId(), otherLine.getName(), otherLine.getAdditionalFare(), otherLine.getSections());
     }
 
     private void addTerminalSections() {
@@ -130,7 +128,7 @@ public class Line {
     }
 
     public String getName() {
-        return name.getName();
+        return lineInfo.getName();
     }
 
     public List<MiddleSection> getSections() {
@@ -141,7 +139,7 @@ public class Line {
     }
 
     public int getAdditionalFare() {
-        return additionalFare;
+        return lineInfo.getAdditionalFare();
     }
 
     @Override
@@ -150,7 +148,7 @@ public class Line {
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
         if (Objects.isNull(id) || Objects.isNull(line.id)) {
-            return Objects.equals(name, line.name) && Objects.equals(sections, line.sections);
+            return Objects.equals(lineInfo, line.lineInfo) && Objects.equals(sections, line.sections);
         }
         return Objects.equals(id, line.id);
     }
@@ -158,7 +156,7 @@ public class Line {
     @Override
     public int hashCode() {
         if (Objects.isNull(id)) {
-            return Objects.hash(name, sections);
+            return Objects.hash(lineInfo, sections);
         }
         return Objects.hash(id);
     }
@@ -166,7 +164,8 @@ public class Line {
     @Override
     public String toString() {
         return "Line{" +
-                "name=" + name +
+                "id=" + id +
+                ", lineInfo=" + lineInfo +
                 ", sections=" + sections +
                 '}';
     }

@@ -180,7 +180,7 @@ class LineServiceTest {
 
         lineService.createLine(lineCreationDto);
 
-        final Line expectedLine = new Line(lineCreationDto.getLineName(), List.of(new MiddleSection(upstream, downstream, DISTANCE)));
+        final Line expectedLine = new Line(lineCreationDto.getLineName(), 0, List.of(new MiddleSection(upstream, downstream, DISTANCE)));
 
         verify(lineRepository, times(1)).createLine(expectedLine);
     }

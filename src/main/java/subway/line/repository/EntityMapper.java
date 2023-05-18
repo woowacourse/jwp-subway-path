@@ -18,6 +18,7 @@ class EntityMapper {
 
     public static LineEntity toLineEntity(Line line) {
         return new LineEntity.Builder().name(line.getName())
+                                       .additionalFare(line.getAdditionalFare())
                                        .build();
     }
 
@@ -39,13 +40,13 @@ class EntityMapper {
                                           .build();
     }
 
-    public static Line toLine(String lineName, List<SectionEntity> sectionEntities, List<StationEntity> stationEntities, long lineId) {
-        return sectionEntities.stream()
-                              .map(sectionEntity -> toMiddleSection(sectionEntity, stationEntities))
-                              .collect(collectingAndThen(
-                                      toList(),
-                                      (sections) -> new Line(lineId, lineName, sections)
-                              ));
+    public static Line toLine(LineEntity lineEntity, List<SectionEntity> sectionEntitiesOfLine, List<StationEntity> allStationEntities) {
+        return sectionEntitiesOfLine.stream()
+                                    .map(sectionEntity -> toMiddleSection(sectionEntity, allStationEntities))
+                                    .collect(collectingAndThen(
+                                            toList(),
+                                            (sections) -> new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getAdditionalFare(), sections)
+                                    ));
     }
 
     private static MiddleSection toMiddleSection(SectionEntity sectionEntity, List<StationEntity> stationEntities) {

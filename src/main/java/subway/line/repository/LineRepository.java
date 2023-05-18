@@ -33,9 +33,10 @@ public class LineRepository {
     }
 
     public long createLine(Line lineToCreate) {
-        lineDao.findLineByName(lineToCreate.getName()).ifPresent(ignored -> {
-            throw new IllegalStateException("디버깅: 이미 노선 이름에 해당하는 노선이 존재합니다." + lineToCreate.getName());
-        });
+        lineDao.findLineByName(lineToCreate.getName())
+               .ifPresent(ignored -> {
+                   throw new IllegalStateException("디버깅: 이미 노선 이름에 해당하는 노선이 존재합니다." + lineToCreate.getName());
+               });
 
         final long lineId = lineDao.insert(EntityMapper.toLineEntity(lineToCreate));
         sectionDao.insertSections(EntityMapper.toSectionEntities(lineToCreate, lineId));
@@ -45,7 +46,7 @@ public class LineRepository {
 
     public long updateLine(Line line) {
         LineEntity lineEntity = lineDao.findLineByName(line.getName())
-                             .orElseThrow(() -> new NoSuchElementException("디버깅: 노선 이름에 해당하는 노선이 없습니다. line이름: " + line.getName()));
+                                       .orElseThrow(() -> new NoSuchElementException("디버깅: 노선 이름에 해당하는 노선이 없습니다. line이름: " + line.getName()));
 
         sectionDao.deleteSectionsByLineId(lineEntity.getId());
         sectionDao.insertSections(EntityMapper.toSectionEntities(line, lineEntity.getId()));
@@ -54,19 +55,23 @@ public class LineRepository {
     }
 
     public Optional<Line> findLineById(Long lineId) {
-        List<SectionEntity> sectionsOfLine = sectionDao.findSectionsByLineId(lineId);
-        final List<StationEntity> allStations = stationDao.findAllStations();
+        List<SectionEntity> sectionEntitiesOfLine = sectionDao.findSectionsByLineId(lineId);
+        final List<StationEntity> allStationEntities = stationDao.findAllStations();
 
         return lineDao.findLineById(lineId)
-                      .map(lineEntity -> EntityMapper.toLine(lineEntity.getName(), sectionsOfLine, allStations, lineId));
+                      .map(lineEntity -> EntityMapper.toLine(lineEntity, sectionEntitiesOfLine, allStationEntities));
     }
 
     public Lines findAllLines() {
-        final List<StationEntity> allStations = stationDao.findAllStations();
+        final List<StationEntity> allStationEntities = stationDao.findAllStations();
 
         return lineDao.findAll()
                       .stream()
-                      .map(lineEntity -> EntityMapper.toLine(lineEntity.getName(), sectionDao.findSectionsByLineId(lineEntity.getId()), allStations, lineEntity.getId()))
+                      .map(lineEntity -> {
+                          final List<SectionEntity> sectionEntitiesOfLine = sectionDao.findSectionsByLineId(lineEntity.getId());
+
+                          return EntityMapper.toLine(lineEntity, sectionEntitiesOfLine, allStationEntities);
+                      })
                       .collect(collectingAndThen(toList(), Lines::new));
     }
 

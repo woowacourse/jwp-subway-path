@@ -6,10 +6,12 @@ public class LineEntity {
 
     private final Long id;
     private final String name;
+    private final Integer additionalFare;
 
-    public LineEntity(Long id, String name) {
+    public LineEntity(Long id, String name, int additionalFare) {
         this.id = id;
         this.name = name;
+        this.additionalFare = additionalFare;
     }
 
     public Long getId() {
@@ -20,17 +22,21 @@ public class LineEntity {
         return name;
     }
 
+    public int getAdditionalFare() {
+        return additionalFare;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LineEntity that = (LineEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        return additionalFare == that.additionalFare && Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, additionalFare);
     }
 
     @Override
@@ -38,6 +44,7 @@ public class LineEntity {
         return "LineEntity{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", additionalFare=" + additionalFare +
                 '}';
     }
 
@@ -45,6 +52,7 @@ public class LineEntity {
 
         private Long id;
         private String name;
+        private Integer additionalFare;
 
         public Builder id(long id) {
             this.id = id;
@@ -56,8 +64,13 @@ public class LineEntity {
             return this;
         }
 
+        public Builder additionalFare(int additionalFare) {
+            this.additionalFare = additionalFare;
+            return this;
+        }
+
         public LineEntity build() {
-            return new LineEntity(id, name);
+            return new LineEntity(id, name, additionalFare);
         }
     }
 }
