@@ -16,7 +16,7 @@ import subway.ui.dto.PathRequest;
 import subway.ui.dto.PathResponse;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
 
     private final StationDao stationDao;

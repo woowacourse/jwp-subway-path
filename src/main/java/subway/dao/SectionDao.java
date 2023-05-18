@@ -60,7 +60,6 @@ public class SectionDao {
     }
 
     public List<Section> insertAll(List<Section> sections) {
-        // TODO: bulk 처리로 수정
         return sections.stream()
             .map(this::insert)
             .collect(Collectors.toList());
