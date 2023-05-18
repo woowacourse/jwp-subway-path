@@ -1,6 +1,9 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.domain.SectionFixture.SECTIONS1;
 import static subway.domain.SectionFixture.SECTIONS4;
 import static subway.domain.SectionFixture.SECTIONS5;
 import static subway.domain.SectionFixture.STATION1;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -68,5 +72,27 @@ class PathFinderTest {
         final Path shortestPath = pathFinder.findShortestPath(from, to);
         assertThat(shortestPath.getStations()).containsExactlyElementsOf(stations);
         assertThat(shortestPath.getDistance()).isEqualTo(distance);
+    }
+
+    @DisplayName("존재하지 않는 역이 들어오면 예외를 발생시킨다.")
+    @Test
+    void validateSectionsHasStation() {
+        final PathFinder pathFinder = new PathFinder(SECTIONS1);
+        assertThatThrownBy(() -> pathFinder.findShortestPath(new Station(8L), new Station(9L)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("노선에 등록되지 않은 역입니다.: " + 8L);
+    }
+
+    @DisplayName("id만 있는 station이 요청으로 들어와도 이름을 추가해 반환한다.")
+    @Test
+    void returnStationWithName() {
+        final PathFinder pathFinder = new PathFinder(SECTIONS1);
+        final Path result = pathFinder.findShortestPath(new Station(1L), new Station(2L));
+        assertAll(
+                () -> assertThat(result.getStations().get(0).getId()).isEqualTo(1L),
+                () -> assertThat(result.getStations().get(0).getName()).isEqualTo("1L"),
+                () -> assertThat(result.getStations().get(1).getId()).isEqualTo(2L),
+                () -> assertThat(result.getStations().get(1).getName()).isEqualTo("2L")
+        );
     }
 }
