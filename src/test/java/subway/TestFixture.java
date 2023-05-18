@@ -1,5 +1,8 @@
 package subway;
 
+import java.util.List;
+
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 
@@ -30,4 +33,42 @@ public class TestFixture {
     public static final Section 몽촌토성역_잠실역 = new Section(몽촌토성역, 잠실역, 5);
     public static final Section 잠실역_석촌역 = new Section(잠실역, 석촌역, 5);
 
+    public static final Station STATION_A = new Station("A");
+    public static final Station STATION_B = new Station("B");
+    public static final Station STATION_C = new Station("C");
+    public static final Station STATION_D = new Station("D");
+    public static final Station STATION_E = new Station("E");
+    public static final Line LINE_A = new Line(1L, "99호선", "blue");
+    public static final Line LINE_B = new Line(1L, "100호선", "blue");
+
+    static {
+        LINE_A.add(new Section(STATION_A, STATION_C, 1));
+        LINE_A.add(new Section(STATION_C, STATION_D, 1));
+        LINE_A.add(new Section(STATION_D, STATION_E, 6));
+        LINE_B.add(new Section(STATION_A, STATION_B, 1));
+        LINE_B.add(new Section(STATION_B, STATION_C, 1));
+        LINE_B.add(new Section(STATION_C, STATION_E, 6));
+    }
+
+    public static final List<Section> SHORTEST_PATH_IN_LINE_A_AND_B_STATION_A_TO_E = List.of(
+            new Section(STATION_A, STATION_C, 1),
+            new Section(STATION_C, STATION_E, 6)
+    );
+
+    public static final Line LINE_C = new Line(1L, "99호선", "blue");
+    public static final Line LINE_D = new Line(1L, "100호선", "blue");
+
+    static {
+        LINE_C.add(new Section(STATION_A, STATION_C, 1));
+        LINE_C.add(new Section(STATION_C, STATION_D, 3));
+        LINE_C.add(new Section(STATION_D, STATION_E, 4));
+        LINE_D.add(new Section(STATION_B, STATION_C, 1));
+        LINE_D.add(new Section(STATION_C, STATION_D, 1));
+    }
+
+    public static final List<Section> SHORTEST_PATH_IN_LINE_C_AND_D_STATION_A_TO_E = List.of(
+            new Section(STATION_A, STATION_C, 1),
+            new Section(STATION_C, STATION_D, 1),
+            new Section(STATION_D, STATION_E, 4)
+    );
 }
