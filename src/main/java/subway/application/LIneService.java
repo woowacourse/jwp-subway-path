@@ -15,7 +15,6 @@ import subway.dto.StationEnrollRequest;
 import subway.entity.SectionEntity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,19 +99,10 @@ public class LIneService {
 
     private List<Section> findSections(final Long lineId) {
         final List<SectionEntity> sectionEntities = sectionDao.findById(lineId);
-        final List<Station> stations = findStationsOf(sectionEntities);
+        final List<Station> stations = stationService.findStationsOf(sectionEntities);
         return sectionEntities.stream()
                 .map(sectionEntity -> toSection(sectionEntity, stations))
                 .collect(Collectors.toList());
-    }
-
-    private List<Station> findStationsOf(final List<SectionEntity> sectionEntities) {
-        final HashSet<String> stationNames = new HashSet<>();
-        for (final SectionEntity sectionEntity : sectionEntities) {
-            stationNames.add(sectionEntity.getLeft());
-            stationNames.add(sectionEntity.getRight());
-        }
-        return stationService.findStationsOf(stationNames);
     }
 
     private Section toSection(final SectionEntity sectionEntity, final List<Station> stations) {

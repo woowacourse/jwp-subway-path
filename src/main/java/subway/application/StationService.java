@@ -6,7 +6,9 @@ import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.entity.SectionEntity;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,38 +18,47 @@ import java.util.stream.Collectors;
 public class StationService {
     private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(final StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+    public StationResponse saveStation(final StationRequest stationRequest) {
+        final Station station = stationDao.insert(new Station(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
     @Transactional(readOnly = true)
-    public StationResponse findStationResponseById(Long id) {
+    public StationResponse findStationResponseById(final Long id) {
         return StationResponse.of(stationDao.findById(id));
     }
 
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        final List<Station> stations = stationDao.findAll();
 
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
+    public void updateStation(final Long id, final StationRequest stationRequest) {
         stationDao.update(new Station(id, stationRequest.getName()));
     }
 
-    public void deleteStationById(Long id) {
+    public void deleteStationById(final Long id) {
         stationDao.deleteById(id);
     }
 
-    public List<Station> findStationsOf(final Set<String> stationNames) {
+    public List<Station> findStationsOf(final List<SectionEntity> sectionEntities) {
+        final HashSet<String> stationNames = new HashSet<>();
+        for (final SectionEntity sectionEntity : sectionEntities) {
+            stationNames.add(sectionEntity.getLeft());
+            stationNames.add(sectionEntity.getRight());
+        }
+        return findStationsOf(stationNames);
+    }
+
+    private List<Station> findStationsOf(final Set<String> stationNames) {
         return stationDao.findByName(stationNames);
     }
 
