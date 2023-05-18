@@ -1,5 +1,8 @@
 package subway.domain;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class SubwayFareCalculator implements FareCalculator {
 
     private static final Fare DEFAULT_FARE = new Fare(1250);
