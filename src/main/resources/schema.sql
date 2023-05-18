@@ -13,6 +13,7 @@ CREATE TABLE line
 (
     id   BIGINT AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL UNIQUE,
+    extra_charge INT NOT NULL,
     PRIMARY KEY (id)
 );
 

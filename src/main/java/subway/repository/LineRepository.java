@@ -51,11 +51,11 @@ public class LineRepository {
                 });
     }
 
-    private Line assembleLine(Long lineId) {
+    public Line assembleLine(Long lineId) {
         Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
 
         List<Section> sections = sectionDao.findSectionsByLineId(line.getId());
-        return new Line(line.getId(), line.getName(), sections);
+        return new Line(line.getId(), line.getName(), line.getExtraCharge(), sections);
     }
 }

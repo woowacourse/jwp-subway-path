@@ -16,9 +16,9 @@ public class Line {
 
     private List<Section> sections;
 
-    public Line(Long id, String name) {
-        this.id = id;
+    public Line(String name, Integer extraCharge) {
         this.name = name;
+        this.extraCharge = extraCharge;
     }
 
     public Line(Long id, String name, Integer extraCharge, List<Section> sections) {
@@ -28,16 +28,16 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line(Long id, String name, List<Section> sections) {
+    public Line(Long id, String name, Integer extraCharge) {
         this.id = id;
         this.name = name;
-        this.sections = sections;
+        this.extraCharge = extraCharge;
     }
 
-    public static Line createLine(String name, Station upStation, Station downStation, int distance) {
+    public static Line createLine(String name, int extraCharge, Station upStation, Station downStation, int distance) {
         List<Section> sections = new ArrayList<>();
         sections.add(new Section(upStation, downStation, distance));
-        return new Line(null, name, sections);
+        return new Line(null, name, extraCharge, sections);
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -154,5 +154,14 @@ public class Line {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", extraCharge=" + extraCharge +
+                '}';
     }
 }

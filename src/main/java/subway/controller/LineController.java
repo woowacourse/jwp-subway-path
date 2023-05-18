@@ -35,6 +35,7 @@ public class LineController {
     public ResponseEntity<LineCreateResponse> createLine(@RequestBody LineCreateRequest request) {
         CreateNewLineDto dto = new CreateNewLineDto(
                 request.getLineName(),
+                request.getExtraCharge(),
                 request.getUpStationId(),
                 request.getDownStationId(),
                 request.getDistance());

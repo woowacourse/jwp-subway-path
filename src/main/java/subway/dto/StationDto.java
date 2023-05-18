@@ -1,10 +1,10 @@
-package subway.dto.response;
+package subway.dto;
 
-public class StationInfoResponse {
+public class StationDto {
     private final long stationId;
     private final String stationName;
 
-    public StationInfoResponse(long stationId, String stationName) {
+    public StationDto(long stationId, String stationName) {
         this.stationId = stationId;
         this.stationName = stationName;
     }

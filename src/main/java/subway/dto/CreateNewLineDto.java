@@ -2,12 +2,15 @@ package subway.dto;
 
 public class CreateNewLineDto {
     private String lineName;
+    private Integer extraCharge;
     private Long upStationId;
     private Long downStationId;
     private Integer distance;
 
-    public CreateNewLineDto(String lineName, long upStationId, long downStationId, int distance) {
+    public CreateNewLineDto(String lineName, Integer extraCharge, Long upStationId, Long downStationId,
+                            Integer distance) {
         this.lineName = lineName;
+        this.extraCharge = extraCharge;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
@@ -17,25 +20,19 @@ public class CreateNewLineDto {
         return lineName;
     }
 
-    public long getUpStationId() {
+    public Integer getExtraCharge() {
+        return extraCharge;
+    }
+
+    public Long getUpStationId() {
         return upStationId;
     }
 
-    public long getDownStationId() {
+    public Long getDownStationId() {
         return downStationId;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
-    }
-
-    @Override
-    public String toString() {
-        return "LineCreateRequest{" +
-                "lineName='" + lineName + '\'' +
-                ", upStationId=" + upStationId +
-                ", downStationId=" + downStationId +
-                ", distance=" + distance +
-                '}';
     }
 }

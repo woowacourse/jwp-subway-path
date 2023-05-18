@@ -41,13 +41,13 @@ public class LineIntegrationTest extends IntegrationTest {
         line_3_initialDownStation = stationDao.insert(new Station("안국"));
         line_3_newStation = stationDao.insert(new Station("충무로"));
 
-        line_3_lineCreateRequest = new LineCreateRequest("3호선", line_3_initialUpStation.getId(), line_3_initialDownStation.getId(), 10);
+        line_3_lineCreateRequest = new LineCreateRequest("3호선", 1000, line_3_initialUpStation.getId(), line_3_initialDownStation.getId(), 10);
         line_3_addStationToLineRequest = new AddStationToLineRequest(line_3_initialUpStation.getId(), line_3_newStation.getId(), 5);
 
         line_2_initialUpStation = stationDao.insert(new Station("잠실"));
         line_2_initialDownStation = stationDao.insert(new Station("잠실새내"));
 
-        line_2_lineCreateRequest = new LineCreateRequest("2호선", line_2_initialUpStation.getId(), line_2_initialDownStation.getId(), 5);
+        line_2_lineCreateRequest = new LineCreateRequest("2호선", 1000, line_2_initialUpStation.getId(), line_2_initialDownStation.getId(), 5);
     }
 
     @Test

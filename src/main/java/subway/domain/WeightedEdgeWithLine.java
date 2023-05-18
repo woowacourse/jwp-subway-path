@@ -12,4 +12,16 @@ public class WeightedEdgeWithLine extends DefaultWeightedEdge {
     public Line getLine() {
         return line;
     }
+
+    @Override
+    protected Station getSource() {
+        return (Station) super.getSource();
+    }
+
+    @Override
+    protected Station getTarget() {
+        return (Station) super.getTarget();
+    }
+
+
 }

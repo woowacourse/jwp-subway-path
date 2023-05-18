@@ -21,16 +21,18 @@ public class LineDao {
         this.lineMapper = (resultSet, rowNum) -> {
             return new Line(
                     resultSet.getLong("id"),
-                    resultSet.getString("name"));
+                    resultSet.getString("name"),
+                    resultSet.getInt("extra_charge"));
         };
     }
 
     public Long insert(Line line) {
-        String sql = "INSERT INTO line(name) VALUES (?)";
+        String sql = "INSERT INTO line(name, extra_charge) VALUES (?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, line.getName());
+            ps.setInt(2, line.getExtraCharge());
             return ps;
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();

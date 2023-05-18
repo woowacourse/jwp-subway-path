@@ -27,7 +27,7 @@ public class LineService {
         Station upStation = stationRepository.getStation(dto.getUpStationId());
         Station downStation = stationRepository.getStation(dto.getDownStationId());
 
-        Line createdLine = Line.createLine(dto.getLineName(), upStation, downStation, dto.getDistance());
+        Line createdLine = Line.createLine(dto.getLineName(), dto.getExtraCharge(), upStation, downStation, dto.getDistance());
 
         return lineRepository.insertNewLine(createdLine);
     }

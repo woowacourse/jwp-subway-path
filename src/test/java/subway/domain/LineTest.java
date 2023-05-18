@@ -19,7 +19,7 @@ class LineTest {
     void createLine() {
         // given
         // when
-        Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+        Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
 
         // then
         assertThat(line.getName()).isEqualTo("2호선");
@@ -36,7 +36,7 @@ class LineTest {
             @Test
             void case1() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
                 line.addSection(STATION_B, STATION_C, 8);
 
                 // when
@@ -49,7 +49,7 @@ class LineTest {
             @Test
             void case2() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
                 line.addSection(STATION_B, STATION_C, 8);
 
                 // when
@@ -62,7 +62,7 @@ class LineTest {
             @Test
             void case3() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
 
                 // when
                 line.addSection(STATION_C, STATION_A, 3);
@@ -74,7 +74,7 @@ class LineTest {
             @Test
             void case4() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
 
                 // when
                 line.addSection(STATION_A, STATION_C, 3);
@@ -86,7 +86,7 @@ class LineTest {
             @Test
             void case5() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
 
                 // when
                 line.addSection(STATION_C, STATION_B, 3);
@@ -98,7 +98,7 @@ class LineTest {
             @Test
             void case6() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
 
                 // when
                 line.addSection(STATION_B, STATION_C, 3);
@@ -115,7 +115,7 @@ class LineTest {
             @DisplayName("해당 노선에 두 역이 모두 이미 존재하는 경우")
             void case1() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
 
                 // when
                 // then
@@ -127,7 +127,7 @@ class LineTest {
             @DisplayName("해당 노선에 두 역이 모두 존재하지 않는 경우")
             void case2() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
 
                 // when
                 // then
@@ -139,7 +139,7 @@ class LineTest {
             @DisplayName("추가하려는 section의 거리가 기존 section사이의 거리보다 긴 경우")
             void case3() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
 
                 // when
                 // then
@@ -160,7 +160,7 @@ class LineTest {
             @Test
             void case1() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
                 line.addSection(STATION_B, STATION_C, 3);
 
                 // when
@@ -173,7 +173,7 @@ class LineTest {
             @Test
             void case2() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
                 line.addSection(STATION_B, STATION_C, 3);
 
                 // when
@@ -186,7 +186,7 @@ class LineTest {
             @Test
             void case3() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
                 line.addSection(STATION_B, STATION_C, 3);
 
                 // when
@@ -204,7 +204,7 @@ class LineTest {
             @DisplayName("해당 역히 해당 노선에 존재하지 않는 경우")
             void case1() {
                 // given
-                Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+                Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
                 line.addSection(STATION_B, STATION_C, 3);
 
                 // when
@@ -219,7 +219,7 @@ class LineTest {
     @DisplayName("해당 노선에 존재하는 모든 역 반환")
     void getStations() {
         // when
-        Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+        Line line = Line.createLine("2호선", 1000, STATION_A, STATION_B, 10);
         line.addSection(STATION_B, STATION_C, 3);
         line.addSection(STATION_A, STATION_D, 5);
 

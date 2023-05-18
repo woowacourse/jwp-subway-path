@@ -16,6 +16,36 @@ class SubwayTest {
     public static final Station STATION_E = new Station(5L, "E");
     public static final Station STATION_F = new Station(6L, "F");
 
+    @Test
+    @DisplayName("최소 거리 계산")
+    void findShortestRoute() {
+        // a-b-c
+        Line lineA = new Line(1L, "lineA", 0,
+                List.of(new Section(STATION_A, STATION_B, 3), new Section(STATION_B, STATION_C, 25)));
+
+        // d-b-e-c
+        Line lineB = new Line(2L, "lineB", 0,
+                List.of(new Section(STATION_D, STATION_B, 4), new Section(STATION_B, STATION_E, 3),
+                        new Section(STATION_E, STATION_C, 1)));
+
+        // c-f
+        Line lineC = new Line(3L, "lineC", 0,
+                List.of(new Section(STATION_C, STATION_F, 2)));
+
+        List<Line> lines = List.of(lineA, lineB, lineC);
+        List<Station> stations = List.of(STATION_A, STATION_B, STATION_C, STATION_D, STATION_E, STATION_F);
+        Subway subway = Subway.create(stations, lines);
+
+        // route : A-B-E-C-F
+        Path path = subway.findShortestRoute(0, STATION_A, STATION_F);
+
+        assertThat(path.getLines().get(0).getStations()).containsExactly(STATION_A, STATION_B);
+        assertThat(path.getLines().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
+        assertThat(path.getLines().get(2).getStations()).containsExactly(STATION_C, STATION_F);
+        assertThat(path.getTotalDistance()).isEqualTo(9);
+        assertThat(path.getTotalCharge()).isEqualTo(1250);
+    }
+
     @Nested
     @DisplayName("거리별 요금")
     class distanceCharge {
@@ -36,7 +66,9 @@ class SubwayTest {
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
-            assertThat(path.getStations()).containsExactly(STATION_A, STATION_B, STATION_E, STATION_C);
+
+            assertThat(path.getLines().get(0).getStations()).containsExactly(STATION_A, STATION_B);
+            assertThat(path.getLines().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
             assertThat(path.getTotalDistance()).isEqualTo(9);
             assertThat(path.getTotalCharge()).isEqualTo(1250);
         }
@@ -57,7 +89,9 @@ class SubwayTest {
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
-            assertThat(path.getStations()).containsExactly(STATION_A, STATION_B, STATION_E, STATION_C);
+
+            assertThat(path.getLines().get(0).getStations()).containsExactly(STATION_A, STATION_B);
+            assertThat(path.getLines().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
             assertThat(path.getTotalDistance()).isEqualTo(12);
             assertThat(path.getTotalCharge()).isEqualTo(1350);
         }
@@ -78,7 +112,9 @@ class SubwayTest {
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
-            assertThat(path.getStations()).containsExactly(STATION_A, STATION_B, STATION_E, STATION_C);
+
+            assertThat(path.getLines().get(0).getStations()).containsExactly(STATION_A, STATION_B);
+            assertThat(path.getLines().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
             assertThat(path.getTotalDistance()).isEqualTo(58);
             assertThat(path.getTotalCharge()).isEqualTo(2150);
         }
@@ -104,7 +140,9 @@ class SubwayTest {
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
-            assertThat(path.getStations()).containsExactly(STATION_A, STATION_B, STATION_E, STATION_C);
+
+            assertThat(path.getLines().get(0).getStations()).containsExactly(STATION_A, STATION_B);
+            assertThat(path.getLines().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
             assertThat(path.getTotalDistance()).isEqualTo(9);
             assertThat(path.getTotalCharge()).isEqualTo(2250);
         }
@@ -125,7 +163,9 @@ class SubwayTest {
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
-            assertThat(path.getStations()).containsExactly(STATION_A, STATION_B, STATION_E, STATION_C);
+
+            assertThat(path.getLines().get(0).getStations()).containsExactly(STATION_A, STATION_B);
+            assertThat(path.getLines().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
             assertThat(path.getTotalDistance()).isEqualTo(9);
             assertThat(path.getTotalCharge()).isEqualTo(3250);
         }
@@ -151,7 +191,9 @@ class SubwayTest {
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(8, STATION_A, STATION_C);
-            assertThat(path.getStations()).containsExactly(STATION_A, STATION_B, STATION_E, STATION_C);
+
+            assertThat(path.getLines().get(0).getStations()).containsExactly(STATION_A, STATION_B);
+            assertThat(path.getLines().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
             assertThat(path.getTotalDistance()).isEqualTo(9);
             assertThat(path.getTotalCharge()).isEqualTo(450);
         }
@@ -172,7 +214,9 @@ class SubwayTest {
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(15, STATION_A, STATION_C);
-            assertThat(path.getStations()).containsExactly(STATION_A, STATION_B, STATION_E, STATION_C);
+
+            assertThat(path.getLines().get(0).getStations()).containsExactly(STATION_A, STATION_B);
+            assertThat(path.getLines().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
             assertThat(path.getTotalDistance()).isEqualTo(9);
             assertThat(path.getTotalCharge()).isEqualTo(720);
         }
