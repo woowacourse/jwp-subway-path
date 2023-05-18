@@ -153,7 +153,7 @@ Response Body {
 }
 ```
 
-- [ ] 경로 조회 
+- [X] 경로 조회 
 ```text
 GET /subway/path/{start_station}/{arrival_station}
 
