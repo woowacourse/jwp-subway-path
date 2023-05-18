@@ -34,6 +34,7 @@ public class RouteService {
     }
 
     public RouteResponse findShortestRoute(final Long sourceStationId, final Long targetStationId) {
+        // TODO LineService와 중복 로직
         Station sourceStation = stationDao.findById(sourceStationId)
                 .orElseThrow(() -> new RequestDataNotFoundException("출발 역이 존재하지 않습니다."));
         Station targetStation = stationDao.findById(targetStationId)
@@ -44,15 +45,20 @@ public class RouteService {
                 .collect(Collectors.toMap(line -> line,
                         line -> RoutedStations.from(sectionDao.findByLineId(line.getId()))));
 
+        return getRouteResponse(sourceStation, targetStation, sectionsByLine);
+    }
+
+    private RouteResponse getRouteResponse(final Station sourceStation, final Station targetStation,
+                                           final Map<Line, RoutedStations> sectionsByLine) {
         MultiRoutedStations multiRoutedStations = MultiRoutedStations.from(sectionsByLine);
         SubwayMap subwayMap = new SubwayMap(multiRoutedStations);
-
         RoutedStations shortestRoutedStations = subwayMap.findShortestRoutedStations(sourceStation, targetStation);
+
+        List<StationResponse> foundSections = convert(shortestRoutedStations.extractSections());
         Distance totalDistance = shortestRoutedStations.totalDistance();
-        return new RouteResponse(
-                convert(shortestRoutedStations.extractSections()),
-                totalDistance.getValue(),
-                FareCalculator.calculate(totalDistance));
+        int totalFare = FareCalculator.calculate(totalDistance);
+
+        return new RouteResponse(foundSections, totalDistance.getValue(), totalFare);
     }
 
     private List<StationResponse> convert(List<Section> sections) {
