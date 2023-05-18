@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.domain.Section;
 import subway.persistence.dto.SectionDto;
@@ -23,6 +25,7 @@ public class SectionRepository {
         return sectionDao.insert(toDto(lineId, section));
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void saveAll(Long lineId, List<Section> sections) {
         deleteAllBy(lineId);
         sectionDao.insertAll(toDtos(lineId, sections));
