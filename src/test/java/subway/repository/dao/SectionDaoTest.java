@@ -1,6 +1,11 @@
 package subway.repository.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.repository.dao.DaoFixtures.GANGNAM_STATION;
+import static subway.repository.dao.DaoFixtures.LINE_NO_2;
+import static subway.repository.dao.DaoFixtures.SAMSEONG_STATION;
+import static subway.repository.dao.DaoFixtures.SEOLLEUNG_STATION;
+import static subway.repository.dao.DaoFixtures.YEOKSAM_STATION;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,11 +38,11 @@ class SectionDaoTest {
     }
 
     @Test
-    void Section을_저장한다() {
+    void 구간을_저장한다() {
         // given
-        LineEntity saveLine = lineDao.insert(new LineEntity("2호선"));
-        StationEntity source = stationDao.insert(new StationEntity("강남역"));
-        StationEntity target = stationDao.insert(new StationEntity("역삼역"));
+        LineEntity saveLine = lineDao.insert(LINE_NO_2);
+        StationEntity source = stationDao.insert(GANGNAM_STATION);
+        StationEntity target = stationDao.insert(YEOKSAM_STATION);
 
         // when
         sectionDao.insert(new SectionEntity(source.getId(), target.getId(), saveLine.getId(), 6));
@@ -48,14 +53,14 @@ class SectionDaoTest {
     }
 
     @Test
-    void 여러개의_Section을_저장한다() {
+    void 여러개의_구간을_저장한다() {
         // given
-        LineEntity saveLine = lineDao.insert(new LineEntity("2호선"));
+        LineEntity saveLine = lineDao.insert(LINE_NO_2);
         final Long lineId = saveLine.getId();
-        StationEntity station1 = stationDao.insert(new StationEntity("강남역"));
-        StationEntity station2 = stationDao.insert(new StationEntity("역삼역"));
-        StationEntity station3 = stationDao.insert(new StationEntity("선릉역"));
-        StationEntity station4 = stationDao.insert(new StationEntity("삼성역"));
+        StationEntity station1 = stationDao.insert(GANGNAM_STATION);
+        StationEntity station2 = stationDao.insert(YEOKSAM_STATION);
+        StationEntity station3 = stationDao.insert(SEOLLEUNG_STATION);
+        StationEntity station4 = stationDao.insert(SAMSEONG_STATION);
         final SectionEntity section1 = new SectionEntity(station1.getId(), station2.getId(), lineId, 5);
         final SectionEntity section2 = new SectionEntity(station2.getId(), station3.getId(), lineId, 6);
         final SectionEntity section3 = new SectionEntity(station3.getId(), station4.getId(), lineId, 7);
