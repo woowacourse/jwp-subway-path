@@ -64,7 +64,7 @@ class LineRepositoryTest {
     void load_line_by_Name() {
         // given
         LineEntity lineEntity = new LineEntity(1L, "2호선", "#123456");
-        List<SectionStationEntity> sectionEntities = List.of(new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 1L,10));
+        List<SectionStationEntity> sectionEntities = List.of(new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 1L, 10));
         doReturn(Optional.of(lineEntity)).when(lineDao)
                 .findByName(any(String.class));
         doReturn(sectionEntities).when(sectionDao)
@@ -106,7 +106,7 @@ class LineRepositoryTest {
     @DisplayName("이름과 노선 아이디를 통해 역을 찾는다.")
     void find_station_by_name_line_id() {
         // given
-        StationEntity stationEntity = new StationEntity(1L,"잠실", 1L);
+        StationEntity stationEntity = new StationEntity(1L, "잠실", 1L);
         doReturn(Optional.of(stationEntity)).when(stationDao).findByNameAndLineId(any(String.class), any(Long.class));
 
         // when
@@ -123,7 +123,7 @@ class LineRepositoryTest {
         // given
         Station station = new Station(1L, "잠실역");
         LineEntity lineEntity = new LineEntity(1L, "2호선", "#123456");
-        List<SectionStationEntity> sectionEntities = List.of(new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 1L,10));
+        List<SectionStationEntity> sectionEntities = List.of(new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 1L, 10));
         doReturn(Optional.of(lineEntity)).when(lineDao)
                 .findByStationId(any(Long.class));
         doReturn(sectionEntities).when(sectionDao)
@@ -150,7 +150,7 @@ class LineRepositoryTest {
         doReturn(lineEntities).when(lineDao).findAll();
 
         List<SectionStationEntity> sectionStationEntities = List.of(
-                new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉",1L, 10),
+                new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 1L, 10),
                 new SectionStationEntity(2L, 2L, "선릉", 3L, "강남", 1L, 10),
                 new SectionStationEntity(3L, 4L, "수서", 5L, "가락시장", 2L, 15)
         );

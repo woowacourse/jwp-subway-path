@@ -58,9 +58,9 @@ class StationServiceTest {
     void check_exception_when_register_init_station_to_not_init_station() {
         // given
         Line line = new Line(
-            1L,
-            "2호선",
-            "#123456", List.of(new Section(new Station("잠실"), new Station("선릉"), 10)));
+                1L,
+                "2호선",
+                "#123456", List.of(new Section(new Station("잠실"), new Station("선릉"), 10)));
         doReturn(line).when(lineRepository).findByName((any(String.class)));
 
         StationInitRequest request = new StationInitRequest("2호선", "잠실역", "선릉역", 10);

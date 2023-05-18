@@ -30,7 +30,7 @@ class SectionsTest {
         lineSection.add(new Section(new Station("잠실"), new Station("선릉"), 10));
         Sections sections = new Sections(lineSection);
 
-        Section section = new Section(new Station("선릉"), new Station("강남"),10);
+        Section section = new Section(new Station("선릉"), new Station("강남"), 10);
 
         // when + then
         assertThatThrownBy(() -> sections.addInitSection(section))
@@ -45,7 +45,7 @@ class SectionsTest {
         Section section = new Section(new Station("잠실"), new Station("선릉"), 10);
 
         // when + then
-        assertDoesNotThrow(() ->sections.addInitSection(section));
+        assertDoesNotThrow(() -> sections.addInitSection(section));
     }
 
     @Test
@@ -59,7 +59,7 @@ class SectionsTest {
         int distance = 10;
 
         // when
-        assertThatThrownBy(() ->sections.addSection(baseStation, direction, insertStation, distance))
+        assertThatThrownBy(() -> sections.addSection(baseStation, direction, insertStation, distance))
                 .isInstanceOf(LineIsInitException.class);
     }
 
@@ -214,7 +214,7 @@ class SectionsTest {
         // then
         assertThat(sections.getSections()).isEqualTo(expect);
     }
-    
+
     @Test
     @DisplayName("중간 역을 삭제한다.")
     void delete_inter_station() {
@@ -232,7 +232,7 @@ class SectionsTest {
 
         // when
         sections.deleteSection(station);
-      
+
         // then
         assertThat(sections.getSections()).isEqualTo(expect);
     }
@@ -283,7 +283,7 @@ class SectionsTest {
         List<Section> sections = List.of(
                 new Section(new Station(1L, "잠실"), new Station(2L, "선릉"), 10),
                 new Section(new Station(3L, "강남"), new Station(4L, "을지로"), 10),
-        new Section(new Station(2L, "선릉"), new Station(3L, "강남"), 10)
+                new Section(new Station(2L, "선릉"), new Station(3L, "강남"), 10)
         );
         Sections lineSection = new Sections(sections);
 
@@ -291,7 +291,7 @@ class SectionsTest {
                 new Station(1L, "잠실"),
                 new Station(2L, "선릉"),
                 new Station(3L, "강남"),
-                new Station(4L,"을지로"));
+                new Station(4L, "을지로"));
 
         // when
         List<Station> result = lineSection.sortStation();

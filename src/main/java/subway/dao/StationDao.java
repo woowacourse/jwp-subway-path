@@ -19,16 +19,16 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
     private final RowMapper<StationEntity> rowMapper = (rs, rowNum) -> new StationEntity(
-        rs.getLong("id"),
-        rs.getString("name"),
-        rs.getLong("line_id")
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getLong("line_id")
     );
 
     public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-            .withTableName("station")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
     }
 
     public StationEntity insert(StationEntity station) {

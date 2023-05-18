@@ -10,9 +10,6 @@ import subway.dto.PathRequest;
 import subway.dto.PathResponse;
 import subway.repository.LineRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class PathService {
 

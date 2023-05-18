@@ -64,7 +64,7 @@ class LineDaoTest {
         assertThat(result.get().getName()).isEqualTo(insertedLine.getName());
         assertThat(result.get().getColor()).isEqualTo(insertedLine.getColor());
     }
-    
+
     @Test
     @DisplayName("노선 전체 정보를 불러온다.")
     void line_all_data_load() {

@@ -3,8 +3,6 @@ package subway.domain.line;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
-import subway.exception.line.AlreadyExistStationException;
-import subway.exception.line.InvalidDistanceException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +24,11 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line (final Long id, final String name, final String color, final List<Section> sections) {
+    public Line(final Long id, final String name, final String color, final List<Section> sections) {
         this(id, new Name(name), new Color(color), new Sections(sections));
     }
 
-    public Line (final Long id, final String name, final String color) {
+    public Line(final Long id, final String name, final String color) {
         this(id, new Name(name), new Color(color), new Sections(new ArrayList<>()));
     }
 

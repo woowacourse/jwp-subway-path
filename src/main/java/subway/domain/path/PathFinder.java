@@ -20,7 +20,7 @@ public class PathFinder {
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         List<Station> path = shortestPath.getPath(departureStation, arrivalStation).getVertexList();
         double distance = shortestPath.getPathWeight(departureStation, arrivalStation);
-        return new Path(path, new Distance((int)distance));
+        return new Path(path, new Distance((int) distance));
     }
 
     private void setGraph(final Graph<Station, DefaultWeightedEdge> graph, final Sections sections) {

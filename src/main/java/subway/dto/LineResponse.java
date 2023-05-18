@@ -1,8 +1,8 @@
 package subway.dto;
 
-import java.util.List;
 import subway.domain.line.Line;
-import subway.entity.LineEntity;
+
+import java.util.List;
 
 public class LineResponse {
 
@@ -20,10 +20,10 @@ public class LineResponse {
 
     public static LineResponse of(Line line) {
         return new LineResponse(
-            line.getId(),
-            line.getName(),
-            line.getColor(),
-            List.of());
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                List.of());
     }
 
     public Long getId() {

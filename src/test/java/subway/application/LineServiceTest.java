@@ -1,13 +1,13 @@
 package subway.application;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 class LineServiceTest {

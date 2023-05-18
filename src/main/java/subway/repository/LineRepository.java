@@ -177,7 +177,7 @@ public class LineRepository {
                 .map(Section::getId).
                 collect(Collectors.toList());
 
-        if(sectiondIds.isEmpty()) {
+        if (sectiondIds.isEmpty()) {
             return;
         }
         sectionDao.deleteBothById(sectiondIds);
@@ -192,7 +192,7 @@ public class LineRepository {
                 .map(section -> new SectionEntity(
                         section.getLeftStation().getId(),
                         section.getRightStation().getId(),
-                        lineId,section.getDistance())).
+                        lineId, section.getDistance())).
                 collect(Collectors.toList()));
     }
 }

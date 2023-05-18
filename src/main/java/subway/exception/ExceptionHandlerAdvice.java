@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.domain.path.Fee;
 import subway.exception.common.NotFoundException;
 import subway.exception.distance.DistanceException;
 import subway.exception.fee.FeeException;

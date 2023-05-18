@@ -12,11 +12,11 @@ public class StationRequest {
     }
 
     public StationRequest(
-        final String registerStationName,
-        final String lineName,
-        final String baseStation,
-        final String direction,
-        final int distance
+            final String registerStationName,
+            final String lineName,
+            final String baseStation,
+            final String direction,
+            final int distance
     ) {
         this.registerStationName = registerStationName;
         this.lineName = lineName;

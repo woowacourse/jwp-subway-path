@@ -1,10 +1,5 @@
 package subway.dao;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,24 +7,30 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import subway.entity.LineEntity;
 
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 @Component
-public class  LineDao {
+public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
-        new LineEntity(
-            rs.getLong("id"),
-            rs.getString("name"),
-            rs.getString("color")
-        );
+            new LineEntity(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("color")
+            );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-            .withTableName("line")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("line")
+                .usingGeneratedKeyColumns("id");
     }
 
     public LineEntity insert(LineEntity line) {
@@ -46,7 +47,7 @@ public class  LineDao {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
         } catch (EmptyResultDataAccessException e) {
-           return Optional.empty();
+            return Optional.empty();
         }
     }
 

@@ -1,13 +1,13 @@
 package subway.domain.line;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.station.Name;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class NameTest {
 
@@ -18,7 +18,7 @@ class NameTest {
     void validate_line_name_is_blank_and_null(String name) {
         // when + then
         assertThatThrownBy(() -> new subway.domain.station.Name(name))
-            .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
 
     }
 

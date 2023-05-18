@@ -1,6 +1,5 @@
 package subway.data;
 
-import subway.domain.line.Line;
 import subway.entity.LineEntity;
 
 public class LineFixture {
