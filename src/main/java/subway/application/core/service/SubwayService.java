@@ -30,7 +30,7 @@ public class SubwayService {
     }
 
     private List<StationResult> makeStationResultsOf(Line line) {
-        return line.routeMap().value().stream()
+        return line.routeMap().stations().stream()
                 .map(station -> new StationResult(station.getId(), station.getName()))
                 .collect(Collectors.toList());
     }
