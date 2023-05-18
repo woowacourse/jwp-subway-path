@@ -1,44 +1,36 @@
 package subway.line.service;
 
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.line.repository.LineRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import subway.domain.line.domain.ShortestPath;
 import subway.domain.line.service.LineService;
+import subway.domain.station.entity.StationEntity;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-
-@ExtendWith(MockitoExtension.class)
-@SuppressWarnings("NonAsciiCharacters")
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@SpringBootTest
+@Sql({"classpath:schema.sql", "classpath:data.sql"})
+@TestPropertySource(properties = "spring.config.location = classpath:application.yml")
 class LineServiceTest {
 
-    @Mock
-    private LineRepository lineRepository;
-    @InjectMocks
+    @Autowired
     private LineService lineService;
 
-
     @Test
-    void 모든_노선_조회_테스트() {
-        // when
-        lineService.findAll();
-
-        // then
-        verify(lineRepository).findAll();
-    }
-
-    @Test
-    void 단일_노선_조회_테스트() {
-        // when
-        lineService.findById(any());
-
-        // then
-        verify(lineRepository).findById(any());
+    void 환승_최단거리_구하기() {
+        ShortestPath shortestPath = lineService.findShortestPath(7L, 8L);
+        org.junit.jupiter.api.Assertions.assertAll(
+                () -> Assertions.assertThat(shortestPath.getPath()).containsExactly(
+                        new StationEntity(7L, "서초역"),
+                        new StationEntity(6L, "방배역"),
+                        new StationEntity(5L, "사당역"),
+                        new StationEntity(4L, "낙성대역"),
+                        new StationEntity(9L, "강남역"),
+                        new StationEntity(8L, "교대역")
+                ),
+                () -> Assertions.assertThat(shortestPath.getDistance()).isEqualTo(35)
+        );
     }
 }
