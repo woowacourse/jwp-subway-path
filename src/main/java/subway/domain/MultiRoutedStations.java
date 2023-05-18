@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.entity.Line;
+import subway.domain.entity.Section;
+import subway.domain.entity.Station;
 
 public class MultiRoutedStations extends WeightedMultigraph<Station, LineClassifiableEdge> {
 

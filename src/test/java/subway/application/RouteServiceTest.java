@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Distance;
+import subway.domain.vo.Distance;
 import subway.domain.FareCalculator;
 import subway.domain.exception.RequestDataNotFoundException;
 import subway.dto.RouteResponse;

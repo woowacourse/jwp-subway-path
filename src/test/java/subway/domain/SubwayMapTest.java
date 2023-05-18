@@ -17,6 +17,7 @@ import static subway.fixture.StationFixture.FIXTURE_STATION_9;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.entity.Line;
 import subway.domain.exception.EmptyRoutedStationsSearchResultException;
 import subway.domain.exception.IllegalSubwayMapArgumentException;
 

@@ -2,8 +2,8 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.Direction.DOWN;
-import static subway.domain.Direction.UP;
+import static subway.domain.vo.Direction.DOWN;
+import static subway.domain.vo.Direction.UP;
 import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
 import static subway.fixture.SectionFixture.LINE1_SECTION_ST2_ST3;
 import static subway.fixture.SectionFixture.LINE1_SECTION_ST3_ST4;
@@ -20,8 +20,11 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.entity.Section;
+import subway.domain.entity.Station;
 import subway.domain.exception.IllegalDistanceArgumentException;
 import subway.domain.exception.IllegalLineMapArgumentException;
+import subway.domain.vo.Distance;
 
 @DisplayName("역 개별 노선도 단위 테스트")
 class LineMapTest {

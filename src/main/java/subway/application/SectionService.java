@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Direction;
-import subway.domain.Distance;
-import subway.domain.LineMap;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.vo.Direction;
+import subway.domain.vo.Distance;
+import subway.domain.entity.Section;
+import subway.domain.entity.Station;
 import subway.domain.exception.RequestDataNotFoundException;
+import subway.domain.LineMap;
 import subway.dto.SectionRequest;
 
 @Service

@@ -1,7 +1,7 @@
 package subway.dto;
 
 import java.util.List;
-import subway.domain.Line;
+import subway.domain.entity.Line;
 
 public class LineResponse {
     private Long id;

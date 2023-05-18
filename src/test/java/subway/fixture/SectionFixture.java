@@ -12,8 +12,8 @@ import static subway.fixture.StationFixture.FIXTURE_STATION_8;
 import static subway.fixture.StationFixture.FIXTURE_STATION_9;
 
 import java.util.List;
-import subway.domain.Distance;
-import subway.domain.Section;
+import subway.domain.vo.Distance;
+import subway.domain.entity.Section;
 
 public class SectionFixture {
 

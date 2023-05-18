@@ -4,9 +4,9 @@ import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.vo.Distance;
+import subway.domain.entity.Section;
+import subway.domain.entity.Station;
 
 @Repository
 public class SectionDao {

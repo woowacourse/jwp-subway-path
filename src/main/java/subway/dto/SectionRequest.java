@@ -1,7 +1,7 @@
 package subway.dto;
 
 import javax.validation.constraints.NotNull;
-import subway.domain.Direction;
+import subway.domain.vo.Direction;
 
 public class SectionRequest {
 

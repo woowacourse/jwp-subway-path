@@ -1,7 +1,7 @@
 package subway.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import subway.domain.Direction;
+import subway.domain.vo.Direction;
 
 public class SectionDirection {
 

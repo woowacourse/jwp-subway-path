@@ -1,7 +1,7 @@
 package subway.dto;
 
 import java.util.Objects;
-import subway.domain.Station;
+import subway.domain.entity.Station;
 
 public class StationResponse {
     private Long id;

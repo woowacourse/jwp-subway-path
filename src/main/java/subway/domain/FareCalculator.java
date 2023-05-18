@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.domain.vo.Distance;
+
 public class FareCalculator {
 
     private static final Distance OVER_FARE_LEVEL1_RANGE_MINIMUM = new Distance(10);

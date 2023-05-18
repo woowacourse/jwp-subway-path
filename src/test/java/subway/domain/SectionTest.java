@@ -12,8 +12,11 @@ import static subway.fixture.StationFixture.FIXTURE_STATION_3;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.entity.Section;
+import subway.domain.entity.Station;
 import subway.domain.exception.IllegalDistanceArgumentException;
 import subway.domain.exception.IllegalSectionArgumentException;
+import subway.domain.vo.Distance;
 
 @DisplayName("구간 단위 테스트")
 class SectionTest {

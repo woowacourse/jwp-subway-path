@@ -1,6 +1,6 @@
 package subway.domain;
 
-import static subway.domain.Direction.DOWN;
+import static subway.domain.vo.Direction.DOWN;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,6 +10,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.domain.vo.Direction;
+import subway.domain.vo.Distance;
+import subway.domain.entity.Section;
+import subway.domain.entity.Station;
 import subway.domain.exception.EmptyRoutedStationsSearchResultException;
 import subway.domain.exception.EmptySectionOperationException;
 import subway.domain.exception.IllegalDistanceArgumentException;

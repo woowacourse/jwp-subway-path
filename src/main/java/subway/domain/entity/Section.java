@@ -1,9 +1,11 @@
-package subway.domain;
+package subway.domain.entity;
 
-import static subway.domain.Direction.DOWN;
+import static subway.domain.vo.Direction.DOWN;
 
 import java.util.Objects;
 import java.util.Optional;
+import subway.domain.vo.Direction;
+import subway.domain.vo.Distance;
 import subway.domain.exception.IllegalSectionArgumentException;
 
 public class Section {
