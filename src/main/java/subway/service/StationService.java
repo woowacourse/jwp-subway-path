@@ -5,6 +5,7 @@ import subway.dao.StationDao;
 import subway.controller.dto.request.StationRequest;
 import subway.controller.dto.response.StationResponse;
 import subway.entity.StationEntity;
+import subway.exception.StationNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,12 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        List<StationEntity> stationEntity = stationDao.findById(id);
+        if (stationEntity.isEmpty()) {
+            throw new StationNotFoundException("해당하는 역을 찾을 수 없습니다.");
+        }
+
+        return StationResponse.of(stationEntity.get(0));
     }
 
     public List<StationResponse> findAllStationResponses() {

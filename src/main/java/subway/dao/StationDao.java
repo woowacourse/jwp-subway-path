@@ -36,14 +36,9 @@ public class StationDao {
         return new StationEntity(id, stationEntity.getName());
     }
 
-    public List<StationEntity> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, stationEntityRowMapper);
-    }
-
-    public StationEntity findById(Long id) {
+    public List<StationEntity> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, id);
+        return jdbcTemplate.query(sql, stationEntityRowMapper, id);
     }
 
     public StationEntity findByName(final String name) {
@@ -56,6 +51,11 @@ public class StationDao {
         }
 
         return result.get(0);
+    }
+
+    public List<StationEntity> findAll() {
+        String sql = "select * from STATION";
+        return jdbcTemplate.query(sql, stationEntityRowMapper);
     }
 
     public void update(StationEntity newStationEntity) {

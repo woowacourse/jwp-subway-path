@@ -13,6 +13,8 @@ import subway.exception.StationNotFoundException;
 
 import javax.sql.DataSource;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -60,6 +62,25 @@ class StationDaoTest {
     }
 
     // findById
+    @Test
+    @DisplayName("Station 을 ID 로 조회한다. (조회 결과가 있는 경우)")
+    @Sql("/station_test_data.sql")
+    void findById_notEmpty() {
+        List<StationEntity> station = stationDao.findById(1L);
+
+        assertThat(station).hasSize(1);
+        assertThat(station.get(0).getId()).isEqualTo(1L);
+        assertThat(station.get(0).getName()).isEqualTo("잠실");
+    }
+
+    @Test
+    @DisplayName("Station 을 ID 로 조회한다. (조회 결과가 없는 경우)")
+    @Sql("/station_test_data.sql")
+    void findById_empty() {
+        List<StationEntity> station = stationDao.findById(4L);
+
+        assertThat(station).isEmpty();
+    }
 
 
     // findByName
