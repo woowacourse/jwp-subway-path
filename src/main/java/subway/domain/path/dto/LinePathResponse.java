@@ -26,7 +26,7 @@ public class LinePathResponse {
     }
 
     public static LinePathResponse of(LinePath linePath) {
-        LineEntity lineDetail = linePath.getLineDetail();
+        LineEntity lineDetail = linePath.getLine();
         List<StationEntity> stations = linePath.getStations();
 
         LineResponse lineResponse = new LineResponse(lineDetail.getId(),

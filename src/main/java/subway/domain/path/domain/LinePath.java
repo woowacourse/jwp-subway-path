@@ -15,7 +15,7 @@ public class LinePath {
         this.stationEntities = stationEntities;
     }
 
-    public LineEntity getLineDetail() {
+    public LineEntity getLine() {
         return lineEntity;
     }
 
