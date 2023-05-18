@@ -36,8 +36,7 @@ public class LineService {
     }
 
     public void saveStationInLine(final Long lineId, final RegisterStationRequest registerStationRequest) {
-        LineEntity lineEntity = lineDao.findById(lineId)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 호선이 존재하지 않습니다."));
+        LineEntity lineEntity = findLineById(lineId);
 
         validateDifferentStation(registerStationRequest);
         validateExistStation(registerStationRequest);
@@ -81,29 +80,17 @@ public class LineService {
                 }).collect(Collectors.toList());
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
     public List<LineEntity> findLines() {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        LineEntity persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
     public LineEntity findLineById(Long id) {
         return lineDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 ID가 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("해당하는 호선 ID가 없습니다."));
     }
 
     public List<LineStationResponse> findAll() {
-        List<LineEntity> lineEntities = lineDao.findAll();
+        List<LineEntity> lineEntities = findLines();
         List<LineStationEntity> lineStationEntities = sectionDao.findLineStationWithSort();
 
         Map<Long, List<LineStationEntity>> lineStationMap = separateByLine(lineStationEntities);
@@ -121,8 +108,7 @@ public class LineService {
     }
 
     public LineStationResponse findById(Long id) {
-        LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 ID가 없습니다."));
+        LineEntity lineEntity = findLineById(id);
         List<LineStationEntity> lineStationEntities = sectionDao.findLineStationByLineIdWithSort(id);
 
         List<StationResponse> stationResponses = toStationResponses(lineStationEntities);

@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
 import subway.dto.RegisterStationRequest;
 
@@ -38,22 +37,12 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
-    }
-
-    @GetMapping("/stations")
-    public ResponseEntity<List<LineStationResponse>> findRegisteredStations() {
+    public ResponseEntity<List<LineStationResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
-    }
-
-    @GetMapping("/{id}/stations")
-    public ResponseEntity<LineStationResponse> findRegisteredStationsById(@PathVariable final Long id) {
+    public ResponseEntity<LineStationResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findById(id));
     }
 
