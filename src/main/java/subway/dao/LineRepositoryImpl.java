@@ -1,11 +1,11 @@
 package subway.dao;
 
+import static subway.dao.mapper.LineMapper.convertLineWithSectionRes;
 import static subway.exception.ErrorCode.DB_DELETE_ERROR;
 import static subway.exception.ErrorCode.DB_UPDATE_ERROR;
 import static subway.exception.ErrorCode.LINE_NOT_FOUND;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.dto.LineWithSection;
 import subway.dao.entity.LineEntity;
@@ -75,16 +75,8 @@ public class LineRepositoryImpl implements LineRepository {
 
     @Override
     public List<LineWithSectionRes> getPossibleSections(final Long sourceStationId, final Long targetStationId) {
-        final List<LineWithSection> lineWithSections = lineDao.getAllLineSectionsBySourceAndStationId(
+        final List<LineWithSection> lineWithSections = lineDao.getAllLineSectionsSourceAndTargetStationId(
             sourceStationId, targetStationId);
         return convertLineWithSectionRes(lineWithSections);
-    }
-
-    private List<LineWithSectionRes> convertLineWithSectionRes(final List<LineWithSection> lineWithSections) {
-        return lineWithSections.stream()
-            .map(section -> new LineWithSectionRes(section.getLineId(), section.getLineName(), section.getLineColor(),
-                section.getLineExtraFare(), section.getSourceStationId(), section.getSourceStationName(),
-                section.getTargetStationId(), section.getTargetStationName(), section.getDistance()))
-            .collect(Collectors.toUnmodifiableList());
     }
 }

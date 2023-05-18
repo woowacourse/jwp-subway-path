@@ -216,7 +216,7 @@ public class LineDaoTest {
 
     @Test
     @DisplayName("출발역에서 도착역으로 갈 수 있는 노선들이 가진 모든 구간 정보를 구한다.")
-    void getAllLineSectionsBySourceAndStationId() {
+    void getAllLineSectionsSourceAndTargetStationId() {
         // given
         final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
         final LineEntity 사호선_엔티티 = new LineEntity("사호선", "bg-blue-600", 0);
@@ -256,7 +256,7 @@ public class LineDaoTest {
         sectionDao.insert(사호선_강남_사당);
 
         // when
-        final List<LineWithSection> possibleSections = lineDao.getAllLineSectionsBySourceAndStationId(
+        final List<LineWithSection> possibleSections = lineDao.getAllLineSectionsSourceAndTargetStationId(
             저장된_잠실역_엔티티_아이디, 저장된_삼성역_엔티티_아이디);
 
         // then
@@ -283,7 +283,7 @@ public class LineDaoTest {
 
     @Test
     @DisplayName("출발역에서 도착역으로 갈 수 있는 노선들이 가진 모든 구간 정보를 역방향 노선을 고려하여 구한다.")
-    void getAllLineSectionsBySourceAndStationId_reversed_section() {
+    void getAllLineSectionsSourceAndTargetStationId_reversed_section() {
         // given
         final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
         final LineEntity 사호선_엔티티 = new LineEntity("사호선", "bg-blue-600", 0);
@@ -323,7 +323,7 @@ public class LineDaoTest {
         sectionDao.insert(사호선_강남_사당);
 
         // when
-        final List<LineWithSection> possibleSections = lineDao.getAllLineSectionsBySourceAndStationId(
+        final List<LineWithSection> possibleSections = lineDao.getAllLineSectionsSourceAndTargetStationId(
             저장된_삼성역_엔티티_아이디, 저장된_잠실역_엔티티_아이디);
 
         // then

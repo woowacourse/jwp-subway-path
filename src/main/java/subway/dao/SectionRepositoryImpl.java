@@ -1,5 +1,6 @@
 package subway.dao;
 
+import static subway.dao.mapper.SectionMapper.convertSectionEntity;
 import static subway.exception.ErrorCode.DB_DELETE_ERROR;
 
 import org.springframework.stereotype.Repository;
@@ -19,9 +20,7 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     @Override
     public Long insert(final SectionSaveReq sectionSaveReq) {
-        final SectionEntity sectionEntity = new SectionEntity(sectionSaveReq.getLineId(),
-            sectionSaveReq.getSourceStationId(),
-            sectionSaveReq.getTargetStationId(), sectionSaveReq.getDistance());
+        final SectionEntity sectionEntity = convertSectionEntity(sectionSaveReq);
         return sectionDao.insert(sectionEntity);
     }
 

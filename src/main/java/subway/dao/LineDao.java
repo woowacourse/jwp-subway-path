@@ -108,8 +108,8 @@ public class LineDao {
         return count > 0;
     }
 
-    public List<LineWithSection> getAllLineSectionsBySourceAndStationId(final Long sourceStationId,
-                                                                        final Long targetStationId) {
+    public List<LineWithSection> getAllLineSectionsSourceAndTargetStationId(final Long sourceStationId,
+                                                                            final Long targetStationId) {
         final String sql = "SELECT sec.id, l.id AS line_id, l.name AS line_name, l.color AS line_color, "
             + "l.extra_fare as line_extra_fare, "
             + "sec.source_station_id, sta1.name AS source_station_name, "

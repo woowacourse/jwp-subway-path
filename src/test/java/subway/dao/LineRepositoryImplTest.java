@@ -195,7 +195,7 @@ class LineRepositoryImplTest {
     @DisplayName("출발역에서 도착역으로 갈 수 있는 노선들이 가진 모든 구간 정보를 구한다.")
     void getPossibleSections() {
         // given
-        when(lineDao.getAllLineSectionsBySourceAndStationId(anyLong(), anyLong()))
+        when(lineDao.getAllLineSectionsSourceAndTargetStationId(anyLong(), anyLong()))
             .thenReturn(이호선_팔호선_구간());
 
         // when
