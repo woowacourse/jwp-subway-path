@@ -10,6 +10,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
+import subway.dto.response.LineSectionResponse;
 import subway.exception.LineDuplicatedException;
 import subway.exception.NotFoundException;
 
@@ -37,9 +38,9 @@ public class LineService {
         return LineResponse.of(line);
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineSectionResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineSectionResponse.of(persistLine);
     }
 
     private Line findLineById(Long lineId) {
@@ -52,10 +53,10 @@ public class LineService {
         return new Line(lineId, lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<LineSectionResponse> findLineResponses() {
         List<Line> persistLine = findLines();
         return persistLine.stream()
-                          .map(LineResponse::of)
+                          .map(LineSectionResponse::of)
                           .collect(Collectors.toList());
     }
 

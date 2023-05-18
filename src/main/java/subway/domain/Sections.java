@@ -16,9 +16,13 @@ public class Sections {
     public List<Station> findStations() {
         List<Station> upStations = getUpStations();
         List<Station> downStations = getDownStations();
-        Station startStation = findStartStation(upStations, downStations);
+        Optional<Station> startStation = findStartStation(upStations, downStations);
 
-        List<Station> stations = new LinkedList<>(List.of(startStation));
+        if (startStation.isEmpty()) {
+            return null;
+        }
+
+        List<Station> stations = new LinkedList<>(List.of(startStation.get()));
         while (stations.size() <= sections.size()) {
             sections.addAll(sort(stations));
         }
@@ -26,10 +30,10 @@ public class Sections {
         return stations;
     }
 
-    private static Station findStartStation(List<Station> upStations, List<Station> downStations) {
+    private static Optional<Station> findStartStation(List<Station> upStations, List<Station> downStations) {
         return upStations.stream()
                          .filter(station -> !downStations.contains(station))
-                         .findFirst().orElseThrow(()->new IllegalStateException("상행 종점을 찾을 수 없습니다"));
+                         .findFirst();
     }
 
     private List<Station> getUpStations() {

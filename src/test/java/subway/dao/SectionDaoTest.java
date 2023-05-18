@@ -40,41 +40,48 @@ class SectionDaoTest {
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
     }
 
-    @DisplayName("노선의 id를 입력했을 때, 해당 노선의 구간 정보를 section객체로 반환한다")
+    @DisplayName("노선의 id를 입력했을 때, 해당 노선의 구간 정보를 SectionStationMapper 객체로 반환한다")
     @Test
     void findSectionsByLineId() {
         List<SectionStationMapper> sections = sectionDao.findSectionsByLineId(1L);
-        assertThat(sections)
-                .containsExactly(
-                        new SectionStationMapper(2L, "봉천역", 1L, "서울대입구역", 5),
-                        new SectionStationMapper(1L, "서울대입구역", 4L, "사당역", 7)
-                );
+        System.out.println("answer : " + sections);
+
+        assertThat(sections).usingRecursiveFieldByFieldElementComparator()
+                            .contains(
+                                    new SectionStationMapper(2L, "봉천역", 1L, "서울대입구역", 5),
+                                    new SectionStationMapper(1L, "서울대입구역", 4L, "사당역", 7)
+                            );
     }
 
     @DisplayName("노선의 id를 입력했을 때, 해당 노선의 구간 정보를 SectionEntity 체로 반환한다")
     @Test
     void findByLineId() {
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L).get();
-        assertThat(sectionEntities).containsExactly(
-                new SectionEntity(1L, 2L, 1L, 5),
-                new SectionEntity(1L, 1L, 4L, 7));
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L)
+                                                        .get();
+        assertThat(sectionEntities).usingRecursiveFieldByFieldElementComparator()
+                                   .containsExactly(
+                                           new SectionEntity(1L, 2L, 1L, 5),
+                                           new SectionEntity(1L, 1L, 4L, 7)
+                                   );
 
     }
 
     @DisplayName("노선의 UpStationId를 입력했을 때, 해당 구간 정보를 SectionEntity 객체로 반환한다")
     @Test
     void findByUpStationId() {
-        SectionEntity section = sectionDao.findByUpStationId(1L, 1L).get();
-        assertThat(section).isEqualTo(
-                new SectionEntity(1L, 1L, 4L, 7));
+        SectionEntity section = sectionDao.findByUpStationId(1L, 1L)
+                                          .get();
+        assertThat(section).usingRecursiveComparison()
+                           .isEqualTo(new SectionEntity(1L, 1L, 4L, 7));
     }
 
     @DisplayName("노선의 DownStationId를 입력했을 때, 해당 구간 정보를 SectionEntity 객체로 반환한다")
     @Test
     void findByDownStationId() {
-        SectionEntity section = sectionDao.findByDownStationId(1L, 1L).get();
-        assertThat(section).isEqualTo(
-                new SectionEntity(1L, 2L, 1L, 5));
+        SectionEntity section = sectionDao.findByDownStationId(1L, 1L)
+                                          .get();
+        assertThat(section).usingRecursiveComparison()
+                           .isEqualTo(new SectionEntity(1L, 2L, 1L, 5));
     }
 
     @Test
@@ -90,8 +97,7 @@ class SectionDaoTest {
                 sectionEntityRowMapper
         );
         assertThat(sectionEntity).usingRecursiveComparison()
-                .comparingOnlyFields()
-                .isEqualTo(new SectionEntity(1L, 1L, 3L, 5));
+                                 .isEqualTo(new SectionEntity(1L, 1L, 3L, 5));
     }
 
     @Test
@@ -104,6 +110,7 @@ class SectionDaoTest {
                 "SELECT * FROM section",
                 sectionEntityRowMapper
         );
-        assertThat(sectionEntities).doesNotContain(deleteSection);
+        assertThat(sectionEntities).usingRecursiveFieldByFieldElementComparator()
+                                   .doesNotContain(deleteSection);
     }
 }

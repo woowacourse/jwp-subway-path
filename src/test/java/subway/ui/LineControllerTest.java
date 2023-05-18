@@ -1,20 +1,6 @@
 package subway.ui;
 
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Collections;
-import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +12,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
+import subway.dto.response.LineSectionResponse;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LineController.class)
 class LineControllerTest {
@@ -43,7 +38,7 @@ class LineControllerTest {
     @Test
     void createLine() throws Exception {
         given(lineService.saveLine(any()))
-                .willReturn(new LineResponse(1L, "2호선", "green", null));
+                .willReturn(new LineResponse(1L, "2호선", "green"));
 
         mockMvc.perform(post("/lines")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,9 +54,9 @@ class LineControllerTest {
     @DisplayName("전체 노선을 조회한다")
     @Test
     void findAllLines() throws Exception {
-        List<LineResponse> lines = List.of(
-                new LineResponse(1L, "2호선", "green", Collections.emptyList()),
-                new LineResponse(2L, "1호선", "blue", List.of("동인천역", "주안역")));
+        List<LineSectionResponse> lines = List.of(
+                new LineSectionResponse(1L, "2호선", "green", Collections.emptyList()),
+                new LineSectionResponse(2L, "1호선", "blue", List.of("동인천역", "주안역")));
         given(lineService.findLineResponses())
                 .willReturn(lines);
 
@@ -85,7 +80,7 @@ class LineControllerTest {
     void findLineById() throws Exception {
         Long lineId = 1L;
         given(lineService.findLineResponseById(anyLong()))
-                .willReturn(new LineResponse(lineId, "1호선", "blue", List.of("동인천역", "주안역")));
+                .willReturn(new LineSectionResponse(lineId, "1호선", "blue", List.of("동인천역", "주안역")));
         mockMvc.perform(get("/lines/"+lineId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
