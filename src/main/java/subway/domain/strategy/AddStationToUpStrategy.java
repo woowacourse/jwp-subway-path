@@ -34,6 +34,6 @@ public class AddStationToUpStrategy implements AddStationStrategy {
         graph.removeSection(adjacentStation, existingStation);
 
         graph.addSection(adjacentStation, newStation, updatedDistance);
-        graph.addSection(newStation,existingStation, distance);
+        graph.addSection(newStation, existingStation, distance);
     }
 }

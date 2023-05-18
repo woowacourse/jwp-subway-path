@@ -23,5 +23,4 @@ public interface SectionRepository {
     void deleteSectionsOf(Line line);
 
     void saveAll(Line line, List<Section> sections);
-
 }

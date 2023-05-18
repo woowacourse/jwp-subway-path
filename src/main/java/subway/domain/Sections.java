@@ -22,7 +22,6 @@ public class Sections {
         this.line = line;
     }
 
-
     public void createInitialSection(Station upStation, Station downStation, int distance) {
         validateDistance(distance);
         graph.addStation(upStation);

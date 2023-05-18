@@ -125,7 +125,6 @@ public class LineServiceImpl implements LineService {
         final List<Section> sections1 = graph.getSections();
         sectionRepository.saveAll(line, sections1);
 
-
         final List<StationResponse> stationResponse = mapToStationResponse(line);
 
         return LineResponse.of(line, stationResponse);

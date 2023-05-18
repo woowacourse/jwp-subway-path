@@ -39,6 +39,5 @@ public interface Graph {
 
     boolean isTerminal(Direction direction, Station station);
 
-
     List<Section> getSections();
 }

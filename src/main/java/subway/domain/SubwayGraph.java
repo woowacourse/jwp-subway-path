@@ -57,7 +57,7 @@ public class SubwayGraph implements Graph {
 
     @Override
     public double getSectionDistance(final DefaultWeightedEdge edge) {
-        return ((Section)edge).getDistance();
+        return ((Section) edge).getDistance();
     }
 
     @Override
