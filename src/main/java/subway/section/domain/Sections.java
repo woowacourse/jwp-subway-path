@@ -14,15 +14,11 @@ public final class Sections {
     private final List<Section> sections;
 
     private Sections(final List<Section> sections) {
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public static Sections empty() {
         return new Sections(new ArrayList<>());
-    }
-
-    public static Sections values(final Section... sections) {
-        return new Sections(Arrays.asList(sections));
     }
 
     public static Sections values(final List<Section> sections) {
@@ -144,7 +140,8 @@ public final class Sections {
 
     private void combineSection(final List<Section> containsSections, final Station station) {
         if (containsSections.size() == 1) {
-            sections.remove(containsSections.get(0));
+            final Section o = containsSections.get(0);
+            sections.remove(o);
             return;
         }
 
