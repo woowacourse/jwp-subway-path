@@ -60,9 +60,6 @@ public class Line {
             downBoundStation = newStation;
             return;
         }
-        if (Direction.LEFT.equals(direction)) {
-
-        }
         sections.split(newStation, baseStation, direction, distance);
     }
 

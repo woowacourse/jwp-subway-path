@@ -41,8 +41,8 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("노선에 종점을 추가합니다.")
-    void add_last_station() {
+    @DisplayName("노선의 오른쪽에 종점을 추가합니다.")
+    void add_right_last_station() {
         // given
         String lineName = "2";
         String colorCode = "#FFFFFF";
@@ -62,8 +62,8 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("노선에 가운데 역을 추가합니다.")
-    void add_inner_station() {
+    @DisplayName("노선의 가운데에 역을 기준의 오른쪽에 추가합니다.")
+    void add_right_inner_station() {
         // given
         String lineName = "2";
         String colorCode = "#FFFFFF";
@@ -75,6 +75,48 @@ class LineTest {
 
         // when
         line.addStation(centerStation, leftStation, Direction.RIGHT, 5);
+
+        // then
+        assertEquals(lineName, line.getName());
+        assertEquals(colorCode, line.getColor());
+        assertEquals(3, line.getStations().size());
+    }
+
+    @Test
+    @DisplayName("노선의 왼쪽에 종점을 추가합니다.")
+    void add_left_last_station() {
+        // given
+        String lineName = "2";
+        String colorCode = "#FFFFFF";
+        Line line = new Line(lineName, colorCode);
+        Station leftStation = new Station(1L, "left");
+        Station rightStation = new Station(2L, "right");
+        Station lastStation = new Station(3L, "last");
+        line.initStations(leftStation, rightStation, 10);
+
+        // when
+        line.addStation(lastStation, leftStation, Direction.LEFT, 5);
+
+        // then
+        assertEquals(lineName, line.getName());
+        assertEquals(colorCode, line.getColor());
+        assertEquals(3, line.getStations().size());
+    }
+
+    @Test
+    @DisplayName("노선에 가운데에 역을 기준의 왼쪽에 추가합니다.")
+    void add_left_inner_station() {
+        // given
+        String lineName = "2";
+        String colorCode = "#FFFFFF";
+        Line line = new Line(lineName, colorCode);
+        Station leftStation = new Station(1L, "left");
+        Station rightStation = new Station(2L, "right");
+        Station centerStation = new Station(3L, "last");
+        line.initStations(leftStation, rightStation, 10);
+
+        // when
+        line.addStation(centerStation, rightStation, Direction.LEFT, 5);
 
         // then
         assertEquals(lineName, line.getName());
