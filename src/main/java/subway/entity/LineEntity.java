@@ -1,25 +1,20 @@
-package subway.domain;
-
-import subway.entity.StationEntity;
+package subway.entity;
 
 import java.util.Objects;
 
-public class Station {
-
+public class LineEntity {
     private final Long id;
     private final String name;
+    private final String color;
 
-    public Station(final Long id, final String name) {
+    public LineEntity(final Long id, final String name, final String color) {
         this.id = id;
         this.name = name;
+        this.color = color;
     }
 
-    public Station(final String name) {
-        this(null, name);
-    }
-
-    public static Station from(final StationEntity stationEntity) {
-        return new Station(stationEntity.getId(), stationEntity.getName());
+    public LineEntity(final String name, final String color) {
+        this(null, name, color);
     }
 
     public Long getId() {
@@ -30,12 +25,16 @@ public class Station {
         return name;
     }
 
+    public String getColor() {
+        return color;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Station station = (Station) o;
-        return Objects.equals(id, station.id);
+        final LineEntity that = (LineEntity) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
@@ -45,10 +44,10 @@ public class Station {
 
     @Override
     public String toString() {
-        return "Station{" +
+        return "LineEntity{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
                 '}';
     }
 }
-
