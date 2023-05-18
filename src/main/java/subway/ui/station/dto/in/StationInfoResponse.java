@@ -7,6 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class StationInfoResponse {
 
-    private final long id;
-    private final String name;
+    private long id;
+    private String name;
+
+    private StationInfoResponse() {
+    }
 }
