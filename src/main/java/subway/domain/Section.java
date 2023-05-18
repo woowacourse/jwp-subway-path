@@ -1,6 +1,8 @@
 package subway.domain;
 
-public class Section {
+import org.jgrapht.graph.DefaultWeightedEdge;
+
+public class Section extends DefaultWeightedEdge {
     private final Long lindId;
     private final Station upper;
     private final Station lower;
