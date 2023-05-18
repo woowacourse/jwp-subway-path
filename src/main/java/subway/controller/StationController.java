@@ -13,8 +13,8 @@ import subway.controller.dto.StationCreateRequest;
 import subway.controller.dto.StationResponse;
 import subway.service.StationService;
 
-@RequestMapping("/stations")
 @RestController
+@RequestMapping("/stations")
 public class StationController {
 
     private final StationService stationService;

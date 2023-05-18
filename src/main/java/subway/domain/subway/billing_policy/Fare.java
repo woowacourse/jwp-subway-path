@@ -12,8 +12,8 @@ public final class Fare {
     }
 
     private void validate(final int value) {
-        if (value <= 0) {
-            throw new InvalidFareException("요금은 0보다 커야합니다.");
+        if (value < 0) {
+            throw new InvalidFareException("요금은 0이상의 값이어야합니다.");
         }
     }
 

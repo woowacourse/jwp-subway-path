@@ -4,7 +4,7 @@ import java.util.List;
 import subway.domain.Path;
 import subway.domain.line.Line;
 
-public class BillingPolicyByBoardedLine implements BillingPolicy {
+public final class BillingPolicyByBoardedLine implements BillingPolicy {
 
     @Override
     public Fare calculateFare(final Path path) {

@@ -11,14 +11,14 @@ import subway.exception.InvalidFareException;
 class FareTest {
 
     @ParameterizedTest
-    @DisplayName("요금이 0 이하라면 예외를 던진다.")
-    @ValueSource(ints = {-1, 0})
+    @DisplayName("요금이 0보다 작다면 예외를 던진다.")
+    @ValueSource(ints = {-1, Integer.MIN_VALUE})
     void validateWithNonPositiveValue(int input) {
         //given
         //when
         //then
         assertThatThrownBy(() -> new Fare(input))
                 .isInstanceOf(InvalidFareException.class)
-                .hasMessage("요금은 0보다 커야합니다.");
+                .hasMessage("요금은 0이상의 값이어야합니다.");
     }
 }
