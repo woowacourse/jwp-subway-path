@@ -59,10 +59,18 @@ public class LineDao {
 
     public void updateById(final LineEntity line) {
         String sql = "UPDATE LINES set name = ?, color = ? WHERE id = ?";
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        try {
+            jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("수정하려는 노선이 존재하지 않습니다.");
+        }
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM Lines WHERE id = ?", id);
+        try {
+            jdbcTemplate.update("DELETE FROM Lines WHERE id = ?", id);
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("삭제하려는 노선이 존재하지 않습니다.");
+        }
     }
 }

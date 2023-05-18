@@ -55,7 +55,11 @@ public class StationDao {
 
     public void update(final StationEntity station) {
         String sql = "UPDATE STATIONS SET name = ? WHERE id = ?";
-        jdbcTemplate.update(sql, station.getName(), station.getId());
+        try {
+            jdbcTemplate.update(sql, station.getName(), station.getId());
+        } catch (DataAccessException e) {
+            throw new IllegalStateException("수정하려는 역이 존재하지 않습니다.");
+        }
     }
 
     public void deleteById(Long id) {

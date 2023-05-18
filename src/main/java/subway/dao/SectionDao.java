@@ -3,6 +3,7 @@ package subway.dao;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -43,7 +44,11 @@ public class SectionDao {
 
     public void deleteAllByLineId(final Long sectionId) {
         String sql = "DELETE FROM SECTIONS WHERE line_id = ?";
-        jdbcTemplate.update(sql, sectionId);
+        try {
+            jdbcTemplate.update(sql, sectionId);
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("전체 구간을 삭제하려는 노선이 존재하지 않습니다.");
+        }
     }
 
     public List<SectionEntity> findAllByLineId(final Long lineId) {
