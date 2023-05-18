@@ -23,7 +23,7 @@ import subway.entity.LineEntity;
 @JdbcTest
 class LineDaoTest {
 
-    Long lineId;
+    private Long lineId;
     private LineDao lineDao;
     @Autowired
     private JdbcTemplate jdbcTemplate;

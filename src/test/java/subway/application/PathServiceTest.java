@@ -67,7 +67,7 @@ class PathServiceTest {
     void findPath_success_one_line() {
         // given
         PathRequest request = new PathRequest(GangNam, KeonDae);
-        List<String> expectedPath = List.of("강남역","역삼역","선릉역","삼성역", "건대입구역");
+        List<String> expectedPath = List.of("강남역", "역삼역", "선릉역", "삼성역", "건대입구역");
         int expectedDistance = 33;
         int expectedCharge = 1750;
         int teenagerCharge = 1120;

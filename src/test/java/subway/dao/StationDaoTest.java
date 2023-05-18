@@ -24,7 +24,7 @@ import subway.entity.StationEntity;
 @JdbcTest
 class StationDaoTest {
 
-    Long lineId;
+    private Long lineId;
     private StationDao stationDao;
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -300,5 +300,4 @@ class StationDaoTest {
         // then
         Assertions.assertThat(actual).isEqualTo(expected);
     }
-
 }

@@ -23,7 +23,7 @@ import subway.entity.StationEntity;
 @JdbcTest
 class LineServiceTest {
 
-    Long lineId;
+    private Long lineId;
 
     private StationDao stationDao;
     private LineDao lineDao;
@@ -119,7 +119,6 @@ class LineServiceTest {
                 .hasMessage("거리는 양의 정수여야 합니다");
         }
     }
-
 
     @Test
     @DisplayName("findLineResponses()를 호출하면 존재하는 모든 노선의 정보를 반환한다.")
