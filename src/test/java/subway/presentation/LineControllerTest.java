@@ -11,12 +11,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.application.service.LineService;
 import subway.presentation.controller.LineController;
 import subway.presentation.dto.StationEnrollRequest;
+import subway.presentation.dto.StationResponse;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -40,25 +47,67 @@ class LineControllerTest {
 
         // when
         mockMvc.perform(post("/subway/{lineId}", 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
 
                 // then
                 .andExpect(status().isCreated());
     }
 
     @Test
-    @DisplayName("/subway/{lineId}로 DELETE 요청을 보낼 수 있다")
+    @DisplayName("/subway/stations/{lineId}로 DELETE 요청을 보낼 수 있다")
     void deleteStation() throws Exception {
         // given
         doNothing().when(lineService).deleteStation(any(), any());
         Integer lineId = 1;
 
         // when
-        mockMvc.perform(delete("/subway/{lineId}/{stationId}", lineId, 2))
+        mockMvc.perform(delete("/subway/{lineId}/stations/{stationId}", lineId, 2))
 
                 // then
                 .andExpect(status().isNoContent())
                 .andExpect(header().string("Location", "/line/" + lineId));
+    }
+
+    @Test
+    @DisplayName("/subway/{lineId}로 GET 요청을 보낼 수 있다")
+    void getRouteMap() throws Exception {
+        // given
+        when(lineService.findRouteMap(any())).thenReturn(List.of(
+                new StationResponse(1L, "잠실역"),
+                new StationResponse(2L, "방배역")
+        ));
+        Integer lineId = 1;
+
+        // when
+        mockMvc.perform(get("/subway/{lineId}", lineId))
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[*].id").exists())
+                .andExpect(jsonPath("$.[*].name").exists());
+    }
+
+    @Test
+    @DisplayName("/subway로 GET 요청을 보낼 수 있다")
+    void getAllRouteMap() throws Exception {
+        // given
+        when(lineService.findAllRouteMap()).thenReturn(Map.of(
+                "1호선", List.of(
+                        new StationResponse(1L, "수원역"),
+                        new StationResponse(2L, "세류역")),
+                "2호선", List.of(
+                        new StationResponse(3L, "잠실역"),
+                        new StationResponse(4L, "방배역")
+                )
+        ));
+
+        // when
+        mockMvc.perform(get("/subway"))
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[*].[*].id").exists())
+                .andExpect(jsonPath("$.[*].[*].name").exists());
     }
 }
