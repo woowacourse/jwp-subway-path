@@ -6,11 +6,13 @@ import subway.exception.StationNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Line {
 
     private static final int NONE = 0;
+
     private final LineName name;
     private final LinkedList<Section> sections;
 
@@ -124,5 +126,18 @@ public class Line {
                 "name=" + name +
                 ", sections=" + sections +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return Objects.equals(name, line.name) && Objects.equals(sections, line.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, sections);
     }
 }

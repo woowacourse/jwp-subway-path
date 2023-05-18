@@ -32,4 +32,11 @@ public class Lines {
     public List<Line> getLines() {
         return new ArrayList<>(lines);
     }
+
+    @Override
+    public String toString() {
+        return "Lines{" +
+                "lines=" + lines +
+                '}';
+    }
 }
