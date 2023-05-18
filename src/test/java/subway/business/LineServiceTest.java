@@ -54,12 +54,10 @@ class LineServiceTest {
         final SectionCreateDto sectionCreateDto = new SectionCreateDto(10, "강남", "신사");
 
         final LineEntity lineEntity = LineEntity.of(lineId, new LineEntity(lineDto.getName(), lineDto.getColor()));
-        final StationEntity firstStation = new StationEntity(firstStationId, sectionCreateDto.getFirstStation());
-        final StationEntity lastStation = new StationEntity(lastStationId, sectionCreateDto.getLastStation());
 
         given(lineDao.insert(any())).willReturn(lineEntity);
-        given(stationDao.findByName(sectionCreateDto.getFirstStation())).willReturn(firstStation);
-        given(stationDao.findByName(sectionCreateDto.getLastStation())).willReturn(lastStation);
+        given(stationDao.findIdByName(sectionCreateDto.getFirstStation())).willReturn(firstStationId);
+        given(stationDao.findIdByName(sectionCreateDto.getLastStation())).willReturn(lastStationId);
         given(sectionDao.insert(any())).willReturn(any());
 
         // when, then

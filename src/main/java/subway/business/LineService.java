@@ -45,12 +45,9 @@ public class LineService {
     @Transactional
     public long createLineWithSection(final LineDto lineDto, final SectionCreateDto sectionCreateDto) {
         final LineEntity lineEntity = lineDao.insert(new LineEntity(lineDto.getName(), lineDto.getColor()));
-        final StationEntity previousStation = stationDao.findByName(sectionCreateDto.getFirstStation());
-        final StationEntity nextStation = stationDao.findByName(sectionCreateDto.getLastStation());
-        sectionDao.insert(new SectionEntity(
-                lineEntity.getId(), sectionCreateDto.getDistance(),
-                previousStation.getId(), nextStation.getId())
-        );
+        final long previousStationId = stationDao.findIdByName(sectionCreateDto.getFirstStation());
+        final long nextStationId = stationDao.findIdByName(sectionCreateDto.getLastStation());
+        sectionDao.insert(new SectionEntity(lineEntity.getId(), sectionCreateDto.getDistance(), previousStationId, nextStationId));
         return lineEntity.getId();
     }
 

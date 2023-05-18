@@ -53,15 +53,6 @@ public class StationDao {
         }
     }
 
-    public StationEntity findByName(final String name) {
-        final String sql = "SELECT * FROM station WHERE name = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, name);
-        } catch (EmptyResultDataAccessException e) {
-            throw new StationNotFoundException();
-        }
-    }
-
     public Long findIdByName(final String name) {
         final String sql = "SELECT id FROM station WHERE name = ?";
         try {
