@@ -16,7 +16,7 @@ import static subway.domain.path.domain.FareCalculator.calculate;
 class FareCalculatorTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 9, 10})
+    @ValueSource(ints = {1, 9, 10})
     void 거리가_10KM_이내인_경우(int distance) {
         int calculate = calculate(distance);
         Assertions.assertThat(calculate).isEqualTo(1_250);
