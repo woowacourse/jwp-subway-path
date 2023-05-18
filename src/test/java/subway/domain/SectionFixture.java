@@ -91,4 +91,27 @@ public class SectionFixture {
             Section.builder().lineId(2L).distance(3)
                     .id(11L).upStation(STATION11).downStation(STATION12).build()
     );
+
+    public static final List<Section> SECTIONS5 = List.of(
+            Section.builder().lineId(1L).distance(3)
+                    .id(1L).upStation(STATION1).downStation(STATION2).build(),
+            Section.builder().lineId(1L).distance(2)
+                    .id(2L).upStation(STATION2).downStation(STATION3).build(),
+            Section.builder().lineId(1L).distance(10)
+                    .id(3L).upStation(STATION3).downStation(STATION4).build(),
+
+
+            Section.builder().lineId(2L).distance(3)
+                    .id(4L).upStation(STATION3).downStation(STATION5).build(),
+            Section.builder().lineId(2L).distance(5)
+                    .id(5L).upStation(STATION5).downStation(STATION4).build(),
+            Section.builder().lineId(2L).distance(6)
+                    .id(6L).upStation(STATION4).downStation(STATION6).build(),
+
+
+            Section.builder().lineId(3L).distance(4)
+                    .id(7L).upStation(STATION8).downStation(STATION4).build(),
+            Section.builder().lineId(3L).distance(7)
+                    .id(8L).upStation(STATION4).downStation(STATION9).build()
+    );
 }
