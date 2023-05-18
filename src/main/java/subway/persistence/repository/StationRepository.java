@@ -1,33 +1,38 @@
-package subway.application;
+package subway.persistence.repository;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
-import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.persistence.entity.StationEntity;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
-public class StationService {
+@Repository
+public class StationRepository {
     private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    public StationRepository(StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        StationEntity station = stationDao.insert(new StationEntity(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        Optional<StationEntity> stationEntity = stationDao.findById(id);
+        if (stationEntity.isPresent()) {
+            return StationResponse.of(stationEntity.get());
+        }
+        throw new IllegalArgumentException("존재하지 않는 역입니다");
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<StationEntity> stations = stationDao.findAll();
 
         return stations.stream()
                 .map(StationResponse::of)
@@ -35,7 +40,7 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        stationDao.update(new StationEntity(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {

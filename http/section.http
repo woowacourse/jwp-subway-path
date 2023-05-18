@@ -1,0 +1,25 @@
+### 구간 등록(1)
+POST http://localhost:8080/lines/1/stations
+Content-Type: application/json
+
+{
+  "preStationId" : "1",
+  "stationId" : "2",
+  "distance" : "10"
+}
+
+### 구간 등록(2)
+POST http://localhost:8080/lines/1/stations
+Content-Type: application/json
+
+{
+  "preStationId" : "2",
+  "stationId" : "3",
+  "distance" : "10"
+}
+
+### 노선별 역 조회
+GET http://localhost:8080/lines/1/stations
+
+### 역 삭제
+DELETE http://localhost:8080/lines/1/stations/2

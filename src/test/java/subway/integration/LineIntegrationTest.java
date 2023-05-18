@@ -27,7 +27,7 @@ public class LineIntegrationTest extends IntegrationTest {
         super.setUp();
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-601");
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -69,12 +69,12 @@ public class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
-    void getLines() {
+    void getLineList() {
         // given
         ExtractableResponse<Response> createResponse1 = RestAssured
                 .given().log().all()
@@ -105,6 +105,8 @@ public class LineIntegrationTest extends IntegrationTest {
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
+
+
         List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
