@@ -1,23 +1,36 @@
 package subway.ui;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.application.SectionService;
+import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-
-import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
+import subway.dto.SectionRequest;
+import subway.dto.StationsByLineResponse;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
+    private final SectionService sectionService;
 
-    public LineController(LineService lineService) {
+    public LineController(LineService lineService, final SectionService sectionService) {
         this.lineService = lineService;
+        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -27,13 +40,32 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<StationsByLineResponse>> findAllLines() {
+        List<Line> lines = lineService.findLines();
+        List<StationsByLineResponse> stationsByLineResponses = new ArrayList<>();
+        for (Line targetLine : lines) {
+            stationsByLineResponses.add(sectionService.showStations(targetLine));
+        }
+        return ResponseEntity.ok(stationsByLineResponses);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    @GetMapping("/{lineId}")
+    public ResponseEntity<StationsByLineResponse> findLineById(@PathVariable Long lineId) {
+        Line targetLine = lineService.findLineById(lineId);
+        return ResponseEntity.ok(sectionService.showStations(targetLine));
+    }
+
+    @PostMapping("/{lineId}")
+    public ResponseEntity<Void> addStationAtLine(@PathVariable Long lineId,
+                                                 @RequestBody SectionRequest sectionRequest) {
+        sectionService.addSection(lineId, sectionRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteStationAtLine(@PathVariable Long lineId, @RequestParam Long stationId) {
+        sectionService.deleteStationById(lineId, stationId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
@@ -42,14 +74,4 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
 }

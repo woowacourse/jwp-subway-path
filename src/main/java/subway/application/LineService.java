@@ -39,6 +39,9 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
+        if (!lineDao.hasId(id)) {
+            throw new IllegalArgumentException("해당 호선이 존재하지 않습니다.");
+        }
         return lineDao.findById(id);
     }
 
