@@ -6,36 +6,43 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import subway.dto.api.PathResponse;
+import subway.domain.Distance;
+import subway.domain.Fare;
+import subway.domain.Station;
 import subway.dto.api.ShortestPathResponse;
-import subway.dto.domain.LineDto;
-import subway.dto.domain.StationDto;
+import subway.dto.service.PathResult;
+import subway.exception.ArrivalSameWithDepartureException;
+import subway.service.FareService;
+import subway.service.PathService;
+import subway.service.StationService;
 
 @RestController
 @RequestMapping("/path")
 public class PathController {
+    private final StationService stationService;
+    private final PathService pathService;
+    private final FareService fareService;
+
+    public PathController(StationService stationService, PathService pathService, FareService fareService) {
+        this.stationService = stationService;
+        this.pathService = pathService;
+        this.fareService = fareService;
+    }
 
     @GetMapping
     public ResponseEntity<ShortestPathResponse> getPath(@RequestParam Long departureStationId,
                                                         @RequestParam Long arrivalStationId) {
-        ShortestPathResponse shortestPathResponse = new ShortestPathResponse(
-                new StationDto(departureStationId, "잠실"),
-                new StationDto(arrivalStationId, "역삼"),
-                true,
-                10,
-                1_250,
-                List.of(
-                        new PathResponse(
-                                new LineDto(1L, "2호선", "초록색"),
-                                List.of(
-                                        new StationDto(departureStationId, "잠실"),
-                                        new StationDto(2L, "잠실새내"),
-                                        new StationDto(4L, "선릉"),
-                                        new StationDto(arrivalStationId, "역삼")
-                                )
-                        )
-                )
-        );
+        if (departureStationId == arrivalStationId) {
+            throw new ArrivalSameWithDepartureException();
+        }
+        List<Station> stations = stationService.findById(List.of(departureStationId, arrivalStationId));
+        Station departure = stations.get(0);
+        Station arrival = stations.get(1);
+        PathResult pathResult = pathService.getShortestPath(departure, arrival);
+        Distance distance = pathResult.getPath().calculateTotalDistance();
+        Fare fare = fareService.calculateFareOf(distance);
+
+        ShortestPathResponse shortestPathResponse = ShortestPathResponse.of(departure, arrival, pathResult, fare);
 
         return ResponseEntity.ok().body(shortestPathResponse);
     }

@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class LineSegmentTest {
+class PathSegmentTest {
 
     @Test
     @DisplayName("전체 거리를 계산한다.")
@@ -13,9 +13,9 @@ class LineSegmentTest {
         //given
         List<StationEdge> stationEdges = List.of(new StationEdge(2L, Distance.from(5)),
                 new StationEdge(3L, Distance.from(2)));
-        LineSegment lineSegment = new LineSegment(1L, stationEdges);
+        PathSegment pathSegment = new PathSegment(1L, stationEdges);
         //when
-        Distance totalDistance = lineSegment.calculateDistance();
+        Distance totalDistance = pathSegment.calculateDistance();
         //then
         Assertions.assertThat(totalDistance).isEqualTo(Distance.from(7));
     }

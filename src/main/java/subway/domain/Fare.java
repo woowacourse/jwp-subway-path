@@ -36,4 +36,8 @@ public class Fare {
     public Fare plus(Fare fare) {
         return new Fare(value + fare.value);
     }
+
+    public int getValue() {
+        return value;
+    }
 }

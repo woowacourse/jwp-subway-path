@@ -1,6 +1,11 @@
 package subway.dto.service;
 
+import static subway.domain.Line.UP_END_EDGE_DISTANCE;
+
+import java.util.List;
 import subway.domain.Line;
+import subway.domain.StationEdge;
+import subway.domain.StationEdges;
 
 public class CreateLineServiceCommand {
     private final String name;
@@ -17,7 +22,10 @@ public class CreateLineServiceCommand {
     }
 
     public Line toLine() {
-        return Line.of(name, color, upStationId, downStationId, distance);
+        final StationEdge upEndEdge = new StationEdge(upStationId, UP_END_EDGE_DISTANCE);
+        final StationEdge downEndEdge = new StationEdge(downStationId, distance);
+        StationEdges stationEdges = StationEdges.from(List.of(upEndEdge, downEndEdge));
+        return new Line(name, color, stationEdges);
     }
 
     public String getName() {

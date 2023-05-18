@@ -12,6 +12,7 @@ import subway.dao.LineDao;
 import subway.dao.StationEdgeDao;
 import subway.domain.Line;
 import subway.domain.StationEdge;
+import subway.domain.StationEdges;
 import subway.entity.LineEntity;
 import subway.entity.StationEdgeEntity;
 import subway.exception.StationNotFoundException;
@@ -39,7 +40,7 @@ public class DbLineRepository implements LineRepository {
         List<StationEdgeEntity> stationEdgeEntities = stationEdgeDao.findByLineId(lineEntity.getId());
         List<StationEdge> stationEdges = convertToDomain(stationEdgeEntities);
 
-        return Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), stationEdges);
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), StationEdges.from(stationEdges));
     }
 
     private List<StationEdge> convertToDomain(List<StationEdgeEntity> stationEdgeEntities) {
@@ -97,7 +98,7 @@ public class DbLineRepository implements LineRepository {
         long lineId = lineEntity.getId();
         List<StationEdgeEntity> stationEdgeEntities = lineIdToStationEdgeEntities.get(lineId);
         List<StationEdge> stationEdges = convertToDomain(stationEdgeEntities);
-        return Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), stationEdges);
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), StationEdges.from(stationEdges));
     }
 
     @Override

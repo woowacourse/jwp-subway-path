@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static subway.domain.Line.UP_END_EDGE_DISTANCE;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -15,9 +16,12 @@ class PathTest {
         Long downStationId = 1L;
         int distance = 2;
         Long upStationId = 2L;
-        Line line = Line.of("2호선", "초록색", upStationId, downStationId, distance);
-        LineSegment lineSegment = new LineSegment(1L, line.getStationEdges());
-        Path path = new Path(List.of(lineSegment));
+        StationEdges stationEdges = StationEdges.from(
+                List.of(new StationEdge(upStationId, UP_END_EDGE_DISTANCE), new StationEdge(downStationId, distance))
+        );
+        Line line = new Line("2호선", "초록색", stationEdges);
+        PathSegment pathSegment = new PathSegment(line.getId(), line.getStationEdges());
+        Path path = new Path(List.of(pathSegment));
         //when
         Distance totalDistance = path.calculateTotalDistance();
         //then

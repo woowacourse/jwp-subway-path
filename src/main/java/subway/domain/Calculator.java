@@ -1,5 +1,8 @@
 package subway.domain;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Calculator implements FareCalculator {
 
     public static final Fare BASIC_FARE = new Fare(1_250);

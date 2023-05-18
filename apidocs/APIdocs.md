@@ -186,15 +186,5 @@ GET `http://localhost:8080/path?departureStationId=1&arrivalStationId=4`
 - 경로가 없는 경우
 
 ```json
-{
-  "departureStation": {
-    "id": 1,
-    "name": "잠실"
-  },
-  "arrivalStation": {
-    "id": 4,
-    "name": "혜화"
-  },
-  "doesPathExists": false
-}
+"경로가 존재하지 않습니다."
 ```

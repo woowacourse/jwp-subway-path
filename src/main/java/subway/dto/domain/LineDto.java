@@ -1,5 +1,7 @@
 package subway.dto.domain;
 
+import subway.domain.Line;
+
 public class LineDto {
     private final Long id;
     private final String name;
@@ -9,6 +11,10 @@ public class LineDto {
         this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public static LineDto from(Line line) {
+        return new LineDto(line.getId(), line.getName(), line.getColor());
     }
 
     public Long getId() {

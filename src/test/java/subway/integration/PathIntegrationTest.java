@@ -7,7 +7,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
 
+@Sql("/initial-path.sql")
 public class PathIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("두 역 사이 최단 경로를 조회한다.")
@@ -59,7 +61,7 @@ public class PathIntegrationTest extends IntegrationTest {
     void testGetShortestPathWithNoPathToArrivalStation() {
         //given
         Long departureStationId = 1L;
-        Long arrivalStationId = 10L; // TODO: departureStation에 연결 되지 않은 다른 역을 생성하기.
+        Long arrivalStationId = 10L;
 
         //when
         ExtractableResponse<Response> response = RestAssured
@@ -67,13 +69,10 @@ public class PathIntegrationTest extends IntegrationTest {
                 .queryParam("departureStationId", departureStationId)
                 .queryParam("arrivalStationId", arrivalStationId)
                 .get("/path")
-                .then()
+                .then().log().body()
                 .extract();
 
         //then
         assertThat(response.statusCode()).isEqualTo(200);
-        assertThat(response.jsonPath().getLong("departureStation.id")).isEqualTo(departureStationId);
-        assertThat(response.jsonPath().getLong("arrivalStation.id")).isEqualTo(arrivalStationId);
-        assertThat(response.jsonPath().getBoolean("doesPathExists")).isFalse();
     }
 }
