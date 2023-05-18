@@ -30,7 +30,7 @@ public class StationController {
 
     @GetMapping
     public ResponseEntity<ResultResponse> showStations() {
-        List<StationEntity> stationEntities = stationService.findAllStationResponses();
+        List<StationEntity> stationEntities = stationService.findAllStation();
 
         List<StationResponse> StationResponses = stationEntities.stream()
                 .map(StationResponse::of)

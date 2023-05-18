@@ -43,7 +43,7 @@ class StationServiceTest {
     @Test
     void 모든_역_검색_테스트() {
         //when
-        stationService.findAllStationResponses();
+        stationService.findAllStation();
 
         //then
         verify(stationDao).findAll();

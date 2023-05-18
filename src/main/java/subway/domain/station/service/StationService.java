@@ -30,7 +30,7 @@ public class StationService {
         return stationDao.findById(id);
     }
 
-    public List<StationEntity> findAllStationResponses() {
+    public List<StationEntity> findAllStation() {
         return stationDao.findAll();
     }
 
