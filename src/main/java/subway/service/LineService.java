@@ -6,9 +6,7 @@ import subway.domain.Line;
 import subway.domain.LineDirection;
 import subway.domain.Station;
 import subway.domain.Subway;
-import subway.exception.DuplicatedLineNameException;
 import subway.exception.LineNotFoundException;
-import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 import subway.ui.dto.LineRequest;
@@ -30,22 +28,19 @@ public class LineService {
 
     @Transactional
     public Long create(final LineRequest lineRequest) {
-        final Station upStation = findStationById(lineRequest.getUpStationId());
-        final Station downStation = findStationById(lineRequest.getDownStationId());
+        final Subway subway = loadSubwayFromRepository();
+        final Station upStation = subway.getStation(lineRequest.getUpStationId());
+        final Station downStation = subway.getStation(lineRequest.getDownStationId());
 
         final Line line = Line.of(lineRequest.getName(), lineRequest.getColor(),
                 upStation.getId(), downStation.getId(), lineRequest.getDistance());
-
-        lineRepository.findByName(line.getName()).ifPresent(lineWithSameName -> {
-            throw new DuplicatedLineNameException(line.getName());
-        });
+        subway.addLine(line);
 
         return lineRepository.create(line);
     }
 
     @Transactional
     public void insertStation(final StationInsertRequest stationInsertRequest) {
-
         final Subway subway = loadSubwayFromRepository();
         subway.insertStationToLine(
                 stationInsertRequest.getLineId(),
@@ -69,11 +64,6 @@ public class LineService {
     public Line findLineById(final Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(LineNotFoundException::new);
-    }
-
-    private Station findStationById(final Long stationId) {
-        return stationRepository.findById(stationId)
-                .orElseThrow(StationNotFoundException::new);
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package subway.domain;
 
+import subway.exception.DuplicatedStationNameException;
 import subway.exception.StationNotFoundException;
 
 import java.util.Collection;
@@ -17,11 +18,21 @@ public class Stations {
     }
 
     public void add(Station station) {
+        validateDuplicatedName(station.getName());
         stations.put(station.getId(), station);
     }
 
     public void add(Collection<Station> stations) {
-        stations.forEach(this::add);
+        stations.forEach(existStation -> {
+            validateDuplicatedName(existStation.getName());
+            this.stations.put(existStation.getId(), existStation);
+        });
+    }
+
+    private void validateDuplicatedName(final String name) {
+        if (stations.values().stream().anyMatch(station -> station.getName().equals(name))) {
+            throw new DuplicatedStationNameException(name);
+        }
     }
 
     public Station get(Long id) {
