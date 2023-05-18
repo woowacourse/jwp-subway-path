@@ -52,6 +52,8 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+
+    implementation 'org.jgrapht:jgrapht-core:1.5.2'
 }
 
 test {
