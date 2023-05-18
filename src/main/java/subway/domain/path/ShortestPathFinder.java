@@ -53,7 +53,7 @@ public class ShortestPathFinder {
         }
     }
 
-    public PathSections findShortestPath(Station startStation, Station endStation) {
+    public PathSections findShortestPathSections(Station startStation, Station endStation) {
         DijkstraShortestPath<Station, Section> shortestPathGenerator = new DijkstraShortestPath<>(pathFinder);
         GraphPath<Station, Section> shortestPath = shortestPathGenerator.getPath(startStation, endStation);
         List<Section> orderedSections = shortestPath.getEdgeList();

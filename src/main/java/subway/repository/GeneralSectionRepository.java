@@ -20,6 +20,10 @@ public class GeneralSectionRepository {
         return generalSectionDao.insert(sectionToSave);
     }
 
+    public List<GeneralSection> findAll() {
+        return generalSectionDao.selectAll();
+    }
+
     public List<GeneralSection> findAllSectionByLineId(Long lineId) {
         return generalSectionDao.selectAllSectionByLineId(lineId);
     }

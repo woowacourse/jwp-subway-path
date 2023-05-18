@@ -16,6 +16,7 @@ public class PathSectionsFixtures {
         public static final int TRANSFER_COUNT = 2;
         public static final int TOTAL_DISTANCE = 17;
 
+
         public static final PathSections PATH_SECTIONS =
                 new PathSections(
                         List.of(

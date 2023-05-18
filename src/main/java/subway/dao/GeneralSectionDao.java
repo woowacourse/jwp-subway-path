@@ -95,6 +95,12 @@ public class GeneralSectionDao {
         return Boolean.FALSE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
     }
 
+    public List<GeneralSection> selectAll() {
+        String sql = LINE_AND_DUPLICATE_STATION_JOIN_SQL;
+
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public List<GeneralSection> selectAllSectionByLineId(Long lineId) {
         String sql = LINE_AND_DUPLICATE_STATION_JOIN_SQL + "WHERE line.id = ?";
 

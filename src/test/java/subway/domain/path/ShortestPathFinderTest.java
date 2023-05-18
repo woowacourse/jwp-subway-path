@@ -35,7 +35,7 @@ public class ShortestPathFinderTest {
         // when
         ShortestPathFinder shortestPathFinder =
                 new ShortestPathFinder(allPathInitialStation, allPathInitialGeneralSection, allPathInitialTransferSection);
-        PathSections findPathSections = shortestPathFinder.findShortestPath(startStation, endStation);
+        PathSections findPathSections = shortestPathFinder.findShortestPathSections(startStation, endStation);
 
         // then
         assertThat(findPathSections).usingRecursiveComparison().isEqualTo(expectedPathSections);

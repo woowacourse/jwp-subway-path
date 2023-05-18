@@ -25,6 +25,11 @@ public class StationRepository {
                 .orElseThrow(() -> new StationNotFoundException("역 ID에 해당하는 역이 존재하지 않습니다."));
     }
 
+    public Station findByStationNameAndLineName(String stationName, String lineName) {
+        return stationDao.selectByStationNameAndLineName(stationName, lineName)
+                .orElseThrow(() -> new StationNotFoundException("역 이름과 노선 이름에 해당하는 역이 존재하지 않습니다."));
+    }
+
     public List<Station> findAllStation() {
         return stationDao.selectAll();
     }
