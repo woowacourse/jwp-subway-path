@@ -62,8 +62,7 @@ public class LineService {
 
     private Long insertEndStations(LineRequest request, Long newLineId) {
         StationEntity downEndStation = new StationEntity(request.getDownStation(), EMPTY_STATION_ID,
-            null,
-            newLineId);
+            null, newLineId);
         Long downEndStationId = stationDao.insert(downEndStation);
 
         StationEntity upEndStation = new StationEntity(request.getUpStation(), downEndStationId,

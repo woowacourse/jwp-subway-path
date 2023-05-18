@@ -14,15 +14,20 @@ public class PathResponse {
 
     public PathResponse() {
     }
-    public static PathResponse of(List<String> path, Distance distance, Charge charge, Charge teenagerCharge, Charge childCharge) {
-        return new PathResponse(path, distance.getValue(), charge.getValue(),teenagerCharge.getValue(),childCharge.getValue());
+
+    public static PathResponse of(List<String> path, Distance distance, Charge charge,
+        Charge teenagerCharge, Charge childCharge) {
+        return new PathResponse(path, distance.getValue(), charge.getValue(),
+            teenagerCharge.getValue(), childCharge.getValue());
     }
-    public PathResponse(List<String> path, int distance, int charge, int teenagerCharge, int childCharge) {
+
+    public PathResponse(List<String> path, int distance, int charge, int teenagerCharge,
+        int childCharge) {
         this.path = path;
         this.distance = distance;
         this.charge = charge;
-        this.teenagerCharge=teenagerCharge;
-        this.childCharge=childCharge;
+        this.teenagerCharge = teenagerCharge;
+        this.childCharge = childCharge;
     }
 
     public List<String> getPath() {

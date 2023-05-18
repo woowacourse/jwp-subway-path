@@ -8,11 +8,11 @@ public class LineEntity {
     private final int extraCharge;
     private final Long headStation;
 
-    public LineEntity(Long id, String name, String color,int extraCharge, Long headStation) {
+    public LineEntity(Long id, String name, String color, int extraCharge, Long headStation) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.extraCharge=extraCharge;
+        this.extraCharge = extraCharge;
         this.headStation = headStation;
     }
 
@@ -39,5 +39,4 @@ public class LineEntity {
     public Long getHeadStation() {
         return headStation;
     }
-
 }
