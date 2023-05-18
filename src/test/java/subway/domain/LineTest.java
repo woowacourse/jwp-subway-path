@@ -82,7 +82,7 @@ class LineTest {
         line.insertStation(3L, stationId1, LineDirection.DOWN, 2);
 
         //when
-        line.deleteStation(2L);
+        line.removeStation(2L);
 
         //then
         final List<Long> stationIdsByOrder = line.getStationIdsByOrder();

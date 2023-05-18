@@ -102,7 +102,7 @@ class LineRepositoryTest {
         Long middleStationId = stationRepository.findByName("middle").get().getId();
 
         //when
-        line.deleteStation(middleStationId);
+        line.removeStation(middleStationId);
         lineRepository.updateStationEdges(line);
 
         //then

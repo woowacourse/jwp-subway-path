@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.LineDirection;
 import subway.domain.Station;
+import subway.domain.Subway;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
@@ -44,32 +45,24 @@ public class LineService {
 
     @Transactional
     public void insertStation(final StationInsertRequest stationInsertRequest) {
-        validateIsStationExist(List.of(stationInsertRequest.getStationId(), stationInsertRequest.getAdjacentStationId()));
 
-        final Line line = findLineById(stationInsertRequest.getLineId());
-        insertStationInLine(stationInsertRequest, line);
+        final Subway subway = loadSubwayFromRepository();
+        subway.insertStationToLine(
+                stationInsertRequest.getLineId(),
+                stationInsertRequest.getStationId(),
+                stationInsertRequest.getAdjacentStationId(),
+                LineDirection.valueOf(stationInsertRequest.getDirection()),
+                stationInsertRequest.getDistance()
+        );
+        final Line insertedLine = subway.getLine(stationInsertRequest.getLineId());
 
-        lineRepository.updateStationEdges(line);
+        lineRepository.updateStationEdges(insertedLine);
     }
 
-    private void validateIsStationExist(final List<Long> stationIds) {
-        final List<Station> stations = stationRepository.findById(stationIds);
-        if (stations.size() != stationIds.size()) {
-            throw new StationNotFoundException();
-        }
-    }
-
-
-    private void insertStationInLine(
-            final StationInsertRequest stationInsertRequest,
-            final Line line
-    ) {
-        final Long stationId = stationInsertRequest.getStationId();
-        final Long adjacentStationId = stationInsertRequest.getAdjacentStationId();
-        final LineDirection direction = LineDirection.valueOf(stationInsertRequest.getDirection());
-        final int distance = stationInsertRequest.getDistance();
-
-        line.insertStation(stationId, adjacentStationId, direction, distance);
+    private Subway loadSubwayFromRepository() {
+        final List<Line> lines = lineRepository.findAll();
+        final List<Station> stations = stationRepository.findAll();
+        return Subway.of(lines, stations);
     }
 
     @Transactional
@@ -85,8 +78,9 @@ public class LineService {
 
     @Transactional
     public void deleteStation(final Long lineId, final Long stationId) {
-        final Line line = findLineById(lineId);
-        line.deleteStation(stationId);
+        final Subway subway = loadSubwayFromRepository();
+        subway.removeStationFromLine(lineId, stationId);
+        final Line line = subway.getLine(lineId);
         lineRepository.updateStationEdges(line);
         if (line.size() == 0) {
             lineRepository.deleteById(line.getId());

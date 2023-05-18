@@ -54,7 +54,7 @@ public class Line {
         stationEdges.addStation(insertedStationId, adjacentStationId, adjacentToInsertedStationDirection, distance);
     }
 
-    public void deleteStation(final Long stationId) {
+    public void removeStation(final Long stationId) {
         stationEdges.removeStation(stationId);
     }
 
