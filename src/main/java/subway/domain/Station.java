@@ -1,21 +1,24 @@
 package subway.domain;
 
+import subway.dao.entity.StationEntity;
+
 import java.util.Objects;
 
 public class Station {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
-    public Station() {
-    }
-
-    public Station(Long id, String name) {
+    private Station(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
+    public static Station from(StationEntity stationEntity) {
+        return new Station(stationEntity.getId(), stationEntity.getName());
+    }
+
+    public static Station of(Long id, String name) {
+        return new Station(id, name);
     }
 
     public Long getId() {

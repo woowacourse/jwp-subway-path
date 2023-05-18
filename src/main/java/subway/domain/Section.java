@@ -18,8 +18,8 @@ public class Section {
 
     public static Section from(SectionStationMapper sectionStationMapper) {
         return new Section(
-                new Station(sectionStationMapper.getUpStationId(), sectionStationMapper.getUpStationName()),
-                new Station(sectionStationMapper.getDownStationId(), sectionStationMapper.getDownStationName()),
+                Station.of(sectionStationMapper.getUpStationId(), sectionStationMapper.getUpStationName()),
+                Station.of(sectionStationMapper.getDownStationId(), sectionStationMapper.getDownStationName()),
                 sectionStationMapper.getDistance()
         );
     }
