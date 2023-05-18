@@ -14,17 +14,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.application.SectionService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationToLineRequest;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
+    private final SectionService sectionService;
 
-    public LineController(LineService lineService) {
+    public LineController(LineService lineService, SectionService sectionService) {
         this.lineService = lineService;
+        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -36,6 +40,13 @@ public class LineController {
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<Void> registerStation(@PathVariable Long id,
+                                                @RequestBody StationToLineRequest stationToLineRequest) {
+        sectionService.connectStation(id, stationToLineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
     @GetMapping("/{id}")
