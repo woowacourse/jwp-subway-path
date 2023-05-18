@@ -33,11 +33,11 @@ public class TestFixture {
     public static final Section 몽촌토성역_잠실역 = new Section(몽촌토성역, 잠실역, 5);
     public static final Section 잠실역_석촌역 = new Section(잠실역, 석촌역, 5);
 
-    public static final Station STATION_A = new Station("A");
-    public static final Station STATION_B = new Station("B");
-    public static final Station STATION_C = new Station("C");
-    public static final Station STATION_D = new Station("D");
-    public static final Station STATION_E = new Station("E");
+    public static final Station STATION_A = new Station(9L, "A");
+    public static final Station STATION_B = new Station(10L, "B");
+    public static final Station STATION_C = new Station(11L, "C");
+    public static final Station STATION_D = new Station(12L, "D");
+    public static final Station STATION_E = new Station(13L, "E");
     public static final Line LINE_A = new Line(1L, "99호선", "blue");
     public static final Line LINE_B = new Line(1L, "100호선", "blue");
 
