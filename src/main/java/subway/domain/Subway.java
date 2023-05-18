@@ -53,32 +53,16 @@ public class Subway {
     }
 
     private static Station findStartStation(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
-        Station station = getBaseStationForFindingStart(stations);
-        while (isNotNull(station) && hasIncomingStation(stations, station)) {
-            station = stations.incomingEdgesOf(station)
-                    .stream()
-                    .map(stations::getEdgeSource)
-                    .findFirst()
-                    .orElse(null);
-        }
-        return station;
-    }
-
-    private static boolean isNotNull(final Station station) {
-        return station != null;
-    }
-
-    private static boolean hasIncomingStation(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations,
-                                              final Station station) {
-        return !stations.incomingEdgesOf(station).isEmpty();
-    }
-
-    private static Station getBaseStationForFindingStart(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
-        return stations.edgeSet()
+        return stations.vertexSet()
                 .stream()
-                .map(stations::getEdgeSource)
+                .filter(station -> isStartStation(stations, station))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private static boolean isStartStation(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations,
+                                          final Station station) {
+        return stations.incomingEdgesOf(station).isEmpty();
     }
 
     public Sections findUpdateSectionsByAddingSection(final Section section) {
@@ -153,7 +137,7 @@ public class Subway {
 
     public boolean hasLeftSection(final Station station) {
         validateStation(station);
-        return hasIncomingStation(stations, station);
+        return isStartStation(stations, station);
     }
 
     private Section findExistedSectionBySide(final Station station, final Side side) {
