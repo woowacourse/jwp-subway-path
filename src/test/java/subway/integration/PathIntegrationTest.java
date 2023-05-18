@@ -12,11 +12,13 @@ import org.springframework.http.MediaType;
 import subway.ui.dto.request.AddSectionRequest;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.request.CreationStationRequest;
+import subway.ui.dto.request.GetPathPriceRequest;
 import subway.ui.dto.request.GetPathRequest;
-import subway.ui.dto.response.CreationPathResponse;
 import subway.ui.dto.response.ReadStationResponse;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("경로 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
@@ -73,11 +75,11 @@ public class PathIntegrationTest extends IntegrationTest {
 
         // 구간 요청 데이터 세팅
         final AddSectionRequest sectionRequestOneLineOne = AddSectionRequest.of(stationOneId, stationTwoId, 10);
-        final AddSectionRequest sectionRequestOneLineTwo = AddSectionRequest.of(stationTwoId, stationThreeId, 10);
-        final AddSectionRequest sectionRequestOneLineThree = AddSectionRequest.of(stationThreeId, stationFourId, 10);
-        final AddSectionRequest sectionRequestOneLineFour = AddSectionRequest.of(stationFourId, stationFiveId, 10);
-        final AddSectionRequest sectionRequestTwoLineOne = AddSectionRequest.of(stationFourId, stationSixId, 1);
-        final AddSectionRequest sectionRequestTwoLineTwo = AddSectionRequest.of(stationSixId, stationFiveId, 1);
+        final AddSectionRequest sectionRequestOneLineTwo = AddSectionRequest.of(stationTwoId, stationThreeId, 20);
+        final AddSectionRequest sectionRequestOneLineThree = AddSectionRequest.of(stationThreeId, stationFourId, 20);
+        final AddSectionRequest sectionRequestOneLineFour = AddSectionRequest.of(stationFourId, stationFiveId, 40);
+        final AddSectionRequest sectionRequestTwoLineOne = AddSectionRequest.of(stationFourId, stationSixId, 8);
+        final AddSectionRequest sectionRequestTwoLineTwo = AddSectionRequest.of(stationSixId, stationFiveId, 8);
 
         // 구간 등록
         postSection(lineOneId, sectionRequestOneLineOne);
@@ -118,6 +120,51 @@ public class PathIntegrationTest extends IntegrationTest {
             softAssertions.assertThat(responseFive.getName()).isEqualTo("선릉역");
             softAssertions.assertThat(responseSix.getName()).isEqualTo("미금역");
         });
+    }
+
+    @Test
+    void 기본_구간_요금을_가져오는지_확인한다() {
+        final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationTwoId);
+
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().get("/path/price")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.body().jsonPath().getInt("price")).isEqualTo(1250);
+    }
+
+    @Test
+    void 구간_10km_50km의_과금을_포함한_요금을_가져오는지_확인한다() {
+        final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationFourId);
+
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().get("/path/price")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.body().jsonPath().getInt("price")).isEqualTo(2050);
+    }
+
+    @Test
+    void 구간_10km_50km의_과금과_50km이상의_과금을_포함한_요금을_가져오는지_확인한다() {
+        final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationFiveId);
+
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().get("/path/price")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.body().jsonPath().getInt("price")).isEqualTo(2250);
     }
 
     private ExtractableResponse<Response> postLine(final CreationLineRequest lineRequest) {
