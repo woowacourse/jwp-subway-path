@@ -7,6 +7,8 @@ import static subway.fixture.Fixture.station2;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.business.domain.line.Station;
+import subway.business.domain.transfer.Transfer;
 
 class TransferTest {
 

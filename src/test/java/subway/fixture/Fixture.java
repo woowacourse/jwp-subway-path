@@ -2,9 +2,9 @@ package subway.fixture;
 
 import java.util.ArrayList;
 import java.util.List;
-import subway.business.domain.Line;
-import subway.business.domain.Section;
-import subway.business.domain.Station;
+import subway.business.domain.line.Line;
+import subway.business.domain.line.Section;
+import subway.business.domain.line.Station;
 import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.StationAddToLineRequest;
 

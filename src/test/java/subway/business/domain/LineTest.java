@@ -10,10 +10,10 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.business.domain.Line;
-import subway.business.domain.Section;
-import subway.business.domain.Station;
 import subway.business.domain.direction.Direction;
+import subway.business.domain.line.Line;
+import subway.business.domain.line.Section;
+import subway.business.domain.line.Station;
 
 class LineTest {
 

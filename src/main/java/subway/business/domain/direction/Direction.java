@@ -2,8 +2,8 @@ package subway.business.domain.direction;
 
 import java.util.Arrays;
 import java.util.List;
-import subway.business.domain.Section;
-import subway.business.domain.Station;
+import subway.business.domain.line.Section;
+import subway.business.domain.line.Station;
 
 public enum Direction {
     //TODO Presentation 계층에서 Mapping하는 책임 가지고, text 없애도록 수정

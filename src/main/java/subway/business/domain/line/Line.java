@@ -1,4 +1,4 @@
-package subway.business.domain;
+package subway.business.domain.line;
 
 import static subway.business.domain.direction.Direction.DOWNWARD;
 import static subway.business.domain.direction.Direction.UPWARD;

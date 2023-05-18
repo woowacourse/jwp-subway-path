@@ -1,7 +1,7 @@
 package subway.business.service.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import subway.business.domain.Section;
+import subway.business.domain.line.Section;
 
 public class SectionDto {
     @Schema(description = "구간의 ID")

@@ -1,4 +1,6 @@
-package subway.business.domain;
+package subway.business.domain.transfer;
+
+import subway.business.domain.line.Station;
 
 public class Transfer {
     private final Long id;

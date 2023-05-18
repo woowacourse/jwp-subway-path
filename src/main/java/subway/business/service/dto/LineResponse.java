@@ -3,7 +3,7 @@ package subway.business.service.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.business.domain.Line;
+import subway.business.domain.line.Line;
 
 public class LineResponse {
     @Schema(description = "노선 ID")
