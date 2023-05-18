@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.line.dto.LineDto;
+import subway.domain.line.dto.LineResponse;
 import subway.domain.lineDetail.dto.LineDetailResponse;
 import subway.domain.station.dto.StationResponse;
 
@@ -33,10 +33,10 @@ class LineIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        final LineDto lineDto = response.jsonPath().getObject("data.", LineDto.class);
+        final LineResponse lineResponse = response.jsonPath().getObject("data.", LineResponse.class);
 
-        assertThat(lineDto.getLineDetail()).isEqualTo(new LineDetailResponse(1L, "2호선", "초록색"));
-        assertThat(lineDto.getStations()).containsExactly(
+        assertThat(lineResponse.getLineDetail()).isEqualTo(new LineDetailResponse(1L, "2호선", "초록색"));
+        assertThat(lineResponse.getStations()).containsExactly(
                 new StationResponse(1L, "신림역"),
                 new StationResponse(2L, "봉천역"),
                 new StationResponse(3L, "서울대입구역"),
@@ -62,7 +62,7 @@ class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
 
-        List<LineDto> result = response.jsonPath().getList("data.", LineDto.class);
+        List<LineResponse> result = response.jsonPath().getList("data.", LineResponse.class);
 
         assertAll(
                 () -> assertThat(result.get(0).getLineDetail()).isEqualTo(new LineDetailResponse(1L, "2호선", "초록색")),

@@ -10,22 +10,22 @@ import subway.domain.station.entity.StationEntity;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LineDto {
+public class LineResponse {
 
     @JsonProperty("lineDetail")
     private LineDetailResponse lineDetailResponse;
     @JsonProperty("stations")
     private List<StationResponse> stationResponses;
 
-    private LineDto() {
+    private LineResponse() {
     }
 
-    public LineDto(LineDetailResponse lineDetailResponse, final List<StationResponse> stationResponses) {
+    public LineResponse(LineDetailResponse lineDetailResponse, final List<StationResponse> stationResponses) {
         this.lineDetailResponse = lineDetailResponse;
         this.stationResponses = stationResponses;
     }
 
-    public static LineDto of(Line line) {
+    public static LineResponse of(Line line) {
         LineDetailEntity lineDetail = line.getLineDetail();
         List<StationEntity> stations = line.getStations();
 
@@ -37,7 +37,7 @@ public class LineDto {
                 stationEntity -> new StationResponse(stationEntity.getId(), stationEntity.getName())
         ).collect(Collectors.toList());
 
-        return new LineDto(lineDetailResponse, stationResponses);
+        return new LineResponse(lineDetailResponse, stationResponses);
     }
 
     public LineDetailResponse getLineDetail() {
