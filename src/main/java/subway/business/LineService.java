@@ -58,15 +58,16 @@ public class LineService {
         return sectionDao.findSectionDetail().stream()
                 .collect(Collectors.groupingBy(SectionDetailEntity::getLineId))
                 .values().stream()
-                .map(this::sortAndReturnToResponse)
+                .map(this::convertToResponse)
                 .collect(Collectors.toUnmodifiableList());
     }
 
     public LineResponse findById(final Long lineId) {
-        return sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(lineId));
+        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(lineId);
+        return convertToResponse(sectionDetailEntities);
     }
 
-    private LineResponse sortAndReturnToResponse(final List<SectionDetailEntity> entities) {
+    private LineResponse convertToResponse(final List<SectionDetailEntity> entities) {
         final LineSections lineSections = SectionDetailEntityDomainConverter.toLineSections(entities);
         return LineSectionsResponseConverter.toResponse(lineSections);
     }
@@ -99,7 +100,8 @@ public class LineService {
 
     private LineResponse registerEndStation(final SectionEntity newSectionEntity) {
         sectionDao.insert(newSectionEntity);
-        return sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(newSectionEntity.getLineId()));
+        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(newSectionEntity.getLineId());
+        return convertToResponse(sectionDetailEntities);
     }
 
     private LineResponse registerUpperMidStation(final SectionEntity base, final SectionEntity newPrevious) {
@@ -107,10 +109,15 @@ public class LineService {
         final int newNextDistance = base.getDistance() - newPrevious.getDistance();
         final SectionEntity newNext = new SectionEntity(base.getLineId(), newNextDistance,
                 newPrevious.getNextStationId(), base.getNextStationId());
+        return mergeSections(base, newPrevious, newNext);
+    }
+
+    private LineResponse mergeSections(final SectionEntity base, final SectionEntity newPrevious, final SectionEntity newNext) {
         sectionDao.delete(base);
         sectionDao.insert(newPrevious);
         sectionDao.insert(newNext);
-        return sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(base.getLineId()));
+        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(base.getLineId());
+        return convertToResponse(sectionDetailEntities);
     }
 
     private LineResponse registerDownStation(final SectionEntity newSectionEntity) {
@@ -125,10 +132,7 @@ public class LineService {
         final int newPreviousDistance = base.getDistance() - newNext.getDistance();
         final SectionEntity newPrevious = new SectionEntity(base.getLineId(), newPreviousDistance,
                 base.getPreviousStationId(), newNext.getPreviousStationId());
-        sectionDao.delete(base);
-        sectionDao.insert(newPrevious);
-        sectionDao.insert(newNext);
-        return sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(base.getLineId()));
+        return mergeSections(base, newPrevious, newNext);
     }
 
     private void validateDistance(final int originalDistance, final int newDistance) {
@@ -147,12 +151,12 @@ public class LineService {
         }
         sectionDao.delete(relatedSectionEntities.get(1));
         bindSections(lineId, relatedSectionEntities);
-        return Optional.of(sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(lineId)));
+        return Optional.of(convertToResponse(sectionDao.findSectionDetailByLineId(lineId)));
     }
 
     private Optional<LineResponse> cascadeLine(final long lineId) {
         try {
-            return Optional.of(sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(lineId)));
+            return Optional.of(convertToResponse(sectionDao.findSectionDetailByLineId(lineId)));
         } catch (LineNotFoundException e) {
             lineDao.deleteById(lineId);
             return Optional.empty();
