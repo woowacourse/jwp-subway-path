@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static subway.TestSource.*;
 
 import java.util.List;
 
@@ -19,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import subway.application.PathService;
-import subway.domain.Station;
 import subway.ui.dto.PathRequest;
 import subway.ui.dto.PathResponse;
 
@@ -37,9 +37,6 @@ class PathControllerTest {
     @Test
     void 단일_노선_path_조회_테스트() throws Exception {
         // given
-        Station cheonho = new Station(1L, "천호");
-        Station jangji = new Station(2L, "장지");
-        Station jamsil = new Station(3L, "잠실");
         PathRequest request = new PathRequest(cheonho.getId(), jangji.getId());
         String jsonRequest = objectMapper.writeValueAsString(request);
         PathResponse response = PathResponse.from(1250, List.of(cheonho, jamsil, jangji));

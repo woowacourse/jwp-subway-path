@@ -22,6 +22,8 @@ public class TestSource {
 
     public static Section cheonhoJamsil10 = new Section(1L, cheonho, jamsil, pink, 10);
     public static Section jamsilJangji10 = new Section(2L, jamsil, jangji, pink, 10);
+    public static Section kundaeJamsil10 = new Section(3L, kundae, jamsil, green, 10);
+    public static Section jamsilGangnam10 = new Section(4L, jamsil, gangnam, green, 10);
 
     // 장지 - 10 - 잠실 - 10 - 천호
     public static List<Section> line8Sections = List.of(cheonhoJamsil10, jamsilJangji10);

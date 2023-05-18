@@ -3,6 +3,7 @@ package subway.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static subway.TestSource.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,21 +44,15 @@ class SectionServiceTest {
     void 노선의_중간에_구간을_저장한다() {
         // given
         // 잠실 - 10 - 천호
-        Station cheonho = new Station(1L, "천호");
-        Station jamsil = new Station(2L, "잠실");
-        Station mongchon = new Station(3L, "몽촌토성");
-        Line line8 = new Line(1L, "8호선", "pink");
-        Section cheonhoJamsil10 = new Section(cheonho, jamsil, line8, 10);
-
-        when(stationDao.findById(2L)).thenReturn(Optional.of(jamsil));
-        when(stationDao.findById(3L)).thenReturn(Optional.of(mongchon));
-        when(lineDao.findById(1L)).thenReturn(line8);
-        when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(cheonhoJamsil10));
-        when(sectionDao.insertAll(any())).thenReturn(List.of(new Section(2L, mongchon, jamsil, line8, 5)));
+        when(stationDao.findById(jamsil.getId())).thenReturn(Optional.of(jamsil));
+        when(stationDao.findById(mongchon.getId())).thenReturn(Optional.of(mongchon));
+        when(lineDao.findById(pink.getId())).thenReturn(pink);
+        when(sectionDao.findAllByLineId(cheonhoJamsil10.getId())).thenReturn(List.of(cheonhoJamsil10));
+        when(sectionDao.insertAll(any())).thenReturn(List.of(new Section(2L, mongchon, jamsil, pink, 5)));
 
         // when
         // 잠실 - 5 - 몽촌 - 5 - 천호
-        PostSectionRequest request = new PostSectionRequest(3L, 2L, 1L, 5);
+        PostSectionRequest request = new PostSectionRequest(mongchon.getId(), jamsil.getId(), pink.getId(), 5);
         SectionResponse sectionResponse = sectionService.saveSection(request);
 
         // then
@@ -68,16 +63,11 @@ class SectionServiceTest {
     void 노선에_존재하지_않는_역으로_구간을_저장하면_예외가_발생한다() {
         // given
         // 잠실 - 10 - 천호
-        Station cheonho = new Station(1L, "천호");
-        Station jamsil = new Station(2L, "잠실");
-        Line line8 = new Line(1L, "8호선", "pink");
-        Section cheonhoJamsil10 = new Section(cheonho, jamsil, line8, 10);
-
         when(stationDao.findById(3L)).thenReturn(Optional.empty());
-        when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(cheonhoJamsil10));
+        when(sectionDao.findAllByLineId(cheonhoJamsil10.getId())).thenReturn(List.of(cheonhoJamsil10));
 
         // when
-        PostSectionRequest request = new PostSectionRequest(3L, 2L, 1L, 5);
+        PostSectionRequest request = new PostSectionRequest(3L, jamsil.getId(), pink.getId(), 5);
 
         // then
         assertThatThrownBy(() -> sectionService.saveSection(request))
@@ -109,15 +99,10 @@ class SectionServiceTest {
     void 노선의_마지막_남은_구간을_삭제한다() {
         // given
         // 잠실 - 10 - 천호
-        Station cheonho = new Station(1L, "천호");
-        Station jamsil = new Station(2L, "잠실");
-        Line line8 = new Line(1L, "8호선", "pink");
-        Section cheonhoJamsil10 = new Section(cheonho, jamsil, line8, 10);
-
-        when(sectionDao.findAllByLineId(line8.getId())).thenReturn(List.of(cheonhoJamsil10));
+        when(sectionDao.findAllByLineId(pink.getId())).thenReturn(List.of(cheonhoJamsil10));
 
         // when
-        DeleteSectionRequest request = new DeleteSectionRequest(1L, 2L);
+        DeleteSectionRequest request = new DeleteSectionRequest(pink.getId(), jamsil.getId());
 
         // then
         assertDoesNotThrow(() -> sectionService.deleteSection(request));
@@ -128,19 +113,14 @@ class SectionServiceTest {
     void 삭제할_역이_노선에_존재하지_않으면_예외가_발생한다() {
         // given
         // 잠실 - 10 - 천호
-        Station cheonho = new Station(1L, "천호");
-        Station jamsil = new Station(2L, "잠실");
-        Line line8 = new Line(1L, "8호선", "pink");
-        Section cheonhoJamsil10 = new Section(cheonho, jamsil, line8, 10);
-
-        when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(cheonhoJamsil10));
+        when(sectionDao.findAllByLineId(cheonhoJamsil10.getId())).thenReturn(List.of(cheonhoJamsil10));
 
         // when
-        DeleteSectionRequest request = new DeleteSectionRequest(1L, 3L);
+        DeleteSectionRequest request = new DeleteSectionRequest(pink.getId(), -1L);
 
         // then
         assertThatThrownBy(() -> sectionService.deleteSection(request))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("해당 노선에 stationId = " + 3L + " 인 역이 존재하지 않습니다");
+            .hasMessage("해당 노선에 stationId = " + -1L + " 인 역이 존재하지 않습니다");
     }
 }

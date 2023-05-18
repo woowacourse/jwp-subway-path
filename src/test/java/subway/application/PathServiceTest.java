@@ -18,8 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Section;
-import subway.domain.Station;
 import subway.domain.path.PathException;
 import subway.ui.dto.PathRequest;
 import subway.ui.dto.PathResponse;
@@ -40,9 +38,9 @@ class PathServiceTest {
     @Test
     void 입력된_역_중_등록되지_않은_역이_존재하면_예외가_발생한다() {
         // given
-        given(stationDao.findById(1L)).willReturn(Optional.of(new Station(1L, "잠실")));
+        given(stationDao.findById(jamsil.getId())).willReturn(Optional.of(jamsil));
         given(stationDao.findById(2L)).willReturn(Optional.empty());
-        PathRequest request = new PathRequest(1L, 2L);
+        PathRequest request = new PathRequest(jamsil.getId(), 2L);
 
         // when & then
         Assertions.assertThatThrownBy(() -> pathService.findPath(request))
@@ -54,9 +52,6 @@ class PathServiceTest {
     void 최단_거리가_검색된다() {
         // given
         // 강남 - 10 - 잠실 - 10 - 건대
-        Section kundaeJamsil10 = new Section(kundae, jamsil, green, 10);
-        Section jamsilGangnam10 = new Section(jamsil, gangnam, green, 10);
-
         given(stationDao.findById(kundae.getId())).willReturn(Optional.of(kundae));
         given(stationDao.findById(gangnam.getId())).willReturn(Optional.of(gangnam));
         given(sectionDao.findAll()).willReturn(List.of(kundaeJamsil10, jamsilGangnam10));
