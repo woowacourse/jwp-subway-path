@@ -20,8 +20,7 @@ public class AddStationToLineRequest {
     }
 
     public AddStationToLineRequest(final AddStationLocation addStationLocation, final String lineName,
-        final String stationName,
-        final String upStationName, final String downStationName, final Long distance) {
+        final String stationName, final String upStationName, final String downStationName, final Long distance) {
         this.addStationLocation = addStationLocation;
         this.lineName = lineName;
         this.stationName = stationName;

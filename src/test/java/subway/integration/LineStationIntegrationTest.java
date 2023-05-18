@@ -3,11 +3,8 @@ package subway.integration;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -15,49 +12,20 @@ import org.springframework.http.MediaType;
 import subway.controller.dto.AddStationLocation;
 import subway.controller.dto.request.AddInitStationToLineRequest;
 import subway.controller.dto.request.AddStationToLineRequest;
-import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.request.RemoveStationOnLineRequest;
 import subway.controller.dto.response.LineResponse;
 import subway.controller.dto.response.StationResponse;
 
-public class LineStationIntegrationTest extends IntegrationTest {
-
-    LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
+class LineStationIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("노선에 초기 지하철을 추가한다.")
     void testAddInitStationToLine() {
         //given
-        final ExtractableResponse<Response> createLineResponse = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
-            .when().post("/lines")
-            .then().log().all().
-            extract();
-        final LineResponse lineResponse = createLineResponse.as(LineResponse.class);
+        final LineResponse lineResponse = saveLine1().as(LineResponse.class);
 
-        final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-        final ExtractableResponse<Response> createStationResponse1 = given().log().all()
-            .body(params1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse1 = createStationResponse1.as(StationResponse.class);
-
-        final Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "신논현역");
-        final ExtractableResponse<Response> createStationResponse2 = given().log().all()
-            .body(params2)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse2 = createStationResponse2.as(StationResponse.class);
+        final StationResponse stationResponse1 = saveStation1().as(StationResponse.class);
+        final StationResponse stationResponse2 = saveStation2().as(StationResponse.class);
 
         //when
         final AddInitStationToLineRequest request = new AddInitStationToLineRequest(
@@ -79,58 +47,14 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 맨 위에 지하철을 추가한다.")
     void testAddStationToLineOnTop() {
         //given
-        final ExtractableResponse<Response> createLineResponse = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
-            .when().post("/lines")
-            .then().log().all().
-            extract();
-        final LineResponse lineResponse = createLineResponse.as(LineResponse.class);
+        final LineResponse lineResponse = saveLine1().as(LineResponse.class);
 
-        final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-        final ExtractableResponse<Response> createStationResponse1 = given().log().all()
-            .body(params1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse1 = createStationResponse1.as(StationResponse.class);
+        final StationResponse stationResponse1 = saveStation1().as(StationResponse.class);
+        final StationResponse stationResponse2 = saveStation2().as(StationResponse.class);
+        final StationResponse stationResponse3 = saveStation3().as(StationResponse.class);
 
-        final Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "신논현역");
-        final ExtractableResponse<Response> createStationResponse2 = given().log().all()
-            .body(params2)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse2 = createStationResponse2.as(StationResponse.class);
-
-        final Map<String, String> params3 = new HashMap<>();
-        params3.put("name", "신사역");
-        final ExtractableResponse<Response> createStationResponse3 = given().log().all()
-            .body(params3)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse3 = createStationResponse3.as(StationResponse.class);
-
-        final AddInitStationToLineRequest initRequest = new AddInitStationToLineRequest(
-            lineResponse.getName(), stationResponse1.getName(), stationResponse2.getName(),
-            10L);
-        given().log().all()
-            .body(initRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/line/station/init")
-            .then().log().all()
-            .extract();
+        saveInitStationToLine(new AddInitStationToLineRequest(lineResponse.getName(), stationResponse1.getName(),
+            stationResponse2.getName(), 10L));
 
         final AddStationToLineRequest request = new AddStationToLineRequest(AddStationLocation.TOP,
             lineResponse.getName(), stationResponse3.getName(),
@@ -153,58 +77,14 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 맨 아래에 지하철을 추가한다.")
     void testAddStationToLineOnBottom() {
         //given
-        final ExtractableResponse<Response> createLineResponse = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
-            .when().post("/lines")
-            .then().log().all().
-            extract();
-        final LineResponse lineResponse = createLineResponse.as(LineResponse.class);
+        final LineResponse lineResponse = saveLine1().as(LineResponse.class);
 
-        final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-        final ExtractableResponse<Response> createStationResponse1 = given().log().all()
-            .body(params1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse1 = createStationResponse1.as(StationResponse.class);
+        final StationResponse stationResponse1 = saveStation1().as(StationResponse.class);
+        final StationResponse stationResponse2 = saveStation2().as(StationResponse.class);
+        final StationResponse stationResponse3 = saveStation3().as(StationResponse.class);
 
-        final Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "신논현역");
-        final ExtractableResponse<Response> createStationResponse2 = given().log().all()
-            .body(params2)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse2 = createStationResponse2.as(StationResponse.class);
-
-        final Map<String, String> params3 = new HashMap<>();
-        params3.put("name", "신사역");
-        final ExtractableResponse<Response> createStationResponse3 = given().log().all()
-            .body(params3)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse3 = createStationResponse3.as(StationResponse.class);
-
-        final AddInitStationToLineRequest initRequest = new AddInitStationToLineRequest(
-            lineResponse.getName(), stationResponse1.getName(), stationResponse2.getName(),
-            10L);
-        given().log().all()
-            .body(initRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/line/station/init")
-            .then().log().all()
-            .extract();
+        saveInitStationToLine(new AddInitStationToLineRequest(lineResponse.getName(), stationResponse1.getName(),
+            stationResponse2.getName(), 10L));
 
         final AddStationToLineRequest request = new AddStationToLineRequest(AddStationLocation.BOTTOM,
             lineResponse.getName(), stationResponse3.getName(),
@@ -227,58 +107,14 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 사이에 지하철을 추가한다.")
     void testAddStationToLineOnBetween() {
         //given
-        final ExtractableResponse<Response> createLineResponse = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
-            .when().post("/lines")
-            .then().log().all().
-            extract();
-        final LineResponse lineResponse = createLineResponse.as(LineResponse.class);
+        final LineResponse lineResponse = saveLine1().as(LineResponse.class);
 
-        final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-        final ExtractableResponse<Response> createStationResponse1 = given().log().all()
-            .body(params1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse1 = createStationResponse1.as(StationResponse.class);
+        final StationResponse stationResponse1 = saveStation1().as(StationResponse.class);
+        final StationResponse stationResponse2 = saveStation2().as(StationResponse.class);
+        final StationResponse stationResponse3 = saveStation3().as(StationResponse.class);
 
-        final Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "신논현역");
-        final ExtractableResponse<Response> createStationResponse2 = given().log().all()
-            .body(params2)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse2 = createStationResponse2.as(StationResponse.class);
-
-        final Map<String, String> params3 = new HashMap<>();
-        params3.put("name", "신사역");
-        final ExtractableResponse<Response> createStationResponse3 = given().log().all()
-            .body(params3)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse3 = createStationResponse3.as(StationResponse.class);
-
-        final AddInitStationToLineRequest initRequest = new AddInitStationToLineRequest(
-            lineResponse.getName(), stationResponse1.getName(), stationResponse2.getName(),
-            10L);
-        given().log().all()
-            .body(initRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/line/station/init")
-            .then().log().all()
-            .extract();
+        saveInitStationToLine(new AddInitStationToLineRequest(lineResponse.getName(), stationResponse1.getName(),
+            stationResponse2.getName(), 10L));
 
         final AddStationToLineRequest request = new AddStationToLineRequest(AddStationLocation.BETWEEN,
             lineResponse.getName(), stationResponse3.getName(),
@@ -301,71 +137,19 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("노선에서 지하철을 삭제한다.")
     void testRemoveStationOnLine() {
         //given
-        final ExtractableResponse<Response> createLineResponse = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
-            .when().post("/lines")
-            .then().log().all().
-            extract();
-        final LineResponse lineResponse = createLineResponse.as(LineResponse.class);
+        final LineResponse lineResponse = saveLine1().as(LineResponse.class);
 
-        final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-        final ExtractableResponse<Response> createStationResponse1 = given().log().all()
-            .body(params1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse1 = createStationResponse1.as(StationResponse.class);
+        final StationResponse stationResponse1 = saveStation1().as(StationResponse.class);
+        final StationResponse stationResponse2 = saveStation2().as(StationResponse.class);
+        final StationResponse stationResponse3 = saveStation3().as(StationResponse.class);
 
-        final Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "신논현역");
-        final ExtractableResponse<Response> createStationResponse2 = given().log().all()
-            .body(params2)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse2 = createStationResponse2.as(StationResponse.class);
+        saveInitStationToLine(new AddInitStationToLineRequest(lineResponse.getName(), stationResponse1.getName(),
+            stationResponse2.getName(), 10L));
 
-        final Map<String, String> params3 = new HashMap<>();
-        params3.put("name", "신사역");
-        final ExtractableResponse<Response> createStationResponse3 = given().log().all()
-            .body(params3)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        final StationResponse stationResponse3 = createStationResponse3.as(StationResponse.class);
-
-        final AddInitStationToLineRequest initRequest = new AddInitStationToLineRequest(
-            lineResponse.getName(), stationResponse1.getName(), stationResponse2.getName(),
-            10L);
-        given().log().all()
-            .body(initRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/line/station/init")
-            .then().log().all()
-            .extract();
-
-        final AddStationToLineRequest addRequest = new AddStationToLineRequest(AddStationLocation.BETWEEN,
-            lineResponse.getName(), stationResponse3.getName(),
-            stationResponse1.getName(), stationResponse2.getName(), 10L);
-
-        final ExtractableResponse<Response> addResponse = given().log().all()
-            .body(addRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/line/station")
-            .then().log().all()
-            .extract();
-
+        saveAdditionalStationToLine(
+            new AddStationToLineRequest(AddStationLocation.BETWEEN, lineResponse.getName(), stationResponse3.getName(),
+                stationResponse1.getName(), stationResponse2.getName(), 10L));
+        
         final RemoveStationOnLineRequest request = new RemoveStationOnLineRequest(lineResponse.getName(),
             stationResponse2.getName());
 

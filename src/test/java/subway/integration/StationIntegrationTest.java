@@ -17,18 +17,15 @@ import org.springframework.http.MediaType;
 import subway.controller.dto.response.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
-public class StationIntegrationTest extends IntegrationTest {
+class StationIntegrationTest extends IntegrationTest {
 
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
         // given
-        final Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
-
         // when
         final ExtractableResponse<Response> response = given().log().all()
-            .body(params)
+            .body(stationParam1)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/stations")
@@ -44,19 +41,11 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void createStationWithDuplicateName() {
         // given
-        final Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
-        given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
+        saveStation1();
 
         // when
         final ExtractableResponse<Response> response = given().log().all()
-            .body(params)
+            .body(stationParam1)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/stations")
@@ -72,25 +61,8 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void getStations() {
         /// given
-        final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-        final ExtractableResponse<Response> createResponse1 = given().log().all()
-            .body(params1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-
-        final Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "역삼역");
-        final ExtractableResponse<Response> createResponse2 = given().log().all()
-            .body(params2)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
+        final ExtractableResponse<Response> createResponse1 = saveStation1();
+        final ExtractableResponse<Response> createResponse2 = saveStation2();
 
         // when
         final ExtractableResponse<Response> response = given().log().all()
@@ -114,15 +86,7 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void getStation() {
         /// given
-        final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-        final ExtractableResponse<Response> createResponse = given().log().all()
-            .body(params1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
+        final ExtractableResponse<Response> createResponse = saveStation1();
 
         // when
         final Long stationId = Long.parseLong(createResponse.header("Location").split("/")[2]);
@@ -142,15 +106,7 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void updateStation() {
         // given
-        final Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
-        final ExtractableResponse<Response> createResponse = given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
+        final ExtractableResponse<Response> createResponse = saveStation1();
 
         // when
         final Map<String, String> otherParams = new HashMap<>();
@@ -172,15 +128,7 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void deleteStation() {
         // given
-        final Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
-        final ExtractableResponse<Response> createResponse = given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
+        final ExtractableResponse<Response> createResponse = saveStation1();
 
         // when
         final String uri = createResponse.header("Location");
