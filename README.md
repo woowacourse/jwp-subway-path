@@ -54,11 +54,11 @@
 
 ### 5. 최단 경로 조회 API
 
-- [ ] GET '/stations/short-path?startLine=?&startStation=?endLine=?&endStation=?
+- [ ] GET '/stations/short-path?startStation=&endStation=
     - Request : Query String
-      - startLine (출발역 노선 이름)
+      - startLine (출발 노선 이름) 
       - startStation (출발역 이름)
-      - endLine (도착역 노선 이름)
+      - endLine (도착 노선 이름)
       - endStation (도착역 이름)
         
     - Response 
@@ -69,7 +69,9 @@
         - 다음역 정보
           - 노선 이름
           - 역 이름
+        - 환승 구간 여부
         - 거리
+      - 환승 횟수
       - 총 거리
       - 요금
 
@@ -100,7 +102,7 @@
 
 - [x] 출발역과 도착역 사이의 최단 거리 경로를 구한다.
   - 여러 노선의 환승도 고려한다.
-  - [ ] 경로 계산 시 요금도 함께 계산한다.
+  - [x] 경로 계산 시 요금도 함께 계산한다.
     - 경로의 이동 거리에 따라 요금이 계산된다.
       - 기본 운임 (10km 이내) : 1250원
       - 10km 초과 시 추가 요금이 부과된다.
@@ -110,7 +112,7 @@
 
 ## DB
 
-!![지하철 노선도 ERD](https://github.com/woowacourse-precourse/java-menu/assets/95729738/092690ea-a094-4877-93a1-1d7f9c9b713b)
+<img width="596" alt="지하철 ERD" src="https://github.com/woowacourse/jwp-subway-path/assets/95729738/0e0c027e-6ee5-4906-85f0-0950bf5efbc5">
 
 ---
 
