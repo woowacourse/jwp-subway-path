@@ -10,6 +10,8 @@ import subway.domain.line.domain.ShortestPath;
 import subway.domain.line.service.LineService;
 import subway.domain.station.entity.StationEntity;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @Sql({"classpath:schema.sql", "classpath:data.sql"})
 @TestPropertySource(properties = "spring.config.location = classpath:application.yml")
@@ -21,7 +23,7 @@ class LineServiceTest {
     @Test
     void 환승_최단거리_구하기() {
         ShortestPath shortestPath = lineService.findShortestPath(7L, 8L);
-        org.junit.jupiter.api.Assertions.assertAll(
+        assertAll(
                 () -> Assertions.assertThat(shortestPath.getPath()).containsExactly(
                         new StationEntity(7L, "서초역"),
                         new StationEntity(6L, "방배역"),
