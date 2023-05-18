@@ -1,7 +1,9 @@
 package subway.exception;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.exception.common.NotFoundException;
@@ -10,8 +12,18 @@ import subway.exception.fee.FeeException;
 import subway.exception.input.InputException;
 import subway.exception.line.LineException;
 
+import java.util.stream.Collectors;
+
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleInvalidValueException(MethodArgumentNotValidException exception) {
+        String errorMessage = exception.getFieldErrors().stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+        return ResponseEntity.badRequest().body(errorMessage);
+    }
 
     @ExceptionHandler(LineException.class)
     public ResponseEntity<String> handleLineException(LineException exception) {
