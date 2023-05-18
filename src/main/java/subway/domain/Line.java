@@ -28,94 +28,112 @@ public class Line {
     public void addSection(Section newSection) {
         Station leftStation = newSection.getLeft();
         Station rightStation = newSection.getRight();
+        validateSameStationInSection(newSection, leftStation, rightStation);
 
-        if (newSection.hasSameStationName(leftStation, rightStation)) {
-            throw new IllegalArgumentException("구간의 역 이름은 같을 수 없습니다.");
-        }
-
-        // 1
         if (sections.isEmpty()) {
             sections.add(newSection);
             return;
         }
+        if (hasLeftStationInSections(leftStation)) {
+            addStationAtRight(newSection, leftStation, rightStation);
+            return;
+        }
+        if (hasRightStationInSections(rightStation)) {
+            addStationAtLeft(newSection, leftStation, rightStation);
+            return;
+        }
+        addSectionAtEnd(newSection, leftStation, rightStation);
+    }
 
-        // 2
+    private void validateSameStationInSection(Section newSection, Station leftStation, Station rightStation) {
+        if (newSection.hasSameStationName(leftStation, rightStation)) {
+            throw new IllegalArgumentException("구간의 역 이름은 같을 수 없습니다.");
+        }
+    }
+
+    private void addStationAtRight(Section newSection, Station leftStation, Station rightStation) {
+        Section foundSection = findSectionByLeftStation(leftStation);
+        int indexOfFoundSection = sections.indexOf(foundSection);
+        int foundSectionDistance = foundSection.getDistance();
+        int newSectionDistance = newSection.getDistance();
+
+        validateDistance(foundSectionDistance, newSectionDistance);
+        Section dividedSection = new Section(rightStation, foundSection.getRight(),
+                new Distance(foundSectionDistance - newSectionDistance));
+        sections.remove(foundSection);
+        sections.add(indexOfFoundSection, newSection);
+        sections.add(indexOfFoundSection + 1, dividedSection);
+    }
+
+    private void addStationAtLeft(Section newSection, Station leftStation, Station rightStation) {
+        Section foundSection = findSectionByRightStation(rightStation);
+        int indexOfFoundSection = sections.indexOf(foundSection);
+        int foundSectionDistance = foundSection.getDistance();
+        int newSectionDistance = newSection.getDistance();
+
+        validateDistance(foundSectionDistance, newSectionDistance);
+        Section dividedSection = new Section(foundSection.getLeft(), leftStation,
+                new Distance(foundSectionDistance - newSectionDistance));
+        sections.remove(foundSection);
+        sections.add(indexOfFoundSection, newSection);
+        sections.add(indexOfFoundSection, dividedSection);
+    }
+
+    private void addSectionAtEnd(Section newSection, Station leftStation, Station rightStation) {
         if (hasLeftStationInSections(rightStation) && !hasRightStationInSections(rightStation)) {
             sections.addFirst(newSection);
-            return;
         }
-
-        // 3
         if (hasRightStationInSections(leftStation) && !hasLeftStationInSections(leftStation)) {
             sections.addLast(newSection);
-            return;
         }
+    }
 
-        // 4-1
-        if (hasLeftStationInSections(leftStation)) {
-            Section foundSection = findSectionByLeftStation(leftStation);
-            int indexOfFoundSection = sections.indexOf(foundSection);
-            sections.remove(foundSection);
-            sections.add(indexOfFoundSection, newSection);
-
-            if (foundSection.getDistance() <= newSection.getDistance()) {
-                throw new IllegalArgumentException("삽입되는 구간의 길이는 원래 구간의 길이를 넘을 수 없습니다.");
-            }
-            Section dividedSection = new Section(rightStation, foundSection.getRight(),
-                    new Distance(foundSection.getDistance() - newSection.getDistance()));
-            sections.add(indexOfFoundSection + 1, dividedSection);
-            return;
-        }
-
-        // 4-2
-        if (hasRightStationInSections(rightStation)) {
-            Section foundSection = findSectionByRightStation(rightStation);
-            int indexOfFoundSection = sections.indexOf(foundSection);
-            sections.remove(foundSection);
-            sections.add(indexOfFoundSection, newSection);
-
-            if (foundSection.getDistance() <= newSection.getDistance()) {
-                throw new IllegalArgumentException("삽입되는 구간의 길이는 원래 구간의 길이를 넘을 수 없습니다.");
-            }
-            Section dividedSection = new Section(foundSection.getLeft(), leftStation,
-                    new Distance(foundSection.getDistance() - newSection.getDistance()));
-            sections.add(indexOfFoundSection, dividedSection);
-            return;
+    private void validateDistance(int foundSectionDistance, int newSectionDistance) {
+        if (foundSectionDistance <= newSectionDistance) {
+            throw new IllegalArgumentException("삽입되는 구간의 길이는 원래 구간의 길이를 넘을 수 없습니다.");
         }
     }
 
     public void deleteSection(Station station) {
-        if (!hasStationInSections(station)) {
-            throw new IllegalArgumentException("노선에 해당 역이 존재하지 않습니다.");
-        }
+        validateStationInLine(station);
 
         if (sections.size() == 1) {
             sections.remove();
             return;
         }
-
         if (hasLeftStationInSections(station) && hasRightStationInSections(station)) {
-            Section leftSection = findSectionByRightStation(station);
-            Section rightSection = findSectionByLeftStation(station);
-            int indexToAdd = sections.indexOf(leftSection);
-
-            sections.remove(leftSection);
-            sections.remove(rightSection);
-            Section newSection = new Section(leftSection.getLeft(), rightSection.getRight(),
-                    new Distance(leftSection.getDistance() + rightSection.getDistance()));
-            sections.add(indexToAdd, newSection);
+            deleteSectionAtMiddle(station);
             return;
         }
+        deleteSectionAtEnd(station);
+    }
 
+    private void validateStationInLine(Station station) {
+        if (!hasStationInSections(station)) {
+            throw new IllegalArgumentException("노선에 해당 역이 존재하지 않습니다.");
+        }
+    }
+
+    private void deleteSectionAtMiddle(Station station) {
+        Section leftSection = findSectionByRightStation(station);
+        Section rightSection = findSectionByLeftStation(station);
+        int indexToAdd = sections.indexOf(leftSection);
+
+        sections.remove(leftSection);
+        sections.remove(rightSection);
+        Section newSection = new Section(leftSection.getLeft(), rightSection.getRight(),
+                new Distance(leftSection.getDistance() + rightSection.getDistance()));
+        sections.add(indexToAdd, newSection);
+    }
+
+    private void deleteSectionAtEnd(Station station) {
         if (isLastStationAtLeft(station)) {
             sections.removeFirst();
         }
-
         if (isLastStationAtRight(station)) {
             sections.removeLast();
         }
     }
-
 
     public boolean hasStationInSections(Station station) {
         return sections.stream()
@@ -150,7 +168,6 @@ public class Line {
         List<Station> leftStations = findLeftStations();
         List<Station> rightStations = findRightStations();
         leftStations.removeAll(rightStations);
-
         return leftStations.stream()
                 .anyMatch(leftStation -> leftStation.equals(station));
     }
@@ -158,7 +175,6 @@ public class Line {
     public boolean isLastStationAtRight(Station station) {
         List<Station> leftStations = findLeftStations();
         List<Station> rightStations = findRightStations();
-
         rightStations.removeAll(leftStations);
         return rightStations.stream()
                 .anyMatch(rightStation -> rightStation.equals(station));
