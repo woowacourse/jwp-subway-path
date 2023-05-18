@@ -36,10 +36,13 @@ public class Navigation {
             final StationInformation upStationInformation = new StationInformation(section.getUpStation(), line);
             final StationInformation downStationInformation = new StationInformation(section.getDownStation(), line);
             final Distance distance = section.getDistance();
+
             graph.addVertex(upStationInformation);
             graph.addVertex(downStationInformation);
+
             stationInformations.add(upStationInformation);
             stationInformations.add(downStationInformation);
+
             graph.setEdgeWeight(graph.addEdge(upStationInformation, downStationInformation), distance.getValue());
         }
     }

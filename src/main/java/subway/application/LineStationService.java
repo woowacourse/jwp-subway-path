@@ -26,53 +26,53 @@ public class LineStationService {
     }
 
     public void addInitStationToLine(final AddInitStationToLineRequest request) {
-        final Line line = getLineByName(request.getLineName());
-        final Station upStation = getStationByName(request.getUpStationName());
-        final Station downStation = getStationByName(request.getDownStationName());
+        final Line line = findLineByName(request.getLineName());
+        final Station upStation = findStationByName(request.getUpStationName());
+        final Station downStation = findStationByName(request.getDownStationName());
         final Distance distance = new Distance(request.getDistance());
         line.addInitStations(upStation, downStation, distance);
         lineRepository.update(line);
     }
 
     public void addStationToTopLine(final AddStationToEndLineRequest request) {
-        final Line line = getLineByName(request.getLineName());
-        final Station station = getStationByName(request.getStationName());
+        final Line line = findLineByName(request.getLineName());
+        final Station station = findStationByName(request.getStationName());
         final Distance distance = new Distance(request.getDistance());
         line.addTopStation(station, distance);
         lineRepository.update(line);
     }
 
     public void addStationToBottomLine(final AddStationToEndLineRequest request) {
-        final Line line = getLineByName(request.getLineName());
-        final Station station = getStationByName(request.getStationName());
+        final Line line = findLineByName(request.getLineName());
+        final Station station = findStationByName(request.getStationName());
         final Distance distance = new Distance(request.getDistance());
         line.addBottomStation(station, distance);
         lineRepository.update(line);
     }
 
     public void addStationToBetweenLine(final AddStationToBetweenLineRequest request) {
-        final Line line = getLineByName(request.getLineName());
-        final Station station = getStationByName(request.getStationName());
-        final Station upStation = getStationByName(request.getUpStationName());
-        final Station downStation = getStationByName(request.getDownStationName());
+        final Line line = findLineByName(request.getLineName());
+        final Station station = findStationByName(request.getStationName());
+        final Station upStation = findStationByName(request.getUpStationName());
+        final Station downStation = findStationByName(request.getDownStationName());
         final Distance distance = new Distance(request.getDistance());
         line.addBetweenStation(station, upStation, downStation, distance);
         lineRepository.update(line);
     }
 
     public void removeStationOnLine(final RemoveStationOnLineRequest request) {
-        final Line line = getLineByName(request.getLineName());
-        final Station station = getStationByName(request.getStationName());
+        final Line line = findLineByName(request.getLineName());
+        final Station station = findStationByName(request.getStationName());
         line.removeStation(station);
         lineRepository.update(line);
     }
 
-    private Line getLineByName(final String name) {
+    private Line findLineByName(final String name) {
         return lineRepository.findByName(name)
             .orElseThrow(() -> new BusinessException("존재하지 않는 호선입니다."));
     }
 
-    private Station getStationByName(final String name) {
+    private Station findStationByName(final String name) {
         return stationRepository.findByName(name)
             .orElseThrow(() -> new BusinessException("존재하지 않는 역입니다."));
     }

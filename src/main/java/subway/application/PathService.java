@@ -16,8 +16,6 @@ import subway.persistence.StationRepository;
 @Transactional(readOnly = true)
 public class PathService {
 
-    private static final String NOT_EXIST_STATION_MESSAGE = "존재하지 않는 역입니다.";
-
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
     private final CostPolicy costPolicy;
@@ -30,8 +28,8 @@ public class PathService {
     }
 
     public FindShortestPathResponse findShortestPath(final String startStationName, final String endStationName) {
-        final Station startStation = getStation(startStationName);
-        final Station endStation = getStation(endStationName);
+        final Station startStation = findStationByName(startStationName);
+        final Station endStation = findStationByName(endStationName);
         final Lines lines = new Lines(lineRepository.findAll());
         final Navigation navigation = new Navigation(lines);
         final Path shortestPath = navigation.findShortestPath(startStation, endStation);
@@ -39,8 +37,8 @@ public class PathService {
         return FindShortestPathResponse.of(shortestPath, totalCost);
     }
 
-    private Station getStation(final String name) {
+    private Station findStationByName(final String name) {
         return stationRepository.findByName(name)
-            .orElseThrow(() -> new BusinessException(NOT_EXIST_STATION_MESSAGE));
+            .orElseThrow(() -> new BusinessException("존재하지 않는 역입니다."));
     }
 }
