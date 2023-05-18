@@ -36,4 +36,15 @@ public class StationRepository {
         return StationConverter.entityToDomain(stationEntity);
     }
 
+    public Station findByName(String name) {
+        List<StationEntity> stationEntities = stationDao.findByName(name);
+
+        if (stationEntities.isEmpty()) {
+            throw new StationNotFoundException(name + "역은 존재하지 않습니다.");
+        }
+
+        StationEntity stationEntity = stationEntities.get(0);
+        return StationConverter.entityToDomain(stationEntity);
+    }
+
 }

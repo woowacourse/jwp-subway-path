@@ -53,4 +53,28 @@ class StationRepositoryTest {
                 .isInstanceOf(StationNotFoundException.class);
     }
 
+    /**
+     * INSERT INTO station(name)
+     * VALUES('가산'), ('남구로'), ('대림'), ('신풍'), ('구로'), ('독산'), ('신도림'), ('구로디지털단지');
+     */
+    @Test
+    @DisplayName("findByName 을 통해 Station 을 찾는다.")
+    void findByName() {
+        Station station = stationRepository.findByName("신풍");
+
+        assertThat(station.getId()).isEqualTo(4L);
+        assertThat(station.getName()).isEqualTo("신풍");
+    }
+
+    /**
+     * INSERT INTO station(name)
+     * VALUES('가산'), ('남구로'), ('대림'), ('신풍'), ('구로'), ('독산'), ('신도림'), ('구로디지털단지');
+     */
+    @Test
+    @DisplayName("findByName 을 통해 Station 을 찾는다. (실패)")
+    void findByName_fail() {
+        assertThatThrownBy(() -> stationRepository.findByName("재연"))
+                .isInstanceOf(StationNotFoundException.class);
+    }
+
 }
