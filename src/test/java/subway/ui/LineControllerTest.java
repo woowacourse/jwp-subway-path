@@ -58,8 +58,8 @@ public class LineControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(jsonPath("$.name").value("2호선"))
-                .andExpect(jsonPath("$.sections[0].upwardStation").value("잠실역"))
-                .andExpect(jsonPath("$.sections[0].downwardStation").value("몽촌토성역"))
+                .andExpect(jsonPath("$.sections[0].upwardStation.name").value("잠실역"))
+                .andExpect(jsonPath("$.sections[0].downwardStation.name").value("몽촌토성역"))
                 .andExpect(status().isCreated());
     }
 
@@ -104,8 +104,8 @@ public class LineControllerTest {
         mockMvc.perform(get("/lines/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("2호선"))
-                .andExpect(jsonPath("$.sections[0].upwardStation").value("몽촌토성역"))
-                .andExpect(jsonPath("$.sections[0].downwardStation").value("잠실역"));
+                .andExpect(jsonPath("$.sections[0].upwardStation.name").value("몽촌토성역"))
+                .andExpect(jsonPath("$.sections[0].downwardStation.name").value("잠실역"));
     }
 
     @DisplayName("모든 노선의 이름과 모든 역의 이름을 반환한다.")
@@ -124,7 +124,7 @@ public class LineControllerTest {
         mockMvc.perform(get("/lines"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("1호선"))
-                .andExpect(jsonPath("$[0].sections[0].upwardStation").value("인천역"))
-                .andExpect(jsonPath("$[1].sections[0].downwardStation").value("잠실역"));
+                .andExpect(jsonPath("$[0].sections[0].upwardStation.name").value("인천역"))
+                .andExpect(jsonPath("$[1].sections[0].downwardStation.name").value("잠실역"));
     }
 }

@@ -7,16 +7,16 @@ public class SectionDto {
     @Schema(description = "구간의 ID")
     private final Long id;
 
-    @Schema(description = "구간의 상행 방향 역 이름")
-    private final String upwardStation;
+    @Schema(description = "구간의 상행 방향 역")
+    private final StationDto upwardStation;
 
     @Schema(description = "구간의 하행 방향 역 이름")
-    private final String downwardStation;
+    private final StationDto downwardStation;
 
     @Schema(description = "구간의 거리")
     private final int distance;
 
-    private SectionDto(Long id, String upwardStation, String downwardStation, int distance) {
+    private SectionDto(Long id, StationDto upwardStation, StationDto downwardStation, int distance) {
         this.id = id;
         this.upwardStation = upwardStation;
         this.downwardStation = downwardStation;
@@ -26,8 +26,8 @@ public class SectionDto {
     public static SectionDto from(Section section) {
         return new SectionDto(
                 section.getId(),
-                section.getUpwardStation().getName(),
-                section.getDownwardStation().getName(),
+                new StationDto(section.getUpwardStation().getId(), section.getUpwardStation().getName()),
+                new StationDto(section.getDownwardStation().getId(), section.getDownwardStation().getName()),
                 section.getDistance()
         );
     }
@@ -36,11 +36,11 @@ public class SectionDto {
         return id;
     }
 
-    public String getUpwardStation() {
+    public StationDto getUpwardStation() {
         return upwardStation;
     }
 
-    public String getDownwardStation() {
+    public StationDto getDownwardStation() {
         return downwardStation;
     }
 
