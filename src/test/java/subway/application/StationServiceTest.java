@@ -1,69 +1,63 @@
 package subway.application;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.line.Line;
-import subway.domain.section.Section;
-import subway.domain.station.Station;
-import subway.dto.StationInitRequest;
-import subway.dto.StationInitResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import subway.dto.*;
 import subway.exception.line.LineIsNotInitException;
-import subway.repository.LineRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class StationServiceTest {
 
-    @InjectMocks
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private LineService lineService;
+
+    @Autowired
     private StationService stationService;
 
-    @Mock
-    private LineRepository lineRepository;
+    @AfterEach
+    void clear() {
+        jdbcTemplate.execute("DELETE FROM SECTION");
+        jdbcTemplate.execute("DELETE FROM STATION");
+        jdbcTemplate.execute("DELETE FROM line");
+    }
 
     @Test
     @DisplayName("초기 두 역을 노선에 등록한다.")
     void register_init_station_to_line() {
         // given
-        Line line = new Line(1L, "2호선", "#123456", new ArrayList<>());
-        doReturn(line).when(lineRepository).findByName((any(String.class)));
-
-        List<Station> stations = List.of(new Station(1L, "잠실역"), new Station(2L, "선릉역"));
-        doReturn(stations).when(lineRepository).saveInitStations(any(Section.class), any(Long.class));
-
-        StationInitRequest request = new StationInitRequest("2호선", "잠실역", "선릉역", 10);
+        LineResponse lineResponse = lineService.saveLine(new LineRequest("2호선", "#123456"));
+        StationInitRequest request = new StationInitRequest(lineResponse.getName(), "잠실역", "선릉역", 10);
 
         // when
         StationInitResponse result = stationService.saveInitStations(request);
 
         // then
-        assertThat(result.getUpboundStationId()).isEqualTo(stations.get(0).getId());
-        assertThat(result.getUpboundStationName()).isEqualTo(stations.get(0).getName());
-        assertThat(result.getDownboundStationId()).isEqualTo(stations.get(1).getId());
-        assertThat(result.getDownboundStationName()).isEqualTo(stations.get(1).getName());
+        assertThat(result.getUpboundStationName()).isEqualTo(request.getUpBoundStationName());
+        assertThat(result.getDownboundStationName()).isEqualTo(request.getDownBoundStationName());
     }
 
     @Test
     @DisplayName("초기 역을 등록하는데 노선의 구간이 비어있지 않으면 에러를 발생한다.")
     void check_exception_when_register_init_station_to_not_init_station() {
         // given
-        Line line = new Line(
-                1L,
-                "2호선",
-                "#123456", List.of(new Section(new Station("잠실"), new Station("선릉"), 10)));
-        doReturn(line).when(lineRepository).findByName((any(String.class)));
+        LineResponse lineResponse = lineService.saveLine(new LineRequest("2호선", "#123456"));
+        StationInitRequest initRequest = new StationInitRequest(lineResponse.getName(), "잠실역", "선릉역", 10);
+        stationService.saveInitStations(initRequest);
 
-        StationInitRequest request = new StationInitRequest("2호선", "잠실역", "선릉역", 10);
+        StationInitRequest request = new StationInitRequest(lineResponse.getName(), "선릉역", "강남역", 10);
+
 
         // when + then
         assertThatThrownBy(() -> stationService.saveInitStations(request))
@@ -71,4 +65,82 @@ class StationServiceTest {
 
     }
 
+    @Test
+    @DisplayName("역 하나를 등록한다.")
+    void register_station() {
+        // given
+        LineResponse lineResponse = lineService.saveLine(new LineRequest("2호선", "#123456"));
+        StationInitRequest initRequest = new StationInitRequest(lineResponse.getName(), "잠실역", "선릉역", 10);
+        stationService.saveInitStations(initRequest);
+
+        StationRequest request = new StationRequest("강남역", lineResponse.getName(), initRequest.getDownBoundStationName(), "right", 10);
+
+        // when
+        StationResponse result = stationService.saveStation(request);
+
+        // then
+        assertThat(result.getName()).isEqualTo(request.getRegisterStationName());
+    }
+
+    @Test
+    @DisplayName("구간이 하나인 노선에 역을 삭제한다.")
+    void delete_station() {
+        // given
+        LineResponse lineResponse = lineService.saveLine(new LineRequest("2호선", "#123456"));
+        StationInitRequest initRequest = new StationInitRequest(lineResponse.getName(), "잠실역", "선릉역", 10);
+        StationInitResponse stationInitResponse = stationService.saveInitStations(initRequest);
+
+        // when
+        stationService.deleteStation(stationInitResponse.getDownboundStationId());
+        LineResponse result = lineService.readLine(lineResponse.getId());
+
+        // then
+        assertThat(result.getStationResponses()).isEqualTo(List.of());
+    }
+
+    /**
+     *  잠실역 - 선릉역 - 강남역 상황에서 잠실역을 삭제하는 경우
+     */
+    @Test
+    @DisplayName("종점 역을 삭제한다.")
+    void delete_bound_station() {
+        // given
+        LineResponse lineResponse = lineService.saveLine(new LineRequest("2호선", "#123456"));
+        StationInitRequest initRequest = new StationInitRequest(lineResponse.getName(), "잠실역", "선릉역", 10);
+        StationInitResponse stationInitResponse = stationService.saveInitStations(initRequest);
+
+        StationRequest request = new StationRequest("강남역", lineResponse.getName(), initRequest.getDownBoundStationName(), "right", 10);
+        StationResponse stationResponse = stationService.saveStation(request);
+
+        // when
+        stationService.deleteStation(stationInitResponse.getUpboundStationId());
+        LineResponse result = lineService.readLine(lineResponse.getId());
+
+        // then
+        assertThat(result.getStationResponses().get(0).getName()).isEqualTo(stationInitResponse.getDownboundStationName());
+        assertThat(result.getStationResponses().get(1).getName()).isEqualTo(stationResponse.getName());
+    }
+
+    /**
+     *  잠실역 - 선릉역 - 강남역 상황에서 선릉역을 삭제
+     */
+    @Test
+    @DisplayName("노선 총 구간의 중간 역을 삭제한다.")
+    void delete_inter_station() {
+        // given
+        LineResponse lineResponse = lineService.saveLine(new LineRequest("2호선", "#123456"));
+        StationInitRequest initRequest = new StationInitRequest(lineResponse.getName(), "잠실역", "선릉역", 10);
+        StationInitResponse stationInitResponse = stationService.saveInitStations(initRequest);
+
+        StationRequest request = new StationRequest("강남역", lineResponse.getName(), initRequest.getDownBoundStationName(), "right", 10);
+        StationResponse stationResponse = stationService.saveStation(request);
+
+        // when
+        stationService.deleteStation(stationInitResponse.getDownboundStationId());
+        LineResponse result = lineService.readLine(lineResponse.getId());
+
+        // then
+        assertThat(result.getStationResponses().get(0).getName()).isEqualTo(stationInitResponse.getUpboundStationName());
+        assertThat(result.getStationResponses().get(1).getName()).isEqualTo(stationResponse.getName());
+    }
 }
