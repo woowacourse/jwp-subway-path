@@ -6,13 +6,20 @@ public class StationResponse {
     private Long id;
     private String name;
 
+    public StationResponse() {
+    }
+
     public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
+    public StationResponse(final String name) {
+        this.name = name;
+    }
+
     public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getName());
+        return new StationResponse(station.getName());
     }
 
     public Long getId() {
@@ -21,5 +28,13 @@ public class StationResponse {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return "StationResponse{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

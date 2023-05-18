@@ -1,53 +1,86 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
+import subway.application.repository.LineRepository;
 import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+        final LineEntity lineEntity = new LineEntity(request.getName(), request.getColor());
+        final LineEntity inserted = lineRepository.saveLine(lineEntity);
+        return LineResponse.of(inserted);
+    }
+
+    public LineResponse findLineResponseById(Long id) {
+        LineEntity persistLine = lineRepository.findLineById(id);
+        Line line = toLine(persistLine);
+        return LineResponse.of(line);
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
+        List<LineEntity> persistLines = lineRepository.findAllLines();
+        System.out.println("persistLines = " + persistLines);
+        List<Line> lines = toLines(persistLines);
+        return lines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    private List<Line> toLines(final List<LineEntity> persistLines) {
+        return persistLines.stream()
+                .map(this::toLine)
+                .collect(Collectors.toList());
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    private Line toLine(final LineEntity lineEntity) {
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), toSections(lineEntity));
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+    private Sections toSections(final LineEntity lineEntity) {
+        return new Sections(
+                findSectionEntitiesByLine(lineEntity).stream()
+                        .map(this::toSection)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private List<SectionEntity> findSectionEntitiesByLine(final LineEntity lineEntity) {
+        return lineRepository.findSectionsByLine(lineEntity);
+    }
+
+    private Section toSection(SectionEntity sectionEntity) {
+        StationEntity upStationEntity = lineRepository.findStationById(sectionEntity.getUpStationId());
+        StationEntity downStationEntity = lineRepository.findStationById(sectionEntity.getDownStationId());
+        Station upStation = new Station(upStationEntity.getName());
+        Station downStation = new Station(downStationEntity.getName());
+        return new Section(upStation, downStation, sectionEntity.getDistance());
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineRepository.updateLine(new LineEntity(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteLineById(id);
     }
 
 }

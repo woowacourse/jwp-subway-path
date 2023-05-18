@@ -2,16 +2,16 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import subway.application.StationService;
+import subway.dto.SectionRequest;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.application.StationService;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/stations")
+@RequestMapping("/lines/{lineId}/stations")
 public class StationController {
     private final StationService stationService;
 
@@ -20,9 +20,9 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+    public ResponseEntity<Void> createStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+        stationService.saveStation(lineId, sectionRequest);
+        return ResponseEntity.created(URI.create("/lines/" + lineId + "/stations/")).build();
     }
 
     @GetMapping
@@ -45,10 +45,5 @@ public class StationController {
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql("/testdata.sql")
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
@@ -24,7 +26,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        super.setUp();
+        RestAssured.port = port;
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
@@ -98,6 +100,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines")
                 .then().log().all()
+                .statusCode(HttpStatus.OK.value())
                 .extract();
 
         // then
@@ -108,6 +111,7 @@ public class LineIntegrationTest extends IntegrationTest {
         List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
+        System.out.println("resultLineIds = " + resultLineIds);
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 

@@ -1,24 +1,45 @@
 package subway.domain;
 
-import java.util.Objects;
+import java.util.List;
 
 public class Line {
+
     private Long id;
-    private String name;
-    private String color;
+    private final String name;
+    private final String color;
+    private final Sections sections;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(Long id, String name, String color) {
+    public Line(final Long id, final String name, final String color, final Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.sections = sections;
+    }
+
+    public Line(final String name, final String color, final Sections sections) {
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+    }
+
+    public Line(Sections sections) {
+        this.name = getName();
+        this.color = getColor();
+        this.sections = sections;
+    }
+
+    public Line addSection(Section section) {
+        Sections addedSections = sections.addSection(section);
+        return new Line(addedSections);
+    }
+
+    public Line deleteStation(Station station) {
+        Sections deletedSections = sections.deleteSection(station);
+        return new Line(deletedSections);
+    }
+
+    public List<Station> getRoute() {
+        return sections.sortStations();
     }
 
     public Long getId() {
@@ -33,16 +54,7 @@ public class Line {
         return color;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
+    public Sections getSections() {
+        return sections;
     }
 }
