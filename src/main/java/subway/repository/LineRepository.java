@@ -6,13 +6,18 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
+import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 import subway.repository.converter.LinePropertyConverter;
 import subway.repository.converter.SectionConverter;
+import subway.repository.converter.StationConverter;
 import subway.service.domain.Distance;
 import subway.service.domain.Line;
 import subway.service.domain.LineProperty;
 import subway.service.domain.Section;
 import subway.service.domain.Sections;
+import subway.service.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,6 +68,45 @@ public class LineRepository {
     public boolean existsByName(String name) {
         return !lineDao.findByName(name)
                 .isEmpty();
+    }
+
+    public Line findById(Long id) {
+        List<LineEntity> lines = lineDao.findById(id);
+
+        if (lines.isEmpty()) {
+            throw new LineNotFoundException("해당 노선은 존재하지 않습니다.");
+        }
+
+        return toLine(lines.get(0));
+    }
+
+    private Line toLine(LineEntity lineEntity) {
+        LineProperty lineProperty = LinePropertyConverter.entityToDomain(lineEntity);
+        Sections sectionsByLineId = new Sections(getSectionsByLineId(lineProperty.getId()));
+        return new Line(lineProperty, sectionsByLineId);
+    }
+
+    private List<Section> getSectionsByLineId(Long id) {
+        return sectionDao.findByLineId(id)
+                .stream()
+                .map(sectionEntity -> new Section(
+                        sectionEntity.getId(),
+                        getStationById(sectionEntity.getPreviousStationId()),
+                        getStationById(sectionEntity.getNextStationId()),
+                        Distance.from(sectionEntity.getDistance())
+                ))
+                .collect(Collectors.toList());
+    }
+
+    private Station getStationById(Long id) {
+        List<StationEntity> stationEntities = stationDao.findById(id);
+
+        if (stationEntities.isEmpty()) {
+            throw new StationNotFoundException("해당하는 역이 존재하지 않습니다.");
+        }
+
+        StationEntity stationEntity = stationEntities.get(0);
+        return StationConverter.entityToDomain(stationEntity);
     }
 
 }
