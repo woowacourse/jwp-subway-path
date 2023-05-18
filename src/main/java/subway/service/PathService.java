@@ -13,7 +13,7 @@ import subway.domain.section.EmptySections;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.exception.StationNotFoundException;
-import subway.persistence.dao.SectionDao;
+import subway.persistence.repository.SectionRepository;
 import subway.persistence.repository.StationRepository;
 import subway.service.dto.PathRequest;
 import subway.service.dto.PathResponse;
@@ -22,22 +22,22 @@ import subway.service.dto.StationResponse;
 @Service
 public class PathService {
 
-    private final SectionDao sectionDao;
+    private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
     private final ShortestPathFinder finder;
     private final FarePolicy farePolicy;
 
-    public PathService(final SectionDao sectionDao, final StationRepository stationRepository,
+    public PathService(final SectionRepository sectionRepository, final StationRepository stationRepository,
                        final ShortestPathFinder finder,
                        final FarePolicy farePolicy) {
-        this.sectionDao = sectionDao;
+        this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
         this.finder = finder;
         this.farePolicy = farePolicy;
     }
 
     public PathResponse findPath(final PathRequest pathRequest) {
-        final List<Section> allSections = sectionDao.findAll();
+        final List<Section> allSections = sectionRepository.findAll();
         final Station startStation = stationRepository.findByName(pathRequest.getStartStationName())
                 .orElseThrow(StationNotFoundException::new);
         final Station endStation = stationRepository.findByName(pathRequest.getEndStationName())
