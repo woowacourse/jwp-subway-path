@@ -25,6 +25,10 @@ public class Fare {
         return new Fare(this.value * value);
     }
 
+    public int getValue() {
+        return value;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
