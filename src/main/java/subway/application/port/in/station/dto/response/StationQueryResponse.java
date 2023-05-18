@@ -5,7 +5,7 @@ public class StationQueryResponse {
     private long id;
     private String name;
 
-    public StationQueryResponse() {
+    private StationQueryResponse() {
     }
 
     public StationQueryResponse(final long id, final String name) {

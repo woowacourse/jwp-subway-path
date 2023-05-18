@@ -11,7 +11,7 @@ public class FindRouteRequest {
     @NotNull(message = "도착역 id가 없습니다.")
     private Long targetStationId;
 
-    public FindRouteRequest() {
+    private FindRouteRequest() {
     }
 
     public FindRouteRequest(final Long sourceStationId, final Long targetStationId) {

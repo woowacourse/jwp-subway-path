@@ -10,7 +10,7 @@ public class LineQueryResponse {
     private String color;
     private List<StationQueryResponse> stations;
 
-    public LineQueryResponse() {
+    private LineQueryResponse() {
     }
 
     public LineQueryResponse(final Long id, final String name, final String color,

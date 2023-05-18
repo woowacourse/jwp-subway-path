@@ -11,7 +11,7 @@ public class UpdateLineRequest {
     @NotNull(message = "색상 정보가 없습니다.")
     private String color;
 
-    public UpdateLineRequest() {
+    private UpdateLineRequest() {
     }
 
     public UpdateLineRequest(final String name, final String color) {

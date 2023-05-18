@@ -11,7 +11,7 @@ public class CreateLineRequest {
     @NotNull(message = "색상 정보가 없습니다.")
     private String color;
 
-    public CreateLineRequest() {
+    private CreateLineRequest() {
     }
 
     public CreateLineRequest(String name, String color) {
