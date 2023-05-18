@@ -72,4 +72,13 @@ public class StationDao {
                 .filter(station -> stationNames.contains(station.getName()))
                 .collect(Collectors.toList());
     }
+
+    public Optional<StationEntity> findByName(final String name) {
+        final String sql = "select * from STATION where name = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
 }
