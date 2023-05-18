@@ -1,5 +1,13 @@
 # jwp-subway-path
 
+## Quick Start
+
+```text
+cd docker
+
+docker-compose -p subway up
+```
+
 ## API 문서
 
 ```text
