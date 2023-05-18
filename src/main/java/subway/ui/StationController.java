@@ -8,6 +8,7 @@ import subway.application.request.CreateSectionRequest;
 import subway.application.request.DeleteStationRequest;
 import subway.application.response.StationResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RequestMapping("/stations")
@@ -21,7 +22,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createStation(@RequestBody CreateSectionRequest request) {
+    public ResponseEntity<Long> createStation(@Valid @RequestBody CreateSectionRequest request) {
         final Long lineId = stationService.saveSection(request);
 
         return ResponseEntity
@@ -40,7 +41,7 @@ public class StationController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteStation(@RequestBody DeleteStationRequest request) {
+    public ResponseEntity<Void> deleteStation(@Valid @RequestBody DeleteStationRequest request) {
         stationService.deleteByStationNameAndLineName(request);
 
         return ResponseEntity

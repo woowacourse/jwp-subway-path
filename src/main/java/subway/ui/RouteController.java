@@ -1,5 +1,6 @@
 package subway.ui;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,8 @@ public class RouteController {
 
     @GetMapping
     public ResponseEntity<QueryShortestRouteResponse> findShortestRoute(
-            final String startStationName,
-            final String endStationName
+            final @Length(min = 1, max = 10, message = "역명의 길이는 1 ~ 10이어야 합니다.") String startStationName,
+            final @Length(min = 1, max = 10, message = "역명의 길이는 1 ~ 10이어야 합니다.") String endStationName
     ) {
         final QueryShortestRouteResponse response = routeService.findByStartAndEnd(startStationName, endStationName);
 

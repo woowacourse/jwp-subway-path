@@ -7,6 +7,7 @@ import subway.application.request.CreateLineRequest;
 import subway.application.response.LineResponse;
 import subway.application.LineService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createLine(@RequestBody CreateLineRequest request) {
+    public ResponseEntity<Long> createLine(@Valid @RequestBody CreateLineRequest request) {
         final Long saveLineId = lineService.saveLine(request);
 
         return ResponseEntity

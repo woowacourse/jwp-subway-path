@@ -35,12 +35,9 @@ public class LineDao {
             );
 
     public Long insert(final String lineName, final String lineColor) {
-        System.out.println("lineName = " + lineName);
-        System.out.println("lineColor = " + lineColor);
         final SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue("name", lineName)
                 .addValue("color", lineColor);
-
         return insertAction.executeAndReturnKey(paramSource).longValue();
     }
 
