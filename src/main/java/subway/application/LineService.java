@@ -14,6 +14,7 @@ import subway.dto.SectionResponse;
 import subway.dto.StationEnrollRequest;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.exception.NoLineException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,22 +55,29 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(final Long lineId) {
-        return LineResponse.of(lineDao.findById(lineId));
+        return LineResponse.of(findLine(lineId));
+    }
+
+    private LineEntity findLine(final Long lineId) {
+        return lineDao.findById(lineId)
+                .orElseThrow(() -> new NoLineException(lineId + "를 가진 라인은 없습니다."));
     }
 
     @Transactional(readOnly = true)
-    public Line findLineById(final Long id) {
-        return lineDao.findById(id).toLine();
+    public Line findLineById(final Long lineId) {
+        return findLine(lineId).toLine();
     }
 
     public LineResponse updateLine(final Long lineId, final LineRequest lineUpdateRequest) {
-        final Line updateLine = new Line(lineId, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
-        lineDao.update(updateLine);
-        return LineResponse.of(updateLine);
+        final LineEntity line = findLine(lineId);
+        final LineEntity newLine = new LineEntity(line.getId(), lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        lineDao.update(newLine);
+        return LineResponse.of(newLine);
     }
 
     public void deleteLineById(final Long lineId) {
-        lineDao.deleteById(lineId);
+        final LineEntity line = findLine(lineId);
+        lineDao.deleteById(line.getId());
     }
 
     public SectionResponse enrollStation(final Long lineId, final StationEnrollRequest request) {

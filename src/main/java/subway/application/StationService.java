@@ -8,7 +8,7 @@ import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
-import subway.exception.StationDuplicationNameExcpetion;
+import subway.exception.StationDuplicationNameException;
 import subway.exception.StationNotFoundException;
 
 import java.util.HashSet;
@@ -27,7 +27,7 @@ public class StationService {
 
     public StationResponse saveStation(final StationRequest stationRequest) {
         stationDao.findByName(stationRequest.getName())
-                .ifPresent(ignore -> new StationDuplicationNameExcpetion(stationRequest.getName() + "역은 이미 존재합니다."));
+                .ifPresent(ignore -> new StationDuplicationNameException(stationRequest.getName() + "역은 이미 존재합니다."));
         final StationEntity station = stationDao.insert(new StationEntity(stationRequest.getName()));
         return StationResponse.of(station);
     }
