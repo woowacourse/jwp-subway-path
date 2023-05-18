@@ -1,6 +1,10 @@
 package subway.domain.section;
 
 import subway.domain.station.Station;
+import subway.exception.common.NotFoundStationException;
+import subway.exception.input.InvalidNewSectionDistanceException;
+import subway.exception.line.AlreadyExistStationException;
+import subway.exception.line.LineIsInitException;
 import subway.exception.line.LineIsNotInitException;
 
 import java.util.ArrayList;
@@ -18,10 +22,93 @@ public class Sections {
     }
 
     public void addInitSection(final Section section) {
+        validateSectionsIsEmpty();
+        sections.add(section);
+    }
+
+    private void validateSectionsIsEmpty() {
         if (!sections.isEmpty()) {
             throw new LineIsNotInitException();
         }
-        sections.add(section);
+    }
+
+    public void addSection(final Station baseStation, final String direction, final Station registerStation, final int distance) {
+        validateSectionsIsNotEmpty();
+        validateSectionsHaveStation(baseStation, registerStation);
+
+        if (findUpBoundStation().equals(baseStation)) {
+            addSectionBasedUpBoundStation(baseStation, direction, registerStation, distance);
+            return;
+        }
+        if (findDownBoundStation().equals(baseStation)) {
+            addSectionBasedDownBoundStation(baseStation, direction, registerStation, distance);
+            return;
+        }
+        addSectionInterStation(baseStation, direction, registerStation, distance);
+    }
+
+    private void validateSectionsIsNotEmpty() {
+        if (sections.isEmpty()) {
+            throw new LineIsInitException();
+        }
+    }
+
+    private void validateSectionsHaveStation(final Station baseStation, final Station registerStation) {
+        List<Station> stations = findAllStation();
+        if (!stations.contains(baseStation)) {
+            throw new NotFoundStationException();
+        }
+        if (stations.contains(registerStation)) {
+            throw new AlreadyExistStationException();
+        }
+    }
+
+    private void addSectionBasedUpBoundStation(final Station baseStation, final String direction, final Station registerStation, final int distance) {
+        if (direction.equals("left")) {
+            sections.add(new Section(registerStation, baseStation, distance));
+            return;
+        }
+        Section section = findSection(baseStation, direction);
+        validateDistanceWithSectionDistance(section, distance);
+        sections.add(new Section(baseStation, registerStation, distance));
+        sections.add(new Section(registerStation, section.getRightStation(), section.calculateDistance(distance)));
+        sections.remove(section);
+    }
+
+    private void addSectionBasedDownBoundStation(final Station baseStation, final String direction, final Station registerStation, final int distance) {
+        if (direction.equals("right")) {
+            sections.add(new Section(baseStation, registerStation, distance));
+            return;
+        }
+        Section section = findSection(baseStation, direction);
+        validateDistanceWithSectionDistance(section, distance);
+        sections.add(new Section(section.getLeftStation(), registerStation, section.calculateDistance(distance)));
+        sections.add(new Section(registerStation, section.getRightStation(), distance));
+        sections.remove(section);
+    }
+
+    private void addSectionInterStation(final Station baseStation, final String direction, final Station registerStation, final int distance) {
+        Section section = findSection(baseStation, direction);
+        validateDistanceWithSectionDistance(section, distance);
+        if (direction.equals("left")) {
+            sections.add(new Section(section.getLeftStation(), registerStation, section.calculateDistance(distance)));
+            sections.add(new Section(registerStation, baseStation, distance));
+            sections.remove(section);
+            return;
+        }
+        sections.add(new Section(section.getLeftStation(), registerStation, distance));
+        sections.add(new Section(registerStation, section.getRightStation(), section.calculateDistance(distance)));
+        sections.remove(section);
+    }
+
+    private static void validateDistanceWithSectionDistance(final Section section, final int distance) {
+        if (section.isShort(distance)) {
+            throw new InvalidNewSectionDistanceException();
+        }
+    }
+
+    public void findUpdatedSection(final List<Section> changedSections) {
+        this.sections.removeAll(changedSections);
     }
 
     public Station findUpBoundStation() {
@@ -52,21 +139,17 @@ public class Sections {
 
     public boolean isContainStation(Station station) {
         List<String> stations = findAllStation().stream()
-            .map(Station::getName)
-            .collect(Collectors.toList());
+                .map(Station::getName)
+                .collect(Collectors.toList());
         return stations.contains(station.getName());
     }
 
     public List<Station> findAllStation() {
         List<Station> stations = sections.stream()
-            .map(Section::getLeftStation)
-            .collect(Collectors.toList());
+                .map(Section::getLeftStation)
+                .collect(Collectors.toList());
         stations.add(findDownBoundStation());
         return stations;
-    }
-
-    public boolean isEmpty() {
-        return sections.isEmpty();
     }
 
     public Section findSection(Station baseStation, String direction) {
@@ -127,7 +210,7 @@ public class Sections {
         List<Station> sortedStation = new ArrayList<>();
         Station station = findUpBoundStation();
         sortedStation.add(station);
-        while(sortedStation.size() <= sections.size()) {
+        while (sortedStation.size() <= sections.size()) {
             Section section = findSection(station, "right");
             sortedStation.add(section.getRightStation());
             station = section.getRightStation();

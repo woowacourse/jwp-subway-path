@@ -92,7 +92,7 @@ public class LineRepository {
         return lines;
     }
 
-    private static List<Section> getSections(List<SectionStationEntity> sectionStationEntities) {
+    private List<Section> getSections(List<SectionStationEntity> sectionStationEntities) {
         List<Section> sections = new ArrayList<>();
         for (SectionStationEntity sectionStationEntity : sectionStationEntities) {
             sections.add(new Section(
@@ -131,22 +131,6 @@ public class LineRepository {
     public Station saveStation(final Station insertStation, final Long lineId) {
         StationEntity insertedStation = stationDao.insert(new StationEntity(insertStation.getName(), lineId));
         return new Station(insertedStation.getId(), insertedStation.getName());
-    }
-
-    public void updateBoundSection(Long lineId, Station baseStation, Station insertStation, String direction, int distance) {
-        if (direction.equals("left")) {
-            sectionDao.insert(new SectionEntity(insertStation.getId(), baseStation.getId(), lineId, distance));
-            return;
-        }
-        sectionDao.insert(new SectionEntity(baseStation.getId(), insertStation.getId(), lineId, distance));
-    }
-
-    public void updateInterSection(final Long lineId, final Section deleteSection, final List<Section> sections) {
-        sectionDao.deleteById(deleteSection.getId());
-        List<SectionEntity> sectionEntities = sections.stream()
-                .map(section -> new SectionEntity(section.getLeftStation().getId(), section.getRightStation().getId(), lineId, section.getDistance()))
-                .collect(Collectors.toList());
-        sectionDao.insertBoth(sectionEntities);
     }
 
     public Station findStationById(Long stationId) {
@@ -191,5 +175,38 @@ public class LineRepository {
     public Sections readAllSection() {
         List<SectionStationEntity> sectionStationEntities = sectionDao.findAll();
         return new Sections(getSections(sectionStationEntities));
+    }
+
+    public void updateSection(final Sections sections, final Long lineId) {
+        deleteUpdateSection(sections, lineId);
+        addUpdateSection(sections, lineId);
+    }
+
+    private void deleteUpdateSection(final Sections sections, final Long lineId) {
+        List<Section> updatedSections = sections.getSections();
+        List<Section> existedSections = getSections(sectionDao.findByLineId(lineId));
+        existedSections.removeAll(updatedSections);
+
+        List<Long> sectiondIds = existedSections.stream()
+                .map(Section::getId).
+                collect(Collectors.toList());
+
+        if(sectiondIds.isEmpty()) {
+            return;
+        }
+        sectionDao.deleteBothById(sectiondIds);
+    }
+
+    private void addUpdateSection(final Sections sections, final Long lineId) {
+        List<Section> updatedSections = sections.getSections();
+        List<Section> existedSections = getSections(sectionDao.findByLineId(lineId));
+        updatedSections.removeAll(existedSections);
+
+        sectionDao.insertBoth(updatedSections.stream()
+                .map(section -> new SectionEntity(
+                        section.getLeftStation().getId(),
+                        section.getRightStation().getId(),
+                        lineId,section.getDistance())).
+                collect(Collectors.toList()));
     }
 }

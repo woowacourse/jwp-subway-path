@@ -41,43 +41,20 @@ public class Line {
         this(null, new Name(name), new Color(color), new Sections(new ArrayList<>()));
     }
 
-    public Section addInitStations(Section section) {
+    public Section addInitStations(final Section section) {
         sections.addInitSection(section);
         return section;
     }
 
-    public boolean isEmpty() {
-        return sections.isEmpty();
+    public Sections addStation(final Station baseStation, final String direction, final Station registerStation, final int distance) {
+        sections.addSection(baseStation, direction, registerStation, distance);
+        return sections;
     }
 
     public boolean isBoundStation(Station baseStation) {
         Station upBoundStation = sections.findUpBoundStation();
         Station downBoundStation = sections.findDownBoundStation();
         return baseStation.equals(upBoundStation) || baseStation.equals(downBoundStation);
-    }
-
-    public boolean isUpBoundStation(Station baseStation) {
-        return sections.findUpBoundStation().equals(baseStation);
-    }
-
-    public boolean isDownBoundStation(Station baseStation) {
-        return sections.findDownBoundStation().equals(baseStation);
-    }
-
-    public void validateDistanceLength(final Section section, final int distance) {
-        if (section.isShort(distance)) {
-            throw new InvalidDistanceException();
-        }
-    }
-
-    public void validateAlreadyExistStation(Station station) {
-        if(sections.isContainStation(station)) {
-            throw new AlreadyExistStationException();
-        }
-    }
-
-    public Section findSection(Station baseStation, String direction) {
-        return sections.findSection(baseStation, direction);
     }
 
     public Section findSectionByBoundStation(Station boundStation) {
