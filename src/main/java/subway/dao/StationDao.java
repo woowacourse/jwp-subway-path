@@ -30,10 +30,9 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public StationEntity insert(StationEntity stationEntity) {
+    public Long insert(StationEntity stationEntity) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new StationEntity(id, stationEntity.getName());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
     public List<StationEntity> findById(Long id) {

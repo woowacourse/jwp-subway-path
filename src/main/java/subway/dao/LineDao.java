@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
-import subway.exception.LineNotFoundException;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
