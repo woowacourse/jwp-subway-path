@@ -2,6 +2,7 @@ package subway.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
+import static subway.TestSource.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.PathException;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.path.PathException;
 import subway.ui.dto.PathRequest;
 import subway.ui.dto.PathResponse;
 import subway.ui.dto.StationResponse;
@@ -51,20 +51,14 @@ class PathServiceTest {
     }
 
     @Test
-    void 하나의_노선을_사용하는_최단_거리가_검색된다() {
+    void 최단_거리가_검색된다() {
         // given
         // 강남 - 10 - 잠실 - 10 - 건대
-        Station kundae = new Station(1L, "건대");
-        Station jamsil = new Station(2L, "잠실");
-        Station gangnam = new Station(3L, "강남");
-
-        Line green = new Line(1L, "2호선", "green");
-
         Section kundaeJamsil10 = new Section(kundae, jamsil, green, 10);
         Section jamsilGangnam10 = new Section(jamsil, gangnam, green, 10);
 
-        given(stationDao.findById(1L)).willReturn(Optional.of(kundae));
-        given(stationDao.findById(3L)).willReturn(Optional.of(gangnam));
+        given(stationDao.findById(kundae.getId())).willReturn(Optional.of(kundae));
+        given(stationDao.findById(gangnam.getId())).willReturn(Optional.of(gangnam));
         given(sectionDao.findAll()).willReturn(List.of(kundaeJamsil10, jamsilGangnam10));
 
         // when
@@ -75,10 +69,5 @@ class PathServiceTest {
         assertThat(response.getFare()).isEqualTo(1450);
         assertThat(response.getStations()).containsExactly(StationResponse.of(kundae), StationResponse.of(jamsil),
             StationResponse.of(gangnam));
-    }
-
-    @Test
-    void 환승을_통한_최단_거리가_검색된다() {
-
     }
 }

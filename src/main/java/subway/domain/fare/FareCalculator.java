@@ -1,6 +1,8 @@
-package subway.domain;
+package subway.domain.fare;
 
 import java.util.List;
+
+import subway.domain.Sections;
 
 public class FareCalculator {
 

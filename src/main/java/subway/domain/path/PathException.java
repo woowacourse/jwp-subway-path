@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.path;
 
 public class PathException extends RuntimeException {
 

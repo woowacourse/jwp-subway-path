@@ -1,4 +1,6 @@
-package subway.domain;
+package subway.domain.fare;
+
+import subway.domain.Sections;
 
 public class DistanceFarePolicy implements FarePolicy {
 

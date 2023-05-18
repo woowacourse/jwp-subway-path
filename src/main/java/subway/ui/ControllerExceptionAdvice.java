@@ -12,7 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import subway.domain.PathException;
+import subway.domain.path.PathException;
 
 @ControllerAdvice
 public class ControllerExceptionAdvice {

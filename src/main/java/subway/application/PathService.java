@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.FareCalculator;
-import subway.domain.PathException;
-import subway.domain.PathFinder;
+import subway.domain.fare.FareCalculator;
+import subway.domain.path.PathException;
+import subway.domain.path.PathFinder;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.ui.dto.PathRequest;
