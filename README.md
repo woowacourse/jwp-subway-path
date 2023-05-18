@@ -83,20 +83,20 @@
         "sections": {
             {
               "line": 1
-              "from": 1,
-              "to": 2,
+              "from": "잠실",
+              "to": "잠실새내",
               "distnace": 8,
             },
             {
               "line": 1
-              "from": 2,
-              "to": 3,
+              "from": "잠실새내",
+              "to": "강변",
               "distnace": 6,
             },
               {
               "line": 2
-              "from": 3,
-              "to": 8,
+              "from": "강변",
+              "to": "구의",
               "distnace": 7,
             }
         },

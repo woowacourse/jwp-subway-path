@@ -2,11 +2,11 @@ package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static subway.integration.TestFixture.JAMSILNARU_ID;
-import static subway.integration.TestFixture.JAMSILSAENAE_ID;
-import static subway.integration.TestFixture.JAMSIL_ID;
-import static subway.integration.TestFixture.JEONGJA_ID;
-import static subway.integration.TestFixture.PANKYO_ID;
+import static subway.integration.TestFixture.SEOULYEOK_ID;
+import static subway.integration.TestFixture.SICHUNG_ID;
+import static subway.integration.TestFixture.SINDORIM_ID;
+import static subway.integration.TestFixture.JONGGAK_ID;
+import static subway.integration.TestFixture.JONGROSAMGA_ID;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -106,14 +106,14 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JEONGJA_ID, PANKYO_ID, 10))
+                .body(new StationRegisterRequest(JONGGAK_ID, JONGROSAMGA_ID, 10))
                 .when().post("/lines/{lineId}/station", lineId1)
                 .then().log().all().
                 extract();
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
+                .body(new StationRegisterRequest(SINDORIM_ID, SEOULYEOK_ID, 10))
                 .when().post("/lines/{lineId}/station", lineId2)
                 .then().log().all().
                 extract();
@@ -141,17 +141,17 @@ class LineIntegrationTest extends IntegrationTest {
                 .filter(lineResponse -> !lineResponse.getStations().isEmpty())
                 .collect(Collectors.toList());
 
-        assertThat(lineResponses.get(0).getStations())
+        assertThat(lineResponses.get(4).getStations())
                 .extracting("id", "name")
                 .containsExactly(
-                        tuple(JEONGJA_ID, "정자"),
-                        tuple(PANKYO_ID, "판교")
+                        tuple(JONGGAK_ID, "종각"),
+                        tuple(JONGROSAMGA_ID, "종로3가")
                 );
-        assertThat(lineResponses.get(1).getStations())
+        assertThat(lineResponses.get(5).getStations())
                 .extracting("id", "name")
                 .containsExactly(
-                        tuple(JAMSIL_ID, "잠실"),
-                        tuple(JAMSILNARU_ID, "잠실나루")
+                        tuple(SINDORIM_ID, "신도림"),
+                        tuple(SEOULYEOK_ID, "서울역")
                 );
     }
 
@@ -171,7 +171,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSILSAENAE_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SICHUNG_ID, 10))
                 .when().post("/lines/{lineId}/station", lineId)
                 .then().log().all().
                 extract();
@@ -191,8 +191,8 @@ class LineIntegrationTest extends IntegrationTest {
         assertThat(resultResponse.getStations())
                 .extracting("id", "name")
                 .containsExactly(
-                        tuple(JAMSILNARU_ID, "잠실나루"),
-                        tuple(JAMSILSAENAE_ID, "잠실새내")
+                        tuple(SEOULYEOK_ID, "서울역"),
+                        tuple(SICHUNG_ID, "시청")
                 );
     }
 
@@ -253,8 +253,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/station")
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
+                .when().post("/lines/5/station")
                 .then().log().all().
                 extract();
 
@@ -269,7 +269,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
                 .when().post("/lines/2/station")
                 .then().log().all().
                 extract();
@@ -278,7 +278,7 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
                 .when().post("/lines/2/station")
                 .then().log().all().
                 extract();
@@ -294,7 +294,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
                 .when().post("/lines/2/station")
                 .then().log().all().
                 extract();
@@ -303,7 +303,7 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILSAENAE_ID, JEONGJA_ID, 10))
+                .body(new StationRegisterRequest(SICHUNG_ID, JONGGAK_ID, 10))
                 .when().post("/lines/2/station")
                 .then().log().all().
                 extract();
@@ -319,8 +319,8 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/station")
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
+                .when().post("/lines/5/station")
                 .then().log().all().
                 extract();
 
@@ -328,8 +328,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILSAENAE_ID, JAMSILNARU_ID, 5))
-                .when().post("/lines/2/station")
+                .body(new StationRegisterRequest(SICHUNG_ID, SEOULYEOK_ID, 5))
+                .when().post("/lines/5/station")
                 .then().log().all().
                 extract();
 
@@ -344,8 +344,8 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/station")
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
+                .when().post("/lines/5/station")
                 .then().log().all().
                 extract();
 
@@ -353,8 +353,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSILSAENAE_ID, 5))
-                .when().post("/lines/2/station")
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SICHUNG_ID, 5))
+                .when().post("/lines/5/station")
                 .then().log().all().
                 extract();
 
@@ -369,7 +369,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
                 .when().post("/lines/2/station")
                 .then().log().all().
                 extract();
@@ -378,7 +378,7 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSILSAENAE_ID,15))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SICHUNG_ID,15))
                 .when().post("/lines/2/station")
                 .then().log().all().
                 extract();
@@ -394,7 +394,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
                 .when().post("/lines/2/station")
                 .then().log().all().
                 extract();
@@ -403,7 +403,7 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSIL_ID, JAMSILNARU_ID, 5))
+                .body(new StationRegisterRequest(SINDORIM_ID, SEOULYEOK_ID, 5))
                 .when().post("/lines/2/station")
                 .then().log().all().
                 extract();
@@ -428,7 +428,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
+                .body(new StationRegisterRequest(SINDORIM_ID, SEOULYEOK_ID, 10))
                 .when().post("/lines/{lineId}/station", lineId)
                 .then().log().all().
                 extract();
@@ -437,7 +437,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationDeleteRequest(JAMSIL_ID))
+                .body(new StationDeleteRequest(SINDORIM_ID))
                 .when().delete("/lines/{lineId}/station", lineId)
                 .then().log().all()
                 .extract();

@@ -11,7 +11,7 @@ public class FareCalculator {
 
     }
 
-    public static int calculateFare(final int distance) {
+    public static int calculate(final int distance) {
         if (distance <= 0) {
             throw new IllegalStateException("잘못된 경로");
         }
