@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS TRANSFER_SECTION;
 DROP TABLE IF EXISTS GENERAL_SECTION;
 DROP TABLE IF EXISTS station;
 DROP TABLE IF EXISTS line;
@@ -27,11 +26,3 @@ CREATE TABLE IF NOT EXISTS GENERAL_SECTION
     distance int not null,
     primary key(id)
 );
-
-CREATE TABLE IF NOT EXISTS TRANSFER_SECTION
-(
-    id bigint auto_increment not null,
-    up_station_id bigint not null,
-    down_station_id bigint not null,
-    primary key(id)
-)

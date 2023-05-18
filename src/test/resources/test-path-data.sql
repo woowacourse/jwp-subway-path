@@ -14,7 +14,3 @@ INSERT INTO GENERAL_SECTION (up_station_id, down_station_id, line_id, distance) 
 INSERT INTO GENERAL_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (5, 7, 3, 8);
 INSERT INTO GENERAL_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (3, 4, 2, 12);
 INSERT INTO GENERAL_SECTION (up_station_id, down_station_id, line_id, distance) VALUES (6, 7, 3, 5);
-
-INSERT INTO TRANSFER_SECTION (up_station_id, down_station_id) VALUES (2, 5);
-INSERT INTO TRANSFER_SECTION (up_station_id, down_station_id) VALUES (1, 3);
-INSERT INTO TRANSFER_SECTION (up_station_id, down_station_id) VALUES (4, 6);
