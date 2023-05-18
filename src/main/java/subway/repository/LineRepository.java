@@ -110,7 +110,7 @@ public class LineRepository {
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
-    public List<Station> saveInitStations(Section section, Long lineId) {
+    public List<Station> saveInitStations(final Section section, final Long lineId) {
         List<StationEntity> stationEntities = List.of(
                 new StationEntity(section.getLeftStation().getName(), lineId),
                 new StationEntity(section.getRightStation().getName(), lineId));

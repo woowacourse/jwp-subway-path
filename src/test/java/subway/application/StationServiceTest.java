@@ -14,6 +14,7 @@ import subway.dto.StationInitResponse;
 import subway.exception.line.LineIsNotInitException;
 import subway.repository.LineRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -34,7 +35,7 @@ class StationServiceTest {
     @DisplayName("초기 두 역을 노선에 등록한다.")
     void register_init_station_to_line() {
         // given
-        Line line = new Line(1L, "2호선", "#123456", List.of());
+        Line line = new Line(1L, "2호선", "#123456", new ArrayList<>());
         doReturn(line).when(lineRepository).findByName((any(String.class)));
 
         List<Station> stations = List.of(new Station(1L, "잠실역"), new Station(2L, "선릉역"));

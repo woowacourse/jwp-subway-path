@@ -52,4 +52,12 @@ public class Section {
     public int getDistance() {
         return distance.getDistance();
     }
+
+    public String getLeftStationName() {
+        return leftStation.getName();
+    }
+
+    public String getRightStationName() {
+        return rightStation.getName();
+    }
 }

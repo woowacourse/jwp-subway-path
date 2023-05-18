@@ -5,9 +5,8 @@ import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.exception.line.AlreadyExistStationException;
 import subway.exception.line.InvalidDistanceException;
-import subway.exception.line.NotDownBoundStationException;
-import subway.exception.line.NotUpBoundStationException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Line {
@@ -31,30 +30,20 @@ public class Line {
     }
 
     public Line (final Long id, final String name, final String color, final List<Section> sections) {
-        this(
-            id,
-            new Name(name),
-            new Color(color),
-            new Sections(sections)
-        );
+        this(id, new Name(name), new Color(color), new Sections(sections));
     }
 
     public Line (final Long id, final String name, final String color) {
-        this(
-            id,
-            new Name(name),
-            new Color(color),
-            new Sections(List.of())
-        );
+        this(id, new Name(name), new Color(color), new Sections(new ArrayList<>()));
     }
 
     public Line(final String name, final String color) {
-        this(
-            null,
-            new Name(name),
-            new Color(color),
-            new Sections(List.of())
-        );
+        this(null, new Name(name), new Color(color), new Sections(new ArrayList<>()));
+    }
+
+    public Section addInitStations(Section section) {
+        sections.addInitSection(section);
+        return section;
     }
 
     public boolean isEmpty() {

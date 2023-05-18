@@ -1,6 +1,7 @@
 package subway.domain.section;
 
 import subway.domain.station.Station;
+import subway.exception.line.LineIsNotInitException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,13 @@ public class Sections {
 
     public Sections(final List<Section> sections) {
         this.sections = sections;
+    }
+
+    public void addInitSection(final Section section) {
+        if (!sections.isEmpty()) {
+            throw new LineIsNotInitException();
+        }
+        sections.add(section);
     }
 
     public Station findUpBoundStation() {
