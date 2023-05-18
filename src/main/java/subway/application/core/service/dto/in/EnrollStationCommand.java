@@ -19,6 +19,7 @@ public class EnrollStationCommand extends SelfValidating<EnrollStationCommand> {
         this.upBound = upBound;
         this.downBound = downBound;
         this.distance = distance;
+        validateSelf();
     }
 
     public Long getLineId() {

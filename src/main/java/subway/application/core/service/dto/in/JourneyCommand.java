@@ -13,6 +13,7 @@ public class JourneyCommand extends SelfValidating<JourneyCommand> {
     public JourneyCommand(Long departure, Long terminal) {
         this.departure = departure;
         this.terminal = terminal;
+        validateSelf();
     }
 
     public Long getDeparture() {

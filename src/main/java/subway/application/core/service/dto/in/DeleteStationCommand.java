@@ -12,6 +12,7 @@ public class DeleteStationCommand extends SelfValidating<DeleteStationCommand> {
     public DeleteStationCommand(Long lineId, Long stationId) {
         this.lineId = lineId;
         this.stationId = stationId;
+        validateSelf();
     }
 
     public Long getLineId() {
