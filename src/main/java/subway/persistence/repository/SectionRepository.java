@@ -3,6 +3,7 @@ package subway.persistence.repository;
 import org.springframework.stereotype.Repository;
 import subway.domain.Distance;
 import subway.domain.Section;
+import subway.domain.SectionGraph;
 import subway.domain.Station;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
@@ -25,17 +26,19 @@ public class SectionRepository {
         this.stationDao = stationDao;
     }
 
-    public List<Section> findAll() {
+    public SectionGraph findAll() {
         final List<SectionEntity> sectionEntities = sectionDao.findAll();
         final Map<Long, Station> stationMap = getStationMap(sectionEntities);
-        return sectionEntities.stream()
-                .map(sectionEntity -> new Section(
-                                sectionEntity.getId(),
-                                stationMap.get(sectionEntity.getBeforeStation()),
-                                stationMap.get(sectionEntity.getNextStation()),
-                                new Distance(sectionEntity.getDistance())
-                        )
-                ).collect(Collectors.toList());
+        return new SectionGraph(
+                sectionEntities.stream()
+                        .map(sectionEntity -> new Section(
+                                        sectionEntity.getId(),
+                                        stationMap.get(sectionEntity.getBeforeStation()),
+                                        stationMap.get(sectionEntity.getNextStation()),
+                                        new Distance(sectionEntity.getDistance())
+                                )
+                        ).collect(Collectors.toList())
+        );
     }
 
     private Map<Long, Station> getStationMap(final List<SectionEntity> sectionEntities) {
