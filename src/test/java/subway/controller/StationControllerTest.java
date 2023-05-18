@@ -1,12 +1,7 @@
-package subway.ui;
+package subway.controller;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,8 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.StationService;
-import subway.dto.StationResponse;
-import subway.dto.StationSaveRequest;
+import subway.dto.response.StationResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -66,7 +60,7 @@ class StationControllerTest {
                 new StationResponse(1L, "잠실역"),
                 new StationResponse(2L, "선릉역")
         );
-        when(stationService.findAllStationResponses()).thenReturn(responses);
+        when(stationService.findAllStation()).thenReturn(responses);
         final String responseJson = objectMapper.writeValueAsString(responses);
 
         // when, then
@@ -83,7 +77,7 @@ class StationControllerTest {
         final Long id = 1L;
         final StationResponse station = new StationResponse(id, "잠실역");
 
-        when(stationService.findStationResponseById(id)).thenReturn(station);
+        when(stationService.findStationById(id)).thenReturn(station);
         final String responseJson = objectMapper.writeValueAsString(station);
 
         // when, then
