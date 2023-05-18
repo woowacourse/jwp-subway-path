@@ -69,7 +69,7 @@ public class LineService {
         Station downstream = stationService.createStationIfNotExist(lineCreationDto.getDownstreamName());
 
         MiddleSection section = new MiddleSection(upstream, downstream, lineCreationDto.getDistance());
-        Line lineToAdd = new Line(lineCreationDto.getLineName(), List.of(section));
+        Line lineToAdd = new Line(lineCreationDto.getLineName(), List.of(section), lineCreationDto.getAdditionalFare());
 
         final Lines allLines = lineRepository.findAllLines();
         allLines.addLine(lineToAdd);

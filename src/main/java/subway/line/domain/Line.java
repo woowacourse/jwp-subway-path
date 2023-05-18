@@ -15,20 +15,22 @@ public class Line {
     private final Long id;
     private final LineName name;
     private final LinkedList<AbstractSection> sections;
+    private final int additionalFare;
 
-    public Line(Long id, String name, List<MiddleSection> sections) {
+    public Line(Long id, String name, List<MiddleSection> sections, int additionalFare) {
         this.id = id;
         this.name = new LineName(name);
         this.sections = new LinkedList<>(sections);
+        this.additionalFare = additionalFare;
         addTerminalSections();
     }
 
-    public Line(String name, List<MiddleSection> sections) {
-        this(null, name, sections);
+    public Line(String name, List<MiddleSection> sections, int additionalFare) {
+        this(null, name, sections, additionalFare);
     }
 
     public Line(Line otherLine) {
-        this(otherLine.getId(), otherLine.getName(), otherLine.getSections());
+        this(otherLine.getId(), otherLine.getName(), otherLine.getSections(), otherLine.getAdditionalFare());
     }
 
     private void addTerminalSections() {
@@ -136,6 +138,10 @@ public class Line {
                        .stream()
                        .map(section -> (MiddleSection) section)
                        .collect(Collectors.toList());
+    }
+
+    public int getAdditionalFare() {
+        return additionalFare;
     }
 
     @Override
