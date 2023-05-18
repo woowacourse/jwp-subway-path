@@ -11,13 +11,14 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.station.Station;
-import subway.domain.station.StationName;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.StationRequest;
+import subway.dto.response.StationResponse;
 import subway.fixture.StationFixture.A;
 import subway.fixture.StationFixture.B;
 import subway.repository.StationRepository;
@@ -39,7 +40,9 @@ class StationServiceTest {
         StationRequest request = new StationRequest("A");
 
         // expect
-        when(stationRepository.insert(A.stationA)).thenReturn(1L);
+        when(stationRepository.insert(Mockito.argThat(
+                station -> station.getName().name().equals("A")))
+        ).thenReturn(1L);
         assertThat(stationService.saveStation(request)).isPositive();
     }
 
@@ -88,8 +91,10 @@ class StationServiceTest {
         stationService.update(id, request);
 
         // then
-        final Station updateStation = new Station(id, new StationName("B"));
-        verify(stationRepository, times(1)).update(updateStation);
+        ArgumentCaptor<Station> argCaptor = ArgumentCaptor.forClass(Station.class);
+        verify(stationRepository, times(1)).update(argCaptor.capture());
+
+        assertThat(argCaptor.getValue().getName().name()).isEqualTo("B");
     }
 
     @Test
