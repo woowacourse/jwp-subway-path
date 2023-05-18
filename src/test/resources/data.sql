@@ -1,5 +1,5 @@
-INSERT INTO LINE (name, color, head_station)
-values('1호선', '파란색', 1);
+INSERT INTO LINE (name, color, extra_charge, head_station)
+values('1호선', '파란색',0, 1);
 
 INSERT INTO STATION (name, next_station, distance, line_id)
 values('강남역', 2, 10, 1);
@@ -21,8 +21,8 @@ values('삼성역', 5, 8, 1);
 
 
 
-INSERT INTO LINE (name, color, head_station)
-values('2호선', '초록색', 7);
+INSERT INTO LINE (name, color,extra_charge, head_station)
+values('2호선', '초록색',300, 7);
 
 INSERT INTO STATION (name, next_station, distance, line_id)
 values('성수역', 8, 10, 2);

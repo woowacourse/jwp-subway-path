@@ -28,7 +28,8 @@ public class LineService {
 
     public Long saveLine(LineRequest request) {
         validateNewLine(request);
-        LineEntity newLine = new LineEntity(request.getName(), request.getColor(), null);
+        LineEntity newLine = new LineEntity(request.getName(), request.getColor(),
+            request.getExtraCharge(), null);
         Long newLineId = lineDao.insert(newLine);
         Long upEndStationId = insertEndStations(request, newLineId);
         lineDao.updateHeadStation(newLineId, upEndStationId);
@@ -60,7 +61,8 @@ public class LineService {
     }
 
     private Long insertEndStations(LineRequest request, Long newLineId) {
-        StationEntity downEndStation = new StationEntity(request.getDownStation(), EMPTY_STATION_ID, null,
+        StationEntity downEndStation = new StationEntity(request.getDownStation(), EMPTY_STATION_ID,
+            null,
             newLineId);
         Long downEndStationId = stationDao.insert(downEndStation);
 

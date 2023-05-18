@@ -69,7 +69,7 @@ public class LineIntegrationTest extends IntegrationTest {
     void getLines() {
         // given
         List<LineResponse> expectedResponses = List.of(
-            new LineResponse(1L,"1호선", "파란색")
+            new LineResponse(1L,"1호선", "파란색",0)
         );
 
         // when

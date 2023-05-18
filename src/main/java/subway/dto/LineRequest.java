@@ -4,6 +4,7 @@ public class LineRequest {
 
     private String name;
     private String color;
+    private int extraCharge;
     private String upStation;
     private String downStation;
     private int distance;
@@ -26,6 +27,10 @@ public class LineRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraCharge() {
+        return extraCharge;
     }
 
     public String getUpStation() {

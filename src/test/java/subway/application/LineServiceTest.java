@@ -133,7 +133,8 @@ class LineServiceTest {
             () -> Assertions.assertThat(lines.size()).isEqualTo(expectSize),
             () -> Assertions.assertThat(lines.get(0).getId()).isEqualTo(1L),
             () -> Assertions.assertThat(lines.get(0).getName()).isEqualTo("1호선"),
-            () -> Assertions.assertThat(lines.get(0).getColor()).isEqualTo("파란색")
+            () -> Assertions.assertThat(lines.get(0).getColor()).isEqualTo("파란색"),
+            () -> Assertions.assertThat(lines.get(0).getExtraCharge()).isEqualTo(0)
         );
     }
 

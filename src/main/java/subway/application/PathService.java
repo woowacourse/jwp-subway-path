@@ -5,6 +5,7 @@ import java.util.List;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Charge;
+import subway.domain.DiscountRate;
 import subway.domain.Distance;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
@@ -32,24 +33,9 @@ public class PathService {
         List<String> path = new ArrayList<>(List.of("성수역", "뚝섬역", "잠실역", "건대입구역"));
         Distance distance = new Distance(26);
         Charge charge = calculateCharge(distance);
-        return PathResponse.of(path, distance, charge);
-    }
-
-    public Charge calculateCharge(Distance distance) {
-        Charge charge = new Charge(BASIC_CHARGE);
-        if (distance.isLessThan(TEN)) {
-            return charge;
-        }
-        if (distance.isLessAndEqualsThan(FIFTH)) {
-            return charge.add(calculateOverCharge(distance.substract(TEN), FIVE));
-        }
-        return charge
-            .add(calculateOverCharge(FOURTH, FIVE))
-            .add(calculateOverCharge(distance.substract(FIFTH), EIGHT));
-    }
-
-    private Charge calculateOverCharge(Distance distance, Distance unit) {
-        return new Charge(distance.substractOne().divide(unit) + 1).multiply(EXTRA_CHARGE_UNIT);
+        Charge teenagerCharge = charge.discount(DiscountRate.TEENAGER_DISCOUNT_RATE);
+        Charge childCharge = charge.discount(DiscountRate.CHILD_DISCOUNT_RATE);
+        return PathResponse.of(path, distance, charge,teenagerCharge,childCharge);
     }
 
     private void validateStation(PathRequest request) {
@@ -68,5 +54,23 @@ public class PathService {
             request.getEndStation())) {
             throw new IllegalArgumentException("존재하지 않는 역이 포함되어 있습니다");
         }
+    }
+
+    // TODO: 2023-05-18 private으로 바꾸기
+    public Charge calculateCharge(Distance distance) {
+        Charge charge = new Charge(BASIC_CHARGE);
+        if (distance.isLessThan(TEN)) {
+            return charge;
+        }
+        if (distance.isLessAndEqualsThan(FIFTH)) {
+            return charge.add(calculateOverCharge(distance.substract(TEN), FIVE));
+        }
+        return charge
+            .add(calculateOverCharge(FOURTH, FIVE))
+            .add(calculateOverCharge(distance.substract(FIFTH), EIGHT));
+    }
+
+    private Charge calculateOverCharge(Distance distance, Distance unit) {
+        return new Charge(distance.substractOne().divide(unit) + 1).multiply(EXTRA_CHARGE_UNIT);
     }
 }
