@@ -1,58 +1,73 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
+import subway.entity.StationEntity;
 
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
-
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("stations")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public Long insert(final StationEntity station) {
+        final Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", station.getName());
+
+        try {
+            return insertAction.executeAndReturnKey(parameters).longValue();
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("동일한 역을 추가할 수 없습니다.");
+        }
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
+    public List<StationEntity> findAll() {
+        String sql = "SELECT * FROM STATIONS";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<StationEntity> findById(Long id) {
+        String sql = "SELECT * FROM STATIONS WHERE id = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+    public void update(final StationEntity station) {
+        String sql = "UPDATE STATIONS SET name = ? WHERE id = ?";
+        try {
+            jdbcTemplate.update(sql, station.getName(), station.getId());
+        } catch (DataAccessException e) {
+            throw new IllegalStateException("수정하려는 역이 존재하지 않습니다.");
+        }
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        String sql = "DELETE FROM STATIONS WHERE id = ?";
+        try {
+            jdbcTemplate.update(sql, id);
+        } catch (DataAccessException e) {
+            throw new IllegalStateException("역을 삭제하기 위한 조건이 충분하지 않습니다.");
+        }
     }
 }

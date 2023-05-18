@@ -1,21 +1,20 @@
 package subway.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import subway.dto.request.LineRequest;
+import subway.dto.response.LineResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -23,9 +22,7 @@ public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest2;
 
     @BeforeEach
-    public void setUp() {
-        super.setUp();
-
+    public void intData() {
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
     }
@@ -79,7 +76,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> createResponse1 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(new LineRequest("시분당선", "bg-red-601"))
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -87,7 +84,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> createResponse2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
+                .body(new LineRequest("분당선", "bg-red-602"))
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -161,7 +158,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("지하철 노선을 제거한다.")

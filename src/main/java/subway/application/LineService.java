@@ -1,53 +1,117 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.line.Line;
+import subway.domain.line.LineColor;
+import subway.domain.line.LineName;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
+import subway.dto.request.LineRequest;
+import subway.dto.request.SectionRequest;
+import subway.dto.response.LineResponse;
+import subway.dto.response.SectionResponse;
+import subway.dto.response.StationResponse;
+import subway.repository.LineRepository;
+import subway.repository.StationRepository;
 
+@Transactional(readOnly = true)
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+
+    public LineService(final LineRepository lineRepository, final StationRepository stationRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    @Transactional
+    public Long saveLine(final LineRequest request) {
+        final Line line = new Line(
+                new LineName(request.getName()),
+                new LineColor(request.getColor())
+        );
+
+        return lineRepository.save(line);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    @Transactional
+    public void insertSectionToLine(final Long lineId, final SectionRequest request) {
+        final Line line = lineRepository.findById(lineId);
+        final Station upStation = stationRepository.findById(request.getUpStationId());
+        final Station downStation = stationRepository.findById(request.getDownStationId());
+        final Distance distance = new Distance(request.getDistance());
+
+        final Section section = new Section(upStation, downStation, distance);
+        final Line updateSections = line.addSection(section);
+
+        lineRepository.updateSections(updateSections);
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    @Transactional
+    public void deleteStationFromLine(final Long lineId, final Long stationId) {
+        final Line line = lineRepository.findById(lineId);
+        final Station station = stationRepository.findById(stationId);
+
+        final Line updateSection = line.deleteStation(station);
+        lineRepository.updateSections(updateSection);
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    public LineResponse findLineById(final Long id) {
+        final Line line = lineRepository.findById(id);
+        return new LineResponse(
+                line.getId(),
+                line.getLineName().name(),
+                line.getLineColor().color(),
+                createSectionResponses(line)
+        );
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+    private List<SectionResponse> createSectionResponses(final Line line) {
+        return line.getSections().sections().stream()
+                .map(this::createSectionResponse).collect(Collectors.toUnmodifiableList());
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    private SectionResponse createSectionResponse(final Section section) {
+        return new SectionResponse(
+                section.getId(),
+                createStationResponse(section.getUpStation()),
+                createStationResponse(section.getDownStation()),
+                section.getDistance().distance()
+        );
     }
 
+    private StationResponse createStationResponse(final Station station) {
+        return new StationResponse(station.getId(), station.getName().name());
+    }
+
+    public List<LineResponse> findAllLine() {
+        final List<Line> lines = lineRepository.findAllLine();
+
+        return lines.stream().map(
+                line -> new LineResponse(
+                        line.getId(),
+                        line.getLineName().name(),
+                        line.getLineColor().color(),
+                        createSectionResponses(line)
+                )
+        ).collect(Collectors.toUnmodifiableList());
+    }
+
+    @Transactional
+    public void updateLineById(Long id, LineRequest request) {
+        lineRepository.update(
+                new Line(id, new LineName(request.getName()), new LineColor(request.getColor()))
+        );
+    }
+
+    @Transactional
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.delete(id);
     }
-
 }

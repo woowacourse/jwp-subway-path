@@ -1,61 +1,76 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import subway.entity.LineEntity;
 
 @Repository
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+    private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("lines")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
+    public Long insert(final LineEntity lineEntity) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("id", lineEntity.getId());
+        parameters.put("name", lineEntity.getName());
+        parameters.put("color", lineEntity.getColor());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        try {
+            return insertAction.executeAndReturnKey(parameters).longValue();
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("중복되는 노선을 추가할 수 없습니다.");
+        }
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+    public List<LineEntity> findAll() {
+        String sql = "SELECT id, name, color FROM LINES";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<LineEntity> findById(final Long id) {
+        String sql = "SELECT id, name, color FROM LINES WHERE id = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    public void updateById(final LineEntity line) {
+        String sql = "UPDATE LINES set name = ?, color = ? WHERE id = ?";
+        try {
+            jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("수정하려는 노선이 존재하지 않습니다.");
+        }
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        try {
+            jdbcTemplate.update("DELETE FROM Lines WHERE id = ?", id);
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("삭제하려는 노선이 존재하지 않습니다.");
+        }
     }
 }

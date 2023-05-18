@@ -1,44 +1,51 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.station.Station;
+import subway.domain.station.StationName;
+import subway.dto.request.StationRequest;
+import subway.dto.response.StationResponse;
+import subway.repository.StationRepository;
 
+@Transactional(readOnly = true)
 @Service
 public class StationService {
-    private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    private final StationRepository stationRepository;
+
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    @Transactional
+    public Long saveStation(final StationRequest request) {
+        final Station station = new Station(new StationName(request.getName()));
+        return stationRepository.insert(station);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public StationResponse findStationById(Long id) {
+        final Station station = stationRepository.findById(id);
+        return new StationResponse(station.getId(), station.getName().name());
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
+    public List<StationResponse> findAllStation() {
+        final List<Station> stations = stationRepository.findAll();
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+                .map(station -> new StationResponse(station.getId(), station.getName().name()))
+                .collect(Collectors.toUnmodifiableList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+    @Transactional
+    public void update(final Long id, final StationRequest stationRequest) {
+        final Station updateStation = new Station(id, new StationName(stationRequest.getName()));
+        stationRepository.update(updateStation);
     }
 
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    @Transactional
+    public void deleteStationById(final Long id) {
+        stationRepository.deleteById(id);
     }
 }
