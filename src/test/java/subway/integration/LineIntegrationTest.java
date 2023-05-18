@@ -6,8 +6,10 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.response.SingleLineResponse;
@@ -23,12 +25,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 노선 관련 기능")
 class LineIntegrationTest extends IntegrationTest {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
+        jdbcTemplate.update("TRUNCATE TABLE line");
         lineRequest1 = new LineRequest("5호선", "bg-red-600", 10, "잠실", "잠실새내");
         lineRequest2 = new LineRequest("6호선", "bg-olive-600", 4, "잠실", "종합운동장");
     }
