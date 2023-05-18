@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static subway.domain.Side.LEFT;
-import static subway.domain.Side.RIGHT;
-
 public class Subway {
 
     private static final String INVALID_ALREADY_EXISTS_TWO_STATIONS_MESSAGE = "노선에 이미 존재하는 두 역을 등록할 수 없습니다.";
@@ -101,37 +98,22 @@ public class Subway {
 
     private Sections getSections(final Station left, final Station right, final int distance) {
         if (hasStation(left) && hasNoStation(right)) {
-            return getSectionsInBetween(left, right, distance, RIGHT);
+            return getLeftSectionsInBetween(left, right, distance);
         }
         if (hasNoStation(left) && hasStation(right)) {
-            return getSectionsInBetween(left, right, distance, LEFT);
+            return getRightSectionsInBetween(left, right, distance);
         }
         return new Sections(List.of(new Section(left, right, new Distance(distance))));
     }
 
-    private Sections getSectionsInBetween(final Station left, final Station right, final int distance, final Side findingSide) {
+    private Sections getLeftSectionsInBetween(final Station left, final Station right, final int distance) {
         Section newSection = new Section(left, right, new Distance(distance));
-        Station baseStation = findBaseStationBySide(left, right, findingSide);
-        if (hasSectionBySide(baseStation, findingSide)) {
-            Section existedSection = findExistedSectionBySide(baseStation, findingSide);
-            Section updatedSection = getUpdatedSection(existedSection, left, right, distance, findingSide);
-            return new Sections(List.of(newSection, updatedSection));
+        if (hasRightSection(left)) {
+            Section existedSection = findRightSection(left);
+            Section updatedRightSection = getUpdatedRightSection(existedSection, right, distance);
+            return new Sections(List.of(newSection, updatedRightSection));
         }
         return new Sections(List.of(newSection));
-    }
-
-    private Station findBaseStationBySide(final Station left, final Station right, final Side side) {
-        if (side.isRight()) {
-            return left;
-        }
-        return right;
-    }
-
-    private boolean hasSectionBySide(final Station station, final Side side) {
-        if (side.isRight()) {
-            return hasRightSection(station);
-        }
-        return hasLeftSection(station);
     }
 
     private boolean hasRightSection(final Station station) {
@@ -143,18 +125,6 @@ public class Subway {
         return !stations.outgoingEdgesOf(station).isEmpty();
     }
 
-    private boolean hasLeftSection(final Station station) {
-        validateStation(station);
-        return !isStartStation(stations, station);
-    }
-
-    private Section findExistedSectionBySide(final Station station, final Side side) {
-        if (side.isRight()) {
-            return findRightSection(station);
-        }
-        return findLeftSection(station);
-    }
-
     private Section findRightSection(final Station station) {
         Set<DefaultWeightedEdge> edges = stations.outgoingEdgesOf(station);
         return edges.stream()
@@ -162,6 +132,34 @@ public class Subway {
                         new Distance((int) stations.getEdgeWeight(edge))))
                 .findFirst()
                 .orElseThrow(() -> new SubwayInternalServerException(INVALID_NOT_FOUND_RIGHT_SIDE_SECTION_MESSAGE));
+    }
+
+    private Section getUpdatedRightSection(final Section existedSection, final Station newRightStation, final int newDistance) {
+        int existedDistance = existedSection.getDistance();
+        validateNewDistance(newDistance, existedDistance);
+
+        return new Section(newRightStation, existedSection.getRight(), new Distance(existedDistance - newDistance));
+    }
+
+    private void validateNewDistance(int newDistance, int existedDistance) {
+        if (existedDistance <= newDistance) {
+            throw new SubwayServiceException(INVALID_DISTANCE_BETWEEN_BASE_AND_NEW_STATION_MESSAGE);
+        }
+    }
+
+    private Sections getRightSectionsInBetween(Station left, Station right, int distance) {
+        Section newSection = new Section(left, right, new Distance(distance));
+        if (hasLeftSection(right)) {
+            Section existedSection = findLeftSection(right);
+            Section updatedLeftSection = getUpdatedLeftSection(existedSection, left, distance);
+            return new Sections(List.of(newSection, updatedLeftSection));
+        }
+        return new Sections(List.of(newSection));
+    }
+
+    private boolean hasLeftSection(final Station station) {
+        validateStation(station);
+        return !isStartStation(stations, station);
     }
 
     private Section findLeftSection(final Station station) {
@@ -173,20 +171,11 @@ public class Subway {
                 .orElseThrow(() -> new SubwayInternalServerException(INVALID_NOT_FOUND_LEFT_SIDE_SECTION_MESSAGE));
     }
 
-    private Section getUpdatedSection(Section baseSection, Station left, Station right, int newDistance, Side side) {
-        int existedDistance = baseSection.getDistance();
+    private Section getUpdatedLeftSection(Section existedSection, Station newLeftStation, int newDistance) {
+        int existedDistance = existedSection.getDistance();
         validateNewDistance(newDistance, existedDistance);
 
-        if (side.isRight()) {
-            return new Section(right, baseSection.getRight(), new Distance(existedDistance - newDistance));
-        }
-        return new Section(baseSection.getLeft(), left, new Distance(existedDistance - newDistance));
-    }
-
-    private void validateNewDistance(int newDistance, int existedDistance) {
-        if (existedDistance <= newDistance) {
-            throw new SubwayServiceException(INVALID_DISTANCE_BETWEEN_BASE_AND_NEW_STATION_MESSAGE);
-        }
+        return new Section(existedSection.getLeft(), newLeftStation, new Distance(existedDistance - newDistance));
     }
 
     public Sections findUpdateSectionsByDeletingSection(Station station) {

@@ -30,10 +30,10 @@ public class Sections implements Iterable<Section> {
         if (hasOnlyOneStation()) {
             return sections.get(0).getLeftId();
         }
-        if (isEqualEndStation()) {
-            return sections.get(1).getLeftId();
+        if (isEqualMiddleStation()) {
+            return sections.get(0).getLeftId();
         }
-        return sections.get(0).getLeftId();
+        return sections.get(1).getLeftId();
     }
 
     private boolean hasOnlyOneStation() {
