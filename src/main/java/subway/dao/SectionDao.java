@@ -69,13 +69,6 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public List<SectionEntity> findByLineId(final Long lineId) {
-        final String sql = "SELECT id, distance, up_station_id, down_station_id, line_id" +
-                " FROM sections " +
-                " WHERE line_id = ? ";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
-    }
-
     public void deleteByLineId(final Long lineId) {
         final String sql = "DELETE FROM sections WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
