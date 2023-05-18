@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -75,6 +76,7 @@ class SubwayControllerTest extends IntegrationTest {
         stationDao.insert(new StationEntity(3L, "지구"));
         stationDao.insert(new StationEntity(4L, "화성"));
         stationDao.insert(new StationEntity(5L, "잠실"));
+        stationDao.insert(new StationEntity(6L, "집"));
     }
 
     private void prepareLine() {
@@ -92,5 +94,26 @@ class SubwayControllerTest extends IntegrationTest {
         sectionDao.save(List.of(
                 new SectionEntity(2L, "지구", "잠실", 40)
         ));
+    }
+
+    @DisplayName("갈 수 없는 역으로의 요청을 보낸다면 예외를 바생시킨다.")
+    @Test
+    void findPathBetween_invalidPath() {
+        //given
+        sectionSetting();
+
+        //when
+        final String errorMessage = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("from", 1)
+                .queryParam("to", 6)
+                .when().get("/subway/paths")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .asString();
+
+        //then
+        assertThat(errorMessage).isEqualTo("수성에서 집으로 갈 수 없습니다.");
     }
 }

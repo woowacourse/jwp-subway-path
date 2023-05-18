@@ -3,6 +3,7 @@ package subway.domain;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.exception.InvalidSubwayPathException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -62,14 +63,22 @@ public class SubwayRouteMap {
     }
 
     public int shortestDistanceBetween(final Station from, final Station to) {
-        return (int) Math.round(shortestPath.getPathWeight(from.getName(), to.getName()));
+        try {
+            return (int) Math.round(shortestPath.getPathWeight(from.getName(), to.getName()));
+        } catch (final IllegalArgumentException e) {
+            throw new InvalidSubwayPathException(from.getName() + "에서 " + to.getName() + "으로 갈 수 없습니다.");
+        }
     }
 
     public List<Station> shortestPathBetween(final Station from, final Station to) {
-        final List<String> pathNames = shortestPath.getPath(from.getName(), to.getName()).getVertexList();
-        return pathNames.stream()
-                .map(stations::get)
-                .collect(Collectors.toList());
+        try {
+            final List<String> pathNames = shortestPath.getPath(from.getName(), to.getName()).getVertexList();
+            return pathNames.stream()
+                    .map(stations::get)
+                    .collect(Collectors.toList());
+        } catch (final IllegalArgumentException e) {
+            throw new InvalidSubwayPathException(from.getName() + "에서 " + to.getName() + "으로 갈 수 없습니다.");
+        }
     }
 
     public int fareBetween(final Station from, final Station to) {
