@@ -11,7 +11,7 @@ import subway.domain.Line;
 import javax.sql.DataSource;
 
 @JdbcTest
-@Sql(scripts = {"classpath:data.sql", "classpath:data/lineTest.sql"})
+@Sql(scripts = {"classpath:data.sql","classpath:data/lineTest.sql"})
 class LineDaoTest {
     private final LineDao lineDao;
 
@@ -41,7 +41,7 @@ class LineDaoTest {
 
     @Test
     void findById() {
-        Assertions.assertThat(lineDao.findById(1l).getName()).isEqualTo("testName1");
+        Assertions.assertThat(lineDao.findById(1l).getName()).isEqualTo("1호선");
     }
 
     @Test

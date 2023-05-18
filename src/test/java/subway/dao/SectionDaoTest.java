@@ -25,18 +25,18 @@ class SectionDaoTest {
 
     @Test
     void findSections() {
-        Line keyLine = new Line(1l, "testName1", "testColor1");
+            Line keyLine = new Line(2l, "2호선", "초록");
         Assertions.assertThat(sectionDao.findSections().get(keyLine)).hasSize(4);
     }
 
     @Test
     void findSectionsByLineId() {
-        Assertions.assertThat(sectionDao.findSectionsByLineId(1l)).hasSize(4);
+        Assertions.assertThat(sectionDao.findSectionsByLineId(2l)).hasSize(4);
     }
 
     @Test
     void findSectionByLineIdAndStationId() {
-        Assertions.assertThat(sectionDao.findSectionByLineIdAndStationId(1l, 2l).isSizeTwo()).isTrue();
+        Assertions.assertThat(sectionDao.findSectionByLineIdAndStationId(2l, 2l).isSizeTwo()).isTrue();
     }
 
     @Test

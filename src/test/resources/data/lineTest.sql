@@ -1,4 +1,4 @@
 insert into line(name, color)
-values ('testName1', 'testColor1');
+values ('1호선', '파랑');
 insert into line(name, color)
-values ('testName2', 'testColor2');
+values ('2호선', '초록');
