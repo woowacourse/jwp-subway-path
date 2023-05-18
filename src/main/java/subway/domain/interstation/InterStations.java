@@ -35,7 +35,7 @@ public class InterStations {
         final long firstStation = findFirstStation(interStations);
 
         final Map<Long, InterStation> upStationToInterStation = interStations.stream()
-            .collect(Collectors.toMap(InterStation::getUpStationId, interStation -> interStation));
+                .collect(Collectors.toMap(InterStation::getUpStationId, interStation -> interStation));
 
         final List<InterStation> sortedInterStations = new ArrayList<>();
         long currentStation = firstStation;
@@ -60,14 +60,14 @@ public class InterStations {
 
     private Set<Long> findDownStations(final List<InterStation> interStations) {
         return interStations.stream()
-            .map(InterStation::getDownStationId)
-            .collect(Collectors.toSet());
+                .map(InterStation::getDownStationId)
+                .collect(Collectors.toSet());
     }
 
     private Set<Long> findUpStations(final List<InterStation> interStations) {
         return interStations.stream()
-            .map(InterStation::getUpStationId)
-            .collect(Collectors.toSet());
+                .map(InterStation::getUpStationId)
+                .collect(Collectors.toSet());
     }
 
     private void validate(final List<InterStation> interStations) {
@@ -93,28 +93,28 @@ public class InterStations {
     }
 
     private void validate(final Long upStationId,
-                          final Long downStationId,
-                          final Long newStationId) {
+            final Long downStationId,
+            final Long newStationId) {
         validateEmptyInterStation(upStationId, downStationId);
         validateDuplicateInterStation(upStationId, downStationId, newStationId);
 
     }
 
     private void validateDuplicateInterStation(final Long upStationId,
-                                               final Long downStationId,
-                                               final Long newStationId) {
+            final Long downStationId,
+            final Long newStationId) {
         interStations.stream()
-            .filter(it -> it.getUpStationId().equals(upStationId) && it.getDownStationId().equals(newStationId))
-            .findFirst()
-            .ifPresent(it -> {
-                throw new InterStationsException("구간이 중복되었습니다.");
-            });
+                .filter(it -> it.getUpStationId().equals(upStationId) && it.getDownStationId().equals(newStationId))
+                .findFirst()
+                .ifPresent(it -> {
+                    throw new InterStationsException("구간이 중복되었습니다.");
+                });
         interStations.stream()
-            .filter(it -> it.getUpStationId().equals(downStationId) && it.getDownStationId().equals(newStationId))
-            .findFirst()
-            .ifPresent(it -> {
-                throw new InterStationsException("구간이 중복되었습니다.");
-            });
+                .filter(it -> it.getUpStationId().equals(downStationId) && it.getDownStationId().equals(newStationId))
+                .findFirst()
+                .ifPresent(it -> {
+                    throw new InterStationsException("구간이 중복되었습니다.");
+                });
     }
 
     private void validateEmptyInterStation(final Long upStationId, final Long downStationId) {
@@ -124,28 +124,26 @@ public class InterStations {
     }
 
     private void addMiddle(final Long upStationId,
-                           final Long downStationId,
-                           final Long newStationId,
-                           final long distance) {
+            final Long downStationId,
+            final Long newStationId,
+            final long distance) {
         final int index = findUpStationIndex(upStationId);
         final InterStation removedInterStation = interStations.remove(index);
         interStations.add(index, new InterStation(upStationId, newStationId, distance));
         interStations.add(index + 1,
-            new InterStation(newStationId, downStationId, removedInterStation.getDistance().minus(distance)));
+                new InterStation(newStationId, downStationId, removedInterStation.getDistance().minus(distance)));
     }
 
     private void addFirst(final InterStation interStation) {
         if (!Objects.equals(interStation.getDownStationId(), interStations.get(0).getUpStationId())) {
             throw new InterStationsException("구간이 연결되어있지 않습니다.");
         }
-        interStations.add(0, new InterStation(interStation.getDownStationId(),
-            interStation.getUpStationId(),
-            interStation.getDistance()));
+        interStations.add(0, interStation);
     }
 
     private void addLast(final InterStation interStation) {
         if (!Objects.equals(interStation.getUpStationId(),
-            interStations.get(interStations.size() - 1).getDownStationId())) {
+                interStations.get(interStations.size() - 1).getDownStationId())) {
             throw new InterStationsException("구간이 연결되어있지 않습니다.");
         }
         interStations.add(interStation);
@@ -185,8 +183,8 @@ public class InterStations {
         final InterStation downInterStation = interStations.remove(index + 1);
         final InterStation upInterStation = interStations.remove(index);
         interStations.add(index, new InterStation(upInterStation.getUpStationId(),
-            downInterStation.getDownStationId(),
-            upInterStation.getDistance().add(downInterStation.getDistance())));
+                downInterStation.getDownStationId(),
+                upInterStation.getDistance().add(downInterStation.getDistance())));
     }
 
     private int findDownStationIndex(final long stationId) {
