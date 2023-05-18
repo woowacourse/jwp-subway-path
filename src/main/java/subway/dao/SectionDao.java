@@ -58,9 +58,9 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionEntityRowMapper);
     }
 
-    public void delete(final SectionEntity sectionEntity) {
+    public int deleteById(Long id) {
         final String sql = "DELETE FROM section WHERE id = ?";
-        jdbcTemplate.update(sql, sectionEntity.getId());
+        return jdbcTemplate.update(sql, id);
     }
 
 }

@@ -20,9 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class SectionDaoTest {
 
-    private final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rn) -> new SectionEntity(
-            rs.getLong("id"), rs.getLong("line_id"), rs.getInt("distance"),
-            rs.getLong("previous_station_id"), rs.getLong("next_station_id")
+    private static final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rn) -> new SectionEntity(
+            rs.getLong("id"),
+            rs.getLong("line_id"),
+            rs.getInt("distance"),
+            rs.getLong("previous_station_id"),
+            rs.getLong("next_station_id")
     );
 
     @Autowired
@@ -77,28 +80,29 @@ class SectionDaoTest {
      * INSERT INTO section(line_id, distance, previous_station_id, next_station_id)
      * VALUES(1, 3, 1, 2), (1, 4, 2, 3), (2, 5, 1, 4), (2, 6, 4, 5);
      */
-//    @Test
-//    @DisplayName("Section을 삭제한다. (성공)")
-//    @Sql("/section_test_data.sql")
-//    void delete_success() {
-//        sectionDao.delete();
-//    }
-//
-//    @Test
-//    @DisplayName("Section을 삭제한다. (실패)")
-//    @Sql("/section_test_data.sql")
-//    void delete_fail() {
-//        // given
-//        final String selectSql = "SELECT id FROM section";
-//        List<Long> resultBeforeRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
-//        final SectionEntity sectionEntity = new SectionEntity.Builder().id(1L).build();
-//
-//        // when
-//        sectionDao.delete(sectionEntity);
-//
-//        // then
-//        List<Long> resultAfterRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
-//        assertThat(resultAfterRemove.size()).isEqualTo(resultBeforeRemove.size() - 1);
-//    }
+    @Test
+    @DisplayName("Section을 삭제한다. (성공)")
+    @Sql("/section_test_data.sql")
+    void delete_success() {
+        int removeCount = sectionDao.deleteById(1L);
+
+        String sql = "SELECT * FROM section WHERE id = ?";
+        List<SectionEntity> sectionEntity = jdbcTemplate.query(sql, sectionEntityRowMapper, 1L);
+        assertThat(removeCount).isEqualTo(1);
+        assertThat(sectionEntity).isEmpty();
+    }
+
+    /**
+     * INSERT INTO section(line_id, distance, previous_station_id, next_station_id)
+     * VALUES(1, 3, 1, 2), (1, 4, 2, 3), (2, 5, 1, 4), (2, 6, 4, 5);
+     */
+    @Test
+    @DisplayName("Section을 삭제한다. (실패)")
+    @Sql("/section_test_data.sql")
+    void delete_fail() {
+        int removeCount = sectionDao.deleteById(5L);
+
+        assertThat(removeCount).isEqualTo(0);
+    }
 
 }
