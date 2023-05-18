@@ -15,7 +15,7 @@ import subway.domain.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class PathFinderTest {
+class JGraphTPathFinderTest {
 
     @Test
     void 전체_노선에_포함되지_않은_역을_통한_객체_생성_테스트() {
@@ -24,7 +24,7 @@ class PathFinderTest {
         Sections sections = new Sections(line8Sections);
 
         // when & then
-        assertThatThrownBy(() -> new PathFinder(sections, cheonho, gangnam))
+        assertThatThrownBy(() -> new JGraphTPathFinder(sections, cheonho, gangnam))
             .isInstanceOf(PathException.class)
             .hasMessage("노선과 연결되지 않은 역이 입력되었습니다.");
     }
@@ -39,7 +39,7 @@ class PathFinderTest {
         Sections sections = new Sections(List.of(cheonhoJangji, kundaeGangnam));
 
         // when & then
-        assertThatThrownBy(() -> new PathFinder(sections, cheonho, gangnam))
+        assertThatThrownBy(() -> new JGraphTPathFinder(sections, cheonho, gangnam))
             .isInstanceOf(PathException.class)
             .hasMessage("두 역이 연결되지 않았습니다.");
     }
@@ -62,11 +62,11 @@ class PathFinderTest {
             List.of(wangsimniCheonho10, wangsimniJamsil11, cheonhoMongchon10, mongchonJamsil10));
 
         // when
-        PathFinder pathFinder = new PathFinder(sections, cheonho, jamsil);
+        JGraphTPathFinder JGraphTPathFinder = new JGraphTPathFinder(sections, cheonho, jamsil);
 
         // then
-        List<Station> verticies = pathFinder.getPathVerticies();
-        List<Section> edges = pathFinder.getPathEdges().getSections();
+        List<Station> verticies = JGraphTPathFinder.getPathVerticies();
+        List<Section> edges = JGraphTPathFinder.getPathEdges().getSections();
         assertThat(verticies).containsExactly(cheonho, mongchon, jamsil);
         assertThat(edges).containsExactly(cheonhoMongchon10, mongchonJamsil10);
     }
@@ -89,11 +89,11 @@ class PathFinderTest {
             List.of(wangsimniCheonho10, wangsimniJamsil10, cheonhoMongchon11, mongchonJamsil10));
 
         // when
-        PathFinder pathFinder = new PathFinder(sections, jamsil, cheonho);
+        JGraphTPathFinder JGraphTPathFinder = new JGraphTPathFinder(sections, jamsil, cheonho);
 
         // then
-        List<Station> verticies = pathFinder.getPathVerticies();
-        List<Section> edges = pathFinder.getPathEdges().getSections();
+        List<Station> verticies = JGraphTPathFinder.getPathVerticies();
+        List<Section> edges = JGraphTPathFinder.getPathEdges().getSections();
         assertThat(verticies).containsExactly(jamsil, wangsimni, cheonho);
         assertThat(edges).containsExactly(wangsimniJamsil10, wangsimniCheonho10);
     }
