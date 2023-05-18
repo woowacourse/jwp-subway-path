@@ -126,16 +126,42 @@ class SectionsTest {
         );
     }
 
-  @DisplayName("노선의 중간에 역을 추가할 때 넣을 거리가 더 큰 경우")
+  @DisplayName("노선의 중간에 역을 추가할 때 넣을 거리가 더 큰 경우 예외처리")
   @Test
-  void addStationWithFail() {
+  void addStationWithLonger() {
     //given
     final Sections sections = Sections.empty();
     sections.initializeSections(잠실새내역, 잠실나루역, 3);
 
     //when
     //then
-    Assertions.assertThatThrownBy(() -> sections.addSection(잠실역, 잠실나루역, 4));
+    Assertions.assertThatThrownBy(() -> sections.addSection(잠실역, 잠실나루역, 4))
+        .isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @DisplayName("노선이 초기화 되지 않고 역을 추가하는 경우 예외처리")
+  @Test
+  void addStationWithoutInitialize() {
+    //given
+    final Sections sections = Sections.empty();
+
+    //when
+    //then
+    Assertions.assertThatThrownBy(() -> sections.addSection(잠실역, 잠실나루역, 4))
+        .isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @DisplayName("추가하는 역들이 이미 구간을 이루고 있는 경우 예외처리")
+  @Test
+  void addExistedStations() {
+    //given
+    final Sections sections = Sections.empty();
+    sections.initializeSections(잠실새내역, 잠실나루역, 3);
+
+    //when
+    //then
+    Assertions.assertThatThrownBy(() -> sections.addSection(잠실새내역, 잠실나루역, 4))
+        .isInstanceOf(IllegalArgumentException.class);
   }
 
     @DisplayName("노선의 제일 앞에 있는 역을 제거한다.")
