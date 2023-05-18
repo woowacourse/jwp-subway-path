@@ -41,8 +41,8 @@ public class SectionService {
 
         Sections updated = sections.add(requestedSection);
 
-        sectionDao.save(updated.getAdded(sections), lineId);
-        sectionDao.delete(updated.getRemoved(sections));
+        sectionDao.save(updated.getAddedCompareTo(sections), lineId);
+        sectionDao.delete(updated.getRemovedCompareTo(sections));
     }
 
     public void removeStation(long stationId, long lineId) {
@@ -51,7 +51,7 @@ public class SectionService {
 
         Sections updated = sections.delete(requestedStation);
 
-        sectionDao.save(updated.getAdded(sections), lineId);
-        sectionDao.delete(updated.getRemoved(sections));
+        sectionDao.save(updated.getAddedCompareTo(sections), lineId);
+        sectionDao.delete(updated.getRemovedCompareTo(sections));
     }
 }

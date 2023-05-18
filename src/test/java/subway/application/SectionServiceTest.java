@@ -14,6 +14,7 @@ import subway.dao.StationDao;
 import subway.dto.request.SectionSaveRequest;
 import subway.dto.response.StationResponse;
 import subway.exception.InvalidSectionLengthException;
+import subway.exception.SectionNotFoundException;
 import subway.exception.StationNotFoundException;
 import subway.integration.IntegrationTest;
 
@@ -59,7 +60,8 @@ public class SectionServiceTest extends IntegrationTest {
         //when 현재상태: 1-2
         sectionService.removeStation(2L, 1L);
 
-        assertThat(sectionService.findByLineId(1L).size()).isEqualTo(0);
+        assertThatThrownBy(() -> sectionService.findByLineId(1L))
+                .isInstanceOf(SectionNotFoundException.class);
     }
 
     @Test
