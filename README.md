@@ -85,7 +85,7 @@
 
 
 [//]: # (우선 순위 낮음)
-- Line 이름으로 삭제 API - DELETE /lines?name={name}
+- Line 삭제 API - DELETE /lines/{id}
   - [ ] 통합 테스트 작성
   - [ ] Dao 단위 테스트 작성
   - [ ] Dao 프로덕션 코드 작성
@@ -94,24 +94,22 @@
   - [ ] Controller 단위 테스트
   - [ ] Controller 프로덕션 코드 작성
 
----
-### 구간 관련 기능
 
-- Line 에 Station 등록 API - POST /lineSections
+- Line 에 Station 등록 API - PATCH /lines/{id}/register
   - [x] 통합 테스트 작성
   - [x] Dao 단위 테스트 작성
   - [x] Dao 프로덕션 코드 작성
   - [x] Service 단위 테스트
-  - [x] Service 프로덕션 코드 작성 
+  - [x] Service 프로덕션 코드 작성
   - [x] Controller 단위 테스트
   - [x] Controller 프로덕션 코드 작성
 
 
-- Line 에서 Station 제거 API
-    - [x] 통합 테스트 작성
-    - [x] Dao 단위 테스트 작성
-    - [x] Dao 프로덕션 코드 작성
-    - [x] Service 단위 테스트
-    - [x] Service 프로덕션 코드 작성
-    - [ ] Controller 단위 테스트
-    - [x] Controller 프로덕션 코드 작성
+- Line 에서 Station 제거 API - PATCH /lines/{id}/unregister
+  - [x] 통합 테스트 작성
+  - [x] Dao 단위 테스트 작성
+  - [x] Dao 프로덕션 코드 작성
+  - [x] Service 단위 테스트
+  - [x] Service 프로덕션 코드 작성
+  - [ ] Controller 단위 테스트
+  - [x] Controller 프로덕션 코드 작성
