@@ -1,4 +1,4 @@
-package subway.presentation;
+package subway.presentation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
