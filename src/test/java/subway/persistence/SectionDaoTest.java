@@ -123,6 +123,25 @@ class SectionDaoTest {
     }
 
     @Test
+    @DisplayName("구간 여러개 삭제 성공")
+    void deleteAll_success() {
+        // given
+        final long[] sectionIds = {1L, 2L};
+        final String sql = "SELECT * FROM section WHERE id = ?";
+        final SectionEntity sectionEntity1 = jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, sectionIds[0]);
+        final SectionEntity sectionEntity2 = jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, sectionIds[1]);
+
+        // when
+        sectionDao.deleteAll(List.of(sectionEntity1, sectionEntity2));
+
+        // then
+        assertThatThrownBy(() -> jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, sectionIds[0]))
+                .isInstanceOf(EmptyResultDataAccessException.class);
+        assertThatThrownBy(() -> jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, sectionIds[1]))
+                .isInstanceOf(EmptyResultDataAccessException.class);
+    }
+
+    @Test
     @DisplayName("노선 id와 이전 역 id로 구간 조회 성공")
     void findByLineIdAndPreviousStationId_success() {
         // given

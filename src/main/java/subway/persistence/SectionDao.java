@@ -2,6 +2,7 @@ package subway.persistence;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -15,6 +16,8 @@ import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +62,21 @@ public class SectionDao {
     public void delete(final SectionEntity sectionEntity) {
         final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.update(sql, sectionEntity.getId());
+    }
+
+    public void deleteAll(final List<SectionEntity> sectionEntities) {
+        final String sql = "DELETE FROM section WHERE id = ?";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                ps.setLong(1, sectionEntities.get(i).getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return sectionEntities.size();
+            }
+        });
     }
 
     public Optional<SectionEntity> findByLineIdAndPreviousStationId(
