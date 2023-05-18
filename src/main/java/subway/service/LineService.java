@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Station;
+import subway.domain.charge.Charge;
 import subway.dto.AddStationToExistLineDto;
 import subway.dto.CreateNewLineDto;
 import subway.repository.LineRepository;
@@ -27,7 +28,7 @@ public class LineService {
         Station upStation = stationRepository.getStation(dto.getUpStationId());
         Station downStation = stationRepository.getStation(dto.getDownStationId());
 
-        Line createdLine = Line.createLine(dto.getLineName(), dto.getExtraCharge(), upStation, downStation, dto.getDistance());
+        Line createdLine = Line.createLine(dto.getLineName(), new Charge(dto.getExtraCharge()), upStation, downStation, dto.getDistance());
 
         return lineRepository.insertNewLine(createdLine);
     }

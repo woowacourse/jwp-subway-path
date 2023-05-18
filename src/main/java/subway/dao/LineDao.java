@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.domain.charge.Charge;
 
 @Repository
 public class LineDao {
@@ -22,7 +23,7 @@ public class LineDao {
             return new Line(
                     resultSet.getLong("id"),
                     resultSet.getString("name"),
-                    resultSet.getInt("extra_charge"));
+                    new Charge(resultSet.getDouble("extra_charge")));
         };
     }
 
@@ -32,7 +33,7 @@ public class LineDao {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, line.getName());
-            ps.setInt(2, line.getExtraCharge());
+            ps.setDouble(2, line.getExtraCharge().getValue());
             return ps;
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();

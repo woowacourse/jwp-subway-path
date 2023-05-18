@@ -7,34 +7,35 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import subway.domain.charge.Charge;
 
 public class Line {
 
     private Long id;
     private String name;
-    private Integer extraCharge;
+    private Charge extraCharge;
 
     private List<Section> sections;
 
-    public Line(String name, Integer extraCharge) {
+    public Line(String name, Charge extraCharge) {
         this.name = name;
         this.extraCharge = extraCharge;
     }
 
-    public Line(Long id, String name, Integer extraCharge, List<Section> sections) {
+    public Line(Long id, String name, Charge extraCharge, List<Section> sections) {
         this.id = id;
         this.name = name;
         this.extraCharge = extraCharge;
         this.sections = sections;
     }
 
-    public Line(Long id, String name, Integer extraCharge) {
+    public Line(Long id, String name, Charge extraCharge) {
         this.id = id;
         this.name = name;
         this.extraCharge = extraCharge;
     }
 
-    public static Line createLine(String name, int extraCharge, Station upStation, Station downStation, int distance) {
+    public static Line createLine(String name, Charge extraCharge, Station upStation, Station downStation, int distance) {
         List<Section> sections = new ArrayList<>();
         sections.add(new Section(upStation, downStation, distance));
         return new Line(null, name, extraCharge, sections);
@@ -135,7 +136,7 @@ public class Line {
         return sections;
     }
 
-    public int getExtraCharge() {
+    public Charge getExtraCharge() {
         return extraCharge;
     }
 

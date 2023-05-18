@@ -7,10 +7,10 @@ public class LineCreateResponse {
 
     private final Long lineId;
     private final String lineName;
-    private final Integer extraCharge;
+    private final Double extraCharge;
     private final List<Long> stationIds;
 
-    public LineCreateResponse(Long lineId, String lineName, Integer extraCharge, List<Long> stationIds) {
+    public LineCreateResponse(Long lineId, String lineName, Double extraCharge, List<Long> stationIds) {
         this.lineId = lineId;
         this.lineName = lineName;
         this.extraCharge = extraCharge;
@@ -18,7 +18,7 @@ public class LineCreateResponse {
     }
 
     public static LineCreateResponse fromDomain(Line line) {
-        return new LineCreateResponse(line.getId(), line.getName(), line.getExtraCharge(), line.getStationIds());
+        return new LineCreateResponse(line.getId(), line.getName(), line.getExtraCharge().getValue(), line.getStationIds());
     }
 
     public Long getLineId() {
@@ -29,7 +29,7 @@ public class LineCreateResponse {
         return lineName;
     }
 
-    public Integer getExtraCharge() {
+    public Double getExtraCharge() {
         return extraCharge;
     }
 

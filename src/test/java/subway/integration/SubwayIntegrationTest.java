@@ -19,6 +19,7 @@ import subway.domain.Line;
 import subway.domain.LineInPath;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.charge.Charge;
 import subway.dto.LineInPathDto;
 import subway.dto.request.FindShortestRouteRequest;
 import subway.dto.response.FindShortestRouteResponse;
@@ -60,9 +61,9 @@ public class SubwayIntegrationTest extends IntegrationTest {
         STATION_E = stationDao.insert(new Station("E"));
         STATION_F = stationDao.insert(new Station("F"));
 
-        LINEA = lineRepository.assembleLine(lineDao.insert(new Line("LINEA", 100)));
-        LINEB = lineRepository.assembleLine(lineDao.insert(new Line("LINEB", 0)));
-        LINEC = lineRepository.assembleLine(lineDao.insert(new Line("LINEC", 500)));
+        LINEA = lineRepository.assembleLine(lineDao.insert(new Line("LINEA", new Charge(100))));
+        LINEB = lineRepository.assembleLine(lineDao.insert(new Line("LINEB", new Charge(0))));
+        LINEC = lineRepository.assembleLine(lineDao.insert(new Line("LINEC", new Charge(500))));
 
         // a-b-c
         sectionDao.insert(LINEA.getId(), new Section(STATION_A, STATION_B, 3));

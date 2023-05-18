@@ -1,13 +1,14 @@
 package subway.domain;
 
 import java.util.List;
+import subway.domain.charge.Charge;
 
 public class Path {
     private final List<LineInPath> lines;
     private final double totalDistance;
-    private final double totalCharge;
+    private final Charge totalCharge;
 
-    public Path(List<LineInPath> lines, double totalDistance, double totalCharge) {
+    public Path(List<LineInPath> lines, double totalDistance, Charge totalCharge) {
         this.lines = lines;
         this.totalDistance = totalDistance;
         this.totalCharge = totalCharge;
@@ -21,7 +22,7 @@ public class Path {
         return totalDistance;
     }
 
-    public double getTotalCharge() {
+    public Charge getTotalCharge() {
         return totalCharge;
     }
 }
