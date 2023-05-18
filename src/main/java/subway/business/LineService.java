@@ -16,7 +16,6 @@ import subway.persistence.StationDao;
 import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
-import subway.persistence.entity.StationEntity;
 import subway.presentation.dto.request.StationRegisterInLineRequest;
 import subway.presentation.dto.request.StationUnregisterInLineRequest;
 import subway.presentation.dto.request.converter.SubwayDirection;
@@ -76,9 +75,13 @@ public class LineService {
         validateNewStationNotExistInLine(lineId, newStationId);
         final int distance = request.getDistance();
         if (request.getDirection() == SubwayDirection.UP) {
-            return registerUpperStation(new SectionEntity(lineId, distance, standardStationId, newStationId));
+            final List<SectionDetailEntity> registeredUpperEntity =
+                    registerUpperStation(new SectionEntity(lineId, distance, standardStationId, newStationId));
+            return convertToResponse(registeredUpperEntity);
         }
-        return registerDownStation(new SectionEntity(lineId, distance, newStationId, standardStationId));
+        final List<SectionDetailEntity> registeredDownEntity =
+                registerDownStation(new SectionEntity(lineId, distance, newStationId, standardStationId));
+        return convertToResponse(registeredDownEntity);
     }
 
     private void validateNewStationNotExistInLine(final long lineId, final long stationId) {
@@ -87,20 +90,19 @@ public class LineService {
         }
     }
 
-    private LineResponse registerUpperStation(final SectionEntity newSectionEntity) {
+    private List<SectionDetailEntity> registerUpperStation(final SectionEntity newSectionEntity) {
         Optional<SectionEntity> baseSection =
                 sectionDao.findByLineIdAndPreviousStationId(newSectionEntity.getLineId(), newSectionEntity.getPreviousStationId());
         return baseSection.map(sectionEntity -> registerUpperMidStation(sectionEntity, newSectionEntity))
                 .orElseGet(() -> registerEndStation(newSectionEntity));
     }
 
-    private LineResponse registerEndStation(final SectionEntity newSectionEntity) {
+    private List<SectionDetailEntity> registerEndStation(final SectionEntity newSectionEntity) {
         sectionDao.insert(newSectionEntity);
-        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(newSectionEntity.getLineId());
-        return convertToResponse(sectionDetailEntities);
+        return sectionDao.findSectionDetailByLineId(newSectionEntity.getLineId());
     }
 
-    private LineResponse registerUpperMidStation(final SectionEntity base, final SectionEntity newPrevious) {
+    private List<SectionDetailEntity> registerUpperMidStation(final SectionEntity base, final SectionEntity newPrevious) {
         validateDistance(base.getDistance(), newPrevious.getDistance());
         final int newNextDistance = base.getDistance() - newPrevious.getDistance();
         final SectionEntity newNext = new SectionEntity(base.getLineId(), newNextDistance,
@@ -108,22 +110,21 @@ public class LineService {
         return mergeSections(base, newPrevious, newNext);
     }
 
-    private LineResponse mergeSections(final SectionEntity base, final SectionEntity newPrevious, final SectionEntity newNext) {
+    private List<SectionDetailEntity> mergeSections(final SectionEntity base, final SectionEntity newPrevious, final SectionEntity newNext) {
         sectionDao.delete(base);
         sectionDao.insert(newPrevious);
         sectionDao.insert(newNext);
-        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(base.getLineId());
-        return convertToResponse(sectionDetailEntities);
+        return sectionDao.findSectionDetailByLineId(base.getLineId());
     }
 
-    private LineResponse registerDownStation(final SectionEntity newSectionEntity) {
+    private List<SectionDetailEntity> registerDownStation(final SectionEntity newSectionEntity) {
         Optional<SectionEntity> baseSection =
                 sectionDao.findByLineIdAndNextStationId(newSectionEntity.getLineId(), newSectionEntity.getNextStationId());
         return baseSection.map(sectionEntity -> registerDownMidStation(sectionEntity, newSectionEntity))
                 .orElseGet(() -> registerEndStation(newSectionEntity));
     }
 
-    private LineResponse registerDownMidStation(final SectionEntity base, final SectionEntity newNext) {
+    private List<SectionDetailEntity> registerDownMidStation(final SectionEntity base, final SectionEntity newNext) {
         validateDistance(base.getDistance(), newNext.getDistance());
         final int newPreviousDistance = base.getDistance() - newNext.getDistance();
         final SectionEntity newPrevious = new SectionEntity(base.getLineId(), newPreviousDistance,
