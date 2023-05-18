@@ -5,9 +5,7 @@ import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
 import subway.domain.Station;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class StationRepository {
@@ -16,14 +14,6 @@ public class StationRepository {
 
     public StationRepository(final StationDao stationDao) {
         this.stationDao = stationDao;
-    }
-
-    public Station findById(final Long id) {
-        Optional<StationEntity> maybeStationEntity = stationDao.findById(id);
-        if (maybeStationEntity.isEmpty()) {
-            throw new IllegalArgumentException("해당 역은 존재하지 않습니다");
-        }
-        return maybeStationEntity.get().convertToStation();
     }
 
     public Station save(final Station station) {
@@ -35,6 +25,14 @@ public class StationRepository {
         );
     }
 
+    public Station findById(final Long id) {
+        Optional<StationEntity> maybeStationEntity = stationDao.findById(id);
+        if (maybeStationEntity.isEmpty()) {
+            throw new IllegalArgumentException("해당 역은 존재하지 않습니다");
+        }
+        return maybeStationEntity.get().convertToStation();
+    }
+
     public void update(final Station before, final Station after) {
         StationEntity stationEntity = new StationEntity(before.getId(), after.getName());
         stationDao.update(stationEntity);
@@ -42,11 +40,5 @@ public class StationRepository {
 
     public void delete(final Station station) {
         stationDao.deleteById(station.getId());
-    }
-
-    private List<StationEntity> convertToStationEntities(final List<Station> stations) {
-        return stations.stream()
-                .map(StationEntity::from)
-                .collect(Collectors.toList());
     }
 }

@@ -73,13 +73,6 @@ public class LineRepository {
         lineDao.update(lineEntity);
     }
 
-
-    private List<LineEntity> convertToLineEntities(final List<Line> lines) {
-        return lines.stream()
-                .map(LineEntity::from)
-                .collect(Collectors.toList());
-    }
-
     public void delete(final Line line) {
         LineEntity lineEntity = LineEntity.from(line);
         sectionDao.deleteByLineId(lineEntity.getId());
