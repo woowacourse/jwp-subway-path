@@ -1,58 +1,57 @@
 package subway.domain.section.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.line.dao.SectionDao;
+import subway.domain.section.domain.Section;
 import subway.domain.section.domain.entity.SectionEntity;
-import subway.domain.section.exception.SectionNotFoundException;
+import subway.domain.section.domain.repository.SectionRepository;
 import subway.domain.section.presentation.dto.SectionSaveRequest;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
+@Transactional(readOnly = true)
 public class SectionService {
 
-    private final SectionDao sectionDao;
+    private final SectionRepository sectionRepository;
 
-    public SectionService(final SectionDao sectionDao) {
-        this.sectionDao = sectionDao;
+    public SectionService(final SectionRepository sectionRepository) {
+        this.sectionRepository = sectionRepository;
     }
 
     @Transactional
     public void saveSection(final SectionSaveRequest request) {
-        Optional<SectionEntity> sectionOptional = sectionDao.findByUpStationId(request.getUpStationId());
+        Optional<SectionEntity> sectionOptional = sectionRepository.findOptionalByUpStationId(request.getUpStationId());
         if (sectionOptional.isPresent()) {
-            deleteOriginAndCreateNewSection(request, sectionOptional);
+            SectionEntity sectionEntity = sectionOptional.get();
+            Section section = Section.from(sectionEntity);
+            Section leftSection = section.getLeftSection(sectionEntity.getLineId(), request.getDownStationId(), request.getDistance());
+            Section rightSection = section.getRightSection(sectionEntity.getLineId(), request.getDownStationId(), request.getDistance());
+            deleteOriginAndCreateNewSection(section.getLineId(), leftSection, rightSection);
             return;
         }
-        SectionEntity sectionEntity = SectionEntity.of(request.getLineId(), request.getUpStationId(), request.getDownStationId(), request.getDistance());
-        sectionDao.insert(sectionEntity);
+        sectionRepository.insert(request.toDomain());
     }
 
-    private void deleteOriginAndCreateNewSection(final SectionSaveRequest request, final Optional<SectionEntity> sectionOptional) {
-        SectionEntity sectionEntity = sectionOptional.get();
-        int fromUpStationToDownStationDistance = request.getDistance();
-        int fromDownStationToUpStationDistance = sectionEntity.getDistance() - request.getDistance();
-        SectionEntity fromUpStationToDownStationSectionEntity = SectionEntity.of(request.getLineId(), sectionEntity.getUpStationId(), request.getDownStationId(), fromUpStationToDownStationDistance);
-        SectionEntity fromDownStationToUpStationSectionEntity = SectionEntity.of(request.getLineId(), request.getDownStationId(), sectionEntity.getDownStationId(), fromDownStationToUpStationDistance);
-        sectionDao.deleteById(sectionEntity.getId());
-        sectionDao.insert(fromUpStationToDownStationSectionEntity);
-        sectionDao.insert(fromDownStationToUpStationSectionEntity);
+    private void deleteOriginAndCreateNewSection(final Long originSectionId, final Section leftSection, final Section rightSection) {
+        sectionRepository.deleteById(originSectionId);
+        sectionRepository.insert(leftSection);
+        sectionRepository.insert(rightSection);
     }
 
-    public List<SectionEntity> findAll() {
-        return sectionDao.findAll();
+    public List<Section> findAll() {
+        return sectionRepository.findAll();
     }
 
-    public SectionEntity findLeftSectionByStationId(final Long stationId) {
-        return sectionDao.findLeftSectionByStationId(stationId)
-                .orElseThrow(() -> SectionNotFoundException.THROW);
-    }
+    @Transactional
+    public void ifMiddleStationDelete(final Long stationId, final Long lineId) {
+        final Section leftSection = sectionRepository.findLeftSectionByStationId(stationId);
+        final Section rightSection = sectionRepository.findRightSectionByStationId(stationId);
 
-    public SectionEntity findRightSectionByStationId(final Long stationId) {
-        return sectionDao.findRightSectionByStationId(stationId)
-                .orElseThrow(() -> SectionNotFoundException.THROW);
-    }
+        int newDistance = leftSection.getDistanceValue() + rightSection.getDistanceValue();
+        Section section = Section.of(lineId, leftSection.getUpStation().getId(), rightSection.getDownStation().getId(), newDistance);
 
+        saveSection(SectionSaveRequest.from(section));
+    }
 }

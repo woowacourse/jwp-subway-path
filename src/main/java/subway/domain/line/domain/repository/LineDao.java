@@ -1,4 +1,4 @@
-package subway.domain.line.dao;
+package subway.domain.line.domain.repository;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,18 +24,18 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate) {
+    public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("lines")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(LineEntity lineEntity) {
+    public Long insert(final LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", lineEntity.getId());
-        params.put("name", lineEntity.getName());
-        params.put("color", lineEntity.getColor());
+        params.put("name", lineEntity.getNameValue());
+        params.put("color", lineEntity.getColorValue());
 
         return insertAction.executeAndReturnKey(params).longValue();
     }
@@ -45,7 +45,7 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<LineEntity> findById(Long id) {
+    public Optional<LineEntity> findById(final Long id) {
         String sql = "select id, name, color from LINES WHERE id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -54,12 +54,12 @@ public class LineDao {
         }
     }
 
-    public void updateById(Long id, LineEntity newLineEntity) {
+    public void updateById(final Long id, final LineEntity lineEntity) {
         String sql = "update LINES set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLineEntity.getName(), newLineEntity.getColor(), id});
+        jdbcTemplate.update(sql, new Object[]{lineEntity.getNameValue(), lineEntity.getColorValue(), id});
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         jdbcTemplate.update("delete from Lines where id = ?", id);
     }
 

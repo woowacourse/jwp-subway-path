@@ -14,7 +14,7 @@ public class Distance {
         return new Distance(distance);
     }
 
-    public int getDistance() {
+    public int getValue() {
         return distance;
     }
 

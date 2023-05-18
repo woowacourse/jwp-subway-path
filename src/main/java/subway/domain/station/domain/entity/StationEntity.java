@@ -1,5 +1,6 @@
 package subway.domain.station.domain.entity;
 
+import subway.domain.station.domain.Station;
 import subway.domain.vo.Name;
 
 import java.util.Objects;
@@ -14,12 +15,16 @@ public class StationEntity {
         this.name = name;
     }
 
-    public static StationEntity of(final String name) {
-        return new StationEntity(null, Name.from(name));
+    public static StationEntity of(final Name name) {
+        return new StationEntity(null, name);
     }
 
     public static StationEntity of(final Long id, final String name) {
         return new StationEntity(id, Name.from(name));
+    }
+
+    public Station toDomain() {
+        return Station.of(id, name);
     }
 
     public Long getId() {
@@ -27,11 +32,7 @@ public class StationEntity {
     }
 
     public String getName() {
-        return name.getName();
-    }
-
-    public void updateName(final String name) {
-        this.name = Name.from(name);
+        return name.getValue();
     }
 
     @Override

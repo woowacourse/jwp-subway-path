@@ -1,76 +1,58 @@
 package subway.domain.station.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.line.dao.StationDao;
-import subway.domain.section.domain.entity.SectionEntity;
-import subway.domain.station.domain.entity.StationEntity;
-import subway.domain.station.exception.StationNotFoundException;
+import subway.domain.section.domain.repository.SectionRepository;
+import subway.domain.station.domain.Station;
+import subway.domain.station.domain.repository.StationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-@Component
+@Service
+@Transactional(readOnly = true)
 public class StationService {
 
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
 
-    public StationService(final StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(final StationRepository stationRepository, final SectionRepository sectionRepository) {
+        this.stationRepository = stationRepository;
+        this.sectionRepository = sectionRepository;
     }
+
 
     @Transactional
-    public Long insert(final StationEntity stationEntity) {
-        return stationDao.insert(stationEntity);
+    public Long insert(final String name) {
+        return stationRepository.insert(Station.from(name));
     }
 
-    public StationEntity findFinalUpStation(final Long lineId) {
-        return stationDao.findFinalUpStation(lineId)
-                .orElseThrow(() -> StationNotFoundException.THROW);
+    public Station findById(final Long stationId) {
+        return stationRepository.findById(stationId);
     }
 
-    public StationEntity findById(final Long stationId) {
-        return stationDao.findById(stationId)
-                .orElseThrow(() -> StationNotFoundException.THROW);
-    }
-
-    public List<StationEntity> findAll(final Long lineId, final List<SectionEntity> sectionEntities) {
-        StationEntity finalUpStationEntity = findFinalUpStation(lineId);
-
-        List<StationEntity> results = new ArrayList<>();
-        results.add(finalUpStationEntity);
-
-        Long beforeStationId = finalUpStationEntity.getId();
-
-        int totalSections = sectionEntities.size();
-        while (results.size() < totalSections + 1) {
-            for (SectionEntity sectionEntity : sectionEntities) {
-                beforeStationId = IfSameStationUpdateStationId(results, beforeStationId, sectionEntity);
-            }
-        }
-        return results;
-    }
-
-    private Long IfSameStationUpdateStationId(final List<StationEntity> results, Long beforeStationId, final SectionEntity sectionEntity) {
-        if (sectionEntity.getUpStationId() == beforeStationId) {
-            StationEntity stationEntity = findById(sectionEntity.getDownStationId());
-            results.add(stationEntity);
-            beforeStationId = stationEntity.getId();
-        }
-        return beforeStationId;
+    public List<Station> findAll() {
+        return stationRepository.findAll();
     }
 
     @Transactional
     public void updateById(final Long stationId, final String name) {
-        StationEntity stationEntity = stationDao.findById(stationId)
-                .orElseThrow(() -> StationNotFoundException.THROW);
-        stationEntity.updateName(name);
-        stationDao.updateById(stationId, stationEntity);
+        stationRepository.updateById(stationId, Station.from(name));
     }
 
     @Transactional
     public void deleteById(final Long stationId) {
-        stationDao.deleteById(stationId);
+        stationRepository.deleteById(stationId);
+    }
+
+    @Transactional
+    public void ifFinalStationDelete(final Long lineId, final Long stationId) {
+        Station station = findById(stationId);
+        Map<String, Station> finalStations = stationRepository.getFinalStations(lineId);
+        if (station.isFinalStations(finalStations)) {
+            stationRepository.deleteById(stationId);
+
+        }
     }
 
 }

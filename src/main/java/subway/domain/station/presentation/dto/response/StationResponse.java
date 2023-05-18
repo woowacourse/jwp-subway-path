@@ -1,25 +1,26 @@
 package subway.domain.station.presentation.dto.response;
 
-import subway.domain.station.domain.entity.StationEntity;
+import subway.domain.station.domain.Station;
 
 public class StationResponse {
-    private Long id;
+    private Long stationId;
     private String name;
 
-    public StationResponse(Long id, String name) {
-        this.id = id;
+    public StationResponse(Long stationId, String name) {
+        this.stationId = stationId;
         this.name = name;
     }
 
-    public static StationResponse of(StationEntity stationEntity) {
-        return new StationResponse(stationEntity.getId(), stationEntity.getName());
+    public static StationResponse from(Station station) {
+        return new StationResponse(station.getId(), station.getNameValue());
     }
 
-    public Long getId() {
-        return id;
+    public Long getStationId() {
+        return stationId;
     }
 
     public String getName() {
         return name;
     }
+
 }

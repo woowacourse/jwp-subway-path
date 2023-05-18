@@ -1,7 +1,5 @@
 package subway.domain.line.presentation.dto;
 
-import subway.domain.line.domain.entity.LineEntity;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -38,10 +36,6 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
-    }
-
-    public LineEntity toEntity() {
-        return LineEntity.of(name, color);
     }
 
     @Override

@@ -1,42 +1,36 @@
 package subway.domain.station.facade;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.section.domain.entity.SectionEntity;
-import subway.domain.section.presentation.dto.SectionSaveRequest;
 import subway.domain.section.service.SectionService;
-import subway.domain.station.domain.entity.StationEntity;
+import subway.domain.station.domain.Station;
 import subway.domain.station.presentation.dto.response.StationResponse;
 import subway.domain.station.service.StationService;
-import subway.global.util.FinalStationFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
-@Service
+@Component
 public class StationFacade {
 
-    private final FinalStationFactory finalStationFactory;
     private final StationService stationService;
     private final SectionService sectionService;
 
-    public StationFacade(final StationService stationService, final SectionService sectionService, final FinalStationFactory finalStationFactory) {
+    public StationFacade(final StationService stationService, final SectionService sectionService) {
         this.stationService = stationService;
         this.sectionService = sectionService;
-        this.finalStationFactory = finalStationFactory;
     }
 
     @Transactional
     public Long createStation(final String name) {
-        return stationService.insert(StationEntity.of(name));
+        return stationService.insert(name);
     }
 
-    public List<StationResponse> getAllByLineId(final Long lineId) {
-        List<SectionEntity> sections = sectionService.findAll();
-        List<StationEntity> stations = stationService.findAll(lineId, sections);
+    public List<StationResponse> getAll() {
+        List<Station> stations = stationService.findAll();
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -47,18 +41,8 @@ public class StationFacade {
 
     @Transactional
     public void deleteById(final Long lineId, final Long stationId) {
-        StationEntity stationEntity = stationService.findById(stationId);
-        if (finalStationFactory.getFinalStation(lineId).isFinalStation(stationEntity.getName())) {
-            stationService.deleteById(stationId);
-            return;
-        }
-        final SectionEntity leftSectionEntity = sectionService.findLeftSectionByStationId(stationId);
-        final SectionEntity rightSectionEntity = sectionService.findRightSectionByStationId(stationId);
-        int newDistance = leftSectionEntity.getDistance() + rightSectionEntity.getDistance();
-        SectionEntity sectionEntity = SectionEntity.of(lineId, leftSectionEntity.getUpStationId(), rightSectionEntity.getDownStationId(), newDistance);
-
-        stationService.deleteById(stationId);
-        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
+        stationService.ifFinalStationDelete(lineId, stationId);
+        sectionService.ifMiddleStationDelete(lineId, stationId);
     }
 
 }

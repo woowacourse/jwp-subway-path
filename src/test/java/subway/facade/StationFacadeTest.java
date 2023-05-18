@@ -61,11 +61,11 @@ class StationFacadeTest {
         doReturn(stations).when(stationService).findAll(lineId, null);
 
         // when
-        List<StationResponse> responses = stationFacade.getAllByLineId(lineId);
+        List<StationResponse> responses = stationFacade.getAll(lineId);
 
         // then
         assertAll(
-                () -> assertThat(responses).extracting(StationResponse::getId).contains(1L, 2L),
+                () -> assertThat(responses).extracting(StationResponse::getStationId).contains(1L, 2L),
                 () -> assertThat(responses).extracting(StationResponse::getName).contains("잠실역", "잠실새내역")
         );
     }

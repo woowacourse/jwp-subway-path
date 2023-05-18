@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.domain.line.facade.LineFacade;
 import subway.domain.line.presentation.dto.LineRequest;
-import subway.domain.line.presentation.dto.LineResponse;
+import subway.domain.line.presentation.dto.LineStationResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
@@ -49,14 +48,10 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineFacade.getAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineFacade.getLineResponseById(id));
+    @GetMapping("/{lineId}")
+    public ResponseEntity<LineStationResponse> findAllStationsIncludeLine(@PathVariable Long lineId) {
+        LineStationResponse response = lineFacade.getAllStationByLineIdAsc(lineId);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

@@ -33,9 +33,9 @@ public class StationController {
         return ResponseEntity.created(URI.create("/stations/" + stationId)).build();
     }
 
-    @GetMapping("/{lineId}")
-    public ResponseEntity<List<StationResponse>> showStations(@PathVariable Long lineId) {
-        return ResponseEntity.ok().body(stationFacade.getAllByLineId(lineId));
+    @GetMapping
+    public ResponseEntity<List<StationResponse>> showAllStations() {
+        return ResponseEntity.ok().body(stationFacade.getAll());
     }
 
     @PutMapping("/{stationId}")

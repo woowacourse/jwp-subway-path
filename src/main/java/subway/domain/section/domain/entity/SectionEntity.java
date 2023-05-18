@@ -1,8 +1,7 @@
 package subway.domain.section.domain.entity;
 
+import subway.domain.section.domain.Section;
 import subway.domain.vo.Distance;
-
-import java.util.Objects;
 
 public class SectionEntity {
 
@@ -45,6 +44,10 @@ public class SectionEntity {
         return new SectionEntity(id, lineId, upStationId, downStationId, Distance.from(distance));
     }
 
+    public Section toDomain() {
+        return Section.of(id, upStationId, downStationId, distance.getValue());
+    }
+
     public Long getId() {
         return id;
     }
@@ -62,20 +65,7 @@ public class SectionEntity {
     }
 
     public int getDistance() {
-        return distance.getDistance();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final SectionEntity that = (SectionEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(lineId, that.lineId) && Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId, that.downStationId) && Objects.equals(distance, that.distance);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, lineId, upStationId, downStationId, distance);
+        return distance.getValue();
     }
 
 }

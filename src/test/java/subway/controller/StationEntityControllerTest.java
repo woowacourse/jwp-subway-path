@@ -61,7 +61,7 @@ class StationEntityControllerTest {
                 new StationResponse(1L, "잠실역"),
                 new StationResponse(2L, "선릉역")
         );
-        when(stationFacade.getAllByLineId(1L)).thenReturn(responses);
+        when(stationFacade.getAll(1L)).thenReturn(responses);
         final String responseJson = objectMapper.writeValueAsString(responses);
 
         // when, then

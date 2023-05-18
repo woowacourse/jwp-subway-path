@@ -1,18 +1,16 @@
 package subway.domain.line.facade;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import subway.domain.line.domain.Line;
 import subway.domain.line.presentation.dto.LineRequest;
-import subway.domain.line.presentation.dto.LineResponse;
+import subway.domain.line.presentation.dto.LineStationResponse;
 import subway.domain.line.service.LineService;
-import subway.domain.section.domain.entity.SectionEntity;
 import subway.domain.section.presentation.dto.SectionSaveRequest;
 import subway.domain.section.service.SectionService;
 
-import java.util.List;
-
 @Transactional(readOnly = true)
-@Service
+@Component
 public class LineFacade {
 
     private final LineService lineService;
@@ -25,24 +23,20 @@ public class LineFacade {
 
     @Transactional
     public Long createLine(final LineRequest request, final Long finalUpStationId, final Long finalDownStationId) {
-        Long lineId = lineService.insert(request.toEntity());
-        SectionEntity sectionEntity = SectionEntity.of(lineId, finalUpStationId, finalDownStationId, request.getDistance());
-        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
+        Long lineId = lineService.insert(Line.of(request.getName(), request.getColor()));
+        SectionSaveRequest sectionSaveRequest = SectionSaveRequest.of(lineId, finalUpStationId, finalDownStationId, request.getDistance());
+        sectionService.saveSection(sectionSaveRequest);
         return lineId;
     }
 
     @Transactional
     public void registerStation(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
-        SectionEntity sectionEntity = SectionEntity.of(lineId, upStationId, downStationId, distance);
-        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
+        SectionSaveRequest sectionSaveRequest = SectionSaveRequest.of(lineId, upStationId, downStationId, distance);
+        sectionService.saveSection(sectionSaveRequest);
     }
 
-    public List<LineResponse> getAll() {
-        return lineService.findAll();
-    }
-
-    public LineResponse getLineResponseById(final Long id) {
-        return lineService.findById(id);
+    public LineStationResponse getAllStationByLineIdAsc(final Long lineId) {
+        return lineService.findAllByIdAsc(lineId);
     }
 
     @Transactional

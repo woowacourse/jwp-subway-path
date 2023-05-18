@@ -1,31 +1,38 @@
 package subway.domain.line.presentation.dto;
 
-import subway.domain.line.domain.entity.LineEntity;
+import subway.domain.line.domain.Line;
+import subway.domain.section.presentation.dto.response.SectionResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LineResponse {
     private Long id;
-    private String name;
-    private String color;
+    private List<SectionResponse> sectionResponse;
 
-    public LineResponse(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+    public LineResponse() {
     }
 
-    public static LineResponse of(LineEntity lineEntity) {
-        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+    private LineResponse(final Long id, final List<SectionResponse> sectionResponse) {
+        this.id = id;
+        this.sectionResponse = sectionResponse;
+    }
+
+    public static LineResponse from(Line line) {
+        return new LineResponse(
+                line.getId(),
+                line.getSectionsValues().stream()
+                        .map(SectionResponse::from)
+                        .collect(Collectors.toList())
+        );
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public List<SectionResponse> getSectionResponse() {
+        return sectionResponse;
     }
 
-    public String getColor() {
-        return color;
-    }
 }

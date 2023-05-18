@@ -1,5 +1,7 @@
 package subway.domain.line.domain.entity;
 
+import subway.domain.line.domain.Line;
+import subway.domain.section.domain.Sections;
 import subway.domain.vo.Color;
 import subway.domain.vo.Name;
 
@@ -24,21 +26,20 @@ public class LineEntity {
         return new LineEntity(id, Name.from(name), Color.from(color));
     }
 
+    public Line toDomain(final Sections sections) {
+        return Line.of(id, sections, name, color);
+    }
+
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name.getName();
+    public String getNameValue() {
+        return name.getValue();
     }
 
-    public String getColor() {
-        return color.getColor();
-    }
-
-    public void updateInfo(final String name, final String color) {
-        this.name = Name.from(name);
-        this.color = Color.from(color);
+    public String getColorValue() {
+        return color.getValue();
     }
 
     @Override

@@ -14,7 +14,7 @@ public class Color {
         return new Color(color);
     }
 
-    public String getColor() {
+    public String getValue() {
         return color;
     }
 
@@ -30,4 +30,5 @@ public class Color {
     public int hashCode() {
         return Objects.hash(color);
     }
+
 }
