@@ -1,13 +1,14 @@
 package subway.domain;
 
 public class Section {
-	private Long id;
 	private final Line line;
+	private Long id;
 	private Station upStation;
 	private Station downStation;
 	private Long distance;
 
-	public Section(final Long id, final Line line, final Station upStation, final Station downStation, final Long distance) {
+	public Section(final Long id, final Line line, final Station upStation, final Station downStation,
+		final Long distance) {
 		this.id = id;
 		this.line = line;
 		this.upStation = upStation;
@@ -25,19 +26,14 @@ public class Section {
 	public static Section of(final Line line, final String upStation, final String downStation, final Long distance) {
 		return new Section(line, new Station(upStation), new Station(downStation), distance);
 	}
-	public static Section of(final String lineName, final String upStationName, final String downStationName, final Long distance) {
+
+	public static Section of(final String lineName, final String upStationName, final String downStationName,
+		final Long distance) {
 		return new Section(new Line(lineName), new Station(upStationName), new Station(downStationName), distance);
 	}
 
 	public static Section of(final String upStation, final String downStation) {
 		return new Section(null, new Station(upStation), new Station(downStation), null);
-	}
-
-
-	private void validateDuplication(final Station nowStation, final Station nextStation) {
-		if (nowStation.equals(nextStation)) {
-			throw new IllegalArgumentException("중복된 이름입니다. 다른 이름을 입력해주세요.");
-		}
 	}
 
 	public boolean validateEqualEndPoint(final Station upEndPoint, final Station downEndPoint) {
@@ -49,11 +45,6 @@ public class Section {
 			&& this.upStation.equals(newSection.upStation) ||
 			this.upStation.equals(newSection.downStation)
 				&& this.downStation.equals(newSection.upStation);
-	}
-
-	public boolean validateMatchOne(final Section section) {
-		return this.downStation.equals(section.downStation)
-			|| this.upStation.equals(section.upStation);
 	}
 
 	public void changeSection(final Section newSection) {
@@ -81,15 +72,6 @@ public class Section {
 
 	public boolean isSameUpStation(final Station station) {
 		return station.equals(this.upStation);
-	}
-
-	public Section mergedSection(final Section section, final Station station) {
-		final Long distance = this.distance + section.getDistance();
-
-		if (this.downStation.equals(station)) {
-			return new Section(this.line, this.upStation, section.downStation, distance);
-		}
-		return new Section(this.line, this.downStation, section.upStation, distance);
 	}
 
 	public Long getId() {
