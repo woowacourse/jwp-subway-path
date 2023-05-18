@@ -30,24 +30,24 @@ public class LineStationService {
         final Station upStation = findStationByName(request.getUpStationName());
         final Station downStation = findStationByName(request.getDownStationName());
         final Distance distance = new Distance(request.getDistance());
-        line.addInitStations(upStation, downStation, distance);
-        lineRepository.update(line);
+        final Line addedLine = line.addInitStations(upStation, downStation, distance);
+        lineRepository.update(addedLine);
     }
 
     public void addStationToTopLine(final AddStationToEndLineRequest request) {
         final Line line = findLineByName(request.getLineName());
         final Station station = findStationByName(request.getStationName());
         final Distance distance = new Distance(request.getDistance());
-        line.addTopStation(station, distance);
-        lineRepository.update(line);
+        final Line addedLine = line.addTopStation(station, distance);
+        lineRepository.update(addedLine);
     }
 
     public void addStationToBottomLine(final AddStationToEndLineRequest request) {
         final Line line = findLineByName(request.getLineName());
         final Station station = findStationByName(request.getStationName());
         final Distance distance = new Distance(request.getDistance());
-        line.addBottomStation(station, distance);
-        lineRepository.update(line);
+        final Line addedLine = line.addBottomStation(station, distance);
+        lineRepository.update(addedLine);
     }
 
     public void addStationToBetweenLine(final AddStationToBetweenLineRequest request) {
@@ -56,15 +56,15 @@ public class LineStationService {
         final Station upStation = findStationByName(request.getUpStationName());
         final Station downStation = findStationByName(request.getDownStationName());
         final Distance distance = new Distance(request.getDistance());
-        line.addBetweenStation(station, upStation, downStation, distance);
-        lineRepository.update(line);
+        final Line addedLine = line.addBetweenStation(station, upStation, downStation, distance);
+        lineRepository.update(addedLine);
     }
 
     public void removeStationOnLine(final RemoveStationOnLineRequest request) {
         final Line line = findLineByName(request.getLineName());
         final Station station = findStationByName(request.getStationName());
-        line.removeStation(station);
-        lineRepository.update(line);
+        final Line removedLine = line.removeStation(station);
+        lineRepository.update(removedLine);
     }
 
     private Line findLineByName(final String name) {

@@ -32,35 +32,39 @@ public class Line {
         this(null, name, color, sections);
     }
 
-    public void addInitStations(final Station upStation, final Station downStation, final Distance distance) {
+    public Line addInitStations(final Station upStation, final Station downStation, final Distance distance) {
         checkSectionsNotEmpty();
         final Section section = new Section(upStation, downStation, distance);
-        sections.addAll(section);
+        final Sections addedSections = sections.addAll(section);
+        return new Line(id, name, color, addedSections);
     }
 
-    public void addTopStation(final Station station, final Distance distance) {
+    public Line addTopStation(final Station station, final Distance distance) {
         checkSectionsEmpty();
         final Station currentTopStation = sections.findTopStation();
         final Section section = new Section(station, currentTopStation, distance);
-        sections.addTop(section);
+        final Sections addedSections = sections.addTop(section);
+        return new Line(id, name, color, addedSections);
     }
 
-    public void addBottomStation(final Station station, final Distance distance) {
+    public Line addBottomStation(final Station station, final Distance distance) {
         checkSectionsEmpty();
         final Station currentBottomStation = sections.findBottomStation();
         final Section section = new Section(currentBottomStation, station, distance);
-        sections.addBottom(section);
+        final Sections addedSections = sections.addBottom(section);
+        return new Line(id, name, color, addedSections);
     }
 
-    public void addBetweenStation(final Station addStation, final Station upStation, final Station downStation,
+    public Line addBetweenStation(final Station addStation, final Station upStation, final Station downStation,
         final Distance distance) {
         checkSectionsEmpty();
         final Section existedSection = sections.findSection(upStation, downStation);
-        sections.remove(existedSection);
+        final Sections removedSections = sections.remove(existedSection);
         final Section upSection = new Section(existedSection.getUpStation(), addStation, distance);
         final Section downSection = new Section(addStation, existedSection.getDownStation(),
             existedSection.getDistance().minus(distance));
-        sections.addAll(upSection, downSection);
+        final Sections addedSections = removedSections.addAll(upSection, downSection);
+        return new Line(id, name, color, addedSections);
     }
 
     private void checkSectionsEmpty() {
@@ -75,8 +79,9 @@ public class Line {
         }
     }
 
-    public void removeStation(final Station station) {
-        sections.remove(station);
+    public Line removeStation(final Station station) {
+        final Sections removedSections = sections.remove(station);
+        return new Line(id, name, color, removedSections);
     }
 
     @Override

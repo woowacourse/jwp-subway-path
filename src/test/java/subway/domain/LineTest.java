@@ -39,13 +39,14 @@ class LineTest {
         //given
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
+        final Station newStation = new Station("newStation");
 
         //when
-        line.addTopStation(thirdStation, distance);
+        final Line result = line.addTopStation(newStation, distance);
 
         //then
-        assertThat(line.getStationsSize()).isEqualTo(4);
-        assertThat(line.getSections().findTopStation()).isEqualTo(thirdStation);
+        assertThat(result.getStationsSize()).isEqualTo(4);
+        assertThat(result.getSections().findTopStation()).isEqualTo(newStation);
     }
 
     @Test
@@ -68,14 +69,14 @@ class LineTest {
         //given
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
-        final Station station = new Station("station");
+        final Station newStation = new Station("newStation");
 
         //when
-        line.addBottomStation(station, distance);
+        final Line result = line.addBottomStation(newStation, distance);
 
         //then
-        assertThat(line.getStationsSize()).isEqualTo(4);
-        assertThat(line.getSections().findBottomStation()).isEqualTo(station);
+        assertThat(result.getStationsSize()).isEqualTo(4);
+        assertThat(result.getSections().findBottomStation()).isEqualTo(newStation);
     }
 
     @Test
@@ -97,15 +98,15 @@ class LineTest {
         //given
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
-        final Station station = new Station("station");
+        final Station newStation = new Station("station");
         final Distance distance = new Distance(5L);
 
         //when
-        line.addBetweenStation(station, firstStation, secondStation, distance);
+        final Line result = line.addBetweenStation(newStation, firstStation, secondStation, distance);
 
         //then
-        assertThat(line.getStationsSize()).isEqualTo(4);
-        assertThat(line.getSections().findStation(1)).isEqualTo(station);
+        assertThat(result.getStationsSize()).isEqualTo(4);
+        assertThat(result.getSections().findStation(1)).isEqualTo(newStation);
     }
 
     @Test
@@ -116,11 +117,11 @@ class LineTest {
         final Line line = new Line("name", "color", sections);
 
         //when
-        line.addInitStations(firstStation, secondStation, distance);
+        final Line result = line.addInitStations(firstStation, secondStation, distance);
 
         //then
-        assertThat(line.getStationsSize()).isEqualTo(2);
-        assertThat(line.getSections().findStation(0)).isEqualTo(firstStation);
+        assertThat(result.getStationsSize()).isEqualTo(2);
+        assertThat(result.getSections().findStation(0)).isEqualTo(firstStation);
     }
 
     @Test
@@ -145,10 +146,10 @@ class LineTest {
         final Line line = new Line("name", "color", sections);
 
         //when
-        line.removeStation(firstStation);
+        final Line result = line.removeStation(firstStation);
 
         //then
-        final Sections removedSections = line.getSections();
+        final Sections removedSections = result.getSections();
         assertThat(removedSections.getStationsSize()).isEqualTo(2);
         assertThat(removedSections.findTopStation()).isEqualTo(secondStation);
         assertThat(removedSections.findBottomStation()).isEqualTo(thirdStation);
@@ -162,10 +163,10 @@ class LineTest {
         final Line line = new Line("name", "color", sections);
 
         //when
-        line.removeStation(thirdStation);
+        final Line result = line.removeStation(thirdStation);
 
         //then
-        final Sections removedSections = line.getSections();
+        final Sections removedSections = result.getSections();
         assertThat(removedSections.getStationsSize()).isEqualTo(2);
         assertThat(removedSections.findTopStation()).isEqualTo(firstStation);
         assertThat(removedSections.findBottomStation()).isEqualTo(secondStation);
@@ -179,10 +180,10 @@ class LineTest {
         final Line line = new Line("name", "color", sections);
 
         //when
-        line.removeStation(secondStation);
+        final Line result = line.removeStation(secondStation);
 
         //then
-        final Sections removedSections = line.getSections();
+        final Sections removedSections = result.getSections();
         assertThat(removedSections.getStationsSize()).isEqualTo(2);
         assertThat(removedSections.findTopStation()).isEqualTo(firstStation);
         assertThat(removedSections.findBottomStation()).isEqualTo(thirdStation);
