@@ -80,7 +80,7 @@ public class LineRepository {
         final StationEntity stationEntity = stationDao.findById(id).orElseThrow(() ->
                 new IllegalStateException(id + "를 가진 역을 찾을 수 없습니다."));
 
-        return new Station(new StationName(stationEntity.getName()));
+        return new Station(id, new StationName(stationEntity.getName()));
     }
 
     public List<Line> findAllLine() {
