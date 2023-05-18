@@ -44,13 +44,19 @@ public class LineService {
 
     @Transactional
     public void insertStation(final StationInsertRequest stationInsertRequest) {
-        findStationById(stationInsertRequest.getStationId());
-        findStationById(stationInsertRequest.getAdjacentStationId());
+        validateIsStationExist(List.of(stationInsertRequest.getStationId(), stationInsertRequest.getAdjacentStationId()));
 
         final Line line = findLineById(stationInsertRequest.getLineId());
         insertStationInLine(stationInsertRequest, line);
 
         lineRepository.updateStationEdges(line);
+    }
+
+    private void validateIsStationExist(final List<Long> stationIds) {
+        final List<Station> stations = stationRepository.findById(stationIds);
+        if (stations.size() != stationIds.size()) {
+            throw new StationNotFoundException();
+        }
     }
 
 
