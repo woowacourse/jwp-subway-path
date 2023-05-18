@@ -14,10 +14,12 @@ import subway.domain.line.dto.LineResponse;
 import subway.domain.line.entity.LineEntity;
 import subway.domain.line.service.LineService;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -33,7 +35,10 @@ class LineServiceTest {
 
 
     @Test
-    void 모든_노선_정보_조회_테스트() {
+    void 모든_노선_정보_조회_성공_테스트() {
+        //given
+        given(lineDao.findAll()).willReturn(Optional.of(new ArrayList<>()));
+
         // when
         lineService.findAllLine();
 
@@ -42,26 +47,34 @@ class LineServiceTest {
     }
 
     @Test
-    void 단일_노선_정보_조회_테스트() {
+    void 단일_노선_정보_조회_성공_테스트() {
+        //given
+        given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(1L, null, null)));
+
         // when
-        lineService.findLineById(any());
+        lineService.findLineById(anyLong());
 
         // then
-        verify(lineDao).findById(any());
+        verify(lineDao).findById(anyLong());
     }
 
     @Test
     void 노선_정보_삭제_테스트() {
+        //given
+        given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(1L, null, null)));
+
         // when
-        lineService.deleteLineById(any());
+        lineService.deleteLineById(anyLong());
 
         // then
-        verify(lineDao).deleteById(any());
+        verify(lineDao).deleteById(anyLong());
     }
 
     @Test
     void 노선_정보_수정_테스트() {
-        // given
+        //given
+        given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(1L, null, null)));
+
         Long lineId = 1L;
         LineRequest line = new LineRequest("2호선", "초록색");
 

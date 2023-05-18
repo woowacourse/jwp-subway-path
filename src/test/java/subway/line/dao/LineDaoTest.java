@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.line.dao.LineDao;
 import subway.domain.line.entity.LineEntity;
@@ -72,9 +71,9 @@ class LineDaoTest {
         lineDao.update(updateLineEntity);
 
         //then
-        LineEntity findLineEntity = lineDao.findById(updateLineEntity.getId());
+        Optional<LineEntity> line = lineDao.findById(updateLineEntity.getId());
 
-        Assertions.assertThat(findLineEntity).isEqualTo(findLineEntity);
+        Assertions.assertThat(line.get()).isEqualTo(updateLineEntity);
     }
 
     @Test
@@ -97,15 +96,15 @@ class LineDaoTest {
         //then
         assertAll(
                 () -> assertDoesNotThrow(() -> lineDao.deleteById(insertLineEntity.getId())),
-                () -> assertThatThrownBy(() -> lineDao.findById(insertLineEntity.getId())).isInstanceOf(EmptyResultDataAccessException.class)
+                () -> lineDao.findById(insertLineEntity.getId()).isEmpty()
         );
     }
 
     @Test
     void Line_단일_검색_테스트() {
         //then
-        LineEntity lineEntity = lineDao.findById(1L);
-        Assertions.assertThat(lineEntity).isEqualTo(new LineEntity(1L, "2호선", "초록색"));
+        Optional<LineEntity> line = lineDao.findById(1L);
+        Assertions.assertThat(line.get()).isEqualTo(new LineEntity(1L, "2호선", "초록색"));
     }
 
     @Test
@@ -125,7 +124,7 @@ class LineDaoTest {
     @Test
     void Line_전체_검색_테스트() {
         //then
-        List<LineEntity> lineDetailEntities = lineDao.findAll();
-        Assertions.assertThat(lineDetailEntities).hasSize(2);
+        Optional<List<LineEntity>> lines = lineDao.findAll();
+        Assertions.assertThat(lines.get()).hasSize(2);
     }
 }

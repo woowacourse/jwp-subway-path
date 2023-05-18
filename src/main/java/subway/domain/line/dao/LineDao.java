@@ -42,14 +42,22 @@ public class LineDao {
         return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
     }
 
-    public List<LineEntity> findAll() {
-        final String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+    public Optional<List<LineEntity>> findAll() {
+        try {
+            final String sql = "select id, name, color from LINE";
+            return Optional.of(jdbcTemplate.query(sql, rowMapper));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public LineEntity findById(final Long id) {
-        final String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<LineEntity> findById(final Long id) {
+        try {
+            final String sql = "select id, name, color from LINE WHERE id = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<LineEntity> findByName(final String name) {
@@ -63,7 +71,7 @@ public class LineDao {
 
     public void update(final LineEntity newLineEntity) {
         final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId()});
+        jdbcTemplate.update(sql, newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId());
     }
 
     public void deleteById(final Long id) {
