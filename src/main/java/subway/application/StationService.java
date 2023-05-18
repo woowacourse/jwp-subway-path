@@ -18,15 +18,16 @@ public class StationService {
     }
 
     public StationResponse saveStation(final StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        Long stationId = stationDao.insert(new Station(stationRequest.getName()));
+        return findStationById(stationId);
+    }
+
+    public StationResponse findStationById(final Long id) {
+        Station station = stationDao.findById(id);
         return StationResponse.from(station);
     }
 
-    public StationResponse findStationResponseById(final Long id) {
-        return StationResponse.from(stationDao.findById(id));
-    }
-
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponse> findAllStations() {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()

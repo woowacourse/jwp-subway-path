@@ -15,6 +15,8 @@ import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionDto;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +44,7 @@ class LineServiceTest {
     @Test
     void saveLine() {
         LineRequest request = new LineRequest("1호선", "blue");
-        when(lineDao.insert(any())).thenReturn(new Line(1L, request.getName(), request.getColor()));
+        when(lineDao.insert(any())).thenReturn(new LineEntity(1L, request.getName(), request.getColor()));
 
         LineResponse response = lineService.saveLine(request);
 
@@ -56,10 +58,10 @@ class LineServiceTest {
     @DisplayName("라인의 id를 전달받아 DB에 저장된 라인을 반환한다")
     @Test
     void findLine() {
-        when(lineDao.findById(1L)).thenReturn(new Line(1L, "1호선", "blue"));
+        when(lineDao.findById(1L)).thenReturn(new LineEntity(1L, "1호선", "blue"));
         when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(
-                new SectionDto(1L, 1L, 2L, 6),
-                new SectionDto(1L, 2L, 3L, 4)
+                new SectionEntity(1L, 1L, 2L, 6),
+                new SectionEntity(1L, 2L, 3L, 4)
         ));
         when(stationDao.findById(1L)).thenReturn(new Station(1L, "잠실나루"));
         when(stationDao.findById(2L)).thenReturn(new Station(2L, "잠실"));

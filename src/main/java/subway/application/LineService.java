@@ -6,6 +6,8 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.*;
 import subway.dto.*;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,8 +27,9 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.from(persistLine);
+        LineEntity persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line line = new Line(persistLine.getId(), persistLine.getName(), persistLine.getColor());
+        return LineResponse.from(line);
     }
 
     public LineResponse findLineById(final Long id) {
@@ -42,13 +45,13 @@ public class LineService {
     }
 
     private Line configureLine(final Long id) {
-        Line persistLine = lineDao.findById(id);
-        List<SectionDto> sectionsDtos = sectionDao.findAllByLineId(id);
-        if (sectionsDtos.isEmpty()) {
-            return persistLine;
+        LineEntity persistLine = lineDao.findById(id);
+        List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(id);
+        if (sectionEntities.isEmpty()) {
+            return new Line(persistLine.getId(), persistLine.getName(), persistLine.getColor());
         }
 
-        Sections sections = new Sections(sectionsDtos.stream()
+        Sections sections = new Sections(sectionEntities.stream()
                 .collect(Collectors.toMap(
                         section -> stationDao.findById(section.getUpperStation()),
                         section -> new Section(

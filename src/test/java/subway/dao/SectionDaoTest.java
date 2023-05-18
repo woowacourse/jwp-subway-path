@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import subway.dto.SectionDto;
+import subway.entity.SectionEntity;
 
 @JdbcTest
 class SectionDaoTest {
@@ -64,7 +65,7 @@ class SectionDaoTest {
     void findAllByLineId() {
         SectionDto section = new SectionDto(LINE_ID, UPPER_STATION, LOWER_STATION, DISTANCE);
         sectionDao.insert(section);
-        List<SectionDto> result = sectionDao.findAllByLineId(LINE_ID);
+        List<SectionEntity> result = sectionDao.findAllByLineId(LINE_ID);
 
         assertThat(result).extracting("lineId", "upperStation", "lowerStation", "distance")
                 .contains(tuple(LINE_ID, UPPER_STATION, LOWER_STATION, DISTANCE));

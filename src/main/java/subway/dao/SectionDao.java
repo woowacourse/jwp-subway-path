@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dto.SectionDto;
+import subway.entity.SectionEntity;
 
 import java.util.List;
 
@@ -22,13 +23,12 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(SectionDto sectionDto) {
+    public Long insert(final SectionDto sectionDto) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(sectionDto);
-
         return simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
     }
 
-    public void insertAll(List<SectionDto> sectionDtos) {
+    public void insertAll(final List<SectionDto> sectionDtos) {
         SqlParameterSource[] parameterSources = sectionDtos.stream()
                 .map(BeanPropertySqlParameterSource::new)
                 .toArray(SqlParameterSource[]::new);
@@ -36,12 +36,12 @@ public class SectionDao {
         simpleJdbcInsert.executeBatch(parameterSources);
     }
 
-    public List<SectionDto> findAllByLineId(Long lineId) {
+    public List<SectionEntity> findAllByLineId(final Long lineId) {
         String sql = "SELECT * FROM section WHERE line_id = ?";
 
         return jdbcTemplate.query(
                 sql,
-                (rs, rowNum) -> new SectionDto(
+                (rs, rowNum) -> new SectionEntity(
                         rs.getLong("line_id"),
                         rs.getLong("upper_station"),
                         rs.getLong("lower_station"),
@@ -51,7 +51,7 @@ public class SectionDao {
         );
     }
 
-    public int deleteAllByLineId(Long lineId) {
+    public int deleteAllByLineId(final Long lineId) {
         String sql = "DELETE FROM section WHERE line_id = ?";
 
         return jdbcTemplate.update(sql, lineId);

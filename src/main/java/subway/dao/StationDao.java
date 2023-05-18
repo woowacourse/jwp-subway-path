@@ -22,7 +22,6 @@ public class StationDao {
                     rs.getString("name")
             );
 
-
     public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
@@ -30,10 +29,9 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(final Station station) {
+    public Long insert(final Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
     public List<Station> findAll() {

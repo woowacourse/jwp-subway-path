@@ -14,11 +14,11 @@ public class StationResponse {
         this.name = name;
     }
 
-    public static StationResponse from(Station station) {
+    public static StationResponse from(final Station station) {
         return new StationResponse(station.getId(), station.getName());
     }
 
-    public static List<StationResponse> from(List<Station> stations) {
+    public static List<StationResponse> from(final List<Station> stations) {
         return stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
