@@ -103,6 +103,21 @@ class StationDaoTest {
      */
 
     // findAll
+    @Test
+    @DisplayName("Station 전부를 조회한다.")
+    @Sql("/station_test_data.sql")
+    void findAll() {
+        List<StationEntity> stations = stationDao.findAll();
+
+        assertThat(stations).hasSize(5)
+                .containsAll(List.of(
+                new StationEntity(1L, "잠실"),
+                new StationEntity(2L, "잠실새내"),
+                new StationEntity(3L, "종합운동장"),
+                new StationEntity(4L, "석촌"),
+                new StationEntity(5L, "송파")
+        ));
+    }
 
     // update (0)
 
