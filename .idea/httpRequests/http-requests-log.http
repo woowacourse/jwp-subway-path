@@ -1,0 +1,763 @@
+POST http://localhost:8080/lines/1/stations
+Content-Type: application/json
+Content-Length: 61
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "upStationId": 1,
+  "downStationId": 3,
+  "distance": 1
+}
+
+<> 2023-05-18T132616.201.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 76
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "lineId": 1,
+  "upStationId": 1,
+  "downStationId": 2,
+  "distance": 3
+}
+
+<> 2023-05-18T132612.201.json
+
+###
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-18T132610.200.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "갓짱역"
+}
+
+<> 2023-05-18T132607.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "사평역"
+}
+
+<> 2023-05-18T132605.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 34
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "고속터미널역"
+}
+
+<> 2023-05-18T132603.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "9호선",
+  "color": "BROWN"
+}
+
+<> 2023-05-18T132602.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "GREEN"
+}
+
+<> 2023-05-18T132601.201.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 61
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "upStationId": 1,
+  "downStationId": 3,
+  "distance": 1
+}
+
+<> 2023-05-18T132452.500.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 61
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "upStationId": 1,
+  "downStationId": 3,
+  "distance": 1
+}
+
+<> 2023-05-18T132422.500.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 76
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "lineId": 1,
+  "upStationId": 1,
+  "downStationId": 2,
+  "distance": 3
+}
+
+<> 2023-05-18T132421.201.json
+
+###
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-18T132420.200.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "갓짱역"
+}
+
+<> 2023-05-18T132418.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "사평역"
+}
+
+<> 2023-05-18T132416.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 34
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "고속터미널역"
+}
+
+<> 2023-05-18T132415.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "9호선",
+  "color": "BROWN"
+}
+
+<> 2023-05-18T132413.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "GREEN"
+}
+
+<> 2023-05-18T132412.201.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 61
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "upStationId": 1,
+  "downStationId": 3,
+  "distance": 1
+}
+
+<> 2023-05-18T132300.500.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 76
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "lineId": 1,
+  "upStationId": 1,
+  "downStationId": 2,
+  "distance": 3
+}
+
+<> 2023-05-18T132258.201.json
+
+###
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-18T132256.200.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "갓짱역"
+}
+
+<> 2023-05-18T132254.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "사평역"
+}
+
+<> 2023-05-18T132253.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 34
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "고속터미널역"
+}
+
+<> 2023-05-18T132251.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "9호선",
+  "color": "BROWN"
+}
+
+<> 2023-05-18T132250.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "GREEN"
+}
+
+<> 2023-05-18T132249.201.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 61
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "upStationId": 1,
+  "downStationId": 3,
+  "distance": 1
+}
+
+<> 2023-05-18T132126.500.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 76
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "lineId": 1,
+  "upStationId": 1,
+  "downStationId": 2,
+  "distance": 3
+}
+
+<> 2023-05-18T132124.201.json
+
+###
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-18T132121.200.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "갓짱역"
+}
+
+<> 2023-05-18T132120.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "사평역"
+}
+
+<> 2023-05-18T132119.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 34
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "고속터미널역"
+}
+
+<> 2023-05-18T132115.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "9호선",
+  "color": "BROWN"
+}
+
+<> 2023-05-18T132114.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "GREEN"
+}
+
+<> 2023-05-18T132112.201.json
+
+###
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-18T132107.200.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 61
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "upStationId": 1,
+  "downStationId": 3,
+  "distance": 1
+}
+
+<> 2023-05-18T131937.500.json
+
+###
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+Content-Length: 76
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "lineId": 1,
+  "upStationId": 1,
+  "downStationId": 2,
+  "distance": 3
+}
+
+<> 2023-05-18T131931.201.json
+
+###
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-18T131925.200.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "갓짱역"
+}
+
+<> 2023-05-18T131922.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "사평역"
+}
+
+<> 2023-05-18T131920.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 34
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "고속터미널역"
+}
+
+<> 2023-05-18T131916.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "9호선",
+  "color": "BROWN"
+}
+
+<> 2023-05-18T131913.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "GREEN"
+}
+
+<> 2023-05-18T131908.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 34
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "고속터미널역"
+}
+
+<> 2023-05-18T131853.500.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 34
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "고속터미널역"
+}
+
+<> 2023-05-18T131850.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "9호선",
+  "color": "BROWN"
+}
+
+<> 2023-05-18T131848.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 44
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+
+  "name": "2호선",
+  "color": "GREEN"
+}
+
+<> 2023-05-18T131522.201.json
+
+###
+
+POST http://localhost:8080/lines/1/stations
+Content-Type: application/json
+Content-Length: 62
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "upStationId": 1,
+  "downStationId": 2,
+  "distance": 15
+}
+
+<> 2023-05-16T161805.400.txt
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "사평역"
+}
+
+<> 2023-05-16T161804.201.json
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 34
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "고속터미널역"
+}
+
+<> 2023-05-16T161802.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "9호선",
+  "color": "BROWN"
+}
+
+<> 2023-05-16T161800.201.json
+
+###
+
