@@ -14,8 +14,8 @@ public class Line {
     private static final int FIRST = 0;
 
     private final Long id;
-    private String name;
-    private String color;
+    private final String name;
+    private final String color;
     private final List<Section> sections;
 
     public Line(String name, String color) {
@@ -166,11 +166,11 @@ public class Line {
         return new ArrayList<>(sections);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Line changeName(String name) {
+        return new Line(id, name, color, sections);
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public Line changeColor(String color) {
+        return new Line(id, name, color, sections);
     }
 }

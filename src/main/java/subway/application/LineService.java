@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import subway.persistence.LineRepository;
-import subway.persistence.StationDao;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -14,6 +12,8 @@ import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
+import subway.persistence.LineRepository;
+import subway.persistence.StationDao;
 
 @Service
 public class LineService {
@@ -61,10 +61,11 @@ public class LineService {
     public void updateLine(Long id, LineRequest lineRequest) {
         Line line = lineRepository.findBy(id);
 
-        line.setName(lineRequest.getName());
-        line.setColor(lineRequest.getColor());
+        Line changed = line
+                .changeName(lineRequest.getName())
+                .changeColor(lineRequest.getColor());
 
-        lineRepository.save(line);
+        lineRepository.save(changed);
     }
 
     public void deleteLineById(Long id) {
