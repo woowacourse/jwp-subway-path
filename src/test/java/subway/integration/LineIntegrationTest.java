@@ -11,6 +11,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.response.LineResponse;
+import subway.controller.dto.response.SectionResponse;
+import subway.controller.dto.response.SingleLineResponse;
+import subway.controller.dto.response.StationResponse;
+import subway.service.domain.Distance;
+import subway.service.domain.Section;
+import subway.service.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,7 +75,39 @@ class LineIntegrationTest extends IntegrationTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
-//
+
+    @DisplayName("지하철 노선을 조회한다.")
+    @Test
+    @Sql("/station_test_data.sql")
+    void getLine() {
+        ExtractableResponse<Response> createResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+
+        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", lineId)
+                .then().log().all()
+                .extract();
+
+        StationResponse 잠실 = new StationResponse(1L, "잠실");
+        StationResponse 잠실새내 = new StationResponse(2L, "잠실새내");
+
+        SingleLineResponse lineResponse = response.as(SingleLineResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(lineResponse.getLinePropertyResponse().getId()).isEqualTo(1L);
+        assertThat(lineResponse.getLinePropertyResponse().getName()).isEqualTo("5호선");
+        assertThat(lineResponse.getLinePropertyResponse().getColor()).isEqualTo("bg-red-600");
+        assertThat(lineResponse.getStationResponses())
+                .containsAll(List.of(잠실, 잠실새내));
+    }
+
 //    @DisplayName("지하철 노선 목록을 조회한다.")
 //    @Test
 //    @Sql("/station_test_data.sql")
@@ -110,35 +148,7 @@ class LineIntegrationTest extends IntegrationTest {
 //                .collect(Collectors.toList());
 //        assertThat(resultLineIds).containsAll(expectedLineIds);
 //    }
-//
-//    @DisplayName("지하철 노선을 조회한다.")
-//    @Test
-//    @Sql("/station_test_data.sql")
-//    void getLine() {
-//        // given
-//        ExtractableResponse<Response> createResponse = RestAssured
-//                .given().log().all()
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .body(lineRequest1)
-//                .when().post("/lines")
-//                .then().log().all().
-//                extract();
-//
-//        // when
-//        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-//        ExtractableResponse<Response> response = RestAssured
-//                .given().log().all()
-//                .accept(MediaType.APPLICATION_JSON_VALUE)
-//                .when().get("/lines/{lineId}", lineId)
-//                .then().log().all()
-//                .extract();
-//
-//        // then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-////        LineResponse resultResponse = response.as(LineResponse.class);
-////        assertThat(resultResponse.getId()).isEqualTo(lineId);
-//    }
-//
+
 //    @DisplayName("지하철 노선을 수정한다.")
 //    @Test
 //    @Sql("/station_test_data.sql")

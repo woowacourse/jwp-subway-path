@@ -1,11 +1,14 @@
 package subway.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.controller.dto.response.LineResponse;
+import subway.controller.dto.response.SingleLineResponse;
 import subway.service.LineService;
 import subway.service.dto.LineDto;
 import subway.service.dto.SectionCreateDto;
@@ -41,14 +44,15 @@ public class LineController {
     }
 //
 //    @GetMapping
-//    public ResponseEntity<List<SingleLineDetailResponse>> readAllLine() {
+//    public ResponseEntity<List<SingleLineResponse>> readAllLine() {
 //        return ResponseEntity.ok(lineService.getAllLine());
 //    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<SingleLineDetailResponse> findLineById(@PathVariable Long id) {
-//        return ResponseEntity.ok(lineService.getLine(id));
-//    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SingleLineResponse> findLineById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.getLineById(id));
+    }
+
 //
 //    @PutMapping("/{id}")
 //    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {

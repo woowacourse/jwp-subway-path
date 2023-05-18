@@ -2,6 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.controller.dto.response.LineResponse;
+import subway.controller.dto.response.SingleLineResponse;
 import subway.exception.LineDuplicateException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -11,6 +12,7 @@ import subway.service.domain.LineProperty;
 import subway.service.domain.Section;
 import subway.service.domain.Sections;
 import subway.service.domain.Station;
+import subway.service.domain.Subway;
 import subway.service.dto.LineDto;
 import subway.service.dto.SectionCreateDto;
 
@@ -47,6 +49,12 @@ public class LineService {
                 nextStation,
                 Distance.from(sectionCreateDto.getDistance())
         );
+    }
+
+    public SingleLineResponse getLineById(Long id) {
+        Subway subway = new Subway(lineRepository.findAll());
+
+        return SingleLineResponse.from(subway.getSingleLine(id));
     }
 
 }
