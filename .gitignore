@@ -24,6 +24,8 @@ out/
 !src/main/java/subway/**/out
 !src/test/java/subway/**/out
 
+mysql-data
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
