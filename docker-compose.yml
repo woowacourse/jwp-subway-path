@@ -7,4 +7,4 @@ services:
       MYSQL_DATABASE: subway
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - 3306:3306
+      - "3306:3306"
