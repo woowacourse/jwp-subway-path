@@ -120,7 +120,7 @@ public class LineRepository {
 
     public Line findById(Long id) {
         LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("없습니다"));
+                .orElseThrow(() -> new NoSuchElementException("노선이 없습니다"));
         Map<Long, Station> idByStations = stationDao.findByLineId(lineEntity.getId()).stream()
                 .collect(toMap(StationEntity::getId, this::toStation));
 

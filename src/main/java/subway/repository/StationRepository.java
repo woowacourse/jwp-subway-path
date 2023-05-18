@@ -1,17 +1,21 @@
 package subway.repository;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 import subway.entity.StationEntity;
+import subway.repository.dao.SectionDao;
 import subway.repository.dao.StationDao;
 
 @Repository
 public class StationRepository {
 
+    private final SectionDao sectionDao;
     private final StationDao stationDao;
 
-    public StationRepository(StationDao stationDao) {
+    public StationRepository(SectionDao sectionDao, StationDao stationDao) {
+        this.sectionDao = sectionDao;
         this.stationDao = stationDao;
     }
 
@@ -29,5 +33,12 @@ public class StationRepository {
         StationEntity stationEntity = stationDao.findByName(name)
                 .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
         return toStation(stationEntity);
+    }
+
+    public void deleteById(Long id) {
+        if (sectionDao.existsByStationId(id)) {
+            throw new IllegalArgumentException("구간에 저장된 역은 삭제할 수 없습니다");
+        }
+        stationDao.deleteByIds(List.of(id));
     }
 }

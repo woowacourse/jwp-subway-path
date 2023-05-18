@@ -20,4 +20,8 @@ public class StationService {
         Station savedStation = stationRepository.save(station);
         return StationAddResponse.from(savedStation);
     }
+
+    public void deleteStation(Long stationId) {
+        stationRepository.deleteById(stationId);
+    }
 }

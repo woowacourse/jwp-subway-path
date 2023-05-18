@@ -156,4 +156,13 @@ public class IntegrationTestFixture {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 역_삭제_요청(Long id) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/stations/{stationId}", id)
+                .then().log().all()
+                .extract();
+    }
 }

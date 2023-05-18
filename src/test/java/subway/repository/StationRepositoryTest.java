@@ -1,7 +1,9 @@
 package subway.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Station;
+import subway.repository.dao.SectionDao;
 import subway.repository.dao.StationDao;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -24,6 +27,7 @@ class StationRepositoryTest {
     @BeforeEach
     void setUp() {
         stationRepository = new StationRepository(
+                new SectionDao(jdbcTemplate),
                 new StationDao(jdbcTemplate)
         );
     }
@@ -38,5 +42,19 @@ class StationRepositoryTest {
 
         // then
         assertThat(savedStation.getId()).isPositive();
+    }
+
+    @Test
+    void 역을_삭제한다() {
+        // given
+        Station station = new Station("강남역");
+        Station savedStation = stationRepository.save(station);
+
+        // when
+        stationRepository.deleteById(savedStation.getId());
+
+        // then
+        assertThatThrownBy(() -> stationRepository.findByName("강남역"))
+                .isInstanceOf(NoSuchElementException.class);
     }
 }
