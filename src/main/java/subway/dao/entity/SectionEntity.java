@@ -6,6 +6,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class SectionEntity {
 
@@ -59,5 +60,33 @@ public class SectionEntity {
 
     public Integer getDistance() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final SectionEntity that = (SectionEntity) o;
+        return Objects.equals(id, that.id)
+                && Objects.equals(upStationId, that.upStationId)
+                && Objects.equals(downStationId, that.downStationId)
+                && Objects.equals(lineId, that.lineId)
+                && Objects.equals(distance, that.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, upStationId, downStationId, lineId, distance);
+    }
+
+    @Override
+    public String toString() {
+        return "SectionEntity{" +
+                "id=" + id +
+                ", upStationId=" + upStationId +
+                ", downStationId=" + downStationId +
+                ", lineId=" + lineId +
+                ", distance=" + distance +
+                '}';
     }
 }
