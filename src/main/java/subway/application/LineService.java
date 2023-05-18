@@ -1,53 +1,63 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import subway.domain.Line;
+import subway.repository.LineRepository;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.LineResponse;
+import subway.ui.dto.LineStationResponse;
+import subway.ui.dto.StationResponse;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+        Line line = lineRepository.save(new Line(request.getName()));
+        return LineResponse.from(line);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
+    public List<LineResponse> findAllLines() {
+        return lineRepository.findAll()
+                .stream()
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    public LineResponse findLineById(Long id) {
+        Line line = findByLineId(id);
+        return LineResponse.from(line);
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    public List<LineStationResponse> findAllLinesAndStations() {
+        return lineRepository.findAll()
+                .stream()
+                .map(line -> findStationsById(line.getId()))
+                .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+    public LineStationResponse findStationsById(Long lineId) {
+        Line line = findByLineId(lineId);
+        List<StationResponse> stationResponses = line.findLeftToRightRoute()
+                .stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
+        return new LineStationResponse(line.getId(), line.getName(), stationResponses);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    private Line findByLineId(Long id) {
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 노선이 없습니다."));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
     }
-
 }
