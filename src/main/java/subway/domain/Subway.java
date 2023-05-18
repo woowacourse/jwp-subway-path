@@ -5,12 +5,16 @@ import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.charge.Charge;
+import subway.domain.charge.ChargeBooth;
 
 public class Subway {
     private final WeightedMultigraph<Station, WeightedEdgeWithLine> graph;
+    private final ChargeBooth chargeBooth;
 
-    private Subway(WeightedMultigraph<Station, WeightedEdgeWithLine> graph) {
+    public Subway(WeightedMultigraph<Station, WeightedEdgeWithLine> graph, ChargeBooth chargeBooth) {
         this.graph = graph;
+        this.chargeBooth = chargeBooth;
     }
 
     public static Subway create(List<Station> stations, List<Line> lines) {
@@ -26,7 +30,7 @@ public class Subway {
                 graph.setEdgeWeight(edge, section.getDistance());
             }
         }
-        return new Subway(graph);
+        return new Subway(graph, new ChargeBooth());
     }
 
     public Path findShortestRoute(int passengerAge, Station startStation, Station endStation) {
@@ -34,7 +38,7 @@ public class Subway {
         GraphPath<Station, WeightedEdgeWithLine> shortestRoute = dijkstraShortestPath.getPath(startStation, endStation);
 
         double totalDistance = shortestRoute.getWeight();
-        double totalCharge = calculateCharge(passengerAge, shortestRoute);
+        Charge totalCharge = chargeBooth.calculateCharge(passengerAge, shortestRoute);
 
         List<WeightedEdgeWithLine> edges = shortestRoute.getEdgeList();
 
@@ -72,43 +76,5 @@ public class Subway {
         }
 
         return new Path(lines, totalDistance, totalCharge);
-    }
-
-    private double calculateCharge(int passengerAge, GraphPath<Station, WeightedEdgeWithLine> shortestRoute) {
-        double totalDistance = shortestRoute.getWeight();
-        double basicFare = calculateChargeByDistance(totalDistance);
-
-        List<WeightedEdgeWithLine> edges = shortestRoute.getEdgeList();
-        double additionalCharge = calculateAdditionalChargeByLine(edges);
-
-        return applyAgeDiscount(passengerAge, basicFare + additionalCharge);
-    }
-
-    private double calculateChargeByDistance(double totalDistance) {
-        if (totalDistance <= 10) {
-            return 1250;
-        }
-        if (totalDistance <= 50) {
-            return 1250 + (int) (Math.ceil((totalDistance - 10) / 5)) * 100;
-        }
-        return 1250 + ((50 - 10) / 5) * 100 + (int) (Math.ceil((totalDistance - 50) / 8)) * 100;
-    }
-
-    private double calculateAdditionalChargeByLine(List<WeightedEdgeWithLine> edges) {
-        return edges.stream()
-                .mapToInt(it -> it.getLine().getExtraCharge())
-                .distinct()
-                .max()
-                .orElse(0);
-    }
-
-    private double applyAgeDiscount(int passengerAge, double charge) {
-        if (6 <= passengerAge && passengerAge < 13) {
-            return (charge - 350) * 0.5;
-        }
-        if (13 <= passengerAge && passengerAge < 19) {
-            return (charge - 350) * 0.8;
-        }
-        return charge;
     }
 }
