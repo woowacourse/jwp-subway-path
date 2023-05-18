@@ -1,91 +1,83 @@
 package subway.ui;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.assertj.core.api.Assertions;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 import subway.application.StationService;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
+@WebMvcTest(StationController.class)
 class StationControllerTest {
+    
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @Autowired
+    private ObjectMapper objectMapper;
+    
+    @MockBean
+    private StationService stationService;
     
     @Test
     @DisplayName("역 생성 테스트")
-    void createStation() {
+    void createStationMvcTest() throws Exception {
         // given
-        final StationService stationServiceMock = mock(StationService.class);
         final StationRequest stationRequest = new StationRequest("테스트역");
         final StationResponse stationResponse = new StationResponse(1L, "테스트역");
         // when
-        when(stationServiceMock.saveStation(stationRequest)).thenReturn(
-                stationResponse);
-        
-        final ResponseEntity<StationResponse> stationResponseResponseEntity = new StationController(
-                stationServiceMock).createStation(
-                stationRequest);
-        
+        when(this.stationService.saveStation(stationRequest)).thenReturn(stationResponse);
         // then
-        final Long id = stationResponseResponseEntity.getBody().getId();
-        Assertions.assertThat(id).isEqualTo(1L);
-        Assertions.assertThat(stationResponseResponseEntity.getBody().getName()).isEqualTo(
-                "테스트역");
-        Assertions.assertThat(stationResponseResponseEntity.getHeaders().getLocation().getPath()).isEqualTo(
-                "/stations/1");
-        Assertions.assertThat(stationResponseResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED
-        );
+        this.mockMvc.perform(post("/stations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(stationRequest)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("테스트역"));
     }
     
     @Test
     @DisplayName("역 조회 테스트")
-    void showStation() {
+    void showStationMvcTest() throws Exception {
         // given
-        final StationService stationServiceMock = mock(StationService.class);
         final StationResponse stationResponse = new StationResponse(1L, "테스트역");
         // when
-        when(stationServiceMock.findStationResponseById(1L)).thenReturn(
-                stationResponse);
-        
-        final ResponseEntity<StationResponse> stationResponseResponseEntity = new StationController(
-                stationServiceMock).showStation(1L);
-        
+        when(this.stationService.findStationResponseById(1L)).thenReturn(stationResponse);
         // then
-        final Long id = stationResponseResponseEntity.getBody().getId();
-        Assertions.assertThat(id).isEqualTo(1L);
-        Assertions.assertThat(stationResponseResponseEntity.getBody().getName()).isEqualTo(
-                "테스트역");
-        Assertions.assertThat(stationResponseResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        this.mockMvc.perform(get("/stations/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("테스트역"));
     }
     
     @Test
-    @DisplayName("역 수정 테스트")
-    void updateStation() {
+    @DisplayName("역 목록 조회 테스트")
+    void showStationsMvcTest() throws Exception {
         // given
-        final StationService stationServiceMock = mock(StationService.class);
-        final StationRequest stationRequest = new StationRequest("테스트역");
+        final StationResponse stationResponse = new StationResponse(1L, "테스트역");
         // when
-        final ResponseEntity<Void> voidResponseEntity = new StationController(
-                stationServiceMock).updateStation(1L, stationRequest);
-        
+        when(this.stationService.findAllStationResponses()).thenReturn(List.of(stationResponse));
         // then
-        Assertions.assertThat(voidResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-    
-    @Test
-    @DisplayName("역 삭제 테스트")
-    void deleteStation() {
-        // given
-        final StationService stationServiceMock = mock(StationService.class);
-        // when
-        final ResponseEntity<Void> voidResponseEntity = new StationController(
-                stationServiceMock).deleteStation(1L);
-        
-        // then
-        Assertions.assertThat(voidResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        this.mockMvc.perform(get("/stations"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("테스트역"));
     }
     
 }

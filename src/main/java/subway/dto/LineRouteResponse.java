@@ -6,23 +6,23 @@ import subway.domain.Station;
 
 public class LineRouteResponse {
     
-    private final LineResponse lineResponse;
-    private final List<StationResponse> stationResponses;
+    private final LineResponse line;
+    private final List<StationResponse> stations;
     
-    public LineRouteResponse(final LineResponse lineResponse, final List<StationResponse> stationResponses) {
-        this.lineResponse = lineResponse;
-        this.stationResponses = stationResponses;
+    public LineRouteResponse(final LineResponse line, final List<StationResponse> stations) {
+        this.line = line;
+        this.stations = stations;
     }
     
     public static LineRouteResponse of(final Line line, final List<Station> stations) {
         return new LineRouteResponse(LineResponse.of(line), StationResponse.listOf(stations));
     }
     
-    public LineResponse getLineResponse() {
-        return this.lineResponse;
+    public LineResponse getLine() {
+        return this.line;
     }
     
-    public List<StationResponse> getStationResponses() {
-        return this.stationResponses;
+    public List<StationResponse> getStations() {
+        return this.stations;
     }
 }

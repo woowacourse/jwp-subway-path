@@ -32,8 +32,7 @@ public class SectionController {
     @PostMapping("/sections")
     public ResponseEntity<List<SectionResponse>> addSection(@RequestBody final SectionRequest sectionRequest) {
         this.sectionService.validate(sectionRequest);
-        
-        final java.util.List<SectionResponse> sectionResponses = this.sectionService.insertSection(sectionRequest);
+        final List<SectionResponse> sectionResponses = this.sectionService.insertSection(sectionRequest);
         return ResponseEntity.created(URI.create("/sections/" + sectionRequest.getLineId())).body(sectionResponses);
     }
     

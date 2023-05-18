@@ -1,5 +1,7 @@
 package subway.dto;
 
+import java.util.Objects;
+
 public class SectionRequest {
     
     long lineId;
@@ -35,5 +37,24 @@ public class SectionRequest {
     
     public int getDistance() {
         return this.distance;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.lineId, this.newStationId, this.baseStationId, this.direction, this.distance);
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        final SectionRequest that = (SectionRequest) o;
+        return this.lineId == that.lineId && this.newStationId == that.newStationId
+                && this.baseStationId == that.baseStationId
+                && this.distance == that.distance && Objects.equals(this.direction, that.direction);
     }
 }

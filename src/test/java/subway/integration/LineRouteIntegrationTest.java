@@ -53,7 +53,7 @@ public class LineRouteIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract().as(LineRouteResponse.class);
         
-        final List<StationResponse> orderedStations = lineRouteResponse.getStationResponses();
+        final List<StationResponse> orderedStations = lineRouteResponse.getStations();
         Assertions.assertThat(orderedStations.size()).isEqualTo(3);
         Assertions.assertThat(orderedStations.get(0).getName()).isEqualTo("맨 앞 테스트역");
         Assertions.assertThat(orderedStations.get(1).getName()).isEqualTo("테스트역");
@@ -70,10 +70,10 @@ public class LineRouteIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract().jsonPath().getList(".", LineRouteResponse.class);
         final Optional<Long> response = lineRouteResponse.stream()
-                .filter(subway -> subway.getLineResponse().getId() == this.lastLineId)
+                .filter(subway -> subway.getLine().getId() == this.lastLineId)
                 .findFirst()
                 .map(subway -> {
-                    return subway.getLineResponse().getId();
+                    return subway.getLine().getId();
                 });
         Assertions.assertThat(response.isPresent()).isTrue();
     }

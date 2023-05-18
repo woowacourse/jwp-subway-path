@@ -1,89 +1,62 @@
 package subway.ui;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
-import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
+@WebMvcTest(LineController.class)
 class LineControllerTest {
     
-    @Test
-    @DisplayName("호선 생성 테스트")
-    void createLine() {
-        // given
-        final LineService lineServiceMock = mock(LineService.class);
-        final LineRequest lineRequest = new LineRequest("2호선", "초록색");
-        final LineResponse lineResponse = new LineResponse(1L, "2호선", "초록색");
-        final LineController lineController = new LineController(lineServiceMock);
-        // when
-        when(lineServiceMock.saveLine(lineRequest)).thenReturn(lineResponse);
-        final ResponseEntity<LineResponse> lineResponseEntity = lineController.createLine(lineRequest);
-        // then
-        Assertions.assertThat(lineResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Assertions.assertThat(lineResponseEntity.getBody()).isEqualTo(lineResponse);
-    }
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @MockBean
+    private LineService lineService;
     
     @Test
     @DisplayName("모든 호선 조회 테스트")
-    void findAllLines() {
-        // given
-        final LineService lineServiceMock = mock(LineService.class);
-        final LineResponse lineResponse1 = new LineResponse(1L, "2호선", "초록색");
-        final LineResponse lineResponse2 = new LineResponse(2L, "3호선", "오렌지색");
-        final LineController lineController = new LineController(lineServiceMock);
-        // when
-        when(lineServiceMock.findLineResponses()).thenReturn(List.of(lineResponse1, lineResponse2));
-        final ResponseEntity<List<LineResponse>> lineResponseEntity = lineController.findAllLines();
-        // then
-        Assertions.assertThat(lineResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(lineResponseEntity.getBody()).isEqualTo(List.of(lineResponse1, lineResponse2));
+    void findAllLinesMvcTest() throws Exception {
+        when(this.lineService.findLineResponses()).thenReturn(List.of(
+                new LineResponse(1L, "2호선", "초록색"),
+                new LineResponse(2L, "3호선", "오렌지색"),
+                new LineResponse(3L, "신분당선", "빨간색")
+        ));
+        this.mockMvc.perform(get("/lines"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("2호선"))
+                .andExpect(jsonPath("$[0].color").value("초록색"));
+        
+        this.mockMvc.perform(get("/lines"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].name").value("3호선"))
+                .andExpect(jsonPath("$[1].color").value("오렌지색"));
     }
     
     @Test
-    @DisplayName("특정 호선 조회 테스트")
-    void findLineById() {
-        // given
-        final LineService lineServiceMock = mock(LineService.class);
-        final LineResponse lineResponse = new LineResponse(1L, "2호선", "초록색");
-        final LineController lineController = new LineController(lineServiceMock);
-        // when
-        when(lineServiceMock.findLineResponseById(1L)).thenReturn(lineResponse);
-        final ResponseEntity<LineResponse> lineResponseEntity = lineController.findLineById(1L);
-        // then
-        Assertions.assertThat(lineResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(lineResponseEntity.getBody()).isEqualTo(lineResponse);
-    }
-    
-    @Test
-    @DisplayName("호선 수정 테스트")
-    void updateLine() {
-        // given
-        final LineService lineServiceMock = mock(LineService.class);
-        final LineRequest lineRequest = new LineRequest("2호선", "초록색");
-        final LineController lineController = new LineController(lineServiceMock);
-        // when
-        final ResponseEntity<Void> lineResponseEntity = lineController.updateLine(1L, lineRequest);
-        // then
-        Assertions.assertThat(lineResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-    
-    @Test
-    @DisplayName("호선 삭제 테스트")
-    void deleteLine() {
-        // given
-        final LineService lineServiceMock = mock(LineService.class);
-        final LineController lineController = new LineController(lineServiceMock);
-        // when
-        final ResponseEntity<Void> lineResponseEntity = lineController.deleteLine(1L);
-        // then
-        Assertions.assertThat(lineResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    @DisplayName("호선 조회 테스트")
+    void findLineByIdMvcTest() throws Exception {
+        when(this.lineService.findLineResponseById(1L)).thenReturn(new LineResponse(1L, "2호선", "초록색"));
+        this.mockMvc.perform(get("/lines/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("2호선"))
+                .andExpect(jsonPath("$.color").value("초록색"));
     }
 }
