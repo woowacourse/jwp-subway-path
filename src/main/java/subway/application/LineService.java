@@ -11,7 +11,7 @@ import subway.domain.Sections;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.dto.response.LineSectionResponse;
-import subway.exception.LineDuplicatedException;
+import subway.exception.DuplicatedException;
 import subway.exception.NotFoundException;
 
 import java.util.List;
@@ -86,11 +86,11 @@ public class LineService {
     private void validateDuplicateLine(LineRequest request) {
         Optional<LineEntity> optionalLineByName = lineDao.findByName(request.getName());
         optionalLineByName.ifPresent(findUser -> {
-            throw new LineDuplicatedException("이미 존재하는 노선 이름입니다.");
+            throw new DuplicatedException("이미 존재하는 노선 이름입니다.");
         });
         Optional<LineEntity> optionalLineByColor = lineDao.findByColor(request.getColor());
         optionalLineByColor.ifPresent(findUser -> {
-            throw new LineDuplicatedException("이미 존재하는 노선 색입니다.");
+            throw new DuplicatedException("이미 존재하는 노선 색입니다.");
         });
     }
 

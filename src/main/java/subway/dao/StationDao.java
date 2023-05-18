@@ -1,6 +1,7 @@
 package subway.dao;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.StationEntity;
+import subway.exception.DuplicatedException;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -36,7 +38,11 @@ public class StationDao {
     public StationEntity insert(StationEntity station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new StationEntity(id, station.getName());
+        try {
+            return new StationEntity(id, station.getName());
+        } catch (DuplicateKeyException exception) {
+            throw new DuplicatedException("이미 존재하는 역입니다.");
+        }
     }
 
     public List<StationEntity> findAll() {
