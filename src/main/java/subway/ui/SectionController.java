@@ -30,7 +30,7 @@ public class SectionController {
     @PostMapping
     public ResponseEntity<SectionResponse> createSection(@RequestBody SectionRequest sectionRequest) {
         final SectionResponse response = sectionService.createSection(sectionRequest);
-        final URI uri = URI.create("/sections");
+        final URI uri = URI.create("/sections" + response.getId());
         return ResponseEntity.created(uri).build();
     }
 
