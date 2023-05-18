@@ -54,8 +54,7 @@ public class LineService {
                 .orElseThrow(() -> new LineNotFoundException(lineId));
 
         line.addSection(existStation, newStation, request.getDirection().getDirectionStrategy(), new Distance(request.getDistance()));
-        sectionRepository.deleteAllByLineId(lineId);
-        sectionRepository.insertAllByLineId(lineId, line.getSections());
+        sectionRepository.save(lineId, line.getSections());
 
         return line;
     }
@@ -85,7 +84,6 @@ public class LineService {
                 .orElseThrow(() -> new StationNotFoundException(stationId));
 
         line.delete(station);
-        sectionRepository.deleteAllByLineId(lineId);
-        sectionRepository.insertAllByLineId(lineId, line.getSections());
+        sectionRepository.save(lineId, line.getSections());
     }
 }
