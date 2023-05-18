@@ -16,7 +16,7 @@ class LineTest {
     @Test
     void 생성한다() {
         assertDoesNotThrow(() ->
-                new Line (
+                new Line(
                         new LineName("2호선"),
                         new LineColor("초록"),
                         new Sections(List.of(SECTION))));
@@ -54,7 +54,7 @@ class LineTest {
                         null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-    
+
     @DisplayName("역이 중복된 이름이 있는지 검증한다")
     @Test
     void 역이_이미_있는지_검증한다() {

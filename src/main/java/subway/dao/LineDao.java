@@ -1,20 +1,13 @@
 package subway.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.LineEntity;
-import subway.domain.Line;
-import subway.domain.LineColor;
-import subway.domain.LineName;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +32,8 @@ public class LineDao {
 
     public Long save(final LineEntity lineEntity) {
         return insertAction.executeAndReturnKey(
-                    new MapSqlParameterSource("name", lineEntity.getName())
-                        .addValue("color", lineEntity.getColor()))
+                        new MapSqlParameterSource("name", lineEntity.getName())
+                                .addValue("color", lineEntity.getColor()))
                 .longValue();
     }
 

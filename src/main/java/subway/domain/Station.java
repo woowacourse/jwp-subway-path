@@ -26,11 +26,11 @@ public class Station {
         }
     }
 
-    public Long getId () {
+    public Long getId() {
         return id;
     }
 
-    public String getName () {
+    public String getName() {
         return name;
     }
 

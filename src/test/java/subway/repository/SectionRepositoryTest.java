@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.SectionDao;
 import subway.dao.entity.SectionEntity;
@@ -14,7 +13,6 @@ import subway.domain.*;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -31,7 +29,7 @@ class SectionRepositoryTest {
     void 라인에서_수정된_구간을_최신화한다() {
         //given
         Station station1 = new Station(1L, "잠실새내");
-        Station station2 = new Station(2L,"잠실");
+        Station station2 = new Station(2L, "잠실");
         Station station3 = new Station(3L, "잠실나루");
         Distance distance1 = new Distance(10);
         Distance distance2 = new Distance(15);

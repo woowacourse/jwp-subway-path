@@ -26,7 +26,7 @@ public class LineStationController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .location(URI.create("/lines/"+lineId))
+                .location(URI.create("/lines/" + lineId))
                 .build();
     }
 

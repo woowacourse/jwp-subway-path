@@ -1,9 +1,7 @@
 package subway.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Section;

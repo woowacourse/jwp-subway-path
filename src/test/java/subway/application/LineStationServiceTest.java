@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.*;
 import subway.dto.LineStationResponse;
@@ -15,7 +14,6 @@ import subway.dto.StationResponse;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
-import subway.ui.LineStationController;
 
 import java.util.List;
 
@@ -69,8 +67,8 @@ class LineStationServiceTest {
         List<LineStationResponse> allLinesStations = lineStationService.findAllLinesStations();
         //then
         Assertions.assertThat(allLinesStations).contains(
-                        new LineStationResponse(1L, "테스트노선1", "테스트색1", List.of(new StationResponse(1L, "테스트역1"), new StationResponse(2L, "테스트역2"))),
-                        new LineStationResponse(2L, "테스트노선2", "테스트색2", List.of(new StationResponse(2L, "테스트역2"), new StationResponse(3L, "테스트역3"))));
+                new LineStationResponse(1L, "테스트노선1", "테스트색1", List.of(new StationResponse(1L, "테스트역1"), new StationResponse(2L, "테스트역2"))),
+                new LineStationResponse(2L, "테스트노선2", "테스트색2", List.of(new StationResponse(2L, "테스트역2"), new StationResponse(3L, "테스트역3"))));
     }
 
     @DisplayName("노선의 역을 조회한다")
