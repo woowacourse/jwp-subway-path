@@ -69,8 +69,16 @@ public class Line {
     }
 
     public void addSection(final Section section) {
+        validateSameSection(section);
+
         final AddSectionStrategy addSectionStrategy = AddSectionHandler.bind(sections, section);
         addSectionStrategy.addSection(sections, section);
+    }
+
+    private void validateSameSection(final Section section) {
+        if (sections.hasSameSection(section)) {
+            throw new IllegalArgumentException("이미 등록된 구간입니다.");
+        }
     }
 
     public void deleteStation(final Station station) {
@@ -80,21 +88,6 @@ public class Line {
 
     public List<Station> findStationsByOrdered() {
         return sections.getStations();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Line line = (Line) o;
-        return Objects.equals(id, line.id)
-                && Objects.equals(name, line.name)
-                && Objects.equals(color, line.color);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     public Long getId() {

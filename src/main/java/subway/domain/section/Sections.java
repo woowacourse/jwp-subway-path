@@ -24,18 +24,21 @@ public class Sections {
     }
 
     public void addSection(final Section section) {
+        if (hasSameSection(section)) {
+            throw new IllegalArgumentException("이미 등록된 경로입니다.");
+        }
+
         addSection(sections.size(), section);
     }
 
     public void addSection(final int index, final Section section) {
-        validateRegistration(section);
         sections.add(index, section);
     }
 
-    private void validateRegistration(final Section section) {
-        if (sections.contains(section)) {
-            throw new IllegalArgumentException("이미 등록된 경로입니다.");
-        }
+    public boolean hasSameSection(final Section findSection) {
+
+        return sections.stream()
+                .anyMatch(section -> section.isSameSection(findSection));
     }
 
     public int findIndex(final Section section) {

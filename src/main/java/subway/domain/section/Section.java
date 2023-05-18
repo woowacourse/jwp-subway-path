@@ -93,6 +93,14 @@ public class Section {
         return upStation;
     }
 
+    public boolean isSameSection(final Section findSection) {
+        final Station upFindStation = findSection.getUpStation();
+        final Station downFindStation = findSection.getDownStation();
+
+        return (upStation.equals(upFindStation) && downStation.equals(downFindStation))
+                || (upStation.equals(downFindStation) && downStation.equals(upFindStation));
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
