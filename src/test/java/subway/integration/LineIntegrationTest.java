@@ -102,7 +102,20 @@ public class LineIntegrationTest extends StationIntegrationTest {
     void addLineFail5() {
         given().log().all()
                .contentType(ContentType.JSON)
-               .body(toJson(new LineCreationRequest(super.SET_UP_LINE_NAME, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, FIVE_DISTANCE, 0)))
+               .body(toJson(new LineCreationRequest(SET_UP_LINE_NAME, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, FIVE_DISTANCE, 0)))
+               .when()
+               .post(LINE_URL)
+               .then()
+               .log().all()
+               .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("/lines post 노선 추가 요금이 음수이면 예외를 발생시킨다.")
+    void addLineFail6() {
+        given().log().all()
+               .contentType(ContentType.JSON)
+               .body(toJson(new LineCreationRequest(SET_UP_LINE_NAME, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, FIVE_DISTANCE, -1)))
                .when()
                .post(LINE_URL)
                .then()
