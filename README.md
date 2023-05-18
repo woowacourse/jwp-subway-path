@@ -2,30 +2,52 @@
 
 ## API SPEC
 
-### 역 추가
+### 노선 생성
 
-- URL: localhost:8080/sections
+- URL: localhost:8080/lines
 - method: POST
 - Request body
 
 ```json
 {
-  "lineId": 1,
+  "name": "1호선"
+}
+```
+
+### 역 추가
+
+- URL: localhost:8080/stations
+- method: POST
+- Request body
+
+```json
+{
+  "name": "잠실역"
+}
+```
+
+### 노선에 역 추가
+
+- URL: localhost:8080/lines/{lineId}/sections
+- method: POST
+- Request body
+
+```json
+{
   "leftStationName": "잠실역",
   "rightStationName": "선릉역",
   "distance": "3"
 }
 ```
 
-### 역 제거
+### 노선에 역 제거
 
-- URL: localhost:8080/sections
+- URL: localhost:8080/lines/{lineId}/sections
 - method: DELETE
 - Request body
 
 ```json
 {
-  "lineId": 1,
   "stationName": "잠실역"
 }
 ```
@@ -114,6 +136,12 @@
 ### 전체 노선 조회
 
 - [x] 모든 노선에 포함된 역을 순서대로 보여준다.
+
+### 경로 조회
+
+- [ ] 한 역에서 다른 역 까지 가는 가장 짧은 경로를 조회한다.
+    - [ ] 경로와 요금을 함께 응답으로 반환한다.
+    - [ ] 갈 수 있는 경로가 없는 경우, `xx역 -> xx역은 갈 수 없는 경로입니다.` 를 반환한다.
 
 ## 도메인 기능 목록
 
