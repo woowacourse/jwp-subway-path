@@ -32,29 +32,19 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public SectionEntity insert(final SectionEntity sectionEntity) {
+    public Long insert(final SectionEntity sectionEntity) {
         final SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
-        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-
-        return new SectionEntity.Builder()
-                .id(id)
-                .lineId(sectionEntity.getLineId())
-                .previousStationId(sectionEntity.getPreviousStationId())
-                .nextStationId(sectionEntity.getNextStationId())
-                .distance(sectionEntity.getDistance())
-                .build();
+        return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
     public List<SectionEntity> findByLineId(final Long lineId) {
         final String sql = "SELECT * " +
                 "FROM section WHERE line_id = ?";
-
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
     }
 
     public List<SectionEntity> findAll() {
         final String sql = "SELECT * FROM section";
-
         return jdbcTemplate.query(sql, sectionEntityRowMapper);
     }
 
