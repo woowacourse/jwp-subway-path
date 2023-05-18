@@ -7,10 +7,10 @@ import static subway.acceptance.CommonSteps.요청_결과의_상태를_검증한
 import static subway.acceptance.CommonSteps.정상_생성;
 import static subway.acceptance.CommonSteps.정상_요청;
 import static subway.acceptance.CommonSteps.정상_요청이지만_반환값_없음;
-import static subway.acceptance.station.StationSteps.결과에서_id_가져오기;
 import static subway.acceptance.station.StationSteps.역_id_조회_요청;
 import static subway.acceptance.station.StationSteps.역_목록_조회_요청;
 import static subway.acceptance.station.StationSteps.역_목록_크기_비교;
+import static subway.acceptance.station.StationSteps.역_생성_결과에서_id_가져오기;
 import static subway.acceptance.station.StationSteps.역_생성_요청;
 import static subway.acceptance.station.StationSteps.역_이름_비교;
 import static subway.acceptance.station.StationSteps.역_정보_변경_요청;
@@ -65,7 +65,7 @@ class StationAcceptanceTest extends IntegrationTest {
         @Test
         void 없는_역을_제거하려고_시도해도_정상적으로_제거된다() {
             final var 역_생성_결과 = 역_생성_요청("name");
-            final var 역_id = 결과에서_id_가져오기(역_생성_결과);
+            final var 역_id = 역_생성_결과에서_id_가져오기(역_생성_결과);
 
             final var 역_제거_결과 = 역_제거_요청(역_id);
 
@@ -79,7 +79,7 @@ class StationAcceptanceTest extends IntegrationTest {
         @Test
         void 정상_요청의_경우_역이_정상적으로_조회된다() {
             final var 역_생성_결과 = 역_생성_요청("name");
-            final var 역_id = 결과에서_id_가져오기(역_생성_결과);
+            final var 역_id = 역_생성_결과에서_id_가져오기(역_생성_결과);
 
             final var 역_조회_결과 = 역_id_조회_요청(역_id);
 
@@ -117,7 +117,7 @@ class StationAcceptanceTest extends IntegrationTest {
         @Test
         void 정상_요청의_경우_역_정보가_정상적으로_변경된다() {
             final var 역_생성_결과 = 역_생성_요청("name");
-            final var 역_id = 결과에서_id_가져오기(역_생성_결과);
+            final var 역_id = 역_생성_결과에서_id_가져오기(역_생성_결과);
 
             final var 역_조회_결과 = 역_id_조회_요청(역_id);
             요청_결과의_상태를_검증한다(역_조회_결과, 정상_요청);

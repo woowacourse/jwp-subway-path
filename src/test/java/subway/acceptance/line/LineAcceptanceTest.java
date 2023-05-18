@@ -7,10 +7,10 @@ import static subway.acceptance.CommonSteps.요청_결과의_상태를_검증한
 import static subway.acceptance.CommonSteps.정상_생성;
 import static subway.acceptance.CommonSteps.정상_요청;
 import static subway.acceptance.CommonSteps.정상_요청이지만_반환값_없음;
-import static subway.acceptance.line.LineSteps.결과에서_id_가져오기;
 import static subway.acceptance.line.LineSteps.노선_목록_조회_요청;
 import static subway.acceptance.line.LineSteps.노선_목록_크기_비교;
 import static subway.acceptance.line.LineSteps.노선_삭제_요청;
+import static subway.acceptance.line.LineSteps.노선_생성_결과에서_id_가져오기;
 import static subway.acceptance.line.LineSteps.노선_생성_요청;
 import static subway.acceptance.line.LineSteps.노선에서_id_조회_요청;
 import static subway.acceptance.line.LineSteps.노선에서_역_추가_요청;
@@ -73,7 +73,7 @@ public class LineAcceptanceTest extends IntegrationTest {
         @Test
         void 정상_요청의_경우_노선이_정상적으로_삭제된다() {
             final var 노선_생성_결과 = 노선_생성_요청("name", "color", 1L, 2L, 10L);
-            final var 노선_id = 결과에서_id_가져오기(노선_생성_결과);
+            final var 노선_id = 노선_생성_결과에서_id_가져오기(노선_생성_결과);
 
             final var 노선_목록_조회_결과 = 노선_목록_조회_요청();
             노선_목록_크기_비교(노선_목록_조회_결과, 1);
@@ -93,7 +93,7 @@ public class LineAcceptanceTest extends IntegrationTest {
         @Test
         void 정상_요청의_경우_노선이_정상적으로_조회된다() {
             final var 노선_생성_결과 = 노선_생성_요청("name", "color", 1L, 2L, 10L);
-            final var 노선_id = 결과에서_id_가져오기(노선_생성_결과);
+            final var 노선_id = 노선_생성_결과에서_id_가져오기(노선_생성_결과);
 
             final var 요청_결과 = 노선에서_id_조회_요청(노선_id);
 
@@ -114,7 +114,7 @@ public class LineAcceptanceTest extends IntegrationTest {
         @Test
         void 정상_요청의_경우_역이_추가된다() {
             final var 노선_생성_결과 = 노선_생성_요청("name", "color", 1L, 2L, 10L);
-            final var 노선_id = 결과에서_id_가져오기(노선_생성_결과);
+            final var 노선_id = 노선_생성_결과에서_id_가져오기(노선_생성_결과);
 
             final var 요청_결과 = 노선에서_역_추가_요청(노선_id, 1L, 2L, 3L, 4L);
 
@@ -124,7 +124,7 @@ public class LineAcceptanceTest extends IntegrationTest {
         @Test
         void 존재하지_않는_역을_기준으로_생성하면_예외가_발생한다() {
             final var 노선_생성_결과 = 노선_생성_요청("name", "color", 1L, 2L, 10L);
-            final var 노선_id = 결과에서_id_가져오기(노선_생성_결과);
+            final var 노선_id = 노선_생성_결과에서_id_가져오기(노선_생성_결과);
 
             final var 요청_결과 = 노선에서_역_추가_요청(노선_id, 2L, 1000L, 3L, 4L);
 
@@ -134,7 +134,7 @@ public class LineAcceptanceTest extends IntegrationTest {
         @Test
         void 가장_앞에_정상_요청의_경우_역이_추가된다() {
             final var 노선_생성_결과 = 노선_생성_요청("name", "color", 1L, 2L, 10L);
-            final var 노선_id = 결과에서_id_가져오기(노선_생성_결과);
+            final var 노선_id = 노선_생성_결과에서_id_가져오기(노선_생성_결과);
 
             final var 요청_결과 = 노선에서_역_추가_요청(노선_id, null, 1L, 3L, 4L);
 
@@ -144,7 +144,7 @@ public class LineAcceptanceTest extends IntegrationTest {
         @Test
         void 가장_뒤에_정상_요청의_경우_역이_추가된다() {
             final var 노선_생성_결과 = 노선_생성_요청("name", "color", 1L, 2L, 10L);
-            final var 노선_id = 결과에서_id_가져오기(노선_생성_결과);
+            final var 노선_id = 노선_생성_결과에서_id_가져오기(노선_생성_결과);
 
             final var 요청_결과 = 노선에서_역_추가_요청(노선_id, 2L, null, 3L, 4L);
 

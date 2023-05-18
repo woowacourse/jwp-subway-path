@@ -39,7 +39,7 @@ public class LineSteps {
         return doDelete("/lines/" + 노선_ID);
     }
 
-    public static long 결과에서_id_가져오기(final ExtractableResponse<Response> 노선_생성_요청_결과) {
+    public static long 노선_생성_결과에서_id_가져오기(final ExtractableResponse<Response> 노선_생성_요청_결과) {
         return 노선_생성_요청_결과.as(LineResponse.class).getId();
     }
 

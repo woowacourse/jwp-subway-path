@@ -35,7 +35,7 @@ public class StationSteps {
         return doGet("/stations/" + 역_ID);
     }
 
-    public static long 결과에서_id_가져오기(final ExtractableResponse<Response> 역_생성_요청_결과) {
+    public static long 역_생성_결과에서_id_가져오기(final ExtractableResponse<Response> 역_생성_요청_결과) {
         return 역_생성_요청_결과.as(StationInfoResponse.class).getId();
     }
 
