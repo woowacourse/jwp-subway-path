@@ -1,18 +1,28 @@
 package subway.line.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.domain.Line;
+import subway.line.domain.LineNameKey;
 import subway.line.domain.LineRepository;
 import subway.line.dto.LineCreateDto;
 import subway.line.dto.LineResponseDto;
+import subway.line.dto.ShortestPathResponse;
+import subway.line.dto.TraverseStationDto;
 import subway.section.domain.Section;
 import subway.section.dto.SectionCreateDto;
 import subway.station.domain.Station;
 import subway.station.domain.StationRepository;
+import subway.line.dto.ShortestPathRequest;
 import subway.station.dto.StationResponseDto;
 
 @Service
@@ -80,5 +90,48 @@ public class LineService {
 
         line.removeStation(station);
         lineRepository.updateLine(line);
+    }
+
+    public ShortestPathResponse findShortestPath(ShortestPathRequest shortestPathRequest) {
+        final Station fromStation = stationRepository.findById(shortestPathRequest.getFromStationId());
+        final Station toStation = stationRepository.findById(shortestPathRequest.getToStationId());
+
+        final List<Line> lines = lineRepository.findAll();
+
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+            DefaultWeightedEdge.class);
+        Map<LineNameKey, String> lineNames = new HashMap<>();
+
+        for (Line line : lines) {
+            for (Section section : line.getSections()) {
+                lineNames.put(new LineNameKey(section.getUpStation().getId(), section.getDownStation().getId()),
+                    line.getLineName());
+                final Station upStation = section.getUpStation();
+                final Station downStation = section.getDownStation();
+                graph.addVertex(upStation);
+                graph.addVertex(downStation);
+                graph.addEdge(upStation, downStation);
+                graph.setEdgeWeight(upStation, downStation, section.getDistance());
+            }
+        }
+
+        final GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(
+            graph).getPath(fromStation, toStation);
+
+        final List<Station> vertexList = shortestPath.getVertexList();
+        final List<TraverseStationDto> traverseStationDtos = new ArrayList<>();
+        final int size = vertexList.size();
+        for (int index = 0; index < size - 1; index++) {
+            traverseStationDtos.add(
+                new TraverseStationDto(
+                    lineNames.get(new LineNameKey(vertexList.get(index).getId(), vertexList.get(index + 1).getId())),
+                    vertexList.get(index).getName()));
+        }
+        traverseStationDtos.add(
+            new TraverseStationDto(
+                lineNames.get(new LineNameKey(vertexList.get(size - 2).getId(), vertexList.get(size - 1).getId())),
+                vertexList.get(size - 1).getName()));
+
+        return new ShortestPathResponse(shortestPath.getWeight(), traverseStationDtos);
     }
 }
