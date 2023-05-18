@@ -1,57 +1,56 @@
 package subway.domain.section.domain;
 
-import subway.domain.section.entity.SectionDetailEntity;
-import subway.domain.station.entity.StationEntity;
+import subway.domain.section.entity.SectionEntity;
 
 import java.util.*;
 
 public class SectionLocator {
 
-    private final Map<StationEntity, List<SectionDetailEntity>> graph;
+    private final Map<Long, List<SectionEntity>> graph;
 
-    private SectionLocator(final Map<StationEntity, List<SectionDetailEntity>> graph) {
+    private SectionLocator(final Map<Long, List<SectionEntity>> graph) {
         this.graph = graph;
     }
 
-    public static SectionLocator of(final List<SectionDetailEntity> sectionDetails) {
-        Map<StationEntity, List<SectionDetailEntity>> stationGraph = new HashMap<>();
-        for (final SectionDetailEntity sectionDetailEntity : sectionDetails) {
-            stationGraph.computeIfAbsent(sectionDetailEntity.getUpStation(), key -> new ArrayList<>()).add(sectionDetailEntity);
-            stationGraph.computeIfAbsent(sectionDetailEntity.getDownStation(), key -> new ArrayList<>()).add(sectionDetailEntity);
+    public static SectionLocator of(final List<SectionEntity> sectionDetails) {
+        Map<Long, List<SectionEntity>> stationGraph = new HashMap<>();
+        for (final SectionEntity sectionDetailEntity : sectionDetails) {
+            stationGraph.computeIfAbsent(sectionDetailEntity.getUpStationId(), key -> new ArrayList<>()).add(sectionDetailEntity);
+            stationGraph.computeIfAbsent(sectionDetailEntity.getDownStationId(), key -> new ArrayList<>()).add(sectionDetailEntity);
         }
         return new SectionLocator(stationGraph);
     }
 
-    public StationEntity findStartStation() {
-        StationEntity station = graph.keySet().iterator().next();
+    public Long findStartStation() {
+        Long station = graph.keySet().iterator().next();
 
-        final Queue<StationEntity> queue = new LinkedList<>();
+        final Queue<Long> queue = new LinkedList<>();
         queue.add(station);
         while (!queue.isEmpty()) {
-            final StationEntity poll = queue.poll();
-            final List<SectionDetailEntity> sectionDetailEntities = graph.get(poll);
-            for (final SectionDetailEntity sectionDetailEntity : sectionDetailEntities) {
-                if (sectionDetailEntity.getDownStation().equals(poll)) {
-                    queue.add(sectionDetailEntity.getUpStation());
-                    station = sectionDetailEntity.getUpStation();
+            final Long poll = queue.poll();
+            final List<SectionEntity> sectionDetailEntities = graph.get(poll);
+            for (final SectionEntity sectionDetailEntity : sectionDetailEntities) {
+                if (sectionDetailEntity.getDownStationId().equals(poll)) {
+                    queue.add(sectionDetailEntity.getUpStationId());
+                    station = sectionDetailEntity.getUpStationId();
                 }
             }
         }
         return station;
     }
 
-    public StationEntity findEndStation() {
-        StationEntity station = graph.keySet().iterator().next();
+    public Long findEndStation() {
+        Long station = graph.keySet().iterator().next();
 
-        final Queue<StationEntity> queue = new LinkedList<>();
+        final Queue<Long> queue = new LinkedList<>();
         queue.add(station);
         while (!queue.isEmpty()) {
-            final StationEntity poll = queue.poll();
-            final List<SectionDetailEntity> sectionDetailEntities = graph.get(poll);
-            for (final SectionDetailEntity sectionDetailEntity : sectionDetailEntities) {
-                if (sectionDetailEntity.getUpStation().equals(poll)) {
-                    queue.add(sectionDetailEntity.getDownStation());
-                    station = sectionDetailEntity.getDownStation();
+            final Long poll = queue.poll();
+            final List<SectionEntity> sectionDetailEntities = graph.get(poll);
+            for (final SectionEntity sectionDetailEntity : sectionDetailEntities) {
+                if (sectionDetailEntity.getUpStationId().equals(poll)) {
+                    queue.add(sectionDetailEntity.getDownStationId());
+                    station = sectionDetailEntity.getDownStationId();
                 }
             }
         }

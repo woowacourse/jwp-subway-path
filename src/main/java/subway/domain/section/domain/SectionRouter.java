@@ -4,38 +4,37 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.domain.section.entity.SectionDetailEntity;
-import subway.domain.station.entity.StationEntity;
+import subway.domain.section.entity.SectionEntity;
 
 import java.util.List;
 
 public class SectionRouter {
 
-    private final WeightedMultigraph<StationEntity, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Long, DefaultWeightedEdge> graph;
 
-    private SectionRouter(final WeightedMultigraph<StationEntity, DefaultWeightedEdge> graph) {
+    private SectionRouter(final WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
         this.graph = graph;
     }
 
-    public static SectionRouter of(final List<SectionDetailEntity> sectionDetails) {
-        WeightedMultigraph<StationEntity, DefaultWeightedEdge> graph
+    public static SectionRouter of(final List<SectionEntity> sectionDetails) {
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-        for (SectionDetailEntity sectionDetailEntity : sectionDetails) {
-            if (!graph.containsVertex(sectionDetailEntity.getUpStation())) {
-                graph.addVertex(sectionDetailEntity.getUpStation());
+        for (SectionEntity sectionDetailEntity : sectionDetails) {
+            if (!graph.containsVertex(sectionDetailEntity.getUpStationId())) {
+                graph.addVertex(sectionDetailEntity.getUpStationId());
             }
-            if (!graph.containsVertex(sectionDetailEntity.getDownStation())) {
-                graph.addVertex(sectionDetailEntity.getDownStation());
+            if (!graph.containsVertex(sectionDetailEntity.getDownStationId())) {
+                graph.addVertex(sectionDetailEntity.getDownStationId());
             }
 
-            graph.setEdgeWeight(graph.addEdge(sectionDetailEntity.getUpStation(), sectionDetailEntity.getDownStation()), sectionDetailEntity.getDistance());
+            graph.setEdgeWeight(graph.addEdge(sectionDetailEntity.getUpStationId(), sectionDetailEntity.getDownStationId()), sectionDetailEntity.getDistance());
         }
 
         return new SectionRouter(graph);
     }
 
-    public List<StationEntity> findShortestPath(StationEntity startStation, StationEntity endStation) {
+    public List<Long> findShortestPath(Long startStation, Long endStation) {
         DijkstraShortestPath shortestPath = new DijkstraShortestPath<>(graph);
 
         GraphPath path = shortestPath.getPath(startStation, endStation);
@@ -43,7 +42,7 @@ public class SectionRouter {
         return path.getVertexList();
     }
 
-    public double findShortestDistance(StationEntity startStation, StationEntity endStation) {
+    public double findShortestDistance(Long startStation, Long endStation) {
         DijkstraShortestPath shortestPath = new DijkstraShortestPath<>(graph);
 
         GraphPath path = shortestPath.getPath(startStation, endStation);

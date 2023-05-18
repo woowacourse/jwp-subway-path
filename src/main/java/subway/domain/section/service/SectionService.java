@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.section.dao.SectionDao;
 import subway.domain.section.domain.Direction;
 import subway.domain.section.dto.SectionCreateRequest;
-import subway.domain.section.entity.SectionDetailEntity;
 import subway.domain.section.entity.SectionEntity;
 
 import java.util.List;
@@ -20,11 +19,11 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public List<SectionDetailEntity> findByLineId(Long id) {
-        return sectionDao.findSectionsByLineId(id);
+    public List<SectionEntity> findByLineId(Long lindId){
+        return sectionDao.findByLineId(lindId);
     }
 
-    public List<SectionDetailEntity> findAll() {
+    public List<SectionEntity> findAll(){
         return sectionDao.findAll();
     }
 
@@ -81,7 +80,7 @@ public class SectionService {
                     .setDownStationId(request.getAddedId())
                     .setDistance(existSectionEntity.getDistance() - request.getDistance())
                     .build();
-            sectionDao.updateStationInSection(upSectionEntity);
+            sectionDao.update(upSectionEntity);
 
             final SectionEntity downSectionEntity = new SectionEntity.Builder()
                     .setLineId(request.getLineId())
@@ -101,7 +100,7 @@ public class SectionService {
                 .setDistance(request.getDistance())
                 .build();
 
-        sectionDao.updateStationInSection(upSectionEntity);
+        sectionDao.update(upSectionEntity);
 
         final SectionEntity downSectionEntity = new SectionEntity.Builder()
                 .setLineId(request.getLineId())

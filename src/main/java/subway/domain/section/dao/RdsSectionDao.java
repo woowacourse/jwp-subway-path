@@ -7,9 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.section.domain.Direction;
-import subway.domain.section.entity.SectionDetailEntity;
 import subway.domain.section.entity.SectionEntity;
-import subway.domain.station.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -29,15 +27,6 @@ public class RdsSectionDao implements SectionDao {
                     rs.getLong("line_id"),
                     rs.getLong("up_station_id"),
                     rs.getLong("down_station_id"),
-                    rs.getInt("distance")
-            );
-
-    private final RowMapper<SectionDetailEntity> sectionRowMapper = (rs, rowNum) ->
-            new SectionDetailEntity(
-                    rs.getLong("id"),
-                    rs.getLong("line_id"),
-                    new StationEntity(rs.getLong("up_station_id"), rs.getString("up_station_name")),
-                    new StationEntity(rs.getLong("down_station_id"), rs.getString("down_station_name")),
                     rs.getInt("distance")
             );
 
@@ -68,38 +57,15 @@ public class RdsSectionDao implements SectionDao {
     }
 
     @Override
-    public List<SectionDetailEntity> findAll() {
-        final String sql = "SELECT s1.id AS up_station_id," +
-                "s1.name AS up_station_name," +
-                "s2.id AS down_station_id," +
-                "s2.name AS down_station_name," +
-                "sec.line_id," +
-                "sec.distance " +
-                "FROM SECTION sec " +
-                "JOIN STATION s1 ON sec.up_station_id = s1.id " +
-                "JOIN STATION s2 ON sec.down_station_id = s2.id ";
-        return jdbcTemplate.query(sql, sectionRowMapper);
-    }
-
-    @Override
     public List<SectionEntity> findByLineId(final Long lineId) {
         final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     @Override
-    public List<SectionDetailEntity> findSectionsByLineId(final Long lineId) {
-        final String sql = "SELECT s1.id AS up_station_id," +
-                "s1.name AS up_station_name," +
-                "s2.id AS down_station_id," +
-                "s2.name AS down_station_name," +
-                "sec.line_id," +
-                "sec.distance " +
-                "FROM SECTION sec " +
-                "JOIN STATION s1 ON sec.up_station_id = s1.id " +
-                "JOIN STATION s2 ON sec.down_station_id = s2.id " +
-                "WHERE line_id = ?";
-        return jdbcTemplate.query(sql, sectionRowMapper, lineId);
+    public List<SectionEntity> findAll() {
+        final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override

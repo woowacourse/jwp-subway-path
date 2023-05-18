@@ -2,9 +2,9 @@ package subway.line.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.section.domain.SectionRouter;
 import subway.domain.section.domain.SectionLocator;
-import subway.domain.section.entity.SectionDetailEntity;
+import subway.domain.section.domain.SectionRouter;
+import subway.domain.section.entity.SectionEntity;
 import subway.domain.station.entity.StationEntity;
 
 import java.util.List;
@@ -24,28 +24,28 @@ class SectionsMapperTest {
         final StationEntity stationEntity6 = new StationEntity(6L, "6L");
         final StationEntity stationEntity7 = new StationEntity(7L, "7L");
 
-        final List<SectionDetailEntity> sectionDetailEntities = List.of(
-                new SectionDetailEntity(1L, 1L, stationEntity1, stationEntity2, 3),
-                new SectionDetailEntity(2L, 1L, stationEntity2, stationEntity3, 3),
-                new SectionDetailEntity(3L, 1L, stationEntity3, stationEntity4, 3),
-                new SectionDetailEntity(4L, 1L, stationEntity4, stationEntity5, 3),
-                new SectionDetailEntity(5L, 1L, stationEntity5, stationEntity6, 3),
-                new SectionDetailEntity(6L, 1L, stationEntity6, stationEntity7, 3)
+        final List<SectionEntity> sectionDetailEntities = List.of(
+                new SectionEntity(1L, 1L, stationEntity1.getId(), stationEntity2.getId(), 3),
+                new SectionEntity(2L, 1L, stationEntity2.getId(), stationEntity3.getId(), 3),
+                new SectionEntity(3L, 1L, stationEntity3.getId(), stationEntity4.getId(), 3),
+                new SectionEntity(4L, 1L, stationEntity4.getId(), stationEntity5.getId(), 3),
+                new SectionEntity(5L, 1L, stationEntity5.getId(), stationEntity6.getId(), 3),
+                new SectionEntity(6L, 1L, stationEntity6.getId(), stationEntity7.getId(), 3)
         );
 
         SectionLocator sectionLocator = SectionLocator.of(sectionDetailEntities);
         SectionRouter sectionRouter = SectionRouter.of(sectionDetailEntities);
 
-        List<StationEntity> shortestPath = sectionRouter.findShortestPath(sectionLocator.findStartStation(), sectionLocator.findEndStation());
+        List<Long> shortestPath = sectionRouter.findShortestPath(sectionLocator.findStartStation(), sectionLocator.findEndStation());
 
         assertThat(shortestPath).containsExactly(
-                stationEntity1,
-                stationEntity2,
-                stationEntity3,
-                stationEntity4,
-                stationEntity5,
-                stationEntity6,
-                stationEntity7
+                stationEntity1.getId(),
+                stationEntity2.getId(),
+                stationEntity3.getId(),
+                stationEntity4.getId(),
+                stationEntity5.getId(),
+                stationEntity6.getId(),
+                stationEntity7.getId()
         );
     }
 
@@ -60,28 +60,28 @@ class SectionsMapperTest {
         final StationEntity stationEntity3 = new StationEntity(3L, "3L");
         final StationEntity stationEntity4 = new StationEntity(4L, "4L");
 
-        final List<SectionDetailEntity> sectionDetailEntities = List.of(
-                new SectionDetailEntity(1L, 1L, stationEntity1, stationEntity2, 3),
-                new SectionDetailEntity(2L, 1L, stationEntity2, stationEntity3, 3),
-                new SectionDetailEntity(3L, 1L, stationEntity3, stationEntity4, 3),
-                new SectionDetailEntity(4L, 1L, stationEntity4, stationEntity5, 3),
-                new SectionDetailEntity(5L, 1L, stationEntity5, stationEntity6, 3),
-                new SectionDetailEntity(6L, 1L, stationEntity6, stationEntity7, 3)
+        final List<SectionEntity> sectionDetailEntities = List.of(
+                new SectionEntity(1L, 1L, stationEntity1.getId(), stationEntity2.getId(), 3),
+                new SectionEntity(2L, 1L, stationEntity2.getId(), stationEntity3.getId(), 3),
+                new SectionEntity(3L, 1L, stationEntity3.getId(), stationEntity4.getId(), 3),
+                new SectionEntity(4L, 1L, stationEntity4.getId(), stationEntity5.getId(), 3),
+                new SectionEntity(5L, 1L, stationEntity5.getId(), stationEntity6.getId(), 3),
+                new SectionEntity(6L, 1L, stationEntity6.getId(), stationEntity7.getId(), 3)
         );
 
         SectionLocator sectionLocator = SectionLocator.of(sectionDetailEntities);
         SectionRouter sectionRouter = SectionRouter.of(sectionDetailEntities);
 
-        List<StationEntity> shortestPath = sectionRouter.findShortestPath(sectionLocator.findStartStation(), sectionLocator.findEndStation());
+        List<Long> shortestPath = sectionRouter.findShortestPath(sectionLocator.findStartStation(), sectionLocator.findEndStation());
 
         assertThat(shortestPath).containsExactly(
-                stationEntity1,
-                stationEntity2,
-                stationEntity3,
-                stationEntity4,
-                stationEntity5,
-                stationEntity6,
-                stationEntity7
+                stationEntity1.getId(),
+                stationEntity2.getId(),
+                stationEntity3.getId(),
+                stationEntity4.getId(),
+                stationEntity5.getId(),
+                stationEntity6.getId(),
+                stationEntity7.getId()
         );
     }
 }
