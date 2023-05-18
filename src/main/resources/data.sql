@@ -1,23 +1,26 @@
 insert into LINE
-values (1, '2호선');
+values (1, '1호선');
 
 insert into SECTION
-values (1, '강남역', '역삼역', 2, 1);
+values (1, 'A', 'B', 1, 1);
 
 insert into SECTION
-values (2, '역삼역', '선릉역', 3, 1);
+values (2, 'B', 'C', 2, 1);
 
 insert into SECTION
-values (3, '선릉역', '삼성역', 4, 1);
+values (3, 'C', 'D', 3, 1);
 
 insert into LINE
-values (2, '8호선');
+values (2, '2호선');
 
 insert into SECTION
-values (4, '1역', '2역', 2, 2);
+values (4, 'B', 'F', 4, 2);
 
 insert into SECTION
-values (5, '2역', '3역', 3, 2);
+values (5, 'F', 'G', 11, 2);
 
 insert into SECTION
-values (6, '3역', '4역', 4, 2);
+values (6, 'G', 'H', 5, 2);
+
+insert into SECTION
+values (7, 'H', 'D', 4, 2);

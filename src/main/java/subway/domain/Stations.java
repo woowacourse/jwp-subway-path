@@ -44,11 +44,7 @@ public class Stations {
     }
 
     public Stations cloneStations() {
-        return new Stations(
-                current.cloneStation(),
-                next.cloneStation(),
-                distance.getValue()
-        );
+        return new Stations(current.cloneStation(), next.cloneStation(), distance.getValue());
     }
 
     public int getDistance() {

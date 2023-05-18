@@ -34,7 +34,7 @@ public class StationService {
     public void registerStation(final StationRegisterRequest stationRegisterRequest) {
 
         final String lineName = stationRegisterRequest.getLineName();
-        final Line line = lineQueryService.findByLineName(lineName);
+        final Line line = lineQueryService.searchByLineName(lineName);
         final List<Section> originSection = line.getSections();
         final Section newSection = mapToSectionFrom(stationRegisterRequest);
 
@@ -50,8 +50,8 @@ public class StationService {
         final List<Section> updatedSection = line.getSections();
 
         updatedSection.stream()
-                      .filter(it -> originSection.stream().noneMatch(it::isSame))
-                      .filter(it -> Objects.nonNull(it.getId()))
+                      .filter(section -> originSection.stream().noneMatch(section::isSame))
+                      .filter(section -> Objects.nonNull(section.getId()))
                       .findFirst()
                       .ifPresent(sectionCommandService::updateSection);
     }
@@ -69,7 +69,7 @@ public class StationService {
     public void deleteStation(final StationDeleteRequest stationDeleteRequest) {
 
         final String lineName = stationDeleteRequest.getLineName();
-        final Line line = lineQueryService.findByLineName(lineName);
+        final Line line = lineQueryService.searchByLineName(lineName);
 
         final List<Section> originSection = line.getSections();
 
@@ -78,7 +78,7 @@ public class StationService {
         final List<Section> updatedSection = line.getSections();
 
         updatedSection.stream()
-                      .filter(it -> originSection.stream().noneMatch(it::isSame))
+                      .filter(section -> originSection.stream().noneMatch(section::isSame))
                       .findAny()
                       .ifPresentOrElse(
                               updateAndDeleteSection(originSection, updatedSection),
@@ -111,8 +111,8 @@ public class StationService {
             final List<Section> updatedSection
     ) {
         return () -> originSection.stream()
-                                  .filter(it -> updatedSection.stream().noneMatch(it::isSame))
+                                  .filter(section -> updatedSection.stream().noneMatch(section::isSame))
                                   .findFirst()
-                                  .ifPresent(it -> sectionCommandService.deleteSection(it.getId()));
+                                  .ifPresent(section -> sectionCommandService.deleteSection(section.getId()));
     }
 }

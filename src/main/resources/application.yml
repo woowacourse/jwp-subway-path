@@ -1,7 +1,9 @@
 spring:
-  h2:
-    console:
-      enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://localhost:13306/local
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: local
+    password: password
+  sql:
+    init:
+      mode: always

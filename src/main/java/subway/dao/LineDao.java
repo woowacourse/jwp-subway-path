@@ -1,15 +1,16 @@
 package subway.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Repository
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -28,15 +29,14 @@ public class LineDao {
                         .usingGeneratedKeyColumns("id");
     }
 
-    public Optional<LineEntity> findLineByName(final String lineName) {
+    public Optional<LineEntity> findByLineName(final String lineName) {
         final String sql = "SELECT * FROM LINE L WHERE L.name = ?";
 
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        sql,
-                        rowMapper,
-                        lineName)
-        );
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineName));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     public List<LineEntity> findAll() {
@@ -45,7 +45,7 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void deleteLineById(final Long lineId) {
+    public void deleteById(final Long lineId) {
         final String sql = "DELETE FROM LINE L WHERE L.id = ?";
 
         jdbcTemplate.update(sql, lineId);
