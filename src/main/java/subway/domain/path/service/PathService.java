@@ -2,7 +2,7 @@ package subway.domain.path.service;
 
 import org.springframework.stereotype.Service;
 import subway.domain.path.domain.LinePath;
-import subway.domain.path.domain.ShortestPath;
+import subway.domain.path.domain.Path;
 import subway.domain.line.entity.LineEntity;
 import subway.domain.line.service.LineService;
 import subway.domain.section.domain.SectionLocator;
@@ -57,13 +57,13 @@ public class PathService {
                 .collect(Collectors.toList());
     }
 
-    public ShortestPath findShortestPath(Long startStationId, Long endStationId) {
+    public Path findShortestPath(Long startStationId, Long endStationId) {
         SectionRouter sectionRouter = SectionRouter.of(sectionService.findAll());
         double shortestDistance = sectionRouter.findShortestDistance(startStationId, endStationId);
         List<Long> shortestPath = sectionRouter.findShortestPath(startStationId, endStationId);
 
         List<StationEntity> stations = stationService.findStationsByIds(shortestPath);
 
-        return new ShortestPath(stations, shortestDistance);
+        return new Path(stations, shortestDistance);
     }
 }

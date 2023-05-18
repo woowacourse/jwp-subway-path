@@ -4,16 +4,13 @@ import subway.domain.station.entity.StationEntity;
 
 import java.util.List;
 
-public class ShortestPath {
+public class Path {
 
-    private List<StationEntity> path;
-    private double distance;
-    private int fare;
+    private final List<StationEntity> path;
+    private final double distance;
+    private final int fare;
 
-    public ShortestPath() {
-    }
-
-    public ShortestPath(final List<StationEntity> path, final double distance) {
+    public Path(final List<StationEntity> path, final double distance) {
         this.path = path;
         this.distance = distance;
         this.fare = FareCalculator.calculate(distance);

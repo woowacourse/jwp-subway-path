@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.path.domain.ShortestPath;
+import subway.domain.path.domain.Path;
 import subway.domain.path.service.PathService;
 import subway.domain.station.entity.StationEntity;
 
@@ -26,9 +26,9 @@ class PathServiceTest {
 
     @Test
     void 환승_최단거리_구하기() {
-        ShortestPath shortestPath = pathService.findShortestPath(7L, 8L);
+        Path path = pathService.findShortestPath(7L, 8L);
         assertAll(
-                () -> Assertions.assertThat(shortestPath.getPath()).containsExactly(
+                () -> Assertions.assertThat(path.getPath()).containsExactly(
                         new StationEntity(7L, "서초역"),
                         new StationEntity(6L, "방배역"),
                         new StationEntity(5L, "사당역"),
@@ -36,7 +36,7 @@ class PathServiceTest {
                         new StationEntity(9L, "강남역"),
                         new StationEntity(8L, "교대역")
                 ),
-                () -> Assertions.assertThat(shortestPath.getDistance()).isEqualTo(35)
+                () -> Assertions.assertThat(path.getDistance()).isEqualTo(35)
         );
     }
 }
