@@ -16,50 +16,36 @@ public class Subway {
     private static final String INVALID_NOT_FOUND_RIGHT_SIDE_SECTION_MESSAGE = "오른쪽 구간을 찾을 수 없습니다.";
     private static final String INVALID_NOT_FOUND_LEFT_SIDE_SECTION_MESSAGE = "왼쪽 구간을 찾을 수 없습니다.";
     private static final String INVALID_DISTANCE_BETWEEN_BASE_AND_NEW_STATION_MESSAGE = "기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.";
-    private static final String INVALID_NOT_FOUND_STATION_MESSAGE = "역이 노선에 없습니다.";
 
     private final Line line;
-    private final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations;
+    private final SubwayStructure subwayStructure;
     private final Station start;
 
-    private Subway(final Line line, final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations,
+    private Subway(final Line line, final SubwayStructure subwayStructure,
                    final Station start) {
         this.line = line;
-        this.stations = stations;
+        this.subwayStructure = subwayStructure;
         this.start = start;
     }
 
     public static Subway of(final Line line, final List<Section> sections) {
-        SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations = generateStations(sections);
-        Station start = findStartStation(stations);
-        return new Subway(line, stations, start);
+        SubwayStructure subwayStructure = generateSubwayStructure(sections);
+        Station start = subwayStructure.findStartStation();
+        return new Subway(line, subwayStructure, start);
     }
 
-    private static SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> generateStations(final List<Section> sections) {
-        SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations = new SimpleDirectedWeightedGraph<>(
+    private static SubwayStructure generateSubwayStructure(final List<Section> sections) {
+        SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> subwayStructure = new SimpleDirectedWeightedGraph<>(
                 DefaultWeightedEdge.class);
         for (Section section : sections) {
             Station right = section.getRight();
             Station left = section.getLeft();
 
-            stations.addVertex(right);
-            stations.addVertex(left);
-            stations.setEdgeWeight(stations.addEdge(left, right), section.getDistance());
+            subwayStructure.addVertex(right);
+            subwayStructure.addVertex(left);
+            subwayStructure.setEdgeWeight(subwayStructure.addEdge(left, right), section.getDistance());
         }
-        return stations;
-    }
-
-    private static Station findStartStation(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
-        return stations.vertexSet()
-                .stream()
-                .filter(station -> isStartStation(stations, station))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private static boolean isStartStation(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations,
-                                          final Station station) {
-        return stations.incomingEdgesOf(station).isEmpty();
+        return new SubwayStructure(subwayStructure);
     }
 
     public Sections findUpdateSectionsByAddingSection(final Section section) {
@@ -72,35 +58,19 @@ public class Subway {
     }
 
     private void validateStation(final Station left, final Station right) {
-        if (hasStation(left) && hasStation(right)) {
+        if (subwayStructure.hasStation(left) && subwayStructure.hasStation(right)) {
             throw new SubwayServiceException(INVALID_ALREADY_EXISTS_TWO_STATIONS_MESSAGE);
         }
-        if (hasNoStation(left) && hasNoStation(right) && isStationsPresent()) {
+        if (subwayStructure.hasNoStation(left) && subwayStructure.hasNoStation(right) && subwayStructure.isStationsPresent()) {
             throw new SubwayServiceException(INVALID_NOT_EXISTS_TWO_STATIONS_MESSAGE);
         }
     }
 
-    private boolean hasStation(final Station station) {
-        return stations.containsVertex(station);
-    }
-
-    private boolean hasNoStation(final Station station) {
-        return !hasStation(station);
-    }
-
-    private boolean isStationsEmpty() {
-        return stations.edgeSet().isEmpty();
-    }
-
-    private boolean isStationsPresent() {
-        return !isStationsEmpty();
-    }
-
     private Sections getSections(final Station left, final Station right, final int distance) {
-        if (hasStation(left) && hasNoStation(right)) {
+        if (subwayStructure.hasStation(left) && subwayStructure.hasNoStation(right)) {
             return getLeftSectionsInBetween(left, right, distance);
         }
-        if (hasNoStation(left) && hasStation(right)) {
+        if (subwayStructure.hasNoStation(left) && subwayStructure.hasStation(right)) {
             return getRightSectionsInBetween(left, right, distance);
         }
         return new Sections(List.of(new Section(left, right, new Distance(distance))));
@@ -108,7 +78,7 @@ public class Subway {
 
     private Sections getLeftSectionsInBetween(final Station left, final Station right, final int distance) {
         Section newSection = new Section(left, right, new Distance(distance));
-        if (hasRightSection(left)) {
+        if (subwayStructure.hasRightSection(left)) {
             Section existedSection = findRightSection(left);
             Section updatedRightSection = getUpdatedRightSection(existedSection, right, distance);
             return new Sections(List.of(newSection, updatedRightSection));
@@ -116,20 +86,11 @@ public class Subway {
         return new Sections(List.of(newSection));
     }
 
-    private boolean hasRightSection(final Station station) {
-        validateStation(station);
-        return hasOutgoingStation(station);
-    }
-
-    private boolean hasOutgoingStation(final Station station) {
-        return !stations.outgoingEdgesOf(station).isEmpty();
-    }
-
     private Section findRightSection(final Station station) {
-        Set<DefaultWeightedEdge> edges = stations.outgoingEdgesOf(station);
+        Set<DefaultWeightedEdge> edges = subwayStructure.getRightEdge(station);
         return edges.stream()
-                .map(edge -> new Section(station, stations.getEdgeTarget(edge),
-                        new Distance((int) stations.getEdgeWeight(edge))))
+                .map(edge -> new Section(station, subwayStructure.getRightStationByEdge(edge),
+                        new Distance(subwayStructure.getDistance(edge))))
                 .findFirst()
                 .orElseThrow(() -> new SubwayInternalServerException(INVALID_NOT_FOUND_RIGHT_SIDE_SECTION_MESSAGE));
     }
@@ -149,7 +110,7 @@ public class Subway {
 
     private Sections getRightSectionsInBetween(Station left, Station right, int distance) {
         Section newSection = new Section(left, right, new Distance(distance));
-        if (hasLeftSection(right)) {
+        if (subwayStructure.hasLeftSection(right)) {
             Section existedSection = findLeftSection(right);
             Section updatedLeftSection = getUpdatedLeftSection(existedSection, left, distance);
             return new Sections(List.of(newSection, updatedLeftSection));
@@ -157,16 +118,11 @@ public class Subway {
         return new Sections(List.of(newSection));
     }
 
-    private boolean hasLeftSection(final Station station) {
-        validateStation(station);
-        return !isStartStation(stations, station);
-    }
-
     private Section findLeftSection(final Station station) {
-        Set<DefaultWeightedEdge> edges = stations.incomingEdgesOf(station);
+        Set<DefaultWeightedEdge> edges = subwayStructure.getLeftEdge(station);
         return edges.stream()
-                .map(edge -> new Section(stations.getEdgeSource(edge), station,
-                        new Distance((int) stations.getEdgeWeight(edge))))
+                .map(edge -> new Section(subwayStructure.getLeftStationByEdge(edge), station,
+                        new Distance(subwayStructure.getDistance(edge))))
                 .findFirst()
                 .orElseThrow(() -> new SubwayInternalServerException(INVALID_NOT_FOUND_LEFT_SIDE_SECTION_MESSAGE));
     }
@@ -179,8 +135,7 @@ public class Subway {
     }
 
     public Sections findUpdateSectionsByDeletingSection(Station station) {
-        validateStation(station);
-        if (hasRightSection(station) && hasLeftSection(station)) {
+        if (subwayStructure.hasRightSection(station) && subwayStructure.hasLeftSection(station)) {
             Section leftSection = findLeftSection(station);
             Section rightSection = findRightSection(station);
 
@@ -192,19 +147,13 @@ public class Subway {
         return new Sections(new ArrayList<>());
     }
 
-    private void validateStation(Station station) {
-        if (hasNoStation(station)) {
-            throw new SubwayServiceException(INVALID_NOT_FOUND_STATION_MESSAGE);
-        }
-    }
-
     public List<Station> getOrderedStations() {
         List<Station> orderedStations = new ArrayList<>();
-        if (isStationsEmpty()) {
+        if (subwayStructure.isStationsEmpty()) {
             return orderedStations;
         }
         Station station = new Station(start.getId(), start.getName());
-        while (hasOutgoingStation(station)) {
+        while (!subwayStructure.isEndStation(station)) {
             orderedStations.add(station);
             station = findRightSection(station).getRight();
         }

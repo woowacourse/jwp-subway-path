@@ -24,8 +24,28 @@ public class SubwayStructure {
                 .orElse(null);
     }
 
-    public boolean isStartStation(final Station station) {
+    private boolean isStartStation(final Station station) {
         return structure.incomingEdgesOf(station).isEmpty();
+    }
+
+    public boolean hasLeftSection(final Station station) {
+        validateStation(station);
+        return !isStartStation(station);
+    }
+
+    private void validateStation(Station station) {
+        if (hasNoStation(station)) {
+            throw new SubwayServiceException(INVALID_NOT_FOUND_STATION_MESSAGE);
+        }
+    }
+
+    public boolean hasRightSection(final Station station) {
+        validateStation(station);
+        return !isEndStation(station);
+    }
+
+    public boolean isEndStation(final Station station) {
+        return structure.outgoingEdgesOf(station).isEmpty();
     }
 
     public boolean hasStation(final Station station) {
@@ -44,35 +64,23 @@ public class SubwayStructure {
         return !isStationsEmpty();
     }
 
-    public boolean isEndStation(final Station station) {
-        return structure.outgoingEdgesOf(station).isEmpty();
+    public Set<DefaultWeightedEdge> getRightEdge(Station station) {
+        return structure.outgoingEdgesOf(station);
     }
 
-    public boolean hasLeftSection(final Station station) {
-        validateStation(station);
-        return !isStartStation(station);
+    public Set<DefaultWeightedEdge> getLeftEdge(Station station) {
+        return structure.incomingEdgesOf(station);
     }
 
-    public boolean hasRightSection(final Station station) {
-        validateStation(station);
-        return !isEndStation(station);
-    }
-
-    private void validateStation(Station station) {
-        if (hasNoStation(station)) {
-            throw new SubwayServiceException(INVALID_NOT_FOUND_STATION_MESSAGE);
-        }
-    }
-
-    public Set<DefaultWeightedEdge> getEdge() {
-        return structure.edgeSet();
-    }
-
-    public Station getEdgeTarget(DefaultWeightedEdge edge) {
+    public Station getRightStationByEdge(DefaultWeightedEdge edge) {
         return structure.getEdgeTarget(edge);
     }
 
-    public int getEdgeWeight(DefaultWeightedEdge edge) {
+    public Station getLeftStationByEdge(DefaultWeightedEdge edge) {
+        return structure.getEdgeSource(edge);
+    }
+
+    public int getDistance(DefaultWeightedEdge edge) {
         return (int) structure.getEdgeWeight(edge);
     }
 }
