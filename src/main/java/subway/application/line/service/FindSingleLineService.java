@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.line.usecase.FindSingleLineUseCase;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
-import subway.domain.line.LineRoutePath;
+import subway.domain.path.LineRoutePath;
 import subway.ui.dto.response.LineResponse;
 import subway.ui.dto.response.StationResponse;
 
