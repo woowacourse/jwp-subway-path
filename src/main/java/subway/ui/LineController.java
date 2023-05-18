@@ -14,25 +14,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.business.service.LineService;
-import subway.business.service.TransferService;
 import subway.business.service.dto.LineResponse;
 import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.StationAddToLineRequest;
-import subway.business.service.dto.TransferRequest;
-import subway.business.service.dto.TransferResponse;
 import subway.ui.dto.StationDeleteRequest;
 
 @Tag(name = "Line", description = "노선 API Document")
 @RestController
 @RequestMapping("/lines")
 public class LineController {
-
     private final LineService lineService;
-    private final TransferService transferService;
 
-    public LineController(LineService lineService, TransferService transferService) {
+    public LineController(LineService lineService) {
         this.lineService = lineService;
-        this.transferService = transferService;
     }
 
     @Operation(summary = "노선 등록", description = "상행 종점, 하행 종점역을 가지는 노선을 등록합니다.")
@@ -72,12 +66,5 @@ public class LineController {
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
-    }
-
-    @Operation(summary = "환승 추가", description = "두 개의 역을 환승역으로 만듭니다.")
-    @PostMapping("/transfers")
-    public ResponseEntity<TransferResponse> createTransfer(@RequestBody TransferRequest transferRequest) {
-        TransferResponse transferResponse = transferService.createTransfer(transferRequest);
-        return ResponseEntity.ok().body(transferResponse);
     }
 }

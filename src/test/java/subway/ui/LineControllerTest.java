@@ -8,8 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static subway.fixture.Fixture.line2WithOneSection;
-import static subway.fixture.Fixture.station1;
-import static subway.fixture.Fixture.station2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -23,14 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.business.domain.line.Line;
 import subway.business.domain.line.Section;
 import subway.business.domain.line.Station;
-import subway.business.domain.transfer.Transfer;
 import subway.business.service.LineService;
-import subway.business.service.TransferService;
 import subway.business.service.dto.LineResponse;
 import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.StationAddToLineRequest;
-import subway.business.service.dto.TransferRequest;
-import subway.business.service.dto.TransferResponse;
 import subway.ui.dto.StationDeleteRequest;
 
 @WebMvcTest(LineController.class)
@@ -43,9 +37,6 @@ public class LineControllerTest {
 
     @MockBean
     private LineService lineService;
-
-    @MockBean
-    private TransferService transferService;
 
     @DisplayName("노선과 두 개의 역을 추가한다")
     @Test
@@ -132,21 +123,4 @@ public class LineControllerTest {
                 .andExpect(jsonPath("$[1].sections[0].downwardStation.name").value("몽촌토성역"));
     }
 
-    @DisplayName("환승역을 등록한다.")
-    @Test
-    void shouldCreateTransferWhenRequest() throws Exception {
-        Transfer transfer = new Transfer(1L, station1(), station2());
-        given(transferService.createTransfer(any())).willReturn(TransferResponse.from(transfer));
-
-        TransferRequest transferRequest = new TransferRequest(1L, 2L);
-        String jsonRequest = objectMapper.writeValueAsString(transferRequest);
-
-        mockMvc.perform(post("/lines/transfers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonRequest))
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.firstStation.name").value("잠실역"))
-                .andExpect(jsonPath("$.lastStation.name").value("몽촌토성역"))
-                .andExpect(status().isOk());
-    }
 }
