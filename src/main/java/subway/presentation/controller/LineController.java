@@ -34,7 +34,7 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
-    @DeleteMapping("/{lineId}/{stationId}")
+    @DeleteMapping("/{lineId}/stations/{stationId}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long lineId, @PathVariable Long stationId) {
         lineService.deleteStation(lineId, stationId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)

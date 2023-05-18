@@ -126,7 +126,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
 
         // when, then
         RestAssured.given()
-                .when().delete("/subway/{lineId}/{stationId}", lineId, jamsilStationId)
+                .when().delete("/subway/{lineId}/stations/{stationId}", lineId, jamsilStationId)
 
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
