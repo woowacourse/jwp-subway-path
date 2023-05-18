@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import subway.domain.path.domain.LinePath;
-import subway.domain.path.domain.ShortestPath;
+import subway.domain.path.domain.Path;
+import subway.domain.path.dto.LinePathResponse;
 import subway.domain.path.dto.PathResponse;
 import subway.domain.path.service.PathService;
 import subway.global.common.ResultResponse;
@@ -29,21 +30,22 @@ public class PathController {
     @GetMapping("/lines")
     public ResponseEntity<ResultResponse> findAllLine() {
         List<LinePath> linePaths = pathService.findAll();
-        List<PathResponse> pathResponse = linePaths.stream()
-                .map(PathResponse::of)
+        List<LinePathResponse> linePathResponse = linePaths.stream()
+                .map(LinePathResponse::of)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, pathResponse));
+        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, linePathResponse));
     }
 
     @GetMapping("/line/{id}")
     public ResponseEntity<ResultResponse> findLineById(@PathVariable final Long id) {
         LinePath linePath = pathService.findById(id);
-        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, PathResponse.of(linePath)));
+        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, LinePathResponse.of(linePath)));
     }
 
     @GetMapping
     public ResponseEntity<ResultResponse> findPath(@RequestParam final Long startLineId, @RequestParam final Long endLineId) {
-        ShortestPath shortestPath = pathService.findShortestPath(startLineId, endLineId);
-        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, shortestPath));
+        Path path = pathService.findShortestPath(startLineId, endLineId);
+
+        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, PathResponse.from(path)));
     }
 }
