@@ -1,94 +1,89 @@
 package subway.service;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.EdgeDao;
-import subway.dao.LineDao;
-import subway.dao.StationDao;
-import subway.domain.Edge;
-import subway.domain.Line;
-import subway.domain.Lines;
-import subway.domain.Station;
-import subway.dto.AddStationToLineRequest;
-import subway.dto.LineCreateRequest;
+import subway.domain.line.Line;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
+import subway.exception.LineAlreadyExistException;
+import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
+import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
+import subway.ui.line.dto.AddStationToLineRequest;
+import subway.ui.line.dto.LineCreateRequest;
+
+import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
 
-    private final Lines lines;
-    private final StationDao stationDao;
-    private final LineDao lineDao;
-    private final EdgeDao edgeDao;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
 
-
-    public LineService(StationDao stationDao, LineDao lineDao, EdgeDao edgeDao) {
-        this.lines = new Lines();
-        this.stationDao = stationDao;
-        this.lineDao = lineDao;
-        this.edgeDao = edgeDao;
+    public LineService(final LineRepository lineRepository, final StationRepository stationRepository, final SectionRepository sectionRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     @Transactional
-    public Line createNewLine(LineCreateRequest createRequest) {
-        Station upStation = stationDao.findById(createRequest.getUpStationId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Station downStation = stationDao.findById(createRequest.getDownStationId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+    public Line createNewLine(final LineCreateRequest request) {
+        final Station upStation = stationRepository.save(new Station(request.getUpStation()));
+        final Station downStation = stationRepository.save(new Station(request.getDownStation()));
+        final Line line = new Line(request.getLineName());
+        if (lineRepository.findLineByName(line).isPresent()) {
+            throw new LineAlreadyExistException(request.getLineName());
+        }
+        final Section section = new Section(upStation, downStation, new Distance(request.getDistance()));
 
-        Line updatedLine = lines.addNewLine(createRequest.getLineName(), upStation, downStation,
-                createRequest.getDistance());
-
-        Line createdLine = lineDao.insert(updatedLine);
-
-        edgeDao.insert(createdLine.getId(), updatedLine.getEdges().get(0));
-
-        Line findLine = assembleLine(createdLine.getId());
-        return lineDao.findById(createdLine.getId()).get();
+        return lineRepository.saveWithSections(new Line(line.getName(), new Sections(List.of(section))));
     }
 
     @Transactional
-    public Line addStationToExistLine(Long lineId, AddStationToLineRequest addStationToLineRequest) {
-        Station upStation = stationDao.findById(addStationToLineRequest.getUpStationId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Station downStation = stationDao.findById(addStationToLineRequest.getDownStationId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Line line = assembleLine(lineId);
+    public Line addStationToLine(final Long lineId, final AddStationToLineRequest request) {
+        final Station existStation = stationRepository.findById(request.getExistStationId())
+                .orElseThrow(() -> new StationNotFoundException(request.getExistStationId()));
+        final Station newStation = stationRepository.save(new Station(request.getNewStationName()));
+        final Line line = lineRepository.findLineWithSectionsByLineId(lineId)
+                .orElseThrow(() -> new LineNotFoundException(lineId));
 
-        Line updatedLine = lines.addStationToLine(line, upStation, downStation, addStationToLineRequest.getDistance());
-        edgeDao.deleteAllByLineId(updatedLine.getId());
-        edgeDao.insertAllByLineId(updatedLine.getId(), updatedLine.getEdges());
+        line.addSection(existStation, newStation, request.getDirection().getDirectionStrategy(), new Distance(request.getDistance()));
+        sectionRepository.save(lineId, line.getSections());
 
-        return assembleLine(updatedLine.getId());
+        return line;
+    }
+
+    public Line findLineById(final Long lineId) {
+        return lineRepository.findById(lineId)
+                .orElseThrow(() -> new LineNotFoundException(lineId));
+    }
+
+    public List<Station> getStations(final Long lineId) {
+        final Line findLine = lineRepository.findLineWithSectionsByLineId(lineId)
+                .orElseThrow(() -> new LineNotFoundException(lineId));
+
+        return findLine.stations();
+    }
+
+    public List<Line> findAllLines() {
+
+        return lineRepository.findAllWithSections();
     }
 
     @Transactional
-    public Line deleteStationFromLine(Long lineId, Long stationId) {
-        Station station = stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Line line = assembleLine(lineId);
+    public void deleteStationFromLine(final Long lineId, final Long stationId) {
+        final Line line = lineRepository.findLineWithSectionsByLineId(lineId)
+                .orElseThrow(() -> new LineNotFoundException(lineId));
+        final Station station = stationRepository.findById(stationId)
+                .orElseThrow(() -> new StationNotFoundException(stationId));
 
-        Line updatedLine = lines.deleteStationFromLine(line, station);
-        edgeDao.deleteAllByLineId(updatedLine.getId());
-        edgeDao.insertAllByLineId(updatedLine.getId(), updatedLine.getEdges());
-
-        return assembleLine(updatedLine.getId());
-    }
-
-    public List<Station> findAllStation(Long lineId) {
-        Line assembleLine = assembleLine(lineId);
-        return lines.findAllStation(assembleLine);
-    }
-
-    public Line assembleLine(Long lineId) {
-        Line line = lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
-
-        List<Edge> edges = edgeDao.findEdgesByLineId(line.getId());
-        return new Line(line.getId(), line.getName(), edges);
-    }
-
-    public List<Line> findAllLine() {
-        return lineDao.findAll();
+        line.delete(station);
+        sectionRepository.save(lineId, line.getSections());
     }
 }
