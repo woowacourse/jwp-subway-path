@@ -27,25 +27,29 @@ class PathFinderTest {
                         SECTIONS4,
                         STATION1,
                         STATION2,
-                        List.of(STATION1, STATION2)
+                        List.of(STATION1, STATION2),
+                        new Distance(3)
                 ),
                 Arguments.of(
                         SECTIONS4,
                         STATION3,
                         STATION10,
-                        List.of(STATION3, STATION4, STATION10)
+                        List.of(STATION3, STATION4, STATION10),
+                        new Distance(6)
                 ),
                 Arguments.of(
                         SECTIONS5,
                         STATION3,
                         STATION4,
-                        List.of(STATION3, STATION5, STATION4)
+                        List.of(STATION3, STATION5, STATION4),
+                        new Distance(8)
                 ),
                 Arguments.of(
                         SECTIONS5,
                         STATION2,
                         STATION9,
-                        List.of(STATION2, STATION3, STATION5, STATION4, STATION9)
+                        List.of(STATION2, STATION3, STATION5, STATION4, STATION9),
+                        new Distance(17)
                 )
         );
     }
@@ -53,9 +57,16 @@ class PathFinderTest {
     @DisplayName("거리의 합이 제일 짧은 경로를 선택한다.")
     @ParameterizedTest
     @MethodSource("getPath")
-    void findShortestPath(final List<Section> sections, final Station from, final Station to, final List<Station> stations) {
+    void findShortestPath(
+            final List<Section> sections,
+            final Station from,
+            final Station to,
+            final List<Station> stations,
+            final Distance distance
+    ) {
         final PathFinder pathFinder = new PathFinder(sections);
-        final List<Station> shortestPath = pathFinder.findShortestPath(from, to);
-        assertThat(shortestPath).containsExactlyElementsOf(stations);
+        final Path shortestPath = pathFinder.findShortestPath(from, to);
+        assertThat(shortestPath.getStations()).containsExactlyElementsOf(stations);
+        assertThat(shortestPath.getDistance()).isEqualTo(distance);
     }
 }
