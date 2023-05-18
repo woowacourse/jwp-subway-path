@@ -87,6 +87,36 @@ class LineIntegrationTest extends IntegrationTest {
     /**
      * INSERT INTO station(name) VALUES('잠실'), ('잠실새내'), ('종합운동장'), ('석촌'), ('송파');
      */
+    @DisplayName("올바른 요청을 하지 않는 경우 Bad Request 반환")
+    @Test
+    @Sql("/station_test_data.sql")
+    void inCorrectRequest() {
+        LineRequest nameIsNull = new LineRequest(null, "olive", 10, "잠실", "잠실새내");
+        LineRequest distanceIsNotPositive = new LineRequest("재연당선", "olive", 0, "잠실", "잠실새내");
+
+        ExtractableResponse<Response> name = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(nameIsNull)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+
+        ExtractableResponse<Response> distance = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(distanceIsNotPositive)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+
+        assertThat(name.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(distance.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * INSERT INTO station(name) VALUES('잠실'), ('잠실새내'), ('종합운동장'), ('석촌'), ('송파');
+     */
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     @Sql("/station_test_data.sql")
