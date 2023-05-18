@@ -167,7 +167,7 @@ public class Subway {
 
     private Section getUpdatedSection(Section baseSection, Station left, Station right, int newDistance, Side side) {
         int existedDistance = baseSection.getDistance();
-        validateDistance(newDistance, existedDistance);
+        validateNewDistance(newDistance, existedDistance);
 
         if (side.isRight()) {
             return new Section(right, baseSection.getRight(), new Distance(existedDistance - newDistance));
@@ -175,7 +175,7 @@ public class Subway {
         return new Section(baseSection.getLeft(), left, new Distance(existedDistance - newDistance));
     }
 
-    private static void validateDistance(int newDistance, int existedDistance) {
+    private void validateNewDistance(int newDistance, int existedDistance) {
         if (existedDistance <= newDistance) {
             throw new SubwayServiceException(INVALID_DISTANCE_BETWEEN_BASE_AND_NEW_STATION_MESSAGE);
         }
