@@ -35,7 +35,7 @@ public class LineController {
         final LineDto lineDto = new LineDto(request.getName(), request.getColor());
         final SectionCreateDto sectionCreateDto = new SectionCreateDto(
                 request.getDistance(), request.getFirstStation(), request.getSecondStation());
-        final long id = lineService.save(lineDto, sectionCreateDto);
+        final long id = lineService.createLineWithSection(lineDto, sectionCreateDto);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 

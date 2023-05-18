@@ -52,7 +52,7 @@ class LineControllerTest {
             // given
             final LineRequest requestDto = new LineRequest("신분당선", "bg-red-600", 10, "강남", "신논현");
             final String requestBody = objectMapper.writeValueAsString(requestDto);
-            given(lineService.save(any(), any())).willReturn(1L);
+            given(lineService.createLineWithSection(any(), any())).willReturn(1L);
 
             // when, then
             mockMvc.perform(post("/lines")
@@ -68,7 +68,7 @@ class LineControllerTest {
             // given
             final LineRequest requestDto = new LineRequest("신분당선", "bg-red-600", 10, "강남", "신논현");
             final String requestBody = objectMapper.writeValueAsString(requestDto);
-            given(lineService.save(any(), any())).willThrow(DuplicatedLineNameException.class);
+            given(lineService.createLineWithSection(any(), any())).willThrow(DuplicatedLineNameException.class);
 
             // when, then
             mockMvc.perform(post("/lines")
@@ -83,7 +83,7 @@ class LineControllerTest {
             // given
             final LineRequest requestDto = new LineRequest("신분당선", "bg-red-600", 10, "하이염", "신논현");
             final String requestBody = objectMapper.writeValueAsString(requestDto);
-            given(lineService.save(any(), any())).willThrow(StationNotFoundException.class);
+            given(lineService.createLineWithSection(any(), any())).willThrow(StationNotFoundException.class);
 
             // when, then
             mockMvc.perform(post("/lines")
