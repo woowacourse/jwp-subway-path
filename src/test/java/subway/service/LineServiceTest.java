@@ -27,8 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
@@ -160,8 +159,8 @@ class LineServiceTest {
         );
 
         given(sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(1L, stationName)).willReturn(entities);
-        doNothing().when(sectionDao).delete(frontSection);
-        doNothing().when(sectionDao).delete(backSection);
+        lenient().doNothing().when(sectionDao).delete(frontSection);
+        lenient().doNothing().when(sectionDao).delete(backSection);
         given(sectionDao.insert(any())).willReturn(any());
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
 
