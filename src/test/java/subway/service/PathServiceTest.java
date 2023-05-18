@@ -17,13 +17,14 @@ import subway.domain.fare.DistanceProportionalFarePolicy;
 import subway.domain.path.DijkstraShortestPathFinder;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
+import subway.persistence.repository.SectionRepository;
 import subway.persistence.repository.StationRepository;
 import subway.service.dto.PathRequest;
 import subway.service.dto.PathResponse;
 import subway.service.dto.StationResponse;
 
 @JdbcTest
-@Import({PathService.class, SectionDao.class, StationDao.class, StationRepository.class,
+@Import({PathService.class, SectionDao.class, StationDao.class, StationRepository.class, SectionRepository.class,
         DijkstraShortestPathFinder.class, DistanceProportionalFarePolicy.class})
 class PathServiceTest {
 

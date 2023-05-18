@@ -1,8 +1,8 @@
 package subway.domain.section.strategy;
 
 import java.util.List;
-import subway.domain.section.Section;
 import subway.domain.Station;
+import subway.domain.section.Section;
 
 public class UpdateTailStrategy implements UpdateSectionsStrategy {
 

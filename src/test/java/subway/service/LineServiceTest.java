@@ -24,7 +24,7 @@ import subway.service.dto.SectionRequest;
 import subway.service.dto.StationRequest;
 
 @JdbcTest
-@Import({LineService.class, StationService.class, SectionService.class,
+@Import({LineService.class, StationService.class,
         LineDao.class, StationDao.class, SectionDao.class,
         StationRepository.class, LineRepository.class})
 class LineServiceTest {
