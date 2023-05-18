@@ -12,7 +12,7 @@ public interface SectionDao {
     SectionEntity insert(final SectionEntity sectionEntity);
 
     void deleteById(final Long id);
-
+    List<SectionDetailEntity> findAll();
     List<SectionEntity> findByLineId(final Long lineId);
 
     List<SectionDetailEntity> findSectionsByLineId(final Long lineId);
