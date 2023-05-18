@@ -63,7 +63,7 @@ public class SectionService {
 		return StationResponse.of(stations);
 	}
 
-	public void deleteSection(final Long lineId, final SectionDeleteRequest deleteRequest) {
+	public void deleteSection(final long lineId, final SectionDeleteRequest deleteRequest) {
 		final String lineName = lineRepository.findById(lineId).getName();
 		sectionRepository.deleteBySection(lineName, deleteRequest.getUpStationName(),
 			deleteRequest.getDownStationName());
