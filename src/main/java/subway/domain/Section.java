@@ -31,7 +31,7 @@ public class Section {
         }
     }
 
-    public boolean have(final Station station) {
+    public boolean contains(final Station station) {
         return isSource(station) || isTarget(station);
     }
 

@@ -37,22 +37,22 @@ public class Sections {
         if (doesNotHave(source) && doesNotHave(target)) {
             throw new StationException("기준역이 존재하지 않아 추가할 수 없습니다.");
         }
-        if (have(source) && have(target)) {
+        if (has(source) && has(target)) {
             throw new StationException("두 역 모두 노선에 존재하는 역입니다.");
         }
     }
 
     private boolean doesNotHave(final Station station) {
-        return !have(station);
+        return !has(station);
     }
 
-    private boolean have(final Station station) {
+    private boolean has(final Station station) {
         return sections.stream()
-                .anyMatch(section -> section.have(station));
+                .anyMatch(section -> section.contains(station));
     }
 
     private Station getExistingStation(final Station source, final Station target) {
-        if (have(source)) {
+        if (has(source)) {
             return source;
         }
         return target;
