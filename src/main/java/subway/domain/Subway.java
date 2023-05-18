@@ -81,7 +81,7 @@ public class Subway {
                 .orElse(null);
     }
 
-    public Sections findAddSections(final Section section) {
+    public Sections findUpdateSectionsByAddingSection(final Section section) {
         Station left = section.getLeft();
         Station right = section.getRight();
         int distance = section.getDistance();
@@ -197,7 +197,7 @@ public class Subway {
         }
     }
 
-    public Sections findDeleteSections(Station station) {
+    public Sections findUpdateSectionsByDeletingSection(Station station) {
         validateStation(station);
         if (hasRightSection(station) && hasLeftSection(station)) {
             Section leftSection = findLeftSection(station);
