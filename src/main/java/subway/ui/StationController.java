@@ -14,6 +14,7 @@ import subway.ui.dto.request.CreationStationRequest;
 import subway.ui.dto.response.CreationStationResponse;
 import subway.ui.dto.response.ReadStationResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -26,7 +27,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<CreationStationResponse> createStation(@RequestBody final CreationStationRequest request) {
+    public ResponseEntity<CreationStationResponse> createStation(@Valid @RequestBody final CreationStationRequest request) {
         final Station station = stationService.saveStation(request.getName());
         final CreationStationResponse response = CreationStationResponse.from(station);
         return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);

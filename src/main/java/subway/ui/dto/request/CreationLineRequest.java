@@ -1,8 +1,12 @@
 package subway.ui.dto.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class CreationLineRequest {
 
+    @NotBlank
     private final String name;
+    @NotBlank
     private final String color;
 
     private CreationLineRequest(final String name, final String color) {

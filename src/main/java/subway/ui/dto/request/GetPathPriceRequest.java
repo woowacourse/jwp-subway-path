@@ -1,8 +1,12 @@
 package subway.ui.dto.request;
 
+import javax.validation.constraints.NotNull;
+
 public class GetPathPriceRequest {
 
+    @NotNull
     private final Long sourceStationId;
+    @NotNull
     private final Long targetStationId;
 
     private GetPathPriceRequest(final Long sourceStationId, final Long targetStationId) {

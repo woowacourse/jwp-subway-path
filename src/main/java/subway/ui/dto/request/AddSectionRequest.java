@@ -1,18 +1,23 @@
 package subway.ui.dto.request;
 
+import javax.validation.constraints.NotNull;
+
 public class AddSectionRequest {
 
+    @NotNull
     private final Long upStationId;
+    @NotNull
     private final Long downStationId;
-    private final int distance;
+    @NotNull
+    private final Integer distance;
 
-    private AddSectionRequest(final Long upStationId, final Long downStationId, final int distance) {
+    private AddSectionRequest(final Long upStationId, final Long downStationId, final Integer distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
     }
 
-    public static AddSectionRequest of(final Long upStationId, final Long downStationId, final int distance) {
+    public static AddSectionRequest of(final Long upStationId, final Long downStationId, final Integer distance) {
         return new AddSectionRequest(upStationId, downStationId, distance);
     }
 
@@ -24,7 +29,7 @@ public class AddSectionRequest {
         return downStationId;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 }

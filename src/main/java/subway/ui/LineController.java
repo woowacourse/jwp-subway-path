@@ -16,6 +16,7 @@ import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.response.CreationLineResponse;
 import subway.ui.dto.response.ReadLineResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +34,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<CreationLineResponse> createLine(@RequestBody final CreationLineRequest request) {
+    public ResponseEntity<CreationLineResponse> createLine(@Valid @RequestBody final CreationLineRequest request) {
         final Line line = lineCommandService.saveLine(request.getName(), request.getColor());
         final CreationLineResponse response = CreationLineResponse.from(line);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(response);
@@ -66,7 +67,7 @@ public class LineController {
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> postAddSection(@PathVariable final Long lineId,
-                                               @RequestBody final AddSectionRequest request) {
+                                               @Valid @RequestBody final AddSectionRequest request) {
         lineCommandService.saveSection(lineId, request.getUpStationId(), request.getDownStationId(), request.getDistance());
         return ResponseEntity.created(URI.create("/lines/" + lineId + "/sections")).build();
     }

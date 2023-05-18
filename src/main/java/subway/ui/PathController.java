@@ -13,9 +13,10 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Price;
 import subway.domain.Station;
-import subway.ui.dto.request.GetPathRequest;
+import subway.ui.dto.request.GetPathPriceRequest;
 import subway.ui.dto.response.ReadPathResponse;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -38,7 +39,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<ReadPathResponse> findShortestPath(@RequestBody final GetPathRequest request) {
+    public ResponseEntity<ReadPathResponse> findShortestPath(@Valid @RequestBody final GetPathPriceRequest request) {
         final Station sourceStation = stationService.findStationById(request.getSourceStationId());
         final Station targetStation = stationService.findStationById(request.getTargetStationId());
         final List<Line> lines = lineQueryService.findAllLine();

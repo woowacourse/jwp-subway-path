@@ -13,12 +13,9 @@ import subway.ui.dto.request.AddSectionRequest;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.request.CreationStationRequest;
 import subway.ui.dto.request.GetPathPriceRequest;
-import subway.ui.dto.request.GetPathRequest;
 import subway.ui.dto.response.ReadStationResponse;
 
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("경로 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
