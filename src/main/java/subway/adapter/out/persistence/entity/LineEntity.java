@@ -1,14 +1,14 @@
-package subway.domain;
+package subway.adapter.out.persistence.entity;
 
-public class Line {
+public class LineEntity {
     private final Long id;
     private final String name;
 
-    public Line(final String name) {
+    public LineEntity(final String name) {
         this(null, name);
     }
 
-    public Line(final Long id, final String name) {
+    public LineEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }

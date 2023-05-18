@@ -1,0 +1,56 @@
+### 노선 등록
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "1호선"
+}
+
+### 노선 삭제
+
+DELETE http://localhost:8080/lines/1
+Content-Type: application/json
+
+### 일부 노선 조회
+
+GET http://localhost:8080/lines/1
+Content-Type: application/json
+
+### 역 초기 등록1
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name":"가"
+}
+
+### 역 초기 등록2
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name":"나"
+}
+
+### 구간 등록
+
+POST http://localhost:8080/line/1/station
+Content-Type: application/json
+
+{
+  "upStationName":"가",
+  "downStationName":"나",
+  "distance": 5
+}
+
+### 역 제거
+
+DELETE http://localhost:8080/line/1/station
+Content-Type: application/json
+
+{
+    "stationName":"가"
+}
