@@ -83,9 +83,8 @@ public class LineService {
 
     private void validateNewStationNotExistInLine(final long lineId, final long stationId) {
         if (sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId).isEmpty()) {
-            return;
+            throw new DuplicatedStationNameException();
         }
-        throw new DuplicatedStationNameException();
     }
 
     private LineResponse registerUpperStation(final SectionEntity newSectionEntity) {
@@ -148,12 +147,14 @@ public class LineService {
         }
         sectionDao.delete(relatedSectionEntities.get(1));
         bindSections(lineId, relatedSectionEntities);
-        return Optional.of(convertToResponse(sectionDao.findSectionDetailByLineId(lineId)));
+        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(lineId);
+        return Optional.of(convertToResponse(sectionDetailEntities));
     }
 
     private Optional<LineResponse> cascadeLine(final long lineId) {
         try {
-            return Optional.of(convertToResponse(sectionDao.findSectionDetailByLineId(lineId)));
+            final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(lineId);
+            return Optional.of(convertToResponse(sectionDetailEntities));
         } catch (LineNotFoundException e) {
             lineDao.deleteById(lineId);
             return Optional.empty();

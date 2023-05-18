@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.exception.bad_request.DuplicatedSectionException;
+import subway.exception.bad_request.DuplicatedStationNameException;
 import subway.exception.not_found.LineNotFoundException;
 import subway.exception.not_found.LineOrStationNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
@@ -101,10 +102,14 @@ public class SectionDao {
         }
     }
 
-    public List<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(final long lineId, final long stationId) {
+    public Optional<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(final long lineId, final long stationId) {
         final String sql = "SELECT * FROM section " +
                 "WHERE line_id = ? AND (previous_station_id = ? OR next_station_id = ?)";
-        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationId, stationId);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, lineId, stationId, stationId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<SectionDetailEntity> findSectionDetail() {
