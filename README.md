@@ -80,14 +80,13 @@
 
 ### API 명세서
 
-| Method | URI                    | Description |
-|--------|------------------------|-------------|
-| POST   | /lines/sections/path   | 경로 조회 API   |
-| POST   | /lines/sections/charge | 요금 조회 API   |
+| Method | URI                  | Description    |
+|--------|----------------------|----------------|
+| POST   | /lines/sections/path | 경로 및 요금 조회 API |
 
 ### Request Body
 
-#### [POST] /lines/sections/path && [POST] /lines/sections/charge
+#### [POST] /lines/sections/path
 
 ```json
 {
