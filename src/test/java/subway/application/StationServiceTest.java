@@ -1,111 +1,94 @@
 package subway.application;
 
-import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.domain.repository.SectionRepository;
-import subway.persistence.StationJdbcRepository;
 import subway.ui.dto.request.StationUpdateRequest;
 import subway.ui.dto.response.StationResponse;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 class StationServiceTest {
 
-	@Mock
-	StationJdbcRepository repository;
-
-	@Mock
-	SectionRepository sectionRepository;
-
-	@InjectMocks
+	@Autowired
 	StationService service;
+
+	String jamsil;
+	String samsung;
+	StationUpdateRequest request;
+	StationResponse response;
+
+	@BeforeEach
+	void setUp() {
+		jamsil = "잠실";
+		samsung = "삼성";
+		request = new StationUpdateRequest(jamsil);
+		response = service.createStation(request);
+
+	}
 
 	@DisplayName("역 생성 서비스 테스트")
 	@Test
 	void createStation() {
-		// given
-		given(repository.createStation(any())).willReturn(1L);
-
-		// when
-		final StationUpdateRequest request = new StationUpdateRequest("잠실");
-		final StationResponse response = service.createStation(request);
-
-		// then
-		Assertions.assertThat(1L).isEqualTo(response.getId());
+		// // then
+		assertThat(response.getName()).isEqualTo(jamsil);
 	}
 
 	@DisplayName("전체 역 조회 서비스 테스트")
 	@Test
 	void findAll() {
 		// given
-		final Station jamsil = new Station(1L, "잠실");
-		given(repository.findAll()).willReturn(List.of(jamsil));
+		final StationUpdateRequest request2 = new StationUpdateRequest(samsung);
+		service.createStation(request2);
 
-		// when
 		final List<StationResponse> stations = service.findAll();
 
 		// then
-		Assertions.assertThat(stations)
-			.usingRecursiveComparison()
-			.isEqualTo(List.of(new StationResponse(1L, "잠실")));
+		assertThat(stations).hasSize(2);
 	}
 
 	@DisplayName("ID를 사용한 역 조회 서비스 테스트")
 	@Test
 	void findById() {
 		// given
-		final Station jamsil = new Station(1L, "잠실");
-		given(repository.findById(1L)).willReturn(jamsil);
-
-		// when
-		final StationResponse response = service.findById(1L);
+		final long stationId = response.getId();
+		final StationResponse foundStation = service.findById(stationId);
 
 		// then
-		Assertions.assertThat(response)
-			.hasFieldOrPropertyWithValue("id", 1L)
-			.hasFieldOrPropertyWithValue("name", "잠실");
+		assertThat(foundStation.getName()).isEqualTo(jamsil);
 	}
 
 	@DisplayName("역 갱신 서비스 테스트")
 	@Test
 	void updateStation() {
 		// given
-		given(repository.updateStation(anyLong(), any())).willReturn(true);
+		final long stationId = response.getId();
+		final StationUpdateRequest request2 = new StationUpdateRequest(samsung);
 
 		// when
-		final StationUpdateRequest request = new StationUpdateRequest("삼성");
-		final StationResponse response = service.updateStation(1L, request);
+		final StationResponse response2 = service.updateStation(stationId, request2);
 
 		// then
-		Assertions.assertThat(response)
-			.hasFieldOrPropertyWithValue("id", 1L)
-			.hasFieldOrPropertyWithValue("name", "삼성");
+		assertThat(response2.getName()).isEqualTo(samsung);
 	}
 
 	@DisplayName("역 삭제 서비스 테스트")
 	@Test
 	void deleteById() {
-		// given
-		final Section section1 = new Section(new Line("2호선"), new Station("잠실"), new Station("역삼"), 10L);
-		final Section section2 = new Section(new Line("2호선"), new Station("역삼"), new Station("선릉"), 8L);
-		given(repository.deleteById(anyLong())).willReturn(true);
-
 		// when
-		final long deletedId = service.deleteById(1L);
+		final long stationId = response.getId();
+		final long deletedId = service.deleteById(stationId);
 
 		// then
-		Assertions.assertThat(1L).isEqualTo(deletedId);
+		Assertions.assertThat(deletedId).isEqualTo(stationId);
 	}
 }

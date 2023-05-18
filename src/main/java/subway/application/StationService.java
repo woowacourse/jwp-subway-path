@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.domain.Line;
 import subway.domain.Section;
@@ -15,6 +16,7 @@ import subway.ui.dto.request.StationUpdateRequest;
 import subway.ui.dto.response.StationResponse;
 
 @Service
+@Transactional
 public class StationService {
 	private final StationRepository stationRepository;
 	private final SectionRepository sectionRepository;
