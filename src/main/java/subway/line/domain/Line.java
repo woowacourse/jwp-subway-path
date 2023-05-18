@@ -57,8 +57,4 @@ public class Line {
         return sections.getSections();
     }
 
-    public boolean isEmpty() {
-        return sections.isEmpty();
-    }
-
 }
