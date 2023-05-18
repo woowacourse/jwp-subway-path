@@ -17,18 +17,17 @@ import subway.exception.LineNameException;
 import subway.exception.LineStationAdditionException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
-import subway.repository.StationRepository;
 
 @Transactional(readOnly = true)
 @Service
 public class LineService {
 
+    private final StationService stationService;
     private final LineRepository lineRepository;
-    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
     @Transactional
@@ -60,8 +59,8 @@ public class LineService {
     @Transactional
     public void createSection(Long lineId, SectionCreateRequest sectionRequest) {
         Line line = lineRepository.findById(lineId);
-        Station leftStation = stationRepository.findByName(sectionRequest.getLeftStationName());
-        Station rightStation = stationRepository.findByName(sectionRequest.getRightStationName());
+        Station leftStation = stationService.findByName(sectionRequest.getLeftStationName());
+        Station rightStation = stationService.findByName(sectionRequest.getRightStationName());
 
         int distance = sectionRequest.getDistance();
         if (line.getSections().isEmpty()) {
@@ -142,7 +141,7 @@ public class LineService {
     @Transactional
     public void deleteSection(Long lineId, SectionDeleteRequest deleteRequest) {
         Line line = lineRepository.findById(lineId);
-        Station station = stationRepository.findByName(deleteRequest.getStationName());
+        Station station = stationService.findByName(deleteRequest.getStationName());
 
         if (!line.hasStation(station)) {
             throw new StationNotFoundException("노선에 해당 역이 존재하지 않습니다.");

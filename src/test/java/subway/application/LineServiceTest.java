@@ -30,7 +30,6 @@ import subway.exception.LineNameException;
 import subway.exception.LineStationAdditionException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
-import subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
@@ -39,7 +38,7 @@ class LineServiceTest {
     private LineRepository lineRepository;
 
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
 
     @InjectMocks
     private LineService lineService;
@@ -113,8 +112,8 @@ class LineServiceTest {
     @DisplayName("노선에 역을 최초로 생성한다.")
     void createSection() {
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Sections(new LinkedList<>())));
-        given(stationRepository.findByName("잠실역")).willReturn(new Station(1L, "잠실역"));
-        given(stationRepository.findByName("강남역")).willReturn(new Station(2L, "강남역"));
+        given(stationService.findByName("잠실역")).willReturn(new Station(1L, "잠실역"));
+        given(stationService.findByName("강남역")).willReturn(new Station(2L, "강남역"));
 
         assertDoesNotThrow(() -> lineService.createSection(1L, new SectionCreateRequest("잠실역", "강남역", 10)));
     }
@@ -128,8 +127,8 @@ class LineServiceTest {
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
-        given(stationRepository.findByName("잠실역")).willReturn(new Station(3L, "잠실역"));
-        given(stationRepository.findByName("강남역")).willReturn(new Station(4L, "강남역"));
+        given(stationService.findByName("잠실역")).willReturn(new Station(3L, "잠실역"));
+        given(stationService.findByName("강남역")).willReturn(new Station(4L, "강남역"));
 
         assertThatThrownBy(() -> lineService.createSection(1L, new SectionCreateRequest("잠실역", "강남역", 5)))
                 .isInstanceOf(LineStationAdditionException.class)
@@ -145,8 +144,8 @@ class LineServiceTest {
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
-        given(stationRepository.findByName("부산역")).willReturn(new Station(1L, "부산역"));
-        given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
+        given(stationService.findByName("부산역")).willReturn(new Station(1L, "부산역"));
+        given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
 
         assertThatThrownBy(() -> lineService.createSection(1L, new SectionCreateRequest("부산역", "서면역", 5)))
                 .isInstanceOf(LineStationAdditionException.class)
@@ -164,8 +163,8 @@ class LineServiceTest {
                         new Section(null, station2, station3, new Distance(5)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
-        given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
-        given(stationRepository.findByName("해운대역")).willReturn(new Station(4L, "해운대역"));
+        given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
+        given(stationService.findByName("해운대역")).willReturn(new Station(4L, "해운대역"));
 
         assertDoesNotThrow(() -> lineService.createSection(1L, new SectionCreateRequest("서면역", "해운대역", 3)));
     }
@@ -181,8 +180,8 @@ class LineServiceTest {
                         new Section(null, station2, station3, new Distance(5)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
-        given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
-        given(stationRepository.findByName("해운대역")).willReturn(new Station(4L, "해운대역"));
+        given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
+        given(stationService.findByName("해운대역")).willReturn(new Station(4L, "해운대역"));
 
         assertThatThrownBy(() -> lineService.createSection(1L, new SectionCreateRequest("서면역", "해운대역", 5)))
                 .isInstanceOf(InvalidDistanceException.class)
@@ -198,8 +197,8 @@ class LineServiceTest {
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
-        given(stationRepository.findByName("부산역")).willReturn(new Station(1L, "부산역"));
-        given(stationRepository.findByName("해운대역")).willReturn(new Station(3L, "해운대역"));
+        given(stationService.findByName("부산역")).willReturn(new Station(1L, "부산역"));
+        given(stationService.findByName("해운대역")).willReturn(new Station(3L, "해운대역"));
 
         assertDoesNotThrow(() -> lineService.createSection(1L, new SectionCreateRequest("부산역", "해운대역", 5)));
     }
@@ -213,8 +212,8 @@ class LineServiceTest {
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
-        given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
-        given(stationRepository.findByName("해운대역")).willReturn(new Station(3L, "해운대역"));
+        given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
+        given(stationService.findByName("해운대역")).willReturn(new Station(3L, "해운대역"));
 
         assertDoesNotThrow(() -> lineService.createSection(1L, new SectionCreateRequest("서면역", "해운대역", 5)));
     }
@@ -228,7 +227,7 @@ class LineServiceTest {
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
-        given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
+        given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
 
         assertDoesNotThrow(() -> lineService.deleteSection(1L, new SectionDeleteRequest("서면역")));
     }
@@ -242,7 +241,7 @@ class LineServiceTest {
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
-        given(stationRepository.findByName("강남역")).willReturn(new Station(3L, "서면역"));
+        given(stationService.findByName("강남역")).willReturn(new Station(3L, "서면역"));
 
         assertThatThrownBy(() -> lineService.deleteSection(1L, new SectionDeleteRequest("강남역")))
                 .isInstanceOf(StationNotFoundException.class)
@@ -260,7 +259,7 @@ class LineServiceTest {
                         new Section(null, station2, station3, new Distance(5)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
-        given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
+        given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
 
         assertDoesNotThrow(() -> lineService.deleteSection(1L, new SectionDeleteRequest("서면역")));
     }

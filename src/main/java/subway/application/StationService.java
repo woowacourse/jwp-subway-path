@@ -34,6 +34,10 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    public Station findByName(String name) {
+        return stationRepository.findByName(name);
+    }
+
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
