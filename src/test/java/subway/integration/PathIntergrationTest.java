@@ -21,7 +21,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("경로 관련 기능")
-public class PathIntergrationTest extends IntegrationTest{
+public class PathIntergrationTest extends IntegrationTest {
 
     private LineRequest lineRequest;
 
