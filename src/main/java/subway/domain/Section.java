@@ -31,6 +31,19 @@ public class Section {
         return null;
     }
 
+    public Section findSameSectionOnAdd(final Section newSection) {
+        Section current = this;
+
+        while (current != null) {
+            if (current.stations.isSameCurrent(newSection.stations.getCurrent())) {
+                return current;
+            }
+            current = current.to;
+        }
+
+        return null;
+    }
+
     public void addNext(final Section newSection) {
         Section current = findPreSectionOnAdd(newSection);
 
@@ -55,6 +68,10 @@ public class Section {
         current.to = newSection;
 
         newSection.to.stations.updateStationOnAdd(newSection.stations);
+    }
+
+    public void updateSectionOnAdd(final Section newSection) {
+        stations.updateStationOnAdd(newSection.stations);
     }
 
     public boolean isLinked(final Section other) {

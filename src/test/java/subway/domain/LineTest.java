@@ -77,6 +77,46 @@ class LineTest {
     }
 
     /**
+     * 기존 : `A` -> B -> C -> D -> E
+     * 추가 : A -> K
+     * 결론 : `A` -> K -> B -> C -> D -> E
+     */
+    @Test
+    @DisplayName("add() : Line의 중간에 새로운 섹션을 추가할 수 있다.")
+    void test_add_intermediate2() throws Exception {
+        //given
+        final Stations stations1 = new Stations(new Station("A"), new Station("B"), 5);
+        final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
+        final Stations stations3 = new Stations(new Station("C"), new Station("D"), 3);
+        final Stations stations4 = new Stations(new Station("D"), new Station("E"), 3);
+
+        Section 헤드_섹션 = new Section(stations1);
+
+        final Section section2 = new Section(stations2);
+        final Section section3 = new Section(stations3);
+        final Section section4 = new Section(stations4);
+
+        final Line line = new Line(1L, "2호선", List.of(헤드_섹션, section2, section3, section4));
+
+        final Station current = new Station("A");
+        final Station next = new Station("K");
+
+        final Stations 새로운_stations = new Stations(current, next, 2);
+
+        final Section 새로운_섹션 = new Section(새로운_stations);
+
+        //when
+        line.add(새로운_섹션);
+
+        //then
+        assertAll(
+                () -> assertEquals(헤드_섹션.getTo(), section2),
+                () -> assertEquals(새로운_섹션.getTo(), 헤드_섹션),
+                () -> assertEquals(3, 헤드_섹션.getStations().getDistance())
+        );
+    }
+
+    /**
      * 기존 : A -> B -> C
      * 추가 : Z -> A
      * 결론 : Z -> A -> B -> C

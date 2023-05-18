@@ -54,12 +54,23 @@ public class Line {
         }
 
         final Section targetSection = starter.findPreSectionOnAdd(newSection);
+        final Section sameStartSection = starter.findSameSectionOnAdd(newSection);
 
         if (canExchangeStarter(targetSection)) {
+
             if (starter.isLinked(newSection)) {
                 exchangeStarterOnAdd(newSection);
                 return;
             }
+
+            if (sameStartSection != null) {
+                newSection.updateNextSection(starter);
+                starter.updateSectionOnAdd(newSection);
+                starter = newSection;
+                return;
+            }
+
+
             throw new IllegalArgumentException("해당 섹션은 현재 Line에 추가할 수 없습니다.");
         }
 
