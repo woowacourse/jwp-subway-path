@@ -7,6 +7,7 @@ public class Line {
     private final Long id;
     private final String name;
     private final Sections sections;
+    private int additionalFee;
 
     public Line(final String name, final Sections sections) {
         this(null, name, sections);
@@ -16,6 +17,17 @@ public class Line {
         this.id = id;
         this.name = name;
         this.sections = sections;
+    }
+
+    public Line(String name, Sections sections, int additionalFee) {
+        this(null, name, sections, additionalFee);
+    }
+
+    public Line(Long id, String name, Sections sections, int additionalFee) {
+        this.id = id;
+        this.name = name;
+        this.sections = sections;
+        this.additionalFee = additionalFee;
     }
 
     public void addSection(final Section section) {
@@ -36,5 +48,9 @@ public class Line {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public int getAdditionalFee() {
+        return additionalFee;
     }
 }

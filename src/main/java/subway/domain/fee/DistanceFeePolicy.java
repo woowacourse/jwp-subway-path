@@ -4,7 +4,7 @@ package subway.domain.fee;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DefaultFeePolicy implements FeePolicy {
+public class DistanceFeePolicy implements FeePolicy {
 
     private static final int DEFAULT_FEE_BOUNDARY = 10;
     private static final int FIRST_ADDITIONAL_FEE_BOUNDARY = 50;
