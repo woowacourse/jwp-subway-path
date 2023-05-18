@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Repository
 public class StationRepository {
 
+    private static final int ZERO = 0;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
 
@@ -39,12 +40,20 @@ public class StationRepository {
     }
 
     public void deleteById(final Long id) {
+        validateHasStaionInLine(id);
+
+        final int count = stationDao.deleteById(id);
+
+        if (count == ZERO) {
+            throw new IllegalArgumentException("등록되지 않은 역입니다.");
+        }
+    }
+
+    private void validateHasStaionInLine(final Long id) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByStationId(id);
 
         if (!sectionEntities.isEmpty()) {
             throw new IllegalArgumentException("노선에 추가되어 있는 역이라 삭제할 수 없습니다");
         }
-
-        stationDao.deleteById(id);
     }
 }

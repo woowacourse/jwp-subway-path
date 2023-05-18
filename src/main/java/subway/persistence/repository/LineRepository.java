@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @Repository
 public class LineRepository {
 
+    private static final int ZERO = 0;
     private final LineDao lineDao;
     private final SectionDao sectionDao;
 
@@ -39,7 +40,11 @@ public class LineRepository {
     }
 
     public void deleteById(final Long id) {
-        lineDao.deleteById(id);
+        final int count = lineDao.deleteById(id);
         sectionDao.deleteByLineId(id);
+
+        if (count == ZERO) {
+            throw new IllegalArgumentException("해당 노선이 존재하지 않습니다.");
+        }
     }
 }
