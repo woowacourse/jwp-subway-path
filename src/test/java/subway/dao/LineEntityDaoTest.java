@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.line.domain.entity.LineEntity;
-import subway.domain.line.domain.repository.LineDao;
-import subway.domain.line.exception.LineNotFoundException;
+import subway.line.domain.entity.LineEntity;
+import subway.line.domain.repository.LineDao;
+import subway.line.exception.LineNotFoundException;
 
 import java.util.List;
 

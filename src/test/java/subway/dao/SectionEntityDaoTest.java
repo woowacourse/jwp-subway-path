@@ -9,15 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.line.domain.entity.LineEntity;
-import subway.domain.line.domain.repository.LineDao;
-import subway.domain.section.domain.entity.SectionEntity;
-import subway.domain.section.domain.repository.SectionDao;
-import subway.domain.section.exception.SectionNotFoundException;
-import subway.domain.station.domain.entity.StationEntity;
-import subway.domain.station.domain.repository.StationDao;
 import subway.fixture.StationFixture.GangnamStation;
 import subway.fixture.StationFixture.JamsilStation;
+import subway.line.domain.entity.LineEntity;
+import subway.line.domain.repository.LineDao;
+import subway.section.domain.entity.SectionEntity;
+import subway.section.domain.repository.SectionDao;
+import subway.section.exception.SectionNotFoundException;
+import subway.station.domain.entity.StationEntity;
+import subway.station.domain.repository.StationDao;
 
 import java.util.List;
 

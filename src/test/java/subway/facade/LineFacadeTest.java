@@ -9,11 +9,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.line.facade.LineFacade;
-import subway.domain.line.presentation.dto.LineRequest;
-import subway.domain.line.presentation.dto.LineResponse;
-import subway.domain.line.service.LineService;
-import subway.domain.section.service.SectionService;
+import subway.line.facade.LineFacade;
+import subway.line.presentation.dto.LineRequest;
+import subway.line.presentation.dto.LineResponse;
+import subway.line.service.LineService;
+import subway.section.service.SectionService;
 
 import java.util.List;
 
