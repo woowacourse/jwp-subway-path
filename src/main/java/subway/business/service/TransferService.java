@@ -1,5 +1,7 @@
 package subway.business.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.business.domain.line.LineRepository;
 import subway.business.domain.line.Station;
@@ -25,5 +27,11 @@ public class TransferService {
         Transfer transfer = new Transfer(station1, station2);
         Transfer transferAfterCreate = transferRepository.create(transfer);
         return TransferResponse.from(transferAfterCreate);
+    }
+
+    public List<TransferResponse> findAllTransfers() {
+        return transferRepository.findAll().stream()
+                .map(transfer -> TransferResponse.from(transfer))
+                .collect(Collectors.toList());
     }
 }

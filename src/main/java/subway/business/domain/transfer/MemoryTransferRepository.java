@@ -16,4 +16,9 @@ public class MemoryTransferRepository implements TransferRepository {
         transfers.add(transferToAdd);
         return transferToAdd;
     }
+
+    @Override
+    public List<Transfer> findAll() {
+        return transfers;
+    }
 }
