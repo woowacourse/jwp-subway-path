@@ -1,6 +1,7 @@
 package subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -40,5 +41,49 @@ class SubwayMapTest {
         assertThat(stationsGraph.containsEdge(new Station("역삼"), new Station("선릉"))).isTrue();
         assertThat(stationsGraph.vertexSet()).hasSize(5);
         assertThat(stationsGraph.edgeSet()).hasSize(4);
+    }
+
+    @Test
+    void 출발점과_도착점을_기준으로_최단_경로_조회_테스트() {
+        // 1호선: 강남    --(3)-- 역삼  --(2)-- 선릉
+        // 2호선: 강남구청 --(5)-- 선정릉 --(8)-- 선릉
+        final SubwayMap subwayMap = subwayMapFixture();
+        final Station fromStation = new Station("역삼");
+        final Station toStation = new Station("강남구청");
+
+        final SubwayPath shortestPath = subwayMap.findShortestPath(fromStation, toStation);
+
+        assertThat(shortestPath.getStations()).extractingResultOf("getStationName")
+                .containsExactly("역삼", "선릉", "선정릉", "강남구청");
+        assertThat(shortestPath.getDistance()).isEqualTo(2 + 8 + 5);
+    }
+
+    @Test
+    void 최단_경로_조회시_역이_존재하지_않으면_예외_발생() {
+        // 1호선: 강남    --(3)-- 역삼  --(2)-- 선릉
+        // 2호선: 강남구청 --(5)-- 선정릉 --(8)-- 선릉
+        final SubwayMap subwayMap = subwayMapFixture();
+        final Station fromStation = new Station("역삼");
+        final Station toStation = new Station("존재하지않는역");
+
+        assertThatThrownBy(() -> subwayMap.findShortestPath(fromStation, toStation))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+
+    private SubwayMap subwayMapFixture() {
+        final Sections sectionsA = new Sections(List.of(
+                new Section(new Station("강남"), new Station("역삼"), new StationDistance(3)),
+                new Section(new Station("역삼"), new Station("선릉"), new StationDistance(2))
+        ));
+        final Line lineA = new Line(sectionsA, new LineName("1호선"), new LineColor("파랑색"));
+
+        final Sections sectionsB = new Sections(List.of(
+                new Section(new Station("강남구청"), new Station("선정릉"), new StationDistance(5)),
+                new Section(new Station("선정릉"), new Station("선릉"), new StationDistance(8))
+        ));
+        final Line lineB = new Line(sectionsB, new LineName("2호선"), new LineColor("청록색"));
+
+        return SubwayMap.from(List.of(lineA, lineB));
     }
 }

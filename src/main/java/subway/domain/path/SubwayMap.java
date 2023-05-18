@@ -1,6 +1,7 @@
 package subway.domain.path;
 
 import java.util.List;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.domain.line.Line;
@@ -38,6 +39,23 @@ public class SubwayMap {
             graph.addVertex(secondStation);
 
             graph.setEdgeWeight(graph.addEdge(firstStation, secondStation), section.getDistance().getDistance());
+        }
+    }
+
+    public SubwayPath findShortestPath(final Station from, final Station to) {
+        validateIsExistStations(from, to);
+
+        final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraPath =
+                new DijkstraShortestPath<>(stationsGraph);
+        final List<Station> shortestPath = dijkstraPath.getPath(from, to).getVertexList();
+        final int distance = (int) dijkstraPath.getPathWeight(from, to);
+
+        return new SubwayPath(shortestPath, distance);
+    }
+
+    private void validateIsExistStations(final Station from, final Station to) {
+        if (!stationsGraph.containsVertex(from) || !stationsGraph.containsVertex(to)) {
+            throw new IllegalStateException();
         }
     }
 
