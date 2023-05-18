@@ -51,7 +51,7 @@ class FindRouteControllerTest {
                 .willReturn(response);
 
         // when
-        MvcResult result = mockMvc.perform(get("/routes")
+        MvcResult result = mockMvc.perform(get("/route")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -73,7 +73,7 @@ class FindRouteControllerTest {
         FindRouteRequest request = new FindRouteRequest(null, 2L);
 
         // when
-        MvcResult result = mockMvc.perform(get("/routes")
+        MvcResult result = mockMvc.perform(get("/route")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -91,7 +91,7 @@ class FindRouteControllerTest {
     @Test
     void 요청이_없을때_예외() throws Exception {
         // when
-        MvcResult result = mockMvc.perform(get("/routes"))
+        MvcResult result = mockMvc.perform(get("/route"))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
