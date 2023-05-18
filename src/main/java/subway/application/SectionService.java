@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.domain.Section;
+import subway.dto.SectionResponse;
 import subway.dto.StationToLineRequest;
 
 @Transactional(readOnly = true)
@@ -18,7 +19,7 @@ public class SectionService {
     }
 
     @Transactional
-    public Long connectStation(final Long lineId, final StationToLineRequest request) {
+    public SectionResponse connectStation(final Long lineId, final StationToLineRequest request) {
         validateRequestDistance(request);
         List<Section> sectionsByUpStation = sectionDao.findSectionByLineIdAndStationId(lineId,
                 request.getUpStationId());
@@ -30,7 +31,7 @@ public class SectionService {
         if (doAddTop(sectionsByUpStation) || isNothing(sectionsByUpStation, sectionsByDownStation)) {
             Section newSection = new Section(lineId, request.getUpStationId(), request.getDownStationId(),
                     request.getDistance());
-            return sectionDao.insert(newSection);
+            return SectionResponse.of(sectionDao.insert(newSection));
         }
 
         if (isInBetween(sectionsByUpStation)) {
@@ -66,12 +67,12 @@ public class SectionService {
         return sectionsByUpStation.isEmpty();
     }
 
-    private boolean isInBetween(final List<Section> sectionsByUpStation) {
-        return sectionsByUpStation.size() == 2;
+    private boolean isInBetween(final List<Section> sectionsByLineAndStation) {
+        return sectionsByLineAndStation.size() == 2;
     }
 
-    private Long addBetweenPosition(final Long lineId, final StationToLineRequest request,
-                                    final List<Section> sectionsByUpStation) {
+    private SectionResponse addBetweenPosition(final Long lineId, final StationToLineRequest request,
+                                               final List<Section> sectionsByUpStation) {
         Section originSection = findSectionByUpStationId(sectionsByUpStation,
                 request.getUpStationId());
         validateDistance(originSection, request);
@@ -83,7 +84,7 @@ public class SectionService {
         sectionDao.update(updateSection);
         Section newSection = new Section(lineId, request.getDownStationId(),
                 originSection.getDownStationId(), newDistance);
-        return sectionDao.insert(newSection);
+        return SectionResponse.of(sectionDao.insert(newSection));
     }
 
     private Section findSectionByUpStationId(final List<Section> sections, final Long upStationId) {
@@ -94,13 +95,13 @@ public class SectionService {
         return sections.get(1);
     }
 
-    private Long addEndPosition(final Long lineId, final StationToLineRequest request,
-                                final List<Section> sectionsByUpStation) {
+    private SectionResponse addEndPosition(final Long lineId, final StationToLineRequest request,
+                                           final List<Section> sectionsByUpStation) {
         Section section = sectionsByUpStation.get(0);
         validateDistance(section, request);
         Section newSection = new Section(lineId, request.getUpStationId(),
                 request.getDownStationId(), request.getDistance());
-        return sectionDao.insert(newSection);
+        return SectionResponse.of(sectionDao.insert(newSection));
     }
 
     private void validateDistance(final Section originSection, final StationToLineRequest stationToLineRequest) {

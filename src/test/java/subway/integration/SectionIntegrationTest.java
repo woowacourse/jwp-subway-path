@@ -1,6 +1,7 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -13,10 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
+import subway.dto.SectionResponse;
 import subway.dto.StationToLineRequest;
 
 @DisplayName("노선에 역 관리 기능")
-public class SectionIntegrationTest extends IntegrationTest{
+public class SectionIntegrationTest extends IntegrationTest {
 
     private Long lineId;
     private Long stationId1;
@@ -65,7 +67,8 @@ public class SectionIntegrationTest extends IntegrationTest{
     @Test
     void registerStation_success_init() {
         //given
-        StationToLineRequest stationToLineRequest = new StationToLineRequest(stationId1, stationId2, 11);
+        int distance = 11;
+        StationToLineRequest stationToLineRequest = new StationToLineRequest(stationId1, stationId2, distance);
 
         //when
         ExtractableResponse<Response> response = RestAssured
@@ -76,8 +79,14 @@ public class SectionIntegrationTest extends IntegrationTest{
                 .then().log().all()
                 .extract();
 
+        SectionResponse section = response.body().as(SectionResponse.class);
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(section.getUpStationId()).isEqualTo(stationId1),
+                () -> assertThat(section.getDownStationId()).isEqualTo(stationId2),
+                () -> assertThat(section.getDistance()).isEqualTo(distance)
+        );
     }
 
     @DisplayName("기존 지하철 노선 사이에 하나의 역을 등록한다.")
@@ -117,7 +126,14 @@ public class SectionIntegrationTest extends IntegrationTest{
                 .extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        SectionResponse section = response.body().as(SectionResponse.class);
+        //then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(section.getUpStationId()).isEqualTo(stationId1),
+                () -> assertThat(section.getDownStationId()).isEqualTo(newStationId),
+                () -> assertThat(section.getDistance()).isEqualTo(4)
+        );
     }
 
     @DisplayName("기존 지하철 노선 종점에 하나의 역을 등록한다.")
@@ -158,6 +174,13 @@ public class SectionIntegrationTest extends IntegrationTest{
                 .extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        SectionResponse section = response.body().as(SectionResponse.class);
+        //then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(section.getUpStationId()).isEqualTo(stationId2),
+                () -> assertThat(section.getDownStationId()).isEqualTo(newStationId),
+                () -> assertThat(section.getDistance()).isEqualTo(4)
+        );
     }
 }

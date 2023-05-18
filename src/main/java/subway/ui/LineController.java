@@ -17,6 +17,7 @@ import subway.application.LineService;
 import subway.application.SectionService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.SectionResponse;
 import subway.dto.StationToLineRequest;
 
 @RestController
@@ -43,10 +44,10 @@ public class LineController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Void> registerStation(@PathVariable Long id,
-                                                @RequestBody StationToLineRequest stationToLineRequest) {
-        sectionService.connectStation(id, stationToLineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + id)).build();
+    public ResponseEntity<SectionResponse> registerStation(@PathVariable Long id,
+                                                           @RequestBody StationToLineRequest stationToLineRequest) {
+        SectionResponse section = sectionService.connectStation(id, stationToLineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + id)).body(section);
     }
 
     @GetMapping("/{id}")

@@ -31,9 +31,11 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(final Section section) {
+    public Section insert(final Section section) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(section);
-        return insertAction.executeAndReturnKey(params).longValue();
+        long id = insertAction.executeAndReturnKey(params).longValue();
+        return new Section(id, section.getLineId(), section.getUpStationId(), section.getDownStationId(),
+                section.getDistance());
     }
 
     public List<Section> findSectionByLineIdAndStationId(final Long lineId, final Long stationId) {
@@ -46,9 +48,24 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, Integer.class, lineId);
     }
 
-    public int update(final Section section) {
+    public void update(final Section section) {
         String sql = "update SECTION set up_station_id = ?, down_station_id = ?, distance = ? where id = ?";
-        return jdbcTemplate.update(sql, section.getUpStationId(), section.getDownStationId(), section.getDistance(),
+        jdbcTemplate.update(sql, section.getUpStationId(), section.getDownStationId(), section.getDistance(),
                 section.getId());
+    }
+
+    public void delete(final Section section) {
+        String sql = "delete SECTION where id = ?";
+        jdbcTemplate.update(sql, section.getId());
+    }
+
+    public void deleteAllByLineId(final Long lineId) {
+        String sql = "delete SECTION where line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
+        String sql = "delete SECTION where line_id = ? and (up_station_id = ? or down_station_id = ?)";
+        jdbcTemplate.update(sql, lineId, stationId, stationId);
     }
 }
