@@ -134,7 +134,7 @@ public class Sections {
 
 		for (int j = 0; j < sections.size(); j++) {
 			for (Section section : sections) {
-				if (section.isNowStation(nowStation)) {
+				if (section.isSameUpStation(nowStation)) {
 					sortStation.add(section.getDownStation());
 					nowStation = section.getDownStation();
 				}

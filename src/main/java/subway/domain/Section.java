@@ -79,7 +79,7 @@ public class Section {
 		return upStation.equals(station) || downStation.equals(station);
 	}
 
-	public boolean isNowStation(final Station station) {
+	public boolean isSameUpStation(final Station station) {
 		return station.equals(this.upStation);
 	}
 
