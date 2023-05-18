@@ -7,8 +7,7 @@ import subway.domain.section.dto.SectionCreateRequest;
 import subway.domain.section.dto.SectionDeleteRequest;
 import subway.domain.section.dto.SectionResponse;
 import subway.domain.section.entity.SectionEntity;
-import subway.domain.section.service.CreateSectionService;
-import subway.domain.section.service.DeleteSectionService;
+import subway.domain.section.service.SectionService;
 import subway.global.common.ResultResponse;
 
 import java.util.List;
@@ -18,17 +17,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/sections")
 public class SectionController {
 
-    private final CreateSectionService createSectionService;
-    private final DeleteSectionService deleteSection;
+    private final SectionService sectionService;
 
-    public SectionController(final CreateSectionService createSectionService, final DeleteSectionService deleteSection) {
-        this.createSectionService = createSectionService;
-        this.deleteSection = deleteSection;
+    public SectionController(final SectionService sectionService) {
+        this.sectionService = sectionService;
     }
 
     @PostMapping
     public ResponseEntity<ResultResponse> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
-        final List<SectionEntity> sectionEntities = createSectionService.createSection(sectionCreateRequest);
+        final List<SectionEntity> sectionEntities = sectionService.createSection(sectionCreateRequest);
         final List<SectionResponse> sectionResponses = sectionEntities.stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
@@ -37,7 +34,7 @@ public class SectionController {
 
     @DeleteMapping
     public ResponseEntity<ResultResponse> deleteSection(@RequestBody final SectionDeleteRequest sectionDeleteRequest) {
-        deleteSection.deleteSection(sectionDeleteRequest.getLineId(), sectionDeleteRequest.getStationId());
+        sectionService.deleteSection(sectionDeleteRequest.getLineId(), sectionDeleteRequest.getStationId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResultResponse(204,"구간 삭제 성공",sectionDeleteRequest.getStationId()));
     }
 }
