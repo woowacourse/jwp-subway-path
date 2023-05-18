@@ -9,4 +9,8 @@ import lombok.RequiredArgsConstructor;
 public class StationInfosResponse {
 
     private final List<StationInfoResponse> stations;
+
+    private StationInfosResponse() {
+        this(null);
+    }
 }

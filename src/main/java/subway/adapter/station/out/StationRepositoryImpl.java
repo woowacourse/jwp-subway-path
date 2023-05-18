@@ -41,7 +41,6 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     public Station save(final Station station) {
         try {
-            stationDao.insert(StationEntity.from(station));
             return stationDao.insert(StationEntity.from(station))
                     .toStation();
         } catch (final DuplicateKeyException e) {

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.station.StationDtoAssembler;
 import subway.application.station.port.in.StationFindByIdUseCase;
 import subway.application.station.port.in.StationInfoResponseDto;
+import subway.application.station.port.in.StationNotFoundException;
 import subway.application.station.port.out.StationRepository;
 
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class StationFindByIdService implements StationFindByIdUseCase {
     @Override
     public StationInfoResponseDto findStationInfoById(final long id) {
         return stationRepository.findById(id)
-            .map(StationDtoAssembler::toStationInfoResponseDto)
-            .orElseThrow(IllegalArgumentException::new);
+                .map(StationDtoAssembler::toStationInfoResponseDto)
+                .orElseThrow(StationNotFoundException::new);
     }
 }

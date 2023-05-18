@@ -15,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import subway.application.line.port.in.LineNotFoundException;
+import subway.application.station.port.in.StationNotFoundException;
 import subway.exception.BusinessException;
 import subway.ui.dto.ErrorResponse;
 
@@ -31,25 +32,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse<String>> handleIllegalArgumentException(
-        final IllegalArgumentException exception) {
+            final IllegalArgumentException exception) {
         log.warn("잘못된 인자가 들어왔습니다", exception);
         return ResponseEntity.badRequest().body(new ErrorResponse<>(exception.getMessage()));
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
-                                                                  final HttpHeaders headers,
-                                                                  final HttpStatus status,
-                                                                  final WebRequest request) {
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request) {
         log.warn("유효성 검사에 실패했습니다.", ex);
         final Map<String, String> body = ex.getFieldErrors()
-            .stream()
-            .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
         return ResponseEntity.badRequest().body(new ErrorResponse<>(body));
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse<String>> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException exception) {
+    private ResponseEntity<ErrorResponse<String>> handleMethodArgumentTypeMismatch(
+            final MethodArgumentTypeMismatchException exception) {
         log.warn("잘못된 인자가 들어왔습니다.", exception);
         return ResponseEntity.badRequest().body(new ErrorResponse<>(exception.getMessage()));
     }
@@ -63,6 +65,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     private ResponseEntity<Void> handleLineNotFound(final LineNotFoundException exception) {
         log.warn("노선을 찾을 수 없습니다.", exception);
+        return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse<String>> handleStationNotFound(final StationNotFoundException exception) {
+        log.warn("역을 찾을 수 없습니다.", exception);
         return ResponseEntity.notFound().build();
     }
 }
