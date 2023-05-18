@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import subway.route.application.dto.RouteDto;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,16 +30,15 @@ public class RouteIntegrationTest {
     @Test
     @DisplayName("최단 거리 경로를 요청하면 구간 정보와 총 거리, 요금을 계산할 수 있다.")
     void routeTest() {
-        final ExtractableResponse<Response> response = 최단_거리_경로_요청(1, 3);
+        final ExtractableResponse<Response> response = 경로를_요청한다(1, 3);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        System.out.println(response.body().as(RouteDto.class));
     }
 
     @Test
     @DisplayName("역이 존재하지 않으면 NOT_FOUND를 반환한다")
     void routeTestFail1() {
-        final ExtractableResponse<Response> response = 최단_거리_경로_요청(1, 0);
+        final ExtractableResponse<Response> response = 경로를_요청한다(1, 0);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -48,7 +46,7 @@ public class RouteIntegrationTest {
     @Test
     @DisplayName("역이 존재하지 않으면 NOT_FOUND를 반환한다")
     void routeTestFail2() {
-        final ExtractableResponse<Response> response = 최단_거리_경로_요청(0, 3);
+        final ExtractableResponse<Response> response = 경로를_요청한다(0, 3);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -56,7 +54,7 @@ public class RouteIntegrationTest {
     @Test
     @DisplayName("역 id가 long이 아니면 BAD_REQUEST를 반환한다")
     void routeTestFail3() {
-        final ExtractableResponse<Response> response = 최단_거리_경로_요청("a", "b");
+        final ExtractableResponse<Response> response = 경로를_요청한다("a", "b");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -64,7 +62,7 @@ public class RouteIntegrationTest {
     @Test
     @DisplayName("출발역과 도착역이 연결되어 있지 않으면 NOT_FOUND를 반환한다")
     void routeTestFail4() {
-        final ExtractableResponse<Response> response = 최단_거리_경로_요청(1, 5);
+        final ExtractableResponse<Response> response = 경로를_요청한다(1, 5);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -72,22 +70,19 @@ public class RouteIntegrationTest {
     @Test
     @DisplayName("출발역과 도착역이 같으면 BAD_REQUEST를 반환한다")
     void routeTestFail5() {
-        final ExtractableResponse<Response> response = 최단_거리_경로_요청(1, 1);
+        final ExtractableResponse<Response> response = 경로를_요청한다(1, 1);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> 최단_거리_경로_요청(long sourceId, long destinationId) {
-        return given().log().all()
-                      .when().get("/routes?source=" + sourceId + "&destination=" + destinationId)
-                      .then().log().all()
-                      .extract();
-    }
-
-    private ExtractableResponse<Response> 최단_거리_경로_요청(String sourceId, String destinationId) {
-        return given().log().all()
-                      .when().get("/routes?source=" + sourceId + "&destination=" + destinationId)
-                      .then().log().all()
+    private ExtractableResponse<Response> 경로를_요청한다(Object sourceId, Object destinationId) {
+        return given().log()
+                      .all()
+                      .when()
+                      .get("/routes?source=" + sourceId + "&destination=" + destinationId)
+                      .then()
+                      .log()
+                      .all()
                       .extract();
     }
 }

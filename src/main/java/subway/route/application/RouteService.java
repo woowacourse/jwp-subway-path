@@ -6,7 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.line.domain.Lines;
 import subway.line.repository.LineRepository;
 import subway.route.application.dto.RouteDto;
-import subway.route.domain.*;
+import subway.route.application.dto.RouteReadDto;
+import subway.route.domain.FarePolicy;
+import subway.route.domain.RouteFinder;
+import subway.route.domain.RouteFinderBuilder;
+import subway.route.domain.RouteSegment;
 import subway.route.domain.jgraph.JgraphRouteFinderBuilder;
 import subway.station.application.StationService;
 import subway.station.domain.Station;
@@ -14,7 +18,7 @@ import subway.station.domain.Station;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class RouteService {
 
     private final StationService stationService;
@@ -26,9 +30,9 @@ public class RouteService {
         this.lineRepository = lineRepository;
     }
 
-    public RouteDto findRoute(Long sourceStationId, Long destinationStationId) {
-        final Station source = stationService.findStationById(sourceStationId);
-        final Station destination = stationService.findStationById(destinationStationId);
+    public RouteDto findRoute(RouteReadDto routeReadDto) {
+        final Station source = stationService.findStationById(routeReadDto.getSource());
+        final Station destination = stationService.findStationById(routeReadDto.getDestination());
 
         final RouteFinder<RouteSegment> routeFinder = getRouteFinder();
         final List<RouteSegment> route = routeFinder.getRoute(source, destination);
