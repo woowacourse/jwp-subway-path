@@ -17,7 +17,8 @@ class LineTest {
     void createLine() {
         //given
         final Station station = new Station("서면역");
-        final Path path = new Path(station, station, 4);
+        final Station station2 = new Station("부산역");
+        final Path path = new Path(station, station2, 4);
         final Paths paths = new Paths(List.of(path));
 
         //when, then
@@ -29,7 +30,8 @@ class LineTest {
     void addStation() {
         //given
         final Station station = new Station("서면역");
-        final Path path = new Path(station, station, 1);
+        final Station station2 = new Station("부산역");
+        final Path path = new Path(station, station2, 1);
         Line line = new Line("1호선", "red");
 
         //when

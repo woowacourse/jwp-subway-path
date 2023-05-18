@@ -17,11 +17,13 @@ public final class Shortest {
         this.graph = graph;
     }
 
-    public static Shortest from(final Paths paths) {
+    public static Shortest from(final List<Paths> allPaths) {
         final WeightedMultigraph<Station, PathEdgeProxy> graph = new WeightedMultigraph<>(PathEdgeProxy.class);
-        paths.getStations().forEach(graph::addVertex);
-        paths.toList()
-                .forEach(path -> graph.addEdge(path.getUp(), path.getDown(), PathEdgeProxy.from(path)));
+        for (final Paths paths : allPaths) {
+            paths.getStations().forEach(graph::addVertex);
+            paths.toList()
+                    .forEach(path -> graph.addEdge(path.getUp(), path.getDown(), PathEdgeProxy.from(path)));
+        }
 
         return new Shortest(new DijkstraShortestPath<>(graph));
     }

@@ -14,14 +14,25 @@ public final class Paths {
 
     public Paths(final List<Path> paths) {
         this.paths = paths;
+        validate(paths);
+    }
+
+    private void validate(final List<Path> paths) {
+        try {
+            if (getOrdered().size() != paths.size()) {
+                throw new RuntimeException();
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("연결되지 않은 경로들입니다.");
+        }
     }
 
     public Paths() {
-        paths = new ArrayList<>();
+        this(new ArrayList<>());
     }
 
     public Paths addPath(final Path path) {
-        validate(path);
+        validatePathInsertionAvailable(path);
 
         final List<Path> result = new ArrayList<>(paths);
         findOverlappedOriginalPath(path)
@@ -34,7 +45,7 @@ public final class Paths {
         return new Paths(result);
     }
 
-    private void validate(final Path newPath) {
+    private void validatePathInsertionAvailable(final Path newPath) {
         if (paths.isEmpty()) {
             return;
         }

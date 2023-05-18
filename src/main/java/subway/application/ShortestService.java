@@ -10,6 +10,8 @@ import subway.domain.Station;
 import subway.domain.path.Paths;
 import subway.dto.ShortestResponse;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class ShortestService {
@@ -27,9 +29,9 @@ public class ShortestService {
     public ShortestResponse findShortest(final Long startId, final Long endId) {
         final Station start = stationDao.findById(startId);
         final Station end = stationDao.findById(endId);
-        final Paths paths = pathDao.findAll();
+        final List<Paths> allPaths = pathDao.findAll();
 
-        final Shortest shortest = Shortest.from(paths);
+        final Shortest shortest = Shortest.from(allPaths);
         final Paths result = shortest.findShortest(start, end);
 
         return ShortestResponse.of(result, fareStrategy);

@@ -13,6 +13,7 @@ import subway.domain.path.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 @JdbcTest
@@ -82,9 +83,14 @@ class PathDaoTest {
         pathDao.save(paths2, 2L);
 
         //when
-        final Paths paths = pathDao.findAll();
+        final List<Paths> allPaths = pathDao.findAll();
 
         //then
-        assertThat(paths.toList()).hasSize(2);
+        assertSoftly(soft -> {
+            soft.assertThat(allPaths).hasSize(2);
+            soft.assertThat(allPaths)
+                    .map(Paths::toList)
+                    .allSatisfy(paths -> assertThat(paths).hasSize(1));
+        });
     }
 }

@@ -17,7 +17,7 @@ class ShortestTest {
     @DisplayName("Paths를 받아서 그래프를 만들 수 있다.")
     @Test
     void construct() {
-        assertDoesNotThrow(() -> Shortest.from(new Paths()));
+        assertDoesNotThrow(() -> Shortest.from(List.of(new Paths())));
     }
 
     @Nested
@@ -47,8 +47,9 @@ class ShortestTest {
             final Path path4 = new Path(station2, station3, 1);
             final Path path5 = new Path(station3, target, 1);
 
-            final Paths paths = new Paths(List.of(path1, path2, path3, path4, path5));
-            final Shortest shortest = Shortest.from(paths);
+            final Paths paths1 = new Paths(List.of(path1, path2));
+            final Paths paths2 = new Paths(List.of(path3, path4, path5));
+            final Shortest shortest = Shortest.from(List.of(paths1, paths2));
 
             //when
             final Paths found = shortest.findShortest(source, target);
@@ -72,8 +73,9 @@ class ShortestTest {
             final Path path1 = new Path(source, station1, 5);
             final Path path2 = new Path(target, station2, 5);
 
-            final Paths paths = new Paths(List.of(path1, path2));
-            final Shortest shortest = Shortest.from(paths);
+            final Paths paths1 = new Paths(List.of(path1));
+            final Paths paths2 = new Paths(List.of(path2));
+            final Shortest shortest = Shortest.from(List.of(paths1, paths2));
 
             //when
             final Paths found = shortest.findShortest(source, target);
