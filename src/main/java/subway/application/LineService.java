@@ -53,12 +53,12 @@ public class LineService {
 		return new LineResponse(lineId, request.getName());
 	}
 
-	public long deleteLine(final Long lineIdRequest) {
-		final boolean isDeleted = lineRepository.deleteById(lineIdRequest);
+	public long deleteLine(final Long lineId) {
+		final boolean isDeleted = lineRepository.deleteById(lineId);
 
 		if (!isDeleted) {
 			throw new NullPointerException("노선 삭제에 실패했습니다");
 		}
-		return lineIdRequest;
+		return lineId;
 	}
 }

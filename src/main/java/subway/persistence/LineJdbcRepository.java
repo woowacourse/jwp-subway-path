@@ -46,9 +46,9 @@ public class LineJdbcRepository implements LineRepository {
     }
 
     @Override
-    public Line findById(final Long lineIdRequest) {
+    public Line findById(final Long lineId) {
         String sql = "SELECT * FROM line WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, lineRowMapper, lineIdRequest);
+        return jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
     }
 
     @Override
@@ -72,9 +72,9 @@ public class LineJdbcRepository implements LineRepository {
     }
 
     @Override
-    public boolean deleteById(final Long lineIdRequest) {
+    public boolean deleteById(final Long lineId) {
         String sql = "DELETE FROM line WHERE id = ?";
-        final int deleteCount = jdbcTemplate.update(sql, lineIdRequest);
+        final int deleteCount = jdbcTemplate.update(sql, lineId);
 
         return deleteCount == DELETED_COUNT;
     }
