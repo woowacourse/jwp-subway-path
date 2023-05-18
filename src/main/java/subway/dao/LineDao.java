@@ -36,7 +36,11 @@ public class LineDao {
         parameters.put("name", lineEntity.getName());
         parameters.put("color", lineEntity.getColor());
 
-        return insertAction.executeAndReturnKey(parameters).longValue();
+        try {
+            return insertAction.executeAndReturnKey(parameters).longValue();
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("중복되는 노선을 추가할 수 없습니다.");
+        }
     }
 
     public List<LineEntity> findAll() {
