@@ -78,7 +78,7 @@ public class SectionDao {
         jdbcTemplate.batchUpdate(sql, removeIds);
     }
 
-    public List<Sections> findAllSections() {
+    public List<Sections> findAll() {
         String findAllLine = "select id from LINE";
 
         List<Long> lineIds = jdbcTemplate.query(findAllLine, (rs, rowNum) -> {

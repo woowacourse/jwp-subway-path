@@ -9,7 +9,7 @@ import subway.integration.IntegrationTest;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Sql("/setUpStationPath.sql")
-class PathServiceImplTest extends IntegrationTest {
+class PathServiceTest extends IntegrationTest {
 
     @Autowired
     PathService pathService;
