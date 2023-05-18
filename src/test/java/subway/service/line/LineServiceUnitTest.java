@@ -73,7 +73,7 @@ class LineServiceUnitTest {
 
     @Test
     @DisplayName("노선을 수정한다.")
-    void edit_line_success() throws Exception {
+    void edit_line_success() {
         // given
         Long id = 1L;
         LineEditRequest lineEditRequest = new LineEditRequest("2호선", 2, "blue");
@@ -83,7 +83,6 @@ class LineServiceUnitTest {
 
         // when
         lineService.editLineById(id, lineEditRequest);
-        Thread.sleep(1000);
 
         // then
         assertThat(lineEntity.getColor()).isEqualTo(lineEditRequest.getColor());
@@ -102,13 +101,12 @@ class LineServiceUnitTest {
 
     @Test
     @DisplayName("노선을 삭제한다.")
-    void delete_line_success() throws Exception {
+    void delete_line_success() {
         // given
         Long id = 1L;
 
         // when
         lineService.deleteLineById(id);
-        Thread.sleep(1000);
 
         // then
         verify(lineRepository).deleteLineById(id);

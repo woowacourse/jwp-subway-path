@@ -95,7 +95,7 @@ public class StationServiceUnitTest {
 
     @Test
     @DisplayName("역을 수정한다.")
-    void edit_station_success() throws Exception {
+    void edit_station_success() {
         // given
         Long id = 1L;
         StationEditRequest stationEditRequest = new StationEditRequest("판교역");
@@ -105,7 +105,6 @@ public class StationServiceUnitTest {
 
         // when
         stationService.editStation(id, stationEditRequest);
-        Thread.sleep(1000);
 
         // then
         verify(stationRepository).update(id, station);
