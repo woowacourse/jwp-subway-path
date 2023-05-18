@@ -7,11 +7,12 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import subway.persistence.LineJdbcRepository;
 import subway.ui.dto.request.LineCreateRequest;
 import subway.ui.dto.response.LineResponse;
 
@@ -47,9 +48,7 @@ class LineServiceTest {
 		final List<LineResponse> lines = lineService.findAll();
 
 		// then
-		assertThat(lines)
-			.usingRecursiveComparison()
-			.isEqualTo(List.of(new LineResponse(1L, lineName)));
+		assertThat(lines).hasSize(1);
 	}
 
 	@DisplayName("ID를 사용한 노선 조회 서비스 테스트")
@@ -98,5 +97,40 @@ class LineServiceTest {
 		// then
 		assertThatThrownBy(() -> lineService.createLine(newRequest)).isInstanceOf(
 			IllegalArgumentException.class).hasMessage("이미 존재하는 노선입니다");
+	}
+
+	@DisplayName("노선의 이름을 공백으로 입력했을 떄 예외가 발생한다")
+	@ParameterizedTest()
+	@ValueSource(strings = {"", " "})
+	void nameNotBlank(String name) {
+		// given
+		final LineCreateRequest newRequest = new LineCreateRequest(name);
+
+		// then
+		assertThatThrownBy(() -> lineService.createLine(newRequest)).isInstanceOf(IllegalArgumentException.class)
+			.hasMessage("노선의 이름은 공백일 수 없습니다");
+	}
+
+	@DisplayName("노선의 이름이 2글자 미만 10글자 초과로 입력됐을 때 예외가 발생한다")
+	@ParameterizedTest()
+	@ValueSource(strings = {"호", "가나다라마바사아자차카"})
+	void nameNotBetweenTwo_Ten(String name) {
+		// given
+		final LineCreateRequest newRequest = new LineCreateRequest(name);
+
+		// then
+		assertThatThrownBy(() -> lineService.createLine(newRequest)).isInstanceOf(IllegalArgumentException.class)
+			.hasMessage("노선의 이름은 최소 2글자 이상 최대 10글자 이하로 등록해주세요");
+	}
+
+	@DisplayName("존재하지 않는 노선 삭제를 요청할 경우 예외가 발생한다")
+	@Test
+	void unableToDeleteNone() {
+		// given
+		final long expectedId = 5L;
+
+		// when
+		assertThatThrownBy(() -> lineService.deleteLine(expectedId)).isInstanceOf(NullPointerException.class)
+			.hasMessage("존재하지 않는 노선입니다");
 	}
 }

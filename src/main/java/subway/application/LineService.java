@@ -23,6 +23,7 @@ public class LineService {
 		final List<LineResponse> lines = findAll();
 		for (LineResponse line : lines) {
 			checkLineExist(lineCreateRequest, line);
+			lineCreateRequest.validateName();
 		}
 		final Line line = new Line(lineCreateRequest.getName());
 		final long lineId = lineRepository.createLine(line);
@@ -59,7 +60,7 @@ public class LineService {
 		final boolean isDeleted = lineRepository.deleteById(lineId);
 
 		if (!isDeleted) {
-			throw new NullPointerException("노선 삭제에 실패했습니다");
+			throw new NullPointerException( "존재하지 않는 노선입니다");
 		}
 		return lineId;
 	}
