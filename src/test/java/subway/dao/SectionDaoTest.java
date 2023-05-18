@@ -52,23 +52,42 @@ class SectionDaoTest {
                 .anyMatch(entity -> entity.getDistance() == 10);
     }
 
+    /**
+     * INSERT INTO section(line_id, distance, previous_station_id, next_station_id)
+     * VALUES(1, 3, 1, 2), (1, 4, 2, 3), (2, 5, 1, 4), (2, 6, 4, 5)
+     */
+    @Test
+    @DisplayName("line 의 id 로 Section 을 가져온다.")
+    @Sql("/section_test_data.sql")
+    void findByLineIdAndPreviousStationId_success() {
+        List<SectionEntity> result = sectionDao.findByLineId(1L);
+
+        assertThat(result).hasSize(2)
+                .anyMatch(sectionEntity -> sectionEntity.getLineId() == 1L
+                                && sectionEntity.getDistance() == 3
+                                && sectionEntity.getPreviousStationId() == 1L
+                                && sectionEntity.getNextStationId() == 2L)
+                .anyMatch(sectionEntity -> sectionEntity.getLineId() == 1L
+                        && sectionEntity.getDistance() == 3
+                        && sectionEntity.getPreviousStationId() == 1L
+                        && sectionEntity.getNextStationId() == 2L);
+    }
+
+    /**
+     * INSERT INTO section(line_id, distance, previous_station_id, next_station_id)
+     * VALUES(1, 3, 1, 2), (1, 4, 2, 3), (2, 5, 1, 4), (2, 6, 4, 5);
+     */
 //    @Test
-//    @DisplayName("line id 와 previous station id 로 구간 조회 성공")
+//    @DisplayName("Section을 삭제한다. (성공)")
 //    @Sql("/section_test_data.sql")
-//    void findByLineIdAndPreviousStationId_success() {
-//        // given, when
-//        final List<SectionEntity> result = sectionDao.findByLineIdAndPreviousStationId(1L, 1L);
-//
-//        // then
-//        assertThat(result).hasSize(1);
-//        assertThat(result.get(0).getLineId()).isEqualTo(1L);
-//        assertThat(result.get(0).getPreviousStationId()).isEqualTo(1L);
+//    void delete_success() {
+//        sectionDao.delete();
 //    }
 //
 //    @Test
-//    @DisplayName("구간 삭제 성공")
+//    @DisplayName("Section을 삭제한다. (실패)")
 //    @Sql("/section_test_data.sql")
-//    void delete_success() {
+//    void delete_fail() {
 //        // given
 //        final String selectSql = "SELECT id FROM section";
 //        List<Long> resultBeforeRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
