@@ -32,10 +32,10 @@ import subway.controller.dto.StationResponse;
 class LineControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    LineService lineService;
+    private LineService lineService;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

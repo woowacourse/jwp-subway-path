@@ -28,10 +28,10 @@ import subway.controller.dto.StationResponse;
 class StationControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    StationService stationService;
+    private StationService stationService;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

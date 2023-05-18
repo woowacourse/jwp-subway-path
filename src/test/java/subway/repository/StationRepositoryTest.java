@@ -19,9 +19,9 @@ import subway.exception.StationNotFoundException;
 class StationRepositoryTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    StationRepository stationRepository;
+    private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {

@@ -17,11 +17,11 @@ import subway.dao.entity.StationEntity;
 class SectionDaoTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    LineDao lineDao;
-    StationDao stationDao;
-    SectionDao sectionDao;
+    private LineDao lineDao;
+    private StationDao stationDao;
+    private SectionDao sectionDao;
 
 
     @BeforeEach

@@ -28,13 +28,13 @@ import subway.exception.LineNotFoundException;
 class LineRepositoryTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    LineDao lineDao;
-    SectionDao sectionDao;
-    StationDao stationDao;
-    StationRepository stationRepository;
-    LineRepository lineRepository;
+    private LineDao lineDao;
+    private SectionDao sectionDao;
+    private StationDao stationDao;
+    private StationRepository stationRepository;
+    private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {

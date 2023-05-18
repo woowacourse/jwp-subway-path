@@ -24,10 +24,10 @@ import subway.repository.StationRepository;
 class StationServiceTest {
 
     @Mock
-    StationRepository stationRepository;
+    private StationRepository stationRepository;
 
     @InjectMocks
-    StationService stationService;
+    private StationService stationService;
 
     @Test
     @DisplayName("역을 추가한다.")

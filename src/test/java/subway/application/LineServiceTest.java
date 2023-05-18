@@ -36,13 +36,13 @@ import subway.repository.StationRepository;
 class LineServiceTest {
 
     @Mock
-    LineRepository lineRepository;
+    private LineRepository lineRepository;
 
     @Mock
-    StationRepository stationRepository;
+    private StationRepository stationRepository;
 
     @InjectMocks
-    LineService lineService;
+    private LineService lineService;
 
     @Test
     @DisplayName("새로운 노선을 저장한다.")

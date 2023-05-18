@@ -16,9 +16,9 @@ import subway.dao.entity.LineEntity;
 class LineDaoTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    LineDao lineDao;
+    private LineDao lineDao;
 
     @BeforeEach
     void setUp() {

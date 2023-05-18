@@ -16,9 +16,9 @@ import subway.dao.entity.StationEntity;
 class StationDaoTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    StationDao stationDao;
+    private StationDao stationDao;
 
     @BeforeEach
     void setUp() {
