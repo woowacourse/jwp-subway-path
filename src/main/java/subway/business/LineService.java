@@ -175,10 +175,9 @@ public class LineService {
     private List<SectionEntity> matchOrderOfTwoSectionEntities(final List<SectionEntity> source) {
         final SectionEntity sourcePreviousEntity = source.get(0);
         final SectionEntity sourceNextEntity = source.get(1);
-        if (Objects.equals(sourcePreviousEntity.getNextStationId(), sourceNextEntity.getPreviousStationId())) {
+        if (sourcePreviousEntity.nextStationIdEqualWithPreviousStationIdFrom(sourceNextEntity)) {
             return List.copyOf(source);
         }
         return List.of(sourceNextEntity, sourcePreviousEntity);
     }
-
 }

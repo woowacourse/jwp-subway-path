@@ -1,5 +1,7 @@
 package subway.persistence.entity;
 
+import java.util.Objects;
+
 public class SectionEntity {
 
     private final Long id;
@@ -48,6 +50,10 @@ public class SectionEntity {
         return nextStationId;
     }
 
+    public boolean nextStationIdEqualWithPreviousStationIdFrom(final SectionEntity other) {
+        return Objects.equals(nextStationId, other.previousStationId);
+    }
+
     @Override
     public String toString() {
         return "SectionEntity{" +
@@ -58,5 +64,4 @@ public class SectionEntity {
                 ", nextStationId=" + nextStationId +
                 '}';
     }
-
 }
