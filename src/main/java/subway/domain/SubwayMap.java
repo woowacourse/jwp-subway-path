@@ -20,25 +20,26 @@ public class SubwayMap {
         }
 
         for (Section section : sections) {
-            subwayGraph.addEdge(section.getUpper(), section.getLower(), SectionEdge.from(section));
-            subwayGraph.setEdgeWeight(SectionEdge.from(section), section.getDistance().getValue());
+            SectionEdge edge = new SectionEdge(section);
+            subwayGraph.addEdge(section.getUpper(), section.getLower(), edge);
+            subwayGraph.setEdgeWeight(edge, section.getDistance().getValue());
         }
     }
 
     public Sections getShortestPath(final Station from, final Station to) {
-        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayGraph);
-        GraphPath<Station, SectionEdge> shortestPath = dijkstraShortestPath.getPath(from, to);
-        List<Station> vertexes = shortestPath.getVertexList();
-        List<SectionEdge> edges = shortestPath.getEdgeList();
+        DijkstraShortestPath<Station, SectionEdge> shortestPath = new DijkstraShortestPath<>(subwayGraph);
+        GraphPath<Station, SectionEdge> shortestGraph = shortestPath.getPath(from, to);
+        List<Station> vertexes = shortestGraph.getVertexList();
+        List<SectionEdge> edges = shortestGraph.getEdgeList();
         Map<Station, Section> pathMap = new HashMap<>();
 
         for (int i = 0; i < edges.size(); i++) {
             SectionEdge section = edges.get(i);
-            if (section.getUpper().equals(vertexes.get(i))) {
-                pathMap.put(vertexes.get(i), new Section(section.getLindId(), section.getUpper(), section.getLower(), section.getDistance()));
+            if (section.getSourceVertex().equals(vertexes.get(i))) {
+                pathMap.put(vertexes.get(i), new Section(section.getLineId(), section.getUpper(), section.getLower(), section.getDistance()));
                 continue;
             }
-            pathMap.put(vertexes.get(i), new Section(section.getLindId(), section.getLower(), section.getUpper(), section.getDistance()));
+            pathMap.put(vertexes.get(i), new Section(section.getLineId(), section.getLower(), section.getUpper(), section.getDistance()));
         }
 
         return new Sections(pathMap);

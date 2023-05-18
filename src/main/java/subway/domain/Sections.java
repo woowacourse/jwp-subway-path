@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class Sections {
         sections.clear();
     }
 
-    public List<Section> getSections() {
+    public List<Section> getSortedSections() {
         List<Station> notTop = sections.values()
                 .stream()
                 .map(Section::getLower)
@@ -68,5 +69,15 @@ public class Sections {
         }
 
         return sortedSections;
+    }
+
+    public List<Station> getSortedStations() {
+        List<Section> sortedSections = getSortedSections();
+        List<Station> sortedStations = new ArrayList<>(List.of(sortedSections.get(0).getUpper()));
+        for (Section section : sortedSections) {
+            sortedStations.add(section.getLower());
+        }
+
+        return sortedStations;
     }
 }

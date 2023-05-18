@@ -154,7 +154,7 @@ public class Line {
     }
 
     public List<Section> getSections() {
-        return sections.getSections();
+        return sections.getSortedSections();
     }
 
     @Override

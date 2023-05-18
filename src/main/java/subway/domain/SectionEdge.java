@@ -4,47 +4,38 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class SectionEdge extends DefaultWeightedEdge {
 
-    private final Long lindId;
-    private final Station upper;
-    private final Station lower;
-    private final Distance distance;
+    private final Section section;
 
-    public SectionEdge(final Long lindId, final Station upper, final Station lower, final Distance distance) {
-        this.lindId = lindId;
-        this.upper = upper;
-        this.lower = lower;
-        this.distance = distance;
+    public SectionEdge(final Section section) {
+        this.section = section;
     }
 
-    public static SectionEdge from(final Section section) {
-        return new SectionEdge(section.getLindId(), section.getUpper(), section.getLower(), section.getDistance());
+    public Station getSourceVertex() {
+        return section.getUpper();
     }
 
-    public boolean isNext(final Station station) {
-        if (lower.equals(station)) {
-            return true;
-        }
-        return false;
+    public Station getTargetVertex() {
+        return section.getLower();
     }
 
-    public Long getLindId() {
-        return lindId;
+    public Long getLineId() {
+        return section.getLindId();
     }
 
     public Station getUpper() {
-        return upper;
+        return section.getUpper();
     }
 
     public Station getLower() {
-        return lower;
+        return section.getLower();
     }
 
     public Distance getDistance() {
-        return distance;
+        return section.getDistance();
     }
 
     @Override
     public double getWeight() {
-        return distance.getValue();
+        return section.getDistance().getValue();
     }
 }

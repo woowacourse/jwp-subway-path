@@ -9,7 +9,6 @@ import subway.dto.*;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,11 +60,7 @@ public class LineService {
                                 new Distance(section.getDistance()))
                 )));
 
-        List<Station> stations = new ArrayList<>(List.of(sections.getSections().get(0).getUpper()));
-        stations.addAll(sections.getSections()
-                .stream()
-                .map(Section::getLower)
-                .collect(Collectors.toList()));
+        List<Station> stations = sections.getSortedStations();
 
         return new Line(persistLine.getId(), persistLine.getName(), persistLine.getColor(), new LinkedList<>(stations), sections);
     }
