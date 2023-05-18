@@ -31,7 +31,7 @@ public class Fee {
         }
     }
 
-    private int calculateFee(int distance) {
+    private int calculateFee(final int distance) {
         if (distance <= DEFAULT_DISTANCE) {
             return DEFAULT_FEE;
         }
