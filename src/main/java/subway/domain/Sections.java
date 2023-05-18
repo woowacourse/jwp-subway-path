@@ -27,23 +27,35 @@ public class Sections implements Iterable<Section> {
     }
 
     public Long getLeftStationId() {
-        if (sections.size() == 1) {
+        if (hasOnlyOneStation()) {
             return sections.get(0).getLeftId();
         }
-        if (sections.get(0).getLeft().equals(sections.get(1).getRight())) {
+        if (isEqualEndStation()) {
             return sections.get(1).getLeftId();
         }
         return sections.get(0).getLeftId();
     }
 
+    private boolean hasOnlyOneStation() {
+        return sections.size() == 1;
+    }
+
+    private boolean isEqualEndStation() {
+        return sections.get(0).getLeft().equals(sections.get(1).getRight());
+    }
+
     public Long getRightStationId() {
-        if (sections.size() == 1) {
+        if (hasOnlyOneStation()) {
             return sections.get(0).getRightId();
         }
-        if (sections.get(0).getRight().equals(sections.get(1).getLeft())) {
+        if (isEqualMiddleStation()) {
             return sections.get(1).getRightId();
         }
         return sections.get(0).getRightId();
+    }
+
+    private boolean isEqualMiddleStation() {
+        return sections.get(0).getRight().equals(sections.get(1).getLeft());
     }
 
     public boolean isPresent() {
