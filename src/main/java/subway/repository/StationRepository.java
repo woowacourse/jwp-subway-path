@@ -65,4 +65,12 @@ public class StationRepository {
         }
     }
 
+    public void deleteById(Long id) {
+        int removeCount = stationDao.deleteById(id);
+
+        if (removeCount == 0) {
+            throw new IllegalArgumentException("역이 삭제되지 않았습니다.");
+        }
+    }
+
 }
