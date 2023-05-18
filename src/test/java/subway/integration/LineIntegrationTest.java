@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.dto.request.AddStationToLineRequest;
+import subway.dto.request.AddStationToExistLineRequest;
 import subway.dto.request.LineCreateRequest;
 
 public class LineIntegrationTest extends IntegrationTest {
@@ -28,7 +28,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
     private LineCreateRequest line_3_lineCreateRequest;
     private LineCreateRequest line_2_lineCreateRequest;
-    private AddStationToLineRequest line_3_addStationToLineRequest;
+    private AddStationToExistLineRequest line_3_addStationToExistLineRequest;
 
     @Autowired
     private StationDao stationDao;
@@ -42,7 +42,7 @@ public class LineIntegrationTest extends IntegrationTest {
         line_3_newStation = stationDao.insert(new Station("충무로"));
 
         line_3_lineCreateRequest = new LineCreateRequest("3호선", 1000, line_3_initialUpStation.getId(), line_3_initialDownStation.getId(), 10);
-        line_3_addStationToLineRequest = new AddStationToLineRequest(line_3_initialUpStation.getId(), line_3_newStation.getId(), 5);
+        line_3_addStationToExistLineRequest = new AddStationToExistLineRequest(line_3_initialUpStation.getId(), line_3_newStation.getId(), 5);
 
         line_2_initialUpStation = stationDao.insert(new Station("잠실"));
         line_2_initialDownStation = stationDao.insert(new Station("잠실새내"));
@@ -89,7 +89,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(line_3_addStationToLineRequest)
+                .body(line_3_addStationToExistLineRequest)
                 .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all()
                 .extract();
@@ -119,7 +119,7 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(line_3_addStationToLineRequest)
+                .body(line_3_addStationToExistLineRequest)
                 .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all();
 
@@ -156,7 +156,7 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(line_3_addStationToLineRequest)
+                .body(line_3_addStationToExistLineRequest)
                 .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all();
 

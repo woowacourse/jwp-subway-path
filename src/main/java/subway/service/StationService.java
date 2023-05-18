@@ -14,9 +14,9 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public Station saveStation(StationCreateRequest createRequest) {
-        stationRepository.checkStationIsExist(createRequest.getStationName());
-        Station station = new Station(createRequest.getStationName());
+    public Station saveStation(String stationName) {
+        stationRepository.checkStationIsExist(stationName);
+        Station station = new Station(stationName);
         return stationRepository.insert(station);
     }
 }

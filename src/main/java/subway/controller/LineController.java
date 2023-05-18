@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.domain.Line;
 import subway.dto.AddStationToExistLineDto;
-import subway.dto.CreateNewLineDto;
-import subway.dto.request.AddStationToLineRequest;
+import subway.dto.LineCreateDto;
+import subway.dto.request.AddStationToExistLineRequest;
 import subway.dto.request.LineCreateRequest;
 import subway.dto.response.AddStationToLineResponse;
 import subway.dto.response.DeleteStationFromLineResponse;
@@ -33,13 +33,7 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineCreateResponse> createLine(@RequestBody LineCreateRequest request) {
-        CreateNewLineDto dto = new CreateNewLineDto(
-                request.getLineName(),
-                request.getExtraCharge(),
-                request.getUpStationId(),
-                request.getDownStationId(),
-                request.getDistance());
-        Line createdLine = lineService.createNewLine(dto);
+        Line createdLine = lineService.createNewLine(LineCreateDto.from(request));
 
         LineCreateResponse response = LineCreateResponse.fromDomain(createdLine);
         return ResponseEntity.created(URI.create("/lines/" + createdLine.getId())).body(response);
@@ -47,13 +41,8 @@ public class LineController {
 
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<AddStationToLineResponse> addStationToLine(@PathVariable Long lineId,
-                                                                     @RequestBody AddStationToLineRequest request) {
-        AddStationToExistLineDto dto = new AddStationToExistLineDto(
-                lineId,
-                request.getUpStationId(),
-                request.getDownStationId(),
-                request.getDistance());
-        Line updatedLine = lineService.addStationToExistLine(dto);
+                                                                     @RequestBody AddStationToExistLineRequest request) {
+        Line updatedLine = lineService.addStationToExistLine(AddStationToExistLineDto.from(lineId, request));
 
         AddStationToLineResponse response = AddStationToLineResponse.fromDomain(updatedLine);
         return ResponseEntity.ok(response);

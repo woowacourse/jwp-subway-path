@@ -8,7 +8,7 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.charge.Charge;
 import subway.dto.AddStationToExistLineDto;
-import subway.dto.CreateNewLineDto;
+import subway.dto.LineCreateDto;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -24,7 +24,7 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public Line createNewLine(CreateNewLineDto dto) {
+    public Line createNewLine(LineCreateDto dto) {
         lineRepository.checkLineIsExist(dto.getLineName());
         Station upStation = stationRepository.getStation(dto.getUpStationId());
         Station downStation = stationRepository.getStation(dto.getDownStationId());

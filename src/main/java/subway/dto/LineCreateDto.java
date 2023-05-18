@@ -1,19 +1,30 @@
 package subway.dto;
 
-public class CreateNewLineDto {
+import subway.dto.request.LineCreateRequest;
+
+public class LineCreateDto {
     private String lineName;
     private Integer extraCharge;
     private Long upStationId;
     private Long downStationId;
     private Integer distance;
 
-    public CreateNewLineDto(String lineName, Integer extraCharge, Long upStationId, Long downStationId,
-                            Integer distance) {
+    private LineCreateDto(String lineName, Integer extraCharge, Long upStationId, Long downStationId,
+                          Integer distance) {
         this.lineName = lineName;
         this.extraCharge = extraCharge;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public static LineCreateDto from(LineCreateRequest request) {
+        return new LineCreateDto(
+                request.getLineName(),
+                request.getExtraCharge(),
+                request.getUpStationId(),
+                request.getDownStationId(),
+                request.getDistance());
     }
 
     public String getLineName() {

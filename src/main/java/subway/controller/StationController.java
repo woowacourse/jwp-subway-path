@@ -22,7 +22,7 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationCreateResponse> createStation(@RequestBody StationCreateRequest createRequest) {
-        Station createdStation = stationService.saveStation(createRequest);
+        Station createdStation = stationService.saveStation(createRequest.getStationName());
         StationCreateResponse response = new StationCreateResponse(createdStation.getId(), createdStation.getName());
         return ResponseEntity
                 .created(URI.create("/stations/" + response.getStationId()))
