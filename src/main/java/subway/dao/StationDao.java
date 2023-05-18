@@ -41,16 +41,9 @@ public class StationDao {
         return jdbcTemplate.query(sql, stationEntityRowMapper, id);
     }
 
-    public StationEntity findByName(final String name) {
+    public List<StationEntity> findByName(final String name) {
         String sql = "SELECT * FROM station WHERE name = ?";
-
-        List<StationEntity> result = jdbcTemplate.query(sql, stationEntityRowMapper, name);
-
-        if (result.isEmpty()) {
-            throw new StationNotFoundException("존재하지 않는 역 이름입니다.");
-        }
-
-        return result.get(0);
+        return jdbcTemplate.query(sql, stationEntityRowMapper, name);
     }
 
     public List<StationEntity> findAll() {

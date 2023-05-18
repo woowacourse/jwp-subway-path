@@ -34,12 +34,6 @@ class StationDaoTest {
         stationDao = new StationDao(dataSource);
     }
 
-    /**
-     * TRUNCATE TABLE station;
-     * ALTER TABLE station auto_increment = 1;
-     * INSERT INTO station(name) VALUES('잠실'), ('잠실새내'), ('종합운동장'), ('석촌'), ('송파');
-     */
-
     // insert test
     @Test
     @DisplayName("Station 을 저장한다.")
@@ -77,39 +71,36 @@ class StationDaoTest {
     @DisplayName("Station 을 ID 로 조회한다. (조회 결과가 없는 경우)")
     @Sql("/station_test_data.sql")
     void findById_empty() {
-        List<StationEntity> station = stationDao.findById(4L);
+        List<StationEntity> station = stationDao.findById(6L);
 
         assertThat(station).isEmpty();
     }
 
-
-    // findByName
     @Test
-    @DisplayName("이름으로 id 조회 성공")
+    @DisplayName("Station 을 Name 으로 조회한다. (조회 결과가 있는 경우)")
     @Sql("/station_test_data.sql")
-    void findIdByName_success() {
-        // given
-        final String name = "잠실";
+    void findByName_notEmpty() {
+        List<StationEntity> station = stationDao.findByName("잠실");
 
-        // when
-        final StationEntity stationEntity = stationDao.findByName(name);
-
-        // then
-        assertThat(stationEntity.getId()).isEqualTo(1L);
+        assertThat(station).hasSize(1);
+        assertThat(station.get(0).getId()).isEqualTo(1L);
+        assertThat(station.get(0).getName()).isEqualTo("잠실");
     }
 
-    // findByName
     @Test
-    @DisplayName("이름으로 id 조회 실패 - 존재하지 않는 이름 입력")
+    @DisplayName("Station 을 Name 으로 조회한다. (조회 결과가 없는 경우)")
     @Sql("/station_test_data.sql")
-    void findIdByName_fail_name_not_found() {
-        // given
-        final String name = "포비";
+    void findByName_empty() {
+        List<StationEntity> station = stationDao.findByName("재연");
 
-        // expected
-        assertThatThrownBy(() -> stationDao.findByName(name))
-                .isInstanceOf(StationNotFoundException.class);
+        assertThat(station).isEmpty();
     }
+
+    /**
+     * TRUNCATE TABLE station;
+     * ALTER TABLE station auto_increment = 1;
+     * INSERT INTO station(name) VALUES('잠실'), ('잠실새내'), ('종합운동장'), ('석촌'), ('송파');
+     */
 
     // findAll
 
