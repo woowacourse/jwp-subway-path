@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
-import subway.entity.StationEntity;
 import subway.repository.dao.SectionDao;
 import subway.repository.dao.StationDao;
+import subway.repository.entity.StationEntity;
 
 @Repository
 public class StationRepository {

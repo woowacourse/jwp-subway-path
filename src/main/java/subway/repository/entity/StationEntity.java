@@ -1,4 +1,4 @@
-package subway.entity;
+package subway.repository.entity;
 
 import java.util.Objects;
 

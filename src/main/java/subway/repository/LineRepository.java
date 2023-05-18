@@ -13,12 +13,12 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
 import subway.repository.dao.LineDao;
 import subway.repository.dao.SectionDao;
 import subway.repository.dao.StationDao;
+import subway.repository.entity.LineEntity;
+import subway.repository.entity.SectionEntity;
+import subway.repository.entity.StationEntity;
 
 @Repository
 public class LineRepository {
