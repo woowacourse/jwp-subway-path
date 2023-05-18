@@ -16,7 +16,7 @@ import subway.exception.not_found.StationNotFoundException;
 import subway.presentation.dto.request.LineRequest;
 import subway.presentation.dto.request.StationRegisterInLineRequest;
 import subway.presentation.dto.request.StationUnregisterInLineRequest;
-import subway.presentation.dto.response.LineDetailResponse;
+import subway.presentation.dto.response.LineResponse;
 import subway.presentation.dto.response.StationResponse;
 import subway.presentation.dto.request.converter.SubwayDirection;
 
@@ -101,15 +101,15 @@ class LineControllerTest {
         @DisplayName("성공")
         void success() throws Exception {
             // given
-            final List<LineDetailResponse> lineDetailResponses = List.of(
-                    new LineDetailResponse(1L, "신분당선", "bg-red-600", List.of(
+            final List<LineResponse> lineRespons = List.of(
+                    new LineResponse(1L, "신분당선", "bg-red-600", List.of(
                             new StationResponse(1L, "정자"), new StationResponse(2L, "판교")
                     )),
-                    new LineDetailResponse(2L, "분당선", "bg-yellow-600", List.of(
+                    new LineResponse(2L, "분당선", "bg-yellow-600", List.of(
                             new StationResponse(1L, "정자"), new StationResponse(3L, "수내")
                     ))
             );
-            given(lineService.findAll()).willReturn(lineDetailResponses);
+            given(lineService.findAll()).willReturn(lineRespons);
 
             // when, then
             final String responseBody =
@@ -138,11 +138,11 @@ class LineControllerTest {
         void success() throws Exception {
             // given
             final long lineId = 1L;
-            final LineDetailResponse lineDetailResponse =
-                    new LineDetailResponse(lineId, "신분당선", "bg-red-600", List.of(
+            final LineResponse lineResponse =
+                    new LineResponse(lineId, "신분당선", "bg-red-600", List.of(
                             new StationResponse(1L, "정자"), new StationResponse(2L, "판교")
                     ));
-            given(lineService.findById(lineId)).willReturn(lineDetailResponse);
+            given(lineService.findById(lineId)).willReturn(lineResponse);
 
             // when, then
             final String responseBody =
@@ -182,12 +182,12 @@ class LineControllerTest {
             final long lineId = 1L;
             final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실새내", "송파", 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
-            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+            final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(1L, "잠실"), new StationResponse(2L, "잠실새내"), new StationResponse(5L, "송파"))
             );
 
             // when
-            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -211,12 +211,12 @@ class LineControllerTest {
             final long lineId = 1L;
             final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "송파", 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
-            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+            final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(1L, "잠실"), new StationResponse(5L, "송파"), new StationResponse(2L, "잠실새내"))
             );
 
             // when
-            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -240,12 +240,12 @@ class LineControllerTest {
             final long lineId = 1L;
             final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실", "송파", 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
-            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+            final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(1L, "잠실새내"), new StationResponse(5L, "송파"), new StationResponse(2L, "잠실"))
             );
 
             // when
-            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -269,12 +269,12 @@ class LineControllerTest {
             final long lineId = 1L;
             final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실새내", "송파", 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
-            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+            final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(5L, "송파"), new StationResponse(1L, "잠실새내"), new StationResponse(2L, "잠실"))
             );
 
             // when
-            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -303,12 +303,12 @@ class LineControllerTest {
             final long lineId = 1L;
             final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("잠실");
             final String requestBody = objectMapper.writeValueAsString(requestDto);
-            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+            final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(2L, "잠실새내"), new StationResponse(3L, "종합운동장"))
             );
 
             // when
-            when(lineService.unregisterStation(eq(lineId), any())).thenReturn(Optional.of(lineDetailResponse));
+            when(lineService.unregisterStation(eq(lineId), any())).thenReturn(Optional.of(lineResponse));
 
             // then
             final String responseBody =
@@ -331,7 +331,7 @@ class LineControllerTest {
             final long lineId = 1L;
             final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("잠실");
             final String requestBody = objectMapper.writeValueAsString(requestDto);
-            final Optional<LineDetailResponse> lineDetailResponse = Optional.empty();
+            final Optional<LineResponse> lineDetailResponse = Optional.empty();
 
             // when
             when(lineService.unregisterStation(eq(lineId), any())).thenReturn(lineDetailResponse);

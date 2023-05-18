@@ -3,7 +3,7 @@ package subway.business.converter.line;
 import subway.business.domain.LineSection;
 import subway.business.domain.LineSections;
 import subway.business.domain.Station;
-import subway.presentation.dto.response.LineDetailResponse;
+import subway.presentation.dto.response.LineResponse;
 import subway.presentation.dto.response.StationResponse;
 
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ public class LineSectionsResponseConverter {
 
     private static final int FIRST_INDEX = 0;
 
-    public static LineDetailResponse toResponse(final LineSections lineSections) {
-        return new LineDetailResponse(
+    public static LineResponse toResponse(final LineSections lineSections) {
+        return new LineResponse(
                 lineSections.getLine().getId(),
                 lineSections.getLine().getName(),
                 lineSections.getLine().getColor(),

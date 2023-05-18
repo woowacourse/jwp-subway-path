@@ -18,7 +18,7 @@ import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
 import subway.presentation.dto.request.StationUnregisterInLineRequest;
-import subway.presentation.dto.response.LineDetailResponse;
+import subway.presentation.dto.response.LineResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -93,7 +93,7 @@ class LineServiceTest {
         given(sectionDao.findSectionDetail()).willReturn(sectionDetailEntities);
 
         // when
-        final List<LineDetailResponse> responses = lineService.findAll();
+        final List<LineResponse> responses = lineService.findAll();
 
         // then
         assertAll(
@@ -121,7 +121,7 @@ class LineServiceTest {
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
 
         // when
-        final LineDetailResponse response = lineService.findById(lineId);
+        final LineResponse response = lineService.findById(lineId);
 
         // then
         assertAll(
@@ -169,7 +169,7 @@ class LineServiceTest {
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
 
         // when
-        final Optional<LineDetailResponse> response = lineService.unregisterStation(lineId, request);
+        final Optional<LineResponse> response = lineService.unregisterStation(lineId, request);
 
         // then
         assertAll(

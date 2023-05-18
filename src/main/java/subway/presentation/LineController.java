@@ -14,7 +14,7 @@ import subway.business.dto.SectionCreateDto;
 import subway.presentation.dto.request.LineRequest;
 import subway.presentation.dto.request.StationRegisterInLineRequest;
 import subway.presentation.dto.request.StationUnregisterInLineRequest;
-import subway.presentation.dto.response.LineDetailResponse;
+import subway.presentation.dto.response.LineResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -40,8 +40,8 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineDetailResponse>> readAll() {
-        final List<LineDetailResponse> responses = lineService.findAll();
+    public ResponseEntity<List<LineResponse>> readAll() {
+        final List<LineResponse> responses = lineService.findAll();
         if (responses.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -49,18 +49,18 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineDetailResponse> read(@PathVariable final Long id) {
+    public ResponseEntity<LineResponse> read(@PathVariable final Long id) {
         return ResponseEntity.ok(lineService.findById(id));
     }
 
     @PatchMapping("/{id}/register")
-    public ResponseEntity<LineDetailResponse> registerStation(
+    public ResponseEntity<LineResponse> registerStation(
             @PathVariable final Long id, @RequestBody @Valid final StationRegisterInLineRequest request) {
         return ResponseEntity.ok(lineService.registerStation(id, request));
     }
 
     @PatchMapping("/{id}/unregister")
-    public ResponseEntity<LineDetailResponse> unregisterStation(
+    public ResponseEntity<LineResponse> unregisterStation(
             @PathVariable final Long id, @RequestBody @Valid final StationUnregisterInLineRequest request) {
         return lineService.unregisterStation(id, request)
                 .map(ResponseEntity::ok)
