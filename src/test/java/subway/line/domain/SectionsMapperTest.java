@@ -2,9 +2,10 @@ package subway.line.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.section.domain.SectionRouter;
+import subway.domain.section.domain.SectionLocator;
 import subway.domain.section.entity.SectionDetailEntity;
 import subway.domain.station.entity.StationEntity;
-import subway.domain.line.repository.SectionsMapper;
 
 import java.util.List;
 
@@ -32,10 +33,12 @@ class SectionsMapperTest {
                 new SectionDetailEntity(6L, 1L, stationEntity6, stationEntity7, 3)
         );
 
-        SectionsMapper sectionsMapper = new SectionsMapper();
-        List<StationEntity> stationEntities = sectionsMapper.sectionsToStations(sectionDetailEntities);
+        SectionLocator sectionLocator = SectionLocator.of(sectionDetailEntities);
+        SectionRouter sectionRouter = SectionRouter.of(sectionDetailEntities);
 
-        assertThat(stationEntities).containsExactly(
+        List<StationEntity> shortestPath = sectionRouter.findShortestPath(sectionLocator.findStartStation(), sectionLocator.findEndStation());
+
+        assertThat(shortestPath).containsExactly(
                 stationEntity1,
                 stationEntity2,
                 stationEntity3,
@@ -66,10 +69,12 @@ class SectionsMapperTest {
                 new SectionDetailEntity(6L, 1L, stationEntity6, stationEntity7, 3)
         );
 
-        SectionsMapper sectionsMapper = new SectionsMapper();
-        List<StationEntity> stationEntities = sectionsMapper.sectionsToStations(sectionDetailEntities);
+        SectionLocator sectionLocator = SectionLocator.of(sectionDetailEntities);
+        SectionRouter sectionRouter = SectionRouter.of(sectionDetailEntities);
 
-        assertThat(stationEntities).containsExactly(
+        List<StationEntity> shortestPath = sectionRouter.findShortestPath(sectionLocator.findStartStation(), sectionLocator.findEndStation());
+
+        assertThat(shortestPath).containsExactly(
                 stationEntity1,
                 stationEntity2,
                 stationEntity3,
