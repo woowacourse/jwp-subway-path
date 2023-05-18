@@ -7,21 +7,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.jdbc.Sql;
 import subway.entity.StationEntity;
-import subway.exception.StationNotFoundException;
 
 import javax.sql.DataSource;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 @DisplayName("Station Dao")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class StationDaoTest {
+
+    private static final RowMapper<StationEntity> stationEntityRowMapper = (rs, rn) -> new StationEntity(
+            rs.getLong("id"),
+            rs.getString("name"));
 
     @Autowired
     private DataSource dataSource;
@@ -34,28 +36,21 @@ class StationDaoTest {
         stationDao = new StationDao(dataSource);
     }
 
-    // insert test
     @Test
     @DisplayName("Station 을 저장한다.")
     void insert() {
-        // given
         StationEntity stationEntity = new StationEntity("insert");
 
-        // when
         stationDao.insert(stationEntity);
 
-        // then
         String sql = "SELECT * FROM station WHERE name = ?";
         StationEntity insertStation = jdbcTemplate.queryForObject(
                 sql,
-                (rs, rn) -> new StationEntity(
-                        rs.getLong("id"),
-                        rs.getString("name")),
+                stationEntityRowMapper,
                 "insert");
         assertThat(insertStation.getName()).isEqualTo("insert");
     }
 
-    // findById
     @Test
     @DisplayName("Station 을 ID 로 조회한다. (조회 결과가 있는 경우)")
     @Sql("/station_test_data.sql")
@@ -96,13 +91,6 @@ class StationDaoTest {
         assertThat(station).isEmpty();
     }
 
-    /**
-     * TRUNCATE TABLE station;
-     * ALTER TABLE station auto_increment = 1;
-     * INSERT INTO station(name) VALUES('잠실'), ('잠실새내'), ('종합운동장'), ('석촌'), ('송파');
-     */
-
-    // findAll
     @Test
     @DisplayName("Station 전부를 조회한다.")
     @Sql("/station_test_data.sql")
@@ -119,11 +107,49 @@ class StationDaoTest {
         ));
     }
 
-    // update (0)
+    @Test
+    @DisplayName("Station 을 update 한다. (성공)")
+    @Sql("/station_test_data.sql")
+    void update_success() {
+        StationEntity stationEntity = new StationEntity(1L, "안녕");
 
-    // update (1)
+        int updateCount = stationDao.update(stationEntity);
 
-    // delete (0)
+        StationEntity updateStationEntity = jdbcTemplate.queryForObject("SELECT * FROM station WHERE id = ?", stationEntityRowMapper, 1L);
+        assertThat(updateCount).isEqualTo(1);
+        assertThat(updateStationEntity.getId()).isEqualTo(1L);
+        assertThat(updateStationEntity.getName()).isEqualTo("안녕");
+    }
 
-    // delete (1)
+    @Test
+    @DisplayName("Station 을 update 한다. (실패)")
+    @Sql("/station_test_data.sql")
+    void update_fail() {
+        StationEntity stationEntity = new StationEntity(6L, "안녕");
+
+        int updateCount = stationDao.update(stationEntity);
+
+        assertThat(updateCount).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("Station 을 delete 한다. (성공)")
+    @Sql("/station_test_data.sql")
+    void delete_success() {
+        int removeCount = stationDao.deleteById(1L);
+
+        List<StationEntity> deleteStationEntity = jdbcTemplate.query("SELECT * FROM station WHERE id = ?", stationEntityRowMapper, 1L);
+        assertThat(deleteStationEntity).isEmpty();
+        assertThat(removeCount).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Station 을 delete 한다. (실패)")
+    @Sql("/station_test_data.sql")
+    void delete_fail() {
+        int removeCount = stationDao.deleteById(6L);
+
+        assertThat(removeCount).isEqualTo(0);
+    }
+
 }
