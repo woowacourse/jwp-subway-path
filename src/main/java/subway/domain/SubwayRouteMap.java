@@ -41,12 +41,12 @@ public class SubwayRouteMap {
     }
 
     private List<Station> getStations(final List<Section> sections) {
-        final Set<Station> stations = new HashSet<>();
+        final Set<Station> uniqueStations = new HashSet<>();
         sections.forEach(section -> {
-            stations.add(section.getLeft());
-            stations.add(section.getRight());
+            uniqueStations.add(section.getLeft());
+            uniqueStations.add(section.getRight());
         });
-        return new ArrayList<>(stations);
+        return new ArrayList<>(uniqueStations);
     }
 
     private void insertEdge(final List<Section> sections) {
@@ -61,8 +61,8 @@ public class SubwayRouteMap {
                 .collect(Collectors.toMap(Station::getName, station -> station));
     }
 
-    public long shortestDistanceBetween(final Station from, final Station to) {
-        return Math.round(shortestPath.getPathWeight(from.getName(), to.getName()));
+    public int shortestDistanceBetween(final Station from, final Station to) {
+        return (int) Math.round(shortestPath.getPathWeight(from.getName(), to.getName()));
     }
 
     public List<Station> shortestPathBetween(final Station from, final Station to) {

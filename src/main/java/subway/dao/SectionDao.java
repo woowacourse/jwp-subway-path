@@ -19,22 +19,22 @@ public class SectionDao {
             rs.getInt("distance")
     );
 
-    public SectionDao(JdbcTemplate jdbcTemplate) {
+    public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<SectionEntity> findById(Long lineId) {
-        String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
+    public List<SectionEntity> findById(final Long lineId) {
+        final String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
         return jdbcTemplate.query(sectionSql, sectionMapper, lineId);
     }
 
-    public void save(List<SectionEntity> sectionEntities) {
+    public void save(final List<SectionEntity> sectionEntities) {
         if (sectionEntities.isEmpty()) {
             return;
         }
-        long lineId = findLineId(sectionEntities);
-        String deleteSql = "delete from section where line_id = ?";
-        String insertSql = "insert into section (line_id, up, down, distance) values (?, ?, ?, ?)";
+        final long lineId = findLineId(sectionEntities);
+        final String deleteSql = "delete from section where line_id = ?";
+        final String insertSql = "insert into section (line_id, up, down, distance) values (?, ?, ?, ?)";
 
         jdbcTemplate.update(deleteSql, lineId);
 
@@ -57,5 +57,10 @@ public class SectionDao {
         }
 
         return sectionEntities.get(0).getLineId();
+    }
+
+    public List<SectionEntity> findAll() {
+        final String sql = "select * from section";
+        return jdbcTemplate.query(sql, sectionMapper);
     }
 }

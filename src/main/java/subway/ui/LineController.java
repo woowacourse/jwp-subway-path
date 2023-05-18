@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.LIneService;
+import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionResponse;
@@ -26,9 +26,9 @@ import java.util.List;
 @RequestMapping("/lines")
 public class LineController {
 
-    private final LIneService lineService;
+    private final LineService lineService;
 
-    public LineController(final LIneService lineService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
     }
 

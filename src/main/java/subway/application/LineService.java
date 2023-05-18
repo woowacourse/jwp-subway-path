@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class LIneService {
+public class LineService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationService stationService;
 
-    public LIneService(final LineDao lineDao, final SectionDao sectionDao, final StationService stationService) {
+    public LineService(final LineDao lineDao, final SectionDao sectionDao, final StationService stationService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;

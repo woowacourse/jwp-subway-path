@@ -7,29 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 
 import javax.sql.DataSource;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 class SectionDaoTest {
-
-    @Autowired
-    private DataSource dataSource;
-    private JdbcTemplate jdbcTemplate;
-    private StationDao stationDao;
-    private SectionDao sectionDao;
-    private LineDao lineDao;
 
     private final RowMapper<SectionEntity> sectionMapper = (rs, cn) -> new SectionEntity(
             rs.getLong("id"),
@@ -38,7 +25,12 @@ class SectionDaoTest {
             rs.getString("down"),
             rs.getInt("distance")
     );
-
+    @Autowired
+    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
+    private StationDao stationDao;
+    private SectionDao sectionDao;
+    private LineDao lineDao;
 
     @BeforeEach
     void setting() {
@@ -52,9 +44,9 @@ class SectionDaoTest {
     @DisplayName("Line은 처음에 저장될 수 있다")
     void test_saveFirst() {
         //given
-        String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
+        final String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
 
-        List<SectionEntity> sectionEntities = List.of(
+        final List<SectionEntity> sectionEntities = List.of(
                 new SectionEntity(1L, "푸우", "테오", 1),
                 new SectionEntity(1L, "테오", "제이온", 2),
                 new SectionEntity(1L, "제이온", "시카", 3)
@@ -62,7 +54,7 @@ class SectionDaoTest {
         sectionDao.save(sectionEntities);
 
         //when
-        List<SectionEntity> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
+        final List<SectionEntity> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
 
         //then
         assertAll(
@@ -80,14 +72,14 @@ class SectionDaoTest {
     @DisplayName("Line은 저장될 때마다 기존 정보를 덮어씌운다")
     void save() {
         //given
-        String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
+        final String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
 
-        List<SectionEntity> origin = List.of(
+        final List<SectionEntity> origin = List.of(
                 new SectionEntity(1L, "푸우", "테오", 1),
                 new SectionEntity(1L, "테오", "제이온", 2),
                 new SectionEntity(1L, "제이온", "시카", 3)
         );
-        List<SectionEntity> update = List.of(
+        final List<SectionEntity> update = List.of(
                 new SectionEntity(1L, "창원", "잠실", 1),
                 new SectionEntity(1L, "잠실", "화성", 2),
                 new SectionEntity(1L, "화성", "목성", 3)
@@ -95,7 +87,7 @@ class SectionDaoTest {
         sectionDao.save(origin);
         sectionDao.save(update);
 
-        List<SectionEntity> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
+        final List<SectionEntity> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
 
         //then
         assertAll(
@@ -110,30 +102,31 @@ class SectionDaoTest {
     }
 
     @Test
-    @DisplayName("id를 통해 해당하는 Line을 찾을 수 있다")
-    void findById() {
+    @DisplayName("모든 section을 찾는다.")
+    void findAll() {
         //given
-        List<SectionEntity> sectionEntities = List.of(
+        final List<SectionEntity> sectionEntities = List.of(
                 new SectionEntity(1L, "푸우", "테오", 1),
-                new SectionEntity(1L, "테오", "제이온", 2),
-                new SectionEntity(1L, "제이온", "시카", 3)
+                new SectionEntity(1L, "테오", "제이온", 2)
+        );
+        final List<SectionEntity> sectionEntities2 = List.of(
+                new SectionEntity(2L, "푸우", "테오", 1),
+                new SectionEntity(2L, "테오", "제이온", 2)
         );
         sectionDao.save(sectionEntities);
+        sectionDao.save(sectionEntities2);
 
 
         //when
-        final List<SectionEntity> returnEntities = sectionDao.findById(1L);
+        final List<SectionEntity> returnEntities = sectionDao.findAll();
 
         //then
         assertAll(
-                () -> assertThat(returnEntities).hasSize(3),
-                () -> assertThat(returnEntities).allMatch(sectionEntity -> sectionEntity.getLineId() == 1L),
-                () -> assertThat(returnEntities).anyMatch(sectionEntity -> sectionEntity.getLeft().equals("푸우") &&
-                        sectionEntity.getRight().equals("테오") && sectionEntity.getDistance() == 1),
-                () -> assertThat(returnEntities).anyMatch(sectionEntity -> sectionEntity.getLeft().equals("테오") &&
-                        sectionEntity.getRight().equals("제이온") && sectionEntity.getDistance() == 2),
-                () -> assertThat(returnEntities).anyMatch(sectionEntity -> sectionEntity.getLeft().equals("제이온") &&
-                        sectionEntity.getRight().equals("시카") && sectionEntity.getDistance() == 3)
+                () -> assertThat(returnEntities).hasSize(4),
+                () -> assertThat(returnEntities).anyMatch(entity -> entity.getLineId().equals(1L) && entity.getLeft().equals("푸우")),
+                () -> assertThat(returnEntities).anyMatch(entity -> entity.getLineId().equals(1L) && entity.getLeft().equals("테오")),
+                () -> assertThat(returnEntities).anyMatch(entity -> entity.getLineId().equals(2L) && entity.getLeft().equals("푸우")),
+                () -> assertThat(returnEntities).anyMatch(entity -> entity.getLineId().equals(2L) && entity.getLeft().equals("테오"))
         );
     }
 }
