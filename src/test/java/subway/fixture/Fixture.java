@@ -54,4 +54,16 @@ public class Fixture {
                 )
         );
     }
+
+    public static Station station1() {
+        return new Station(1L, "잠실역");
+    }
+
+    public static Station station2() {
+        return new Station(2L, "몽촌토성역");
+    }
+
+    public static Station station3() {
+        return new Station(3L, "까치산역");
+    }
 }

@@ -15,8 +15,15 @@ classDiagram
     WebEnvironment <--> LineController
     LineController --> LineService
     LineService --> LineRepository
-    DbLineRepository ..|> LineRepository
+    LineRepository <|.. DbLineRepository
     DbLineRepository --> LineDao
+    DbLineRepository --> SectionDao
+    DbLineRepository --> StationDao
+    
+    LineController --> TransferService
+    TransferService --> LineService
+    TransferService  --> TransferRepository
+    TransferRepository <|.. DbTransferRepository
 ```
 
 ### 클래스 다이어그램 - 도메인
@@ -24,6 +31,7 @@ classDiagram
 classDiagram
     Line *-- Section
     Section *-- Station
+    Transfer *-- Station
     class Line {
         - List(Section) sections
     }
@@ -35,24 +43,34 @@ classDiagram
     class Station {
         - String name
     }
+    class Transfer {
+        - Station firstStation
+        - Station lastStation
+    }
 ```
 
 ### Entity-Relationship Diagram
 ```mermaid
 erDiagram
-    LINE ||--|{ SECTION : ""
-	LINE {
+  LINE ||--|{ SECTION : ""
+  LINE ||--|{ STATION : ""
+  LINE {
 		BIGINT id PK
 		VARCHAR(50) name
-		VARCHAR(50) upward_terminus
-		VARCHAR(50) downward_terminus
+        DATE created_at
 	}
     SECTION {
         BIGINT id PK
         BIGINT line_id FK
-        VARCHAR(50) upward_station
-        VARCHAR(50) downward_station
+        BIGINT upward_station_id
+        BIGINT downward_station_id
         INT distance
+        DATE created_at
+    }
+    STATION {
+        BIGINT id PK
+        BIGINT line_id FK
+        VARCHAR(255) name
         DATE created_at
     }
 ```
@@ -89,3 +107,8 @@ Swagger link : http://localhost:8080/swagger-ui/index.html#/
 
 ### Station
 - [x] 역의 이름을 갖는다.
+
+### Transfer
+- [x] 환승 가능한 2개의 역을 갖는다.
+  - [x] ID가 빠른 순서로 저장한다.
+  - [x] 같은 역을 가질 수 없다.

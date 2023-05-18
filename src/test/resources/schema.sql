@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS station
     id                  BIGINT AUTO_INCREMENT  NOT NULL,
     line_id             BIGINT                 NOT NULL,
     name                VARCHAR(255)           NOT NULL,
+    created_at          TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
 );
