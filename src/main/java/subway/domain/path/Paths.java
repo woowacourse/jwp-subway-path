@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toUnmodifiableList;
-import static subway.domain.path.PathUtils.*;
 
 public final class Paths {
     private final List<Path> paths;
@@ -38,7 +37,7 @@ public final class Paths {
         findOverlappedOriginalPath(path)
                 .ifPresentOrElse(originalPath -> {
                             result.remove(originalPath);
-                            result.addAll(divide(originalPath, path));
+                            result.addAll(originalPath.divide(path));
                         },
                         () -> result.add(path));
 
@@ -67,7 +66,7 @@ public final class Paths {
 
     private Optional<Path> findOverlappedOriginalPath(final Path newPath) {
         return paths.stream()
-                .filter(path -> isOverlapped(path, newPath))
+                .filter(path -> path.isOverlapped(newPath))
                 .findAny();
     }
 
@@ -78,7 +77,7 @@ public final class Paths {
         result.removeAll(affectedPaths);
 
         if (isStationBetween(affectedPaths)) {
-            final Path merged = merge(affectedPaths.get(0), affectedPaths.get(1));
+            final Path merged = affectedPaths.get(0).merge(affectedPaths.get(1));
             result.add(merged);
         }
 

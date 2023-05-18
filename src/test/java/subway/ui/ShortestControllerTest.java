@@ -48,7 +48,6 @@ class ShortestControllerTest {
         lineService.addPathToLine(lineId, new PathRequest(stationId1, stationId2, 5));
         lineService.addPathToLine(lineId, new PathRequest(stationId2, stationId3, 5));
 
-
         //when, then
         RestAssured.given()
                 .get("/paths/start/{start-station-id}/end/{end-station-id}", stationId1, stationId3)
@@ -75,7 +74,6 @@ class ShortestControllerTest {
         Long stationId2 = stationService.saveStation(new StationRequest("전포역")).getId();
         Long stationId3 = stationService.saveStation(new StationRequest("부산역")).getId();
         Long stationId4 = stationService.saveStation(new StationRequest("해운대역")).getId();
-
 
         lineService.addPathToLine(lineId1, new PathRequest(source, stationId2, 5));
         lineService.addPathToLine(lineId1, new PathRequest(stationId2, destination, 5));

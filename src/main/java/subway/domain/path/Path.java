@@ -2,6 +2,7 @@ package subway.domain.path;
 
 import subway.domain.Station;
 
+import java.util.List;
 import java.util.Objects;
 
 public final class Path {
@@ -38,6 +39,55 @@ public final class Path {
 
     public boolean contains(final Station station) {
         return up.equals(station) || down.equals(station);
+    }
+
+    public boolean isContinuous(final Path next) {
+        if (this.equals(next)) {
+            return false;
+        }
+
+        return down.equals(next.up);
+    }
+
+    public boolean isOverlapped(final Path other) {
+        return isUpStation(other.up) || isDownStation(other.down);
+    }
+
+    public Path merge(final Path other) {
+        if (isContinuous(other)) {
+            return new Path(up, other.down, distance + other.distance);
+        }
+        if (other.isContinuous(this)) {
+            return new Path(other.up, down, distance + other.distance);
+        }
+
+        throw new IllegalStateException("두 경로를 합칠 수 없습니다.");
+    }
+
+    public List<Path> divide(final Path divisor) {
+        if (distance <= divisor.distance) {
+            throw new IllegalArgumentException("기존의 거리보다 길 수 없습니다.");
+        }
+        if (!isOverlapped(divisor)) {
+            throw new IllegalArgumentException("두 경로가 겹치지 않습니다.");
+        }
+
+        if (up.equals(divisor.up)) {
+            return divideByUpPath(divisor);
+        }
+        return divideByDownPath(divisor);
+    }
+
+    private List<Path> divideByUpPath(final Path up) {
+        final Path down = new Path(up.down, this.down, distance - up.distance);
+
+        return List.of(up, down);
+    }
+
+    private List<Path> divideByDownPath(final Path down) {
+        final Path up = new Path(this.up, down.up, distance - down.distance);
+
+        return List.of(up, down);
     }
 
     public Long getId() {
