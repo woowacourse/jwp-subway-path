@@ -122,7 +122,7 @@ public class Subway {
         return hasLeftSection(station);
     }
 
-    public boolean hasRightSection(final Station station) {
+    private boolean hasRightSection(final Station station) {
         validateStation(station);
         return hasOutgoingStation(station);
     }
@@ -131,11 +131,11 @@ public class Subway {
         return !stations.outgoingEdgesOf(station).isEmpty();
     }
 
-    public boolean hasStation(final Station station) {
+    private boolean hasStation(final Station station) {
         return stations.containsVertex(station);
     }
 
-    public boolean hasLeftSection(final Station station) {
+    private boolean hasLeftSection(final Station station) {
         validateStation(station);
         return isStartStation(stations, station);
     }
@@ -147,7 +147,7 @@ public class Subway {
         return findLeftSection(station);
     }
 
-    public Section findRightSection(final Station station) {
+    private Section findRightSection(final Station station) {
         Set<DefaultWeightedEdge> edge = stations.outgoingEdgesOf(station);
         return edge.stream()
                 .map(x -> new Section(station, stations.getEdgeTarget(x),
@@ -156,7 +156,7 @@ public class Subway {
                 .orElseThrow(() -> new SubwayInternalServerException(INVALID_NOT_FOUND_RIGHT_SIDE_SECTION_MESSAGE));
     }
 
-    public Section findLeftSection(final Station station) {
+    private Section findLeftSection(final Station station) {
         Set<DefaultWeightedEdge> edge = stations.incomingEdgesOf(station);
         return edge.stream()
                 .map(x -> new Section(stations.getEdgeSource(x), station,
