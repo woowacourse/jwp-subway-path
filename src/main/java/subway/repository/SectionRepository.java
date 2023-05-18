@@ -22,16 +22,6 @@ public class SectionRepository {
         this.stationDao = stationDao;
     }
 
-    public Long save(final SectionEntity sectionEntity) {
-        return sectionDao.insert(
-                sectionEntity.getUpStationId(),
-                sectionEntity.getDownStationId(),
-                sectionEntity.getLineId(),
-                sectionEntity.getStart(),
-                sectionEntity.getDistance()
-        );
-    }
-
     public void saveAll(final List<SectionEntity> sectionEntities) {
         sectionDao.insertBatch(sectionEntities);
     }

@@ -120,25 +120,12 @@ public class Section {
         return Objects.equals(downStation, otherStation);
     }
 
-    public Section sortBy(final Station station) {
-        if (isSameUpStationBy(station)) {
-            return this;
-        }
-        return new Section(id, distance, isStart, downStation, upStation);
-    }
-
-    public Station findSameStationBy(final Section otherSection) {
-        if (upStation.equals(otherSection.upStation)) {
-            return upStation;
-        }
-        if (upStation.equals(otherSection.downStation)) {
-            return upStation;
-        }
-        return downStation;
-    }
-
     public boolean isDistanceEqualsOrGreaterThan(final Section otherSection) {
         return distance.isEqualsOrGreaterThan(otherSection.distance);
+    }
+
+    public Section combine(final Section otherSection) {
+        return new Section(distance.plus(otherSection.distance), isStart, upStation, otherSection.downStation);
     }
 
     public Long getId() {

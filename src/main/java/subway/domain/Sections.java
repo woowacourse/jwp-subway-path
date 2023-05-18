@@ -1,11 +1,6 @@
 package subway.domain;
 
-import subway.domain.vo.Distance;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -127,13 +122,9 @@ public class Sections {
 
     public void removeStation(final Station removeStation) {
         final List<Section> removeSections = collectRemoveSections(removeStation);
-        if (isRemoveSectionBetween(removeSections)) {
-            collapseLeftRightSection(removeSections);
+        if (isStationBetween(removeSections)) {
+            addCombineSection(removeSections);
         }
-        if (isRemoveSectionIsStart(removeSections)) {
-            removeFirstSection(removeSections);
-        }
-
         sections.removeAll(removeSections);
     }
 
@@ -143,47 +134,18 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
-    private boolean isRemoveSectionBetween(final List<Section> removeSections) {
+    private boolean isStationBetween(final List<Section> removeSections) {
         return removeSections.size() == 2;
     }
 
-    private void collapseLeftRightSection(final List<Section> removeSections) {
-        final Section leftSection = removeSections.get(0);
-        final Section rightSection = removeSections.get(1);
-        final Section newSection = new Section(
-                sumSectionsDistance(removeSections),
-                leftSection.getStart(),
-                leftSection.getUpStation(),
-                rightSection.getDownStation());
+    private void addCombineSection(final List<Section> removeSections) {
+        final Deque<Section> currentSections = new ArrayDeque<>(removeSections);
+        final Section leftSection = currentSections.pollFirst();
+        final Section rightSection = currentSections.pollFirst();
+        final Section newSection = leftSection.combine(rightSection);
+        final int targetIndex = sections.indexOf(leftSection);
 
-        sections.add(sections.indexOf(leftSection), newSection);
-    }
-
-    private boolean isRemoveSectionIsStart(final List<Section> removeSections) {
-        return removeSections.size() == 1 && sections.size() > 1;
-    }
-
-    private void removeFirstSection(final List<Section> removeSections) {
-        final Section firstSection = removeSections.get(0);
-        final Section secondSection = sections.get(1);
-        final Section newSection = new Section(
-                secondSection.getDistance(),
-                firstSection.getStart(),
-                secondSection.getUpStation(),
-                secondSection.getDownStation());
-
-        sections.remove(secondSection);
-        sections.add(0, newSection);
-    }
-
-    private Distance sumSectionsDistance(final List<Section> sections) {
-        final Integer sum = sections.stream()
-                .map(Section::getDistance)
-                .map(Distance::getValue)
-                .reduce(Integer::sum)
-                .orElseThrow(() -> new IllegalStateException("구간의 거리 합을 구하던 도중 오류가 발생하였습니다."));
-
-        return new Distance(sum);
+        sections.add(targetIndex, newSection);
     }
 
     public List<Station> collectAllStations() {
