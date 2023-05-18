@@ -60,4 +60,17 @@ public class Section {
     public String getRightStationName() {
         return rightStation.getName();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return Objects.equals(id, section.id) && Objects.equals(leftStation, section.leftStation) && Objects.equals(rightStation, section.rightStation) && Objects.equals(distance, section.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, leftStation, rightStation, distance);
+    }
 }

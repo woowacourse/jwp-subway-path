@@ -11,9 +11,6 @@ import java.util.List;
 
 public class Line {
 
-    private static final int EMPTY = 0;
-    private static final int NOT_EXIST = 0;
-
     private Long id;
     private Name name;
     private Color color;
@@ -51,26 +48,9 @@ public class Line {
         return sections;
     }
 
-    public boolean isBoundStation(Station baseStation) {
-        Station upBoundStation = sections.findUpBoundStation();
-        Station downBoundStation = sections.findDownBoundStation();
-        return baseStation.equals(upBoundStation) || baseStation.equals(downBoundStation);
-    }
-
-    public Section findSectionByBoundStation(Station boundStation) {
-        return sections.findBoundSection(boundStation);
-    }
-
-    public List<Section> findSectionByInterStation(Station station) {
-        return sections.findInterSections(station);
-    }
-
-    public Section updateSection(List<Section> section) {
-        return sections.linkSections(section);
-    }
-
-    public boolean hasOneSection() {
-        return sections.isSizeOne();
+    public Sections deleteStation(final Station station) {
+        sections.deleteSection(station);
+        return sections;
     }
 
     public List<Station> sortStation() {

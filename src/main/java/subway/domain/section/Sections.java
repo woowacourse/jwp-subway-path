@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 
 public class Sections {
 
-    public static final int BOUND_STATION_INDEX = 0;
+    private static final int BOUND_STATION_INDEX = 0;
+    private static final int LEFT_SECTION = 0;
+    private static final int RIGHT_SECTION = 1;
 
     private final List<Section> sections;
 
@@ -34,7 +36,8 @@ public class Sections {
 
     public void addSection(final Station baseStation, final String direction, final Station registerStation, final int distance) {
         validateSectionsIsNotEmpty();
-        validateSectionsHaveStation(baseStation, registerStation);
+        validateSectionsHaveStation(baseStation);
+        validateStationAlreadyExist(registerStation);
 
         if (findUpBoundStation().equals(baseStation)) {
             addSectionBasedUpBoundStation(baseStation, direction, registerStation, distance);
@@ -47,17 +50,92 @@ public class Sections {
         addSectionInterStation(baseStation, direction, registerStation, distance);
     }
 
+    public void deleteSection(Station station) {
+        validateSectionsHaveStation(station);
+        if (sections.size() == 1) {
+            sections.clear();
+            return;
+        }
+
+        if (findBoundStation().contains(station)) {
+            Section boundSection = findBoundSection(station);
+            sections.remove(boundSection);
+            return;
+        }
+
+        List<Section> interSections = findInterSections(station);
+        sections.add(new Section(
+                interSections.get(LEFT_SECTION).getLeftStation(),
+                interSections.get(RIGHT_SECTION).getRightStation(),
+                interSections.get(LEFT_SECTION).getDistance() + interSections.get(RIGHT_SECTION).getDistance()));
+        sections.remove(interSections.get(LEFT_SECTION));
+        sections.remove(interSections.get(RIGHT_SECTION));
+    }
+
+    public List<Station> findAllStation() {
+        List<Station> stations = sections.stream()
+                .map(Section::getLeftStation)
+                .collect(Collectors.toList());
+        stations.add(findDownBoundStation());
+        return stations;
+    }
+
+    public Station findUpBoundStation() {
+        List<Station> upperStations = sections.stream()
+                .map(Section::getLeftStation)
+                .collect(Collectors.toList());
+        List<Station> downStations = sections.stream()
+                .map(Section::getRightStation)
+                .collect(Collectors.toList());
+
+        upperStations.removeAll(downStations);
+
+        return upperStations.get(BOUND_STATION_INDEX);
+    }
+
+    public Station findDownBoundStation() {
+        List<Station> downStations = sections.stream()
+                .map(Section::getRightStation)
+                .collect(Collectors.toList());
+        List<Station> upperStations = sections.stream()
+                .map(Section::getLeftStation)
+                .collect(Collectors.toList());
+
+        downStations.removeAll(upperStations);
+
+        return downStations.get(BOUND_STATION_INDEX);
+    }
+
+    public List<Station> sortStation() {
+        if (sections.isEmpty()) {
+            return List.of();
+        }
+        List<Station> sortedStation = new ArrayList<>();
+        Station station = findUpBoundStation();
+        sortedStation.add(station);
+        while (sortedStation.size() <= sections.size()) {
+            Section section = findSection(station, "right");
+            sortedStation.add(section.getRightStation());
+            station = section.getRightStation();
+        }
+        return sortedStation;
+    }
+
     private void validateSectionsIsNotEmpty() {
         if (sections.isEmpty()) {
             throw new LineIsInitException();
         }
     }
 
-    private void validateSectionsHaveStation(final Station baseStation, final Station registerStation) {
+    private void validateSectionsHaveStation(final Station station) {
         List<Station> stations = findAllStation();
-        if (!stations.contains(baseStation)) {
+        if (!stations.contains(station)) {
             throw new NotFoundStationException();
         }
+    }
+
+    private void validateStationAlreadyExist(final Station registerStation) {
+        List<Station> stations = findAllStation();
         if (stations.contains(registerStation)) {
             throw new AlreadyExistStationException();
         }
@@ -107,52 +185,7 @@ public class Sections {
         }
     }
 
-    public void findUpdatedSection(final List<Section> changedSections) {
-        this.sections.removeAll(changedSections);
-    }
-
-    public Station findUpBoundStation() {
-        List<Station> upperStations = sections.stream()
-                .map(Section::getLeftStation)
-                .collect(Collectors.toList());
-        List<Station> downStations = sections.stream()
-                .map(Section::getRightStation)
-                .collect(Collectors.toList());
-
-        upperStations.removeAll(downStations);
-
-        return upperStations.get(BOUND_STATION_INDEX);
-    }
-
-    public Station findDownBoundStation() {
-        List<Station> downStations = sections.stream()
-                .map(Section::getRightStation)
-                .collect(Collectors.toList());
-        List<Station> upperStations = sections.stream()
-                .map(Section::getLeftStation)
-                .collect(Collectors.toList());
-
-        downStations.removeAll(upperStations);
-
-        return downStations.get(BOUND_STATION_INDEX);
-    }
-
-    public boolean isContainStation(Station station) {
-        List<String> stations = findAllStation().stream()
-                .map(Station::getName)
-                .collect(Collectors.toList());
-        return stations.contains(station.getName());
-    }
-
-    public List<Station> findAllStation() {
-        List<Station> stations = sections.stream()
-                .map(Section::getLeftStation)
-                .collect(Collectors.toList());
-        stations.add(findDownBoundStation());
-        return stations;
-    }
-
-    public Section findSection(Station baseStation, String direction) {
+    private Section findSection(Station baseStation, String direction) {
         if (direction.equals("left")) {
             return sections.stream()
                     .filter(section -> section.getRightStation().equals(baseStation))
@@ -165,7 +198,7 @@ public class Sections {
                 .orElseThrow(RuntimeException::new);
     }
 
-    public Section findBoundSection(Station boundStation) {
+    private Section findBoundSection(Station boundStation) {
         if (boundStation.equals(findUpBoundStation())) {
             return sections.stream()
                     .filter(section -> section.getLeftStation().equals(boundStation))
@@ -178,7 +211,7 @@ public class Sections {
                 .orElseThrow();
     }
 
-    public List<Section> findInterSections(Station station) {
+    private List<Section> findInterSections(Station station) {
         Section rightSection = sections.stream()
                 .filter(section -> section.getRightStation().equals(station))
                 .findFirst()
@@ -191,31 +224,13 @@ public class Sections {
         return List.of(rightSection, leftSection);
     }
 
-    public Section linkSections(final List<Section> existedSections) {
-        int updateDistance = existedSections.get(0).getDistance() + existedSections.get(1).getDistance();
-        return new Section(
-                existedSections.get(0).getLeftStation(),
-                existedSections.get(1).getRightStation(),
-                updateDistance);
+    private List<Station> findBoundStation() {
+        return List.of(findUpBoundStation(), findDownBoundStation());
     }
 
-    public boolean isSizeOne() {
-        return sections.size() == 1;
-    }
 
-    public List<Station> sortStation() {
-        if (sections.isEmpty()) {
-            return List.of();
-        }
-        List<Station> sortedStation = new ArrayList<>();
-        Station station = findUpBoundStation();
-        sortedStation.add(station);
-        while (sortedStation.size() <= sections.size()) {
-            Section section = findSection(station, "right");
-            sortedStation.add(section.getRightStation());
-            station = section.getRightStation();
-        }
-        return sortedStation;
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 
     public List<Section> getSections() {

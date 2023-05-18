@@ -55,22 +55,8 @@ public class StationService {
         Line line = lineRepository.findByStationId(stationId);
         Station station = lineRepository.findStationById(stationId);
 
-        if (line.isBoundStation(station)) {
-            deleteBoundStation(line, station);
-            return;
-        }
+        Sections updatedSections = line.deleteStation(station);
 
-        List<Section> sectionsWithStation = line.findSectionByInterStation(station);
-        Section section = line.updateSection(sectionsWithStation);
-        lineRepository.updateSectionAndDeleteStation(line.getId(), sectionsWithStation, section, station);
-    }
-
-    private void deleteBoundStation(Line line, Station station) {
-        Section section = line.findSectionByBoundStation(station);
-        if (line.hasOneSection()) {
-            lineRepository.deleteSectionAndAllStation(section);
-            return;
-        }
-        lineRepository.deleteSectionAndStation(section, station);
+        lineRepository.updateSectionAndDeleteStation(line.getId(), updatedSections, station);
     }
 }
