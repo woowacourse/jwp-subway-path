@@ -32,7 +32,7 @@ public class LineRepository {
 
     public Line saveLine(Line line) {
         LineProperty lineProperty = saveLineProperty(line.getLineProperty());
-        Sections sections = new Sections(saveSections(line.getLineProperty(), line.getSections()));
+        Sections sections = new Sections(saveSections(lineProperty, line.getSections()));
         return new Line(lineProperty, sections);
     }
 
@@ -56,7 +56,8 @@ public class LineRepository {
                 id,
                 section.getPreviousStation(),
                 section.getNextStation(),
-                Distance.from(section.getDistance()));
+                Distance.from(section.getDistance())
+        );
     }
 
 }

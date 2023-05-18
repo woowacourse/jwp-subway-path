@@ -24,44 +24,6 @@ public class SectionEntity {
         this.nextStationId = nextStationId;
     }
 
-    public static class Builder {
-        private Long id;
-        private Long lineId;
-        private Integer distance;
-        private Long previousStationId;
-        private Long nextStationId;
-
-        public Builder id(final Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder lineId(final Long lineId) {
-            this.lineId = lineId;
-            return this;
-        }
-
-        public Builder distance(final Integer distance) {
-            this.distance = distance;
-            return this;
-        }
-
-        public Builder previousStationId(final Long previousStationId) {
-            this.previousStationId = previousStationId;
-            return this;
-        }
-
-        public Builder nextStationId(final Long nextStationId) {
-            this.nextStationId = nextStationId;
-            return this;
-        }
-
-        public SectionEntity build() {
-            return new SectionEntity(id, lineId, distance, previousStationId, nextStationId);
-        }
-
-    }
-
     public Long getId() {
         return id;
     }
@@ -80,6 +42,17 @@ public class SectionEntity {
 
     public Long getNextStationId() {
         return nextStationId;
+    }
+
+    @Override
+    public String toString() {
+        return "SectionEntity{" +
+                "id=" + id +
+                ", lineId=" + lineId +
+                ", distance=" + distance +
+                ", previousStationId=" + previousStationId +
+                ", nextStationId=" + nextStationId +
+                '}';
     }
 
 }
