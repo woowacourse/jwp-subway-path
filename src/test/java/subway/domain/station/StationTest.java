@@ -36,6 +36,6 @@ class StationTest {
         final StationName name2 = new StationName("잠실");
 
         // expect
-        assertThat(name1.equals(name2)).isTrue();
+        assertThat(name1.isSameName(name2)).isTrue();
     }
 }

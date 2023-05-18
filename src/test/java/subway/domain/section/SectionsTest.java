@@ -73,7 +73,8 @@ class SectionsTest {
 
         // then
         final List<Section> linkedSections = updatedSections.sections();
-        assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(C.stationC)).isTrue(),
+        assertAll(
+                () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(C.stationC)).isTrue(),
                 () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(A.stationA)).isTrue(),
                 () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(B.stationB)).isTrue());
     }
@@ -221,6 +222,6 @@ class SectionsTest {
     @Test
     void 구간들에_역이_한개_남았다면_남은_구간_자체를_삭제한다() {
         // expect
-        assertThat(sections.removeStation(A.stationA).sections()).hasSize(0);
+        assertThat(sections.removeStation(B.stationB).sections()).hasSize(0);
     }
 }
