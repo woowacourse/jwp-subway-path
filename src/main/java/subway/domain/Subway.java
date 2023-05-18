@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -32,11 +33,45 @@ public class Subway {
         DijkstraShortestPath<Station, WeightedEdgeWithLine> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, WeightedEdgeWithLine> shortestRoute = dijkstraShortestPath.getPath(startStation, endStation);
 
-        List<Station> stations = shortestRoute.getVertexList();
         double totalDistance = shortestRoute.getWeight();
         double totalCharge = calculateCharge(passengerAge, shortestRoute);
 
-        return new Path(stations, totalDistance, totalCharge);
+        List<WeightedEdgeWithLine> edges = shortestRoute.getEdgeList();
+
+        // a-b-e-c
+        // a-b
+        // b-e-c
+        List<LineInPath> lines = new ArrayList<>();
+        List<Station> stationsInSameLine = new ArrayList<>();
+
+        for (int i = 0; i <= edges.size(); i++) {
+            if (i==edges.size()) {
+                stationsInSameLine.add(edges.get(i-1).getTarget());
+                Line line = edges.get(i - 1).getLine();
+                lines.add(new LineInPath(line.getId(), line.getName(), stationsInSameLine));
+                continue;
+            }
+            if (i==0) {
+                stationsInSameLine.add(edges.get(i).getSource());
+            } else {
+                WeightedEdgeWithLine before = edges.get(i-1);
+                WeightedEdgeWithLine after = edges.get(i);
+                Line beforLine = before.getLine();
+                Line afterLine = after.getLine();
+                if (beforLine.equals(afterLine)) {
+                    // 같으면
+                    stationsInSameLine.add(edges.get(i).getSource());
+                } else {
+                    // 다르면
+                    stationsInSameLine.add(edges.get(i - 1).getTarget());
+                    lines.add(new LineInPath(before.getLine().getId(), before.getLine().getName(), stationsInSameLine));
+                    stationsInSameLine = new ArrayList<>();
+                    stationsInSameLine.add(edges.get(i - 1).getTarget());
+                }
+            }
+        }
+
+        return new Path(lines, totalDistance, totalCharge);
     }
 
     private double calculateCharge(int passengerAge, GraphPath<Station, WeightedEdgeWithLine> shortestRoute) {
@@ -66,6 +101,7 @@ public class Subway {
                 .max()
                 .orElse(0);
     }
+
     private double applyAgeDiscount(int passengerAge, double charge) {
         if (6 <= passengerAge && passengerAge < 13) {
             return (charge - 350) * 0.5;

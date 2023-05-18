@@ -118,6 +118,57 @@ response
   }
 ```
 
+### 7. [ ] 경로 조회 API
+request
+```JSON
+{
+  "passengerAge": 15,
+  "startStationId" : 1,
+  "endStationId" : 4
+}
+```
+response
+```JSON
+{
+  "totalDistance" : 10,
+  "totalCharge" : 1400,
+  "path": [
+    {
+      "lineId" : 1,
+      "lineName": "2호선",
+      "stations" : [
+        {
+          "stationId" : 1,
+          "stationName" : "a"
+        },
+        {
+          "stationId" : 2,
+          "stationName" : "b"
+        },
+        {
+          "stationId" : 3,
+          "stationName" : "c"
+        }
+      ]
+    },
+    {
+      "lineId" : 2,
+      "lineName": "3호선",
+      "stations" : [
+        {
+          "stationId" : 3,
+          "stationName" : "c"
+        },
+        {
+          "stationId" : 4,
+          "stationName" : "d"
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## 요구사항 정리
 - [x] 노선에 역 등록
   - [x] 노선에 등록되는 역의 위치는 자유롭게 지정할 수 있어야 합니다.
