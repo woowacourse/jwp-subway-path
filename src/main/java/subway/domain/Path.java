@@ -31,4 +31,8 @@ public class Path {
                 .reduce(Integer::sum)
                 .orElseThrow(EmptyPathException::new);
     }
+
+    public List<Section> getSections() {
+        return new ArrayList<>(sections);
+    }
 }
