@@ -32,7 +32,7 @@ public class LineController {
     }
 
     @GetMapping("/{lineId}")
-    public ResponseEntity<List<StationResponseDto>> getStation(@PathVariable final Long lineId) {
+    public ResponseEntity<List<StationResponseDto>> getStations(@PathVariable final Long lineId) {
         return ResponseEntity.ok(lineService.findSortedStations(lineId));
     }
 
