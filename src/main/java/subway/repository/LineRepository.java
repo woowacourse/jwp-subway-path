@@ -35,7 +35,7 @@ public class LineRepository {
         boolean existName = lineDao.exists(line.getName());
 
         if (existName) {
-            throw new DuplicateException(ErrorMessage.DUPLICATE_NAME);
+            throw new DuplicateException(ErrorMessage.DUPLICATE_LINE);
         }
 
         return lineDao.save(toEntity(line));
@@ -67,11 +67,15 @@ public class LineRepository {
     }
 
     public List<Line> findAll() {
-        List<LineWithSectionEntities> linesWithSections = lineDao.findLinesWithSections();
+        List<LineWithSectionEntities> linesWithSections = lineDao.findLinesWithSections();   // section 리스트를 들고 있는 노선들
         List<Line> lines = new ArrayList<>();
-        for (LineWithSectionEntities linesWithSection : linesWithSections) {
-            List<SectionWithStationNameEntity> sectionEntities =
-                    sectionDao.findByLineIdWithStationName(linesWithSection.getLineEntity().getId());
+        for (LineWithSectionEntities linesWithSection : linesWithSections) {    // 라인 하나 꺼내기
+            List<SectionWithStationNameEntity> sectionEntities = linesWithSection.getSectionEntities().stream()
+                    .filter(entity ->
+                            entity.getUpStationId() != 0 && entity.getDownStationId() != 0)
+                    .map(sectionEntity -> sectionDao.findBySectionIdWithStationName(sectionEntity.getId())
+                                    .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_SECTION)))
+                    .collect(Collectors.toList());
 
             List<Section> sections = sectionEntities.stream()
                     .map(section -> new Section(
@@ -79,9 +83,10 @@ public class LineRepository {
                                     new Station(section.getDownStationEntity().getId(),
                                             section.getDownStationEntity().getName()),
                                     section.getSectionDistance()
-                            )
-                    ).collect(Collectors.toList());
+                            ))
+                    .collect(Collectors.toList());
 
+            // 라인 리스트에 추가
             lines.add(Line.of(
                     linesWithSection.getLineEntity().getId(),
                     linesWithSection.getLineEntity().getName(),
