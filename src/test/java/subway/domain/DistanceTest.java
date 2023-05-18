@@ -27,7 +27,7 @@ class DistanceTest {
         Distance otherDistance = new Distance(200);
 
         //when
-        boolean actual = distance.isFartherThan(otherDistance);
+        boolean actual = distance.isLongerThan(otherDistance);
 
         //then
         Assertions.assertThat(actual).isFalse();
@@ -40,7 +40,7 @@ class DistanceTest {
         Distance distance = new Distance(100);
         Distance otherDistance = new Distance(200);
         //when
-        boolean actual = distance.isCloserThan(otherDistance);
+        boolean actual = distance.isShorterThan(otherDistance);
 
         //then
         Assertions.assertThat(actual).isTrue();

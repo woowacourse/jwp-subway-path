@@ -50,11 +50,11 @@ public class Distance {
         return value;
     }
 
-    public boolean isFartherThan(Distance otherDistance) {
+    public boolean isLongerThan(Distance otherDistance) {
         return value > otherDistance.value;
     }
 
-    public boolean isCloserThan(Distance otherDistance) {
+    public boolean isShorterThan(Distance otherDistance) {
         return value < otherDistance.value;
     }
 }

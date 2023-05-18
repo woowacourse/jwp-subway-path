@@ -40,4 +40,11 @@ public class Fare {
     public int getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "Fare{" +
+                "value=" + value +
+                '}';
+    }
 }
