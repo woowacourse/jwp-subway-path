@@ -16,11 +16,11 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
-import subway.domain.LineInPath;
+import subway.domain.Route;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.charge.Charge;
-import subway.dto.LineInPathDto;
+import subway.dto.RouteDto;
 import subway.dto.request.FindShortestRouteRequest;
 import subway.dto.response.FindShortestRouteResponse;
 import subway.repository.LineRepository;
@@ -91,10 +91,10 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .then().log().all().
                 extract();
 
-        List<LineInPathDto> pathDtos = List.of(
-                LineInPathDto.from(new LineInPath(LINEA.getId(), LINEA.getName(), List.of(STATION_A, STATION_B))),
-                LineInPathDto.from(new LineInPath(LINEB.getId(), LINEB.getName(), List.of(STATION_B, STATION_E, STATION_C))),
-                LineInPathDto.from(new LineInPath(LINEC.getId(), LINEC.getName(), List.of(STATION_C, STATION_F))
+        List<RouteDto> pathDtos = List.of(
+                RouteDto.from(new Route(LINEA.getId(), LINEA.getName(), List.of(STATION_A, STATION_B))),
+                RouteDto.from(new Route(LINEB.getId(), LINEB.getName(), List.of(STATION_B, STATION_E, STATION_C))),
+                RouteDto.from(new Route(LINEC.getId(), LINEC.getName(), List.of(STATION_C, STATION_F))
                 ));
         FindShortestRouteResponse expectedResponse = new FindShortestRouteResponse(pathDtos, 9.0, 1750.0);
 

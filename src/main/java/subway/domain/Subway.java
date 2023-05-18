@@ -37,44 +37,39 @@ public class Subway {
         DijkstraShortestPath<Station, WeightedEdgeWithLine> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, WeightedEdgeWithLine> shortestRoute = dijkstraShortestPath.getPath(startStation, endStation);
 
+        List<Route> routes = getRoutes(shortestRoute.getEdgeList());
         double totalDistance = shortestRoute.getWeight();
         Charge totalCharge = chargeBooth.calculateCharge(passengerAge, shortestRoute);
 
-        List<WeightedEdgeWithLine> edges = shortestRoute.getEdgeList();
+        return new Path(routes, totalDistance, totalCharge);
+    }
 
-        // a-b-e-c
-        // a-b
-        // b-e-c
-        List<LineInPath> lines = new ArrayList<>();
+    private List<Route> getRoutes(List<WeightedEdgeWithLine> edges) {
+        List<Route> lines = new ArrayList<>();
         List<Station> stationsInSameLine = new ArrayList<>();
 
-        for (int i = 0; i <= edges.size(); i++) {
-            if (i==edges.size()) {
-                stationsInSameLine.add(edges.get(i-1).getTarget());
-                Line line = edges.get(i - 1).getLine();
-                lines.add(new LineInPath(line.getId(), line.getName(), stationsInSameLine));
-                continue;
+        for (WeightedEdgeWithLine edge : edges) {
+            Station currentSource = edge.getSource();
+            Station currentTarget = edge.getTarget();
+            if (stationsInSameLine.isEmpty()) {
+                stationsInSameLine.add(currentSource);
             }
-            if (i==0) {
-                stationsInSameLine.add(edges.get(i).getSource());
-            } else {
-                WeightedEdgeWithLine before = edges.get(i-1);
-                WeightedEdgeWithLine after = edges.get(i);
-                Line beforLine = before.getLine();
-                Line afterLine = after.getLine();
-                if (beforLine.equals(afterLine)) {
-                    // 같으면
-                    stationsInSameLine.add(edges.get(i).getSource());
-                } else {
-                    // 다르면
-                    stationsInSameLine.add(edges.get(i - 1).getTarget());
-                    lines.add(new LineInPath(before.getLine().getId(), before.getLine().getName(), stationsInSameLine));
-                    stationsInSameLine = new ArrayList<>();
-                    stationsInSameLine.add(edges.get(i - 1).getTarget());
-                }
+            stationsInSameLine.add(currentTarget);
+            if (!hasSameLineAsNextEdge(edge, edges)) {
+                Line currentLine = edge.getLine();
+                lines.add(new Route(currentLine.getId(), currentLine.getName(), new ArrayList<>(stationsInSameLine)));
+                stationsInSameLine.clear();
             }
         }
+        return lines;
+    }
 
-        return new Path(lines, totalDistance, totalCharge);
+    private boolean hasSameLineAsNextEdge(WeightedEdgeWithLine currentEdge, List<WeightedEdgeWithLine> edges) {
+        int currentIndex = edges.indexOf(currentEdge);
+        if (currentIndex < edges.size() - 1) {
+            WeightedEdgeWithLine nextEdge = edges.get(currentIndex + 1);
+            return currentEdge.getLine().equals(nextEdge.getLine());
+        }
+        return false;
     }
 }
