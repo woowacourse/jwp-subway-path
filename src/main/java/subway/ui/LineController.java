@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,12 +41,6 @@ public class LineController {
     @GetMapping("/lines/{id}")
     public ResponseEntity<GetLineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineById(id));
-    }
-
-    @PutMapping("/lines/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody @Valid LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/lines/{id}")

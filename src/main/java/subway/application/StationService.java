@@ -37,12 +37,4 @@ public class StationService {
             .map(StationResponse::of)
             .collect(Collectors.toList());
     }
-
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
-    }
-
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
-    }
 }

@@ -70,10 +70,6 @@ public class LineService {
         return GetLineResponse.from(line, stations);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
     public void deleteLineById(Long id) {
         sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);

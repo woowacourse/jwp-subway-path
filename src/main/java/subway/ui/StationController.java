@@ -1,16 +1,20 @@
 package subway.ui;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import subway.ui.dto.StationRequest;
-import subway.ui.dto.StationResponse;
-import subway.application.StationService;
-
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import subway.application.StationService;
+import subway.ui.dto.StationRequest;
+import subway.ui.dto.StationResponse;
 
 @RestController
 public class StationController {
@@ -35,22 +39,5 @@ public class StationController {
     @GetMapping("/stations/{id}")
     public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
         return ResponseEntity.ok().body(stationService.findStationResponseById(id));
-    }
-
-    @PutMapping("/stations/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody @Valid StationRequest stationRequest) {
-        stationService.updateStation(id, stationRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/stations/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
-        stationService.deleteStationById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }
