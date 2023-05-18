@@ -83,8 +83,12 @@ class LineDaoTest {
     void findById(Long findId) {
         Optional<LineEntity> findLine = lineDao.findById(findId);
         int findIndex = (int) (findId - 1);
-        assertThat(findLine.get()).usingRecursiveComparison()
-                                  .isEqualTo(expectLines.get(findIndex));
+
+        assertAll(
+                () -> assertThat(findLine).isPresent(),
+                () -> assertThat(findLine.get()).usingRecursiveComparison()
+                                                .isEqualTo(expectLines.get(findIndex))
+        );
     }
 
     @DisplayName("존재하지 않는 아이디를 조회하면 빈 값을 반환한다")
@@ -102,7 +106,7 @@ class LineDaoTest {
         Optional<LineEntity> findLine = lineDao.findByName(name);
 
         assertAll(
-                () -> assertThat(findLine.get()).isNotNull(),
+                () -> assertThat(findLine).isPresent(),
                 () -> assertThat(findLine.get().getName()).isEqualTo(name)
         );
     }
@@ -125,7 +129,7 @@ class LineDaoTest {
         Optional<LineEntity> findLine = lineDao.findByColor(color);
 
         assertAll(
-                () -> assertThat(findLine.get()).isNotNull(),
+                () -> assertThat(findLine).isPresent(),
                 () -> assertThat(findLine.get().getColor()).isEqualTo(color)
         );
     }
