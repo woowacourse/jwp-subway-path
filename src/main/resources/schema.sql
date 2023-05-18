@@ -1,14 +1,29 @@
-create table if not exists STATION
+CREATE TABLE IF NOT EXISTS LINE
 (
-    id bigint auto_increment not null,
-    name varchar(255) not null unique,
-    primary key(id)
+    id    BIGINT AUTO_INCREMENT NOT NULL,
+    name  VARCHAR(255)          NOT NULL,
+    color VARCHAR(20)           NOT NULL,
+    PRIMARY KEY (id)
 );
 
-create table if not exists LINE
+CREATE TABLE IF NOT EXISTS STATION
 (
-    id bigint auto_increment not null,
-    name varchar(255) not null unique,
-    color varchar(20) not null,
-    primary key(id)
+    id      BIGINT AUTO_INCREMENT NOT NULL,
+    name    VARCHAR(255)          NOT NULL,
+    line_id BIGINT                NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS SECTION
+(
+    id               BIGINT AUTO_INCREMENT NOT NULL,
+    start_station_id BIGINT                NOT NULL,
+    end_station_id   BIGINT                NOT NULL,
+    distance         INT                   NOT NULL,
+    line_id          BIGINT                NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (start_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
+    FOREIGN KEY (end_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
+    FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
 );
