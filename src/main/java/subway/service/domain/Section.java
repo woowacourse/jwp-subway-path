@@ -2,7 +2,7 @@ package subway.service.domain;
 
 public class Section {
 
-    private long id;
+    private Long id;
     private final Station previousStation;
     private final Station nextStation;
     private final Distance distance;
@@ -38,7 +38,7 @@ public class Section {
         return nextStation.equals(station);
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -49,7 +49,7 @@ class StationConverterTest {
 
         StationEntity stationEntity = StationConverter.domainToEntity(station);
 
-        assertThat(stationEntity.getId()).isZero();
+        assertThat(stationEntity.getId()).isNull();
         assertThat(stationEntity.getName()).isEqualTo("existsId");
     }
 

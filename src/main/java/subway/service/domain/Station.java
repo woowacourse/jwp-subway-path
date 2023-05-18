@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Station {
 
-    private long id;
+    private Long id;
     private final String name;
 
     public Station(final String name) {
@@ -16,7 +16,7 @@ public class Station {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
