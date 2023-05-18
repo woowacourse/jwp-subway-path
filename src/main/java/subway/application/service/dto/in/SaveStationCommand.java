@@ -1,7 +1,6 @@
-package subway.application.service.command.in;
+package subway.application.service.dto.in;
 
 import subway.application.domain.Station;
-import subway.application.service.command.SelfValidating;
 
 import javax.validation.constraints.NotEmpty;
 

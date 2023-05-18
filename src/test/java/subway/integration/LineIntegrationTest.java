@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.presentation.dto.LineRequest;
-import subway.presentation.dto.LineResponse;
+import subway.presentation.dto.LinePropertyResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,8 +105,8 @@ public class LineIntegrationTest extends IntegrationTest {
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", LinePropertyResponse.class).stream()
+                .map(LinePropertyResponse::getId)
                 .collect(Collectors.toList());
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
@@ -134,7 +134,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
+        LinePropertyResponse resultResponse = response.as(LinePropertyResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineId);
     }
 

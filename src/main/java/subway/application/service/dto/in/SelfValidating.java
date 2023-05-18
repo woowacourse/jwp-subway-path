@@ -1,4 +1,4 @@
-package subway.application.service.command;
+package subway.application.service.dto.in;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;

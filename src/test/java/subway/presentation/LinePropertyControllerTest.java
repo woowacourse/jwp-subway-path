@@ -9,9 +9,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.service.LinePropertyService;
+import subway.application.service.dto.out.LinePropertyResult;
 import subway.presentation.controller.LinePropertyController;
 import subway.presentation.dto.LineRequest;
-import subway.presentation.dto.LineResponse;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,10 +40,10 @@ public class LinePropertyControllerTest {
     void createLine() throws Exception {
         // given
         LineRequest lineRequest = new LineRequest("1호선", "파랑");
-        LineResponse lineResponse = new LineResponse(1L, "1호선", "파랑");
+        LinePropertyResult linePropertyResult = new LinePropertyResult(1L, "1호선", "파랑");
 
         String body = objectMapper.writeValueAsString(lineRequest);
-        when(linePropertyService.saveLineProperty(any())).thenReturn(lineResponse);
+        when(linePropertyService.saveLineProperty(any())).thenReturn(linePropertyResult);
 
         // when
         mockMvc.perform(post("/lines")
@@ -60,12 +61,12 @@ public class LinePropertyControllerTest {
     @DisplayName("/lines 로 GET 요청을 보낼 시, 모든 노선을 응답한다")
     void findAllLines() throws Exception {
         // given
-        List<LineResponse> lineResponses = List.of(
-                new LineResponse(1L, "1호선", "파랑"),
-                new LineResponse(2L, "2호선", "초록")
+        List<LinePropertyResult> linePropertyResults = List.of(
+                new LinePropertyResult(1L, "1호선", "파랑"),
+                new LinePropertyResult(2L, "2호선", "초록")
         );
 
-        when(linePropertyService.findLinePropertyResponses()).thenReturn(lineResponses);
+        when(linePropertyService.findLinePropertyResponses()).thenReturn(linePropertyResults);
 
         // when
         mockMvc.perform(get("/lines"))
@@ -82,9 +83,9 @@ public class LinePropertyControllerTest {
     @DisplayName("/lines/{id} 로 GET 요청을 보낼 시, 특정 노선을 응답한다")
     void findLineById() throws Exception {
         // given
-        LineResponse lineResponse = new LineResponse(1L, "1호선", "파랑");
+        LinePropertyResult linePropertyResult = new LinePropertyResult(1L, "1호선", "파랑");
 
-        when(linePropertyService.findLinePropertyResponseById(any())).thenReturn(lineResponse);
+        when(linePropertyService.findLinePropertyResponseById(any())).thenReturn(linePropertyResult);
 
         // when
         mockMvc.perform(get("/lines/{id}", 1L))
@@ -106,7 +107,7 @@ public class LinePropertyControllerTest {
         doNothing().when(linePropertyService).updateLineProperty(any());
 
         // when
-        mockMvc.perform(get("/lines/{id}", 1L)
+        mockMvc.perform(put("/lines/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
 

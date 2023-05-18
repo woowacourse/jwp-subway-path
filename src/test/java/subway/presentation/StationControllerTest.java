@@ -9,9 +9,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.service.StationService;
+import subway.application.service.dto.out.StationResult;
 import subway.presentation.controller.StationController;
 import subway.presentation.dto.StationRequest;
-import subway.presentation.dto.StationResponse;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,10 +41,10 @@ public class StationControllerTest {
     void createStation() throws Exception {
         // given
         StationRequest stationRequest = new StationRequest("잠실역");
-        StationResponse stationResponse = new StationResponse(1L, "잠실역");
+        StationResult stationResult = new StationResult(1L, "잠실역");
 
         String body = objectMapper.writeValueAsString(stationRequest);
-        when(stationService.saveStation(any())).thenReturn(stationResponse);
+        when(stationService.saveStation(any())).thenReturn(stationResult);
 
         // when
         mockMvc.perform(post("/stations")
@@ -60,12 +61,12 @@ public class StationControllerTest {
     @DisplayName("/stations 로 GET 요청을 보낼 시, 모든 역을 응답한다")
     void showStations() throws Exception {
         // given
-        List<StationResponse> stationResponses = List.of(
-                new StationResponse(1L, "잠실역"),
-                new StationResponse(2L, "방배역")
+        List<StationResult> stationResults = List.of(
+                new StationResult(1L, "잠실역"),
+                new StationResult(2L, "방배역")
         );
 
-        when(stationService.findAllStationResponses()).thenReturn(stationResponses);
+        when(stationService.findAllStationResponses()).thenReturn(stationResults);
 
         // when
         mockMvc.perform(get("/stations"))
@@ -81,8 +82,8 @@ public class StationControllerTest {
     @DisplayName("/stations/{id} 로 GET 요청을 보낼 시, 특정 역을 응답한다")
     void showStation() throws Exception {
         // given
-        StationResponse stationResponse = new StationResponse(1L, "잠실역");
-        when(stationService.findStationResponseById(any())).thenReturn(stationResponse);
+        StationResult stationResult = new StationResult(1L, "잠실역");
+        when(stationService.findStationResponseById(any())).thenReturn(stationResult);
 
         // when
         mockMvc.perform(get("/stations/{id}", 1L))
@@ -103,7 +104,7 @@ public class StationControllerTest {
         doNothing().when(stationService).updateStation(any());
 
         // when
-        mockMvc.perform(get("/stations/{id}", 1L)
+        mockMvc.perform(put("/stations/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
 

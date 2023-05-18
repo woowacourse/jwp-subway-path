@@ -2,20 +2,20 @@ package subway.presentation.dto;
 
 import subway.application.domain.LineProperty;
 
-public class LineResponse {
+public class LinePropertyResponse {
 
     private Long id;
     private String name;
     private String color;
 
-    public LineResponse(Long id, String name, String color) {
+    public LinePropertyResponse(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
 
-    public static LineResponse of(LineProperty line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+    public static LinePropertyResponse of(LineProperty line) {
+        return new LinePropertyResponse(line.getId(), line.getName(), line.getColor());
     }
 
     public Long getId() {

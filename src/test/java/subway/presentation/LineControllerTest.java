@@ -3,16 +3,15 @@ package subway.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.service.LineService;
+import subway.application.service.dto.out.StationResult;
 import subway.presentation.controller.LineController;
 import subway.presentation.dto.StationEnrollRequest;
-import subway.presentation.dto.StationResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -75,8 +74,8 @@ class LineControllerTest {
     void getRouteMap() throws Exception {
         // given
         when(lineService.findRouteMap(any())).thenReturn(List.of(
-                new StationResponse(1L, "잠실역"),
-                new StationResponse(2L, "방배역")
+                new StationResult(1L, "잠실역"),
+                new StationResult(2L, "방배역")
         ));
         Integer lineId = 1;
 
@@ -95,11 +94,11 @@ class LineControllerTest {
         // given
         when(lineService.findAllRouteMap()).thenReturn(Map.of(
                 "1호선", List.of(
-                        new StationResponse(1L, "수원역"),
-                        new StationResponse(2L, "세류역")),
+                        new StationResult(1L, "수원역"),
+                        new StationResult(2L, "세류역")),
                 "2호선", List.of(
-                        new StationResponse(3L, "잠실역"),
-                        new StationResponse(4L, "방배역")
+                        new StationResult(3L, "잠실역"),
+                        new StationResult(4L, "방배역")
                 )
         ));
 

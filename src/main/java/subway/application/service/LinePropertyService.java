@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.domain.LineProperty;
 import subway.application.repository.LinePropertyRepository;
-import subway.application.service.command.in.IdCommand;
-import subway.application.service.command.in.SaveLinePropertyCommand;
-import subway.application.service.command.in.UpdateLinePropertyCommand;
-import subway.presentation.dto.LineResponse;
+import subway.application.service.dto.in.IdCommand;
+import subway.application.service.dto.in.SaveLinePropertyCommand;
+import subway.application.service.dto.in.UpdateLinePropertyCommand;
+import subway.application.service.dto.out.LinePropertyResult;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,25 +22,22 @@ public class LinePropertyService {
         this.linePropertyRepository = linePropertyRepository;
     }
 
-    public LineResponse saveLineProperty(SaveLinePropertyCommand command) {
+    public LinePropertyResult saveLineProperty(SaveLinePropertyCommand command) {
         LineProperty lineProperty = linePropertyRepository.insert(command.toEntity());
-        return LineResponse.of(lineProperty);
+        return new LinePropertyResult(lineProperty);
     }
 
-    public List<LineResponse> findLinePropertyResponses() {
-        List<LineProperty> allLineProperties = findLineProperties();
+    public List<LinePropertyResult> findLinePropertyResponses() {
+        List<LineProperty> allLineProperties = linePropertyRepository.findAll();
         return allLineProperties.stream()
-                .map(LineResponse::of)
+                .map(lineProperty -> new LinePropertyResult(lineProperty.getId(),
+                        lineProperty.getName(), lineProperty.getColor()))
                 .collect(Collectors.toList());
     }
 
-    public List<LineProperty> findLineProperties() {
-        return linePropertyRepository.findAll();
-    }
-
-    public LineResponse findLinePropertyResponseById(IdCommand command) {
+    public LinePropertyResult findLinePropertyResponseById(IdCommand command) {
         LineProperty lineProperty = linePropertyRepository.findById(command.getId());
-        return LineResponse.of(lineProperty);
+        return new LinePropertyResult(lineProperty);
     }
 
     public void updateLineProperty(UpdateLinePropertyCommand command) {

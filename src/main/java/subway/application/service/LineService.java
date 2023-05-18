@@ -7,10 +7,10 @@ import subway.application.domain.Line;
 import subway.application.domain.Section;
 import subway.application.repository.LineRepository;
 import subway.application.repository.StationRepository;
-import subway.application.service.command.in.DeleteStationCommand;
-import subway.application.service.command.in.EnrollStationCommand;
-import subway.application.service.command.in.IdCommand;
-import subway.presentation.dto.StationResponse;
+import subway.application.service.dto.in.DeleteStationCommand;
+import subway.application.service.dto.in.EnrollStationCommand;
+import subway.application.service.dto.in.IdCommand;
+import subway.application.service.dto.out.StationResult;
 
 import java.util.List;
 import java.util.Map;
@@ -45,20 +45,20 @@ public class LineService {
         lineRepository.insert(line);
     }
 
-    public List<StationResponse> findRouteMap(IdCommand command) {
+    public List<StationResult> findRouteMap(IdCommand command) {
         Line line = lineRepository.findById(command.getId());
-        return makeRouteMapResponseOf(line);
+        return makeStationResultsOf(line);
     }
 
-    public Map<String, List<StationResponse>> findAllRouteMap() {
+    public Map<String, List<StationResult>> findAllRouteMap() {
         List<Line> allLines = lineRepository.findAll();
         return allLines.stream()
-                .collect(Collectors.toMap(Line::getName, this::makeRouteMapResponseOf));
+                .collect(Collectors.toMap(Line::getName, this::makeStationResultsOf));
     }
 
-    private List<StationResponse> makeRouteMapResponseOf(Line line) {
+    private List<StationResult> makeStationResultsOf(Line line) {
         return line.routeMap().value().stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(station -> new StationResult(station.getId(), station.getName()))
                 .collect(Collectors.toList());
     }
 }

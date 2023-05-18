@@ -4,11 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.domain.Station;
 import subway.application.repository.StationRepository;
-import subway.application.service.command.in.IdCommand;
-import subway.application.service.command.in.SaveStationCommand;
-import subway.application.service.command.in.UpdateStationCommand;
-import subway.presentation.dto.StationRequest;
-import subway.presentation.dto.StationResponse;
+import subway.application.service.dto.in.IdCommand;
+import subway.application.service.dto.in.SaveStationCommand;
+import subway.application.service.dto.in.UpdateStationCommand;
+import subway.application.service.dto.out.StationResult;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,20 +22,20 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(SaveStationCommand command) {
+    public StationResult saveStation(SaveStationCommand command) {
         Station station = stationRepository.insert(command.toEntity());
-        return StationResponse.of(station);
+        return new StationResult(station);
     }
 
-    public StationResponse findStationResponseById(IdCommand command) {
-        return StationResponse.of(stationRepository.findById(command.getId()));
+    public StationResult findStationResponseById(IdCommand command) {
+        return new StationResult(stationRepository.findById(command.getId()));
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResult> findAllStationResponses() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
+                .map(station -> new StationResult(station.getId(), station.getName()))
                 .collect(Collectors.toList());
     }
 
