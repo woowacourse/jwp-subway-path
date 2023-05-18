@@ -9,6 +9,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -31,6 +32,12 @@ public class ApiExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleBusinessException(BusinessException e) {
         return ResponseEntity.badRequest()
                 .body(ExceptionResponse.of(e));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ExceptionResponse> handleMissingRequestParameter(MissingServletRequestParameterException e) {
+        return ResponseEntity.badRequest()
+                .body(ExceptionResponse.of("쿼리스트링 '" + e.getParameterName() + "'이 없거나 잘못됐습니다"));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
