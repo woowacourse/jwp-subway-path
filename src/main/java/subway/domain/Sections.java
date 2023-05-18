@@ -14,6 +14,10 @@ public class Sections {
 		this.sections = sections;
 	}
 
+	private static long addDistance(final Section section0, final Section section1) {
+		return section0.getDistance() + section1.getDistance();
+	}
+
 	public void addSection(final Section newSection) {
 		if (sections.isEmpty()) {
 			sections.add(newSection);
@@ -34,7 +38,7 @@ public class Sections {
 		Section originSection = getOriginSection(newSection);
 		sections.remove(originSection);
 
-		if (validateDistance(originSection,newSection)) {
+		if (validateDistance(originSection, newSection)) {
 			throw new IllegalArgumentException("새로운 역을 등록할 경우 기존 역 사이 길이보다 크거나 같을 수 없습니다.");
 		}
 
@@ -46,7 +50,6 @@ public class Sections {
 	private boolean validateDistance(final Section originSection, final Section newSection) {
 		return originSection.getDistance() <= newSection.getDistance();
 	}
-
 
 	private Station findUpEndPoint() {
 		List<Station> upStations = new ArrayList<>();
@@ -147,26 +150,39 @@ public class Sections {
 	public Map<Line, List<Section>> deleteAndMerge(final Station station, final List<Section> sectionsContainStation) {
 		final Map<Line, List<Section>> sectionByLine = distributeByLine(sectionsContainStation);
 		for (Line line : sectionByLine.keySet()) {
+
 			final List<Section> sectionInLine = sectionByLine.get(line);
 			sections.removeAll(sectionInLine);
-			if(sectionInLine.get(0).getDownStation().equals(station) && sectionInLine.get(1).getUpStation().equals(station)){
-				final Section section = new Section(line, sectionInLine.get(0).getUpStation(),
-					sectionInLine.get(1).getDownStation(),
-					sectionInLine.get(0).getDistance() + sectionInLine.get(1).getDistance());
-				sections.add(section);
-			}
-			if(sectionInLine.get(0).getUpStation().equals(station) && sectionInLine.get(1).getDownStation().equals(station)){
-				final Section section = new Section(line, sectionInLine.get(1).getUpStation(),
-					sectionInLine.get(0).getDownStation(),
-					sectionInLine.get(0).getDistance() + sectionInLine.get(1).getDistance());
-				sections.add(section);
-			}
+
+			final Section firstSection = sectionInLine.get(0);
+			final Section secondSection = sectionInLine.get(1);
+
+			addIfDownSame(firstSection, secondSection, station, line);
+			addIfDownSame(secondSection, firstSection, station, line );
 		}
+
 		return distributeByLine(sections);
 	}
 
-	private Map<Line, List<Section>> distributeByLine(final List<Section> sectionsContainStation){
+	private Map<Line, List<Section>> distributeByLine(final List<Section> sectionsContainStation) {
 		return sectionsContainStation.stream()
 			.collect(Collectors.groupingBy(Section::getLine));
+	}
+
+	private void addIfDownSame(final Section section, final Section nextSection, final Station station, final Line line) {
+		if (isSameDownUp(section, nextSection, station)) {
+			final Section mergedSection = mergeSection(section, nextSection, line);
+			sections.add(mergedSection);
+		}
+	}
+
+	private boolean isSameDownUp(final Section section, final Section nextSection, final Station station) {
+		return section.getDownStation().equals(station) && nextSection.getUpStation().equals(station);
+	}
+
+	private Section mergeSection(final Section section, final Section nextSection,
+		final Line line) {
+		return new Section(line, section.getUpStation(),
+			nextSection.getDownStation(), addDistance(section, nextSection));
 	}
 }
