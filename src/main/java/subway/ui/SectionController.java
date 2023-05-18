@@ -4,11 +4,9 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,13 +24,13 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @PostMapping("/lines/{lineId}")
+    @PatchMapping("/lines/{lineId}/register")
     public ResponseEntity<Void> createSection(@PathVariable Long lineId, @RequestBody @Valid PostSectionRequest postSectionRequest) {
         SectionResponse sectionResponse = sectionService.saveSection(lineId, postSectionRequest);
         return ResponseEntity.created(URI.create("/sections/" + sectionResponse.getId())).build();
     }
 
-    @DeleteMapping(path = "/lines/{lineId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/lines/{lineId}/unregister")
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestBody @Valid DeleteSectionRequest deleteSectionRequest) {
         sectionService.deleteSection(lineId, deleteSectionRequest);
         return ResponseEntity.noContent().build();

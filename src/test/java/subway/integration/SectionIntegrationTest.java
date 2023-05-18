@@ -51,7 +51,6 @@ public class SectionIntegrationTest {
     private Station persistCheonho;
     private Station persistJamsil;
     private Line persistLine8;
-    private Section jamsilJangji10;
 
     @BeforeEach
     public void setUp() {
@@ -62,7 +61,7 @@ public class SectionIntegrationTest {
         Station persistJangji = stationDao.insert(jangji);
         persistLine8 = lineDao.insert(new Line("8호선", "pink"));
         sectionDao.insert(new Section(persistCheonho, persistJamsil, persistLine8, 10));
-        jamsilJangji10 = sectionDao.insert(new Section(persistJamsil, persistJangji, persistLine8, 10));
+        sectionDao.insert(new Section(persistJamsil, persistJangji, persistLine8, 10));
     }
 
     @Test
@@ -78,7 +77,7 @@ public class SectionIntegrationTest {
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(postSectionRequest)
-            .when().post("/lines/" + persistLine8.getId())
+            .when().patch("/lines/" + persistLine8.getId() + "/register")
             .then()
             .extract();
 
@@ -101,7 +100,7 @@ public class SectionIntegrationTest {
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/lines/" + persistLine8.getId())
+            .when().patch("/lines/" + persistLine8.getId() + "/unregister")
             .then()
             .extract();
 
@@ -126,7 +125,7 @@ public class SectionIntegrationTest {
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/lines/" + persistLine8.getId())
+            .when().patch("/lines/" + persistLine8.getId() + "/unregister")
             .then()
             .extract();
 
@@ -141,7 +140,7 @@ public class SectionIntegrationTest {
     }
 
     @Test
-    void 환승역을_특정_노선에서_제거한다() {
+    void 환승_역을_특정_노선에서_제거한다() {
         // given
         //            건대
         //            |
@@ -166,7 +165,7 @@ public class SectionIntegrationTest {
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/lines/" + persistLine8.getId())
+            .when().patch("/lines/" + persistLine8.getId() + "/unregister")
             .then()
             .extract();
 
@@ -195,7 +194,7 @@ public class SectionIntegrationTest {
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/lines/" + wrongLineId)
+            .when().patch("/lines/" + wrongLineId + "/unregister")
             .then()
             .extract();
 
@@ -210,7 +209,7 @@ public class SectionIntegrationTest {
     }
 
     @Test
-    void 등록된_노선에_등록되지_않은_역을_삭제하면_예외가_발생한다() {
+    void 등록된_노선에_속하지_않은_역을_삭제하면_예외가_발생한다() {
         // given
         // 장지 - 10 - 잠실 - 10 - 천호
         long wrongStationId = 999L;
@@ -221,7 +220,7 @@ public class SectionIntegrationTest {
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
-            .when().delete("/lines/" + persistLine8.getId())
+            .when().patch("/lines/" + persistLine8.getId() + "/unregister")
             .then()
             .extract();
 

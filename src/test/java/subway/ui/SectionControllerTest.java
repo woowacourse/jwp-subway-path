@@ -40,7 +40,7 @@ class SectionControllerTest {
         given(sectionService.saveSection(any(Long.class), any(PostSectionRequest.class))).willReturn(response);
 
         // when & then
-        mockMvc.perform(post("/lines/" + 1L)
+        mockMvc.perform(patch("/lines/" + 1L + "/register")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequest))
             .andExpect(status().isCreated())
@@ -54,7 +54,7 @@ class SectionControllerTest {
         String jsonRequest = new ObjectMapper().writeValueAsString(request);
 
         // when & then
-        mockMvc.perform(delete("/lines/" + 1L)
+        mockMvc.perform(patch("/lines/" + 1L + "/unregister")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequest))
             .andExpect(status().isNoContent());
