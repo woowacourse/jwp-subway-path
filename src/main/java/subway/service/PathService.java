@@ -1,8 +1,7 @@
 package subway.service;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
-import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Station;
 import subway.domain.fee.FeeInformation;
 import subway.domain.fee.FeePolicy;
@@ -39,7 +38,7 @@ public class PathService {
                 .orElseThrow(() -> new NotFoundStationException(request.getStartStation()));
         final Station endStation = stationRepository.findByName(request.getEndStation())
                 .orElseThrow(() -> new NotFoundStationException(request.getEndStation()));
-        final List<Line> lines = lineRepository.findAll();
+        final Lines lines = lineRepository.findAll();
         final Path path = pathFinder.findShortestPath(startStation, endStation, lines);
         final int fee = feePolicy.calculate(new FeeInformation(path.getTotalDistance()));
 

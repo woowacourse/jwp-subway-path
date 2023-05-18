@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static subway.domain.fixture.SectionFixtures.createSection;
 import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
+import static subway.domain.fixture.StationFixture.사당역;
+import static subway.domain.fixture.StationFixture.잠실새내역;
+import static subway.domain.fixture.StationFixture.잠실역;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -258,5 +261,25 @@ class SectionsTest {
             // then
             assertThat(sections.getSections()).isEmpty();
         }
+    }
+
+    @Test
+    void 섹션을_포함하고_있으면_true() {
+        // given
+        Sections sections = new Sections(List.of(new Section(잠실역, 사당역, 10)));
+        Section sameSection = new Section(잠실역, 사당역, 10);
+
+        // when & then
+        assertThat(sections.contains(sameSection)).isTrue();
+    }
+
+    @Test
+    void 섹션을_포함하고_있지않으면_false() {
+        // given
+        Sections sections = new Sections(List.of(new Section(잠실역, 사당역, 10)));
+        Section sameSection = new Section(잠실새내역, 사당역, 10);
+
+        // when & then
+        assertThat(sections.contains(sameSection)).isFalse();
     }
 }

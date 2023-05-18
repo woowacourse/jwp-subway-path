@@ -19,6 +19,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.fee.FeePolicy;
@@ -51,7 +52,7 @@ class PathServiceTest {
                         new Section(종합운동장역, 잠실새내역, 3),
                         new Section(잠실새내역, 잠실역, 4)
                 ));
-        List<Line> lines = List.of(new Line("2호선", sections));
+        Lines lines = new Lines(List.of(new Line("2호선", sections)));
         given(stationRepository.findByName("삼성역"))
                 .willReturn(Optional.of(삼성역));
         given(stationRepository.findByName("잠실역"))

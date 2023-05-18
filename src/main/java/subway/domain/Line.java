@@ -38,6 +38,10 @@ public class Line {
         sections.removeStation(station);
     }
 
+    public boolean containSection(final Section section) {
+        return sections.contains(section);
+    }
+
     public Long getId() {
         return id;
     }

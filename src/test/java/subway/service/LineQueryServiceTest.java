@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Sections;
 import subway.dto.response.LineQueryResponse;
 import subway.exception.NotFoundLineException;
@@ -76,7 +77,7 @@ class LineQueryServiceTest {
         final Line line2 = new Line("2호선", sections2);
 
         given(lineRepository.findAll())
-                .willReturn(List.of(line1, line2));
+                .willReturn(new Lines(List.of(line1, line2)));
 
         // when
         final List<LineQueryResponse> responses = lineQueryService.findAll();

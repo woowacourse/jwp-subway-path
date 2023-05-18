@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.Objects;
 import subway.exception.ArgumentNotValidException;
 import subway.exception.LineStationAddException;
 
@@ -66,5 +67,23 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Section section = (Section) o;
+        return distance == section.distance && Objects.equals(up, section.up) && Objects.equals(down,
+                section.down);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(up, down, distance);
     }
 }
