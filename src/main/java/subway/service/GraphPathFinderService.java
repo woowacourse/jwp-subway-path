@@ -16,6 +16,7 @@ import subway.domain.PathSegment;
 import subway.domain.Path;
 import subway.domain.Station;
 import subway.domain.StationEdge;
+import subway.dto.service.WeightedLineEdge;
 import subway.exception.PathNotExistsException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -29,25 +30,6 @@ public class GraphPathFinderService implements PathFinderService {
     public GraphPathFinderService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-    }
-
-    class WeightedLineEdge {
-
-        private final StationEdge stationEdge;
-        private final Long lineId;
-
-        public WeightedLineEdge(StationEdge stationEdge, Long lineId) {
-            this.stationEdge = stationEdge;
-            this.lineId = lineId;
-        }
-
-        public int getWeight() {
-            return stationEdge.getDistance().getValue();
-        }
-
-        public Long getLineId() {
-            return lineId;
-        }
     }
 
     @Override
@@ -100,7 +82,7 @@ public class GraphPathFinderService implements PathFinderService {
 
     private PathSegment toLineSegment(Entry<Long, List<WeightedLineEdge>> entry) {
         List<StationEdge> stationEdges = entry.getValue().stream()
-                .map(it -> it.stationEdge)
+                .map(it -> it.getStationEdge())
                 .collect(Collectors.toList());
 
         return new PathSegment(entry.getKey(), stationEdges);
