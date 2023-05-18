@@ -1,14 +1,8 @@
 package subway.ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import subway.application.SectionService;
 import subway.dto.SectionRequest;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -21,17 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SuppressWarnings("NonAsciiCharacters")
-@WebMvcTest(SectionController.class)
-public class SectionControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private SectionService sectionService;
+public class SectionControllerTest extends DocumentationSteps {
 
     @Test
     void 구간을_등록한다() throws Exception {
@@ -47,7 +31,8 @@ public class SectionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated())
-                .andExpect(header().string(HttpHeaders.LOCATION, "/lines/1/sections/1"));
+                .andExpect(header().string(HttpHeaders.LOCATION, "/lines/1/sections/1"))
+                .andDo(document("lines/sections/save"));
     }
 
     @Test
@@ -60,6 +45,7 @@ public class SectionControllerTest {
 
         // when, then
         mockMvc.perform(delete("/lines/{lineId}/stations/{stationId}", lineId, stationId))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andDo(document("lines/sections/delete"));
     }
 }

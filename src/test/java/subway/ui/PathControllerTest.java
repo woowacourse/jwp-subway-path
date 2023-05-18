@@ -1,12 +1,6 @@
 package subway.ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
-import subway.application.path.PathService;
 import subway.domain.Distance;
 import subway.domain.Fare;
 import subway.domain.ShortestPath;
@@ -21,23 +15,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SuppressWarnings("NonAsciiCharacters")
-@WebMvcTest(PathController.class)
-public class PathControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private PathService pathService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+public class PathControllerTest extends DocumentationSteps {
 
     @Test
     void 가장_짧은_경로를_찾는다() throws Exception {
         // given
         final Long start = 1L;
-        final Long end =4L;
+        final Long end = 4L;
 
         final List<Station> stations = List.of(
                 new Station(start, "잠실역"),
@@ -54,6 +38,7 @@ public class PathControllerTest {
                         .param("start", String.valueOf(start))
                         .param("end", String.valueOf(end)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(pathResponse)));
+                .andExpect(content().json(objectMapper.writeValueAsString(pathResponse)))
+                .andDo(document("paths"));
     }
 }

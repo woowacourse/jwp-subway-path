@@ -1,0 +1,72 @@
+= 노선 API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+
+
+== 노선 추가 API
+
+=== Request
+
+include::{snippets}/lines/save/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/lines/save/http-response.adoc[]
+
+
+== 노선 삭제 API
+
+=== Request
+
+include::{snippets}/lines/delete/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/lines/delete/http-response.adoc[]
+
+
+== 노선 단건 조회 API
+
+=== Request
+
+include::{snippets}/lines/findLineById/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/lines/findLineById/http-response.adoc[]
+
+
+== 노선 전체 조회 API
+
+=== Request
+
+include::{snippets}/lines/findAll/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/lines/findAll/http-response.adoc[]
+
+
+== 구간 추가 API
+
+=== Request
+
+include::{snippets}/lines/sections/save/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/lines/sections/save/http-response.adoc[]
+
+
+== 구간 추가 API
+
+=== Request
+
+include::{snippets}/lines/sections/delete/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/lines/sections/delete/http-response.adoc[]

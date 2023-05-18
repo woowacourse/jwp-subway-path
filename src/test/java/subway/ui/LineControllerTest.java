@@ -1,14 +1,8 @@
 package subway.ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
@@ -27,17 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SuppressWarnings("NonAsciiCharacters")
-@WebMvcTest(LineController.class)
-class LineControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private LineService lineService;
+class LineControllerTest extends DocumentationSteps {
 
     @Test
     void 노선을_저장한다() throws Exception {
@@ -51,7 +35,8 @@ class LineControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string(HttpHeaders.LOCATION, "/lines/1"));
+                .andExpect(header().string(HttpHeaders.LOCATION, "/lines/1"))
+                .andDo(document("lines/save"));
     }
 
     @Test
@@ -75,7 +60,8 @@ class LineControllerTest {
         // when, then
         mockMvc.perform(get("/lines"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(result)));
+                .andExpect(content().json(objectMapper.writeValueAsString(result)))
+                .andDo(document("lines/findAll"));
     }
 
     @Test
@@ -93,7 +79,8 @@ class LineControllerTest {
         // when, then
         mockMvc.perform(get("/lines/{lineId}", lineId))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(이호선_응답)));
+                .andExpect(content().json(objectMapper.writeValueAsString(이호선_응답)))
+                .andDo(document("lines/findLineById"));
     }
 
     @Test
@@ -105,6 +92,7 @@ class LineControllerTest {
 
         // when, then
         mockMvc.perform(delete("/lines/{lineId}", lineId))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andDo(document("lines/delete"));
     }
 }
