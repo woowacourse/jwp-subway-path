@@ -36,7 +36,7 @@ DELETE http://localhost:8080/lines/1
 
 
 ### 구간 등록
-POST http://localhost:8080/lines/1
+PATCH http://localhost:8080/lines/1/register
 Content-Type: application/json
 
 {
@@ -46,7 +46,7 @@ Content-Type: application/json
 }
 
 ### 구간 삭제
-DELETE http://localhost:8080/lines/1
+PATCH http://localhost:8080/lines/1/unregister
 Content-Type: application/json
 
 {
