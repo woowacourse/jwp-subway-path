@@ -1,44 +1,29 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.dao.StationEntity;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import subway.repository.StationRepository;
 
 @Service
 public class StationService {
-    private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    private final StationRepository stationRepository;
+
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public StationResponse saveStation(final StationRequest stationRequest) {
+        final StationEntity stationEntity = new StationEntity(stationRequest.getName());
+        validateDuplication(stationEntity);
+        return StationResponse.of(stationRepository.save(stationEntity));
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
-    }
-
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
-    }
-
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    private void validateDuplication(final StationEntity stationEntity) {
+        if (stationRepository.contains(stationEntity)) {
+            throw new IllegalArgumentException("이미 존재하는 역입니다.");
+        }
     }
 }
