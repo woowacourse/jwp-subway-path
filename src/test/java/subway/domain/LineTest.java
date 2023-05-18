@@ -2,8 +2,8 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.fixture.LineFixture.line2WithOneSection;
-import static subway.fixture.LineFixture.line2WithTwoSection;
+import static subway.fixture.Fixture.line2WithOneSection;
+import static subway.fixture.Fixture.line2WithTwoSection;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,8 +5,25 @@ import java.util.List;
 import subway.business.domain.Line;
 import subway.business.domain.Section;
 import subway.business.domain.Station;
+import subway.business.service.dto.LineSaveRequest;
+import subway.business.service.dto.StationAddToLineRequest;
 
-public class LineFixture {
+public class Fixture {
+
+    public static LineSaveRequest LINE_SAVE_REQUEST = new LineSaveRequest(
+            "2호선",
+            "잠실역",
+            "몽촌토성역",
+            5
+    );
+
+    public static StationAddToLineRequest STATION_ADD_TO_LINE_REQUEST = new StationAddToLineRequest(
+            "까치산역",
+            "몽촌토성역",
+            "하행",
+            5
+    );
+
     /**
      * @ID : 1L
      * @이름 : 2호선
