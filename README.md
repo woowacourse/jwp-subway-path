@@ -14,9 +14,10 @@
 | 생성    | POST   | /lines/{line_id}/sections              |
 | 삭제    | DELETE | /lines/{line_id}/sections/{station_id} |
 | 목록 조회 | GET    | /lines/{line_id}/sections              |
+| 경로 조회 | GET    | /paths/{station_id}/{station_id}}      |
 
 ### 환경
-- [ ] 프로덕션 db 로컬로 사용, 테스트 db는 인메모리로 사용
+- [x] 프로덕션 db 로컬로 사용, 테스트 db는 인메모리로 사용
 
 ## 기능 목록
 - [x] 노선에 역을 등록한다. 
