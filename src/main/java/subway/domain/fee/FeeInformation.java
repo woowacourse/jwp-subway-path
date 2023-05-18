@@ -1,18 +1,17 @@
 package subway.domain.fee;
 
-import java.util.List;
-import subway.domain.Line;
+import subway.domain.Lines;
 
 public class FeeInformation {
 
     private final int distance;
-    private List<Line> lines;
+    private Lines lines;
 
     public FeeInformation(int distance) {
         this.distance = distance;
     }
 
-    public FeeInformation(int distance, List<Line> lines) {
+    public FeeInformation(int distance, Lines lines) {
         this.distance = distance;
         this.lines = lines;
     }
@@ -21,7 +20,7 @@ public class FeeInformation {
         return distance;
     }
 
-    public List<Line> getLines() {
+    public Lines getLines() {
         return lines;
     }
 }

@@ -8,7 +8,6 @@ public class DistanceFeePolicy implements FeePolicy {
 
     private static final int DEFAULT_FEE_BOUNDARY = 10;
     private static final int FIRST_ADDITIONAL_FEE_BOUNDARY = 50;
-    private static final int DEFAULT_FEE = 1250;
     private static final int UNIT_OF_ADDITIONAL_FEE = 100;
     private static final double UNIT_OF_FIRST_ADDITIONAL_FEE_DISTANCE = 5d;
     private static final double UNIT_OF_SECOND_ADDITIONAL_FEE_DISTANCE = 8d;
@@ -18,10 +17,10 @@ public class DistanceFeePolicy implements FeePolicy {
         int distance = feeInformation.getDistance();
         validateDistance(distance);
         if (distance <= DEFAULT_FEE_BOUNDARY) {
-            return DEFAULT_FEE;
+            return 0;
         }
 
-        return DEFAULT_FEE + getAdditionalFee(distance);
+        return getAdditionalFee(distance);
     }
 
     private void validateDistance(final int distance) {

@@ -16,18 +16,16 @@ import org.junit.jupiter.params.provider.ValueSource;
 @DisplayName("DefaultFeePolicy 은(는)")
 class DistanceFeePolicyTest {
 
-    private static final int DEFAULT_FEE = 1250;
-
     private final DistanceFeePolicy distanceFeePolicy = new DistanceFeePolicy();
 
     @ParameterizedTest
     @ValueSource(ints = {1,5,8,10})
-    void 거리가_10km_이하면_기본요금만_반환한다(final int distance) {
+    void 거리가_10km_이하면_추가요금이_없다(final int distance) {
         // when
         final int actual = distanceFeePolicy.calculate(new FeeInformation(distance));
 
         // then
-        assertThat(actual).isEqualTo(DEFAULT_FEE);
+        assertThat(actual).isEqualTo(0);
     }
 
     @ParameterizedTest
@@ -42,7 +40,7 @@ class DistanceFeePolicyTest {
     class 거리가_10km를_넘어갈_떄 {
 
         @ParameterizedTest
-        @CsvSource(value= {"12:1350", "15:1350", "16:1450", "20:1450", "23:1550"}, delimiter = ':')
+        @CsvSource(value= {"12:100", "15:100", "16:200", "20:200", "23:300"}, delimiter = ':')
         void 거리가_50km이하면_5km마다_추가요금이_붙는다(final int distance,final int expected) {
             // when
             final int actual = distanceFeePolicy.calculate(new FeeInformation(distance));
@@ -52,7 +50,7 @@ class DistanceFeePolicyTest {
         }
 
         @ParameterizedTest
-        @CsvSource(value= {"58:2150", "59:2250", "66:2250", "67:2350"}, delimiter = ':')
+        @CsvSource(value= {"58:900", "59:1000", "66:1000", "67:1100"}, delimiter = ':')
         void 거리가_50km을_초과하면_50km_이상의_거리는_8km마다_추가요금이_붙는다(final int distance,final int expected) {
             // when
             final int actual = distanceFeePolicy.calculate(new FeeInformation(distance));

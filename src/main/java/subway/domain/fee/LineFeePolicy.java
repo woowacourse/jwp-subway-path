@@ -7,7 +7,7 @@ public class LineFeePolicy implements FeePolicy {
 
     @Override
     public int calculate(final FeeInformation feeInformation) {
-        return feeInformation.getLines().stream()
+        return feeInformation.getLines().getLines().stream()
                 .map(Line::getAdditionalFee)
                 .max(Comparator.naturalOrder())
                 .orElse(0);

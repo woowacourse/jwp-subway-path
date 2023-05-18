@@ -1,7 +1,5 @@
 package subway.domain.path;
 
-import java.util.List;
-import subway.domain.Section;
 import subway.domain.Sections;
 
 public class Path {
@@ -14,8 +12,8 @@ public class Path {
         this.totalDistance = totalDistance;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public Sections getSections() {
+        return sections;
     }
 
     public int getTotalDistance() {

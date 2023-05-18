@@ -40,8 +40,13 @@ public class PathService {
                 .orElseThrow(() -> new NotFoundStationException(request.getEndStation()));
         final Lines lines = lineRepository.findAll();
         final Path path = pathFinder.findShortestPath(startStation, endStation, lines);
-        final int fee = feePolicy.calculate(new FeeInformation(path.getTotalDistance()));
+        final int fee = feePolicy.calculate(getFeeInformation(path, lines));
 
         return ShortestPathResponse.of(path, fee);
+    }
+
+    private static FeeInformation getFeeInformation(Path path, Lines lines) {
+        Lines findLines = lines.findLinesByContainSection(path.getSections());
+        return new FeeInformation(path.getTotalDistance(), findLines);
     }
 }
