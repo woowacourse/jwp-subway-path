@@ -3,11 +3,14 @@ package subway.integration;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -19,6 +22,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @AfterEach
+    void clear() {
+        jdbcTemplate.execute("DELETE FROM SECTION");
+        jdbcTemplate.execute("DELETE FROM STATION");
+        jdbcTemplate.execute("DELETE FROM line");
+    }
 
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
