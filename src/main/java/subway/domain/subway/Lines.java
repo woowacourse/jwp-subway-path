@@ -1,6 +1,10 @@
 package subway.domain.subway;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Lines {
 
@@ -28,15 +32,16 @@ public class Lines {
     public Set<String> getLinesNameFromStation(final Station station) {
         Set<String> lineNamesFromStation = new LinkedHashSet<>();
 
-        for (Line line : lines) {
-            for (Section section : line.getSections()) {
-                if (section.hasStation(station)) {
-                    lineNamesFromStation.add(line.getName());
-                }
-            }
-        }
+        lines.forEach(line -> insertLineName(lineNamesFromStation, line, station));
 
         return lineNamesFromStation;
+    }
+
+    private void insertLineName(final Set<String> lineNamesFromStation, final Line line, final Station station) {
+        line.getSections().stream()
+                .filter(section -> section.hasStation(station))
+                .map(section -> line.getName())
+                .forEach(lineNamesFromStation::add);
     }
 
     public List<Line> getLines() {
