@@ -1,20 +1,30 @@
 package subway.ui.dto.response;
 
+import subway.domain.Price;
+import subway.domain.Station;
+
 import java.util.List;
 
 public class ReadPathResponse {
 
-    final List<ReadStationResponse> stationResponses;
+    final List<Station> stations;
+    final Price price;
 
-    private ReadPathResponse(final List<ReadStationResponse> stationResponses) {
-        this.stationResponses = stationResponses;
+    public ReadPathResponse(final List<Station> stations, final Price price) {
+        this.stations = stations;
+        this.price = price;
     }
 
-    public static ReadPathResponse from(final List<ReadStationResponse> stationResponses) {
-        return new ReadPathResponse(stationResponses);
+    public static ReadPathResponse from(final List<Station> stations,
+                                        final Price price) {
+        return new ReadPathResponse(stations, price);
     }
 
-    public List<ReadStationResponse> getStationResponses() {
-        return stationResponses;
+    public List<Station> getStations() {
+        return stations;
+    }
+
+    public Price getPrice() {
+        return price;
     }
 }
