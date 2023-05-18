@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import subway.domain.exception.EmptyPathException;
 
@@ -34,5 +35,12 @@ public class Path {
 
     public List<Section> getSections() {
         return new ArrayList<>(sections);
+    }
+
+    public List<Station> getStations() {
+        return sections.stream()
+                .flatMap(section -> section.getStations().stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

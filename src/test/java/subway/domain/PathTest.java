@@ -50,4 +50,18 @@ public class PathTest {
 
         assertThat(path.calculateFare()).isEqualTo(fare);
     }
+
+    @DisplayName("하행 방향으로 중복 없이 역들을 꺼낸다")
+    @Test
+    void getDistinctStationsOrderedFromUpperToLower() {
+        Path path = new Path(List.of(
+                new Section(STATION_A, STATION_C, 2),
+                new Section(STATION_C, STATION_D, 3),
+                new Section(STATION_D, STATION_E, 5)
+        ));
+
+        List<Station> stations = path.getStations();
+
+        assertThat(stations).containsExactly(STATION_A, STATION_C, STATION_D, STATION_E);
+    }
 }
