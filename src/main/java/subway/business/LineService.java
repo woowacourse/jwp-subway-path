@@ -172,13 +172,13 @@ public class LineService {
         sectionDao.insert(concatSectionEntity);
     }
 
-    private List<SectionEntity> matchOrderOfTwoSectionEntities(final List<SectionEntity> relatedSectionEntities) {
-        final SectionEntity firstEntity = relatedSectionEntities.get(0);
-        final SectionEntity secondEntity = relatedSectionEntities.get(1);
-        if (Objects.equals(firstEntity.getNextStationId(), secondEntity.getPreviousStationId())) {
-            return List.copyOf(relatedSectionEntities);
+    private List<SectionEntity> matchOrderOfTwoSectionEntities(final List<SectionEntity> source) {
+        final SectionEntity sourcePreviousEntity = source.get(0);
+        final SectionEntity sourceNextEntity = source.get(1);
+        if (Objects.equals(sourcePreviousEntity.getNextStationId(), sourceNextEntity.getPreviousStationId())) {
+            return List.copyOf(source);
         }
-        return List.of(secondEntity, firstEntity);
+        return List.of(sourceNextEntity, sourcePreviousEntity);
     }
 
 }
