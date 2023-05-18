@@ -1,11 +1,13 @@
 package subway.persistence.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import subway.persistence.RepositoryTest;
 import subway.persistence.entity.LineEntity;
@@ -67,6 +69,7 @@ class LineDaoTest {
         // given
         final LineEntity lineEntity = new LineEntity("1호선");
         final Long id = lineDao.save(lineEntity);
+
 
         // when
         lineDao.delete(new LineEntity(id, lineEntity.getName()));

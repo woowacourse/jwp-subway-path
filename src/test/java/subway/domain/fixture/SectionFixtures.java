@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -17,5 +18,9 @@ public class SectionFixtures {
         assertThat(sections)
                 .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
                 .containsExactly(sectionStrings);
+    }
+
+    public static void 포함된_구간들을_검증한다(final Sections sections, final String... sectionStrings) {
+        포함된_구간들을_검증한다(sections.getSections(), sectionStrings);
     }
 }

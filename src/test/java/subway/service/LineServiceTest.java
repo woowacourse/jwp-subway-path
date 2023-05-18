@@ -17,6 +17,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -42,7 +44,6 @@ class LineServiceTest {
 
     @Nested
     class 노선을_생성시 {
-
         final LineCreateRequest request = new LineCreateRequest(
                 "1호선",
                 "잠실역",
