@@ -3,27 +3,27 @@ package subway.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.domain.Path;
-import subway.dto.LineInPathDto;
+import subway.dto.RouteDto;
 
 public class FindShortestRouteResponse {
-    private final List<LineInPathDto> path;
+    private final List<RouteDto> path;
     private final Double totalDistance;
     private final Double totalCharge;
 
-    public FindShortestRouteResponse(List<LineInPathDto> path, Double totalDistance, Double totalCharge) {
+    public FindShortestRouteResponse(List<RouteDto> path, Double totalDistance, Double totalCharge) {
         this.path = path;
         this.totalDistance = totalDistance;
         this.totalCharge = totalCharge;
     }
 
     public static FindShortestRouteResponse from(Path path) {
-        List<LineInPathDto> lines = path.getLines().stream()
-                .map(it -> LineInPathDto.from(it))
+        List<RouteDto> lines = path.getRoutes().stream()
+                .map(it -> RouteDto.from(it))
                 .collect(Collectors.toList());
         return new FindShortestRouteResponse(lines, path.getTotalDistance(), path.getTotalCharge().getValue());
     }
 
-    public List<LineInPathDto> getPath() {
+    public List<RouteDto> getPath() {
         return path;
     }
 

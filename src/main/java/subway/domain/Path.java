@@ -4,18 +4,18 @@ import java.util.List;
 import subway.domain.charge.Charge;
 
 public class Path {
-    private final List<LineInPath> lines;
+    private final List<Route> routes;
     private final double totalDistance;
     private final Charge totalCharge;
 
-    public Path(List<LineInPath> lines, double totalDistance, Charge totalCharge) {
-        this.lines = lines;
+    public Path(List<Route> routes, double totalDistance, Charge totalCharge) {
+        this.routes = routes;
         this.totalDistance = totalDistance;
         this.totalCharge = totalCharge;
     }
 
-    public List<LineInPath> getLines() {
-        return lines;
+    public List<Route> getRoutes() {
+        return routes;
     }
 
     public double getTotalDistance() {
