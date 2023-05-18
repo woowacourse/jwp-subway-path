@@ -9,4 +9,8 @@ import lombok.Getter;
 public class LinesResponse {
 
     private List<LineResponse> lines;
+
+    private LinesResponse() {
+        this(null);
+    }
 }
