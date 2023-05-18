@@ -1,11 +1,11 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static subway.TestSource.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -89,7 +89,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         JsonPath jsonPath = response.body().jsonPath();
-        Assertions.assertAll(() -> {
+        assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(jsonPath.getString("stations[0].name")).isEqualTo("[천호, 잠실, 장지]");
             assertThat(jsonPath.getString("stations[1].name")).isEqualTo("[건대입구, 잠실, 강남]");
@@ -108,7 +108,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         JsonPath jsonPath = response.body().jsonPath();
-        Assertions.assertAll(() -> {
+        assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(jsonPath.getString("stations.name")).isEqualTo("[천호, 잠실, 장지]");
         });

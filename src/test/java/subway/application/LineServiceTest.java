@@ -116,7 +116,7 @@ class LineServiceTest {
             assertThat(line2.getLineId()).isEqualTo(green.getId());
             assertThat(line2.getLineName()).isEqualTo("2호선");
             assertThat(line2.getLineColor()).isEqualTo("green");
-            assertThat(line2Stations.get(0).getName()).isEqualTo("건대");
+            assertThat(line2Stations.get(0).getName()).isEqualTo("건대입구");
             assertThat(line2Stations.get(1).getName()).isEqualTo("잠실");
             assertThat(line2Stations.get(2).getName()).isEqualTo("강남");
         });

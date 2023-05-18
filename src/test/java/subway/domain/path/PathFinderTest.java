@@ -80,7 +80,7 @@ class PathFinderTest {
         //           10          10
         //        /              |
         //     /                 |
-        // [잠실] - 11 - 몽촌 - 10 - [천호]
+        // [잠실] - 10 - 몽촌 - 11 - [천호]
         Section wangsimniCheonho10 = new Section(1L, wangsimni, cheonho, purple, 10);
         Section wangsimniJamsil10 = new Section(2L, wangsimni, jamsil, green, 10);
         Section cheonhoMongchon11 = new Section(3L, cheonho, mongchon, pink, 11);
