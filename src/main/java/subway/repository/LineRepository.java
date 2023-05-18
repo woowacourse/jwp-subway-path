@@ -80,6 +80,23 @@ public class LineRepository {
         return toLine(lines.get(0));
     }
 
+    public Line findByName(String name) {
+        List<LineEntity> lines = lineDao.findByName(name);
+
+        if (lines.isEmpty()) {
+            throw new LineNotFoundException(name + "노선은 존재하지 않습니다.");
+        }
+
+        return toLine(lines.get(0));
+    }
+
+    public List<Line> findAll() {
+        List<LineEntity> lineEntities = lineDao.findAll();
+        return lineEntities.stream()
+                .map(this::toLine)
+                .collect(Collectors.toList());
+    }
+
     private Line toLine(LineEntity lineEntity) {
         LineProperty lineProperty = LinePropertyConverter.entityToDomain(lineEntity);
         Sections sectionsByLineId = new Sections(getSectionsByLineId(lineProperty.getId()));

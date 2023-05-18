@@ -117,7 +117,72 @@ class LineRepositoryTest {
                 .anyMatch(section -> section.getDistance() == 4
                         && section.getPreviousStation().equals(middle)
                         && section.getNextStation().equals(next));
+    }
 
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     *
+     * INSERT INTO section(line_id, distance, previous_station_id, next_station_id)
+     * VALUES(1, 3, 1, 2), (1, 4, 2, 3), (2, 5, 1, 4), (2, 6, 4, 5);
+     *
+     * INSERT INTO station(name) VALUES('잠실'), ('잠실새내'), ('종합운동장'), ('석촌'), ('송파');
+     */
+    @Test
+    @DisplayName("해당하는 Name 의 노선을 반환받는다.")
+    @Sql(scripts = {"/line_test_data.sql", "/section_test_data.sql", "/station_test_data.sql"})
+    void findByName() {
+        Station previous = new Station(1, "잠실");
+        Station middle = new Station(2, "잠실새내");
+        Station next = new Station(3, "종합운동장");
+        Line line = lineRepository.findByName("2호선");
+
+        assertThat(line.getLineProperty().getId()).isEqualTo(1L);
+        assertThat(line.getLineProperty().getName()).isEqualTo("2호선");
+        assertThat(line.getLineProperty().getColor()).isEqualTo("bg-green-600");
+        assertThat(line.getSections()).hasSize(2)
+                .anyMatch(section -> section.getDistance() == 3
+                        && section.getPreviousStation().equals(previous)
+                        && section.getNextStation().equals(middle))
+                .anyMatch(section -> section.getDistance() == 4
+                        && section.getPreviousStation().equals(middle)
+                        && section.getNextStation().equals(next));
+    }
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     *
+     * INSERT INTO section(line_id, distance, previous_station_id, next_station_id)
+     * VALUES(1, 3, 1, 2), (1, 4, 2, 3), (2, 5, 1, 4), (2, 6, 4, 5);
+     *
+     * INSERT INTO station(name) VALUES('잠실'), ('잠실새내'), ('종합운동장'), ('석촌'), ('송파');
+     */
+    @Test
+    @DisplayName("해당하는 Name 의 노선을 반환받는다. (실패)")
+    @Sql(scripts = {"/line_test_data.sql", "/section_test_data.sql", "/station_test_data.sql"})
+    void findByName_fail() {
+        assertThatThrownBy(() -> lineRepository.findByName("재연"))
+                .isInstanceOf(LineNotFoundException.class);
+    }
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     *
+     * INSERT INTO section(line_id, distance, previous_station_id, next_station_id)
+     * VALUES(1, 3, 1, 2), (1, 4, 2, 3), (2, 5, 1, 4), (2, 6, 4, 5);
+     *
+     * INSERT INTO station(name) VALUES('잠실'), ('잠실새내'), ('종합운동장'), ('석촌'), ('송파');
+     */
+    @Test
+    @DisplayName("모든 노선을 반환받는다.")
+    @Sql(scripts = {"/line_test_data.sql", "/section_test_data.sql", "/station_test_data.sql"})
+    void findAll() {
+        assertThat(lineRepository.findAll())
+                .hasSize(2)
+                .allMatch(line -> line.getLineProperty().getName().equals("2호선")
+                        || line.getLineProperty().getName().equals("8호선"));
     }
 
     /**
