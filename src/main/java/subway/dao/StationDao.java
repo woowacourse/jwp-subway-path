@@ -29,6 +29,8 @@ public class StationDao {
     }
 
     public StationEntity save(StationEntity stationEntity) {
+        System.out.println("save  " + Thread.currentThread().getName());
+
         SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
         Long savedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return new StationEntity(savedId, stationEntity.getName());
