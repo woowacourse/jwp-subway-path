@@ -1,4 +1,4 @@
-package subway.persistence.dao;
+package subway.infrastructure.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.persistence.row.StationRow;
+import subway.infrastructure.row.StationRow;
 
 import javax.sql.DataSource;
 import java.util.Collections;

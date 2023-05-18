@@ -1,9 +1,9 @@
-package subway.persistence.dao;
+package subway.infrastructure.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import subway.persistence.row.SectionRow;
+import subway.infrastructure.row.SectionRow;
 
 import java.util.List;
 

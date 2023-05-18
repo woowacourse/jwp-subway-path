@@ -1,10 +1,10 @@
-package subway.persistence.repository;
+package subway.infrastructure.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.application.core.domain.LineProperty;
 import subway.application.port.LinePropertyRepository;
-import subway.persistence.dao.LineDao;
-import subway.persistence.row.LineRow;
+import subway.infrastructure.dao.LineDao;
+import subway.infrastructure.row.LineRow;
 
 import java.util.List;
 import java.util.stream.Collectors;

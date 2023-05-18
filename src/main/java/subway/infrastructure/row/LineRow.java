@@ -1,4 +1,4 @@
-package subway.persistence.row;
+package subway.infrastructure.row;
 
 public class LineRow {
 

@@ -1,4 +1,4 @@
-package subway.persistence.repository;
+package subway.infrastructure.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.application.port.LineRepository;
@@ -7,11 +7,11 @@ import subway.application.core.domain.Line;
 import subway.application.core.domain.LineProperty;
 import subway.application.core.domain.Section;
 import subway.application.core.domain.Station;
-import subway.persistence.dao.LineDao;
-import subway.persistence.dao.SectionDao;
-import subway.persistence.dao.StationDao;
-import subway.persistence.row.LineRow;
-import subway.persistence.row.SectionRow;
+import subway.infrastructure.dao.LineDao;
+import subway.infrastructure.dao.SectionDao;
+import subway.infrastructure.dao.StationDao;
+import subway.infrastructure.row.LineRow;
+import subway.infrastructure.row.SectionRow;
 
 import java.util.ArrayList;
 import java.util.Collections;
