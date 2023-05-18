@@ -1,6 +1,6 @@
 package subway;
 
-import subway.application.domain.Station;
+import subway.application.core.domain.Station;
 
 public class StationFixture {
 

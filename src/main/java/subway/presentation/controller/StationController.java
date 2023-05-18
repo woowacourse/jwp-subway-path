@@ -2,13 +2,13 @@ package subway.presentation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.service.dto.in.IdCommand;
-import subway.application.service.dto.in.SaveStationCommand;
-import subway.application.service.dto.in.UpdateStationCommand;
-import subway.application.service.dto.out.StationResult;
+import subway.application.core.service.dto.in.IdCommand;
+import subway.application.core.service.dto.in.SaveStationCommand;
+import subway.application.core.service.dto.in.UpdateStationCommand;
+import subway.application.core.service.dto.out.StationResult;
 import subway.presentation.dto.StationRequest;
 import subway.presentation.dto.StationResponse;
-import subway.application.service.StationService;
+import subway.application.core.service.StationService;
 
 import java.net.URI;
 import java.util.List;

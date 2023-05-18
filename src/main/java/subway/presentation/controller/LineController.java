@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.service.LineService;
-import subway.application.service.dto.in.DeleteStationCommand;
-import subway.application.service.dto.in.EnrollStationCommand;
-import subway.application.service.dto.in.IdCommand;
-import subway.application.service.dto.out.StationResult;
+import subway.application.core.service.LineService;
+import subway.application.core.service.dto.in.DeleteStationCommand;
+import subway.application.core.service.dto.in.EnrollStationCommand;
+import subway.application.core.service.dto.in.IdCommand;
+import subway.application.core.service.dto.out.StationResult;
 import subway.presentation.dto.StationEnrollRequest;
 import subway.presentation.dto.StationResponse;
 

@@ -8,8 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.service.LineService;
-import subway.application.service.dto.out.StationResult;
+import subway.application.core.service.LineService;
+import subway.application.core.service.dto.out.StationResult;
 import subway.presentation.controller.LineController;
 import subway.presentation.dto.StationEnrollRequest;
 

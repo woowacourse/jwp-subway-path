@@ -1,6 +1,6 @@
 package subway.presentation.dto;
 
-import subway.application.domain.LineProperty;
+import subway.application.core.domain.LineProperty;
 
 public class LinePropertyResponse {
 

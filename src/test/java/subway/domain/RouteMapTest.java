@@ -3,12 +3,12 @@ package subway.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.StationFixture;
-import subway.application.domain.Distance;
-import subway.application.domain.RouteMap;
-import subway.application.domain.Section;
-import subway.application.domain.Station;
-import subway.application.exception.CircularRouteException;
-import subway.application.exception.RouteNotConnectedException;
+import subway.application.core.domain.Distance;
+import subway.application.core.domain.RouteMap;
+import subway.application.core.domain.Section;
+import subway.application.core.domain.Station;
+import subway.application.core.exception.CircularRouteException;
+import subway.application.core.exception.RouteNotConnectedException;
 
 import java.util.Collections;
 import java.util.List;

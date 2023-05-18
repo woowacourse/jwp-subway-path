@@ -6,7 +6,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.application.exception.ExpectedException;
+import subway.application.core.exception.ExpectedException;
 import subway.presentation.dto.ExceptionResponse;
 
 import java.sql.SQLException;

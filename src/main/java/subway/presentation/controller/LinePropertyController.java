@@ -2,11 +2,11 @@ package subway.presentation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.service.LinePropertyService;
-import subway.application.service.dto.in.IdCommand;
-import subway.application.service.dto.in.SaveLinePropertyCommand;
-import subway.application.service.dto.in.UpdateLinePropertyCommand;
-import subway.application.service.dto.out.LinePropertyResult;
+import subway.application.core.service.LinePropertyService;
+import subway.application.core.service.dto.in.IdCommand;
+import subway.application.core.service.dto.in.SaveLinePropertyCommand;
+import subway.application.core.service.dto.in.UpdateLinePropertyCommand;
+import subway.application.core.service.dto.out.LinePropertyResult;
 import subway.presentation.dto.LineRequest;
 import subway.presentation.dto.LinePropertyResponse;
 

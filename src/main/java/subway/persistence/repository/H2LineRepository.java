@@ -1,12 +1,12 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.application.repository.LineRepository;
-import subway.application.domain.Distance;
-import subway.application.domain.Line;
-import subway.application.domain.LineProperty;
-import subway.application.domain.Section;
-import subway.application.domain.Station;
+import subway.application.port.LineRepository;
+import subway.application.core.domain.Distance;
+import subway.application.core.domain.Line;
+import subway.application.core.domain.LineProperty;
+import subway.application.core.domain.Section;
+import subway.application.core.domain.Station;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;

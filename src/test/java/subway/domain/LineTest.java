@@ -4,15 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.StationFixture;
-import subway.application.domain.Distance;
-import subway.application.domain.Line;
-import subway.application.domain.LineProperty;
-import subway.application.domain.Section;
-import subway.application.domain.Station;
-import subway.application.exception.StationAlreadyExistsException;
-import subway.application.exception.StationConnectException;
-import subway.application.exception.StationNotExistsException;
-import subway.application.exception.StationTooFarException;
+import subway.application.core.domain.Distance;
+import subway.application.core.domain.Line;
+import subway.application.core.domain.LineProperty;
+import subway.application.core.domain.Section;
+import subway.application.core.domain.Station;
+import subway.application.core.exception.StationAlreadyExistsException;
+import subway.application.core.exception.StationConnectException;
+import subway.application.core.exception.StationNotExistsException;
+import subway.application.core.exception.StationTooFarException;
 
 import java.util.ArrayList;
 
