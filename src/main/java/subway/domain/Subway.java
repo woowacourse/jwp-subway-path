@@ -145,7 +145,7 @@ public class Subway {
 
     private boolean hasLeftSection(final Station station) {
         validateStation(station);
-        return isStartStation(stations, station);
+        return !isStartStation(stations, station);
     }
 
     private Section findExistedSectionBySide(final Station station, final Side side) {
