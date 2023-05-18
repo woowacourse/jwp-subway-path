@@ -31,7 +31,7 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(final String name, final String color) {
+    public long insert(final String name, final String color) {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
@@ -47,7 +47,7 @@ public class LineDao {
         }
     }
 
-    public Optional<LineEntity> findById(final Long id) {
+    public Optional<LineEntity> findById(final long id) {
         final String sql = "SELECT id, name, color FROM line where id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, ENTITY_MAPPER, id));
