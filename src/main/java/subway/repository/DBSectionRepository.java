@@ -3,17 +3,27 @@ package subway.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.section.SectionRepository;
 import subway.domain.station.Station;
+import subway.domain.station.StationRepository;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class DBSectionRepository implements SectionRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final StationRepository stationRepository;
+    private final StationDao stationDao;
+    private final SectionDao sectionDao;
+
     private final RowMapper<Section> sectionRowMapper =
             (rs, rowNum) -> {
                 Long sectionId = rs.getLong("section_id");
@@ -24,33 +34,66 @@ public class DBSectionRepository implements SectionRepository {
                 return new Section(sectionId, upStation, downStation, distance);
             };
 
-    public DBSectionRepository(JdbcTemplate jdbcTemplate) {
+    public DBSectionRepository(JdbcTemplate jdbcTemplate, StationRepository stationRepository, StationDao stationDao, SectionDao sectionDao) {
         this.jdbcTemplate = jdbcTemplate;
+        this.stationRepository = stationRepository;
+        this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     @Override
-    public List<Section> findSectionsContaining(Section sectionToAdd) {
-        String upStationName = sectionToAdd.getUpStation().getName();
-        String downStationName = sectionToAdd.getDownStation().getName();
-        Long lineId = sectionToAdd.getLineId();
-        String sql = "SELECT " +
-                "ss.id AS section_id, " +
-                "us.id AS up_station_id, " +
-                "us.name AS up_station_name, " +
-                "ds.id AS down_station_id, " +
-                "ds.name AS down_station_name, " +
-                "ss.distance, " +
-                "ss.line_id, " +
-                "line.name AS line_name " +
-                "FROM " +
-                "section ss " +
-                "INNER JOIN station us ON us.line_id = ss.line_id AND us.id = ss.up_station_id " +
-                "INNER JOIN station ds ON ds.line_id = ss.line_id AND ds.id = ss.down_station_id " +
-                "INNER JOIN line ON ss.line_id = line.id " +
-                "WHERE (us.name = ? OR us.name = ? OR ds.name = ? OR ds.name = ?) " +
-                "AND line.id = ?";
+    public Section insert(Section sectionToAdd) {
+        Optional<StationEntity> findUpStationEntity = stationDao.findByStationNameAndLineId(sectionToAdd.getUpStationName(), sectionToAdd.getLineId());
+        Optional<StationEntity> findDownStationEntity = stationDao.findByStationNameAndLineId(sectionToAdd.getDownStationName(), sectionToAdd.getLineId());
+        validateIsExistSection(findUpStationEntity, findDownStationEntity, sectionToAdd);
+        if (findUpStationEntity.isPresent()) {
+            return insertDownStationAndSection(sectionToAdd, findUpStationEntity);
+        }
+        if (findDownStationEntity.isPresent()) {
+            return insertUpStationAndSection(sectionToAdd, findDownStationEntity);
+        }
+        return insertAllStationsAndSection(sectionToAdd);
+    }
 
-        return jdbcTemplate.query(sql, sectionRowMapper, upStationName, downStationName, upStationName, downStationName, lineId);
+    private void validateIsExistSection(Optional<StationEntity> findUpStationEntity, Optional<StationEntity> findDownStationEntity, Section sectionToAdd) {
+        if (isExistSection(sectionToAdd)) {
+            throw new IllegalArgumentException("이미 포함되어 있는 구간입니다.");
+        }
+    }
+
+    private boolean isExistSection(Section sectionToAdd) {
+        Optional<SectionEntity> findSectionEntity = sectionDao.findByStationIdsAndDistance(sectionToAdd.getUpStationId(), sectionToAdd.getDownStationId(), sectionToAdd.getDistanceValue());
+        return findSectionEntity.isPresent();
+    }
+
+    private Section insertDownStationAndSection(Section sectionToAdd, Optional<StationEntity> findUpStationEntity) {
+        Station downStationToAdd = sectionToAdd.getDownStation();
+        Station insertedDownStation = stationRepository.insert(downStationToAdd);
+        Station existUpStation = stationRepository.findStationById(findUpStationEntity.get().getId());
+        sectionToAdd = new Section(null, existUpStation, insertedDownStation, sectionToAdd.getDistance());
+        return add(sectionToAdd);
+    }
+
+    private Section insertUpStationAndSection(Section sectionToAdd, Optional<StationEntity> findDownStationEntity) {
+        Station upStationToAdd = sectionToAdd.getUpStation();
+        Station insertedUpStation = stationRepository.insert(upStationToAdd);
+        Station existDownStation = stationRepository.findStationById(findDownStationEntity.get().getId());
+        sectionToAdd = new Section(null, insertedUpStation, existDownStation, sectionToAdd.getDistance());
+        return add(sectionToAdd);
+    }
+
+    private Section insertAllStationsAndSection(Section sectionToAdd) {
+        Station upStationToAdd = sectionToAdd.getUpStation();
+        Station downStationToAdd = sectionToAdd.getDownStation();
+        Station insertedUpStation = stationRepository.insert(upStationToAdd);
+        Station insertedDownStation = stationRepository.insert(downStationToAdd);
+        sectionToAdd = new Section(null, insertedUpStation, insertedDownStation, sectionToAdd.getDistance());
+        return add(sectionToAdd);
+    }
+
+    private Section add(Section sectionToAdd) {
+        SectionEntity insertedEntity = sectionDao.insert(new SectionEntity(null, sectionToAdd.getUpStationId(), sectionToAdd.getDownStationId(), sectionToAdd.getDistanceValue(), sectionToAdd.getLineId()));
+        return new Section(insertedEntity.getId(), sectionToAdd.getUpStation(), sectionToAdd.getDownStation(), sectionToAdd.getDistance());
     }
 
     @Override
@@ -72,5 +115,10 @@ public class DBSectionRepository implements SectionRepository {
                 "WHERE line.id = ?";
 
         return jdbcTemplate.query(sql, sectionRowMapper, lineId);
+    }
+
+    @Override
+    public void remove(Section sectionToModify) {
+        sectionDao.deleteBySectionId(sectionToModify.getId());
     }
 }

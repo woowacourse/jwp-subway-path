@@ -5,6 +5,7 @@ import subway.domain.section.Section;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -44,5 +45,29 @@ public class StationConnections {
             throw new IllegalStateException("상행 종점을 찾을 수 없습니다.");
         }
         return upStations.get(0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        StationConnections that = (StationConnections) o;
+        return Objects.equals(stationConnections, that.stationConnections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stationConnections);
+    }
+
+    @Override
+    public String toString() {
+        return "StationConnections{" +
+                "stationConnections=" + stationConnections +
+                '}';
     }
 }

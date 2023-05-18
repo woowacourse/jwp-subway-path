@@ -47,6 +47,13 @@ public class SectionDao {
         return new SectionEntity(insertedId, upStationId, downStationId, distance, lineId);
     }
 
+    public Optional<SectionEntity> findByStationIdsAndDistance(Long upStationId, Long downStationId, int distanceValue) {
+        String sql = "SELECT id, up_station_id, down_station_id, distance, line_id " +
+                "FROM section WHERE up_station_id = ? AND down_station_id = ? AND distance = ?";
+        List<SectionEntity> findEntities = jdbcTemplate.query(sql, sectionEntityRowMapper, upStationId, downStationId, distanceValue);
+        return findEntities.stream().findAny();
+    }
+
     public Optional<SectionEntity> findByUpStationIdAndLindId(Long upStationId, Long lineId) {
         String sql = "SELECT id, up_station_id, down_station_id, distance, line_id " +
                 "FROM section WHERE up_station_id = ? AND line_id = ?";
@@ -61,13 +68,6 @@ public class SectionDao {
 
         List<SectionEntity> sectionEntities = jdbcTemplate.query(sql, sectionEntityRowMapper, downStationId, lineId);
         return sectionEntities.stream().findAny();
-    }
-
-    public List<SectionEntity> findSectionEntitiesByLineId(Long lineId) {
-        String sql = "SELECT id, up_station_id, down_station_id, distance, line_id " +
-                "FROM section WHERE line_id = ?";
-
-        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
     }
 
     public void deleteBySectionId(Long id) {

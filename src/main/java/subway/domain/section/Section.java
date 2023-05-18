@@ -26,6 +26,60 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
+    public Section subtract(Section sectionToSubtract) {
+        validateIsSameSection(sectionToSubtract);
+        if (upStation.isSameStation(sectionToSubtract.getUpStation())) {
+            Station newUpStation = sectionToSubtract.getDownStation();
+            Station newDownStation = this.downStation;
+            Distance newDistance = this.distance.subtract(sectionToSubtract.getDistance());
+            return new Section(null, newUpStation, newDownStation, newDistance);
+        }
+        if (downStation.isSameStation(sectionToSubtract.getDownStation())) {
+            Station newUpStation = this.upStation;
+            Station newDownStation = sectionToSubtract.getUpStation();
+            Distance newDistance = this.distance.subtract(sectionToSubtract.getDistance());
+            return new Section(null, newUpStation, newDownStation, newDistance);
+        }
+        throw new IllegalArgumentException("현재 등록된 역 중에 하나를 포함해야합니다.");
+    }
+
+    public Section combine(Section sectionToCombine) {
+        validateIsSameSection(sectionToCombine);
+        if (downStation.isSameStation(sectionToCombine.getUpStation())) {
+            Station newUpStation = this.upStation;
+            Station newDownStation = sectionToCombine.getDownStation();
+            Distance newDistance = this.distance.add(sectionToCombine.getDistance());
+            return new Section(null, newUpStation, newDownStation, newDistance);
+        }
+        if (upStation.isSameStation(sectionToCombine.getDownStation())) {
+            Station newUpStation = sectionToCombine.getUpStation();
+            Station newDownStation = this.downStation;
+            Distance newDistance = this.distance.add(sectionToCombine.getDistance());
+            return new Section(null, newUpStation, newDownStation, newDistance);
+        }
+        throw new IllegalArgumentException("현재 등록된 역 중에 하나를 포함해야합니다.");
+    }
+
+    private void validateIsSameSection(Section otherSection) {
+        if (isSameSection(otherSection)) {
+            throw new IllegalArgumentException("이미 포함되어 있는 구간입니다.");
+        }
+    }
+
+    private boolean isSameSection(Section otherSection) {
+        return upStation.isSameStation(otherSection.getUpStation()) &&
+                downStation.isSameStation(otherSection.getDownStation()) &&
+                distance.equals(otherSection.getDistance());
+    }
+
+    public boolean isContainSection(Section targetSection) {
+        return upStation.isSameStation(targetSection.getUpStation()) || downStation.isSameStation(targetSection.getDownStation());
+    }
+
+    public boolean isContainStation(Station targetStation) {
+        return upStation.isSameStation(targetStation) || downStation.isSameStation(targetStation);
+    }
+
     public Long getId() {
         return id;
     }
@@ -38,12 +92,20 @@ public class Section {
         return upStation.getId();
     }
 
+    public String getUpStationName() {
+        return upStation.getName();
+    }
+
     public Station getDownStation() {
         return downStation;
     }
 
     public Long getDownStationId() {
         return downStation.getId();
+    }
+
+    public String getDownStationName() {
+        return downStation.getName();
     }
 
     public Distance getDistance() {

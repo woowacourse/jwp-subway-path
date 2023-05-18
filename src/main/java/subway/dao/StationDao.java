@@ -42,11 +42,11 @@ public class StationDao {
         return new StationEntity(insertedId, stationName, lineId);
     }
 
-    public Optional<StationEntity> findByStationIdAndLineId(Long stationId, Long lineId) {
+    public Optional<StationEntity> findByStationNameAndLineId(String stationName, Long lineId) {
         String sql = "SELECT id, name, line_id FROM STATION " +
-                "WHERE id = ? AND line_id = ?";
+                "WHERE name = ? AND line_id = ?";
 
-        List<StationEntity> station = jdbcTemplate.query(sql, stationEntityRowMapper, stationId, lineId);
+        List<StationEntity> station = jdbcTemplate.query(sql, stationEntityRowMapper, stationName, lineId);
         return station.stream().findAny();
     }
 

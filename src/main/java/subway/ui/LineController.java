@@ -13,8 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/lines")
 public class LineController {
-
-    // TODO : ControllerAdvice 구현
     private final LineService lineService;
 
     public LineController(LineService lineService) {

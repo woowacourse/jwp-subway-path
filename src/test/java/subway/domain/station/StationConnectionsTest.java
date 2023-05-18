@@ -8,6 +8,7 @@ import java.util.List;
 
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class StationConnectionsTest {
 
@@ -30,5 +31,17 @@ class StationConnectionsTest {
 
         // then
         assertThat(sortedStationNames).isEqualTo(expectSortedStationNames);
+    }
+
+    @Test
+    @DisplayName("섹션 정보가 없을 때 상행 종점을 찾을 수 없으므로 예왹가 발생한다.")
+    void cannotFindUpStationTest() {
+        // given
+        StationConnections stationConnections = StationConnections.fromSections(List.of());
+
+        // when, then
+        assertThatThrownBy(() -> stationConnections.getSortedStationNames())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("상행 종점을 찾을 수 없습니다.");
     }
 }

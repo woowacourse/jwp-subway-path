@@ -22,7 +22,6 @@ class LineDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
     private LineDao lineDao;
 
     @BeforeEach
@@ -56,8 +55,18 @@ class LineDaoTest {
     }
 
     @Test
+    @DisplayName("모든 노선 행을 조회한다.")
+    void findAllTest() {
+        // when
+        List<LineEntity> findLineEntities = lineDao.findAll();
+
+        // then
+        assertThat(findLineEntities).isEqualTo(List.of(LINE2_FIND_ENTITY));
+    }
+
+    @Test
     @DisplayName("노선 id에 해당하는 행을 조회한다.")
-    void findByLineIdTest() {
+    void findByIdTest() {
         // given
         Long lineId = LINE2_ID;
 
@@ -79,16 +88,6 @@ class LineDaoTest {
 
         // then
         assertThat(findLineEntity).contains(LINE2_FIND_ENTITY);
-    }
-
-    @Test
-    @DisplayName("모든 노선 행을 조회한다.")
-    void findAllTest() {
-        // when
-        List<LineEntity> findLineEntities = lineDao.findAll();
-
-        // then
-        assertThat(findLineEntities).isEqualTo(List.of(LINE2_FIND_ENTITY));
     }
 
     @Test

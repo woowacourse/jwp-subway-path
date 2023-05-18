@@ -16,6 +16,11 @@ public class Station {
         this.line = line;
     }
 
+    public boolean isSameStation(Station otherStation) {
+        return this.getLineName().equals(otherStation.getLineName()) &&
+                this.getName().equals(otherStation.getName());
+    }
+
     public Long getId() {
         return id;
     }

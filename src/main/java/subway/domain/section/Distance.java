@@ -20,7 +20,11 @@ public class Distance {
     }
 
     public Distance subtract(Distance targetDistance) {
-        return new Distance(this.distance - targetDistance.getDistance());
+        return new Distance(this.distance - targetDistance.distance);
+    }
+
+    public Distance add(Distance targetDistance) {
+        return new Distance(this.distance + targetDistance.distance);
     }
 
     public int getDistance() {

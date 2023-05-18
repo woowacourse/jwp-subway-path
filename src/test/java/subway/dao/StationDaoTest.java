@@ -46,11 +46,11 @@ class StationDaoTest {
     @DisplayName("받은 역 이름과 노선 이름에 해당하는 행을 조회한다.")
     void findByStationNameAndLineNameTest() {
         // given
-        Long stationId = STATION_건대역_ID;
+        String stationName = STATION_건대역_NAME;
         Long lineId = LINE2_ID;
 
         // when
-        Optional<StationEntity> findStationEntity = stationDao.findByStationIdAndLineId(stationId, lineId);
+        Optional<StationEntity> findStationEntity = stationDao.findByStationNameAndLineId(stationName, lineId);
 
         // then
         assertThat(findStationEntity).contains(ENTITY_건대역_FIND);
@@ -62,13 +62,14 @@ class StationDaoTest {
         // given
         Station station = STATION_잠실역;
         Long stationId = station.getId();
+        String stationName = station.getName();
         Long lineId = station.getLineId();
 
         // when
         stationDao.deleteById(stationId);
 
         // then
-        assertThat(stationDao.findByStationIdAndLineId(stationId, lineId))
+        assertThat(stationDao.findByStationNameAndLineId(stationName, lineId))
                 .isEmpty();
     }
 }

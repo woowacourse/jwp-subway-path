@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
+
 public class Sections {
 
     private final List<Section> sections;
@@ -14,20 +16,16 @@ public class Sections {
         this.sections = sections;
     }
 
-    public Optional<Section> findUpSectionByStation(Station station) {
+    public List<Section> findSectionsContainStation(Station containedStation) {
         return sections.stream()
-                .filter(section -> section.getDownStation() == station)
-                .findAny();
+                .filter(section -> section.isContainStation(containedStation))
+                .collect(toList());
     }
 
-    public Optional<Section> findDownSectionByStation(Station station) {
+    public Optional<Section> findSectionContainSection(Section containedSection) {
         return sections.stream()
-                .filter(section -> section.getUpStation() == station)
+                .filter(section -> section.isContainSection(containedSection))
                 .findAny();
-    }
-
-    public int getSectionsSize() {
-        return sections.size();
     }
 
     public List<Section> getSections() {

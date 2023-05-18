@@ -12,7 +12,7 @@ create table if not exists LINE
 create table if not exists STATION
 (
     id bigint auto_increment not null,
-    name varchar(255) not null unique,
+    name varchar(255) not null,
     line_id bigint not null,
     primary key(id)
 );

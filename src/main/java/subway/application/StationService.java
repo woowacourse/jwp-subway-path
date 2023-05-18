@@ -2,21 +2,16 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
-import subway.domain.calculator.AddCalculator;
-import subway.domain.calculator.Changes;
-import subway.domain.calculator.RemoveCalculator;
 import subway.domain.line.Line;
+import subway.domain.line.LineRepository;
 import subway.domain.line.LineStatus;
-import subway.domain.section.*;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.section.SectionRepository;
+import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
 import subway.dto.StationRequest;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,92 +20,86 @@ import java.util.Optional;
 @Transactional
 public class StationService {
 
-    private final LineDao lineDao;
-    private final StationDao stationDao;
-    private final SectionDao sectionDao;
+    private final LineRepository lineRepository;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
-    public StationService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao, StationRepository stationRepository, SectionRepository sectionRepository) {
-        this.lineDao = lineDao;
-        this.stationDao = stationDao;
-        this.sectionDao = sectionDao;
+    public StationService(LineRepository lineRepository, StationRepository stationRepository, SectionRepository sectionRepository) {
+        this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
     }
 
     public Long saveSection(StationRequest stationRequest) {
-        Optional<LineEntity> findNullableLineEntity = lineDao.findByLineName(stationRequest.getLineName());
-        LineStatus lineStatus = getLineStatus(findNullableLineEntity);
-        Line line = findOrCreateLine(findNullableLineEntity, stationRequest.getLineName());
+        Optional<Line> findNullableLine = lineRepository.findByLineName(stationRequest.getLineName());
+        if (LineStatus.of(findNullableLine) == LineStatus.INITIAL) {
+            return saveInitialSection(stationRequest);
+        }
+        Line line = findNullableLine.get();
         Station upStation = new Station(null, stationRequest.getUpStationName(), line);
         Station downStation = new Station(null, stationRequest.getDownStationName(), line);
         Distance distance = new Distance(stationRequest.getDistance());
         Section sectionToAdd = new Section(null, upStation, downStation, distance);
 
-        List<Section> containingSections = sectionRepository.findSectionsContaining(sectionToAdd);
-        AddCalculator addCalculator = new AddCalculator(new ContainingSections(containingSections));
-        Changes changes = addCalculator.addSection(lineStatus, sectionToAdd);
-        return applyChanges(changes);
+        Sections sections = new Sections(sectionRepository.findSectionsByLineId(line.getId()));
+        validateSectionCanLink(sections, sectionToAdd);
+        return saveAdditionalSection(sections, sectionToAdd);
     }
 
-    private LineStatus getLineStatus(Optional<LineEntity> findNullableLineEntity) {
-        LineStatus lineStatus = null;
-        if (findNullableLineEntity.isEmpty()) {
-            lineStatus = LineStatus.INITIAL;
+    private void validateSectionCanLink(Sections sections, Section sectionToAdd) {
+        List<Section> sectionsContainUpStation = sections.findSectionsContainStation(sectionToAdd.getUpStation());
+        List<Section> sectionsContainDownStation = sections.findSectionsContainStation(sectionToAdd.getDownStation());
+        if (sectionsContainUpStation.isEmpty() && sectionsContainDownStation.isEmpty()) {
+            throw new IllegalArgumentException("현재 등록된 역 중에 하나를 포함해야합니다.");
         }
-        if (findNullableLineEntity.isPresent()) {
-            lineStatus = LineStatus.EXIST;
-        }
-        return lineStatus;
     }
 
-    private Line findOrCreateLine(Optional<LineEntity> findNullableLineEntity, String lineName) {
-        Line line = null;
-        if (findNullableLineEntity.isEmpty()) {
-            LineEntity insertedLineEntity = lineDao.insert(new LineEntity(null, lineName));
-            line = new Line(insertedLineEntity.getId(), insertedLineEntity.getLineName());
-        }
-        if (findNullableLineEntity.isPresent()) {
-            LineEntity findLineEntity = findNullableLineEntity.get();
-            line = new Line(findLineEntity.getId(), findLineEntity.getLineName());
-        }
-        return line;
+    private Long saveInitialSection(StationRequest stationRequest) {
+        Line line = lineRepository.insert(new Line(null, stationRequest.getLineName()));
+        Station upStation = new Station(null, stationRequest.getUpStationName(), line);
+        Station downStation = new Station(null, stationRequest.getDownStationName(), line);
+        Distance distance = new Distance(stationRequest.getDistance());
+        Section sectionToAdd = new Section(null, upStation, downStation, distance);
+        Section insertedSection = sectionRepository.insert(sectionToAdd);
+        return insertedSection.getLineId();
     }
 
-    private Long applyChanges(Changes changes) {
-        for (Line line : changes.getLineToAdd()) {
-            lineDao.insert(new LineEntity(null, line.getName()));
+    private Long saveAdditionalSection(Sections sections, Section sectionToAdd) {
+        Optional<Section> nullableSectionToModify = sections.findSectionContainSection(sectionToAdd);
+        if (nullableSectionToModify.isEmpty()) {
+            Section insertedSection = sectionRepository.insert(sectionToAdd);
+            return insertedSection.getLineId();
         }
-        for (Line line : changes.getLineToRemove()) {
-            lineDao.deleteById(line.getId());
-        }
-        for (Station station : changes.getStationsToAdd()) {
-            stationDao.insert(new StationEntity(null, station.getName(), station.getLineId()));
-        }
-        for (Station station : changes.getStationsToRemove()) {
-            stationDao.deleteById(station.getId());
-        }
-        for (Section section : changes.getSectionsToAdd()) {
-            sectionDao.insert(new SectionEntity(null, section.getUpStationId(),
-                    section.getDownStationId(), section.getDistance(), section.getLineId()));
-        }
-        for (Section section : changes.getSectionsToRemove()) {
-            sectionDao.deleteBySectionId(section.getId());
-        }
-        return changes.getChangedLineId();
+        Section sectionToModify = nullableSectionToModify.get();
+        Section modifiedSection = sectionToModify.subtract(sectionToAdd);
+
+        sectionRepository.insert(modifiedSection);
+        sectionRepository.insert(sectionToAdd);
+        sectionRepository.remove(sectionToModify);
+        return sectionToAdd.getLineId();
     }
 
     public Long deleteStationById(Long id) {
-        Optional<Station> findNullableStation = stationRepository.findStationById(id);
-        if (findNullableStation.isEmpty()) {
-            throw new IllegalArgumentException("역 id에 해당하는 역 정보를 찾을 수 없습니다.");
+        Station stationToDelete = stationRepository.findStationById(id);
+        Line targetLine = stationToDelete.getLine();
+        Sections sections = new Sections(sectionRepository.findSectionsByLineId(targetLine.getId()));
+        List<Section> sectionsToCombine = sections.findSectionsContainStation(stationToDelete);
+        if (sectionsToCombine.isEmpty()) {
+            throw new IllegalArgumentException("해당 역이 존재하지 않습니다.");
         }
-        Station stationToDelete = findNullableStation.get();
-        List<Section> sectionsByLineId = sectionRepository.findSectionsByLineId(stationToDelete.getLineId());
-        Sections sections = new Sections(sectionsByLineId);
-        RemoveCalculator removeCalculator = new RemoveCalculator(sections);
-        Changes changes = removeCalculator.calculate(stationToDelete);
-        return applyChanges(changes);
+        stationRepository.remove(stationToDelete);
+        if (sectionsToCombine.size() == 1) {
+            lineRepository.remove(targetLine);
+            return targetLine.getId();
+        }
+        Section combinedSection = combineSections(sectionsToCombine);
+        Section insertedSection = sectionRepository.insert(combinedSection);
+        return insertedSection.getLineId();
+    }
+
+    private Section combineSections(List<Section> sectionsToCombine) {
+        Section section1 = sectionsToCombine.get(0);
+        Section section2 = sectionsToCombine.get(1);
+        return section1.combine(section2);
     }
 }
