@@ -2,7 +2,7 @@ package subway.ui.dto.request;
 
 import javax.validation.constraints.NotNull;
 
-public class AddSectionRequest {
+public class CreationSectionRequest {
 
     @NotNull
     private final Long upStationId;
@@ -11,14 +11,14 @@ public class AddSectionRequest {
     @NotNull
     private final Integer distance;
 
-    private AddSectionRequest(final Long upStationId, final Long downStationId, final Integer distance) {
+    private CreationSectionRequest(final Long upStationId, final Long downStationId, final Integer distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
     }
 
-    public static AddSectionRequest of(final Long upStationId, final Long downStationId, final Integer distance) {
-        return new AddSectionRequest(upStationId, downStationId, distance);
+    public static CreationSectionRequest of(final Long upStationId, final Long downStationId, final Integer distance) {
+        return new CreationSectionRequest(upStationId, downStationId, distance);
     }
 
     public Long getUpStationId() {

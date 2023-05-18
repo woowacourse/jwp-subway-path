@@ -9,10 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import subway.ui.dto.request.AddSectionRequest;
+import subway.ui.dto.request.CreationSectionRequest;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.request.CreationStationRequest;
-import subway.ui.dto.request.GetPathPriceRequest;
+import subway.ui.dto.request.ReadPathPriceRequest;
 import subway.ui.dto.response.ReadStationResponse;
 
 import java.util.List;
@@ -71,12 +71,12 @@ public class PathIntegrationTest extends IntegrationTest {
         stationSixId = getParseId(createStationResponseSix);
 
         // 구간 요청 데이터 세팅
-        final AddSectionRequest sectionRequestOneLineOne = AddSectionRequest.of(stationOneId, stationTwoId, 10);
-        final AddSectionRequest sectionRequestOneLineTwo = AddSectionRequest.of(stationTwoId, stationThreeId, 20);
-        final AddSectionRequest sectionRequestOneLineThree = AddSectionRequest.of(stationThreeId, stationFourId, 20);
-        final AddSectionRequest sectionRequestOneLineFour = AddSectionRequest.of(stationFourId, stationFiveId, 40);
-        final AddSectionRequest sectionRequestTwoLineOne = AddSectionRequest.of(stationFourId, stationSixId, 8);
-        final AddSectionRequest sectionRequestTwoLineTwo = AddSectionRequest.of(stationSixId, stationFiveId, 8);
+        final CreationSectionRequest sectionRequestOneLineOne = CreationSectionRequest.of(stationOneId, stationTwoId, 10);
+        final CreationSectionRequest sectionRequestOneLineTwo = CreationSectionRequest.of(stationTwoId, stationThreeId, 20);
+        final CreationSectionRequest sectionRequestOneLineThree = CreationSectionRequest.of(stationThreeId, stationFourId, 20);
+        final CreationSectionRequest sectionRequestOneLineFour = CreationSectionRequest.of(stationFourId, stationFiveId, 40);
+        final CreationSectionRequest sectionRequestTwoLineOne = CreationSectionRequest.of(stationFourId, stationSixId, 8);
+        final CreationSectionRequest sectionRequestTwoLineTwo = CreationSectionRequest.of(stationSixId, stationFiveId, 8);
 
         // 구간 등록
         postSection(lineOneId, sectionRequestOneLineOne);
@@ -89,7 +89,7 @@ public class PathIntegrationTest extends IntegrationTest {
 
     @Test
     void 기본_구간의_경로와_요금을_가져오는지_확인한다() {
-        final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationTwoId);
+        final ReadPathPriceRequest request = ReadPathPriceRequest.of(stationOneId, stationTwoId);
 
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -115,7 +115,7 @@ public class PathIntegrationTest extends IntegrationTest {
 
     @Test
     void 구간_10km_50km의_경로와_과금을_포함한_요금을_가져오는지_확인한다() {
-        final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationFourId);
+        final ReadPathPriceRequest request = ReadPathPriceRequest.of(stationOneId, stationFourId);
 
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -145,7 +145,7 @@ public class PathIntegrationTest extends IntegrationTest {
 
     @Test
     void 구간_10km_50km의_과금과_50km이상의_과금을_포함한_경로와_요금을_가져오는지_확인한다() {
-        final GetPathPriceRequest request = GetPathPriceRequest.of(stationOneId, stationFiveId);
+        final ReadPathPriceRequest request = ReadPathPriceRequest.of(stationOneId, stationFiveId);
 
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -201,7 +201,7 @@ public class PathIntegrationTest extends IntegrationTest {
         return Long.parseLong(response.header("Location").split("/")[2]);
     }
 
-    private void postSection(final Long lineId, final AddSectionRequest request) {
+    private void postSection(final Long lineId, final CreationSectionRequest request) {
         RestAssured
                 .given().log().all()
                 .body(request)

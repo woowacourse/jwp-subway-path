@@ -1,5 +1,8 @@
 package subway.ui.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotBlank;
 
 public class CreationLineRequest {
@@ -9,7 +12,9 @@ public class CreationLineRequest {
     @NotBlank
     private final String color;
 
-    private CreationLineRequest(final String name, final String color) {
+    @JsonCreator
+    private CreationLineRequest(@JsonProperty("name") final String name,
+                                @JsonProperty("color") final String color) {
         this.name = name;
         this.color = color;
     }

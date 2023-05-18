@@ -2,20 +2,20 @@ package subway.ui.dto.request;
 
 import javax.validation.constraints.NotNull;
 
-public class GetPathPriceRequest {
+public class ReadPathPriceRequest {
 
     @NotNull
     private final Long sourceStationId;
     @NotNull
     private final Long targetStationId;
 
-    private GetPathPriceRequest(final Long sourceStationId, final Long targetStationId) {
+    private ReadPathPriceRequest(final Long sourceStationId, final Long targetStationId) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
     }
 
-    public static GetPathPriceRequest of(final Long sourceStationId, final Long targetStationId) {
-        return new GetPathPriceRequest(sourceStationId, targetStationId);
+    public static ReadPathPriceRequest of(final Long sourceStationId, final Long targetStationId) {
+        return new ReadPathPriceRequest(sourceStationId, targetStationId);
     }
 
     public Long getSourceStationId() {

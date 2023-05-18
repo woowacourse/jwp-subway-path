@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineCommandService;
 import subway.application.LineQueryService;
 import subway.domain.Line;
-import subway.ui.dto.request.AddSectionRequest;
+import subway.ui.dto.request.CreationSectionRequest;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.response.CreationLineResponse;
 import subway.ui.dto.response.ReadLineResponse;
@@ -67,7 +67,7 @@ public class LineController {
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> postAddSection(@PathVariable final Long lineId,
-                                               @Valid @RequestBody final AddSectionRequest request) {
+                                               @Valid @RequestBody final CreationSectionRequest request) {
         lineCommandService.saveSection(lineId, request.getUpStationId(), request.getDownStationId(), request.getDistance());
         return ResponseEntity.created(URI.create("/lines/" + lineId + "/sections")).build();
     }

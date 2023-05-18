@@ -99,5 +99,4 @@ CREATE TABLE IF NOT EXISTS section
   - 역 종점 삭제 `DELETE /end 204`
   - 중간 역 삭제 `DELETE /middle 204`
 - 경로 (`/path`)
-  - 경로 조회 `GET /path 200`
-  - 요금 조회 `GET /path/price 200`
+  - 경로와 요금 조회 `GET / 200`

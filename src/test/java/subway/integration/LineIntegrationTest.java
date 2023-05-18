@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.ui.dto.request.AddSectionRequest;
+import subway.ui.dto.request.CreationSectionRequest;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.request.CreationStationRequest;
 import subway.ui.dto.response.ReadLineResponse;
@@ -208,7 +208,7 @@ public class LineIntegrationTest extends IntegrationTest {
         final Long lineId = Long.parseLong(createLineResponse.header("Location").split("/")[2]);
         final Long stationOneId = Long.parseLong(createStationResponseOne.header("Location").split("/")[2]);
         final Long stationTwoId = Long.parseLong(createStationResponseTwo.header("Location").split("/")[2]);
-        final AddSectionRequest sectionRequest = AddSectionRequest.of(stationOneId, stationTwoId, 10);
+        final CreationSectionRequest sectionRequest = CreationSectionRequest.of(stationOneId, stationTwoId, 10);
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .body(sectionRequest)
@@ -254,7 +254,7 @@ public class LineIntegrationTest extends IntegrationTest {
         final Long lineId = Long.parseLong(createLineResponse.header("Location").split("/")[2]);
         final Long stationOneId = Long.parseLong(createStationResponseOne.header("Location").split("/")[2]);
         final Long stationTwoId = Long.parseLong(createStationResponseTwo.header("Location").split("/")[2]);
-        final AddSectionRequest sectionRequest = AddSectionRequest.of(stationOneId, stationTwoId, 10);
+        final CreationSectionRequest sectionRequest = CreationSectionRequest.of(stationOneId, stationTwoId, 10);
         RestAssured
                 .given().log().all()
                 .body(sectionRequest)

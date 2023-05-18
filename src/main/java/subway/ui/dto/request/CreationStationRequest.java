@@ -1,5 +1,7 @@
 package subway.ui.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import javax.validation.constraints.NotBlank;
 
 public class CreationStationRequest {
@@ -7,6 +9,7 @@ public class CreationStationRequest {
     @NotBlank
     private final String name;
 
+    @JsonCreator
     private CreationStationRequest(final String name) {
         this.name = name;
     }
