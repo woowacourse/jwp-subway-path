@@ -39,7 +39,8 @@ public class SectionDao {
     public SectionDao(NamedParameterJdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("section");
+                .withTableName("section")
+                .usingGeneratedKeyColumns("id");
     }
 
     public List<SectionStationMapper> findSectionsByLineId(Long lineId) {
