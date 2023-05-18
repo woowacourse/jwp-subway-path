@@ -3,7 +3,6 @@ package subway.domain;
 import java.util.Objects;
 
 public class Station {
-    public static final Station EMPTY_STATION = new Station("EMPTY");
 
     private final Long id;
     private final String name;

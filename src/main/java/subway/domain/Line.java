@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Line {
 
@@ -18,10 +19,23 @@ public class Line {
     }
 
     public Line(final Long id, final LineName name, final LineColor color, final Sections sections) {
+        validate(name, color, sections);
         this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
+    }
+
+    private void validate(final LineName name, final LineColor color, final Sections sections) {
+        if(Objects.isNull(name)) {
+            throw new IllegalArgumentException("노선명이 필요합니다.");
+        }
+        if(Objects.isNull(color)) {
+            throw new IllegalArgumentException("노선색이 필요합니다.");
+        }
+        if(Objects.isNull(sections)) {
+            throw new IllegalArgumentException("노선의 구간이 필요합니다.");
+        }
     }
 
     public Line addSection(final Section section) {
@@ -36,6 +50,16 @@ public class Line {
 
     public List<Station> findAllStation() {
         return sections.findAllStationUpToDown();
+    }
+
+    public void validateNotDuplicatedStation(final Station station) {
+        List<Station> allStations = sections.findAllStationUpToDown();
+        Set<String> names = allStations.stream()
+                .map(Station::getName)
+                .collect(Collectors.toSet());
+        if (names.contains(station.getName())) {
+            throw new IllegalArgumentException( name.getValue() + "선의 중복된 역명이 존재합니다.");
+        }
     }
 
     public Long getId() {
@@ -55,10 +79,10 @@ public class Line {
     }
 
     public Station getFirstStation() {
-        return sections.getFirstStation();
+        return sections.findFirstStation();
     }
 
     public Station getLastStation() {
-        return sections.getLastStation();
+        return sections.findLastStation();
     }
 }

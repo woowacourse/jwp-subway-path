@@ -59,7 +59,7 @@ public class LineStationService {
         Station upStation = stationRepository.findById(request.getUpStationId());
         Station downStation = stationRepository.findById(request.getDownStationId());
         Distance distance = new Distance(request.getDistance());
-        Section section = Section.of(upStation, downStation, distance);
+        Section section = new Section(upStation, downStation, distance);
         Line updateLine = line.addSection(section);
         sectionRepository.updateByLine(line, updateLine);
     }

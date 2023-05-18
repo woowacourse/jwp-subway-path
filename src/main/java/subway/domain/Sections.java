@@ -31,10 +31,10 @@ public class Sections {
             Section beforeSection = maybeSectionByDownStation.get();
             return addMiddleSection(beforeSection, section);
         }
-        if (downStation.equals(getFirstStation())) {
+        if (downStation.equals(findFirstStation())) {
             return addEdgeSection(section);
         }
-        if (upStation.equals(getLastStation())) {
+        if (upStation.equals(findLastStation())) {
             return addEdgeSection(section);
         }
         return addInitSection(section);
@@ -54,15 +54,15 @@ public class Sections {
         return new Sections(updateSection);
     }
 
-    private Optional<Section> findSectionByUpStation(final Station upStation) {
+    private Optional<Section> findSectionByUpStation(final Station station) {
         return sections.stream()
-                .filter(section -> section.getUpStation().equals(upStation))
+                .filter(section -> section.getUpStation().equals(station))
                 .findAny();
     }
 
-    private Optional<Section> findSectionByDownStation(final Station downStation) {
+    private Optional<Section> findSectionByDownStation(final Station station) {
         return sections.stream()
-                .filter(section -> section.getDownStation().equals(downStation))
+                .filter(section -> section.getDownStation().equals(station))
                 .findAny();
     }
 
@@ -76,32 +76,36 @@ public class Sections {
     }
 
     public Sections removeStation(final Station station) {
-        Optional<Section> maybeUpSection = sections.stream()
-                .filter(section -> section.getDownStation().equals(station))
-                .findAny();
-        Optional<Section> maybeDownSection = sections.stream()
-                .filter(section -> section.getUpStation().equals(station))
-                .findAny();
-        List<Section> editSections = new ArrayList<>(sections);
+        Optional<Section> maybeUpSection = findSectionByDownStation(station);
+        Optional<Section> maybeDownSection = findSectionByUpStation(station);
         if (maybeUpSection.isEmpty() && maybeDownSection.isEmpty()) {
-            return new Sections(editSections);
+            throw new IllegalArgumentException("삭제하려는 역이 존재하지 않습니다.");
         }
         if (maybeUpSection.isEmpty()) {
             Section downSection = maybeDownSection.get();
-            editSections.remove(downSection);
-            return new Sections(editSections);
+            return removeEdgeSection(downSection);
         }
         if (maybeDownSection.isEmpty()) {
             Section upSection = maybeUpSection.get();
-            editSections.remove(upSection);
-            return new Sections(editSections);
+            return removeEdgeSection(upSection);
         }
         Section upSection = maybeUpSection.get();
         Section downSection = maybeDownSection.get();
+        return removeStationByUpAndDownSection(upSection, downSection);
+    }
+
+    private Sections removeStationByUpAndDownSection(final Section upSection, final Section downSection) {
+        List<Section> editSections = new ArrayList<>(sections);
         editSections.remove(upSection);
         editSections.remove(downSection);
         Section mergedSection = upSection.mergeWith(downSection);
         editSections.add(mergedSection);
+        return new Sections(editSections);
+    }
+
+    private Sections removeEdgeSection(final Section edgeSection) {
+        List<Section> editSections = new ArrayList<>(sections);
+        editSections.remove(edgeSection);
         return new Sections(editSections);
     }
 
@@ -111,7 +115,7 @@ public class Sections {
         if (sections.isEmpty()) {
             return stations;
         }
-        Station station = getFirstStation();
+        Station station = findFirstStation();
         stations.add(station);
         while (upStationToDownStation.containsKey(station)) {
             station = upStationToDownStation.get(station).getDownStation();
@@ -120,23 +124,23 @@ public class Sections {
         return stations;
     }
 
-    public Station getFirstStation() {
+    public Station findFirstStation() {
         Map<Station, Section> downToUp = sections.stream()
                 .collect(Collectors.toMap(Section::getDownStation, section -> section));
         return sections.stream()
                 .filter(section -> !downToUp.containsKey(section.getUpStation()))
                 .findAny()
-                .orElse(Section.EMPTY_SECTION)
+                .orElseThrow(() -> new IllegalArgumentException("해당 역은 비어있는 역입니다."))
                 .getUpStation();
     }
 
-    public Station getLastStation() {
+    public Station findLastStation() {
         Map<Station, Section> upToDown = sections.stream()
                 .collect(Collectors.toMap(Section::getUpStation, section -> section));
         return sections.stream()
                 .filter(section -> !upToDown.containsKey(section.getDownStation()))
                 .findAny()
-                .orElse(Section.EMPTY_SECTION)
+                .orElseThrow(() -> new IllegalArgumentException("해당 역은 비어있는 역입니다."))
                 .getDownStation();
     }
 
@@ -150,5 +154,25 @@ public class Sections {
 
     public List<Section> getSections() {
         return new ArrayList<>(sections);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Sections sections1 = (Sections) o;
+        return Objects.equals(sections, sections1.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sections);
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "sections=" + sections +
+                '}';
     }
 }

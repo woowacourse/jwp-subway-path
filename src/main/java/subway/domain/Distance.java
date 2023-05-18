@@ -3,7 +3,6 @@ package subway.domain;
 import java.util.Objects;
 
 public class Distance {
-    public static final Distance EMPTY_DISTANCE = new Distance();
 
     private final int value;
 

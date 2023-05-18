@@ -1,243 +1,67 @@
 package subway.domain;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class LineTest {
 
-    private final Section SECTION = Section.of(new Station("잠실나루"), new Station("잠실새내"), new Distance(10));
+    private final Section SECTION = new Section(new Station("잠실나루"), new Station("잠실새내"), new Distance(10));
 
     @DisplayName("생성한다")
     @Test
-    void create() {
-        assertDoesNotThrow(
-                () -> new Line (
+    void 생성한다() {
+        assertDoesNotThrow(() ->
+                new Line (
                         new LineName("2호선"),
                         new LineColor("초록"),
-                        new Sections(List.of(SECTION))
-                )
-        );
+                        new Sections(List.of(SECTION))));
     }
 
-    @DisplayName("중간 구간을 추가한다.")
+    @DisplayName("노선명이 null이면 예외를 발생한다")
     @Test
-    void addSection() {
-        //given
-        Section newSection1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section newSection2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록"),
-                new Sections(List.of(SECTION))
-        );
-        //when
-        Line afterLine = line.addSection(newSection1, newSection2);
-        //then
-        assertThat(afterLine.getSections()).contains(newSection1, newSection2);
+    void 노선명이_NULL이면_예외를_발생한다() {
+        assertThatThrownBy(() ->
+                new Line(
+                        null,
+                        new LineColor("초록"),
+                        new Sections(List.of(SECTION))))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("중간 구간을 추가할 수 없는 경우 예외를 발생시킨다.")
-    @ParameterizedTest
-    @MethodSource("sectionsDummy")
-    void addSectionThrowException(final Section section1, final Section section2) {
-        //given
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록"),
-                new Sections(List.of(SECTION))
-        );
-        //then
-        assertThatThrownBy(() -> line.addSection(section1, section2)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    static Stream<Arguments> sectionsDummy() {
-        return Stream.of(
-                Arguments.arguments(
-                        Section.of(new Station("삼성"), new Station("잠실"), new Distance(3)),
-                        Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7))
-                ),
-                Arguments.arguments(
-                        Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3)),
-                        Section.of(new Station("잠실"), new Station("구의"), new Distance(7))
-                ),
-                Arguments.arguments(
-                        Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(2)),
-                        Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7))
-                ),
-                Arguments.arguments(
-                        Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3)),
-                        Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(8))
-                )
-        );
-    }
-
-    @DisplayName("상행 종점 구간을 추가한다.")
+    @DisplayName("노선색이 null이면 예외를 발생한다")
     @Test
-    void addFirstSection() {
-        //given
-        Section newSection = Section.of(new Station("삼성"), new Station("잠실나루"), new Distance(3));
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록"),
-                new Sections(List.of(SECTION))
-        );
-        //when
-        Line afterLine = line.addSection(Section.EMPTY_SECTION, newSection);
-        //then
-        assertThat(afterLine.getFirstStation()).isEqualTo(new Station("삼성"));
+    void 노선색이_NULL이면_예외를_발생한다() {
+        assertThatThrownBy(() ->
+                new Line(
+                        new LineName("2호선"),
+                        null,
+                        new Sections(List.of(SECTION))))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("하행 종점 구간을 추가한다.")
+    @DisplayName("노선의 구간이 null이면 예외를 발생한다")
     @Test
-    void addLastSection() {
-        //given
-        Section newSection = Section.of(new Station("잠실새내"), new Station("구의"), new Distance(3));
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록"),
-                new Sections(List.of(SECTION))
-        );
-        //when
-        Line afterLine = line.addSection(newSection, Section.EMPTY_SECTION);
-        //then
-        assertThat(afterLine.getLastStation()).isEqualTo(new Station("구의"));
+    void 노선의_구간이_NULL이면_예외를_발생한다() {
+        assertThatThrownBy(() ->
+                new Line(
+                        new LineName("2호선"),
+                        new LineColor("초록"),
+                        null))
+                .isInstanceOf(IllegalArgumentException.class);
     }
-
-    @DisplayName("초기 구간을 추가한다")
+    
+    @DisplayName("역이 중복된 이름이 있는지 검증한다")
     @Test
-    void addInitSection() {
+    void 역이_이미_있는지_검증한다() {
         //given
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록")
-        );
-        Section newSection = Section.of(new Station("잠실새내"), new Station("구의"), new Distance(3));
-        //when
-        Line afterLine = line.addInitSection(newSection);
+        Line line = new Line(new LineName("2호선"), new LineColor("빨강"), new Sections(List.of(SECTION)));
+        Station jamsilnaru = new Station("잠실나루");
         //then
-        assertAll(
-                () -> assertThat(afterLine.getFirstStation()).isEqualTo(new Station("잠실새내")),
-                () -> assertThat(afterLine.getLastStation()).isEqualTo(new Station("구의"))
-        );
-    }
-
-    @DisplayName("중간 역을 삭제한다.")
-    @Test
-    void removeStation() {
-        //given
-        Section section1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section section2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록"),
-                new Sections(List.of(section1, section2))
-        );
-        Station target = new Station("잠실");
-        //when
-        Line afterLine = line.removeStation(target);
-        //then
-        assertThat(afterLine.getSections())
-                .containsOnly(
-                        Section.of(
-                                new Station("잠실나루"),
-                                new Station("잠실새내"),
-                                new Distance(10)));
-    }
-
-    @DisplayName("하행종점 삭제한다.")
-    @Test
-    void removeFirstStation() {
-        //given
-        Section section1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section section2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록"),
-                new Sections(List.of(section1, section2))
-        );
-        Station target = new Station("잠실나루");
-        //when
-        Line afterLine = line.removeStation(target);
-        //then
-        assertAll(
-                () -> assertThat(afterLine.getFirstStation()).isEqualTo(new Station("잠실")),
-                () -> assertThat(afterLine.getLastStation()).isEqualTo(new Station("잠실새내"))
-        );
-    }
-
-    @DisplayName("상행종점을 삭제한다.")
-    @Test
-    void removeLastStation() {
-        //given
-        Section section1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section section2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록"),
-                new Sections(List.of(section1, section2))
-        );
-        Station target = new Station("잠실새내");
-        //when
-        Line afterLine = line.removeStation(target);
-        //then
-        assertAll(
-                () -> assertThat(afterLine.getFirstStation()).isEqualTo(new Station("잠실나루")),
-                () -> assertThat(afterLine.getLastStation()).isEqualTo(new Station("잠실"))
-        );
-    }
-
-    @DisplayName("한 구간만 노선에 존재하는 경우 한 역만 삭제해도 이어진 두 역이 다 지워진다.")
-    @Test
-    void removeStationWhenOnlyOneSectionExist() {
-        //given
-        Section section = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록"),
-                new Sections(List.of(section))
-        );
-        Station target1 = new Station("잠실나루");
-        Station target2 = new Station("잠실");
-        //when
-        Line afterLine1 = line.removeStation(target1);
-        Line afterLine2 = line.removeStation(target2);
-        //then
-        assertAll(
-                () -> assertThat(afterLine1.getSections()).isEmpty(),
-                () -> assertThat(afterLine1.getSections()).isEmpty()
-        );
-    }
-
-    @DisplayName("모든 역을 순서대로 반환한다.")
-    @Test
-    void findAllStation() {
-        //given
-        Section section1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section section2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
-        Line line = new Line (
-                new LineName("2호선"),
-                new LineColor("초록"),
-                new Sections(List.of(section1, section2))
-        );
-        //when
-        List<Station> stations = line.findAllStation();
-        //then
-        assertThat(stations).containsOnly(
-                        new Station("잠실나루"),
-                        new Station("잠실"),
-                        new Station("잠실새내"));
+        assertThatThrownBy(() -> line.validateNotDuplicatedStation(jamsilnaru)).isInstanceOf(IllegalArgumentException.class);
     }
 }

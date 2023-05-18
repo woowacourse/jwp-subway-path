@@ -21,7 +21,7 @@ public class LineService {
     public Long saveLine(final LineRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
         Line line = new Line(new LineName(request.getName()), new LineColor(request.getColor()), Sections.create());
-        subway.validateLine(line);
+        subway.validateNotDuplicatedLine(line);
         Line savedLine = lineRepository.save(line);
         return savedLine.getId();
     }
@@ -41,7 +41,7 @@ public class LineService {
                 new LineColor(request.getColor()),
                 new Sections(line.getSections())
         );
-        subway.deleteById(lineId).validateLine(updateLine);
+        subway.deleteById(lineId).validateNotDuplicatedLine(updateLine);
         lineRepository.update(updateLine);
     }
 

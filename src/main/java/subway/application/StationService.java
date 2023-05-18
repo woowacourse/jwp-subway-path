@@ -25,7 +25,7 @@ public class StationService {
     public Long saveStation(final StationRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
         Station station = new Station(request.getName());
-        subway.validateStation(station);
+        subway.validateNotDuplicatedStation(station);
         Station savedStation = stationRepository.save(station);
         return savedStation.getId();
     }
