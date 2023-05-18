@@ -54,7 +54,7 @@
 
 ### 5. 최단 경로 조회 API
 
-- [ ] GET '/stations/short-path?startStation=&endStation=
+- [x] GET '/sections/short-path?startLine=&startStation=&endLine&endStation=
     - Request : Query String
       - startLine (출발 노선 이름) 
       - startStation (출발역 이름)
