@@ -5,9 +5,9 @@ import subway.domain.line.domain.Line;
 import subway.domain.line.domain.ShortestPath;
 import subway.domain.lineDetail.entity.LineDetailEntity;
 import subway.domain.lineDetail.service.LineDetailService;
-import subway.domain.section.domain.SectionRouter;
 import subway.domain.section.domain.SectionLocator;
-import subway.domain.section.entity.SectionDetailEntity;
+import subway.domain.section.domain.SectionRouter;
+import subway.domain.section.entity.SectionEntity;
 import subway.domain.section.service.SectionService;
 import subway.domain.station.entity.StationEntity;
 import subway.domain.station.service.StationService;
@@ -30,7 +30,7 @@ public class LineService {
     }
 
     public Line findById(Long id) {
-        List<SectionDetailEntity> sectionDetails = sectionService.findByLineId(id);
+        List<SectionEntity> sectionDetails = sectionService.findByLineId(id);
 
         SectionLocator sectionLocator = SectionLocator.of(sectionDetails);
         SectionRouter sectionRouter = SectionRouter.of(sectionDetails);
@@ -39,13 +39,14 @@ public class LineService {
     }
 
     private Line createLine(Long lineId, SectionLocator sectionLocator, SectionRouter sectionRouter) {
-        StationEntity startStation = sectionLocator.findStartStation();
-        StationEntity endStation = sectionLocator.findEndStation();
+        Long startStation = sectionLocator.findStartStation();
+        Long endStation = sectionLocator.findEndStation();
 
-        List<StationEntity> shortestPath = sectionRouter.findShortestPath(startStation, endStation);
+        List<Long> shortestPath = sectionRouter.findShortestPath(startStation, endStation);
         LineDetailEntity lineDetail = lineDetailService.findLineById(lineId);
 
-        return new Line(lineDetail, shortestPath);
+        List<StationEntity> stations = stationService.findStationsByIds(shortestPath);
+        return new Line(lineDetail, stations);
     }
 
     public List<Line> findAll() {
@@ -58,12 +59,11 @@ public class LineService {
 
     public ShortestPath findShortestPath(Long startStationId, Long endStationId) {
         SectionRouter sectionRouter = SectionRouter.of(sectionService.findAll());
-        StationEntity startStation = stationService.findStationById(startStationId);
-        StationEntity endStation = stationService.findStationById(endStationId);
+        double shortestDistance = sectionRouter.findShortestDistance(startStationId, endStationId);
+        List<Long> shortestPath = sectionRouter.findShortestPath(startStationId, endStationId);
 
-        List<StationEntity> shortestPath = sectionRouter.findShortestPath(startStation, endStation);
-        double shortestDistance = sectionRouter.findShortestDistance(startStation, endStation);
+        List<StationEntity> stations = stationService.findStationsByIds(shortestPath);
 
-        return new ShortestPath(shortestPath, shortestDistance);
+        return new ShortestPath(stations, shortestDistance);
     }
 }

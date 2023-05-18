@@ -12,6 +12,7 @@ import subway.domain.station.entity.StationEntity;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class StationDao {
@@ -46,6 +47,14 @@ public class StationDao {
     public StationEntity findById(final Long id) {
         final String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public List<StationEntity> findByIds(List<Long> ids) {
+        final String sql = "select * from STATION where id in (?)";
+        String joinedIds = ids.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+        return jdbcTemplate.query(sql.replace("?", joinedIds), rowMapper);
     }
 
     public Optional<StationEntity> findByName(final String name) {

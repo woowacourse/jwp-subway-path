@@ -2,11 +2,14 @@ package subway.domain.station.service;
 
 import org.springframework.stereotype.Service;
 import subway.domain.station.dao.StationDao;
-import subway.domain.station.entity.StationEntity;
 import subway.domain.station.dto.StationRequest;
+import subway.domain.station.entity.StationEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -28,6 +31,13 @@ public class StationService {
 
     public StationEntity findStationById(final Long id) {
         return stationDao.findById(id);
+    }
+
+    public List<StationEntity> findStationsByIds(final List<Long> id) {
+        List<StationEntity> stations = stationDao.findByIds(id);
+        Map<Long, StationEntity> stationMap = stations.stream().collect(Collectors.toMap(StationEntity::getId, Function.identity()));
+        List<StationEntity> sortedStations = id.stream().map(stationMap::get).collect(Collectors.toList());
+        return sortedStations;
     }
 
     public List<StationEntity> findAllStation() {
