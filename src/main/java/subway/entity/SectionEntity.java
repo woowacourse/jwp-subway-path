@@ -2,11 +2,18 @@ package subway.entity;
 
 public class SectionEntity {
 
-    private final Long id;
+    private Long id;
     private final Long lineId;
     private final Integer distance;
     private final Long previousStationId;
     private final Long nextStationId;
+
+    public SectionEntity(Long lineId, Integer distance, Long previousStationId, Long nextStationId) {
+        this.lineId = lineId;
+        this.distance = distance;
+        this.previousStationId = previousStationId;
+        this.nextStationId = nextStationId;
+    }
 
     public SectionEntity(final Long id, final Long lineId, final Integer distance,
                          final Long previousStationId, final Long nextStationId) {
