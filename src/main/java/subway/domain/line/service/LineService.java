@@ -1,69 +1,43 @@
 package subway.domain.line.service;
 
 import org.springframework.stereotype.Service;
-import subway.domain.line.domain.Line;
-import subway.domain.line.domain.ShortestPath;
-import subway.domain.lineDetail.entity.LineDetailEntity;
-import subway.domain.lineDetail.service.LineDetailService;
-import subway.domain.section.domain.SectionLocator;
-import subway.domain.section.domain.SectionRouter;
-import subway.domain.section.entity.SectionEntity;
-import subway.domain.section.service.SectionService;
-import subway.domain.station.entity.StationEntity;
-import subway.domain.station.service.StationService;
+import subway.domain.line.dao.LineDao;
+import subway.domain.line.dto.LineRequest;
+import subway.domain.line.entity.LineEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class LineService {
 
-    private final LineDetailService lineDetailService;
-    private final SectionService sectionService;
-    private final StationService stationService;
+    private final LineDao lineDao;
 
-
-    public LineService(final LineDetailService lineDetailService, final SectionService sectionService, final StationService stationService) {
-        this.lineDetailService = lineDetailService;
-        this.sectionService = sectionService;
-        this.stationService = stationService;
+    public LineService(final LineDao lineDao) {
+        this.lineDao = lineDao;
     }
 
-    public Line findById(Long id) {
-        List<SectionEntity> sectionDetails = sectionService.findByLineId(id);
-
-        SectionLocator sectionLocator = SectionLocator.of(sectionDetails);
-        SectionRouter sectionRouter = SectionRouter.of(sectionDetails);
-
-        return createLine(id, sectionLocator, sectionRouter);
+    public List<LineEntity> findAllLine() {
+        return lineDao.findAll();
     }
 
-    private Line createLine(Long lineId, SectionLocator sectionLocator, SectionRouter sectionRouter) {
-        Long startStation = sectionLocator.findStartStation();
-        Long endStation = sectionLocator.findEndStation();
-
-        List<Long> shortestPath = sectionRouter.findShortestPath(startStation, endStation);
-        LineDetailEntity lineDetail = lineDetailService.findLineById(lineId);
-
-        List<StationEntity> stations = stationService.findStationsByIds(shortestPath);
-        return new Line(lineDetail, stations);
+    public LineEntity findLineById(Long id) {
+        return lineDao.findById(id);
     }
 
-    public List<Line> findAll() {
-        List<LineDetailEntity> lineDetails = lineDetailService.findAllLine();
-        return lineDetails.stream()
-                .map(LineDetailEntity::getId)
-                .map(this::findById)
-                .collect(Collectors.toList());
+    public LineEntity saveLine(final LineRequest request) {
+        Optional<LineEntity> line = lineDao.findByName(request.getName());
+        if (line.isPresent()) {
+            throw new IllegalArgumentException("노선 이름이 이미 존재합니다. 유일한 노선 이름을 사용해주세요.");
+        }
+        return lineDao.insert(new LineEntity(request.getName(), request.getColor()));
     }
 
-    public ShortestPath findShortestPath(Long startStationId, Long endStationId) {
-        SectionRouter sectionRouter = SectionRouter.of(sectionService.findAll());
-        double shortestDistance = sectionRouter.findShortestDistance(startStationId, endStationId);
-        List<Long> shortestPath = sectionRouter.findShortestPath(startStationId, endStationId);
+    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
+        lineDao.update(new LineEntity(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    }
 
-        List<StationEntity> stations = stationService.findStationsByIds(shortestPath);
-
-        return new ShortestPath(stations, shortestDistance);
+    public void deleteLineById(final Long id) {
+        lineDao.deleteById(id);
     }
 }

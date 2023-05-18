@@ -1,4 +1,4 @@
-package subway.domain.line.dto;
+package subway.domain.path.dto;
 
 public class ShortestPathResponse {
 

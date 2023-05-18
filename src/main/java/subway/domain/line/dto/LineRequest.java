@@ -1,14 +1,14 @@
-package subway.domain.lineDetail.dto;
+package subway.domain.line.dto;
 
-public class LineDetailRequest {
+public class LineRequest {
 
     private String name;
     private String color;
 
-    private LineDetailRequest() {
+    private LineRequest() {
     }
 
-    public LineDetailRequest(final String name, final String color) {
+    public LineRequest(final String name, final String color) {
         this.name = name;
         this.color = color;
     }

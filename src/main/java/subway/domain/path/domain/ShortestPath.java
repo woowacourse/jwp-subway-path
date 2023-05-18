@@ -1,4 +1,4 @@
-package subway.domain.line.domain;
+package subway.domain.path.domain;
 
 import subway.domain.station.entity.StationEntity;
 

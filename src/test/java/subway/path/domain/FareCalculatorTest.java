@@ -1,10 +1,14 @@
-package subway.line.domain;
+package subway.path.domain;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.domain.line.domain.FareCalculator;
+import subway.domain.path.domain.FareCalculator;
 
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class FareCalculatorTest {
 
     @ParameterizedTest
