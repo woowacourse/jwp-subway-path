@@ -92,4 +92,15 @@ public class StationDao {
             }
         });
     }
+
+    public Optional<StationEntity> findByName(final String stationName, final String lineName) {
+        String sql = "SELECT s.id, s.name, s.line_id FROM STATION s " +
+                "JOIN LINE l on s.line_id = l.id " +
+                "WHERE s.name = ? AND l.name = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationName, lineName));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package subway.domain.section;
 
+import subway.exception.distance.InvalidDistanceException;
+
 public class Distance {
 
     private final int distance;
@@ -11,7 +13,7 @@ public class Distance {
 
     private void validateDistanceIsPositive(final int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("거리는 자연수여야 합니다.");
+            throw new InvalidDistanceException();
         }
     }
 

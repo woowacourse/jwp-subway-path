@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static subway.data.LineFixture.LINE2_ENTITY;
+import static subway.data.LineFixture.LINE3_ENTITY;
 
 @JdbcTest
 class StationDaoTest {
@@ -142,5 +143,25 @@ class StationDaoTest {
         // then
         assertThat(result1.isPresent()).isFalse();
         assertThat(result2.isPresent()).isFalse();
+    }
+
+    @Test
+    @DisplayName("역 이름으로 역 정보를 조회한다.")
+    void find_station_by_station_name() {
+        // given
+        LineEntity insertedLine2 = lineDao.insert(LINE2_ENTITY);
+        LineEntity insertedLine3 = lineDao.insert(LINE3_ENTITY);
+        StationEntity Line2Jamsil = new StationEntity("잠실", insertedLine2.getId());
+        StationEntity Line3Jamsil = new StationEntity("잠실", insertedLine3.getId());
+        StationEntity insertedLine2Jamsil = stationDao.insert(Line2Jamsil);
+        StationEntity insertedLine3Jamsil = stationDao.insert(Line3Jamsil);
+
+
+        // when
+        Optional<StationEntity> result = stationDao.findByName(insertedLine2Jamsil.getName(), insertedLine2.getName());
+
+        // then
+        assertThat(result.get().getId()).isEqualTo(insertedLine2Jamsil.getId());
+        assertThat(result.get().getName()).isEqualTo(insertedLine2Jamsil.getName());
     }
 }

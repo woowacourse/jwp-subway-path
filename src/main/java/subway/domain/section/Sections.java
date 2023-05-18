@@ -49,7 +49,7 @@ public class Sections {
         return stations.contains(station.getName());
     }
 
-    private List<Station> findAllStation() {
+    public List<Station> findAllStation() {
         List<Station> stations = sections.stream()
             .map(Section::getLeftStation)
             .collect(Collectors.toList());

@@ -182,4 +182,14 @@ public class LineRepository {
 
         stationDao.deleteById(station.getId());
     }
+
+    public Station findStationByName(final String station, final String lineName) {
+        StationEntity stationEntity = stationDao.findByName(station, lineName).orElseThrow(NotFoundStationException::new);
+        return new Station(stationEntity.getId(), stationEntity.getName());
+    }
+
+    public Sections readAllSection() {
+        List<SectionStationEntity> sectionStationEntities = sectionDao.findAll();
+        return new Sections(getSections(sectionStationEntities));
+    }
 }
