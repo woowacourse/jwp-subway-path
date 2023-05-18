@@ -11,7 +11,7 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.repository.SectionRepository;
 import subway.domain.repository.StationRepository;
-import subway.ui.dto.request.StationRequest;
+import subway.ui.dto.request.StationUpdateRequest;
 import subway.ui.dto.response.StationResponse;
 
 @Service
@@ -24,14 +24,14 @@ public class StationService {
 		this.sectionRepository = sectionRepository;
 	}
 
-	public StationResponse createStation(final StationRequest stationRequest) {
+	public StationResponse createStation(final StationUpdateRequest stationUpdateRequest) {
 		final List<StationResponse> stations = findAll();
 		for (StationResponse station : stations) {
-			if (station.getName().equals(stationRequest.getName())) {
+			if (station.getName().equals(stationUpdateRequest.getName())) {
 				throw new IllegalArgumentException("이미 존재하는 역입니다");
 			}
 		}
-		final Station station = new Station(stationRequest.getName());
+		final Station station = new Station(stationUpdateRequest.getName());
 
 		final long stationId = stationRepository.createStation(station);
 		return new StationResponse(stationId, station.getName());
@@ -46,7 +46,7 @@ public class StationService {
 		return new StationResponse(stationId, station.getName());
 	}
 
-	public StationResponse updateStation(final long stationId, final StationRequest request) {
+	public StationResponse updateStation(final long stationId, final StationUpdateRequest request) {
 		final boolean isUpdated = stationRepository.updateStation(stationId, new Station(request.getName()));
 
 		if (!isUpdated) {

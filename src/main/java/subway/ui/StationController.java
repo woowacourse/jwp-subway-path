@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import subway.application.StationService;
-import subway.ui.dto.request.StationRequest;
+import subway.ui.dto.request.StationUpdateRequest;
 import subway.ui.dto.response.StationResponse;
 
 import java.net.URI;
@@ -20,8 +20,8 @@ public class StationController {
 	}
 
 	@PostMapping
-	public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-		final long stationId = stationService.createStation(stationRequest).getId();
+	public ResponseEntity<StationResponse> createStation(@RequestBody StationUpdateRequest stationUpdateRequest) {
+		final long stationId = stationService.createStation(stationUpdateRequest).getId();
 		final URI uri = URI.create("/stations/" + stationId);
 		return ResponseEntity.created(uri).build();
 	}
@@ -41,7 +41,7 @@ public class StationController {
 	@PutMapping("/{id}")
 	public ResponseEntity<StationResponse> updateStation(
 		@PathVariable(name = "id") long stationId,
-		@RequestBody StationRequest request) {
+		@RequestBody StationUpdateRequest request) {
 		final StationResponse stationResponse = stationService.updateStation(stationId, request);
 		return ResponseEntity.ok(stationResponse);
 	}

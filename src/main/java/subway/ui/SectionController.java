@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.SectionService;
 import subway.ui.dto.request.SectionDeleteRequest;
-import subway.ui.dto.request.SectionRequest;
+import subway.ui.dto.request.SectionUpdateRequest;
 import subway.ui.dto.response.SectionResponse;
 import subway.ui.dto.response.StationResponse;
 
@@ -28,8 +28,8 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<SectionResponse> createSection(@RequestBody SectionRequest sectionRequest) {
-        final SectionResponse response = sectionService.createSection(sectionRequest);
+    public ResponseEntity<SectionResponse> createSection(@RequestBody SectionUpdateRequest sectionUpdateRequest) {
+        final SectionResponse response = sectionService.createSection(sectionUpdateRequest);
         final URI uri = URI.create("/sections" + response.getId());
         return ResponseEntity.created(uri).build();
     }

@@ -1,15 +1,15 @@
 package subway.ui.dto.request;
 
-public class SectionRequest {
+public class SectionUpdateRequest {
 	private String lineName;
 	private String upStationName;
 	private String downStationName;
 	private Long distance;
 
-	public SectionRequest() {
+	public SectionUpdateRequest() {
 	}
 
-	public SectionRequest(final String lineName, final String upStationName, final String downStationName, final Long distance) {
+	public SectionUpdateRequest(final String lineName, final String upStationName, final String downStationName, final Long distance) {
 		this.lineName = lineName;
 		this.upStationName = upStationName;
 		this.downStationName = downStationName;

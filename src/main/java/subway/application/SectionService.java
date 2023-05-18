@@ -13,7 +13,7 @@ import subway.domain.repository.LineRepository;
 import subway.domain.repository.SectionRepository;
 import subway.persistence.StationJdbcRepository;
 import subway.ui.dto.request.SectionDeleteRequest;
-import subway.ui.dto.request.SectionRequest;
+import subway.ui.dto.request.SectionUpdateRequest;
 import subway.ui.dto.response.SectionResponse;
 import subway.ui.dto.response.StationResponse;
 
@@ -31,18 +31,18 @@ public class SectionService {
 		this.stationRepository = stationRepository;
 	}
 
-	public SectionResponse createSection(final SectionRequest sectionRequest) {
-		final Sections sections = new Sections(sectionRepository.findAllByLineName(sectionRequest.getLineName()));
+	public SectionResponse createSection(final SectionUpdateRequest sectionUpdateRequest) {
+		final Sections sections = new Sections(sectionRepository.findAllByLineName(sectionUpdateRequest.getLineName()));
 		final Section section = Section.of(
-			sectionRequest.getLineName(),
-			sectionRequest.getUpStationName(),
-			sectionRequest.getDownStationName(),
-			sectionRequest.getDistance()
+			sectionUpdateRequest.getLineName(),
+			sectionUpdateRequest.getUpStationName(),
+			sectionUpdateRequest.getDownStationName(),
+			sectionUpdateRequest.getDistance()
 		);
 		sections.addSection(section);
-		sectionRepository.createSection(sectionRequest.getLineName(), sections.getSections());
-		final Long sectionId = sectionRepository.findIdByUpDown(sectionRequest.getUpStationName(),
-			sectionRequest.getDownStationName()).getId();
+		sectionRepository.createSection(sectionUpdateRequest.getLineName(), sections.getSections());
+		final Long sectionId = sectionRepository.findIdByUpDown(sectionUpdateRequest.getUpStationName(),
+			sectionUpdateRequest.getDownStationName()).getId();
 		return new SectionResponse(sectionId, section.getLine().getName(), section.getUpStation().getName(),
 			section.getDownStation().getName(), section.getDistance());
 	}

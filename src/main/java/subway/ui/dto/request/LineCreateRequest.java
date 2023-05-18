@@ -1,12 +1,12 @@
 package subway.ui.dto.request;
 
-public class LineRequest {
+public class LineCreateRequest {
     private String name;
 
-    public LineRequest() {
+    public LineCreateRequest() {
     }
 
-    public LineRequest(final String name) {
+    public LineCreateRequest(final String name) {
         this.name = name;
     }
 

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Section;
 import subway.persistence.SectionJdbcRepository;
 import subway.persistence.StationJdbcRepository;
-import subway.ui.dto.request.SectionRequest;
+import subway.ui.dto.request.SectionUpdateRequest;
 import subway.ui.dto.response.SectionResponse;
 
 @SpringBootTest
@@ -45,7 +45,7 @@ class SectionServiceTest {
 	@Test
 	void createSection() {
 		// when
-		final SectionRequest request = new SectionRequest(lineName, jamsil, yeoksam, 10L);
+		final SectionUpdateRequest request = new SectionUpdateRequest(lineName, jamsil, yeoksam, 10L);
 		final SectionResponse response = sectionService.createSection(request);
 
 		// then
@@ -59,7 +59,7 @@ class SectionServiceTest {
 	@Test
 	void findAll() {
 		// when
-		final SectionRequest request = new SectionRequest(lineName, jamsil, yeoksam, 10L);
+		final SectionUpdateRequest request = new SectionUpdateRequest(lineName, jamsil, yeoksam, 10L);
 		final SectionResponse response = sectionService.createSection(request);
 		final List<Section> sections = sectionRepository.findAll();
 

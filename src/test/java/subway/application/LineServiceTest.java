@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.domain.Line;
 import subway.persistence.LineJdbcRepository;
-import subway.ui.dto.request.LineRequest;
+import subway.ui.dto.request.LineCreateRequest;
 import subway.ui.dto.response.LineResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +33,7 @@ class LineServiceTest {
 		given(repository.createLine(any())).willReturn(1L);
 
 		// when
-		final LineRequest request = new LineRequest("2호선");
+		final LineCreateRequest request = new LineCreateRequest("2호선");
 		final LineResponse response = service.createLine(request);
 
 		// then
@@ -79,7 +79,7 @@ class LineServiceTest {
 		given(repository.updateLine(anyLong(), any())).willReturn(true);
 
 		// when
-		final LineRequest request = new LineRequest("2호선");
+		final LineCreateRequest request = new LineCreateRequest("2호선");
 		final LineResponse response = service.updateLine(1L, request);
 
 		// then

@@ -17,7 +17,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.repository.SectionRepository;
 import subway.persistence.StationJdbcRepository;
-import subway.ui.dto.request.StationRequest;
+import subway.ui.dto.request.StationUpdateRequest;
 import subway.ui.dto.response.StationResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +39,7 @@ class StationServiceTest {
 		given(repository.createStation(any())).willReturn(1L);
 
 		// when
-		final StationRequest request = new StationRequest("잠실");
+		final StationUpdateRequest request = new StationUpdateRequest("잠실");
 		final StationResponse response = service.createStation(request);
 
 		// then
@@ -85,7 +85,7 @@ class StationServiceTest {
 		given(repository.updateStation(anyLong(), any())).willReturn(true);
 
 		// when
-		final StationRequest request = new StationRequest("삼성");
+		final StationUpdateRequest request = new StationUpdateRequest("삼성");
 		final StationResponse response = service.updateStation(1L, request);
 
 		// then

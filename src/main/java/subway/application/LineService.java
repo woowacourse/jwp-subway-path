@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import subway.domain.Line;
 import subway.domain.repository.LineRepository;
-import subway.ui.dto.request.LineRequest;
+import subway.ui.dto.request.LineCreateRequest;
 import subway.ui.dto.response.LineResponse;
 
 @Service
@@ -17,19 +17,19 @@ public class LineService {
 		this.lineRepository = lineRepository;
 	}
 
-	public LineResponse createLine(final LineRequest lineRequest) {
+	public LineResponse createLine(final LineCreateRequest lineCreateRequest) {
 		final List<LineResponse> lines = findAll();
 		for (LineResponse line : lines) {
-			checkLineExist(lineRequest, line);
+			checkLineExist(lineCreateRequest, line);
 		}
-		final Line line = new Line(lineRequest.getName());
+		final Line line = new Line(lineCreateRequest.getName());
 		final long lineId = lineRepository.createLine(line);
 
-		return new LineResponse(lineId, lineRequest.getName());
+		return new LineResponse(lineId, lineCreateRequest.getName());
 	}
 
-	private void checkLineExist(final LineRequest lineRequest, final LineResponse line) {
-		if (line.getName().equals(lineRequest.getName())) {
+	private void checkLineExist(final LineCreateRequest lineCreateRequest, final LineResponse line) {
+		if (line.getName().equals(lineCreateRequest.getName())) {
 			throw new IllegalArgumentException("이미 존재하는 노선입니다");
 		}
 	}
@@ -43,7 +43,7 @@ public class LineService {
 		return new LineResponse(lineId, line.getName());
 	}
 
-	public LineResponse updateLine(final long lineId, final LineRequest request) {
+	public LineResponse updateLine(final long lineId, final LineCreateRequest request) {
 		final boolean isUpdated = lineRepository.updateLine(lineId, new Line(request.getName()));
 
 		if (!isUpdated) {

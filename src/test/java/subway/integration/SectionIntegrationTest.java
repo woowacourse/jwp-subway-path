@@ -12,7 +12,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.ui.dto.request.SectionDeleteRequest;
-import subway.ui.dto.request.SectionRequest;
+import subway.ui.dto.request.SectionUpdateRequest;
 
 @DisplayName("지하철 구간 관련 기능")
 @Sql("/test-data.sql")
@@ -24,7 +24,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 	@BeforeEach
 	public void setUp() {
 		super.setUp();
-		SectionRequest request = new SectionRequest("2호선", "잠실", "역삼", 5L);
+		SectionUpdateRequest request = new SectionUpdateRequest("2호선", "잠실", "역삼", 5L);
 		deleteRequest = new SectionDeleteRequest("잠실", "역삼");
 		response = RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
