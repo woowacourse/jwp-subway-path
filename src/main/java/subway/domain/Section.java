@@ -18,6 +18,10 @@ public class Section {
         return left.equals(station) || right.equals(station);
     }
 
+    public boolean hasSameStationName(Station leftStation, Station rightStation) {
+        return leftStation.getName().equals(rightStation.getName());
+    }
+
     public Station getLeft() {
         return left;
     }

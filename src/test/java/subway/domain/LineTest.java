@@ -144,4 +144,121 @@ class LineTest {
         // then
         assertThat(stations).containsExactly(station1, station2, station3);
     }
+
+    @DisplayName("노선에 구간을 추가한다. - 상행 종점을 추가")
+    @Test
+    void addSectionAtLeftEnd() {
+        // given
+        Station newStation = new Station("강변역");
+        Section sectionToAdd = new Section(newStation, station1, new Distance(3));
+
+        // when
+        line.addSection(sectionToAdd);
+        LinkedList<Section> sections = line.getSections();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(sections).hasSize(3);
+            softly.assertThat(sections.getFirst().getLeft().getName()).isEqualTo("강변역");
+        });
+    }
+
+    @DisplayName("노선에 구간을 추가한다. - 하행 종점을 추가")
+    @Test
+    void addSectionAtRightEnd() {
+        // given
+        Station newStation = new Station("서초역");
+        Section sectionToAdd = new Section(station3, newStation, new Distance(3));
+
+        // when
+        line.addSection(sectionToAdd);
+        LinkedList<Section> sections = line.getSections();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(sections).hasSize(3);
+            softly.assertThat(sections.getLast().getRight().getName()).isEqualTo("서초역");
+        });
+    }
+
+    @DisplayName("노선에 구간을 추가한다. - 역과 역 사이 기준역 좌측에 추가한다.")
+    @Test
+    void addSectionLeftBetween() {
+        // given
+        Station newStation = new Station("삼성역");
+        Section section = new Section(newStation, station2, new Distance(4));
+
+        // when
+        line.addSection(section);
+        LinkedList<Section> sections = line.getSections();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(sections).hasSize(3);
+            softly.assertThat(sections.get(1).getLeft().getName()).isEqualTo("삼성역");
+        });
+    }
+
+    @DisplayName("노선에 구간을 추가한다. - 역과 역 사이 기준역 우측에 추가한다.")
+    @Test
+    void addSectionRightBetween() {
+        // given
+        Station newStation = new Station("삼성역");
+        Section section = new Section(station2, newStation, new Distance(4));
+
+        // when
+        line.addSection(section);
+        LinkedList<Section> sections = line.getSections();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(sections).hasSize(3);
+            softly.assertThat(sections.get(1).getRight().getName()).isEqualTo("삼성역");
+        });
+    }
+
+    @DisplayName("노선에 구간을 삭제한다. - 상행 종점을 삭제한다.")
+    @Test
+    void deleteSectionAtLeftEnd() {
+        // when
+        line.deleteSection(station1);
+        LinkedList<Section> sections = line.getSections();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(sections).hasSize(1);
+            softly.assertThat(sections.get(0).getLeft()).isEqualTo(station2);
+            softly.assertThat(sections.get(0).getRight()).isEqualTo(station3);
+        });
+    }
+
+    @DisplayName("노선에 구간을 삭제한다. - 하행 종점을 삭제한다.")
+    @Test
+    void deleteSectionAtRightEnd() {
+        // when
+        line.deleteSection(station3);
+        LinkedList<Section> sections = line.getSections();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(sections).hasSize(1);
+            softly.assertThat(sections.get(0).getLeft()).isEqualTo(station1);
+            softly.assertThat(sections.get(0).getRight()).isEqualTo(station2);
+        });
+    }
+
+    @DisplayName("노선에 구간을 삭제한다. - 역과 역 사이의 역을 삭제한다.")
+    @Test
+    void deleteSectionMiddle() {
+        // when
+        line.deleteSection(station2);
+        LinkedList<Section> sections = line.getSections();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(sections).hasSize(1);
+            softly.assertThat(sections.get(0).getLeft()).isEqualTo(station1);
+            softly.assertThat(sections.get(0).getRight()).isEqualTo(station3);
+        });
+    }
 }

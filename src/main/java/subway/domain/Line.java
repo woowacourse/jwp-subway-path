@@ -29,7 +29,7 @@ public class Line {
         Station leftStation = newSection.getLeft();
         Station rightStation = newSection.getRight();
 
-        if (newSection.getLeft().getName().equals(newSection.getRight().getName())) {
+        if (newSection.hasSameStationName(leftStation, rightStation)) {
             throw new IllegalArgumentException("구간의 역 이름은 같을 수 없습니다.");
         }
 
@@ -150,7 +150,7 @@ public class Line {
         List<Station> leftStations = findLeftStations();
         List<Station> rightStations = findRightStations();
         leftStations.removeAll(rightStations);
-        
+
         return leftStations.stream()
                 .anyMatch(leftStation -> leftStation.equals(station));
     }
