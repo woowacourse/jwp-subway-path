@@ -26,7 +26,8 @@ public class GlobalExceptionHandler {
             InvalidDistanceException.class,
             NameLengthException.class,
             DuplicateLineNameException.class,
-            IdenticalStationsException.class
+            IdenticalStationsException.class,
+            InvalidAdditionalFareException.class
     })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorDto handleBadRequest(RuntimeException exception, HttpServletRequest request) {

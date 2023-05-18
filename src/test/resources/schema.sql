@@ -13,6 +13,7 @@ create table if not exists LINE
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
+    additional_fare int not null,
     primary key(id)
 );
 

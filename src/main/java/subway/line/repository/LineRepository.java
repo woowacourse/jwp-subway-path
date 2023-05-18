@@ -76,6 +76,6 @@ public class LineRepository {
     }
 
     public void deleteLine(Line lineToDelete) {
-        lineDao.deleteLineByName(lineToDelete.getName());
+        lineDao.deleteLineById(lineToDelete.getId());
     }
 }
