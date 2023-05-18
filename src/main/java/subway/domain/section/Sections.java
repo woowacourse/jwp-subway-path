@@ -2,7 +2,11 @@ package subway.domain.section;
 
 import subway.domain.station.Station;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -86,7 +90,7 @@ public class Sections {
                             sections.remove(section);
                             return section.changeLeft(to, distance);
                         })
-                        .orElseThrow(() -> new IllegalStateException("수정된 구간을 찾을 수 없습니다.")));
+                        .orElseThrow(() -> new IllegalArgumentException("기존 두 역 사이의 거리가 부족합니다.")));
 
         sections.add(changedSection);
     }
