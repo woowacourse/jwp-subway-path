@@ -5,9 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import subway.application.SectionService;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.line.domain.section.application.SectionService;
+import subway.line.Line;
+import subway.line.application.LineDao;
+import subway.line.domain.section.application.SectionDao;
+import subway.line.domain.station.Station;
+import subway.line.domain.station.application.StationDao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

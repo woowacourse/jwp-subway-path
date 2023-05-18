@@ -10,12 +10,15 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.SectionService;
-import subway.application.exception.InvalidDistanceException;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.line.domain.section.application.SectionService;
+import subway.line.domain.section.domain.exception.InvalidDistanceException;
+import subway.line.application.LineDao;
+import subway.line.domain.section.domain.Distance;
+import subway.line.Line;
+import subway.line.domain.section.Section;
+import subway.line.domain.section.application.SectionDao;
+import subway.line.domain.station.Station;
+import subway.line.domain.station.application.StationDao;
 
 import java.util.List;
 

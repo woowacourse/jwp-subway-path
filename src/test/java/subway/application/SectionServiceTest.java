@@ -7,14 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.exception.InvalidDistanceException;
-import subway.application.exception.StationNotConnectedException;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.line.domain.section.domain.exception.InvalidDistanceException;
+import subway.line.domain.section.application.exception.StationNotConnectedException;
+import subway.line.application.LineDao;
+import subway.line.domain.section.application.SectionDao;
+import subway.line.domain.section.application.SectionService;
+import subway.line.domain.station.application.StationDao;
+import subway.line.domain.section.domain.Distance;
+import subway.line.Line;
+import subway.line.domain.station.Station;
 
 import static org.assertj.core.api.Assertions.*;
 
