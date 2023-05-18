@@ -56,4 +56,13 @@ public class StationRepository {
                 .collect(Collectors.toList());
     }
 
+    public void update(Station station) {
+        StationEntity stationEntity = StationConverter.domainToEntity(station);
+        int updateCount = stationDao.update(stationEntity);
+
+        if (updateCount == 0) {
+            throw new IllegalArgumentException("역이 수정되지 않았습니다.");
+        }
+    }
+
 }

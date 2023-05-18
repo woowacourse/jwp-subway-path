@@ -91,4 +91,43 @@ class StationRepositoryTest {
         assertThat(stations).isNotEmpty();
     }
 
+    /**
+     * INSERT INTO station(name)
+     * VALUES('가산'), ('남구로'), ('대림'), ('신풍'), ('구로'), ('독산'), ('신도림'), ('구로디지털단지');
+     */
+    @Test
+    @DisplayName("update 를 통해 Station 을 update 한다.")
+    void update() {
+        Station station = new Station(5, "구로로");
+
+        stationRepository.update(station);
+        Station updateStation = stationRepository.findByName("구로로");
+
+        assertThat(updateStation.getId()).isEqualTo(5L);
+        assertThat(updateStation.getName()).isEqualTo("구로로");
+    }
+
+    /**
+     * INSERT INTO station(name)
+     * VALUES('가산'), ('남구로'), ('대림'), ('신풍'), ('구로'), ('독산'), ('신도림'), ('구로디지털단지');
+     */
+    @Test
+    @DisplayName("update 를 통해 Station 을 update 한다. (실패)")
+    void updateFail() {
+        Station station = new Station(100, "구로로");
+
+        assertThatThrownBy(() -> stationRepository.update(station))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
+     * INSERT INTO station(name)
+     * VALUES('가산'), ('남구로'), ('대림'), ('신풍'), ('구로'), ('독산'), ('신도림'), ('구로디지털단지');
+     */
+
+    /**
+     * INSERT INTO station(name)
+     * VALUES('가산'), ('남구로'), ('대림'), ('신풍'), ('구로'), ('독산'), ('신도림'), ('구로디지털단지');
+     */
+
 }
