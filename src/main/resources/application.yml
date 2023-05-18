@@ -1,10 +1,23 @@
 spring:
+  profiles:
+    active: local
   h2:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL
-    driver-class-name: org.h2.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:13306/subway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: root
+
+  sql:
+    init:
+      schema-locations: classpath:schema.sql
+      mode: always
+    h2:
+      console:
+        enabled: true
+
   http:
     encoding:
       charset: UTF-8
