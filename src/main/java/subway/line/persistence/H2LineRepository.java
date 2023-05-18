@@ -70,6 +70,7 @@ public class H2LineRepository implements LineRepository {
             section.getDistance()))
         .collect(Collectors.toList()));
   }
+
   @Override
   public List<Line> findAll() {
     final List<LineEntity> lineEntities = lineDao.findAll();
