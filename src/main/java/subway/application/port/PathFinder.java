@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public interface PathFinder {
 
-    List<Station> findShortestPath(List<RouteMap> routeMap);
+    List<Station> findShortestPath(List<RouteMap> routeMap, Station departure, Station terminal);
 
-    Integer calculateDistance(List<RouteMap> routeMap);
+    Double calculateDistance(List<RouteMap> routeMap, Station departure, Station terminal);
 }

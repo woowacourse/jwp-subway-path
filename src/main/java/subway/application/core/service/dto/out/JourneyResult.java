@@ -7,18 +7,24 @@ import java.util.List;
 public class JourneyResult {
 
     private final List<Station> path;
-    private final Integer fee;
+    private final Double distance;
+    private final Integer fare;
 
-    public JourneyResult(List<Station> path, Integer fee) {
+    public JourneyResult(List<Station> path, Double distance, Integer fare) {
         this.path = path;
-        this.fee = fee;
+        this.distance = distance;
+        this.fare = fare;
     }
 
     public List<Station> getPath() {
         return path;
     }
 
-    public Integer getFee() {
-        return fee;
+    public Double getDistance() {
+        return distance;
+    }
+
+    public Integer getFare() {
+        return fare;
     }
 }
