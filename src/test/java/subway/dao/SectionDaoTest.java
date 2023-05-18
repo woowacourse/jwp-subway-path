@@ -9,7 +9,7 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Line;
 
 @JdbcTest
-@Sql(scripts = {"classpath:truncate.sql", "classpath:lineTest.sql", "classpath:sectionTest.sql", "classpath:stationTest.sql"})
+@Sql(scripts = {"classpath:data.sql", "classpath:data/lineTest.sql", "classpath:data/sectionTest.sql", "classpath:data/stationTest.sql"})
 class SectionDaoTest {
     private final SectionDao sectionDao;
 
