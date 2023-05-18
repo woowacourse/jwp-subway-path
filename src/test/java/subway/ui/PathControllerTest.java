@@ -51,7 +51,7 @@ class PathControllerTest {
                                 "용산역"
                         ),
                         28,
-                        2300
+                        1650
                 ));
 
         // expect
@@ -69,7 +69,7 @@ class PathControllerTest {
                         relaxedResponseFields(
                                 fieldWithPath("result.stations").description("역 목록"),
                                 fieldWithPath("result.totalDistance").description("총 거리"),
-                                fieldWithPath("result.totalPrice").description("요금")
+                                fieldWithPath("result.price").description("요금")
                         )
                 ));
     }

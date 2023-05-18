@@ -5,12 +5,12 @@ import java.util.List;
 public class PathResponse {
     private List<String> stations;
     private int totalDistance;
-    private int totalPrice;
+    private int price;
 
-    public PathResponse(List<String> stations, int totalDistance, int totalPrice) {
+    public PathResponse(List<String> stations, int totalDistance, int price) {
         this.stations = stations;
         this.totalDistance = totalDistance;
-        this.totalPrice = totalPrice;
+        this.price = price;
     }
 
     public List<String> getStations() {
@@ -21,7 +21,7 @@ public class PathResponse {
         return totalDistance;
     }
 
-    public int getTotalPrice() {
-        return totalPrice;
+    public int getPrice() {
+        return price;
     }
 }
