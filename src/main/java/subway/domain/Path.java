@@ -14,16 +14,20 @@ public class Path {
         this.sections = new ArrayList<>(sections);
     }
 
-    // TODO: ENUM 리팩터링
+    // TODO: Distance로 리팩터링
     public int calculateFare() {
         int distance = getDistance();
         if (distance <= 10) {
             return 1250;
         }
-        if (distance < 50) {
-            return 1250 + (distance - 10) / 5 * 100;
+        if (distance <= 50) {
+            return 1250 + calculateExtraFareFor(distance - 10, 5);
         }
-        return 2050 + (distance - 50) / 8 * 100;
+        return 2050 + calculateExtraFareFor(distance - 50, 8);
+    }
+
+    private int calculateExtraFareFor(int distance, int unit) {
+        return ((int)(Math.ceil(distance - 1) / unit) + 1) * 100;
     }
 
     public List<Section> getSections() {

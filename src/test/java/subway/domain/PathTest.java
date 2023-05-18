@@ -21,7 +21,7 @@ public class PathTest {
         var path = new Path(List.of(
                 new Section(STATION_A, STATION_C, 2),
                 new Section(STATION_C, STATION_D, 3),
-                new Section(STATION_D, STATION_E, 5)
+                new Section(STATION_D, STATION_E, 4)
         ));
 
         assertThat(path.calculateFare()).isEqualTo(1250);
@@ -29,7 +29,7 @@ public class PathTest {
 
     @DisplayName("10km~50km는 5km 당 100원이다")
     @ParameterizedTest(name = "10km + {0}km = {1}원")
-    @CsvSource({"4,1250", "5,1350", "6,1350", "10,1450", "40,2050"})
+    @CsvSource({"5,1350", "6,1450", "9,1450", "10,1450", "40,2050"})
     void calculate_fare_between_10km_50km(int extraDistance, int fare) {
         var path = new Path(List.of(
                 new Section(STATION_A, STATION_C, 10),
@@ -40,11 +40,11 @@ public class PathTest {
     }
 
     @DisplayName("50km 초과는 8km 당 100원이다")
-    @ParameterizedTest(name = "10km + {0}km = {1}원")
-    @CsvSource({"48,2150", "56, 2250", "64, 2350"})
+    @ParameterizedTest(name = "50km + {0}km = {1}원")
+    @CsvSource({"1,2150", "8, 2150", "9,2250", "16, 2250", "24, 2350"})
     void calculate_fare_over_50km(int extraDistance, int fare) {
         var path = new Path(List.of(
-                new Section(STATION_A, STATION_C, 10),
+                new Section(STATION_A, STATION_C, 50),
                 new Section(STATION_C, STATION_D, extraDistance)
         ));
 
