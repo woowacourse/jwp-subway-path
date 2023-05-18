@@ -20,31 +20,19 @@ public enum FareCalculator {
     }
 
     public static int calculate(double distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("거리 값은 음수일 수 없습니다. 유효한 거리 값을 입력해주세요.");
+        }
+
         int additionalFare = 0;
         for (FareCalculator value : FareCalculator.values()) {
             if (value.maxDistance < distance) {
-                additionalFare += (Math.ceil((value.maxDistance - value.minDistance) / value.additionalDistance)) * value.additionalFare;
+                additionalFare += Math.ceil((value.maxDistance - value.minDistance) / value.additionalDistance) * value.additionalFare;
             }
             if (value.minDistance < distance && distance < value.maxDistance) {
-                additionalFare += (Math.ceil((distance - value.minDistance) / value.additionalDistance)) * value.additionalFare;
+                additionalFare += Math.ceil((distance - value.minDistance) / value.additionalDistance) * value.additionalFare;
             }
         }
         return DEFAULT_FARE + additionalFare;
-    }
-
-    public int getMinDistance() {
-        return minDistance;
-    }
-
-    public int getMaxDistance() {
-        return maxDistance;
-    }
-
-    public int getAdditionalDistance() {
-        return additionalDistance;
-    }
-
-    public int getAdditionalFare() {
-        return additionalFare;
     }
 }
