@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
@@ -84,8 +85,8 @@ class SectionDaoTest {
                            .isEqualTo(new SectionEntity(1L, 2L, 1L, 5));
     }
 
-    @Test
     @DisplayName("특정 노선에 구간을 추가한다")
+    @Test
     void insert() {
         sectionDao.insert(new SectionEntity(1L, 1L, 3L, 5));
         SectionEntity sectionEntity = jdbcTemplate.queryForObject(
@@ -100,8 +101,34 @@ class SectionDaoTest {
                                  .isEqualTo(new SectionEntity(1L, 1L, 3L, 5));
     }
 
+    @DisplayName("특정 노선의 상행선 아이디를 통해 구간을 수정한다")
     @Test
+    void updateByUpStationId() {
+        SectionEntity updateSection = new SectionEntity(1L, 2L, 6L, 5);
+        sectionDao.updateByUpStationId(updateSection);
+
+        List<SectionEntity> sectionEntities = jdbcTemplate.query(
+                "SELECT * FROM section WHERE line_id = :lineId AND up_station_id = :upStationId",
+                new BeanPropertySqlParameterSource(updateSection),
+                sectionEntityRowMapper
+        );
+    }
+
+    @DisplayName("특정 노선의 상행선 아이디를 통해 구간을 수정한다")
+    @Test
+    void updateByDownStationId() {
+        SectionEntity updateSection = new SectionEntity(1L, 6L, 1L, 5);
+        sectionDao.updateByUpStationId(updateSection);
+
+        List<SectionEntity> sectionEntities = jdbcTemplate.query(
+                "SELECT * FROM section WHERE line_id = :lineId AND up_station_id = :upStationId",
+                new BeanPropertySqlParameterSource(updateSection),
+                sectionEntityRowMapper
+        );
+    }
+
     @DisplayName("특정 노선에 구간을 추가한다")
+    @Test
     void delete() {
         SectionEntity deleteSection = new SectionEntity(1L, 2L, 1L, 5);
         sectionDao.delete(deleteSection);
