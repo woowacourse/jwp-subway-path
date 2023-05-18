@@ -29,11 +29,6 @@ class StationDaoTest {
 
     @BeforeEach
     void init() {
-        Integer integer = jdbcTemplate.queryForObject("select count(*) from station", Integer.class);
-        System.out.println("############");
-        System.out.println("############");
-        System.out.println(integer);
-
         stationDao = new StationDao(jdbcTemplate, dataSource);
     }
 
