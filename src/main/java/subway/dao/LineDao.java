@@ -59,7 +59,7 @@ public class LineDao {
         return jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }

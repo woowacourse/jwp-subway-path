@@ -10,14 +10,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.jdbc.Sql;
 import subway.entity.LineEntity;
-import subway.entity.StationEntity;
-import subway.exception.LineNotFoundException;
 
 import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -145,7 +142,7 @@ class LineDaoTest {
 
         int updateCount = lineDao.update(lineEntity);
 
-        List<LineEntity> lines = jdbcTemplate.query("SELECT * FROM station WHERE id = ?", lineEntityRowMapper, 1L);
+        List<LineEntity> lines = jdbcTemplate.query("SELECT * FROM line WHERE id = ?", lineEntityRowMapper, 1L);
         assertThat(updateCount).isEqualTo(1);
         assertThat(lines.get(0).getId()).isEqualTo(1L);
         assertThat(lines.get(0).getName()).isEqualTo("2호선");
@@ -171,33 +168,28 @@ class LineDaoTest {
      * INSERT INTO line(name, color)
      * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
      */
-    // deleteById
+    @Test
+    @DisplayName("Line 을 삭제한다. (성공)")
+    @Sql("/line_test_data.sql")
+    void delete_success() {
+        int removeCount = lineDao.deleteById(1L);
 
+        List<LineEntity> deleteLineEntity = jdbcTemplate.query("SELECT * FROM line WHERE id = ?", lineEntityRowMapper, 1L);
+        assertThat(deleteLineEntity).isEmpty();
+        assertThat(removeCount).isEqualTo(1);
+    }
 
-//    @Test
-//    @DisplayName("이름으로 id 조회 성공")
-//    @Sql("/line_test_data.sql")
-//    void findIdByName_success() {
-//        // given
-//        final String name = "2호선";
-//
-//        // when
-//        final LineEntity entity = lineDao.findByName(name);
-//
-//        // then
-//        assertThat(entity.getId()).isEqualTo(1L);
-//    }
-//
-//    @Test
-//    @DisplayName("이름으로 id 조회 실패 - 존재하지 않는 이름 입력")
-//    @Sql("/line_test_data.sql")
-//    void findIdByName_fail_name_not_found() {
-//        // given
-//        final String name = "포비";
-//
-//        // expected
-//        assertThatThrownBy(() -> lineDao.findByName(name))
-//                .isInstanceOf(LineNotFoundException.class);
-//    }
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    @Test
+    @DisplayName("Line 을 삭제한다. (실패)")
+    @Sql("/line_test_data.sql")
+    void delete_fail() {
+        int removeCount = lineDao.deleteById(3L);
+
+        assertThat(removeCount).isZero();
+    }
 
 }
