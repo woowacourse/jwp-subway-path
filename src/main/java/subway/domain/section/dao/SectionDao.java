@@ -16,5 +16,5 @@ public interface SectionDao {
 
     Optional<SectionEntity> findNeighborSection(final Long lineId, final Long baseId, final Direction direction);
 
-    void updateStationInSection(SectionEntity sectionEntity);
+    void update(SectionEntity sectionEntity);
 }

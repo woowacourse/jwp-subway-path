@@ -53,7 +53,7 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
-    public void updateStationInSection(final SectionEntity sectionEntity) {
+    public void update(final SectionEntity sectionEntity) {
 
     }
 
