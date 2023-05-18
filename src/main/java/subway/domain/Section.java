@@ -24,7 +24,7 @@ public class Section {
     }
 
     private void validateDifferentUpAndDown(final Station upStation, final Station downStation) {
-        if(upStation.getId() == null || downStation.getId() == null) {
+        if (upStation.getId() == null || downStation.getId() == null) {
             return;
         }
         if (upStation.equals(downStation)) {

@@ -74,16 +74,16 @@ public class LineRepository {
                     .filter(entity ->
                             entity.getUpStationId() != 0 && entity.getDownStationId() != 0)
                     .map(sectionEntity -> sectionDao.findBySectionIdWithStationName(sectionEntity.getId())
-                                    .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_SECTION)))
+                            .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_SECTION)))
                     .collect(Collectors.toList());
 
             List<Section> sections = sectionEntities.stream()
                     .map(section -> new Section(
-                                    new Station(section.getUpStationEntity().getId(), section.getUpStationEntity().getName()),
-                                    new Station(section.getDownStationEntity().getId(),
-                                            section.getDownStationEntity().getName()),
-                                    section.getSectionDistance()
-                            ))
+                            new Station(section.getUpStationEntity().getId(), section.getUpStationEntity().getName()),
+                            new Station(section.getDownStationEntity().getId(),
+                                    section.getDownStationEntity().getName()),
+                            section.getSectionDistance()
+                    ))
                     .collect(Collectors.toList());
 
             // 라인 리스트에 추가
