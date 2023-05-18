@@ -12,7 +12,7 @@ import subway.global.common.ResultResponse;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/line-detail")
+@RequestMapping("/line")
 public class LineController {
 
     private final LineService lineService;
@@ -25,7 +25,7 @@ public class LineController {
     public ResponseEntity<ResultResponse> createLine(@RequestBody final LineRequest lineRequest) {
         LineEntity lineEntity = lineService.saveLine(lineRequest);
         LineResponse lineResponse = LineResponse.of(lineEntity);
-        return ResponseEntity.created(URI.create("/line-detail/" + lineResponse.getId())).body(new ResultResponse(201, "노선 추가 성공", lineResponse));
+        return ResponseEntity.created(URI.create("/line/" + lineResponse.getId())).body(new ResultResponse(201, "노선 추가 성공", lineResponse));
     }
 
     @PutMapping("/{id}")

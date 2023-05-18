@@ -35,7 +35,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
-                .when().post("/line-detail")
+                .when().post("/line")
                 .then().log().all().
                 extract();
 
@@ -52,7 +52,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
-                .when().post("/line-detail")
+                .when().post("/line")
                 .then().log().all().
                 extract();
 
@@ -61,7 +61,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
-                .when().post("/line-detail")
+                .when().post("/line")
                 .then().log().all().
                 extract();
 
@@ -77,7 +77,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
-                .when().post("/line-detail")
+                .when().post("/line")
                 .then().log().all().
                 extract();
 
@@ -87,7 +87,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest2)
-                .when().put("/line-detail/{lineId}", lineId)
+                .when().put("/line/{lineId}", lineId)
                 .then().log().all()
                 .extract();
 
@@ -103,7 +103,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
-                .when().post("/line-detail")
+                .when().post("/line")
                 .then().log().all().
                 extract();
 
@@ -111,7 +111,7 @@ public class LineIntegrationTest extends IntegrationTest {
         final Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .when().delete("/line-detail/{lineId}", lineId)
+                .when().delete("/line/{lineId}", lineId)
                 .then().log().all()
                 .extract();
 
