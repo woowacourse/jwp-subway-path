@@ -29,13 +29,13 @@ public class SectionService {
 
     public void addSection(final SectionRequest sectionRequest) {
         Long lineId = sectionRequest.getLineId();
+        Line line = getLineById(lineId);
         List<Section> sections = sectionDao.findByLineId(lineId);
 
-        saveSection(sectionRequest, lineId, sections);
+        saveSection(sectionRequest, line, sections);
     }
 
-    private void saveSection(final SectionRequest sectionRequest, final Long lineId, final List<Section> sections) {
-        Line line = getLineById(lineId);
+    private void saveSection(final SectionRequest sectionRequest, final Line line, final List<Section> sections) {
         Subway subway = Subway.of(line, sections);
         Station baseStation = getStationById(sectionRequest.leftStationId());
         Station nextStation = getStationById(sectionRequest.rightStationId());
