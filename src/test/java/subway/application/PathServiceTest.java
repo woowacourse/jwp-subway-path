@@ -2,7 +2,6 @@ package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.mock;
 import static subway.helper.SubwayPathFixture.stationsFixture;
@@ -56,8 +55,6 @@ class PathServiceTest {
      */
     @BeforeEach
     void setUp() {
-        given(stationDao.doesNotExistBy(anyString()))
-                .willReturn(false);
         InMemorySectionDao sectionDao = new InMemorySectionDao();
         pathService = new PathService(stationDao, sectionDao, pricePolicy);
 
@@ -120,14 +117,12 @@ class PathServiceTest {
     @DisplayName("없는 역을 조회하면 예외가 발생해야 한다.")
     void findPath_invalidStation() {
         // given
-        PathRequest pathRequest = new PathRequest("A역", "B역");
-        given(stationDao.doesNotExistBy(anyString()))
-                .willReturn(true);
+        PathRequest pathRequest = new PathRequest("A역", "?역");
 
         // expect
         assertThatThrownBy(() -> pathService.findPath(pathRequest))
                 .isInstanceOf(IllegalPathException.class)
-                .hasMessage("해당되는 역을 찾을 수 없습니다.");
+                .hasMessage("해당 역이 구간에 존재하지 않습니다.");
     }
 
     @Test

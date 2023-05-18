@@ -1,6 +1,7 @@
 package subway.application;
 
 import java.util.List;
+import java.util.Objects;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -31,8 +32,9 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findPath(PathRequest pathRequest) {
-        Station originStation = getStation(pathRequest.getOriginStationName());
-        Station destinationStation = getStation(pathRequest.getDestinationStationName());
+        validateSameStation(pathRequest);
+        Station originStation = new Station(pathRequest.getOriginStationName());
+        Station destinationStation = new Station(pathRequest.getDestinationStationName());
         validateStationInSection(originStation, destinationStation);
         Path path = getPath(originStation, destinationStation);
         List<String> stations = path.getStations();
@@ -40,11 +42,10 @@ public class PathService {
         return new PathResponse(stations, distance, path.getPrice(pricePolicy));
     }
 
-    private Station getStation(String stationName) {
-        if (stationDao.doesNotExistBy(stationName)) {
-            throw new IllegalPathException("해당되는 역을 찾을 수 없습니다.");
+    private void validateSameStation(PathRequest request) {
+        if (Objects.equals(request.getOriginStationName(), request.getDestinationStationName())) {
+            throw new IllegalPathException("조회할 역이 서로 같습니다.");
         }
-        return new Station(stationName);
     }
 
     private void validateStationInSection(Station originStation, Station destinationStation) {
