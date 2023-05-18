@@ -40,7 +40,7 @@ public class StationRepository {
     }
 
     public void deleteById(final Long id) {
-        validateHasStaionInLine(id);
+        validateHasStationInLine(id);
 
         final int count = stationDao.deleteById(id);
 
@@ -49,7 +49,7 @@ public class StationRepository {
         }
     }
 
-    private void validateHasStaionInLine(final Long id) {
+    private void validateHasStationInLine(final Long id) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByStationId(id);
 
         if (!sectionEntities.isEmpty()) {
