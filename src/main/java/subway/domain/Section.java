@@ -21,8 +21,17 @@ public class Section {
     }
 
     public boolean hasStation(Station station) {
-        return upStation.equals(station) || downStation.equals(station);
+        return isUpStation(station) || isDownStation(station);
     }
+
+    public boolean isUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
 
     public boolean isStationExistsAtDirection(Station station, Direction direction) {
         if (direction == Direction.UP) {
