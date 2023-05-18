@@ -68,10 +68,4 @@ public class SectionJdbcRepository implements SectionRepository {
         String sql = "SELECT * FROM section WHERE up_station = ? AND down_station = ?";
         return jdbcTemplate.queryForObject(sql, sectionRowMapper, upStation, downStation);
     }
-
-    @Override
-    public List<Section> findSectionsContainStation(final Station station) {
-        String sql = "SELECT * FROM section WHERE up_station = ? OR down_station = ?";
-        return jdbcTemplate.query(sql, sectionRowMapper, station.getName(), station.getName());
-    }
 }

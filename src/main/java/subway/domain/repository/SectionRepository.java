@@ -16,6 +16,4 @@ public interface SectionRepository {
     void deleteBySection(String lineName, String upStation, String downStation);
 
     Section findIdByUpDown(String upStation, String downStation);
-
-    List<Section> findSectionsContainStation(Station station);
 }

@@ -101,7 +101,6 @@ class StationServiceTest {
 		final Section section1 = new Section(new Line("2호선"), new Station("잠실"), new Station("역삼"), 10L);
 		final Section section2 = new Section(new Line("2호선"), new Station("역삼"), new Station("선릉"), 8L);
 		given(repository.deleteById(anyLong())).willReturn(true);
-		given(sectionRepository.findSectionsContainStation(any())).willReturn(List.of(section1, section2));
 
 		// when
 		final long deletedId = service.deleteById(1L);

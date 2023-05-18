@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Sections {
-	private static final int ONE_SECTION = 1;
 	private static final int END_POINT_SIZE = 1;
 	private List<Section> sections;
 
@@ -34,6 +33,13 @@ public class Sections {
 		addMiddleSection(newSection);
 	}
 
+	private void isSectionDuplicate(final Section newSection) {
+		if (sections.stream()
+			.anyMatch(section -> section.validateDuplicateSection(newSection))) {
+			throw new IllegalArgumentException("이미 존재하는 구간입니다.");
+		}
+	}
+
 	private void addMiddleSection(final Section newSection) {
 		Section originSection = getOriginSection(newSection);
 		sections.remove(originSection);
@@ -45,6 +51,14 @@ public class Sections {
 		originSection.changeSection(newSection);
 		sections.add(originSection);
 		sections.add(newSection);
+	}
+
+	private Section getOriginSection(final Section newSection) {
+		return sections.stream()
+			.filter(section -> section.getUpStation().equals(newSection.getUpStation()) || section.getDownStation()
+				.equals(newSection.getDownStation()))
+			.findAny()
+			.orElseThrow(() -> new IllegalArgumentException("접하는 역이 없습니다."));
 	}
 
 	private boolean validateDistance(final Section originSection, final Section newSection) {
@@ -77,56 +91,6 @@ public class Sections {
 		return downStations.get(0);
 	}
 
-	public void remove(final Station station) {
-		validateStationExistence(station);
-
-		if (sections.size() == ONE_SECTION) {
-			sections.clear();
-		}
-
-		final List<Section> stationSection = getStationSection(station);
-		if (stationSection.size() == END_POINT_SIZE) {
-			sections.removeAll(stationSection);
-		}
-
-		removeMiddleStation(stationSection, station);
-	}
-
-	private void validateStationExistence(final Station station) {
-		if (sections.stream()
-			.noneMatch(section -> section.hasStation(station))) {
-			throw new IllegalArgumentException("삭제할 역이 존재하지 않습니다.");
-		}
-	}
-
-	private void removeMiddleStation(final List<Section> stationSection, final Station station) {
-		Section section = stationSection.get(0).mergedSection(stationSection.get(1), station);
-
-		sections.removeAll(stationSection);
-		sections.add(section);
-	}
-
-	private List<Section> getStationSection(final Station station) {
-		return sections.stream()
-			.filter(section -> section.hasStation(station))
-			.collect(Collectors.toList());
-	}
-
-	private void isSectionDuplicate(final Section newSection) {
-		if (sections.stream()
-			.anyMatch(section -> section.validateDuplicateSection(newSection))) {
-			throw new IllegalArgumentException("이미 존재하는 구간입니다.");
-		}
-	}
-
-	private Section getOriginSection(final Section newSection) {
-		return sections.stream()
-			.filter(section -> section.getUpStation().equals(newSection.getUpStation()) || section.getDownStation()
-				.equals(newSection.getDownStation()))
-			.findAny()
-			.orElseThrow(() -> new IllegalArgumentException("접하는 역이 없습니다."));
-	}
-
 	public List<Station> getSortedStations() {
 		Station nowStation = findUpEndPoint();
 		List<Station> sortStation = new ArrayList<>();
@@ -143,33 +107,71 @@ public class Sections {
 		return sortStation;
 	}
 
-	public List<Section> getSections() {
-		return sections;
-	}
+	public Map<Line, List<Section>> remove(final Station station) {
+		final Map<Line, List<Section>> sectionsByLine = distributeByLine(sections);
 
-	public Map<Line, List<Section>> deleteAndMerge(final Station station, final List<Section> sectionsContainStation) {
-		final Map<Line, List<Section>> sectionByLine = distributeByLine(sectionsContainStation);
-		for (Line line : sectionByLine.keySet()) {
+		if (noStationInSection(station)){
+			return sectionsByLine;
+		}
 
-			final List<Section> sectionInLine = sectionByLine.get(line);
-			sections.removeAll(sectionInLine);
+		for (Line line : sectionsByLine.keySet()) {
+			final List<Section> lineSections = sectionsByLine.get(line);
 
-			final Section firstSection = sectionInLine.get(0);
-			final Section nextSection = sectionInLine.get(1);
-
-			addIfDownSame(firstSection, nextSection, station, line);
-			addIfDownSame(nextSection, firstSection, station, line );
+			if (isEndStation(lineSections, station)) {
+				final Section endSection = getEndSection(lineSections, station);
+				lineSections.remove(endSection);
+				continue;
+			}
+			removeMiddleStation(lineSections, station, line);
 		}
 
 		return distributeByLine(sections);
 	}
 
-	private Map<Line, List<Section>> distributeByLine(final List<Section> sectionsContainStation) {
-		return sectionsContainStation.stream()
+	private Map<Line, List<Section>> distributeByLine(final List<Section> sections) {
+		return sections.stream()
 			.collect(Collectors.groupingBy(Section::getLine));
 	}
 
-	private void addIfDownSame(final Section section, final Section nextSection, final Station station, final Line line) {
+	private boolean noStationInSection(final Station station) {
+		return sections.stream().noneMatch(section -> section.hasStation(station));
+	}
+
+	private boolean isEndStation(final List<Section> lineSections, final Station station) {
+		final List<Section> stationSection = getStationSection(lineSections, station);
+		return stationSection.size() == END_POINT_SIZE;
+	}
+
+	private List<Section> getStationSection(final List<Section> lineSections, final Station station) {
+		return lineSections.stream()
+			.filter(section -> section.hasStation(station))
+			.collect(Collectors.toList());
+	}
+
+	private Section getEndSection(final List<Section> lineSections, final Station station) {
+		return lineSections.stream()
+			.filter(section -> section.hasStation(station))
+			.findAny().get();
+	}
+
+	private void removeMiddleStation(final List<Section> stationSection, final Station station, final Line line) {
+		final List<Section> twoSections = findTwoSections(stationSection, station);
+
+		final Section firstSection = twoSections.get(0);
+		final Section nextSection = twoSections.get(1);
+
+		addIfDownSame(firstSection, nextSection, station, line);
+		addIfDownSame(nextSection, firstSection, station, line);
+	}
+
+	private List<Section> findTwoSections(final List<Section> stationSection, final Station station) {
+		return stationSection.stream()
+			.filter(section -> section.hasStation(station))
+			.collect(Collectors.toList());
+	}
+
+	private void addIfDownSame(final Section section, final Section nextSection, final Station station,
+		final Line line) {
 		if (isSameDownUp(section, nextSection, station)) {
 			final Section mergedSection = mergeSection(section, nextSection, line);
 			sections.add(mergedSection);
@@ -184,5 +186,9 @@ public class Sections {
 		final Line line) {
 		return new Section(line, section.getUpStation(),
 			nextSection.getDownStation(), addDistance(section, nextSection));
+	}
+
+	public List<Section> getSections() {
+		return sections;
 	}
 }

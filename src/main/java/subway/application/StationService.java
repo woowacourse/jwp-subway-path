@@ -58,14 +58,14 @@ public class StationService {
 
 	public long deleteById(final Long stationId) {
 		final Station station = stationRepository.findById(stationId);
-		final List<Section> sectionsContainStation = sectionRepository.findSectionsContainStation(station);
 		final boolean isDelete = stationRepository.deleteById(stationId);
 
 		if (!isDelete) {
-			throw new NullPointerException("역 삭제에 실패했습니다");
+			throw new NullPointerException("삭제할 역이 존재하지 않습니다");
 		}
+
 		final Sections sections = new Sections(sectionRepository.findAll());
-		final Map<Line, List<Section>> mergedSections = sections.deleteAndMerge(station, sectionsContainStation);
+		final Map<Line, List<Section>> mergedSections = sections.remove(station);
 		mergedSections.keySet()
 			.forEach(line -> sectionRepository.createSection(line.getName(), mergedSections.get(line)));
 
