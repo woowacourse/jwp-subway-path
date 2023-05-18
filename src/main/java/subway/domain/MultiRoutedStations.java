@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.graph.AbstractBaseGraph;
@@ -53,16 +51,5 @@ public class MultiRoutedStations extends WeightedMultigraph<Station, StationEdge
             stations.addEdge(section.getLeft(), section.getRight(), stationEdge);
             stations.setEdgeWeight(stationEdge, section.getDistance().getValue());
         }
-    }
-
-    public Optional<StationEdge> getEdgeByLine(final Station sourceVertex, final Station targetVertex,
-                                               final Line line) {
-        Set<StationEdge> allEdges = getAllEdges(sourceVertex, targetVertex);
-        if (allEdges.isEmpty()) {
-            return Optional.empty();
-        }
-        return allEdges.stream()
-                .filter(edge -> Objects.equals(edge.getLine(), line))
-                .findFirst();
     }
 }

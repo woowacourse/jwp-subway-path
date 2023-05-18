@@ -9,6 +9,9 @@ import static subway.domain.SectionFixture.LINE2_SECTIONS;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +27,7 @@ class MultiRoutedStationsTest {
 
         MultiRoutedStations result = MultiRoutedStations.from(sectionsByLine);
 
+        // TODO 더 직관적으로 결과를 확인할 수 없을까?
         for (Entry<Line, RoutedStations> entry : sectionsByLine.entrySet()) {
             checkResult(entry.getKey(), entry.getValue().extractSections(), result);
         }
@@ -33,11 +37,24 @@ class MultiRoutedStationsTest {
                              final List<Section> expectedSections,
                              final MultiRoutedStations result) {
         for (Section section : expectedSections) {
-            StationEdge edge = result.getEdgeByLine(section.getLeft(), section.getRight(), expectedLine).get();
+            StationEdge edge = getEdgeByLine(section.getLeft(), section.getRight(), expectedLine, result).get();
             assertThat(edge.getLine())
                     .isEqualTo(expectedLine);
             assertThat(result.getEdgeWeight(edge))
                     .isEqualTo(section.getDistance().getValue());
         }
+    }
+
+    private Optional<StationEdge> getEdgeByLine(final Station sourceVertex,
+                                                final Station targetVertex,
+                                                final Line line,
+                                                final MultiRoutedStations result) {
+        Set<StationEdge> allEdges = result.getAllEdges(sourceVertex, targetVertex);
+        if (allEdges.isEmpty()) {
+            return Optional.empty();
+        }
+        return allEdges.stream()
+                .filter(edge -> Objects.equals(edge.getLine(), line))
+                .findFirst();
     }
 }
