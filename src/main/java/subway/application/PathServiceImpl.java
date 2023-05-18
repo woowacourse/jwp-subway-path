@@ -1,5 +1,6 @@
 package subway.application;
 
+import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -38,20 +39,6 @@ public class PathServiceImpl implements PathService {
         return new PathDto(findPath(start, end, graph), findDistance(start, end, graph));
     }
 
-    private List<StationResponse> findPath(Station start, Station end, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<Station> shortestPath = dijkstraShortestPath.getPath(start, end).getVertexList();
-
-        return  shortestPath.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    private double findDistance(Station start, Station end, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return dijkstraShortestPath.getPathWeight(start, end);
-    }
-
     private void addSectionsToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph, List<Sections> allSections) {
         for (Sections sections : allSections) {
             for (Section lineSection : sections.getSections()) {
@@ -60,5 +47,19 @@ public class PathServiceImpl implements PathService {
                 stationGraph.setEdgeWeight(stationGraph.addEdge(lineSection.getUpStation(), lineSection.getDownStation()), lineSection.getDistance());
             }
         }
+    }
+
+    private List<StationResponse> findPath(Station start, Station end, Graph<Station, DefaultWeightedEdge> graph) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(graph);
+        List<Station> shortestPath = dijkstraShortestPath.getPath(start, end).getVertexList();
+
+        return  shortestPath.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    private double findDistance(Station start, Station end, Graph<Station, DefaultWeightedEdge> graph) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(graph);
+        return dijkstraShortestPath.getPathWeight(start, end);
     }
 }
