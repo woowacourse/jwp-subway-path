@@ -18,7 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.Sections;
+import subway.domain.Station;
+import subway.domain.fare.FareCalculator;
 import subway.domain.path.PathException;
+import subway.domain.path.PathFinder;
+import subway.domain.path.PathInfo;
 import subway.ui.dto.PathRequest;
 import subway.ui.dto.PathResponse;
 import subway.ui.dto.StationResponse;
@@ -32,6 +37,10 @@ class PathServiceTest {
     StationDao stationDao;
     @Mock
     SectionDao sectionDao;
+    @Mock
+    FareCalculator fareCalculator;
+    @Mock
+    PathFinder pathFinder;
     @InjectMocks
     PathService pathService;
 
@@ -55,6 +64,9 @@ class PathServiceTest {
         given(stationDao.findById(kundae.getId())).willReturn(Optional.of(kundae));
         given(stationDao.findById(gangnam.getId())).willReturn(Optional.of(gangnam));
         given(sectionDao.findAll()).willReturn(List.of(kundaeJamsil10, jamsilGangnam10));
+        given(pathFinder.findPath(any(Sections.class), any(Station.class), any(Station.class)))
+            .willReturn(new PathInfo(List.of(kundae, jamsil, gangnam), new Sections(List.of(kundaeJamsil10, jamsilGangnam10))));
+        given(fareCalculator.calculate(any(Sections.class))).willReturn(1450);
 
         // when
         PathRequest request = new PathRequest(kundae.getId(), gangnam.getId());

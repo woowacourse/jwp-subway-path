@@ -7,23 +7,24 @@ import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import subway.domain.Sections;
 import subway.domain.Station;
 
+@Component
 public class JGraphTPathFinder implements PathFinder {
 
-    private final List<Station> pathVerticies;
-    private final Sections pathEdges;
-
-    public JGraphTPathFinder(Sections sections, Station source, Station target) {
+    @Override
+    public PathInfo findPath(Sections sections, Station source, Station target) {
         GraphPath<Station, SectionWeightedEdge> shortestPath;
         shortestPath = makeGraphPath(sections, source, target);
 
-        pathVerticies = setPathVerticies(shortestPath);
-        pathEdges = new Sections(shortestPath.getEdgeList().stream()
+        List<Station> pathVerticies = setPathVerticies(shortestPath);
+        Sections pathEdges = new Sections(shortestPath.getEdgeList().stream()
             .map(SectionWeightedEdge::toSection)
             .collect(toList()));
+        return new PathInfo(pathVerticies, pathEdges);
     }
 
     private GraphPath<Station, SectionWeightedEdge> makeGraphPath(Sections sections,
@@ -63,15 +64,5 @@ public class JGraphTPathFinder implements PathFinder {
         sectionWeightedEdges.forEach(edge -> graph.addEdge(edge.getSource(), edge.getTarget(), edge));
         sectionWeightedEdges.forEach(edge -> graph.setEdgeWeight(edge, edge.getWeight()));
         return graph;
-    }
-
-    @Override
-    public List<Station> getPathVerticies() {
-        return pathVerticies;
-    }
-
-    @Override
-    public Sections getPathEdges() {
-        return pathEdges;
     }
 }

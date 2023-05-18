@@ -2,8 +2,11 @@ package subway.domain.fare;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import subway.domain.Sections;
 
+@Component
 public class FareCalculator {
 
     private final static int BASE_FARE = 1250;
