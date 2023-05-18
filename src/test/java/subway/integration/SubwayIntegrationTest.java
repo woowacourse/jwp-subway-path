@@ -41,5 +41,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(pathResponse.getStations()).extracting("id")
                 .containsExactlyElementsOf(expectedIds);
+        assertThat(pathResponse.getFare()).isEqualTo(1250);
+        assertThat(pathResponse.getDistance()).isEqualTo(7);
     }
 }

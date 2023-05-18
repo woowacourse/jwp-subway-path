@@ -16,7 +16,7 @@ public class Path {
 
     // TODO: ENUM 리팩터링
     public int calculateFare() {
-        int distance = getDistanceOf(sections);
+        int distance = getDistance();
         if (distance <= 10) {
             return 1250;
         }
@@ -24,13 +24,6 @@ public class Path {
             return 1250 + (distance - 10) / 5 * 100;
         }
         return 2050 + (distance - 50) / 8 * 100;
-    }
-
-    private int getDistanceOf(List<Section> sections) {
-        return sections.stream()
-                .map(Section::getDistance)
-                .reduce(Integer::sum)
-                .orElseThrow(EmptyPathException::new);
     }
 
     public List<Section> getSections() {
@@ -42,5 +35,12 @@ public class Path {
                 .flatMap(section -> section.getStations().stream())
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public int getDistance() {
+        return sections.stream()
+                .map(Section::getDistance)
+                .reduce(Integer::sum)
+                .orElseThrow(EmptyPathException::new);
     }
 }

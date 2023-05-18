@@ -55,5 +55,7 @@ class SubwayServiceTest {
         assertThat(path.getStations())
                 .extracting("id")
                 .containsExactlyElementsOf(expectedIds);
+        assertThat(path.getDistance()).isEqualTo(7);
+        assertThat(path.getFare()).isEqualTo(1250);
     }
 }
