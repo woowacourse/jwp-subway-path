@@ -13,3 +13,18 @@ spring:
       mode: always
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
+
+springdoc:
+  packages-to-scan: subway
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: subway.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /subway-api-docs/json
+    groups:
+      enabled: true
+  cache:
+    disabled: true

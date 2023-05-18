@@ -1,5 +1,7 @@
 package subway.ui;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/lines")
+@Tag(name = "Lines", description = "노선 API")
 public class LineController {
 
     private final LineQueryService lineQueryService;
@@ -34,6 +37,7 @@ public class LineController {
     }
 
     @PostMapping
+    @Operation(summary = "노선 생성 API", description = "새로운 노선을 생성합니다.")
     public ResponseEntity<CreationLineResponse> createLine(@Valid @RequestBody final CreationLineRequest request) {
         final Line line = lineCommandService.saveLine(request.getName(), request.getColor());
         final CreationLineResponse response = CreationLineResponse.from(line);
@@ -41,6 +45,7 @@ public class LineController {
     }
 
     @GetMapping
+    @Operation(summary = "모든 노선 조회 API", description = "저장된 모든 노선의 정보를 조회합니다.")
     public ResponseEntity<List<ReadLineResponse>> findAllLines() {
         final List<Line> lines = lineQueryService.findAllLine();
 
@@ -52,6 +57,7 @@ public class LineController {
     }
 
     @GetMapping("/{lineId}")
+    @Operation(summary = "특정 노선 조회 API", description = "저장된 특정 노선의 정보를 조회합니다.")
     public ResponseEntity<ReadLineResponse> findLineById(@PathVariable final Long lineId) {
         final Line line = lineQueryService.findLineById(lineId);
         final ReadLineResponse response = ReadLineResponse.of(line);
@@ -59,6 +65,7 @@ public class LineController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "노선 삭제 API", description = "저장된 노선을 삭제합니다.")
     @DeleteMapping("/{lineId}")
     public ResponseEntity<Void> deleteLine(@PathVariable final Long lineId) {
         lineCommandService.deleteLineById(lineId);
@@ -66,6 +73,7 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
+    @Operation(summary = "노선 구간 추가 API", description = "노선에 구간을 생성합니다.")
     public ResponseEntity<Void> postAddSection(@PathVariable final Long lineId,
                                                @Valid @RequestBody final CreationSectionRequest request) {
         lineCommandService.saveSection(lineId, request.getUpStationId(), request.getDownStationId(), request.getDistance());
@@ -73,9 +81,12 @@ public class LineController {
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
+    @Operation(summary = "노선 역 삭제 API", description = "노선에 저장된 역을 삭제합니다.")
     public ResponseEntity<Void> deleteStation(@PathVariable final Long lineId,
                                               @PathVariable final Long stationId) {
         lineCommandService.deleteStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 }
+
+

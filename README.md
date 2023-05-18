@@ -44,7 +44,7 @@
 - [x] 경로를 조회하는 기능
 - [x] 요금을 계산하는 기능
 
-2. 테이블 구조
+### 2. 테이블 구조
 
 ```sql
 CREATE TABLE IF NOT EXISTS line
@@ -80,7 +80,10 @@ CREATE TABLE IF NOT EXISTS section
 );
 ```
 
-3. API 문서
+### 3. API 문서
+
+[Swagger 문서](http://localhost:8080/swagger-ui/index.html)
+
 - 역 (`/stations`)
   - 역 등록 `POST / 201 Location/stations/{id}`
   - 역 단일 조회 `GET /{id} 200`

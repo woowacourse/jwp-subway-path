@@ -1,5 +1,7 @@
 package subway.ui;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/path")
+@Tag(name = "Path", description = "경로 API")
 public class PathController {
 
     private final PathService pathService;
@@ -39,6 +42,7 @@ public class PathController {
     }
 
     @GetMapping
+    @Operation(summary = "경로와 요금 확인 API", description = "출발점과 도착점 사이의 경로와 금액을 조회합니다.")
     public ResponseEntity<ReadPathResponse> findShortestPath(@Valid @RequestBody final ReadPathPriceRequest request) {
         final Station sourceStation = stationService.findStationById(request.getSourceStationId());
         final Station targetStation = stationService.findStationById(request.getTargetStationId());
