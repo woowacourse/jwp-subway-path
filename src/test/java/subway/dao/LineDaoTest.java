@@ -59,7 +59,6 @@ class LineDaoTest {
      * INSERT INTO line(name, color)
      * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
      */
-    // findById
     @Test
     @DisplayName("Line 을 ID 를 통해서 찾는다. (조회 성공)")
     @Sql("/line_test_data.sql")
@@ -85,7 +84,30 @@ class LineDaoTest {
      * INSERT INTO line(name, color)
      * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
      */
-    // findByName
+    @Test
+    @DisplayName("Line 을 name 을 통해서 찾는다. (조회 성공)")
+    @Sql("/line_test_data.sql")
+    void findByName_notEmpty() {
+        List<LineEntity> lineEntity = lineDao.findByName("2호선");
+
+        assertThat(lineEntity).hasSize(1)
+                .anyMatch(entity -> entity.getId() == 1
+                        && entity.getName().equals("2호선")
+                        && entity.getColor().equals("bg-green-600"));
+    }
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    @Test
+    @DisplayName("Line 을 name 을 통해서 찾는다. (조회 실패)")
+    @Sql("/line_test_data.sql")
+    void findByName_Empty() {
+        List<LineEntity> lineEntity = lineDao.findByName("디투당선");
+
+        assertThat(lineEntity).hasSize(0);
+    }
 
     /**
      * INSERT INTO line(name, color)
