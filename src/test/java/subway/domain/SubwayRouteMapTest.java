@@ -8,7 +8,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class SubwayTest {
+class SubwayRouteMapTest {
     private final Station station1 = new Station(1L, "station1");
     private final Station station2 = new Station(2L, "station2");
     private final Station station3 = new Station(3L, "station3");
@@ -24,7 +24,7 @@ class SubwayTest {
         final Section section1 = new Section(station1, station2, new Distance(1));
         final Section section2 = new Section(station2, station3, new Distance(2));
         final Section section3 = new Section(station2, station4, new Distance(3));
-        final Subway subway = new Subway(List.of(section1, section2, section3));
+        final SubwayRouteMap subway = new SubwayRouteMap(List.of(section1, section2, section3));
 
         //when
         final long distanceBetween1 = subway.shortestDistanceBetween(station1, station3);
@@ -44,7 +44,7 @@ class SubwayTest {
         final Section section1 = new Section(station1, station2, new Distance(1));
         final Section section2 = new Section(station2, station3, new Distance(2));
         final Section section3 = new Section(station2, station4, new Distance(3));
-        final Subway subway = new Subway(List.of(section1, section2, section3));
+        final SubwayRouteMap subway = new SubwayRouteMap(List.of(section1, section2, section3));
 
         //when
         final List<Station> path1 = subway.shortestPathBetween(station1, station3);

@@ -5,15 +5,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RouteMap {
+public class LineRouteMap {
     private final List<Station> lineStations;
 
-    public RouteMap(final List<Section> sections) {
+    public LineRouteMap(final List<Section> sections) {
         lineStations = stationsOf(sections);
     }
 
-    private List<Station> stationsOf(final List<Section> sections){
-        if(sections.isEmpty()){
+    private List<Station> stationsOf(final List<Section> sections) {
+        if (sections.isEmpty()) {
             return Collections.emptyList();
         }
         return linkStations(sections);

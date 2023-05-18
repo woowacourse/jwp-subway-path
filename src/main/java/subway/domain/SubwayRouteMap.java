@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Subway {
+public class SubwayRouteMap {
     private final WeightedMultigraph<String, DefaultWeightedEdge> graph;
     private final DijkstraShortestPath shortestPath;
     private final Map<String, Station> stations;
 
-    public Subway(final List<Section> sections) {
+    public SubwayRouteMap(final List<Section> sections) {
         graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         insertStation(sections);
         shortestPath = new DijkstraShortestPath(graph);
@@ -61,7 +61,7 @@ public class Subway {
     public List<Station> shortestPathBetween(final Station from, final Station to) {
         final List<String> pathNames = shortestPath.getPath(from.getName(), to.getName()).getVertexList();
         return pathNames.stream()
-                .map(pathName -> stations.get(pathName))
+                .map(stations::get)
                 .collect(Collectors.toList());
     }
 }
