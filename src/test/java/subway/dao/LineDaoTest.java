@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.entity.LineEntity;
+import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -27,14 +28,17 @@ class LineDaoTest {
     private DataSource dataSource;
 
     private LineDao lineDao;
+    private StationDao stationDao;
 
     @BeforeEach
     void setUp() {
         lineDao = new LineDao(jdbcTemplate, dataSource);
+        stationDao = new StationDao(jdbcTemplate, dataSource);
     }
 
     @AfterEach
     void clear() {
+        jdbcTemplate.execute("DELETE FROM station");
         jdbcTemplate.execute("DELETE FROM line");
     }
 
@@ -79,5 +83,34 @@ class LineDaoTest {
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("등록된 역 id로 노선을 조회한다.")
+    void find_line_by_station_id() {
+        // given
+        LineEntity insertedLine2 = lineDao.insert(LINE2_ENTITY);
+        StationEntity insertedJamsil = stationDao.insert(new StationEntity("잠실", insertedLine2.getId()));
+
+        // when
+        Optional<LineEntity> result = lineDao.findByStationId(insertedJamsil.getId());
+
+        // then
+        assertThat(result.get().getId()).isEqualTo(insertedLine2.getId());
+        assertThat(result.get().getName()).isEqualTo(insertedLine2.getName());
+    }
+
+    @Test
+    @DisplayName("노선 id로 노선을 조회한다.")
+    void find_line_by_id() {
+        // given
+        LineEntity insertedLine2 = lineDao.insert(LINE2_ENTITY);
+
+        // when
+        Optional<LineEntity> result = lineDao.findById(insertedLine2.getId());
+
+        // then
+        assertThat(result.get().getId()).isEqualTo(insertedLine2.getId());
+        assertThat(result.get().getName()).isEqualTo(insertedLine2.getName());
     }
 }
