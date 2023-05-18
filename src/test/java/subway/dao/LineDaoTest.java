@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
 import subway.entity.LineEntity;
 import subway.fixture.LineFixture.Line1;
 import subway.fixture.LineFixture.Line2;
@@ -21,7 +20,6 @@ import subway.fixture.LineFixture.Line2;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @JdbcTest
-@Sql({"classpath:schema-test.sql"})
 class LineDaoTest {
 
     private LineDao lineDao;
