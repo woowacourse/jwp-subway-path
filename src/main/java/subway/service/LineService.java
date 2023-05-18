@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.controller.exception.SubwayException;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.Subway;
@@ -25,14 +24,8 @@ public class LineService {
 
     @Transactional
     public Long register(final LineDto lineDto) {
-        validateDuplicatedName(lineDto.getName());
-        return subwayRepository.registerLine(lineDto.getName(), lineDto.getColor());
-    }
-
-    private void validateDuplicatedName(final String name) {
-        if (subwayRepository.isDuplicatedName(name)) {
-            throw new SubwayException("중복된 이름의 노선이 존재합니다.");
-        }
+        final Line line = new Line(lineDto.getName(), lineDto.getColor());
+        return subwayRepository.registerLine(line);
     }
 
     @Transactional(readOnly = true)

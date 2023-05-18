@@ -11,7 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.controller.exception.StationException;
-import subway.controller.exception.SubwayException;
+import subway.controller.exception.BusinessException;
+import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.SectionDto;
 import subway.dto.StationDto;
@@ -37,7 +38,7 @@ class StationServiceTest {
     @Test
     void 노선에_역을_등록할_수_있다() {
         // given
-        final Long lineId = subwayRepository.registerLine("8호선", "분홍색");
+        final Long lineId = subwayRepository.registerLine(new Line("8호선", "분홍색"));
 
         // when
         stationService.register(new SectionDto(lineId, "잠실역", "석촌역", 10));
@@ -54,7 +55,7 @@ class StationServiceTest {
 
         // expect
         assertThatThrownBy(() -> stationService.register(sectionDto))
-                .isInstanceOf(SubwayException.class)
+                .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("노선 정보가 잘못되었습니다.");
     }
 
@@ -62,7 +63,7 @@ class StationServiceTest {
     @Test
     void 노선에_역을_제거할_수_있다() {
         // given
-        final Long lineId = subwayRepository.registerLine("8호선", "분홍색");
+        final Long lineId = subwayRepository.registerLine(new Line("8호선", "분홍색"));
         stationService.register(new SectionDto(lineId, "잠실역", "석촌역", 10));
         stationService.register(new SectionDto(lineId, "석촌역", "송파역", 10));
 
@@ -77,7 +78,7 @@ class StationServiceTest {
     @Test
     void 존재하지_않는_역을_제거하면_예외가_발생한다() {
         // given
-        final Long id = subwayRepository.registerLine("8호선", "분홍색");
+        final Long id = subwayRepository.registerLine(new Line("8호선", "분홍색"));
 
         // expect
         assertThatThrownBy(() -> stationService.delete(new StationDto(id, "터틀역")))

@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import subway.controller.exception.SubwayException;
+import subway.controller.exception.BusinessException;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -31,11 +31,6 @@ public class SubwayRepository {
         this.sectionDao = sectionDao;
     }
 
-    public boolean isDuplicatedName(final String name) {
-        final Optional<LineEntity> lineEntity = lineDao.findByName(name);
-        return lineEntity.isPresent();
-    }
-
     public Line findLineByName(final String name) {
         final LineEntity lineEntity = findLineEntityByName(name);
 
@@ -44,11 +39,15 @@ public class SubwayRepository {
 
     private LineEntity findLineEntityByName(final String name) {
         return lineDao.findByName(name)
-                .orElseThrow(() -> new SubwayException("해당 이름을 가진 노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException("해당 이름을 가진 노선이 존재하지 않습니다."));
     }
 
-    public Long registerLine(final String name, final String color) {
-        return lineDao.insert(name, color);
+    public Long registerLine(final Line line) {
+        final Optional<LineEntity> lineEntity = lineDao.findByName(line.getName());
+        if (lineEntity.isPresent()) {
+            throw new BusinessException("해당 이름의 노선이 이미 존재합니다.");
+        }
+        return lineDao.insert(line.getName(), line.getColor());
     }
 
     public Line updateLine(final Line line) {
@@ -74,7 +73,7 @@ public class SubwayRepository {
 
     private Long findStationIdByName(final String name) {
         final StationEntity stationEntity = stationDao.findByName(name)
-                .orElseThrow(() -> new SubwayException("해당 이름을 가진 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException("해당 이름을 가진 역이 존재하지 않습니다."));
         return stationEntity.getId();
     }
 
@@ -95,7 +94,7 @@ public class SubwayRepository {
     public Line findLineById(final Long id) {
         final List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
         final LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> new SubwayException("노선 정보가 잘못되었습니다."));
+                .orElseThrow(() -> new BusinessException("노선 정보가 잘못되었습니다."));
         return toLine(lineEntity, sectionEntities);
     }
 
@@ -112,7 +111,7 @@ public class SubwayRepository {
 
     private Station toStation(final Long stationId) {
         final StationEntity stationEntity = stationDao.findById(stationId)
-                .orElseThrow(() -> new SubwayException("역 정보가 잘못되엇습니다."));
+                .orElseThrow(() -> new BusinessException("역 정보가 잘못되엇습니다."));
         return new Station(stationEntity.getName());
     }
 

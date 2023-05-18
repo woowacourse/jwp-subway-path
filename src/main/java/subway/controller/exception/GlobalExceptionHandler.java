@@ -9,10 +9,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.controller.exception.LineException;
-import subway.controller.exception.SectionException;
-import subway.controller.exception.StationException;
-import subway.controller.exception.SubwayException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -32,8 +28,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
     }
 
-    @ExceptionHandler(SubwayException.class)
-    public ResponseEntity<String> handleSubwayException(final SubwayException error) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<String> handleBusinessException(final BusinessException error) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
     }
 
@@ -48,8 +44,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorMessageByFields);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(final Exception error) {
+        return ResponseEntity.internalServerError().body("서버에 일시적인 문제가 생겼습니다. 관리자에게 문의하세요.");
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleException(final IllegalArgumentException error) {
-        return ResponseEntity.internalServerError().body("서버에 일시적인 문제가 생겼습니다. 관리자에게 문의하세요.");
+        return ResponseEntity.badRequest().body("올바르지 않은 요청입니다.");
     }
 }

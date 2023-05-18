@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.controller.exception.SubwayException;
+import subway.controller.exception.BusinessException;
 import subway.domain.Line;
 import subway.domain.Subway;
 import subway.dto.LineDto;
@@ -59,12 +59,12 @@ class LineServiceTest {
     @Test
     void 존재하는_노선_이름으로_등록시_예외가_발생한다() {
         // given
-        subwayRepository.registerLine("8호선", "분홍색");
+        subwayRepository.registerLine(new Line("8호선", "분홍색"));
 
         // expect
         assertThatThrownBy(() -> lineService.register(new LineDto("8호선", "분홍색")))
-                .isInstanceOf(SubwayException.class)
-                .hasMessageContaining("중복된 이름의 노선이 존재합니다.");
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("해당 이름의 노선이 이미 존재합니다.");
     }
 
     @Test
@@ -92,7 +92,7 @@ class LineServiceTest {
 
         // expect
         assertThatThrownBy(() -> lineService.read(100000L))
-                .isInstanceOf(SubwayException.class)
+                .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("노선 정보가 잘못되었습니다.");
     }
 
