@@ -44,18 +44,19 @@
 
 ### 노선 API
 
-| Method | URI         | Description |
-|--------|-------------|-------------|
-| POST   | /lines      | 노선 추가       |
-| GET    | /lines      | 전체 노선과 역 조회 |
-| GET    | /lines/{id} | 특정 노선과 역 조회 |
+| Method | URI                                  | Description  |
+|--------|--------------------------------------|--------------|
+| POST   | /lines                               | 노선 추가        |
+| GET    | /lines                               | 전체 노선과 역 조회  |
+| GET    | /lines/{id}                          | 특정 노선과 역 조회  |
+| DELETE | /lines/{lineId}/stations/{stationId} | 특정 노선에서 역 삭제 |
+| POST   | /lines/{lineId}/sections             | 특정 노선에 구간 등록 |
 
 ### 역 API
 
 | Method | URI       | Description |
 |--------|-----------|-------------|
 | POST   | /stations | 역 추가        |
-| DELETE | /stations | 역 삭제        |
 
 ## Line API 요청 / 응답 예시
 
@@ -80,7 +81,7 @@ Content-Type: application/json
 Location: /lines/1
 ```
 
-### GET : 노선 목록 조회
+### GET : 모든 노선 목록 조회
 
 #### Request
 
@@ -120,7 +121,7 @@ Content-Type: application/json
 ]
 ```
 
-### GET : 노선 조회
+### GET : 특정 노선 조회
 
 #### Request
 
@@ -145,6 +146,45 @@ Content-Type: application/json
 }
 ```
 
+### DELETE : 특정 노선에서 역 삭제
+
+#### Request
+
+```http request
+DELETE /lines/{lineId}/stations/{stationId} HTTP/1.1
+Host: localhost:8080
+```
+
+#### Response
+
+``` http request
+HTTP/1.1 204 No Content
+Content-Type: application/json
+```
+
+### POST : 특정 노선에 구간 추가
+
+#### Request
+
+```http request
+POST /lines/{id}/sections HTTP/1.1
+Host: localhost:8080
+
+{
+    "upStationId" : 1L,
+    "downStationId" : 2L,
+    "distance" : 10
+}
+```
+
+#### Response
+
+``` http request
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: /lines/1/sections/1
+```
+
 ---
 
 ## Station API 요청 / 응답 예시
@@ -158,10 +198,7 @@ POST /stations HTTP/1.1
 Host: localhost:8080
 
 {
-    "upStation" : "잠실역",
-    "downStation" : "잠실새내역",
-    "distance" : 10,
-    "lineId" : 1
+    "name": "잠실역"
 }
 ```
 
@@ -171,23 +208,4 @@ Host: localhost:8080
 HTTP/1.1 201 Created
 Content-Type: application/json
 Location: /stations/1
-```
-
-### DELETE : 특정 역 삭제
-
-#### Request
-
-```http request
-DELETE /stations HTTP/1.1
-Host: localhost:8080
-
-{
-    "name" : "잠실역"
-}
-```
-
-#### Response
-
-``` http request
-HTTP/1.1 204 No Content
 ```
