@@ -78,23 +78,35 @@ public class Subway {
         if (hasStation(left) && hasStation(right)) {
             throw new SubwayServiceException(INVALID_ALREADY_EXISTS_TWO_STATIONS_MESSAGE);
         }
-        if (!hasStation(left) && !hasStation(right) && !isStationEmpty()) {
+        if (hasNoStation(left) && hasNoStation(right) && isStationsPresent()) {
             throw new SubwayServiceException(INVALID_NOT_EXISTS_TWO_STATIONS_MESSAGE);
         }
     }
 
+    private boolean hasStation(final Station station) {
+        return stations.containsVertex(station);
+    }
+
+    private boolean hasNoStation(final Station station) {
+        return !hasStation(station);
+    }
+
+    private boolean isStationsEmpty() {
+        return stations.edgeSet().isEmpty();
+    }
+
+    private boolean isStationsPresent() {
+        return !isStationsEmpty();
+    }
+
     private Sections getSections(final Station left, final Station right, final int distance) {
-        if (hasStation(left) && !hasStation(right)) {
+        if (hasStation(left) && hasNoStation(right)) {
             return getSectionsInBetween(left, right, distance, RIGHT);
         }
-        if (!hasStation(left) && hasStation(right)) {
+        if (hasNoStation(left) && hasStation(right)) {
             return getSectionsInBetween(left, right, distance, LEFT);
         }
         return new Sections(List.of(new Section(left, right, new Distance(distance))));
-    }
-
-    private boolean isStationEmpty() {
-        return stations.edgeSet().isEmpty();
     }
 
     private Sections getSectionsInBetween(final Station left, final Station right, final int distance, final Side findingSide) {
@@ -129,10 +141,6 @@ public class Subway {
 
     private boolean hasOutgoingStation(final Station station) {
         return !stations.outgoingEdgesOf(station).isEmpty();
-    }
-
-    private boolean hasStation(final Station station) {
-        return stations.containsVertex(station);
     }
 
     private boolean hasLeftSection(final Station station) {
@@ -196,14 +204,14 @@ public class Subway {
     }
 
     private void validateStation(Station station) {
-        if (!hasStation(station)) {
+        if (hasNoStation(station)) {
             throw new SubwayServiceException(INVALID_NOT_FOUND_STATION_MESSAGE);
         }
     }
 
     public List<Station> getOrderedStations() {
         List<Station> orderedStations = new ArrayList<>();
-        if (isStationEmpty()) {
+        if (isStationsEmpty()) {
             return orderedStations;
         }
         Station station = new Station(start.getId(), start.getName());
