@@ -16,9 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.domain.Distance;
-import subway.domain.Fare;
-import subway.domain.Path;
 import subway.domain.Station;
 import subway.dto.PathSearchResponse;
 import subway.service.PathService;
@@ -35,20 +32,19 @@ class PathControllerTest {
     @Test
     void findPath() throws Exception {
         given(pathService.getShortestPath(any())).willReturn(new PathSearchResponse(
-                new Path(List.of(
-                        new Station(1L, "선릉역"), new Station(2L, "잠실역")),
-                        new Distance(10)),
-                new Fare(1250)
+                List.of(new Station(1L, "선릉역"), new Station(2L, "잠실역")),
+                10,
+                1250
         ));
 
         mockMvc.perform(get("/paths/1/2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.path.stations", hasSize(2)))
-                .andExpect(jsonPath("$.path.stations[0].id", is(1)))
-                .andExpect(jsonPath("$.path.stations[0].name", is("선릉역")))
-                .andExpect(jsonPath("$.path.stations[1].id", is(2)))
-                .andExpect(jsonPath("$.path.stations[1].name", is("잠실역")))
-                .andExpect(jsonPath("$.path.distance.value", is(10)))
-                .andExpect(jsonPath("$.fare.value", is(1250)));
+                .andExpect(jsonPath("$.path", hasSize(2)))
+                .andExpect(jsonPath("$.path[0].id", is(1)))
+                .andExpect(jsonPath("$.path[0].name", is("선릉역")))
+                .andExpect(jsonPath("$.path[1].id", is(2)))
+                .andExpect(jsonPath("$.path[1].name", is("잠실역")))
+                .andExpect(jsonPath("$.distance", is(10)))
+                .andExpect(jsonPath("$.fare", is(1250)));
     }
 }

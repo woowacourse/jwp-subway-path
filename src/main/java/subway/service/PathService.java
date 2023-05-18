@@ -31,6 +31,6 @@ public class PathService {
         final Station arrivalStation = new Station(pathSearchRequest.getArrivalStationId());
         final Path path = pathFinder.findShortestPath(departureStation, arrivalStation);
         final Fare fare = fareCalculator.calculate(path.getDistance());
-        return new PathSearchResponse(path, fare);
+        return new PathSearchResponse(path.getStations(), path.getDistance().getValue(), fare.getValue());
     }
 }

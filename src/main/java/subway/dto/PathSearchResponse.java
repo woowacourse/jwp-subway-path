@@ -1,23 +1,30 @@
 package subway.dto;
 
-import subway.domain.Fare;
-import subway.domain.Path;
+import java.util.List;
+
+import subway.domain.Station;
 
 public class PathSearchResponse {
 
-    private final Path path;
-    private final Fare fare;
+    private final List<Station> path;
+    private final int distance;
+    private final int fare;
 
-    public PathSearchResponse(final Path path, final Fare fare) {
+    public PathSearchResponse(final List<Station> path, final int distance, final int fare) {
         this.path = path;
+        this.distance = distance;
         this.fare = fare;
     }
 
-    public Path getPath() {
+    public List<Station> getPath() {
         return path;
     }
 
-    public Fare getFare() {
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getFare() {
         return fare;
     }
 }

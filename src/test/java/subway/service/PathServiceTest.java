@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.dao.StubSectionDao;
-import subway.domain.Distance;
-import subway.domain.Fare;
 import subway.domain.SubwayFareCalculator;
 import subway.dto.PathSearchRequest;
 import subway.dto.PathSearchResponse;
@@ -29,17 +27,17 @@ class PathServiceTest {
         final PathSearchRequest request = new PathSearchRequest(4L, 6L);
         final PathSearchResponse result = pathService.getShortestPath(request);
         assertAll(
-                () -> assertThat(result.getPath().getStations()).hasSize(4),
-                () -> assertThat(result.getPath().getStations().get(0).getId()).isEqualTo(4L),
-                () -> assertThat(result.getPath().getStations().get(0).getName()).isEqualTo("사당역"),
-                () -> assertThat(result.getPath().getStations().get(1).getId()).isEqualTo(3L),
-                () -> assertThat(result.getPath().getStations().get(1).getName()).isEqualTo("강남역"),
-                () -> assertThat(result.getPath().getStations().get(2).getId()).isEqualTo(5L),
-                () -> assertThat(result.getPath().getStations().get(2).getName()).isEqualTo("낙성대역"),
-                () -> assertThat(result.getPath().getStations().get(3).getId()).isEqualTo(6L),
-                () -> assertThat(result.getPath().getStations().get(3).getName()).isEqualTo("신림역"),
-                () -> assertThat(result.getPath().getDistance()).isEqualTo(new Distance(7)),
-                () -> assertThat(result.getFare()).isEqualTo(new Fare(1250))
+                () -> assertThat(result.getPath()).hasSize(4),
+                () -> assertThat(result.getPath().get(0).getId()).isEqualTo(4L),
+                () -> assertThat(result.getPath().get(0).getName()).isEqualTo("사당역"),
+                () -> assertThat(result.getPath().get(1).getId()).isEqualTo(3L),
+                () -> assertThat(result.getPath().get(1).getName()).isEqualTo("강남역"),
+                () -> assertThat(result.getPath().get(2).getId()).isEqualTo(5L),
+                () -> assertThat(result.getPath().get(2).getName()).isEqualTo("낙성대역"),
+                () -> assertThat(result.getPath().get(3).getId()).isEqualTo(6L),
+                () -> assertThat(result.getPath().get(3).getName()).isEqualTo("신림역"),
+                () -> assertThat(result.getDistance()).isEqualTo(7),
+                () -> assertThat(result.getFare()).isEqualTo(1250)
         );
     }
 }
