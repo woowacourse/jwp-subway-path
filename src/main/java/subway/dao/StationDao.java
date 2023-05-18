@@ -33,11 +33,6 @@ public class StationDao {
                     resultSet.getString("name")
             );
 
-    public Long save(final String stationName) {
-        final MapSqlParameterSource name = new MapSqlParameterSource().addValue("name", stationName);
-        return insertAction.executeAndReturnKeyHolder(name).getKey().longValue();
-    }
-
     public Long save(final StationEntity stationEntity) {
         final MapSqlParameterSource name = new MapSqlParameterSource()
                 .addValue("name", stationEntity.getName());
@@ -53,15 +48,6 @@ public class StationDao {
         String sql = "select * from STATIONS where id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<StationEntity> findByName(final String upStationName) {
-        final String sql = "SELECT id, name FROM stations WHERE name = ?";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, upStationName));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
