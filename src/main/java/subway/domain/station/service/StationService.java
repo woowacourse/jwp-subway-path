@@ -30,25 +30,57 @@ public class StationService {
     }
 
     public StationEntity findStationById(final Long id) {
-        return stationDao.findById(id);
+        Optional<StationEntity> findStation = stationDao.findById(id);
+
+        if (findStation.isEmpty()) {
+            throw new IllegalArgumentException("해당 ID의 역이 존재하지 않습니다.");
+        }
+
+        return findStation.get();
     }
 
     public List<StationEntity> findStationsByIds(final List<Long> id) {
-        List<StationEntity> stations = stationDao.findByIds(id);
-        Map<Long, StationEntity> stationMap = stations.stream().collect(Collectors.toMap(StationEntity::getId, Function.identity()));
-        List<StationEntity> sortedStations = id.stream().map(stationMap::get).collect(Collectors.toList());
-        return sortedStations;
+        Optional<List<StationEntity>> findStations = stationDao.findByIds(id);
+
+        if (findStations.isEmpty()) {
+            throw new IllegalArgumentException("ID 값중에 존재하지 않는 역이 포함되어 있습니다");
+        }
+
+        Map<Long, StationEntity> stationMap = findStations.get().stream()
+                .collect(Collectors.toMap(StationEntity::getId, Function.identity()));
+
+        return id.stream()
+                .map(stationMap::get)
+                .collect(Collectors.toList());
     }
 
     public List<StationEntity> findAllStation() {
-        return stationDao.findAll();
+        Optional<List<StationEntity>> findStations = stationDao.findAll();
+
+        if (findStations.isEmpty()) {
+            throw new IllegalArgumentException("역이 존재하지 않습니다.");
+        }
+
+        return findStations.get();
     }
 
     public void updateStation(final Long id, final StationRequest stationRequest) {
+        Optional<StationEntity> findStation = stationDao.findById(id);
+
+        if (findStation.isEmpty()) {
+            throw new IllegalArgumentException("해당 ID의 역이 존재하지 않습니다.");
+        }
+
         stationDao.update(new StationEntity(id, stationRequest.getName()));
     }
 
     public void deleteStationById(final Long id) {
+        Optional<StationEntity> findStation = stationDao.findById(id);
+
+        if (findStation.isEmpty()) {
+            throw new IllegalArgumentException("해당 ID의 역이 존재하지 않습니다.");
+        }
+
         stationDao.deleteById(id);
     }
 }

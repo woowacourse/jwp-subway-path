@@ -9,15 +9,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.station.dao.StationDao;
-import subway.domain.station.entity.StationEntity;
 import subway.domain.station.dto.StationRequest;
+import subway.domain.station.entity.StationEntity;
 import subway.domain.station.service.StationService;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -33,6 +33,9 @@ class StationServiceTest {
 
     @Test
     void 단일_역_검색_테스트() {
+        //given
+        given(stationDao.findById(anyLong())).willReturn(Optional.of(new StationEntity(1L, null)));
+
         //when
         stationService.findStationById(anyLong());
 
@@ -42,6 +45,9 @@ class StationServiceTest {
 
     @Test
     void 모든_역_검색_테스트() {
+        //given
+        given(stationDao.findAll()).willReturn(Optional.of(new ArrayList<>()));
+
         //when
         stationService.findAllStation();
 
@@ -51,6 +57,9 @@ class StationServiceTest {
 
     @Test
     void 역_수정_테스트() {
+        //given
+        given(stationDao.findById(anyLong())).willReturn(Optional.of(new StationEntity(1L, null)));
+
         //when
         stationService.updateStation(anyLong(), new StationRequest("동대구역"));
 
@@ -60,6 +69,9 @@ class StationServiceTest {
 
     @Test
     void 역_삭제_테스트() {
+        //given
+        given(stationDao.findById(anyLong())).willReturn(Optional.of(new StationEntity(1L, null)));
+
         //when
         stationService.deleteStationById(anyLong());
 

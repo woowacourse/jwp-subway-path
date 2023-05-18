@@ -5,7 +5,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.station.dao.StationDao;
 import subway.domain.station.entity.StationEntity;
@@ -63,10 +62,10 @@ class StationDaoTest {
     @Test
     void 모든_역_조회_테스트() {
         //given
-        List<StationEntity> stationEntities = stationDao.findAll();
+        Optional<List<StationEntity>> findStation = stationDao.findAll();
 
         //then
-        Assertions.assertThat(stationEntities).hasSizeGreaterThan(0);
+        Assertions.assertThat(findStation.get()).hasSizeGreaterThan(0);
     }
 
     @Test
@@ -118,7 +117,7 @@ class StationDaoTest {
         stationDao.update(updateStationEntity);
 
         //then
-        Assertions.assertThat(stationDao.findById(updateStationEntity.getId())).isEqualTo(updateStationEntity);
+        Assertions.assertThat(stationDao.findById(updateStationEntity.getId()).get()).isEqualTo(updateStationEntity);
     }
 
     @Test
@@ -131,7 +130,6 @@ class StationDaoTest {
         stationDao.deleteById(insertStationEntity.getId());
 
         //then
-        assertThatThrownBy(() -> stationDao.findById(insertStationEntity.getId()))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+        Assertions.assertThat(stationDao.findById(insertStationEntity.getId())).isEmpty();
     }
 }

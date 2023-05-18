@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -24,7 +25,6 @@ public class StationDao {
                     rs.getLong("id"),
                     rs.getString("name")
             );
-
 
     public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -39,22 +39,34 @@ public class StationDao {
         return new StationEntity(id, stationEntity.getName());
     }
 
-    public List<StationEntity> findAll() {
-        final String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+    public Optional<List<StationEntity>> findAll() {
+        try {
+            final String sql = "select * from STATION";
+            return Optional.of(jdbcTemplate.query(sql, rowMapper));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public StationEntity findById(final Long id) {
-        final String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<StationEntity> findById(final Long id) {
+        try {
+            final String sql = "select * from STATION where id = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public List<StationEntity> findByIds(List<Long> ids) {
-        final String sql = "select * from STATION where id in (?)";
-        String joinedIds = ids.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(", "));
-        return jdbcTemplate.query(sql.replace("?", joinedIds), rowMapper);
+    public Optional<List<StationEntity>> findByIds(List<Long> ids) {
+        try {
+            final String sql = "select * from STATION where id in (?)";
+            String joinedIds = ids.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(", "));
+            return Optional.of(jdbcTemplate.query(sql.replace("?", joinedIds), rowMapper));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<StationEntity> findByName(final String name) {
@@ -68,7 +80,7 @@ public class StationDao {
 
     public void update(final StationEntity newStationEntity) {
         final String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStationEntity.getName(), newStationEntity.getId()});
+        jdbcTemplate.update(sql, newStationEntity.getName(), newStationEntity.getId());
     }
 
     public void deleteById(final Long id) {
