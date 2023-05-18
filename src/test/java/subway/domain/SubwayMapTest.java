@@ -5,21 +5,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.domain.LineFixture.FIXTURE_LINE_1;
 import static subway.domain.LineFixture.FIXTURE_LINE_2;
 import static subway.domain.LineFixture.FIXTURE_LINE_3;
+import static subway.domain.SectionFixture.LINE1_SECTIONS;
 import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST3_ST4;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST4_ST5;
-import static subway.domain.SectionFixture.LINE1_SECTION_ST5_ST6;
-import static subway.domain.SectionFixture.LINE2_SECTION_ST1_ST8;
-import static subway.domain.SectionFixture.LINE2_SECTION_ST7_ST1;
-import static subway.domain.SectionFixture.LINE2_SECTION_ST8_ST9;
-import static subway.domain.SectionFixture.LINE2_SECTION_ST9_ST10;
+import static subway.domain.SectionFixture.LINE2_SECTIONS;
+import static subway.domain.SectionFixture.LINE3_SECTIONS;
 import static subway.domain.SectionFixture.LINE3_SECTION_ST2_ST9;
 import static subway.domain.StationFixture.FIXTURE_STATION_1;
 import static subway.domain.StationFixture.FIXTURE_STATION_7;
 import static subway.domain.StationFixture.FIXTURE_STATION_9;
 
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,24 +27,9 @@ class SubwayMapTest {
     void findShortestRoutedStations() {
         // given
         Map<Line, RoutedStations> sectionsByLine = Map.of(
-                FIXTURE_LINE_1, RoutedStations.from(List.of(
-                        LINE1_SECTION_ST1_ST2,
-                        LINE1_SECTION_ST2_ST3,
-                        LINE1_SECTION_ST3_ST4,
-                        LINE1_SECTION_ST4_ST5,
-                        LINE1_SECTION_ST5_ST6
-                )),
-                FIXTURE_LINE_2, RoutedStations.from(
-                        List.of(
-                                LINE2_SECTION_ST7_ST1,
-                                LINE2_SECTION_ST1_ST8,
-                                LINE2_SECTION_ST8_ST9,
-                                LINE2_SECTION_ST9_ST10
-                        )),
-                FIXTURE_LINE_3, RoutedStations.from(
-                        List.of(
-                                LINE3_SECTION_ST2_ST9
-                        ))
+                FIXTURE_LINE_1, RoutedStations.from(LINE1_SECTIONS),
+                FIXTURE_LINE_2, RoutedStations.from(LINE2_SECTIONS),
+                FIXTURE_LINE_3, RoutedStations.from(LINE3_SECTIONS)
         );
         SubwayMap subwayMap = new SubwayMap(MultiRoutedStations.from(sectionsByLine));
 
@@ -67,15 +46,7 @@ class SubwayMapTest {
     @Test
     void findShortestRoutedStationsFailNotExistingSource() {
         // given
-        Map<Line, RoutedStations> sectionsByLine = Map.of(
-                FIXTURE_LINE_1, RoutedStations.from(List.of(
-                        LINE1_SECTION_ST1_ST2,
-                        LINE1_SECTION_ST2_ST3,
-                        LINE1_SECTION_ST3_ST4,
-                        LINE1_SECTION_ST4_ST5,
-                        LINE1_SECTION_ST5_ST6
-                ))
-        );
+        Map<Line, RoutedStations> sectionsByLine = Map.of(FIXTURE_LINE_1, RoutedStations.from(LINE1_SECTIONS));
         SubwayMap subwayMap = new SubwayMap(MultiRoutedStations.from(sectionsByLine));
 
         // when, then
@@ -89,15 +60,7 @@ class SubwayMapTest {
     @Test
     void findShortestRoutedStationsFailNotExistingTarget() {
         // given
-        Map<Line, RoutedStations> sectionsByLine = Map.of(
-                FIXTURE_LINE_1, RoutedStations.from(List.of(
-                        LINE1_SECTION_ST1_ST2,
-                        LINE1_SECTION_ST2_ST3,
-                        LINE1_SECTION_ST3_ST4,
-                        LINE1_SECTION_ST4_ST5,
-                        LINE1_SECTION_ST5_ST6
-                ))
-        );
+        Map<Line, RoutedStations> sectionsByLine = Map.of(FIXTURE_LINE_1, RoutedStations.from(LINE1_SECTIONS));
         SubwayMap subwayMap = new SubwayMap(MultiRoutedStations.from(sectionsByLine));
 
         // when, then
