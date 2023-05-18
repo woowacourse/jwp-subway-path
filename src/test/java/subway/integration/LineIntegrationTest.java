@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.presentation.dto.request.LineRequest;
-import subway.presentation.dto.request.StationRegisterInLineRequest;
-import subway.presentation.dto.request.StationUnregisterInLineRequest;
-import subway.presentation.dto.request.converter.SubwayDirection;
+import subway.controller.dto.request.LineRequest;
+import subway.controller.dto.request.StationRegisterInLineRequest;
+import subway.controller.dto.request.StationUnregisterInLineRequest;
+import subway.controller.dto.request.converter.SubwayDirection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

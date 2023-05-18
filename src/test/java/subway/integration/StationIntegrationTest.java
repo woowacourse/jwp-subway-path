@@ -7,8 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-import subway.presentation.dto.response.StationResponse;
+import subway.controller.dto.response.StationResponse;
 
 import java.util.List;
 import java.util.Map;
