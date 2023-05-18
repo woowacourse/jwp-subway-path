@@ -21,7 +21,7 @@ import subway.controller.dto.response.StationResponse;
 class PathIntegrationTest extends IntegrationTest {
 
     @Test
-    @DisplayName("최단 경로를 찾는다.")
+    @DisplayName("같은 경로를 공유하는 두 호선에서 도착점과 끝점이 그 경로 위에 있을 때, 최단 경로를 찾는다.")
     void testFindShortestPath() {
         //given
         final LineResponse lineResponse1 = saveLine1().as(LineResponse.class);
