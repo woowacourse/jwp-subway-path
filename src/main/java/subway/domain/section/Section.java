@@ -48,6 +48,13 @@ public class Section {
         return this.upStation.isSameStation(other.upStation);
     }
 
+    public boolean isSameUpStationByFlip(final Section other) {
+        return this.upStation.isSameStation(other.downStation);
+    }
+
+    public boolean isSameDownStationByFlip(final Section other) {
+        return this.downStation.isSameStation(other.upStation);
+    }
 
     public boolean isSameUpStation(final Station other) {
         return this.upStation.isSameStation(other);

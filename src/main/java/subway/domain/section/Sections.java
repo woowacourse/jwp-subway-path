@@ -51,8 +51,10 @@ public class Sections {
     }
 
     private boolean isContainAllSectionStations(final Section other) {
-        return sections.stream().anyMatch(section -> section.isSameUpStation(other)) &&
-                sections.stream().anyMatch(section -> section.isSameDownStation(other));
+        return sections.stream().anyMatch(
+                section -> section.isSameUpStation(other) || section.isSameDownStationByFlip(other)) &&
+                sections.stream().anyMatch(
+                        section -> section.isSameDownStation(other) || section.isSameUpStationByFlip(other));
     }
 
     private boolean isAddableOnFrontOfUpTerminal(final Section other) {
