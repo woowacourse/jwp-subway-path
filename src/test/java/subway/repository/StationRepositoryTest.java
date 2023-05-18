@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import subway.exception.StationNotFoundException;
 import subway.service.domain.Station;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -75,6 +77,18 @@ class StationRepositoryTest {
     void findByName_fail() {
         assertThatThrownBy(() -> stationRepository.findByName("재연"))
                 .isInstanceOf(StationNotFoundException.class);
+    }
+
+    /**
+     * INSERT INTO station(name)
+     * VALUES('가산'), ('남구로'), ('대림'), ('신풍'), ('구로'), ('독산'), ('신도림'), ('구로디지털단지');
+     */
+    @Test
+    @DisplayName("findAll 을 통해 모든 Station 을 찾는다.")
+    void findAll() {
+        List<Station> stations = stationRepository.findAll();
+
+        assertThat(stations).isNotEmpty();
     }
 
 }

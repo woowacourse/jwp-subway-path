@@ -8,6 +8,7 @@ import subway.repository.converter.StationConverter;
 import subway.service.domain.Station;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class StationRepository {
@@ -45,6 +46,14 @@ public class StationRepository {
 
         StationEntity stationEntity = stationEntities.get(0);
         return StationConverter.entityToDomain(stationEntity);
+    }
+
+    public List<Station> findAll() {
+        List<StationEntity> stationEntities = stationDao.findAll();
+
+        return stationEntities.stream()
+                .map(StationConverter::entityToDomain)
+                .collect(Collectors.toList());
     }
 
 }
