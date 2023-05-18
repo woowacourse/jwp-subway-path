@@ -22,7 +22,7 @@ public class ReadPathResponse {
                 .map(ReadStationResponse::from)
                 .collect(Collectors.toList());
 
-        final int priceResponse =  price.getPrice();
+        final int priceResponse = price.getPrice();
 
         return new ReadPathResponse(stationResponses, priceResponse);
     }

@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import javax.validation.ConstraintViolation;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("NonAsciiCharacters")
 class CreationSectionRequestTest extends ValidationTest {

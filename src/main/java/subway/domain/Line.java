@@ -8,7 +8,6 @@ import subway.domain.section.delete.DeleteStationHandler;
 import subway.domain.section.delete.strategy.DeleteStationStrategy;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Line {

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineCommandService;
 import subway.application.LineQueryService;
 import subway.domain.Line;
-import subway.ui.dto.request.CreationSectionRequest;
 import subway.ui.dto.request.CreationLineRequest;
+import subway.ui.dto.request.CreationSectionRequest;
 import subway.ui.dto.response.CreationLineResponse;
 import subway.ui.dto.response.ReadLineResponse;
 
