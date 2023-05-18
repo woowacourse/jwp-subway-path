@@ -15,6 +15,7 @@ import subway.service.domain.Station;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -72,6 +73,18 @@ class LineRepositoryTest {
         assertThat(saveLine.getSections().get(0).getPreviousStation()).isEqualTo(previousStation);
         assertThat(saveLine.getSections().get(0).getNextStation()).isEqualTo(nextStation);
         assertThat(saveLine.getSections().get(0).getDistance()).isEqualTo(10);
+    }
+
+    /**
+     * INSERT INTO line(name, color)
+     * VALUES('2호선', 'bg-green-600'), ('8호선', 'bg-pink-600');
+     */
+    @Test
+    @DisplayName("해당하는 이름의 노선이 존재하는지 확인한다.")
+    @Sql("/line_test_data.sql")
+    void existsByName() {
+        assertThat(lineRepository.existsByName("2호선")).isTrue();
+        assertThat(lineRepository.existsByName("1호선")).isFalse();
     }
 
 }

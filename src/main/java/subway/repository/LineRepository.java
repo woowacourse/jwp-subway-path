@@ -60,4 +60,9 @@ public class LineRepository {
         );
     }
 
+    public boolean existsByName(String name) {
+        return !lineDao.findByName(name)
+                .isEmpty();
+    }
+
 }
