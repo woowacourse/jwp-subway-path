@@ -59,10 +59,12 @@ public class Line {
         sections.removeAll(nearBys);
     }
 
-    private void validateContains(Station station) {
-        if (findNearBysOf(station).isEmpty()) {
-            throw new NoSuchStationException();
-        }
+    public Line changeName(String name) {
+        return new Line(id, name, color, sections);
+    }
+
+    public Line changeColor(String color) {
+        return new Line(id, name, color, sections);
     }
 
     private boolean hasOverlapWith(Section child) {
@@ -127,6 +129,12 @@ public class Line {
         }
     }
 
+    private void validateContains(Station station) {
+        if (findNearBysOf(station).isEmpty()) {
+            throw new NoSuchStationException();
+        }
+    }
+
     private Section firstOf(List<Section> sections) {
         return sections.get(FIRST);
     }
@@ -164,13 +172,5 @@ public class Line {
 
     public List<Section> getSections() {
         return new ArrayList<>(sections);
-    }
-
-    public Line changeName(String name) {
-        return new Line(id, name, color, sections);
-    }
-
-    public Line changeColor(String color) {
-        return new Line(id, name, color, sections);
     }
 }
