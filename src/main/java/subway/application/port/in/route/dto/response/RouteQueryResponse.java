@@ -5,8 +5,11 @@ import subway.application.port.in.station.dto.response.StationQueryResponse;
 
 public class RouteQueryResponse {
 
-    private final List<StationQueryResponse> route;
-    private final int distance;
+    private List<StationQueryResponse> route;
+    private int distance;
+
+    private RouteQueryResponse() {
+    }
 
     public RouteQueryResponse(final List<StationQueryResponse> route, final int distance) {
         this.route = route;
