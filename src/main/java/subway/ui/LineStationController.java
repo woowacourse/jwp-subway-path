@@ -22,7 +22,7 @@ public class LineStationController {
 
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<Void> createLinesStations(@PathVariable Long lineId, @RequestBody LineStationsRequest request) {
-        lineStationService.saveSection(lineId, request);
+        lineStationService.saveLinesStations(lineId, request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -32,7 +32,7 @@ public class LineStationController {
 
     @GetMapping("/stations")
     public ResponseEntity<List<LineStationResponse>> findAllLinesStations() {
-        final List<LineStationResponse> findAllLines = lineStationService.findAllLines();
+        final List<LineStationResponse> findAllLines = lineStationService.findAllLinesStations();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -41,7 +41,7 @@ public class LineStationController {
 
     @GetMapping("/{lineId}/stations")
     public ResponseEntity<LineStationResponse> findLineStations(@PathVariable Long lineId) {
-        final LineStationResponse lineStationResponse = lineStationService.findStations(lineId);
+        final LineStationResponse lineStationResponse = lineStationService.findLinesStations(lineId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -50,7 +50,7 @@ public class LineStationController {
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
     public ResponseEntity<Void> deleteLineStations(@PathVariable Long lineId, @PathVariable Long stationId) {
-        lineStationService.deleteStation(lineId, stationId);
+        lineStationService.deleteLinesStations(lineId, stationId);
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

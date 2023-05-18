@@ -20,16 +20,19 @@ public class Sections {
         Station downStation = section.getDownStation();
         Optional<Section> maybeSectionByUpStation = findSectionByUpStation(upStation);
         Optional<Section> maybeSectionByDownStation = findSectionByDownStation(downStation);
-        if (maybeSectionByUpStation.isPresent() && maybeSectionByDownStation.isPresent()) {
-            throw new IllegalArgumentException("이미 해당 구간이 존재합니다.");
+        if (checkDuplicatedStations(upStation, downStation)) {
+            throw new IllegalArgumentException("두 역이 모두 노선에 존재합니다.");
         }
-        if (maybeSectionByUpStation.isPresent()) {
+        if (maybeSectionByUpStation.isPresent() && maybeSectionByDownStation.isEmpty()) {
             Section beforeSection = maybeSectionByUpStation.get();
             return addMiddleSection(beforeSection, section);
         }
-        if ( maybeSectionByDownStation.isPresent()) {
+        if (maybeSectionByDownStation.isPresent() && maybeSectionByUpStation.isEmpty()) {
             Section beforeSection = maybeSectionByDownStation.get();
             return addMiddleSection(beforeSection, section);
+        }
+        if (sections.isEmpty()) {
+            return addInitSection(section);
         }
         if (downStation.equals(findFirstStation())) {
             return addEdgeSection(section);
@@ -37,7 +40,12 @@ public class Sections {
         if (upStation.equals(findLastStation())) {
             return addEdgeSection(section);
         }
-        return addInitSection(section);
+        throw new IllegalArgumentException("구간을 추가할 수 없습니다.");
+    }
+
+    private boolean checkDuplicatedStations(final Station upStation, final Station downStation) {
+        List<Station> allStations = findAllStationUpToDown();
+        return allStations.contains(upStation) && allStations.contains(downStation);
     }
 
     private Sections addEdgeSection(final Section section) {

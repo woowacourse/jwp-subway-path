@@ -28,7 +28,18 @@ public class LineStationService {
         this.stationRepository = stationRepository;
     }
 
-    public List<LineStationResponse> findAllLines() {
+    @Transactional
+    public void saveLinesStations(final Long lineId, final LineStationsRequest request) {
+        Line line = lineRepository.findById(lineId);
+        Station upStation = stationRepository.findById(request.getUpStationId());
+        Station downStation = stationRepository.findById(request.getDownStationId());
+        Distance distance = new Distance(request.getDistance());
+        Section section = new Section(upStation, downStation, distance);
+        Line updateLine = line.addSection(section);
+        sectionRepository.updateByLine(line, updateLine);
+    }
+
+    public List<LineStationResponse> findAllLinesStations() {
         final List<Line> lines = lineRepository.findAll();
 
         List<LineStationResponse> lineStationResponses = new ArrayList<>();
@@ -39,28 +50,17 @@ public class LineStationService {
         return lineStationResponses;
     }
 
-    public LineStationResponse findStations(final Long lineId) {
+    public LineStationResponse findLinesStations(final Long lineId) {
         final Line line = lineRepository.findById(lineId);
         List<Station> stations = line.findAllStation();
         return LineStationResponse.of(line, stations);
     }
 
     @Transactional
-    public void deleteStation(final Long lineId, final Long stationId) {
+    public void deleteLinesStations(final Long lineId, final Long stationId) {
         Line line = lineRepository.findById(lineId);
         Station station = stationRepository.findById(stationId);
         Line updateLine = line.removeStation(station);
-        sectionRepository.updateByLine(line, updateLine);
-    }
-
-    @Transactional
-    public void saveSection(final Long lineId, final LineStationsRequest request) {
-        Line line = lineRepository.findById(lineId);
-        Station upStation = stationRepository.findById(request.getUpStationId());
-        Station downStation = stationRepository.findById(request.getDownStationId());
-        Distance distance = new Distance(request.getDistance());
-        Section section = new Section(upStation, downStation, distance);
-        Line updateLine = line.addSection(section);
         sectionRepository.updateByLine(line, updateLine);
     }
 }

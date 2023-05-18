@@ -4,6 +4,7 @@ import subway.domain.Line;
 import subway.domain.Station;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LineStationResponse {
@@ -46,5 +47,28 @@ public class LineStationResponse {
 
     public List<StationResponse> getStationResponses() {
         return stationResponses;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final LineStationResponse that = (LineStationResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(color, that.color) && Objects.equals(stationResponses, that.stationResponses);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color, stationResponses);
+    }
+
+    @Override
+    public String toString() {
+        return "LineStationResponse{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", stationResponses=" + stationResponses +
+                '}';
     }
 }
