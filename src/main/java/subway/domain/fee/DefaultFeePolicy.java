@@ -14,7 +14,8 @@ public class DefaultFeePolicy implements FeePolicy {
     private static final double UNIT_OF_SECOND_ADDITIONAL_FEE_DISTANCE = 8d;
 
     @Override
-    public int calculate(final int distance) {
+    public int calculate(final FeeInformation feeInformation) {
+        int distance = feeInformation.getDistance();
         validateDistance(distance);
         if (distance <= DEFAULT_FEE_BOUNDARY) {
             return DEFAULT_FEE;
