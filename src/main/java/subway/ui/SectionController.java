@@ -1,6 +1,7 @@
 package subway.ui;
 
 import java.net.URI;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,7 @@ public class SectionController {
     private final SectionService sectionService;
 
     @PostMapping("/{lineId}/stations")
-    public ResponseEntity<StationDto> add(@PathVariable long lineId, @RequestBody SectionRequest request) {
+    public ResponseEntity<StationDto> add(@PathVariable long lineId, @RequestBody @Valid SectionRequest request) {
         StationDto station = sectionService.add(request, lineId);
         return ResponseEntity
                 .created(URI.create("lines/" + lineId + "/sections/" + station.getId()))

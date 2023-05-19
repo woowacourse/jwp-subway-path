@@ -1,11 +1,17 @@
 package subway.dto;
 
+import javax.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class LineRequest {
-    private final String name;
-    private final String color;
+    @NotBlank(message = "호선명은 빈 문자열일 수 없습니다.")
+    private String name;
+
+    @NotBlank(message = "호선의 색상은 빈 문자열일 수 없습니다.")
+    private String color;
 }

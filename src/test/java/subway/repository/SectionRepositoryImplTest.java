@@ -26,13 +26,13 @@ import subway.domain.Station;
 import subway.entity.StationEntity;
 import subway.entity.vo.SectionVo;
 
-@WebMvcTest(SectionRepository.class)
-class SectionRepositoryTest {
+@WebMvcTest(SectionRepositoryImpl.class)
+class SectionRepositoryImplTest {
 
     public static final SectionVo SECTION_VO_강남_잠실_5 = SectionVo.of(1L, "강남", 2L, "잠실", 5);
     public static final SectionVo SECTION_VO_잠실_몽촌토성_5 = SectionVo.of(2L, "잠실", 3L, "몽촌토성", 5);
     @Autowired
-    private SectionRepository sectionRepository;
+    private SectionRepositoryImpl sectionRepositoryImpl;
 
     @MockBean
     private LineDao lineDao;
@@ -51,7 +51,7 @@ class SectionRepositoryTest {
         willReturn(List.of(SECTION_VO_강남_잠실_5, SECTION_VO_잠실_몽촌토성_5)).given(sectionDao).findSectionsByLineId(anyLong());
 
         // when
-        Sections sections = sectionRepository.findSectionsByLineId(1L);
+        Sections sections = sectionRepositoryImpl.findSectionsByLineId(1L);
 
         // then
         assertThat(sections.getSections())
@@ -69,7 +69,7 @@ class SectionRepositoryTest {
         willDoNothing().given(sectionDao).insertSection(any(), anyLong());
 
         // when
-        Station station = sectionRepository.addSection(SECTION_강남_잠실_5, 1L);
+        Station station = sectionRepositoryImpl.addSection(SECTION_강남_잠실_5, 1L);
 
         // then
         assertThat(station).isEqualTo(STATION_잠실);
@@ -85,7 +85,7 @@ class SectionRepositoryTest {
 
         // when, then
         assertDoesNotThrow(
-                () -> sectionRepository.addSections(sections, 1L)
+                () -> sectionRepositoryImpl.addSections(sections, 1L)
         );
     }
 
@@ -98,7 +98,7 @@ class SectionRepositoryTest {
         willReturn(stationEntity).given(stationDao).insert(STATION_강남);
 
         // when
-        Station station = sectionRepository.addStation(STATION_강남);
+        Station station = sectionRepositoryImpl.addStation(STATION_강남);
 
         // then
         assertThat(station).isEqualTo(STATION_강남);
@@ -113,7 +113,7 @@ class SectionRepositoryTest {
         willReturn(exPectedStationEntity).given(stationDao).findById(anyLong());
 
         // when
-        Station station = sectionRepository.findStationById(1L);
+        Station station = sectionRepositoryImpl.findStationById(1L);
 
         // then
         assertThat(station).isEqualTo(STATION_강남);
@@ -129,7 +129,7 @@ class SectionRepositoryTest {
 
         // when, then
         assertDoesNotThrow(
-                () -> sectionRepository.deleteSections(sections, 1L)
+                () -> sectionRepositoryImpl.deleteSections(sections, 1L)
         );
     }
 }

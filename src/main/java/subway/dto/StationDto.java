@@ -7,12 +7,8 @@ import subway.domain.Station;
 @Getter
 @EqualsAndHashCode
 public class StationDto {
-    private Long id;
+    private final Long id;
     private final String name;
-
-    private StationDto(final String name) {
-        this.name = name;
-    }
 
     public StationDto(final Long id, final String name) {
         this.id = id;
