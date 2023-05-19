@@ -65,16 +65,16 @@ public class Sections {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public boolean isExistAsUpStation(final Station station) {
-        return sections.stream()
-                .anyMatch(nowSection -> nowSection.getUpStation().equals(station));
-    }
-
     public Section findSectionWithDownStation(final Station station) {
         return sections.stream()
                 .filter(nowSection -> nowSection.getDownStation().equals(station))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public boolean isExistAsUpStation(final Station station) {
+        return sections.stream()
+                .anyMatch(nowSection -> nowSection.getUpStation().equals(station));
     }
 
     public List<Section> getSections() {
