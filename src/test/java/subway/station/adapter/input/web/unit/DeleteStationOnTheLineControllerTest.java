@@ -46,7 +46,7 @@ class DeleteStationOnTheLineControllerTest {
         RestAssuredMockMvc.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().delete("/stations")
+                .when().delete("/stations/one")
                 .then().log().all()
                 .assertThat()
                 .status(HttpStatus.NO_CONTENT);
@@ -64,7 +64,7 @@ class DeleteStationOnTheLineControllerTest {
         RestAssuredMockMvc.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().delete("/stations")
+                .when().delete("/stations/one")
                 .then().log().all()
                 .status(HttpStatus.BAD_REQUEST)
                 .body("message", is("[ERROR] lineId는 null일 수 없습니다."));
@@ -82,7 +82,7 @@ class DeleteStationOnTheLineControllerTest {
         RestAssuredMockMvc.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().delete("/stations")
+                .when().delete("/stations/one")
                 .then().log().all()
                 .status(HttpStatus.BAD_REQUEST)
                 .body("message", is("[ERROR] stationId는 null일 수 없습니다."));

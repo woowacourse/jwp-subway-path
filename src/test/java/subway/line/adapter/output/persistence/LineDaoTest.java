@@ -61,4 +61,32 @@ class LineDaoTest {
         // then
         assertThat(lineEntity).isEqualTo(new LineEntity(lineEntity.getId(), name, color));
     }
+    
+    @Test
+    void id로_노선_삭제하기() {
+        // given
+        final String name = "1호선";
+        final String color = "파랑";
+        final Long lineId = lineDao.insert(new LineEntity(name, color));
+        
+        // when
+        lineDao.deleteById(lineId);
+        
+        // then
+        assertThat(lineDao.findAll()).isEmpty();
+    }
+    
+    @Test
+    void name으로_노선_찾기() {
+        // given
+        final String name = "1호선";
+        final String color = "파랑";
+        final Long lineId = lineDao.insert(new LineEntity(name, color));
+        
+        // when
+        final LineEntity lineEntity = lineDao.findByName(name);
+        
+        // then
+        assertThat(lineEntity).isEqualTo(new LineEntity(lineId, name, color));
+    }
 }

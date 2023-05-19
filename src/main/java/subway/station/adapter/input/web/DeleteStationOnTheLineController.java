@@ -15,8 +15,8 @@ import javax.validation.Valid;
 public class DeleteStationOnTheLineController {
     private final DeleteStationOnTheLineUseCase deleteStationOnTheLineUseCase;
     
-    @DeleteMapping("/stations")
-    public ResponseEntity<Void> delete(@RequestBody @Valid final DeleteStationOnTheLineRequest request) {
+    @DeleteMapping("/stations/one")
+    public ResponseEntity<Void> deleteStationOnTheLine(@RequestBody @Valid final DeleteStationOnTheLineRequest request) {
         deleteStationOnTheLineUseCase.deleteStationOnTheLine(request.getLineId(), request.getStationId());
         return ResponseEntity.noContent().build();
     }

@@ -50,4 +50,9 @@ public class LineDao {
         final String sql = "DELETE FROM line WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+    
+    public LineEntity findByName(final String name) {
+        final String sql = "SELECT * FROM line WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
+    }
 }
