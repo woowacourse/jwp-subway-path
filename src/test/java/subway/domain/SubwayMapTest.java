@@ -30,7 +30,7 @@ class SubwayMapTest {
 
         //then
         assertAll(
-            () -> assertThat(shortestPath.getDistance()).isEqualTo(24.0),
+            () -> assertThat(shortestPath.getDistance()).isEqualTo(24),
             () -> assertThat(shortestPath.getPath()).hasSize(2),
             () -> assertThat(shortestPath.getPath().get(0).getStation()).isEqualTo(첫번쩨_),
             () -> assertThat(shortestPath.getPath().get(1).getStation()).isEqualTo(세번째_),
