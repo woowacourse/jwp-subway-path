@@ -2,17 +2,26 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import subway.application.SubwayService;
+import subway.dto.PathRequest;
 import subway.dto.PathResponse;
 
 @RestController
 @RequestMapping("/subway")
 public class SubwayController {
 
-    //TODO: 최단경로 정보와 운임 body에 담아 전달하기
+    private final SubwayService subwayService;
+
+    public SubwayController(SubwayService subwayService) {
+        this.subwayService = subwayService;
+    }
+    
     @GetMapping("/path")
-    public ResponseEntity<PathResponse> findPath() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PathResponse> findPath(@RequestBody PathRequest request) {
+        PathResponse response = subwayService.findShortestPath(request);
+        return ResponseEntity.ok(response);
     }
 }

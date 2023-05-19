@@ -30,13 +30,11 @@ class SubwayControllerTest {
     @DisplayName("두 역을 전달받았을 때 두 역 사이의 최단경로와 관련된 정보와 요금을 반환한다")
     @Test
     void findPath() throws Exception {
-        String body = objectMapper.writeValueAsString(
-                new PathRequest(1L, 4L)
-        );
+        String body = objectMapper.writeValueAsString(new PathRequest(1L, 5L));
 
         this.mockMvc.perform(get("/subway/path")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
                 .andExpect(status().isOk());
     }
 }
