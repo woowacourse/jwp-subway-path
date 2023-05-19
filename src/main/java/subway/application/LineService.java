@@ -1,53 +1,132 @@
 package subway.application;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
 import subway.domain.Line;
+import subway.domain.Station;
+import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import subway.dto.LineSelectResponse;
+import subway.dto.LinesSelectResponse;
+import subway.dto.StationSaveRequest;
+import subway.dto.StationSelectResponse;
+import subway.exception.AlreadyExistStationException;
+import subway.repository.LineRepository;
+import subway.repository.StationRepository;
+import subway.repository.dao.LineDao;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
+    private final LineDao lineDao;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+
+    private LineService(LineDao lineDao, LineRepository lineRepository,
+                       StationRepository stationRepository) {
         this.lineDao = lineDao;
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+        Line line = request.toDomain();
+        Long saveId = lineRepository.save(line);
+        return new LineResponse(saveId);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public LinesSelectResponse findAllLine() {
+        final List<Line> lines = lineRepository.findAll();
+
+        return LinesSelectResponse.from(lines);
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public LineSelectResponse getStationsByLineId(Long lineId) {
+        Line line = lineRepository.findById(lineId);
+        return LineSelectResponse.from(line);
     }
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }
 
+    public StationSelectResponse addStation(Long lineId, StationSaveRequest stationRequest) {
+        Subway subway = new Subway(lineRepository.findAll());
+        final Line line = subway.findLineById(lineId);
+
+        List<Optional<String>> requestStations = extractNullableStation(stationRequest, line);
+        final String newStationName = extractStationNameToAdd(requestStations);
+
+        stationRepository.save(newStationName);
+
+        subway.addStation(
+                line.getName(),
+                stationRequest.getSourceStation(),
+                stationRequest.getTargetStation(),
+                stationRequest.getDistance()
+        );
+        saveUpdatedLine(subway, line.getName(), lineId);
+        return new StationSelectResponse(newStationName);
+    }
+
+    private List<Optional<String>> extractNullableStation(
+            final StationSaveRequest stationRequest,
+            final Line lineByName)
+    {
+        final List<Station> stations = lineByName.getStations();
+        List<Optional<String>> requestStations = new ArrayList<>();
+        requestStations.add(filterNonExistStation(stations, stationRequest.getSourceStation()));
+        requestStations.add(filterNonExistStation(stations, stationRequest.getTargetStation()));
+        return requestStations;
+    }
+
+    private String extractStationNameToAdd(final List<Optional<String>> requestStations) {
+        return requestStations.stream()
+                .filter(Optional::isPresent)
+                .flatMap(Optional::stream)
+                .findFirst()
+                .orElseThrow(AlreadyExistStationException::new);
+    }
+
+    private Optional<String> filterNonExistStation(List<Station> stations, String requestStationName) {
+        if (noneMatchStationName(stations, requestStationName)) {
+            return Optional.ofNullable(requestStationName);
+        }
+
+        return Optional.empty();
+    }
+
+    private boolean noneMatchStationName(final List<Station> stations, final String requestStationName) {
+        return stations.stream()
+                .noneMatch(station -> station.getName().equals(requestStationName));
+    }
+
+    private void saveUpdatedLine(Subway subway, String lineName, Long lineId) {
+        Line updatedLine = subway.getLines().stream()
+                .filter(line -> line.isSameName(lineName))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 Line 이름입니다."));
+        lineRepository.updateLine(lineId, updatedLine);
+    }
+
+    public void deleteStation(final Long lineId, final Long stationId) {
+        final Subway subway = new Subway(lineRepository.findAll());
+        final Line line = subway.findLineById(lineId);
+        final Station findStation = stationRepository.findById(stationId);
+
+        line.removeStation(findStation);
+        lineRepository.deleteStation(lineId, stationId);
+
+        if (line.getStations().isEmpty()) {
+            lineRepository.delete(lineId);
+        }
+
+        if (subway.notContainsStation(findStation)) {
+            stationRepository.delete(stationId);
+        }
+    }
 }
