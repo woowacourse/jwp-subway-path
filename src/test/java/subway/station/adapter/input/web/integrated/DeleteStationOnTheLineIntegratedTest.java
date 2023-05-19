@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
 @SuppressWarnings("NonAsciiCharacters")
-class DeleteStationIntegratedTest extends IntegrationTest {
+class DeleteStationOnTheLineIntegratedTest extends IntegrationTest {
     @Test
     void 해당_노선의_가장_왼쪽_역을_삭제한다() {
         // given

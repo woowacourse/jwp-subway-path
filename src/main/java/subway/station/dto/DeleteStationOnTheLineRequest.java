@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteStationRequest {
+public class DeleteStationOnTheLineRequest {
     @NotNull(message = "lineId는 null일 수 없습니다.")
     private Long lineId;
     @NotNull(message = "stationId는 null일 수 없습니다.")

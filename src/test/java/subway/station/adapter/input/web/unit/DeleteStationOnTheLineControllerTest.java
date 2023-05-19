@@ -5,16 +5,14 @@ import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
-import subway.station.adapter.input.web.DeleteStationController;
-import subway.station.application.port.input.DeleteStationUseCase;
+import subway.station.adapter.input.web.DeleteStationOnTheLineController;
+import subway.station.application.port.input.DeleteStationOnTheLineUseCase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,15 +21,15 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ContextConfiguration(classes = TestConfig.class)
-@WebMvcTest(DeleteStationController.class)
-class DeleteStationControllerTest {
+@WebMvcTest(DeleteStationOnTheLineController.class)
+class DeleteStationOnTheLineControllerTest {
     @MockBean
-    private DeleteStationUseCase deleteStationUseCase;
+    private DeleteStationOnTheLineUseCase deleteStationOnTheLineUseCase;
     
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.standaloneSetup(
-                MockMvcBuilders.standaloneSetup(new DeleteStationController(deleteStationUseCase))
+                MockMvcBuilders.standaloneSetup(new DeleteStationOnTheLineController(deleteStationOnTheLineUseCase))
                         .setControllerAdvice(new GlobalExceptionHandler())
         );
     }

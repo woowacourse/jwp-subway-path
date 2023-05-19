@@ -78,7 +78,7 @@ public class Path {
             return 0;
         }
         
-        return (long) ((Math.ceil((distance - 1) / increase) + 1) * 100);
+        return (long) ((Math.ceil((double) (distance - 1) / increase) + 1) * 100);
     }
     
     private boolean isDistanceNegative(final long distance) {

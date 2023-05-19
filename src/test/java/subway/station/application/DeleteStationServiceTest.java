@@ -36,7 +36,7 @@ class DeleteStationServiceTest {
     private SaveAllSectionPort saveAllSectionPort;
     
     @InjectMocks
-    private DeleteStationService deleteStationService;
+    private DeleteStationOnTheLineService deleteStationService;
     
     @Test
     void 해당_노선에서_역을_삭제한다() {
@@ -50,6 +50,6 @@ class DeleteStationServiceTest {
         
         // expect
         assertThatNoException()
-                .isThrownBy(() -> deleteStationService.deleteStation(1L, 1L));
+                .isThrownBy(() -> deleteStationService.deleteStationOnTheLine(1L, 1L));
     }
 }
