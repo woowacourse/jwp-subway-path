@@ -17,11 +17,13 @@ public class Subway {
         this.chargeBooth = chargeBooth;
     }
 
-    public static Subway create(List<Station> stations, List<Line> lines) {
+    public static Subway create(List<Line> lines) {
         WeightedMultigraph<Station, WeightedEdgeWithLine> graph = new WeightedMultigraph(WeightedEdgeWithLine.class);
-        for (Station station : stations) {
-            graph.addVertex(station);
-        }
+
+        lines.stream()
+                .flatMap(line -> line.getStations().stream())
+                .forEach(graph::addVertex);
+
         for (Line line : lines) {
             List<Section> sections = line.getSections();
             for (Section section : sections) {
@@ -34,8 +36,16 @@ public class Subway {
     }
 
     public Path findShortestRoute(int passengerAge, Station startStation, Station endStation) {
+        if (!graph.containsVertex(startStation) || !graph.containsVertex(endStation)) {
+            throw new IllegalArgumentException("노선에 등록되지 않은 역입니다.");
+        }
+
         DijkstraShortestPath<Station, WeightedEdgeWithLine> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, WeightedEdgeWithLine> shortestRoute = dijkstraShortestPath.getPath(startStation, endStation);
+
+        if (shortestRoute == null) {
+            throw new IllegalArgumentException("경로를 찾을 수 없습니다.");
+        }
 
         List<Route> routes = getRoutes(shortestRoute.getEdgeList());
         Distance totalDistance = new Distance(shortestRoute.getWeight());

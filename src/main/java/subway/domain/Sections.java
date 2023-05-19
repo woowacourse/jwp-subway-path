@@ -66,10 +66,9 @@ public class Sections {
 
             Section newSection = new Section(section1.getUpStation(), section2.getDownStation(),
                     section1.getDistance().add(section2.getDistance()));
-            int removedIndex = sections.indexOf(section1);
             sections.remove(section1);
             sections.remove(section2);
-            sections.add(removedIndex, newSection);
+            sections.add(newSection);
         }
     }
 

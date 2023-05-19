@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -27,34 +28,75 @@ class SubwayTest {
     private static final Distance DISTANCE_20 = new Distance(20);
     private static final Distance DISTANCE_1000 = new Distance(1000);
 
-    @Test
+    @Nested
     @DisplayName("최소 거리 계산")
-    void findShortestRoute() {
-        // a-b-c
-        Line lineA = new Line(1L, "lineA", new Charge(0),
-                List.of(new Section(STATION_A, STATION_B, DISTANCE_3), new Section(STATION_B, STATION_C, DISTANCE_25)));
+    class findShortestRoute {
+        @Test
+        @DisplayName("성공")
+        void success() {
+            // a-b-c
+            Line lineA = new Line(1L, "lineA", new Charge(0),
+                    List.of(new Section(STATION_A, STATION_B, DISTANCE_3), new Section(STATION_B, STATION_C, DISTANCE_25)));
 
-        // d-b-e-c
-        Line lineB = new Line(2L, "lineB", new Charge(0),
-                List.of(new Section(STATION_D, STATION_B, DISTANCE_4), new Section(STATION_B, STATION_E, DISTANCE_3),
-                        new Section(STATION_E, STATION_C, DISTANCE_1)));
+            // d-b-e-c
+            Line lineB = new Line(2L, "lineB", new Charge(0),
+                    List.of(new Section(STATION_D, STATION_B, DISTANCE_4), new Section(STATION_B, STATION_E, DISTANCE_3),
+                            new Section(STATION_E, STATION_C, DISTANCE_1)));
 
-        // c-f
-        Line lineC = new Line(3L, "lineC", new Charge(0),
-                List.of(new Section(STATION_C, STATION_F, DISTANCE_2)));
+            // c-f
+            Line lineC = new Line(3L, "lineC", new Charge(0),
+                    List.of(new Section(STATION_C, STATION_F, DISTANCE_2)));
 
-        List<Line> lines = List.of(lineA, lineB, lineC);
-        List<Station> stations = List.of(STATION_A, STATION_B, STATION_C, STATION_D, STATION_E, STATION_F);
-        Subway subway = Subway.create(stations, lines);
+            List<Line> lines = List.of(lineA, lineB, lineC);
+            Subway subway = Subway.create(lines);
 
-        // route : A-B-E-C-F
-        Path path = subway.findShortestRoute(0, STATION_A, STATION_F);
+            // route : A-B-E-C-F
+            Path path = subway.findShortestRoute(0, STATION_A, STATION_F);
 
-        assertThat(path.getRoutes().get(0).getStations()).containsExactly(STATION_A, STATION_B);
-        assertThat(path.getRoutes().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
-        assertThat(path.getRoutes().get(2).getStations()).containsExactly(STATION_C, STATION_F);
-        assertThat(path.getTotalDistance().getValue()).isEqualTo(9);
-        assertThat(path.getTotalCharge().getValue()).isEqualTo(1250);
+            assertThat(path.getRoutes().get(0).getStations()).containsExactly(STATION_A, STATION_B);
+            assertThat(path.getRoutes().get(1).getStations()).containsExactly(STATION_B, STATION_E, STATION_C);
+            assertThat(path.getRoutes().get(2).getStations()).containsExactly(STATION_C, STATION_F);
+            assertThat(path.getTotalDistance().getValue()).isEqualTo(9);
+            assertThat(path.getTotalCharge().getValue()).isEqualTo(1250);
+        }
+
+        @Test
+        @DisplayName("실패 - 역이 노선에 등록되지 않은 경우")
+        void fail1() {
+            // a-b
+            Line lineA = new Line(1L, "lineA", new Charge(0),
+                    List.of(new Section(STATION_A, STATION_B, DISTANCE_3)));
+
+            // c-f
+            Line lineC = new Line(3L, "lineC", new Charge(0),
+                    List.of(new Section(STATION_C, STATION_F, DISTANCE_2)));
+
+            List<Line> lines = List.of(lineA, lineC);
+            Subway subway = Subway.create(lines);
+
+            // route :
+            assertThatThrownBy(() -> subway.findShortestRoute(0, STATION_A, STATION_D))
+                    .hasMessage("노선에 등록되지 않은 역입니다.");
+        }
+
+        @Test
+        @DisplayName("실패 - 경로를 찾을 수 없는 경우")
+        void fail2() {
+            // a-b
+            Line lineA = new Line(1L, "lineA", new Charge(0),
+                    List.of(new Section(STATION_A, STATION_B, DISTANCE_3)));
+
+            // c-f
+            Line lineC = new Line(3L, "lineC", new Charge(0),
+                    List.of(new Section(STATION_C, STATION_F, DISTANCE_2)));
+
+            List<Line> lines = List.of(lineA, lineC);
+            Subway subway = Subway.create(lines);
+
+            // route :
+            assertThatThrownBy(() -> subway.findShortestRoute(0, STATION_A, STATION_F))
+                    .hasMessage("경로를 찾을 수 없습니다.");
+        }
     }
 
     @Nested
@@ -72,8 +114,7 @@ class SubwayTest {
                             new Section(STATION_E, STATION_C, DISTANCE_1)));
 
             List<Line> lines = List.of(lineA, lineB);
-            List<Station> stations = List.of(STATION_A, STATION_B, STATION_C, STATION_D, STATION_E, STATION_F);
-            Subway subway = Subway.create(stations, lines);
+            Subway subway = Subway.create(lines);
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
@@ -95,8 +136,7 @@ class SubwayTest {
                             new Section(STATION_E, STATION_C, DISTANCE_4)));
 
             List<Line> lines = List.of(lineA, lineB);
-            List<Station> stations = List.of(STATION_A, STATION_B, STATION_C, STATION_D, STATION_E, STATION_F);
-            Subway subway = Subway.create(stations, lines);
+            Subway subway = Subway.create(lines);
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
@@ -118,8 +158,7 @@ class SubwayTest {
                             new Section(STATION_E, STATION_C, DISTANCE_18)));
 
             List<Line> lines = List.of(lineA, lineB);
-            List<Station> stations = List.of(STATION_A, STATION_B, STATION_C, STATION_D, STATION_E, STATION_F);
-            Subway subway = Subway.create(stations, lines);
+            Subway subway = Subway.create(lines);
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
@@ -146,8 +185,7 @@ class SubwayTest {
                             new Section(STATION_E, STATION_C, DISTANCE_1)));
 
             List<Line> lines = List.of(lineA, lineB);
-            List<Station> stations = List.of(STATION_A, STATION_B, STATION_C, STATION_D, STATION_E, STATION_F);
-            Subway subway = Subway.create(stations, lines);
+            Subway subway = Subway.create(lines);
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
@@ -169,8 +207,7 @@ class SubwayTest {
                             new Section(STATION_E, STATION_C, DISTANCE_1)));
 
             List<Line> lines = List.of(lineA, lineB);
-            List<Station> stations = List.of(STATION_A, STATION_B, STATION_C, STATION_D, STATION_E, STATION_F);
-            Subway subway = Subway.create(stations, lines);
+            Subway subway = Subway.create(lines);
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(0, STATION_A, STATION_C);
@@ -197,8 +234,7 @@ class SubwayTest {
                             new Section(STATION_E, STATION_C, DISTANCE_1)));
 
             List<Line> lines = List.of(lineA, lineB);
-            List<Station> stations = List.of(STATION_A, STATION_B, STATION_C, STATION_D, STATION_E, STATION_F);
-            Subway subway = Subway.create(stations, lines);
+            Subway subway = Subway.create(lines);
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(8, STATION_A, STATION_C);
@@ -220,8 +256,7 @@ class SubwayTest {
                             new Section(STATION_E, STATION_C, DISTANCE_1)));
 
             List<Line> lines = List.of(lineA, lineB);
-            List<Station> stations = List.of(STATION_A, STATION_B, STATION_C, STATION_D, STATION_E, STATION_F);
-            Subway subway = Subway.create(stations, lines);
+            Subway subway = Subway.create(lines);
 
             // route : A-B-E-C
             Path path = subway.findShortestRoute(15, STATION_A, STATION_C);
