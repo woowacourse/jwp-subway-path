@@ -1,13 +1,12 @@
-package subway.business.domain;
+package subway.business.domain.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.fixture.Fixture.station1;
-import static subway.fixture.Fixture.station2;
+import static subway.fixture.FixtureForLineTest.station1;
+import static subway.fixture.FixtureForLineTest.station2;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.business.domain.line.Station;
 import subway.business.domain.transfer.Transfer;
 
 class TransferTest {

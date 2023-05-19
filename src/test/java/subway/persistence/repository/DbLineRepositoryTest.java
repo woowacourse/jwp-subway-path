@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static subway.fixture.Fixture.line2WithOneSection;
+import static subway.fixture.FixtureForLineTest.line2WithOneSection;
 
 import java.util.ArrayList;
 import java.util.List;

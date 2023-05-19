@@ -49,4 +49,13 @@ public class Station {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    // TODO 제거하기
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

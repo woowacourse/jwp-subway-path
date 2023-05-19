@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static subway.fixture.Fixture.line2WithOneSection;
+import static subway.fixture.FixtureForLineTest.line2WithOneSection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;

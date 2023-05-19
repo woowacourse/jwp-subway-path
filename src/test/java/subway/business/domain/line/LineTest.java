@@ -1,9 +1,9 @@
-package subway.business.domain;
+package subway.business.domain.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.fixture.Fixture.line2WithOneSection;
-import static subway.fixture.Fixture.line2WithTwoSection;
+import static subway.fixture.FixtureForLineTest.line2WithOneSection;
+import static subway.fixture.FixtureForLineTest.line2WithTwoSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.business.domain.direction.Direction;
-import subway.business.domain.line.Line;
-import subway.business.domain.line.Section;
-import subway.business.domain.line.Station;
 
 class LineTest {
 

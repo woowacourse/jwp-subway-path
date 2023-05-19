@@ -3,16 +3,20 @@ package subway.business.domain.line;
 import java.util.LinkedList;
 import java.util.List;
 
-public class OrderedStations {
-    private final List<Station> stations = new LinkedList<>();
+public class Stations {
+    private final List<Station> stations;
 
-    public static OrderedStations from(List<Section> orderedSections) {
-        OrderedStations orderedStations = new OrderedStations();
+    public Stations(List<Station> stations) {
+        this.stations = stations;
+    }
+
+    public static Stations createOfOrderedSections(List<Section> orderedSections) {
+        Stations stations = new Stations(new LinkedList<>());
         for (Section section : orderedSections) {
-            orderedStations.add(section.getUpwardStation());
+            stations.add(section.getUpwardStation());
         }
-        orderedStations.add(orderedSections.get(orderedSections.size() - 1).getDownwardStation());
-        return orderedStations;
+        stations.add(orderedSections.get(orderedSections.size() - 1).getDownwardStation());
+        return stations;
     }
 
     public void add(Station station) {
@@ -36,5 +40,9 @@ public class OrderedStations {
                                 String.format("존재하지 않는 이름의 역입니다. " + "(입력한 역 이름 : %s)", stationName)
                         )
                 );
+    }
+
+    public List<Station> getStations() {
+        return stations;
     }
 }

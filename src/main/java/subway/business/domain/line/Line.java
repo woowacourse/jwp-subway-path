@@ -56,6 +56,10 @@ public class Line {
         deleteStationWhenIsNotTerminus(station);
     }
 
+    public Stations getOrderedStations() {
+        return Stations.createOfOrderedSections(sections);
+    }
+
     private void deleteStationWhenIsNotTerminus(Station stationToDelete) {
         Section downwardSection = getSectionOfDirectionHasStation(stationToDelete, DOWNWARD);
         Section upwardSection = getSectionOfDirectionHasStation(stationToDelete, UPWARD);
@@ -135,10 +139,6 @@ public class Line {
         if (sections.size() == 1) {
             throw new IllegalArgumentException("노선에 역이 2개 밖에 존재하지 않아, 역을 제외할 수 없습니다.");
         }
-    }
-
-    private OrderedStations getOrderedStations() {
-        return OrderedStations.from(sections);
     }
 
     public Long getId() {

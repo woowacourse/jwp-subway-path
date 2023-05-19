@@ -6,9 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static subway.fixture.Fixture.station1;
-import static subway.fixture.Fixture.station2;
-import static subway.fixture.Fixture.station3;
+import static subway.fixture.FixtureForLineTest.station1;
+import static subway.fixture.FixtureForLineTest.station2;
+import static subway.fixture.FixtureForLineTest.station3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
