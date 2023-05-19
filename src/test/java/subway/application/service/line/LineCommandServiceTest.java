@@ -1,10 +1,12 @@
 package subway.application.service.line;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import subway.adapter.in.web.line.dto.LineRequest;
 import subway.application.port.out.line.LineCommandPort;
 import subway.application.port.out.line.LineQueryPort;
@@ -17,17 +19,14 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+@ExtendWith(MockitoExtension.class)
 class LineCommandServiceTest {
+    @Mock
     private LineCommandPort lineCommandPort;
+    @Mock
     private LineQueryPort lineQueryPort;
+    @InjectMocks
     private LineCommandService lineCommandService;
-
-    @BeforeEach
-    void setUp() {
-        lineCommandPort = Mockito.mock(LineCommandPort.class);
-        lineQueryPort = Mockito.mock(LineQueryPort.class);
-        lineCommandService = new LineCommandService(lineCommandPort, lineQueryPort);
-    }
 
     @Test
     @DisplayName("노선이 중복되지않으면 정상적으로 노선을 만든다.")
