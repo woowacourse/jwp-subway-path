@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.path;
 
 public enum PriceLevel {
     LEVEL1,

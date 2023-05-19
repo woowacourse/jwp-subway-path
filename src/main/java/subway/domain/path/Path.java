@@ -5,9 +5,9 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import subway.application.PricePolicy;
+import subway.application.path.PricePolicy;
 import subway.domain.station.Station;
-import subway.exception.IllegalPathException;
+import subway.exception.path.IllegalPathException;
 
 public class Path {
     private final GraphPath<Station, DefaultWeightedEdge> path;

@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.path;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import subway.domain.path.Path;
 import subway.domain.station.Station;
 import subway.dto.path.PathRequest;
 import subway.dto.path.PathResponse;
-import subway.exception.IllegalPathException;
+import subway.exception.path.IllegalPathException;
 
 @Service
 @Transactional

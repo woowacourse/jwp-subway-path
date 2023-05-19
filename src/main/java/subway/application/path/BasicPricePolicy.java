@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.path;
 
 import java.util.EnumMap;
 import java.util.Map;

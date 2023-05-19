@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.section;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
@@ -17,9 +17,9 @@ import subway.domain.station.Station;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 import subway.dto.section.SectionResponse;
-import subway.exception.IllegalDistanceException;
-import subway.exception.IllegalSectionException;
-import subway.exception.StationNotFoundException;
+import subway.exception.section.IllegalDistanceException;
+import subway.exception.section.IllegalSectionException;
+import subway.exception.station.StationNotFoundException;
 
 @Service
 @Transactional

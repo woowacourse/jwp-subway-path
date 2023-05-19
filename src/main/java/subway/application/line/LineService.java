@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.line;
 
 import static java.util.stream.Collectors.toList;
 
@@ -13,8 +13,8 @@ import subway.domain.line.LineName;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
-import subway.exception.DuplicateLineException;
-import subway.exception.LineNotFoundException;
+import subway.exception.line.DuplicateLineException;
+import subway.exception.line.LineNotFoundException;
 
 @Service
 @Transactional

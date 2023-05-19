@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -21,8 +21,8 @@ import subway.dao.StationDao;
 import subway.domain.station.Station;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionResponse;
-import subway.exception.IllegalDistanceException;
-import subway.exception.IllegalSectionException;
+import subway.exception.section.IllegalDistanceException;
+import subway.exception.section.IllegalSectionException;
 
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {

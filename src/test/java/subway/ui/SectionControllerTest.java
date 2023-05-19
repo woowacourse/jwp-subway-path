@@ -26,7 +26,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.SectionService;
+import subway.application.section.SectionService;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 

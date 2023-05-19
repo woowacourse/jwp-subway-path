@@ -20,7 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.PathService;
+import subway.application.path.PathService;
 import subway.dto.path.PathRequest;
 import subway.dto.path.PathResponse;
 

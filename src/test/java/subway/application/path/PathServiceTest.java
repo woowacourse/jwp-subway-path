@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -22,7 +22,7 @@ import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.dto.path.PathRequest;
 import subway.dto.path.PathResponse;
-import subway.exception.IllegalPathException;
+import subway.exception.path.IllegalPathException;
 
 class PathServiceTest {
     PathService pathService;

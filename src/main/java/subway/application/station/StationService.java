@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.station;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,8 +9,8 @@ import subway.domain.station.Station;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationUpdateRequest;
-import subway.exception.DuplicateStationException;
-import subway.exception.StationNotFoundException;
+import subway.exception.station.DuplicateStationException;
+import subway.exception.station.StationNotFoundException;
 
 @Service
 @Transactional

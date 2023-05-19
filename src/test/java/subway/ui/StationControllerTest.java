@@ -30,7 +30,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.StationService;
+import subway.application.station.StationService;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationUpdateRequest;
 
