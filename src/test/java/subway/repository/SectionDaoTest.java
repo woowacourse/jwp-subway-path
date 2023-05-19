@@ -264,6 +264,34 @@ class SectionDaoTest {
     }
 
     @Test
+    @DisplayName("노선에 역 존재 확인 - true")
+    void isStationExistInLine_true() {
+        // given
+        final long lineId = 1L;
+        final long stationId = 1L;
+
+        // when
+        boolean exist = sectionDao.isStationExistInLine(lineId, stationId);
+
+        // then
+        assertThat(exist).isTrue();
+    }
+
+    @Test
+    @DisplayName("노선에 역 존재 확인 - false")
+    void isStationExistInLine_false() {
+        // given
+        final long lineId = 1L;
+        final long stationId = 4L;
+
+        // when
+        boolean exist = sectionDao.isStationExistInLine(lineId, stationId);
+
+        // then
+        assertThat(exist).isFalse();
+    }
+
+    @Test
     @DisplayName("구간 전체 조회 성공")
     void findAll_success() {
         // given, when
