@@ -59,7 +59,7 @@ class LineServiceTest {
         given(sectionDao.insert(any())).willReturn(any());
 
         // when, then
-        assertThat(lineService.createLineWithSection(lineDto, sectionCreateDto)).isEqualTo(1L);
+        assertThat(lineService.create(lineDto, sectionCreateDto)).isEqualTo(1L);
     }
 
     @Test
@@ -72,7 +72,7 @@ class LineServiceTest {
         given(lineDao.insert(any())).willThrow(DuplicatedLineNameException.class);
 
         // when, then
-        assertThatThrownBy(() -> lineService.createLineWithSection(lineDto, sectionCreateDto))
+        assertThatThrownBy(() -> lineService.create(lineDto, sectionCreateDto))
                 .isInstanceOf(DuplicatedLineNameException.class);
     }
 
