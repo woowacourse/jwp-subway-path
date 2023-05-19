@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import subway.application.SectionService;
 import subway.ui.request.PathRequest;
-import subway.ui.response.StationResponse;
+import subway.ui.response.PathResponse;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("/lines/sections")
@@ -24,9 +23,9 @@ public class SectionController {
     }
 
     @PostMapping("/path")
-    public ResponseEntity<List<StationResponse>> findPath(@Valid @RequestBody final PathRequest pathRequest) {
-        final List<StationResponse> responses = sectionService.findPath(pathRequest);
-        return ResponseEntity.ok(responses);
+    public ResponseEntity<PathResponse> findPath(@Valid @RequestBody final PathRequest pathRequest) {
+        final PathResponse response = sectionService.findPath(pathRequest);
+        return ResponseEntity.ok(response);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

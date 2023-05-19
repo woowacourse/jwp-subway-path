@@ -5,10 +5,9 @@ import subway.domain.SectionGraph;
 import subway.domain.Station;
 import subway.persistence.repository.SectionRepository;
 import subway.ui.request.PathRequest;
-import subway.ui.response.StationResponse;
+import subway.ui.response.PathResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SectionService {
@@ -19,14 +18,13 @@ public class SectionService {
         this.serviceRepository = serviceRepository;
     }
 
-    public List<StationResponse> findPath(final PathRequest pathRequest) {
+    public PathResponse findPath(final PathRequest pathRequest) {
+        final String startSection = pathRequest.getStartStationName();
+        final String endSection = pathRequest.getEndStationName();
         final SectionGraph sectionGraph = serviceRepository.findAll();
-        final List<Station> shortestPathStations = sectionGraph.findShortestPath(
-                pathRequest.getStartStationName(),
-                pathRequest.getEndStationName()
-        );
-        return shortestPathStations.stream()
-                .map(StationResponse::new)
-                .collect(Collectors.toList());
+        final List<Station> shortestPathStations = sectionGraph.findShortestPath(startSection, endSection);
+        final double distance = sectionGraph.findShortestDistance(startSection, endSection);
+        final int fare = SectionGraph.calculateFare(distance);
+        return new PathResponse(fare, distance, shortestPathStations);
     }
 }

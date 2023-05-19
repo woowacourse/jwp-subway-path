@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import subway.integration.IntegrationTest;
 import subway.ui.request.PathRequest;
 import subway.ui.request.SectionRequest;
+import subway.ui.response.PathResponse;
 import subway.ui.response.StationResponse;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static subway.integration.IntegrationFixture.*;
 
@@ -38,16 +38,20 @@ class SectionServiceTest extends IntegrationTest {
     void findPathTest() {
         final PathRequest request = new PathRequest(STATION_A.getName(), STATION_D.getName());
 
-        final List<StationResponse> pathResponses = sectionService.findPath(request);
+        final PathResponse response = sectionService.findPath(request);
 
-        assertThat(pathResponses)
-                .extracting(StationResponse::getId)
-                .containsExactly(
-                        STATION_A.getId(),
-                        STATION_B.getId(),
-                        STATION_C.getId(),
-                        STATION_D.getId()
-                );
+        assertAll(
+                () -> assertThat(response.getFare()).isEqualTo(1350),
+                () -> assertThat(response.getPath())
+                        .extracting(StationResponse::getId)
+                        .containsExactly(
+                                STATION_A.getId(),
+                                STATION_B.getId(),
+                                STATION_C.getId(),
+                                STATION_D.getId()
+                        ),
+                () -> assertThat(response.getDistance()).isEqualTo(13)
+        );
     }
 
     @DisplayName("경로가 존재하지 않을 경우 예외가 발생한다.")
@@ -59,6 +63,7 @@ class SectionServiceTest extends IntegrationTest {
                 IllegalArgumentException.class,
                 () -> sectionService.findPath(request)
         );
+
         assertThat(exception.getMessage()).isEqualTo("경로를 찾을 수 없습니다.");
     }
 }
