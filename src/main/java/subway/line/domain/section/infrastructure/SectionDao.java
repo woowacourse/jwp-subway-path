@@ -40,15 +40,15 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, Integer.class, line.getId());
     }
 
-    public Section insert(Section section) {
+    public Section insert(Line line, Station previousStation, Station nextStation, Distance distance) {
         long id = insertAndReturnId(
-                section.getLine().getId(),
-                section.getPreviousStation().getId(),
-                section.getNextStation().getId(),
-                section.getDistance()
+                line.getId(),
+                previousStation.getId(),
+                nextStation.getId(),
+                distance
         );
 
-        return new Section(id, section.getLine(), section.getPreviousStation(), section.getNextStation(), section.getDistance());
+        return new Section(id, line, previousStation, nextStation, distance);
     }
 
     private long insertAndReturnId(Long lineId, Long previousStationId, Long nextStationId, Distance distance) {

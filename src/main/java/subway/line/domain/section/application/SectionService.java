@@ -6,7 +6,6 @@ import subway.line.Line;
 import subway.line.application.LineRepository;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.application.exception.StationNotConnectedException;
-import subway.line.domain.section.application.exception.StationNotRegisteredException;
 import subway.line.domain.section.application.strategy.SectionInsertionStrategy;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
@@ -35,17 +34,19 @@ public class SectionService {
         Station previousStation = stationRepository.findByName(previousStationName);
         Station nextStation = stationRepository.findByName(nextStationName);
 
-        final var section = isDown ?
-                new Section(line, previousStation, nextStation, distance)
-                : new Section(line, nextStation, previousStation, distance);
+        if (isDown) {
+            return insert(line, previousStation, nextStation, distance);
+        }
+        return insert(line, nextStation, previousStation, distance);
+    }
 
+    private long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
         for (SectionInsertionStrategy strategy : strategies) {
-            if (strategy.support(section)) {
-                return strategy.insert(section);
+            if (strategy.support(line, previousStation, nextStation, distance)) {
+                return strategy.insert(line, previousStation, nextStation, distance);
             }
         }
-
-        throw new StationNotRegisteredException(ExceptionMessages.STATION_NOT_REGISTERED);
+        throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
     }
 
     public Distance findDistanceBetween(Station stationA, Station stationB, Line line) {

@@ -3,6 +3,7 @@ package subway.line.domain.section.application;
 import org.springframework.stereotype.Repository;
 import subway.line.Line;
 import subway.line.domain.section.Section;
+import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.infrastructure.SectionDao;
 import subway.line.domain.station.Station;
 
@@ -30,8 +31,8 @@ public class SectionRepository {
         return sectionDao.findAllByLine(line);
     }
 
-    public Section insert(Section section) {
-        return sectionDao.insert(section);
+    public Section insert(Line line, Station previousStation, Station nextStation, Distance distance) {
+        return sectionDao.insert(line, previousStation, nextStation, distance);
     }
 
     public void update(Section section) {
@@ -40,5 +41,13 @@ public class SectionRepository {
 
     public int countStations(Line line) {
         return sectionDao.countStations(line);
+    }
+
+    public void clearStations(Line line) {
+        sectionDao.clearStations(line);
+    }
+
+    public void deleteStation(Station station, Line line) {
+        sectionDao.deleteStation(station, line);
     }
 }

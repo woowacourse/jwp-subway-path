@@ -22,14 +22,6 @@ public class Section {
         this.distance = distance;
     }
 
-    public Section(Line line, Station previousStation, Station nextStation, Distance distance) {
-        this.id = null;
-        this.line = line;
-        this.previousStation = previousStation;
-        this.nextStation = nextStation;
-        this.distance = distance;
-    }
-
     public boolean isNextStationEmpty() {
         return nextStation.equals(new EmptyStation());
     }

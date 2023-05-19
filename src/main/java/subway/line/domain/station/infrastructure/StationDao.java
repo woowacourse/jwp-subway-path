@@ -2,7 +2,7 @@ package subway.line.domain.station.infrastructure;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -29,10 +29,11 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+    public Station insert(String name) {
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("name", name);
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        return new Station(id, name);
     }
 
     public List<Station> findAll() {

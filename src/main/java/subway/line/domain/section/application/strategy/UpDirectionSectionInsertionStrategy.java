@@ -3,8 +3,10 @@ package subway.line.domain.section.application.strategy;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
-import subway.line.domain.section.Section;
+import subway.line.Line;
 import subway.line.domain.section.application.SectionRepository;
+import subway.line.domain.section.domain.Distance;
+import subway.line.domain.station.Station;
 
 @Component
 @Order(1)
@@ -16,20 +18,20 @@ public class UpDirectionSectionInsertionStrategy implements SectionInsertionStra
     }
 
     @Override
-    public boolean support(Section section) {
-        return sectionRepository.findByNextStation(section.getNextStation(), section.getLine()).isPresent();
+    public boolean support(Line line, Station previousStation, Station nextStation, Distance distance) {
+        return sectionRepository.findByNextStation(nextStation, line).isPresent();
     }
 
     @Override
-    public long insert(Section section) {
-        final var savedSection = sectionRepository.insert(section);
+    public long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
+        final var savedSection = sectionRepository.insert(line, previousStation, nextStation, distance);
 
-        final var stationToUpdate = sectionRepository.findByNextStation(section.getNextStation(), section.getLine())
+        final var stationToUpdate = sectionRepository.findByNextStation(nextStation, line)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
         sectionRepository.update(stationToUpdate.change()
-                .line(section.getLine())
-                .nextStation(section.getPreviousStation())
-                .subtractDistance(section.getDistance())
+                .line(line)
+                .nextStation(previousStation)
+                .subtractDistance(distance)
                 .done());
 
         return savedSection.getId();
