@@ -9,18 +9,8 @@ import java.sql.SQLException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler({DuplicateSectionNameException.class, DuplicateSectionAddException.class, DuplicateSectionException.class,
-    DuplicateSectionNameException.class,DuplicateLineNameException.class})
-    public ResponseEntity<String> handleDuplicationException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-    @ExceptionHandler({InValidDistanceException.class, InValidLineNameException.class, InvalidSectionException.class,
-            InValidStationNameException.class,InvalidStationException.class})
-    public ResponseEntity<String> handleInvalidException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-    @ExceptionHandler({NotConnectSectionException.class, NotExistSectionException.class})
-    public ResponseEntity<String> handle(Exception e) {
+    @ExceptionHandler(GlobalException.class)
+    public ResponseEntity<String> handleGlobalException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
