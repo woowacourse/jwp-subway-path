@@ -201,5 +201,4 @@ class StationDaoTest {
         assertThatThrownBy(() -> stationDao.deleteById(id))
                 .isInstanceOf(StationNotFoundException.class);
     }
-
 }
