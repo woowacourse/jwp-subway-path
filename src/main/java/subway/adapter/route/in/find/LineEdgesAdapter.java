@@ -7,7 +7,7 @@ import subway.application.line.port.in.InterStationResponseDto;
 import subway.application.line.port.in.LineFindAllUseCase;
 import subway.application.line.port.in.LineResponseDto;
 import subway.application.route.port.in.find.RouteAllEdgesUseCase;
-import subway.domain.route.Graph;
+import subway.domain.route.Edges;
 import subway.domain.route.InterStationEdge;
 
 @Component
@@ -20,13 +20,13 @@ public class LineEdgesAdapter implements RouteAllEdgesUseCase {
     }
 
     @Override
-    public Graph findAllEdges() {
+    public Edges findAllEdges() {
         final List<LineResponseDto> allLines = lineFindAllUseCase.findAllLines();
         final List<InterStationEdge> edges = new ArrayList<>();
         for (final LineResponseDto lineResponseDto : allLines) {
             addEdges(edges, lineResponseDto);
         }
-        return new Graph(edges);
+        return new Edges(edges);
     }
 
     private void addEdges(final List<InterStationEdge> edges, final LineResponseDto lineResponseDto) {

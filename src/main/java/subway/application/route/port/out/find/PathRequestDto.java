@@ -1,17 +1,17 @@
 package subway.application.route.port.out.find;
 
-import subway.domain.route.Graph;
+import subway.domain.route.Edges;
 
 public class PathRequestDto {
 
     private final long sourceId;
     private final long targetId;
-    private final Graph graph;
+    private final Edges edges;
 
-    public PathRequestDto(final long sourceId, final long targetId, final Graph graph) {
+    public PathRequestDto(final long sourceId, final long targetId, final Edges edges) {
         this.sourceId = sourceId;
         this.targetId = targetId;
-        this.graph = graph;
+        this.edges = edges;
     }
 
     public long getSourceId() {
@@ -22,7 +22,7 @@ public class PathRequestDto {
         return targetId;
     }
 
-    public Graph getGraph() {
-        return graph;
+    public Edges getGraph() {
+        return edges;
     }
 }

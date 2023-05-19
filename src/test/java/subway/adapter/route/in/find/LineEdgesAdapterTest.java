@@ -15,7 +15,7 @@ import subway.adapter.line.out.LineRepositoryImpl;
 import subway.application.line.port.out.LineRepository;
 import subway.application.line.service.LineFindAllService;
 import subway.domain.line.Line;
-import subway.domain.route.Graph;
+import subway.domain.route.Edges;
 import subway.domain.route.InterStationEdge;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -45,7 +45,7 @@ class LineEdgesAdapterTest {
     @Test
     void 정상적으로_모든_역을_그래프_형태로_반환한다() {
         // when
-        final Graph allEdges = lineEdgesAdapter.findAllEdges();
+        final Edges allEdges = lineEdgesAdapter.findAllEdges();
         // then
 
         assertThat(allEdges.getEdges()).usingRecursiveComparison()
