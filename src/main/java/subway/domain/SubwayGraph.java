@@ -52,8 +52,10 @@ public class SubwayGraph {
         if (path == null) {
             throw new IllegalArgumentException("최단 경로를 찾을 수 없습니다");
         }
+        
         List<SubwayPathWeightedEdge> edgeList = path.getEdgeList();
-        List<Section> pathSections = edgeList.stream().map(edge -> new Section(edge.getLine(), graph.getEdgeSource(edge),
+        List<Section> pathSections = edgeList.stream()
+                .map(edge -> new Section(edge.getLine(), graph.getEdgeSource(edge),
                         graph.getEdgeTarget(edge), (long) graph.getEdgeWeight(edge)))
                 .collect(Collectors.toList());
         return ShortestPath.of(pathSections, path.getWeight());
