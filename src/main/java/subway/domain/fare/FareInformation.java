@@ -1,17 +1,13 @@
-package subway.domain.fee;
+package subway.domain.fare;
 
 import subway.domain.Lines;
 
-public class FeeInformation {
+public class FareInformation {
 
     private final int distance;
     private Lines lines;
 
-    public FeeInformation(int distance) {
-        this.distance = distance;
-    }
-
-    public FeeInformation(int distance, Lines lines) {
+    public FareInformation(int distance, Lines lines) {
         this.distance = distance;
         this.lines = lines;
     }

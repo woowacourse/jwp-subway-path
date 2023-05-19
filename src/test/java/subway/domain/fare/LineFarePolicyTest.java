@@ -1,4 +1,4 @@
-package subway.domain.fee;
+package subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,14 +14,14 @@ import subway.domain.Lines;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("LineFeePolicy 은(는)")
-class LineFeePolicyTest {
+class LineFarePolicyTest {
 
-    private final LineFeePolicy lineFeePolicy = new LineFeePolicy();
+    private final LineFarePolicy lineFeePolicy = new LineFarePolicy();
 
     @Test
     void 노선의_추가_요금이_없으면_기본_요금을_반환한다() {
         // given
-        FeeInformation feeInformation = new FeeInformation(10,
+        FareInformation fareInformation = new FareInformation(10,
                 new Lines(
                         List.of(
                                 new Line("1호선", null, 0),
@@ -30,7 +30,7 @@ class LineFeePolicyTest {
         );
 
         // when
-        int fee = lineFeePolicy.calculate(feeInformation);
+        int fee = lineFeePolicy.calculate(fareInformation);
 
         // then
         assertThat(fee).isEqualTo(0);
@@ -39,7 +39,7 @@ class LineFeePolicyTest {
     @Test
     void 여러_노선중_추가_요금이_가장_높은_노선을_반영한다() {
         // given
-        FeeInformation feeInformation = new FeeInformation(10,
+        FareInformation fareInformation = new FareInformation(10,
                 new Lines(
                         List.of(
                                 new Line("1호선", null, 100),
@@ -49,7 +49,7 @@ class LineFeePolicyTest {
         );
 
         // when
-        int fee = lineFeePolicy.calculate(feeInformation);
+        int fee = lineFeePolicy.calculate(fareInformation);
 
         // then
         assertThat(fee).isEqualTo(300);

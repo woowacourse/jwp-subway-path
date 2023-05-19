@@ -22,7 +22,7 @@ import subway.domain.Line;
 import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Sections;
-import subway.domain.fee.FeePolicy;
+import subway.domain.fare.FarePolicy;
 import subway.domain.path.Path;
 import subway.domain.path.PathFinder;
 import subway.dto.request.ShortestPathRequest;
@@ -39,9 +39,9 @@ class PathServiceTest {
     private final StationRepository stationRepository = mock(StationRepository.class);
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final PathFinder pathFinder = mock(PathFinder.class);
-    private final FeePolicy feePolicy = mock(FeePolicy.class);
+    private final FarePolicy farePolicy = mock(FarePolicy.class);
 
-    private PathService pathService = new PathService(stationRepository, lineRepository, pathFinder, feePolicy);
+    private PathService pathService = new PathService(stationRepository, lineRepository, pathFinder, farePolicy);
 
     @Test
     void 최단_거리와_금액을_반환한다() {
@@ -59,7 +59,7 @@ class PathServiceTest {
                 .willReturn(Optional.of(잠실역));
         given(pathFinder.findShortestPath(삼성역, 잠실역, lines))
                 .willReturn(new Path(sections, 9));
-        given(feePolicy.calculate(any()))
+        given(farePolicy.calculate(any()))
                 .willReturn(1250);
         given(lineRepository.findAll())
                 .willReturn(lines);
@@ -70,7 +70,7 @@ class PathServiceTest {
         // then
         verify(stationRepository, times(2)).findByName(any());
         verify(pathFinder, times(1)).findShortestPath(any(), any(), any());
-        verify(feePolicy, times(1)).calculate(any());
+        verify(farePolicy, times(1)).calculate(any());
         verify(lineRepository, times(1)).findAll();
         assertThat(response.getSectionQueryResponses().size()).isEqualTo(3);
         assertThat(response.getTotalDistance()).isEqualTo(9);

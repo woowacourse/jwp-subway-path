@@ -1,10 +1,10 @@
-package subway.domain.fee;
+package subway.domain.fare;
 
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class DistanceFeePolicy implements FeePolicy {
+public class DistanceFarePolicy implements FarePolicy {
 
     private static final int DEFAULT_FEE_BOUNDARY = 10;
     private static final int FIRST_ADDITIONAL_FEE_BOUNDARY = 50;
@@ -13,8 +13,8 @@ public class DistanceFeePolicy implements FeePolicy {
     private static final double UNIT_OF_SECOND_ADDITIONAL_FEE_DISTANCE = 8d;
 
     @Override
-    public int calculate(final FeeInformation feeInformation) {
-        int distance = feeInformation.getDistance();
+    public int calculate(final FareInformation fareInformation) {
+        int distance = fareInformation.getDistance();
         validateDistance(distance);
         if (distance <= DEFAULT_FEE_BOUNDARY) {
             return 0;
