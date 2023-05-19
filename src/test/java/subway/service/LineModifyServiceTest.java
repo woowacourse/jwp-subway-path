@@ -6,7 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.controller.dto.request.StationRegisterInLineRequest;
 import subway.controller.dto.request.StationUnregisterInLineRequest;
+import subway.controller.dto.request.SubwayDirection;
 import subway.controller.dto.response.LineResponse;
 import subway.entity.SectionDetailEntity;
 import subway.entity.SectionEntity;
@@ -37,8 +39,150 @@ class LineModifyServiceTest {
     private LineModifyService lineModifyService;
 
     @Test
+    @DisplayName("노선에 역 등록 성공 - 상행 끝에 추가")
+    void registerStation_success_upper_end() {
+        // given
+        final long lineId = 1L;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "석촌", 1);
+        final long standardStationId = 1L;
+        final long newStationId = 4L;
+        final List<SectionDetailEntity> sectionDetailEntities = List.of(
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 4L, "석촌", 1L, "잠실"),
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 2L, "잠실새내"),
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 2L, "잠실새내", 3L, "종합운동장")
+        );
+
+        given(stationDao.findIdByName(request.getStandardStationName())).willReturn(standardStationId);
+        given(stationDao.findIdByName(request.getNewStationName())).willReturn(newStationId);
+        given(sectionDao.findByLineIdAndPreviousStationId(lineId, 1L)).willReturn(Optional.empty());
+        given(sectionDao.insert(any())).willReturn(any());
+        given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
+
+        // when
+        final LineResponse response = lineModifyService.registerStation(lineId, request);
+
+        // then
+        assertAll(
+                () -> assertThat(response.getStations()).hasSize(4),
+                () -> assertThat(response.getId()).isEqualTo(1L),
+                () -> assertThat(response.getName()).isEqualTo("2호선"),
+                () -> assertThat(response.getStations().get(0).getName()).isEqualTo("석촌"),
+                () -> assertThat(response.getStations().get(1).getName()).isEqualTo("잠실"),
+                () -> assertThat(response.getStations().get(2).getName()).isEqualTo("잠실새내"),
+                () -> assertThat(response.getStations().get(3).getName()).isEqualTo("종합운동장")
+        );
+    }
+
+    @Test
+    @DisplayName("노선에 역 등록 성공 - 하행 끝에 추가")
+    void registerStation_success_down_end() {
+        // given
+        final long lineId = 1L;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, "종합운동장", "석촌", 1);
+        final long standardStationId = 3L;
+        final long newStationId = 4L;
+        final List<SectionDetailEntity> sectionDetailEntities = List.of(
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 2L, "잠실새내"),
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 2L, "잠실새내", 3L, "종합운동장"),
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 3L, "종합운동장", 4L, "석촌")
+        );
+
+        given(stationDao.findIdByName(request.getStandardStationName())).willReturn(standardStationId);
+        given(stationDao.findIdByName(request.getNewStationName())).willReturn(newStationId);
+        given(sectionDao.findByLineIdAndNextStationId(lineId, 3L)).willReturn(Optional.empty());
+        given(sectionDao.insert(any())).willReturn(any());
+        given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
+
+        // when
+        final LineResponse response = lineModifyService.registerStation(lineId, request);
+
+        // then
+        assertAll(
+                () -> assertThat(response.getStations()).hasSize(4),
+                () -> assertThat(response.getId()).isEqualTo(1L),
+                () -> assertThat(response.getName()).isEqualTo("2호선"),
+                () -> assertThat(response.getStations().get(0).getName()).isEqualTo("잠실"),
+                () -> assertThat(response.getStations().get(1).getName()).isEqualTo("잠실새내"),
+                () -> assertThat(response.getStations().get(2).getName()).isEqualTo("종합운동장"),
+                () -> assertThat(response.getStations().get(3).getName()).isEqualTo("석촌")
+        );
+    }
+
+    @Test
+    @DisplayName("노선에 역 등록 성공 - 상행 중간에 추가")
+    void registerStation_success_upper_mid() {
+        // given
+        final long lineId = 1L;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실새내", "석촌", 1);
+        final long standardStationId = 1L;
+        final long newStationId = 4L;
+        final List<SectionDetailEntity> sectionDetailEntities = List.of(
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 4L, "석촌"),
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 4L, "석촌", 2L, "잠실새내"),
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 2L, "잠실새내", 3L, "종합운동장")
+        );
+
+        given(stationDao.findIdByName(request.getStandardStationName())).willReturn(standardStationId);
+        given(stationDao.findIdByName(request.getNewStationName())).willReturn(newStationId);
+        given(sectionDao.findByLineIdAndPreviousStationId(lineId, 1L)).willReturn(Optional.empty());
+        lenient().doNothing().when(sectionDao).delete(any());
+        given(sectionDao.insert(any())).willReturn(any());
+        given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
+
+        // when
+        final LineResponse response = lineModifyService.registerStation(lineId, request);
+
+        // then
+        assertAll(
+                () -> assertThat(response.getStations()).hasSize(4),
+                () -> assertThat(response.getId()).isEqualTo(1L),
+                () -> assertThat(response.getName()).isEqualTo("2호선"),
+                () -> assertThat(response.getStations().get(0).getName()).isEqualTo("잠실"),
+                () -> assertThat(response.getStations().get(1).getName()).isEqualTo("석촌"),
+                () -> assertThat(response.getStations().get(2).getName()).isEqualTo("잠실새내"),
+                () -> assertThat(response.getStations().get(3).getName()).isEqualTo("종합운동장")
+        );
+    }
+
+    @Test
+    @DisplayName("노선에 역 등록 성공 - 하행 중간에 추가")
+    void registerStation_success_down_mid() {
+        // given
+        final long lineId = 1L;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실새내", "석촌", 1);
+        final long standardStationId = 1L;
+        final long newStationId = 4L;
+        final List<SectionDetailEntity> sectionDetailEntities = List.of(
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 4L, "석촌"),
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 4L, "석촌", 2L, "잠실새내"),
+                new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 2L, "잠실새내", 3L, "종합운동장")
+        );
+
+        given(stationDao.findIdByName(request.getStandardStationName())).willReturn(standardStationId);
+        given(stationDao.findIdByName(request.getNewStationName())).willReturn(newStationId);
+        given(sectionDao.findByLineIdAndNextStationId(lineId, 1L)).willReturn(Optional.empty());
+        lenient().doNothing().when(sectionDao).delete(any());
+        given(sectionDao.insert(any())).willReturn(any());
+        given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
+
+        // when
+        final LineResponse response = lineModifyService.registerStation(lineId, request);
+
+        // then
+        assertAll(
+                () -> assertThat(response.getStations()).hasSize(4),
+                () -> assertThat(response.getId()).isEqualTo(1L),
+                () -> assertThat(response.getName()).isEqualTo("2호선"),
+                () -> assertThat(response.getStations().get(0).getName()).isEqualTo("잠실"),
+                () -> assertThat(response.getStations().get(1).getName()).isEqualTo("석촌"),
+                () -> assertThat(response.getStations().get(2).getName()).isEqualTo("잠실새내"),
+                () -> assertThat(response.getStations().get(3).getName()).isEqualTo("종합운동장")
+        );
+    }
+
+    @Test
     @DisplayName("노선에 역 삭제 성공")
-    void deleteStation_success() {
+    void unregisterStation_success() {
         // given
         final long lineId = 1L;
         final String stationName = "잠실새내";

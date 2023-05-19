@@ -10,7 +10,6 @@ import subway.controller.dto.response.LineResponse;
 import subway.entity.LineEntity;
 import subway.entity.SectionDetailEntity;
 import subway.exception.DuplicatedLineNameException;
-import subway.exception.DuplicatedStationNameException;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineDao;
