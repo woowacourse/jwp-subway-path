@@ -48,7 +48,8 @@ public class SectionStationMapper {
     @Override
     public String toString() {
         return "SectionStationMapper{" +
-                "upStationId=" + upStationId +
+                "id=" + id +
+                ", upStationId=" + upStationId +
                 ", upStationName='" + upStationName + '\'' +
                 ", downStationId=" + downStationId +
                 ", downStationName='" + downStationName + '\'' +

@@ -2,10 +2,7 @@ package subway.dao;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
@@ -46,7 +43,7 @@ public class SectionDao {
     }
 
     public List<SectionStationMapper> findSectionsByLineId(Long lineId) {
-        String sql = "SELECT up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance "
+        String sql = "SELECT s.id, up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance "
                 + "FROM SECTION AS s "
                 + "JOIN STATION AS up ON s.up_station_id = up.id "
                 + "JOIN STATION AS down ON s.down_station_id = down.id "
@@ -59,7 +56,7 @@ public class SectionDao {
     }
 
     public Optional<List<SectionEntity>> findByLineId(Long lineId) {
-        String sql = "SELECT line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id";
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id";
         SqlParameterSource source = new MapSqlParameterSource()
                 .addValue("line_id", lineId);
         try {
@@ -70,7 +67,7 @@ public class SectionDao {
     }
 
     public Optional<SectionEntity> findByUpStationId(Long upStationId, Long lineId) {
-        String sql = "SELECT line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND up_station_id = :up_station_id";
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND up_station_id = :up_station_id";
         SqlParameterSource source = new MapSqlParameterSource()
                 .addValue("up_station_id", upStationId)
                 .addValue("line_id", lineId);
@@ -82,7 +79,7 @@ public class SectionDao {
     }
 
     public Optional<SectionEntity> findByDownStationId(Long downStationId, Long lineId) {
-        String sql = "SELECT line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND down_station_id = :down_station_id";
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND down_station_id = :down_station_id";
         SqlParameterSource source = new MapSqlParameterSource()
                 .addValue("down_station_id", downStationId)
                 .addValue("line_id", lineId);
@@ -98,9 +95,18 @@ public class SectionDao {
         insertAction.execute(source);
     }
 
+    public void insertAll(List<SectionEntity> sectionEntities) {
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(sectionEntities.toArray());
+        jdbcTemplate.batchUpdate(
+                "INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance) " +
+                        "VALUES (:lineId, :upStationId, :downStationId, :distance)",
+                batch
+        );
+    }
+
     public void updateByUpStationId(SectionEntity sectionEntity) {
         String sql = "UPDATE SECTION SET down_station_id = :downStationId, distance = :distance "
-                + "WHERE line_id = :lineId AND up_station_id = :upStationId";
+                + "WHERE id = :id";
 
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
         jdbcTemplate.update(sql, source);
@@ -115,10 +121,18 @@ public class SectionDao {
     }
 
     public void delete(SectionEntity sectionEntity) {
-        String sql = "DELETE FROM SECTION WHERE up_station_id = :upStationId AND down_station_id = :downStationId";
+        String sql = "DELETE FROM SECTION WHERE id = :id";
 
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
         jdbcTemplate.update(sql, source);
+    }
+
+    public void deleteAll(List<SectionEntity> sectionEntities) {
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(sectionEntities.toArray());
+        jdbcTemplate.batchUpdate(
+                "DELETE FROM SECTION WHERE id = :id",
+                batch
+        );
     }
 
 }
