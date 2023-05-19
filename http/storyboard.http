@@ -90,8 +90,8 @@ Content-Type: application/json
 
 ###
 # @name getShortestPath
-# @description Retrieve shortest path
-GET http://localhost:8080/path
+# @description Retrieve shortest shortestPathFinder
+GET http://localhost:8080/shortestPathFinder
 Content-Type: application/json
 Accept: application/json
 
@@ -296,8 +296,8 @@ Accept: application/json
 
 ###
 # @name getShortestPath
-# @description Retrieve shortest path
-GET http://localhost:8080/path
+# @description Retrieve shortest shortestPathFinder
+GET http://localhost:8080/shortestPathFinder
 Content-Type: application/json
 Accept: application/json
 
@@ -324,7 +324,7 @@ Accept: application/json
 # @name deleteStationOnAllLines
 # @description Deletes a station from all lines.
 # @method DELETE
-# @path /stations/{stationId}
+# @shortestPathFinder /stations/{stationId}
 DELETE http://localhost:8080/stations/3
 
 

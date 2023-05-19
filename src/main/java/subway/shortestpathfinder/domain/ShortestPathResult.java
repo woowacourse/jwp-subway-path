@@ -1,4 +1,4 @@
-package subway.path.domain;
+package subway.shortestpathfinder.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package subway.path.domain;
+package subway.shortestpathfinder.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class Path {
+public class ShortestPathFinder {
     private static final int BASE_FEE = 1250;
     private static final int BASE_DISTANCE = 10;
     private static final int RANGE_OF_FIVE_INCREASE = 40;

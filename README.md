@@ -1,4 +1,4 @@
-# jwp-subway-path
+# jwp-subway-shortestPathFinder
 
 # 기능 구현 목록
 

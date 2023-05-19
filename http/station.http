@@ -55,7 +55,7 @@ Content-Type: application/json
 # @description Deletes a station from all lines.
 # This request will not return any content upon success.
 # @method DELETE
-# @path /stations/{stationId}
+# @shortestPathFinder /stations/{stationId}
 ###
 
 DELETE http://localhost:8080/stations/3

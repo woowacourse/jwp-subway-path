@@ -1,6 +1,6 @@
-package subway.path.application.port.input;
+package subway.shortestpathfinder.application.port.input;
 
-import subway.path.dto.GetShortestPathResponse;
+import subway.shortestpathfinder.dto.GetShortestPathResponse;
 
 public interface GetShortestPathUseCase {
     GetShortestPathResponse getShortestPath(String startStationName, String endStationName);

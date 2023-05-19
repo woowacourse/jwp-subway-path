@@ -1,4 +1,4 @@
-package subway.path.adapter.input.web.integrated;
+package subway.shortestpathfinder.adapter.input.web.integrated;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -16,7 +16,7 @@ import java.util.Map;
 import static org.hamcrest.Matchers.*;
 
 @SuppressWarnings("NonAsciiCharacters")
-class GetShortestPathIntegratedTest extends IntegrationTest {
+class GetShortestShortestPathIntegratedTestFinder extends IntegrationTest {
     @Test
     void 최단_경로를_조회한다() {
         // given

@@ -1,4 +1,4 @@
-package subway.path.adapter.input.web.unit;
+package subway.shortestpathfinder.adapter.input.web.unit;
 
 import config.TestConfig;
 import io.restassured.http.ContentType;
@@ -7,17 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
-import subway.path.adapter.input.web.GetShortestPathController;
-import subway.path.application.port.input.GetShortestPathUseCase;
-import subway.path.dto.GetShortestPathResponse;
+import subway.shortestpathfinder.adapter.input.web.GetShortestPathController;
+import subway.shortestpathfinder.application.port.input.GetShortestPathUseCase;
+import subway.shortestpathfinder.dto.GetShortestPathResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +28,7 @@ import static org.mockito.BDDMockito.given;
 @SuppressWarnings("NonAsciiCharacters")
 @ContextConfiguration(classes = TestConfig.class)
 @WebMvcTest(GetShortestPathController.class)
-class GetShortestPathControllerTest {
+class GetShortestShortestPathControllerTestFinder {
     @MockBean
     private GetShortestPathUseCase useCase;
     

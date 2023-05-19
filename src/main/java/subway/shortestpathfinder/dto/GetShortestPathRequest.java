@@ -1,4 +1,4 @@
-package subway.path.dto;
+package subway.shortestpathfinder.dto;
 
 import lombok.*;
 

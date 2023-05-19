@@ -1,4 +1,4 @@
-package subway.path.domain;
+package subway.shortestpathfinder.domain;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @SuppressWarnings("NonAsciiCharacters")
-class PathTest {
+class ShortestPathFinderTest {
     @ParameterizedTest(name = "{displayName} : partialDistance = {0}, resultFee = {1}")
     @CsvSource(value = {"4,1250", "5,1350", "9,1350", "10,1450", "44,2050", "45,2150", "52,2150", "53,2250", "60,2250", "61,2350"})
     void 최단_경로와_최단_거리와_요금을_구한다(final Long distanceMinusSix, final Long resultFee) {
@@ -57,10 +57,10 @@ class PathTest {
         initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
         final Line line2 = new Line("1호선", "파랑", initSections);
-        final Path path = new Path(Set.of(line1, line2));
+        final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(Set.of(line1, line2));
         
         // when
-        final ShortestPathResult result = path.getShortestPath("김포공항역", "잠실역");
+        final ShortestPathResult result = shortestPathFinder.getShortestPath("김포공항역", "잠실역");
         
         // then
         assertThat(result.getShortestPath()).containsExactly("김포공항역", "마곡나루역", "화정역", "가양역", "잠실역");
@@ -109,11 +109,11 @@ class PathTest {
         initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
         final Line line2 = new Line("1호선", "파랑", initSections);
-        final Path path = new Path(Set.of(line1, line2));
+        final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(Set.of(line1, line2));
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> path.getShortestPath(startStationName, endStationName));
+                .isThrownBy(() -> shortestPathFinder.getShortestPath(startStationName, endStationName));
     }
     
     @Test
@@ -156,11 +156,11 @@ class PathTest {
         initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
         final Line line2 = new Line("1호선", "파랑", initSections);
-        final Path path = new Path(Set.of(line1, line2));
+        final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(Set.of(line1, line2));
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> path.getShortestPath("김포공항역", "가양역"));
+                .isThrownBy(() -> shortestPathFinder.getShortestPath("김포공항역", "가양역"));
     }
     
     @ParameterizedTest(name = "{displayName} : stationName = {0}")
@@ -204,10 +204,10 @@ class PathTest {
         initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
         final Line line2 = new Line("1호선", "파랑", initSections);
-        final Path path = new Path(Set.of(line1, line2));
+        final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(Set.of(line1, line2));
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> path.getShortestPath(stationName, "가양역"));
+                .isThrownBy(() -> shortestPathFinder.getShortestPath(stationName, "가양역"));
     }
 }

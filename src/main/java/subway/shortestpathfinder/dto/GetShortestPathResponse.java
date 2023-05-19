@@ -1,10 +1,10 @@
-package subway.path.dto;
+package subway.shortestpathfinder.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import subway.path.domain.ShortestPathResult;
+import subway.shortestpathfinder.domain.ShortestPathResult;
 
 import java.util.List;
 

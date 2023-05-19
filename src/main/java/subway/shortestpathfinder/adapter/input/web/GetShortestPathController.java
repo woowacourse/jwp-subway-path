@@ -1,13 +1,13 @@
-package subway.path.adapter.input.web;
+package subway.shortestpathfinder.adapter.input.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import subway.path.application.port.input.GetShortestPathUseCase;
-import subway.path.dto.GetShortestPathRequest;
-import subway.path.dto.GetShortestPathResponse;
+import subway.shortestpathfinder.application.port.input.GetShortestPathUseCase;
+import subway.shortestpathfinder.dto.GetShortestPathRequest;
+import subway.shortestpathfinder.dto.GetShortestPathResponse;
 
 import javax.validation.Valid;
 

@@ -1,4 +1,4 @@
-package subway.path.application.port.input;
+package subway.shortestpathfinder.application.port.input;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.line.application.port.output.GetAllLinePort;
 import subway.line.domain.Line;
-import subway.path.dto.GetShortestPathResponse;
+import subway.shortestpathfinder.dto.GetShortestPathResponse;
 import subway.section.domain.Section;
 
 import java.util.Set;
@@ -19,7 +19,7 @@ import static org.mockito.BDDMockito.given;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
-class GetShortestPathServiceTest {
+class GetShortestShortestPathServiceTestFinder {
     @Mock
     private GetAllLinePort getAllLinePort;
     @InjectMocks

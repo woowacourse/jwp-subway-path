@@ -1,12 +1,12 @@
-package subway.path.application.port.input;
+package subway.shortestpathfinder.application.port.input;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.application.port.output.GetAllLinePort;
-import subway.path.domain.Path;
-import subway.path.domain.ShortestPathResult;
-import subway.path.dto.GetShortestPathResponse;
+import subway.shortestpathfinder.domain.ShortestPathFinder;
+import subway.shortestpathfinder.domain.ShortestPathResult;
+import subway.shortestpathfinder.dto.GetShortestPathResponse;
 
 @RequiredArgsConstructor
 @Transactional
@@ -16,8 +16,8 @@ public class GetShortestPathService implements GetShortestPathUseCase {
     
     @Override
     public GetShortestPathResponse getShortestPath(final String startStationName, final String endStationName) {
-        final Path path = new Path(getAllLinePort.getAll());
-        final ShortestPathResult result = path.getShortestPath(startStationName, endStationName);
+        final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(getAllLinePort.getAll());
+        final ShortestPathResult result = shortestPathFinder.getShortestPath(startStationName, endStationName);
         return new GetShortestPathResponse(result);
     }
 }
