@@ -5,6 +5,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import subway.application.exception.AddSectionException;
+import subway.application.exception.NoSuchStationException;
 import subway.dto.ErrorResponseDto;
 
 import java.sql.SQLException;
@@ -31,6 +32,11 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(AddSectionException.class)
     public ResponseEntity<ErrorResponseDto> handleAddSectionException(final AddSectionException exception) {
+        final String message = exception.getMessage();
+        return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
+    }
+    @ExceptionHandler(NoSuchStationException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoSuchStationException(final NoSuchStationException exception) {
         final String message = exception.getMessage();
         return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
     }

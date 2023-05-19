@@ -1,6 +1,6 @@
 package subway.application.reader;
 
-import subway.domain.Section;
+import subway.domain.vo.Section;
 
 public class CaseDto {
     private final Long lineId;

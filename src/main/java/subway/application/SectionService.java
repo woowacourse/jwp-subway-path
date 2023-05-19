@@ -7,9 +7,9 @@ import subway.application.reader.CaseDto;
 import subway.application.reader.InitializationReader;
 import subway.application.reader.Reader;
 import subway.dao.SectionDao;
-import subway.domain.Line;
-import subway.domain.RequestInclusiveSections;
-import subway.domain.Section;
+import subway.domain.vo.Line;
+import subway.domain.vo.RequestInclusiveSections;
+import subway.domain.vo.Section;
 import subway.domain.SectionSorter;
 
 import java.sql.SQLException;

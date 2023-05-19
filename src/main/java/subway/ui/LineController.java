@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.application.SectionService;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.vo.Line;
+import subway.domain.vo.Section;
 import subway.dto.*;
 
 import javax.validation.Valid;

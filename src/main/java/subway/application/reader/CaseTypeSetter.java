@@ -1,6 +1,6 @@
 package subway.application.reader;
 
-import subway.domain.Section;
+import subway.domain.vo.Section;
 
 import java.util.List;
 
