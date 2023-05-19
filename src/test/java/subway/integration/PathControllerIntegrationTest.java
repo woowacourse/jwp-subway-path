@@ -17,10 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dto.line.LineCreateRequest;
-import subway.dto.path.PathFindRequest;
-import subway.dto.section.SectionCreateRequest;
-import subway.dto.station.StationCreateRequest;
+import subway.ui.dto.line.LineCreateRequest;
+import subway.ui.dto.path.PathFindRequest;
+import subway.ui.dto.section.SectionCreateRequest;
+import subway.ui.dto.station.StationCreateRequest;
 
 @SpringBootTest
 @Transactional

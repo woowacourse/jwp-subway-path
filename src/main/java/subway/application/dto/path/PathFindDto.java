@@ -1,4 +1,4 @@
-package subway.application.dto;
+package subway.application.dto.path;
 
 public class PathFindDto {
     private String sourceStationName;

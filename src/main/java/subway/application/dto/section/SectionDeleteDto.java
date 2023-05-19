@@ -1,4 +1,4 @@
-package subway.application.dto;
+package subway.application.dto.section;
 
 public class SectionDeleteDto {
     private Long id;

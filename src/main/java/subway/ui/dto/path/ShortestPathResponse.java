@@ -1,9 +1,9 @@
-package subway.dto.path;
+package subway.ui.dto.path;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.application.dto.ShortestPathDto;
-import subway.dto.station.StationResponse;
+import subway.application.dto.path.ShortestPathDto;
+import subway.ui.dto.station.StationResponse;
 
 public class ShortestPathResponse {
     private List<StationResponse> pathStations;

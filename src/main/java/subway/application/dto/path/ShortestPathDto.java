@@ -1,4 +1,4 @@
-package subway.application.dto;
+package subway.application.dto.path;
 
 import java.util.List;
 import subway.domain.Path;

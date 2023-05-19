@@ -1,8 +1,8 @@
-package subway.dto.path;
+package subway.ui.dto.path;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotBlank;
-import subway.application.dto.PathFindDto;
+import subway.application.dto.path.PathFindDto;
 
 public class PathFindRequest {
     @NotBlank(message = "출발역은 비어있을 수 없습니다.")

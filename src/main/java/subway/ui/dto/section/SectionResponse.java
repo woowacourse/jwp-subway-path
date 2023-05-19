@@ -1,4 +1,4 @@
-package subway.dto.section;
+package subway.ui.dto.section;
 
 import subway.domain.Section;
 

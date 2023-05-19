@@ -1,26 +1,27 @@
-package subway.dto.line;
+package subway.ui.dto.line;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotBlank;
-import subway.application.dto.LineCreateDto;
+import subway.application.dto.line.LineUpdateDto;
 
-public class LineCreateRequest {
+public class LineUpdateRequest {
     @NotBlank(message = "노선의 이름은 비어있을 수 없습니다.")
     private String name;
 
     @NotBlank(message = "노선의 색은 비어있을 수 없습니다.")
     private String color;
 
-    public LineCreateRequest() {}
+    public LineUpdateRequest() {
+    }
 
     @JsonCreator
-    public LineCreateRequest(String name, String color) {
+    public LineUpdateRequest(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public LineCreateDto toLineCreateDto() {
-        return new LineCreateDto(name, color);
+    public LineUpdateDto toLineUpdateDto(Long id) {
+        return new LineUpdateDto(id, name, color);
     }
 
     public String getName() {

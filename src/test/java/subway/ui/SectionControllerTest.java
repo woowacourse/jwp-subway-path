@@ -16,11 +16,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.SectionService;
-import subway.application.dto.SectionCreateDto;
+import subway.application.dto.section.SectionCreateDto;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.dto.section.SectionCreateRequest;
-import subway.dto.section.SectionDeleteRequest;
+import subway.ui.dto.section.SectionCreateRequest;
+import subway.ui.dto.section.SectionDeleteRequest;
 
 @WebMvcTest(SectionController.class)
 class SectionControllerTest {

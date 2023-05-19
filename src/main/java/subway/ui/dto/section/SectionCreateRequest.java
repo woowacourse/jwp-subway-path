@@ -1,9 +1,9 @@
-package subway.dto.section;
+package subway.ui.dto.section;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
-import subway.application.dto.SectionCreateDto;
+import subway.application.dto.section.SectionCreateDto;
 
 public class SectionCreateRequest {
     @NotBlank(message = "상행역은 비어있을 수 없습니다.")

@@ -1,8 +1,8 @@
-package subway.dto.section;
+package subway.ui.dto.section;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotBlank;
-import subway.application.dto.SectionDeleteDto;
+import subway.application.dto.section.SectionDeleteDto;
 
 public class SectionDeleteRequest {
     @NotBlank(message = "역 이름은 비어있을 수 없습니다.")

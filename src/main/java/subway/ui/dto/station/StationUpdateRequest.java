@@ -1,23 +1,23 @@
-package subway.dto.station;
+package subway.ui.dto.station;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotBlank;
-import subway.application.dto.StationCreateDto;
+import subway.application.dto.station.StationUpdateDto;
 
-public class StationCreateRequest {
+public class StationUpdateRequest {
     @NotBlank(message = "역 이름은 비어있을 수 없습니다.")
     private String name;
 
-    public StationCreateRequest() {
+    public StationUpdateRequest() {
     }
 
     @JsonCreator
-    public StationCreateRequest(String name) {
+    public StationUpdateRequest(String name) {
         this.name = name;
     }
 
-    public StationCreateDto toStationCreateDto() {
-        return new StationCreateDto(name);
+    public StationUpdateDto toStationUpdateDto(Long id) {
+        return new StationUpdateDto(id, name);
     }
 
     public String getName() {

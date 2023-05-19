@@ -1,4 +1,4 @@
-package subway.dto.exception;
+package subway.ui.dto.exception;
 
 public class ExceptionResponse {
     private String message;

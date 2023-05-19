@@ -10,7 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.dto.exception.ExceptionResponse;
+import subway.ui.dto.exception.ExceptionResponse;
 import subway.exception.IllegalDistanceException;
 import subway.exception.IllegalLineException;
 import subway.exception.IllegalSectionException;

@@ -19,8 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dto.section.SectionCreateRequest;
-import subway.dto.section.SectionDeleteRequest;
+import subway.ui.dto.section.SectionCreateRequest;
+import subway.ui.dto.section.SectionDeleteRequest;
 
 @SpringBootTest
 @Transactional

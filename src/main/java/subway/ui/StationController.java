@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
-import subway.dto.station.StationCreateRequest;
-import subway.dto.station.StationResponse;
-import subway.dto.station.StationUpdateRequest;
+import subway.ui.dto.station.StationCreateRequest;
+import subway.ui.dto.station.StationResponse;
+import subway.ui.dto.station.StationUpdateRequest;
 
 @RestController
 @RequestMapping("/stations")

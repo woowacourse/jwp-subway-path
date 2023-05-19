@@ -1,4 +1,4 @@
-package subway.dto.line;
+package subway.ui.dto.line;
 
 import static java.util.stream.Collectors.toList;
 
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import subway.domain.Line;
 import subway.domain.Section;
-import subway.dto.section.SectionResponse;
+import subway.ui.dto.section.SectionResponse;
 
 public class LineResponse {
 

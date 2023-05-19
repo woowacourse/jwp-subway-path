@@ -17,8 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dto.line.LineCreateRequest;
-import subway.dto.line.LineUpdateRequest;
+import subway.ui.dto.line.LineCreateRequest;
+import subway.ui.dto.line.LineUpdateRequest;
 
 @SpringBootTest
 @Transactional

@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.PathService;
-import subway.application.dto.ShortestPathDto;
-import subway.dto.path.PathFindRequest;
-import subway.dto.path.ShortestPathResponse;
+import subway.application.dto.path.ShortestPathDto;
+import subway.ui.dto.path.PathFindRequest;
+import subway.ui.dto.path.ShortestPathResponse;
 
 @RestController
 @RequestMapping("/routes")
