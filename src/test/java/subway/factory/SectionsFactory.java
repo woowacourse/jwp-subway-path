@@ -1,11 +1,10 @@
 package subway.factory;
 
-import subway.domain.Sections;
-
-import java.util.List;
-
 import static subway.factory.SectionFactory.createSection;
 import static subway.factory.SectionFactory.createSection2;
+
+import java.util.List;
+import subway.domain.Sections;
 
 public class SectionsFactory {
 

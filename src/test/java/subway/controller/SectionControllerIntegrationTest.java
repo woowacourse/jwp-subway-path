@@ -51,7 +51,7 @@ class SectionControllerIntegrationTest {
         stationService.saveStation(stationRequest1);
         stationService.saveStation(stationRequest2);
 
-        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3L);
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(2L, "잠실역", "잠실새내역", 3L);
 
         // when & then
         RestAssured
@@ -75,7 +75,7 @@ class SectionControllerIntegrationTest {
         stationService.saveStation(stationRequest1);
         stationService.saveStation(stationRequest2);
 
-        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3L);
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(2L, "잠실역", "잠실새내역", 3L);
         sectionService.insertSection(sectionCreateRequest);
 
         SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest(2L, "잠실역");

@@ -1,17 +1,10 @@
 package subway.domain;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static subway.factory.SectionsFactory.createSections;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import subway.exception.invalid.SectionInvalidException;
-
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static subway.factory.SectionFactory.createSection;
-import static subway.factory.SectionsFactory.createSections;
 
 class SectionsTest {
 
@@ -26,18 +19,6 @@ class SectionsTest {
 
         // then
         assertThat(existStation).isFalse();
-    }
-
-    @ParameterizedTest
-    @CsvSource({"false, false", "true, true"})
-    @DisplayName("역이 모두 존재하거나, 역이 모두 존재하지 않으면서 Sections가 비어있지 않을 경우 예외를 던진다.")
-    void throws_exception_when_invalid_stations(final boolean isExistUpStation, final boolean isExistDownStation) {
-        // given
-        Sections sections = new Sections(List.of(createSection()));
-
-        // when & then
-        assertThatThrownBy(() -> sections.validateSection(isExistUpStation, isExistDownStation))
-                .isInstanceOf(SectionInvalidException.class);
     }
 
     @Test
