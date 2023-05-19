@@ -11,8 +11,18 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static subway.TestFixture.JAMSILNARU_ID;
+import static subway.TestFixture.JAMSILSAENAE_ID;
+import static subway.TestFixture.JAMSIL_ID;
+import static subway.TestFixture.몽촌토성역;
+import static subway.TestFixture.몽촌토성역_ID;
 import static subway.TestFixture.몽촌토성역_잠실역;
+import static subway.TestFixture.석촌역;
+import static subway.TestFixture.석촌역_ID;
+import static subway.TestFixture.잠실나루역;
 import static subway.TestFixture.잠실나루역_잠실역;
+import static subway.TestFixture.잠실새내역;
+import static subway.TestFixture.잠실역;
 import static subway.TestFixture.잠실역_석촌역;
 import static subway.TestFixture.잠실역_잠실새내역;
 
@@ -26,9 +36,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import subway.persistence.exception.NoSuchLineException;
-import subway.persistence.dto.LineDto;
 import subway.domain.Line;
+import subway.persistence.dto.LineDto;
+import subway.persistence.dto.SectionDto;
+import subway.persistence.exception.NoSuchLineException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
@@ -43,9 +54,11 @@ class LineRepositoryTest {
     @InjectMocks
     private LineRepository lineRepository;
     @Mock
-    LineDao lineDao;
+    private LineDao lineDao;
     @Mock
-    private SectionRepository sectionRepository;
+    private SectionDao sectionDao;
+    @Mock
+    private StationDao stationDao;
 
     private Line line;
 
@@ -61,38 +74,42 @@ class LineRepositoryTest {
     @Test
     void save() {
         doReturn(new LineDto(LINE_ID, LINE_NAME, LINE_COLOR)).when(lineDao).insert(any());
-        doNothing().when(sectionRepository).saveAll(anyLong(), anyList());
+        doNothing().when(sectionDao).insertAll(anyList());
 
         Line saved = lineRepository.save(line);
 
-        verify(sectionRepository, times(1)).saveAll(anyLong(), eq(line.getSections()));
+        verify(sectionDao, times(1)).insertAll(anyList());
         assertThat(saved.getId()).isEqualTo(LINE_ID);
     }
 
     @DisplayName("호선을 수정한다")
     @Test
     void update() {
-        doNothing().when(sectionRepository).saveAll(anyLong(), anyList());
+        doNothing().when(sectionDao).insertAll(anyList());
         Line savedLine = new Line(LINE_ID, LINE_NAME, LINE_COLOR, line.getSections());
 
         lineRepository.save(savedLine);
 
         verify(lineDao, never()).insert(any());
-        verify(sectionRepository, times(1)).saveAll(anyLong(), eq(line.getSections()));
+        verify(sectionDao, times(1)).insertAll(anyList());
     }
 
     @DisplayName("id로 호선을 조회한다")
     @Test
     void findById() {
         doReturn(new LineDto(LINE_ID, LINE_NAME, LINE_COLOR)).when(lineDao).findById(any());
-        doReturn(List.of(
+        doReturn(SectionDto.of(LINE_ID, List.of(
                 잠실나루역_잠실역,
                 잠실역_잠실새내역
-        )).when(sectionRepository).findAllBy(anyLong());
+        ))).when(sectionDao).findAllByLineId(anyLong());
+        doReturn(잠실역).when(stationDao).findById(eq(JAMSIL_ID));
+        doReturn(잠실나루역).when(stationDao).findById(eq(JAMSILNARU_ID));
+        doReturn(잠실새내역).when(stationDao).findById(eq(JAMSILSAENAE_ID));
 
         Line found = lineRepository.findBy(LINE_ID);
 
-        verify(sectionRepository, times(1)).findAllBy(eq(LINE_ID));
+        verify(sectionDao, times(1)).findAllByLineId(eq(LINE_ID));
+        verify(stationDao, times(4)).findById(anyLong());
         assertThat(found.getSections()).containsExactly(
                 잠실나루역_잠실역,
                 잠실역_잠실새내역
@@ -106,19 +123,25 @@ class LineRepositoryTest {
                 new LineDto(LINE_ID, LINE_NAME, LINE_COLOR),
                 new LineDto(OTHER_LINE_ID, OTHER_LINE_NAME, OTHER_LINE_COLOR)
         )).when(lineDao).findAll();
-        doReturn(List.of(
+        doReturn(SectionDto.of(LINE_ID, List.of(
                 잠실나루역_잠실역,
                 잠실역_잠실새내역
-        )).when(sectionRepository).findAllBy(eq(LINE_ID));
-        doReturn(List.of(
+        ))).when(sectionDao).findAllByLineId(eq(LINE_ID));
+        doReturn(SectionDto.of(LINE_ID, List.of(
                 몽촌토성역_잠실역,
                 잠실역_석촌역
-        )).when(sectionRepository).findAllBy(eq(OTHER_LINE_ID));
+        ))).when(sectionDao).findAllByLineId(eq(OTHER_LINE_ID));
+        doReturn(잠실역).when(stationDao).findById(eq(JAMSIL_ID));
+        doReturn(잠실나루역).when(stationDao).findById(eq(JAMSILNARU_ID));
+        doReturn(잠실새내역).when(stationDao).findById(eq(JAMSILSAENAE_ID));
+        doReturn(몽촌토성역).when(stationDao).findById(eq(몽촌토성역_ID));
+        doReturn(석촌역).when(stationDao).findById(eq(석촌역_ID));
 
         List<Line> lines = lineRepository.findAll();
 
-        verify(sectionRepository, times(1)).findAllBy(eq(LINE_ID));
-        verify(sectionRepository, times(1)).findAllBy(eq(OTHER_LINE_ID));
+        verify(sectionDao, times(1)).findAllByLineId(eq(LINE_ID));
+        verify(sectionDao, times(1)).findAllByLineId(eq(OTHER_LINE_ID));
+        verify(stationDao, times(8)).findById(anyLong());
         assertThat(lines.get(0).getSections()).containsExactly(
                 잠실나루역_잠실역,
                 잠실역_잠실새내역
@@ -133,26 +156,26 @@ class LineRepositoryTest {
     @Test
     void deleteById() {
         doReturn(1).when(lineDao).deleteById(any());
-        doNothing().when(sectionRepository).deleteAllBy(any());
+        doReturn(1).when(sectionDao).deleteAllByLineId(any());
         Line savedLine = new Line(LINE_ID, LINE_NAME, LINE_COLOR, line.getSections());
 
         lineRepository.delete(savedLine);
 
         verify(lineDao, times(1)).deleteById(eq(LINE_ID));
-        verify(sectionRepository, times(1)).deleteAllBy(eq(LINE_ID));
+        verify(sectionDao, times(1)).deleteAllByLineId(eq(LINE_ID));
     }
 
     @DisplayName("호선이 제거되지 않으면 예외를 던진다")
     @Test
     void deleteById_fail_throws() {
         doReturn(0).when(lineDao).deleteById(any());
-        doNothing().when(sectionRepository).deleteAllBy(any());
+        doReturn(1).when(sectionDao).deleteAllByLineId(any());
         Line savedLine = new Line(LINE_ID, LINE_NAME, LINE_COLOR, line.getSections());
 
         assertThatThrownBy(() -> lineRepository.delete(savedLine))
                 .isInstanceOf(NoSuchLineException.class);
 
         verify(lineDao, times(1)).deleteById(eq(LINE_ID));
-        verify(sectionRepository, times(1)).deleteAllBy(eq(LINE_ID));
+        verify(sectionDao, times(1)).deleteAllByLineId(eq(LINE_ID));
     }
 }

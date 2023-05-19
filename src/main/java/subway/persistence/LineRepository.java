@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import subway.persistence.exception.NoSuchLineException;
-import subway.persistence.dto.LineDto;
 import subway.domain.Line;
+import subway.domain.Section;
+import subway.persistence.dto.LineDto;
+import subway.persistence.dto.SectionDto;
+import subway.persistence.exception.NoSuchLineException;
 
 /* 학습용 주석입니다 :)
 Repository 도입은 도메인 객체의 저장에 대한 관심사를 분리하기 위함이다.
@@ -21,12 +23,15 @@ Repository 도입은 도메인 객체의 저장에 대한 관심사를 분리하
 public class LineRepository {
 
     private static final int ZERO = 0;
-    private final LineDao lineDao;
-    private final SectionRepository sectionRepository;
 
-    public LineRepository(LineDao lineDao, SectionRepository sectionRepository) {
+    private final LineDao lineDao;
+    private final StationDao stationDao;
+    private final SectionDao sectionDao;
+
+    public LineRepository(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
         this.lineDao = lineDao;
-        this.sectionRepository = sectionRepository;
+        this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     /* 학습용 주석입니다 :)
@@ -60,7 +65,7 @@ public class LineRepository {
 
     @Transactional
     public void delete(Line line) {
-        sectionRepository.deleteAllBy(line.getId());
+        sectionDao.deleteAllByLineId(line.getId());
         int deletedCount = lineDao.deleteById(line.getId());
         validateChangedBy(deletedCount);
     }
@@ -73,13 +78,25 @@ public class LineRepository {
 
     private Line create(Line line) {
         LineDto inserted = lineDao.insert(toDto(line));
-        sectionRepository.saveAll(inserted.getId(), line.getSections());
+        saveSectionsOf(line);
         return putIdOn(line, inserted.getId());
     }
 
     private Line update(Line line) {
-        sectionRepository.saveAll(line.getId(), line.getSections());
+        saveSectionsOf(line);
         return line;
+    }
+
+    private void saveSectionsOf(Line line) {
+        sectionDao.deleteAllByLineId(line.getId());
+        sectionDao.insertAll(SectionDto.of(line.getId(), line.getSections()));
+    }
+
+    private List<Section> findSectionsOf(Long lineId) {
+        return sectionDao.findAllByLineId(lineId)
+                .stream()
+                .map(this::toSection)
+                .collect(Collectors.toList());
     }
 
     private Line putIdOn(Line line, Long id) {
@@ -88,6 +105,14 @@ public class LineRepository {
                 line.getName(),
                 line.getColor(),
                 line.getSections()
+        );
+    }
+
+    private Section toSection(SectionDto sectionDto) {
+        return new Section(
+                stationDao.findById(sectionDto.getStationId()),
+                stationDao.findById(sectionDto.getNextStationId()),
+                sectionDto.getDistance()
         );
     }
 
@@ -104,7 +129,7 @@ public class LineRepository {
                 lineDto.getId(),
                 lineDto.getName(),
                 lineDto.getColor(),
-                sectionRepository.findAllBy(lineDto.getId())
+                findSectionsOf(lineDto.getId())
         );
     }
 }

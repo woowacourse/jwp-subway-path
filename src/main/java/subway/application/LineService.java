@@ -19,7 +19,6 @@ import subway.persistence.StationDao;
 public class LineService {
 
     private final StationDao stationDao;
-
     private final LineRepository lineRepository;
 
     public LineService(StationDao stationDao, LineRepository lineRepository) {
