@@ -45,15 +45,15 @@ public class LineSteps {
         return 노선_생성_요청(request).as(LineResponse.class).getId();
     }
 
-    public static ExtractableResponse<Response> 노선에_최초의_역_2개_추가_요청(final Long lineId, final InitialSectionCreateRequest initialSectionCreateRequest) {
+    public static ExtractableResponse<Response> 노선에_최초의_역_2개_추가_요청(final InitialSectionCreateRequest request) {
         return RestAssured
                 .given()
                 .log().all()
                 .contentType(APPLICATION_JSON_VALUE)
-                .body(initialSectionCreateRequest)
+                .body(request)
 
                 .when()
-                .post("/lines/" + lineId + "/station-init")
+                .post("/lines/" + request.getLineId() + "/station-init")
 
                 .then()
                 .log().all()

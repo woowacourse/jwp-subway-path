@@ -19,8 +19,35 @@ import static subway.steps.StationSteps.*;
 public class PathIntegrationTest extends IntegrationTest {
 
     @Test
-    void 존재하지_않는_역에_대해_최단_경로를_요청하면_에외가_발생한다() {
+    void 존재하지_않는_역에_대해_최단_경로_조회를_요청하면_에외가_발생한다() {
         final ExtractableResponse<Response> response = 두_역_사이의_최단_경로_조회_요청(1L, 2L);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 연결되지_않은_두_역에_대해_최단_경로_조회를_요청하면_예외가_발생한다() {
+        final long 노선_9호선_아이디 = 노선_생성하고_아이디_반환(노선_9호선);
+        final long 고속터미널_아이디 = 역_생성하고_아이디_반환(역_고속터미널);
+        final long 사평역_아이디 = 역_생성하고_아이디_반환(역_사평역);
+
+        final long 노선_3호선_아이디 = 노선_생성하고_아이디_반환(노선_3호선);
+        final long 교대역_아이디 = 역_생성하고_아이디_반환(역_교대역);
+        final long 양재역_아이디 = 역_생성하고_아이디_반환(역_양재역);
+
+        노선에_최초의_역_2개_추가_요청(
+                new InitialSectionCreateRequest(
+                        노선_9호선_아이디, 고속터미널_아이디, 사평역_아이디, 5
+                )
+        );
+
+        노선에_최초의_역_2개_추가_요청(
+                new InitialSectionCreateRequest(
+                        노선_3호선_아이디, 교대역_아이디, 양재역_아이디, 5
+                )
+        );
+
+        final ExtractableResponse<Response> response = 두_역_사이의_최단_경로_조회_요청(고속터미널_아이디, 양재역_아이디);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -36,7 +63,6 @@ public class PathIntegrationTest extends IntegrationTest {
         final long 노선_3호선_아이디 = 노선_생성하고_아이디_반환(노선_3호선);
 
         노선에_최초의_역_2개_추가_요청(
-                노선_9호선_아이디,
                 new InitialSectionCreateRequest(
                         노선_9호선_아이디, 고속터미널_아이디, 사평역_아이디, 3
                 ));
@@ -48,7 +74,6 @@ public class PathIntegrationTest extends IntegrationTest {
                 ));
 
         노선에_최초의_역_2개_추가_요청(
-                노선_3호선_아이디,
                 new InitialSectionCreateRequest(
                         노선_3호선_아이디, 고속터미널_아이디, 교대역_아이디, 5
                 ));
@@ -77,7 +102,6 @@ public class PathIntegrationTest extends IntegrationTest {
         final long 노선_3호선_아이디 = 노선_생성하고_아이디_반환(노선_3호선);
 
         노선에_최초의_역_2개_추가_요청(
-                노선_9호선_아이디,
                 new InitialSectionCreateRequest(
                         노선_9호선_아이디, 고속터미널_아이디, 사평역_아이디, 8
                 ));
@@ -89,7 +113,6 @@ public class PathIntegrationTest extends IntegrationTest {
                 ));
 
         노선에_최초의_역_2개_추가_요청(
-                노선_3호선_아이디,
                 new InitialSectionCreateRequest(
                         노선_3호선_아이디, 고속터미널_아이디, 교대역_아이디, 5
                 ));

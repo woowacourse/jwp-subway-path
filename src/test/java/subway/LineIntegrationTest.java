@@ -27,7 +27,6 @@ class LineIntegrationTest extends IntegrationTest {
         final long 사평역_아이디 = 역_생성하고_아이디_반환(역_사평역);
 
         노선에_최초의_역_2개_추가_요청(
-                노선_9호선_아이디,
                 new InitialSectionCreateRequest(
                         노선_9호선_아이디,
                         고속터미널_아이디,
@@ -70,7 +69,6 @@ class LineIntegrationTest extends IntegrationTest {
         final long lineId = 노선_생성하고_아이디_반환(노선_9호선);
 
         final ExtractableResponse<Response> response = 노선에_최초의_역_2개_추가_요청(
-                lineId,
                 new InitialSectionCreateRequest(
                         lineId, station1Id, station2Id, 5
                 ));
@@ -98,7 +96,7 @@ class LineIntegrationTest extends IntegrationTest {
 
         final long lineId = 노선_생성하고_아이디_반환(노선_9호선);
 
-        노선에_최초의_역_2개_추가_요청(lineId,
+        노선에_최초의_역_2개_추가_요청(
                 new InitialSectionCreateRequest(
                         lineId, station1Id, station2Id, 5
                 ));
@@ -118,7 +116,6 @@ class LineIntegrationTest extends IntegrationTest {
         final long lineId = 노선_생성하고_아이디_반환(노선_9호선);
 
         노선에_최초의_역_2개_추가_요청(
-                lineId,
                 new InitialSectionCreateRequest(
                         lineId, station1Id, station2Id, 5
                 ));
@@ -150,7 +147,7 @@ class LineIntegrationTest extends IntegrationTest {
 
         final long lineId = 노선_생성하고_아이디_반환(노선_9호선);
 
-        노선에_최초의_역_2개_추가_요청(lineId,
+        노선에_최초의_역_2개_추가_요청(
                 new InitialSectionCreateRequest(
                         lineId, station1Id, station2Id, 3
                 ));

@@ -53,6 +53,13 @@ public class GlobalExceptionHandler {
                 .body(new ExceptionResponse(exception.getMessage()));
     }
 
+    @ExceptionHandler(InvalidPathException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidPathException(final InvalidPathException exception) {
+        logger.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getMessage()));
+    }
+
     @ExceptionHandler(InvalidStationException.class)
     public ResponseEntity<ExceptionResponse> handleInvalidStationException(final InvalidStationException exception) {
         logger.warn(exception.getMessage(), exception);
