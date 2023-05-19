@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +15,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import subway.domain.Station;
+import subway.exception.DatabaseException;
+import subway.exception.ExceptionType;
 
 @Repository
 public class StationDao {
@@ -35,8 +38,12 @@ public class StationDao {
 
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        try {
+            Long id = insertAction.executeAndReturnKey(params).longValue();
+            return new Station(id, station.getName());
+        } catch(DataIntegrityViolationException exception) {
+            throw new DatabaseException(ExceptionType.STATION_NAME_IS_ALREADY_EXISTED);
+        }
     }
 
     public List<Station> findAll() {

@@ -1,15 +1,15 @@
 package subway.dto;
 
 public class LineRequest {
-    private String name;
-    private String color;
+    private final String name;
+    private final String color;
+    private final Integer additionalFare;
 
-    public LineRequest() {
-    }
 
-    public LineRequest(String name, String color) {
+    public LineRequest(String name, String color, Integer additionalFare) {
         this.name = name;
         this.color = color;
+        this.additionalFare = additionalFare;
     }
 
     public String getName() {
@@ -20,4 +20,7 @@ public class LineRequest {
         return color;
     }
 
+    public Integer getAdditionalFare() {
+        return additionalFare;
+    }
 }
