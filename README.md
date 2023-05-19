@@ -67,7 +67,7 @@
 
 ## API 명세
 
-### 역 등록
+### (1) 역 등록
 
 #### Request
 
@@ -92,7 +92,7 @@ POST /sections HTTP/1.1
 HTTP/1.1 201
 ```
 
-### 역 제거
+### (2) 역 제거
 
 #### Request
 
@@ -106,7 +106,28 @@ DELETE /sections/{lineId}/{stationId} HTTP/1.1
 HTTP/1.1 204
 ```
 
+### (3) 경로 조회 API
+#### Request
+```http request
+GET /paths/{startStationId}/{EndStationId} HTTP/1.1
+```
 
-### checkList
-- 매개변수의 final 키워드 통일
-- 상수화
+#### Response
+
+```http request
+{
+    "paths": [
+                {
+                     "stationId": 1,
+                     "name": "서울역"
+                },
+                {
+                     "stationId": 2,
+                     "name": "시청역"
+                },
+                ...
+             ],
+    "distance": 8,
+    "cost": 1250
+}
+```
