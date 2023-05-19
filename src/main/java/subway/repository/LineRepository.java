@@ -84,7 +84,7 @@ public class LineRepository {
         List<LineEntity> lines = lineDao.findByName(name);
 
         if (lines.isEmpty()) {
-            throw new LineNotFoundException(name + "노선은 존재하지 않습니다.");
+            throw new LineNotFoundException(name + " 노선은 존재하지 않습니다.");
         }
 
         return toLine(lines.get(0));

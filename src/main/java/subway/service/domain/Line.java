@@ -1,6 +1,7 @@
 package subway.service.domain;
 
 import subway.exception.SectionDuplicateException;
+import subway.exception.SectionNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +33,12 @@ public class Line {
     }
 
     private void validateSection(Station firstStation, Station secondStation) {
-        if (allContainsTwoStation(firstStation, secondStation)
-                || noContainsTwoStation(firstStation, secondStation)) {
+        if (allContainsTwoStation(firstStation, secondStation)) {
             throw new SectionDuplicateException("이미 포함하고 있는 간선 정보입니다.");
+        }
+
+        if (noContainsTwoStation(firstStation, secondStation)) {
+            throw new SectionNotFoundException("해당 노선은 두 역 모두 포함하지 않습니다.");
         }
     }
 
