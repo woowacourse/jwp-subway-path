@@ -7,7 +7,7 @@ import subway.domain.interstation.exception.InterStationsException;
 
 public enum AddInterStationPolicy {
     ADD_FIRST(new AddFirstInterStationStrategy()),
-    ADD_LAST(new AddMiddleStationStrategy()),
+    ADD_LAST(new AddMiddleInterStationStrategy()),
     ADD_MIDDLE(new AddLastInterStationStrategy());
 
     private final AddInterStationStrategy addInterStationStrategy;
