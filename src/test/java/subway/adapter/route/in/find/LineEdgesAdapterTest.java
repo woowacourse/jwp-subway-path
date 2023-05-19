@@ -24,7 +24,6 @@ import subway.domain.route.InterStationEdge;
 class LineEdgesAdapterTest {
 
     private LineRepository lineRepository;
-    private LineFindAllService lineFindAllService;
     private LineEdgesAdapter lineEdgesAdapter;
     private long line2호선_id;
     private long line3호선_id;
@@ -32,7 +31,7 @@ class LineEdgesAdapterTest {
     @Autowired
     private void setUp(final JdbcTemplate jdbcTemplate) {
         lineRepository = new LineRepositoryImpl(jdbcTemplate);
-        lineFindAllService = new LineFindAllService(lineRepository);
+        final LineFindAllService lineFindAllService = new LineFindAllService(lineRepository);
         lineEdgesAdapter = new LineEdgesAdapter(lineFindAllService);
     }
 

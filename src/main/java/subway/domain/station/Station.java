@@ -5,8 +5,6 @@ import org.springframework.lang.Nullable;
 
 public class Station {
 
-    private static final int MAX_STATION_NAME_LENGTH = 20;
-
     private final Long id;
     private StationName name;
 

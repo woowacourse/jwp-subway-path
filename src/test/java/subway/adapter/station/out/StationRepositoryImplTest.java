@@ -61,9 +61,7 @@ class StationRepositoryImplTest {
             final Optional<Station> result = stationRepository.findById(station.getId());
 
             // then
-            assertSoftly(softly -> {
-                softly.assertThat(result).isEmpty();
-            });
+            assertSoftly(softly -> softly.assertThat(result).isEmpty());
         }
 
         @Test
