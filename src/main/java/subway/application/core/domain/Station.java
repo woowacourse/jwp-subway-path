@@ -20,10 +20,6 @@ public class Station {
         return name;
     }
 
-    public boolean hasSameNameWith(Station target) {
-        return name.equals(target.name);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
