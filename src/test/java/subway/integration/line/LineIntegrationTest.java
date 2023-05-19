@@ -44,9 +44,8 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선 생성")
     class create extends IntegrationTest {
 
-        @DisplayName("정상 생성한다")
         @Test
-        void createLine() {
+        void 지하철_노선을_생성한다() {
             // when
             ExtractableResponse<Response> response = 노선_생성_요청(lineRequest1);
 
@@ -55,9 +54,8 @@ public class LineIntegrationTest extends IntegrationTest {
             assertThat(response.header("Location")).isNotBlank();
         }
 
-        @DisplayName("기존에 존재하는 이름으로 생성하면 400에러를 반환한다")
         @Test
-        void createLineWithDuplicateName() {
+        void 기존에_존재하는_이름으로_생성하면_400에러를_반환한다() {
             // given
             노선_생성_요청(lineRequest1);
 
@@ -77,9 +75,8 @@ public class LineIntegrationTest extends IntegrationTest {
     @Nested
     class find extends IntegrationTest {
 
-        @DisplayName("목록 전체를 조회한다.")
         @Test
-        void getLines() {
+        void 목록_전체를_조회한다() {
             // given
             lineRequest1 = new LineRequest("1호선", "서울역", "명동역", 7);
             lineRequest2 = new LineRequest("2호선", "강남역", "역삼역", 5);
@@ -103,9 +100,8 @@ public class LineIntegrationTest extends IntegrationTest {
                     .containsExactly("강남역", "역삼역");
         }
 
-        @DisplayName("하나를 조회한다.")
         @Test
-        void getLine() {
+        void 지하철_노선을_단건_조회한다() {
             lineRequest1 = new LineRequest("2호선", "교대역", "역삼역", 5);
 
             // given
@@ -149,9 +145,8 @@ public class LineIntegrationTest extends IntegrationTest {
     @Nested
     class createStation extends IntegrationTest {
 
-        @DisplayName("역을 추가한다.")
         @Test
-        void success() {
+        void 지하철_노선에_역을_등록한다() {
             lineRequest1 = new LineRequest("2호선", "교대역", "강남역", 10);
             // given
             ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
@@ -167,9 +162,8 @@ public class LineIntegrationTest extends IntegrationTest {
             assertThat(stationSelectResponse.getName()).isEqualTo("민트역");
         }
 
-        @DisplayName("추가한 역이 기존의 노선과 연결되지 않는다면 예외가 발생한다.")
         @Test
-        void notConnected_fail() {
+        void 추가한_역이_기존의_노선과_연결되지_않는다면_예외가_발생한다() {
             lineRequest1 = new LineRequest("2호선", "교대역", "강남역", 10);
             // given
             ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
@@ -185,9 +179,8 @@ public class LineIntegrationTest extends IntegrationTest {
             assertThat(errorMessage).isEqualTo("연결되지 않은 역이 있습니다");
         }
 
-        @DisplayName("기존 노선이 가지고 있는 구간과 완전히 겹치는 구간을 추가하면 예외가 발생한다.")
         @Test
-        void sectionAlreadyExists_fail() {
+        void 기존_노선이_가지고_있는_구간과_완전히_겹치는_구간을_추가하면_예외가_발생한다() {
             lineRequest1 = new LineRequest("2호선", "교대역", "강남역", 10);
             // given
             ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
@@ -203,9 +196,8 @@ public class LineIntegrationTest extends IntegrationTest {
             assertThat(errorMessage).isEqualTo("이미 존재하는 지하철역입니다.");
         }
 
-        @DisplayName("A-C 구간 사이로 들어간 B-C 구간의 길이가 A-C 구간의 길이보다 길다면 예외가 발생한다")
         @Test
-        void invalidSectionDistance_fail() {
+        void AC_구간_사이로_들어간_BC_구간의_길이가_AC_구간의_길이보다_길다면_예외가_발생한다() {
             lineRequest1 = new LineRequest("2호선", "교대역", "역삼역", 20);
             // given
             ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
