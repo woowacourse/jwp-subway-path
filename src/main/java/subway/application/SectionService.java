@@ -31,9 +31,9 @@ public class SectionService {
     }
 
     public Long insertSection(SectionRequest request) {
-        validateInput(request);
         final List<Section> sections = getSections(request.getLineId());
         final Sections sortedSections = Sections.from(sections);
+        validateInput(sortedSections, request);
 
         checkCanInsert(request, sortedSections);
 
@@ -50,15 +50,11 @@ public class SectionService {
                 .collect(Collectors.toList());
     }
 
-    private void validateInput(SectionRequest request) {
+    private void validateInput(Sections sections, SectionRequest request) {
         if (lineDao.findById(request.getLineId()).isEmpty()) {
             throw new IllegalArgumentException("존재 하지 않는 노선에는 구간을 추가 할 수 없습니다.");
         }
-
-        if (sectionDao.exists(request.getDownStationId(), request.getUpStationId(), request.getLineId())
-                || sectionDao.exists(request.getUpStationId(), request.getDownStationId(), request.getLineId())) {
-            throw new IllegalArgumentException("동일한 구간을 추가할 수 없습니다.");
-        }
+        sections.isExistSection(request);
     }
 
     private static void checkCanInsert(SectionRequest request, Sections sortedSections) {

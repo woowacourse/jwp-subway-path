@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.dto.SectionDeleteRequest;
+import subway.dto.SectionRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +134,15 @@ public class Sections {
         stations.add(new Station(lastSection.getDownStationId(), lastSection.getDownStation().getName()));
 
         return stations;
+    }
+
+    public void isExistSection(SectionRequest request) {
+        for (Section section : sections) {
+            if (Objects.equals(section.getUpStationId(), request.getUpStationId())
+                    || Objects.equals(section.getDownStationId(), request.getDownStationId())) {
+                throw new IllegalArgumentException("동일한 구간을 추가할 수 없습니다.");
+            }
+        }
     }
 
     public boolean isInitialState() {
