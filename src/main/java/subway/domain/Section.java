@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.exception.DuplicateSectionNameException;
+import subway.exception.NotExistStationException;
 
 import java.util.Objects;
 
@@ -10,14 +11,20 @@ public class Section {
     private final Distance distance;
 
     public Section(Station startStation, Station endStation, Distance distance) {
-        validate(startStation, endStation);
-
+        validateExistStation(startStation, endStation);
+        validateStationName(startStation, endStation);
         this.startStation = startStation;
         this.endStation = endStation;
         this.distance = distance;
     }
 
-    private void validate(Station startStation, Station endStation) {
+    private void validateExistStation(Station startStation, Station endStation) {
+        if (startStation.getName().isBlank() || endStation.getName().isBlank()) {
+            throw new NotExistStationException();
+        }
+    }
+
+    private void validateStationName(Station startStation, Station endStation) {
         if (startStation.equals(endStation)) {
             throw new DuplicateSectionNameException();
         }
