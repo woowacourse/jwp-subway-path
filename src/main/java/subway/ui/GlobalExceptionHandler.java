@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import subway.adapter.route.out.find.PathNotFoundException;
 import subway.application.line.port.in.LineNotFoundException;
 import subway.application.station.port.in.StationNotFoundException;
 import subway.exception.BusinessException;
@@ -71,6 +72,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     private ResponseEntity<ErrorResponse<String>> handleStationNotFound(final StationNotFoundException exception) {
         log.warn("역을 찾을 수 없습니다.", exception);
+        return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse<String>> handlePathNotFound(final PathNotFoundException exception) {
+        log.warn("경로를 찾을 수 없습니다.", exception);
         return ResponseEntity.notFound().build();
     }
 }
