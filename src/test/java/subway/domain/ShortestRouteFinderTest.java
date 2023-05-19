@@ -55,5 +55,31 @@ class ShortestRouteFinderTest {
                             "from : " + 잠실역.STATION +
                             "to : " + 건대역.STATION);
         }
+
+        /*
+        강남 - 5km - 종합운동장
+        강남 - 1km - 신논현역 - 1km - 종합운동장
+         */
+        @Test
+        void 최단경로를_구한다() {
+            Line 이호선 = new Line("2호선", "GREEN");
+            이호선.addSection(new Section(강남역.STATION, 종합운동장역.STATION, 5));
+
+            Line 신분당선 = new Line("신분당선", "RED");
+            신분당선.addSection(new Section(강남역.STATION, 신논현역.STATION, 1));
+
+            Line 구호선 = new Line("9호선", "BROWN");
+            구호선.addSection(new Section(신논현역.STATION, 종합운동장역.STATION, 1));
+
+            BDDMockito.given(lineRepository.findAll())
+                    .willReturn(List.of(이호선, 신분당선, 구호선));
+
+            List<Station> route = routeFinder.findRoute(강남역.STATION, 종합운동장역.STATION);
+
+            Assertions.assertThat(route)
+                    .usingRecursiveComparison()
+                    .ignoringFields("id")
+                    .isEqualTo(List.of(강남역.STATION, 신논현역.STATION, 종합운동장역.STATION));
+        }
     }
 }
