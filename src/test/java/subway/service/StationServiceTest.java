@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import subway.exception.DuplicatedStationNameException;
+import subway.exception.StationNotFoundException;
 import subway.repository.StationDao;
 import subway.entity.StationEntity;
 import subway.controller.dto.request.StationRequest;
@@ -19,6 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class StationServiceTest {
@@ -129,6 +132,38 @@ public class StationServiceTest {
     }
 
     @Test
+    @DisplayName("수정 실패 - 존재하지 않는 id")
+    void update_fail_id_not_found() {
+        // given
+        final long id = 11L;
+        final String name = "실잠";
+        final StationRequest stationRequest = new StationRequest(name);
+
+        // when
+        doThrow(StationNotFoundException.class).when(stationDao).update(any());
+
+        // then
+        assertThatThrownBy(() -> stationService.update(id, stationRequest))
+                .isInstanceOf(StationNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("수정 실패 - 겹치는 역 이름")
+    void update_fail_duplicated_station_name() {
+        // given
+        final long id = 1L;
+        final String name = "종합운동장";
+        final StationRequest stationRequest = new StationRequest(name);
+
+        // when
+        doThrow(DuplicatedStationNameException.class).when(stationDao).update(any());
+
+        // then
+        assertThatThrownBy(() -> stationService.update(id, stationRequest))
+                .isInstanceOf(DuplicatedStationNameException.class);
+    }
+
+    @Test
     @DisplayName("삭제 성공")
     void delete_success() {
         // given
@@ -139,4 +174,17 @@ public class StationServiceTest {
                 .doesNotThrowAnyException();
     }
 
+    @Test
+    @DisplayName("삭제 실패 - 존재하지 않는 id")
+    void delete_fail_station_not_found() {
+        // given
+        final long id = 11L;
+
+        // when
+        doThrow(StationNotFoundException.class).when(stationDao).deleteById(id);
+
+        // then
+        assertThatThrownBy(() -> stationService.delete(id))
+                .isInstanceOf(StationNotFoundException.class);
+    }
 }
