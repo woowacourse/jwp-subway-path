@@ -8,6 +8,8 @@ import subway.dto.response.ErrorResponse;
 import subway.exception.business.*;
 import subway.ui.ErrorCode;
 
+import java.sql.SQLException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -57,5 +59,10 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<Void> handleSQLException() {
+        return ResponseEntity.badRequest().build();
     }
 }
