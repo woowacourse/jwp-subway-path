@@ -1,5 +1,6 @@
 package subway.repository;
 
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 import subway.entity.StationEntity;
@@ -27,11 +28,9 @@ public class StationRepository {
         }
     }
 
-    public Station findById(Long stationId) {
-        final StationEntity findStationEntity = stationDao.findById(stationId);
-        final Long id = findStationEntity.getId();
-        final String name = findStationEntity.getName();
-        return new Station(id, name);
+    public Optional<Station> findById(Long stationId) {
+        return stationDao.findById(stationId)
+                .map(StationEntity::toDomain);
     }
 
     public void deleteById(final Long stationId) {

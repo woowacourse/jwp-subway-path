@@ -3,13 +3,13 @@ package subway.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Station;
 import subway.exception.DuplicatedNameException;
@@ -36,10 +36,11 @@ class StationRepositoryTest {
 
         // when
         final Station saveStation = stationRepository.insert(stationName);
-        final Station findStation = stationRepository.findById(saveStation.getId());
+        final Optional<Station> findStation = stationRepository.findById(saveStation.getId());
 
         // then
-        assertThat(saveStation).isEqualTo(findStation);
+        assertThat(findStation).isPresent();
+        assertThat(saveStation).isEqualTo(findStation.get());
     }
 
     @Test
@@ -60,9 +61,9 @@ class StationRepositoryTest {
 
         // when
         stationRepository.deleteById(saveStation.getId());
+        final Optional<Station> findStation = stationRepository.findById(saveStation.getId());
 
         // then
-        assertThatThrownBy(() -> stationRepository.findById(saveStation.getId()))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+        assertThat(findStation).isEmpty();
     }
 }

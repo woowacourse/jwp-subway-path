@@ -76,10 +76,11 @@ class StationDaoTest {
         final StationEntity saveStation = stationDao.insert(GANGNAM_STATION);
 
         // when
-        final StationEntity findStation = stationDao.findById(saveStation.getId());
+        final Optional<StationEntity> findStation = stationDao.findById(saveStation.getId());
 
         // then
-        assertThat(findStation).isEqualTo(saveStation);
+        assertThat(findStation).isPresent();
+        assertThat(findStation.get()).isEqualTo(saveStation);
     }
 
     @Test

@@ -15,6 +15,7 @@ import subway.dto.LinesSelectResponse;
 import subway.dto.StationSaveRequest;
 import subway.dto.StationSelectResponse;
 import subway.exception.AlreadyExistStationException;
+import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -113,7 +114,8 @@ public class LineService {
     public void deleteStation(final Long lineId, final Long stationId) {
         final Subway subway = new Subway(lineRepository.findAll());
         final Line line = subway.findLineById(lineId);
-        final Station findStation = stationRepository.findById(stationId);
+        final Station findStation = stationRepository.findById(stationId)
+                .orElseThrow(() -> new StationNotFoundException("삭제하려는 역이 존재하지 않습니다."));
 
         line.removeStation(findStation);
         lineRepository.deleteStationByLineIdAndStationId(lineId, stationId);

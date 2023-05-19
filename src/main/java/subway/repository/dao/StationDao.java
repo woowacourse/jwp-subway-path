@@ -35,19 +35,25 @@ public class StationDao {
         return new StationEntity(id, station.getName());
     }
 
+    public void insertAll(List<StationEntity> stations) {
+        String sql = "INSERT INTO station (name) VALUES (?)";
+        jdbcTemplate.batchUpdate(sql, stations, stations.size(), ((ps, station) -> {
+            ps.setString(1, station.getName());
+        }));
+    }
+
     public List<StationEntity> findAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<StationEntity> findByName(String name) {
@@ -59,11 +65,9 @@ public class StationDao {
         }
     }
 
-    public void insertAll(List<StationEntity> stations) {
-        String sql = "INSERT INTO station (name) VALUES (?)";
-        jdbcTemplate.batchUpdate(sql, stations, stations.size(), ((ps, station) -> {
-            ps.setString(1, station.getName());
-        }));
+    public void deleteById(Long id) {
+        String sql = "delete from STATION where id = ?";
+        jdbcTemplate.update(sql, id);
     }
 
     public boolean existsByName(final String name) {

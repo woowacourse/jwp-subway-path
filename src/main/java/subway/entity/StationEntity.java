@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import subway.domain.Line;
+import subway.domain.Station;
 
 public class StationEntity {
 
@@ -24,6 +25,11 @@ public class StationEntity {
                 .map(station -> new StationEntity(station.getName()))
                 .collect(Collectors.toList());
     }
+
+    public Station toDomain() {
+        return new Station(this.id, this.name);
+    }
+
 
     public Long getId() {
         return id;
