@@ -1,6 +1,9 @@
 package subway.domain;
 
 import org.junit.jupiter.api.Test;
+import subway.domain.vo.Distance;
+import subway.domain.vo.Section;
+import subway.domain.vo.Station;
 
 import java.util.ArrayList;
 import java.util.Collections;
