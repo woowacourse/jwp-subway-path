@@ -11,7 +11,6 @@ import subway.line.domain.Line;
 import subway.section.domain.Section;
 import subway.station.domain.Station;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,10 +28,6 @@ public class Path {
     private static final int EIGHT_INCREASE = 8;
     
     private final Set<Line> lines;
-    
-    public Path() {
-        this(new HashSet<>());
-    }
     
     public ShortestPathResult getShortestPath(final String startStationName, final String endStationName) {
         final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
