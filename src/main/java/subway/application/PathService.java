@@ -9,6 +9,7 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
+import subway.domain.PathInformation;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.farecalculator.FareCalculator;
@@ -50,11 +51,10 @@ public class PathService {
         final List<Section> sections = sectionDao.findAll();
 
         pathFinder.addSections(sections);
-        final List<Section> path = pathFinder.computeShortestPath(sourceStationId, targetStationId);
-        final int distance = pathFinder.computeShortestDistance(sourceStationId, targetStationId);
-
+        final PathInformation pathInformation = pathFinder.computeShortestPath(sourceStationId, targetStationId);
+        final Integer distance = pathInformation.getDistance();
         final SectionMapper sectionMapper = SectionMapper.from(stations, lines);
-        final List<SectionResponse> sectionResponses = sectionMapper.convertToSectionResponse(path);
+        final List<SectionResponse> sectionResponses = sectionMapper.convertToSectionResponse(pathInformation.getPath());
         final List<FareResponse> calculate = fareCalculator.calculate(sectionResponses, distance);
 
         return new PathResponse(distance, calculate, sectionResponses);

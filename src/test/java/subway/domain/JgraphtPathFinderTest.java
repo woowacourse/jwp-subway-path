@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.jgrapht.graph.WeightedMultigraph;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,28 +32,24 @@ class JgraphtPathFinderTest {
 
     public static Stream<Arguments> provideStationIdsAndPath() {
         return Stream.of(
-                Arguments.of(1L, 4L, List.of(Fixture.SECTION_8)),
-                Arguments.of(1L, 5L, List.of(Fixture.SECTION_8, Fixture.SECTION_4)),
-                Arguments.of(1L, 8L, List.of(Fixture.SECTION_8, Fixture.SECTION_9, Fixture.SECTION_10))
+                Arguments.of(1L, 4L, List.of(Fixture.SECTION_8), 4),
+                Arguments.of(1L, 5L, List.of(Fixture.SECTION_8, Fixture.SECTION_4), 9),
+                Arguments.of(1L, 8L, List.of(Fixture.SECTION_8, Fixture.SECTION_9, Fixture.SECTION_10), 15)
         );
     }
 
-    public static Stream<Arguments> provideStationIdsAndDistance() {
-        return Stream.of(
-                Arguments.of(1L, 4L, 4),
-                Arguments.of(1L, 5L, 9),
-                Arguments.of(1L, 8L, 15)
-        );
-    }
-
-    @ParameterizedTest(name = "최단경로를 구한다.")
+    @ParameterizedTest(name = "최단경로와 거리를 구한다.")
     @MethodSource("provideStationIdsAndPath")
-    void computeShortestPath(Long sourceStationId, Long targetStationId, List<Section> expected) {
+    void computeShortestPath(Long sourceStationId, Long targetStationId, List<Section> expectedPath,
+                             Integer expectedDistance) {
         //when
-        final List<Section> result = jgraphtPathFinder.computeShortestPath(sourceStationId, targetStationId);
+        final PathInformation result = jgraphtPathFinder.computeShortestPath(sourceStationId, targetStationId);
 
         //then
-        assertThat(result).containsExactlyElementsOf(expected);
+        Assertions.assertAll(
+                () -> assertThat(result.getPath()).containsExactlyElementsOf(expectedPath),
+                () -> assertThat(result.getDistance()).isEqualTo(expectedDistance)
+        );
     }
 
     @Test
@@ -75,15 +72,5 @@ class JgraphtPathFinderTest {
         assertThatThrownBy(() -> jgraphtPathFinder.computeShortestPath(1L, 10L))
                 .isInstanceOf(DomainException.class)
                 .hasMessage(ExceptionType.UN_REACHABLE_PATH.name());
-    }
-
-    @ParameterizedTest(name = "최단 거리를 구한다.")
-    @MethodSource("provideStationIdsAndDistance")
-    void computeShortestDistance(Long sourceStationId, Long targetStationId, int expected) {
-        //when
-        final int result = jgraphtPathFinder.computeShortestDistance(sourceStationId, targetStationId);
-
-        //then
-        assertThat(result).isEqualTo(expected);
     }
 }
