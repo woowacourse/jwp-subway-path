@@ -2,7 +2,10 @@ package subway.line.domain;
 
 import org.junit.jupiter.api.Test;
 import subway.section.domain.Direction;
+import subway.section.domain.Section;
+import subway.section.domain.Sections;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -120,5 +123,36 @@ class SubwayTest {
         // expect
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> subway.removeLine("3호선"));
+    }
+    
+    @Test
+    void stationId로_모든_노선에_있는_해당_역을_삭제한다() {
+        // given
+        final String first = "잠실역";
+        final String second = "가양역";
+        final String third = "화정역";
+        final String fourth = "종합운동장";
+        final String fifth = "선릉역";
+        
+        final int distance1 = 3;
+        final int distance2 = 2;
+        final int distance3 = 6;
+        final int distance4 = 7;
+        final Section firstSection = new Section(first, second, distance1);
+        final Section secondSection = new Section(second, third, distance2);
+        final Section thirdSection = new Section(third, fourth, distance3);
+        final Section fourthSection = new Section(fourth, fifth, distance4);
+        
+        final Set<Section> initSections1 = new HashSet<>(Set.of(firstSection, secondSection));
+        final Set<Section> initSections2 = new HashSet<>(Set.of(thirdSection, fourthSection));
+        final Line line1 = new Line("1호선", "파랑", initSections1);
+        final Line line2 = new Line("2호선", "초록", initSections2);
+        final Subway subway = new Subway(Set.of(line1, line2));
+        
+        // when
+        final Set<Line> modifiedLines = subway.removeStationOnAllLine("화정역");
+        
+        // then
+        assertThat(modifiedLines).contains(line1, line2);
     }
 }

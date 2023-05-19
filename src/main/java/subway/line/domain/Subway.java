@@ -85,9 +85,28 @@ public class Subway {
     public GetAllSortedLineResponse getAllSortedStations() {
         return new GetAllSortedLineResponse(
                 lines.stream()
-                .map(line -> getSortedStations(line.getName()))
-                .map(GetSortedLineResponse::new)
-                .collect(Collectors.toUnmodifiableList())
+                        .map(line -> getSortedStations(line.getName()))
+                        .map(GetSortedLineResponse::new)
+                        .collect(Collectors.toUnmodifiableList())
         );
+    }
+    
+    public Set<Line> removeStationOnAllLine(final String stationName) {
+        final Set<Line> linesWithStation = getLinesWithStation(stationName);
+        validateExistStation(linesWithStation);
+        linesWithStation.forEach(line -> line.removeStation(stationName));
+        return linesWithStation;
+    }
+    
+    private void validateExistStation(final Set<Line> linesWithStation) {
+        if (linesWithStation.isEmpty()) {
+            throw new IllegalArgumentException("stationId에 해당하는 역이 모든 노선에 존재하지 않습니다.");
+        }
+    }
+    
+    private Set<Line> getLinesWithStation(final String stationName) {
+        return lines.stream()
+                .filter(line -> line.isContainsStation(stationName))
+                .collect(Collectors.toUnmodifiableSet());
     }
 }
