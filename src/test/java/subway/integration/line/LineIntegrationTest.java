@@ -1,7 +1,6 @@
 package subway.integration.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.integration.line.LineSteps.노선_단건_삭제_요청;
 import static subway.integration.line.LineSteps.노선_단건_조회_요청;
 import static subway.integration.line.LineSteps.노선_생성_요청;
 import static subway.integration.line.LineSteps.노선_전체_조회_요청;
@@ -119,25 +118,6 @@ public class LineIntegrationTest extends IntegrationTest {
             assertThat(lineSelectResponse.getLineName()).isEqualTo("2호선");
             assertThat(lineSelectResponse.getStations()).map(StationSelectResponse::getName)
                     .containsExactly("교대역", "강남역", "역삼역");
-        }
-    }
-
-    @DisplayName("지하철 노선 삭제")
-    @Nested
-    class delete extends IntegrationTest {
-
-        @DisplayName("하나를 제거한다.")
-        @Test
-        void deleteLine() {
-            // given
-            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
-
-            // when
-            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-            ExtractableResponse<Response> response = 노선_단건_삭제_요청(lineId);
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         }
     }
 

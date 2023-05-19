@@ -48,10 +48,6 @@ public class LineService {
         return LineSelectResponse.from(line);
     }
 
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
-    }
-
     public StationSelectResponse addStation(Long lineId, StationSaveRequest stationRequest) {
         Subway subway = new Subway(lineRepository.findAll());
         final Line line = subway.findLineById(lineId);
