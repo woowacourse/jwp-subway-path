@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import subway.line.application.LineRepository;
+import subway.line.domain.section.application.SectionRepository;
 import subway.line.domain.section.domain.exception.InvalidDistanceException;
 import subway.line.domain.station.application.StationRepository;
-import subway.line.infrastructure.LineDao;
-import subway.line.domain.section.infrastructure.SectionDao;
 import subway.line.domain.section.application.SectionService;
 import subway.line.domain.section.domain.Distance;
 import subway.line.Line;
@@ -26,10 +26,10 @@ class SectionServiceTest {
     private SectionService sectionService;
 
     @Autowired
-    private SectionDao sectionDao;
+    private SectionRepository sectionRepository;
 
     @Autowired
-    private LineDao lineDao;
+    private LineRepository lineRepository;
 
     @Autowired
     private StationRepository stationRepository;
@@ -41,17 +41,17 @@ class SectionServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineOne = lineDao.insert("1호선", "blue");
-        stationS = stationRepository.insert(new Station("송탄"));
-        stationJ = stationRepository.insert(new Station("진위"));
-        stationO = stationRepository.insert(new Station("오산"));
+        lineOne = lineRepository.insert("1호선", "blue");
+        stationS = stationRepository.insert("송탄");
+        stationJ = stationRepository.insert("진위");
+        stationO = stationRepository.insert("오산");
         sectionService.insert(lineOne.getId(), "송탄", "진위", Distance.of(6), true);
     }
 
     @Test
     @DisplayName("노선에 역이 하나도 등록되지 않은 상황에서 최초 등록시 두 역이 동시 등록됩니다.")
     void initialize() {
-        assertThat(sectionDao.countStations(lineOne))
+        assertThat(sectionRepository.countStations(lineOne))
                 .as("두 개의 역이 동시에 등록되어 있습니다.")
                 .isEqualTo(2);
     }
@@ -132,7 +132,7 @@ class SectionServiceTest {
     @DisplayName("하나의 역은 여러 노선에 등록될 수 있습니다.")
     void multipleSubwayMap() {
         // given
-        Line lineTwo = lineDao.insert("2호선", "yellow");
+        Line lineTwo = lineRepository.insert("2호선", "yellow");
 
         // when
         assertThatCode(() -> sectionService.insert(lineTwo.getId(), stationS.getName(), stationO.getName(), Distance.of(6), false))
@@ -143,18 +143,18 @@ class SectionServiceTest {
     @Test
     @DisplayName("역을 처음 초기화하면 노선 정보에 상행 종점 역 정보가 저장되어 있다.")
     void head() {
-        final var headStation = lineDao.findById(lineOne.getId()).getHead();
+        final var headStation = lineRepository.findById(lineOne.getId()).getHead();
         assertThat(headStation).isEqualTo(stationS);
     }
 
     @Test
     @DisplayName("역의 상행 종점 역 정보가 바뀌면, 노선 정보에 상행 종점 역 정보도 변경된다.")
     void changeHead() {
-        assertThat(lineDao.findById(lineOne.getId()).getHead())
+        assertThat(lineRepository.findById(lineOne.getId()).getHead())
                 .as("본래는 송탄이 상행 최종역이지만")
                 .isEqualTo(stationS);
         sectionService.insert(lineOne.getId(), "오산", "송탄", Distance.of(4), true);
-        assertThat(lineDao.findById(lineOne.getId()).getHead())
+        assertThat(lineRepository.findById(lineOne.getId()).getHead())
                 .as("오산을 송탄 앞에 배치한 이후로는 오산이 상행 최종역이다.")
                 .isEqualTo(stationO);
     }
@@ -165,7 +165,7 @@ class SectionServiceTest {
     void findAllOrderByUp() {
         sectionService.insert(lineOne.getId(), stationO.getName(), stationS.getName(), Distance.of(6), true);
 
-        assertThat(sectionService.findAllStationsOrderByUp(lineDao.findById(lineOne.getId())))
+        assertThat(sectionService.findAllStationsOrderByUp(lineRepository.findById(lineOne.getId())))
                 .containsExactly(stationO, stationS, stationJ);
     }
 }

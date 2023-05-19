@@ -7,9 +7,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.domain.section.application.SectionService;
+import subway.line.domain.station.application.StationRepository;
 import subway.line.infrastructure.LineDao;
-import subway.line.domain.station.Station;
-import subway.line.domain.station.infrastructure.StationDao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +20,7 @@ class LineDaoTest {
     LineDao lineDao;
 
     @Autowired
-    StationDao stationDao;
+    StationRepository stationRepository;
 
     @Autowired
     SectionService sectionService;
@@ -31,7 +30,7 @@ class LineDaoTest {
     void head() {
         // given
         final var line = lineDao.insert("1호선", "blue");
-        final var stationS = stationDao.insert(new Station("송탄"));
+        final var stationS = stationRepository.insert("송탄");
 
         lineDao.updateHeadStation(line, stationS);
 
@@ -45,7 +44,7 @@ class LineDaoTest {
     void findHead() {
         // given
         final var line = lineDao.insert("1호선", "blue");
-        final var stationS = stationDao.insert(new Station("송탄"));
+        final var stationS = stationRepository.insert("송탄");
         lineDao.updateHeadStation(line, stationS);
 
         // when

@@ -10,19 +10,19 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import subway.line.domain.section.application.SectionService;
-import subway.line.domain.section.domain.exception.InvalidDistanceException;
-import subway.line.infrastructure.LineDao;
-import subway.line.domain.section.domain.Distance;
 import subway.line.Line;
-import subway.line.domain.section.Section;
+import subway.line.application.LineRepository;
+import subway.line.domain.section.application.SectionService;
+import subway.line.domain.section.domain.Distance;
+import subway.line.domain.section.domain.exception.InvalidDistanceException;
 import subway.line.domain.section.infrastructure.SectionDao;
 import subway.line.domain.station.Station;
 import subway.line.domain.station.infrastructure.StationDao;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -35,7 +35,7 @@ class SectionDaoTest {
     private SectionDao sectionDao;
 
     @Autowired
-    private LineDao lineDao;
+    private LineRepository lineRepository;
 
     @Autowired
     private StationDao stationDao;
@@ -47,10 +47,10 @@ class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        line = lineDao.insert("1호선", "blue");
-        stationS = stationDao.insert(new Station("송탄"));
-        stationJ = stationDao.insert(new Station("진위"));
-        stationO = stationDao.insert(new Station("오산"));
+        line = lineRepository.insert("1호선", "blue");
+        stationS = stationDao.insert("송탄");
+        stationJ = stationDao.insert("진위");
+        stationO = stationDao.insert("오산");
     }
 
     @Test

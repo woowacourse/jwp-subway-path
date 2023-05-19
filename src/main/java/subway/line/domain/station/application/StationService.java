@@ -4,30 +4,29 @@ import org.springframework.stereotype.Service;
 import subway.line.domain.station.Station;
 import subway.line.domain.station.dto.StationRequest;
 import subway.line.domain.station.dto.StationResponse;
-import subway.line.domain.station.infrastructure.StationDao;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        Station station = stationRepository.insert(stationRequest.getName());
         return StationResponse.of(station);
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        return StationResponse.of(stationRepository.findById(id));
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
                 .map(StationResponse::of)
@@ -35,10 +34,10 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        stationRepository.update(new Station(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteById(id);
     }
 }

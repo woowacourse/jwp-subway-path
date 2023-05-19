@@ -5,12 +5,12 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import subway.line.Line;
-import subway.line.domain.section.application.ShortestPathResponse;
-import subway.line.domain.section.infrastructure.SectionDao;
-import subway.line.domain.section.application.SectionService;
-import subway.line.domain.station.infrastructure.StationDao;
 import subway.line.domain.section.Section;
+import subway.line.domain.section.application.SectionRepository;
+import subway.line.domain.section.application.SectionService;
+import subway.line.domain.section.application.ShortestPathResponse;
 import subway.line.domain.station.Station;
+import subway.line.domain.station.application.StationRepository;
 import subway.line.dto.LineRequest;
 import subway.line.dto.LineResponse;
 
@@ -27,14 +27,14 @@ public class LineService {
     public static final int MIN_8KM_FARE_DISTANCE = 51;
     public static final int SURCHARGE = 100;
     private final LineRepository lineRepository;
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
+    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
     private final SectionService sectionService;
 
-    public LineService(LineRepository lineRepository, SectionDao sectionDao, StationDao stationDao, SectionService sectionService) {
+    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, StationRepository stationRepository, SectionService sectionService) {
         this.lineRepository = lineRepository;
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
+        this.sectionRepository = sectionRepository;
+        this.stationRepository = stationRepository;
         this.sectionService = sectionService;
     }
 
@@ -73,8 +73,8 @@ public class LineService {
     }
 
     public ShortestPathResponse findShortestPath(String startingStationName, String destinationStationName) {
-        final var startingStation = stationDao.findByName(startingStationName);
-        final var destinationStation = stationDao.findByName(destinationStationName);
+        final var startingStation = stationRepository.findByName(startingStationName);
+        final var destinationStation = stationRepository.findByName(destinationStationName);
         return findShortestPath(startingStation, destinationStation);
     }
 
@@ -94,7 +94,7 @@ public class LineService {
     }
 
     private void saveLineInGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        final var sections = sectionDao.findAllByLine(line);
+        final var sections = sectionRepository.findAllByLine(line);
         for (Section section : sections) {
             saveSectionInGraph(graph, section);
         }
@@ -131,23 +131,23 @@ public class LineService {
 
     public void deleteStation(long lineId, String stationName) {
         Line line = lineRepository.findById(lineId);
-        Station station = stationDao.findByName(stationName);
+        Station station = stationRepository.findByName(stationName);
 
-        if (sectionDao.countStations(line) == Section.MIN_STATION_COUNT) {
-            sectionDao.clearStations(line);
+        if (sectionRepository.countStations(line) == Section.MIN_STATION_COUNT) {
+            sectionRepository.clearStations(line);
             return;
         }
 
-        Optional<Section> stationsToDeleteOptional = sectionDao.findByPreviousStation(station, line);
-        Optional<Section> stationsLeftOptional = sectionDao.findByNextStation(station, line);
+        Optional<Section> stationsToDeleteOptional = sectionRepository.findByPreviousStation(station, line);
+        Optional<Section> stationsLeftOptional = sectionRepository.findByNextStation(station, line);
 
         if (stationsToDeleteOptional.isPresent() && stationsLeftOptional.isPresent()) {
             Section sectionToDelete = stationsToDeleteOptional.get();
             Section sectionLeft = stationsLeftOptional.get();
 
-            sectionDao.update(new Section(sectionLeft.getId(), sectionLeft.getLine(), sectionLeft.getPreviousStation(), sectionToDelete.getNextStation(), sectionToDelete.getDistance().add(sectionLeft.getDistance())));
+            sectionRepository.update(new Section(sectionLeft.getId(), sectionLeft.getLine(), sectionLeft.getPreviousStation(), sectionToDelete.getNextStation(), sectionToDelete.getDistance().add(sectionLeft.getDistance())));
         }
 
-        sectionDao.deleteStation(station, line);
+        sectionRepository.deleteStation(station, line);
     }
 }
