@@ -1,6 +1,7 @@
 package subway.ui;
 
 
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +40,7 @@ public class SectionController {
                                               @RequestBody SectionSaveDto sectionSaveDto) {
         sectionService.saveSection(lineId, sectionSaveDto);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create("/subway/lines/" + lineId)).build();
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
