@@ -11,7 +11,6 @@ import subway.ui.response.LineResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -63,10 +62,5 @@ public class LineController {
     public ResponseEntity<Void> unregisterStation(@PathVariable final Long lineId, @Valid @RequestBody final StationRequest request) {
         lineService.unregisterStation(lineId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }
