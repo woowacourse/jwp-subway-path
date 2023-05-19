@@ -48,7 +48,7 @@ public class StationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable final Long id, @RequestBody final StationRequest stationRequest) {
+    public ResponseEntity<Void> update(@PathVariable final Long id, @RequestBody @Valid final StationRequest stationRequest) {
         stationService.update(id, stationRequest);
         return ResponseEntity.ok().build();
     }

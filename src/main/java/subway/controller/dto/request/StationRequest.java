@@ -2,11 +2,11 @@ package subway.controller.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 public class StationRequest {
 
-    @NotNull(message = "name 이 null 이면 안됩니다.")
+    @NotBlank(message = "name 이 비어있습니다.")
     private final String name;
 
     @JsonCreator
