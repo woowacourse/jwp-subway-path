@@ -1,4 +1,4 @@
-package subway.domain.subway;
+package subway.domain.subway.route_map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,7 +14,6 @@ import subway.domain.Path;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
-import subway.domain.subway.routeMap.DijkstraRouteMap;
 import subway.exception.InvalidStationException;
 
 class DijkstraRouteMapTest {

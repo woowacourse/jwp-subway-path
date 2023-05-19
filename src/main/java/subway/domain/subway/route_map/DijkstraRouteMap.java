@@ -1,4 +1,4 @@
-package subway.domain.subway.routeMap;
+package subway.domain.subway.route_map;
 
 import java.util.List;
 import java.util.stream.Collectors;

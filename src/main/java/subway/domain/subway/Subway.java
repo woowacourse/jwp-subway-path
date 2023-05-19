@@ -4,7 +4,7 @@ import subway.domain.Path;
 import subway.domain.station.Station;
 import subway.domain.subway.billing_policy.BillingPolicy;
 import subway.domain.subway.billing_policy.Fare;
-import subway.domain.subway.routeMap.RouteMap;
+import subway.domain.subway.route_map.RouteMap;
 
 public final class Subway {
 

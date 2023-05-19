@@ -7,7 +7,7 @@ import subway.controller.dto.SubwayShortestPathResponse;
 import subway.domain.Path;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
-import subway.domain.subway.routeMap.DijkstraRouteMap;
+import subway.domain.subway.route_map.DijkstraRouteMap;
 import subway.domain.subway.Subway;
 import subway.domain.subway.billing_policy.BillingPolicyByDistance;
 import subway.domain.subway.billing_policy.Fare;
