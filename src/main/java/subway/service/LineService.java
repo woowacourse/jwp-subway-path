@@ -78,7 +78,7 @@ public class LineService {
     }
 
     private void validateNewStationNotExistInLine(final long lineId, final long stationId) {
-        if (sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId).isPresent()) {
+        if (sectionDao.isStationExistInLine(lineId, stationId)) {
             throw new DuplicatedStationNameException();
         }
     }

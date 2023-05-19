@@ -119,14 +119,14 @@ public class SectionDao {
         }
     }
 
-    public Optional<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(final long lineId, final long stationId) {
+    public boolean isStationExistInLine(final long lineId, final long stationId) {
+        return !findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId).isEmpty();
+    }
+
+    private List<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(final long lineId, final long stationId) {
         final String sql = "SELECT * FROM section " +
                 "WHERE line_id = ? AND (previous_station_id = ? OR next_station_id = ?)";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, lineId, stationId, stationId));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationId, stationId);
     }
 
     public List<SectionDetailEntity> findSectionDetail() {
