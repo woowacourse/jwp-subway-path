@@ -10,10 +10,9 @@ public class Cost {
     private static final int UNIT_OF_FIRST_DISTANCE = 5;
     private static final int UNIT_OF_SECOND_DISTANCE = 8;
     private static final int FEE = 100;
-    private int cost;
 
     public int calculate(int distance) {
-        cost = STANDARD_COST;
+        int cost = STANDARD_COST;
 
         if (distance >= START_BOUNDARY) {
             cost += costCalculateFirstOption(distance - START_BOUNDARY);

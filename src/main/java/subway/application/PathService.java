@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class PathService {
-    private SectionDao sectionDao;
-    private StationDao stationDao;
-    private LineDao lineDao;
-    private Cost cost;
+    private final SectionDao sectionDao;
+    private final StationDao stationDao;
+    private final LineDao lineDao;
+    private final Cost cost;
 
     public PathService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao, Cost cost) {
         this.sectionDao = sectionDao;

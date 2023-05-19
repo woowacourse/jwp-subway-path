@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.SectionService;
 import subway.dto.SectionRequest;
 
-import java.sql.SQLException;
-
 @RestController
 @RequestMapping("/subway/lines")
 public class SectionController {

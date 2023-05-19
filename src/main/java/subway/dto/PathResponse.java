@@ -3,9 +3,9 @@ package subway.dto;
 import java.util.List;
 
 public class PathResponse {
-    private List<StationResponse> stations;
-    private Integer distance;
-    private Integer cost;
+    private final List<StationResponse> stations;
+    private final Integer distance;
+    private final Integer cost;
 
     public PathResponse(List<StationResponse> stations, Integer distance, Integer cost) {
         this.stations = stations;

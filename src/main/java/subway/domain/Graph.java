@@ -7,7 +7,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.List;
 
 public class Graph {
-    private WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
     public Graph(List<Station> stations, List<Section> sections) {
         addVertex(stations);
