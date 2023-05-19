@@ -8,10 +8,9 @@ import java.util.stream.Collectors;
 import subway.domain.interstation.add.AddInterStationPolicy;
 import subway.domain.interstation.add.AddInterStationStrategy;
 import subway.domain.interstation.exception.InterStationsException;
+import subway.domain.interstation.remove.RemoveInterStationPolicy;
+import subway.domain.interstation.remove.RemoveInterStationStrategy;
 
-/**
- * 구간들은 상행선부터, 하행선까지 순서대로 정렬되어있다.
- */
 public class InterStations {
 
     private final List<InterStation> interStations;
@@ -25,9 +24,6 @@ public class InterStations {
         return new InterStations(List.of(new InterStation(upStationId, downStationId, distance)));
     }
 
-    /**
-     * 상행선부터 하행선까지 순서대로 구간을 정렬한다
-     */
     private List<InterStation> sort(final List<InterStation> interStations) {
         final long firstStation = findFirstStation(interStations);
 
@@ -83,41 +79,8 @@ public class InterStations {
     }
 
     public void remove(final long stationId) {
-        if (isStartStation(stationId)) {
-            interStations.remove(0);
-            return;
-        }
-        if (isEndStation(stationId)) {
-            interStations.remove(interStations.size() - 1);
-            return;
-        }
-        removeMiddle(stationId);
-    }
-
-    private boolean isStartStation(final long stationId) {
-        return interStations.get(0).getUpStationId().equals(stationId);
-    }
-
-    private boolean isEndStation(final long stationId) {
-        return interStations.get(interStations.size() - 1).getDownStationId().equals(stationId);
-    }
-
-    private void removeMiddle(final long stationId) {
-        final int index = findDownStationIndex(stationId);
-        final InterStation downInterStation = interStations.remove(index + 1);
-        final InterStation upInterStation = interStations.remove(index);
-        interStations.add(index, new InterStation(upInterStation.getUpStationId(),
-                downInterStation.getDownStationId(),
-                upInterStation.getDistance().add(downInterStation.getDistance())));
-    }
-
-    private int findDownStationIndex(final long stationId) {
-        for (int i = 0; i < interStations.size(); i++) {
-            if (interStations.get(i).getDownStationId().equals(stationId)) {
-                return i;
-            }
-        }
-        throw new InterStationsException("역이 존재하지 않습니다.");
+        final RemoveInterStationStrategy removeStrategy = RemoveInterStationPolicy.of(interStations, stationId);
+        removeStrategy.removeInterStation(interStations, stationId);
     }
 
     public boolean isEmpty() {

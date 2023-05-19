@@ -229,7 +229,7 @@ class InterStationsTest {
 
             assertThatCode(() -> interStations.remove(처음보는_역_id_4.getId()))
                     .isInstanceOf(InterStationsException.class)
-                    .hasMessage("역이 존재하지 않습니다.");
+                    .hasMessage("역을 제거할 수 없습니다");
         }
     }
 
