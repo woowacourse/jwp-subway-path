@@ -3,7 +3,7 @@ package subway.domain;
 public class Charge {
 
     private static final Charge deductCharge = new Charge(350);
-    int value;
+    private final int value;
 
     public Charge(int value) {
         this.value = value;

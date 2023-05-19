@@ -4,7 +4,7 @@ public enum DiscountRate {
     CHILD_DISCOUNT_RATE(0.5),
     TEENAGER_DISCOUNT_RATE(0.2);
 
-    private double value;
+    private final double value;
 
     DiscountRate(double value) {
         this.value = value;

@@ -8,7 +8,7 @@ public class Distance {
     private static final Distance SECOND_CHARGE_BOUND = new Distance(50);
     private static final Charge EXTRA_CHARGE_UNIT = new Charge(100);
     private static final int BASIC_CHARGE = 1250;
-    int value;
+    private final int value;
 
     public Distance(int value) {
         this.value = value;

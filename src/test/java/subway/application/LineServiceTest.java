@@ -57,7 +57,7 @@ class LineServiceTest {
         @DisplayName("새로운 노선과 역들을 추가한다.")
         void success() {
             // given
-            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName,
+            LineRequest request = new LineRequest(newLineName, "노란색", 300,upEndStationName,
                 downEndStationName, distance);
             int beforeSize = lineService.findLineResponses().size();
 
@@ -85,7 +85,7 @@ class LineServiceTest {
         void saveLine_fail_same_name() {
             // given
             newLineName = "1호선";
-            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName,
+            LineRequest request = new LineRequest(newLineName, "노란색", 0,upEndStationName,
                 downEndStationName, distance);
 
             // when, then
@@ -99,7 +99,7 @@ class LineServiceTest {
         void saveLine_fail_same_stations() {
             // given
             downEndStationName = "왕십리";
-            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName,
+            LineRequest request = new LineRequest(newLineName, "노란색", 300,upEndStationName,
                 downEndStationName, distance);
 
             // when, then
@@ -113,7 +113,7 @@ class LineServiceTest {
         void saveLine_fail_not_positive_distance() {
             // given
             distance = 0;
-            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName,
+            LineRequest request = new LineRequest(newLineName, "노란색", 300,upEndStationName,
                 downEndStationName, distance);
 
             // when, then
