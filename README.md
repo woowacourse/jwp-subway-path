@@ -5,6 +5,7 @@
 - [x] 노선에 역 추가
   - `/lines/:lineId/sections`
   - POST
+  - Request
   ```json
   {
     "startStationName": "잠실나루역",
@@ -12,6 +13,16 @@
     "distance": 10
   }
   ``` 
+  - Response
+  ```json
+    {
+        "id": 1,
+        "startStationName": "선릉역",
+        "endStationName": "삼성역",
+        "distance": 5
+    }
+  ```
+
 
 - [x] 노선에 역 제거
   - `lines/:lineId/sections`
@@ -147,6 +158,13 @@
     "fare":2250
   }
   ```
+
+### 프로덕션 데이터베이스 docker 실행
+```text
+# 루트 디렉터리에서 실행 (jwp-subway-path)
+cd docker
+docker-compose -p subway up -d
+```
 
 ### 기능 요구 사항
 

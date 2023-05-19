@@ -1,10 +1,10 @@
 package subway.ui;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.SectionService;
 import subway.application.dto.SectionCreateDto;
+import subway.domain.Section;
+import subway.domain.Station;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 
@@ -38,13 +40,18 @@ class SectionControllerTest {
         // given
         Long lineId = 1L;
         SectionCreateRequest request = new SectionCreateRequest("잠실역", "잠실나루역", 10);
-        willDoNothing().given(sectionService).saveSection(any(SectionCreateDto.class));
+        given(sectionService.saveSection(any(SectionCreateDto.class))).willReturn(
+                new Section(1L, new Station("잠실역"), new Station("잠실나루역"), 10));
 
         // expect
         mockMvc.perform(post("/lines/{lineId}/sections", lineId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.startStationName").value("잠실역"))
+                .andExpect(jsonPath("$.endStationName").value("잠실나루역"))
+                .andExpect(jsonPath("$.distance").value(10));
     }
 
     @Test

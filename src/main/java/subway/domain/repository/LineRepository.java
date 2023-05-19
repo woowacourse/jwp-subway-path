@@ -53,13 +53,6 @@ public class LineRepository {
         return lineDao.existsByNameAndColor(line.getColor(), line.getName());
     }
 
-    public List<Line> findAllWithNoSections() {
-        return lineDao.findAll()
-                .stream()
-                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor()))
-                .collect(Collectors.toList());
-    }
-
     public Line findByIdWithNoSections(Long id) {
         Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
         if (optionalLineEntity.isEmpty()) {
@@ -77,7 +70,7 @@ public class LineRepository {
         LineEntity lineEntity = optionalLineEntity.get();
         lineEntity.updateNameAndColor(line.getName(), line.getColor());
         lineDao.update(lineEntity);
-        return findByIdWithNoSections(line.getId());
+        return line;
     }
 
     public void delete(Line line) {

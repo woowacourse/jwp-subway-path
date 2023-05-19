@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
+import subway.domain.Section;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 import subway.dto.section.SectionResponse;
@@ -31,10 +32,10 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createSection(@PathVariable Long lineId,
+    public ResponseEntity<SectionResponse> createSection(@PathVariable Long lineId,
                                               @RequestBody @Valid SectionCreateRequest sectionCreateRequest) {
-        sectionService.saveSection(sectionCreateRequest.toSectionCreateDto(lineId));
-        return ResponseEntity.ok().build();
+        Section section = sectionService.saveSection(sectionCreateRequest.toSectionCreateDto(lineId));
+        return ResponseEntity.ok().body(SectionResponse.from(section));
     }
 
     @DeleteMapping

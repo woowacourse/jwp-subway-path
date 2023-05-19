@@ -33,32 +33,30 @@ public class SectionService {
         this.sectionRepository = sectionRepository;
     }
 
-    public void saveSection(SectionCreateDto requestedSection) {
+    public Section saveSection(SectionCreateDto requestedSection) {
         Station startStation = stationRepository.findByName(requestedSection.getStartStationName());
         Station endStation = stationRepository.findByName(requestedSection.getEndStationName());
         Line line = lineRepository.findById(requestedSection.getLineId());
-        addSection(line, new Section(startStation, endStation, requestedSection.getDistance()));
+        return addSection(line, new Section(startStation, endStation, requestedSection.getDistance()));
     }
 
-    private void addSection(Line line, Section sectionToAdd) {
+    private Section addSection(Line line, Section sectionToAdd) {
         if (line.isEmpty()) {
-            sectionRepository.save(line.getId(), sectionToAdd);
-            return;
+            Long savedId = sectionRepository.save(line.getId(), sectionToAdd);
+            return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
+                    sectionToAdd.getDistance());
         }
-        addSectionByExistence(line, sectionToAdd);
-        // TODO: 2023-05-18 저장이라는 행위를 함 -> 여기서 생성된 Section 객체를 반환하기
+        return addSectionByExistence(line, sectionToAdd);
     }
 
-    private void addSectionByExistence(Line line, Section sectionToAdd) {
+    private Section addSectionByExistence(Line line, Section sectionToAdd) {
         boolean isStartStationAddRequest = line.hasStationInLine(sectionToAdd.getEndStation());
         boolean isEndStationAddRequest = line.hasStationInLine(sectionToAdd.getStartStation());
         validateAddableSection(isStartStationAddRequest, isEndStationAddRequest);
         if (isStartStationAddRequest) {
-            addStartStation(line, sectionToAdd);
+            return addStartStation(line, sectionToAdd);
         }
-        if (isEndStationAddRequest) {
-            addEndStation(line, sectionToAdd);
-        }
+        return addEndStation(line, sectionToAdd);
     }
 
     private void validateAddableSection(boolean hasStartStation, boolean hasEndStation) {
@@ -70,14 +68,16 @@ public class SectionService {
         }
     }
 
-    private void addStartStation(Line line, Section sectionToAdd) {
+    private Section addStartStation(Line line, Section sectionToAdd) {
         Optional<Section> prevExistingSection = line.findSectionWithEndStation(sectionToAdd.getEndStation());
         prevExistingSection.ifPresent(prevSection -> {
             changePrevSectionToNewSection(prevSection, sectionToAdd);
             saveStation(line.getId(), prevSection.getStartStation(), sectionToAdd.getStartStation(),
                     prevSection.getDistance() - sectionToAdd.getDistance());
         });
-        sectionRepository.save(line.getId(), sectionToAdd);
+        Long savedId = sectionRepository.save(line.getId(), sectionToAdd);
+        return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
+                sectionToAdd.getDistance());
     }
 
     private void changePrevSectionToNewSection(Section prevSection, Section newSection) {
@@ -89,15 +89,16 @@ public class SectionService {
         sectionRepository.save(lineId, new Section(startStation, endStation, distance));
     }
 
-    private void addEndStation(Line line, Section sectionToAdd) {
-        Optional<Section> prevExistingSection = line.findSectionWithStartStation(
-                sectionToAdd.getStartStation()); // 로직 다름
+    private Section addEndStation(Line line, Section sectionToAdd) {
+        Optional<Section> prevExistingSection = line.findSectionWithStartStation(sectionToAdd.getStartStation());
         prevExistingSection.ifPresent(prevSection -> {
             changePrevSectionToNewSection(prevSection, sectionToAdd);
             saveStation(line.getId(), sectionToAdd.getEndStation(), prevSection.getEndStation(),
                     prevSection.getDistance() - sectionToAdd.getDistance());
         });
-        sectionRepository.save(line.getId(), sectionToAdd);
+        Long savedId = sectionRepository.save(line.getId(), sectionToAdd);
+        return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
+                sectionToAdd.getDistance());
     }
 
     private void validateDistance(int distance, int newDistance) {

@@ -35,14 +35,14 @@ class SectionControllerIntegrationTest {
     ObjectMapper objectMapper;
 
     private Long lineId = 1L;
-    
+
     private final String baseUrl = "/lines/{lineId}/sections";
 
     @Test
     @DisplayName("빈 노선에 구간을 추가하면 추가에 성공한다.")
     void addSection_toEmptyLine_success() throws Exception {
         // given
-        addSection("선릉역", "삼성역", 50);
+        addSectionAndCheckReturnValue("선릉역", "삼성역", 50);
 
         // expect
         mockMvc.perform(get(baseUrl, lineId))
@@ -55,8 +55,8 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 두 역 사이에 하행역을 추가하면 추가에 성공한다.")
     void addSection_betweenStation_endStation_success() throws Exception {
         // given
-        addSection("역삼역", "삼성역", 50);
-        addSection("역삼역", "선릉역", 20);
+        addSectionAndCheckReturnValue("역삼역", "삼성역", 50);
+        addSectionAndCheckReturnValue("역삼역", "선릉역", 20);
 
         // expect
         mockMvc.perform(get(baseUrl, lineId))
@@ -73,8 +73,8 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 두 역 사이에 상행역을 추가하면 추가에 성공한다.")
     void addSection_betweenStation_startStation_success() throws Exception {
         // given
-        addSection("역삼역", "삼성역", 50);
-        addSection("강남역", "삼성역", 20);
+        addSectionAndCheckReturnValue("역삼역", "삼성역", 50);
+        addSectionAndCheckReturnValue("강남역", "삼성역", 20);
 
         // expect
         mockMvc.perform(get(baseUrl, lineId))
@@ -91,8 +91,8 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 상행 종점 역 앞에 새로운 역을 추가하면 추가에 성공한다.")
     void addSection_frontOfStartStation_success() throws Exception {
         // given
-        addSection("강남역", "역삼역", 50);
-        addSection("교대역", "강남역", 20);
+        addSectionAndCheckReturnValue("강남역", "역삼역", 50);
+        addSectionAndCheckReturnValue("교대역", "강남역", 20);
 
         // expect
         mockMvc.perform(get(baseUrl, lineId))
@@ -108,8 +108,8 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 하행 종점 역 뒤에 역을 추가하면 추가에 성공한다.")
     void addSection_behindEndStation_success() throws Exception {
         // given
-        addSection("역삼역", "선릉역", 50);
-        addSection("선릉역", "삼성역", 20);
+        addSectionAndCheckReturnValue("역삼역", "선릉역", 50);
+        addSectionAndCheckReturnValue("선릉역", "삼성역", 20);
 
         // expect
         mockMvc.perform(get(baseUrl, lineId))
@@ -125,7 +125,7 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 두 역 사이에 역을 추가할 때, 기준이 되는 역이 없다면 추가에 실패한다.")
     void addSection_betweenStation_noStandard_fail() throws Exception {
         // given
-        addSection("역삼역", "선릉역", 50);
+        addSectionAndCheckReturnValue("역삼역", "선릉역", 50);
 
         // expect
         SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("교대역", "강남역", 20);
@@ -139,7 +139,7 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 두 역 사이에 역을 추가할 때, 모든 역이 노선에 존재한다면 추가에 실패한다.")
     void addSection_betweenStation_allInLine_fail() throws Exception {
         // given
-        addSection("선릉역", "삼성역", 50);
+        addSectionAndCheckReturnValue("선릉역", "삼성역", 50);
 
         // expect
         SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("삼성역", "선릉역", 20);
@@ -154,7 +154,7 @@ class SectionControllerIntegrationTest {
     @DisplayName("기존 구간에 역을 추가할 때, 기존 구간보다 길이가 같거나 길다면 추가에 실패한다.")
     void addSection_betweenSection_overExistingSectionDistance(int distance) throws Exception {
         // given
-        addSection("역삼역", "삼성역", 50);
+        addSectionAndCheckReturnValue("역삼역", "삼성역", 50);
 
         // expect
         SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("역삼역", "선릉역", distance);
@@ -195,8 +195,8 @@ class SectionControllerIntegrationTest {
     @DisplayName("구간의 중간에 있는 역을 삭제할 때, 두 구간이 합쳐진다.")
     void deleteStation_mergeSection_success() throws Exception {
         // given
-        addSection("역삼역", "선릉역", 50);
-        addSection("선릉역", "삼성역", 50);
+        addSectionAndCheckReturnValue("역삼역", "선릉역", 50);
+        addSectionAndCheckReturnValue("선릉역", "삼성역", 50);
 
         // when
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest("선릉역");
@@ -217,7 +217,7 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선에 구간이 1개일 때, 모든 구간이 삭제된다.")
     void deleteStation_singleSection_success(String station) throws Exception {
         // given
-        addSection("선릉역", "삼성역", 50);
+        addSectionAndCheckReturnValue("선릉역", "삼성역", 50);
 
         // when
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest(station);
@@ -235,8 +235,8 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선에 구간이 여러 개 일 때, 상행 종점 역을 지울 수 있다.")
     void deleteStation_multipleSection_startStation_success() throws Exception {
         // given
-        addSection("역삼역", "선릉역", 50);
-        addSection("선릉역", "삼성역", 50);
+        addSectionAndCheckReturnValue("역삼역", "선릉역", 50);
+        addSectionAndCheckReturnValue("선릉역", "삼성역", 50);
 
         // when
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest("역삼역");
@@ -256,8 +256,8 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선에 구간이 여러 개 일 때, 하행 종점 역을 지울 수 있다.")
     void deleteStation_multipleSection_endStation_success() throws Exception {
         // given
-        addSection("역삼역", "선릉역", 50);
-        addSection("선릉역", "삼성역", 50);
+        addSectionAndCheckReturnValue("역삼역", "선릉역", 50);
+        addSectionAndCheckReturnValue("선릉역", "삼성역", 50);
 
         // when
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest("삼성역");
@@ -277,8 +277,8 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선에 없는 역을 지우면 삭제에 실패한다.")
     void deleteStation_noStation_inLine_fail() throws Exception {
         // given
-        addSection("역삼역", "선릉역", 50);
-        addSection("선릉역", "삼성역", 50);
+        addSectionAndCheckReturnValue("역삼역", "선릉역", 50);
+        addSectionAndCheckReturnValue("선릉역", "삼성역", 50);
 
         // expect
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest("교대역");
@@ -287,7 +287,7 @@ class SectionControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(deleteRequest)))
                 .andExpect(status().isBadRequest());
     }
-    
+
     @Test
     @DisplayName("존재하지 않는 노선에 대한 요청이 오면 실패한다.")
     void noLineIdFound_fail() throws Exception {
@@ -296,10 +296,14 @@ class SectionControllerIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-    void addSection(String startStationName, String endStationName, int distance) throws Exception {
+    void addSectionAndCheckReturnValue(String startStationName, String endStationName, int distance) throws Exception {
         SectionCreateRequest createRequest = new SectionCreateRequest(startStationName, endStationName, distance);
         mockMvc.perform(post(baseUrl, lineId)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(createRequest)));
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(createRequest)))
+                .andExpect(jsonPath("$.startStationName").value(startStationName))
+                .andExpect(jsonPath("$.endStationName").value(endStationName))
+                .andExpect(jsonPath("$.distance").value(distance));
+
     }
 }
