@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.exception.InvalidSectionException;
+import subway.exception.NotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -141,6 +142,41 @@ public class Sections {
             throw new InvalidSectionException("현재 구간보다 큰 구간은 입력할 수 없습니다.");
         }
         return revisedDistance;
+    }
+
+    public void removeStation(Station removeStation) {
+        if (hasStationInLine(removeStation)) {
+            deleteStationBetweenStations(removeStation);
+            return;
+        }
+
+        sections.stream()
+                .filter(section -> section.isUpStation(removeStation))
+                .findFirst()
+                .ifPresent(sections::remove);
+
+        sections.stream()
+                .filter(section -> section.isDownStation(removeStation))
+                .findFirst()
+                .ifPresent(sections::remove);
+    }
+
+    private void deleteStationBetweenStations(Station removeStation) {
+        Section upSectionOfOrigin = sections.stream()
+                                            .filter(section -> section.isUpStation(removeStation))
+                                            .findFirst()
+                                            .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
+        Section downSectionOfOrigin = sections.stream()
+                                            .filter(section -> section.isDownStation(removeStation))
+                                            .findFirst()
+                                            .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
+
+        int revisedDistance = upSectionOfOrigin.getDistance() + downSectionOfOrigin.getDistance();
+        Section revisedSection = Section.of(upSectionOfOrigin.getId(), downSectionOfOrigin.getUpStation(), upSectionOfOrigin.getDownStation(), revisedDistance);
+
+        sections.remove(upSectionOfOrigin);
+        sections.remove(downSectionOfOrigin);
+        sections.add(revisedSection);
     }
 
     public List<Section> getSections() {

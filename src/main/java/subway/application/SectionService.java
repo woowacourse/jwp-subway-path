@@ -12,6 +12,7 @@ import subway.domain.Station;
 import subway.dto.request.SectionRequest;
 import subway.exception.NotFoundException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -79,8 +80,8 @@ public class SectionService {
     }
 
     private Set<Section> getDifference(Set<Section> sections, Set<Section> removeSections) {
-        Set<Section> original = Set.copyOf(sections);
-        Set<Section> remove = Set.copyOf(removeSections);
+        Set<Section> original = new HashSet<>(sections);
+        Set<Section> remove = new HashSet<>(removeSections);
         original.removeAll(remove);
         return original;
     }
@@ -96,16 +97,26 @@ public class SectionService {
                        .collect(Collectors.toList());
     }
 
-    private void deleteStationBetweenStations(Long lineId, Long stationIdToRemove) {
-        SectionEntity upSectionOfOrigin = sectionDao.findByUpStationId(stationIdToRemove, lineId).get();
-        SectionEntity downSectionOfOrigin = sectionDao.findByDownStationId(stationIdToRemove, lineId).get();
-        int revisedDistance = upSectionOfOrigin.getDistance() + downSectionOfOrigin.getDistance();
+    public void removeStationFromLine(Long lineId, Long stationIdToRemove) {
+        checkIfExistLine(lineId);
+        checkIfExistStation(stationIdToRemove);
 
-        SectionEntity revisedSection = new SectionEntity(lineId, upSectionOfOrigin.getUpStationId(),
-                downSectionOfOrigin.getDownStationId(), revisedDistance);
+        List<Section> findSections = sectionDao.findSectionsByLineId(lineId)
+                                               .stream()
+                                               .map(Section::from)
+                                               .collect(Collectors.toList());
+        Set<Section> sectionsSnapshot = Set.copyOf(findSections);
+        Station removeStation = convertToStation(stationIdToRemove);
+        Sections sections = new Sections(findSections);
 
-        sectionDao.updateByUpStationId(revisedSection);
-        sectionDao.delete(downSectionOfOrigin);
+        sections.removeStation(removeStation);
+        Set<Section> updateSections = Set.copyOf(sections.getSections());
+
+        Set<Section> deleteSections = getDifference(sectionsSnapshot, updateSections);
+        Set<Section> insertSections = getDifference(updateSections, sectionsSnapshot);
+
+        sectionDao.deleteAll(convertToSectionEntities(deleteSections, lineId));
+        sectionDao.insertAll(convertToSectionEntities(insertSections, lineId));
     }
 
 
