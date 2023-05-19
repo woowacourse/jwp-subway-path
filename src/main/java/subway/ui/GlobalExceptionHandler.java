@@ -12,23 +12,16 @@ import subway.dto.ErrorResponse;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class,
-        DuplicateKeyException.class, NoSuchElementException.class})
+        DuplicateKeyException.class, NoSuchElementException.class, IllegalStateException.class})
     public ResponseEntity<ErrorResponse> handleRequestException(Exception exception) {
         ErrorResponse errorResponse = new ErrorResponse("[ERROR] " + exception.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalStateException(
-        IllegalStateException exception) {
-        ErrorResponse errorResponse = new ErrorResponse("[ERROR] " + exception.getMessage());
-        return ResponseEntity.internalServerError().body(errorResponse);
-    }
-
     @ExceptionHandler({EmptyResultDataAccessException.class})
     public ResponseEntity<ErrorResponse> handleNotHandledDBException(
         EmptyResultDataAccessException exception) {
-        ErrorResponse errorResponse = new ErrorResponse("처리되지 않은 에러입니다. 관리자에게 문의하세요.");
+        ErrorResponse errorResponse = new ErrorResponse("DB 조회에 실패하였습니다. 처리되지 않은 예외이니 관리자에게 문의하세요.");
         return ResponseEntity.internalServerError().body(errorResponse);
     }
 }
