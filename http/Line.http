@@ -1,0 +1,47 @@
+### POST /lines : 노선 추가
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "1호선",
+  "color": "파란색"
+}
+
+### POST /lines/stations : 노선에 역 추가
+POST http://localhost:8080/lines/stations
+Content-Type: application/json
+
+{
+  "lineId": 1,
+  "baseStationId": 1,
+  "addedStationId": 2,
+  "direction": false,
+  "distance": 3
+}
+
+### GET /lines : 모든 노선 조회
+GET http://localhost:8080/lines
+
+### GET /lines/{id} : 노선 조회
+GET http://localhost:8080/lines/1
+
+### PUT /lines/{id} : 노선 수정
+PUT http://localhost:8080/lines/1
+Content-Type: application/json
+
+{
+  "name": "2호선",
+  "color": "초록색"
+}
+
+### DELETE /lines/{id} : 노선 삭제
+DELETE http://localhost:8080/lines/1
+
+### DELETE /lines/stations : 노선에서 역 삭제
+DELETE http://localhost:8080/lines/stations
+Content-Type: application/json
+
+{
+  "lineId": 1,
+  "stationId": 2
+}
