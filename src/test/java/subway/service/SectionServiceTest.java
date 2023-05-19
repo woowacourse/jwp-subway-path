@@ -18,7 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static subway.fixture.LineFixture.LINE;
+import static subway.fixture.LineFixture.LINE_1;
 import static subway.fixture.SectionFixture.*;
 import static subway.fixture.StationFixture.*;
 
@@ -35,7 +35,7 @@ class SectionServiceTest {
         //given
         Long lineId = 1L;
         LineStationRequest lineStationRequest = new LineStationRequest(2L, 3L, 10L);
-        when(sectionRepository.toSection(lineId, lineStationRequest)).thenReturn(new Section(LINE, STATION_2, STATION_3, 10L));
+        when(sectionRepository.toSection(lineId, lineStationRequest)).thenReturn(new Section(LINE_1, STATION_2, STATION_3, 10L));
         when(sectionRepository.getCurrentLineSections(lineId)).thenReturn(new Sections(new ArrayList<>(List.of(SECTION_1))));
 
         //when
@@ -72,6 +72,6 @@ class SectionServiceTest {
         LineStationResponse response = sectionService.findByLineId(lineId);
 
         //then
-        assertThat(response.getStations()).isEqualTo(List.of(STATION_4, STATION_1, STATION_2, STATION_3));
+        assertThat(response.getStations()).isEqualTo(List.of(STATION_1, STATION_2, STATION_3, STATION_4));
     }
 }

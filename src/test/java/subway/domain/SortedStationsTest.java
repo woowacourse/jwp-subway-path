@@ -15,8 +15,8 @@ class SortedStationsTest {
     @Test
     void sortedStations() {
         //given
-        Sections sections = new Sections(new ArrayList<>(List.of(SECTION_1, SECTION_2, SECTION_3)));
-        List<Station> expected = List.of(STATION_4, STATION_1, STATION_2, STATION_3);
+        Sections sections = new Sections(new ArrayList<>(List.of(SECTION_2, SECTION_1, SECTION_3)));
+        List<Station> expected = List.of(STATION_1, STATION_2, STATION_3, STATION_4);
 
         //when
         List<Station> stations = SortedStations.from(sections).getStations();
