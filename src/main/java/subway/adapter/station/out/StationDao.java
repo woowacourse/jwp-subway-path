@@ -15,21 +15,21 @@ class StationDao {
     private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
-        new StationEntity(
-            rs.getLong("id"),
-            rs.getString("name")
-        );
+            new StationEntity(
+                    rs.getLong("id"),
+                    rs.getString("name")
+            );
     private final RowMapper<Optional<StationEntity>> optionalRowMapper = (rs, rowNum) ->
-        Optional.of(new StationEntity(
-            rs.getLong("id"),
-            rs.getString("name")
-        ));
+            Optional.of(new StationEntity(
+                    rs.getLong("id"),
+                    rs.getString("name")
+            ));
 
     public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         insertAction = new SimpleJdbcInsert(jdbcTemplate)
-            .withTableName("station")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
     }
 
     public StationEntity insert(final StationEntity stationEntity) {
@@ -39,12 +39,12 @@ class StationDao {
     }
 
     public List<StationEntity> findAll() {
-        final String sql = "select id,name from STATION";
+        final String sql = "select id, name from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<StationEntity> findByName(final String name) {
-        final String sql = "select id,name from STATION where name = ?";
+        final String sql = "select id, name from STATION where name = ?";
         try {
             return jdbcTemplate.queryForObject(sql, optionalRowMapper, name);
         } catch (final EmptyResultDataAccessException e) {
@@ -53,7 +53,7 @@ class StationDao {
     }
 
     public Optional<StationEntity> findById(final Long id) {
-        final String sql = "select id,name from STATION where id = ?";
+        final String sql = "select id, name from STATION where id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, optionalRowMapper, id);
         } catch (final EmptyResultDataAccessException e) {

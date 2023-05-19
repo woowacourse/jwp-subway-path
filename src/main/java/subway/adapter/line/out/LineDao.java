@@ -68,7 +68,7 @@ class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        return jdbcTemplate.query("select id,name,color from Line", rowMapper);
+        return jdbcTemplate.query("select id, name, color from Line", rowMapper);
     }
 
     public LineEntity insert(final LineEntity lineEntity) {
@@ -85,7 +85,7 @@ class LineDao {
 
     public Optional<LineEntity> findById(final long id) {
         try {
-            return jdbcTemplate.queryForObject("select id,name,color from Line where id = ?",
+            return jdbcTemplate.queryForObject("select id, name, color from Line where id = ?",
                     optionalRowMapper, id);
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
