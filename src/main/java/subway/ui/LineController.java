@@ -34,16 +34,21 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    @GetMapping("/{lineId}")
-    public ResponseEntity<LineSelectResponse> findLineById(@PathVariable Long lineId) {
-        return ResponseEntity.ok(lineService.getStationsByLineId(lineId));
-    }
-
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<StationSelectResponse> createStation(@PathVariable Long lineId,
                                                                @RequestBody StationSaveRequest stationSaveRequest) {
         StationSelectResponse response = lineService.addStation(lineId, stationSaveRequest);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<LinesSelectResponse> findAllLines() {
+        return ResponseEntity.ok(lineService.findAllLine());
+    }
+
+    @GetMapping("/{lineId}")
+    public ResponseEntity<LineSelectResponse> findLineById(@PathVariable Long lineId) {
+        return ResponseEntity.ok(lineService.getStationsByLineId(lineId));
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
@@ -52,14 +57,4 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public ResponseEntity<LinesSelectResponse> findAllLines() {
-        return ResponseEntity.ok(lineService.findAllLine());
-    }
-
-    @DeleteMapping("/{lineId}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
-        lineService.deleteLineById(lineId);
-        return ResponseEntity.noContent().build();
-    }
 }
