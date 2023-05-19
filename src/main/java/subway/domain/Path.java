@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -55,13 +56,21 @@ public class Path {
     public List<Station> getShortestPathStations(final Station from, final Station to) {
         validateSameStations(from, to);
         validateUnconnectedStations(from, to);
+        return findPath(from, to).getVertexList();
+    }
+
+    private GraphPath<Station, SectionEdge> findPath(final Station from, final Station to) {
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(from, to).getVertexList();
+        GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(from, to);
+        if (path == null) {
+            throw new IllegalArgumentException("[ERROR] 출발역과 도착역이 연결되어 있지 않습니다.");
+        }
+        return path;
     }
 
     private void validateUnconnectedStations(final Station from, final Station to) {
         if (!graph.containsVertex(from) || !graph.containsVertex(to)) {
-            throw new IllegalArgumentException("[ERROR] 출발역과 도착역이 연결되어있지 않습니다.");
+            throw new IllegalArgumentException("[ERROR] 노선에 등록되지 않은 역이 존재합니다.");
         }
     }
 
@@ -74,9 +83,7 @@ public class Path {
     public List<Section> getShortestPathSections(final Station from, final Station to) {
         validateSameStations(from, to);
         validateUnconnectedStations(from, to);
-        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(from, to)
-                .getEdgeList()
+        return findPath(from, to).getEdgeList()
                 .stream()
                 .map(SectionEdge::toSection)
                 .collect(Collectors.toUnmodifiableList());
@@ -85,7 +92,6 @@ public class Path {
     public int getShortestPathDistance(final Station from, final Station to) {
         validateSameStations(from, to);
         validateUnconnectedStations(from, to);
-        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return (int) dijkstraShortestPath.getPath(from, to).getWeight();
+        return (int) findPath(from, to).getWeight();
     }
 }
