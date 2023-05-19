@@ -11,12 +11,12 @@ import subway.dto.FareResponse;
 import subway.dto.SectionResponse;
 
 @Component
-public class FareCalculatorImpl implements FareCalculator{
+public class DefaultFareCalculator implements FareCalculator{
     private final FareByDistancePolicy fareByDistancePolicy;
     private final AdditionalFarePolicy additionalFarePolicy;
     private final DiscountPolicy discountPolicy;
 
-    public FareCalculatorImpl(
+    public DefaultFareCalculator(
             FareByDistancePolicy fareByDistancePolicy,
             AdditionalFarePolicy additionalFarePolicy,
             DiscountPolicy discountPolicy

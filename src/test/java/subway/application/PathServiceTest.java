@@ -18,7 +18,7 @@ import fixture.Fixture;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.farecalculator.FareCalculatorImpl;
+import subway.domain.farecalculator.DefaultFareCalculator;
 import subway.domain.farecalculator.policy.additional.LineAdditionalFarePolicy;
 import subway.domain.farecalculator.policy.discount.AgeDiscountPolicy;
 import subway.domain.farecalculator.policy.distance.BasicFareByDistancePolicy;
@@ -44,7 +44,7 @@ class PathServiceTest {
     void setUp() {
         pathService = new PathService(
                 new JgraphtPathFinder(new WeightedMultigraph<>(LineWeightedEdge.class)),
-                new FareCalculatorImpl(
+                new DefaultFareCalculator(
                         new BasicFareByDistancePolicy(),
                         new LineAdditionalFarePolicy(),
                         new AgeDiscountPolicy()

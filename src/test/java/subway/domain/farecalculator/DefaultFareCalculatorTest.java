@@ -15,8 +15,8 @@ import subway.domain.farecalculator.policy.distance.BasicFareByDistancePolicy;
 import subway.dto.FareResponse;
 import subway.dto.SectionResponse;
 
-class FareCalculatorImplTest {
-    FareCalculatorImpl fareCalculator = new FareCalculatorImpl(
+class DefaultFareCalculatorTest {
+    DefaultFareCalculator fareCalculator = new DefaultFareCalculator(
             new BasicFareByDistancePolicy(),
             new LineAdditionalFarePolicy(),
             new AgeDiscountPolicy()
