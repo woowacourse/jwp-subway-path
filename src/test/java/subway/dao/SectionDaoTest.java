@@ -16,7 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Section;
 
 @ActiveProfiles(profiles = "test")
-@Sql("/InitializeTable.sql")
+@Sql("/initializeTable.sql")
 @JdbcTest
 class SectionDaoTest {
     @Autowired

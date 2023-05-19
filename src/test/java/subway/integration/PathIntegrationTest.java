@@ -13,7 +13,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
-@Sql("/InitializeTable.sql")
+@Sql("/initializeTable.sql")
 @DisplayName("최단 경로 찾기 인수테스트")
 public class PathIntegrationTest extends IntegrationTest {
 

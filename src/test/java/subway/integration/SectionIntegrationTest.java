@@ -20,7 +20,7 @@ import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionDeleteRequest;
 
-@Sql("/InitializeTable.sql")
+@Sql("/initializeTable.sql")
 @DisplayName("구간 관련 기능")
 public class SectionIntegrationTest extends IntegrationTest {
 

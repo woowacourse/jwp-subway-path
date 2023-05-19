@@ -74,7 +74,7 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @Sql("/InitializeTable.sql")
+    @Sql("/initializeTable.sql")
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
@@ -114,7 +114,7 @@ public class LineIntegrationTest extends IntegrationTest {
                         ));
     }
 
-    @Sql("/InitializeTable.sql")
+    @Sql("/initializeTable.sql")
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
