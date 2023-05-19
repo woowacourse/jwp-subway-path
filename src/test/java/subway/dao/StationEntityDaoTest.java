@@ -17,6 +17,7 @@ import subway.section.domain.repository.SectionDao;
 import subway.station.domain.entity.StationEntity;
 import subway.station.domain.repository.StationDao;
 import subway.station.exception.StationNotFoundException;
+import subway.vo.Name;
 
 import java.util.List;
 
@@ -93,7 +94,7 @@ class StationEntityDaoTest {
     void 등록된_역을_수정한다() {
         // given
         final Long id = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
-        final StationEntity 선릉역 = StationEntity.of("선릉역");
+        final StationEntity 선릉역 = StationEntity.of(Name.from("선릉역"));
 
         // when
         stationDao.updateById(id, 선릉역);
@@ -123,7 +124,7 @@ class StationEntityDaoTest {
 
         final Long stationId1 = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
         final Long stationId2 = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
-        final Long stationId3 = stationDao.insert(StationEntity.of("잠실새내역"));
+        final Long stationId3 = stationDao.insert(StationEntity.of(Name.from("잠실새내역")));
 
         final SectionEntity sectionEntity1 = SectionEntity.of(lineId1, stationId1, stationId2, 3);
         final SectionEntity sectionEntity2 = SectionEntity.of(lineId1, stationId2, stationId3, 3);

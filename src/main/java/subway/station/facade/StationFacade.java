@@ -3,7 +3,6 @@ package subway.station.facade;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import subway.section.service.SectionService;
-import subway.station.domain.Station;
 import subway.station.presentation.dto.response.StationResponse;
 import subway.station.service.StationService;
 
@@ -28,8 +27,7 @@ public class StationFacade {
     }
 
     public List<StationResponse> getAll() {
-        List<Station> stations = stationService.findAll();
-        return stations.stream()
+        return stationService.findAll().stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
     }

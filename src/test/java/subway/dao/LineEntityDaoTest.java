@@ -61,9 +61,9 @@ class LineEntityDaoTest {
 
         // then
         assertAll(
-                () -> assertThat(results).extracting(LineEntity::getName)
+                () -> assertThat(results).extracting(LineEntity::getNameValue)
                         .contains("1호선", "2호선", "3호선"),
-                () -> assertThat(results).extracting(LineEntity::getColor)
+                () -> assertThat(results).extracting(LineEntity::getColorValue)
                         .contains("파랑", "초록", "노랑")
         );
     }
@@ -80,8 +80,8 @@ class LineEntityDaoTest {
 
         // then
         assertAll(
-                () -> assertThat(result.getName()).isEqualTo("2호선"),
-                () -> assertThat(result.getColor()).isEqualTo("초록")
+                () -> assertThat(result.getNameValue()).isEqualTo("2호선"),
+                () -> assertThat(result.getColorValue()).isEqualTo("초록")
         );
     }
 
@@ -98,8 +98,8 @@ class LineEntityDaoTest {
 
         // then
         assertAll(
-                () -> assertThat(result.getName()).isEqualTo("2호선"),
-                () -> assertThat(result.getColor()).isEqualTo("검정")
+                () -> assertThat(result.getNameValue()).isEqualTo("2호선"),
+                () -> assertThat(result.getColorValue()).isEqualTo("검정")
         );
     }
 

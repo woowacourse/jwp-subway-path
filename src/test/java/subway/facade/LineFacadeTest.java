@@ -1,8 +1,7 @@
 package subway.facade;
 
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -11,14 +10,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.line.facade.LineFacade;
 import subway.line.presentation.dto.LineRequest;
-import subway.line.presentation.dto.LineResponse;
+import subway.line.presentation.dto.LineStationResponse;
 import subway.line.service.LineService;
-import subway.section.service.SectionService;
+import subway.station.presentation.dto.response.StationResponse;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,49 +30,24 @@ class LineFacadeTest {
     @Mock
     LineService lineService;
 
-    @Mock
-    SectionService sectionService;
-
-    @DisplayName("모든 호선을 조회한다.")
-    @Test
-    void findAll() {
-        // given
-        LineResponse response1 = new LineResponse(1L, "1호선", "검정");
-        LineResponse response2 = new LineResponse(2L, "2호선", "초록");
-        LineResponse response3 = new LineResponse(3L, "3호선", "노랑");
-        List<LineResponse> results = List.of(response1, response2, response3);
-        doReturn(results).when(lineService).findAll();
-
-        // when
-        List<LineResponse> responses = lineFacade.getAll();
-
-        // then
-        assertAll(
-                () -> assertThat(responses).extracting(LineResponse::getId)
-                        .contains(1L, 2L, 3L),
-                () -> assertThat(responses).extracting(LineResponse::getName)
-                        .contains("1호선", "2호선", "3호선"),
-                () -> assertThat(responses).extracting(LineResponse::getColor)
-                        .contains("검정", "초록", "노랑")
-        );
-    }
-
     @DisplayName("호선의 아이디를 입력받아 조회한다.")
     @ParameterizedTest
     @CsvSource(value = {"1"})
-    void getLineResponseById(Long id) {
+    void getAllStationByLineIdAsc(Long lineId) {
         // given
-        LineResponse response = new LineResponse(1L, "1호선", "검정");
-        doReturn(response).when(lineService).findById(id);
+        List<StationResponse> stationResponses = List.of(new StationResponse(1L, "station1"), new StationResponse(2L, "station2"));
+        LineStationResponse response = new LineStationResponse(lineId, "responseName", "responseColor", stationResponses);
+        doReturn(response).when(lineService).findAllByIdAsc(lineId);
 
         // when
-        LineResponse result = lineFacade.getLineResponseById(id);
+        LineStationResponse result = lineFacade.getAllStationByLineIdAsc(lineId);
 
         // then
-        assertAll(
-                () -> Assertions.assertThat(result.getId()).isEqualTo(1L),
-                () -> Assertions.assertThat(result.getName()).isEqualTo("1호선"),
-                () -> Assertions.assertThat(result.getColor()).isEqualTo("검정")
+        Assertions.assertAll(
+                () -> assertThat(result.getLineId()).isEqualTo(1L),
+                () -> assertThat(result.getColor()).isEqualTo("responseColor"),
+                () -> assertThat(result.getName()).isEqualTo("responseName"),
+                () -> assertThat(result.getStationResponse().size()).isEqualTo(2)
         );
     }
 

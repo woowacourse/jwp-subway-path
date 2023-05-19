@@ -18,6 +18,7 @@ import subway.section.domain.repository.SectionDao;
 import subway.section.exception.SectionNotFoundException;
 import subway.station.domain.entity.StationEntity;
 import subway.station.domain.repository.StationDao;
+import subway.vo.Name;
 
 import java.util.List;
 
@@ -92,7 +93,7 @@ class SectionEntityDaoTest {
         final SectionEntity sectionEntity1 = SectionEntity.of(lineId, stationId1, stationId2, 3);
         sectionDao.insert(sectionEntity1);
 
-        final Long stationId3 = stationDao.insert(StationEntity.of("선릉역"));
+        final Long stationId3 = stationDao.insert(StationEntity.of(Name.from("선릉역")));
         SectionEntity stationEntity2 = SectionEntity.of(lineId, stationId2, stationId3, 10);
         sectionDao.insert(stationEntity2);
 
@@ -164,8 +165,6 @@ class SectionEntityDaoTest {
 
         final SectionEntity sectionEntity = SectionEntity.of(lineId, stationId1, stationId2, 3);
         Long sectionId = sectionDao.insert(sectionEntity);
-
-        String sql = "DELETE FROM SECTIONS WHERE id=?";
 
         // when
         sectionDao.deleteById(sectionId);

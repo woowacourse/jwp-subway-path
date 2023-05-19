@@ -8,11 +8,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.section.service.SectionService;
-import subway.station.domain.entity.StationEntity;
+import subway.station.domain.Station;
 import subway.station.facade.StationFacade;
 import subway.station.presentation.dto.response.StationResponse;
 import subway.station.service.StationService;
+import subway.vo.Name;
 
 import java.util.List;
 
@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StationFacadeTest {
@@ -32,36 +31,17 @@ class StationFacadeTest {
     @Mock
     StationService stationService;
 
-    @Mock
-    SectionService sectionService;
-
-    @DisplayName("이름을 입력받아 역을 생성한다.")
-    @Test
-    void createStation() {
-        // given
-        final String name = "잠실역";
-        when(stationService.insert(StationEntity.of(name))).thenReturn(1L);
-
-        // when
-        Long stationId = stationFacade.createStation(name);
-
-        // then
-        assertThat(stationId).isEqualTo(1L);
-    }
-
     @DisplayName("모든 역을 조회한다.")
     @Test
     void getAll() {
         // given
-        final Long lineId = 1L;
-        StationEntity station1 = StationEntity.of(1L, "잠실역");
-        StationEntity station2 = StationEntity.of(2L, "잠실새내역");
-        List<StationEntity> stations = List.of(station1, station2);
-        when(sectionService.findAll()).thenReturn(null);
-        doReturn(stations).when(stationService).findAll(lineId, null);
+        Station station1 = Station.of(1L, Name.from("잠실역"));
+        Station station2 = Station.of(2L, Name.from("잠실새내역"));
+        List<Station> stations = List.of(station1, station2);
+        doReturn(stations).when(stationService).findAll();
 
         // when
-        List<StationResponse> responses = stationFacade.getAll(lineId);
+        List<StationResponse> responses = stationFacade.getAll();
 
         // then
         assertAll(

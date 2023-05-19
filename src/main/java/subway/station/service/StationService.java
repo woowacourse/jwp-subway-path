@@ -2,7 +2,6 @@ package subway.station.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.section.domain.repository.SectionRepository;
 import subway.station.domain.Station;
 import subway.station.domain.repository.StationRepository;
 
@@ -14,11 +13,9 @@ import java.util.Map;
 public class StationService {
 
     private final StationRepository stationRepository;
-    private final SectionRepository sectionRepository;
 
-    public StationService(final StationRepository stationRepository, final SectionRepository sectionRepository) {
+    public StationService(final StationRepository stationRepository) {
         this.stationRepository = stationRepository;
-        this.sectionRepository = sectionRepository;
     }
 
 
