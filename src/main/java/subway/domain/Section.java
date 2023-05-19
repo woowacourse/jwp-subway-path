@@ -25,13 +25,9 @@ public class Section {
     }
 
     private void validateTarget(Station source, Station target) {
-        if (source.isSameName(target)) {
+        if (source.equals(target)) {
             throw new InvalidSectionDirectionException("출발지와 도착지는 같을 수 없습니다");
         }
-    }
-
-    public boolean isAnySame(Station station) {
-        return source.isSameName(station) || target.isSameName(station);
     }
 
     public boolean contains(Station station) {

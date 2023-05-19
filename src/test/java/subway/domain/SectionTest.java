@@ -29,7 +29,7 @@ class SectionTest {
 
         // when
         Station sameNameStation = new Station(value);
-        boolean isAnySame = section.isAnySame(sameNameStation);
+        boolean isAnySame = section.contains(sameNameStation);
 
         // then
         assertThat(isAnySame).isTrue();
@@ -42,7 +42,7 @@ class SectionTest {
 
         // when
         Station sameNameStation = new Station("잠실역");
-        boolean isAnySame = section.isAnySame(sameNameStation);
+        boolean isAnySame = section.contains(sameNameStation);
 
         // then
         assertThat(isAnySame).isFalse();

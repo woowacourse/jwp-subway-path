@@ -69,18 +69,18 @@ public class Line {
 
     private boolean isDuplicatedName(Station station) {
         return sections.stream()
-                .anyMatch(it -> it.isAnySame(station));
+                .anyMatch(it -> it.contains(station));
     }
 
     private Optional<Section> findBySource(Station source) {
         return sections.stream()
-                .filter(section -> section.getSource().isSameName(source))
+                .filter(section -> section.getSource().equals(source))
                 .findAny();
     }
 
     private Optional<Section> findByTarget(Station target) {
         return sections.stream()
-                .filter(section -> section.getTarget().isSameName(target))
+                .filter(section -> section.getTarget().equals(target))
                 .findAny();
     }
 

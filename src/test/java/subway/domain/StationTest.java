@@ -29,7 +29,7 @@ class StationTest {
         Station other = new Station("강남역");
 
         //when
-        boolean isSameName = station.isSameName(other);
+        boolean isSameName = station.equals(other);
 
         //then
         assertThat(isSameName).isTrue();
@@ -42,7 +42,7 @@ class StationTest {
         Station other = new Station("역삼역");
 
         //when
-        boolean isSameName = station.isSameName(other);
+        boolean isSameName = station.equals(other);
 
         //then
         assertThat(isSameName).isFalse();
