@@ -9,6 +9,33 @@ import subway.common.exception.SubwayIllegalArgumentException;
 
 public class Sections {
 
+    private enum Direction {
+        UP,
+        DOWN;
+
+        public static Direction of(final List<Section> sections, final Section section) {
+            boolean isUpward = contains(sections, section.getDownStation());
+            boolean isDownward = contains(sections, section.getUpStation());
+
+            if (isUpward && isDownward) {
+                throw new SubwayIllegalArgumentException("이미 존재하는 구간입니다.");
+            }
+            if (!isUpward && !isDownward) {
+                throw new SubwayIllegalArgumentException("하나의 역은 반드시 노선에 존재해야합니다.");
+            }
+
+            if (isUpward) {
+                return UP;
+            }
+            return DOWN;
+        }
+
+        private static boolean contains(final List<Section> sections, final Station station) {
+            return sections.stream()
+                    .anyMatch(section -> section.contains(station));
+        }
+    }
+
     private final List<Section> sections;
 
     public Sections() {
@@ -21,90 +48,109 @@ public class Sections {
     }
 
     public void add(final Section section) {
-
-        if (sections.isEmpty()) { // 최초등록
+        if (sections.isEmpty()) {
             sections.add(section);
             return;
         }
 
-        Map<Station, Station> upToDown = sections.stream()
-                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+        Direction direction = Direction.of(sections, section);
 
-        boolean isUpExists = isExists(upToDown, section.getUpStation());
-        boolean isDownExists = isExists(upToDown, section.getDownStation());
-        if (isUpExists && isDownExists) {
-            throw new SubwayIllegalArgumentException("이미 존재하는 구간입니다.");
-        }
-        if (!isUpExists && !isDownExists) {
-            throw new SubwayIllegalArgumentException("하나의 역은 반드시 노선에 존재해야합니다.");
-        }
-
-        // 상행역이 이미 노선에 존재할 경우
-        if (isUpExists) {
-            Station existStation = section.getUpStation(); // 기존에 노선에 존재하는 역
-
-            // 해당 역의 하행역이 존재하지 않을 경우 : 종점 추가
-            if (!upToDown.containsKey(existStation)) {
-                sections.add(section);
-                return;
-            }
-
-            // 기존 구간 가져오기!
-            Section originSection = sections.stream()
-                    .filter(it -> it.getUpStation().equals(existStation))
-                    .findAny()
-                    .orElseThrow(IllegalStateException::new);
-
-            // 해당 역의 하행역이 존재할 경우 -> 해당 역이 상행역일 경우 : 구간 사이에 추가
-            int oldDistance = originSection.getDistance();
-            int newDistance = section.getDistance();
-
-            if (oldDistance <= newDistance) {
-                throw new SubwayIllegalArgumentException("거리는 기존 구간보다 짧아야합니다.");
-            }
-
+        if (isEndPoint(section)) {
             sections.add(section);
-            sections.add(
-                    new Section(section.getDownStation(), originSection.getDownStation(), oldDistance - newDistance));
-            sections.remove(originSection);
-
+            return;
         }
 
-        if (isDownExists) {
-            Station existStation = section.getDownStation(); // 기존에 노선에 존재하는 역
-
-            // 해당 역의 상행역이 존재하지 않을 경우 : 종점 추가
-            if (!upToDown.containsValue(existStation)) {
-                sections.add(section);
-                return;
-            }
-
-            // 기존 구간 가져오기!
-            Section originSection = sections.stream()
-                    .filter(it -> it.getDownStation().equals(existStation))
-                    .findAny()
-                    .orElseThrow(IllegalStateException::new);
-
-            // 해당 역의 상행역이 존재할 경우 -> 해당 역이 하행역일 경우 : 구간 사이에 추가
-            int oldDistance = originSection.getDistance();
-            int newDistance = section.getDistance();
-
-            if (oldDistance <= newDistance) {
-                throw new SubwayIllegalArgumentException("거리는 기존 구간보다 짧아야합니다.");
-            }
-
-            sections.add(section);
-            sections.add(new Section(originSection.getUpStation(), section.getUpStation(), oldDistance - newDistance));
-            sections.remove(originSection);
-
-        }
+        divideSection(direction, section);
     }
 
-    private boolean isExists(final Map<Station, Station> upToDown, final Station station) {
-        return upToDown.containsKey(station) || upToDown.containsValue(station);
+    private boolean isEndPoint(final Section section) {
+        Station upEndPoint = getUpEndPoint();
+        Station downEndPoint = getDownEndPoint();
+        return section.getUpStation().equals(downEndPoint) || section.getDownStation().equals(upEndPoint);
     }
+
+    private Station getUpEndPoint() {
+        return getSubtractionStation(getUpStations(), getDownStations());
+    }
+
+    private Station getDownEndPoint() {
+        return getSubtractionStation(getDownStations(), getUpStations());
+    }
+
+    private Station getSubtractionStation(List<Station> minuendStations, List<Station> subtrahendStations) {
+        final int UP_DOWN_DIFF_SIZE = 1;
+
+        minuendStations.removeAll(subtrahendStations);
+        if (minuendStations.size() != UP_DOWN_DIFF_SIZE) {
+            throw new IllegalStateException("Section이 이어지지 않은 상태입니다.");
+        }
+        return minuendStations.get(0);
+    }
+
+    private List<Station> getUpStations() {
+        return sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+    }
+
+    private List<Station> getDownStations() {
+        return sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+    }
+
+    private void divideSection(final Direction direction, final Section section) {
+        Station originStation = getOriginStation(direction, section);
+        Section originSection = getOriginSection(direction, originStation);
+
+        int oldDistance = originSection.getDistance();
+        int newDistance = section.getDistance();
+
+        if (oldDistance <= newDistance) {
+            throw new SubwayIllegalArgumentException("거리는 기존 구간보다 짧아야합니다.");
+        }
+
+        List<Section> newSections = new ArrayList<>();
+        newSections.add(section);
+        newSections.add(getDividedSection(direction, originSection, section, oldDistance - newDistance));
+
+        sections.remove(originSection);
+        sections.addAll(newSections);
+    }
+
+    private Station getOriginStation(final Direction direction, final Section section) {
+        if (direction == Direction.UP) {
+            return section.getDownStation();
+        }
+        return section.getUpStation();
+    }
+
+    private Section getOriginSection(final Direction direction, final Station station) {
+        return sections.stream()
+                .filter(it -> getBaseStation(it, direction).equals(station))
+                .findAny()
+                .orElseThrow(IllegalStateException::new);
+    }
+
+    private Station getBaseStation(final Section section, final Direction direction) {
+        if (direction == Direction.UP) {
+            return section.getDownStation();
+        }
+        return section.getUpStation();
+    }
+
+    private Section getDividedSection(final Direction direction, final Section originSection, final Section newSection,
+            final int dividedDistance) {
+        if (direction == Direction.UP) {
+            return new Section(originSection.getUpStation(), newSection.getUpStation(), dividedDistance);
+        }
+        return new Section(newSection.getDownStation(), originSection.getDownStation(), dividedDistance);
+    }
+
 
     public void remove(final Station station) {
+        final int ONLY_SECTION = 1;
+
         if (sections.isEmpty()) {
             throw new SubwayIllegalArgumentException("해당 역이 노선에 존재하지 않습니다.");
         }
@@ -117,27 +163,26 @@ public class Sections {
             throw new SubwayIllegalArgumentException("해당 역이 노선에 존재하지 않습니다.");
         }
 
-        if (stationSections.size() == 1) {
+        if (stationSections.size() == ONLY_SECTION) {
             sections.remove(stationSections.get(0));
             return;
         }
 
-        Section section1 = stationSections.stream()
+        Section upSection = stationSections.stream()
                 .filter(section -> station.equals(section.getDownStation()))
                 .findAny()
                 .orElseThrow(IllegalStateException::new);
-        Section section2 = stationSections.stream()
+        Section downSection = stationSections.stream()
                 .filter(section -> station.equals(section.getUpStation()))
                 .findAny()
                 .orElseThrow(IllegalStateException::new);
 
-        Section newSection = new Section(section1.getUpStation(), section2.getDownStation(),
-                section1.getDistance() + section2.getDistance());
+        Section newSection = new Section(upSection.getUpStation(), downSection.getDownStation(),
+                upSection.getDistance() + downSection.getDistance());
 
         sections.add(newSection);
-
-        sections.remove(section1);
-        sections.remove(section2);
+        sections.remove(upSection);
+        sections.remove(downSection);
     }
 
     public List<Station> findOrderedStation() {
@@ -148,7 +193,7 @@ public class Sections {
         Map<Station, Station> upToDown = sections.stream()
                 .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
 
-        Station upEndPoint = findUpEndPoint(upToDown);
+        Station upEndPoint = getUpEndPoint();
 
         List<Station> orderedStations = new ArrayList<>();
         Station now = upEndPoint;
@@ -157,16 +202,8 @@ public class Sections {
             orderedStations.add(now);
             now = upToDown.get(now);
         }
-        
-        return orderedStations;
-    }
 
-    private Station findUpEndPoint(final Map<Station, Station> upToDown) {
-        List<Station> downStations = new ArrayList<>(upToDown.values());
-        return upToDown.keySet().stream()
-                .filter(upStation -> !downStations.contains(upStation))
-                .findFirst()
-                .orElseThrow(IllegalStateException::new);
+        return orderedStations;
     }
 
     public List<Section> getSections() {
