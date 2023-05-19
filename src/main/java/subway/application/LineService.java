@@ -83,12 +83,8 @@ public class LineService {
     }
 
     public LineStationResponse findLineResponseById(Long id) {
-        LineEntity findEntity = findLineById(id);
+        LineEntity findEntity = lineDao.findById(id);
         return getLineResponse(findEntity, id);
-    }
-
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
     }
 
 }

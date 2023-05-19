@@ -329,8 +329,8 @@ class SectionServiceTest {
 
         RouteDto routeDto = sectionService.getFeeByStations(1L, 2L);
 
-        assertThat(routeDto.getFee()).isEqualTo(1250);
-        assertThat(routeDto.getDistance()).isEqualTo(3);
+        assertThat(routeDto.getDistance().getDistance()).isEqualTo(3);
+        assertThat(routeDto.getFee().getFee()).isEqualTo(1250);
     }
 
     @DisplayName("구간 추가 예외")

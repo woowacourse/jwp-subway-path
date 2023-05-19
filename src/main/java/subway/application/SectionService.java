@@ -4,11 +4,9 @@ import static subway.application.StationFactory.toStation;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.dao.Route;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.dao.StationDao;
@@ -18,6 +16,8 @@ import subway.domain.Fee;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
+import subway.dto.DistanceDto;
+import subway.dto.FeeDto;
 import subway.dto.RouteDto;
 import subway.dto.SectionSaveDto;
 import subway.exception.GlobalException;
@@ -104,19 +104,21 @@ public class SectionService {
         List<SectionEntity> sectionEntities = sectionDao.findAll();
         Sections sections = sectionsMapper.mapFrom(sectionEntities);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath(
-                sections.getSections());
+        Route route = new Route(sections.getSections());
 
-        List<Station> shortestPath = dijkstraShortestPath.getPath(startStation, endStation).getVertexList();
-        int distance = (int) dijkstraShortestPath.getPathWeight(startStation, endStation);
+        List<Station> shortestPath = route.getPath(startStation, endStation);
+        Distance distance = new Distance(route.getPathWeight(startStation, endStation));
 
-        Fee fee = Fee.toDistance(distance);
+        Fee fee = Fee.toDistance(distance.getDistance());
 
-        List<String> shortestPathStationNames = shortestPath.stream()
+        return new RouteDto(new DistanceDto(distance.getDistance()), new FeeDto(fee.getFee()),
+                convertToStationNamesByStations(shortestPath));
+    }
+
+    private static List<String> convertToStationNamesByStations(final List<Station> shortestPath) {
+        return shortestPath.stream()
                 .map(Station::getName)
                 .collect(Collectors.toList());
-
-        return new RouteDto(distance, fee.getFee(), shortestPathStationNames);
     }
 
     private void validateStations(final Long startStationId, final Long endStationId) {
@@ -126,29 +128,6 @@ public class SectionService {
         if (!stationDao.isExistStationById(startStationId) || !stationDao.isExistStationById(endStationId)) {
             throw new GlobalException("존재하지 않는 역입니다. 역을 다시 한번 확인해주세요.");
         }
-    }
-
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath(
-            final List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        for (int i = 0; i < sections.size(); i++) {
-            graph.addVertex(sections.get(i).getStartStation());
-            if (i == sections.size() - 1) {
-                graph.addVertex(sections.get(i).getEndStation());
-            }
-        }
-
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(
-                            section.getStartStation(),
-                            section.getEndStation()),
-                    section.getDistance().getDistance()
-            );
-        }
-
-        return new DijkstraShortestPath<>(graph);
     }
 
 }
