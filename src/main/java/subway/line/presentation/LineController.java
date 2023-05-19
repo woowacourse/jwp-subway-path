@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.line.dto.LineCreateDto;
 import subway.line.dto.LineResponseDto;
+import subway.line.dto.ShortestPathRequest;
 import subway.line.dto.ShortestPathResponse;
 import subway.line.service.LineService;
 import subway.section.dto.SectionCreateDto;
-import subway.line.dto.ShortestPathRequest;
 import subway.station.dto.StationResponseDto;
 
 @RestController
