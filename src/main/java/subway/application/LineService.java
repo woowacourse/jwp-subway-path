@@ -17,18 +17,15 @@ import subway.dto.StationSelectResponse;
 import subway.exception.AlreadyExistStationException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
-import subway.repository.dao.LineDao;
 
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    private LineService(LineDao lineDao, LineRepository lineRepository,
+    private LineService(LineRepository lineRepository,
                        StationRepository stationRepository) {
-        this.lineDao = lineDao;
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -126,7 +123,7 @@ public class LineService {
         }
 
         if (subway.notContainsStation(findStation)) {
-            stationRepository.delete(stationId);
+            stationRepository.deleteById(stationId);
         }
     }
 }

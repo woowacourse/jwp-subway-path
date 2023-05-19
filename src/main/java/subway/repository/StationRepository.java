@@ -1,6 +1,5 @@
 package subway.repository;
 
-import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 import subway.entity.StationEntity;
@@ -16,9 +15,10 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public StationEntity insert(String stationName) {
+    public Station insert(String stationName) {
         validateDuplicatedStationName(stationName);
-        return stationDao.insert(new StationEntity(stationName));
+        final StationEntity saveStation = stationDao.insert(new StationEntity(stationName));
+        return new Station(saveStation.getId(), saveStation.getName());
     }
 
     private void validateDuplicatedStationName(final String stationName) {
@@ -34,7 +34,7 @@ public class StationRepository {
         return new Station(id, name);
     }
 
-    public void delete(final Long stationId) {
+    public void deleteById(final Long stationId) {
         stationDao.deleteById(stationId);
     }
 }
