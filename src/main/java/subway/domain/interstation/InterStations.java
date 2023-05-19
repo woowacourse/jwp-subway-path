@@ -6,15 +6,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.ToString;
 import subway.domain.interstation.exception.InterStationsException;
 
 /**
  * 구간들은 상행선부터, 하행선까지 순서대로 정렬되어있다.
  */
-@Getter
-@ToString
 public class InterStations {
 
     private final List<InterStation> interStations;
@@ -207,5 +203,9 @@ public class InterStations {
             stations.add(interStation.getDownStationId());
         }
         return stations;
+    }
+
+    public List<InterStation> getInterStations() {
+        return interStations;
     }
 }

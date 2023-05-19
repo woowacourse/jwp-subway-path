@@ -1,14 +1,9 @@
 package subway.domain.line;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import java.util.Objects;
 import org.springframework.util.StringUtils;
 import subway.domain.line.exception.LineColorException;
 
-@Getter
-@ToString
-@EqualsAndHashCode(of = "value")
 public class LineColor {
 
     private static final int MAX_COLOR_LENGTH = 20;
@@ -27,5 +22,26 @@ public class LineColor {
         if (value.length() > MAX_COLOR_LENGTH) {
             throw new LineColorException("노선 색상이 " + MAX_COLOR_LENGTH + "글자를 초과했습니다");
         }
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final LineColor lineColor = (LineColor) o;
+        return Objects.equals(value, lineColor.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

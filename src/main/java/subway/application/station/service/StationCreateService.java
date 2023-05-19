@@ -1,6 +1,5 @@
 package subway.application.station.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.station.StationDtoAssembler;
@@ -10,12 +9,15 @@ import subway.application.station.port.in.StationInfoResponseDto;
 import subway.application.station.port.out.StationRepository;
 import subway.domain.station.Station;
 
-@RequiredArgsConstructor
 @Service
 @Transactional
 public class StationCreateService implements StationCreateUseCase {
 
     private final StationRepository stationRepository;
+
+    public StationCreateService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
+    }
 
     @Override
     public StationInfoResponseDto create(final StationCreateRequestDto requestDto) {

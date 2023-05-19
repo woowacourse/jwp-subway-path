@@ -1,15 +1,10 @@
 package subway.domain.line;
 
 import java.util.List;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import java.util.Objects;
 import subway.domain.interstation.InterStation;
 import subway.domain.interstation.InterStations;
 
-@Getter
-@ToString
-@EqualsAndHashCode(of = "id")
 public class Line {
 
     private final Long id;
@@ -37,10 +32,10 @@ public class Line {
     }
 
     public Line(final String name,
-                final String color,
-                final Long upStationId,
-                final Long downStationId,
-                final long distance) {
+            final String color,
+            final Long upStationId,
+            final Long downStationId,
+            final long distance) {
         this(null, name, color, InterStations.of(upStationId, downStationId, distance));
     }
 
@@ -49,9 +44,9 @@ public class Line {
     }
 
     public void addInterStation(final Long existStationId,
-                                final Long downStationId,
-                                final Long newStationId,
-                                final long distance) {
+            final Long downStationId,
+            final Long newStationId,
+            final long distance) {
         interStations.add(existStationId, downStationId, newStationId, distance);
     }
 
@@ -65,5 +60,38 @@ public class Line {
 
     public void updateColor(final String color) {
         this.color = new LineColor(color);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public InterStations getInterStations() {
+        return interStations;
+    }
+
+    public LineName getName() {
+        return name;
+    }
+
+    public LineColor getColor() {
+        return color;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

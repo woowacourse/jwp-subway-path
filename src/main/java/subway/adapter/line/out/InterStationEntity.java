@@ -1,11 +1,7 @@
 package subway.adapter.line.out;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import subway.domain.interstation.InterStation;
 
-@Getter
-@RequiredArgsConstructor
 public class InterStationEntity {
 
     private final Long id;
@@ -14,23 +10,52 @@ public class InterStationEntity {
     private final long downStationId;
     private final long distance;
 
+    public InterStationEntity(
+            final Long id, final Long lineId, final long upStationId, final long downStationId, final long distance) {
+        this.id = id;
+        this.lineId = lineId;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+    }
+
     public static InterStationEntity of(final InterStation interStation, final Long lineId) {
         return new InterStationEntity(interStation.getId(),
-            lineId,
-            interStation.getUpStationId(),
-            interStation.getDownStationId(),
-            interStation.getDistance().getValue());
+                lineId,
+                interStation.getUpStationId(),
+                interStation.getDownStationId(),
+                interStation.getDistance().getValue());
     }
 
     public static InterStationEntity of(final InterStationEntity interStationEntity, final long lineId) {
         return new InterStationEntity(interStationEntity.getId(),
-            lineId,
-            interStationEntity.getUpStationId(),
-            interStationEntity.getDownStationId(),
-            interStationEntity.getDistance());
+                lineId,
+                interStationEntity.getUpStationId(),
+                interStationEntity.getDownStationId(),
+                interStationEntity.getDistance());
     }
 
     public InterStation toInterStation() {
         return new InterStation(id, upStationId, downStationId, distance);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getLineId() {
+        return lineId;
+    }
+
+    public long getUpStationId() {
+        return upStationId;
+    }
+
+    public long getDownStationId() {
+        return downStationId;
+    }
+
+    public long getDistance() {
+        return distance;
     }
 }

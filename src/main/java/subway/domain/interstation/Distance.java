@@ -1,13 +1,8 @@
 package subway.domain.interstation;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import java.util.Objects;
 import subway.domain.interstation.exception.DistanceException;
 
-@Getter
-@ToString
-@EqualsAndHashCode(of = "value")
 public class Distance {
 
     private final long value;
@@ -16,6 +11,7 @@ public class Distance {
         validate(value);
         this.value = value;
     }
+
 
     private void validate(final long value) {
         if (value <= 0) {
@@ -33,5 +29,26 @@ public class Distance {
 
     public Distance minus(final long distance) {
         return new Distance(value - distance);
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Distance distance = (Distance) o;
+        return value == distance.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
