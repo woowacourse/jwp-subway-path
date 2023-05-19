@@ -7,6 +7,7 @@ import subway.application.core.domain.RouteMap;
 import subway.application.core.domain.Station;
 import subway.application.core.service.dto.in.JourneyCommand;
 import subway.application.core.service.dto.out.JourneyResult;
+import subway.application.core.service.dto.out.PathFindResult;
 import subway.application.port.LineRepository;
 import subway.application.port.PathFinder;
 import subway.application.port.StationRepository;
@@ -31,11 +32,12 @@ public class JourneyService {
         List<RouteMap> routeMaps = getAllRouteMaps();
         Station departure = stationRepository.findById(journeyCommand.getDeparture());
         Station terminal = stationRepository.findById(journeyCommand.getTerminal());
+        PathFindResult result = pathFinder.findShortestPath(routeMaps, departure, terminal);
 
         return new JourneyResult(
-                pathFinder.findShortestPath(routeMaps, departure, terminal),
-                pathFinder.calculateDistance(routeMaps, departure, terminal),
-                new Fare(pathFinder.calculateDistance(routeMaps, departure, terminal)).value()
+                result.getShortestPath(),
+                result.getDistance(),
+                new Fare(result.getDistance()).value()
         );
     }
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import subway.application.core.domain.RouteMap;
 import subway.application.core.domain.Section;
 import subway.application.core.domain.Station;
+import subway.application.core.service.dto.out.PathFindResult;
 import subway.application.port.PathFinder;
 
 import java.util.List;
@@ -16,11 +17,11 @@ import java.util.List;
 public class JgraphtPathFinder implements PathFinder {
 
     @Override
-    public List<Station> findShortestPath(List<RouteMap> routeMap, Station departure, Station terminal) {
+    public PathFindResult findShortestPath(List<RouteMap> routeMap, Station departure, Station terminal) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = setupGraph(routeMap);
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(departure, terminal);
-        return path.getVertexList();
+        return new PathFindResult(path.getVertexList(), path.getWeight());
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> setupGraph(List<RouteMap> routeMap) {
@@ -39,13 +40,5 @@ public class JgraphtPathFinder implements PathFinder {
             graph.addVertex(downBound);
             graph.setEdgeWeight(graph.addEdge(upBound, downBound), section.getDistance().value());
         });
-    }
-
-    @Override
-    public Double calculateDistance(List<RouteMap> routeMap, Station departure, Station terminal) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = setupGraph(routeMap);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(departure, terminal);
-        return path.getWeight();
     }
 }
