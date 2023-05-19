@@ -4,33 +4,48 @@ import subway.domain.line.Line;
 import subway.domain.station.Station;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Sections {
+public class LineSections {
 
     public static final int MIDDLE_SECTION_SIZE = 2;
 
+    private final Line line;
     private final Map<Station, List<Section>> sectionsByStation;
 
-    private Sections(Map<Station, List<Section>> sectionsByStation) {
+    private LineSections(Line line, Map<Station, List<Section>> sectionsByStation) {
+        this.line = line;
         this.sectionsByStation = new HashMap<>(sectionsByStation);
     }
 
-    public static Sections from(List<Section> sections) {
+    public static LineSections from(Line line, List<Section> sections) {
         Map<Station, List<Section>> sectionsByStation = new HashMap<>();
         if (sections.size() == 0) {
-            return new Sections(sectionsByStation);
+            return new LineSections(line, sectionsByStation);
         }
+
+        validateSameLine(line, sections);
 
         for (Section section : sections) {
             putSectionByStation(sectionsByStation, section);
         }
 
-        return new Sections(sectionsByStation);
+        return new LineSections(line, sectionsByStation);
+    }
+
+    private static void validateSameLine(Line line, List<Section> sections) {
+        int countOfSectionInLine = (int) sections.stream()
+                .filter(section -> section.isSameLine(line))
+                .count();
+
+        if (countOfSectionInLine != sections.size()) {
+            throw new IllegalArgumentException("[ERROR] 한 노선에 포함되는 구간들로만 초기화가 가능합니다.");
+        }
     }
 
     private static void putSectionByStation(
@@ -46,19 +61,20 @@ public class Sections {
         sectionsByStation.put(section.getDownward(), adjacentSections);
     }
 
-    public void addSection(Line line, Station upward, Station downward, int distance) {
+    public void addSection(Station upward, Station downward, int distance) {
         if (sectionsByStation.isEmpty()) {
-            addInitSection(line, upward, downward, distance);
+            addInitSection(upward, downward, distance);
             return;
         }
 
         validateDuplication(upward, downward);
         Station newStation = judgeNewStation(upward, downward);
         if (newStation.equals(upward)) {
-            addSectionWithNewUpward(line, newStation, downward, distance);
+            addSectionWithNewUpward(newStation, downward, distance);
+            distinctSectionsByStation();
             return;
         }
-        addSectionWithNewDownward(line, upward, newStation, distance);
+        addSectionWithNewDownward(upward, newStation, distance);
         distinctSectionsByStation();
     }
 
@@ -72,7 +88,7 @@ public class Sections {
         }
     }
 
-    private void addInitSection(Line line, Station upward, Station downward, int distance) {
+    private void addInitSection(Station upward, Station downward, int distance) {
         Section newSection = Section.of(line, upward, downward, distance);
         putSectionByStation(sectionsByStation, newSection);
     }
@@ -96,12 +112,12 @@ public class Sections {
         return upward;
     }
 
-    private void addSectionWithNewUpward(Line line, Station newUpward, Station downward, int distance) {
+    private void addSectionWithNewUpward(Station newUpward, Station downward, int distance) {
         List<Section> downwardSections = sectionsByStation.get(downward);
         if (downwardSections.stream().anyMatch(section -> section.isDownward(downward))) {
             Section existedSection = getSectionHasDownward(downward, downwardSections);
             validateDistance(existedSection, distance);
-            addNewUpwardBetweenExistedSection(line, newUpward, distance, existedSection);
+            addNewUpwardBetweenExistedSection(newUpward, distance, existedSection);
             return;
         }
 
@@ -116,7 +132,7 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 하행 방향 역을 가지는 구간이 없습니다."));
     }
 
-    private void addNewUpwardBetweenExistedSection(Line line, Station newUpward, int distance, Section existedSection) {
+    private void addNewUpwardBetweenExistedSection(Station newUpward, int distance, Section existedSection) {
         Section newUpwardSection = Section.of(
                 line,
                 existedSection.getUpward(),
@@ -130,12 +146,12 @@ public class Sections {
         removeSection(existedSection);
     }
 
-    private void addSectionWithNewDownward(Line line, Station upward, Station newDownward, int distance) {
+    private void addSectionWithNewDownward(Station upward, Station newDownward, int distance) {
         List<Section> upwardSections = sectionsByStation.get(upward);
         if (upwardSections.stream().anyMatch(section -> section.isUpward(upward))) {
             Section existedSection = getSectionHasUpward(upward, upwardSections);
             validateDistance(existedSection, distance);
-            addNewDownwardBetweenExistedSection(line, newDownward, distance, existedSection);
+            addNewDownwardBetweenExistedSection(newDownward, distance, existedSection);
         }
 
         Section newDownwardSection = Section.of(line, upward, newDownward, distance);
@@ -149,7 +165,7 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 상행 방향 역을 가지는 구간이 없습니다."));
     }
 
-    private void addNewDownwardBetweenExistedSection(Line line, Station newDownward, int distance, Section existedSection) {
+    private void addNewDownwardBetweenExistedSection(Station newDownward, int distance, Section existedSection) {
         Section newUpwardSection = Section.of(line, existedSection.getUpward(), newDownward, distance);
         Section newDownwardSection = Section.of(
                 line,
@@ -197,20 +213,19 @@ public class Sections {
         }
     }
 
-    public List<Section> findLineSections(Line line) {
+    public List<Section> findAllSections() {
         return sectionsByStation.values().stream()
-                .flatMap(sections -> sections.stream()
-                        .filter(section -> section.isSameLine(line)))
+                .flatMap(Collection::stream)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-    public void removeStationFromLine(Line line, Station removeStation) {
+    public void removeStation(Station removeStation) {
         validateIsExistingStation(removeStation);
 
         List<Section> removeSections = sectionsByStation.get(removeStation);
         if (removeSections.size() == MIDDLE_SECTION_SIZE) {
-            addNewSectionFromDeletedSections(line, removeStation, removeSections);
+            addNewSectionFromDeletedSections(removeStation, removeSections);
         }
 
         distinctSectionsByStation();
@@ -225,7 +240,7 @@ public class Sections {
         }
     }
 
-    private void addNewSectionFromDeletedSections(Line line, Station removeStation, List<Section> removeSections) {
+    private void addNewSectionFromDeletedSections(Station removeStation, List<Section> removeSections) {
         Section upwardSection = getSectionHasDownward(removeStation, removeSections);
         Section downwardSection = getSectionHasUpward(removeStation, removeSections);
 
@@ -233,14 +248,14 @@ public class Sections {
         putSectionByStation(sectionsByStation, newSection);
     }
 
-    public List<Station> findStationsInOrder(Line line) {
-        List<Section> lineSections = findLineSections(line);
+    public List<Station> findStationsInOrder() {
+        List<Section> lineSections = findAllSections();
 
         if (lineSections.isEmpty()) {
             return new ArrayList<>();
         }
 
-        Station upwardEndStation = findUpwardEndStation(line);
+        Station upwardEndStation = findUpwardEndStation();
         List<Station> inOrderLineStations = new ArrayList<>(List.of(upwardEndStation));
 
         while (!lineSections.isEmpty()) {
@@ -255,8 +270,8 @@ public class Sections {
         return inOrderLineStations;
     }
 
-    private Station findUpwardEndStation(Line line) {
-        List<Section> lineSections = findLineSections(line);
+    private Station findUpwardEndStation() {
+        List<Section> lineSections = findAllSections();
 
         List<Station> upwardStations = lineSections.stream().map(Section::getUpward).collect(Collectors.toList());
         List<Station> downwardStations = lineSections.stream().map(Section::getDownward).collect(Collectors.toList());

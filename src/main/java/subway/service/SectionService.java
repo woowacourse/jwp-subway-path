@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.controller.exception.OptionalHasNoLineException;
 import subway.controller.exception.OptionalHasNoStationException;
 import subway.domain.line.Line;
+import subway.domain.section.LineSections;
 import subway.domain.section.SectionRepository;
-import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.dto.DtoMapper;
 import subway.dto.request.SectionDeleteRequest;
@@ -40,10 +40,10 @@ public class SectionService {
         Station downward = stationDao.findById(request.getDownwardId())
                 .orElseThrow(OptionalHasNoStationException::new);
 
-        Sections lineSections = Sections.from(sectionRepository.readSectionsByLine(line));
-        lineSections.addSection(line, upward, downward, request.getDistance());
+        LineSections lineSections = LineSections.from(line, sectionRepository.readSectionsByLine(line));
+        lineSections.addSection(upward, downward, request.getDistance());
 
-        sectionRepository.updateAllSectionsInLine(line, lineSections.findLineSections(line));
+        sectionRepository.updateAllSectionsInLine(line, lineSections.findAllSections());
     }
 
     public void removeStationFromLine(SectionDeleteRequest request) {
@@ -52,18 +52,18 @@ public class SectionService {
         Line line = lineDao.findById(request.getLineId())
                 .orElseThrow(OptionalHasNoStationException::new);
 
-        Sections lineSections = Sections.from(sectionRepository.readSectionsByLine(line));
-        lineSections.removeStationFromLine(line, removeStation);
+        LineSections lineSections = LineSections.from(line, sectionRepository.readSectionsByLine(line));
+        lineSections.removeStation(removeStation);
 
-        sectionRepository.updateAllSectionsInLine(line, lineSections.findLineSections(line));
+        sectionRepository.updateAllSectionsInLine(line, lineSections.findAllSections());
     }
 
     public LineStationsResponse readAllStationsOfLine(Long lineId) {
         Line line = lineDao.findById(lineId)
                 .orElseThrow(OptionalHasNoStationException::new);
 
-        Sections lineSections = Sections.from(sectionRepository.readSectionsByLine(line));
-        List<Station> inOrderLineStations = lineSections.findStationsInOrder(line);
+        LineSections lineSections = LineSections.from(line, sectionRepository.readSectionsByLine(line));
+        List<Station> inOrderLineStations = lineSections.findStationsInOrder();
 
         return DtoMapper.convertToLineStationsResponse(line, inOrderLineStations);
     }
