@@ -24,6 +24,15 @@ public class InterStations {
         return new InterStations(List.of(new InterStation(upStationId, downStationId, distance)));
     }
 
+    private void validate(final List<InterStation> interStations) {
+        if (interStations == null || interStations.isEmpty()) {
+            throw new InterStationsException("구간이 비어있습니다.");
+        }
+        if (interStations.stream().distinct().count() != interStations.size()) {
+            throw new InterStationsException("구간이 중복되었습니다.");
+        }
+    }
+
     private List<InterStation> sort(final List<InterStation> interStations) {
         final long firstStation = findFirstStation(interStations);
 
@@ -61,15 +70,6 @@ public class InterStations {
         return interStations.stream()
                 .map(InterStation::getUpStationId)
                 .collect(Collectors.toSet());
-    }
-
-    private void validate(final List<InterStation> interStations) {
-        if (interStations == null || interStations.isEmpty()) {
-            throw new InterStationsException("구간이 비어있습니다.");
-        }
-        if (interStations.stream().distinct().count() != interStations.size()) {
-            throw new InterStationsException("구간이 중복되었습니다.");
-        }
     }
 
     public void add(final Long upStationId, final Long downStationId, final Long newStationId, final long distance) {
