@@ -3,9 +3,10 @@ package subway.domain.interstation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import subway.domain.interstation.add.AddInterStationPolicy;
+import subway.domain.interstation.add.AddInterStationStrategy;
 import subway.domain.interstation.exception.InterStationsException;
 
 /**
@@ -76,82 +77,9 @@ public class InterStations {
     }
 
     public void add(final Long upStationId, final Long downStationId, final Long newStationId, final long distance) {
-        validate(upStationId, downStationId, newStationId);
-        if (downStationId == null) {
-            addLast(new InterStation(upStationId, newStationId, distance));
-            return;
-        }
-        if (upStationId == null) {
-            addFirst(new InterStation(newStationId, downStationId, distance));
-            return;
-        }
-        addMiddle(upStationId, downStationId, newStationId, distance);
-    }
-
-    private void validate(final Long upStationId,
-            final Long downStationId,
-            final Long newStationId) {
-        validateEmptyInterStation(upStationId, downStationId);
-        validateDuplicateInterStation(upStationId, downStationId, newStationId);
-
-    }
-
-    private void validateDuplicateInterStation(final Long upStationId,
-            final Long downStationId,
-            final Long newStationId) {
-        interStations.stream()
-                .filter(it -> it.getUpStationId().equals(upStationId) && it.getDownStationId().equals(newStationId))
-                .findFirst()
-                .ifPresent(it -> {
-                    throw new InterStationsException("구간이 중복되었습니다.");
-                });
-        interStations.stream()
-                .filter(it -> it.getUpStationId().equals(downStationId) && it.getDownStationId().equals(newStationId))
-                .findFirst()
-                .ifPresent(it -> {
-                    throw new InterStationsException("구간이 중복되었습니다.");
-                });
-    }
-
-    private void validateEmptyInterStation(final Long upStationId, final Long downStationId) {
-        if (upStationId == null && downStationId == null) {
-            throw new InterStationsException("구간이 비어있습니다.");
-        }
-    }
-
-    private void addMiddle(final Long upStationId,
-            final Long downStationId,
-            final Long newStationId,
-            final long distance) {
-        final int index = findUpStationIndex(upStationId);
-        final InterStation removedInterStation = interStations.remove(index);
-        interStations.add(index, new InterStation(upStationId, newStationId, distance));
-        interStations.add(index + 1,
-                new InterStation(newStationId, downStationId, removedInterStation.getDistance().minus(distance)));
-    }
-
-    private void addFirst(final InterStation interStation) {
-        if (!Objects.equals(interStation.getDownStationId(), interStations.get(0).getUpStationId())) {
-            throw new InterStationsException("구간이 연결되어있지 않습니다.");
-        }
-        interStations.add(0, interStation);
-    }
-
-    private void addLast(final InterStation interStation) {
-        if (!Objects.equals(interStation.getUpStationId(),
-                interStations.get(interStations.size() - 1).getDownStationId())) {
-            throw new InterStationsException("구간이 연결되어있지 않습니다.");
-        }
-        interStations.add(interStation);
-    }
-
-    private int findUpStationIndex(final Long upStationId) {
-        for (int i = 0; i < interStations.size(); i++) {
-            if (interStations.get(i).getUpStationId().equals(upStationId)) {
-                return i;
-            }
-        }
-        throw new InterStationsException("구간이 연결되어있지 않습니다.");
+        final AddInterStationStrategy strategy = AddInterStationPolicy.of(interStations, upStationId, downStationId,
+                newStationId);
+        strategy.addInterStation(interStations, upStationId, downStationId, newStationId, distance);
     }
 
     public void remove(final long stationId) {
