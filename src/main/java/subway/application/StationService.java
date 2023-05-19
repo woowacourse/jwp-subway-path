@@ -1,44 +1,76 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
+import subway.domain.repository.SectionRepository;
+import subway.domain.repository.StationRepository;
+import subway.ui.dto.request.StationUpdateRequest;
+import subway.ui.dto.response.StationResponse;
 
 @Service
+@Transactional
 public class StationService {
-    private final StationDao stationDao;
+	private final StationRepository stationRepository;
+	private final SectionRepository sectionRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
-    }
+	public StationService(final StationRepository stationRepository, final SectionRepository sectionRepository) {
+		this.stationRepository = stationRepository;
+		this.sectionRepository = sectionRepository;
+	}
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
-    }
+	public StationResponse createStation(final StationUpdateRequest stationUpdateRequest) {
+		final List<StationResponse> stations = findAll();
+		for (StationResponse station : stations) {
+			if (station.getName().equals(stationUpdateRequest.getName())) {
+				throw new IllegalArgumentException("이미 존재하는 역입니다");
+			}
+		}
+		final Station station = new Station(stationUpdateRequest.getName());
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
-    }
+		final long stationId = stationRepository.createStation(station);
+		return new StationResponse(stationId, station.getName());
+	}
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+	public List<StationResponse> findAll() {
+		return StationResponse.of(stationRepository.findAll());
+	}
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
+	public StationResponse findById(final Long stationId) {
+		final Station station = stationRepository.findById(stationId);
+		return new StationResponse(stationId, station.getName());
+	}
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
-    }
+	public StationResponse updateStation(final long stationId, final StationUpdateRequest request) {
+		final boolean isUpdated = stationRepository.updateStation(stationId, new Station(request.getName()));
 
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
-    }
+		if (!isUpdated) {
+			throw new IllegalStateException("역 갱신에 실패했습니다");
+		}
+
+		return new StationResponse(stationId, request.getName());
+	}
+
+	public long deleteById(final Long stationId) {
+		final Station station = stationRepository.findById(stationId);
+		final boolean isDelete = stationRepository.deleteById(stationId);
+
+		if (!isDelete) {
+			throw new NullPointerException("삭제할 역이 존재하지 않습니다");
+		}
+
+		final Sections sections = new Sections(sectionRepository.findAll());
+		final Map<Line, List<Section>> mergedSections = sections.remove(station);
+		mergedSections.keySet()
+			.forEach(line -> sectionRepository.createSection(line.getName(), mergedSections.get(line)));
+
+		return stationId;
+	}
 }
