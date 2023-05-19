@@ -1,8 +1,6 @@
 package subway.exception;
 
-import subway.controller.exception.BadRequestException;
-
-public class InvalidDistanceException extends BadRequestException {
+public class InvalidDistanceException extends IllegalArgumentException {
 
     private static final String MESSAGE = "구간 간격이 너무 큽니다.";
 

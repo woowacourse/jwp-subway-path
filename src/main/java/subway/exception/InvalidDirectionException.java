@@ -1,8 +1,6 @@
 package subway.exception;
 
-import subway.controller.exception.BadRequestException;
-
-public class InvalidDirectionException extends BadRequestException {
+public class InvalidDirectionException extends IllegalArgumentException {
 
     private static final String MESSAGE = "잘못된 방향입니다.";
 

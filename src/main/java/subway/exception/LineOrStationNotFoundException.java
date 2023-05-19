@@ -1,8 +1,6 @@
 package subway.exception;
 
-import subway.controller.exception.NotFoundException;
-
-public class LineOrStationNotFoundException extends NotFoundException {
+public class LineOrStationNotFoundException extends IllegalArgumentException {
 
     private static final String MESSAGE = "노선이나 역을 찾을 수 없습니다.";
 
