@@ -163,4 +163,10 @@ public class Sections {
     public void addSectionsToGraph(final WeightedMultigraph<Station, Section> graph) {
         sections.forEach(section -> section.addStationsAndDistanceToGraph(graph));
     }
+    
+    public boolean isContainsStation(final String stationName) {
+        return sections.stream()
+                .anyMatch(section -> isExistMatchStation(Section::isLeftStation, new Station(stationName))
+                || isExistMatchStation(Section::isRightStation, new Station(stationName)));
+    }
 }
