@@ -148,13 +148,13 @@ public class Sections {
     }
 
     public List<Station> getOrderedStations() {
-        final Map<Station, Station> stationsChain = sectionsToChain(sections);
+        final Map<Station, Station> stationsChain = getStationsChain();
         final Optional<Station> firstStation = getFirstStation(stationsChain);
         return firstStation.map(station -> getSortedStations(stationsChain, station))
                 .orElse(Collections.emptyList());
     }
 
-    private Map<Station, Station> sectionsToChain(final List<Section> sections) {
+    public Map<Station, Station> getStationsChain() {
         return sections.stream()
                 .collect(Collectors.toMap(Section::getSource, Section::getTarget));
     }
