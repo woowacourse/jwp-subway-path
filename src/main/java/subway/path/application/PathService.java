@@ -45,7 +45,7 @@ public class PathService {
         );
         final Path continousPath = path.continuousPathWithStartStation(start);
         final PaymentLines paymentLines = new PaymentLines(continousPath, paymentPolicy, discountPolicy);
-        return ShortestRouteResponse.from(paymentLines);
+        return ShortestRouteResponse.from(paymentLines.lines(), paymentLines.discountFee());
     }
 
     private Station findStationByName(final String stationName) {
