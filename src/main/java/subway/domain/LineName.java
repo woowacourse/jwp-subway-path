@@ -4,17 +4,17 @@ import subway.exception.NameLengthException;
 
 import java.util.Objects;
 
-public class Station {
+public class LineName {
 
     public static final int MINIMUM_NAME_LENGTH = 2;
     public static final int MAXIMUM_NAME_LENGTH = 15;
 
     private final String name;
 
-    public Station(String name) {
-        String stripped = name.strip();
-        validateNameLength(stripped);
-        this.name = stripped;
+    public LineName(String name) {
+        String strippedName = name.strip();
+        validateNameLength(strippedName);
+        this.name = strippedName;
     }
 
     private void validateNameLength(String name) {
@@ -28,18 +28,11 @@ public class Station {
     }
 
     @Override
-    public String toString() {
-        return "Station{" +
-                "name='" + name + '\'' +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return Objects.equals(name, station.name);
+        LineName lineName = (LineName) o;
+        return Objects.equals(name, lineName.name);
     }
 
     @Override
