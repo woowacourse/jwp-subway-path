@@ -202,7 +202,7 @@ Accept: application/json
 ###
 # @name deleteStation
 # @description Delete a specific station
-DELETE http://localhost:8080/stations
+DELETE http://localhost:8080/stations/one
 Content-Type: application/json
 
 {
@@ -265,6 +265,36 @@ Content-Type: application/json
 
 
 ###
+# @name getAllSortedLine
+# @description Retrieve all sorted lines
+GET http://localhost:8080/lines
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "allSortedLines": [
+>     {
+>       "sortedStations": [
+>         "잠실역",
+>         "청라역",
+>         "가정역"
+>       ]
+>     },
+>     {
+>       "sortedStations": [
+>         "화정역",
+>         "신도림역",
+>         "청라역",
+>         "신길역"
+>       ]
+>     }
+>   ]
+> }
+
+
+###
 # @name getShortestPath
 # @description Retrieve shortest path
 GET http://localhost:8080/path
@@ -287,6 +317,42 @@ Accept: application/json
 >   ],
 >   "shortestDistance": 8,
 >   "fee": 1250
+> }
+
+
+###
+# @name deleteStationOnAllLines
+# @description Deletes a station from all lines.
+# @method DELETE
+# @path /stations/{stationId}
+DELETE http://localhost:8080/stations/3
+
+
+###
+# @name getAllSortedLine
+# @description Retrieve all sorted lines
+GET http://localhost:8080/lines
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "allSortedLines": [
+>     {
+>       "sortedStations": [
+>         "화정역",
+>         "신도림역",
+>         "신길역"
+>       ]
+>     },
+>     {
+>       "sortedStations": [
+>         "잠실역",
+>         "가정역"
+>       ]
+>     }
+>   ]
 > }
 
 
