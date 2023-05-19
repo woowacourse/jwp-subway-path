@@ -1,5 +1,16 @@
 # jwp-subway-path
 
+### 프로그램 실행방법
+
+/docker 경로에서 아래 명령어를 입력해주세요
+```
+docker-compose -p subway up -d
+```
+정지 시에는 아래 명령어를 입력해주세요
+```
+docker-compose -p subway down
+```
+
 ### API
 
 http://localhost:8080/swagger-ui/index.html
