@@ -2,6 +2,7 @@ package subway.ui.route.find;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import subway.application.route.port.in.find.MockRouteFindUseCase;
 import subway.application.route.port.in.find.RouteFindRequestDto;
+import subway.ui.route.find.dto.RouteEdgeResponse;
 import subway.ui.route.find.dto.RouteFindRequest;
 import subway.ui.route.find.dto.RouteFindResponse;
 
@@ -39,7 +41,8 @@ class RouteFindControllerTest {
                     softly.assertThat(result.getStatusCodeValue()).isEqualTo(200);
                     softly.assertThat(result.getBody().getDistance()).isEqualTo(100);
                     softly.assertThat(result.getBody().getFare()).isEqualTo(100);
-                    softly.assertThat(result.getBody().getStations()).containsExactly(1L, 2L, 3L);
+                    softly.assertThat(result.getBody().getStations()).usingRecursiveComparison()
+                            .isEqualTo(List.of(new RouteEdgeResponse(1L, 2L, 3L, 4L)));
                     softly.assertThat(mockRouteFindUseCase.getCallCount()).isOne();
                     softly.assertThat(mockRouteFindUseCase.getRequestDto()).usingRecursiveComparison()
                             .isEqualTo(new RouteFindRequestDto(1L, 2L));

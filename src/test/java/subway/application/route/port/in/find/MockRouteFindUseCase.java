@@ -1,6 +1,7 @@
 package subway.application.route.port.in.find;
 
 import java.util.List;
+import subway.application.route.service.find.dto.RouteEdgeResponseDto;
 
 public class MockRouteFindUseCase implements RouteFindUseCase {
 
@@ -11,7 +12,7 @@ public class MockRouteFindUseCase implements RouteFindUseCase {
     public RouteFindResponseDto findRoute(final RouteFindRequestDto requestDto) {
         callCount++;
         this.requestDto = requestDto;
-        return new RouteFindResponseDto(List.of(1L, 2L, 3L), 100, 0);
+        return new RouteFindResponseDto(List.of(new RouteEdgeResponseDto(1L, 2L, 3L, 4L)), 100, 0);
     }
 
     public int getCallCount() {

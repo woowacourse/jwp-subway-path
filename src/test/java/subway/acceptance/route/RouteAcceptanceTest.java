@@ -8,6 +8,7 @@ import static subway.acceptance.line.LineSteps.노선_생성_요청;
 import static subway.acceptance.line.LineSteps.노선에서_역_추가_요청;
 import static subway.acceptance.route.RouteSteps.경로_거리_계산_결과_확인;
 import static subway.acceptance.route.RouteSteps.경로_금액_계산_결과_확인;
+import static subway.acceptance.route.RouteSteps.경로_하나_만들기;
 import static subway.acceptance.route.RouteSteps.경로_확인;
 import static subway.acceptance.route.RouteSteps.역_거리_계산_요청;
 import static subway.acceptance.station.StationSteps.역_생성_결과에서_id_가져오기;
@@ -44,7 +45,7 @@ class RouteAcceptanceTest extends IntegrationTest {
             요청_결과의_상태를_검증한다(역_거리_계산_요청_결과, 정상_요청);
 
             경로_거리_계산_결과_확인(역_거리_계산_요청_결과, 10);
-            경로_확인(역_거리_계산_요청_결과, 첫번째_역_ID, 세번째_역_ID);
+            경로_확인(역_거리_계산_요청_결과, 경로_하나_만들기(첫번째_역_ID, 세번째_역_ID, 10L, 노선_ID));
             경로_금액_계산_결과_확인(역_거리_계산_요청_결과, 1250);
 
             final var 역_거리_계산_요청_결과_2 = 역_거리_계산_요청(첫번째_역_ID, 두번째_역_ID);
@@ -52,7 +53,8 @@ class RouteAcceptanceTest extends IntegrationTest {
             요청_결과의_상태를_검증한다(역_거리_계산_요청_결과_2, 정상_요청);
 
             경로_거리_계산_결과_확인(역_거리_계산_요청_결과_2, 20);
-            경로_확인(역_거리_계산_요청_결과_2, 첫번째_역_ID, 세번째_역_ID, 두번째_역_ID);
+            경로_확인(역_거리_계산_요청_결과_2, 경로_하나_만들기(첫번째_역_ID, 세번째_역_ID, 10L, 노선_ID),
+                    경로_하나_만들기(세번째_역_ID, 두번째_역_ID, 10L, 노선_ID));
             경로_금액_계산_결과_확인(역_거리_계산_요청_결과_2, 1450);
         }
 

@@ -4,28 +4,28 @@ import java.util.List;
 
 public class RouteFindResponse {
 
-    private int distance;
-    private int fare;
-    private List<Long> stations;
+    private long distance;
+    private long fare;
+    private List<RouteEdgeResponse> stations;
 
     private RouteFindResponse() {
     }
 
-    public RouteFindResponse(final List<Long> stations, final int distance, final int fare) {
+    public RouteFindResponse(final List<RouteEdgeResponse> stations, final long distance, final long fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
     }
 
-    public int getDistance() {
+    public long getDistance() {
         return distance;
     }
 
-    public int getFare() {
+    public long getFare() {
         return fare;
     }
 
-    public List<Long> getStations() {
+    public List<RouteEdgeResponse> getStations() {
         return stations;
     }
 }

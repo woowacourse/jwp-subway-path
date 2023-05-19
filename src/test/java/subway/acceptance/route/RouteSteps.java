@@ -5,6 +5,7 @@ import static subway.acceptance.CommonSteps.doPost;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import subway.ui.route.find.dto.RouteEdgeResponse;
 import subway.ui.route.find.dto.RouteFindRequest;
 import subway.ui.route.find.dto.RouteFindResponse;
 
@@ -19,8 +20,12 @@ class RouteSteps {
         assertThat(역_거리_계산_요청_결과.as(RouteFindResponse.class).getDistance()).isEqualTo(거리);
     }
 
-    public static void 경로_확인(final ExtractableResponse<Response> 역_거리_계산_요청_결과, final Long... 역_IDs) {
-        assertThat(역_거리_계산_요청_결과.as(RouteFindResponse.class).getStations()).containsExactly(역_IDs);
+    public static void 경로_확인(final ExtractableResponse<Response> 역_거리_계산_요청_결과, final RouteEdgeResponse... 경로들) {
+        assertThat(역_거리_계산_요청_결과.as(RouteFindResponse.class).getStations()).containsExactly(경로들);
+    }
+
+    public static RouteEdgeResponse 경로_하나_만들기(final Long 시작_역_id, final Long 끝_역_id, final Long 거리, final Long 노선_id) {
+        return new RouteEdgeResponse(시작_역_id, 끝_역_id, 거리, 노선_id);
     }
 
     public static void 경로_금액_계산_결과_확인(final ExtractableResponse<Response> 역_거리_계산_요청_결과, final int 금액) {
