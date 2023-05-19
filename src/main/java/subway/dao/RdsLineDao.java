@@ -27,7 +27,7 @@ public class RdsLineDao implements LineDao {
     public RdsLineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
+                .withTableName("LINE")
                 .usingGeneratedKeyColumns("id")
                 .usingColumns("name", "color");
     }

@@ -13,7 +13,7 @@ import subway.domain.Station;
 
 @Repository
 public class RdsStationDao implements StationDao {
-    
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -27,7 +27,7 @@ public class RdsStationDao implements StationDao {
     public RdsStationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id")
                 .usingColumns("name");
     }
