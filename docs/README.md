@@ -76,6 +76,7 @@
   - Parameters
     - source(required): 시작 역의 id
     - destination(required): 도착 역의 id
+    - age(required): 탑승객의 나이
 
 - Response
   - 200 OK
@@ -85,7 +86,8 @@
     - fare 
 
   - 400 BAD REQUEST
-    - from, to의 parameter가 없을 때 
+    - from, to, age의 parameter가 없을 때 
+    - age가 0 이하일 때 
   - 404 NOT FOUND
     - 역 id가 존재하지 않는 경우
 
