@@ -44,7 +44,7 @@ class SectionServiceTest {
         // 잠실 - 10 - 천호
         when(stationDao.findById(jamsil.getId())).thenReturn(Optional.of(jamsil));
         when(stationDao.findById(mongchon.getId())).thenReturn(Optional.of(mongchon));
-        when(lineDao.findById(pink.getId())).thenReturn(pink);
+        when(lineDao.findById(pink.getId())).thenReturn(Optional.of(pink));
         when(sectionDao.findAllByLineId(cheonhoJamsil10.getId())).thenReturn(List.of(cheonhoJamsil10));
         when(sectionDao.insertAll(any())).thenReturn(List.of(new Section(2L, mongchon, jamsil, pink, 5)));
 

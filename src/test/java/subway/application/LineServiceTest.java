@@ -72,7 +72,7 @@ class LineServiceTest {
     @Test
     void 조회_시_노선_정보와_포함된_역을_상행부터_순서대로_반환한다() {
         // given
-        given(lineDao.findById(pink.getId())).willReturn(pink);
+        given(lineDao.findById(pink.getId())).willReturn(Optional.of(pink));
         given(sectionDao.findAllByLineId(pink.getId())).willReturn(List.of(jamsilJangji10, cheonhoJamsil10));
 
         // when

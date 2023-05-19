@@ -38,7 +38,8 @@ public class SectionService {
 
         Station upStation = getSavedStation(sortedSingleLineSections, request.getUpStationId());
         Station downStation = getSavedStation(sortedSingleLineSections, request.getDownStationId());
-        Line line = lineDao.findById(lineId);
+        Line line = lineDao.findById(lineId)
+            .orElseThrow(() -> new IllegalArgumentException("해당하는 데이터가 없습니다."));
         int distance = request.getDistance();
 
         ChangesByAddition changes = sortedSingleLineSections.findChangesWhenAdd(upStation, downStation, line, distance);

@@ -133,8 +133,7 @@ public class SectionIntegrationTest {
         List<Section> sections = sectionDao.findAllByLineId(persistLine8.getId());
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-            assertThatThrownBy(() -> lineDao.findById(persistLine8.getId()))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+            assertThat(lineDao.findById(persistLine8.getId())).isEmpty();
             assertThat(sections.size()).isZero();
         });
     }

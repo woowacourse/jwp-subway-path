@@ -52,19 +52,4 @@ public class StationDao {
             return Optional.empty();
         }
     }
-
-    public Station findByName(String name) {
-        String sql = "SELECT * FROM station WHERE name = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, name);
-    }
-
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, newStation.getName(), newStation.getId());
-    }
-
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
-    }
 }

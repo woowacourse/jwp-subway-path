@@ -59,7 +59,8 @@ public class LineService {
     }
 
     public GetLineResponse findLineById(Long id) {
-        Line line = lineDao.findById(id);
+        Line line = lineDao.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당하는 데이터가 없습니다."));
         return findLineResponse(line);
     }
 
