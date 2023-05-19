@@ -30,7 +30,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private ResponseEntity<ErrorResponse> handleInvalidArgument(MethodArgumentNotValidException exception) {
-        logger.warn("[MethodArgumentNotValidException] ", exception);
+        logger.warn("[MethodArgumentNotValidException]", exception);
 
         List<FieldError> fieldErrors = exception.getFieldErrors();
 
@@ -70,7 +70,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     private ResponseEntity<ErrorResponse> unhandledException(Exception exception) {
-        logger.error("[Internal Server Error] ", exception);
+        logger.error("[Internal Server Error]", exception);
 
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse("Internal Server Error."));
