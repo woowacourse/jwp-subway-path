@@ -14,6 +14,6 @@ public class EndsWithValidator implements ConstraintValidator<EndsWith, String> 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value.endsWith(suffix);
+        return value != null && value.endsWith(suffix);
     }
 }
