@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface SectionQueryPort {
     List<Section> findAllByLineId(Long lineId);
+
+    List<Section> findAll();
 }

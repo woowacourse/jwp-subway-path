@@ -45,4 +45,10 @@ public class SectionJdbcDao implements SectionDao {
         String sql = "select * from section where line_id = ?";
         return jdbcTemplate.query(sql, sectionRowMapper, lineId);
     }
+
+    @Override
+    public List<SectionEntity> findAll() {
+        String sql = "select * from section";
+        return jdbcTemplate.query(sql, sectionRowMapper);
+    }
 }
