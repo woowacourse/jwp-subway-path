@@ -1,0 +1,136 @@
+### 하나의 노선 조회 API
+GET http://localhost:8080/lines/1
+Accept: application/json
+
+### Response
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 05:44:18 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+  "linePropertyResponse": {
+    "id": 1,
+    "name": "7호선",
+    "color": "bg-olive-600"
+  },
+  "stationResponses": [
+    {
+      "id": 1,
+      "name": "가산"
+    },
+    {
+      "id": 2,
+      "name": "남구로"
+    },
+    {
+      "id": 3,
+      "name": "대림"
+    },
+    {
+      "id": 4,
+      "name": "신풍"
+    }
+  ]
+}
+
+### 하나의 노선 조회 (없는 노선인 경우)
+
+GET http://localhost:8080/lines/4
+Accept: application/json
+
+### Response
+
+HTTP/1.1 400
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 06:06:51 GMT
+Connection: close
+
+{
+  "message": "조회하려는 노선이 존재하지 않습니다."
+}
+
+### 노선 전체 조회 API
+GET http://localhost:8080/lines
+Accept: application/json
+
+### Response
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 05:45:56 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+[
+  {
+    "linePropertyResponse": {
+      "id": 1,
+      "name": "7호선",
+      "color": "bg-olive-600"
+    },
+    "stationResponses": [
+      {
+        "id": 1,
+        "name": "가산"
+      },
+      {
+        "id": 2,
+        "name": "남구로"
+      },
+      {
+        "id": 3,
+        "name": "대림"
+      },
+      {
+        "id": 4,
+        "name": "신풍"
+      }
+    ]
+  },
+  {
+    "linePropertyResponse": {
+      "id": 2,
+      "name": "1호선",
+      "color": "bg-blue-600"
+    },
+    "stationResponses": [
+      {
+        "id": 5,
+        "name": "구로"
+      },
+      {
+        "id": 2,
+        "name": "남구로"
+      },
+      {
+        "id": 6,
+        "name": "독산"
+      }
+    ]
+  },
+  {
+    "linePropertyResponse": {
+      "id": 3,
+      "name": "2호선",
+      "color": "bg-green-600"
+    },
+    "stationResponses": [
+      {
+        "id": 7,
+        "name": "신도림"
+      },
+      {
+        "id": 3,
+        "name": "대림"
+      },
+      {
+        "id": 8,
+        "name": "구로디지털단지"
+      }
+    ]
+  }
+]

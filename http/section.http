@@ -1,0 +1,361 @@
+### 구간 추가 API
+
+### 가산에서 하행 방향으로 구로 추가
+
+POST http://localhost:8080/sections
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineName" : "7호선",
+  "direction" : "Down",
+  "standardStationName" : "가산",
+  "additionalStationName" : "구로",
+  "distance" : 10
+}
+
+### Response
+
+HTTP/1.1 201
+Location: /lines/1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 05:49:36 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+  "id": 1,
+  "name": "7호선",
+  "color": "bg-olive-600",
+  "sections": [
+    {
+      "id": 8,
+      "distance": 10,
+      "previousStation": {
+        "id": 5,
+        "name": "구로"
+      },
+      "nextStation": {
+        "id": 1,
+        "name": "가산"
+      }
+    }
+  ]
+}
+
+### 신풍에서 상행 방향으로 신도림 추가
+
+POST http://localhost:8080/sections
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineName" : "7호선",
+  "direction" : "Up",
+  "standardStationName" : "신풍",
+  "additionalStationName" : "신도림",
+  "distance" : 10
+}
+
+### Response
+
+HTTP/1.1 201
+Location: /lines/1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 05:51:24 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+  "id": 1,
+  "name": "7호선",
+  "color": "bg-olive-600",
+  "sections": [
+    {
+      "id": 9,
+      "distance": 10,
+      "previousStation": {
+        "id": 4,
+        "name": "신풍"
+      },
+      "nextStation": {
+        "id": 7,
+        "name": "신도림"
+      }
+    }
+  ]
+}
+
+### 대림에서 상행방향으로 역 추가
+
+POST http://localhost:8080/sections
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineName" : "7호선",
+  "direction" : "Up",
+  "standardStationName" : "대림",
+  "additionalStationName" : "독산",
+  "distance" : 5
+}
+
+### Response
+
+HTTP/1.1 201
+Location: /lines/1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 05:52:46 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+  "id": 1,
+  "name": "7호선",
+  "color": "bg-olive-600",
+  "sections": [
+    {
+      "id": 10,
+      "distance": 5,
+      "previousStation": {
+        "id": 3,
+        "name": "대림"
+      },
+      "nextStation": {
+        "id": 6,
+        "name": "독산"
+      }
+    },
+    {
+      "id": 11,
+      "distance": 5,
+      "previousStation": {
+        "id": 6,
+        "name": "독산"
+      },
+      "nextStation": {
+        "id": 4,
+        "name": "신풍"
+      }
+    }
+  ]
+}
+
+### 대림에서 하행방향으로 역 추가
+
+POST http://localhost:8080/sections
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineName" : "7호선",
+  "direction" : "Down",
+  "standardStationName" : "대림",
+  "additionalStationName" : "구로디지털단지",
+  "distance" : 5
+}
+
+### Response
+
+HTTP/1.1 201
+Location: /lines/1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 05:53:51 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+  "id": 1,
+  "name": "7호선",
+  "color": "bg-olive-600",
+  "sections": [
+    {
+      "id": 12,
+      "distance": 5,
+      "previousStation": {
+        "id": 2,
+        "name": "남구로"
+      },
+      "nextStation": {
+        "id": 8,
+        "name": "구로디지털단지"
+      }
+    },
+    {
+      "id": 13,
+      "distance": 5,
+      "previousStation": {
+        "id": 8,
+        "name": "구로디지털단지"
+      },
+      "nextStation": {
+        "id": 3,
+        "name": "대림"
+      }
+    }
+  ]
+}
+
+### 없는 노선에 추가하려는 경우
+
+POST http://localhost:8080/sections
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineName" : "빙봉당선",
+  "direction" : "Down",
+  "standardStationName" : "신도림",
+  "additionalStationName" : "독산",
+  "distance" : 5
+}
+
+### Response
+
+HTTP/1.1 400
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 05:55:01 GMT
+Connection: close
+
+{
+  "message": "빙봉당선 노선은 존재하지 않습니다."
+}
+
+### 없는 역을 추가하려는 경우
+
+POST http://localhost:8080/sections
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineName" : "2호선",
+  "direction" : "Down",
+  "standardStationName" : "신도림",
+  "additionalStationName" : "빙봉",
+  "distance" : 5
+}
+
+### Response
+
+HTTP/1.1 400
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 05:57:10 GMT
+Connection: close
+
+{
+"message": "빙봉역이 존재하지 않습니다."
+}
+
+### 이미 해당 호선에 두 역이 존재하는 경우
+
+POST http://localhost:8080/sections
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineName" : "7호선",
+  "direction" : "Up",
+  "standardStationName" : "가산",
+  "additionalStationName" : "대림",
+  "distance" : 5
+}
+
+### Response
+
+HTTP/1.1 400
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 05:58:32 GMT
+Connection: close
+
+{
+  "message": "이미 포함하고 있는 간선 정보입니다."
+}
+
+### 해당 호선에 두 역 모두 존재하지 않는 경우
+
+POST http://localhost:8080/sections
+Content-Type: application/json
+Accept: application/json
+
+{
+  "lineName" : "1호선",
+  "direction" : "Up",
+  "standardStationName" : "신도림",
+  "additionalStationName" : "구로디지털단지",
+  "distance" : 5
+}
+
+### Response
+
+HTTP/1.1 400
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 06:01:18 GMT
+Connection: close
+
+{
+  "message": "해당 노선은 두 역 모두 포함하지 않습니다."
+}
+
+### 구간 삭제 API
+
+### 7호선에서 대림 역을 삭제 (사이 역)
+
+DELETE http://localhost:8080/sections?lineid=1&stationid=3
+
+### Response
+
+HTTP/1.1 204
+Date: Fri, 19 May 2023 06:03:12 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+### 7호선에서 가산 역을 삭제 (종점)
+
+DELETE http://localhost:8080/sections?lineid=1&stationid=1
+
+### Response
+
+HTTP/1.1 204
+Date: Fri, 19 May 2023 06:04:23 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+### 없는 노선을 삭제하는 경우
+
+DELETE http://localhost:8080/sections?lineid=4&stationid=1
+
+### Response
+
+HTTP/1.1 400
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 06:05:23 GMT
+Connection: close
+
+{
+  "message": "해당 노선은 존재하지 않습니다."
+}
+
+### 없는 역을 삭제하는 경우
+
+DELETE http://localhost:8080/sections?lineid=1&stationid=5
+
+### Response
+
+HTTP/1.1 400
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 19 May 2023 06:05:55 GMT
+Connection: close
+
+{
+  "message": "해당 노선에서 해당하는 역을 찾을 수 없습니다."
+}
