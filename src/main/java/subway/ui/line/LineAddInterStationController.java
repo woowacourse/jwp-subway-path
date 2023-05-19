@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.line.port.in.LineAddInterStationUseCase;
 import subway.application.line.port.in.LineResponseDto;
+import subway.application.line.port.in.addinterstation.LineAddInterStationUseCase;
 import subway.ui.line.dto.in.LineAddStationRequest;
 import subway.ui.line.dto.in.LineResponse;
 

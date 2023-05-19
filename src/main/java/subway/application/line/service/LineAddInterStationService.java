@@ -2,10 +2,10 @@ package subway.application.line.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.line.port.in.LineAddInterStationRequestDto;
-import subway.application.line.port.in.LineAddInterStationUseCase;
 import subway.application.line.port.in.LineNotFoundException;
 import subway.application.line.port.in.LineResponseDto;
+import subway.application.line.port.in.addinterstation.LineAddInterStationRequestDto;
+import subway.application.line.port.in.addinterstation.LineAddInterStationUseCase;
 import subway.application.line.port.out.LineRepository;
 import subway.domain.line.Line;
 

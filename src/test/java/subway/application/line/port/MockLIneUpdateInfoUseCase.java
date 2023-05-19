@@ -1,7 +1,7 @@
 package subway.application.line.port;
 
-import subway.application.line.port.in.LineUpdateInfoUseCase;
-import subway.application.line.port.in.LineUpdateRequestDto;
+import subway.application.line.port.in.update.LineUpdateInfoUseCase;
+import subway.application.line.port.in.update.LineUpdateRequestDto;
 
 public class MockLIneUpdateInfoUseCase implements LineUpdateInfoUseCase {
 

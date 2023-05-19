@@ -1,4 +1,4 @@
-package subway.application.line.port.in;
+package subway.application.line.port.in.update;
 
 public class LineUpdateRequestDto {
 

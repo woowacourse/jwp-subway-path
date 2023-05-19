@@ -1,4 +1,4 @@
-package subway.mvc.line;
+package subway.mvc.line.update;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,9 +20,9 @@ class LineUpdateControllerTest extends AbstractControllerTest {
         final String request = objectMapper.writeValueAsString(new LineUpdateInfoRequest("2호선", "초록색"));
 
         mockMvc.perform(patch("/lines/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
 
-            .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
     }
 }

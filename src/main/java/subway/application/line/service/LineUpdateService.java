@@ -3,8 +3,8 @@ package subway.application.line.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.line.port.in.LineNotFoundException;
-import subway.application.line.port.in.LineUpdateInfoUseCase;
-import subway.application.line.port.in.LineUpdateRequestDto;
+import subway.application.line.port.in.update.LineUpdateInfoUseCase;
+import subway.application.line.port.in.update.LineUpdateRequestDto;
 import subway.application.line.port.out.LineRepository;
 import subway.domain.line.Line;
 

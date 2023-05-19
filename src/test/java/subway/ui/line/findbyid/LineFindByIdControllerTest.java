@@ -1,4 +1,4 @@
-package subway.ui.line;
+package subway.ui.line.findbyid;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import subway.application.line.port.MockLineFindByIdUseCase;
 import subway.application.line.port.in.InterStationResponseDto;
 import subway.application.line.port.in.LineResponseDto;
+import subway.ui.line.LineFindByIdController;
 import subway.ui.line.dto.in.InterStationResponse;
 import subway.ui.line.dto.in.LineResponse;
 
@@ -34,10 +35,10 @@ class LineFindByIdControllerTest {
         // when
         final ResponseEntity<LineResponse> result = lineFindByIdController.findById(1L);
         new LineResponseDto(1L, "2호선", "green", List.of(
-            new InterStationResponseDto(1L, 1L, 10L, 10)
+                new InterStationResponseDto(1L, 1L, 10L, 10)
         ));
         final LineResponse expected = new LineResponse(1L, "2호선", "green", List.of(
-            new InterStationResponse(1L, 1L, 10L, 10L)
+                new InterStationResponse(1L, 1L, 10L, 10L)
         ));
 
         // then

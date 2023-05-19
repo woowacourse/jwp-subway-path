@@ -1,25 +1,28 @@
-package subway.application.line.port.in;
+package subway.application.line.port.in.create;
 
-public class LineAddInterStationRequestDto {
+public class LineCreateRequestDto {
 
-    private final Long id;
+    private final String name;
+    private final String color;
     private final Long upStationId;
     private final Long downStationId;
-    private final Long newStationId;
     private final long distance;
 
-    public LineAddInterStationRequestDto(final Long id, final Long upStationId, final Long downStationId,
-            final Long newStationId,
+    public LineCreateRequestDto(final String name, final String color, final Long upStationId, final Long downStationId,
             final long distance) {
-        this.id = id;
+        this.name = name;
+        this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
-        this.newStationId = newStationId;
         this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public Long getUpStationId() {
@@ -28,10 +31,6 @@ public class LineAddInterStationRequestDto {
 
     public Long getDownStationId() {
         return downStationId;
-    }
-
-    public Long getNewStationId() {
-        return newStationId;
     }
 
     public long getDistance() {

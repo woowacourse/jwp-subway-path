@@ -1,4 +1,4 @@
-package subway.mvc.line;
+package subway.mvc.line.create;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -14,8 +14,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.application.line.port.in.InterStationResponseDto;
-import subway.application.line.port.in.LineCreateRequestDto;
 import subway.application.line.port.in.LineResponseDto;
+import subway.application.line.port.in.create.LineCreateRequestDto;
 import subway.mvc.AbstractControllerTest;
 import subway.ui.line.dto.in.InterStationResponse;
 import subway.ui.line.dto.in.LineResponse;
@@ -27,19 +27,19 @@ class LineCreateControllerTest extends AbstractControllerTest {
     @Test
     void 정상적으로_생성된다() throws Exception {
         final LineResponseDto givenResult = new LineResponseDto(1L, "2호선", "초록색",
-            List.of(new InterStationResponseDto(1L, 2L, 3L, 4L)));
+                List.of(new InterStationResponseDto(1L, 2L, 3L, 4L)));
         given(lineCreateUseCase.createLine(any(LineCreateRequestDto.class)))
-            .willReturn(givenResult);
+                .willReturn(givenResult);
         final String requestBody = objectMapper.writeValueAsString(new LineCreateRequestDto("2호선", "초록색", 1L, 2L, 10L));
         final String expect = objectMapper.writeValueAsString(new LineResponse(1L, "2호선", "초록색", List.of(
-            new InterStationResponse(1L, 2L, 3L, 4L))));
+                new InterStationResponse(1L, 2L, 3L, 4L))));
 
         mockMvc.perform(post("/lines")
-                .contentType(APPLICATION_JSON)
-                .content(requestBody))
+                        .contentType(APPLICATION_JSON)
+                        .content(requestBody))
 
-            .andExpect(status().isCreated())
-            .andExpect(header().string("Location", "/lines/1"))
-            .andExpect(content().json(expect));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/lines/1"))
+                .andExpect(content().json(expect));
     }
 }

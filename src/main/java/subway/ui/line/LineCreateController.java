@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.line.port.in.LineCreateRequestDto;
-import subway.application.line.port.in.LineCreateUseCase;
 import subway.application.line.port.in.LineResponseDto;
+import subway.application.line.port.in.create.LineCreateRequestDto;
+import subway.application.line.port.in.create.LineCreateUseCase;
 import subway.ui.line.dto.in.LineCreateRequest;
 import subway.ui.line.dto.in.LineResponse;
 

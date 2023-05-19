@@ -1,6 +1,6 @@
 package subway.application.line.port;
 
-import subway.application.line.port.in.LineDeleteUseCase;
+import subway.application.line.port.in.delete.LineDeleteUseCase;
 
 public class MockLineDeleteUseCase implements LineDeleteUseCase {
 

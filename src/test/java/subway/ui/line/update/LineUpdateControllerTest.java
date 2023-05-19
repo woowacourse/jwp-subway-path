@@ -1,4 +1,4 @@
-package subway.ui.line;
+package subway.ui.line.update;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.application.line.port.MockLIneUpdateInfoUseCase;
+import subway.ui.line.LineUpdateInfoController;
 import subway.ui.line.dto.in.LineUpdateInfoRequest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)

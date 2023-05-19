@@ -1,4 +1,4 @@
-package subway.ui.line;
+package subway.ui.line.create;
 
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import subway.application.line.port.MockLineCreateUseCase;
+import subway.ui.line.LineCreateController;
 import subway.ui.line.dto.in.LineCreateRequest;
 import subway.ui.line.dto.in.LineResponse;
 
@@ -31,7 +32,7 @@ class LineCreateControllerTest {
     void 정상적으로_생성된다() {
         // when
         final ResponseEntity<LineResponse> result = lineCreateController.createLine(
-            new LineCreateRequest("2호선", "초록색", 1L, 2L, 10L));
+                new LineCreateRequest("2호선", "초록색", 1L, 2L, 10L));
 
         // then
         assertSoftly(softly -> {

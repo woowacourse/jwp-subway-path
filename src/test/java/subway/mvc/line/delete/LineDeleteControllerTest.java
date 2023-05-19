@@ -1,4 +1,4 @@
-package subway.mvc.line;
+package subway.mvc.line.delete;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,6 +17,6 @@ class LineDeleteControllerTest extends AbstractControllerTest {
     void 정상적으로_삭제된다() throws Exception {
         mockMvc.perform(delete("/lines/1"))
 
-            .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
     }
 }

@@ -2,8 +2,8 @@ package subway.application.line.port;
 
 import java.util.List;
 import subway.application.line.port.in.InterStationResponseDto;
-import subway.application.line.port.in.LineFindByIdUseCase;
 import subway.application.line.port.in.LineResponseDto;
+import subway.application.line.port.in.findById.LineFindByIdUseCase;
 
 public class MockLineFindByIdUseCase implements LineFindByIdUseCase {
 
@@ -15,7 +15,7 @@ public class MockLineFindByIdUseCase implements LineFindByIdUseCase {
         callCount++;
         lastId = id;
         return new LineResponseDto(1L, "2호선", "green", List.of(
-            new InterStationResponseDto(1L, 1L, 10L, 10)
+                new InterStationResponseDto(1L, 1L, 10L, 10)
         ));
     }
 

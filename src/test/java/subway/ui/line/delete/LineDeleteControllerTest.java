@@ -1,4 +1,4 @@
-package subway.ui.line;
+package subway.ui.line.delete;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import subway.application.line.port.MockLineDeleteUseCase;
+import subway.ui.line.LineDeleteController;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철 노선을 삭제하는 기능")

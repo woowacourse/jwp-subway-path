@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.line.port.in.LineFindByIdUseCase;
 import subway.application.line.port.in.LineResponseDto;
+import subway.application.line.port.in.findById.LineFindByIdUseCase;
 import subway.ui.line.dto.in.LineResponse;
 
 @Tag(name = "노선")

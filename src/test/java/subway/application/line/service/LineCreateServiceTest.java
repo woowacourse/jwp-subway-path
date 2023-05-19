@@ -11,8 +11,8 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.adapter.line.out.FakeLineRepository;
 import subway.application.line.port.in.InterStationResponseDto;
-import subway.application.line.port.in.LineCreateRequestDto;
 import subway.application.line.port.in.LineResponseDto;
+import subway.application.line.port.in.create.LineCreateRequestDto;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("라인 추가 기능 테스트")
@@ -31,14 +31,14 @@ class LineCreateServiceTest {
     void 정상적으로_생성된다() {
         final LineResponseDto result = lineCreateService.createLine(new LineCreateRequestDto("2호선", "초록색", 1L, 2L, 10));
         final LineResponseDto expected = new LineResponseDto(1L, "2호선", "초록색", List.of(
-            new InterStationResponseDto(1L, 1L, 2L, 10)
+                new InterStationResponseDto(1L, 1L, 2L, 10)
         ));
 
         assertSoftly(
-            softly -> {
-                assertThat(result).usingRecursiveComparison().isEqualTo(expected);
-                assertThat(fakeLineRepository.findAll()).hasSize(1);
-            }
+                softly -> {
+                    assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+                    assertThat(fakeLineRepository.findAll()).hasSize(1);
+                }
         );
     }
 }

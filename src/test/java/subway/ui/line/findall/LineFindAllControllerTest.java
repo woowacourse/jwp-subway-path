@@ -1,4 +1,4 @@
-package subway.ui.line;
+package subway.ui.line.findall;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import subway.application.line.port.MockLineFindAllUseCase;
+import subway.ui.line.LineFindAllController;
 import subway.ui.line.dto.in.LineResponse;
 import subway.ui.line.dto.in.LinesResponse;
 
@@ -32,8 +33,8 @@ class LineFindAllControllerTest {
         // when
         final ResponseEntity<LinesResponse> allLines = lineFindAllController.findAllLines();
         final LinesResponse expected = new LinesResponse(List.of(
-            new LineResponse(1L, "2호선", "green", List.of()),
-            new LineResponse(2L, "신분당선", "red", List.of())
+                new LineResponse(1L, "2호선", "green", List.of()),
+                new LineResponse(2L, "신분당선", "red", List.of())
         ));
 
         // then

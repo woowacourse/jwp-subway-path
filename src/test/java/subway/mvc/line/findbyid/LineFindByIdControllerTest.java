@@ -1,4 +1,4 @@
-package subway.mvc.line;
+package subway.mvc.line.findbyid;
 
 
 import static org.mockito.BDDMockito.given;
@@ -24,17 +24,17 @@ class LineFindByIdControllerTest extends AbstractControllerTest {
     @Test
     void 정상적으로_조회된다() throws Exception {
         given(lineFindByIdUseCase.findById(1L))
-            .willReturn(new LineResponseDto(1L, "2호선", "green", List.of(
-                new InterStationResponseDto(1L, 2L, 3L, 4L)
-            )));
+                .willReturn(new LineResponseDto(1L, "2호선", "green", List.of(
+                        new InterStationResponseDto(1L, 2L, 3L, 4L)
+                )));
         final LineResponse resultBody = new LineResponse(1L, "2호선", "green", List.of(
-            new InterStationResponse(1L, 2L, 3L, 4L)
+                new InterStationResponse(1L, 2L, 3L, 4L)
         ));
         final String expect = objectMapper.writeValueAsString(resultBody);
 
         mockMvc.perform(get("/lines/1"))
 
-            .andExpect(status().isOk())
-            .andExpect(content().json(expect));
+                .andExpect(status().isOk())
+                .andExpect(content().json(expect));
     }
 }

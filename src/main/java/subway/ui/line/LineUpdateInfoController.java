@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.line.port.in.LineUpdateInfoUseCase;
+import subway.application.line.port.in.update.LineUpdateInfoUseCase;
 import subway.ui.line.dto.in.LineUpdateInfoRequest;
 
 @Tag(name = "노선")

@@ -2,9 +2,9 @@ package subway.application.line.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.line.port.in.LineCreateRequestDto;
-import subway.application.line.port.in.LineCreateUseCase;
 import subway.application.line.port.in.LineResponseDto;
+import subway.application.line.port.in.create.LineCreateRequestDto;
+import subway.application.line.port.in.create.LineCreateUseCase;
 import subway.application.line.port.out.LineRepository;
 import subway.domain.line.Line;
 
