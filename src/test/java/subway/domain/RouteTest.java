@@ -17,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RouteTest {
 
     /**
-     *        11   5
-     *      F -- G -- H
-     *    4 |         | 4
-     *      |         |
+     * 11   5
+     * F -- G -- H
+     * 4 |         | 4
+     * |         |
      * A -- B -- C -- D
-     *   1   2    3
+     * 1   2    3
      */
 
     @ParameterizedTest
@@ -71,12 +71,12 @@ class RouteTest {
     }
 
     /**
-     *        11   5
-     *      F -- G -- H
-     *    4 |         | 4
-     *      |         |
+     * 11   5
+     * F -- G -- H
+     * 4 |         | 4
+     * |         |
      * A -- B -- C -- D
-     *   1   2    3
+     * 1   2    3
      */
     @ParameterizedTest
     @MethodSource("findShortestRouteDistance")
@@ -92,10 +92,10 @@ class RouteTest {
         final Route route = new Route(lines);
 
         //when
-        final double shortestRouteDistance = route.findShortestRouteDistance(start, end);
+        final Distance shortestRouteDistance = route.findShortestRouteDistance(start, end);
 
         //then
-        assertEquals(distance, shortestRouteDistance);
+        assertEquals(distance, shortestRouteDistance.getValue());
     }
 
     static Stream<Arguments> findShortestRouteDistance() {

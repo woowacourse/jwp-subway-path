@@ -41,8 +41,9 @@ public class RouteQueryService {
         final Route route = new Route(lines);
 
         return route.findShortestRouteDistance(
-                shortestRouteRequest.getStartStation(),
-                shortestRouteRequest.getEndStation()
-        );
+                            shortestRouteRequest.getStartStation(),
+                            shortestRouteRequest.getEndStation())
+                    .getValue();
     }
+
 }
