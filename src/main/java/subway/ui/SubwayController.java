@@ -18,7 +18,7 @@ public class SubwayController {
     public SubwayController(SubwayService subwayService) {
         this.subwayService = subwayService;
     }
-    
+
     @GetMapping("/path")
     public ResponseEntity<PathResponse> findPath(@RequestBody PathRequest request) {
         PathResponse response = subwayService.findShortestPath(request);

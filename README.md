@@ -122,3 +122,4 @@
 
 - 2단계 질문 목록
   - Entity처럼 쓰이는 도메인과 DB 테이블 구조와는 상관없는 도메인을 혼용하는 것에 대해 어떻게 생각하는지
+  - 존재하지 않는 Station을 find하도록 dao에 요청했을 때 예외가 발생하는 이유?(InvokationTargetException)

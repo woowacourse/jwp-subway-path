@@ -27,6 +27,10 @@ public class SubwayMap {
     }
 
     public Sections getShortestPath(final Station from, final Station to) {
+        if (from == null || to == null) {
+            throw new IllegalArgumentException("존재하지 않는 역입니다.");
+        }
+
         DijkstraShortestPath<Station, SectionEdge> shortestPath = new DijkstraShortestPath<>(subwayGraph);
         GraphPath<Station, SectionEdge> shortestGraph = shortestPath.getPath(from, to);
         List<Station> vertexes = shortestGraph.getVertexList();
