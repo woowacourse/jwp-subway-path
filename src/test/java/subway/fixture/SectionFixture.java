@@ -19,20 +19,20 @@ import subway.domain.Section;
 public class SectionFixture {
 
     // 1호선
-    public static Section 남영역_서울역 = new Section(1L, 남영역, 서울역, new Distance(10));
-    public static Section 서울역_시청역 = new Section(2L, 서울역, 시청역, new Distance(5));
-    public static Section 시청역_종각역 = new Section(3L, 시청역, 종각역, new Distance(10));
+    public static Section 남영역_서울역_10 = new Section(1L, 남영역, 서울역, new Distance(10));
+    public static Section 서울역_시청역_5 = new Section(2L, 서울역, 시청역, new Distance(5));
+    public static Section 시청역_종각역_10 = new Section(3L, 시청역, 종각역, new Distance(10));
 
     // 2호선
-    public static Section 강남역_용산역 = new Section(3L, 강남역, 용산역, new Distance(10));
-    public static Section 용산역_시청역 = new Section(4L, 용산역, 시청역, new Distance(5));
-    public static Section 시청역_선릉역 = new Section(5L, 시청역, 선릉역, new Distance(5));
+    public static Section 강남역_용산역_10 = new Section(3L, 강남역, 용산역, new Distance(10));
+    public static Section 용산역_시청역_5 = new Section(4L, 용산역, 시청역, new Distance(5));
+    public static Section 시청역_선릉역_5 = new Section(5L, 시청역, 선릉역, new Distance(5));
 
     // 3호선
-    public static Section 신사역_수서역 = new Section(6L, 신사역, 수서역, new Distance(7));
+    public static Section 신사역_수서역_7 = new Section(6L, 신사역, 수서역, new Distance(7));
 
     // 4호선
-    public static Section 서울역_용산역 = new Section(7L, 서울역, 용산역, new Distance(5));
-    public static Section 용산역_사당역 = new Section(8L, 용산역, 사당역, new Distance(10));
-    public static Section 사당역_혜화역 = new Section(9L, 사당역, 혜화역, new Distance(10));
+    public static Section 서울역_용산역_5 = new Section(7L, 서울역, 용산역, new Distance(5));
+    public static Section 용산역_사당역_10 = new Section(8L, 용산역, 사당역, new Distance(10));
+    public static Section 사당역_혜화역_10 = new Section(9L, 사당역, 혜화역, new Distance(10));
 }
