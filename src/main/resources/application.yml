@@ -1,0 +1,27 @@
+spring:
+  sql:
+    init:
+      mode: always
+
+---
+
+spring:
+  profiles:
+    active: prod
+  datasource:
+    url: jdbc:mysql://localhost:13306/subway
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+---
+
+spring:
+  profiles:
+    active: test
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
