@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -50,9 +51,9 @@ class PathServiceTest {
     @DisplayName("출발점부터 도착점까지 최단 경로를 찾는다.")
     void testFindShortestPath() {
         //given
-        final Sections sections1 = new Sections(List.of(section1, section2, section3));
+        final Sections sections1 = new Sections(new ArrayList<>(List.of(section1, section2, section3)));
         final Line line1 = new Line("lineName", "lineColor", sections1);
-        final Sections sections2 = new Sections(List.of(section4, section5, section6));
+        final Sections sections2 = new Sections(new ArrayList<>(List.of(section4, section5, section6)));
         final Line line2 = new Line("lineName", "lineColor", sections2);
 
         given(stationRepository.findByName(anyString()))
