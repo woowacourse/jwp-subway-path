@@ -1,15 +1,15 @@
 package subway.repository.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.repository.dao.DaoFixtures.GANGNAM_STATION;
-import static subway.repository.dao.DaoFixtures.LINE_NO_1;
-import static subway.repository.dao.DaoFixtures.LINE_NO_2;
-import static subway.repository.dao.DaoFixtures.NAMYOUNG_STATION;
-import static subway.repository.dao.DaoFixtures.SAMSEONG_STATION;
-import static subway.repository.dao.DaoFixtures.SEOLLEUNG_STATION;
-import static subway.repository.dao.DaoFixtures.SEOUL_STATION;
-import static subway.repository.dao.DaoFixtures.YEOKSAM_STATION;
-import static subway.repository.dao.DaoFixtures.YONGSAN_STATION;
+import static subway.repository.dao.EntityFixtures.GANGNAM_STATION;
+import static subway.repository.dao.EntityFixtures.LINE_NO_1;
+import static subway.repository.dao.EntityFixtures.LINE_NO_2;
+import static subway.repository.dao.EntityFixtures.NAMYOUNG_STATION;
+import static subway.repository.dao.EntityFixtures.SAMSEONG_STATION;
+import static subway.repository.dao.EntityFixtures.SEOLLEUNG_STATION;
+import static subway.repository.dao.EntityFixtures.SEOUL_STATION;
+import static subway.repository.dao.EntityFixtures.YEOKSAM_STATION;
+import static subway.repository.dao.EntityFixtures.YONGSAN_STATION;
 
 import java.util.List;
 import java.util.stream.Collectors;

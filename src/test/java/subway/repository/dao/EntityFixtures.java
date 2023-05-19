@@ -4,7 +4,7 @@ import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
 @SuppressWarnings("NonAsciiCharacters")
-public class DaoFixtures {
+public class EntityFixtures {
 
     public static LineEntity LINE_NO_1 = new LineEntity("1호선");
     public static LineEntity LINE_NO_2 = new LineEntity("2호선");

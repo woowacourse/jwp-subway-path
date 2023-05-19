@@ -2,8 +2,8 @@ package subway.repository.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.repository.dao.DaoFixtures.LINE_NO_1;
-import static subway.repository.dao.DaoFixtures.LINE_NO_2;
+import static subway.repository.dao.EntityFixtures.LINE_NO_1;
+import static subway.repository.dao.EntityFixtures.LINE_NO_2;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,8 @@
 package subway.repository.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.repository.dao.DaoFixtures.GANGNAM_STATION;
-import static subway.repository.dao.DaoFixtures.YEOKSAM_STATION;
+import static subway.repository.dao.EntityFixtures.GANGNAM_STATION;
+import static subway.repository.dao.EntityFixtures.YEOKSAM_STATION;
 
 import java.util.List;
 import java.util.Optional;
