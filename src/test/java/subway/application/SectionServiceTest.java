@@ -24,6 +24,9 @@ import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.dao.StationDao;
 import subway.dao.StationEntity;
+import subway.domain.Distance;
+import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.RouteDto;
 import subway.dto.SectionSaveDto;
@@ -37,6 +40,9 @@ class SectionServiceTest {
 
     @Mock
     StationDao stationDao;
+
+    @Mock
+    SectionsMapper sectionsMapper;
 
     private static MockedStatic<StationFactory> stationFactory;
 
@@ -56,13 +62,22 @@ class SectionServiceTest {
     @DisplayName("구간 삭제 테스트")
     @Test
     void deleteSectionSuccessTest() {
-        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
+        int distanceValue = 3;
+        Distance distance = new Distance(distanceValue);
+        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, distanceValue);
 
-        List<SectionEntity> sections = List.of(sectionEntity1);
+        List<SectionEntity> sectionEntities = List.of(sectionEntity1);
         StationEntity stationEntity1 = new StationEntity(1L, "일역");
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
+        Station station1 = new Station("일역");
+        Station station2 = new Station("이역");
+        Section section = new Section(station1, station2, distance);
+        Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
+                .thenReturn(sectionEntities);
+
+        when(sectionsMapper.mapFrom(sectionEntities))
                 .thenReturn(sections);
 
         when(stationDao.findById(1L))
@@ -90,13 +105,22 @@ class SectionServiceTest {
     @DisplayName("구간 저장 테스트 (도착역이 새로운 역인 경우)")
     @Test
     void saveSectionSuccessTest1() {
-        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
+        int distanceValue = 3;
+        Distance distance = new Distance(distanceValue);
+        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, distanceValue);
 
-        List<SectionEntity> sections = List.of(sectionEntity1);
+        List<SectionEntity> sectionEntities = List.of(sectionEntity1);
         StationEntity stationEntity1 = new StationEntity(1L, "일역");
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
+        Station station1 = new Station("일역");
+        Station station2 = new Station("이역");
+        Section section = new Section(station1, station2, distance);
+        Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
+                .thenReturn(sectionEntities);
+
+        when(sectionsMapper.mapFrom(sectionEntities))
                 .thenReturn(sections);
 
         when(stationDao.findById(1L))
@@ -126,13 +150,22 @@ class SectionServiceTest {
     @DisplayName("구간 저장 테스트 (출발역 새로운 역인 경우)")
     @Test
     void saveSectionSuccessTest2() {
-        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
+        int distanceValue = 3;
+        Distance distance = new Distance(distanceValue);
+        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, distanceValue);
 
-        List<SectionEntity> sections = List.of(sectionEntity1);
+        List<SectionEntity> sectionEntities = List.of(sectionEntity1);
         StationEntity stationEntity1 = new StationEntity(1L, "일역");
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
+        Station station1 = new Station("일역");
+        Station station2 = new Station("이역");
+        Section section = new Section(station1, station2, distance);
+        Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
+                .thenReturn(sectionEntities);
+
+        when(sectionsMapper.mapFrom(sectionEntities))
                 .thenReturn(sections);
 
         when(stationDao.findById(1L))
@@ -162,13 +195,22 @@ class SectionServiceTest {
     @DisplayName("구간 저장 테스트 (도착역이 새로운 역이고 사이에 추가되는 경우)")
     @Test
     void saveSectionSuccessTest3() {
-        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
+        int distanceValue = 3;
+        Distance distance = new Distance(distanceValue);
+        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, distanceValue);
 
-        List<SectionEntity> sections = List.of(sectionEntity1);
+        List<SectionEntity> sectionEntities = List.of(sectionEntity1);
         StationEntity stationEntity1 = new StationEntity(1L, "일역");
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
+        Station station1 = new Station("일역");
+        Station station2 = new Station("이역");
+        Section section = new Section(station1, station2, distance);
+        Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
+                .thenReturn(sectionEntities);
+
+        when(sectionsMapper.mapFrom(sectionEntities))
                 .thenReturn(sections);
 
         when(stationDao.findById(1L))
@@ -198,13 +240,22 @@ class SectionServiceTest {
     @DisplayName("구간 저장 테스트 (출발역이 새로운 역이고 사이에 추가되는 경우)")
     @Test
     void saveSectionSuccessTest4() {
-        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
+        int distanceValue = 3;
+        Distance distance = new Distance(distanceValue);
+        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, distanceValue);
 
-        List<SectionEntity> sections = List.of(sectionEntity1);
+        List<SectionEntity> sectionEntities = List.of(sectionEntity1);
         StationEntity stationEntity1 = new StationEntity(1L, "일역");
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
+        Station station1 = new Station("일역");
+        Station station2 = new Station("이역");
+        Section section = new Section(station1, station2, distance);
+        Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
+                .thenReturn(sectionEntities);
+
+        when(sectionsMapper.mapFrom(sectionEntities))
                 .thenReturn(sections);
 
         when(stationDao.findById(1L))
@@ -234,16 +285,22 @@ class SectionServiceTest {
     @DisplayName("구간에 따른 요금 반환 테스트")
     @Test
     void getFeeByStations() {
-        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
+        int distanceValue = 3;
+        Distance distance = new Distance(distanceValue);
+        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, distanceValue);
 
-        List<SectionEntity> sections = List.of(sectionEntity1);
+        List<SectionEntity> sectionEntities = List.of(sectionEntity1);
         StationEntity stationEntity1 = new StationEntity(1L, "일역");
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
+        Station station1 = new Station("일역");
+        Station station2 = new Station("이역");
+        Section section = new Section(station1, station2, distance);
+        Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findAll())
-                .thenReturn(sections);
+                .thenReturn(sectionEntities);
 
-        when(sectionDao.findByLineId(1L))
+        when(sectionsMapper.mapFrom(sectionEntities))
                 .thenReturn(sections);
 
         when(stationDao.findById(1L))
@@ -283,13 +340,22 @@ class SectionServiceTest {
         @DisplayName("구간 저장 테스트 (같은 구간인 경우)")
         @Test
         void saveSectionFailTest1() {
-            SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
+            int distanceValue = 3;
+            Distance distance = new Distance(distanceValue);
+            SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, distanceValue);
 
-            List<SectionEntity> sections = List.of(sectionEntity1);
+            List<SectionEntity> sectionEntities = List.of(sectionEntity1);
             StationEntity stationEntity1 = new StationEntity(1L, "일역");
             StationEntity stationEntity2 = new StationEntity(2L, "이역");
+            Station station1 = new Station("일역");
+            Station station2 = new Station("이역");
+            Section section = new Section(station1, station2, distance);
+            Sections sections = new Sections(List.of(section));
 
             when(sectionDao.findByLineId(1L))
+                    .thenReturn(sectionEntities);
+
+            when(sectionsMapper.mapFrom(sectionEntities))
                     .thenReturn(sections);
 
             when(stationDao.findById(1L))
@@ -353,13 +419,22 @@ class SectionServiceTest {
         @DisplayName("구간 저장 테스트 (구간길이가 추가될 구간보다 긴 경우)")
         @Test
         void saveSectionFailTest3() {
-            SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
+            int distanceValue = 3;
+            Distance distance = new Distance(distanceValue);
+            SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, distanceValue);
 
-            List<SectionEntity> sections = List.of(sectionEntity1);
+            List<SectionEntity> sectionEntities = List.of(sectionEntity1);
             StationEntity stationEntity1 = new StationEntity(1L, "일역");
             StationEntity stationEntity2 = new StationEntity(2L, "이역");
+            Station station1 = new Station("일역");
+            Station station2 = new Station("이역");
+            Section section = new Section(station1, station2, distance);
+            Sections sections = new Sections(List.of(section));
 
             when(sectionDao.findByLineId(1L))
+                    .thenReturn(sectionEntities);
+
+            when(sectionsMapper.mapFrom(sectionEntities))
                     .thenReturn(sections);
 
             when(stationDao.findById(1L))

@@ -28,16 +28,18 @@ public class SectionService {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final SectionsMapper sectionsMapper;
 
-    public SectionService(SectionDao sectionDao, StationDao stationDao) {
+    public SectionService(SectionDao sectionDao, StationDao stationDao, final SectionsMapper sectionsMapper) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.sectionsMapper = sectionsMapper;
     }
 
     @Transactional
     public void saveSection(Long lineId, SectionSaveDto request) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
-        Sections sections = getSections(sectionEntities);
+        Sections sections = sectionsMapper.mapFrom(sectionEntities);
 
         Station requestStartStation = new Station(request.getStartStation());
         Station requestEndStation = new Station(request.getEndStation());
@@ -79,32 +81,15 @@ public class SectionService {
                 .collect(Collectors.toList());
     }
 
-
-    private Section toSection(SectionEntity sectionEntity) {
-        Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
-        Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
-        Distance distance = new Distance(sectionEntity.getDistance());
-
-        return new Section(startStation, endStation, distance);
-    }
-
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         List<SectionEntity> sectionEntitiesOfLine = sectionDao.findByLineId(lineId);
-        Sections sections = getSections(sectionEntitiesOfLine);
+        Sections sections = sectionsMapper.mapFrom(sectionEntitiesOfLine);
 
         Station removedStation = toStation(stationDao.findById(stationId));
         sections.remove(removedStation);
 
         updateSections(lineId, sections);
-    }
-
-    private Sections getSections(final List<SectionEntity> sectionEntitiesOfLine) {
-        List<Section> sectionsOfLine = sectionEntitiesOfLine.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
-
-        return new Sections(sectionsOfLine);
     }
 
     public RouteDto getFeeByStations(final Long startStationId, final Long endStationId) {
@@ -117,11 +102,10 @@ public class SectionService {
         Station endStation = new Station(endStationEntity.getName());
 
         List<SectionEntity> sectionEntities = sectionDao.findAll();
-        List<Section> sections = sectionEntities.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
+        Sections sections = sectionsMapper.mapFrom(sectionEntities);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath(sections);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath(
+                sections.getSections());
 
         List<Station> shortestPath = dijkstraShortestPath.getPath(startStation, endStation).getVertexList();
         int distance = (int) dijkstraShortestPath.getPathWeight(startStation, endStation);
