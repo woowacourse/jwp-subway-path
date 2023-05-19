@@ -26,7 +26,7 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> add(@RequestBody SectionRequest request) {
+    public ResponseEntity<LineResponse> createSection(@RequestBody SectionRequest request) {
         final LineResponse responses = sectionService.save(
                 new SectionInsertDto(
                         request.getLineName(),
@@ -41,7 +41,7 @@ public class SectionController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> remove(@RequestParam("lineid") Long lineId, @RequestParam("stationid") Long stationId) {
+    public ResponseEntity<Void> deleteSection(@RequestParam("lineid") Long lineId, @RequestParam("stationid") Long stationId) {
         sectionService.remove(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
