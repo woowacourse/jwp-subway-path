@@ -18,21 +18,14 @@ public class SubwayMapService {
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private SubwayMap subwayMap;
 
     public SubwayMapService(final LineDao lineDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        update();
-    }
-
-    public synchronized void update() {
-        final List<Line> lines = lineDao.findAll();
-        final List<Section> sections = sectionDao.findAll();
-        subwayMap = SubwayMap.of(lines, sections);
     }
 
     public List<LineSearchResponse> getLineSearchResponses() {
+        final SubwayMap subwayMap = getSubwayMap();
         final Set<Long> lineIds = subwayMap.getAllLineIds();
         return lineIds.stream()
                 .map(this::getLineSearchResponse)
@@ -40,8 +33,15 @@ public class SubwayMapService {
     }
 
     public LineSearchResponse getLineSearchResponse(final Long lineId) {
+        final SubwayMap subwayMap = getSubwayMap();
         final Line line = subwayMap.getLine(lineId);
         final List<Station> stations = subwayMap.getStations(lineId);
         return new LineSearchResponse(line.getId(), line.getName(), line.getColor(), stations);
+    }
+
+    private SubwayMap getSubwayMap() {
+        final List<Line> lines = lineDao.findAll();
+        final List<Section> sections = sectionDao.findAll();
+        return SubwayMap.of(lines, sections);
     }
 }
