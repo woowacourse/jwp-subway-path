@@ -3,7 +3,6 @@ package subway.integration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Station;
 import subway.dto.LineResponse;
 

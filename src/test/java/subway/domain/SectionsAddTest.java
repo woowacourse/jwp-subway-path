@@ -18,7 +18,6 @@ import static subway.fixture.StationFixture.*;
 class SectionsAddTest {
     Sections sections;
 
-
     @BeforeEach
     void beforeEach() {
         sections = new Sections(new ArrayList<>(List.of(SECTION_1, SECTION_2)));

@@ -70,7 +70,7 @@ class SubwayGraphTest {
         subway = Subway.from(sections);
         subwayGraph = SubwayGraph.from(subway);
 
-        assertThatThrownBy(()->subwayGraph.getDijkstraShortestPath(STATION_1, STATION_8))
+        assertThatThrownBy(() -> subwayGraph.getDijkstraShortestPath(STATION_1, STATION_8))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("최단 경로를 찾을 수 없습니다");
     }

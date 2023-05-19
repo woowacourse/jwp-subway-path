@@ -11,7 +11,6 @@ import java.util.List;
 @Transactional
 @Service
 public class LineService {
-
     private final LineRepository lineRepository;
 
     public LineService(LineRepository lineRepository) {

@@ -12,7 +12,6 @@ import java.net.URI;
 @RestController
 @RequestMapping("/lines/{lineId}/stations")
 public class SectionController {
-
     private final SectionService sectionService;
 
     public SectionController(SectionService sectionService) {
