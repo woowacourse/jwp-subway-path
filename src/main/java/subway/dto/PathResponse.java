@@ -3,7 +3,7 @@ package subway.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import subway.domain.Station;
+import subway.domain.subway.Station;
 
 public class PathResponse {
     private final int distance;

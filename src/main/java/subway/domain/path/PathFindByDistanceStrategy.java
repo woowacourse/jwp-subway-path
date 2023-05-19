@@ -1,9 +1,10 @@
-package subway.domain;
+package subway.domain.path;
 
+import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -13,17 +14,15 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import subway.domain.exception.DomainException;
 import subway.domain.exception.ExceptionType;
-import subway.domain.fee.FeeCalculator;
-import subway.domain.fee.FeeStrategy;
+import subway.domain.subway.Section;
 
-public class PathInfoFinder {
-    private final FeeStrategy feeStrategy;
-    private final Graph<Long, DefaultWeightedEdge> graph;
-
-    public PathInfoFinder(FeeStrategy feeStrategy, List<Section> allSections) {
-        this.feeStrategy = feeStrategy;
-        Set<Section> sections = new HashSet<>(allSections);
-        this.graph = makeGraph(sections);
+public class PathFindByDistanceStrategy implements PathFindStrategy {
+    @Override
+    public Map.Entry<List<Long>, Integer> findPathAndTotalDistance(Long departureId, Long destinationId,
+        List<Section> allSections) {
+        Graph<Long, DefaultWeightedEdge> graph = makeGraph(new HashSet<>(allSections));
+        GraphPath<Long, DefaultWeightedEdge> path = getPath(departureId, destinationId, graph);
+        return new AbstractMap.SimpleEntry<>(path.getVertexList(), (int)path.getWeight());
     }
 
     private Graph<Long, DefaultWeightedEdge> makeGraph(Set<Section> sections) {
@@ -32,7 +31,8 @@ public class PathInfoFinder {
             setGraph(sections, graph);
         } catch (IllegalArgumentException e) {
             throw new DomainException(ExceptionType.PATH_HAS_LOOP);
-        } return graph;
+        }
+        return graph;
     }
 
     private void setGraph(Set<Section> allSections, Graph<Long, DefaultWeightedEdge> graph) {
@@ -46,25 +46,8 @@ public class PathInfoFinder {
         }
     }
 
-    public List<Long> findPath(Long departureId, Long destinationId) {
-        GraphPath<Long, DefaultWeightedEdge> path = getPath(departureId, destinationId);
-
-        return path.getVertexList().stream().collect(Collectors.toUnmodifiableList());
-    }
-
-    public int findTotalDistance(Long departureId, Long destinationId) {
-        GraphPath<Long, DefaultWeightedEdge> path = getPath(departureId, destinationId);
-
-        return (int)path.getWeight();
-    }
-
-    public int findFee(Long departureId, Long destinationId) {
-        int totalDistance = findTotalDistance(departureId, destinationId);
-        FeeCalculator feeCalculator = new FeeCalculator(feeStrategy);
-        return feeCalculator.calculate(totalDistance);
-    }
-
-    private GraphPath<Long, DefaultWeightedEdge> getPath(Long departureId, Long destinationId) {
+    private GraphPath<Long, DefaultWeightedEdge> getPath(Long departureId, Long destinationId,
+        Graph<Long, DefaultWeightedEdge> graph) {
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(departureId, destinationId);
 
