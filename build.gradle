@@ -22,6 +22,7 @@ dependencies {
     testImplementation 'io.rest-assured:spring-mock-mvc:4.4.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    runtimeOnly 'mysql:mysql-connector-java:8.0.28'
     runtimeOnly 'com.h2database:h2'
 }
 
