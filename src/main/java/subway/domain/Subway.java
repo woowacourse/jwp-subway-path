@@ -3,7 +3,7 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.List;
 import subway.exception.DuplicatedNameException;
-import subway.exception.NonExistLineException;
+import subway.exception.line.NonExistLineException;
 
 public class Subway {
 

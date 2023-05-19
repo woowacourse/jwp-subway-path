@@ -1,7 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.exception.InvalidSectionDirectionException;
+import subway.exception.section.InvalidSectionDirectionException;
 
 public class Section {
 

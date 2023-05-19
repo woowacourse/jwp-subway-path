@@ -14,8 +14,8 @@ import subway.dto.LineSelectResponse;
 import subway.dto.LinesSelectResponse;
 import subway.dto.StationSaveRequest;
 import subway.dto.StationSelectResponse;
-import subway.exception.AlreadyExistStationException;
-import subway.exception.StationNotFoundException;
+import subway.exception.station.AlreadyExistStationException;
+import subway.exception.station.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 

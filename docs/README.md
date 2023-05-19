@@ -39,7 +39,7 @@
 - [ ] 이번 미션에서 엔티티를 사용한 이유는?
 - [ ] id라는 값이 꼭 DB에 한정된 값일까? DB 연동을 하지 않더라도 id 값을 가지게 만들 수 있을텐데, 이때는 왜 id를 사용하는 것일까?
 - [ ] 현재와 같이 정보를 가져간다면, 역 이름이 달라지면 다른 역이 되는 걸까?
-- [ ] DuplicatedNameException 핸들러 제거 + SubwayException 추상화 계층 추가
+- [x] DuplicatedNameException 핸들러 제거 + SubwayException 추상화 계층 추가
 - [ ] Section의 isAnySame() 메서드가 Station의 equals를 통해 비교하도록 수정
 
 ## 2단계 요구사항

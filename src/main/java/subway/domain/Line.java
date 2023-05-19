@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import subway.exception.AlreadyExistSectionException;
+import subway.exception.section.AlreadyExistSectionException;
 import subway.exception.EmptyNameException;
-import subway.exception.LineUnconnectedException;
-import subway.exception.StationNotFoundException;
+import subway.exception.line.LineUnconnectedException;
+import subway.exception.station.StationNotFoundException;
 
 public class Line {
     private final Long id;

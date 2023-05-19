@@ -11,11 +11,11 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import subway.exception.AlreadyExistSectionException;
+import subway.exception.section.AlreadyExistSectionException;
 import subway.exception.EmptyNameException;
-import subway.exception.LineUnconnectedException;
-import subway.exception.NegativeDistanceValueException;
-import subway.exception.StationNotFoundException;
+import subway.exception.line.LineUnconnectedException;
+import subway.exception.section.NegativeDistanceValueException;
+import subway.exception.station.StationNotFoundException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
