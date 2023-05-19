@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.service.LineService;
-import subway.service.StationService;
+import subway.service.SubwayService;
 import subway.service.dto.LineDto;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
@@ -24,27 +23,27 @@ import java.util.stream.Collectors;
 @RequestMapping("/lines")
 public class LineController {
 
-    private final LineService lineService;
+    private final SubwayService subwayService;
 
-    public LineController(final LineService lineService) {
-        this.lineService = lineService;
+    public LineController(final SubwayService subwayService) {
+        this.subwayService = subwayService;
     }
 
     @PostMapping
     public ResponseEntity<Void> createLine(@Valid @RequestBody final LineRequest lineRequest) {
-        final Long id = lineService.create(lineRequest);
+        final Long id = subwayService.create(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
     @PostMapping("/stations")
     public ResponseEntity<Void> insertStation(@Valid @RequestBody final StationInsertRequest stationInsertRequest) {
-        lineService.insertStation(stationInsertRequest);
+        subwayService.insertStation(stationInsertRequest);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        final List<LineDto> lines = lineService.findAll();
+        final List<LineDto> lines = subwayService.findAll();
         final List<LineResponse> lineResponses = lines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toUnmodifiableList());
@@ -53,7 +52,7 @@ public class LineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable final Long id) {
-        final LineDto lineDto = lineService.findLineById(id);
+        final LineDto lineDto = subwayService.findLineById(id);
         return ResponseEntity.ok(LineResponse.of(lineDto));
     }
 
@@ -61,7 +60,7 @@ public class LineController {
     public ResponseEntity<Void> deleteStation(
             @PathVariable(value = "lineId") final Long lineId,
             @PathVariable(value = "stationId") final Long stationId) {
-        lineService.deleteStation(lineId, stationId);
+        subwayService.deleteStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 }

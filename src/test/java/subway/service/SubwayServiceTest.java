@@ -22,10 +22,10 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Transactional
-class LineServiceTest {
+class SubwayServiceTest {
 
     @Autowired
-    private LineService lineService;
+    private SubwayService subwayService;
 
     @Autowired
     private LineRepository lineRepository;
@@ -41,7 +41,7 @@ class LineServiceTest {
         LineRequest lineRequest = createLineRequest();
 
         //when
-        Long createdId = lineService.create(lineRequest);
+        Long createdId = subwayService.create(lineRequest);
 
         //then
         assertThat(createdId).isNotNull();
@@ -62,7 +62,7 @@ class LineServiceTest {
     void insertStation() {
         //given
         LineRequest lineRequest = createLineRequest();
-        Long lineId = lineService.create(lineRequest);
+        Long lineId = subwayService.create(lineRequest);
         Long stationId = stationRepository.create(new Station("강남"));
 
         StationInsertRequest stationInsertRequest = new StationInsertRequest(
@@ -72,7 +72,7 @@ class LineServiceTest {
                 "DOWN",
                 1);
         //when
-        lineService.insertStation(stationInsertRequest);
+        subwayService.insertStation(stationInsertRequest);
 
         //then
         Line line = lineRepository.findByName(lineRequest.getName()).get();
@@ -86,15 +86,15 @@ class LineServiceTest {
     void deleteStation() {
         //given (up - 강남 - down)
         LineRequest lineRequest = createLineRequest();
-        Long lineId = lineService.create(lineRequest);
+        Long lineId = subwayService.create(lineRequest);
         Long stationId = stationRepository.create(new Station("강남"));
         StationInsertRequest stationInsertRequest = new StationInsertRequest(stationId, lineId,
                 lineRequest.getUpStationId(), "DOWN",
                 1);
-        lineService.insertStation(stationInsertRequest);
+        subwayService.insertStation(stationInsertRequest);
 
         //when
-        lineService.deleteStation(lineId, stationId);
+        subwayService.deleteStation(lineId, stationId);
 
         //then
         Line line = lineRepository.findById(lineId).get();
@@ -107,10 +107,10 @@ class LineServiceTest {
     void deleteStationWithTwoStation() {
         //given
         LineRequest lineRequest = createLineRequest();
-        Long lineId = lineService.create(lineRequest);
+        Long lineId = subwayService.create(lineRequest);
 
         //when
-        lineService.deleteStation(lineId, lineRequest.getDownStationId());
+        subwayService.deleteStation(lineId, lineRequest.getDownStationId());
 
         //then
         assertThat(lineRepository.findById(lineId)).isEmpty();
@@ -121,10 +121,10 @@ class LineServiceTest {
     void findById() {
         //given
         LineRequest lineRequest = createLineRequest();
-        Long lineId = lineService.create(lineRequest);
+        Long lineId = subwayService.create(lineRequest);
 
         //when
-        LineDto createdLine = lineService.findLineById(lineId);
+        LineDto createdLine = subwayService.findLineById(lineId);
 
         //then
         assertThat(createdLine.getId()).isEqualTo(lineId);
@@ -135,9 +135,9 @@ class LineServiceTest {
     void findAll() {
         //given
         LineRequest lineRequest = createLineRequest();
-        Long firstLineId = lineService.create(lineRequest);
+        Long firstLineId = subwayService.create(lineRequest);
 
-        Long secondLineId = lineService.create(new LineRequest(
+        Long secondLineId = subwayService.create(new LineRequest(
                 "2호선",
                 "초록색",
                 stationRepository.create(new Station("up")),
@@ -146,7 +146,7 @@ class LineServiceTest {
         ));
 
         //when
-        List<LineDto> lines = lineService.findAll();
+        List<LineDto> lines = subwayService.findAll();
 
         //then
         assertSoftly(softly -> {

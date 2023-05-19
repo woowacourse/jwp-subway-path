@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class LineService {
+public class SubwayService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public LineService(final LineRepository lineRepository, final StationRepository stationRepository) {
+    public SubwayService(final LineRepository lineRepository, final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
