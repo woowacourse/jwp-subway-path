@@ -1,8 +1,13 @@
 package subway.domain;
 
+import subway.entity.SectionDetailEntity;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LineSections {
+
+    private static final int FIRST_INDEX = 0;
 
     private final Line line;
     private final List<LineSection> sections;
@@ -12,9 +17,13 @@ public class LineSections {
         this.sections = sections;
     }
 
-    public static LineSections createWithSort(final Line line, final List<LineSection> unsortedSections) {
-        final List<LineSection> sortedSections = LineSectionsSortFactory.sort(List.copyOf(unsortedSections));
-        return new LineSections(line, sortedSections);
+    public static LineSections createByEntities(final List<SectionDetailEntity> detailEntities) {
+        final SectionDetailEntity entity = detailEntities.get(FIRST_INDEX);
+        final Line line = new Line(entity.getLineId(), entity.getLineName(), entity.getLineColor());
+        final List<LineSection> sections = detailEntities.stream()
+                .map(LineSection::createByEntity)
+                .collect(Collectors.toUnmodifiableList());
+        return new LineSections(line, LineSectionsSortFactory.sort(sections));
     }
 
     public Line getLine() {

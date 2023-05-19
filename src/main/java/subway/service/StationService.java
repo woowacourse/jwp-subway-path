@@ -1,7 +1,6 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.service.converter.station.StationEntityRequestResponseConverter;
 import subway.repository.StationDao;
 import subway.entity.StationEntity;
 import subway.controller.dto.request.StationRequest;
@@ -20,20 +19,20 @@ public class StationService {
     }
 
     public StationResponse save(final StationRequest stationRequest) {
-        final StationEntity stationEntity = StationEntityRequestResponseConverter.toEntity(stationRequest);
+        final StationEntity stationEntity = new StationEntity(stationRequest.getName());
         final StationEntity insertedStationEntity = stationDao.insert(stationEntity);
-        return StationEntityRequestResponseConverter.toResponse(insertedStationEntity);
+        return StationResponse.createByEntity(insertedStationEntity);
     }
 
     public StationResponse findById(final long id) {
         final StationEntity stationEntity = stationDao.findById(id);
-        return StationEntityRequestResponseConverter.toResponse(stationEntity);
+        return StationResponse.createByEntity(stationEntity);
     }
 
     public List<StationResponse> findAll() {
         final List<StationEntity> stationEntities = stationDao.findAll();
         return stationEntities.stream()
-                .map(StationEntityRequestResponseConverter::toResponse)
+                .map(StationResponse::createByEntity)
                 .collect(Collectors.toUnmodifiableList());
     }
 

@@ -2,8 +2,6 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.service.converter.line.LineSectionsResponseConverter;
-import subway.service.converter.section.SectionDetailEntityDomainConverter;
 import subway.domain.LineSections;
 import subway.service.dto.LineDto;
 import subway.service.dto.SectionCreateDto;
@@ -61,8 +59,8 @@ public class LineService {
     }
 
     private LineResponse convertToResponse(final List<SectionDetailEntity> entities) {
-        final LineSections lineSections = SectionDetailEntityDomainConverter.toLineSections(entities);
-        return LineSectionsResponseConverter.toResponse(lineSections);
+        final LineSections lineSections = LineSections.createByEntities(entities);
+        return LineResponse.createByDomain(lineSections);
     }
 
     @Transactional
