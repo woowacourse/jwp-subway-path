@@ -63,7 +63,7 @@ class SectionRepositoryTest {
     @DisplayName("SectionRepository 에 id 를 넘겨 Section 을 삭제한다. (실패)")
     @Sql("/section_test_data.sql")
     void deleteById_fail() {
-        assertThatThrownBy(() -> sectionRepository.deleteById(100))
+        assertThatThrownBy(() -> sectionRepository.deleteById(100L))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
