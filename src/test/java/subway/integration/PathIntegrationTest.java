@@ -69,10 +69,10 @@ public class PathIntegrationTest extends IntegrationTest {
                 .queryParam("departureStationId", departureStationId)
                 .queryParam("arrivalStationId", arrivalStationId)
                 .get("/path")
-                .then().log().body()
-                .extract();
+                .then().extract();
 
         //then
         assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.jsonPath().getBoolean("doesPathExists")).isFalse();
     }
 }

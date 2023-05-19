@@ -1,5 +1,8 @@
 package subway.dto.api;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.domain.Fare;
@@ -7,12 +10,11 @@ import subway.domain.Station;
 import subway.dto.domain.StationDto;
 import subway.dto.service.PathResult;
 
-
+@JsonInclude(Include.NON_NULL)
 public class ShortestPathResponse {
-    private final StationDto departureStation;
-    private final StationDto arrivalStation;
-
     private final boolean doesPathExists;
+    private StationDto departureStation;
+    private StationDto arrivalStation;
     private Integer totalDistance;
     private Integer fare;
     private List<PathSegmentResponse> path;
@@ -25,6 +27,10 @@ public class ShortestPathResponse {
         this.totalDistance = totalDistance;
         this.fare = fare;
         this.path = path;
+    }
+
+    public static ShortestPathResponse notFound() {
+        return new ShortestPathResponse(null, null, false, null, null, null);
     }
 
     public static ShortestPathResponse of(Station departure, Station arrival, PathResult pathResult, Fare fare) {
@@ -52,11 +58,11 @@ public class ShortestPathResponse {
         return doesPathExists;
     }
 
-    public int getTotalDistance() {
+    public Integer getTotalDistance() {
         return totalDistance;
     }
 
-    public int getFare() {
+    public Integer getFare() {
         return fare;
     }
 

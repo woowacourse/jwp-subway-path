@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import subway.dto.api.ShortestPathResponse;
 import subway.exception.ArrivalSameWithDepartureException;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.DuplicatedStationNameException;
@@ -30,7 +31,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({PathNotExistsException.class})
-    public ResponseEntity<String> handlePathNotExistsException(Exception e) {
-        return ResponseEntity.ok().body(e.getMessage());
+    public ResponseEntity<ShortestPathResponse> handlePathNotExistsException(Exception e) {
+        return ResponseEntity.ok().body(ShortestPathResponse.notFound());
     }
 }
