@@ -1,11 +1,11 @@
 package subway.domain;
 
-public class FeeCalculator {
+public class FareCalculator {
 
-    private static final Integer DEFAULT_MONEY = 1250;
+    private static final Integer DEFAULT_FARE = 1250;
 
     public static long calculate(int distance) {
-        int result = DEFAULT_MONEY;
+        int result = DEFAULT_FARE;
         if (distance >= 10) {
             result += calculateOverFare(distance);
         }

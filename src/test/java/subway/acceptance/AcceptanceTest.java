@@ -161,7 +161,7 @@ class AcceptanceTest {
                 .extract().as(RouteResponse.class);
 
         assertThat(routeResponse.getDistance()).isEqualTo(2);
-        assertThat(routeResponse.getMoney()).isEqualTo(1250);
+        assertThat(routeResponse.getFare()).isEqualTo(1250);
         assertThat(routeResponse.getStations())
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(강남, 신논현, 종합운동장));

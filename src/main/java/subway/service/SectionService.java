@@ -57,11 +57,11 @@ public class SectionService {
         ShortestRouteFinder finder = new ShortestRouteFinder(lineRepository.findAll());
 
         int distance = finder.getDistance(sourceStation, targetStation);
-        long money = FeeCalculator.calculate(distance);
+        long fare = FareCalculator.calculate(distance);
         List<StationResponse> route = finder.getRoute(sourceStation, targetStation).stream()
                 .map(StationMapper::toResponse)
                 .collect(Collectors.toList());
 
-        return new RouteResponse(money, distance, route);
+        return new RouteResponse(fare, distance, route);
     }
 }

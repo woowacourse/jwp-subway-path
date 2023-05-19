@@ -409,7 +409,7 @@ Body
     }
   ],
   "distance": 10,
-  "money": 1250
+  "fare": 1250
 }
 ```
 

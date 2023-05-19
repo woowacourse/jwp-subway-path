@@ -4,21 +4,21 @@ import java.util.List;
 
 public class RouteResponse {
 
-    private Long money;
+    private Long fare;
     private Integer distance;
     private List<StationResponse> stations;
 
     public RouteResponse() {
     }
 
-    public RouteResponse(Long money, Integer distance, List<StationResponse> stations) {
-        this.money = money;
+    public RouteResponse(Long fare, Integer distance, List<StationResponse> stations) {
+        this.fare = fare;
         this.distance = distance;
         this.stations = stations;
     }
 
-    public Long getMoney() {
-        return money;
+    public Long getFare() {
+        return fare;
     }
 
     public Integer getDistance() {
