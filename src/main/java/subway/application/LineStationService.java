@@ -16,10 +16,12 @@ public class LineStationService {
 
     private final LineService lineService;
     private final StationService stationService;
+    private final PathService pathService;
 
-    public LineStationService(final LineService lineService, final StationService stationService) {
+    public LineStationService(final LineService lineService, final StationService stationService, final PathService pathService) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.pathService = pathService;
     }
 
     public void addInitStations(final Long id, final Long upStationId, final Long downStationId, final int distance) {
@@ -30,6 +32,12 @@ public class LineStationService {
         line.addInitStations(upStation, downStation, distance);
 
         lineService.save(line);
+        updatePath();
+    }
+
+    private void updatePath() {
+        final Lines lines = lineService.findAll();
+        pathService.update(lines);
     }
 
     public void addUpEndpoint(final Long id, final Long stationId, final int distance) {
@@ -39,6 +47,7 @@ public class LineStationService {
         line.addUpEndpoint(station, distance);
 
         lineService.save(line);
+        updatePath();
     }
 
     public void addDownEndpoint(final Long id, final Long stationId, final int distance) {
@@ -48,6 +57,7 @@ public class LineStationService {
         line.addDownEndpoint(station, distance);
 
         lineService.save(line);
+        updatePath();
     }
 
     public void addIntermediate(final Long id, final Long stationId, final Long prevStationId, final int distance) {
@@ -58,6 +68,7 @@ public class LineStationService {
         line.addIntermediate(station, prevStation, distance);
 
         lineService.save(line);
+        updatePath();
     }
 
     public void deleteStationInLine(final Long id, final Long stationId) {
@@ -67,6 +78,7 @@ public class LineStationService {
         line.deleteSections(station);
 
         lineService.save(line);
+        updatePath();
     }
 
     public void deleteStation(final Long stationId) {
@@ -76,6 +88,7 @@ public class LineStationService {
         lines.deleteStation(station);
 
         stationService.deleteStationById(stationId);
+        updatePath();
     }
 
     @Transactional(readOnly = true)

@@ -14,23 +14,21 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class PathService {
-    private final LineService lineService;
     private final StationService stationService;
     private final FareCalculator fareCalculator;
+    private final SubwayGraph subwayGraph;
 
-    public PathService(final LineService lineService, final StationService stationService, final FareCalculator fareCalculator) {
-        this.lineService = lineService;
+    public PathService(final StationService stationService, final FareCalculator fareCalculator, final SubwayGraph subwayGraph) {
         this.stationService = stationService;
         this.fareCalculator = fareCalculator;
+        this.subwayGraph = subwayGraph;
     }
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(final Long source, final Long target) {
-        final Lines lines = lineService.findAll();
         final Station sourceStation = stationService.findById(source);
         final Station targetStation = stationService.findById(target);
 
-        final SubwayGraph subwayGraph = SubwayGraph.from(lines);
         final List<Station> shortestPaths = subwayGraph.findPath(sourceStation, targetStation);
         final int distanceSum = subwayGraph.calculateDistanceSum(sourceStation, targetStation);
 
@@ -41,5 +39,9 @@ public class PathService {
 
     private List<String> mapToString(final List<Station> shortestPaths) {
         return shortestPaths.stream().map(Station::getName).collect(Collectors.toList());
+    }
+
+    public void update(final Lines lines) {
+        subwayGraph.update(lines);
     }
 }
