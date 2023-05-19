@@ -6,9 +6,9 @@ import subway.dao.LineDao;
 import subway.dao.PathDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
-import subway.domain.Path;
-import subway.domain.Paths;
 import subway.domain.Station;
+import subway.domain.path.Path;
+import subway.domain.path.Paths;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.PathRequest;
@@ -23,21 +23,23 @@ public class LineService {
     private final StationDao stationDao;
     private final PathDao pathDao;
 
-    public LineService(LineDao lineDao, final StationDao stationDao, final PathDao pathDao) {
+    public LineService(final LineDao lineDao, final StationDao stationDao, final PathDao pathDao) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.pathDao = pathDao;
     }
 
     @Transactional
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), new Paths()));
+    public LineResponse saveLine(final LineRequest request) {
+        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+
         return LineResponse.from(persistLine);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
+    public List<LineResponse> findAllLines() {
+        final List<Line> lines = lineDao.findAll();
+
+        return lines.stream()
                 .map(line -> {
                     final Paths paths = pathDao.findByLineId(line.getId());
                     return LineResponse.of(line, paths);
@@ -45,11 +47,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(Long id) {
+    public LineResponse findLineById(final Long id) {
         final Line line = lineDao.findById(id);
         final Paths paths = pathDao.findByLineId(id);
 
@@ -57,12 +55,12 @@ public class LineService {
     }
 
     @Transactional
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     @Transactional
-    public void deleteLineById(Long id) {
+    public void deleteLineById(final Long id) {
         lineDao.deleteById(id);
     }
 
@@ -77,15 +75,10 @@ public class LineService {
     }
 
     @Transactional
-    public void deletePathByStationId(final Long stationId) {
+    public void deletePath(final Long lineId, final Long stationId) {
         final Station station = stationDao.findById(stationId);
+        final Paths paths = pathDao.findByLineId(lineId);
 
-        final List<Long> lineIds = pathDao.findAllLineIdsByStationId(stationId);
-        for (final Long lineId : lineIds) {
-            Paths paths = pathDao.findByLineId(lineId);
-            paths = paths.removePath(station);
-
-            pathDao.save(paths, lineId);
-        }
+        pathDao.save(paths.removePath(station), lineId);
     }
 }

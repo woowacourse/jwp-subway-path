@@ -6,13 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.Path;
-import subway.domain.Paths;
 import subway.domain.Station;
+import subway.domain.path.Path;
+import subway.domain.path.Paths;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 @JdbcTest
@@ -61,12 +62,12 @@ class PathDaoTest {
         final Paths persisted = pathDao.findByLineId(1L);
 
         //then
-        assertThat(persisted.getOrderedPaths()).hasSize(1);
+        assertThat(persisted.getOrdered()).hasSize(1);
     }
 
-    @DisplayName("해당 역이 속한 모든 노선의 id들을 가져올 수 있다")
+    @DisplayName("모든 노선의 경로들을 가져올 수 있다")
     @Test
-    void findAllPathsByStationId() {
+    void findAll() {
         //given
         final Station station1 = stationDao.insert(new Station("서면역"));
         final Station station2 = stationDao.insert(new Station("부산역"));
@@ -82,9 +83,14 @@ class PathDaoTest {
         pathDao.save(paths2, 2L);
 
         //when
-        final List<Long> lineIds = pathDao.findAllLineIdsByStationId(commonStation.getId());
+        final List<Paths> allPaths = pathDao.findAll();
 
         //then
-        assertThat(lineIds).containsExactlyInAnyOrder(1L, 2L);
+        assertSoftly(soft -> {
+            soft.assertThat(allPaths).hasSize(2);
+            soft.assertThat(allPaths)
+                    .map(Paths::toList)
+                    .allSatisfy(paths -> assertThat(paths).hasSize(1));
+        });
     }
 }

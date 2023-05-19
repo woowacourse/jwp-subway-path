@@ -2,27 +2,24 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import subway.domain.Path;
-import subway.domain.Paths;
 import subway.domain.Station;
+import subway.domain.path.Path;
+import subway.domain.path.Paths;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.*;
 
 @Component
 public class PathDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public PathDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("path")
-                .usingGeneratedKeyColumns("id");
     }
 
-    private RowMapper<Path> rowMapper = (rs, rowNum) -> {
+    private final RowMapper<Path> rowMapper = (rs, rowNum) -> {
         final Station upStation = new Station(rs.getLong("up_station_id"), rs.getString("upName"));
         final Station downStation = new Station(rs.getLong("down_station_id"), rs.getString("downName"));
 
@@ -40,17 +37,29 @@ public class PathDao {
         return new Paths(paths);
     }
 
-    public List<Long> findAllLineIdsByStationId(final Long stationId) {
-        final String sql = "SELECT DISTINCT line_id FROM path WHERE up_station_id = ? OR down_station_id = ?";
+    public List<Paths> findAll() {
+        final String sql = "SELECT p.line_id, p.id, up_station_id, s1.name AS upName, down_station_id, s2.name AS downName, distance\n" +
+                "FROM PATH p\n" +
+                "         JOIN station s1 ON p.up_station_id = s1.id\n" +
+                "         JOIN station s2 ON p.down_station_id = s2.id\n";
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("line_id"), stationId, stationId);
+        return jdbcTemplate.queryForStream(sql, (rs, rowNum) -> {
+                    final Station upStation = new Station(rs.getLong("up_station_id"), rs.getString("upName"));
+                    final Station downStation = new Station(rs.getLong("down_station_id"), rs.getString("downName"));
+                    final Path path = new Path(upStation, downStation, rs.getInt("distance"));
+
+                    return new PathEntity(rs.getLong("line_id"), path);
+                }).collect(groupingBy(PathEntity::getLineId, mapping(PathEntity::toPath, toList())))
+                .values().stream()
+                .map(Paths::new)
+                .collect(toList());
     }
 
     public void save(final Paths paths, final Long lineId) {
         final String deleteLineSql = "DELETE FROM path WHERE line_id = ?";
         jdbcTemplate.update(deleteLineSql, lineId);
 
-        final List<Path> pathList = paths.getOrderedPaths();
+        final List<Path> pathList = paths.toList();
         final String sql = "INSERT INTO path (line_id, up_station_id, distance, down_station_id) VALUES (?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql,
@@ -62,5 +71,23 @@ public class PathDao {
                     ps.setInt(3, argument.getDistance());
                     ps.setLong(4, argument.getDown().getId());
                 });
+    }
+
+    private static class PathEntity {
+        private final Long lineId;
+        private final Path path;
+
+        private PathEntity(final Long lineId, final Path path) {
+            this.lineId = lineId;
+            this.path = path;
+        }
+
+        private Path toPath() {
+            return path;
+        }
+
+        public Long getLineId() {
+            return lineId;
+        }
     }
 }

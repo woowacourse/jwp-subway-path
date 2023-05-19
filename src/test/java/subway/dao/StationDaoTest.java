@@ -59,7 +59,7 @@ class StationDaoTest {
         final Station persisted = stationDao.insert(station);
 
         //when, then
-        assertThat(stationDao.findById(persisted.getId()).equals(persisted));
+        assertThat(stationDao.findById(persisted.getId())).isEqualTo(persisted);
     }
 
     @DisplayName("존재하지 않는 역을 조회하면 예외가 발생한다")

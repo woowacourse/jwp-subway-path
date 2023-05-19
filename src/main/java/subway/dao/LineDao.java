@@ -17,7 +17,7 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
             new Line(
                     rs.getLong("id"),
                     rs.getString("name"),
@@ -47,13 +47,14 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        final String sql = "select id, name, color from LINE";
+        final String sql = "SELECT id, name, color FROM line";
+
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Line findById(final Long id) {
         try {
-            final String sql = "select id, name, color from LINE WHERE id = ?";
+            final String sql = "SELECT id, name, color FROM line WHERE id = ?";
 
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
@@ -61,12 +62,13 @@ public class LineDao {
         }
     }
 
-    public void update(final Line newLine) {
-        final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    public void update(final Line line) {
+        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
+
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
     }
 
     public void deleteById(final Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        jdbcTemplate.update("DELETE FROM line WHERE id = ?", id);
     }
 }

@@ -1,5 +1,8 @@
-package subway.domain;
+package subway.domain.path;
 
+import subway.domain.Station;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,55 +30,69 @@ public final class Path {
         }
     }
 
-    public boolean isUpStationEquals(final Path another) {
-        return up.equals(another.up);
+    public boolean isUpStation(final Station up) {
+        return up.equals(this.up);
     }
 
-    public boolean isDownStationEquals(final Path another) {
-        return down.equals(another.down);
+    public boolean isDownStation(final Station down) {
+        return down.equals(this.down);
     }
 
     public boolean contains(final Station station) {
         return up.equals(station) || down.equals(station);
     }
 
-    public boolean isDownPath(final Path path) {
-        if (this.equals(path)) {
+    public boolean isContinuous(final Path next) {
+        if (this.equals(next)) {
             return false;
         }
 
-        return down.equals(path.up);
+        return down.equals(next.up);
     }
 
-    public boolean isUpPath(final Path path) {
-        if (this.equals(path)) {
-            return false;
+    public boolean isOverlapped(final Path other) {
+        return isUpStation(other.up) || isDownStation(other.down);
+    }
+
+    public Path merge(final Path other) {
+        if (isContinuous(other)) {
+            return new Path(up, other.down, distance + other.distance);
+        }
+        if (other.isContinuous(this)) {
+            return new Path(other.up, down, distance + other.distance);
         }
 
-        return up.equals(path.down);
+        throw new IllegalStateException("두 경로를 합칠 수 없습니다.");
     }
 
-    public List<Path> divideBy(final Path middle) {
-        if (distance <= middle.distance) {
+    public List<Path> divide(final Path divisor) {
+        if (distance <= divisor.distance) {
             throw new IllegalArgumentException("기존의 거리보다 길 수 없습니다.");
         }
-        final int newDistance = distance - middle.distance;
-
-        if (up.equals(middle.up)) {
-            final Path newPath = new Path(middle.down, down, newDistance);
-            return List.of(middle, newPath);
+        if (!isOverlapped(divisor)) {
+            throw new IllegalArgumentException("두 경로가 겹치지 않습니다.");
         }
 
-        final Path newPath = new Path(up, middle.up, newDistance);
-        return List.of(middle, newPath);
+        if (up.equals(divisor.up)) {
+            return divideByUpPath(divisor);
+        }
+        return divideByDownPath(divisor);
     }
 
-    public Path merge(final Path another) {
-        if (down.equals(another.up)) {
-            return new Path(up, another.down, distance + another.distance);
-        }
+    private List<Path> divideByUpPath(final Path up) {
+        final Path down = new Path(up.down, this.down, distance - up.distance);
 
-        return new Path(another.up, down, distance + another.distance);
+        return List.of(up, down);
+    }
+
+    private List<Path> divideByDownPath(final Path down) {
+        final Path up = new Path(this.up, down.up, distance - down.distance);
+
+        return List.of(up, down);
+    }
+
+    public List<Station> getStations() {
+        return new ArrayList<>(List.of(up, down));
     }
 
     public Long getId() {

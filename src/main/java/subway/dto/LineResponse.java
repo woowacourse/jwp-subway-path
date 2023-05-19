@@ -1,7 +1,7 @@
 package subway.dto;
 
 import subway.domain.Line;
-import subway.domain.Paths;
+import subway.domain.path.Paths;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,12 +28,12 @@ public class LineResponse {
         this.color = color;
     }
 
-    public static LineResponse from(Line line) {
+    public static LineResponse from(final Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 
-    public static LineResponse of(Line line, Paths paths) {
-        final List<PathResponse> pathResponses = paths.getOrderedPaths().stream()
+    public static LineResponse of(final Line line, final Paths paths) {
+        final List<PathResponse> pathResponses = paths.getOrdered().stream()
                 .map(PathResponse::from)
                 .collect(Collectors.toUnmodifiableList());
 
