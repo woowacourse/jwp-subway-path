@@ -35,9 +35,9 @@ public class LineService {
         final int distance = sectionRequest.getDistance();
 
         final Section section = line.addInitialSection(upStation, downStation, distance);
-        final Long sectionId = lineRepository.saveInitialSection(line, section);
+        final List<Long> sectionIds = lineRepository.saveSectionsByLine(line);
 
-        return SectionResponse.of(sectionId, section);
+        return SectionResponse.of(sectionIds.get(0), section);
     }
 
     public SectionResponse saveSection(final Long lineId, final SectionRequest sectionRequest) {
@@ -47,8 +47,7 @@ public class LineService {
         final int distance = sectionRequest.getDistance();
 
         final Section section = line.addSection(upStation, downStation, distance);
-
-        final List<Long> sectionIds = lineRepository.updateSectionsInLine(line);
+        final List<Long> sectionIds = lineRepository.saveSectionsByLine(line);
 
         final Long lastSectionId = sectionIds.get(sectionIds.size() - 1);
         return SectionResponse.of(lastSectionId, section);
@@ -75,7 +74,7 @@ public class LineService {
         final Station station = stationService.findStationById(stationId);
 
         line.deleteStation(station);
-        lineRepository.updateSectionsInLine(line);
+        lineRepository.saveSectionsByLine(line);
     }
 
     public void deleteLineById(final Long id) {
