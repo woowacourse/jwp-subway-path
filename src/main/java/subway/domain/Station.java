@@ -1,21 +1,13 @@
 package subway.domain;
 
 import java.util.Objects;
-import lombok.Getter;
-import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
-import subway.exception.BusinessException;
 
-@Getter
 public class Station {
-
-    private static final int MAX_STATION_NAME_LENGTH = 20;
 
     private final Long id;
     private final String name;
 
-    public Station(@Nullable final Long id, final String name) {
-        validateName(name);
+    public Station(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
@@ -24,13 +16,12 @@ public class Station {
         this(null, name);
     }
 
-    private void validateName(final String name) {
-        if (!StringUtils.hasText(name)) {
-            throw new BusinessException("역 이름이 공백입니다. 글자를 입력해주세요");
-        }
-        if (name.length() > MAX_STATION_NAME_LENGTH) {
-            throw new BusinessException("역 이름이 " + MAX_STATION_NAME_LENGTH + "글자를 초과했습니다");
-        }
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -42,11 +33,14 @@ public class Station {
             return false;
         }
         final Station station = (Station) o;
-        return Objects.equals(getId(), station.getId());
+        if (getId() == null || station.id == null) {
+            return Objects.equals(getName(), station.getName());
+        }
+        return Objects.equals(getId(), station.getId()) && Objects.equals(getName(), station.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getName());
     }
 }
