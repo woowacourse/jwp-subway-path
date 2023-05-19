@@ -51,14 +51,14 @@ public class SectionService {
     }
 
     public RouteResponse getShortestRoute(final RouteRequest routeRequest) {
-        Station fromStation = stationRepository.findById(routeRequest.getFromStation());
-        Station destStation = stationRepository.findById(routeRequest.getDestStation());
+        Station sourceStation = stationRepository.findById(routeRequest.getSourceStation());
+        Station targetStation = stationRepository.findById(routeRequest.getTargetStation());
 
         ShortestRouteFinder finder = new ShortestRouteFinder(lineRepository.findAll());
 
-        int distance = finder.getDistance(fromStation, destStation);
+        int distance = finder.getDistance(sourceStation, targetStation);
         long money = FeeCalculator.calculate(distance);
-        List<StationResponse> route = finder.getRoute(fromStation, destStation).stream()
+        List<StationResponse> route = finder.getRoute(sourceStation, targetStation).stream()
                 .map(StationMapper::toResponse)
                 .collect(Collectors.toList());
 
