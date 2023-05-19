@@ -59,11 +59,11 @@ public class StationEdges {
     ) {
         if (adjacentToInsertedDirection == LineDirection.UP) {
             return stationEdges.stream()
-                    .filter(edge -> edge.getDownStationId().equals(adjacentStationId))
+                    .filter(edge -> edge.isDownStationId(adjacentStationId))
                     .findFirst();
         }
         return stationEdges.stream()
-                .filter(edge -> edge.getUpStationId().equals(adjacentStationId))
+                .filter(edge -> edge.isUpStationId(adjacentStationId))
                 .findFirst();
     }
 
@@ -136,13 +136,13 @@ public class StationEdges {
 
     public boolean isContainStation(final Long stationId) {
         return stationEdges.stream()
-                .anyMatch(edge -> edge.getUpStationId().equals(stationId) || edge.getDownStationId().equals(stationId));
+                .anyMatch(edge -> edge.isUpStationId(stationId) || edge.isDownStationId(stationId));
     }
 
     public void removeStation(final Long stationId) {
         validateIsContainStation(stationId);
         final Set<StationEdge> edgesToRemove = stationEdges.stream()
-                .filter(edge -> edge.getUpStationId().equals(stationId) || edge.getDownStationId().equals(stationId))
+                .filter(edge -> edge.isUpStationId(stationId) || edge.isDownStationId(stationId))
                 .collect(Collectors.toSet());
 
         if (edgesToRemove.size() == 1) {
@@ -161,7 +161,7 @@ public class StationEdges {
 
     private long findDownStationIdOf(final Set<StationEdge> edgePool, final Long upStationId) {
         return edgePool.stream()
-                .filter(edge -> edge.getUpStationId().equals(upStationId))
+                .filter(edge -> edge.isUpStationId(upStationId))
                 .mapToLong(StationEdge::getDownStationId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStationEdgeStateException(upStationId + "를 상행역으로 가지는 구간이 없습니다."));
@@ -169,7 +169,7 @@ public class StationEdges {
 
     private long findUpStationIdOf(final Set<StationEdge> edgePool, final Long downStationId) {
         return edgePool.stream()
-                .filter(edge -> edge.getDownStationId().equals(downStationId))
+                .filter(edge -> edge.isDownStationId(downStationId))
                 .mapToLong(StationEdge::getUpStationId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStationEdgeStateException(downStationId + "를 하행역으로 가지는 구간이 없습니다."));
@@ -199,7 +199,7 @@ public class StationEdges {
 
     private StationEdge get(final Long upStationId, final Long downStationId) {
         return stationEdges.stream()
-                .filter(edge -> edge.getUpStationId().equals(upStationId) && edge.getDownStationId().equals(downStationId))
+                .filter(edge -> edge.isUpStationId(upStationId) && edge.isDownStationId(downStationId))
                 .findFirst()
                 .orElseThrow(StationEdgeNotFoundException::new);
     }

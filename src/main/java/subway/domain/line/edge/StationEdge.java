@@ -51,6 +51,14 @@ public class StationEdge {
         );
     }
 
+    public boolean isUpStationId(final Long stationId) {
+        return upStationId.equals(stationId);
+    }
+
+    public boolean isDownStationId(final Long stationId) {
+        return downStationId.equals(stationId);
+    }
+
     public Long getUpStationId() {
         return upStationId;
     }

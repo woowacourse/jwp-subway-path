@@ -59,11 +59,11 @@ class StationEdgesTest {
         // then
         final Set<StationEdge> edges = stationEdges.toSet();
         final StationEdge insertedUpEdge = edges.stream()
-                .filter(edge -> edge.getUpStationId().equals(2L) && edge.getDownStationId().equals(4L))
+                .filter(edge -> edge.isUpStationId(2L) && edge.isDownStationId(4L))
                 .findFirst()
                 .get();
         final StationEdge insertedDownEdge = edges.stream()
-                .filter(edge -> edge.getUpStationId().equals(4L) && edge.getDownStationId().equals(3L))
+                .filter(edge -> edge.isUpStationId(4L) && edge.isDownStationId(3L))
                 .findFirst()
                 .get();
 
@@ -89,7 +89,7 @@ class StationEdgesTest {
         // then
         final Set<StationEdge> edges = stationEdges.toSet();
         final StationEdge mergedEdge = edges.stream()
-                .filter(edge -> edge.getUpStationId().equals(2L) && edge.getDownStationId().equals(4L))
+                .filter(edge -> edge.isUpStationId(2L) && edge.isDownStationId(4L))
                 .findFirst()
                 .get();
         assertSoftly(softly -> {

@@ -34,7 +34,7 @@ public class Lines {
     }
 
     private void validateDuplicatedName(final String name) {
-        if (lines.values().stream().anyMatch(line -> line.getName().equals(name))) {
+        if (lines.values().stream().anyMatch(line -> line.isSameName(name))) {
             throw new DuplicatedLineNameException(name);
         }
     }

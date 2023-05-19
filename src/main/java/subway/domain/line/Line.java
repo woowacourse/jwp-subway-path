@@ -78,6 +78,10 @@ public class Line {
         return stationEdges.getEdgeDistanceBetween(station1Id, station2Id);
     }
 
+    public boolean isSameName(final String name) {
+        return this.name.equals(name);
+    }
+
     public Long getId() {
         return id;
     }

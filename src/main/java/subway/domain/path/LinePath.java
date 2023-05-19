@@ -28,9 +28,13 @@ public class LinePath {
     }
 
     private void validatePathContinuous(final StationEdge stationEdge) {
-        if (!stationEdge.getUpStationId().equals(stationEdges.findDownEndStationId())) {
+        if (!stationEdge.isUpStationId(stationEdges.findDownEndStationId())) {
             throw new IllegalStationEdgeStateException("경로가 연결되지 않습니다.");
         }
+    }
+
+    public boolean isLineId(final Long id) {
+        return this.lineId.equals(id);
     }
 
     public int getTotalDistance() {

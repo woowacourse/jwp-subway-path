@@ -5,9 +5,7 @@ import subway.exception.StationNotFoundException;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class Stations {
 
@@ -30,7 +28,7 @@ public class Stations {
     }
 
     private void validateDuplicatedName(final String name) {
-        if (stations.values().stream().anyMatch(station -> station.getName().equals(name))) {
+        if (stations.values().stream().anyMatch(station -> station.isSameName(name))) {
             throw new DuplicatedStationNameException(name);
         }
     }
@@ -44,9 +42,5 @@ public class Stations {
         if (!stations.containsKey(id)) {
             throw new StationNotFoundException();
         }
-    }
-
-    public Set<Station> toSet() {
-        return new HashSet<>(stations.values());
     }
 }

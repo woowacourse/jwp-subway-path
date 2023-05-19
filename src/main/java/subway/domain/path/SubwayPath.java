@@ -25,7 +25,7 @@ public class SubwayPath {
     }
 
     private boolean isTransfer(final Long lineId) {
-        return linePaths.isEmpty() || !getLatestLinePath().getLineId().equals(lineId);
+        return linePaths.isEmpty() || !getLatestLinePath().isLineId(lineId);
     }
 
     private LinePath getLatestLinePath() {
