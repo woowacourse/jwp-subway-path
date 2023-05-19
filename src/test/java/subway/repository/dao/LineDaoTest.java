@@ -1,18 +1,17 @@
 package subway.repository.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.repository.dao.EntityFixtures.LINE_NO_1;
 import static subway.repository.dao.EntityFixtures.LINE_NO_2;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.entity.LineEntity;
 
@@ -66,25 +65,27 @@ class LineDaoTest {
         final LineEntity saveLine2 = lineDao.insert(LINE_NO_2);
 
         // when
-        final LineEntity findLine1 = lineDao.findById(saveLine1.getId());
-        final LineEntity findLine2 = lineDao.findById(saveLine2.getId());
+        final Optional<LineEntity> findLine1 = lineDao.findById(saveLine1.getId());
+        final Optional<LineEntity> findLine2 = lineDao.findById(saveLine2.getId());
 
         // then
-        assertThat(findLine1).isEqualTo(saveLine1);
-        assertThat(findLine2).isEqualTo(saveLine2);
+        assertThat(findLine1).isPresent();
+        assertThat(findLine1.get()).isEqualTo(saveLine1);
+        assertThat(findLine2).isPresent();
+        assertThat(findLine2.get()).isEqualTo(saveLine2);
     }
 
     @Test
     void 노선을_ID_기준으로_삭제한다() {
         // given
         final LineEntity saveLine = lineDao.insert(LINE_NO_1);
+        final Long saveId = saveLine.getId();
 
         // when
-        lineDao.deleteById(saveLine.getId());
+        lineDao.deleteById(saveId);
 
         // then
-        assertThatThrownBy(() -> lineDao.findById(saveLine.getId()))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+        assertThat(lineDao.findById(saveId)).isEmpty();
     }
 
     @Test

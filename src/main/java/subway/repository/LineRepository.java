@@ -74,8 +74,7 @@ public class LineRepository {
 
     public Line findById(Long id) {
         Subway subway = new Subway(findAll());
-        LineEntity lineEntity = lineDao.findById(id);
-        return subway.findLineByName(lineEntity.getName());
+        return subway.findLineById(id);
     }
 
     public List<Line> findAll() {
