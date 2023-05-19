@@ -25,7 +25,7 @@ public class Sections {
 
     public boolean isExistStation(final Station station) {
         return sections.stream()
-                .anyMatch(nowStation -> nowStation.isExistStation(station));
+                .anyMatch(section -> section.contains(station));
     }
 
     private void validateSection(final boolean isExistUpStation, final boolean isExistDownStation) {

@@ -15,10 +15,6 @@ public class Section {
         this.distance = distance;
     }
 
-    public boolean isExistStation(final Station station) {
-        return this.upStation.equals(station) || this.downStation.equals(station);
-    }
-
     public void validateDistance(final Long requestDistance) {
         if (this.distance <= requestDistance) {
             throw new DistanceInvalidException();
