@@ -6,15 +6,15 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class RouteMap {
+public class Route {
 
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> sectionGraph;
 
-    private RouteMap(DijkstraShortestPath<Station, DefaultWeightedEdge> sectionGraph) {
+    private Route(DijkstraShortestPath<Station, DefaultWeightedEdge> sectionGraph) {
         this.sectionGraph = sectionGraph;
     }
 
-    public static RouteMap from(List<Line> lines) {
+    public static Route from(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (Line line : lines) {
@@ -22,7 +22,7 @@ public class RouteMap {
             addSection(graph, line);
         }
 
-        return new RouteMap(new DijkstraShortestPath<>(graph));
+        return new Route(new DijkstraShortestPath<>(graph));
     }
 
     private static void addStation(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
@@ -48,7 +48,7 @@ public class RouteMap {
         return path.getVertexList();
     }
 
-    public int findShortestDistance(Station start, Station end) {
-        return (int) sectionGraph.getPathWeight(start, end);
+    public Distance findShortestDistance(Station start, Station end) {
+        return new Distance((int) sectionGraph.getPathWeight(start, end));
     }
 }

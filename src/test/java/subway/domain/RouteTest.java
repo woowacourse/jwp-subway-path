@@ -20,16 +20,16 @@ import org.junit.jupiter.api.Test;
 import subway.fixture.LineFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
-class RouteMapTest {
+class RouteTest {
 
     @Test
     @DisplayName("출발역과 도착역 까지 최단 경로를 찾는다.")
     void findShortedRoute1() {
         Station start = 남영역;
         Station end = 선릉역;
-        RouteMap routeMap = createRouteMap();
+        Route route = createRouteMap();
 
-        List<Station> shortestRoute = routeMap.findShortestRoute(start, end);
+        List<Station> shortestRoute = route.findShortestRoute(start, end);
 
         assertThat(shortestRoute).containsExactly(start, 서울역, 시청역, end);
     }
@@ -39,9 +39,9 @@ class RouteMapTest {
     void findShortedRoute2() {
         Station start = 사당역;
         Station end = 종각역;
-        RouteMap routeMap = createRouteMap();
+        Route route = createRouteMap();
 
-        List<Station> shortestRoute = routeMap.findShortestRoute(start, end);
+        List<Station> shortestRoute = route.findShortestRoute(start, end);
 
         assertThat(shortestRoute).containsExactly(start, 용산역, 시청역, end);
     }
@@ -51,11 +51,11 @@ class RouteMapTest {
     void findShortedDistance() {
         Station start = 남영역;
         Station end = 선릉역;
-        RouteMap routeMap = createRouteMap();
+        Route route = createRouteMap();
 
-        int shortestDistance = routeMap.findShortestDistance(start, end);
+        Distance distance = route.findShortestDistance(start, end);
 
-        assertThat(shortestDistance).isEqualTo(20);
+        assertThat(distance.getValue()).isEqualTo(20);
     }
 
     @Test
@@ -64,9 +64,9 @@ class RouteMapTest {
         Station start = 역삼역;
         Station end = 선릉역;
 
-        RouteMap routeMap = createRouteMap();
+        Route route = createRouteMap();
 
-        assertThatThrownBy(() -> routeMap.findShortestRoute(start, end))
+        assertThatThrownBy(() -> route.findShortestRoute(start, end))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -76,9 +76,9 @@ class RouteMapTest {
         Station start = 선릉역;
         Station end = 회현역;
 
-        RouteMap routeMap = createRouteMap();
+        Route route = createRouteMap();
 
-        assertThatThrownBy(() -> routeMap.findShortestRoute(start, end))
+        assertThatThrownBy(() -> route.findShortestRoute(start, end))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -88,9 +88,9 @@ class RouteMapTest {
         Station start = 서초역;
         Station end = 회현역;
 
-        RouteMap routeMap = createRouteMap();
+        Route route = createRouteMap();
 
-        assertThatThrownBy(() -> routeMap.findShortestRoute(start, end))
+        assertThatThrownBy(() -> route.findShortestRoute(start, end))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -100,19 +100,19 @@ class RouteMapTest {
         Station start = 신사역;
         Station end = 서울역;
 
-        RouteMap routeMap = createRouteMap();
+        Route route = createRouteMap();
 
-        assertThatThrownBy(() -> routeMap.findShortestRoute(start, end))
+        assertThatThrownBy(() -> route.findShortestRoute(start, end))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(start.getName() + "과 " + end.getName() + " 사이의 경로가 존재하지 않습니다.");
     }
 
 
-    private static RouteMap createRouteMap() {
+    private static Route createRouteMap() {
         Line 일호선 = LineFixture.일호선;
         Line 이호선 = LineFixture.이호선;
         Line 삼호선 = LineFixture.삼호선;
         Line 사호선 = LineFixture.사호선;
-        return RouteMap.from(List.of(일호선, 이호선, 삼호선, 사호선));
+        return Route.from(List.of(일호선, 이호선, 삼호선, 사호선));
     }
 }
