@@ -120,7 +120,7 @@ class PathControllerIntegrationTest {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("분당선", "yellow");
         mockMvc.perform(post("/lines")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(lineCreateRequest))); // 4번 id
+                .content(objectMapper.writeValueAsString(lineCreateRequest)));
 
         SectionCreateRequest sectionCreateInNewLineRequest = new SectionCreateRequest(stationName1, stationName2, 3);
         mockMvc.perform(post("/lines/4/sections")
