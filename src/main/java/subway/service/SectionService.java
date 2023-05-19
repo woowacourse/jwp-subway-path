@@ -2,6 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.controller.dto.response.LineResponse;
+import subway.exception.SectionNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
@@ -166,7 +167,7 @@ public class SectionService {
 
     private void saveNewSection(Long lineId, Station station, List<Section> sections) {
         if (sections.isEmpty()) {
-            throw new IllegalArgumentException("해당 노선에서 해당하는 역을 찾을 수 없습니다.");
+            throw new SectionNotFoundException("해당 노선에서 해당하는 역을 찾을 수 없습니다.");
         }
 
         if (sections.size() == 2) {
@@ -196,7 +197,7 @@ public class SectionService {
         return sections.stream()
                 .filter(sectionSelect)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 구간을 찾을 수 없습니다."));
+                .orElseThrow(() -> new SectionNotFoundException("해당 구간을 찾을 수 없습니다."));
     }
 
 }

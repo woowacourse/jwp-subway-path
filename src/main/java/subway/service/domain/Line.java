@@ -1,5 +1,7 @@
 package subway.service.domain;
 
+import subway.exception.SectionDuplicateException;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +34,7 @@ public class Line {
     private void validateSection(Station firstStation, Station secondStation) {
         if (allContainsTwoStation(firstStation, secondStation)
                 || noContainsTwoStation(firstStation, secondStation)) {
-            throw new IllegalArgumentException("이미 포함하고 있는 간선 정보입니다.");
+            throw new SectionDuplicateException("이미 포함하고 있는 간선 정보입니다.");
         }
     }
 

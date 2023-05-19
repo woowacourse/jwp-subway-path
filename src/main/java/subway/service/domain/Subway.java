@@ -1,5 +1,7 @@
 package subway.service.domain;
 
+import subway.exception.LineNotFoundException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,10 +21,10 @@ public class Subway {
 
     public SingleLine getSingleLine(Long lineId) {
         return lines.stream()
-                .filter(line -> line.getLineProperty().getId() == lineId)
+                .filter(line -> line.getLineProperty().getId().equals(lineId))
                 .map(this::getSingleLine)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("조회하려는 노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new LineNotFoundException("조회하려는 노선이 존재하지 않습니다."));
     }
 
     private SingleLine getSingleLine(Line line) {
