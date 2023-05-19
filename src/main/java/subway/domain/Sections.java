@@ -145,7 +145,7 @@ public class Sections {
     }
 
     public void removeStation(Station removeStation) {
-        if (hasStationInLine(removeStation)) {
+        if (hasStationBothInLine(removeStation)) {
             deleteStationBetweenStations(removeStation);
             return;
         }
@@ -161,15 +161,24 @@ public class Sections {
                 .ifPresent(sections::remove);
     }
 
+    private boolean hasStationBothInLine(Station newStation) {
+        boolean isInUpStation = sections.stream()
+                                        .anyMatch(section -> section.isUpStation(newStation));
+        boolean isInDownStation = sections.stream()
+                                          .anyMatch(section -> section.isDownStation(newStation));
+
+        return isInUpStation && isInDownStation;
+    }
+
     private void deleteStationBetweenStations(Station removeStation) {
         Section upSectionOfOrigin = sections.stream()
                                             .filter(section -> section.isUpStation(removeStation))
                                             .findFirst()
                                             .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
         Section downSectionOfOrigin = sections.stream()
-                                            .filter(section -> section.isDownStation(removeStation))
-                                            .findFirst()
-                                            .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
+                                              .filter(section -> section.isDownStation(removeStation))
+                                              .findFirst()
+                                              .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
 
         int revisedDistance = upSectionOfOrigin.getDistance() + downSectionOfOrigin.getDistance();
         Section revisedSection = Section.of(upSectionOfOrigin.getId(), downSectionOfOrigin.getUpStation(), upSectionOfOrigin.getDownStation(), revisedDistance);

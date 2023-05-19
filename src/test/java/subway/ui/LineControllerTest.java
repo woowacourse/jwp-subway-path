@@ -41,14 +41,14 @@ class LineControllerTest {
                 .willReturn(new LineResponse(1L, "2호선", "green"));
 
         mockMvc.perform(post("/lines")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LineRequest("2호선", "green"))))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/lines/1"))
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.name").value("2호선"))
-                .andExpect(jsonPath("$.color").value("green"))
-                .andDo(print());
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(new LineRequest("2호선", "green"))))
+               .andExpect(status().isCreated())
+               .andExpect(header().string("Location", "/lines/1"))
+               .andExpect(jsonPath("$.id").value(1L))
+               .andExpect(jsonPath("$.name").value("2호선"))
+               .andExpect(jsonPath("$.color").value("green"))
+               .andDo(print());
     }
 
     @DisplayName("전체 노선을 조회한다")
@@ -62,17 +62,17 @@ class LineControllerTest {
 
         //todo 처음 배운 정보 기록1 : Matchers.empty() 메서드는 Hamcrest 라이브러리의 Matcher 클래스의 정적 메서드이며, 빈 리스트(empty list)인 경우에 true를 반환합니다.
         mockMvc.perform(get("/lines"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].name").value("2호선"))
-                .andExpect(jsonPath("$[0].color").value("green"))
-                .andExpect(jsonPath("$[0].stations").value(Matchers.empty()))
-                .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[1].name").value("1호선"))
-                .andExpect(jsonPath("$[1].color").value("blue"))
-                .andExpect(jsonPath("$[1].stations[0]").value("동인천역"))
-                .andExpect(jsonPath("$[1].stations[1]").value("주안역"))
-                .andDo(print());
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$[0].id").value(1L))
+               .andExpect(jsonPath("$[0].name").value("2호선"))
+               .andExpect(jsonPath("$[0].color").value("green"))
+               .andExpect(jsonPath("$[0].stations").value(Matchers.empty()))
+               .andExpect(jsonPath("$[1].id").value(2L))
+               .andExpect(jsonPath("$[1].name").value("1호선"))
+               .andExpect(jsonPath("$[1].color").value("blue"))
+               .andExpect(jsonPath("$[1].stations[0]").value("동인천역"))
+               .andExpect(jsonPath("$[1].stations[1]").value("주안역"))
+               .andDo(print());
     }
 
     @DisplayName("특정 노선을 조회한다")
@@ -81,14 +81,14 @@ class LineControllerTest {
         Long lineId = 1L;
         given(lineService.findLineResponseById(anyLong()))
                 .willReturn(new LineSectionResponse(lineId, "1호선", "blue", List.of("동인천역", "주안역")));
-        mockMvc.perform(get("/lines/"+lineId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.name").value("1호선"))
-                .andExpect(jsonPath("$.color").value("blue"))
-                .andExpect(jsonPath("$.stations[0]").value("동인천역"))
-                .andExpect(jsonPath("$.stations[1]").value("주안역"))
-                .andDo(print());
+        mockMvc.perform(get("/lines/" + lineId))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.id").value(1L))
+               .andExpect(jsonPath("$.name").value("1호선"))
+               .andExpect(jsonPath("$.color").value("blue"))
+               .andExpect(jsonPath("$.stations[0]").value("동인천역"))
+               .andExpect(jsonPath("$.stations[1]").value("주안역"))
+               .andDo(print());
     }
 
     // todo : 수정에 성공했을 때 이를 클라이언트에게도 반환값을 통해 알릴 것인가?
@@ -97,19 +97,19 @@ class LineControllerTest {
     void updateLine() throws Exception {
         Long lineId = 1L;
         mockMvc.perform(put("/lines/" + lineId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LineRequest("2호선", "green"))))
-                .andExpect(status().isOk())
-                .andDo(print());
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(new LineRequest("2호선", "green"))))
+               .andExpect(status().isOk())
+               .andDo(print());
     }
 
     @DisplayName("특정 노선을 삭제한다")
     @Test
     void deleteLine() throws Exception {
         Long lineId = 1L;
-        mockMvc.perform(delete("/lines/"+ lineId))
-                .andExpect(status().isNoContent())
-                .andDo(print());
+        mockMvc.perform(delete("/lines/" + lineId))
+               .andExpect(status().isNoContent())
+               .andDo(print());
     }
 
     // 써비스에서 할 것
