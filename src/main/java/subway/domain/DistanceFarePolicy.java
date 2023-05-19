@@ -5,12 +5,12 @@ public class DistanceFarePolicy implements FarePolicy {
     private static final int STANDARD_FARE = 1250;
 
     @Override
-    public Fare calculate(int distance) {
-        if (distance < 10) {
+    public Fare calculate(Distance distance) {
+        if (distance.getValue() < 10) {
             return new Fare(STANDARD_FARE);
         }
 
-        return new Fare(STANDARD_FARE + calculateOverFare(distance));
+        return new Fare(STANDARD_FARE + calculateOverFare(distance.getValue()));
     }
 
     private int calculateOverFare(int distance) {
