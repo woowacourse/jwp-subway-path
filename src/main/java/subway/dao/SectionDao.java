@@ -1,105 +1,93 @@
 package subway.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.entity.vo.SectionVo;
 
 @Repository
 public class SectionDao {
-
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("SECTIONS")
-                .usingGeneratedKeyColumns("id");
+                .withTableName("sections");
     }
 
-    public Sections findSectionsByLineId(final long lineId) {
 
-        String sql = "SELECT SEC.id, S1.id, S1.name, S2.id, S2.name, SEC.distance, SEC.next_id"
+    public void insertSection(final Section section, final long lineId) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("up_id", section.getUpStation().getId())
+                .addValue("down_id", section.getDownStation().getId())
+                .addValue("line_id", lineId)
+                .addValue("distance", section.getDistance().getValue());
+
+        simpleJdbcInsert.execute(params);
+    }
+
+    public void insertSections(List<Section> sectionEntities, long lineId) {
+        String sql = "INSERT INTO sections (up_id, down_id, distance, line_id) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                Section section = sectionEntities.get(i);
+                ps.setLong(1, section.getUpStation().getId());
+                ps.setLong(2, section.getDownStation().getId());
+                ps.setInt(3, section.getDistance().getValue());
+                ps.setLong(4, lineId);
+            }
+
+            @Override
+            public int getBatchSize() {
+                return sectionEntities.size();
+            }
+        });
+    }
+
+    public List<SectionVo> findSectionsByLineId(final long lineId) {
+        String sql = "SELECT S1.id, S1.name, S2.id, S2.name, SEC.distance"
                 + " FROM SECTIONS AS SEC "
                 + " JOIN STATION AS S1 ON SEC.up_id = S1.id "
                 + " JOIN STATION AS S2 ON SEC.down_id = S2.id "
                 + " WHERE SEC.line_id = ?";
 
-        List<Section> sections = jdbcTemplate.query(sql, upStationMapper(), lineId);
-
-        return new Sections(lineId, sections);
+        return jdbcTemplate.query(sql, upStationMapper(), lineId);
     }
 
-    private RowMapper<Section> upStationMapper() {
-        return (rs, rowNum) -> new Section(
-                rs.getLong(1),
-                new Station(rs.getLong(2), rs.getString(3)),
-                new Station(rs.getLong(4), rs.getString(5)),
-                rs.getInt(6),
-                rs.getLong(7));
+    private RowMapper<SectionVo> upStationMapper() {
+        return (rs, rowNum) -> SectionVo.of(
+                rs.getLong(1), rs.getString(2),
+                rs.getLong(3), rs.getString(4),
+                rs.getInt(5));
     }
 
-    public long save(final Section section, final long lineId) {
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue("id", section.getId())
-                .addValue("up_id", section.getUpStationId())
-                .addValue("down_id", section.getDownStationId())
-                .addValue("distance", section.getDistance())
-                .addValue("line_id", lineId)
-                .addValue("next_id", section.getNextSectionId());
 
-        return simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
+
+    public void deleteSections(List<Section> sections, long lineId) {
+        String sql = "DELETE sections WHERE up_id = ? AND down_id = ? AND line_id =?";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                Section section = sections.get(i);
+                ps.setLong(1, section.getUpStation().getId());
+                ps.setLong(2, section.getDownStation().getId());
+                ps.setLong(3, lineId);
+            }
+
+            @Override
+            public int getBatchSize() {
+                return sections.size();
+            }
+        });
     }
 
-    public void updateNextSection(Long nextId, long sectionId) {
-        String sql = "UPDATE SECTIONS SET next_id = ? WHERE id = ?";
-        jdbcTemplate.update(sql, nextId, sectionId);
-    }
-
-    public void update(final Section section) {
-        String sql = "UPDATE SECTIONS SET up_id = ?, down_id = ?, distance = ?, next_id = ? WHERE id = ?";
-        jdbcTemplate.update(sql,
-                section.getUpStationId(),
-                section.getDownStationId(),
-                section.getDistance(),
-                section.getNextSectionId(),
-                section.getId());
-    }
-
-    public void deleteById(final long sectionId) {
-        String sql = "delete SECTIONS where id = ?";
-        jdbcTemplate.update(sql, sectionId);
-    }
-
-    public void deleteSectionByUpStationId(final long stationId, final long lineId) {
-        String sql = "delete SECTIONS where up_id = ? AND line_id = ?";
-        jdbcTemplate.update(sql, stationId, lineId);
-    }
-
-    public void deleteSectionByDownStationId(final long stationId, final long lineId) {
-        String sql = "delete SECTIONS where down_id = ? AND line_id = ?";
-        jdbcTemplate.update(sql, stationId, lineId);
-    }
-
-    public void deleteByLineId(long lineId) {
-        String sql = "delete SECTIONS where line_id = ?";
-        jdbcTemplate.update(sql, lineId);
-    }
-
-    public Section findById(long sectionId) {
-        String sql = "SELECT SEC.id, S1.id, S1.name, S2.id, S2.name, SEC.distance, SEC.next_id"
-                + " FROM SECTIONS AS SEC "
-                + " JOIN STATION AS S1 ON SEC.up_id = S1.id "
-                + " JOIN STATION AS S2 ON SEC.down_id = S2.id "
-                + " WHERE SEC.id = ?";
-
-        return jdbcTemplate.queryForObject(sql, upStationMapper(), sectionId);
-    }
 }
