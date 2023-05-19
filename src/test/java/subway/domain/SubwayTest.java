@@ -102,4 +102,24 @@ class SubwayTest {
             softly.assertThat(linePaths.get(2).getStationIds()).containsExactly(st5.getId(), st6.getId(), st2.getId());
         });
     }
+
+    @Test
+    @DisplayName("노선에 등록된 역순으로도 경로를 얻는다.")
+    void find_path_in_opposite_direction_test() {
+        // given
+        final Station st1 = new Station(1L, "st1");
+        final Station st2 = new Station(2L, "st2");
+        final Line line1 = Line.of(1L, "line1", "red", Set.of(new StationEdge(st1.getId(), st2.getId(), 1)));
+        final Subway subway = Subway.of(
+                List.of(line1),
+                List.of(st1, st2)
+        );
+
+        // when
+        final SubwayPath path = subway.findPath(st2.getId(), st1.getId(), new JgraphtPathNavigation());
+
+        // then
+        final List<Long> stationIds = path.getLinePaths().get(0).getStationIds();
+        assertThat(stationIds).containsExactly(2L, 1L);
+    }
 }

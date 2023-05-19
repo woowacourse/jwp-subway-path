@@ -1,12 +1,10 @@
 package subway.domain;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import subway.domain.line.Line;
-import subway.domain.line.edge.StationEdge;
 
 import java.util.List;
 
@@ -40,19 +38,16 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("상행역과 하행역의 아이디로 구간을 얻는다.")
+    @DisplayName("두 역 사이의 거리를 얻는다.")
     void get_station_edge_test() {
         // given
         final Line line = createLine();
 
         // when
-        final StationEdge stationEdge = line.getStationEdgeOf(stationId1, stationId2);
+        final int actualDistance = line.getEdgeDistanceBetween(stationId2, stationId1);
 
         // then
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(stationEdge.getUpStationId()).isEqualTo(stationId1);
-            softly.assertThat(stationEdge.getDownStationId()).isEqualTo(stationId2);
-        });
+        assertThat(actualDistance).isEqualTo(distance);
     }
 
     private Line createLine() {

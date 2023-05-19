@@ -70,12 +70,12 @@ public class Line {
         return stationEdges.isContainStation(stationId);
     }
 
-    public boolean contains(final Long upStationId, final Long downStationId) {
-        return stationEdges.contains(upStationId, downStationId);
+    public boolean contains(final Long station1Id, final Long station2Id) {
+        return stationEdges.contains(station1Id, station2Id) || stationEdges.contains(station2Id, station1Id);
     }
 
-    public StationEdge getStationEdgeOf(final Long upStationId, final Long downStationId) {
-        return stationEdges.get(upStationId, downStationId);
+    public int getEdgeDistanceBetween(final Long station1Id, final Long station2Id) {
+        return stationEdges.getEdgeDistanceBetween(station1Id, station2Id);
     }
 
     public Long getId() {

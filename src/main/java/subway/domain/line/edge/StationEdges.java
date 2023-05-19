@@ -175,14 +175,29 @@ public class StationEdges {
                 .orElseThrow(() -> new IllegalStationEdgeStateException(downStationId + "를 하행역으로 가지는 구간이 없습니다."));
     }
 
-    public boolean contains(final Long upStationId, final Long downStationId) {
-        return stationEdges.stream()
-                .anyMatch(edge ->
-                        edge.getUpStationId().equals(upStationId) && edge.getDownStationId().equals(downStationId)
-                );
+    public boolean contains(final Long station1Id, final Long station2Id) {
+        return isContainInUpToDownDirection(station1Id, station2Id) || isContainInDownToUpDirection(station2Id, station1Id);
     }
 
-    public StationEdge get(final Long upStationId, final Long downStationId) {
+    private boolean isContainInUpToDownDirection(final Long upStationId, final Long downStationId) {
+        return stationEdges.contains(new StationEdge(upStationId, downStationId, 1));
+    }
+
+    private boolean isContainInDownToUpDirection(final Long upStationId, final Long downStationId) {
+        return stationEdges.contains(new StationEdge(downStationId, upStationId, 1));
+    }
+
+    public int getEdgeDistanceBetween(final Long station1Id, final Long station2Id) {
+        if (isContainInUpToDownDirection(station1Id, station2Id)) {
+            return get(station1Id, station2Id).getDistance();
+        }
+        if (isContainInDownToUpDirection(station1Id, station2Id)) {
+            return get(station2Id, station1Id).getDistance();
+        }
+        throw new StationEdgeNotFoundException();
+    }
+
+    private StationEdge get(final Long upStationId, final Long downStationId) {
         return stationEdges.stream()
                 .filter(edge -> edge.getUpStationId().equals(upStationId) && edge.getDownStationId().equals(downStationId))
                 .findFirst()

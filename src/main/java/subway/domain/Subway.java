@@ -71,8 +71,9 @@ public class Subway {
             final Long stationId = stationIds.get(index);
             final Long nextStationId = stationIds.get(index + 1);
             final Line line = getLine(lines.getLineIdBySection(stationId, nextStationId));
+            final int distance = line.getEdgeDistanceBetween(stationId, nextStationId);
 
-            path.add(line.getId(), line.getStationEdgeOf(stationId, nextStationId));
+            path.add(line.getId(), new StationEdge(stationId, nextStationId, distance));
         }
         return path;
     }
