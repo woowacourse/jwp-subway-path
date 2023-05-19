@@ -48,28 +48,6 @@ public class SectionService {
         throw new StationNotRegisteredException(ExceptionMessages.STATION_NOT_REGISTERED);
     }
 
-    public void deleteStation(long lineId, String stationName) {
-        Line line = lineDao.findById(lineId);
-        Station station = stationDao.findByName(stationName);
-
-        if (sectionDao.countStations(line) == Section.MIN_STATION_COUNT) {
-            sectionDao.clearStations(line);
-            return;
-        }
-
-        Optional<Section> stationsToDeleteOptional = sectionDao.findByPreviousStation(station, line);
-        Optional<Section> stationsLeftOptional = sectionDao.findByNextStation(station, line);
-
-        if (stationsToDeleteOptional.isPresent() && stationsLeftOptional.isPresent()) {
-            Section sectionToDelete = stationsToDeleteOptional.get();
-            Section sectionLeft = stationsLeftOptional.get();
-
-            sectionDao.update(new Section(sectionLeft.getId(), sectionLeft.getLine(), sectionLeft.getPreviousStation(), sectionToDelete.getNextStation(), sectionToDelete.getDistance().add(sectionLeft.getDistance())));
-        }
-
-        sectionDao.deleteStation(station, line);
-    }
-
     public Distance findDistanceBetween(Station stationA, Station stationB, Line line) {
         Optional<Section> subwayMapOptional = sectionDao.findByPreviousStation(stationA, line);
         if (subwayMapOptional.isPresent() && subwayMapOptional.get().getNextStation().equals(stationB)) {

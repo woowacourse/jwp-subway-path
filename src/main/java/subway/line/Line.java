@@ -10,13 +10,6 @@ public class Line {
     private final String color;
     private final Station head;
 
-    public Line(String name, String color) {
-        this.id = null;
-        this.name = name;
-        this.color = color;
-        this.head = null;
-    }
-
     public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;

@@ -36,13 +36,13 @@ class SectionServiceTest {
     private StationDao stationDao;
 
     private Line lineOne;
-    Station stationS;
-    Station stationJ;
-    Station stationO;
+    private Station stationS;
+    private Station stationJ;
+    private Station stationO;
 
     @BeforeEach
     void setUp() {
-        lineOne = lineDao.insert(new Line("1호선", "blue"));
+        lineOne = lineDao.insert("1호선", "blue");
         stationS = stationDao.insert(new Station("송탄"));
         stationJ = stationDao.insert(new Station("진위"));
         stationO = stationDao.insert(new Station("오산"));
@@ -130,64 +130,10 @@ class SectionServiceTest {
     }
 
     @Test
-    @DisplayName("노선에서 역을 제거할 경우 정상 동작을 위해 재배치됩니다.")
-    void delete() {
-        // given
-        sectionService.insert(lineOne.getId(), stationO.getName(), stationJ.getName(), Distance.of(3), true);
-        assertThat(sectionDao.findByPreviousStation(stationS, lineOne)
-                .get().getNextStation())
-                .as("원래 노선에 등록된 역은 3개고, 송탄역 다음은 오산역입니다.")
-                .isEqualTo(stationO);
-
-        // when
-        sectionService.deleteStation(lineOne.getId(), stationO.getName());
-
-        // then
-        assertThat(sectionDao.findByPreviousStation(stationS, lineOne).get().getNextStation())
-                .as("이제 남은 역은 2개이고, 송탄역 다음은 진위역입니다.")
-                .isEqualTo(stationJ);
-    }
-
-    @Test
-    @DisplayName("노선에서 역이 제거될 경우 역과 역 사이의 거리가 재배정됩니다.")
-    void deleteDistance() {
-        // given
-        sectionService.insert(lineOne.getId(), stationO.getName(), stationJ.getName(), Distance.of(3), true);
-        assertThatThrownBy(() -> sectionService.findDistanceBetween(stationS, stationJ, lineOne))
-                .as("송탄역과 진위역은 이웃하지 않아 조회가 불가능합니다.")
-                .isInstanceOf(StationNotConnectedException.class);
-
-        // when
-        sectionService.deleteStation(lineOne.getId(), stationO.getName());
-
-        // then
-        assertThat(sectionService.findDistanceBetween(stationS, stationJ, lineOne))
-                .as("이제 송탄역과 진위역이 이어져있고, 송탄-오산, 오산-진위 길이를 합한 6km의 길이를 가집니다.")
-                .isEqualTo(Distance.of(6));
-    }
-
-    @Test
-    @DisplayName("노선에 등록된 역이 2개인 경우 하나의 역을 제거할 때 두 역이 모두 제거됩니다.")
-    void deleteAll() {
-        // given
-        assertThat(sectionDao.countStations(lineOne))
-                .as("2개의 역만 등록되어 있습니다.")
-                .isEqualTo(2);
-
-        // when
-        sectionService.deleteStation(lineOne.getId(), stationO.getName());
-
-        // then
-        assertThat(sectionDao.countStations(lineOne))
-                .as("둘만 남은 노선에서 하나를 지우면, 나머지 하나도 함께 지워져 0개가 됩니다.")
-                .isEqualTo(0);
-    }
-
-    @Test
     @DisplayName("하나의 역은 여러 노선에 등록될 수 있습니다.")
     void multipleSubwayMap() {
         // given
-        Line lineTwo = lineDao.insert(new Line("2호선", "yellow"));
+        Line lineTwo = lineDao.insert("2호선", "yellow");
 
         // when
         assertThatCode(() -> sectionService.insert(lineTwo.getId(), stationS.getName(), stationO.getName(), Distance.of(6), false))

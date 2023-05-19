@@ -47,7 +47,7 @@ class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        line = lineDao.insert(new Line("1호선", "blue"));
+        line = lineDao.insert("1호선", "blue");
         stationS = stationDao.insert(new Station("송탄"));
         stationJ = stationDao.insert(new Station("진위"));
         stationO = stationDao.insert(new Station("오산"));

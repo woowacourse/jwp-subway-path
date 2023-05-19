@@ -16,6 +16,7 @@ import subway.line.dto.LineResponse;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +39,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = lineDao.insert(request.getName(), request.getColor());
         return LineResponse.of(persistLine);
     }
 
@@ -126,5 +127,27 @@ public class LineService {
 
     private static BigDecimal calculate8kmFare(double km, BigDecimal fare) {
         return fare.add(new BigDecimal(SURCHARGE * Math.floor((km - 10) / 8)));
+    }
+
+    public void deleteStation(long lineId, String stationName) {
+        Line line = lineDao.findById(lineId);
+        Station station = stationDao.findByName(stationName);
+
+        if (sectionDao.countStations(line) == Section.MIN_STATION_COUNT) {
+            sectionDao.clearStations(line);
+            return;
+        }
+
+        Optional<Section> stationsToDeleteOptional = sectionDao.findByPreviousStation(station, line);
+        Optional<Section> stationsLeftOptional = sectionDao.findByNextStation(station, line);
+
+        if (stationsToDeleteOptional.isPresent() && stationsLeftOptional.isPresent()) {
+            Section sectionToDelete = stationsToDeleteOptional.get();
+            Section sectionLeft = stationsLeftOptional.get();
+
+            sectionDao.update(new Section(sectionLeft.getId(), sectionLeft.getLine(), sectionLeft.getPreviousStation(), sectionToDelete.getNextStation(), sectionToDelete.getDistance().add(sectionLeft.getDistance())));
+        }
+
+        sectionDao.deleteStation(station, line);
     }
 }
