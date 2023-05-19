@@ -1,4 +1,4 @@
-package subway.application.station;
+package subway.application.service.station;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,7 +7,6 @@ import org.mockito.Mockito;
 import subway.adapter.in.web.station.dto.StationCreateRequest;
 import subway.application.port.out.station.StationCommandPort;
 import subway.application.port.out.station.StationQueryPort;
-import subway.application.service.station.StationCommandService;
 import subway.domain.Station;
 
 import java.util.Optional;
