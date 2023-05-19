@@ -21,7 +21,6 @@ public class H2LinePropertyRepository implements LinePropertyRepository {
     public LineProperty insert(LineProperty lineProperty) {
         LineRow row = lineDao.insert(
                 new LineRow(lineProperty.getId(), lineProperty.getName(), lineProperty.getColor()));
-
         return new LineProperty(row.getId(), row.getName(), row.getColor());
     }
 
@@ -35,13 +34,11 @@ public class H2LinePropertyRepository implements LinePropertyRepository {
 
     public LineProperty findById(Long id) {
         LineRow row = lineDao.findById(id);
-
         return new LineProperty(row.getId(), row.getName(), row.getColor());
     }
 
     public void update(LineProperty lineProperty) {
-        lineDao.update(
-                new LineRow(lineProperty.getId(), lineProperty.getName(), lineProperty.getColor()));
+        lineDao.update(new LineRow(lineProperty.getId(), lineProperty.getName(), lineProperty.getColor()));
     }
 
     public void deleteById(Long id) {

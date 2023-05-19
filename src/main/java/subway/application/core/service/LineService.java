@@ -30,13 +30,17 @@ public class LineService {
 
     public void enrollStation(EnrollStationCommand command) {
         Line line = lineRepository.findById(command.getLineId());
-        Section section = new Section(
+        Section section = generateSection(command);
+        line.addSection(section);
+        lineRepository.insert(line);
+    }
+
+    private Section generateSection(EnrollStationCommand command) {
+        return new Section(
                 stationRepository.findById(command.getUpBound()),
                 stationRepository.findById(command.getDownBound()),
                 new Distance(command.getDistance())
         );
-        line.addSection(section);
-        lineRepository.insert(line);
     }
 
     public void deleteStation(DeleteStationCommand command) {

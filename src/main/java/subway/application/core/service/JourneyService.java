@@ -30,15 +30,15 @@ public class JourneyService {
 
     public JourneyResult findShortestJourney(JourneyCommand journeyCommand) {
         List<RouteMap> routeMaps = getAllRouteMaps();
+        PathFindResult result = findShortestPath(journeyCommand, routeMaps);
+        return new JourneyResult(result.getShortestPath(), result.getDistance(),
+                new Fare(result.getDistance()).value());
+    }
+
+    private PathFindResult findShortestPath(JourneyCommand journeyCommand, List<RouteMap> routeMaps) {
         Station departure = stationRepository.findById(journeyCommand.getDeparture());
         Station terminal = stationRepository.findById(journeyCommand.getTerminal());
-        PathFindResult result = pathFinder.findShortestPath(routeMaps, departure, terminal);
-
-        return new JourneyResult(
-                result.getShortestPath(),
-                result.getDistance(),
-                new Fare(result.getDistance()).value()
-        );
+        return pathFinder.findShortestPath(routeMaps, departure, terminal);
     }
 
     private List<RouteMap> getAllRouteMaps() {

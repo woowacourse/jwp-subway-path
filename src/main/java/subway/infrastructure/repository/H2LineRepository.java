@@ -37,17 +37,20 @@ public class H2LineRepository implements LineRepository {
     public Line findById(Long lineId) {
         List<SectionRow> sectionEntities = sectionDao.selectAllOfLineId(lineId);
         LineRow lineRow = lineDao.findById(lineId);
-
-        Map<Long, String> stationIdNameSet = getStationIdNameSet(sectionEntities);
-        List<Section> sections = sectionEntities.stream()
-                .map(sectionRow -> new Section(
-                        new Station(sectionRow.getUpBound(), stationIdNameSet.get(sectionRow.getUpBound())),
-                        new Station(sectionRow.getDownBound(), stationIdNameSet.get(sectionRow.getDownBound())),
-                        new Distance(sectionRow.getDistance())
-                )).collect(Collectors.toList());
+        List<Section> sections = generateSectionsFrom(sectionEntities);
 
         return new Line(new LineProperty(lineRow.getId(), lineRow.getName(),
                 lineRow.getColor()), sections);
+    }
+
+    private List<Section> generateSectionsFrom(List<SectionRow> sectionEntities) {
+        Map<Long, String> stationIdNameSet = getStationIdNameSet(sectionEntities);
+        return sectionEntities.stream()
+                .map(sectionRow -> new Section(
+                        new Station(sectionRow.getUpBound(), stationIdNameSet.get(sectionRow.getUpBound())),
+                        new Station(sectionRow.getDownBound(), stationIdNameSet.get(sectionRow.getDownBound())),
+                        new Distance(sectionRow.getDistance())))
+                .collect(Collectors.toList());
     }
 
     private Map<Long, String> getStationIdNameSet(List<SectionRow> sectionRows) {
@@ -74,8 +77,8 @@ public class H2LineRepository implements LineRepository {
         return lineRows.stream()
                 .map(lineRow -> new Line(
                         new LineProperty(lineRow.getId(), lineRow.getName(), lineRow.getColor()),
-                        findSectionsWithLineId(sectionRows, stationIds, lineRow))
-                ).collect(Collectors.toList());
+                        findSectionsWithLineId(sectionRows, stationIds, lineRow)))
+                .collect(Collectors.toList());
     }
 
     private List<Section> findSectionsWithLineId(List<SectionRow> sectionRows,
@@ -85,8 +88,8 @@ public class H2LineRepository implements LineRepository {
                 .map(sectionRow -> new Section(
                         new Station(sectionRow.getUpBound(), stationIds.get(sectionRow.getUpBound())),
                         new Station(sectionRow.getDownBound(), stationIds.get(sectionRow.getDownBound())),
-                        new Distance(sectionRow.getDistance())
-                )).collect(Collectors.toList());
+                        new Distance(sectionRow.getDistance())))
+                .collect(Collectors.toList());
     }
 
     public void insert(Line line) {
