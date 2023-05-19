@@ -19,6 +19,13 @@ import static subway.steps.StationSteps.*;
 public class PathIntegrationTest extends IntegrationTest {
 
     @Test
+    void 존재하지_않는_역에_대해_최단_경로를_요청하면_에외가_발생한다() {
+        final ExtractableResponse<Response> response = 두_역_사이의_최단_경로_조회_요청(1L, 2L);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
     void 환승_없이_최단_경로를_조회할_수_있다() {
         final long 고속터미널_아이디 = 역_생성하고_아이디_반환(역_고속터미널);
         final long 사평역_아이디 = 역_생성하고_아이디_반환(역_사평역);

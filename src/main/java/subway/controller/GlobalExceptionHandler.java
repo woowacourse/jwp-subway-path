@@ -2,12 +2,14 @@ package subway.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.dto.ExceptionResponse;
 import subway.exeption.*;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,6 +46,13 @@ public class GlobalExceptionHandler {
                 .body(new ExceptionResponse(exception.getMessage()));
     }
 
+    @ExceptionHandler(InvalidLineException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidLineException(final InvalidLineException exception) {
+        logger.warn(exception.getMessage(), exception);
+        return ResponseEntity.status(BAD_REQUEST)
+                .body(new ExceptionResponse(exception.getMessage()));
+    }
+
     @ExceptionHandler(InvalidStationException.class)
     public ResponseEntity<ExceptionResponse> handleInvalidStationException(final InvalidStationException exception) {
         logger.warn(exception.getMessage(), exception);
@@ -54,14 +63,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(LineNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleLineNotFoundException(final LineNotFoundException exception) {
         logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(NOT_FOUND)
                 .body(new ExceptionResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(StationNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleStationNotFoundException(final StationNotFoundException exception) {
         logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(NOT_FOUND)
                 .body(new ExceptionResponse(exception.getMessage()));
     }
 }

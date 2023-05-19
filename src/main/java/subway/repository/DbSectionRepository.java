@@ -50,8 +50,8 @@ public class DbSectionRepository implements SectionRepository {
         final List<SectionEntity> sectionEntities = sectionDao.findBy(line.getId());
         return sectionEntities.stream()
                 .map(sectionEntity -> new Section(
-                        Station.from(stationDao.findBy(sectionEntity.getUpStationId())),
-                        Station.from(stationDao.findBy(sectionEntity.getDownStationId())),
+                        Station.from(stationDao.findBy(sectionEntity.getUpStationId()).get()),
+                        Station.from(stationDao.findBy(sectionEntity.getDownStationId()).get()),
                         sectionEntity.getDistance()))
                 .collect(Collectors.toList());
     }

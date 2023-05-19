@@ -44,7 +44,7 @@ class LineH2DaoTest {
     void findByIdTest() {
         final LineEntity savedLine999 = saveLine(LINE_999);
 
-        final LineEntity foundLine = lineDao.findById(savedLine999.getId());
+        final LineEntity foundLine = (LineEntity) lineDao.findById(savedLine999.getId()).get();
 
         assertThat(foundLine).isEqualTo(savedLine999);
     }
