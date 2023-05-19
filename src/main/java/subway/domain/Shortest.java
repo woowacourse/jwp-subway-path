@@ -36,7 +36,7 @@ public final class Shortest {
                     .map(PathEdgeProxy::toPath)
                     .collect(Collectors.toList());
             return new Paths(paths);
-        } catch (final Exception e) {
+        } catch (final NullPointerException | IllegalArgumentException e) {
             return new Paths();
         }
     }
