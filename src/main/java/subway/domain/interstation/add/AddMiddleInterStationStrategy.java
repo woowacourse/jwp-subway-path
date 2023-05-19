@@ -37,7 +37,7 @@ public class AddMiddleInterStationStrategy implements AddInterStationStrategy {
         final InterStation removedInterStation = interStations.remove(index);
         interStations.add(index, new InterStation(upStationId, newStationId, distance));
         interStations.add(index + 1,
-                new InterStation(newStationId, downStationId, removedInterStation.getDistance().minus(distance)));
+                new InterStation(newStationId, downStationId, removedInterStation.getDistanceValue() - distance));
     }
 
     private int findUpStationIndex(final List<InterStation> interStations, final Long upStationId) {

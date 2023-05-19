@@ -24,7 +24,7 @@ public class InterStationEntity {
                 lineId,
                 interStation.getUpStationId(),
                 interStation.getDownStationId(),
-                interStation.getDistance().getValue());
+                interStation.getDistanceValue());
     }
 
     public static InterStationEntity of(final InterStationEntity interStationEntity, final long lineId) {

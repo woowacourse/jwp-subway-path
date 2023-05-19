@@ -63,8 +63,8 @@ public class InterStation {
         return downStationId;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public long getDistanceValue() {
+        return distance.getValue();
     }
 
     @Override

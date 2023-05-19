@@ -37,7 +37,7 @@ public class RemoveMiddleInterStationStrategy implements RemoveInterStationStrat
         final InterStation upInterStation = interStations.remove(index);
         interStations.add(index, new InterStation(upInterStation.getUpStationId(),
                 downInterStation.getDownStationId(),
-                upInterStation.getDistance().add(downInterStation.getDistance())));
+                upInterStation.getDistanceValue() + downInterStation.getDistanceValue()));
     }
 
     private int findDownStationIndex(final List<InterStation> interStations, final long removeStationId) {

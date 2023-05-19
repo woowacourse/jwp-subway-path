@@ -11,7 +11,8 @@ public class InterStationResponseDto {
     private final Long downStationId;
     private final long distance;
 
-    public InterStationResponseDto(final Long id, final Long upStationId, final Long downStationId, final long distance) {
+    public InterStationResponseDto(final Long id, final Long upStationId, final Long downStationId,
+            final long distance) {
         this.id = id;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
@@ -26,7 +27,7 @@ public class InterStationResponseDto {
 
     private static InterStationResponseDto from(final InterStation interStation) {
         return new InterStationResponseDto(interStation.getId(), interStation.getUpStationId(),
-                interStation.getDownStationId(), interStation.getDistance().getValue());
+                interStation.getDownStationId(), interStation.getDistanceValue());
     }
 
     public Long getId() {
