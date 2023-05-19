@@ -7,18 +7,20 @@ public class Line {
     private Long id;
     private String name;
     private String color;
+    private Integer additionalFee;
 
     Line() {
     }
 
-    public Line(Long id, String name, String color) {
+    public Line(Long id, String name, String color, Integer additionalFee) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.additionalFee = additionalFee;
     }
 
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(String name, String color, Integer additionalFee) {
+        this(null, name, color, additionalFee);
     }
 
     public Long getId() {
@@ -31,6 +33,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getAdditionalFee() {
+        return additionalFee;
     }
 
     @Override

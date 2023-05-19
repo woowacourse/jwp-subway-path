@@ -19,17 +19,17 @@ public class LineDao {
         new Line(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("additional_fee")
         );
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-
     public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-            .withTableName("line")
+            .withTableName("LINE")
             .usingGeneratedKeyColumns("id");
     }
 
@@ -38,32 +38,32 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("additional_fee", line.getAdditionalFee());
 
         final Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), line.getAdditionalFee());
     }
 
     public List<Line> findAll() {
-        final String sql = "select id, name, color from LINE";
+        final String sql = "SELECT * FROM LINE";
         return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
     public Optional<Line> findById(Long id) {
-        final String sql = "select id, name, color from LINE WHERE id = ?";
+        final String sql = "SELECT * FROM LINE WHERE id = ?";
         try {
-            final Line line = jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id);
-            return Optional.of(line);
+            return Optional.of(jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
     public void update(final Line newLine) {
-        final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        final String sql = "UPDATE LINE SET name = ?, color = ?, additional_fee = ? WHERE id = ?";
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId(), newLine.getAdditionalFee());
     }
 
     public void deleteById(final Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        jdbcTemplate.update("DELETE FROM LINE WHERE id = ?", id);
     }
 }

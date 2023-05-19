@@ -48,14 +48,14 @@ Content-Type: application/json;
 }
 ```
 
-2. 등록하려는 역의 이름이 유효하지 않은 이름일 때
+2. 기준이 되는 역이 노선에 존재하지 않을 때
 
 ```
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;
 
 {
-    "message": "역의 이름은 1글자 이상 10글자 이하의 한글이여야 합니다. ( 입력한 역의 이름 = ${입력한 역의 이름} )"
+    "message": "기준이 되는 역이 노선에 존재하지 않습니다 ( 존재하지 않는 역: ${존재하지 않는 역})"
 }
 ```
 
@@ -88,25 +88,14 @@ HTTP/1.1 204 No Content
 
 실패
 
-1. ${lineId} 에 해당하는 노선이 없는 경우
-
-```
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;
-
-{
-"message": "삭제하려는 노선이 존재하지 않습니다."
-}
-```
-
 1. 제거하려는 역이 존재하지 않을 경우
 
-```
+```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;
 
 {
-"message": "삭제하려는 역이 노선에 존재하지 않습니다."
+  "message": "삭제하려는 역이 노선에 존재하지 않습니다."
 }
 ```
 
@@ -121,7 +110,9 @@ Content-Type: application/json;
 #### Request
 
 ```
+
 curl -X GET "https://localhost:8080/lines/${lineId}"
+
 ```
 
 #### Request Parameter
@@ -138,20 +129,20 @@ curl -X GET "https://localhost:8080/lines/${lineId}"
 HTTP/1.1 OK
 Content-Type: application/json;
 {
-  "id": 1,
-  "name": "노선 이름",
-  "color": "노선 색상",
-  "stations" : [
-  {
     "id": 1,
-    "name": "첫번째역 이름"
-  },
-  {
-    "id": 2,
-    "name": "두번째역 이름"
-  },
-  ...
-  ]
+    "name": "노선 이름",
+    "color": "노선 색상",
+    "stations" : [
+        {
+            "id": 1,
+            "name": "첫번째역 이름"
+        },
+        {
+            "id": 2,
+            "name": "두번째역 이름"
+        },
+        ...
+    ]
 }
 ```
 
@@ -160,11 +151,13 @@ Content-Type: application/json;
 - ${lineId}에 해당하는 노선이 존재하지 않을 때
 
 ```
+
 HTTP/1.1 Bad Request
 Content-Type: application/json;
 {
     "message" : "${lineId} 에 해당하는 노선이 존재하지 않습니다"
 }
+
 ```
 
 #### Response Parameter
@@ -194,52 +187,52 @@ Station
 #### Request
 
 ```
+
 curl -X GET "https://localhost:8080/lines"
+
 ```
 
 #### Response
 
-```
 HTTP/1.1 OK
 Content-Type: application/json;
 {
-  "lines" : [
-    {
-      "id": 1,
-      "name": "노선 이름",
-      "color": "노선 색상",
-      "stations" : [
-        {
-          "id": 1,
-          "name": "첫번째역 이름"
-        },
-        {
-          "id": 2,
-          "name": "두번째역 이름"
-        },
-        ...
-      ]
-    },
-    {
-      "id": 2,
-      "name": "노선 이름",
-      "color": "노선 색상",
-      "stations" : [
-        {
-          "id": 3,
-          "name": "첫번째역 이름"
-        },
-        {
-          "id": 4,
-          "name": "두번째역 이름"
-        },
-        ...
-      ]
-    },
-    ...
-  ]
+"lines" : [
+{
+"id": 1,
+"name": "노선 이름",
+"color": "노선 색상",
+"stations" : [
+{
+"id": 1,
+"name": "첫번째역 이름"
+},
+{
+"id": 2,
+"name": "두번째역 이름"
+},
+...
+]
+},
+{
+"id": 2,
+"name": "노선 이름",
+"color": "노선 색상",
+"stations" : [
+{
+"id": 3,
+"name": "첫번째역 이름"
+},
+{
+"id": 4,
+"name": "두번째역 이름"
+},
+...
+]
+},
+...
+]
 }
-```
 
 #### Response Parameter
 
@@ -272,7 +265,9 @@ Station
 #### Request
 
 ```
+
 curl -X GET "https://localhost:8080/subway?start={start_station_id}&end={end_station_id}"
+
 ```
 
 #### Request Parameter
@@ -285,36 +280,38 @@ curl -X GET "https://localhost:8080/subway?start={start_station_id}&end={end_sta
 #### Response
 
 ```
+
 HTTP/1.1 200 OK
 Content-Type: application/json;
 {
-  "route":[
-	{
-	  "stationId": 1,
-	  "name": "시작역",
-	  "lineId": 2,
-	  "lineName": "시작역 노선",
-	  "lineColor" : "시작역 노선 색상"
-	},
-	{
-	  "stationId": 7,
-	  "name": "다음역",
-	  "lineId": 3,
-	  "lineName": "다음역 노선",
-	  "lineColor" : "다음역 노선 색상"
-	},
-	...
-	{
-	  "stationId": 3,
-	  "name": "도착역",
-	  "lineId": 2,
-	  "lineName": "도착역 노선",
-	  "lineColor" : "도착역 노선 색상"
-	}
-  ],
-  "totalDistance": 15,
-  "totalBudget": 3400
+"route":[
+{
+"stationId": 1,
+"name": "시작역",
+"lineId": 2,
+"lineName": "시작역 노선",
+"lineColor" : "시작역 노선 색상"
+},
+{
+"stationId": 7,
+"name": "다음역",
+"lineId": 3,
+"lineName": "다음역 노선",
+"lineColor" : "다음역 노선 색상"
+},
+...
+{
+"stationId": 3,
+"name": "도착역",
+"lineId": 2,
+"lineName": "도착역 노선",
+"lineColor" : "도착역 노선 색상"
 }
+],
+"totalDistance": 15,
+"totalBudget": 3400
+}
+
 ```
 
 #### Response Parameter

@@ -38,7 +38,7 @@ public class SectionIntegrationTest extends IntegrationTest {
     }
 
     private Long createLine() {
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600");
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 0);
 
         final ExtractableResponse<Response> extract = RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
