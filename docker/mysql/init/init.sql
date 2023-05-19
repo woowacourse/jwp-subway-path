@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS station
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS line
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    COLOR VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS section
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    line_id BIGINT NOT NULL,
+    pre_station_id BIGINT NOT NULL,
+    station_id BIGINT NOT NULL,
+    distance BIGINT NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(line_id) REFERENCES line(id),
+    FOREIGN KEY(pre_station_id) REFERENCES station(id),
+    FOREIGN KEY(station_id) REFERENCES station(id)
+)
