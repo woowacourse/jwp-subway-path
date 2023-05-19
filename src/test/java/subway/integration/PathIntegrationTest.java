@@ -24,7 +24,7 @@ public class PathIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/path/?source=1&target=3")
+                .when().get("/path/?source=1&target=3&age=10")
                 .then().log().all()
                 .extract();
 
@@ -43,7 +43,7 @@ public class PathIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/path/?source=1&target=4")
+                .when().get("/path/?source=1&target=4&age=10")
                 .then().log().all()
                 .extract();
 

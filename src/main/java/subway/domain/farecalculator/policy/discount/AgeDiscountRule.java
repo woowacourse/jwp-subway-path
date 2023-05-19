@@ -1,15 +1,13 @@
 package subway.domain.farecalculator.policy.discount;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import subway.dto.FareResponse;
 
 public enum AgeDiscountRule {
     DEFAULT(null, null, 0, 1.0),
-    YOUTH(6, 13, 350, 0.8),
-    CHILD(13, 19, 350, 0.5);
+    YOUTH(13, 19, 350, 0.8),
+    CHILD(6, 13, 350, 0.5);
 
     private final Integer startAge;
     private final Integer endAge;
@@ -27,9 +25,19 @@ public enum AgeDiscountRule {
         return (int) ((fare - flatDiscount) * discountRate);
     }
 
-    public static List<FareResponse> computeFares(Integer fare) {
-        return Arrays.stream(AgeDiscountRule.values()).
-                map(rule -> new FareResponse(rule.name(), rule.discount(fare)))
-                .collect(Collectors.toUnmodifiableList());
+    public boolean isInRange(Integer age) {
+        return startAge <= age && age < endAge;
+    }
+    public static FareResponse computeFare(Integer age, Integer fare) {
+        final AgeDiscountRule ageDiscountRule = find(age);
+        return new FareResponse(ageDiscountRule.name(), ageDiscountRule.discount(fare));
+    }
+
+    private static AgeDiscountRule find(Integer age) {
+        return Arrays.stream(AgeDiscountRule.values())
+                .filter(ageDiscountRule -> ageDiscountRule != DEFAULT)
+                .filter(ageDiscountRule -> ageDiscountRule.isInRange(age))
+                .findFirst()
+                .orElse(DEFAULT);
     }
 }

@@ -35,14 +35,12 @@ class DefaultFareCalculatorTest {
         final int distance = 13;
 
         //when
-        final List<FareResponse> result = fareCalculator.calculate(sectionResponses, distance);
+        final FareResponse result = fareCalculator.calculate(sectionResponses, distance, 10);
 
         //then
         Assertions.assertAll(
-                () -> assertThat(result).hasSize(3),
-                () -> assertThat(result.get(0).getFare()).isEqualTo(2250),
-                () -> assertThat(result.get(1).getFare()).isEqualTo(1520),
-                () -> assertThat(result.get(2).getFare()).isEqualTo(950)
+                ()->assertThat(result.getFare()).isEqualTo(950),
+                ()->assertThat(result.getType()).isEqualTo("CHILD")
         );
     }
 

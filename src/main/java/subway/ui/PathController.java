@@ -20,10 +20,11 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findShortestPath(
-            @RequestParam("source")Long sourceStationId,
-            @RequestParam("target")Long targetStationId
+            @RequestParam("source") Long sourceStationId,
+            @RequestParam("target") Long targetStationId,
+            @RequestParam("age") Integer age
     ) {
-        final PathResponse pathResponse = pathService.computePath(sourceStationId, targetStationId);
+        final PathResponse pathResponse = pathService.computePath(sourceStationId, targetStationId, age);
         return ResponseEntity.ok().body(pathResponse);
     }
 }

@@ -6,5 +6,5 @@ import subway.dto.FareResponse;
 import subway.dto.SectionResponse;
 
 public interface FareCalculator {
-    List<FareResponse> calculate(List<SectionResponse> sections, Integer distance);
+    FareResponse calculate(List<SectionResponse> sections, Integer distance, Integer age);
 }

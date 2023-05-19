@@ -27,9 +27,9 @@ public class DefaultFareCalculator implements FareCalculator{
     }
 
     @Override
-    public List<FareResponse> calculate(List<SectionResponse> sections, Integer distance) {
+    public FareResponse calculate(List<SectionResponse> sections, Integer distance, Integer age) {
         final int fareByDistance = fareByDistancePolicy.calculateFare(distance);
         final int additionalFare = additionalFarePolicy.calculateAdditionalFare(sections);
-        return discountPolicy.discount(fareByDistance + additionalFare);
+        return discountPolicy.discount(age,fareByDistance + additionalFare);
     }
 }

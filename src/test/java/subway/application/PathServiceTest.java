@@ -66,18 +66,13 @@ class PathServiceTest {
         when(lineDao.findAll()).thenReturn(Fixture.LINES);
 
         //when
-        final PathResponse result = pathService.computePath(1L, 8L);
+        final PathResponse result = pathService.computePath(1L, 8L, 10);
 
         //then
         assertAll(
                 () -> assertThat(result.getDistance()).isEqualTo(15),
-                () -> assertThat(result.getFareResponses()).hasSize(3),
-                () -> assertThat(result.getFareResponses().get(0).getType()).isEqualTo("DEFAULT"),
-                () -> assertThat(result.getFareResponses().get(0).getFare()).isEqualTo(1650),
-                () -> assertThat(result.getFareResponses().get(1).getType()).isEqualTo("YOUTH"),
-                () -> assertThat(result.getFareResponses().get(1).getFare()).isEqualTo(1040),
-                () -> assertThat(result.getFareResponses().get(2).getType()).isEqualTo("CHILD"),
-                () -> assertThat(result.getFareResponses().get(2).getFare()).isEqualTo(650),
+                () -> assertThat(result.getFareResponses().getType()).isEqualTo("CHILD"),
+                () -> assertThat(result.getFareResponses().getFare()).isEqualTo(650),
                 () -> assertThat(result.getPath()).hasSize(3)
         );
     }
@@ -85,7 +80,7 @@ class PathServiceTest {
     @Test
     @DisplayName("source 와 target이 같은 경우 예외가 발생한다.")
     void computePathFailBySameStation() {
-        assertThatThrownBy(() -> pathService.computePath(1L, 1L))
+        assertThatThrownBy(() -> pathService.computePath(1L, 1L, 10))
                 .isInstanceOf(DomainException.class)
                 .hasMessage(ExceptionType.SOURCE_IS_SAME_WITH_TARGET.name());
     }

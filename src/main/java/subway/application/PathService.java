@@ -44,7 +44,7 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse computePath(Long sourceStationId, Long targetStationId) {
+    public PathResponse computePath(Long sourceStationId, Long targetStationId, Integer age) {
         validate(sourceStationId, targetStationId);
         final List<Station> stations = stationDao.findAll();
         final List<Line> lines = lineDao.findAll();
@@ -55,7 +55,7 @@ public class PathService {
         final Integer distance = pathInformation.getDistance();
         final SectionMapper sectionMapper = SectionMapper.from(stations, lines);
         final List<SectionResponse> sectionResponses = sectionMapper.convertToSectionResponse(pathInformation.getPath());
-        final List<FareResponse> calculate = fareCalculator.calculate(sectionResponses, distance);
+        final FareResponse calculate = fareCalculator.calculate(sectionResponses, distance, age);
 
         return new PathResponse(distance, calculate, sectionResponses);
     }

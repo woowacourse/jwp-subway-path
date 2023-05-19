@@ -2,8 +2,6 @@ package subway.domain.farecalculator.policy.discount;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,21 +15,19 @@ class AgeDiscountPolicyTest {
 
     @ParameterizedTest(name = "연령별로 할인된 운임료 리스트를 반환한다.")
     @MethodSource("provideFareAndExpect")
-    void discount(int fare, List<Integer> expect) {
+    void discount(int fare, int age, Integer expect) {
         //when
-        final List<FareResponse> result = ageDiscountPolicy.discount(fare);
+        final FareResponse result = ageDiscountPolicy.discount(age, fare);
 
         //then
-        final List<Integer> collect = result.stream().map(FareResponse::getFare)
-                .collect(Collectors.toUnmodifiableList());
-        assertThat(collect).containsExactlyElementsOf(expect);
+        assertThat(result.getFare()).isEqualTo(expect);
     }
 
     public static Stream<Arguments> provideFareAndExpect() {
         return Stream.of(
-                Arguments.of(1350, List.of(1350, 800, 500)),
-                Arguments.of(2050, List.of(2050, 1360, 850)),
-                Arguments.of(1550, List.of(1550, 960, 600))
+                Arguments.of(1350, 5, 1350),
+                Arguments.of(1350, 6, 500),
+                Arguments.of(1350, 13, 800)
         );
     }
 }
