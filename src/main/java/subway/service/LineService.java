@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
 
-    private static final int SIZE_OF_END_POINT_STATION = 1;
+    private static final int END_POINT_STATION_SIZE = 1;
 
     private final LineDao lineDao;
     private final StationDao stationDao;
@@ -122,7 +122,7 @@ public class LineService {
     @Transactional
     public Optional<LineResponse> unregisterStation(final Long lineId, final StationUnregisterInLineRequest request) {
         final List<SectionEntity> relatedSectionEntities = sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, request.getStationName());
-        if (relatedSectionEntities.size() == SIZE_OF_END_POINT_STATION) {
+        if (relatedSectionEntities.size() == END_POINT_STATION_SIZE) {
             final List<SectionDetailEntity> sectionDetailEntities = unregisterEndStation(relatedSectionEntities.get(0));
             return Optional.of(convertToResponse(sectionDetailEntities));
         }
