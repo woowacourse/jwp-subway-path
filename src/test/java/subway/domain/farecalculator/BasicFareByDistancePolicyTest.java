@@ -17,9 +17,11 @@ class BasicFareByDistancePolicyTest {
 
     public static Stream<Arguments> provideDistanceAndFare() {
         return Stream.of(
-                Arguments.of(9,1250),
-                Arguments.of(16,1450),
-                Arguments.of(58,2150)
+                Arguments.of(10,1250),
+                Arguments.of(15,1350),
+                Arguments.of(50,2050),
+                Arguments.of(58,2150),
+                Arguments.of(59,2250)
         );
     }
 
