@@ -21,23 +21,23 @@ public class SubwayGraph {
 
     public static SubwayGraph from(final Lines lines) {
         final List<Station> stations = lines.getAllStations();
-        final List<Path> paths = lines.getAllPaths();
+        final Paths paths = Paths.from(lines);
 
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph =
                 new WeightedMultigraph<>(DefaultWeightedEdge.class);
         stations.forEach(graph::addVertex);
-        paths.forEach(path -> graph.addEdge(path.getSource(), path.getTarget(), path));
+        paths.addAllToGraph(graph);
         return new SubwayGraph(graph);
     }
 
     public void update(final Lines lines) {
         final List<Station> stations = lines.getAllStations();
-        final List<Path> paths = lines.getAllPaths();
+        final Paths paths = Paths.from(lines);
 
         final WeightedGraph<Station, DefaultWeightedEdge> graph =
                 new WeightedMultigraph<>(DefaultWeightedEdge.class);
         stations.forEach(graph::addVertex);
-        paths.forEach(path -> graph.addEdge(path.getSource(), path.getTarget(), path));
+        paths.addAllToGraph(graph);
 
         this.subwayGraph = graph;
         this.shortestPath = new DijkstraShortestPath<>(subwayGraph);

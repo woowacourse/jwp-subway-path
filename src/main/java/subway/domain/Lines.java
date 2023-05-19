@@ -1,7 +1,5 @@
 package subway.domain;
 
-import subway.domain.graph.Path;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +15,9 @@ public class Lines {
         lines.forEach(line -> line.deleteSections(station));
     }
 
-    public List<Path> getAllPaths() {
+    public List<Section> getAllSections() {
         return lines.stream()
-                .flatMap(line -> line.getSections().stream()
-                        .map(Path::new))
+                .flatMap(line -> line.getSections().stream())
                 .collect(Collectors.toList());
     }
 
