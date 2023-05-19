@@ -293,7 +293,7 @@ class SectionDaoTest {
 
     @Test
     @DisplayName("구간 전체 조회 성공")
-    void findAll_success() {
+    void findSectionDetail_success() {
         // given, when
         final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetail();
 
@@ -377,5 +377,4 @@ class SectionDaoTest {
         assertThatThrownBy(() -> sectionDao.findSectionDetailByLineId(lineId))
                 .isInstanceOf(LineNotFoundException.class);
     }
-
 }
