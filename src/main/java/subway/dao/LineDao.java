@@ -1,61 +1,101 @@
 package subway.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import subway.domain.Line;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+import subway.dao.entity.LineEntity;
+import subway.dao.entity.LineWithSectionEntities;
+import subway.dao.entity.LineWithSectionEntity;
+import subway.dao.entity.SectionEntity;
 
 @Repository
 public class LineDao {
+    private static final int EXIST_NAME = 1;
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("name")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    private final RowMapper<LineWithSectionEntity> lineWithSectionEntityRowMapper = (rs, rowNum) ->
+            new LineWithSectionEntity(
+                    new LineEntity(
+                            rs.getLong("line.id"),
+                            rs.getString("line.name")
+                    ),
+                    new SectionEntity(
+                            rs.getLong("section.id"),
+                            rs.getLong("section.up_station_id"),
+                            rs.getLong("section.down_station_id"),
+                            rs.getLong("section.line_id"),
+                            rs.getInt("section.distance")
+                    )
+            );
+
+    public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+    public Long save(LineEntity lineEntity) {
+        return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(lineEntity)).longValue();
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+    public LineEntity findByName(final String name) {
+        final String sql = "SELECT * FROM line WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<LineEntity> findById(final Long id) {
+        final String sql = "SELECT * FROM line WHERE id = ?";
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    public List<LineWithSectionEntities> findLinesWithSections() {
+        final String sql = "SELECT * FROM line "
+                + "LEFT JOIN section ON line.id = section.line_id";
+
+        try {
+            List<LineWithSectionEntity> lineWithSectionEntities = jdbcTemplate.query(sql,
+                    lineWithSectionEntityRowMapper);
+            Map<LineEntity, List<LineWithSectionEntity>> lineEntities = lineWithSectionEntities.stream()
+                    .collect(Collectors.groupingBy(LineWithSectionEntity::getLineEntity, Collectors.toList()));
+
+            return lineEntities.entrySet().stream()
+                    .map(entry -> LineWithSectionEntities.of(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList());
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyList();
+        }
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int deleteById(final Long lineId) {
+        final String sql = "DELETE FROM line WHERE id = ?";
+        return jdbcTemplate.update(sql, lineId);
+    }
+
+    public boolean exists(final String lineName) {
+        final String sql = "SELECT EXISTS(SELECT * FROM line WHERE name = ?)";
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, lineName);
+
+        return result == EXIST_NAME;
     }
 }

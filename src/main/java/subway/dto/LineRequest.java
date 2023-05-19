@@ -1,23 +1,19 @@
 package subway.dto;
 
-public class LineRequest {
-    private String name;
-    private String color;
+import javax.validation.constraints.NotBlank;
 
-    public LineRequest() {
+public class LineRequest {
+    @NotBlank(message = "노선 이름은 공백일 수 없습니다.")
+    private String name;
+
+    private LineRequest() {
     }
 
-    public LineRequest(String name, String color) {
+    public LineRequest(final String name) {
         this.name = name;
-        this.color = color;
     }
 
     public String getName() {
         return name;
     }
-
-    public String getColor() {
-        return color;
-    }
-
 }

@@ -1,48 +1,61 @@
 package subway.domain;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
+import subway.exception.ErrorMessage;
+import subway.exception.InvalidException;
 
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final Sections sections;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(Long id, String name, String color) {
+    private Line(final Long id, final String name, final Sections sections) {
         this.id = id;
         this.name = name;
-        this.color = color;
+        this.sections = sections;
     }
 
-    public Long getId() {
-        return id;
+    public static Line createWithoutId(final String name, final List<Section> sections) {
+        return Line.of(null, name, sections);
+    }
+
+    public static Line of(final Long id, final String name, final List<Section> sections) {
+        if (sections.isEmpty()) {
+            return new Line(id, name, new Sections(sections));
+        }
+        return new Line(id, name, Sections.from(sections));
+    }
+
+    public void addSection(final Station upStation, final Station downStation, final int distance) {
+        Section newSection = new Section(upStation, downStation, distance);
+        sections.addSection(newSection);
+    }
+
+    public void deleteStation(final Station station) {
+        if (sections.isEmpty()) {
+            throw new InvalidException(ErrorMessage.INVALID_DELETE_SECTION_REQUEST);
+        }
+        sections.deleteStation(station);
+    }
+
+    public List<Section> getSectionsByList() {
+        return new ArrayList<>(sections.getSections());
+    }
+
+    public List<Station> getStations() {
+        return new ArrayList<>(sections.getStations());
     }
 
     public String getName() {
         return name;
     }
 
-    public String getColor() {
-        return color;
+    public Long getId() {
+        return id;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 }
