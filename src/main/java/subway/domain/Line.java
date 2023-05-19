@@ -9,13 +9,23 @@ public final class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final int additionalFare;
     private Paths paths;
 
-    public Line(final Long id, final String name, final String color, final Paths paths) {
+    public Line(final Long id, final String name, final String color, final int additionalFare, final Paths paths) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.additionalFare = additionalFare;
         this.paths = paths;
+    }
+
+    public Line(final Long id, final String name, final String color, final int additionalFare) {
+        this(id, name, color, additionalFare, new Paths());
+    }
+
+    public Line(final Long id, final String name, final String color, final Paths paths) {
+        this(id, name, color, 0, paths);
     }
 
     public Line(final String name, final String color, final Paths paths) {
@@ -31,7 +41,7 @@ public final class Line {
     }
 
     public Line(final Line line) {
-        this(line.id, line.name, line.color, line.paths);
+        this(line.id, line.name, line.color, line.additionalFare, line.paths);
     }
 
     public Line addPath(final Path path) {
@@ -51,6 +61,10 @@ public final class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getAdditionalFare() {
+        return additionalFare;
     }
 
     public int getPathsSize() {
