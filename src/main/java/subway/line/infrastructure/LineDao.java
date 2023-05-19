@@ -1,4 +1,4 @@
-package subway.line.application;
+package subway.line.infrastructure;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;

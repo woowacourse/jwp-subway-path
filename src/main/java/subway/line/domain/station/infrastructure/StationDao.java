@@ -1,4 +1,4 @@
-package subway.line.domain.station.application;
+package subway.line.domain.station.infrastructure;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

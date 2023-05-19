@@ -8,11 +8,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.domain.section.domain.exception.InvalidDistanceException;
-import subway.line.domain.section.application.exception.StationNotConnectedException;
-import subway.line.application.LineDao;
-import subway.line.domain.section.application.SectionDao;
+import subway.line.domain.station.application.StationRepository;
+import subway.line.infrastructure.LineDao;
+import subway.line.domain.section.infrastructure.SectionDao;
 import subway.line.domain.section.application.SectionService;
-import subway.line.domain.station.application.StationDao;
 import subway.line.domain.section.domain.Distance;
 import subway.line.Line;
 import subway.line.domain.station.Station;
@@ -33,7 +32,7 @@ class SectionServiceTest {
     private LineDao lineDao;
 
     @Autowired
-    private StationDao stationDao;
+    private StationRepository stationRepository;
 
     private Line lineOne;
     private Station stationS;
@@ -43,9 +42,9 @@ class SectionServiceTest {
     @BeforeEach
     void setUp() {
         lineOne = lineDao.insert("1호선", "blue");
-        stationS = stationDao.insert(new Station("송탄"));
-        stationJ = stationDao.insert(new Station("진위"));
-        stationO = stationDao.insert(new Station("오산"));
+        stationS = stationRepository.insert(new Station("송탄"));
+        stationJ = stationRepository.insert(new Station("진위"));
+        stationO = stationRepository.insert(new Station("오산"));
         sectionService.insert(lineOne.getId(), "송탄", "진위", Distance.of(6), true);
     }
 

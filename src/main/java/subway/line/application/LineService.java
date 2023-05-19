@@ -6,9 +6,9 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import subway.line.Line;
 import subway.line.domain.section.application.ShortestPathResponse;
-import subway.line.domain.section.application.SectionDao;
+import subway.line.domain.section.infrastructure.SectionDao;
 import subway.line.domain.section.application.SectionService;
-import subway.line.domain.station.application.StationDao;
+import subway.line.domain.station.infrastructure.StationDao;
 import subway.line.domain.section.Section;
 import subway.line.domain.station.Station;
 import subway.line.dto.LineRequest;
@@ -26,20 +26,20 @@ public class LineService {
     public static final int MAX_5KM_FARE_DISTANCE = 50;
     public static final int MIN_8KM_FARE_DISTANCE = 51;
     public static final int SURCHARGE = 100;
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
     private final SectionService sectionService;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao, SectionService sectionService) {
-        this.lineDao = lineDao;
+    public LineService(LineRepository lineRepository, SectionDao sectionDao, StationDao stationDao, SectionService sectionService) {
+        this.lineRepository = lineRepository;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.sectionService = sectionService;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(request.getName(), request.getColor());
+        Line persistLine = lineRepository.insert(request.getName(), request.getColor());
         return LineResponse.of(persistLine);
     }
 
@@ -51,7 +51,7 @@ public class LineService {
     }
 
     public List<Line> findLines() {
-        return lineDao.findAll();
+        return lineRepository.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -61,15 +61,15 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineRepository.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineRepository.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
     }
 
     public ShortestPathResponse findShortestPath(String startingStationName, String destinationStationName) {
@@ -87,7 +87,7 @@ public class LineService {
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph() {
         final var graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        for (Line line : lineDao.findAll()) {
+        for (Line line : lineRepository.findAll()) {
             saveLineInGraph(graph, line);
         }
         return graph;
@@ -130,7 +130,7 @@ public class LineService {
     }
 
     public void deleteStation(long lineId, String stationName) {
-        Line line = lineDao.findById(lineId);
+        Line line = lineRepository.findById(lineId);
         Station station = stationDao.findByName(stationName);
 
         if (sectionDao.countStations(line) == Section.MIN_STATION_COUNT) {

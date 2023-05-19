@@ -2,8 +2,8 @@ package subway.line.domain.section.application.strategy;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import subway.line.application.LineDao;
-import subway.line.domain.section.application.SectionDao;
+import subway.line.infrastructure.LineDao;
+import subway.line.domain.section.infrastructure.SectionDao;
 import subway.line.domain.section.domain.EmptyDistance;
 import subway.line.domain.station.EmptyStation;
 import subway.line.domain.section.Section;

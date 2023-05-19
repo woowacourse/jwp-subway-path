@@ -3,19 +3,19 @@ package subway.dao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import subway.line.domain.section.application.SectionService;
-import subway.line.Line;
-import subway.line.application.LineDao;
-import subway.line.domain.section.application.SectionDao;
+import subway.line.infrastructure.LineDao;
 import subway.line.domain.station.Station;
-import subway.line.domain.station.application.StationDao;
+import subway.line.domain.station.infrastructure.StationDao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@JdbcTest
-@Import({StationDao.class, LineDao.class, SectionService.class, SectionDao.class})
+@SpringBootTest
+@Transactional
+@AutoConfigureTestDatabase
 class LineDaoTest {
     @Autowired
     LineDao lineDao;

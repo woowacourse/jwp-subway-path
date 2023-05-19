@@ -4,7 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
 import subway.line.domain.section.Section;
-import subway.line.domain.section.application.SectionDao;
+import subway.line.domain.section.infrastructure.SectionDao;
 
 @Component
 @Order(3)

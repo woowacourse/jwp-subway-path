@@ -12,13 +12,13 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.domain.section.application.SectionService;
 import subway.line.domain.section.domain.exception.InvalidDistanceException;
-import subway.line.application.LineDao;
+import subway.line.infrastructure.LineDao;
 import subway.line.domain.section.domain.Distance;
 import subway.line.Line;
 import subway.line.domain.section.Section;
-import subway.line.domain.section.application.SectionDao;
+import subway.line.domain.section.infrastructure.SectionDao;
 import subway.line.domain.station.Station;
-import subway.line.domain.station.application.StationDao;
+import subway.line.domain.station.infrastructure.StationDao;
 
 import java.util.List;
 

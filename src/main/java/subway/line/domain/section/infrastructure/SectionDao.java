@@ -1,11 +1,10 @@
-package subway.line.domain.section.application;
+package subway.line.domain.section.infrastructure;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
-import subway.line.application.LineDao;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.domain.EmptyDistance;
 import subway.line.domain.section.Section;
@@ -28,14 +27,12 @@ public class SectionDao {
     public static final String ID = "id";
     private final SimpleJdbcInsert simpleJdbcInsert;
     private final JdbcTemplate jdbcTemplate;
-    private final LineDao lineDao;
 
-    public SectionDao(LineDao lineDao, DataSource dataSource) {
+    public SectionDao(DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("SECTION")
                 .usingGeneratedKeyColumns("ID");
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.lineDao = lineDao;
     }
 
     public int countStations(Line line) {
