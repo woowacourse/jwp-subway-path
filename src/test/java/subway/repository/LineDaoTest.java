@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.exception.DuplicatedLineNameException;
@@ -71,4 +72,29 @@ class LineDaoTest {
                 .isInstanceOf(DuplicatedLineNameException.class);
     }
 
+    @Test
+    @DisplayName("삭제 성공")
+    void deleteById_success() {
+        // given
+        final long id = 1L;
+
+        // when
+        lineDao.deleteById(id);
+
+        // then
+        final String searchSql = "SELECT * FROM line WHERE id = ?";
+        assertThatThrownBy(() -> jdbcTemplate.queryForObject(searchSql, lineEntityRowMapper, id))
+                .isInstanceOf(EmptyResultDataAccessException.class);
+    }
+
+    @Test
+    @DisplayName("삭제 실패 - 존재하지 않는 id")
+    void deleteById_fail_id_not_found() {
+        // given
+        final long id = 33L;
+
+        // when, then
+        assertThatThrownBy(() ->lineDao.deleteById(id))
+                .isInstanceOf(RuntimeException.class);
+    }
 }

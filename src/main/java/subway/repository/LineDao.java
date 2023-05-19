@@ -45,5 +45,4 @@ public class LineDao {
             throw new RuntimeException("존재하지 않는 line id 입니다.");
         }
     }
-
 }
