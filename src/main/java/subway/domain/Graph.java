@@ -29,18 +29,13 @@ public class Graph {
     }
 
     public List<String> findPath(String start, String end){
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-        List<String> vertexs = dijkstraShortestPath.getPath(start, end).getVertexList();
-
-        return vertexs;
+        return dijkstraShortestPath.getPath(start, end).getVertexList();
     }
     public double findPathDistance(String start, String end){
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-        double weight = dijkstraShortestPath.getPath(start, end).getWeight();
-        return weight;
+        return dijkstraShortestPath.getPath(start, end).getWeight();
     }
 }
