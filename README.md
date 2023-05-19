@@ -29,7 +29,31 @@
   - `200 OK`/`400 BAD REQUEST`
 - 노선에 역 제거 API
   - DELETE `/lines/{lineId}/stations/{stationId}`
-  - `201 NO CONTENT`/`400 BAD REQUEST`
+  - `204 NO CONTENT`/`400 BAD REQUEST`
+- 최단 경로 조회 API
+  - GET `/subway/shortest-path?from={fromStationId}&to={toStationId}`
+  - body:
+    ```json
+    {
+      "stations":[
+        {
+          "id": 9,
+          "name":"A"
+        },
+        {
+          "id": 11,
+          "name":"C"
+        },
+        {
+          "id": 13,
+          "name":"E"
+        }
+      ],
+      "fare": 1250,
+      "distance": 7
+    }
+    ```
+  - `200 OK`/`400 BAD REQUEST`
 ## 기능 목록
 - 지하철
   - 역에서 역까지 최단 경로를 알 수 있다.
