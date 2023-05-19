@@ -35,15 +35,11 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
+        List<Line> persistLines = lineDao.findAll();
 
         return persistLines.stream()
                 .map(line -> findLineResponseById(line.getId()))
                 .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineDao.findAll();
     }
 
     private List<Section> getSections(Long lineId) {

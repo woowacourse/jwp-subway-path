@@ -12,17 +12,27 @@ public class GlobalExceptionHandler {
 
     private Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+//        log.error("handleMethodArgumentNotValidException", exception.getMessage());
+//        return ResponseEntity.badRequest().body(exception.getMessage());
+//    }
+//
+//    @ExceptionHandler(IllegalStateException.class)
+//    protected ResponseEntity<String> handleIllegalStatementException(IllegalStateException e) {
+//        log.error("illegalStateException", e.getMessage());
+//        return ResponseEntity.badRequest().body(e.getMessage());
+//    }
+//
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    protected ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+//        log.error("illegalArgumentException", e);
+//        return ResponseEntity.badRequest().body(e.getMessage());
+//    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleUnExpectedException(Exception exception) {
-        final String errorMessage = exception.getMessage();
-        log.error("예상치 못한 예외가 발생했습니다 : {}", errorMessage);
-
-        return ResponseEntity.internalServerError().body(errorMessage);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        log.error("잘못된 입력 정보 입니다 : {}", exception.getMessage());
-        return ResponseEntity.badRequest().body(exception.getMessage());
+    protected ResponseEntity<String> handleException(Exception e) {
+        log.error("exception", e);
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

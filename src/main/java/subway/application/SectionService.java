@@ -89,16 +89,13 @@ public class SectionService {
     private Long insertToMiddleSection(SectionRequest request, Sections sortedSections) {
         if (sortedSections.isUpStationPoint(request.getUpStationId())) {
             final Section targetSection = sortedSections.getTargetUpStationSection(request.getUpStationId());
-
             validateDistance(targetSection.getDistance(), request.getDistance());
 
             final Section updateSection = new Section(new Distance(request.getDistance()), findStationById(targetSection.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
             final Section newSection = new Section(new Distance(targetSection.getDistance() - request.getDistance()), findStationById(request.getDownStationId()), findStationById(targetSection.getDownStationId()), targetSection.getLineId());
             return updateAndInsertSection(updateSection, newSection);
         }
-
         final Section targetSection = sortedSections.getTargetDownStationSection(request.getDownStationId());
-
         validateDistance(targetSection.getDistance(), request.getDistance());
 
         final Section updateSection = new Section(new Distance(request.getDistance()), findStationById(request.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
