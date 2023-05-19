@@ -1,37 +1,44 @@
 package subway.domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static subway.factory.SectionFactory.createSection;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.DisplayName;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import subway.exception.invalid.DistanceInvalidException;
 
-class SectionTest {
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+public class SectionTest {
+
+    private Station jamsil = new Station("잠실역");
+    private Station gangnam = new Station("강남역");
 
     @Test
-    @DisplayName("역이 존재하는지 확인한다.")
-    void returns_exist_station() {
-        // given
-        Section section = createSection();
+    void 역_구간의_길이보다_크거나_같은_길이에_대해서_예외를_던진다() {
+        final Section section = new Section(jamsil, gangnam, 3L);
 
-        // when
-        boolean result = section.isExistStation(new Station("삼성역"));
-
-        // then
-        assertThat(result).isFalse();
+        final SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThatThrownBy(() -> section.validateDistance(3L))
+                .isInstanceOf(DistanceInvalidException.class);
+        softAssertions.assertThatThrownBy(() -> section.validateDistance(4L))
+                .isInstanceOf(DistanceInvalidException.class);
+        softAssertions.assertAll();
     }
 
     @Test
-    @DisplayName("요청한 역 사이의 거리가 현재 거리보다 같거나 길면 예외가 발생한다.")
-    void throws_exception_when_invalid_distance() {
-        // given
-        Section section = createSection();
-        Long requestDistance = 10L;
+    void 역_구간_안에_특정_역이_존재하는지_확인한다() {
+        final Section section = new Section(jamsil, gangnam, 3L);
 
-        // when & then
-        assertThatThrownBy(() -> section.validateDistance(requestDistance))
-                .isInstanceOf(DistanceInvalidException.class);
+        assertThat(section.contains(new Station("비빔밥"))).isFalse();
+    }
+
+    @Test
+    void 역_구간_정보가_같다면_동등하다() {
+        final Section section1 = new Section(jamsil, gangnam, 3L);
+        final Section section2 = new Section(jamsil, gangnam, 3L);
+
+        assertThat(section1).isEqualTo(section2);
     }
 }
