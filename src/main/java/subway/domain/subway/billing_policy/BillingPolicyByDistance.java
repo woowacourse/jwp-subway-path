@@ -33,7 +33,11 @@ public final class BillingPolicyByDistance implements BillingPolicy {
 
         private int calculateExtraFare(int distance) {
             final int extraDistance = distance - threshold;
-            return EXTRA_FARE_UNIT * (extraDistance / distanceUnitForChargeFare);
+            final int extraFare = EXTRA_FARE_UNIT * (extraDistance / distanceUnitForChargeFare);
+            if (extraDistance % distanceUnitForChargeFare > 0) {
+                return extraFare + EXTRA_FARE_UNIT;
+            }
+            return extraFare;
         }
     }
 
