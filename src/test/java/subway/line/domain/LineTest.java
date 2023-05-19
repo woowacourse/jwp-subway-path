@@ -1,11 +1,9 @@
-package subway.domain;
+package subway.line.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.line.domain.Line;
-import subway.line.domain.MiddleSection;
 import subway.line.exception.DuplicateStationInLineException;
 import subway.line.exception.InvalidAdditionalFareException;
 import subway.line.exception.SectionNotFoundException;

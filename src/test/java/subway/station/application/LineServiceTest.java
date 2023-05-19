@@ -1,4 +1,4 @@
-package subway.application;
+package subway.station.application;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import subway.line.domain.Line;
 import subway.line.domain.Lines;
 import subway.line.domain.MiddleSection;
 import subway.line.repository.LineRepository;
-import subway.station.application.StationService;
 import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 

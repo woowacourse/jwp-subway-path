@@ -1,4 +1,4 @@
-package subway.integration;
+package subway.line.ui;
 
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import subway.line.ui.dto.LineCreationRequest;
+import subway.station.ui.StationIntegrationTest;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;

@@ -1,4 +1,4 @@
-package subway.integration;
+package subway.station.ui;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
