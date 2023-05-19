@@ -1,7 +1,7 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.StationEntity;
 import subway.ui.request.StationRequest;

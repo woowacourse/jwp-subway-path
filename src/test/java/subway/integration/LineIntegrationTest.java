@@ -80,7 +80,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLines() throws JsonProcessingException {
         // given
-        final SectionRequest request = new SectionRequest(STATION_A.getName(), STATION_B.getName(), 10);
+        final SectionRequest request = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), 10);
         final String json = jsonSerialize(request);
         final Long lineId = 1L;
 
@@ -111,7 +111,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLine() throws JsonProcessingException {
         // given
-        final SectionRequest request = new SectionRequest(STATION_A.getName(), STATION_B.getName(), 10);
+        final SectionRequest request = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), 10);
         final String json = jsonSerialize(request);
         final Long lineId = 1L;
 
@@ -135,7 +135,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.getName()).isEqualTo(LINE1.getName().getValue()),
                 () -> assertThat(result.getStations())
                         .extracting(StationResponse::getName)
-                        .containsExactly(STATION_A.getName(), STATION_B.getName())
+                        .containsExactly(STATION_A.getName().getValue(), STATION_B.getName().getValue())
         );
     }
 
@@ -182,7 +182,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("노선에 역을 최초 등록한다.")
     @Test
     void addInitialStationInLine() throws JsonProcessingException {
-        final SectionRequest request = new SectionRequest(STATION_A.getName(), STATION_B.getName(), 10);
+        final SectionRequest request = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), 10);
 
         final String json = jsonSerialize(request);
 
@@ -195,13 +195,13 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("노선에서 역을 삭제한다.")
     @Test
     void deleteStationInLine() throws JsonProcessingException {
-        final SectionRequest request = new SectionRequest(STATION_A.getName(), STATION_B.getName(), 10);
+        final SectionRequest request = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), 10);
         final String json = jsonSerialize(request);
         given().body(json)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines/1/register")
                 .then().statusCode(HttpStatus.CREATED.value());
-        final StationRequest stationRequest = new StationRequest(STATION_A.getName());
+        final StationRequest stationRequest = new StationRequest(STATION_A.getName().getValue());
 
         given().body(jsonSerialize(stationRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

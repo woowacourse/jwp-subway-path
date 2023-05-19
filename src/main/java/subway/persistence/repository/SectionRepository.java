@@ -1,10 +1,10 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.SectionGraph;
-import subway.domain.Station;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.section.SectionGraph;
+import subway.domain.station.Station;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.SectionEntity;

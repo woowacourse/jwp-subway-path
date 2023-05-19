@@ -1,10 +1,11 @@
-package subway.domain;
+package subway.domain.section;
 
 import java.util.Objects;
 
 public class Distance {
 
-    private static final int MIN_VALUE = 1;
+    private static final int MIN_RANGE = 1;
+    private static final int MAX_RANGE = 100;
     private final int value;
 
     public Distance(final int value) {
@@ -13,8 +14,8 @@ public class Distance {
     }
 
     private void validateDistance(final int value) {
-        if (value < MIN_VALUE) {
-            throw new IllegalArgumentException("거리는 1이상의 정수여야합니다.");
+        if (MAX_RANGE < value || value < MIN_RANGE) {
+            throw new IllegalArgumentException("거리는 " + MIN_RANGE + "이상 " + MAX_RANGE + "이하여야 합니다.");
         }
     }
 

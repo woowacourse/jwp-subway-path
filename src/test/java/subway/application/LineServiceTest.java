@@ -5,8 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
 import subway.integration.IntegrationTest;
 import subway.ui.request.SectionRequest;
 import subway.ui.request.StationRequest;
@@ -27,15 +27,15 @@ class LineServiceTest extends IntegrationTest {
     void registerLine() {
         final long lineId = 1L;
         final SectionRequest sectionRequest =
-                new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
+                new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), DISTANCE9.getValue());
 
         lineService.registerStation(lineId, sectionRequest);
 
         final Line line = lineService.findById(lineId);
         assertAll(
-                () -> assertThat(line.getSections().getSections().get(0).getBeforeStation().getName()).isEqualTo(STATION_A.getName()),
-                () -> assertThat(line.getSections().getSections().get(0).getNextStation().getName()).isEqualTo(STATION_B.getName()),
-                () -> assertThat(line.getSections().getSections().get(0).getDistance().getValue()).isEqualTo(DISTANCE9.getValue())
+                () -> assertThat(line.getSections().getValues().get(0).getBeforeStation().getName()).isEqualTo(STATION_A.getName()),
+                () -> assertThat(line.getSections().getValues().get(0).getNextStation().getName()).isEqualTo(STATION_B.getName()),
+                () -> assertThat(line.getSections().getValues().get(0).getDistance().getValue()).isEqualTo(DISTANCE9.getValue())
         );
     }
 
@@ -44,14 +44,14 @@ class LineServiceTest extends IntegrationTest {
     void unregisterLine() {
         final long lineId = 1L;
         final SectionRequest sectionRequest =
-                new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
+                new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), DISTANCE9.getValue());
         lineService.registerStation(lineId, sectionRequest);
-        final StationRequest stationRequest = new StationRequest(STATION_A.getName());
+        final StationRequest stationRequest = new StationRequest(STATION_A.getName().getValue());
 
         lineService.unregisterStation(lineId, stationRequest);
 
         final Line line = lineService.findById(lineId);
-        assertThat(line.getSections().getSections())
+        assertThat(line.getSections().getValues())
                 .isEmpty();
     }
 
@@ -63,8 +63,8 @@ class LineServiceTest extends IntegrationTest {
         @Test
         void headDuplicate() {
             final long lineId = 1L;
-            final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
-            final SectionRequest duplicateRequest = new SectionRequest(STATION_B.getName(), STATION_A.getName(), DISTANCE8.getValue());
+            final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), DISTANCE9.getValue());
+            final SectionRequest duplicateRequest = new SectionRequest(STATION_B.getName().getValue(), STATION_A.getName().getValue(), DISTANCE8.getValue());
 
             lineService.registerStation(lineId, sectionRequest);
 
@@ -75,8 +75,8 @@ class LineServiceTest extends IntegrationTest {
         @Test
         void centralDuplicate() {
             final long lineId = 1L;
-            final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
-            final SectionRequest duplicateRequest = new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE8.getValue());
+            final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), DISTANCE9.getValue());
+            final SectionRequest duplicateRequest = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), DISTANCE8.getValue());
 
             lineService.registerStation(lineId, sectionRequest);
 
@@ -87,9 +87,9 @@ class LineServiceTest extends IntegrationTest {
         @Test
         void tailDuplicate() {
             final long lineId = 1L;
-            final SectionRequest sectionRequest1 = new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
-            final SectionRequest sectionRequest2 = new SectionRequest(STATION_B.getName(), STATION_C.getName(), DISTANCE7.getValue());
-            final SectionRequest duplicateRequest = new SectionRequest(STATION_C.getName(), STATION_B.getName(), DISTANCE8.getValue());
+            final SectionRequest sectionRequest1 = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), DISTANCE9.getValue());
+            final SectionRequest sectionRequest2 = new SectionRequest(STATION_B.getName().getValue(), STATION_C.getName().getValue(), DISTANCE7.getValue());
+            final SectionRequest duplicateRequest = new SectionRequest(STATION_C.getName().getValue(), STATION_B.getName().getValue(), DISTANCE8.getValue());
 
             lineService.registerStation(lineId, sectionRequest1);
             lineService.registerStation(lineId, sectionRequest2);
@@ -101,7 +101,7 @@ class LineServiceTest extends IntegrationTest {
         @Test
         void duplicateNameRegister() {
             final long lineId = 1L;
-            final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName(), STATION_A.getName(), DISTANCE9.getValue());
+            final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName().getValue(), STATION_A.getName().getValue(), DISTANCE9.getValue());
 
             assertThrows(IllegalArgumentException.class, () -> lineService.registerStation(lineId, sectionRequest));
         }
@@ -115,20 +115,20 @@ class LineServiceTest extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            lineService.registerStation(lineId, new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE5.getValue()));
-            lineService.registerStation(lineId, new SectionRequest(STATION_B.getName(), STATION_C.getName(), DISTANCE5.getValue()));
-            lineService.registerStation(lineId, new SectionRequest(STATION_C.getName(), STATION_D.getName(), DISTANCE5.getValue()));
+            lineService.registerStation(lineId, new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), DISTANCE5.getValue()));
+            lineService.registerStation(lineId, new SectionRequest(STATION_B.getName().getValue(), STATION_C.getName().getValue(), DISTANCE5.getValue()));
+            lineService.registerStation(lineId, new SectionRequest(STATION_C.getName().getValue(), STATION_D.getName().getValue(), DISTANCE5.getValue()));
         }
 
         @DisplayName("상행 종점에 역을 추가한다.")
         @Test
         void addStationHead() {
-            final SectionRequest request = new SectionRequest(STATION_E.getName(), STATION_A.getName(), DISTANCE5.getValue());
+            final SectionRequest request = new SectionRequest(STATION_E.getName().getValue(), STATION_A.getName().getValue(), DISTANCE5.getValue());
 
             lineService.registerStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getSections())
+            assertThat(line.getSections().getValues())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_E, STATION_A, DISTANCE5),
@@ -141,12 +141,12 @@ class LineServiceTest extends IntegrationTest {
         @DisplayName("중간에 역을 추가한다.")
         @Test
         void addStationCenter() {
-            final SectionRequest request = new SectionRequest(STATION_B.getName(), STATION_E.getName(), DISTANCE3.getValue());
+            final SectionRequest request = new SectionRequest(STATION_B.getName().getValue(), STATION_E.getName().getValue(), DISTANCE3.getValue());
 
             lineService.registerStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getSections())
+            assertThat(line.getSections().getValues())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),
@@ -159,12 +159,12 @@ class LineServiceTest extends IntegrationTest {
         @DisplayName("하행종점에 역을 추가한다.")
         @Test
         void addStationTail() {
-            final SectionRequest request = new SectionRequest(STATION_D.getName(), STATION_E.getName(), DISTANCE5.getValue());
+            final SectionRequest request = new SectionRequest(STATION_D.getName().getValue(), STATION_E.getName().getValue(), DISTANCE5.getValue());
 
             lineService.registerStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getSections())
+            assertThat(line.getSections().getValues())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),
@@ -177,12 +177,12 @@ class LineServiceTest extends IntegrationTest {
         @DisplayName("상행종점에 역을 삭제한다.")
         @Test
         void removeStationHead() {
-            final StationRequest request = new StationRequest(STATION_A.getName());
+            final StationRequest request = new StationRequest(STATION_A.getName().getValue());
 
             lineService.unregisterStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getSections())
+            assertThat(line.getSections().getValues())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_B, STATION_C, DISTANCE5),
@@ -193,12 +193,12 @@ class LineServiceTest extends IntegrationTest {
         @DisplayName("중간에 역을 삭제한다.")
         @Test
         void removeStationCenter() {
-            final StationRequest request = new StationRequest(STATION_C.getName());
+            final StationRequest request = new StationRequest(STATION_C.getName().getValue());
 
             lineService.unregisterStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getSections())
+            assertThat(line.getSections().getValues())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),
@@ -209,12 +209,12 @@ class LineServiceTest extends IntegrationTest {
         @DisplayName("하행종점 역을 삭제한다.")
         @Test
         void removeStationTail() {
-            final StationRequest request = new StationRequest(STATION_D.getName());
+            final StationRequest request = new StationRequest(STATION_D.getName().getValue());
 
             lineService.unregisterStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getSections())
+            assertThat(line.getSections().getValues())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),
@@ -225,15 +225,15 @@ class LineServiceTest extends IntegrationTest {
         @DisplayName("중간에 역을 삭제하고 추가한다.")
         @Test
         void removeAndAddStation() {
-            final StationRequest unregisterRequest = new StationRequest(STATION_C.getName());
-            final SectionRequest registerRequest = new SectionRequest(STATION_B.getName(), STATION_E.getName(), DISTANCE3.getValue());
+            final StationRequest unregisterRequest = new StationRequest(STATION_C.getName().getValue());
+            final SectionRequest registerRequest = new SectionRequest(STATION_B.getName().getValue(), STATION_E.getName().getValue(), DISTANCE3.getValue());
 
             lineService.unregisterStation(lineId, unregisterRequest);
             lineService.registerStation(lineId, registerRequest);
 
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getSections())
+            assertThat(line.getSections().getValues())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),

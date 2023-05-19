@@ -1,12 +1,14 @@
-package subway.domain;
+package subway.domain.section;
+
+import subway.domain.station.Station;
 
 import java.util.Objects;
 
 public class Section {
-    private Long id;
     private final Station beforeStation;
     private final Station nextStation;
     private final Distance distance;
+    private Long id;
 
     public Section(final Long id, final Station beforeStation, final Station nextStation, final Distance distance) {
         this(beforeStation, nextStation, distance);

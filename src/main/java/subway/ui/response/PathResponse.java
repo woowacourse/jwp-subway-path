@@ -1,6 +1,6 @@
 package subway.ui.response;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -26,17 +26,17 @@ class SectionServiceTest extends IntegrationTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        lineService.registerStation(LINE1.getId(), new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE5.getValue()));
-        lineService.registerStation(LINE1.getId(), new SectionRequest(STATION_B.getName(), STATION_C.getName(), DISTANCE5.getValue()));
-        lineService.registerStation(LINE2.getId(), new SectionRequest(STATION_B.getName(), STATION_D.getName(), DISTANCE10.getValue()));
-        lineService.registerStation(LINE3.getId(), new SectionRequest(STATION_D.getName(), STATION_C.getName(), DISTANCE3.getValue()));
-        lineService.registerStation(LINE3.getId(), new SectionRequest(STATION_C.getName(), STATION_E.getName(), DISTANCE3.getValue()));
+        lineService.registerStation(LINE1.getId(), new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), DISTANCE5.getValue()));
+        lineService.registerStation(LINE1.getId(), new SectionRequest(STATION_B.getName().getValue(), STATION_C.getName().getValue(), DISTANCE5.getValue()));
+        lineService.registerStation(LINE2.getId(), new SectionRequest(STATION_B.getName().getValue(), STATION_D.getName().getValue(), DISTANCE10.getValue()));
+        lineService.registerStation(LINE3.getId(), new SectionRequest(STATION_D.getName().getValue(), STATION_C.getName().getValue(), DISTANCE3.getValue()));
+        lineService.registerStation(LINE3.getId(), new SectionRequest(STATION_C.getName().getValue(), STATION_E.getName().getValue(), DISTANCE3.getValue()));
     }
 
     @DisplayName("경로 조회 기능을 테스트한다.")
     @Test
     void findPathTest() {
-        final PathRequest request = new PathRequest(STATION_A.getName(), STATION_D.getName());
+        final PathRequest request = new PathRequest(STATION_A.getName().getValue(), STATION_D.getName().getValue());
 
         final PathResponse response = sectionService.findPath(request);
 
@@ -57,7 +57,7 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("경로가 존재하지 않을 경우 예외가 발생한다.")
     @Test
     void findUnablePathTest() {
-        final PathRequest request = new PathRequest(STATION_A.getName(), STATION_F.getName());
+        final PathRequest request = new PathRequest(STATION_A.getName().getValue(), STATION_F.getName().getValue());
 
         final IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,

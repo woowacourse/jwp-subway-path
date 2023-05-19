@@ -1,7 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.persistence.repository.StationRepository;
 import subway.ui.request.StationRequest;
 import subway.ui.response.StationResponse;
@@ -24,12 +24,12 @@ public class StationService {
 
     public StationResponse findStationResponseById(final Long id) {
         final Station station = stationRepository.findStationById(id);
-        return new StationResponse(station.getId(), station.getName());
+        return new StationResponse(station.getId(), station.getName().getValue());
     }
 
     public List<StationResponse> findAllStationResponses() {
         return stationRepository.findAllStations().stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(station -> new StationResponse(station.getId(), station.getName().getValue()))
                 .collect(Collectors.toList());
     }
 

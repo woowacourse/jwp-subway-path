@@ -1,6 +1,6 @@
 package subway.ui.response;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationResponse {
     private final Long id;
@@ -12,7 +12,7 @@ public class StationResponse {
     }
 
     public StationResponse(final Station station) {
-        this(station.getId(), station.getName());
+        this(station.getId(), station.getName().getValue());
     }
 
     private StationResponse() {
@@ -20,7 +20,7 @@ public class StationResponse {
     }
 
     public static StationResponse of(final Station station) {
-        return new StationResponse(station.getId(), station.getName());
+        return new StationResponse(station.getId(), station.getName().getValue());
     }
 
     public Long getId() {

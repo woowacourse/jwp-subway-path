@@ -1,6 +1,7 @@
 package subway.persistence.entity;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
+import subway.domain.station.StationName;
 
 public class StationEntity {
 
@@ -25,6 +26,6 @@ public class StationEntity {
     }
 
     public Station mapToStation() {
-        return new Station(id, name);
+        return new Station(id, new StationName(name));
     }
 }

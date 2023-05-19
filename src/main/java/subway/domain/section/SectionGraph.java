@@ -1,8 +1,10 @@
-package subway.domain;
+package subway.domain.section;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.station.Station;
+import subway.domain.station.StationName;
 
 import java.util.List;
 import java.util.Map;
@@ -13,14 +15,14 @@ import java.util.stream.Stream;
 public class SectionGraph {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-    private final Map<String, Station> stationMap;
+    private final Map<StationName, Station> stationMap;
 
     public SectionGraph(final List<Section> sections) {
         this.stationMap = extractStationAsMap(sections);
         this.graph = createGraph(sections);
     }
 
-    private static Map<String, Station> extractStationAsMap(final List<Section> sections) {
+    private static Map<StationName, Station> extractStationAsMap(final List<Section> sections) {
         return sections.stream()
                 .flatMap(section -> Stream.of(section.getBeforeStation(), section.getNextStation()))
                 .distinct()
@@ -53,7 +55,7 @@ public class SectionGraph {
         return graph;
     }
 
-    public List<Station> findShortestPath(final String startStation, final String endStation) {
+    public List<Station> findShortestPath(final StationName startStation, final StationName endStation) {
         final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         try {
             return dijkstraShortestPath.getPath(
@@ -65,7 +67,7 @@ public class SectionGraph {
         }
     }
 
-    public double findShortestDistance(final String startStation, final String endStation) {
+    public double findShortestDistance(final StationName startStation, final StationName endStation) {
         final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         try {
             return dijkstraShortestPath.getPathWeight(

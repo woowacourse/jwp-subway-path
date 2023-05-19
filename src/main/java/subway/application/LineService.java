@@ -2,7 +2,12 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.*;
+import subway.domain.line.Line;
+import subway.domain.line.LineName;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 import subway.persistence.repository.LineRepository;
 import subway.ui.request.LineRequest;
 import subway.ui.request.SectionRequest;
@@ -27,8 +32,8 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        final List<Line> persistLines = findLines();
-        return persistLines.stream()
+        final List<Line> lines = findLines();
+        return lines.stream()
                 .map(LineResponse::from)
                 .collect(Collectors.toList());
     }

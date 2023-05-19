@@ -1,8 +1,9 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.domain.SectionGraph;
-import subway.domain.Station;
+import subway.domain.section.SectionGraph;
+import subway.domain.station.Station;
+import subway.domain.station.StationName;
 import subway.persistence.repository.SectionRepository;
 import subway.ui.request.PathRequest;
 import subway.ui.response.PathResponse;
@@ -19,8 +20,8 @@ public class SectionService {
     }
 
     public PathResponse findPath(final PathRequest pathRequest) {
-        final String startSection = pathRequest.getStartStationName();
-        final String endSection = pathRequest.getEndStationName();
+        final StationName startSection = new StationName(pathRequest.getStartStationName());
+        final StationName endSection = new StationName(pathRequest.getEndStationName());
         final SectionGraph sectionGraph = serviceRepository.findAll();
         final List<Station> shortestPathStations = sectionGraph.findShortestPath(startSection, endSection);
         final double distance = sectionGraph.findShortestDistance(startSection, endSection);

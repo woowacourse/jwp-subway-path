@@ -1,7 +1,11 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.domain.*;
+import subway.domain.line.Line;
+import subway.domain.line.LineName;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
@@ -46,7 +50,6 @@ public class LineRepository {
         return new Line(line.getId(), new LineName(line.getName()), sections);
     }
 
-    // TODO: Line 검색 로직 리팩터링
     private Sections findByLineId(final Long lineId) {
         final List<Section> sectionList = sectionDao.findByLineId(lineId).stream()
                 .map(SectionEntity::mapToSection)
@@ -57,20 +60,15 @@ public class LineRepository {
 
         final Sections sections = new Sections(sectionList);
 
-        final List<Long> stationIds = serializeToStationIds(sections.getSections());
-        final Map<Long, Station> stations = findStationsById(stationIds);
-        return joinStationsToSections(sections.getSections(), stations);
+        final Map<Long, Station> stations = findStationsBySections(sections);
+        return joinStationsToSections(sections.getValues(), stations);
     }
 
-    private List<Long> serializeToStationIds(final List<Section> sections) {
-        final List<Long> stationIds = sections.stream()
+    private Map<Long, Station> findStationsBySections(final Sections sections) {
+        final List<Long> stationIds = sections.getValues().stream()
                 .map(section -> section.getBeforeStation().getId())
                 .collect(Collectors.toList());
-        stationIds.add(sections.get(sections.size() - 1).getNextStation().getId());
-        return stationIds;
-    }
-
-    private Map<Long, Station> findStationsById(final List<Long> stationIds) {
+        stationIds.add(sections.getValues().get(sections.getValues().size() - 1).getNextStation().getId());
         return stationDao.findAllById(stationIds).stream()
                 .map(StationEntity::mapToStation)
                 .collect(Collectors.toMap(Station::getId, Function.identity()));
@@ -89,7 +87,7 @@ public class LineRepository {
     }
 
     public void deleteSections(final Sections sections) {
-        final List<Long> ids = sections.getSections().stream()
+        final List<Long> ids = sections.getValues().stream()
                 .mapToLong(Section::getId)
                 .boxed()
                 .collect(Collectors.toList());
@@ -97,7 +95,7 @@ public class LineRepository {
     }
 
     public void insertSections(final Long lineId, final Sections sections) {
-        final List<SectionEntity> sectionEntities = sections.getSections().stream()
+        final List<SectionEntity> sectionEntities = sections.getValues().stream()
                 .map(section -> SectionEntity.from(lineId, section))
                 .collect(Collectors.toList());
         sectionDao.insert(sectionEntities);

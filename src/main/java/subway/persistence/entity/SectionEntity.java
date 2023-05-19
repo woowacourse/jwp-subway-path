@@ -1,8 +1,8 @@
 package subway.persistence.entity;
 
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 public class SectionEntity {
 
