@@ -2,9 +2,9 @@ package subway.domain.vo;
 
 public class LineSection {
 
-    private Line line;
+    private final Line line;
 
-    private Section section;
+    private final Section section;
 
     public LineSection(final Line line, final Section section) {
         this.line = line;

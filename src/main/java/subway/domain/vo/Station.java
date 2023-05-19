@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Station {
     private Long id;
-    private String name;
+    private final String name;
 
 
     public Station(Long id, String name) {

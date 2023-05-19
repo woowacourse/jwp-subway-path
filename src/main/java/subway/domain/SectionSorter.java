@@ -56,9 +56,7 @@ public class SectionSorter {
         if (trg == null) {
             return src;
         }
-        for (Section section : trg) {
-            src.add(section);
-        }
+        src.addAll(trg);
         return src;
     }
 
