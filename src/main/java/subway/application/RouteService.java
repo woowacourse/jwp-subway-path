@@ -2,7 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
-
 import subway.domain.ShortcutFinder;
 import subway.domain.vo.Shortcut;
 import subway.domain.vo.Station;
@@ -19,15 +18,15 @@ public class RouteService {
         this.sectionDao = sectionDao;
     }
 
-    public RouteResponse findShortcut(final long departure, final long arrival){
+    public RouteResponse findShortcut(final long departure, final long arrival) {
         final ShortcutFinder shortcutFinder = new ShortcutFinder(sectionDao.findAllSections());
-        final Shortcut shortcut = shortcutFinder.findShortcut(departure,arrival);
+        final Shortcut shortcut = shortcutFinder.findShortcut(departure, arrival);
         final List<String> path = shortcut.getPath()
                 .stream()
                 .map(Station::getName)
                 .collect(Collectors.toList());
         final int fee = shortcut.getFee();
-        return new RouteResponse(path,fee);
+        return new RouteResponse(path, fee);
     }
 
 }

@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.RouteService;
 import subway.dto.RouteResponse;
 
-import javax.validation.constraints.NotNull;
-
 @RestController
 @RequestMapping("/route")
 public class RouteController {
@@ -22,9 +20,9 @@ public class RouteController {
     @GetMapping("")
     public ResponseEntity<RouteResponse> getShortestRoute(
             @RequestParam("departure-id") long departureId,
-            @RequestParam("arrival-id") long arrivalId){
-         RouteResponse routeResponse = routeService.findShortcut(departureId,arrivalId);
-         return ResponseEntity.ok()
-                 .body(routeResponse);
+            @RequestParam("arrival-id") long arrivalId) {
+        RouteResponse routeResponse = routeService.findShortcut(departureId, arrivalId);
+        return ResponseEntity.ok()
+                .body(routeResponse);
     }
 }

@@ -1,7 +1,5 @@
 package subway.domain.vo;
 
-import subway.domain.vo.Station;
-
 import java.util.List;
 
 public class Shortcut {

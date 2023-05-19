@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.vo.Line;
 
 @JdbcTest
 @Sql(scripts = {"classpath:truncate.sql", "classpath:data/lineTest.sql", "classpath:data/sectionTest.sql", "classpath:data/stationTest.sql"})
@@ -27,8 +26,9 @@ class SectionDaoTest {
     void findSections() {
         Assertions.assertThat(sectionDao.findSections()).hasSize(3);
     }
+
     @Test
-    void findAllSections(){
+    void findAllSections() {
 
         Assertions.assertThat(sectionDao.findAllSections()).hasSize(11);
     }

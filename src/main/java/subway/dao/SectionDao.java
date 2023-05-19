@@ -76,7 +76,8 @@ public class SectionDao {
         return lineSections.stream()
                 .collect(groupingBy(LineSection::getLineInfo, mapping(LineSection::getSection, toList())));
     }
-    public List<Section> findAllSections(){
+
+    public List<Section> findAllSections() {
         String sql =
                 "SELECT sections.id, sections.line_id, " +
                         "departure_station.id AS departure_id, departure_station.name AS departure_name, " +

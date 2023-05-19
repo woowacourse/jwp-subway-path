@@ -11,7 +11,7 @@ import subway.domain.vo.Line;
 import javax.sql.DataSource;
 
 @JdbcTest
-@Sql(scripts = {"classpath:truncate.sql","classpath:data/lineTest.sql"})
+@Sql(scripts = {"classpath:truncate.sql", "classpath:data/lineTest.sql"})
 class LineDaoTest {
     private final LineDao lineDao;
 

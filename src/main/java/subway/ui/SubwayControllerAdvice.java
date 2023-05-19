@@ -35,6 +35,7 @@ public class SubwayControllerAdvice {
         final String message = exception.getMessage();
         return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
     }
+
     @ExceptionHandler(NoSuchStationException.class)
     public ResponseEntity<ErrorResponseDto> handleNoSuchStationException(final NoSuchStationException exception) {
         final String message = exception.getMessage();

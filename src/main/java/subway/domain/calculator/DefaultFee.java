@@ -1,9 +1,9 @@
 package subway.domain.calculator;
 
-public class DefaultFee implements FeeCalculator{
+public class DefaultFee implements FeeCalculator {
     @Override
     public int calculate(double distance) {
-        if(distance<=10){
+        if (distance <= 10) {
             return 1250;
         }
         int intDistance = (int) distance;

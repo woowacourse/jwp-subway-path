@@ -7,10 +7,10 @@ import subway.application.reader.CaseDto;
 import subway.application.reader.InitializationReader;
 import subway.application.reader.Reader;
 import subway.dao.SectionDao;
+import subway.domain.SectionSorter;
 import subway.domain.vo.Line;
 import subway.domain.vo.RequestInclusiveSections;
 import subway.domain.vo.Section;
-import subway.domain.SectionSorter;
 
 import java.sql.SQLException;
 import java.util.List;

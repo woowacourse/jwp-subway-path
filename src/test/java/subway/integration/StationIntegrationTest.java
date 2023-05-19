@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StationIntegrationTest extends IntegrationTest {
     @LocalServerPort
     private int port;
+
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
