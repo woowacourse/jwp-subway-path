@@ -20,6 +20,7 @@ public class SectionDao {
 
     private static final RowMapper<SectionStationMapper> sectionStationRowMapper = (rs, rowNum) ->
             new SectionStationMapper(
+                    rs.getLong("id"),
                     rs.getLong("up_station_id"),
                     rs.getString("up_station_name"),
                     rs.getLong("down_station_id"),
@@ -27,6 +28,7 @@ public class SectionDao {
                     rs.getInt("distance"));
     private static final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rowNum) ->
             new SectionEntity(
+                    rs.getLong("id"),
                     rs.getLong("line_id"),
                     rs.getLong("up_station_id"),
                     rs.getLong("down_station_id"),

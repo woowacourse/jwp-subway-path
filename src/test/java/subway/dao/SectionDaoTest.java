@@ -45,12 +45,11 @@ class SectionDaoTest {
     @Test
     void findSectionsByLineId() {
         List<SectionStationMapper> sections = sectionDao.findSectionsByLineId(1L);
-        System.out.println("answer : " + sections);
 
         assertThat(sections).usingRecursiveFieldByFieldElementComparator()
                             .contains(
-                                    new SectionStationMapper(2L, "봉천역", 1L, "서울대입구역", 5),
-                                    new SectionStationMapper(1L, "서울대입구역", 4L, "사당역", 7)
+                                    new SectionStationMapper(1L, 2L, "봉천역", 1L, "서울대입구역", 5),
+                                    new SectionStationMapper(2L, 1L, "서울대입구역", 4L, "사당역", 7)
                             );
     }
 

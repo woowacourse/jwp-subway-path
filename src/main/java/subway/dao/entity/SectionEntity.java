@@ -5,7 +5,6 @@ import java.util.Objects;
 public class SectionEntity {
 
     private Long id;
-
     private Long lineId;
     private Long upStationId;
     private Long downStationId;
@@ -24,6 +23,10 @@ public class SectionEntity {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getLineId() {
