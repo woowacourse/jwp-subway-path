@@ -4,6 +4,9 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.Distance;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 
 class SectionTest {
 

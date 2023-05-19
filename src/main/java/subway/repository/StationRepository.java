@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
-import subway.domain.Station;
+import subway.domain.line.Station;
 import subway.exception.StationNameException;
 import subway.exception.StationNotFoundException;
 

@@ -14,8 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 

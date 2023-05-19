@@ -2,8 +2,8 @@ package subway.controller.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
 
 public class LineResponse {
 

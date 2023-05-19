@@ -17,11 +17,11 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.line.Distance;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Sections;
+import subway.domain.line.Station;
 import subway.exception.LineNotFoundException;
 
 @JdbcTest

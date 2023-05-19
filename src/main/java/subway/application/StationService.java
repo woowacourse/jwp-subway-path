@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.controller.dto.StationRequest;
 import subway.controller.dto.StationResponse;
-import subway.domain.Station;
+import subway.domain.line.Station;
 import subway.repository.StationRepository;
 
 @Service

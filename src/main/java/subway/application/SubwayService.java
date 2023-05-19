@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.dto.RouteSearchResponse;
 import subway.controller.dto.StationResponse;
-import subway.domain.Distance;
-import subway.domain.Fare;
-import subway.domain.FarePolicy;
-import subway.domain.Line;
-import subway.domain.Route;
-import subway.domain.Station;
+import subway.domain.fare.Fare;
+import subway.domain.fare.FarePolicy;
+import subway.domain.line.Distance;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
+import subway.domain.route.JgraphtRouteGraph;
+import subway.domain.route.RouteGraph;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -33,16 +34,17 @@ public class SubwayService {
         Station startStation = stationRepository.findByName(startStationName);
         Station endStation = stationRepository.findByName(endStationName);
         List<Line> lines = lineRepository.findAll();
-        Route route = Route.from(lines);
+        RouteGraph routeGraph = JgraphtRouteGraph.from(lines);
 
-        List<StationResponse> routes = findShortestRoute(route, startStation, endStation);
-        Distance distance = route.findShortestDistance(startStation, endStation);
+        List<StationResponse> routes = findShortestRoute(routeGraph, startStation, endStation);
+        Distance distance = routeGraph.findShortestDistance(startStation, endStation);
         Fare fare = farePolicy.calculate(distance);
         return new RouteSearchResponse(routes, distance.getValue(), fare.getValue());
     }
 
-    private static List<StationResponse> findShortestRoute(Route route, Station startStation, Station endStation) {
-        return route.findShortestRoute(startStation, endStation)
+    private static List<StationResponse> findShortestRoute(RouteGraph routeGraph, Station startStation,
+                                                           Station endStation) {
+        return routeGraph.findShortestRoute(startStation, endStation)
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());

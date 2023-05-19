@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.StationRequest;
 import subway.controller.dto.StationResponse;
-import subway.domain.Station;
+import subway.domain.line.Station;
 import subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)

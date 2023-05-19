@@ -10,10 +10,10 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.line.Distance;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Sections;
 import subway.exception.LineNotFoundException;
 
 @Repository

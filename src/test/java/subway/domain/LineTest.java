@@ -8,6 +8,11 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.Distance;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Sections;
+import subway.domain.line.Station;
 
 class LineTest {
 

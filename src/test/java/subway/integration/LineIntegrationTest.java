@@ -21,8 +21,8 @@ import subway.controller.dto.LineRequest;
 import subway.controller.dto.LineResponse;
 import subway.dao.SectionDao;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 

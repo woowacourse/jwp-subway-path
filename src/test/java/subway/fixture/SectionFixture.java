@@ -12,8 +12,8 @@ import static subway.fixture.StationFixture.용산역;
 import static subway.fixture.StationFixture.종각역;
 import static subway.fixture.StationFixture.혜화역;
 
-import subway.domain.Distance;
-import subway.domain.Section;
+import subway.domain.line.Distance;
+import subway.domain.line.Section;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class SectionFixture {

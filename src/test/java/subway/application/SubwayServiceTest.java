@@ -22,9 +22,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.RouteSearchResponse;
 import subway.controller.dto.StationResponse;
-import subway.domain.Fare;
-import subway.domain.FarePolicy;
-import subway.domain.Line;
+import subway.domain.fare.Fare;
+import subway.domain.fare.FarePolicy;
+import subway.domain.line.Line;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 

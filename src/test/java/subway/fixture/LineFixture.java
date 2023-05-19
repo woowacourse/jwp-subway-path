@@ -13,8 +13,8 @@ import static subway.fixture.SectionFixture.용산역_시청역_5;
 
 import java.util.LinkedList;
 import java.util.List;
-import subway.domain.Line;
-import subway.domain.Sections;
+import subway.domain.line.Line;
+import subway.domain.line.Sections;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineFixture {

@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.fare;
 
 import subway.exception.InvalidFeeException;
 

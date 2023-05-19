@@ -5,6 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import subway.domain.fare.DistanceFarePolicy;
+import subway.domain.fare.Fare;
+import subway.domain.fare.FarePolicy;
+import subway.domain.line.Distance;
 
 class DistanceFarePolicyTest {
 
