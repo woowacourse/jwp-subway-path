@@ -3,15 +3,15 @@ package subway.ui;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.PathService;
 import subway.ui.dto.PathRequest;
 import subway.ui.dto.PathResponse;
 
-@Controller
+@RestController
 public class PathController {
 
     PathService pathService;
