@@ -9,7 +9,7 @@ public enum DistancePolicy {
     OVER_10KM_POLICY((long distance) -> distance > 10 && distance <= 50,
             new DefaultDistancePolicy().add(new OverTenKMStrategy())),
     OVER_50KM_POLICY((long distance) -> distance > 50,
-            new DefaultDistancePolicy().add(new OverFiftyKMStrategy()));
+            new DefaultDistancePolicy().add(new OverTenKMStrategy()).add(new OverFiftyKMStrategy()));
 
     private final LongPredicate distancePredicate;
     private final DistanceFareStrategy distanceFareStrategy;
@@ -19,7 +19,7 @@ public enum DistancePolicy {
         this.distanceFareStrategy = distanceFareStrategy;
     }
 
-    public static DistanceFareStrategy of(final long distance) {
+    public static DistanceFareStrategy from(final long distance) {
         return Arrays.stream(values())
                 .filter(distancePolicy -> distancePolicy.distancePredicate.test(distance))
                 .findFirst()
