@@ -48,6 +48,6 @@ class PathControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequest))
             .andExpect(status().isOk())
-            .andExpect(content().json(jsonResponse));
+            .andExpect(content().json(jsonResponse, true));
     }
 }
