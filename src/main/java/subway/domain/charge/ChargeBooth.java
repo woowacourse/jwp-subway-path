@@ -1,11 +1,9 @@
 package subway.domain.charge;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import org.jgrapht.GraphPath;
-import subway.domain.Line;
-import subway.domain.Station;
-import subway.domain.WeightedEdgeWithLine;
+import subway.domain.Charge;
+import subway.domain.Distance;
+import subway.domain.line.Line;
 
 public class ChargeBooth {
 
@@ -19,15 +17,9 @@ public class ChargeBooth {
         this.ageDiscountPolicy = new DefaultAgeDiscountPolicy();
     }
 
-    public Charge calculateCharge(int passengerAge, GraphPath<Station, WeightedEdgeWithLine> shortestRoute) {
-        double totalDistance = shortestRoute.getWeight();
+    public Charge calculateCharge(int passengerAge, Distance totalDistance, List<Line> linesInRoute) {
         Charge distanceCharge = distanceChargePolicy.apply(totalDistance);
-
-        List<Line> linesInRoute = shortestRoute.getEdgeList().stream()
-                .map(edge -> edge.getLine())
-                .collect(Collectors.toList());
         Charge lineCharge = lineChargePolicy.apply(linesInRoute);
-
         return ageDiscountPolicy.apply(passengerAge, distanceCharge.add(lineCharge));
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.dto.AddStationToExistLineDto;
 import subway.dto.LineCreateDto;
 import subway.dto.request.AddStationToExistLineRequest;

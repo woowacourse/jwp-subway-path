@@ -1,12 +1,17 @@
-package subway.domain;
+package subway.domain.subway;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.domain.charge.Charge;
+import subway.domain.Distance;
+import subway.domain.Charge;
 import subway.domain.charge.ChargeBooth;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 
 public class Subway {
     private final WeightedMultigraph<Station, WeightedEdgeWithLine> graph;
@@ -47,10 +52,12 @@ public class Subway {
             throw new IllegalArgumentException("경로를 찾을 수 없습니다.");
         }
 
-        List<Route> routes = getRoutes(shortestRoute.getEdgeList());
         Distance totalDistance = new Distance(shortestRoute.getWeight());
-        Charge totalCharge = chargeBooth.calculateCharge(passengerAge, shortestRoute);
-
+        List<Line> linesInRoute = shortestRoute.getEdgeList().stream()
+                .map(edge -> edge.getLine())
+                .collect(Collectors.toList());
+        Charge totalCharge = chargeBooth.calculateCharge(passengerAge, totalDistance, linesInRoute);
+        List<Route> routes = getRoutes(shortestRoute.getEdgeList());
         return new Path(routes, totalDistance, totalCharge);
     }
 

@@ -1,7 +1,6 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.domain.charge.Charge;
 
 public class Distance {
     private final double value;
@@ -25,8 +24,15 @@ public class Distance {
         return new Distance(this.value - other.value);
     }
 
+    public Distance divide(Distance other) {
+        return new Distance(this.value / other.value);
+    }
     public boolean isSmallerThan(Distance other) {
         return this.getValue() < other.getValue();
+    }
+
+    public boolean isSmallOrEqualThan(Distance other) {
+        return this.getValue() <= other.getValue();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package subway.domain.charge;
+package subway.domain;
 
 import java.util.Objects;
 

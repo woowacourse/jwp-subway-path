@@ -1,6 +1,8 @@
-package subway.domain;
+package subway.domain.subway;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
 
 public class WeightedEdgeWithLine extends DefaultWeightedEdge {
     private Line line;

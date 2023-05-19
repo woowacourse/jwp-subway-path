@@ -1,7 +1,8 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.List;
 import java.util.Optional;
+import subway.domain.Distance;
 
 public interface AddStrategy {
     void activate(List<Section> sections, Station upStation, Station downStation, Distance distance);

@@ -1,8 +1,8 @@
 package subway.domain.charge;
 
 import java.util.List;
-import subway.domain.Line;
-import subway.domain.WeightedEdgeWithLine;
+import subway.domain.Charge;
+import subway.domain.line.Line;
 
 public class DefaultLineChargePolicy implements LineChargePolicy {
     private static final int NO_CHARGE = 0;

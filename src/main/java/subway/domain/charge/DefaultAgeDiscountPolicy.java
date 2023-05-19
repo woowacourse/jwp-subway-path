@@ -1,5 +1,7 @@
 package subway.domain.charge;
 
+import subway.domain.Charge;
+
 public class DefaultAgeDiscountPolicy implements AgeDiscountPolicy {
 
     private static final int CHILD_STANDARD_MINIMUM = 6;

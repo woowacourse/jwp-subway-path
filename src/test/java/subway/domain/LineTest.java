@@ -6,7 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.domain.charge.Charge;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
 
 class LineTest {
 

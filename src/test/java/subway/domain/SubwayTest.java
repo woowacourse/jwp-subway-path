@@ -7,7 +7,11 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.domain.charge.Charge;
+import subway.domain.line.Line;
+import subway.domain.subway.Path;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
+import subway.domain.subway.Subway;
 
 class SubwayTest {
 

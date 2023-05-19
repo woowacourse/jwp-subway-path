@@ -2,7 +2,7 @@ package subway.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Route;
+import subway.domain.subway.Route;
 
 public class RouteDto {
     private final Long lineId;

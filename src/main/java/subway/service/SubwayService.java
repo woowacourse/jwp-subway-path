@@ -3,10 +3,10 @@ package subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
-import subway.domain.Path;
-import subway.domain.Station;
-import subway.domain.Subway;
+import subway.domain.line.Line;
+import subway.domain.subway.Path;
+import subway.domain.line.Station;
+import subway.domain.subway.Subway;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 

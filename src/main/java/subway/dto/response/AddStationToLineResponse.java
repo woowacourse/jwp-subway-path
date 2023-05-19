@@ -1,7 +1,7 @@
 package subway.dto.response;
 
 import java.util.List;
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 public class AddStationToLineResponse {
     private final Long lineId;

@@ -2,7 +2,7 @@ package subway.dto.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Path;
+import subway.domain.subway.Path;
 import subway.dto.RouteDto;
 
 public class FindShortestRouteResponse {

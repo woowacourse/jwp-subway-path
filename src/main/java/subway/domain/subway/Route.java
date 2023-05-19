@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.subway;
 
 import java.util.List;
+import subway.domain.line.Station;
 
 public class Route {
     private final Long lineId;

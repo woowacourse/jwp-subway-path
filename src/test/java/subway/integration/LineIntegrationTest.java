@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.line.Station;
 import subway.dto.request.AddStationToExistLineRequest;
 import subway.dto.request.LineCreateRequest;
 

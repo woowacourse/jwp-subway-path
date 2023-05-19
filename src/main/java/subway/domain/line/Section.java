@@ -1,4 +1,6 @@
-package subway.domain;
+package subway.domain.line;
+
+import subway.domain.Distance;
 
 public class Section {
 

@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.List;
+import subway.domain.Distance;
 
 public enum Direction {
     UP(new UpAddStrategy()),

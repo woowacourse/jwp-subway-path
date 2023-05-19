@@ -1,8 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.domain.Station;
-import subway.dto.request.StationCreateRequest;
+import subway.domain.line.Station;
 import subway.repository.StationRepository;
 
 @Service

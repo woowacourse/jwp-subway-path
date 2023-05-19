@@ -1,8 +1,9 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.List;
 import java.util.Objects;
-import subway.domain.charge.Charge;
+import subway.domain.Charge;
+import subway.domain.Distance;
 
 public class Line {
 

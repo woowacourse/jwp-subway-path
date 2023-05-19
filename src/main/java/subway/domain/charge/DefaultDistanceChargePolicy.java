@@ -1,27 +1,30 @@
 package subway.domain.charge;
 
+import subway.domain.Charge;
+import subway.domain.Distance;
+
 public class DefaultDistanceChargePolicy implements DistanceChargePolicy {
     private static final Charge BASIC_CHARGE = new Charge(1250);
     private static final Charge ADDITIONAL_CHARGE_STEP = new Charge(100);
-    private static final int BASIC_DISTANCE = 10;
-    private static final int ADDITIONAL_DISTANCE = 50;
-    private static final int ADDITIONAL_DISTANCE_STEP = 5;
-    private static final int MAX_ADDITIONAL_DISTANCE_STEP = 8;
+    private static final Distance BASIC_DISTANCE = new Distance(10);
+    private static final Distance ADDITIONAL_DISTANCE = new Distance(50);
+    private static final Distance ADDITIONAL_DISTANCE_STEP = new Distance(5);
+    private static final Distance MAX_ADDITIONAL_DISTANCE_STEP = new Distance(8);
 
     @Override
-    public Charge apply(double totalDistance) {
-        if (totalDistance <= BASIC_DISTANCE) {
+    public Charge apply(Distance totalDistance) {
+        if (totalDistance.isSmallOrEqualThan(BASIC_DISTANCE)) {
             return BASIC_CHARGE;
         }
-        if (totalDistance <= ADDITIONAL_DISTANCE) {
-            double additonalDistance = totalDistance - BASIC_DISTANCE;
-            Charge additionalCharge = ADDITIONAL_CHARGE_STEP.multiply(Math.ceil(additonalDistance / ADDITIONAL_DISTANCE_STEP));
+        if (totalDistance.isSmallOrEqualThan(ADDITIONAL_DISTANCE)) {
+            Distance additonalDistance = totalDistance.substract(BASIC_DISTANCE);
+            Charge additionalCharge = ADDITIONAL_CHARGE_STEP.multiply(Math.ceil(additonalDistance.divide(ADDITIONAL_DISTANCE_STEP).getValue()));
             return BASIC_CHARGE.add(additionalCharge);
         }
-        double additionalDistanceWithin50 = ADDITIONAL_DISTANCE - BASIC_DISTANCE;
-        Charge additionalChargeWithin50 = ADDITIONAL_CHARGE_STEP.multiply(additionalDistanceWithin50 / ADDITIONAL_DISTANCE_STEP);
-        double additionalDistanceBeyond50 = totalDistance - ADDITIONAL_DISTANCE;
-        Charge additionalChargeBeyond50 = ADDITIONAL_CHARGE_STEP.multiply(Math.ceil(additionalDistanceBeyond50 / MAX_ADDITIONAL_DISTANCE_STEP));
+        Distance additionalDistanceWithin50 = ADDITIONAL_DISTANCE.substract(BASIC_DISTANCE);
+        Charge additionalChargeWithin50 = ADDITIONAL_CHARGE_STEP.multiply(additionalDistanceWithin50.divide(ADDITIONAL_DISTANCE_STEP).getValue());
+        Distance additionalDistanceBeyond50 = totalDistance.substract(ADDITIONAL_DISTANCE);
+        Charge additionalChargeBeyond50 = ADDITIONAL_CHARGE_STEP.multiply(Math.ceil(additionalDistanceBeyond50.divide(MAX_ADDITIONAL_DISTANCE_STEP).getValue()));
         return BASIC_CHARGE.add(additionalChargeWithin50).add(additionalChargeBeyond50);
     }
 }

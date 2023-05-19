@@ -10,8 +10,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 
 @Repository
 public class SectionDao {

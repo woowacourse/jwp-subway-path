@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.SectionDao;
 import subway.dao.LineDao;
-import subway.domain.Section;
-import subway.domain.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Line;
 
 @Repository
 public class LineRepository {

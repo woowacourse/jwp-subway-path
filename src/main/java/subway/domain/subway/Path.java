@@ -1,7 +1,8 @@
-package subway.domain;
+package subway.domain.subway;
 
 import java.util.List;
-import subway.domain.charge.Charge;
+import subway.domain.Distance;
+import subway.domain.Charge;
 
 public class Path {
     private final List<Route> routes;
