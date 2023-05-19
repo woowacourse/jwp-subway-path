@@ -6,7 +6,7 @@ import subway.domain.line.exception.LineNameException;
 
 public class LineName {
 
-    private static final int MAX_LINE_LENGTH = 255;
+    private static final int MAX_LINE_NAME_LENGTH = 255;
 
     private final String value;
 
@@ -19,8 +19,8 @@ public class LineName {
         if (!StringUtils.hasText(name)) {
             throw new LineNameException("노선 이름이 공백입니다. 글자를 입력해주세요");
         }
-        if (name.length() > MAX_LINE_LENGTH) {
-            throw new LineNameException("노선 이름이 " + MAX_LINE_LENGTH + "글자를 초과했습니다");
+        if (name.length() > MAX_LINE_NAME_LENGTH) {
+            throw new LineNameException("노선 이름이 " + MAX_LINE_NAME_LENGTH + "글자를 초과했습니다");
         }
     }
 
