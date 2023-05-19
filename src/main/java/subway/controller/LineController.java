@@ -45,9 +45,6 @@ public class LineController {
     @GetMapping
     public ResponseEntity<List<LineResponse>> readAll() {
         final List<LineResponse> responses = lineService.findAll();
-        if (responses.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(responses);
     }
 

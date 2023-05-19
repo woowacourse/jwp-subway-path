@@ -36,9 +36,6 @@ public class StationController {
     @GetMapping
     public ResponseEntity<List<StationResponse>> readAll() {
         final List<StationResponse> responses = stationService.findAll();
-        if (responses.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok().body(responses);
     }
 
