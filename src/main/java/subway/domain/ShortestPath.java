@@ -27,10 +27,11 @@ public class ShortestPath {
     private static int calculateFare(double distance) {
         int additionalFare = 0;
         if (distance > BASE_DISTANCE && distance <= ADDITIONAL_FARE_DISTANCE) {
-            additionalFare = ((int) ((distance - BASE_DISTANCE) / FIRST_ADDITIONAL_DISTANCE_INTERVAL) * ADDITIONAL_FARE);
+            additionalFare = (int) ((Math.ceil((distance - BASE_DISTANCE) / FIRST_ADDITIONAL_DISTANCE_INTERVAL) * ADDITIONAL_FARE));
         }
         if (distance > ADDITIONAL_FARE_DISTANCE) {
-            additionalFare = (800 + ((int) (distance - ADDITIONAL_FARE_DISTANCE) / SECOND_ADDITIONAL_DISTANCE_INTERVAL) * ADDITIONAL_FARE);
+            additionalFare = (800 + (int) ((Math.ceil((distance - ADDITIONAL_FARE_DISTANCE)
+                    / SECOND_ADDITIONAL_DISTANCE_INTERVAL) * ADDITIONAL_FARE)));
         }
         return BASIC_FARE + additionalFare;
     }

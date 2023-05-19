@@ -59,13 +59,12 @@ class SubwayGraphTest {
         assertThat(shortestPath.getPath()).isEqualTo(new ArrayList<>(
                 List.of(SECTION_2, SECTION_3, SECTION_4, SECTION_5, SECTION_6, SECTION_19, SECTION_18, SECTION_17, SECTION_16)));
         assertThat(shortestPath.getDistance()).isEqualTo(67);
-        assertThat(shortestPath.getFare()).isEqualTo(2250);
+        assertThat(shortestPath.getFare()).isEqualTo(2350);
     }
 
     @DisplayName("최단경로가 존재하지 않을 때 예외를 발생한다")
     @Test
     void notExistShortestPath() {
-        //given
         Sections sections = new Sections(new ArrayList<>(List.of(SECTION_1, SECTION_2, SECTION_7)));
         subway = Subway.from(sections);
         subwayGraph = SubwayGraph.from(subway);
