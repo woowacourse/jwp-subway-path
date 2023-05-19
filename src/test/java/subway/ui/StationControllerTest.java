@@ -83,7 +83,7 @@ class StationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.validation.stationName").value("역의 이름은 10글자를 초과할 수 없습니다."));
+                .andExpect(jsonPath("$.validation.stationName").value("역의 이름은 2글자 이상, 10글자 미만이어야 합니다."));
     }
 
     @Test
@@ -147,7 +147,7 @@ class StationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.validation.stationName").value("역의 이름은 10글자를 초과할 수 없습니다."));
+                .andExpect(jsonPath("$.validation.stationName").value("역의 이름은 2글자 이상, 10글자 미만이어야 합니다."));
     }
 
     @Test

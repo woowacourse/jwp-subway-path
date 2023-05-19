@@ -7,8 +7,9 @@ import org.hibernate.validator.constraints.Length;
 public class LineUpdateRequest {
     @NotBlank(message = "노선의 이름은 비어있을 수 없습니다.")
     @Length(
+            min = 3,
             max = 15,
-            message = "노선의 이름은 {max}글자를 초과할 수 없습니다."
+            message = "노선의 이름은 {min}글자 이상, {max}글자를 미만이어야 합니다."
     )
     private String lineName;
 
@@ -19,7 +20,7 @@ public class LineUpdateRequest {
     )
     @Length(
             max = 15,
-            message = "노선의 이름은 {max}글자를 초과할 수 없습니다."
+            message = "노선의 색은 {max}글자를 초과할 수 없습니다."
     )
     private String color;
 
