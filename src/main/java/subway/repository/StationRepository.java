@@ -16,7 +16,7 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public StationEntity save(String stationName) {
+    public StationEntity insert(String stationName) {
         validateDuplicatedStationName(stationName);
         return stationDao.insert(new StationEntity(stationName));
     }
@@ -32,15 +32,6 @@ public class StationRepository {
         final Long id = findStationEntity.getId();
         final String name = findStationEntity.getName();
         return new Station(id, name);
-    }
-
-    public StationEntity findOrSaveStation(String stationName) {
-        return stationDao.findByName(stationName)
-                .orElseGet(() -> stationDao.insert(new StationEntity(stationName)));
-    }
-
-    public Optional<StationEntity> findByName(String name) {
-        return stationDao.findByName(name);
     }
 
     public void delete(final Long stationId) {

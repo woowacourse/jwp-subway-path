@@ -21,10 +21,6 @@ public class StationService {
         return StationSelectResponse.from(station);
     }
 
-    public StationSelectResponse findStationResponseById(Long id) {
-        return StationSelectResponse.from(stationDao.findById(id));
-    }
-
     public List<StationSelectResponse> findAllStationResponses() {
         List<StationEntity> stations = stationDao.findAll();
 

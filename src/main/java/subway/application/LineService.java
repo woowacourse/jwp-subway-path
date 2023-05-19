@@ -61,7 +61,7 @@ public class LineService {
         List<Optional<String>> requestStations = extractNullableStation(stationRequest, line);
         final String newStationName = extractStationNameToAdd(requestStations);
 
-        stationRepository.save(newStationName);
+        stationRepository.insert(newStationName);
 
         subway.addStation(
                 line.getName(),
