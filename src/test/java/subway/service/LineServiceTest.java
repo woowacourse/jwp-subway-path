@@ -10,7 +10,9 @@ import subway.controller.dto.response.LineResponse;
 import subway.entity.LineEntity;
 import subway.entity.SectionDetailEntity;
 import subway.exception.DuplicatedLineNameException;
+import subway.exception.DuplicatedStationNameException;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 import subway.repository.LineDao;
 import subway.repository.SectionDao;
 import subway.repository.StationDao;
@@ -71,6 +73,22 @@ class LineServiceTest {
         // when, then
         assertThatThrownBy(() -> lineService.create(lineDto, sectionCreateDto))
                 .isInstanceOf(DuplicatedLineNameException.class);
+    }
+
+    @Test
+    @DisplayName("생성 실패 - 존재하지 않는 역")
+    void save_fail_station_not_found() {
+        // given
+        final LineDto lineDto = new LineDto("신분당선", "bg-gogi-600");
+        final SectionCreateDto sectionCreateDto = new SectionCreateDto(10, "강남", "신사");
+        final LineEntity lineEntity = LineEntity.of(1L, new LineEntity(lineDto.getName(), lineDto.getColor()));
+
+        given(lineDao.insert(any())).willReturn(lineEntity);
+        given(stationDao.findIdByName(sectionCreateDto.getFirstStation())).willThrow(StationNotFoundException.class);
+
+        // when, then
+        assertThatThrownBy(() -> lineService.create(lineDto, sectionCreateDto))
+                .isInstanceOf(StationNotFoundException.class);
     }
 
     @Test
