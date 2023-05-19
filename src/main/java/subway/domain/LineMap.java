@@ -11,11 +11,13 @@ public class LineMap {
 
     private final Map<Station, List<Station>> lineMap;
     private final Map<Station, Boolean> visited;
+    private final Station upStationEndPoint;
 
     public LineMap(final Sections sections) {
         this.lineMap = initLineMap(sections);
         sections.getSections().forEach(this::addUndirectedEdgeBySection);
         this.visited = initVisited();
+        this.upStationEndPoint = getUpStationEndPoint(sections, getEndPointStations());
     }
 
     private Map<Station, List<Station>> initLineMap(final Sections sections) {
@@ -48,14 +50,12 @@ public class LineMap {
         return visited;
     }
 
-    public List<Station> getOrderedStations(final Sections sections) {
-        List<Station> endPointStations = getEndPointStations();
-        Station upStationEndPoint = getUpStationEndPoint(sections, endPointStations);
-
-        List<Station> stations = new ArrayList<>();
-        stations.add(upStationEndPoint);
-        dfs(stations, upStationEndPoint);
-        return stations;
+    private Station getUpStationEndPoint(final Sections sections, final List<Station> endPointStations) {
+        return sections.getSections().stream()
+                .flatMap(section -> endPointStations.stream()
+                        .filter(station -> station.equals(section.getUpStation())))
+                .findFirst()
+                .orElseThrow(UpStationNotFoundException::new);
     }
 
     private List<Station> getEndPointStations() {
@@ -64,12 +64,11 @@ public class LineMap {
                 .collect(Collectors.toList());
     }
 
-    private Station getUpStationEndPoint(final Sections sections, final List<Station> endPointStations) {
-        return sections.getSections().stream()
-                .flatMap(section -> endPointStations.stream()
-                        .filter(station -> station.equals(section.getUpStation())))
-                .findFirst()
-                .orElseThrow(UpStationNotFoundException::new);
+    public List<Station> getOrderedStations() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(upStationEndPoint);
+        dfs(stations, upStationEndPoint);
+        return stations;
     }
 
     private void dfs(final List<Station> stations, final Station station) {

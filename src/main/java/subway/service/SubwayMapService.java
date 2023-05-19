@@ -28,7 +28,7 @@ public class SubwayMapService {
         Sections sections = sectionRepository.findByLineNumber(lineNumber);
         LineMap lineMap = new LineMap(sections);
 
-        List<Station> orderedStations = lineMap.getOrderedStations(sections);
+        List<Station> orderedStations = lineMap.getOrderedStations();
         List<StationResponse> stations = orderedStations.stream()
                 .map(station -> {
                     Long stationId = stationRepository.findStationIdByStationName(station.getName());
