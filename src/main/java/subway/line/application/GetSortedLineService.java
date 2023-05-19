@@ -9,7 +9,7 @@ import subway.line.domain.Line;
 import subway.line.domain.Subway;
 import subway.line.dto.GetSortedLineResponse;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class GetSortedLineService implements GetSortedLineUseCase {
     private final GetAllLinePort getAllLinePort;

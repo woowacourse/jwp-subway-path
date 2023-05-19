@@ -7,7 +7,7 @@ import subway.shortestpathfinder.domain.ShortestPathFinder;
 import subway.shortestpathfinder.domain.ShortestPathResult;
 import subway.shortestpathfinder.dto.GetShortestPathResponse;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class GetShortestPathService implements GetShortestPathUseCase {
     private final GetAllLinePort getAllLinePort;

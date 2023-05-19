@@ -7,7 +7,7 @@ import subway.line.application.port.output.GetAllLinePort;
 import subway.line.domain.Subway;
 import subway.line.dto.GetAllSortedLineResponse;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class GetAllSortedLineService implements GetAllSortedLineUseCase {
     private final GetAllLinePort getAllLinePort;
