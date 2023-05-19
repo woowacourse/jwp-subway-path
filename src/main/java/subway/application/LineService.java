@@ -5,10 +5,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.domain.LineMap;
 import subway.domain.entity.Line;
 import subway.domain.entity.Section;
 import subway.domain.entity.Station;
-import subway.domain.LineMap;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
@@ -29,7 +29,6 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    // TODO 반환타입만 빼면 RouteService와 중복 로직인데 어떻게 하면 좋을까?
     public List<LineResponse> findLineResponses() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()
@@ -45,10 +44,10 @@ public class LineService {
 
     private List<StationResponse> createStationResponse(final Line persistLine) {
         List<Section> sections = sectionDao.findByLineId(persistLine.getId());
-        return extractStationResponses(sections);
+        return convertToOrderedStationResponses(sections);
     }
 
-    private List<StationResponse> extractStationResponses(final List<Section> sections) {
+    private List<StationResponse> convertToOrderedStationResponses(final List<Section> sections) {
         LineMap lineMap = LineMap.of(sections);
         List<Station> orderedStations = lineMap.getOrderedStations();
         return orderedStations.stream()
