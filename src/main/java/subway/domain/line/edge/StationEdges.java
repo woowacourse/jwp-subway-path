@@ -186,6 +186,12 @@ public class StationEdges {
         return stationIds;
     }
 
+    public int getTotalDistance() {
+        return stationEdges.stream()
+                .mapToInt(StationEdge::getDistance)
+                .sum();
+    }
+
     public Set<StationEdge> toSet() {
         return stationEdges;
     }
