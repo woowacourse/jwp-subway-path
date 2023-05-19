@@ -1,6 +1,9 @@
 package subway.domain.line;
 
+import subway.domain.line.edge.StationEdge;
+import subway.domain.line.edge.StationEdges;
 import subway.exception.DuplicatedLineNameException;
+import subway.exception.StationEdgeNotFoundException;
 import subway.exception.StationNotFoundException;
 
 import java.util.Collection;
@@ -8,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Lines {
 
@@ -17,12 +21,12 @@ public class Lines {
         this.lines = new HashMap<>();
     }
 
-    public void add(Line line) {
+    public void add(final Line line) {
         validateDuplicatedName(line.getName());
         lines.put(line.getId(), line);
     }
 
-    public void add(Collection<Line> lines) {
+    public void add(final Collection<Line> lines) {
         lines.forEach(existLine -> {
             validateDuplicatedName(existLine.getName());
             this.lines.put(existLine.getId(), existLine);
@@ -35,7 +39,7 @@ public class Lines {
         }
     }
 
-    public Line get(Long id) {
+    public Line get(final Long id) {
         validateIsExist(id);
         return lines.get(id);
     }
@@ -44,6 +48,22 @@ public class Lines {
         if (!lines.containsKey(id)) {
             throw new StationNotFoundException();
         }
+    }
+
+    public Long getLineIdBySection(final Long upStationId, final Long downStationId) {
+        return toSet().stream()
+                .filter(line -> line.contains(upStationId, downStationId))
+                .mapToLong(Line::getId)
+                .findFirst()
+                .orElseThrow(StationEdgeNotFoundException::new);
+    }
+
+    public Set<StationEdge> getAllStationEdges() {
+        return toSet().stream()
+                .map(Line::getStationEdges)
+                .map(StationEdges::toSet)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
     }
 
     public Set<Line> toSet() {

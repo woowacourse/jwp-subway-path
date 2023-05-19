@@ -130,6 +130,7 @@ response body
   "path": [
     {
       "lineId": 1,
+      "lineName": "1호선",
       "stations": [
         {
           "id": 1,
@@ -143,6 +144,7 @@ response body
     },
     {
       "lineId": 2,
+      "lineName": "2호선",
       "stations": [
         {
           "id": 2,

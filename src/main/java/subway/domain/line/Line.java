@@ -70,6 +70,14 @@ public class Line {
         return stationEdges.isContainStation(stationId);
     }
 
+    public boolean contains(final Long upStationId, final Long downStationId) {
+        return stationEdges.contains(upStationId, downStationId);
+    }
+
+    public StationEdge getStationEdgeOf(final Long upStationId, final Long downStationId) {
+        return stationEdges.get(upStationId, downStationId);
+    }
+
     public Long getId() {
         return id;
     }

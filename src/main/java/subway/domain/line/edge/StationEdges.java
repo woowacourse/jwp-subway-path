@@ -3,6 +3,7 @@ package subway.domain.line.edge;
 import subway.domain.LineDirection;
 import subway.exception.IllegalStationEdgeStateException;
 import subway.exception.StationAlreadyExistsException;
+import subway.exception.StationEdgeNotFoundException;
 import subway.exception.StationNotFoundException;
 
 import java.util.ArrayList;
@@ -17,12 +18,12 @@ public class StationEdges {
 
     private final Set<StationEdge> stationEdges;
 
-    public StationEdges() {
-        stationEdges = new HashSet<>();
-    }
-
     public StationEdges(final Collection<StationEdge> stationEdges) {
         this.stationEdges = new HashSet<>(stationEdges);
+    }
+
+    public static StationEdges from(final StationEdge stationEdge) {
+        return new StationEdges(Set.of(stationEdge));
     }
 
     public void addStation(
@@ -172,6 +173,20 @@ public class StationEdges {
                 .mapToLong(StationEdge::getUpStationId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStationEdgeStateException(downStationId + "를 하행역으로 가지는 구간이 없습니다."));
+    }
+
+    public boolean contains(final Long upStationId, final Long downStationId) {
+        return stationEdges.stream()
+                .anyMatch(edge ->
+                        edge.getUpStationId().equals(upStationId) && edge.getDownStationId().equals(downStationId)
+                );
+    }
+
+    public StationEdge get(final Long upStationId, final Long downStationId) {
+        return stationEdges.stream()
+                .filter(edge -> edge.getUpStationId().equals(upStationId) && edge.getDownStationId().equals(downStationId))
+                .findFirst()
+                .orElseThrow(StationEdgeNotFoundException::new);
     }
 
     public List<Long> getStationIdsInOrder() {

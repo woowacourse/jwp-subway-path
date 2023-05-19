@@ -1,10 +1,12 @@
 package subway.domain;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import subway.domain.line.Line;
+import subway.domain.line.edge.StationEdge;
 
 import java.util.List;
 
@@ -37,6 +39,26 @@ class LineTest {
                 .isNotNull();
     }
 
+    @Test
+    @DisplayName("상행역과 하행역의 아이디로 구간을 얻는다.")
+    void get_station_edge_test() {
+        // given
+        final Line line = createLine();
+
+        // when
+        final StationEdge stationEdge = line.getStationEdgeOf(stationId1, stationId2);
+
+        // then
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(stationEdge.getUpStationId()).isEqualTo(stationId1);
+            softly.assertThat(stationEdge.getDownStationId()).isEqualTo(stationId2);
+        });
+    }
+
+    private Line createLine() {
+        return Line.of(name, color, stationId1, stationId2, distance);
+    }
+
     @ParameterizedTest(name = "역 추가 방향 : {1}")
     @DisplayName("노선에 역을 추가한다")
     @CsvSource(value = {"2:UP", "1:DOWN"}, delimiter = ':')
@@ -54,10 +76,6 @@ class LineTest {
         //then
         final List<Long> stationIdsByOrder = line.getStationIdsByOrder();
         assertThat(stationIdsByOrder).containsExactly(1L, 3L, 2L);
-    }
-
-    private Line createLine() {
-        return Line.of(name, color, stationId1, stationId2, distance);
     }
 
     @Test

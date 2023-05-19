@@ -2,6 +2,9 @@ package subway.domain;
 
 import subway.domain.line.Line;
 import subway.domain.line.Lines;
+import subway.domain.line.edge.StationEdge;
+import subway.domain.navigation.PathNavigation;
+import subway.domain.path.SubwayPath;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
 
@@ -20,10 +23,6 @@ public class Subway {
         this.stations = stations;
     }
 
-    public static Subway empty() {
-        return new Subway(new Lines(), new Stations());
-    }
-
     public static Subway of(final Collection<Line> lines, final Collection<Station> stations) {
         final Lines initialLines = new Lines();
         initialLines.add(lines);
@@ -36,16 +35,8 @@ public class Subway {
         lines.add(line);
     }
 
-    public void addLine(final Collection<Line> lines) {
-        this.lines.add(lines);
-    }
-
     public void addStation(final Station station) {
         stations.add(station);
-    }
-
-    public void addStation(final Collection<Station> stations) {
-        this.stations.add(stations);
     }
 
     public void insertStationToLine(
@@ -62,6 +53,28 @@ public class Subway {
     public void removeStationFromLine(final Long lineId, final Long stationId) {
         final Line line = lines.get(lineId);
         line.removeStation(stationId);
+    }
+
+    public SubwayPath findPath(
+            final Long startStationId,
+            final Long destinationStationId,
+            final PathNavigation pathNavigation
+    ) {
+        final Set<StationEdge> allStationEdges = lines.getAllStationEdges();
+        final List<Long> pathStations = pathNavigation.findPath(startStationId, destinationStationId, allStationEdges);
+        return convertStationIdsToPath(pathStations);
+    }
+
+    private SubwayPath convertStationIdsToPath(final List<Long> stationIds) {
+        final SubwayPath path = new SubwayPath();
+        for (int index = 0; index < stationIds.size() - 1; index++) {
+            final Long stationId = stationIds.get(index);
+            final Long nextStationId = stationIds.get(index + 1);
+            final Line line = getLine(lines.getLineIdBySection(stationId, nextStationId));
+
+            path.add(line.getId(), line.getStationEdgeOf(stationId, nextStationId));
+        }
+        return path;
     }
 
     public List<Station> getStationsIn(final Long lineId) {

@@ -1,13 +1,14 @@
 package subway.domain.navigation;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.line.edge.StationEdge;
-import subway.domain.line.edge.StationEdges;
 
+import java.util.List;
 import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class JgraphtPathNavigationTest {
 
@@ -34,13 +35,10 @@ class JgraphtPathNavigationTest {
         );
 
         // when
-        final StationEdges path = jgraphtPathNavigation.findPath(2L, 8L, subwayGraph);
+        final List<Long> path = jgraphtPathNavigation.findPath(2L, 8L, subwayGraph);
 
         // then
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(path.getStationIdsInOrder()).containsExactly(2L, 3L, 7L, 8L);
-            softly.assertThat(path.getTotalDistance()).isEqualTo(10);
-        });
+        assertThat(path).containsExactly(2L, 3L, 7L, 8L);
     }
 
 }
