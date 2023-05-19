@@ -2,10 +2,12 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+@ActiveProfiles("test")
 class DistanceTest {
 
     @DisplayName("생성 시 입력된 정수의 값을 가지는 Distance 인스턴스가 생성된다")

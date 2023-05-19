@@ -1,5 +1,6 @@
 package subway;
 
+import org.springframework.test.context.ActiveProfiles;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -8,6 +9,7 @@ import subway.entity.SectionEntity;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ActiveProfiles("test")
 public class SubwayFixture {
     //1호선
     public static final Station SEOULYEOK = new Station(1L, "서울역");

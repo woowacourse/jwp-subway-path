@@ -2,10 +2,12 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+@ActiveProfiles("test")
 class FareCalculatorTest {
 
     @DisplayName("거리가 10km 이내일 경우 1250을 반환한다")

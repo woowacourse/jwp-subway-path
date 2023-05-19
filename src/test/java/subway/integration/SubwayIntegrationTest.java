@@ -4,10 +4,12 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import subway.dto.PathRequest;
 
 import static org.hamcrest.Matchers.*;
 
+@ActiveProfiles("test")
 @DisplayName("지하철 경로 관련 기능")
 class SubwayIntegrationTest extends IntegrationTest {
 

@@ -2,10 +2,12 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static subway.SubwayFixture.*;
 
+@ActiveProfiles("test")
 class SubWayMapTest {
     private final SubwayMap subwayMap = new SubwayMap(testStations, testSections);
 

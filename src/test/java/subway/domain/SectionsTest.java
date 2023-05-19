@@ -3,6 +3,7 @@ package subway.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static subway.SubwayFixture.*;
 
+@ActiveProfiles("test")
 class SectionsTest {
     private static final Distance DISTANCE_10 = new Distance(10);
     private static final Distance DISTANCE_6 = new Distance(6);

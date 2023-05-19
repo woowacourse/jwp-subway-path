@@ -1,5 +1,8 @@
 package subway.integration;
 
+import org.springframework.test.context.ActiveProfiles;
+
+@ActiveProfiles("test")
 public class TestFixture {
 
     public static final Long SEOULYEOK_ID = 1L;

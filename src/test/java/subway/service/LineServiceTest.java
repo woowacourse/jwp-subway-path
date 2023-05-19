@@ -6,15 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import subway.application.LineService;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.SectionDto;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 
@@ -25,6 +24,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
 

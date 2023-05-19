@@ -21,11 +21,13 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.test.context.ActiveProfiles;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationRegisterRequest;
 
+@ActiveProfiles("test")
 @DisplayName("지하철 노선 관련 기능")
 class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
