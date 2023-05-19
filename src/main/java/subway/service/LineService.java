@@ -9,60 +9,31 @@ import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class LineService {
 
+    private final SubwayService subwayService;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
     public LineService(
+            final SubwayService subwayService,
             final LineRepository lineRepository,
             final StationRepository stationRepository,
             final SectionRepository sectionRepository) {
+        this.subwayService = subwayService;
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
     }
 
-    private Subway findSubway() {
-        final List<Line> lines = lineRepository.findAllLines();
-
-        List<Sections> subwaySections = new ArrayList<>();
-
-        for (final Line line : lines) {
-            final List<Section> sections = sectionRepository.findAllSectionOf(line);
-            final Graph newGraph = new SubwayGraph();
-
-            final List<Long> allStationIds = sectionRepository.findAllStationIds(line);
-            for (final Long stationId : allStationIds) {
-                final Station station = stationRepository.findById(stationId);
-                newGraph.addStation(station);
-            }
-
-            for (final Section section : sections) {
-                final Station upStation = section.getUpStation();
-                final Station downStation = section.getDownStation();
-                final int distance = section.getDistance();
-
-                newGraph.addSection(upStation, downStation, distance);
-            }
-
-            subwaySections.add(new Sections(line, newGraph));
-            System.out.println("newGraph = " + newGraph);
-        }
-
-        return new Subway(subwaySections);
-    }
-
     @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
-        final Subway subway = findSubway();
-
+        final Subway subway = subwayService.findSubway();
         List<Line> lines = subway.findAllLines();
         return lines.stream()
                 .map(line -> LineResponse.of(
@@ -73,7 +44,7 @@ public class LineService {
 
     @Transactional
     public LineResponse createNewLine(final LineCreateRequest request) {
-        final Subway subway = findSubway();
+        final Subway subway = subwayService.findSubway();
         final Line line = lineRepository.save(Line.of(request.getName(), request.getColor()));
         subway.createSectionsOf(line, new SubwayGraph());
         return LineResponse.of(line);
@@ -81,8 +52,7 @@ public class LineService {
 
     @Transactional
     public LineResponse createInitialSection(final Long lineId, final InitialSectionCreateRequest request) {
-        final Subway subway = findSubway();
-
+        final Subway subway = subwayService.findSubway();
         final Line line = lineRepository.findById(lineId);
 
         final Station upStation = stationRepository.findById(request.getUpStationId());
@@ -104,8 +74,7 @@ public class LineService {
 
     @Transactional
     public LineResponse addStation(final Long lineId, final SectionCreateRequest request) {
-        final Subway subway = findSubway();
-
+        final Subway subway = subwayService.findSubway();
         final Line line = lineRepository.findById(lineId);
 
         final Station upStation = stationRepository.findById(request.getUpStationId());
@@ -133,8 +102,7 @@ public class LineService {
 
     @Transactional
     public void deleteStation(final Long lineId, final Long stationId) {
-        final Subway subway = findSubway();
-
+        final Subway subway = subwayService.findSubway();
         final Line line = lineRepository.findById(lineId);
         final Station station = stationRepository.findById(stationId);
 
@@ -157,7 +125,7 @@ public class LineService {
     }
 
     private List<StationResponse> mapToStationResponse(final Line line) {
-        final Subway subway = findSubway();
+        final Subway subway = subwayService.findSubway();
 
         final List<Station> stationsInOrder = subway.findStationsInOrder(line);
 
