@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
+import subway.exception.business.AlreadyExistStationException;
 import subway.exception.business.StationNotFoundException;
 
 import java.util.List;
@@ -30,10 +31,14 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
+    public Station insert(Station station) throws AlreadyExistStationException {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        try {
+            Long id = insertAction.executeAndReturnKey(params).longValue();
+            return new Station(id, station.getName());
+        } catch (Exception e) {
+            throw new AlreadyExistStationException();
+        }
     }
 
     public List<Station> findAll() {

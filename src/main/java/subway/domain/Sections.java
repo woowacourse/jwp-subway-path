@@ -1,8 +1,8 @@
 package subway.domain;
 
-import subway.exception.business.EndStationNotExistException;
 import subway.exception.business.InvalidSectionLengthException;
 import subway.exception.business.SectionNotFoundException;
+import subway.exception.business.StationNotFoundException;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -133,7 +133,7 @@ public class Sections {
     public Section getDownEndSection() {
         return sections.stream()
                 .filter(existingSection -> existingSection.getNextSectionId() == DOWN_END_NEXT)
-                .findFirst().orElseThrow(EndStationNotExistException::new);
+                .findFirst().orElseThrow(StationNotFoundException::new);
     }
 
     public Section getUpEndSection() {

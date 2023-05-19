@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
+import subway.ui.LineController;
 
 import java.util.List;
 import java.util.stream.Collectors;
