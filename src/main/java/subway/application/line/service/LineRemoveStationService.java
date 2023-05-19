@@ -24,9 +24,13 @@ public class LineRemoveStationService {
         for (final Line line : lines) {
             line.deleteStation(event.getId());
             final Line result = lineRepository.update(line);
-            if (result.isEmpty()) {
-                lineRepository.deleteById(result.getId());
-            }
+            removeIfNoStationInLine(result);
+        }
+    }
+
+    private void removeIfNoStationInLine(final Line result) {
+        if (result.isEmpty()) {
+            lineRepository.deleteById(result.getId());
         }
     }
 }
