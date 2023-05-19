@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import subway.controller.dto.response.ExceptionResponse;
 import subway.controller.exception.BadRequestException;
 import subway.controller.exception.NotFoundException;
-import subway.controller.dto.response.ExceptionResponse;
 
 import java.util.stream.Collectors;
 

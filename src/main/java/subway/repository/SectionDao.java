@@ -8,11 +8,11 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.entity.SectionDetailEntity;
+import subway.entity.SectionEntity;
 import subway.exception.DuplicatedSectionException;
 import subway.exception.LineNotFoundException;
 import subway.exception.LineOrStationNotFoundException;
-import subway.entity.SectionDetailEntity;
-import subway.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
