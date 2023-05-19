@@ -6,13 +6,13 @@ import subway.application.exception.SubwayServiceException;
 
 import java.util.Set;
 
-public class SubwayStructure {
+public class SubwayStructure<T extends DefaultWeightedEdge> {
 
     private static final String INVALID_NOT_FOUND_STATION_MESSAGE = "역이 노선에 없습니다.";
 
-    private final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> structure;
+    private final SimpleDirectedWeightedGraph<Station, T> structure;
 
-    public SubwayStructure(SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> structure) {
+    public SubwayStructure(SimpleDirectedWeightedGraph<Station, T> structure) {
         this.structure = structure;
     }
 
@@ -64,23 +64,23 @@ public class SubwayStructure {
         return !isStationsEmpty();
     }
 
-    public Set<DefaultWeightedEdge> getRightEdge(Station station) {
+    public Set<T> getRightEdge(Station station) {
         return structure.outgoingEdgesOf(station);
     }
 
-    public Set<DefaultWeightedEdge> getLeftEdge(Station station) {
+    public Set<T> getLeftEdge(Station station) {
         return structure.incomingEdgesOf(station);
     }
 
-    public Station getRightStationByEdge(DefaultWeightedEdge edge) {
+    public Station getRightStationByEdge(T edge) {
         return structure.getEdgeTarget(edge);
     }
 
-    public Station getLeftStationByEdge(DefaultWeightedEdge edge) {
+    public Station getLeftStationByEdge(T edge) {
         return structure.getEdgeSource(edge);
     }
 
-    public int getDistance(DefaultWeightedEdge edge) {
+    public int getDistance(T edge) {
         return (int) structure.getEdgeWeight(edge);
     }
 }
