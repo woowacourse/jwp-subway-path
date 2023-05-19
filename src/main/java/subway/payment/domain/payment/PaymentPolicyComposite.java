@@ -1,9 +1,10 @@
-package subway.path.domain.payment;
+package subway.payment.domain.payment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import subway.path.domain.Path;
+import subway.path.domain.PaymentPolicy;
 
 public class PaymentPolicyComposite implements PaymentPolicy {
 

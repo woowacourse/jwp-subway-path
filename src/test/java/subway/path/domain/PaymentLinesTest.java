@@ -14,11 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.path.domain.discount.AgeGroupDiscountPolicy;
-import subway.path.domain.discount.DiscountPolicy;
-import subway.path.domain.discount.DiscountResult;
-import subway.path.domain.payment.DefaultPaymentPolicy;
-import subway.path.domain.payment.PaymentPolicy;
+import subway.payment.domain.discount.AgeGroupDiscountPolicy;
+import subway.payment.domain.discount.DiscountResult;
+import subway.payment.domain.payment.DefaultPaymentPolicy;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)

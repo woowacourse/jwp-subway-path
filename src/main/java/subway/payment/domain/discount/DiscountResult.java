@@ -1,4 +1,4 @@
-package subway.path.domain.discount;
+package subway.payment.domain.discount;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

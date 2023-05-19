@@ -2,8 +2,12 @@ package subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static subway.line.domain.fixture.StationFixture.*;
+import static subway.line.domain.fixture.StationFixture.선릉;
 import static subway.line.domain.fixture.StationFixture.역2;
+import static subway.line.domain.fixture.StationFixture.역4;
+import static subway.line.domain.fixture.StationFixture.역5;
+import static subway.line.domain.fixture.StationFixture.역6;
+import static subway.line.domain.fixture.StationFixture.잠실;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import subway.line.domain.Line;
 import subway.line.domain.Section;
 import subway.line.domain.Station;
-import subway.line.domain.fixture.StationFixture;
 import subway.line.exception.line.LineException;
 
 @SuppressWarnings("NonAsciiCharacters")

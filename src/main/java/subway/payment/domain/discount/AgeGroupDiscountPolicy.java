@@ -1,10 +1,11 @@
-package subway.path.domain.discount;
+package subway.payment.domain.discount;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import subway.path.domain.AgeGroup;
-import subway.path.exception.PathException;
+import subway.path.domain.DiscountPolicy;
+import subway.payment.exception.PaymentException;
 
 @Component
 public class AgeGroupDiscountPolicy implements DiscountPolicy {
@@ -43,7 +44,7 @@ public class AgeGroupDiscountPolicy implements DiscountPolicy {
 
     private void validateFeeIsNonNegative(final double discountedFee) {
         if (discountedFee < 0) {
-            throw new PathException("요금 계산 결과가 음수입니다");
+            throw new PaymentException("요금 계산 결과가 음수입니다");
         }
     }
 

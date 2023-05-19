@@ -1,8 +1,9 @@
-package subway.path.domain.payment;
+package subway.payment.domain.payment;
 
 import org.springframework.stereotype.Component;
 import subway.line.exception.line.LineException;
 import subway.path.domain.Path;
+import subway.path.domain.PaymentPolicy;
 
 @Component
 public class DefaultPaymentPolicy implements PaymentPolicy {

@@ -36,14 +36,14 @@ import subway.line.domain.Section;
 import subway.line.domain.StationRepository;
 import subway.line.exception.station.StationException;
 import subway.path.application.dto.ShortestRouteResponse;
+import subway.path.domain.DiscountPolicy;
+import subway.path.domain.PaymentPolicy;
 import subway.path.domain.ShortestRouteService;
-import subway.path.domain.discount.AgeGroupDiscountPolicy;
-import subway.path.domain.discount.DiscountPolicy;
-import subway.path.domain.payment.PaymentPolicy;
 import subway.path.exception.PathException;
 import subway.path.infrastructure.shortestpath.GraphCache;
 import subway.path.infrastructure.shortestpath.JgraphtShortestRoute;
 import subway.path.infrastructure.shortestpath.LineDispatcher;
+import subway.payment.domain.discount.AgeGroupDiscountPolicy;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)

@@ -1,6 +1,4 @@
-package subway.path.domain.payment;
-
-import subway.path.domain.Path;
+package subway.path.domain;
 
 public interface PaymentPolicy {
 

@@ -9,11 +9,11 @@ import subway.line.domain.Station;
 import subway.line.domain.StationRepository;
 import subway.line.exception.station.StationException;
 import subway.path.application.dto.ShortestRouteResponse;
+import subway.path.domain.DiscountPolicy;
 import subway.path.domain.Path;
 import subway.path.domain.PaymentLines;
+import subway.path.domain.PaymentPolicy;
 import subway.path.domain.ShortestRouteService;
-import subway.path.domain.discount.DiscountPolicy;
-import subway.path.domain.payment.PaymentPolicy;
 
 @Transactional(readOnly = true)
 @Service

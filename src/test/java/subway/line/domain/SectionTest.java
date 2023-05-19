@@ -3,7 +3,15 @@ package subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static subway.line.domain.fixture.StationFixture.*;
+import static subway.line.domain.fixture.StationFixture.건대입구;
+import static subway.line.domain.fixture.StationFixture.선릉;
+import static subway.line.domain.fixture.StationFixture.없는역;
+import static subway.line.domain.fixture.StationFixture.없는역2;
+import static subway.line.domain.fixture.StationFixture.역1;
+import static subway.line.domain.fixture.StationFixture.역2;
+import static subway.line.domain.fixture.StationFixture.역3;
+import static subway.line.domain.fixture.StationFixture.잠실;
+import static subway.line.domain.fixture.StationFixture.잠실나루;
 import static subway.line.exception.line.LineExceptionType.NON_POSITIVE_DISTANCE;
 import static subway.line.exception.line.LineExceptionType.UP_AND_DOWN_STATION_IS_SAME;
 
@@ -13,7 +21,6 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.common.exception.BaseExceptionType;
-import subway.line.domain.fixture.StationFixture;
 import subway.line.exception.line.LineException;
 
 @SuppressWarnings("NonAsciiCharacters")

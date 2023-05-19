@@ -1,8 +1,6 @@
 package subway.path.domain;
 
-import subway.path.domain.discount.DiscountPolicy;
-import subway.path.domain.discount.DiscountResult;
-import subway.path.domain.payment.PaymentPolicy;
+import subway.payment.domain.discount.DiscountResult;
 
 public class PaymentLines {
 

@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 import subway.path.domain.Path;
-import subway.path.domain.discount.DiscountResult;
+import subway.payment.domain.discount.DiscountResult;
 
 public class ShortestRouteResponse {
 
@@ -25,7 +25,6 @@ public class ShortestRouteResponse {
         this.totalDistance = totalDistance;
         this.transferCount = transferStations.size();
     }
-
 
     public static ShortestRouteResponse from(final Path path, final DiscountResult discountResult) {
         return new ShortestRouteResponse(

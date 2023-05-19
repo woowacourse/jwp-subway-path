@@ -7,7 +7,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
-import static subway.line.domain.fixture.StationFixture.*;
+import static subway.line.domain.fixture.StationFixture.역1;
+import static subway.line.domain.fixture.StationFixture.역2;
+import static subway.line.domain.fixture.StationFixture.역3;
+import static subway.line.domain.fixture.StationFixture.역4;
+import static subway.line.domain.fixture.StationFixture.역5;
 import static subway.line.exception.line.LineExceptionType.DUPLICATE_LINE_NAME;
 import static subway.line.exception.line.LineExceptionType.INCONSISTENT_EXISTING_SECTION;
 
@@ -18,7 +22,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.common.exception.BaseExceptionType;
-import subway.line.domain.fixture.StationFixture;
 import subway.line.exception.line.LineException;
 
 @SuppressWarnings("NonAsciiCharacters")

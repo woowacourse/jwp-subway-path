@@ -1,10 +1,10 @@
-package subway.path.config;
+package subway.payment.config;
 
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import subway.path.domain.payment.PaymentPolicy;
-import subway.path.domain.payment.PaymentPolicyComposite;
+import subway.path.domain.PaymentPolicy;
+import subway.payment.domain.payment.PaymentPolicyComposite;
 
 @Configuration
 public class PaymentPolicyConfig {

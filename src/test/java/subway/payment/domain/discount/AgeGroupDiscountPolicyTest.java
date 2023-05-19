@@ -1,4 +1,4 @@
-package subway.path.domain.discount;
+package subway.payment.domain.discount;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.path.domain.AgeGroup.ADULTS;
