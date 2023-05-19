@@ -39,7 +39,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(List.of(sectionsOfLine1, sectionsOfLine2));
 
         // when
-        Path path = pathFinder.calculateShortestPath(new Station("판교역"), new Station("정자역"));
+        Path path = pathFinder.findShortestPath(new Station("판교역"), new Station("정자역"));
 
         // then
         assertThat(path).usingRecursiveComparison()
@@ -55,7 +55,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(List.of(sectionsOfLine1, sectionsOfLine2));
 
         // when
-        Path path = pathFinder.calculateShortestPath(new Station("미금역"), new Station("수내역"));
+        Path path = pathFinder.findShortestPath(new Station("미금역"), new Station("수내역"));
 
         // then
         assertThat(path).usingRecursiveComparison()
@@ -72,7 +72,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(List.of(sectionsOfLine1, sectionsOfLine2, unconnectedSections));
 
         // when, then
-        assertThatThrownBy(() -> pathFinder.calculateShortestPath(new Station("서현역"), new Station("복정역")))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(new Station("서현역"), new Station("복정역")))
                 .isInstanceOf(IllegalStationException.class)
                 .hasMessageContaining("요청한 출발역과 도착역 사이의 경로가 없습니다.");
     }
@@ -84,7 +84,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(List.of(sectionsOfLine1, sectionsOfLine2));
 
         // when, then
-        assertThatThrownBy(() -> pathFinder.calculateShortestPath(new Station("복정역"), new Station("정자역")))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(new Station("복정역"), new Station("정자역")))
                 .isInstanceOf(StationNotFoundException.class);
     }
 }

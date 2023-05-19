@@ -38,7 +38,7 @@ public class PathFinder {
         }
     }
 
-    public Path calculateShortestPath(Station source, Station dest) {
+    public Path findShortestPath(Station source, Station dest) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         validateTargetInPath(source, dest);
         return Path.of(getShortestPathStations(shortestPath, source, dest), shortestPath.getPathWeight(source, dest));

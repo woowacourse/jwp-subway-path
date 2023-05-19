@@ -19,4 +19,7 @@ public class Path {
         return distance;
     }
 
+    public List<Station> getStations() {
+        return stations;
+    }
 }
