@@ -1,6 +1,5 @@
 package subway.controller.dto.response;
 
-
 import subway.domain.LineSection;
 import subway.domain.LineSections;
 
