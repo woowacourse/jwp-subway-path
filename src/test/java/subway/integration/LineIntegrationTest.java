@@ -32,6 +32,19 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
+    @Test
+    @DisplayName("중복된 노선을 생성하는 경우 CONFLICT 에러가 발생한다.")
+    void createDuplicateLine() {
+        initLine("3호선",
+                "1번",
+                "2번",
+                5);
+
+        ExtractableResponse<Response> response = createLine("3호선");
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+    }
+
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void findLine() {
@@ -47,6 +60,22 @@ public class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/line/" + id)
+                .then().log().all().
+                extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("지하철 노선을 조회한다. - 노선에 역이 존재하지 않는 경우")
+    @Test
+    void findLine1() {
+        ExtractableResponse<Response> createResponse = createLine("2호선");
+        LineResponse lineResponse = createResponse.as(LineResponse.class);
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/line/" + lineResponse.getId())
                 .then().log().all().
                 extract();
 
@@ -82,34 +111,6 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(lineResponses.get(1).getName()).isEqualTo("3호선");
         assertThat(lineResponses.get(1).getStations().get(0).getName()).isEqualTo("1번");
         assertThat(lineResponses.get(1).getStations().get(1).getName()).isEqualTo("2번");
-    }
-
-    @DisplayName("모든 지하철 노선을 조회한다. 노선에 station이없는 경우")
-    @Test
-    void findALlLines1() {
-        createLine("2호선");
-
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/")
-                .then().log().all().
-                extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @Test
-    @DisplayName("중복된 노선을 생성하는 경우 CONFLICT 에러가 발생한다.")
-    void createDuplicateLine() {
-        initLine("3호선",
-                "1번",
-                "2번",
-                5);
-
-        ExtractableResponse<Response> response = createLine("3호선");
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
 }

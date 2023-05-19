@@ -14,7 +14,7 @@ import static subway.integration.Utils.*;
 import static subway.integration.Utils.addStation;
 
 public class StationIntegrationTest extends IntegrationTest {
-    @DisplayName("지하철역을 추가한다.")
+    @DisplayName("노선에 초기 지하철역을 추가한다.")
     @Test
     void addStationTest() {
         createLine("2호선");
@@ -27,6 +27,27 @@ public class StationIntegrationTest extends IntegrationTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("기존에 존재하는 지하철을 추가하는 경우 CONFILCT를 응답한다.")
+    void addDuplicateStation() {
+        initLine("2호선",
+                "잠실역",
+                "잠실새내역",
+                5);
+        addStation("2호선",
+                "잠실역",
+                "강변역",
+                4);
+
+        ExtractableResponse<Response> response = addStation(
+                "2호선",
+                "강변역",
+                "잠실새내역",
+                5);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     @DisplayName("지하철역을 삭제한다.")
@@ -94,27 +115,6 @@ public class StationIntegrationTest extends IntegrationTest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-    }
-
-    @Test
-    @DisplayName("기존에 존재하는 지하철을 추가하는 경우 CONFILCT를 응답한다.")
-    void addDuplicateStation() {
-        initLine("2호선",
-                "잠실역",
-                "잠실새내역",
-                5);
-        addStation("2호선",
-                "잠실역",
-                "강변역",
-                4);
-
-        ExtractableResponse<Response> response = addStation(
-                "2호선",
-                "강변역",
-                "잠실새내역",
-                5);
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
 }
