@@ -12,7 +12,6 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("구간 삭제 관련 기능")
-@Sql("/truncate.sql")
 public class SelectionRemovalIntegrationTest extends IntegrationTest {
 
     @DisplayName("노선에 역이 2개 존재 시 둘 다 삭제한다")
