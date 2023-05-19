@@ -6,13 +6,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
-import subway.domain.Section;
+import subway.domain.subway.Section;
 
 @Sql("/InitializeTable.sql")
 @JdbcTest
@@ -31,6 +32,7 @@ class SectionDaoTest {
     }
 
     @Test
+    @DisplayName("section 테이블에 데이터를 저장한다")
     void insert() {
         StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
         stationDao.findAll().forEach(station -> System.out.println(station.getId()));
@@ -41,11 +43,13 @@ class SectionDaoTest {
     }
 
     @Test
+    @DisplayName("section 테이블에서 특정 노선의 구간을 조회한다")
     void findAllSectionByLineId() {
         assertThat(sectionDao.findAllSectionByLineId(2L)).hasSize(2);
     }
 
     @Test
+    @DisplayName("section 테이블에서 특정 구간을 조회한다")
     void findById() {
         Section section = sectionDao.findById(2L);
         assertAll(
@@ -58,6 +62,7 @@ class SectionDaoTest {
     }
 
     @Test
+    @DisplayName("section 테이블에 특정 구간을 삭제한다")
     void deleteById() {
         sectionDao.deleteById(2L);
         assertThat(sectionDao.findAllSectionByLineId(2L)).hasSize(1);

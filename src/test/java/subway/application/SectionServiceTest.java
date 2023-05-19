@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.dao.SectionDao;
-import subway.domain.Section;
+import subway.domain.subway.Section;
 import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
