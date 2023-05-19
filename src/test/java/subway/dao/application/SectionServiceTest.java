@@ -151,7 +151,7 @@ class SectionServiceTest {
 
         // when, then
         assertThatThrownBy(() -> sectionService.insertSection(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test

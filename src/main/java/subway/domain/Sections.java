@@ -34,6 +34,9 @@ public class Sections {
     }
 
     private static Long getFirstStations(List<Section> sections) {
+        if (sections.isEmpty()) {
+            throw new IllegalStateException("빈 라인은 첫번째 역을 찾을 수  없습니다.");
+        }
         final Set<Long> allStationIds = sections.stream()
                 .flatMap(section -> Stream.of(section.getUpStationId(), section.getDownStationId()))
                 .collect(Collectors.toSet());
@@ -138,8 +141,8 @@ public class Sections {
 
     public void isExistSection(SectionRequest request) {
         for (Section section : sections) {
-            if (Objects.equals(section.getUpStationId(), request.getUpStationId())
-                    || Objects.equals(section.getDownStationId(), request.getDownStationId())) {
+            if (Objects.equals(section.getUpStationId(), request.getUpStationId()) && Objects.equals(section.getDownStationId(), request.getDownStationId())
+                    || Objects.equals(section.getDownStationId(), request.getUpStationId()) && Objects.equals(section.getUpStationId(), request.getDownStationId())) {
                 throw new IllegalArgumentException("동일한 구간을 추가할 수 없습니다.");
             }
         }
