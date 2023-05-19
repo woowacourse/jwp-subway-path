@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import subway.exception.DuplicatedStationNameException;
 import subway.service.LineModifyService;
 import subway.service.LineService;
 import subway.exception.DuplicatedLineNameException;
@@ -294,6 +295,24 @@ class LineControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().json(responseBody));
         }
+
+        @Test
+        @DisplayName("실패 - 중복된 역이름")
+        void fail_duplicated_station_name() throws Exception {
+            // given
+            final long lineId = 1L;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실새내", "잠실", 5);
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+
+            // when
+            when(lineModifyService.registerStation(eq(lineId), any())).thenThrow(DuplicatedStationNameException.class);
+
+            // then
+            mockMvc.perform(patch("/lines/{id}/register", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isBadRequest());
+        }
     }
 
     @Nested
@@ -345,6 +364,42 @@ class LineControllerTest {
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isNoContent());
+        }
+
+        @Test
+        @DisplayName("실패 - 존재하지 않는 노선")
+        void fail_line_not_found() throws Exception {
+            // given
+            final long lineId = 11L;
+            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("잠실");
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+
+            // when
+            when(lineModifyService.unregisterStation(eq(lineId), any())).thenThrow(LineNotFoundException.class);
+
+            // then
+            mockMvc.perform(patch("/lines/{id}/unregister", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("실패 - 존재하지 않는 역")
+        void fail_station_not_found() throws Exception {
+            // given
+            final long lineId = 1L;
+            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("실");
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+
+            // when
+            when(lineModifyService.unregisterStation(eq(lineId), any())).thenThrow(StationNotFoundException.class);
+
+            // then
+            mockMvc.perform(patch("/lines/{id}/unregister", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isNotFound());
         }
     }
 }
