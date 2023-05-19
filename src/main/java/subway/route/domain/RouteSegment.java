@@ -1,5 +1,7 @@
 package subway.route.domain;
 
+import subway.line.domain.LineInfo;
+
 public class RouteSegment {
 
     private final long upstreamId;
@@ -7,16 +9,16 @@ public class RouteSegment {
     private final long downstreamId;
     private final String downstreamName;
     private final long lineId;
-    private final String lineName;
+    private final LineInfo lineInfo;
     private final int distance;
 
-    public RouteSegment(long upstreamId, String upstreamName, long downstreamId, String downstreamName, long lineId, String lineName, int distance) {
+    public RouteSegment(long upstreamId, String upstreamName, long downstreamId, String downstreamName, long lineId, LineInfo lineInfo, int distance) {
         this.upstreamId = upstreamId;
         this.upstreamName = upstreamName;
         this.downstreamId = downstreamId;
         this.downstreamName = downstreamName;
         this.lineId = lineId;
-        this.lineName = lineName;
+        this.lineInfo = lineInfo;
         this.distance = distance;
     }
 
@@ -41,7 +43,11 @@ public class RouteSegment {
     }
 
     public String getLineName() {
-        return lineName;
+        return lineInfo.getName();
+    }
+
+    public int getLineAdditionalFare() {
+        return lineInfo.getAdditionalFare();
     }
 
     public int getDistance() {
@@ -56,7 +62,7 @@ public class RouteSegment {
                 ", downstreamId=" + downstreamId +
                 ", downstreamName='" + downstreamName + '\'' +
                 ", lineId=" + lineId +
-                ", lineName='" + lineName + '\'' +
+                ", lineInfo=" + lineInfo +
                 ", distance=" + distance +
                 '}';
     }

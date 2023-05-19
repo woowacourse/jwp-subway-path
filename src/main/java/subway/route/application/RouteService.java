@@ -7,10 +7,11 @@ import subway.line.domain.Lines;
 import subway.line.repository.LineRepository;
 import subway.route.application.dto.RouteDto;
 import subway.route.application.dto.RouteReadDto;
-import subway.route.domain.FarePolicy;
 import subway.route.domain.RouteFinder;
 import subway.route.domain.RouteFinderBuilder;
 import subway.route.domain.RouteSegment;
+import subway.route.domain.fare.FareFactors;
+import subway.route.domain.fare.FarePolicy;
 import subway.route.domain.jgraph.JgraphRouteFinderBuilder;
 import subway.station.application.StationService;
 import subway.station.domain.Station;
@@ -23,11 +24,13 @@ public class RouteService {
 
     private final StationService stationService;
     private final LineRepository lineRepository;
+    private final FarePolicy farePolicy;
 
     @Autowired
-    public RouteService(StationService stationService, LineRepository lineRepository) {
+    public RouteService(StationService stationService, LineRepository lineRepository, FarePolicy farePolicy) {
         this.stationService = stationService;
         this.lineRepository = lineRepository;
+        this.farePolicy = farePolicy;
     }
 
     public RouteDto findRoute(RouteReadDto routeReadDto) {
@@ -36,7 +39,8 @@ public class RouteService {
 
         final RouteFinder<RouteSegment> routeFinder = getRouteFinder();
         final List<RouteSegment> route = routeFinder.getRoute(source, destination);
-        final int fare = calculateFare(source, destination, routeFinder);
+
+        final int fare = calculateFare(source, destination, routeFinder, routeReadDto);
 
         return DtoMapper.toRouteDto(route, fare);
     }
@@ -47,9 +51,12 @@ public class RouteService {
         return routeFinderBuilder.buildRouteFinder(allLines.getLines());
     }
 
-    private int calculateFare(Station source, Station destination, RouteFinder<RouteSegment> routeFinder) {
-        final FareCalculator fareCalculator = new DistanceFareCalculator();
-        final int totalWeight = routeFinder.getTotalWeight(source, destination);
-        return fareCalculator.calculate(totalWeight);
+    private int calculateFare(Station source, Station destination, RouteFinder<RouteSegment> routeFinder, RouteReadDto routeReadDto) {
+        final List<RouteSegment> route = routeFinder.getRoute(source, destination);
+        final int distance = routeFinder.getTotalWeight(source, destination);
+        final FareFactors fareFactors = new FareFactors();
+
+        farePolicy.buildFareFactors(fareFactors, route, distance, routeReadDto.getAge());
+        return farePolicy.calculate(fareFactors, 0);
     }
 }

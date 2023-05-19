@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.line.exception.*;
 import subway.route.exception.IdenticalStationsException;
+import subway.route.exception.InvalidAgeException;
 import subway.route.exception.RouteNotFoundException;
 import subway.station.exception.NameLengthException;
 import subway.station.exception.StationNotFoundException;
@@ -27,7 +28,8 @@ public class GlobalExceptionHandler {
             NameLengthException.class,
             DuplicateLineNameException.class,
             IdenticalStationsException.class,
-            InvalidAdditionalFareException.class
+            InvalidAdditionalFareException.class,
+            InvalidAgeException.class
     })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorDto handleBadRequest(RuntimeException exception, HttpServletRequest request) {

@@ -59,7 +59,7 @@ public class JgraphRouteFinder implements RouteFinder<RouteSegment> {
                     downstream.getId(),
                     downstream.getName(),
                     section.getLindId(),
-                    section.getLineName(),
+                    section.getLineInfo(),
                     section.getDistance()
             );
 

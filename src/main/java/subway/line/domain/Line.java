@@ -131,15 +131,19 @@ public class Line {
         return lineInfo.getName();
     }
 
+    public int getAdditionalFare() {
+        return lineInfo.getAdditionalFare();
+    }
+
+    public LineInfo getLineInfo() {
+        return lineInfo;
+    }
+
     public List<MiddleSection> getSections() {
         return sections.subList(1, sections.size() - 1)
                        .stream()
                        .map(section -> (MiddleSection) section)
                        .collect(Collectors.toList());
-    }
-
-    public int getAdditionalFare() {
-        return lineInfo.getAdditionalFare();
     }
 
     @Override

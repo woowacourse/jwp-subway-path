@@ -13,7 +13,7 @@ public class StationAdditionRequest {
     @NotNull(message = "추가하려는 역과 상행역의 거리를 입력해주세요")
     private int distanceToUpstream;
 
-    public StationAdditionRequest(String stationName, String upstreamName, String downstreamName, int distanceToUpstream) {
+    public StationAdditionRequest(String stationName, String upstreamName, String downstreamName, Integer distanceToUpstream) {
         this.stationName = stationName;
         this.upstreamName = upstreamName;
         this.downstreamName = downstreamName;

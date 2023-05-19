@@ -61,4 +61,17 @@ public class RouteSegmentResponse {
     public int getDistance() {
         return distance;
     }
+
+    @Override
+    public String toString() {
+        return "RouteSegmentResponse{" +
+                "upstreamId=" + upstreamId +
+                ", upstreamName='" + upstreamName + '\'' +
+                ", downstreamId=" + downstreamId +
+                ", downstreamName='" + downstreamName + '\'' +
+                ", lineId=" + lineId +
+                ", lineName='" + lineName + '\'' +
+                ", distance=" + distance +
+                '}';
+    }
 }

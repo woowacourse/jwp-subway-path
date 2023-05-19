@@ -15,7 +15,7 @@ public class LineCreationRequest {
     @NotNull(message = "노선별 추가 요금을 입력해주세요")
     private Integer additionalFare;
 
-    public LineCreationRequest(String lineName, String upstreamName, String downstreamName, int distance, int additionalFare) {
+    public LineCreationRequest(String lineName, String upstreamName, String downstreamName, Integer distance, Integer additionalFare) {
         this.lineName = lineName;
         this.upstreamName = upstreamName;
         this.downstreamName = downstreamName;

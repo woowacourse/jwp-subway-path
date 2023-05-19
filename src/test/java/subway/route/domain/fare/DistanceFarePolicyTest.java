@@ -8,11 +8,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.route.domain.fare.DistanceFarePolicy.*;
 
 class DistanceFarePolicyTest {
-
-    private static final int FAR_DISTANCE_MINIMUM_FARE = MINIMUM_FARE + MAXIMUM_MID_DISTANCE_INCREMENT_COUNT * INCREMENTAL_FARE;
 
     final DistanceFarePolicy fareCalculator = new DistanceFarePolicy();
     FareFactors fareFactors;
@@ -33,7 +30,7 @@ class DistanceFarePolicyTest {
     @Test
     @DisplayName("입력된 거리가 0이하면 예외가 발생된다")
     void calculateFail1() {
-
+        fareFactors.setFactor("total_distance", 0);
 
         assertThatThrownBy(() -> fareCalculator.calculate(fareFactors, 0))
                 .isInstanceOf(IllegalArgumentException.class)
