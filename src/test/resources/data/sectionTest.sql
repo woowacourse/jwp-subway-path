@@ -11,12 +11,12 @@ values (1, 1, 6, 5);
 insert into sections(line_id, departure_id, arrival_id, distance)
 values (1, 6, 7, 5);
 insert into sections(line_id, departure_id, arrival_id, distance)
-values (5, 1, 8, 9);
+values (3, 1, 8, 9);
 insert into sections(line_id, departure_id, arrival_id, distance)
-values (5, 1, 9, 10);
+values (3, 1, 9, 10);
 insert into sections(line_id, departure_id, arrival_id, distance)
-values (5, 1, 10, 11);
+values (3, 1, 10, 11);
 insert into sections(line_id, departure_id, arrival_id, distance)
-values (5, 1, 11, 16);
+values (3, 1, 11, 16);
 insert into sections(line_id, departure_id, arrival_id, distance)
-values (5, 1, 12, 58);
+values (3, 1, 12, 58);
