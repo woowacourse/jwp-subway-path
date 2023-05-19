@@ -10,10 +10,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.service.StationService;
-import subway.exception.StationNotFoundException;
 import subway.controller.dto.request.StationRequest;
 import subway.controller.dto.response.StationResponse;
+import subway.exception.StationNotFoundException;
+import subway.service.StationService;
 
 import java.util.List;
 

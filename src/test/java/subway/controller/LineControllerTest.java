@@ -313,6 +313,24 @@ class LineControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isBadRequest());
         }
+
+        @Test
+        @DisplayName("실패 - 존재하지 않는 노선")
+        void fail_duplicated_line() throws Exception {
+            // given
+            final long lineId = 2L;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실새내", "잠실", 5);
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+
+            // when
+            when(lineModifyService.registerStation(eq(lineId), any())).thenThrow(DuplicatedLineNameException.class);
+
+            // then
+            mockMvc.perform(patch("/lines/{id}/register", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isBadRequest());
+        }
     }
 
     @Nested
