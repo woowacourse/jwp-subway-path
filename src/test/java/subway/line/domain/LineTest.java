@@ -3,8 +3,13 @@ package subway.line.domain;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.section.domain.Section;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,5 +28,28 @@ class LineTest {
     void 노선_색상이_Null_or_Empty인_경우_예외_발생(final String color) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Line("1호선", color));
+    }
+    
+    @ParameterizedTest(name = "{displayName} : stationName = {0}, expectResult = {1}")
+    @CsvSource(value = {"잠실역,true", "청라역,false"})
+    void 해당_역이_포함되어있는지_확인(final String stationName, final boolean expectResult) {
+        // given
+        final String first = "잠실역";
+        final String second = "가양역";
+        final String third = "화정역";
+        
+        final int distance1 = 3;
+        final int distance2 = 2;
+        final Section firstSection = new Section(first, second, distance1);
+        final Section secondSection = new Section(second, third, distance2);
+        
+        final Set<Section> initSections1 = new HashSet<>(Set.of(firstSection, secondSection));
+        final Line line = new Line("1호선", "파랑", initSections1);
+        
+        // when
+        final boolean isContainsStation = line.isContainsStation(stationName);
+        
+        // then
+        assertThat(isContainsStation).isEqualTo(expectResult);
     }
 }

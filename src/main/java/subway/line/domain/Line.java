@@ -80,4 +80,8 @@ public class Line {
     public void addLineToGraph(final WeightedMultigraph<Station, Section> graph) {
         sections.addSectionsToGraph(graph);
     }
+    
+    public boolean isContainsStation(final String stationName) {
+        return sections.isContainsStation(stationName);
+    }
 }
