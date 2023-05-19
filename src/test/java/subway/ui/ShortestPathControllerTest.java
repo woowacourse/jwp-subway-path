@@ -3,6 +3,7 @@ package subway.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -42,12 +43,13 @@ class ShortestPathControllerTest {
         final LineStationResponse secondStation = new LineStationResponse(1L, "출발역", 1L, "1호선", "red");
         final ShortestPathResponse shortestPathResponse = new ShortestPathResponse(List.of(firstStation, secondStation),
             10, 2300);
-        Mockito.when(shortestPathService.findShortestPath(any(), any())).thenReturn(shortestPathResponse);
+
+        Mockito.when(shortestPathService.getShortestPath(any(), any(), anyInt())).thenReturn(shortestPathResponse);
 
         //when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
             .when()
-            .get("/shortest-path?start=1&end=1")
+            .get("/shortest-path?start=1&end=1&age=10")
             .then().log().all()
             .extract();
 

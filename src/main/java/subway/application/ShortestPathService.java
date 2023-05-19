@@ -29,7 +29,7 @@ public class ShortestPathService {
         this.sectionRepository = sectionRepository;
     }
 
-    public ShortestPathResponse findShortestPath(final String startStation, final String endStation) {
+    public ShortestPathResponse getShortestPath(final String startStation, final String endStation, final int age) {
         final Station start = sectionRepository.findStationByName(startStation);
         final Station end = sectionRepository.findStationByName(endStation);
 
@@ -50,7 +50,7 @@ public class ShortestPathService {
 
         final List<LineStationResponse> lineStationResponses = mapToLineStationResponse(path);
         final int totalDistance = shortestPath.getDistance();
-        final int totalFare = FareCalculator.calculate(findMostExpensiveLine(path), totalDistance);
+        final int totalFare = FareCalculator.calculate(findMostExpensiveLine(path), totalDistance, age);
 
         return new ShortestPathResponse(lineStationResponses, totalDistance, totalFare);
     }

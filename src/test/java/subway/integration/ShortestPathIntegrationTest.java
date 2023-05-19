@@ -28,7 +28,7 @@ public class ShortestPathIntegrationTest extends IntegrationTest {
         //when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
             .when()
-            .get("/shortest-path?start=첫번째역&end=세번째역")
+            .get("/shortest-path?start=첫번째역&end=세번째역&age=18")
             .then()
             .extract();
 
@@ -36,7 +36,7 @@ public class ShortestPathIntegrationTest extends IntegrationTest {
         final ShortestPathResponse shortestPathResponse = response.body().as(ShortestPathResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(shortestPathResponse.getTotalDistance()).isEqualTo(9);
-        assertThat(shortestPathResponse.getTotalFare()).isEqualTo(1550);
+        assertThat(shortestPathResponse.getTotalFare()).isEqualTo(1310);
     }
 
     @DisplayName("지하철 노선에서 시작과 도착역의 최단 경로, 최단 거리, 요금을 조회한다.")
@@ -52,7 +52,7 @@ public class ShortestPathIntegrationTest extends IntegrationTest {
         //when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
             .when()
-            .get("/shortest-path?start=첫번째역&end=첫번째역")
+            .get("/shortest-path?start=첫번째역&end=첫번째역&age=6")
             .then()
             .extract();
 
