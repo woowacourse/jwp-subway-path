@@ -15,8 +15,8 @@ public class Section {
         this.distance = distance;
     }
 
-    public void validateDistance(final Long requestDistance) {
-        if (this.distance <= requestDistance) {
+    public void validateDistance(final Long otherDistance) {
+        if (this.distance <= otherDistance) {
             throw new DistanceInvalidException();
         }
     }
