@@ -120,47 +120,14 @@ class LineServiceTest {
         given(sectionDao.findByLineId(anyLong())).willReturn(Collections.emptyList());
         given(stationDao.findAll()).willReturn(List.of(upStationEntity, downStationEntity));
 
-        SectionEntity null_서울역 = new SectionEntity(null, 1L, null, 1L, 0, order);
-        SectionEntity 서울역_천안역 = new SectionEntity(null, 1L, 1L, 2L, 5, order);
-        SectionEntity 천안역_null = new SectionEntity(null, 1L, 2L, null, 0, order);
+        SectionEntity 서울역_천안역 = new SectionEntity(null, 1L, 1L, 2L, 5, 1);
 
         // when
         lineService.saveStationInLine(lineId, registerStationRequest);
 
         // then
         verify(sectionDao).deleteByLineId(lineId);
-        verify(sectionDao).insertAll(ArgumentMatchers.eq(Arrays.asList(null_서울역, 서울역_천안역, 천안역_null)));
-    }
-
-    @DisplayName("모든 Line의 정보를 반환한다.")
-    @Test
-    void findLineResponses() {
-        // given
-        LineEntity 호선1 = new LineEntity(1L, "1호선", "bg-blue-500");
-        LineEntity 호선2 = new LineEntity(2L, "2호선", "bg-green-500");
-        given(lineDao.findAll()).willReturn(new ArrayList<>(List.of(호선1, 호선2)));
-
-        // when
-        List<LineResponse> lineResponses = lineService.findLineResponses();
-
-        // then
-        assertThat(lineResponses.size()).isEqualTo(2);
-        assertThat(lineResponses).extracting(LineResponse::getId).containsExactly(1L, 2L);
-        assertThat(lineResponses).extracting(LineResponse::getName).containsExactly("1호선", "2호선");
-        assertThat(lineResponses).extracting(LineResponse::getColor).containsExactly("bg-blue-500", "bg-green-500");
-    }
-
-    @DisplayName("특정 Line의 정보를 반환한다.")
-    @Test
-    void findLineResponseById() {
-        LineEntity 호선1 = new LineEntity(1L, "1호선", "bg-blue-500");
-        given(lineDao.findById(1L)).willReturn(Optional.of(호선1));
-
-        // when
-        LineResponse lineResponse = lineService.findLineResponseById(1L);
-
-        // then
-        assertThat(lineResponse).usingRecursiveComparison().isEqualTo(호선1);
+        verify(sectionDao).insertAll(ArgumentMatchers.eq(Arrays.asList(서울역_천안역)));
     }
 
     @DisplayName("모든 노선의 정보와 각 노선에 있는 구간을 조회하여 순서대로 반환한다.")
@@ -179,19 +146,15 @@ class LineServiceTest {
         StationEntity 잠실역 = new StationEntity(6L, "잠실역");
         given(stationDao.findAll()).willReturn(List.of(서울역, 수원역, 천안역, 강남역, 선릉역, 잠실역));
 
-        SectionEntity null_서울역 = new SectionEntity(1L, 1L, null, 1L, 0, order);
-        SectionEntity 서울역_수원역 = new SectionEntity(2L, 1L, 1L, 2L, 3, order);
-        SectionEntity 수원역_천안역 = new SectionEntity(3L, 1L, 2L, 3L, 4, order);
-        SectionEntity 천안역_null = new SectionEntity(4L, 1L, 3L, null, 0, order);
+        SectionEntity 서울역_수원역 = new SectionEntity(2L, 1L, 1L, 2L, 3, 1);
+        SectionEntity 수원역_천안역 = new SectionEntity(3L, 1L, 2L, 3L, 4, 2);
 
-        SectionEntity null_강남역 = new SectionEntity(5L, 2L, null, 4L, 0, order);
-        SectionEntity 강남역_선릉역 = new SectionEntity(6L, 2L, 4L, 5L, 3, order);
-        SectionEntity 선릉역_잠실역 = new SectionEntity(7L, 2L, 5L, 6L, 4, order);
-        SectionEntity 잠실역_null = new SectionEntity(8L, 2L, 6L, null, 0, order);
+        SectionEntity 강남역_선릉역 = new SectionEntity(6L, 2L, 4L, 5L, 3, 1);
+        SectionEntity 선릉역_잠실역 = new SectionEntity(7L, 2L, 5L, 6L, 4, 2);
 
         given(sectionDao.findAll()).willReturn(List.of(
-                null_서울역, 서울역_수원역, 수원역_천안역, 천안역_null,
-                null_강남역, 강남역_선릉역, 선릉역_잠실역, 잠실역_null)
+                서울역_수원역, 수원역_천안역,
+                강남역_선릉역, 선릉역_잠실역)
         );
 
         // when
@@ -221,11 +184,9 @@ class LineServiceTest {
         StationEntity 천안역 = new StationEntity(3L, "천안역");
         given(stationDao.findAll()).willReturn(List.of(서울역, 수원역, 천안역));
 
-        SectionEntity null_서울역 = new SectionEntity(1L, 1L, null, 1L, 0, order);
-        SectionEntity 서울역_수원역 = new SectionEntity(1L, 1L, 1L, 2L, 3, order);
-        SectionEntity 수원역_천안역 = new SectionEntity(1L, 1L, 2L, 3L, 4, order);
-        SectionEntity 천안역_null = new SectionEntity(1L, 1L, 3L, null, 0, order);
-        given(sectionDao.findByLineId(1L)).willReturn(List.of(null_서울역, 서울역_수원역, 수원역_천안역, 천안역_null));
+        SectionEntity 서울역_수원역 = new SectionEntity(1L, 1L, 1L, 2L, 3, 1);
+        SectionEntity 수원역_천안역 = new SectionEntity(1L, 1L, 2L, 3L, 4, 2);
+        given(sectionDao.findByLineId(1L)).willReturn(List.of(서울역_수원역, 수원역_천안역));
 
         // when
         LineStationResponse lineStationResponse = lineService.findById(1L);
@@ -262,9 +223,7 @@ class LineServiceTest {
     void deleteByLineIdAndStationId() {
         // given
         List<SectionEntity> sectionEntities = Arrays.asList(
-                new SectionEntity(1L, 1L, null, 1L, 0, order),
-                new SectionEntity(1L, 1L, 1L, 2L, 5, order),
-                new SectionEntity(1L, 1L, 2L, null, 0, order)
+                new SectionEntity(1L, 1L, 1L, 2L, 5, 1)
         );
 
         List<StationEntity> stationEntities = Arrays.asList(

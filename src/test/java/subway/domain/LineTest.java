@@ -23,7 +23,10 @@ class LineTest {
     })
     void Line(String validName, String validColor) {
         // given
-        Section section = new Section(Station.empty(), Station.empty(), 0);
+        Station 강남역 = new Station(1L, "강남역");
+        Station 선릉역 = new Station(2L, "선릉역");
+
+        Section section = new Section(강남역, 선릉역, 5);
         Sections sections = new Sections(List.of(section));
 
         // when & then
@@ -35,7 +38,10 @@ class LineTest {
     @ValueSource(strings = {"", "  ", "5자이하만가능합니다."})
     void Line_NameValidationFail(String invalidName) {
         // given
-        Section section = new Section(Station.empty(), Station.empty(), 0);
+        Station 강남역 = new Station(1L, "강남역");
+        Station 선릉역 = new Station(2L, "선릉역");
+
+        Section section = new Section(강남역, 선릉역, 5);
         Sections sections = new Sections(List.of(section));
 
         // when & then
@@ -48,7 +54,10 @@ class LineTest {
     @ValueSource(strings = {"", "  ", "bg--", "bg-20자이상은불가능합니다-10000"})
     void Line_ColorValidationFail(String invalidColor) {
         // given
-        Section section = new Section(Station.empty(), Station.empty(), 0);
+        Station 강남역 = new Station(1L, "강남역");
+        Station 선릉역 = new Station(2L, "선릉역");
+
+        Section section = new Section(강남역, 선릉역, 5);
         Sections sections = new Sections(List.of(section));
 
         // when & then
@@ -64,21 +73,18 @@ class LineTest {
         Station 선릉역 = new Station(2L, "선릉역");
         Station 잠실역 = new Station(3L, "잠실역");
 
-        Section 상행종점_강남역 = new Section(Station.empty(), 강남역, 0);
         Section 강남역_선릉역 = new Section(강남역, 선릉역, 5);
-        Section 선릉역_하행종점 = new Section(선릉역, Station.empty(), 0);
 
-        Sections sections = new Sections(new ArrayList<>(List.of(상행종점_강남역, 강남역_선릉역, 선릉역_하행종점)));
+        Sections sections = new Sections(new ArrayList<>(List.of(강남역_선릉역)));
         Line 호선2 = new Line(null, "2호선", "bg-green-500", sections);
 
         // when
         Section 선릉역_잠실역 = new Section(선릉역, 잠실역, 3);
-        Section 잠실역_하행종점 = new Section(잠실역, Station.empty(), 0);
         호선2.add(선릉역_잠실역);
         
         // then
         assertThat(호선2.getSections())
-                .containsAll(List.of(상행종점_강남역, 강남역_선릉역, 선릉역_잠실역, 잠실역_하행종점));
+                .containsAll(List.of(강남역_선릉역, 선릉역_잠실역));
     }
 
     @DisplayName("Line에 있는 Session을 삭제한다.")
@@ -88,16 +94,13 @@ class LineTest {
         Station 강남역 = new Station(1L, "강남역");
         Station 선릉역 = new Station(2L, "선릉역");
 
-        Section 상행종점_강남역 = new Section(Station.empty(), 강남역, 0);
         Section 강남역_선릉역 = new Section(강남역, 선릉역, 5);
-        Section 선릉역_하행종점 = new Section(선릉역, Station.empty(), 0);
 
-        Sections sections = new Sections(new ArrayList<>(List.of(상행종점_강남역, 강남역_선릉역, 선릉역_하행종점)));
+        Sections sections = new Sections(new ArrayList<>(List.of(강남역_선릉역)));
         Line 호선2 = new Line(null, "2호선", "bg-green-500", sections);
 
         // when
-        Sections deleteSections = new Sections(new ArrayList<>(List.of(강남역_선릉역, 선릉역_하행종점)));
-        호선2.remove(deleteSections, 선릉역);
+        호선2.remove(선릉역);
 
         // then
         assertThat(호선2.getSections()).isEmpty();

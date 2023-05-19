@@ -1,12 +1,11 @@
 package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class StationTest {
 
@@ -25,19 +24,5 @@ class StationTest {
         // when & then
         assertThatThrownBy(() -> new Station(null, invalidName))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("비어있는 역인지에 따라 Boolean 값을 반환한다.")
-    @Test
-    void isEmpty() {
-        // given
-        Station notEmptyStation = new Station(null, "2호선");
-        Station emptyStation = Station.empty();
-
-        // when & then
-        assertAll("isEmpty",
-                () -> assertFalse(notEmptyStation.isEmpty()),
-                () -> assertTrue(emptyStation.isEmpty())
-        );
     }
 }

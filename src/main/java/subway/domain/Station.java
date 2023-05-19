@@ -7,11 +7,6 @@ public class Station {
     private final Long id;
     private final String name;
 
-    private Station() {
-        this.id = null;
-        this.name = null;
-    }
-
     public Station(final Long id, final String name) {
         validateName(name);
         this.id = id;
@@ -26,14 +21,6 @@ public class Station {
         if (name.length() < 1 || name.length() > 15) {
             throw new IllegalArgumentException("역 이름은 1자 이상 15자 이하만 가능합니다.");
         }
-    }
-
-    public static Station empty() {
-        return new Station();
-    }
-
-    public boolean isEmpty() {
-        return id == null && name == null;
     }
 
     public Long getId() {

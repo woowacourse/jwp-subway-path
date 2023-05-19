@@ -66,7 +66,7 @@ public class Sections {
                 });
 
         downSections.stream()
-                .filter(downSection -> downSection.getDownStation().equals(section.getDownStation()) && !downSection.getUpStation().isEmpty())
+                .filter(downSection -> downSection.getDownStation().equals(section.getDownStation()))
                 .findAny()
                 .ifPresent((target) -> {
                     if (section.getDistance() >= target.getDistance()) {
@@ -92,7 +92,7 @@ public class Sections {
                 });
 
         upSections.stream()
-                .filter(upSection -> upSection.getUpStation().equals(section.getUpStation()) && !upSection.getDownStation().isEmpty())
+                .filter(upSection -> upSection.getUpStation().equals(section.getUpStation()))
                 .findAny()
                 .ifPresent((target) -> {
                     if (section.getDistance() >= target.getDistance()) {
