@@ -18,7 +18,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.dto.InitialSectionAddRequest;
-import subway.dto.PathFindingRequest;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionDeleteRequest;
 
@@ -139,23 +138,5 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    @DisplayName("최단 경로를 조회한다.")
-    void findPathTest() {
-        PathFindingRequest pathFindingRequest = new PathFindingRequest(1L, 2L);
-
-        ExtractableResponse<Response> response = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(pathFindingRequest)
-            .when().post("/sections/path")
-            .then().log().all()
-            .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
     }
 }

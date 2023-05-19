@@ -14,11 +14,11 @@ import io.restassured.response.Response;
 import subway.dto.PathFindingRequest;
 
 @Sql("/InitializeTable.sql")
-class PathIntegrationTest extends IntegrationTest{
+class PathIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("최단 경로를 조회한다.")
     void findPathTest() {
-        PathFindingRequest pathFindingRequest = new PathFindingRequest(1L, 2L);
+        PathFindingRequest pathFindingRequest = new PathFindingRequest(1L, 3L);
 
         ExtractableResponse<Response> response = RestAssured
             .given().log().all()
