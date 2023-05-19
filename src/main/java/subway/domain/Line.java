@@ -19,18 +19,21 @@ public class Line {
     private final List<Section> sections;
 
     public Line(String name, String color) {
-        this(null, name, color, new ArrayList<>());
-    }
-
-    public Line(Long id, String name, String color) {
-        this(id, name, color, new ArrayList<>());
+        this(null, name, color);
     }
 
     public Line(Long id, String name, String color, List<Section> sections) {
+        this(id, name, color);
+        for (Section section : sections) {
+            add(section);
+        }
+    }
+
+    public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = sections;
+        this.sections = new ArrayList<>();
     }
 
     public void add(Section section) {
