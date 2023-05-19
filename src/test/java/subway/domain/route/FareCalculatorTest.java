@@ -14,7 +14,7 @@ class FareCalculatorTest {
 
     @DisplayName("거리에 따른 요금을 계산한다")
     @ParameterizedTest
-    @CsvSource(value = {"10,1250", "50,2050", "51,2150", "80,2450", "81,2550", "100,2750"})
+    @CsvSource(value = {"10,1250", "50,2050", "51,2150", "80,2450", "81,2450", "100,2750"})
     void calculateFare(final int input, final long expected) {
         // given
         final FareCalculator fareCalculator = new FareCalculator();

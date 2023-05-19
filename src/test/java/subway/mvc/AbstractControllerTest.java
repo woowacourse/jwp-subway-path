@@ -11,6 +11,7 @@ import subway.application.line.port.in.LineDeleteUseCase;
 import subway.application.line.port.in.LineFindAllUseCase;
 import subway.application.line.port.in.LineFindByIdUseCase;
 import subway.application.line.port.in.LineUpdateInfoUseCase;
+import subway.application.route.port.in.find.RouteFindUseCase;
 import subway.application.station.port.in.StationCreateUseCase;
 import subway.application.station.port.in.StationDeleteUseCase;
 import subway.application.station.port.in.StationFindAllUseCase;
@@ -58,4 +59,7 @@ public abstract class AbstractControllerTest {
 
     @MockBean
     protected LineAddInterStationUseCase lineAddInterStationUseCase;
+
+    @MockBean
+    protected RouteFindUseCase routeFindUseCase;
 }

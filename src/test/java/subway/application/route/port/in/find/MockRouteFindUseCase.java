@@ -12,7 +12,7 @@ public class MockRouteFindUseCase implements RouteFindUseCase {
     public RouteFindResponseDto findRoute(final RouteFindRequestDto requestDto) {
         callCount++;
         this.requestDto = requestDto;
-        return new RouteFindResponseDto(List.of(new RouteEdgeResponseDto(1L, 2L, 3L, 4L)), 100, 0);
+        return new RouteFindResponseDto(List.of(new RouteEdgeResponseDto(1L, 2L, 3L, 4L)), 100, 100);
     }
 
     public int getCallCount() {
