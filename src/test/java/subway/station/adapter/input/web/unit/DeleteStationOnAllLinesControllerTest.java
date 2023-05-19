@@ -1,14 +1,11 @@
 package subway.station.adapter.input.web.unit;
 
-import config.TestConfig;
-import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
 import subway.station.adapter.input.web.DeleteStationOnAllLinesController;
@@ -17,7 +14,6 @@ import subway.station.application.port.input.DeleteStationOnAllLineUseCase;
 import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("NonAsciiCharacters")
-@ContextConfiguration(classes = TestConfig.class)
 @WebMvcTest(DeleteStationOnAllLinesController.class)
 class DeleteStationOnAllLinesControllerTest {
     @MockBean

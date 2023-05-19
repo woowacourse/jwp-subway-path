@@ -1,34 +1,24 @@
 package subway.line.adapter.input.web.unit;
 
-import config.TestConfig;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
 import subway.line.adapter.input.web.GetSortedLineController;
 import subway.line.application.port.input.GetSortedLineUseCase;
 import subway.line.dto.GetSortedLineResponse;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 
 @SuppressWarnings("NonAsciiCharacters")
-@ContextConfiguration(classes = TestConfig.class)
 @WebMvcTest(GetSortedLineController.class)
 class GetSortedLineControllerTest {
     @MockBean

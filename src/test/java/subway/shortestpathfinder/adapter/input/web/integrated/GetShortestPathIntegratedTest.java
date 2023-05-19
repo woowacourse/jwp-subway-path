@@ -16,7 +16,7 @@ import java.util.Map;
 import static org.hamcrest.Matchers.*;
 
 @SuppressWarnings("NonAsciiCharacters")
-class GetShortestShortestPathIntegratedTestFinder extends IntegrationTest {
+class GetShortestPathIntegratedTest extends IntegrationTest {
     @Test
     void 최단_경로를_조회한다() {
         // given
