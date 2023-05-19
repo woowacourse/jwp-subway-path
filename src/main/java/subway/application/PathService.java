@@ -4,11 +4,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Path;
 import subway.domain.Section;
-import subway.domain.SectionEdge;
 import subway.domain.Station;
 import subway.domain.fee.FeePolicy;
+import subway.domain.path.Path;
+import subway.domain.path.PathGenerator;
+import subway.domain.path.SectionEdge;
 import subway.dto.PathAndFee;
 import subway.exceptions.customexceptions.InvalidDataException;
 import subway.exceptions.customexceptions.NotFoundException;
@@ -23,13 +24,14 @@ public class PathService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
     private final FeePolicy feePolicy;
+    private final PathGenerator pathGenerator;
 
-    public PathService(StationDao stationDao, SectionDao sectionDao, FeePolicy feePolicy) {
+    public PathService(StationDao stationDao, SectionDao sectionDao, FeePolicy feePolicy, PathGenerator pathGenerator) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
         this.feePolicy = feePolicy;
+        this.pathGenerator = pathGenerator;
     }
-
 
     public PathAndFee findShortestPathAndFee(Long sourceStationId, Long targetStationId) {
         Station sourceStation = stationDao.findById(sourceStationId)
@@ -44,7 +46,7 @@ public class PathService {
                 .stream()
                 .map(SectionEdge::getSection)
                 .collect(Collectors.toList());
-        int fee = calculateFee(shortestSectionPath);
+        int fee = feePolicy.calculateFee(shortestSectionPath);
 
         List<Station> shortestStationPath = path.getShortestStationPath(sourceStation, targetStation);
         if (shortestStationPath.isEmpty()) {
@@ -54,7 +56,7 @@ public class PathService {
     }
 
     private Path getPath(List<Station> stations, List<Section> sections) {
-        Path path = new Path();
+        Path path = pathGenerator.generate();
 
         for (Station station : stations) {
             path.addStation(station);
@@ -72,9 +74,5 @@ public class PathService {
             path.addSectionEdge(sourceStation, targetStation, new SectionEdge(section));
         }
         return path;
-    }
-
-    private int calculateFee(List<Section> sections) {
-        return feePolicy.calculateFee(sections);
     }
 }

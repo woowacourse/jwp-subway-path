@@ -1,17 +1,18 @@
-package subway.domain;
+package subway.domain.path;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.Station;
 
 import java.util.Collections;
 import java.util.List;
 
-public class Path {
+public class JgraphtPath implements Path {
 
     private final WeightedMultigraph<Station, SectionEdge> path;
 
-    public Path() {
+    public JgraphtPath() {
         this.path = new WeightedMultigraph<>(SectionEdge.class);
     }
 

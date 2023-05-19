@@ -1,16 +1,19 @@
-package subway.domain;
+package subway.domain.path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Station;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PathTest {
+public class JgraphtPathTest {
 
-    private Path path;
+    private JgraphtPath path;
     private Line firstLine = new Line(1L, "2호선", "green");
     private Line secondLine = new Line(2L, "8호선", "pink");
     private Station jamsil = new Station(1L, "잠실");
@@ -24,7 +27,7 @@ public class PathTest {
 
     @BeforeEach
     void setUp() {
-        path = new Path();
+        path = new JgraphtPath();
         path.addStation(jamsil);
         path.addStation(cheonho);
         path.addStation(source);

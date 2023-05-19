@@ -12,6 +12,8 @@ import subway.dao.StationDao;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.fee.FeePolicy;
+import subway.domain.path.JgraphtPathGenerator;
+import subway.domain.path.PathGenerator;
 import subway.dto.PathAndFee;
 
 import java.util.List;
@@ -34,6 +36,9 @@ public class PathServiceTest {
 
     @Mock
     private FeePolicy feePolicy;
+
+    @Mock
+    private PathGenerator pathGenerator;
 
     @InjectMocks
     private PathService pathService;
@@ -66,6 +71,8 @@ public class PathServiceTest {
                 .thenReturn(stations);
         when(sectionDao.findAll())
                 .thenReturn(sections);
+        when(pathGenerator.generate())
+                .thenReturn(new JgraphtPathGenerator().generate());
 
         // when
         PathAndFee pathAndFee = pathService.findShortestPathAndFee(1L, 3L);
