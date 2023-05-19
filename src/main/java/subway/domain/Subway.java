@@ -1,8 +1,11 @@
 package subway.domain;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.exeption.InvalidPathException;
 import subway.exeption.LineNotFoundException;
 
 import java.util.ArrayList;
@@ -80,5 +83,22 @@ public class Subway {
         }
 
         return mergedGraph;
+    }
+
+    public PathDto findShortestPath(final Station source, final Station target) {
+        final WeightedMultigraph<Station, DefaultWeightedEdge> allStationGraph = findAllStationGraph();
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(allStationGraph);
+
+        final GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
+
+        if (path == null) {
+            throw new InvalidPathException("연결되지 않은 역에 대해 경로를 조회할 수 없습니다.");
+        }
+
+        final List<Station> stations = path.getVertexList();
+        double distance = shortestPath.getPathWeight(source, target);
+
+        return new PathDto(stations, distance);
     }
 }
