@@ -1,15 +1,16 @@
 package subway.domain.charge;
 
 import java.util.List;
+import subway.domain.Line;
 import subway.domain.WeightedEdgeWithLine;
 
 public class DefaultLineChargePolicy implements LineChargePolicy {
     private static final int NO_CHARGE = 0;
 
     @Override
-    public Charge apply(List<WeightedEdgeWithLine> edges) {
-        Double charge = edges.stream()
-                .mapToDouble(it -> it.getLine().getExtraCharge().getValue())
+    public Charge apply(List<Line> linesInRoute) {
+        double charge = linesInRoute.stream()
+                .mapToDouble(line -> line.getExtraCharge().getValue())
                 .distinct()
                 .max()
                 .orElse(NO_CHARGE);
