@@ -12,6 +12,7 @@ import subway.application.core.service.dto.out.JourneyResult;
 import subway.presentation.dto.JourneyRequest;
 import subway.presentation.dto.JourneyResponse;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -33,14 +34,18 @@ public class JourneyController {
         return ResponseEntity.ok(response);
     }
 
-    private static JourneyResponse makeJourneyResponseFor(JourneyResult result) {
+    private JourneyResponse makeJourneyResponseFor(JourneyResult result) {
         return new JourneyResponse(
-                result.getPath().stream()
-                        .map(Station::getName)
-                        .collect(Collectors.toList()),
+                collectStationNames(result),
                 result.getDistance(),
                 result.getFare()
         );
+    }
+
+    private List<String> collectStationNames(JourneyResult result) {
+        return result.getPath().stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
     }
 }
 
