@@ -21,13 +21,6 @@ import subway.entity.StationEntity;
 
 @Service
 public class PathService {
-
-    private static final Distance DISTANCE_FIVE_UNIT = new Distance(5);
-    private static final Distance DISTANCE_EIGHT_UNIT = new Distance(8);
-    private static final Distance FIRST_CHARGE_BOUND = new Distance(10);
-    private static final Distance SECOND_CHARGE_BOUND = new Distance(50);
-    private static final Charge EXTRA_CHARGE_UNIT = new Charge(100);
-    private static final int BASIC_CHARGE = 1250;
     private static final int MIN_COUNT_TO_TRANSFER = 2;
 
     private final StationDao stationDao;
@@ -45,7 +38,7 @@ public class PathService {
         List<LineEntity> lines = lineDao.findAll();
         List<String> trace = path.getVertexList();
         Distance distance = new Distance((int) path.getWeight());
-        Charge charge = calculateCharge(distance, findMaxExtraChargeInAllLines(lines, trace));
+        Charge charge = distance.calculateCharge(findMaxExtraChargeInAllLines(lines, trace));
         Charge teenagerCharge = charge.discount(DiscountRate.TEENAGER_DISCOUNT_RATE);
         Charge childCharge = charge.discount(DiscountRate.CHILD_DISCOUNT_RATE);
         return PathResponse.of(trace, distance, charge, teenagerCharge, childCharge);
@@ -101,24 +94,6 @@ public class PathService {
         if (path == null) {
             throw new IllegalStateException("두 역은 연결되어 있지 않습니다");
         }
-    }
-
-    private Charge calculateCharge(Distance distance, Charge extraCharge) {
-        Charge charge = new Charge(BASIC_CHARGE).add(extraCharge);
-        if (distance.isLessThan(FIRST_CHARGE_BOUND)) {
-            return charge;
-        }
-        if (distance.isLessAndEqualsThan(SECOND_CHARGE_BOUND)) {
-            return charge.add(calculateOverCharge(distance.substract(FIRST_CHARGE_BOUND),
-                DISTANCE_FIVE_UNIT));
-        }
-        return charge.add(calculateOverCharge(SECOND_CHARGE_BOUND.substract(FIRST_CHARGE_BOUND),
-                DISTANCE_FIVE_UNIT))
-            .add(calculateOverCharge(distance.substract(SECOND_CHARGE_BOUND), DISTANCE_EIGHT_UNIT));
-    }
-
-    private Charge calculateOverCharge(Distance distance, Distance unit) {
-        return new Charge(distance.substractOne().divide(unit) + 1).multiply(EXTRA_CHARGE_UNIT);
     }
 
     private Charge findMaxExtraChargeInAllLines(List<LineEntity> lines, List<String> trace) {
