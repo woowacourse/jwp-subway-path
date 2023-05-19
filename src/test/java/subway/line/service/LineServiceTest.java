@@ -142,7 +142,7 @@ class LineServiceTest {
     given(lineRepository.findAll()).willReturn(List.of(
         new Line(1L, "1호선", Sections.values(
             List.of(
-                Section.of(잠실새내역, 잠실나루역, 5)
+                Section.of(잠실새내역, 잠실나루역, 50)
             )
         )),
         new Line(2L, "2호선", Sections.values(
@@ -152,7 +152,7 @@ class LineServiceTest {
         )),
         new Line(3L, "3호선", Sections.values(
             List.of(
-                Section.of(잠실나루역, 잠실역, 4)
+                Section.of(잠실나루역, 잠실역, 8)
             )
         ))
     ));
@@ -162,7 +162,8 @@ class LineServiceTest {
 
     final List<TraverseStationDto> traverseStationDtos = shortestPath.getTraverseStationDtos();
     assertAll(
-        () -> assertThat(shortestPath.getDistance()).isEqualTo(9),
+        () -> assertThat(shortestPath.getDistance()).isEqualTo(58),
+        () -> assertThat(shortestPath.getFare()).isEqualTo(2150),
         () -> assertThat(traverseStationDtos.get(0).getLineName()).isEqualTo("1호선"),
         () -> assertThat(traverseStationDtos.get(0).getStationName()).isEqualTo("잠실새내역"),
         () -> assertThat(traverseStationDtos.get(1).getLineName()).isEqualTo("3호선"),
