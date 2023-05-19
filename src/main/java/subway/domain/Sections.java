@@ -10,7 +10,8 @@ public class Sections {
 
     private static final String NOT_EXIST_SECTION_MESSAGE = "존재하지 않는 섹션입니다.";
     private static final String EMPTY_MESSAGE = "빈 섹션 목록입니다.";
-    private List<Section> value;
+
+    private final List<Section> value;
 
     public Sections(final List<Section> value) {
         this.value = value;
@@ -31,7 +32,8 @@ public class Sections {
             newValue.add(nextSection);
             currentSection = nextSection;
         }
-        value = newValue;
+        value.clear();
+        value.addAll(newValue);
     }
 
     private boolean isTopSection(final Section section) {
@@ -58,15 +60,23 @@ public class Sections {
         return new Sections(newValue);
     }
 
+    public Sections addAll(final Section... sections) {
+        final List<Section> newValue = new ArrayList<>(value);
+        Collections.addAll(newValue, sections);
+        return new Sections(newValue);
+    }
+
     public Sections remove(final Section section) {
         final List<Section> newValue = new ArrayList<>(value);
         newValue.remove(section);
         return new Sections(newValue);
     }
-    
-    public Sections addAll(final Section... sections) {
+
+    private Sections removeAll(final Section... sections) {
         final List<Section> newValue = new ArrayList<>(value);
-        Collections.addAll(newValue, sections);
+        for (final Section section : sections) {
+            newValue.remove(section);
+        }
         return new Sections(newValue);
     }
 
@@ -97,14 +107,6 @@ public class Sections {
         final Section newSection = new Section(upSection.getUpStation(), downSection.getDownStation(),
             upSection.getDistance().plus(downSection.getDistance()));
         return sections.addAll(newSection);
-    }
-
-    private Sections removeAll(final Section... sections) {
-        final List<Section> newValue = new ArrayList<>(value);
-        for (final Section section : sections) {
-            newValue.remove(section);
-        }
-        return new Sections(newValue);
     }
 
     public boolean isEmpty() {
