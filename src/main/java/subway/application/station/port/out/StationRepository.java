@@ -10,11 +10,11 @@ public interface StationRepository {
 
     Optional<Station> findById(long id);
 
-    Optional<Station> findByName(String name);
+    Optional<Station> findByName(final String name);
 
     Station save(final Station station);
 
     void update(final Station station);
 
-    void deleteById(long id);
+    void deleteById(final long id);
 }

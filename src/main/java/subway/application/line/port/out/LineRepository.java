@@ -12,7 +12,7 @@ public interface LineRepository {
 
     Line update(Line line);
 
-    Optional<Line> findById(long id);
+    Optional<Line> findById(final long id);
 
-    void deleteById(long id);
+    void deleteById(final long id);
 }
