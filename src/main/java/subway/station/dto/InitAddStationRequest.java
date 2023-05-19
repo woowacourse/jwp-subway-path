@@ -1,6 +1,5 @@
 package subway.station.dto;
 
-import lombok.*;
 import subway.section.domain.Section;
 import subway.station.domain.Station;
 
@@ -8,12 +7,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Objects;
 
-@Getter
-@ToString
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
 public class InitAddStationRequest {
     @NotBlank (message = "역 이름은 null 또는 빈값이 올 수 없습니다.")
     private String firstStation;
@@ -25,11 +20,59 @@ public class InitAddStationRequest {
     @NotNull(message = "lineId는 null일 수 없습니다.")
     private Long lineId;
     
+    public InitAddStationRequest() {}
+    
+    public InitAddStationRequest(final String firstStation, final String secondStation, final Long distance, final Long lineId) {
+        this.firstStation = firstStation;
+        this.secondStation = secondStation;
+        this.distance = distance;
+        this.lineId = lineId;
+    }
+    
     public List<Station> toEntities() {
         return List.of(new Station(firstStation), new Station(secondStation));
     }
     
     public Section toSectionEntity() {
         return new Section(firstStation, secondStation, distance);
+    }
+    
+    public String getFirstStation() {
+        return firstStation;
+    }
+    
+    public String getSecondStation() {
+        return secondStation;
+    }
+    
+    public Long getDistance() {
+        return distance;
+    }
+    
+    public Long getLineId() {
+        return lineId;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final InitAddStationRequest that = (InitAddStationRequest) o;
+        return Objects.equals(firstStation, that.firstStation) && Objects.equals(secondStation, that.secondStation) && Objects.equals(distance, that.distance) && Objects.equals(lineId, that.lineId);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstStation, secondStation, distance, lineId);
+    }
+    
+    @Override
+    public String toString() {
+        return "InitAddStationRequest{" +
+                "firstStation='" + firstStation + '\'' +
+                ", secondStation='" + secondStation + '\'' +
+                ", distance=" + distance +
+                ", lineId=" + lineId +
+                '}';
     }
 }

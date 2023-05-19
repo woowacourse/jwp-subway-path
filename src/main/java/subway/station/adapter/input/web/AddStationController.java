@@ -1,6 +1,5 @@
 package subway.station.adapter.input.web;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +10,13 @@ import subway.station.dto.AddStationRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
-@RequiredArgsConstructor
 @RestController
 public class AddStationController {
     private final AddStationUseCase addStationUseCase;
+    
+    public AddStationController(final AddStationUseCase addStationUseCase) {
+        this.addStationUseCase = addStationUseCase;
+    }
     
     @PostMapping("/stations")
     public ResponseEntity<Void> add(@RequestBody @Valid final AddStationRequest request) {

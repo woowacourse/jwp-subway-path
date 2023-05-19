@@ -1,6 +1,5 @@
 package subway.station.application;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.application.port.output.GetAllLinePort;
@@ -14,7 +13,6 @@ import subway.station.application.port.input.DeleteStationOnTheLineUseCase;
 import subway.station.application.port.output.GetStationByIdPort;
 import subway.station.domain.Station;
 
-@RequiredArgsConstructor
 @Transactional
 @Service
 public class DeleteStationOnTheLineService implements DeleteStationOnTheLineUseCase {
@@ -23,6 +21,20 @@ public class DeleteStationOnTheLineService implements DeleteStationOnTheLineUseC
     private final GetStationByIdPort getStationByIdPort;
     private final DeleteSectionByLineIdPort deleteSectionByLineIdPort;
     private final SaveAllSectionPort saveAllSectionPort;
+    
+    public DeleteStationOnTheLineService(
+            final GetAllLinePort getAllLinePort,
+            final GetLineByIdPort getLineByIdPort,
+            final GetStationByIdPort getStationByIdPort,
+            final DeleteSectionByLineIdPort deleteSectionByLineIdPort,
+            final SaveAllSectionPort saveAllSectionPort
+    ) {
+        this.getAllLinePort = getAllLinePort;
+        this.getLineByIdPort = getLineByIdPort;
+        this.getStationByIdPort = getStationByIdPort;
+        this.deleteSectionByLineIdPort = deleteSectionByLineIdPort;
+        this.saveAllSectionPort = saveAllSectionPort;
+    }
     
     @Override
     public void deleteStationOnTheLine(final Long lineId, final Long stationId) {

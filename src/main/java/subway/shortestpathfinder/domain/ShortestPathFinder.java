@@ -1,9 +1,5 @@
 package subway.shortestpathfinder.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -12,13 +8,10 @@ import subway.section.domain.Section;
 import subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Getter
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
 public class ShortestPathFinder {
     private static final int BASE_FEE = 1250;
     private static final int BASE_DISTANCE = 10;
@@ -28,6 +21,10 @@ public class ShortestPathFinder {
     private static final int EIGHT_INCREASE = 8;
     
     private final Set<Line> lines;
+    
+    public ShortestPathFinder(final Set<Line> lines) {
+        this.lines = lines;
+    }
     
     public ShortestPathResult getShortestPath(final String startStationName, final String endStationName) {
         final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
@@ -78,5 +75,29 @@ public class ShortestPathFinder {
     
     private boolean isDistanceNegative(final long distance) {
         return distance <= 0;
+    }
+    
+    public Set<Line> getLines() {
+        return lines;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final ShortestPathFinder that = (ShortestPathFinder) o;
+        return Objects.equals(lines, that.lines);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(lines);
+    }
+    
+    @Override
+    public String toString() {
+        return "ShortestPathFinder{" +
+                "lines=" + lines +
+                '}';
     }
 }

@@ -1,6 +1,5 @@
 package subway.line.adapter.input.web;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +10,13 @@ import subway.line.dto.AddLineRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
-@RequiredArgsConstructor
 @RestController
 public class AddLineController {
     private final AddLineUseCase addLineUseCase;
+    
+    public AddLineController(final AddLineUseCase addLineUseCase) {
+        this.addLineUseCase = addLineUseCase;
+    }
     
     @PostMapping("/lines")
     public ResponseEntity<Void> save(@RequestBody @Valid final AddLineRequest request) {

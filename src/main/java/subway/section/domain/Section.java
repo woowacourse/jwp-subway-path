@@ -1,18 +1,12 @@
 package subway.section.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.station.domain.Station;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@ToString
-@EqualsAndHashCode
 public class Section {
     private final Station left;
     private final Station right;
@@ -118,5 +112,39 @@ public class Section {
         graph.addVertex(right);
         graph.addEdge(left, right, this);
         graph.setEdgeWeight(left, right, distance.getDistance());
+    }
+    
+    public Station getLeft() {
+        return left;
+    }
+    
+    public Station getRight() {
+        return right;
+    }
+    
+    public Distance getDistance() {
+        return distance;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Section section = (Section) o;
+        return Objects.equals(left, section.left) && Objects.equals(right, section.right) && Objects.equals(distance, section.distance);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, right, distance);
+    }
+    
+    @Override
+    public String toString() {
+        return "Section{" +
+                "left=" + left +
+                ", right=" + right +
+                ", distance=" + distance +
+                '}';
     }
 }

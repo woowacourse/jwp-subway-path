@@ -1,8 +1,5 @@
 package subway.section.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.station.domain.Station;
@@ -11,9 +8,6 @@ import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
-@Getter
-@ToString
-@EqualsAndHashCode
 public class Sections {
     private static final int ADDITIONAL_SECTIONS_NUMBER_OF_BETWEEN_CASE = 3;
     private static final int NUMBER_OF_CONTAIN_MIDDLE_STATION = 2;
@@ -168,5 +162,29 @@ public class Sections {
         return sections.stream()
                 .anyMatch(section -> isExistMatchStation(Section::isLeftStation, new Station(stationName))
                 || isExistMatchStation(Section::isRightStation, new Station(stationName)));
+    }
+    
+    public Set<Section> getSections() {
+        return sections;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Sections sections1 = (Sections) o;
+        return Objects.equals(sections, sections1.sections);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(sections);
+    }
+    
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "sections=" + sections +
+                '}';
     }
 }

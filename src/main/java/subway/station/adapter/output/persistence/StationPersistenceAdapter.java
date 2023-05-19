@@ -1,6 +1,5 @@
 package subway.station.adapter.output.persistence;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import subway.station.application.port.output.GetStationByIdPort;
 import subway.station.application.port.output.SaveAllStationPort;
@@ -10,10 +9,13 @@ import subway.station.domain.Station;
 import java.util.List;
 import java.util.Objects;
 
-@RequiredArgsConstructor
 @Repository
 public class StationPersistenceAdapter implements SaveStationPort, SaveAllStationPort, GetStationByIdPort {
     private final StationDao stationDao;
+    
+    public StationPersistenceAdapter(final StationDao stationDao) {
+        this.stationDao = stationDao;
+    }
     
     @Override
     public Long saveStation(final Station station) {

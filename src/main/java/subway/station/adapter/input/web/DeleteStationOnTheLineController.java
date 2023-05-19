@@ -1,6 +1,5 @@
 package subway.station.adapter.input.web;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,10 +9,13 @@ import subway.station.dto.DeleteStationOnTheLineRequest;
 
 import javax.validation.Valid;
 
-@RequiredArgsConstructor
 @RestController
 public class DeleteStationOnTheLineController {
     private final DeleteStationOnTheLineUseCase deleteStationOnTheLineUseCase;
+    
+    public DeleteStationOnTheLineController(final DeleteStationOnTheLineUseCase deleteStationOnTheLineUseCase) {
+        this.deleteStationOnTheLineUseCase = deleteStationOnTheLineUseCase;
+    }
     
     @DeleteMapping("/stations/one")
     public ResponseEntity<Void> deleteStationOnTheLine(@RequestBody @Valid final DeleteStationOnTheLineRequest request) {

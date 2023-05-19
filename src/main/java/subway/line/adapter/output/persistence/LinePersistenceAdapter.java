@@ -1,6 +1,5 @@
 package subway.line.adapter.output.persistence;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import subway.line.application.port.output.DeleteLinePort;
 import subway.line.application.port.output.GetAllLinePort;
@@ -16,12 +15,17 @@ import subway.station.adapter.output.persistence.StationEntity;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Repository
 public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, GetLineByIdPort, DeleteLinePort {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    
+    public LinePersistenceAdapter(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
+        this.lineDao = lineDao;
+        this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
+    }
     
     @Override
     public Set<Line> getAll() {

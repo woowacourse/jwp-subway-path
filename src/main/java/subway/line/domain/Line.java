@@ -1,8 +1,5 @@
 package subway.line.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.section.domain.Direction;
 import subway.section.domain.Section;
@@ -14,9 +11,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@ToString
-@EqualsAndHashCode
 public class Line {
     private final String name;
     private final String color;
@@ -83,5 +77,39 @@ public class Line {
     
     public boolean isContainsStation(final String stationName) {
         return sections.isContainsStation(stationName);
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getColor() {
+        return color;
+    }
+    
+    public Sections getSections() {
+        return sections;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Line line = (Line) o;
+        return Objects.equals(name, line.name) && Objects.equals(color, line.color) && Objects.equals(sections, line.sections);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, color, sections);
+    }
+    
+    @Override
+    public String toString() {
+        return "Line{" +
+                "name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", sections=" + sections +
+                '}';
     }
 }

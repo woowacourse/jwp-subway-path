@@ -1,6 +1,5 @@
 package subway.station.application;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.application.port.output.GetAllLinePort;
@@ -15,7 +14,6 @@ import subway.station.application.port.output.SaveStationPort;
 import subway.station.domain.Station;
 import subway.station.dto.AddStationRequest;
 
-@RequiredArgsConstructor
 @Transactional
 @Service
 public class AddStationService implements AddStationUseCase {
@@ -24,6 +22,20 @@ public class AddStationService implements AddStationUseCase {
     private final DeleteSectionByLineIdPort deleteSectionByLineIdPort;
     private final SaveStationPort saveStationPort;
     private final SaveAllSectionPort saveAllSectionPort;
+    
+    public AddStationService(
+            final GetAllLinePort getAllLinePort,
+            final GetLineByIdPort getLineByIdPort,
+            final DeleteSectionByLineIdPort deleteSectionByLineIdPort,
+            final SaveStationPort saveStationPort,
+            final SaveAllSectionPort saveAllSectionPort
+    ) {
+        this.getAllLinePort = getAllLinePort;
+        this.getLineByIdPort = getLineByIdPort;
+        this.deleteSectionByLineIdPort = deleteSectionByLineIdPort;
+        this.saveStationPort = saveStationPort;
+        this.saveAllSectionPort = saveAllSectionPort;
+    }
     
     @Override
     public Long addStation(final AddStationRequest request) {

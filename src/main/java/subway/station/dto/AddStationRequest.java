@@ -1,16 +1,11 @@
 package subway.station.dto;
 
-import lombok.*;
 import subway.section.domain.Direction;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
-@Getter
-@ToString
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
 public class AddStationRequest {
     @NotNull(message = "lineId는 null일 수 없습니다.")
     private Long lineId;
@@ -22,4 +17,64 @@ public class AddStationRequest {
     private String additionalStation;
     @NotNull(message = "거리는 null일 수 없습니다.")
     private Long distance;
+    
+    public AddStationRequest() {}
+    
+    public AddStationRequest(
+            final Long lineId,
+            final String baseStation,
+            final Direction direction,
+            final String additionalStation,
+            final Long distance
+    ) {
+        this.lineId = lineId;
+        this.baseStation = baseStation;
+        this.direction = direction;
+        this.additionalStation = additionalStation;
+        this.distance = distance;
+    }
+    
+    public Long getLineId() {
+        return lineId;
+    }
+    
+    public String getBaseStation() {
+        return baseStation;
+    }
+    
+    public Direction getDirection() {
+        return direction;
+    }
+    
+    public String getAdditionalStation() {
+        return additionalStation;
+    }
+    
+    public Long getDistance() {
+        return distance;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final AddStationRequest that = (AddStationRequest) o;
+        return Objects.equals(lineId, that.lineId) && Objects.equals(baseStation, that.baseStation) && direction == that.direction && Objects.equals(additionalStation, that.additionalStation) && Objects.equals(distance, that.distance);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(lineId, baseStation, direction, additionalStation, distance);
+    }
+    
+    @Override
+    public String toString() {
+        return "AddStationRequest{" +
+                "lineId=" + lineId +
+                ", baseStation='" + baseStation + '\'' +
+                ", direction=" + direction +
+                ", additionalStation='" + additionalStation + '\'' +
+                ", distance=" + distance +
+                '}';
+    }
 }
