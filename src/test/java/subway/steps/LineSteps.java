@@ -12,6 +12,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class LineSteps {
 
+    public static final LineCreateRequest 노선_9호선 = new LineCreateRequest("9호선", "BROWN");
+
     public static ExtractableResponse<Response> 전체_노선_조회_요청() {
         return RestAssured
                 .given()
