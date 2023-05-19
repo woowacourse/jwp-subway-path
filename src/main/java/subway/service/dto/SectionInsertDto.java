@@ -10,8 +10,11 @@ public class SectionInsertDto {
     private final String additionalStationName;
     private final Integer distance;
 
-    public SectionInsertDto(final String lineName, final Direction direction, final String standardStationName,
-                            final String additionalStationName, final Integer distance) {
+    public SectionInsertDto(String lineName,
+                            Direction direction,
+                            String standardStationName,
+                            String additionalStationName,
+                            Integer distance) {
         this.lineName = lineName;
         this.direction = direction;
         this.standardStationName = standardStationName;

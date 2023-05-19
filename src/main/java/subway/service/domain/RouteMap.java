@@ -80,4 +80,11 @@ public class RouteMap {
         singleLine.add(startStation);
     }
 
+    @Override
+    public String toString() {
+        return "RouteMap{" +
+                "map=" + map +
+                '}';
+    }
+
 }

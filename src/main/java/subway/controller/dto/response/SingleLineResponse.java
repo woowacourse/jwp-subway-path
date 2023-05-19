@@ -33,4 +33,5 @@ public class SingleLineResponse {
     public List<StationResponse> getStationResponses() {
         return stationResponses;
     }
+
 }

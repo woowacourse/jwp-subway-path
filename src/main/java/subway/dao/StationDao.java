@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.StationEntity;
-import subway.exception.StationNotFoundException;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -40,7 +39,7 @@ public class StationDao {
         return jdbcTemplate.query(sql, stationEntityRowMapper, id);
     }
 
-    public List<StationEntity> findByName(final String name) {
+    public List<StationEntity> findByName(String name) {
         String sql = "SELECT * FROM station WHERE name = ?";
         return jdbcTemplate.query(sql, stationEntityRowMapper, name);
     }

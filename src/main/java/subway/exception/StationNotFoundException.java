@@ -2,7 +2,7 @@ package subway.exception;
 
 public class StationNotFoundException extends IllegalArgumentException {
 
-    public StationNotFoundException(final String message) {
+    public StationNotFoundException(String message) {
         super(message);
     }
 

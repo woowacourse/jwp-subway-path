@@ -5,7 +5,7 @@ public class LineDto {
     private final String name;
     private final String color;
 
-    public LineDto(final String name, final String color) {
+    public LineDto(String name, String color) {
         this.name = name;
         this.color = color;
     }

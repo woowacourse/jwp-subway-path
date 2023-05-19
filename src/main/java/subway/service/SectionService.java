@@ -2,9 +2,6 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.controller.dto.response.LineResponse;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;

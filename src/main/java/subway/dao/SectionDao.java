@@ -25,31 +25,31 @@ public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public SectionDao(final DataSource dataSource) {
+    public SectionDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(final SectionEntity sectionEntity) {
-        final SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
+    public Long insert(SectionEntity sectionEntity) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
         return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
-    public List<SectionEntity> findByLineId(final Long lineId) {
-        final String sql = "SELECT * " +
+    public List<SectionEntity> findByLineId(Long lineId) {
+        String sql = "SELECT * " +
                 "FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
     }
 
     public List<SectionEntity> findAll() {
-        final String sql = "SELECT * FROM section";
+        String sql = "SELECT * FROM section";
         return jdbcTemplate.query(sql, sectionEntityRowMapper);
     }
 
     public int deleteById(Long id) {
-        final String sql = "DELETE FROM section WHERE id = ?";
+        String sql = "DELETE FROM section WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }
 

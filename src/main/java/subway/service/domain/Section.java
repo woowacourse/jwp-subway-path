@@ -50,7 +50,7 @@ public class Section {
         return nextStation;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance.getValue();
     }
 

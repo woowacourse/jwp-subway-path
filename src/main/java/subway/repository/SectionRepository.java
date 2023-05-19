@@ -27,7 +27,7 @@ public class SectionRepository {
         );
     }
 
-    public void deleteById(long id) {
+    public void deleteById(Long id) {
         int removeCount = sectionDao.deleteById(id);
 
         if (removeCount == 0) {

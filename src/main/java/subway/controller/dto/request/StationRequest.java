@@ -1,10 +1,8 @@
 package subway.controller.dto.request;
 
 public class StationRequest {
-    private String name;
 
-    public StationRequest() {
-    }
+    private String name;
 
     public StationRequest(String name) {
         this.name = name;
@@ -13,4 +11,5 @@ public class StationRequest {
     public String getName() {
         return name;
     }
+
 }

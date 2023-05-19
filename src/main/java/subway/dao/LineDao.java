@@ -34,17 +34,16 @@ public class LineDao {
         Map<String, Object> params = new HashMap<>();
         params.put("name", line.getName());
         params.put("color", line.getColor());
-
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
     public List<LineEntity> findAll() {
-        final String sql = "select id, name, color from LINE";
+        String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, lineEntityRowMapper);
     }
 
-    public List<LineEntity> findByName(final String name) {
-        final String sql = "SELECT * FROM line WHERE name = ?";
+    public List<LineEntity> findByName(String name) {
+        String sql = "SELECT * FROM line WHERE name = ?";
         return jdbcTemplate.query(sql, lineEntityRowMapper, name);
     }
 
@@ -61,4 +60,5 @@ public class LineDao {
     public int deleteById(Long id) {
         return jdbcTemplate.update("delete from Line where id = ?", id);
     }
+
 }

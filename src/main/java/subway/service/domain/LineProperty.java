@@ -29,4 +29,13 @@ public class LineProperty {
         return color;
     }
 
+    @Override
+    public String toString() {
+        return "LineProperty{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                '}';
+    }
+
 }

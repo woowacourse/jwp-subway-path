@@ -15,7 +15,11 @@ public class LinePropertyResponse {
     }
 
     public static LinePropertyResponse from(LineProperty line) {
-        return new LinePropertyResponse(line.getId(), line.getName(), line.getColor());
+        return new LinePropertyResponse(
+                line.getId(),
+                line.getName(),
+                line.getColor()
+        );
     }
 
     public Long getId() {
@@ -29,4 +33,5 @@ public class LinePropertyResponse {
     public String getColor() {
         return color;
     }
+
 }

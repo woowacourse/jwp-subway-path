@@ -1,11 +1,8 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
 import subway.controller.dto.request.StationRequest;
 import subway.controller.dto.response.StationResponse;
-import subway.entity.StationEntity;
-import subway.exception.StationNotFoundException;
 import subway.repository.StationRepository;
 import subway.service.domain.Station;
 

@@ -6,7 +6,7 @@ public class SectionCreateDto {
     private final String previousStation;
     private final String nextStation;
 
-    public SectionCreateDto(final Integer distance, final String previousStation, final String nextStation) {
+    public SectionCreateDto(Integer distance, String previousStation, String nextStation) {
         this.distance = distance;
         this.previousStation = previousStation;
         this.nextStation = nextStation;

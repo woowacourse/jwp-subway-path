@@ -3,12 +3,10 @@ package subway.entity;
 import java.util.Objects;
 
 public class LineEntity {
-    private Long id;
-    private String name;
-    private String color;
 
-    public LineEntity() {
-    }
+    private Long id;
+    private final String name;
+    private final String color;
 
     public LineEntity(String name, String color) {
         this.name = name;
@@ -45,4 +43,5 @@ public class LineEntity {
     public int hashCode() {
         return Objects.hash(id, name, color);
     }
+
 }
