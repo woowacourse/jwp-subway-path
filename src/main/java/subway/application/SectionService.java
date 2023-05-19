@@ -19,7 +19,6 @@ import subway.ui.dto.PostSectionRequest;
 import subway.ui.dto.SectionResponse;
 
 @Service
-@Transactional
 public class SectionService {
 
     private final StationDao stationDao;
@@ -32,6 +31,7 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional
     public SectionResponse saveSection(Long lineId, PostSectionRequest request) {
         List<Section> sectionList = sectionDao.findAllByLineId(lineId);
         SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(sectionList);
@@ -60,6 +60,7 @@ public class SectionService {
         return sortedSingleLineSections.findAnySectionWithGivenStations(upStation, downStation);
     }
 
+    @Transactional
     public void deleteSection(Long lineId, DeleteSectionRequest request) {
         Long stationId = request.getStationId();
 

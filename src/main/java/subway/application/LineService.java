@@ -21,7 +21,6 @@ import subway.ui.dto.LineRequest;
 import subway.ui.dto.PostLineResponse;
 
 @Service
-@Transactional
 public class LineService {
 
     private final LineDao lineDao;
@@ -34,6 +33,7 @@ public class LineService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional
     public PostLineResponse saveLine(LineRequest request) {
         Optional<Station> upStation = stationDao.findById(request.getUpStationId());
         Optional<Station> downStation = stationDao.findById(request.getDownStationId());
@@ -50,6 +50,7 @@ public class LineService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<GetLineResponse> findAllLines() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()
@@ -58,6 +59,7 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public GetLineResponse findLineById(Long id) {
         Line line = lineDao.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("해당하는 데이터가 없습니다."));
@@ -71,6 +73,7 @@ public class LineService {
         return GetLineResponse.from(line, stations);
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);

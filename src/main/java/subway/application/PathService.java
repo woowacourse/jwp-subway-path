@@ -15,7 +15,6 @@ import subway.ui.dto.PathRequest;
 import subway.ui.dto.PathResponse;
 
 @Service
-@Transactional(readOnly = true)
 public class PathService {
 
     private final StationDao stationDao;
@@ -31,6 +30,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(PathRequest pathRequest) {
         Station source = stationDao.findById(pathRequest.getSourceStationId())
             .orElseThrow(() -> new PathException("등록되지 않은 역과의 경로는 찾을 수 없습니다."));
@@ -38,9 +38,7 @@ public class PathService {
             .orElseThrow(() -> new PathException("등록되지 않은 역과의 경로는 찾을 수 없습니다."));
 
         PathInfo pathinfo = pathFinder.findPath(new Sections(sectionDao.findAll()), source, target);
-
         int fare = fareCalculator.calculate(pathinfo.getPathEdges());
-
         return PathResponse.from(fare, pathinfo.getPathVerticies());
     }
 }
