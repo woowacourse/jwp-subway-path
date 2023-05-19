@@ -3,27 +3,27 @@ package subway.application;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.SectionDao;
 import subway.domain.Section;
 import subway.dto.SectionResponse;
 import subway.dto.StationToLineRequest;
+import subway.repository.SectionRepository;
 
 @Transactional(readOnly = true)
 @Service
 public class SectionService {
 
-    private final SectionDao sectionDao;
+    private final SectionRepository sectionRepository;
 
-    public SectionService(final SectionDao sectionDao) {
-        this.sectionDao = sectionDao;
+    public SectionService(final SectionRepository sectionRepository) {
+        this.sectionRepository = sectionRepository;
     }
 
     @Transactional
     public SectionResponse connectStation(final Long lineId, final StationToLineRequest request) {
         validateRequestDistance(request);
-        List<Section> sectionsByUpStation = sectionDao.findSectionByLineIdAndStationId(lineId,
+        List<Section> sectionsByUpStation = sectionRepository.findSectionByLineIdAndStationId(lineId,
                 request.getUpStationId());
-        List<Section> sectionsByDownStation = sectionDao.findSectionByLineIdAndStationId(lineId,
+        List<Section> sectionsByDownStation = sectionRepository.findSectionByLineIdAndStationId(lineId,
                 request.getDownStationId());
         validateExist(sectionsByUpStation, sectionsByDownStation);
         validateTwoStationRequest(lineId, sectionsByUpStation, sectionsByDownStation);
@@ -31,7 +31,7 @@ public class SectionService {
         if (doAddTop(sectionsByUpStation) || isNothing(sectionsByUpStation, sectionsByDownStation)) {
             Section newSection = new Section(lineId, request.getUpStationId(), request.getDownStationId(),
                     request.getDistance());
-            return SectionResponse.of(sectionDao.insert(newSection));
+            return SectionResponse.of(sectionRepository.insert(newSection));
         }
 
         if (isInBetween(sectionsByUpStation)) {
@@ -54,7 +54,7 @@ public class SectionService {
 
     private void validateTwoStationRequest(final Long lineId, final List<Section> sectionsByUpStation,
                                            final List<Section> sectionsByDownStation) {
-        if (isNothing(sectionsByUpStation, sectionsByDownStation) && sectionDao.countByLineId(lineId) > 0) {
+        if (isNothing(sectionsByUpStation, sectionsByDownStation) && sectionRepository.countByLineId(lineId) > 0) {
             throw new IllegalArgumentException("노선이 비었을 때를 제외하고 한 번에 두개의 역을 등록할 수 없습니다.");
         }
     }
@@ -81,10 +81,10 @@ public class SectionService {
         Integer updateDistance = originDistance - newDistance;
         Section updateSection = new Section(originSection.getId(), lineId, originSection.getUpStationId(),
                 request.getDownStationId(), updateDistance);
-        sectionDao.update(updateSection);
+        sectionRepository.update(updateSection);
         Section newSection = new Section(lineId, request.getDownStationId(),
                 originSection.getDownStationId(), newDistance);
-        return SectionResponse.of(sectionDao.insert(newSection));
+        return SectionResponse.of(sectionRepository.insert(newSection));
     }
 
     private Section findSectionByUpStationId(final List<Section> sections, final Long upStationId) {
@@ -101,7 +101,7 @@ public class SectionService {
         validateDistance(section, request);
         Section newSection = new Section(lineId, request.getUpStationId(),
                 request.getDownStationId(), request.getDistance());
-        return SectionResponse.of(sectionDao.insert(newSection));
+        return SectionResponse.of(sectionRepository.insert(newSection));
     }
 
     private void validateDistance(final Section originSection, final StationToLineRequest stationToLineRequest) {
@@ -114,23 +114,23 @@ public class SectionService {
 
     @Transactional
     public void disconnectStation(Long lineId, Long stationId) {
-        int sectionCountByLine = sectionDao.countByLineId(lineId);
+        int sectionCountByLine = sectionRepository.countByLineId(lineId);
         if (sectionCountByLine == 2) {
-            sectionDao.deleteAllByLineId(lineId);
+            sectionRepository.deleteAllByLineId(lineId);
             return;
         }
-        List<Section> sections = sectionDao.findSectionByLineIdAndStationId(lineId, stationId);
+        List<Section> sections = sectionRepository.findSectionByLineIdAndStationId(lineId, stationId);
         if (isInBetween(sections)) {
             Section frontSection = findSectionByDownStationId(sections, stationId);
             Section backSection = findSectionByUpStationId(sections, stationId);
             int updateDistance = frontSection.getDistance() + backSection.getDistance();
             Section updateSection = new Section(frontSection.getId(), frontSection.getUpStationId(),
                     backSection.getDownStationId(), updateDistance);
-            sectionDao.update(updateSection);
-            sectionDao.delete(backSection);
+            sectionRepository.update(updateSection);
+            sectionRepository.deleteById(backSection.getId());
             return;
         }
-        sectionDao.deleteByLineIdAndStationId(lineId, stationId);
+        sectionRepository.deleteByLineIdAndStationId(lineId, stationId);
     }
 
     private Section findSectionByDownStationId(final List<Section> sections, final Long downStationId) {

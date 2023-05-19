@@ -19,9 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.SectionDao;
 import subway.domain.Section;
 import subway.dto.StationToLineRequest;
+import subway.repository.SectionRepository;
 
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
@@ -30,7 +30,7 @@ class SectionServiceTest {
     private SectionService sectionService;
 
     @Mock
-    private SectionDao sectionDao;
+    private SectionRepository sectionRepository;
 
     private Long lineId;
     private StationToLineRequest request;
@@ -45,19 +45,19 @@ class SectionServiceTest {
     @Test
     void connectStation_success_isNothing() {
         //given
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
                 .willReturn(Collections.emptyList());
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
                 .willReturn(Collections.emptyList());
         Section mockSection = Mockito.mock(Section.class);
-        given(sectionDao.insert(any()))
+        given(sectionRepository.insert(any()))
                 .willReturn(mockSection);
         //when
         sectionService.connectStation(lineId, request);
         //then
         assertAll(
-                () -> verify(sectionDao, never()).update(any()),
-                () -> verify(sectionDao, times(1)).insert(any())
+                () -> verify(sectionRepository, never()).update(any()),
+                () -> verify(sectionRepository, times(1)).insert(any())
         );
     }
 
@@ -66,19 +66,19 @@ class SectionServiceTest {
     void connectStation_success_addTop() {
         //given
         List<Section> sections = Mockito.mock(List.class);
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
                 .willReturn(Collections.emptyList());
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
                 .willReturn(sections);
         Section mockSection = Mockito.mock(Section.class);
-        given(sectionDao.insert(any()))
+        given(sectionRepository.insert(any()))
                 .willReturn(mockSection);
         //when
         sectionService.connectStation(lineId, request);
         //then
         assertAll(
-                () -> verify(sectionDao, never()).update(any()),
-                () -> verify(sectionDao, times(1)).insert(any())
+                () -> verify(sectionRepository, never()).update(any()),
+                () -> verify(sectionRepository, times(1)).insert(any())
         );
     }
 
@@ -88,21 +88,21 @@ class SectionServiceTest {
         //given
         List<Section> sections = Mockito.mock(List.class);
         when(sections.size()).thenReturn(2);
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
                 .willReturn(sections);
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
                 .willReturn(Collections.emptyList());
         Section section = new Section(lineId, 1L, 3L, 11);
         when(sections.get(0)).thenReturn(section);
         Section mockSection = Mockito.mock(Section.class);
-        given(sectionDao.insert(any()))
+        given(sectionRepository.insert(any()))
                 .willReturn(mockSection);
         //when
         sectionService.connectStation(lineId, request);
         //then
         assertAll(
-                () -> verify(sectionDao, times(1)).update(any()),
-                () -> verify(sectionDao, times(1)).insert(any())
+                () -> verify(sectionRepository, times(1)).update(any()),
+                () -> verify(sectionRepository, times(1)).insert(any())
         );
     }
 
@@ -112,21 +112,21 @@ class SectionServiceTest {
         //given
         List<Section> sections = Mockito.mock(List.class);
         when(sections.size()).thenReturn(1);
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
                 .willReturn(sections);
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
                 .willReturn(Collections.emptyList());
         Section section = new Section(lineId, 1L, 3L, 11);
         when(sections.get(0)).thenReturn(section);
         Section mockSection = Mockito.mock(Section.class);
-        given(sectionDao.insert(any()))
+        given(sectionRepository.insert(any()))
                 .willReturn(mockSection);
         //when
         sectionService.connectStation(lineId, request);
         //then
         assertAll(
-                () -> verify(sectionDao, never()).update(any()),
-                () -> verify(sectionDao, times(1)).insert(any())
+                () -> verify(sectionRepository, never()).update(any()),
+                () -> verify(sectionRepository, times(1)).insert(any())
         );
     }
 
@@ -144,7 +144,7 @@ class SectionServiceTest {
     void connectStation_fail_exist() {
         List<Section> sections = Mockito.mock(List.class);
         when(sections.size()).thenReturn(1);
-        given(sectionDao.findSectionByLineIdAndStationId(any(), any()))
+        given(sectionRepository.findSectionByLineIdAndStationId(any(), any()))
                 .willReturn(sections);
 
         assertThatThrownBy(() -> sectionService.connectStation(lineId, request))
@@ -155,9 +155,9 @@ class SectionServiceTest {
     @DisplayName("노선에 역이 존재할 경우 요청하는 역 두개가 존재하지 않는 경우 예외가 발생한다.")
     @Test
     void connectStation_fail_isEmpty() {
-        given(sectionDao.findSectionByLineIdAndStationId(any(), any()))
+        given(sectionRepository.findSectionByLineIdAndStationId(any(), any()))
                 .willReturn(Collections.emptyList());
-        given(sectionDao.countByLineId(lineId))
+        given(sectionRepository.countByLineId(lineId))
                 .willReturn(2);
 
         assertThatThrownBy(() -> sectionService.connectStation(lineId, request))
@@ -171,9 +171,9 @@ class SectionServiceTest {
         List<Section> sections = Mockito.mock(List.class);
         when(sections.size()).thenReturn(2);
 
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
                 .willReturn(sections);
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
                 .willReturn(Collections.emptyList());
         Section section = new Section(lineId, 1L, 3L, 1);
         when(sections.get(0)).thenReturn(section);
@@ -188,22 +188,22 @@ class SectionServiceTest {
     @Test
     void disconnectStation_success_deleteAll() {
         //given
-        given(sectionDao.countByLineId(lineId))
+        given(sectionRepository.countByLineId(lineId))
                 .willReturn(2);
         //when
         sectionService.disconnectStation(lineId, request.getUpStationId());
         //then
-        verify(sectionDao, times(1)).deleteAllByLineId(lineId);
+        verify(sectionRepository, times(1)).deleteAllByLineId(lineId);
     }
 
     @DisplayName("삭제하려는 역이 중간에 있으면 업데이트 쿼리와 삭제 쿼를 호출한다.")
     @Test
     void disconnectStation_success_isInBetween() {
         //given
-        given(sectionDao.countByLineId(lineId))
+        given(sectionRepository.countByLineId(lineId))
                 .willReturn(3);
         List<Section> sections = Mockito.mock(List.class);
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
                 .willReturn(sections);
         when(sections.size()).thenReturn(2);
         Section frontSection = new Section(lineId, 3L, request.getUpStationId(), 4);
@@ -215,8 +215,8 @@ class SectionServiceTest {
         sectionService.disconnectStation(lineId, request.getUpStationId());
         //then
         assertAll(
-                () -> verify(sectionDao, times(1)).delete(any()),
-                () -> verify(sectionDao, times(1)).update(any())
+                () -> verify(sectionRepository, times(1)).deleteById(any()),
+                () -> verify(sectionRepository, times(1)).update(any())
         );
     }
 
@@ -224,10 +224,10 @@ class SectionServiceTest {
     @Test
     void disconnectStation_success_isEnd() {
         //given
-        given(sectionDao.countByLineId(lineId))
+        given(sectionRepository.countByLineId(lineId))
                 .willReturn(3);
         List<Section> sections = Mockito.mock(List.class);
-        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
+        given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
                 .willReturn(sections);
         when(sections.size()).thenReturn(1);
 
@@ -235,6 +235,6 @@ class SectionServiceTest {
         sectionService.disconnectStation(lineId, request.getUpStationId());
 
         //then
-        verify(sectionDao, times(1)).deleteByLineIdAndStationId(lineId, request.getUpStationId());
+        verify(sectionRepository, times(1)).deleteByLineIdAndStationId(lineId, request.getUpStationId());
     }
 }
