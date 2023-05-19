@@ -1,109 +1,221 @@
 package subway.domain;
 
+import static subway.domain.Location.END;
+import static subway.domain.Location.MIDDLE;
+import static subway.domain.Location.NONE;
+import static subway.domain.Status.INCLUDED;
+import static subway.domain.Status.INIT;
+import static subway.domain.Status.NOT_INCLUDED;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.Getter;
 
-@Getter
 public class Sections {
-    private final long lineId;
     private final List<Section> sections;
 
-    public Sections(final long lineId, final List<Section> sections) {
-        this.lineId = lineId;
+    public Sections(final List<Section> sections) {
         this.sections = sections;
     }
 
-    public Section getIncludeSection(Section section) {
-        Section includeSection = sections.stream()
-                .filter(section1 -> section1.hasIntersection(section))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("구간의 중간에 등록될 수 있는 구간이 아닙니다."));
+    public Sections() {
+        this(new ArrayList<>());
+    }
 
-        if (includeSection.isDistanceSmallOrSame(section)) {
-            throw new IllegalArgumentException("중간에 등록될 수 없는 길이의 구간입니다. 너무 큽니다.");
+    public void addSection(Section section) {
+        validateExistAll(section);
+        validateNotExistAll(section);
+
+        if (sections.size() == 0) {
+            sections.add(section);
+            return;
         }
-        return includeSection;
+
+        Station includedStation = getIncludedStation(section);
+        List<Section> sections = findSectionBy(includedStation);
+        addByDirection(section, includedStation, sections);
     }
 
-    public boolean isDownEndAppend(Section section) {
-        Section downEndSection = getDownEndSection();
-
-        return downEndSection.isNextContinuable(section);
+    private void validateExistAll(final Section section) {
+        if (checkStationStatus(section.getUpStation()) == INCLUDED
+                && checkStationStatus(section.getDownStation()) == INCLUDED) {
+            throw new IllegalArgumentException("해당 노선에 이미 두 역 모두 존재합니다.");
+        }
     }
 
-
-    public boolean isUpEndAppend(final Section section) {
-        Section upEndSection = getUpEndSection();
-
-        return upEndSection.isPreviousContinuable(section);
+    private void validateNotExistAll(final Section section) {
+        if (checkStationStatus(section.getUpStation()) == NOT_INCLUDED
+                && checkStationStatus(section.getDownStation()) == NOT_INCLUDED) {
+            throw new IllegalArgumentException("해당 노선에 두 역 모두 존재하지 않습니다.");
+        }
     }
 
-    public Section getDownEndSection() {
-        return sections.stream().filter(section1 -> section1.getNextSectionId() == 0)
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("하행 종점이 존재하지 않습니다"));
+    private void addByDirection(final Section section, final Station includedStation, final List<Section> sections) {
+        if (checkStationLocation(includedStation) == END && section.isConnectableDifferentDirection(sections.get(0))) {
+            this.sections.add(section);
+            return;
+        }
+
+        addIfSameDirectionSection(section, sections);
     }
 
-    public Section getUpEndSection() {
-        List<Long> downSectionIds = sections.stream().map(Section::getNextSectionId)
+    private Station getIncludedStation(final Section section) {
+        if (checkStationStatus(section.getUpStation()) == NOT_INCLUDED) {
+            return section.getDownStation();
+        }
+        return section.getUpStation();
+    }
+
+    private void addIfSameDirectionSection(final Section section, final List<Section> sections) {
+        Section rawSection = getSameDirectionSection(section, sections);
+        validateDistance(section, rawSection);
+
+        if (section.equalsUpStation(rawSection)) {
+            this.sections.add(Section.of(section.getDownStation(),
+                    rawSection.getDownStation(),
+                    rawSection.getDistance().minus(section.getDistance())));
+            this.sections.remove(rawSection);
+        }
+
+        if (section.equalsDownStation(rawSection)) {
+            this.sections.add(Section.of(rawSection.getUpStation(),
+                    section.getUpStation(),
+                    rawSection.getDistance().minus(section.getDistance())));
+            this.sections.remove(rawSection);
+        }
+
+        this.sections.add(section);
+    }
+
+    private void validateDistance(final Section section, final Section rawSection) {
+        if (!rawSection.getDistance().greaterThan(section.getDistance())) {
+            throw new IllegalArgumentException("해당 구간의 거리가 너무 큽니다.");
+        }
+    }
+
+    public Status checkStationStatus(Station station) {
+        List<Section> sections = findSectionBy(station);
+        if (this.sections.isEmpty()) {
+            return INIT;
+        }
+
+        if (sections.isEmpty()) {
+            return NOT_INCLUDED;
+        }
+
+        return INCLUDED;
+    }
+
+    private Section getSameDirectionSection(Section section, List<Section> sections) {
+        return sections.stream()
+                .filter(section2 -> section2.equalsUpStation(section) || section2.equalsDownStation(section))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("동일한 위치의 구간이 아닙니다."));
+    }
+
+    public void deleteSectionByStation(Station station) {
+        Location location = checkStationLocation(station);
+        validateStation(location);
+
+        List<Section> sections = findSectionBy(station);
+
+        if (location == MIDDLE) {
+            Section connectedSection = createConnectedSection(sections.get(0), sections.get(1));
+            this.sections.add(connectedSection);
+        }
+        this.sections.removeAll(sections);
+    }
+
+    private void validateStation(final Location location) {
+        if (location == NONE) {
+            throw new IllegalArgumentException("해당 노선에 존재하는 역이 아닙니다.");
+        }
+    }
+
+    private Section createConnectedSection(final Section section, final Section other) {
+        Station upStation = section.getUpStation();
+        Station downStation = other.getDownStation();
+
+        if (other.isNextSection(section)) {
+            upStation = other.getUpStation();
+            downStation = section.getDownStation();
+        }
+
+        Distance calculatedDistance = section.getDistance().add(other.getDistance());
+        return Section.of(upStation, downStation, calculatedDistance);
+    }
+
+    public Location checkStationLocation(Station station) {
+        List<Section> sections = findSectionBy(station);
+        int sectionsSize = sections.size();
+
+        if (sectionsSize == 0) {
+            return NONE;
+        }
+
+        if (sectionsSize == 1) {
+            return END;
+        }
+
+        return MIDDLE;
+    }
+
+    public List<Section> findSectionBy(Station station) {
+        return sections.stream()
+                .filter(section -> section.contains(station))
+                .collect(Collectors.toList());
+    }
+
+    public List<Station> findAllStation() {
+        Map<Station, Section> allSections = new HashMap<>();
+        sections.forEach(section -> allSections.put(section.getUpStation(), section));
+
+        return getSortedStations(allSections);
+    }
+
+    private List<Station> getSortedStations(final Map<Station, Section> allSections) {
+        List<Station> stations = new ArrayList<>();
+        Section currentSection = findUpEndSection();
+        Station currentStation = currentSection.getDownStation();
+        stations.add(currentSection.getUpStation());
+        stations.add(currentSection.getDownStation());
+
+        while (allSections.containsKey(currentStation)) {
+            Section nextSection = allSections.get(currentStation);
+            currentStation = nextSection.getDownStation();
+            stations.add(currentStation);
+        }
+
+        return stations;
+    }
+
+    private Section findUpEndSection() {
+        List<Station> downStations = sections.stream()
+                .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
-        return sections.stream().filter(section1 -> !downSectionIds.contains(section1.getId()))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("상행 종점이 존재하지 않습니다."));
-    }
-
-    public boolean isInitialSave() {
-        return sections.isEmpty();
-    }
-
-    public Section findSectionByNextSection(Section section) {
         return sections.stream()
-                .filter(section1 -> section1.getNextSectionId().equals(section.getNextSectionId()))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("노선에 해당 구간이 존재하지 않습니다."));
-    }
-
-    public Section findSectionByUpStation(final long stationId) {
-        return sections.stream().filter(section -> section.isSameUpStationId(stationId))
+                .filter(section1 -> !downStations.contains(section1.getUpStation()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 상행역을 가진 구간이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("상행 종점이 존재하지 않습니다."));
     }
 
-    public Section findSectionByDownStation(final long stationId) {
-        return sections.stream().filter(section -> section.isSameDownStationId(stationId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 하행역을 가진 구간이 존재하지 않습니다."));
-    }
+    public Station getNotIncludedStation(Section section) {
+        validateExistAll(section);
+        validateNotExistAll(section);
 
-    public boolean isNotExistStation(final long stationId) {
-        return sections.stream()
-                .noneMatch(section -> section.containsStation(stationId));
-    }
-
-    public List<Station> getSortedStations() {
-        Map<Long, Section> allSections = new HashMap<>();
-        sections.forEach(section -> allSections.put(section.getId(), section));
-
-        Section upEndSection = getUpEndSection();
-        Section currentSection = upEndSection;
-
-        List<Station> result = new ArrayList<>();
-
-        result.add(upEndSection.getUpStation());
-        result.add(upEndSection.getDownStation());
-
-        while (currentSection.getNextSectionId() != 0) {
-            Section nextSection = allSections.get(currentSection.getNextSectionId());
-            result.add(nextSection.getDownStation());
-            currentSection = nextSection;
+        if (checkStationLocation(section.getUpStation()) == NONE) {
+            return section.getUpStation();
         }
-
-        return result;
+        return section.getDownStation();
+    }
+    public List<Section> getSections() {
+        return new ArrayList<>(sections);
     }
 
-    public int size() {
-        return this.sections.size();
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 }

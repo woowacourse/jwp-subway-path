@@ -1,87 +1,47 @@
 package subway.domain;
 
-import static subway.domain.Direction.INNER_LEFT;
-import static subway.domain.Direction.INNER_RIGHT;
-import static subway.domain.Direction.NONE;
-
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Section {
-    private final Long id;
     private final Station upStation;
     private final Station downStation;
-    private final int distance;
-    private final Long nextSectionId;
+    private final Distance distance;
 
-    public Section(final Long id, final Station upStation, final Station downStation, final int distance,
-                   final Long nextSectionId) {
-        // TODO: 2023/05/10 distance 1이상 검증
-        this.id = id;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
-        this.nextSectionId = nextSectionId;
+    public static Section of(Station upStation, Station downStation, int distance) {
+        return new Section(upStation, downStation, new Distance(distance));
     }
 
-    public Section(final long id, final Station upStation, final Station downStation, final int distance) {
-        this(id, upStation, downStation, distance, null);
+    public static Section of(Station upStation, Station downStation, Distance distance) {
+        return new Section(upStation, downStation, distance);
     }
 
-    public Section(final Station upStation, final Station downStation, final int distance) {
-        this(null, upStation, downStation, distance, null);
+    public static Section of(String upStationName, String downStationName, int distance) {
+        return new Section(new Station(upStationName), new Station(downStationName), new Distance(distance));
     }
 
-    public Section(final Station upStation, final Station downStation, final int distance, final long nextSectionId) {
-        this(null, upStation, downStation, distance, nextSectionId);
+    public boolean equalsUpStation(Section section) {
+        return this.upStation.equalsName(section.upStation);
     }
 
-    public boolean isNextContinuable(Section newSection) {
-        return this.downStation.equals(newSection.upStation);
+    public boolean equalsDownStation(Section section) {
+        return this.downStation.equalsName(section.downStation);
     }
 
-    public boolean isPreviousContinuable(Section newSection) {
-        return this.upStation.equals(newSection.downStation);
+    public boolean isNextSection(Section section) {
+        return this.downStation.equalsName(section.upStation);
     }
 
-    public boolean isSameUpStationId(long stationId) {
-        return this.getUpStationId() == stationId;
-    }
-    public boolean isSameDownStationId(long stationId) {
-        return this.getDownStationId() == stationId;
+    public boolean isConnectableDifferentDirection(Section section) {
+        return this.downStation.equalsName(section.upStation) || this.upStation.equalsName(section.downStation);
     }
 
-    public Direction checkDirection(Section section) {
-        if (this.upStation.equals(section.upStation)) {
-            return INNER_LEFT;
-        }
-
-        if (this.downStation.equals(section.downStation)) {
-            return INNER_RIGHT;
-        }
-
-        return NONE;
-    }
-
-    public boolean hasIntersection(Section section) {
-        boolean isUpSame = this.upStation.equals(section.upStation);
-        boolean isDownSame = this.downStation.equals(section.downStation);
-        return isUpSame != isDownSame;
-    }
-
-    public long getUpStationId() {
-        return upStation.getId();
-    }
-
-    public long getDownStationId() {
-        return downStation.getId();
-    }
-
-    public boolean isDistanceSmallOrSame(final Section section) {
-        return this.distance <= section.distance;
-    }
-
-    public boolean containsStation(long stationId) {
-        return this.getUpStationId() == stationId || this.getDownStationId() == stationId;
+    public boolean contains(Station station) {
+        return upStation.equalsName(station) || downStation.equalsName(station);
     }
 }

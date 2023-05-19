@@ -6,21 +6,17 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final Name name;
+    private final Color color;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(Long id, String name, String color) {
+    public Line(final Long id, final String name, final String color) {
         this.id = id;
-        this.name = name;
-        this.color = color;
+        this.name =  new Name(name);
+        this.color = new Color(color);
+    }
+
+    public Line(final String name, final String color) {
+        this(null, name, color);
     }
 }
