@@ -28,19 +28,19 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    @PostMapping("/{id}/station/init")
+    @PostMapping("/{id}/stations/init")
     public ResponseEntity<SectionResponse> createInitialSection(@PathVariable final Long id,
                                                                 @RequestBody final SectionRequest sectionRequest) {
         final SectionResponse section = lineService.saveInitialSection(id, sectionRequest);
-        final URI uri = URI.create("/lines/" + id + "/station/init/" + section.getId());
+        final URI uri = URI.create("/lines/" + id + "/stations/init/" + section.getId());
         return ResponseEntity.created(uri).body(section);
     }
 
-    @PostMapping("/{id}/station")
+    @PostMapping("/{id}/stations")
     public ResponseEntity<SectionResponse> createSection(@PathVariable final Long id,
                                                          @RequestBody final SectionRequest sectionRequest) {
         final SectionResponse section = lineService.saveSection(id, sectionRequest);
-        final URI uri = URI.create("/lines/" + id + "/station/" + section.getId());
+        final URI uri = URI.create("/lines/" + id + "/stations/" + section.getId());
         return ResponseEntity.created(uri).body(section);
     }
 
@@ -66,7 +66,7 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}/station/{stationId}")
+    @DeleteMapping("/{id}/stations/{stationId}")
     public ResponseEntity<Void> deleteStationInLine(@PathVariable final Long id,
                                                     @PathVariable final Long stationId) {
         lineService.deleteStationById(id, stationId);

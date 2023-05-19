@@ -17,7 +17,7 @@
 
 ## 🎯 리팩토링 목록
 
-- [ ]  API 수정 (station -> stations)
+- [x]  API 수정 (station -> stations)
 - [ ]  save 메소드 통일
 
 ## 🎯 추가할 기능 목록
