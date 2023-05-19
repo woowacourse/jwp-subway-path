@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.subway;
 
 import subway.domain.exception.DomainException;
 import subway.domain.exception.ExceptionType;

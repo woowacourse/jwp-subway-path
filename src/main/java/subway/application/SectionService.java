@@ -1,24 +1,16 @@
 package subway.application;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.fee.NormalFeeStrategy;
-import subway.domain.PathInfoFinder;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.subway.Section;
+import subway.domain.subway.Sections;
 import subway.dto.InitialSectionAddRequest;
-import subway.dto.PathFindingRequest;
-import subway.dto.PathResponse;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
 import subway.dto.SectionDeleteRequest;
@@ -28,11 +20,9 @@ import subway.domain.exception.ExceptionType;
 @Service
 @Transactional(readOnly = true)
 public class SectionService {
-    private final StationDao stationDao;
     private final SectionDao sectionDao;
 
-    public SectionService(StationDao stationDao, SectionDao sectionDao) {
-        this.stationDao = stationDao;
+    public SectionService(SectionDao sectionDao) {
         this.sectionDao = sectionDao;
     }
 
@@ -202,28 +192,5 @@ public class SectionService {
             .sum();
 
         sectionDao.insert(new Section(null, sourceStationId, targetStationId, lineId, distanceSum));
-    }
-
-    public PathResponse findPath(PathFindingRequest pathFindingRequest) {
-        List<Station> allStations = stationDao.findAll();
-        Map<Long, Station> idsToStations = allStations.stream()
-            .collect(Collectors.toMap(Station::getId, Function.identity()));
-
-        List<Section> allSections = sectionDao.findAll();
-
-        Long departureId = pathFindingRequest.getDepartureId();
-        Long destinationId = pathFindingRequest.getDestinationId();
-
-        PathInfoFinder pathInfoFinder = new PathInfoFinder(new NormalFeeStrategy(), allSections);
-
-        List<Long> stationIds = pathInfoFinder.findPath(departureId, destinationId);
-        List<Station> path = stationIds.stream()
-            .map(idsToStations::get)
-            .collect(Collectors.toUnmodifiableList());
-
-        int distance = pathInfoFinder.findTotalDistance(departureId, destinationId);
-        int fee = pathInfoFinder.findFee(departureId, destinationId);
-
-        return PathResponse.of(distance, path, fee);
     }
 }

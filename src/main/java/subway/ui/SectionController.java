@@ -43,12 +43,6 @@ public class SectionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(sectionAddResponse);
     }
 
-    @PostMapping("/path")
-    public ResponseEntity<PathResponse> findPath(@RequestBody PathFindingRequest pathFindingRequest) {
-        PathResponse path = sectionService.findPath(pathFindingRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(path);
-    }
-
     @DeleteMapping
     public ResponseEntity<Void> deleteStationFromLine(@RequestBody SectionDeleteRequest sectionDeleteRequest) {
         sectionService.deleteSection(sectionDeleteRequest);

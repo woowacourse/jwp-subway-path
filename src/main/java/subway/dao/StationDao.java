@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -11,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import subway.domain.Station;
+import subway.domain.subway.Station;
 
 @Repository
 public class StationDao {
@@ -65,5 +66,11 @@ public class StationDao {
     public boolean checkExistenceById(Long id) {
         String sql = "select exists(select * from STATION WHERE id = ?)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, boolean.class, id));
+    }
+
+    public List<Station> findStationByList(List<Long> stationIds) {
+        String placeholders = String.join(",", Collections.nCopies(stationIds.size(), "?"));
+        String sql = "SELECT * FROM station WHERE id IN (" + placeholders + ")";
+        return jdbcTemplate.query(sql, rowMapper, stationIds.toArray());
     }
 }

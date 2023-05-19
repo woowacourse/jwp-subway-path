@@ -3,8 +3,8 @@ package subway.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.subway.Line;
+import subway.domain.subway.Station;
 
 public class LineStationsResponse {
     private final LineResponse line;

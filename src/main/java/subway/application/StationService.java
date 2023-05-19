@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
 import subway.domain.exception.DomainException;
 import subway.domain.exception.ExceptionType;
+import subway.domain.subway.Station;
+import subway.dto.StationRequest;
+import subway.dto.StationResponse;
 
 @Transactional(readOnly = true)
 @Service
