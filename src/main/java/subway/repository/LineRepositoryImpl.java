@@ -2,14 +2,10 @@ package subway.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.entity.LineEntity;
 
-@Repository
-@Transactional
 public class LineRepositoryImpl implements LineRepository {
     private final LineDao lineDao;
 

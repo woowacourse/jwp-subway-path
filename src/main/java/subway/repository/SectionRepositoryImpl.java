@@ -2,9 +2,6 @@ package subway.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -14,14 +11,17 @@ import subway.domain.Station;
 import subway.entity.StationEntity;
 import subway.entity.vo.SectionVo;
 
-@RequiredArgsConstructor
-@Transactional
-@Repository
 public class SectionRepositoryImpl implements SectionRepository {
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+
+    public SectionRepositoryImpl(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
+        this.lineDao = lineDao;
+        this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
+    }
 
     public Sections findSectionsByLineId(final long lineId) {
         validateLineId(lineId);

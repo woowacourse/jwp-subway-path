@@ -1,9 +1,13 @@
 package subway.repository;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 
+@Transactional
+@Repository
 public interface SectionRepository {
     Sections findSectionsByLineId(final long lineId);
 
