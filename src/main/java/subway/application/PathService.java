@@ -45,7 +45,7 @@ public class PathService {
         List<String> pathStations = graph.findPath(startStation.getName(), endStation.getName());
         double pathDistance = graph.findPathDistance(startStation.getName(), endStation.getName());
 
-        return new PathResponse(makeStationResponses(pathStations), (int) pathDistance, ((int)pathDistance));
+        return new PathResponse(makeStationResponses(pathStations), (int) pathDistance, cost.calculate((int)pathDistance));
     }
 
     private List<Station> toStations(List<StationEntity> findStations) {
@@ -73,10 +73,8 @@ public class PathService {
         Map<String, Long> stations = stationDao.findAll().stream()
                 .collect(Collectors.toMap(StationEntity::getName, StationEntity::getId));
 
-        List<StationResponse> stationResponses = stationNames.stream()
+        return stationNames.stream()
                 .map(it -> new StationResponse(stations.get(it), it))
                 .collect(Collectors.toList());
-
-        return stationResponses;
     }
 }

@@ -158,7 +158,7 @@ Response Body {[
 
 경로 조회 
 ```text
-GET /subway/path/startStation/{startStationId}/endStation/{endStationId}
+GET subway/path?startStationId=?&endStationId=?
 
 Response Headers {
     Status : 200
