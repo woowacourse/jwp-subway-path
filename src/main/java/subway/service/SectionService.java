@@ -20,11 +20,13 @@ public class SectionService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final RouteFinder routeFinder;
 
     public SectionService(final LineRepository lineRepository,
-                          final StationRepository stationRepository) {
+                          final StationRepository stationRepository, RouteFinder routeFinder) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.routeFinder = routeFinder;
     }
 
     public LineResponse createSection(final long lineId, final CreateSectionRequest request) {
@@ -54,11 +56,9 @@ public class SectionService {
         Station sourceStation = stationRepository.findById(routeRequest.getSourceStation());
         Station targetStation = stationRepository.findById(routeRequest.getTargetStation());
 
-        ShortestRouteFinder finder = new ShortestRouteFinder(lineRepository.findAll());
-
-        int distance = finder.getDistance(sourceStation, targetStation);
+        int distance = routeFinder.getDistance(sourceStation, targetStation);
         long fare = FareCalculator.calculate(distance);
-        List<StationResponse> route = finder.getRoute(sourceStation, targetStation).stream()
+        List<StationResponse> route = routeFinder.findRoute(sourceStation, targetStation).stream()
                 .map(StationMapper::toResponse)
                 .collect(Collectors.toList());
 
