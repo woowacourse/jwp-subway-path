@@ -116,10 +116,10 @@ public class LineService {
         final Station findStation = stationRepository.findById(stationId);
 
         line.removeStation(findStation);
-        lineRepository.deleteStation(lineId, stationId);
+        lineRepository.deleteStationByLineIdAndStationId(lineId, stationId);
 
         if (line.getStations().isEmpty()) {
-            lineRepository.delete(lineId);
+            lineRepository.deleteLineById(lineId);
         }
 
         if (subway.notContainsStation(findStation)) {

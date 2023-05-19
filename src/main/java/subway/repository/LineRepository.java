@@ -119,7 +119,7 @@ public class LineRepository {
         saveSections(lineId, updatedLine);
     }
 
-    public void deleteStation(final Long lineId, final Long stationId) {
+    public void deleteStationByLineIdAndStationId(final Long lineId, final Long stationId) {
         List<SectionEntity> connectedSections = sectionDao.findByStationId(stationId);
         final int deletedRowCount = sectionDao.deleteByLineIdAndStationId(lineId, stationId);
 
@@ -149,7 +149,7 @@ public class LineRepository {
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    public void delete(final Long lineId) {
+    public void deleteLineById(final Long lineId) {
         lineDao.deleteById(lineId);
     }
 }
