@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
@@ -40,4 +41,8 @@ public interface Graph {
     boolean isTerminal(Direction direction, Station station);
 
     List<Section> getSections();
+
+    DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> getGraph();
+
+    List<Station> getStations();
 }

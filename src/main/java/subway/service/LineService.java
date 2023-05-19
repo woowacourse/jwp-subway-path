@@ -38,7 +38,9 @@ public class LineService {
         return lines.stream()
                 .map(line -> LineResponse.of(
                         line,
-                        mapToStationResponse(line)))
+                        mapToStationResponse(
+                                subway.findStationsInOrder(line)
+                        )))
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +71,8 @@ public class LineService {
 
         subway.addSection(line, savedSection);
 
-        return LineResponse.of(line, mapToStationResponse(line));
+        final List<Station> stationsInOrder = subway.findStationsInOrder(line);
+        return LineResponse.of(line, mapToStationResponse(stationsInOrder));
     }
 
     @Transactional
@@ -86,7 +89,7 @@ public class LineService {
 
         final int distance = request.getDistance();
 
-        final Station newStation = subway.addStation(line, upStation, downStation, distance);
+        subway.addStation(line, upStation, downStation, distance);
 
         final Sections sections = subway.findSectionsOf(line);
 
@@ -95,7 +98,8 @@ public class LineService {
         final List<Section> sections1 = graph.getSections();
         sectionRepository.saveAll(line, sections1);
 
-        final List<StationResponse> stationResponse = mapToStationResponse(line);
+        final List<Station> stationsInOrder = subway.findStationsInOrder(line);
+        final List<StationResponse> stationResponse = mapToStationResponse(stationsInOrder);
 
         return LineResponse.of(line, stationResponse);
     }
@@ -124,12 +128,8 @@ public class LineService {
         sections.deleteStation(station);
     }
 
-    private List<StationResponse> mapToStationResponse(final Line line) {
-        final Subway subway = subwayService.findSubway();
-
-        final List<Station> stationsInOrder = subway.findStationsInOrder(line);
-
-        return stationsInOrder.stream()
+    private List<StationResponse> mapToStationResponse(final List<Station> stations) {
+        return stations.stream()
                 .map(Station::getId)
                 .map(stationRepository::findById)
                 .map(StationResponse::from)

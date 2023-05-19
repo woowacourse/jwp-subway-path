@@ -2,32 +2,101 @@ package subway;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import subway.dto.InitialSectionCreateRequest;
 import subway.dto.SectionCreateRequest;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.steps.LineSteps.*;
 import static subway.steps.StationSteps.*;
 
 public class PathIntegrationTest extends IntegrationTest {
 
     @Test
-    void 최단_경로를_조회할_수_있다() {
-        final long station1Id = 역_생성하고_아이디_반환(역_고속터미널);
-        final long station2Id = 역_생성하고_아이디_반환(역_사평역);
-        final long newStationId = 역_생성하고_아이디_반환(역_새역);
+    void 환승_없이_최단_경로를_조회할_수_있다() {
+        final long 고속터미널_아이디 = 역_생성하고_아이디_반환(역_고속터미널);
+        final long 사평역_아이디 = 역_생성하고_아이디_반환(역_사평역);
+        final long 새역_아이디 = 역_생성하고_아이디_반환(역_새역);
+        final long 교대역_아이디 = 역_생성하고_아이디_반환(역_교대역);
 
-        final long lineId = 노선_생성하고_아이디_반환(노선_9호선);
+        final long 노선_9호선_아이디 = 노선_생성하고_아이디_반환(노선_9호선);
+        final long 노선_3호선_아이디 = 노선_생성하고_아이디_반환(노선_3호선);
 
-        노선에_최초의_역_2개_추가_요청(lineId,
+        노선에_최초의_역_2개_추가_요청(
+                노선_9호선_아이디,
                 new InitialSectionCreateRequest(
-                        lineId, station1Id, station2Id, 3
+                        노선_9호선_아이디, 고속터미널_아이디, 사평역_아이디, 3
                 ));
 
-        final ExtractableResponse<Response> response = 존재하는_노선에_역_1개_추가_요청(
-                lineId,
+        존재하는_노선에_역_1개_추가_요청(
+                노선_9호선_아이디,
                 new SectionCreateRequest(
-                        station1Id, newStationId, 1
+                        고속터미널_아이디, 새역_아이디, 2
                 ));
+
+        노선에_최초의_역_2개_추가_요청(
+                노선_3호선_아이디,
+                new InitialSectionCreateRequest(
+                        노선_3호선_아이디, 고속터미널_아이디, 교대역_아이디, 5
+                ));
+
+        final ExtractableResponse<Response> response = 두_역_사이의_최단_경로_조회_요청(고속터미널_아이디, 사평역_아이디);
+
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getList("stations.id", Long.class))
+                        .isEqualTo(Arrays.asList(고속터미널_아이디, 새역_아이디, 사평역_아이디)),
+                () -> assertThat(response.jsonPath().getLong("price"))
+                        .isEqualTo(1_250)
+        );
+    }
+
+    @Test
+    void 환승경로를_포함해_최단_경로를_조회할_수_있다() {
+        final long 고속터미널_아이디 = 역_생성하고_아이디_반환(역_고속터미널);
+        final long 사평역_아이디 = 역_생성하고_아이디_반환(역_사평역);
+        final long 새역_아이디 = 역_생성하고_아이디_반환(역_새역);
+        final long 교대역_아이디 = 역_생성하고_아이디_반환(역_교대역);
+
+        final long 노선_9호선_아이디 = 노선_생성하고_아이디_반환(노선_9호선);
+        final long 노선_3호선_아이디 = 노선_생성하고_아이디_반환(노선_3호선);
+
+        노선에_최초의_역_2개_추가_요청(
+                노선_9호선_아이디,
+                new InitialSectionCreateRequest(
+                        노선_9호선_아이디, 고속터미널_아이디, 사평역_아이디, 8
+                ));
+
+        존재하는_노선에_역_1개_추가_요청(
+                노선_9호선_아이디,
+                new SectionCreateRequest(
+                        고속터미널_아이디, 새역_아이디, 3
+                ));
+
+        노선에_최초의_역_2개_추가_요청(
+                노선_3호선_아이디,
+                new InitialSectionCreateRequest(
+                        노선_3호선_아이디, 고속터미널_아이디, 교대역_아이디, 5
+                ));
+
+        final ExtractableResponse<Response> response = 두_역_사이의_최단_경로_조회_요청(교대역_아이디, 사평역_아이디);
+
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getList("stations.id", Long.class))
+                        .isEqualTo(List.of(교대역_아이디, 고속터미널_아이디, 새역_아이디, 사평역_아이디)),
+                () -> assertThat(response.jsonPath().getLong("price"))
+                        .isEqualTo(1_350)
+        );
     }
 }

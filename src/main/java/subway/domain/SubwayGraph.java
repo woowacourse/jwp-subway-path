@@ -111,6 +111,16 @@ public class SubwayGraph implements Graph {
         return new ArrayList<>(collect);
     }
 
+    @Override
+    public DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> getGraph() {
+        return graph;
+    }
+
+    @Override
+    public List<Station> getStations() {
+        return new ArrayList<>(graph.vertexSet());
+    }
+
     private boolean isDownLastStation(final Station station) {
         int inDegree = graph.inDegreeOf(station);
         int outDegree = graph.outDegreeOf(station);

@@ -7,7 +7,10 @@ import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SubwayService {
@@ -30,7 +33,19 @@ public class SubwayService {
             final List<Section> sections = sectionRepository.findAllSectionOf(line);
             final Graph newGraph = new SubwayGraph();
 
-            final List<Long> allStationIds = sectionRepository.findAllStationIds(line);
+            final Set<Station> stations = new HashSet<>();
+            final List<Section> allSections = sectionRepository.findAllSectionOf(line);
+            for (final Section section : allSections) {
+                stations.add(section.getUpStation());
+                stations.add(section.getDownStation());
+            }
+
+            System.out.println("stations = " + stations);
+
+            final List<Long> allStationIds = stations.stream()
+                    .map(Station::getId)
+                    .collect(Collectors.toList());
+
             for (final Long stationId : allStationIds) {
                 final Station station = stationRepository.findById(stationId);
                 newGraph.addStation(station);
@@ -45,7 +60,6 @@ public class SubwayService {
             }
 
             subwaySections.add(new Sections(line, newGraph));
-            System.out.println("newGraph = " + newGraph);
         }
 
         return new Subway(subwaySections);

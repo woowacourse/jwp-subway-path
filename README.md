@@ -18,8 +18,8 @@
 
 #### 경로 조회 API 구현
 
-- [ ] 출발역과 도착역 사이의 최단 거리 경로를 탐색
-- [ ] 최단 거리 경로와 함께 총 거리 정보를 함께 응답
+- [x] 출발역과 도착역 사이의 최단 거리 경로를 탐색
+- [x] 최단 거리 경로와 함께 총 거리 정보를 함께 응답
     - 여러 노선의 환승도 고려
 - [ ] 경로 조회 시 요금 정보를 포함하여 응답
 
@@ -41,68 +41,3 @@
 | POST       | /lines/{lineId}/station-init         | 201        | 노선에 최초로 역 2개를 추가한다. |
 | DELETE     | /lines/{lineId}/stations/{stationId} | 204        | 특정 노선에서 특정 역을 삭제한다. |
 | POST       | /stations                            | 201        | 역을 생성한다.            |
-
-## POST /lines
-
-#### Request
-
-BODY
-
-```json
-{
-  "name": "2호선",
-  "color": "GREEN"
-}
-```
-
-#### Response
-
-BODY
-
-```json
-{
-  "id": 1,
-  "name": "2호선",
-  "color": "GREEN"
-}
-```
-
-### POST /lines/{lineId}/stations
-
-#### Request
-
-Body
-
-```json
-{
-  "upStation": 1,
-  "downStation": 2,
-  "distance": 15
-}
-```
-
-#### Response
-
-Body
-
-```json
-{
-  "id": 1,
-  "name": "2호선",
-  "color": "GREEN",
-  "stations": [
-    {
-      "id": 1,
-      "name": "역삼역"
-    },
-    {
-      "id": 2,
-      "name": "삼성역"
-    },
-    {
-      "id": 3,
-      "name": "잠실역"
-    }
-  ]
-}
-```

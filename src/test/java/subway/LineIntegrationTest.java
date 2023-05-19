@@ -22,19 +22,24 @@ class LineIntegrationTest extends IntegrationTest {
     @Test
     void 전체_노선을_조회한다() {
 
+        final long 노선_9호선_아이디 = 노선_생성하고_아이디_반환(노선_9호선);
+        final long 고속터미널_아이디 = 역_생성하고_아이디_반환(역_고속터미널);
+        final long 사평역_아이디 = 역_생성하고_아이디_반환(역_사평역);
+
         노선에_최초의_역_2개_추가_요청(
-                노선_생성하고_아이디_반환(노선_9호선),
+                노선_9호선_아이디,
                 new InitialSectionCreateRequest(
-                        노선_생성하고_아이디_반환(노선_9호선),
-                        역_생성하고_아이디_반환(역_고속터미널),
-                        역_생성하고_아이디_반환(역_사평역),
+                        노선_9호선_아이디,
+                        고속터미널_아이디,
+                        사평역_아이디,
                         5
                 ));
+
         존재하는_노선에_역_1개_추가_요청(
-                노선_생성하고_아이디_반환(노선_9호선),
+                노선_9호선_아이디,
                 new SectionCreateRequest(
-                        역_생성하고_아이디_반환(역_고속터미널),
-                        역_생성하고_아이디_반환(역_새역),
+                        고속터미널_아이디,
+                        사평역_아이디,
                         3
                 ));
 
@@ -138,7 +143,7 @@ class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void addTwoStationsInLineTest() {
+    void 존재하는_노선에_역_1개를_추가한다() {
         final long station1Id = 역_생성하고_아이디_반환(역_고속터미널);
         final long station2Id = 역_생성하고_아이디_반환(역_사평역);
         final long newStationId = 역_생성하고_아이디_반환(역_새역);

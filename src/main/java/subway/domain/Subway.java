@@ -1,5 +1,8 @@
 package subway.domain;
 
+import org.jgrapht.Graphs;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import subway.exeption.LineNotFoundException;
 
 import java.util.ArrayList;
@@ -53,15 +56,6 @@ public class Subway {
         return sections.findAllStationsInOrder();
     }
 
-    public int findDistanceBetween(final Line line, final Station upStation, final Station downStation) {
-        final Sections sections = findSectionsOf(line);
-
-        if (!sections.containsStation(upStation) || !sections.containsStation(downStation)) {
-            throw new IllegalArgumentException("존재하지 않는 역입니다!");
-        }
-        return sections.findDistanceBetween(upStation, downStation);
-    }
-
     public Station findStationBefore(final Line line, final Station station) {
         final Sections sections = findSectionsOf(line);
         return sections
@@ -72,5 +66,19 @@ public class Subway {
         final Sections sections = findSectionsOf(line);
         return sections
                 .findAdjacentStationOf(station, element -> sections.getDownStationsOf(station));
+    }
+
+    public WeightedMultigraph<Station, DefaultWeightedEdge> findAllStationGraph() {
+        final List<Graph> graphs = sections.stream()
+                .map(Sections::getGraph)
+                .collect(Collectors.toList());
+
+        WeightedMultigraph<Station, DefaultWeightedEdge> mergedGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
+        for (final Graph graph : graphs) {
+            Graphs.addGraph(mergedGraph, graph.getGraph());
+        }
+
+        return mergedGraph;
     }
 }
