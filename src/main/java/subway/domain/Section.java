@@ -102,8 +102,8 @@ public class Section {
         return false;
     }
 
-    public int getDistance() {
-        return distance.getValue();
+    public Distance getDistance() {
+        return distance;
     }
 
     public List<Station> getStations() {

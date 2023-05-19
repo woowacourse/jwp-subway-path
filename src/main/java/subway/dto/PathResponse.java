@@ -22,8 +22,8 @@ public class PathResponse {
                 path.getStations().stream()
                         .map(StationResponse::of)
                         .collect(Collectors.toList()),
-                path.calculateFare(),
-                path.getDistance()
+                path.getDistance().calculateFare(),
+                path.getDistance().getValue()
         );
     }
 

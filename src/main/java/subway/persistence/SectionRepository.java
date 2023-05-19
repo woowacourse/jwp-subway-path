@@ -44,7 +44,7 @@ public class SectionRepository {
                 lineId,
                 section.getUpperStation().getId(),
                 section.getLowerStation().getId(),
-                section.getDistance()
+                section.getDistance().getValue()
         );
     }
 

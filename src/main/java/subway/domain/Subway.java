@@ -33,7 +33,7 @@ public class Subway {
     private void addEdgeTo(WeightedMultigraph<Station, Section> graph, List<Section> sections) {
         for (Section section : sections) {
             graph.addEdge(section.getUpperStation(), section.getLowerStation(), section);
-            graph.setEdgeWeight(section, section.getDistance());
+            graph.setEdgeWeight(section, section.getDistance().getValue());
         }
     }
 }
