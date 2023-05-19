@@ -2,19 +2,19 @@ package subway.line.domain.section.application.strategy;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import subway.line.infrastructure.LineDao;
-import subway.line.domain.section.infrastructure.SectionDao;
+import subway.line.application.LineRepository;
 import subway.line.domain.section.Section;
+import subway.line.domain.section.application.SectionRepository;
 
 @Component
 @Order(4)
 public class HighestSectionInsertionStrategy implements SectionInsertionStrategy {
-    private final SectionDao sectionDao;
-    private final LineDao lineDao;
+    private final SectionRepository sectionRepository;
+    private final LineRepository lineRepository;
 
-    public HighestSectionInsertionStrategy(SectionDao sectionDao, LineDao lineDao) {
-        this.sectionDao = sectionDao;
-        this.lineDao = lineDao;
+    public HighestSectionInsertionStrategy(SectionRepository sectionRepository, LineRepository lineRepository) {
+        this.sectionRepository = sectionRepository;
+        this.lineRepository = lineRepository;
     }
 
     @Override
@@ -24,8 +24,8 @@ public class HighestSectionInsertionStrategy implements SectionInsertionStrategy
 
     @Override
     public long insert(Section section) {
-        final var sectionId = sectionDao.insert(section).getId();
-        lineDao.updateHeadStation(section.getLine(), section.getPreviousStation());
+        final var sectionId = sectionRepository.insert(section).getId();
+        lineRepository.updateHeadStation(section.getLine(), section.getPreviousStation());
         return sectionId;
     }
 }
