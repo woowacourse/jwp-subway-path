@@ -111,4 +111,33 @@ public class SectionService {
             throw new IllegalArgumentException("기존 역과의 거리가 요청한 거리보다 짧습니다.");
         }
     }
+
+    @Transactional
+    public void disconnectStation(Long lineId, Long stationId) {
+        int sectionCountByLine = sectionDao.countByLineId(lineId);
+        if (sectionCountByLine == 2) {
+            sectionDao.deleteAllByLineId(lineId);
+            return;
+        }
+        List<Section> sections = sectionDao.findSectionByLineIdAndStationId(lineId, stationId);
+        if (isInBetween(sections)) {
+            Section frontSection = findSectionByDownStationId(sections, stationId);
+            Section backSection = findSectionByUpStationId(sections, stationId);
+            int updateDistance = frontSection.getDistance() + backSection.getDistance();
+            Section updateSection = new Section(frontSection.getId(), frontSection.getUpStationId(),
+                    backSection.getDownStationId(), updateDistance);
+            sectionDao.update(updateSection);
+            sectionDao.delete(backSection);
+            return;
+        }
+        sectionDao.deleteByLineIdAndStationId(lineId, stationId);
+    }
+
+    private Section findSectionByDownStationId(final List<Section> sections, final Long downStationId) {
+        Section section = sections.get(0);
+        if (downStationId.equals(section.getDownStationId())) {
+            return section;
+        }
+        return sections.get(1);
+    }
 }

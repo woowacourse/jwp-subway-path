@@ -67,6 +67,12 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{id}/stations/{stationId}")
+    public ResponseEntity<Void> deleteSection(@PathVariable Long id, @PathVariable Long stationId) {
+        sectionService.disconnectStation(id, stationId);
+        return ResponseEntity.noContent().build();
+    }
+
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();

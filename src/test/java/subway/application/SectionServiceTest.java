@@ -182,4 +182,59 @@ class SectionServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("기존 역과의 거리가 요청한 거리보다 짧습니다.");
     }
+
+
+    @DisplayName("호선에 역이 두개만 존재하면 모든 역을 삭제한다.")
+    @Test
+    void disconnectStation_success_deleteAll() {
+        //given
+        given(sectionDao.countByLineId(lineId))
+                .willReturn(2);
+        //when
+        sectionService.disconnectStation(lineId, request.getUpStationId());
+        //then
+        verify(sectionDao, times(1)).deleteAllByLineId(lineId);
+    }
+
+    @DisplayName("삭제하려는 역이 중간에 있으면 업데이트 쿼리와 삭제 쿼를 호출한다.")
+    @Test
+    void disconnectStation_success_isInBetween() {
+        //given
+        given(sectionDao.countByLineId(lineId))
+                .willReturn(3);
+        List<Section> sections = Mockito.mock(List.class);
+        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
+                .willReturn(sections);
+        when(sections.size()).thenReturn(2);
+        Section frontSection = new Section(lineId, 3L, request.getUpStationId(), 4);
+        Section backSection = new Section(lineId, request.getUpStationId(), request.getDownStationId(), 7);
+        when(sections.get(0)).thenReturn(frontSection);
+        when(sections.get(1)).thenReturn(backSection);
+
+        //when
+        sectionService.disconnectStation(lineId, request.getUpStationId());
+        //then
+        assertAll(
+                () -> verify(sectionDao, times(1)).delete(any()),
+                () -> verify(sectionDao, times(1)).update(any())
+        );
+    }
+
+    @DisplayName("삭제하려는 역이 끝에 있으면 해당하는 역만 삭제한다.")
+    @Test
+    void disconnectStation_success_isEnd() {
+        //given
+        given(sectionDao.countByLineId(lineId))
+                .willReturn(3);
+        List<Section> sections = Mockito.mock(List.class);
+        given(sectionDao.findSectionByLineIdAndStationId(lineId, request.getUpStationId()))
+                .willReturn(sections);
+        when(sections.size()).thenReturn(1);
+
+        //when
+        sectionService.disconnectStation(lineId, request.getUpStationId());
+
+        //then
+        verify(sectionDao, times(1)).deleteByLineIdAndStationId(lineId, request.getUpStationId());
+    }
 }

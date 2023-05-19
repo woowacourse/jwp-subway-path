@@ -29,37 +29,33 @@ public class SectionIntegrationTest extends IntegrationTest {
         super.setUp();
         LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
 
-        ExtractableResponse<Response> createLineResponse = RestAssured
-                .given().log().all()
+        ExtractableResponse<Response> createLineResponse = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().extract();
 
         lineId = Long.parseLong(createLineResponse.header("Location").split("/")[2]);
 
         Map<String, String> params = new HashMap<>();
         params.put("name", "강남역");
 
-        ExtractableResponse<Response> createStationResponse1 = RestAssured.given().log().all()
+        ExtractableResponse<Response> createStationResponse1 = RestAssured.given()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
-                .then().log().all()
-                .extract();
+                .then().extract();
         stationId1 = Long.parseLong(createStationResponse1.header("Location").split("/")[2]);
 
         params.put("name", "삼성역");
 
-        ExtractableResponse<Response> createStationResponse2 = RestAssured.given().log().all()
+        ExtractableResponse<Response> createStationResponse2 = RestAssured.given()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
-                .then().log().all()
-                .extract();
+                .then().extract();
         stationId2 = Long.parseLong(createStationResponse2.header("Location").split("/")[2]);
     }
 
@@ -96,33 +92,31 @@ public class SectionIntegrationTest extends IntegrationTest {
         StationToLineRequest initRequest = new StationToLineRequest(stationId1, stationId2, 11);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
-                .when().post("lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
+                .when().post("lines/{lineId}", lineId);
 
         Map<String, String> params = new HashMap<>();
         params.put("name", "선릉역");
 
-        ExtractableResponse<Response> createStationResponse1 = RestAssured.given().log().all()
+        ExtractableResponse<Response> createStationResponse1 = RestAssured.given()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
-                .then().log().all()
+                .then()
                 .extract();
         Long newStationId = Long.parseLong(createStationResponse1.header("Location").split("/")[2]);
 
         StationToLineRequest request = new StationToLineRequest(stationId1, newStationId, 4);
         //when
         ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("lines/{lineId}", lineId)
-                .then().log().all()
+                .then()
                 .extract();
 
         //then
@@ -143,22 +137,20 @@ public class SectionIntegrationTest extends IntegrationTest {
         StationToLineRequest initRequest = new StationToLineRequest(stationId1, stationId2, 11);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
-                .when().post("lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
+                .when().post("lines/{lineId}", lineId);
 
         Map<String, String> params = new HashMap<>();
         params.put("name", "선릉역");
 
-        ExtractableResponse<Response> createStationResponse1 = RestAssured.given().log().all()
+        ExtractableResponse<Response> createStationResponse1 = RestAssured.given()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
-                .then().log().all()
+                .then()
                 .extract();
         Long newStationId = Long.parseLong(createStationResponse1.header("Location").split("/")[2]);
 
@@ -182,5 +174,28 @@ public class SectionIntegrationTest extends IntegrationTest {
                 () -> assertThat(section.getDownStationId()).isEqualTo(newStationId),
                 () -> assertThat(section.getDistance()).isEqualTo(4)
         );
+    }
+
+    @DisplayName("노선에서 역 하나를 제거한다.")
+    @Test
+    void deleteSection_success() {
+        //given
+        StationToLineRequest initRequest = new StationToLineRequest(stationId1, stationId2, 11);
+
+        RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(initRequest)
+                .when().post("lines/{lineId}", lineId);
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .when().delete("lines/{lineId}/stations/{stationId}", lineId, stationId1)
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
