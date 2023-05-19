@@ -1,7 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.domain.LineRepository;
+import subway.domain.*;
 import subway.dto.PathResponse;
 
 import java.util.List;
@@ -18,6 +18,14 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(final Long departureId, final Long arrivalId) {
-        return new PathResponse(List.of(), 99, 99);
+        final List<Line> lines = lineRepository.findLines();
+        final List<Station> stations = stationService.findAllStation();
+        final PathFinder pathFinder = PathFinder.generate(stations, lines);
+
+        final Station departure = stationService.findStationById(departureId);
+        final Station arrival = stationService.findStationById(arrivalId);
+
+        final Path path = pathFinder.findPath(departure, arrival);
+        return PathResponse.of(path);
     }
 }
