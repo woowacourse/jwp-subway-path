@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.service.LineService;
-import subway.service.dto.LineDto;
-import subway.service.dto.SectionCreateDto;
 import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.request.StationRegisterInLineRequest;
 import subway.controller.dto.request.StationUnregisterInLineRequest;
 import subway.controller.dto.response.LineResponse;
+import subway.service.LineModifyService;
+import subway.service.LineService;
+import subway.service.dto.LineDto;
+import subway.service.dto.SectionCreateDto;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -25,9 +26,11 @@ import java.util.List;
 public class LineController {
 
     private final LineService lineService;
+    private final LineModifyService lineModifyService;
 
-    public LineController(LineService lineService) {
+    public LineController(final LineService lineService, final LineModifyService lineModifyService) {
         this.lineService = lineService;
+        this.lineModifyService = lineModifyService;
     }
 
     @PostMapping
@@ -56,15 +59,14 @@ public class LineController {
     @PatchMapping("/{id}/register")
     public ResponseEntity<LineResponse> registerStation(
             @PathVariable final Long id, @RequestBody @Valid final StationRegisterInLineRequest request) {
-        return ResponseEntity.ok(lineService.registerStation(id, request));
+        return ResponseEntity.ok(lineModifyService.registerStation(id, request));
     }
 
     @PatchMapping("/{id}/unregister")
     public ResponseEntity<LineResponse> unregisterStation(
             @PathVariable final Long id, @RequestBody @Valid final StationUnregisterInLineRequest request) {
-        return lineService.unregisterStation(id, request)
+        return lineModifyService.unregisterStation(id, request)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
-
 }

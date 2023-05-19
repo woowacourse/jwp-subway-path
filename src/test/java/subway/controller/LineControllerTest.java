@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import subway.service.LineModifyService;
 import subway.service.LineService;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.LineNotFoundException;
@@ -41,6 +42,9 @@ class LineControllerTest {
 
     @MockBean
     private LineService lineService;
+
+    @MockBean
+    private LineModifyService lineModifyService;
 
     @Nested
     @DisplayName("노선 추가 - POST /lines")
@@ -101,7 +105,7 @@ class LineControllerTest {
         @DisplayName("성공")
         void success() throws Exception {
             // given
-            final List<LineResponse> lineRespons = List.of(
+            final List<LineResponse> lineResponses = List.of(
                     new LineResponse(1L, "신분당선", "bg-red-600", List.of(
                             new StationResponse(1L, "정자"), new StationResponse(2L, "판교")
                     )),
@@ -109,7 +113,7 @@ class LineControllerTest {
                             new StationResponse(1L, "정자"), new StationResponse(3L, "수내")
                     ))
             );
-            given(lineService.findAll()).willReturn(lineRespons);
+            given(lineService.findAll()).willReturn(lineResponses);
 
             // when, then
             final String responseBody =
@@ -187,7 +191,7 @@ class LineControllerTest {
             );
 
             // when
-            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
+            when(lineModifyService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -216,7 +220,7 @@ class LineControllerTest {
             );
 
             // when
-            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
+            when(lineModifyService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -245,7 +249,7 @@ class LineControllerTest {
             );
 
             // when
-            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
+            when(lineModifyService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -274,7 +278,7 @@ class LineControllerTest {
             );
 
             // when
-            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
+            when(lineModifyService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -308,7 +312,7 @@ class LineControllerTest {
             );
 
             // when
-            when(lineService.unregisterStation(eq(lineId), any())).thenReturn(Optional.of(lineResponse));
+            when(lineModifyService.unregisterStation(eq(lineId), any())).thenReturn(Optional.of(lineResponse));
 
             // then
             final String responseBody =
@@ -334,7 +338,7 @@ class LineControllerTest {
             final Optional<LineResponse> lineDetailResponse = Optional.empty();
 
             // when
-            when(lineService.unregisterStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+            when(lineModifyService.unregisterStation(eq(lineId), any())).thenReturn(lineDetailResponse);
 
             // then
             mockMvc.perform(patch("/lines/{id}/unregister", lineId)
