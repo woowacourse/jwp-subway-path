@@ -5,27 +5,27 @@
 http://localhost:8080/swagger-ui/index.html
 
 ### 2단계 기능 요구사항
-- [ ] 경로 조회 API
-  - [ ] 출발역과 도착역 사이의 최단 거리 경로를 구하는 API를 구현한다
-    - [ ] uri : GET path?departure=value1&arrival=value2
-  - [ ] 최단 거리 경로와 함께 총 거리 정보를 응답한다 
-    - [ ] response : List<Station>, distance
-  - [ ] 한 노선에서 경로 찾기 뿐만 아니라 여러 노선의 환승도 고려한다
-  - [ ] WeightedMultigraph<String, DefaultWeightedEdge> graph
-  - [ ] Vertex : Station, Edge : Section 의 상하행역 정보, Weight : 거리
-  - [ ] 출발역과 도착역이 노선에 존재하지 않으면 예외 처리
+- [x] 경로 조회 API
+  - [x] 출발역과 도착역 사이의 최단 거리 경로를 구하는 API를 구현한다
+    - [x] uri : GET path?departure=value1&arrival=value2
+  - [x] 최단 거리 경로와 함께 총 거리 정보를 응답한다 
+    - [x] response : List<Station>, distance
+  - [x] 한 노선에서 경로 찾기 뿐만 아니라 여러 노선의 환승도 고려한다
+  - [x] WeightedMultigraph<String, DefaultWeightedEdge> graph
+  - [x] Vertex : Station, Edge : Section 의 상하행역 정보, Weight : 거리
+  - [x] 출발역과 도착역이 노선에 존재하지 않으면 예외 처리
 
--[ ] 요금 조회 기능 추가 
-  - [ ] 경로 조회 시 요금 정보를 포함하여 응답한다
-  - [ ] 요금 계산 방법 
-    - [ ] 기본운임(10㎞ 이내): 기본운임 1,250원 
-    - [ ] 이용 거리 초과 시 추가운임 부과 
-      - [ ] 10km~50km: 5km 까지 마다 100원 추가 
-      - [ ] 50km 초과: 8km 까지 마다 100원 추가
+-[x] 요금 조회 기능 추가 
+  - [x] 경로 조회 시 요금 정보를 포함하여 응답한다
+  - [x] 요금 계산 방법 
+    - [x] 기본운임(10㎞ 이내): 기본운임 1,250원 
+    - [x] 이용 거리 초과 시 추가운임 부과 
+      - [x] 10km~50km: 5km 까지 마다 100원 추가 
+      - [x] 50km 초과: 8km 까지 마다 100원 추가
 
-- [ ] 데이터 베이스 설정
-  - [ ] 프로덕션은 로컬에 저장되도록
-  - [ ] 테스트는 인메모리로 
+- [x] 데이터 베이스 설정
+  - [x] 프로덕션은 로컬에 저장되도록
+  - [x] 테스트는 인메모리로 
 
 ### 1단계 기능 요구사항
 
