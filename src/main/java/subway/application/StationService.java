@@ -1,11 +1,11 @@
 package subway.application;
 
 import java.util.ArrayList;
-import java.util.DuplicateFormatFlagsException;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
@@ -116,6 +116,7 @@ public class StationService {
         return newStationId;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<StationResponse> findLineStationResponsesById(Long lineId) {
         List<StationEntity> rawStations = stationDao.findByLineId(lineId);
         StationEntity currentStation = stationDao.findHeadStationByLineId(lineId);

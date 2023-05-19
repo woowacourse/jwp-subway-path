@@ -9,7 +9,6 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Charge;
@@ -20,7 +19,6 @@ import subway.dto.PathResponse;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
-@Transactional
 @Service
 public class PathService {
 
@@ -29,8 +27,8 @@ public class PathService {
     private static final Distance FIRST_CHARGE_BOUND = new Distance(10);
     private static final Distance SECOND_CHARGE_BOUND = new Distance(50);
     private static final Charge EXTRA_CHARGE_UNIT = new Charge(100);
-    public static final int BASIC_CHARGE = 1250;
-    public static final int MIN_COUNT_TO_TRANSFER = 2;
+    private static final int BASIC_CHARGE = 1250;
+    private static final int MIN_COUNT_TO_TRANSFER = 2;
 
     private final StationDao stationDao;
     private final LineDao lineDao;

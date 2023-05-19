@@ -1,10 +1,8 @@
 package subway.application;
 
-import static subway.application.StationService.EMPTY_STATION_ID;
-
-import java.util.DuplicateFormatFlagsException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
@@ -64,7 +62,7 @@ public class LineService {
 
     private Long insertEndStations(LineRequest request, Long newLineId) {
         StationEntity downEndStation = new StationEntity(request.getDownStation(),
-             newLineId);
+            newLineId);
         Long downEndStationId = stationDao.insert(downEndStation);
 
         StationEntity upEndStation = new StationEntity(request.getUpStation(), downEndStationId,
@@ -72,6 +70,7 @@ public class LineService {
         return stationDao.insert(upEndStation);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<LineResponse> findLineResponses() {
         List<LineEntity> persistLines = lineDao.findAll();
         return persistLines.stream()
@@ -79,6 +78,7 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public LineResponse findLineResponseById(Long id) {
         LineEntity persistLine = lineDao.findById(id);
         return LineResponse.of(persistLine);
