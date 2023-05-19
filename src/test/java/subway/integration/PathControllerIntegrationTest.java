@@ -29,7 +29,7 @@ class PathControllerIntegrationTest {
     ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("경로를 조회하면 최단 경로가 조회되어야 한다.")
+    @DisplayName("경로를 조회하면 최단 경로와 요금이 조회되어야 한다.")
     void findPath_success() throws Exception {
         // given
         PathRequest request = new PathRequest("A역", "I역");
