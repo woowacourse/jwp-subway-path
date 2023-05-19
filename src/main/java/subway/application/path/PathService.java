@@ -39,7 +39,7 @@ public class PathService {
         Path path = getPath(originStation, destinationStation);
         List<String> stations = path.getStations();
         int distance = path.getTotalDistance();
-        return new PathResponse(stations, distance, path.getPrice(pricePolicy));
+        return new PathResponse(stations, distance, pricePolicy.calculate(distance));
     }
 
     private void validateSameStation(PathRequest request) {
