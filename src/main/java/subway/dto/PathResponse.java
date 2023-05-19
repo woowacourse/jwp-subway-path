@@ -2,19 +2,19 @@ package subway.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import subway.domain.Section;
 import subway.domain.ShortestPath;
-import subway.domain.Station;
 
 import java.util.List;
 
 @AllArgsConstructor
 @Getter
 public class PathResponse {
-    private final List<Station> path;
+    private final List<Section> path;
     private final double distance;
     private final int fare;
 
     public static PathResponse of(ShortestPath shortestPath) {
-        return new PathResponse(shortestPath.getStations(), shortestPath.getDistance(), shortestPath.getFare());
+        return new PathResponse(shortestPath.getPath(), shortestPath.getDistance(), shortestPath.getFare());
     }
 }

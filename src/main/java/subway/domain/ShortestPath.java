@@ -15,13 +15,13 @@ public class ShortestPath {
     private static final int ADDITIONAL_FARE = 100;
     private static final int BASIC_FARE = 1250;
 
-    private final List<Station> stations;
+    private final List<Section> path;
     private final double distance;
     private final int fare;
 
-    public static ShortestPath of(List<Station> stations, double distance) {
+    public static ShortestPath of(List<Section> path, double distance) {
         int fare = calculateFare(distance);
-        return new ShortestPath(stations, distance, fare);
+        return new ShortestPath(path, distance, fare);
     }
 
     private static int calculateFare(double distance) {

@@ -3,12 +3,12 @@ package subway.integration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import subway.domain.Station;
 import subway.dto.PathResponse;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static subway.fixture.SectionFixture.*;
 
 @DisplayName("지하철 최단경로 구하기 기능")
 public class PathIntegrationTest extends IntegrationTest {
@@ -28,9 +28,9 @@ public class PathIntegrationTest extends IntegrationTest {
         createLine("3호선", "주황");
 
         createLineStation(1L, "1", "2", "10");
-        createLineStation(1L, "2", "3", "10");
+        createLineStation(1L, "2", "3", "8");
         createLineStation(1L, "3", "4", "10");
-        createLineStation(1L, "4", "5", "10");
+        createLineStation(1L, "4", "5", "7");
         createLineStation(2L, "5", "6", "10");
 
         //when
@@ -38,10 +38,9 @@ public class PathIntegrationTest extends IntegrationTest {
 
         //then
         assertThat(shortestPath.getPath()).isEqualTo(List.of(
-                new Station("이촌"), new Station("서빙고"), new Station("한남"),
-                new Station("옥수"), new Station("압구정")));
-        assertThat(shortestPath.getDistance()).isEqualTo(40);
-        assertThat(shortestPath.getFare()).isEqualTo(1850);
+                SECTION_2, SECTION_3, SECTION_4, SECTION_7));
+        assertThat(shortestPath.getDistance()).isEqualTo(35);
+        assertThat(shortestPath.getFare()).isEqualTo(1750);
     }
 
     @DisplayName("출발역이 노선에 포함되어 있지 않으면 예외가 발생한다")
