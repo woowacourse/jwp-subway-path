@@ -29,7 +29,6 @@ public class SectionController {
     @GetMapping("sections/{startStationId}/{endStationId}")
     public ResponseEntity<RouteDto> selectSectionFee(@PathVariable Long startStationId,
                                                      @PathVariable Long endStationId) {
-        System.out.println("SectionController.selectSectionFee");
         RouteDto feeBySection = sectionService.getFeeByStations(startStationId, endStationId);
 
         return ResponseEntity.ok().body(feeBySection);
