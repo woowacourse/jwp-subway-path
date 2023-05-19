@@ -1,7 +1,5 @@
 package subway.controller.dto.request;
 
-import subway.controller.dto.request.converter.SubwayDirection;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;

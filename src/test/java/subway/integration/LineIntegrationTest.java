@@ -15,7 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.request.StationRegisterInLineRequest;
 import subway.controller.dto.request.StationUnregisterInLineRequest;
-import subway.controller.dto.request.converter.SubwayDirection;
+import subway.controller.dto.request.SubwayDirection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

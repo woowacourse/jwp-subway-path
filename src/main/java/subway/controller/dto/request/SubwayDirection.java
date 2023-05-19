@@ -1,4 +1,4 @@
-package subway.controller.dto.request.converter;
+package subway.controller.dto.request;
 
 import subway.exception.InvalidDirectionException;
 

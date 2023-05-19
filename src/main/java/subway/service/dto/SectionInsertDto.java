@@ -1,6 +1,6 @@
 package subway.service.dto;
 
-import subway.controller.dto.request.converter.SubwayDirection;
+import subway.controller.dto.request.SubwayDirection;
 
 public class SectionInsertDto {
 

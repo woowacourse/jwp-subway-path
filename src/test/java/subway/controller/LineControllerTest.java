@@ -19,7 +19,7 @@ import subway.controller.dto.request.StationRegisterInLineRequest;
 import subway.controller.dto.request.StationUnregisterInLineRequest;
 import subway.controller.dto.response.LineResponse;
 import subway.controller.dto.response.StationResponse;
-import subway.controller.dto.request.converter.SubwayDirection;
+import subway.controller.dto.request.SubwayDirection;
 
 import java.util.List;
 import java.util.Optional;

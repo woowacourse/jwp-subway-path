@@ -1,7 +1,8 @@
-package subway.controller.dto.request.converter;
+package subway.config;
 
 
 import org.springframework.core.convert.converter.Converter;
+import subway.controller.dto.request.SubwayDirection;
 
 public class StringToSubwayDirectionConverter implements Converter<String, SubwayDirection> {
 
