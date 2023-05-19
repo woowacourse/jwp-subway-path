@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.service.SubwayService;
+import subway.service.dto.PathDto;
+import subway.ui.dto.PathResponse;
 
 @RestController
 @RequestMapping("/path")
@@ -18,14 +20,12 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<Void> findPath(
+    public ResponseEntity<PathResponse> findPath(
             @RequestParam("startstation") final Long startStationId,
             @RequestParam("destinationstation") final Long destinationStationId
     ) {
-        System.out.println("====== PathController.findPath ======");
-        System.out.println("startStationId = " + startStationId);
-        System.out.println("destinationStationId = " + destinationStationId);
-        return ResponseEntity.ok().build();
+        final PathDto path = subwayService.findPath(startStationId, destinationStationId);
+        return ResponseEntity.ok().body(PathResponse.from(path));
     }
 
 }

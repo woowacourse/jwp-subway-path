@@ -129,8 +129,9 @@ response body
   "fare": 1450,
   "path": [
     {
-      "lineId": 1,
-      "lineName": "1호선",
+      "id": 1,
+      "name": "1호선",
+      "lineColor": "blue",
       "stations": [
         {
           "id": 1,
@@ -143,8 +144,9 @@ response body
       ]
     },
     {
-      "lineId": 2,
-      "lineName": "2호선",
+      "id": 2,
+      "name": "2호선",
+      "lineColor": "green",
       "stations": [
         {
           "id": 2,

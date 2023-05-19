@@ -81,7 +81,7 @@ public class Subway {
         final Line line = lines.get(lineId);
         return line.getStationIdsByOrder().stream()
                 .map(stations::get)
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public Line getLine(final Long lineId) {
@@ -94,5 +94,11 @@ public class Subway {
 
     public Station getStation(final Long stationId) {
         return stations.get(stationId);
+    }
+
+    public List<Station> getStations(final List<Long> stationIds) {
+        return stationIds.stream()
+                .map(stations::get)
+                .collect(Collectors.toUnmodifiableList());
     }
 }

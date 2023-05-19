@@ -4,11 +4,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.LineDirection;
 import subway.domain.Subway;
+import subway.domain.farepolicy.FarePolicy;
 import subway.domain.line.Line;
+import subway.domain.navigation.PathNavigation;
+import subway.domain.path.LinePath;
+import subway.domain.path.SubwayPath;
 import subway.domain.station.Station;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 import subway.service.dto.LineDto;
+import subway.service.dto.PathDto;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.StationInsertRequest;
 
@@ -21,9 +26,14 @@ public class SubwayService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public SubwayService(final LineRepository lineRepository, final StationRepository stationRepository) {
+    private final PathNavigation pathNavigation;
+    private final FarePolicy farePolicy;
+
+    public SubwayService(final LineRepository lineRepository, final StationRepository stationRepository, final PathNavigation pathNavigation, final FarePolicy farePolicy) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.pathNavigation = pathNavigation;
+        this.farePolicy = farePolicy;
     }
 
     @Transactional
@@ -100,5 +110,25 @@ public class SubwayService {
         return subway.getLines().stream()
                 .map(line -> getLineDto(subway, line))
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Transactional
+    public PathDto findPath(final Long startStationId, final Long endStationId) {
+        final Subway subway = loadSubwayFromRepository();
+        final SubwayPath path = subway.findPath(startStationId, endStationId, pathNavigation);
+
+        final int totalDistance = path.getTotalDistance();
+        final int fare = farePolicy.calculate(path);
+        final List<LinePath> linePaths = path.getLinePaths();
+
+        final List<LineDto> linePath = linePaths.stream()
+                .map(linepath -> {
+                    final Line line = subway.getLine(linepath.getLineId());
+                    final List<Station> stations = subway.getStations(linepath.getStationIds());
+                    return LineDto.of(line, stations);
+                })
+                .collect(Collectors.toUnmodifiableList());
+
+        return new PathDto(totalDistance, fare, linePath);
     }
 }

@@ -327,17 +327,16 @@ public class LineIntegrationTest extends IntegrationTest {
                 .queryParam("destinationstation", st2)
                 .when().get("/path")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value());
-                // todo: 경로 조회 기능 연결
-//                .body("distance", is(7))
-//                .body("fair", is(1250))
-//                .body("path", hasSize(3))
-//                .body("path[0].linId", is(line1Id))
-//                .body("path[0].stations", hasSize(2))
-//                .body("path[1].linId", is(line2Id))
-//                .body("path[1].stations", hasSize(2))
-//                .body("path[2].linId", is(line1Id))
-//                .body("path[2].stations", hasSize(3));
+                .statusCode(HttpStatus.OK.value())
+                .body("distance", is(7))
+                .body("fare", is(1250))
+                .body("path", hasSize(3))
+                .body("path[0].id.toLong()", is(line1Id))
+                .body("path[0].stations", hasSize(2))
+                .body("path[1].id.toLong()", is(line2Id))
+                .body("path[1].stations", hasSize(2))
+                .body("path[2].id.toLong()", is(line1Id))
+                .body("path[2].stations", hasSize(3));
     }
 
     private Long createLine(String name, String color, Long initialUpStation, Long initialDownStation, int initialDistance) {
