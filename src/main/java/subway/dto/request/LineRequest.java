@@ -1,5 +1,8 @@
 package subway.dto.request;
 
+import subway.domain.Line;
+import subway.domain.Sections;
+
 import javax.validation.constraints.NotEmpty;
 
 public class LineRequest {
@@ -14,6 +17,10 @@ public class LineRequest {
     public LineRequest(final String name, final String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public Line toLine() {
+        return new Line(null, name, color, new Sections());
     }
 
     public String getName() {

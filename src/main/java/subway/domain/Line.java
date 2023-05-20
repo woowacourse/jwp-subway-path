@@ -1,7 +1,5 @@
 package subway.domain;
 
-import subway.dto.request.LineRequest;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,10 +14,6 @@ public class Line {
         this.name = name;
         this.color = color;
         this.sections = sections;
-    }
-
-    public Line(final LineRequest request) {
-        this(null, request.getName(), request.getColor(), new Sections());
     }
 
     public Line(final Long id, final String name, final String color) {

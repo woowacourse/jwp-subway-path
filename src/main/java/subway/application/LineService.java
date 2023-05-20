@@ -22,7 +22,7 @@ public class LineService {
     }
 
     public LineResponse createLine(final LineRequest request) {
-        final Line line = new Line(request);
+        final Line line = request.toLine();
         final Line savedLine = lineRepository.save(line);
 
         return LineResponse.of(savedLine);
