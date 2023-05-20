@@ -12,18 +12,18 @@ import subway.repository.SectionRepository;
 @Service
 public class SectionService {
 
-    private final SectionRepository sectionRepository;
+    private final SectionRepository sectionRepositoryImpl;
 
     public SectionService(final SectionRepository sectionRepository) {
-        this.sectionRepository = sectionRepository;
+        this.sectionRepositoryImpl = sectionRepository;
     }
 
     @Transactional
     public SectionResponse connectStation(final Long lineId, final StationToLineRequest request) {
         validateRequestDistance(request);
-        List<Section> sectionsByUpStation = sectionRepository.findSectionByLineIdAndStationId(lineId,
+        List<Section> sectionsByUpStation = sectionRepositoryImpl.findSectionByLineIdAndStationId(lineId,
                 request.getUpStationId());
-        List<Section> sectionsByDownStation = sectionRepository.findSectionByLineIdAndStationId(lineId,
+        List<Section> sectionsByDownStation = sectionRepositoryImpl.findSectionByLineIdAndStationId(lineId,
                 request.getDownStationId());
         validateExist(sectionsByUpStation, sectionsByDownStation);
         validateTwoStationRequest(lineId, sectionsByUpStation, sectionsByDownStation);
@@ -31,13 +31,13 @@ public class SectionService {
         if (doAddTop(sectionsByUpStation) || isNothing(sectionsByUpStation, sectionsByDownStation)) {
             Section newSection = new Section(lineId, request.getUpStationId(), request.getDownStationId(),
                     request.getDistance());
-            return SectionResponse.of(sectionRepository.insert(newSection));
+            return SectionResponse.of(sectionRepositoryImpl.insert(newSection));
         }
 
         if (isInBetween(sectionsByUpStation)) {
             return addBetweenPosition(lineId, request, sectionsByUpStation);
         }
-        return addEndPosition(lineId, request, sectionsByUpStation);
+        return addEndPosition(lineId, request);
     }
 
     private void validateRequestDistance(final StationToLineRequest request) {
@@ -54,7 +54,7 @@ public class SectionService {
 
     private void validateTwoStationRequest(final Long lineId, final List<Section> sectionsByUpStation,
                                            final List<Section> sectionsByDownStation) {
-        if (isNothing(sectionsByUpStation, sectionsByDownStation) && sectionRepository.countByLineId(lineId) > 0) {
+        if (isNothing(sectionsByUpStation, sectionsByDownStation) && sectionRepositoryImpl.countByLineId(lineId) > 0) {
             throw new IllegalArgumentException("노선이 비었을 때를 제외하고 한 번에 두개의 역을 등록할 수 없습니다.");
         }
     }
@@ -81,10 +81,10 @@ public class SectionService {
         Integer updateDistance = originDistance - newDistance;
         Section updateSection = new Section(originSection.getId(), lineId, originSection.getUpStationId(),
                 request.getDownStationId(), updateDistance);
-        sectionRepository.update(updateSection);
+        sectionRepositoryImpl.update(updateSection);
         Section newSection = new Section(lineId, request.getDownStationId(),
                 originSection.getDownStationId(), newDistance);
-        return SectionResponse.of(sectionRepository.insert(newSection));
+        return SectionResponse.of(sectionRepositoryImpl.insert(newSection));
     }
 
     private Section findSectionByUpStationId(final List<Section> sections, final Long upStationId) {
@@ -95,13 +95,10 @@ public class SectionService {
         return sections.get(1);
     }
 
-    private SectionResponse addEndPosition(final Long lineId, final StationToLineRequest request,
-                                           final List<Section> sectionsByUpStation) {
-        Section section = sectionsByUpStation.get(0);
-        validateDistance(section, request);
+    private SectionResponse addEndPosition(final Long lineId, final StationToLineRequest request) {
         Section newSection = new Section(lineId, request.getUpStationId(),
                 request.getDownStationId(), request.getDistance());
-        return SectionResponse.of(sectionRepository.insert(newSection));
+        return SectionResponse.of(sectionRepositoryImpl.insert(newSection));
     }
 
     private void validateDistance(final Section originSection, final StationToLineRequest stationToLineRequest) {
@@ -114,23 +111,23 @@ public class SectionService {
 
     @Transactional
     public void disconnectStation(Long lineId, Long stationId) {
-        int sectionCountByLine = sectionRepository.countByLineId(lineId);
+        int sectionCountByLine = sectionRepositoryImpl.countByLineId(lineId);
         if (sectionCountByLine == 2) {
-            sectionRepository.deleteAllByLineId(lineId);
+            sectionRepositoryImpl.deleteAllByLineId(lineId);
             return;
         }
-        List<Section> sections = sectionRepository.findSectionByLineIdAndStationId(lineId, stationId);
+        List<Section> sections = sectionRepositoryImpl.findSectionByLineIdAndStationId(lineId, stationId);
         if (isInBetween(sections)) {
             Section frontSection = findSectionByDownStationId(sections, stationId);
             Section backSection = findSectionByUpStationId(sections, stationId);
             int updateDistance = frontSection.getDistance() + backSection.getDistance();
             Section updateSection = new Section(frontSection.getId(), frontSection.getUpStationId(),
                     backSection.getDownStationId(), updateDistance);
-            sectionRepository.update(updateSection);
-            sectionRepository.deleteById(backSection.getId());
+            sectionRepositoryImpl.update(updateSection);
+            sectionRepositoryImpl.deleteById(backSection.getId());
             return;
         }
-        sectionRepository.deleteByLineIdAndStationId(lineId, stationId);
+        sectionRepositoryImpl.deleteByLineIdAndStationId(lineId, stationId);
     }
 
     private Section findSectionByDownStationId(final List<Section> sections, final Long downStationId) {
@@ -139,5 +136,10 @@ public class SectionService {
             return section;
         }
         return sections.get(1);
+    }
+
+    @Transactional
+    public void deleteAllByLineId(Long lineId) {
+        sectionRepositoryImpl.deleteAllByLineId(lineId);
     }
 }

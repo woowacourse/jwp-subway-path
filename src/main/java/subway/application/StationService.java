@@ -10,23 +10,23 @@ import subway.repository.StationRepository;
 
 @Service
 public class StationService {
-    private final StationRepository stationRepository;
+    private final StationRepository stationRepositoryImpl;
 
     public StationService(StationRepository stationRepository) {
-        this.stationRepository = stationRepository;
+        this.stationRepositoryImpl = stationRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.insert(new Station(stationRequest.getName()));
+        Station station = stationRepositoryImpl.insert(new Station(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationRepository.findById(id));
+        return StationResponse.of(stationRepositoryImpl.findById(id));
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationRepository.findAll();
+        List<Station> stations = stationRepositoryImpl.findAll();
 
         return stations.stream()
                 .map(StationResponse::of)
@@ -34,10 +34,10 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationRepository.update(new Station(id, stationRequest.getName()));
+        stationRepositoryImpl.update(new Station(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {
-        stationRepository.deleteById(id);
+        stationRepositoryImpl.deleteById(id);
     }
 }
