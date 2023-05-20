@@ -31,3 +31,23 @@
 - [x] 경로 조회
   - [x] 출발역부터 도착역까지 최단거리를 찾는다.
   - [x] 최단거리의 요금을 계산한다.
+
+# API
+
+### path
+| HTTP Method | URL    | 설명       | HTTP Status |
+|------------|--------|----------|-------------|
+| post       | /paths | 최단 경로 조회 | 200         |
+
+### line
+| HTTP Method | URL       | 설명       | HTTP Status |
+|------------|-----------|----------|-------------|
+| post       | /lines    | 노선 등록    | 201         |
+| get        | /lines/{id} | 단일 노선 조회 | 200         |
+| get        | /lines    | 전체 노선 조회 | 200         |
+
+### station
+| HTTP Method | URL       | 설명    | HTTP Status |
+|-------------|-----------|-------|-------------|
+| post        | /stations | 노선 등록 | 201         |
+| delete      | /stations | 노선 삭제 | 202         |
