@@ -11,7 +11,7 @@ import subway.domain.Navigation;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.SubwayFareCalculator;
-import subway.dto.PathDto;
+import subway.service.dto.PathDto;
 import subway.dto.response.PathResponse;
 import subway.repository.SubwayRepository;
 

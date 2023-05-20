@@ -18,7 +18,7 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
-import subway.dto.PathDto;
+import subway.service.dto.PathDto;
 import subway.dto.response.PathResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)

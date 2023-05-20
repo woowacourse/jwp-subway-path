@@ -1,7 +1,7 @@
 package subway.dto.request;
 
 import javax.validation.constraints.NotEmpty;
-import subway.dto.LineDto;
+import subway.service.dto.LineDto;
 
 public class CreateLineRequest {
 

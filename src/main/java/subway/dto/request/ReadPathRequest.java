@@ -1,7 +1,7 @@
 package subway.dto.request;
 
 import javax.validation.constraints.NotEmpty;
-import subway.dto.PathDto;
+import subway.service.dto.PathDto;
 
 public class ReadPathRequest {
 

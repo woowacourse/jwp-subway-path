@@ -14,8 +14,8 @@ import subway.controller.exception.StationNotFoundException;
 import subway.controller.exception.BusinessException;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.dto.SectionDto;
-import subway.dto.StationDto;
+import subway.service.dto.SectionDto;
+import subway.service.dto.StationDto;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 

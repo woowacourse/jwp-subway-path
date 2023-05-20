@@ -2,7 +2,7 @@ package subway.dto.request;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import subway.dto.StationDto;
+import subway.service.dto.StationDto;
 
 public class DeleteStationRequest {
 

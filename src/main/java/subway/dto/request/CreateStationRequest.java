@@ -3,7 +3,7 @@ package subway.dto.request;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import subway.dto.SectionDto;
+import subway.service.dto.SectionDto;
 
 public class CreateStationRequest {
 

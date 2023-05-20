@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.Subway;
-import subway.dto.LineDto;
+import subway.service.dto.LineDto;
 import subway.dto.response.LineResponse;
 import subway.repository.LineRepository;
 import subway.repository.SubwayRepository;

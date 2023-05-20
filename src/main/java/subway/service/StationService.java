@@ -7,12 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.dto.SectionDto;
-import subway.dto.StationDto;
+import subway.service.dto.SectionDto;
+import subway.service.dto.StationDto;
 import subway.dto.response.StationResponse;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
-import subway.repository.SubwayRepository;
 
 @Service
 public class StationService {
