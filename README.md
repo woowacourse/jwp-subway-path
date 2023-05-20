@@ -7,16 +7,16 @@
   - 노선에 포함된 역을 순서대로 보여주도록 응답 개선
 - [x] 노선 목록 조회 API 수정
   - 노선에 포함된 역을 순서대로 보여주도록 응답 개선
-- [ ] (2단계) 경로 조회 API 구현
+- [x] (2단계) 경로 조회 API 구현
   - 최단 거리 경로와 거리 정보, 요금 정보
 
 ## API 명세
 
-- 노선에 역 등록 API: POST /lines/{lineId}/stations
+- 노선에 역 등록 API: POST /lines/{id}/stations
   - BODY: upStationId, downStationId, distance
-- 노선에 역 제거 API: DELETE /lines/{lineId}/stations/{stationId}
-- 노선 조회 API: GET /lines/{lineId}/stations
-- 모든 노선 조회 API: GET /lines/stations 
+- 노선에 역 제거 API: DELETE /lines/{id}/stations/{stationId}
+- 노선 조회 API: GET /lines/{id}
+- 모든 노선 조회 API: GET /lines
 - 경로 조회 API: GET /path
 
 
@@ -56,7 +56,7 @@
       50km 초과: 8km 까지 마다 100원 추가
 
 ## 리팩토링 사항
-- [ ] Section 테이블에 order 추가
-- [ ] 도메인에게 책임 옮기기
-- [ ] 라인 정보 조회 API 합치기
-- [ ] 테스트 메서드 추가 및 메서드 분리
+- [x] Section 테이블에 order 추가
+- [x] 도메인에게 책임 옮기기
+- [x] 라인 정보 조회 API 합치기
+- [x] 테스트 메서드 추가 및 메서드 분리
