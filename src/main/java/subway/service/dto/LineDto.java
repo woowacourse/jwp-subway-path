@@ -1,19 +1,13 @@
-package subway.domain;
+package subway.service.dto;
 
-public class Line {
+public class LineDto {
 
-    private final long id;
     private final String name;
     private final String color;
 
-    public Line(final long id, final String name, final String color) {
-        this.id = id;
+    public LineDto(final String name, final String color) {
         this.name = name;
         this.color = color;
-    }
-
-    public long getId() {
-        return id;
     }
 
     public String getName() {
@@ -23,4 +17,5 @@ public class Line {
     public String getColor() {
         return color;
     }
+
 }
