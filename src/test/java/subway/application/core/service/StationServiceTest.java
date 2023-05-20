@@ -2,7 +2,6 @@ package subway.application.core.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +13,6 @@ import subway.application.core.service.dto.out.StationResult;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,7 +45,7 @@ class StationServiceTest {
 
         // when
         IdCommand idCommand = new IdCommand(saved.getId());
-        StationResult findResult = stationService.findStationResponseById(idCommand);
+        StationResult findResult = stationService.findStationById(idCommand);
 
         // then
         assertThat(findResult).usingRecursiveComparison()
@@ -62,7 +60,7 @@ class StationServiceTest {
         StationResult saved = stationService.saveStation(saveCommand);
 
         // when
-        List<StationResult> findResults = stationService.findAllStationResponses();
+        List<StationResult> findResults = stationService.findAllStations();
 
         // then
         assertThat(findResults.get(0)).usingRecursiveComparison()
@@ -80,7 +78,7 @@ class StationServiceTest {
         UpdateStationCommand updateCommand = new UpdateStationCommand(saved.getId(), "방배역");
         stationService.updateStation(updateCommand);
 
-        StationResult actual = stationService.findStationResponseById(new IdCommand(saved.getId()));
+        StationResult actual = stationService.findStationById(new IdCommand(saved.getId()));
         StationResult expected = new StationResult(saved.getId(), "방배역");
 
         // then
@@ -99,7 +97,7 @@ class StationServiceTest {
         IdCommand idCommand = new IdCommand(saved.getId());
         stationService.deleteStationById(idCommand);
 
-        List<StationResult> actual = stationService.findAllStationResponses();
+        List<StationResult> actual = stationService.findAllStations();
 
         // then
         assertThat(actual).isEmpty();

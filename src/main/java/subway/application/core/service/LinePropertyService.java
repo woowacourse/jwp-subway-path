@@ -27,7 +27,7 @@ public class LinePropertyService {
         return new LinePropertyResult(lineProperty);
     }
 
-    public List<LinePropertyResult> findLinePropertyResponses() {
+    public List<LinePropertyResult> findAllLineProperty() {
         List<LineProperty> allLineProperties = linePropertyRepository.findAll();
         return allLineProperties.stream()
                 .map(lineProperty -> new LinePropertyResult(lineProperty.getId(),
@@ -35,7 +35,7 @@ public class LinePropertyService {
                 .collect(Collectors.toList());
     }
 
-    public LinePropertyResult findLinePropertyResponseById(IdCommand command) {
+    public LinePropertyResult findLinePropertyById(IdCommand command) {
         LineProperty lineProperty = linePropertyRepository.findById(command.getId());
         return new LinePropertyResult(lineProperty);
     }

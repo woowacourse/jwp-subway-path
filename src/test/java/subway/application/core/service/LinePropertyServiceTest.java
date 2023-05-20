@@ -2,22 +2,17 @@ package subway.application.core.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.core.domain.LineProperty;
-import subway.application.core.service.dto.in.DeleteStationCommand;
 import subway.application.core.service.dto.in.IdCommand;
 import subway.application.core.service.dto.in.SaveLinePropertyCommand;
 import subway.application.core.service.dto.in.UpdateLinePropertyCommand;
 import subway.application.core.service.dto.out.LinePropertyResult;
-import subway.application.port.LinePropertyRepository;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,7 +30,7 @@ class LinePropertyServiceTest {
 
         // when
         IdCommand idCommand = new IdCommand(saved.getId());
-        LinePropertyResult actual = linePropertyService.findLinePropertyResponseById(idCommand);
+        LinePropertyResult actual = linePropertyService.findLinePropertyById(idCommand);
 
         // then
         assertThat(saved).usingRecursiveComparison().isEqualTo(actual);
@@ -49,7 +44,7 @@ class LinePropertyServiceTest {
         LinePropertyResult saved = linePropertyService.saveLineProperty(command);
 
         // when
-        List<LinePropertyResult> results = linePropertyService.findLinePropertyResponses();
+        List<LinePropertyResult> results = linePropertyService.findAllLineProperty();
         LinePropertyResult expected = new LinePropertyResult(saved.getId(), "1호선", "파랑");
 
         // then
@@ -66,7 +61,7 @@ class LinePropertyServiceTest {
 
         // when
         IdCommand idCommand = new IdCommand(saved.getId());
-        LinePropertyResult result = linePropertyService.findLinePropertyResponseById(idCommand);
+        LinePropertyResult result = linePropertyService.findLinePropertyById(idCommand);
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(saved);
@@ -83,7 +78,7 @@ class LinePropertyServiceTest {
         UpdateLinePropertyCommand updateCommand =
                 new UpdateLinePropertyCommand(saved.getId(), "1호선", "빨강");
         linePropertyService.updateLineProperty(updateCommand);
-        LinePropertyResult findResult = linePropertyService.findLinePropertyResponseById(
+        LinePropertyResult findResult = linePropertyService.findLinePropertyById(
                 new IdCommand(saved.getId()));
         LinePropertyResult expected = new LinePropertyResult(saved.getId(), "1호선", "빨강");
 
@@ -103,6 +98,6 @@ class LinePropertyServiceTest {
         linePropertyService.deleteLinePropertyById(idCommand);
 
         // then
-        assertThat(linePropertyService.findLinePropertyResponses()).isEmpty();
+        assertThat(linePropertyService.findAllLineProperty()).isEmpty();
     }
 }

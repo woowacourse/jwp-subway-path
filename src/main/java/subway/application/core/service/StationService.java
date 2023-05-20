@@ -27,11 +27,11 @@ public class StationService {
         return new StationResult(station);
     }
 
-    public StationResult findStationResponseById(IdCommand command) {
+    public StationResult findStationById(IdCommand command) {
         return new StationResult(stationRepository.findById(command.getId()));
     }
 
-    public List<StationResult> findAllStationResponses() {
+    public List<StationResult> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()

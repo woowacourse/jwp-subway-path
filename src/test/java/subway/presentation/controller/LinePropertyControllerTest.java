@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.core.service.LinePropertyService;
 import subway.application.core.service.dto.out.LinePropertyResult;
-import subway.presentation.controller.LinePropertyController;
 import subway.presentation.dto.LineRequest;
 
 import java.util.List;
@@ -66,7 +65,7 @@ public class LinePropertyControllerTest {
                 new LinePropertyResult(2L, "2호선", "초록")
         );
 
-        when(linePropertyService.findLinePropertyResponses()).thenReturn(linePropertyResults);
+        when(linePropertyService.findAllLineProperty()).thenReturn(linePropertyResults);
 
         // when
         mockMvc.perform(get("/lines"))
@@ -85,7 +84,7 @@ public class LinePropertyControllerTest {
         // given
         LinePropertyResult linePropertyResult = new LinePropertyResult(1L, "1호선", "파랑");
 
-        when(linePropertyService.findLinePropertyResponseById(any())).thenReturn(linePropertyResult);
+        when(linePropertyService.findLinePropertyById(any())).thenReturn(linePropertyResult);
 
         // when
         mockMvc.perform(get("/lines/{id}", 1L))

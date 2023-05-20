@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.core.service.StationService;
 import subway.application.core.service.dto.out.StationResult;
-import subway.presentation.controller.StationController;
 import subway.presentation.dto.StationRequest;
 
 import java.util.List;
@@ -66,7 +65,7 @@ public class StationControllerTest {
                 new StationResult(2L, "방배역")
         );
 
-        when(stationService.findAllStationResponses()).thenReturn(stationResults);
+        when(stationService.findAllStations()).thenReturn(stationResults);
 
         // when
         mockMvc.perform(get("/stations"))
@@ -83,7 +82,7 @@ public class StationControllerTest {
     void showStation() throws Exception {
         // given
         StationResult stationResult = new StationResult(1L, "잠실역");
-        when(stationService.findStationResponseById(any())).thenReturn(stationResult);
+        when(stationService.findStationById(any())).thenReturn(stationResult);
 
         // when
         mockMvc.perform(get("/stations/{id}", 1L))

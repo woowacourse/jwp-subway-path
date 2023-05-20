@@ -37,7 +37,7 @@ public class StationController {
     @GetMapping
     @Operation(summary = "show stations", description = "모든 역 정보 반환")
     public ResponseEntity<List<StationResponse>> showStations() {
-        List<StationResult> result = stationService.findAllStationResponses();
+        List<StationResult> result = stationService.findAllStations();
         List<StationResponse> responses = result.stream()
                 .map(stationResult -> new StationResponse(stationResult.getId(), stationResult.getName()))
                 .collect(Collectors.toList());
@@ -48,7 +48,7 @@ public class StationController {
     @GetMapping("/{id}")
     @Operation(summary = "show station by id", description = "역 정보 반환")
     public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
-        StationResult result = stationService.findStationResponseById(new IdCommand(id));
+        StationResult result = stationService.findStationById(new IdCommand(id));
         StationResponse response = new StationResponse(result.getId(), result.getName());
 
         return ResponseEntity.ok().body(response);
