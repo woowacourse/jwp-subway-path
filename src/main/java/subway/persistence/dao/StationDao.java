@@ -49,4 +49,14 @@ public class StationDao {
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", id);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
+
+    public Optional<Long> findLineIdByStationId(Long stationId) {
+        String sql = "SELECT line_id FROM station WHERE id=:id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", stationId);
+        return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(
+                sql,
+                sqlParameterSource,
+                (resultSet, rowNumber) -> resultSet.getLong("line_id")
+        ));
+    }
 }
