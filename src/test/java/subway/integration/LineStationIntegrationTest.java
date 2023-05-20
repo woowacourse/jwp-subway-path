@@ -14,11 +14,13 @@ import subway.dto.request.ConnectionInitRequest;
 import subway.dto.request.ConnectionMidRequest;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineStationResponse;
+import subway.dto.response.StationResponse;
 import subway.ui.EndpointType;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -250,9 +252,13 @@ public class LineStationIntegrationTest extends IntegrationTest {
 
         // then
         final LineStationResponse lineStationResponse = response.as(LineStationResponse.class);
+        final List<String> stationNames = lineStationResponse.getStationResponses()
+                .stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
         assertAll(
                 () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> Assertions.assertThat(lineStationResponse.getStations()).containsOnly("강남역", "잠실역"),
+                () -> Assertions.assertThat(stationNames).containsOnly("강남역", "잠실역"),
                 () -> Assertions.assertThat(lineStationResponse.getDistances()).containsOnly(10)
         );
     }
@@ -286,12 +292,15 @@ public class LineStationIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        final List<String> stations = response.jsonPath().getList("stations.flatten()", String.class);
+        final List<StationResponse> stationResponses = response.jsonPath().getList("stationResponses.flatten()", StationResponse.class);
+        final List<String> stationNames = stationResponses.stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
         final List<String> distances = response.jsonPath().getList("distances.flatten()", String.class);
-        System.out.println(stations);
+        System.out.println(stationNames);
         assertAll(
                 () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> Assertions.assertThat(stations).contains("강남역", "잠실역", "건대입구역", "선릉역"),
+                () -> Assertions.assertThat(stationNames).contains("강남역", "잠실역", "건대입구역", "선릉역"),
                 () -> Assertions.assertThat(distances).contains("6", "10")
         );
     }

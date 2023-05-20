@@ -13,6 +13,7 @@ import subway.dto.request.ConnectionEndpointRequest;
 import subway.dto.request.ConnectionInitRequest;
 import subway.dto.request.ConnectionMidRequest;
 import subway.dto.response.LineStationResponse;
+import subway.dto.response.StationResponse;
 
 import java.util.List;
 
@@ -134,9 +135,12 @@ class LineStationControllerTest {
     @DisplayName("get /lines/{lineId}/stations : 라인에 해당하는 모든 역을 조회한다.")
     void showStationsByLineId() throws Exception {
         // given
-        final List<String> stations = List.of("선릉역", "강남역", "잠실역");
+        final List<StationResponse> stationResponses = List.of(
+                new StationResponse(1L, "선릉역"),
+                new StationResponse(2L, "강남역"),
+                new StationResponse(3L, "잠실역"));
         final List<Integer> distances = List.of(1, 3);
-        final LineStationResponse response = new LineStationResponse(stations, distances);
+        final LineStationResponse response = new LineStationResponse(stationResponses, distances);
         final String jsonResponse = objectMapper.writeValueAsString(response);
 
         when(lineStationService.findByLineId(1L)).thenReturn(response);
@@ -154,12 +158,20 @@ class LineStationControllerTest {
     @Test
     void showStations() throws Exception {
         // given
-        final List<String> stations1 = List.of("선릉역", "강남역", "잠실역");
+        final List<StationResponse> stationResponses1 = List.of(
+                new StationResponse(1L, "선릉역"),
+                new StationResponse(2L, "강남역"),
+                new StationResponse(3L, "잠실역"));
         final List<Integer> distances1 = List.of(1, 3);
-        final List<String> stations2 = List.of("구의역", "건대입구역", "신도림역");
+
+        final List<StationResponse> stationResponses2 = List.of(
+                new StationResponse(4L, "구의역"),
+                new StationResponse(5L, "건대입구역"),
+                new StationResponse(6L, "신도림역"));
         final List<Integer> distances2 = List.of(5, 8);
-        final LineStationResponse response = new LineStationResponse(stations1, distances1);
-        final LineStationResponse response2 = new LineStationResponse(stations2, distances2);
+
+        final LineStationResponse response = new LineStationResponse(stationResponses1, distances1);
+        final LineStationResponse response2 = new LineStationResponse(stationResponses2, distances2);
         final List<LineStationResponse> responses = List.of(response, response2);
         final String jsonResponse = objectMapper.writeValueAsString(responses);
 

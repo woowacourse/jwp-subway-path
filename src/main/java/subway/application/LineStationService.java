@@ -6,6 +6,7 @@ import subway.domain.Line;
 import subway.domain.Lines;
 import subway.domain.Station;
 import subway.dto.response.LineStationResponse;
+import subway.dto.response.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,14 +106,14 @@ public class LineStationService {
     }
 
     private LineStationResponse mapToResponse(final Line line) {
-        final List<String> stations = stationsToString(line.getAllStations());
+        final List<StationResponse> stationResponses = mapToStationResponses(line.getAllStations());
         final List<Integer> getDistances = line.getAllDistances();
-        return new LineStationResponse(stations, getDistances);
+        return new LineStationResponse(stationResponses, getDistances);
     }
 
-    private List<String> stationsToString(final List<Station> stations) {
+    private List<StationResponse> mapToStationResponses(final List<Station> stations) {
         return stations.stream()
-                .map(Station::getName)
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 }
