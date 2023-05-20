@@ -16,12 +16,12 @@ public class RouteResponse {
         this.fare = fare;
     }
 
-    public static RouteResponse from(final Route route) {
+    public static RouteResponse of(final Route route, final Fare fare) {
         final List<String> StationNames = route.getStations().stream()
                 .map(Station::getName)
                 .collect(Collectors.toList());
 
-        return new RouteResponse(StationNames, route.calculateOverFare());
+        return new RouteResponse(StationNames, fare);
     }
 
     public List<String> getShortCutRoute() {

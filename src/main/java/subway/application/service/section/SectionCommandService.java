@@ -61,7 +61,7 @@ public class SectionCommandService implements AttachStationUseCase, DetachStatio
     }
 
     private void validateLineId(final long lineId) {
-        final Optional<Line> optionalLine = lineQueryPort.findById(lineId);
+        final Optional<Line> optionalLine = lineQueryPort.findLineById(lineId);
         if (optionalLine.isEmpty()) {
             throw new IllegalArgumentException("노선이 없습니다");
         }
