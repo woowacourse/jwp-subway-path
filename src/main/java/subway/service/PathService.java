@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.FareCalculator;
 import subway.domain.Line;
 import subway.domain.Navigation;
@@ -24,6 +25,7 @@ public class PathService {
         this.subwayRepository = subwayRepository;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(final PathDto pathDto) {
         final Station source = new Station(pathDto.getSourceStation());
         final Station target = new Station(pathDto.getTargetStation());
@@ -32,7 +34,6 @@ public class PathService {
         final List<Sections> sections = lines.stream()
                 .map(Line::getSections)
                 .collect(Collectors.toList());
-        System.out.println(sections);
 
         final Navigation navigation = Navigation.from(sections);
         final List<Station> stations = navigation.getShortestPath(source, target);

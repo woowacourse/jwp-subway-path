@@ -89,5 +89,4 @@ class PathControllerTest extends IntegrationTest {
         sectionDao.insert(thirdLineId, 문정역.getId(), 장지역.getId(), 8);
         sectionDao.insert(thirdLineId, 장지역.getId(), 복정역.getId(), 10);
     }
-
 }

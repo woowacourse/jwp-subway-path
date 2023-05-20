@@ -36,7 +36,6 @@ public class StationService {
         return StationResponse.of(registeredLine, registeredLine.stations());
     }
 
-
     private void updateLine(final Station source, final Station target) {
         final List<Station> stations = subwayRepository.findStations();
 
