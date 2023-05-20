@@ -17,10 +17,11 @@ class SectionDaoTest {
     private JdbcTemplate jdbcTemplate;
     private SectionDao sectionDao;
     private SectionEntity sectionEntity;
-    private final Long lineId = 1L;
+    private Long lineId;
 
     @BeforeEach
     void setUp() {
+        lineId = 1L;
         sectionDao = new SectionDao(jdbcTemplate);
         sectionEntity = new SectionEntity(1L, 2L, lineId, 10);
     }

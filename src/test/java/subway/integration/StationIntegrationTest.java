@@ -16,9 +16,9 @@ import subway.dto.StationDeleteRequest;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
-
     private StationCreateRequest stationCreateRequest;
 
+    @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
