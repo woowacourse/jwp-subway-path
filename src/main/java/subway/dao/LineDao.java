@@ -24,9 +24,9 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("line_id");
     }
