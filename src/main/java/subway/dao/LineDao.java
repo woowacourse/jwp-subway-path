@@ -34,7 +34,6 @@ public class LineDao {
 
     public Long insert(LineEntity lineEntity) {
         SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("id", lineEntity.getId())
                 .addValue("name", lineEntity.getName())
                 .addValue("color", lineEntity.getColor());
 

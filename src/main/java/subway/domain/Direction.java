@@ -3,13 +3,16 @@ package subway.domain;
 import java.util.Arrays;
 
 public enum Direction {
-    LEFT("LEFT"),
-    RIGHT("RIGHT");
+
+    UP("UP", new AddUpStationStrategy()),
+    DOWN("DOWN", new AddDownStationStrategy());
 
     private final String value;
+    private final AddStationStrategy addStationStrategy;
 
-    Direction(String value) {
+    Direction(String value, AddStationStrategy addStationStrategy) {
         this.value = value;
+        this.addStationStrategy = addStationStrategy;
     }
 
     public boolean isSameDirection(String input) {
@@ -21,5 +24,9 @@ public enum Direction {
                 .filter(direction -> direction.isSameDirection(input))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("일치하는 방향이 존재하지 않습니다."));
+    }
+
+    public AddStationStrategy findAddStrategy() {
+        return this.addStationStrategy;
     }
 }

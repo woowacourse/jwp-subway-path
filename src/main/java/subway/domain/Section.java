@@ -26,7 +26,7 @@ public class Section {
     }
 
     public boolean isStationOnDirection(Station baseStation, Direction direction) {
-        if(direction == Direction.LEFT) {
+        if(direction == Direction.UP) {
             return upStation.equals(baseStation);
         }
         return downStation.equals(baseStation);
@@ -48,6 +48,15 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(upStation, downStation);
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 
     public Station getUpStation() {
