@@ -1,11 +1,11 @@
 package subway.integration;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -90,7 +90,7 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.body().jsonPath().get("message").equals("존재하지 않는 역입니다.")).isTrue()
         );
@@ -139,7 +139,7 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.body().jsonPath().get("message").equals("존재하지 않는 역입니다.")).isTrue()
         );
