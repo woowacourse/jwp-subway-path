@@ -3,6 +3,8 @@ package subway.domain;
 import subway.domain.vo.Distance;
 import subway.domain.vo.Money;
 
+import java.math.BigDecimal;
+
 public class DistancePrice {
 
     private final Distance each;
@@ -13,12 +15,12 @@ public class DistancePrice {
         this.price = price;
     }
 
-    public static DistancePrice from(final Integer each, final Double price) {
+    public static DistancePrice from(final Integer each, final String price) {
         return new DistancePrice(new Distance(each), Money.from(price));
     }
 
     public Money impose(final Distance totalDistance) {
         final Distance quotient = totalDistance.quotient(each);
-        return price.multiply(quotient.getValue());
+        return price.multiply(BigDecimal.valueOf(quotient.getValue()));
     }
 }

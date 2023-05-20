@@ -24,7 +24,6 @@ import static subway.fixture.LineFixture.노선;
 import static subway.fixture.MoneyFixture.비용;
 import static subway.fixture.SectionFixture.구간;
 import static subway.fixture.SectionFixture.상행_종점_구간;
-import static subway.fixture.SectionsFixture.구간_목록;
 import static subway.fixture.StationFixture.역;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -201,7 +200,7 @@ class RouteGraphServiceTest {
                         RouteEdge.from(구간(거리(2), 역("D"), 역("B")), "2"),
                         RouteEdge.from(구간(거리(1), 역("B"), 역("A")), "1")
                 ),
-                () -> assertThat(비용).isEqualTo(비용(1250)),
+                () -> assertThat(비용).isEqualTo(비용("1250")),
                 () -> assertThat(최단_거리).isEqualTo(거리(10))
         );
     }

@@ -23,7 +23,7 @@ public class RouteAssured {
             final List<String> 환승역_목록,
             final List<RouteEdgeResponse> 구간_목록,
             final Integer 총거리,
-            final Integer 총금액
+            final String 총금액
     ) {
         return new QueryShortestRouteResponse(출발역명, 도착역명, 환승역_목록, 구간_목록, 총거리, 총금액);
     }

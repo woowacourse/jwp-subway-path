@@ -1,29 +1,31 @@
 package subway.domain.vo;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class Money {
 
-    private final double value;
+    private final BigDecimal value;
 
-    private Money(final double value) {
+    public Money(final BigDecimal value) {
         this.value = value;
     }
 
-    public static Money from(final double value) {
-        return new Money(value);
+    public static Money from(final String value) {
+        return new Money(new BigDecimal(value));
     }
 
-    public Money plus(final Money other) {
-        return new Money(value + other.value);
+    public Money plus(final Money otherValue) {
+        return new Money(value.add(otherValue.value));
     }
 
-    public Money multiply(final int value) {
-        return new Money(this.value * value);
+    public Money multiply(final BigDecimal otherValue) {
+        return new Money(value.multiply(otherValue));
     }
 
-    public double getValue() {
-        return value;
+    public String getValue() {
+        return value.setScale(0, RoundingMode.CEILING).toString();
     }
 
     @Override
@@ -31,7 +33,7 @@ public class Money {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Money money = (Money) o;
-        return Double.compare(money.value, value) == 0;
+        return Objects.equals(value, money.value);
     }
 
     @Override
@@ -40,8 +42,7 @@ public class Money {
     }
 
     @Override
-    public String
-    toString() {
+    public String toString() {
         return "Money{" +
                 "value=" + value +
                 '}';

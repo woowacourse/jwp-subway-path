@@ -8,19 +8,19 @@ import java.util.function.Predicate;
 
 public enum Payment {
     GREATER_THAN_0_EQUALS_OR_LESS_THAN_10(
-            DistancePrice.from(100_000, 0D),
+            DistancePrice.from(100_000, "0"),
             totalDistance -> 0 < totalDistance && totalDistance <= 10
     ),
     GREATER_THAN_10_EQUALS_OR_LESS_THAN_50(
-            DistancePrice.from(5, 100D),
+            DistancePrice.from(5, "100"),
             totalDistance -> 10 < totalDistance && totalDistance <= 50
     ),
     GREATER_THAN_50(
-            DistancePrice.from(8, 100D),
+            DistancePrice.from(8, "100"),
             totalDistance -> 50 < totalDistance && totalDistance <= 100_000
     );
 
-    private static final Money DEFAULT_PRICE = Money.from(1250D);
+    private static final Money DEFAULT_PRICE = Money.from("1250");
     private static final Distance DEFAULT_DISTANCE = new Distance(10);
 
     private final DistancePrice distancePrice;

@@ -41,7 +41,7 @@ class RouteIntegrationTest extends ControllerTestConfig {
                                     중간_경로_응답("D", "C", "1", 3),
                                     중간_경로_응답("C", "B", "1", 2),
                                     중간_경로_응답("B", "A", "1", 1)
-                            ), 19, 1350));
+                            ), 19, "1350"));
     }
 
     @Test
@@ -61,7 +61,7 @@ class RouteIntegrationTest extends ControllerTestConfig {
                             최종_경로_정보_응답("G", "A",
                                     List.of(),
                                     List.of(중간_경로_응답("G", "A", "1", 1)),
-                                    1, 1250));
+                                    1, "1250"));
     }
 
     @Test
@@ -84,7 +84,7 @@ class RouteIntegrationTest extends ControllerTestConfig {
                                             중간_경로_응답("E", "D", "2", 1),
                                             중간_경로_응답("D", "C", "1", 3),
                                             중간_경로_응답("C", "A", "1", 3)
-                                    ), 19, 1350));
+                                    ), 19, "1350"));
     }
 
     void 출발역과_도착지가_있을_때_환승을_2번하는_상황에서_최단_경로와_금액을_구한다() {
@@ -132,7 +132,7 @@ class RouteIntegrationTest extends ControllerTestConfig {
                                             중간_경로_응답("D", "E", "2", 1),
                                             중간_경로_응답("E", "F", "2", 2),
                                             중간_경로_응답("F", "G", "3", 10)
-                                    ), 19, 1350));
+                                    ), 19, "1350"));
     }
 
     @Test
@@ -176,6 +176,6 @@ class RouteIntegrationTest extends ControllerTestConfig {
                             최종_경로_정보_응답("A", "F",
                                     List.of(),
                                     List.of(중간_경로_응답("A", "F", "3", 1)
-                                    ), 1, 1250));
+                                    ), 1, "1250"));
     }
 }

@@ -16,16 +16,18 @@ class PaymentTest {
         final Money totalPrice = Payment.calculate(Distance.from(10));
 
         // then
-        assertThat(totalPrice).isEqualTo(비용(1250D));
+        assertThat(totalPrice).isEqualTo(비용("1250"));
     }
 
     @ParameterizedTest
     @CsvSource(value = {"11:1250", "15:1350", "20:1450"}, delimiter = ':')
-    void _10km_초과_50km_이하_거리_요금을_게산한다(final int distance, final int price) {
+    void _10km_초과_50km_이하_거리_요금을_게산한다(final int distance, final String price) {
         // when
         final Money totalPrice = Payment.calculate(Distance.from(distance));
 
         // then
-        assertThat(totalPrice).isEqualTo(비용(price));
+        assertThat(totalPrice)
+                .usingRecursiveComparison()
+                .isEqualTo(비용(price));
     }
 }

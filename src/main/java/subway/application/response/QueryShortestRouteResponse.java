@@ -14,7 +14,7 @@ public class QueryShortestRouteResponse {
     private List<String> transferStations;
     private List<RouteEdgeResponse> sections;
     private Integer totalDistance;
-    private Integer totalPrice;
+    private String totalPrice;
 
     public QueryShortestRouteResponse() {
     }
@@ -25,7 +25,7 @@ public class QueryShortestRouteResponse {
             final List<String> transferStations,
             final List<RouteEdgeResponse> sections,
             final Integer totalDistance,
-            final Integer totalPrice
+            final String totalPrice
     ) {
         this.startStation = startStation;
         this.endStation = endStation;
@@ -52,7 +52,7 @@ public class QueryShortestRouteResponse {
                         .collect(Collectors.toList()),
                 sectionEdges,
                 distance.getValue(),
-                (int) totalPrice.getValue()
+                totalPrice.getValue()
         );
     }
 
@@ -70,7 +70,7 @@ public class QueryShortestRouteResponse {
                 transferStationResponse,
                 routeEdgeResponse,
                 distance.getValue(),
-                (int) totalPrice.getValue()
+                totalPrice.getValue()
         );
     }
 
@@ -109,7 +109,7 @@ public class QueryShortestRouteResponse {
         return totalDistance;
     }
 
-    public Integer getTotalPrice() {
+    public String getTotalPrice() {
         return totalPrice;
     }
 }
