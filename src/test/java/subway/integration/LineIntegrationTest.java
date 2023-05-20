@@ -50,7 +50,7 @@ class LineIntegrationTest extends IntegrationTest {
     @Test
     void 기존에_존재하는_지하철_노선_이름으로_지하철_노선을_생성한다() {
         // given
-        지하철_생성(createLineRequestOne);
+        노선_생성(createLineRequestOne);
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -71,16 +71,9 @@ class LineIntegrationTest extends IntegrationTest {
     @Test
     void 지하철_노선을_조회한다() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createLineRequestOne)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+        final Long lineId = 노선_생성(createLineRequestOne);
 
         // expect
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -94,8 +87,8 @@ class LineIntegrationTest extends IntegrationTest {
     @Test
     void 지하철_노선_목록을_조회한다() {
         // given
-        지하철_생성(createLineRequestOne);
-        지하철_생성(createLineRequestTwo);
+        노선_생성(createLineRequestOne);
+        노선_생성(createLineRequestTwo);
 
         // expect
         RestAssured.given().log().all()
@@ -111,12 +104,16 @@ class LineIntegrationTest extends IntegrationTest {
     }
 
 
-    private void 지하철_생성(final CreateLineRequest createLineRequest) {
-        RestAssured
+    private Long 노선_생성(final CreateLineRequest createLineRequest) {
+        final ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(createLineRequest)
                 .when().post("/lines")
-                .then().log().all();
+                .then().log().all()
+                .extract();
+
+        // expect
+        return Long.parseLong(createResponse.header("Location").split("/")[2]);
     }
 }
