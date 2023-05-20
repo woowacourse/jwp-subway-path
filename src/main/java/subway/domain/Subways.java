@@ -1,15 +1,21 @@
 package subway.domain;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.application.exception.SubwayServiceException;
 
 import java.util.List;
 
 public class Subways {
 
-    private final WeightedMultigraph<Station, SubwayEdge> subwayStructure;
+    private static final String INVALID_NO_STATION_MESSAGE = "노선에 존재하지 않는 역을 입력했습니다.";
+    private static final String INVALID_SAME_STATIONS_MESSAGE = "동일한 역의 경로는 찾을 수 없습니다.";
 
-    private Subways(WeightedMultigraph<Station, SubwayEdge> subwayStructure) {
-        this.subwayStructure = subwayStructure;
+    private final WeightedMultigraph<Station, SubwayEdge> subways;
+
+    private Subways(WeightedMultigraph<Station, SubwayEdge> subways) {
+        this.subways = subways;
     }
 
     public static Subways from(final List<Section> sections) {
@@ -29,5 +35,25 @@ public class Subways {
             subwayStructure.addEdge(left, right, subwayEdge);
         }
         return subwayStructure;
+    }
+
+    public GraphPath<Station, SubwayEdge> getShortestPaths(final Station start, final Station end) {
+        validateGetPath(start, end);
+        DijkstraShortestPath<Station, SubwayEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subways);
+        GraphPath<Station, SubwayEdge> paths = dijkstraShortestPath.getPath(start, end);
+        return paths;
+    }
+
+    private void validateGetPath(Station start, Station end) {
+        if (hasNoStation(start) || hasNoStation(end)) {
+            throw new SubwayServiceException(INVALID_NO_STATION_MESSAGE);
+        }
+        if (start.equals(end)) {
+            throw new SubwayServiceException(INVALID_SAME_STATIONS_MESSAGE);
+        }
+    }
+
+    private boolean hasNoStation(Station station) {
+        return !subways.containsVertex(station);
     }
 }
