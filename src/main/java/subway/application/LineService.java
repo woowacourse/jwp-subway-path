@@ -22,7 +22,7 @@ public class LineService {
     }
 
     public LineResponse create(final LineRequest request) {
-        final Line line = lineRepository.insert(request.getName(), request.getColor(), request.getAdditionalFee());
+        final Line line = lineRepository.insert(request.getName(), request.getColor(), request.getAdditionalFare());
         return LineResponse.of(line);
     }
 

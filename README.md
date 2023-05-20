@@ -132,7 +132,7 @@ Content-Type: application/json;
     "id": 1,
     "name": "노선 이름",
     "color": "노선 색상",
-    "additionalFee": 100
+    "additionalFare": 100
     "stations" : [
         {
             "id": 1,
@@ -163,13 +163,13 @@ Content-Type: application/json;
 
 #### Response Parameter
 
-| Name          | Type      | Description    | Required |
-|---------------|-----------|----------------|----------|
-| id            | Long      | 노선의 ID         | O        |
-| name          | String    | 노선의 이름         | O        |
-| color         | String    | 노선의 색상         | O        |
-| additionalFee | Integer   | 노선 사용시 추가요금    | O        |
-| stations      | Station[] | 노선에 등록된 역들의 목록 | O        |
+| Name           | Type      | Description    | Required |
+|----------------|-----------|----------------|----------|
+| id             | Long      | 노선의 ID         | O        |
+| name           | String    | 노선의 이름         | O        |
+| color          | String    | 노선의 색상         | O        |
+| additionalFare | Integer   | 노선 사용시 추가요금    | O        |
+| stations       | Station[] | 노선에 등록된 역들의 목록 | O        |
 
 Station
 
@@ -205,7 +205,7 @@ Content-Type: application/json;
             "id": 1,
             "name": "노선 이름",
             "color": "노선 색상",
-            "additionalFee": 100,
+            "additionalFare": 100,
             "stations" : [
                 {
                     "id": 1,
@@ -222,7 +222,7 @@ Content-Type: application/json;
             "id": 2,
             "name": "노선 이름",
             "color": "노선 색상",
-            "additionalFee": 200,
+            "additionalFare": 200,
             "stations" : [
                 {
                     "id": 3,
@@ -248,13 +248,13 @@ Content-Type: application/json;
 
 Line
 
-| Name          | Type      | Description    | Required |
-|---------------|-----------|----------------|----------|
-| id            | Long      | 노선의 ID         | O        |
-| name          | String    | 노선의 이름         | O        |
-| color         | String    | 노선의 색상         | O        |
-| additionalFee | Integer   | 노선 사용시 추가요금    | O        |
-| stations      | Station[] | 노선에 등록된 역들의 목록 | O        |
+| Name           | Type      | Description    | Required |
+|----------------|-----------|----------------|----------|
+| id             | Long      | 노선의 ID         | O        |
+| name           | String    | 노선의 이름         | O        |
+| color          | String    | 노선의 색상         | O        |
+| additionalFare | Integer   | 노선 사용시 추가요금    | O        |
+| stations       | Station[] | 노선에 등록된 역들의 목록 | O        |
 
 Station
 

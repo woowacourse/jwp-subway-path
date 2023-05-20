@@ -87,7 +87,7 @@ public class ShortestPathService {
 
     private Line findMostExpensiveLine(final List<LineStation> path) {
         return path.stream()
-            .map(LineStation::getLine).min(Comparator.comparingInt(Line::getAdditionalFee))
+            .map(LineStation::getLine).min(Comparator.comparingInt(Line::getAdditionalFare))
             .orElseThrow(() -> new LineNotExistException("경로가 비어있습니다."));
     }
 }

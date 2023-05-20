@@ -33,7 +33,7 @@ public final class FareCalculator {
             totalFare += getOveredFare(distance - SECOND_BOUND, SECOND_BOUND_EXCEED_UNIT);
         }
 
-        return totalFare + line.getAdditionalFee();
+        return totalFare + line.getAdditionalFare();
     }
 
     private static int getOveredFare(final int distance, final int bound) {

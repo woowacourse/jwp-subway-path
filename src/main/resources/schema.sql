@@ -11,10 +11,10 @@ CREATE TABLE IF NOT EXISTS STATION
 
 CREATE TABLE IF NOT EXISTS LINE
 (
-    id             BIGINT       NOT NULL AUTO_INCREMENT,
-    name           VARCHAR(255) NOT NULL UNIQUE,
-    color          VARCHAR(20)  NOT NULL,
-    additional_fee INTEGER      NOT NULL,
+    id              BIGINT       NOT NULL AUTO_INCREMENT,
+    name            VARCHAR(255) NOT NULL UNIQUE,
+    color           VARCHAR(20)  NOT NULL,
+    additional_fare INTEGER      NOT NULL,
     PRIMARY KEY (id)
 );
 

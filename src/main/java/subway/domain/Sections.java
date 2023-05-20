@@ -125,8 +125,13 @@ public final class Sections {
     public void removeStation(final Station removeStation) {
         validateExistStation(removeStation);
 
-        final Section upSection = findSectionGetAsDownStation(removeStation);
+        if (isStartStation(removeStation)) {
+            sections.remove(removeStation);
+            return;
+        }
+        
         final Section downSection = sections.get(removeStation);
+        final Section upSection = findSectionGetAsDownStation(removeStation);
 
         if (isEndStation(removeStation)) {
             sections.remove(upSection.getUpStation());

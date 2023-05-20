@@ -5,7 +5,7 @@ Content-Type: application/json
 {
   "name": "1호선",
   "color": "빨강",
-  "additionalFee": 200
+  "additionalFare": 200
 }
 
 > {%
@@ -22,7 +22,7 @@ Content-Type: application/json
 {
   "name": "2호선",
   "color": "파랑",
-  "additionalFee": 100
+  "additionalFare": 100
 }
 
 > {%
@@ -39,7 +39,7 @@ Content-Type: application/json
 {
   "name": "1호선",
   "color": "빨강",
-  "additionalFee": 200
+  "additionalFare": 200
 }
 
 > {%
@@ -158,7 +158,7 @@ Accept: application/json
 		client.assert(body["id"] == 1, "노선 id를 가지고 있다.");
 		client.assert(body["name"] == "1호선", "노선 이름을 가지고 있다.");
 		client.assert(body["color"] == "빨강", "노선 색상을 가지고 있다.");
-		client.assert(body["additionalFee"] == 200, "노선 추가요금 정보를 가지고 있다.");
+		client.assert(body["additionalFare"] == 200, "노선 추가요금 정보를 가지고 있다.");
 		client.assert(body["stations"].length == 3, "노선에 있는 역을 가지고 있다.");
 	});
 %}
@@ -184,12 +184,12 @@ Content-Type: application/json
 		client.assert(body[0]["id"] == 1, "노선 id를 가지고 있다.");
 		client.assert(body[0]["name"] == "1호선", "노선 이름을 가지고 있다.");
 		client.assert(body[0]["color"] == "빨강", "노선 색상을 가지고 있다.");
-		client.assert(body[0]["additionalFee"] == 200, "노선 추가요금 정보를 가지고 있다.");
+		client.assert(body[0]["additionalFare"] == 200, "노선 추가요금 정보를 가지고 있다.");
 		client.assert(body[0]["stations"].length == 3, "노선에 있는 역을 가지고 있다.");
 		client.assert(body[1]["id"] == 2, "노선 id를 가지고 있다.");
 		client.assert(body[1]["name"] == "2호선", "노선 이름을 가지고 있다.");
 		client.assert(body[1]["color"] == "파랑", "노선 색상을 가지고 있다.");
-		client.assert(body[1]["additionalFee"] == 100, "노선 추가요금 정보를 가지고 있다.");
+		client.assert(body[1]["additionalFare"] == 100, "노선 추가요금 정보를 가지고 있다.");
 		client.assert(body[1]["stations"].length == 2, "노선에 있는 역을 가지고 있다.");
 	});
 %}

@@ -20,7 +20,7 @@ public class LineDao {
             rs.getLong("id"),
             rs.getString("name"),
             rs.getString("color"),
-            rs.getInt("additional_fee")
+            rs.getInt("additional_fare")
         );
 
     private final JdbcTemplate jdbcTemplate;
@@ -38,10 +38,10 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
-        params.put("additional_fee", line.getAdditionalFee());
+        params.put("additional_fare", line.getAdditionalFare());
 
         final Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return Line.of(lineId, line.getName(), line.getColor(), line.getAdditionalFee());
+        return Line.of(lineId, line.getName(), line.getColor(), line.getAdditionalFare());
     }
 
     public Optional<Line> findById(Long id) {
@@ -59,8 +59,8 @@ public class LineDao {
     }
 
     public void update(final Line newLine) {
-        final String sql = "UPDATE LINE SET name = ?, color = ?, additional_fee = ? WHERE id = ?";
-        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId(), newLine.getAdditionalFee());
+        final String sql = "UPDATE LINE SET name = ?, color = ?, additional_fare = ? WHERE id = ?";
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId(), newLine.getAdditionalFare());
     }
 
     public void deleteById(final Long id) {

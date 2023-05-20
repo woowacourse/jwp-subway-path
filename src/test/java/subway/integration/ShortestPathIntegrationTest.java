@@ -63,8 +63,8 @@ public class ShortestPathIntegrationTest extends IntegrationTest {
         assertThat(shortestPathResponse.getTotalFare()).isEqualTo(0);
     }
 
-    private Long createLine(final String lineName, final String color, final int additionalFee) {
-        final LineRequest lineRequest = new LineRequest(lineName, color, additionalFee);
+    private Long createLine(final String lineName, final String color, final int additionalFare) {
+        final LineRequest lineRequest = new LineRequest(lineName, color, additionalFare);
 
         final ExtractableResponse<Response> extract = RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)

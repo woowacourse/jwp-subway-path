@@ -18,8 +18,8 @@ public class LineRepository {
         this.sectionDao = sectionDao;
     }
 
-    public Line insert(final String name, final String color, final int additionalFee) {
-        return lineDao.insert(Line.withNullId(name, color, additionalFee));
+    public Line insert(final String name, final String color, final int additionalFare) {
+        return lineDao.insert(Line.withNullId(name, color, additionalFare));
     }
 
     public List<Line> findAll() {
@@ -37,7 +37,7 @@ public class LineRepository {
 
     public void update(final Long id, final LineRequest lineUpdateRequest) {
         lineDao.update(Line.of(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
-            lineUpdateRequest.getAdditionalFee()));
+            lineUpdateRequest.getAdditionalFare()));
     }
 
     public void deleteById(final Long id) {

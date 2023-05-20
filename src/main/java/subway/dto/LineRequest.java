@@ -4,15 +4,15 @@ public class LineRequest {
 
     private String name;
     private String color;
-    private Integer additionalFee;
+    private Integer additionalFare;
 
     LineRequest() {
     }
 
-    public LineRequest(String name, String color, Integer additionalFee) {
+    public LineRequest(String name, String color, Integer additionalFare) {
         this.name = name;
         this.color = color;
-        this.additionalFee = additionalFee;
+        this.additionalFare = additionalFare;
     }
 
     public String getName() {
@@ -23,7 +23,7 @@ public class LineRequest {
         return color;
     }
 
-    public Integer getAdditionalFee() {
-        return additionalFee;
+    public Integer getAdditionalFare() {
+        return additionalFare;
     }
 }

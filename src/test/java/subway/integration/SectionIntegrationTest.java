@@ -106,7 +106,8 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().as(ExceptionResponse.class).getMessage()).isEqualTo("구간의 거리는 0보다 커야 합니다.");
+        assertThat(response.body().as(ExceptionResponse.class).getMessage()).isEqualTo(
+            "역이 들어가야할 구간의 길이가 충분하지 않습니다.( 추가될 구간의 길이 : 10 )");
     }
 
     @DisplayName("노선의 상행종점역의 상행 방향으로 역을 등록한다.")
@@ -175,7 +176,8 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().as(ExceptionResponse.class).getMessage()).isEqualTo("기준이 되는 역이 노선에 존재하지 않습니다.");
+        assertThat(response.body().as(ExceptionResponse.class).getMessage()).isEqualTo(
+            "역이 노선에 존재하지 않습니다 ( 존재하지 않는 역: 없는역 )");
     }
 
     @DisplayName("노선에서 상행종점역을 삭제시 상행종점역을 포함한 구간이 같이 삭제된다.")
