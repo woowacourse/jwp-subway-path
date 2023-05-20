@@ -46,7 +46,7 @@ public class SectionService {
                 .collect(Collectors.toUnmodifiableList());
     }
     
-    public void validate(final SectionRequest sectionRequest) {
+    private void validate(final SectionRequest sectionRequest) {
         this.validateLine(sectionRequest.getLineId());
         this.validateStation(sectionRequest.getBaseStationId());
         this.validateStation(sectionRequest.getNewStationId());
@@ -70,6 +70,7 @@ public class SectionService {
     
     @Transactional
     public List<SectionResponse> insertSection(final SectionRequest sectionRequest) {
+        this.validate(sectionRequest);
         final List<Section> sections = this.sectionDAO.findSectionsBy(sectionRequest.getLineId());
         final LineSections lineSections = LineSections.from(sections);
         if (lineSections.isEmpty()) {
@@ -118,7 +119,7 @@ public class SectionService {
                 .collect(Collectors.toUnmodifiableList());
     }
     
-    public void validate(final DeleteSectionRequest deleteSectionRequest) {
+    private void validate(final DeleteSectionRequest deleteSectionRequest) {
         this.validateLine(deleteSectionRequest.getLineId());
         this.validateStation(deleteSectionRequest.getStationId());
     }
@@ -133,6 +134,7 @@ public class SectionService {
     
     @Transactional
     public void deleteSection(final DeleteSectionRequest deleteSectionRequest) {
+        this.validate(deleteSectionRequest);
         final List<Section> sections = this.findSections(deleteSectionRequest.getStationId(),
                 deleteSectionRequest.getLineId());
         if (sections.size() == 1) {

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
@@ -20,7 +19,6 @@ class StationServiceTest {
     private StationService stationService;
     
     @Test
-    @Transactional
     @DisplayName("역 저장 테스트")
     void saveStationTest() {
         // given
@@ -37,7 +35,6 @@ class StationServiceTest {
     }
     
     @Test
-    @Transactional
     @DisplayName("역 수정 테스트")
     void updateStationTest() {
         // given
@@ -53,7 +50,6 @@ class StationServiceTest {
     }
     
     @Test
-    @Transactional
     @DisplayName("역 삭제 테스트")
     void deleteStationTest() {
         // given

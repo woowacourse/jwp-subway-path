@@ -31,7 +31,6 @@ public class SectionController {
     
     @PostMapping("/sections")
     public ResponseEntity<List<SectionResponse>> addSection(@RequestBody final SectionRequest sectionRequest) {
-        this.sectionService.validate(sectionRequest);
         final List<SectionResponse> sectionResponses = this.sectionService.insertSection(sectionRequest);
         return ResponseEntity.created(URI.create("/sections/" + sectionRequest.getLineId())).body(sectionResponses);
     }
@@ -39,7 +38,6 @@ public class SectionController {
     @DeleteMapping("/sections")
     public ResponseEntity<Void> deleteSection(
             @RequestBody final DeleteSectionRequest deleteSectionRequest) {
-        this.sectionService.validate(deleteSectionRequest);
         this.sectionService.deleteSection(deleteSectionRequest);
         return ResponseEntity.noContent().build();
     }
