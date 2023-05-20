@@ -7,8 +7,10 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.controller.exception.LineException;
-import subway.controller.exception.StationException;
+import subway.controller.exception.InvalidLineException;
+import subway.controller.exception.InvalidStationException;
+import subway.controller.exception.LineNotFoundException;
+import subway.controller.exception.StationNotFoundException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -72,7 +74,7 @@ class SubwayTest {
 
         // expect
         assertThatThrownBy(() -> subway.registerLine(new Line(name, "검정색")))
-                .isInstanceOf(LineException.class)
+                .isInstanceOf(InvalidLineException.class)
                 .hasMessageContaining("중복되는 이름의 노선이 이미 존재합니다.");
     }
 
@@ -83,7 +85,7 @@ class SubwayTest {
 
         // expect
         assertThatThrownBy(() -> subway.deleteStation("8호선", new Station("잠실역")))
-                .isInstanceOf(LineException.class)
+                .isInstanceOf(LineNotFoundException.class)
                 .hasMessageContaining("존재하지 않는 노선입니다.");
     }
 
@@ -96,7 +98,7 @@ class SubwayTest {
 
         // expect
         assertThatThrownBy(() -> subway.deleteStation("8호선", new Station("강남역")))
-                .isInstanceOf(StationException.class)
+                .isInstanceOf(StationNotFoundException.class)
                 .hasMessage("존재하지 않는 역을 삭제할 수 없습니다.");
     }
 }

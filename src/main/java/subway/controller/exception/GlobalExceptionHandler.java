@@ -13,19 +13,29 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(StationException.class)
-    public ResponseEntity<String> handleStationException(final StationException error) {
+    @ExceptionHandler(InvalidStationException.class)
+    public ResponseEntity<String> handleInvalidStationException(final InvalidStationException error) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
     }
 
-    @ExceptionHandler(SectionException.class)
-    public ResponseEntity<String> handleSectionException(final SectionException error) {
+    @ExceptionHandler(InvalidSectionException.class)
+    public ResponseEntity<String> handleInvalidSectionException(final InvalidSectionException error) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
     }
 
-    @ExceptionHandler(LineException.class)
-    public ResponseEntity<String> handleLineException(final LineException error) {
+    @ExceptionHandler(InvalidLineException.class)
+    public ResponseEntity<String> handleInvalidLineException(final InvalidLineException error) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
+    }
+
+    @ExceptionHandler(StationNotFoundException.class)
+    public ResponseEntity<String> handleStationNotFoundException(final StationNotFoundException error) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
+    }
+
+    @ExceptionHandler(LineNotFoundException.class)
+    public ResponseEntity<String> handleLineNotFoundException(final LineNotFoundException error) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
     }
 
     @ExceptionHandler(BusinessException.class)
@@ -47,10 +57,5 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(final Exception error) {
         return ResponseEntity.internalServerError().body("서버에 일시적인 문제가 생겼습니다. 관리자에게 문의하세요.");
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleException(final IllegalArgumentException error) {
-        return ResponseEntity.badRequest().body("올바르지 않은 요청입니다.");
     }
 }

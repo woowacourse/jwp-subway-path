@@ -3,7 +3,7 @@ package subway.domain;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import subway.controller.exception.LineException;
+import subway.controller.exception.InvalidStationException;
 
 public class Line {
     private static final int MIN_NAME_LENGTH = 3;
@@ -26,7 +26,7 @@ public class Line {
 
     private void validate(final String name) {
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
-            throw new LineException(String.format("노선 이름은 %d~%d자 사이여야 합니다.", MIN_NAME_LENGTH, MAX_NAME_LENGTH));
+            throw new InvalidStationException(String.format("노선 이름은 %d~%d자 사이여야 합니다.", MIN_NAME_LENGTH, MAX_NAME_LENGTH));
         }
     }
 

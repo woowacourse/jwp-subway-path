@@ -2,7 +2,8 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import subway.controller.exception.LineException;
+import subway.controller.exception.InvalidLineException;
+import subway.controller.exception.LineNotFoundException;
 
 public class Subway {
 
@@ -23,7 +24,7 @@ public class Subway {
 
     private void validate(final Line line) {
         if (isDuplicatedName(line)) {
-            throw new LineException("중복되는 이름의 노선이 이미 존재합니다.");
+            throw new InvalidLineException("중복되는 이름의 노선이 이미 존재합니다.");
         }
     }
 
@@ -41,7 +42,7 @@ public class Subway {
         return lines.stream()
                 .filter(line -> line.hasName(name))
                 .findAny()
-                .orElseThrow(() -> new LineException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다."));
     }
 
     public void deleteStation(final String name, final Station station) {

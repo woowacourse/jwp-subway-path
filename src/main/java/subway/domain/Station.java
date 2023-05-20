@@ -1,7 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.controller.exception.StationException;
+import subway.controller.exception.InvalidStationException;
 
 public class Station {
     private static final int MIN_NAME_LENGTH = 3;
@@ -16,7 +16,7 @@ public class Station {
 
     private void validate(final String name) {
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
-            throw new StationException(String.format("역 이름은 %d~%d자 사이여야 합니다", MIN_NAME_LENGTH, MAX_NAME_LENGTH));
+            throw new InvalidStationException(String.format("역 이름은 %d~%d자 사이여야 합니다", MIN_NAME_LENGTH, MAX_NAME_LENGTH));
         }
     }
 

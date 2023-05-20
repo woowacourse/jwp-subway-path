@@ -7,8 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.controller.exception.SectionException;
-import subway.controller.exception.StationException;
+import subway.controller.exception.InvalidSectionException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -21,7 +20,7 @@ class SectionTest {
 
         // expect
         assertThatThrownBy(() -> new Section(stationName, stationName, 1))
-                .isInstanceOf(StationException.class)
+                .isInstanceOf(InvalidSectionException.class)
                 .hasMessageContaining("출발역과 도착역은 동일할 수 없습니다.");
     }
 
@@ -32,7 +31,7 @@ class SectionTest {
 
         // expect
         assertThatThrownBy(() -> new Section("잠실역", "석촌역", distance))
-                .isInstanceOf(SectionException.class)
+                .isInstanceOf(InvalidSectionException.class)
                 .hasMessageContaining("거리 정보는 1 이상이어야 합니다.");
     }
 

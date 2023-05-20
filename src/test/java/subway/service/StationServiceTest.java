@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.controller.exception.StationException;
+import subway.controller.exception.StationNotFoundException;
 import subway.controller.exception.BusinessException;
 import subway.domain.Line;
 import subway.domain.Station;
@@ -18,7 +18,6 @@ import subway.dto.SectionDto;
 import subway.dto.StationDto;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
-import subway.repository.SubwayRepository;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class StationServiceTest {
@@ -87,7 +86,7 @@ class StationServiceTest {
 
         // expect
         assertThatThrownBy(() -> stationService.delete(new StationDto(id, "터틀역")))
-                .isInstanceOf(StationException.class)
+                .isInstanceOf(StationNotFoundException.class)
                 .hasMessageContaining("존재하지 않는 역을 삭제할 수 없습니다.");
     }
 }
