@@ -31,6 +31,9 @@ class LineServiceTest {
     @InjectMocks
     private LineService lineService;
 
+    @Mock
+    private SubwayGraphs subwayGraphs;
+
 
     @Test
     @DisplayName("새로운 노선을 생성한다.")
