@@ -58,30 +58,6 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     @Override
-    public Line findLineWithSort(final Long id) {
-        String sql = "SELECT section.*, s1.name as up_station_name, s2.name as down_station_name, line.name as line_name, line.color as line_color FROM section " +
-                "LEFT OUTER JOIN station s1 ON section.up_station_id=s1.id " +
-                "LEFT OUTER JOIN station s2 ON section.down_station_id=s2.id " +
-                "LEFT OUTER JOIN line ON section.line_id = line.id " +
-                " WHERE line_id = ? ORDER BY `order`";
-
-        return jdbcTemplate.query(sql, ps -> ps.setLong(1, id), rs -> {
-            List<Section> sections = new ArrayList<>();
-            long lineId = rs.getLong("line_id");
-            String lineName = rs.getString("line_name");
-            String lineColor = rs.getString("line_color");
-
-            while(rs.next()) {
-                Station upStation = new Station(rs.getLong("up_station_id"), rs.getString("up_station_name"));
-                Station downStation = new Station(rs.getLong("down_station_id"), rs.getString("down_station_name"));
-                sections.add(new Section(rs.getLong("section_id"), upStation, downStation, rs.getInt("distance"), rs.getInt("order")));
-            }
-            return new Line(lineId, lineName, lineColor, new Sections(sections));
-        });
-    }
-
-
-    @Override
     public List<Section> findSectionsWithSort() {
         String sql = "SELECT section.*, s1.name as up_station_name, s2.name as down_station_name FROM section" +
                 " LEFT OUTER JOIN station s1 ON section.up_station_id=s1.id" +
@@ -98,5 +74,4 @@ public class JdbcLineRepository implements LineRepository {
                 " WHERE line_id = ? ORDER BY `order`";
         return jdbcTemplate.query(sql, SectionRowMapper, lineId);
     }
-
 }
