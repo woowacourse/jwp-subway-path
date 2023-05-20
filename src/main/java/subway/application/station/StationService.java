@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.application.station.dto.StationDto;
+import subway.error.exception.StationNotFoundException;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.StationEntity;
 
@@ -36,7 +37,7 @@ public class StationService {
 	@Transactional(readOnly = true)
 	public StationDto findStationById(final Long id) {
 		final StationEntity stationEntity = stationDao.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+			.orElseThrow(() -> StationNotFoundException.EXCEPTION);
 		return new StationDto(stationEntity);
 	}
 

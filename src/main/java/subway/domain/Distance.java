@@ -2,6 +2,8 @@ package subway.domain;
 
 import java.util.Objects;
 
+import subway.error.exception.SectionDistanceException;
+
 public final class Distance {
 
 	private final int distance;
@@ -25,7 +27,7 @@ public final class Distance {
 
 	private static void validatePositive(int distance) {
 		if (distance <= 0) {
-			throw new IllegalArgumentException("거리는 항상 양의 정수여야 합니다.");
+			throw SectionDistanceException.EXCEPTION;
 		}
 	}
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.application.line.dto.LineDto;
+import subway.error.exception.LineNotFoundException;
 import subway.persistence.dao.LineDao;
 import subway.persistence.entity.LineEntity;
 
@@ -35,7 +36,8 @@ public class LineService {
 
 	@Transactional(readOnly = true)
 	public LineDto findLineById(final Long id) {
-		final LineEntity lineEntity = lineDao.findById(id);
+		final LineEntity lineEntity = lineDao.findById(id)
+			.orElseThrow(() -> LineNotFoundException.EXCEPTION);
 		return new LineDto(lineEntity);
 	}
 

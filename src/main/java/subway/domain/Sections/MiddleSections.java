@@ -5,6 +5,7 @@ import java.util.List;
 
 import subway.domain.Distance;
 import subway.domain.Section;
+import subway.error.exception.SectionConnectionException;
 
 public final class MiddleSections extends FilledSections implements StationAddable, StationRemovable {
 	MiddleSections(final List<Section> sections) {
@@ -35,7 +36,7 @@ public final class MiddleSections extends FilledSections implements StationAddab
 			.anyMatch(newSection::equals);
 
 		if (hasSameSection) {
-			throw new IllegalArgumentException("이미 존재하는 구간입니다.");
+			throw new SectionConnectionException("이미 존재하는 구간입니다.");
 		}
 	}
 
@@ -43,7 +44,7 @@ public final class MiddleSections extends FilledSections implements StationAddab
 		return sections.stream()
 			.filter(newSection::isConnected)
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("노선에 연결될 수 없는 구간입니다."));
+			.orElseThrow(() -> new SectionConnectionException("노선에 연결될 수 없는 구간입니다."));
 	}
 
 	private static List<Section> addStationSections(final Section newSection, final Section targetSection,

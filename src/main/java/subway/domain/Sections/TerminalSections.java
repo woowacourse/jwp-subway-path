@@ -3,6 +3,7 @@ package subway.domain.Sections;
 import java.util.List;
 
 import subway.domain.Section;
+import subway.error.exception.SectionConnectionException;
 
 public final class TerminalSections extends FilledSections implements StationAddable, StationRemovable {
 
@@ -25,7 +26,7 @@ public final class TerminalSections extends FilledSections implements StationAdd
 
 	private void validateCrossConnected(final Section newSection) {
 		if (newSection.isCrossConnected(upLineTerminal(), downLineTerminal())) {
-			throw new IllegalArgumentException("순환 노선입니다.");
+			throw new SectionConnectionException("순환 노선입니다.");
 		}
 	}
 

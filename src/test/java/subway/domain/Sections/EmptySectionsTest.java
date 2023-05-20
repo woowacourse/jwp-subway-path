@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import subway.domain.Fixture;
 import subway.domain.Section;
+import subway.error.exception.StationNotFoundException;
 
 class EmptySectionsTest {
 
@@ -36,8 +37,7 @@ class EmptySectionsTest {
 
 		// when & then
 		assertThatThrownBy(sections::removeStation)
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("해당하는 역이 없습니다.");
+			.isInstanceOf(StationNotFoundException.class);
 	}
 
 }

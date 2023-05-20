@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import subway.domain.Section;
+import subway.error.exception.StationNotFoundException;
 
 public final class EmptySections extends Sections implements StationAddable, StationRemovable {
 
@@ -18,6 +19,6 @@ public final class EmptySections extends Sections implements StationAddable, Sta
 
 	@Override
 	public List<Section> removeStation() {
-		throw new IllegalArgumentException("해당하는 역이 없습니다.");
+		throw StationNotFoundException.EXCEPTION;
 	}
 }
