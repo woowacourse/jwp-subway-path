@@ -23,14 +23,14 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationRepository.findById(id));
+        return StationResponse.from(stationRepository.findById(id));
     }
 
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
