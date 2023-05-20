@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.LineDao;
 import subway.domain.Line;
-import subway.ui.dto.request.LineCreateRequest;
-import subway.ui.dto.response.LineResponse;
+import subway.dto.request.LineCreateRequest;
+import subway.dto.response.LineResponse;
 
 @Service
 @Transactional

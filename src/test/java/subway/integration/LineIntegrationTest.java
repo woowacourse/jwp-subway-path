@@ -15,8 +15,8 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.ui.dto.request.LineCreateRequest;
-import subway.ui.dto.response.LineResponse;
+import subway.dto.request.LineCreateRequest;
+import subway.dto.response.LineResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {

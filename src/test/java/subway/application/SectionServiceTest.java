@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Section;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.ui.dto.request.SectionUpdateRequest;
-import subway.ui.dto.response.SectionResponse;
+import subway.dto.request.SectionUpdateRequest;
+import subway.dto.response.SectionResponse;
 
 @SpringBootTest
 @Transactional

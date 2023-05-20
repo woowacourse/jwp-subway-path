@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import subway.ui.dto.request.StationUpdateRequest;
-import subway.ui.dto.response.StationResponse;
+import subway.dto.request.StationUpdateRequest;
+import subway.dto.response.StationResponse;
 
 @SpringBootTest
 @Transactional

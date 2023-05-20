@@ -1,4 +1,4 @@
-package subway.ui.exception;
+package subway.exception;
 
 import java.time.LocalDateTime;
 

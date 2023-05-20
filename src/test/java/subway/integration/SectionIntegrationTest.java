@@ -11,8 +11,8 @@ import org.springframework.test.context.jdbc.Sql;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.ui.dto.request.SectionDeleteRequest;
-import subway.ui.dto.request.SectionUpdateRequest;
+import subway.dto.request.SectionDeleteRequest;
+import subway.dto.request.SectionUpdateRequest;
 
 @DisplayName("지하철 구간 관련 기능")
 @Sql("/test-data.sql")

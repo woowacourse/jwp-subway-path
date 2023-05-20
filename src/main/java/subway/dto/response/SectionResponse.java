@@ -1,4 +1,4 @@
-package subway.ui.dto.response;
+package subway.dto.response;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -12,10 +12,10 @@ import subway.dao.StationDao;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.ui.dto.request.SectionDeleteRequest;
-import subway.ui.dto.request.SectionUpdateRequest;
-import subway.ui.dto.response.SectionResponse;
-import subway.ui.dto.response.StationResponse;
+import subway.dto.request.SectionDeleteRequest;
+import subway.dto.request.SectionUpdateRequest;
+import subway.dto.response.SectionResponse;
+import subway.dto.response.StationResponse;
 
 @Service
 @Transactional

@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import subway.ui.dto.request.LineCreateRequest;
-import subway.ui.dto.response.LineResponse;
+import subway.dto.request.LineCreateRequest;
+import subway.dto.response.LineResponse;
 
 @SpringBootTest
 @Transactional

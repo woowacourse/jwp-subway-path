@@ -1,4 +1,4 @@
-package subway.ui.dto.request;
+package subway.dto.request;
 
 public class LineCreateRequest {
 	private String name;

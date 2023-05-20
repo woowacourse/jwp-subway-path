@@ -12,8 +12,8 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.ui.dto.request.StationUpdateRequest;
-import subway.ui.dto.response.StationResponse;
+import subway.dto.request.StationUpdateRequest;
+import subway.dto.response.StationResponse;
 
 @Service
 @Transactional
