@@ -57,6 +57,19 @@ public class TestData {
     public static final Section _7호선_보라매_장승배기_13 = new Section(_7호선, 보라매역, 장승배기역, new Distance(13));
     public static final Section _7호선_신풍_보라매_6 = new Section(_7호선, 신풍역, 보라매역, new Distance(6));
 
+    public static List<Station> getAllStations() {
+        return List.of(
+                신림역, 당곡역, 보라매병원역, 보라매역, 서울지방병무청역, 서원역,
+                봉천역, 서울대입구역, 사당역, 방배역,
+                총신대입구역, 동작역, 남태령역,
+                내방역, 남성역, 상도역, 장승배기역, 신풍역
+        );
+    }
+
+    public static List<Line> getAllLines() {
+        return List.of(신림선, _2호선, _4호선, _7호선);
+    }
+
     public static Sections getAllSections() {
         return new Sections(List.of(
                 신림선_당곡_신림_3, 신림선_보라매병원_당곡_4, 신림선_보라매_보라매병원_3, 신림선_서울지방병무청_보라매_11, 신림선_신림_서원_7,
