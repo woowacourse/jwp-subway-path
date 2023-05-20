@@ -4,7 +4,6 @@ import java.util.Arrays;
 import subway.exception.IllegalAgeException;
 
 public enum AgeGroup {
-
     ADULT(20, Integer.MAX_VALUE, 0, 0),
     YOUTH(13, 18, 350, 0.2),
     CHILD(6, 12, 350, 0.5),
@@ -22,7 +21,7 @@ public enum AgeGroup {
         this.discountRate = discountRate;
     }
 
-    public static AgeGroup from(int age) {
+    public static AgeGroup from(final int age) {
         return Arrays.stream(values())
                 .filter(ageGroup -> ageGroup.minAge <= age && age <= ageGroup.maxAge)
                 .findAny()

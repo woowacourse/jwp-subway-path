@@ -22,9 +22,9 @@ class AgeGroupTest {
 
         @ParameterizedTest
         @ValueSource(ints = {20, Integer.MAX_VALUE})
-        void 정상적으로_성인을_생성한다(int adultAge) {
+        void 정상적으로_성인을_생성한다(final int adultAge) {
             // when
-            AgeGroup actual = AgeGroup.from(adultAge);
+            final AgeGroup actual = AgeGroup.from(adultAge);
 
             // then
             assertThat(actual).isEqualTo(AgeGroup.ADULT);
@@ -32,9 +32,9 @@ class AgeGroupTest {
 
         @ParameterizedTest
         @ValueSource(ints = {13, 18})
-        void 정상적으로_청소년을_생성한다(int youthAge) {
+        void 정상적으로_청소년을_생성한다(final int youthAge) {
             // when
-            AgeGroup actual = AgeGroup.from(youthAge);
+            final AgeGroup actual = AgeGroup.from(youthAge);
 
             // then
             assertThat(actual).isEqualTo(AgeGroup.YOUTH);
@@ -42,9 +42,9 @@ class AgeGroupTest {
 
         @ParameterizedTest
         @ValueSource(ints = {6, 12})
-        void 정상적으로_어린이를_생성한다(int childAge) {
+        void 정상적으로_어린이를_생성한다(final int childAge) {
             // when
-            AgeGroup actual = AgeGroup.from(childAge);
+            final AgeGroup actual = AgeGroup.from(childAge);
 
             // then
             assertThat(actual).isEqualTo(AgeGroup.CHILD);
@@ -52,9 +52,9 @@ class AgeGroupTest {
 
         @ParameterizedTest
         @ValueSource(ints = {0, 5})
-        void 정상적으로_미취학아동_생성한다(int preschoolersAge) {
+        void 정상적으로_미취학아동_생성한다(final int preschoolersAge) {
             // when
-            AgeGroup actual = AgeGroup.from(preschoolersAge);
+            final AgeGroup actual = AgeGroup.from(preschoolersAge);
 
             // then
             assertThat(actual).isEqualTo(AgeGroup.PRESCHOOLERS);
@@ -62,7 +62,7 @@ class AgeGroupTest {
 
         @ParameterizedTest
         @ValueSource(ints = {-1, -10, -100})
-        void 잘못된_나이면_예외(int wrongAge) {
+        void 잘못된_나이면_예외(final int wrongAge) {
             assertThatThrownBy(() -> AgeGroup.from(wrongAge))
                     .isInstanceOf(IllegalAgeException.class);
         }
@@ -73,12 +73,12 @@ class AgeGroupTest {
 
         @ParameterizedTest
         @CsvSource(value = {"1000:1000", "1500:1500", "2000:2000"}, delimiter = ':')
-        void 성인의_경우(int given, int expected) {
+        void 성인의_경우(final int given, final int expected) {
             // given
-            AgeGroup adult = AgeGroup.ADULT;
+            final AgeGroup adult = AgeGroup.ADULT;
 
             // when
-            int actual = adult.calculate(given);
+            final int actual = adult.calculate(given);
 
             // then
             assertThat(actual).isEqualTo(expected);
@@ -86,12 +86,12 @@ class AgeGroupTest {
 
         @ParameterizedTest
         @CsvSource(value = {"1350:800", "2350:1600"}, delimiter = ':')
-        void 청소년의_경우(int given, int expected) {
+        void 청소년의_경우(final int given, final int expected) {
             // given
-            AgeGroup adult = AgeGroup.YOUTH;
+            final AgeGroup adult = AgeGroup.YOUTH;
 
             // when
-            int actual = adult.calculate(given);
+            final int actual = adult.calculate(given);
 
             // then
             assertThat(actual).isEqualTo(expected);
@@ -101,10 +101,10 @@ class AgeGroupTest {
         @CsvSource(value = {"1350:500", "2350:1000"}, delimiter = ':')
         void 어린이의_경우(int given, int expected) {
             // given
-            AgeGroup adult = AgeGroup.CHILD;
+            final AgeGroup adult = AgeGroup.CHILD;
 
             // when
-            int actual = adult.calculate(given);
+            final int actual = adult.calculate(given);
 
             // then
             assertThat(actual).isEqualTo(expected);
@@ -114,10 +114,10 @@ class AgeGroupTest {
         @CsvSource(value = {"1350:0", "2600:0"}, delimiter = ':')
         void 미취학아동의_경우(int given, int expected) {
             // given
-            AgeGroup adult = AgeGroup.PRESCHOOLERS;
+            final AgeGroup adult = AgeGroup.PRESCHOOLERS;
 
             // when
-            int actual = adult.calculate(given);
+            final int actual = adult.calculate(given);
 
             // then
             assertThat(actual).isEqualTo(expected);

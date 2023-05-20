@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Lines;
 import subway.domain.Station;
 import subway.domain.fare.AgeGroup;
@@ -15,6 +16,7 @@ import subway.persistence.repository.LineRepository;
 import subway.persistence.repository.StationRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
 
     private final StationRepository stationRepository;
@@ -51,3 +53,4 @@ public class PathService {
         return new FareInformation(path.getTotalDistance(), findLines, AgeGroup.from(age));
     }
 }
+

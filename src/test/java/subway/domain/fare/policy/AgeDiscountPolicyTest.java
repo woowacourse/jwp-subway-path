@@ -19,11 +19,11 @@ class AgeDiscountPolicyTest {
     @Test
     void 나이에_따라_요금을_계산한다() {
         // given
-        FareInformation fareInformation = new FareInformation(10, null, AgeGroup.CHILD);
-        int fare = 1350;
+        final FareInformation fareInformation = new FareInformation(10, null, AgeGroup.CHILD);
+        final int fare = 1350;
 
         // when
-        int actual = discountPolicy.calculate(fare, fareInformation);
+        final int actual = discountPolicy.calculate(fare, fareInformation);
 
         // then
         assertThat(actual).isEqualTo(500);

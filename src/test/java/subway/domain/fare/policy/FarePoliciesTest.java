@@ -18,41 +18,41 @@ import subway.domain.fare.FareInformation;
 @DisplayName("FeePolicies 은(는)")
 class FarePoliciesTest {
 
-    private FarePolicies farePolicies = new FarePolicies(List.of(new LineFarePolicy(), new DistanceFarePolicy()));
+    private final FarePolicies farePolicies = new FarePolicies(List.of(new LineFarePolicy(), new DistanceFarePolicy()));
 
     @Test
     void 추가_요금이_없으면_기본_요금을_반환한다() {
         // given
-        Lines lines = new Lines(
+        final Lines lines = new Lines(
                 List.of(
                         new Line("1호선", null, 0),
                         new Line("2호선", null, 0)
                 )
         );
-        FareInformation fareInformation = new FareInformation(4, lines, null);
+        final FareInformation fareInformation = new FareInformation(4, lines, null);
 
         // when
-        int fee = farePolicies.calculate(fareInformation);
+        final int actual = farePolicies.calculate(fareInformation);
 
         // then
-        assertThat(fee).isEqualTo(1250);
+        assertThat(actual).isEqualTo(1250);
     }
 
     @Test
     void 조건이_맞으면_추가_요금을_포함하여_돈을_계산한다() {
         // given
-        Lines lines = new Lines(
+        final Lines lines = new Lines(
                 List.of(
                         new Line("1호선", null, 300),
                         new Line("2호선", null, 500)
                 )
         );
-        FareInformation fareInformation = new FareInformation(11, lines, null);
+        final FareInformation fareInformation = new FareInformation(11, lines, null);
 
         // when
-        int fee = farePolicies.calculate(fareInformation);
+        final int actual = farePolicies.calculate(fareInformation);
 
         // then
-        assertThat(fee).isEqualTo(1850);
+        assertThat(actual).isEqualTo(1850);
     }
 }

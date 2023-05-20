@@ -5,7 +5,7 @@ import subway.domain.fare.FareInformation;
 
 public class FarePolicies implements FarePolicy {
 
-    private static final int DEFAULT_FEE = 1250;
+    private static final int DEFAULT_FARE = 1250;
 
     private final List<FarePolicy> feePolicies;
 
@@ -15,7 +15,7 @@ public class FarePolicies implements FarePolicy {
 
     @Override
     public int calculate(final FareInformation fareInformation) {
-        int fee = DEFAULT_FEE;
+        int fee = DEFAULT_FARE;
         for (FarePolicy farePolicy : feePolicies) {
             fee += farePolicy.calculate(fareInformation);
         }

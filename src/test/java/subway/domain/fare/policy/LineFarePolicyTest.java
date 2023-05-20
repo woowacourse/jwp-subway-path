@@ -22,35 +22,35 @@ class LineFarePolicyTest {
     @Test
     void 노선의_추가_요금이_없으면_기본_요금을_반환한다() {
         // given
-        Lines lines = new Lines(
+        final Lines lines = new Lines(
                 List.of(
                         new Line("1호선", null, 0),
                         new Line("2호선", null, 0)
                 ));
-        FareInformation fareInformation = new FareInformation(10, lines, null);
+        final FareInformation fareInformation = new FareInformation(10, lines, null);
 
         // when
-        int fee = lineFeePolicy.calculate(fareInformation);
+        final int actual = lineFeePolicy.calculate(fareInformation);
 
         // then
-        assertThat(fee).isEqualTo(0);
+        assertThat(actual).isEqualTo(0);
     }
 
     @Test
     void 여러_노선중_추가_요금이_가장_높은_노선을_반영한다() {
         // given
-        Lines lines = new Lines(
+        final Lines lines = new Lines(
                 List.of(
                         new Line("1호선", null, 100),
                         new Line("2호선", null, 200),
                         new Line("3호선", null, 300)
                 ));
-        FareInformation fareInformation = new FareInformation(10, lines, null);
+        final FareInformation fareInformation = new FareInformation(10, lines, null);
 
         // when
-        int fee = lineFeePolicy.calculate(fareInformation);
+        final int actual = lineFeePolicy.calculate(fareInformation);
 
         // then
-        assertThat(fee).isEqualTo(300);
+        assertThat(actual).isEqualTo(300);
     }
 }

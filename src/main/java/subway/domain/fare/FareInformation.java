@@ -8,7 +8,7 @@ public class FareInformation {
     private final Lines lines;
     private final AgeGroup ageGroup;
 
-    public FareInformation(final int distance,final Lines lines,final AgeGroup ageGroup) {
+    public FareInformation(final int distance, final Lines lines, final AgeGroup ageGroup) {
         this.distance = distance;
         this.lines = lines;
         this.ageGroup = ageGroup;
