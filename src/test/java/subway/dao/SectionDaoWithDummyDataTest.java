@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
@@ -25,6 +26,7 @@ import static subway.fixture.StationEntityFixture.JAMSIL_NO_ID_ENTITY;
 import static subway.fixture.StationEntityFixture.SEOKCHON_NO_ID_ENTITY;
 import static subway.fixture.StationEntityFixture.YUKSAM_NO_ID_ENTITY;
 
+@ActiveProfiles("test")
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 public class SectionDaoWithDummyDataTest {

@@ -9,7 +9,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql("/test-schema.sql")
+@Sql("/schema-test.sql")
 public class IntegrationTest {
     @LocalServerPort
     int port;
