@@ -11,8 +11,10 @@ import org.junit.jupiter.api.Test;
 import subway.dao.StubLineDao;
 import subway.dao.StubSectionDao;
 import subway.domain.Line;
+import subway.domain.Section;
 import subway.domain.Station;
-import subway.dto.LineSearchResponse;
+import subway.dto.LineResponseWithSections;
+import subway.dto.LineResponseWithStations;
 
 class SubwayMapServiceTest {
 
@@ -27,15 +29,15 @@ class SubwayMapServiceTest {
         subwayMapService = new SubwayMapService(stubLineDao, stubSectionDao);
     }
 
-    @DisplayName("lineId로 해당 노선을 순서대로 가져온다.")
+    @DisplayName("lineId로 해당 노선의 모든 역을 순서대로 가져온다.")
     @Test
-    void getLineSearchResponse() {
-        final LineSearchResponse lineSearchResponse = subwayMapService.getLineSearchResponse(1L);
+    void getLineResponseWithStations() {
+        final LineResponseWithStations lineResponseWithStations = subwayMapService.getLineResponseWithStations(1L);
         assertAll(
-                () -> assertThat(lineSearchResponse.getId()).isEqualTo(1L),
-                () -> assertThat(lineSearchResponse.getName()).isEqualTo("1호선"),
-                () -> assertThat(lineSearchResponse.getColor()).isEqualTo("파란색"),
-                () -> assertThat(lineSearchResponse.getStations()).containsExactly(
+                () -> assertThat(lineResponseWithStations.getId()).isEqualTo(1L),
+                () -> assertThat(lineResponseWithStations.getName()).isEqualTo("1호선"),
+                () -> assertThat(lineResponseWithStations.getColor()).isEqualTo("파란색"),
+                () -> assertThat(lineResponseWithStations.getStations()).containsExactly(
                         new Station(1L),
                         new Station(2L),
                         new Station(3L),
@@ -44,12 +46,12 @@ class SubwayMapServiceTest {
         );
     }
 
-    @DisplayName("모든 노선을 순서대로 가져온다.")
+    @DisplayName("모든 노선의 모든 역을 순서대로 가져온다.")
     @Test
-    void getLineSearchResponses() {
-        final List<LineSearchResponse> lineSearchResponses = subwayMapService.getLineSearchResponses();
-        final LineSearchResponse line1 = lineSearchResponses.get(0);
-        final LineSearchResponse line2 = lineSearchResponses.get(1);
+    void getLineResponsesWithStations() {
+        final List<LineResponseWithStations> lineResponsesWithStations = subwayMapService.getLineResponsesWithStations();
+        final LineResponseWithStations line1 = lineResponsesWithStations.get(0);
+        final LineResponseWithStations line2 = lineResponsesWithStations.get(1);
         assertAll(
                 () -> assertThat(line1.getId()).isEqualTo(1L),
                 () -> assertThat(line1.getName()).isEqualTo("1호선"),
@@ -67,6 +69,48 @@ class SubwayMapServiceTest {
                         new Station(3L),
                         new Station(5L),
                         new Station(6L)
+                )
+        );
+    }
+
+
+    @DisplayName("lineId로 해당 노선의 모든 구간을 순서대로 가져온다.")
+    @Test
+    void getLineResponseWithSections() {
+        final LineResponseWithSections lineResponseWithSections = subwayMapService.getLineResponseWithSections(1L);
+        assertAll(
+                () -> assertThat(lineResponseWithSections.getId()).isEqualTo(1L),
+                () -> assertThat(lineResponseWithSections.getName()).isEqualTo("1호선"),
+                () -> assertThat(lineResponseWithSections.getColor()).isEqualTo("파란색"),
+                () -> assertThat(lineResponseWithSections.getSections()).containsExactly(
+                        Section.builder().id(1L).build(),
+                        Section.builder().id(2L).build(),
+                        Section.builder().id(3L).build()
+                )
+        );
+    }
+
+    @DisplayName("모든 노선의 모든 구간을 순서대로 가져온다.")
+    @Test
+    void getLineResponsesWithSections() {
+        final List<LineResponseWithSections> lineResponsesWithSections = subwayMapService.getLineResponsesWithSections();
+        final LineResponseWithSections line1 = lineResponsesWithSections.get(0);
+        final LineResponseWithSections line2 = lineResponsesWithSections.get(1);
+        assertAll(
+                () -> assertThat(line1.getId()).isEqualTo(1L),
+                () -> assertThat(line1.getName()).isEqualTo("1호선"),
+                () -> assertThat(line1.getColor()).isEqualTo("파란색"),
+                () -> assertThat(line1.getSections()).containsExactly(
+                        Section.builder().id(1L).build(),
+                        Section.builder().id(2L).build(),
+                        Section.builder().id(3L).build()
+                ),
+                () -> assertThat(line2.getId()).isEqualTo(2L),
+                () -> assertThat(line2.getName()).isEqualTo("2호선"),
+                () -> assertThat(line2.getColor()).isEqualTo("초록색"),
+                () -> assertThat(line2.getSections()).containsExactly(
+                        Section.builder().id(4L).build(),
+                        Section.builder().id(5L).build()
                 )
         );
     }

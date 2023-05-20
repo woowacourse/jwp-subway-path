@@ -17,7 +17,7 @@ import subway.dao.StubLineDao;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineSearchResponse;
+import subway.dto.LineResponseWithStations;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
@@ -49,24 +49,24 @@ class LineServiceTest {
     @DisplayName("모든 노선들의 역들을 조회한다.")
     @Test
     void findLineResponses() {
-        final List<LineSearchResponse> given = List.of(
-                new LineSearchResponse(1L, "2호선", "초록색", List.of(
+        final List<LineResponseWithStations> given = List.of(
+                new LineResponseWithStations(1L, "2호선", "초록색", List.of(
                         new Station(1L, "강남역")
                 ))
         );
-        given(subwayMapService.getLineSearchResponses()).willReturn(given);
-        final List<LineSearchResponse> result = lineService.findLineResponses();
+        given(subwayMapService.getLineResponsesWithStations()).willReturn(given);
+        final List<LineResponseWithStations> result = lineService.findLineResponses();
         assertThat(result).isEqualTo(given);
     }
 
     @DisplayName("노선의 아이디로 노선의 역들을 조회한다.")
     @Test
     void findLineResponseById() {
-        final LineSearchResponse given = new LineSearchResponse(1L, "1호선", "파란색", List.of(
+        final LineResponseWithStations given = new LineResponseWithStations(1L, "1호선", "파란색", List.of(
                 new Station(1L, "사당역")
         ));
-        given(subwayMapService.getLineSearchResponse(anyLong())).willReturn(given);
-        final LineSearchResponse result = lineService.findLineResponseById(1L);
+        given(subwayMapService.getLineResponseWithStations(anyLong())).willReturn(given);
+        final LineResponseWithStations result = lineService.findLineResponseById(1L);
         assertThat(result).isEqualTo(given);
     }
 

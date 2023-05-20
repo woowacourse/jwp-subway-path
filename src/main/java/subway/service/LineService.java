@@ -7,7 +7,7 @@ import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.LineSearchResponse;
+import subway.dto.LineResponseWithStations;
 
 @Service
 public class LineService {
@@ -25,12 +25,12 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public List<LineSearchResponse> findLineResponses() {
-        return subwayMapService.getLineSearchResponses();
+    public List<LineResponseWithStations> findLineResponses() {
+        return subwayMapService.getLineResponsesWithStations();
     }
 
-    public LineSearchResponse findLineResponseById(final Long id) {
-        return subwayMapService.getLineSearchResponse(id);
+    public LineResponseWithStations findLineResponseById(final Long id) {
+        return subwayMapService.getLineResponseWithStations(id);
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {

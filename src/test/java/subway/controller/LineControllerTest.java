@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineSearchResponse;
+import subway.dto.LineResponseWithStations;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionResponse;
@@ -93,7 +93,7 @@ class LineControllerTest extends ControllerTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final List<LineSearchResponse> result = response.jsonPath().getList(".", LineSearchResponse.class);
+        final List<LineResponseWithStations> result = response.jsonPath().getList(".", LineResponseWithStations.class);
         assertAll(
                 () -> assertThat(result.get(0).getId()).isPositive(),
                 () -> assertThat(result.get(0).getName()).isEqualTo("1호선"),
@@ -134,7 +134,7 @@ class LineControllerTest extends ControllerTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final LineSearchResponse result = response.as(LineSearchResponse.class);
+        final LineResponseWithStations result = response.as(LineResponseWithStations.class);
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(1),
                 () -> assertThat(result.getName()).isEqualTo("1호선"),
