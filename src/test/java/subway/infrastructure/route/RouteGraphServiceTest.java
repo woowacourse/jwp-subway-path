@@ -9,7 +9,7 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.route.Route;
 import subway.domain.route.RouteEdge;
-import subway.domain.route.RouteService;
+import subway.domain.route.RouteFinder;
 import subway.domain.vo.Distance;
 import subway.domain.vo.Money;
 import subway.fixture.SectionsFixture;
@@ -30,11 +30,11 @@ import static subway.fixture.StationFixture.역;
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class RouteGraphServiceTest {
 
-    RouteService routeService;
+    RouteFinder routeFinder;
 
     @BeforeEach
     void setUp() {
-        routeService = new RouteGraphService();
+        routeFinder = new RouteGraphFinder();
     }
 
     @Test
@@ -45,7 +45,7 @@ class RouteGraphServiceTest {
         final Line 노선1 = 노선("1", "파랑", 구간_목록);
 
         // when
-        final Route 경로 = routeService.findRouteBy(List.of(노선1), 역("A"), 역("B"));
+        final Route 경로 = routeFinder.findRouteBy(List.of(노선1), 역("A"), 역("B"));
 
         final Distance 최단_거리 = 경로.getTotalDistance();
         final List<RouteEdge> 최단_구간_목록 = 경로.getSections();
@@ -75,7 +75,7 @@ class RouteGraphServiceTest {
 
 
         // when
-        final Route 경로 = routeService.findRouteBy(List.of(노선1, 노선2), 역("A"), 역("F"));
+        final Route 경로 = routeFinder.findRouteBy(List.of(노선1, 노선2), 역("A"), 역("F"));
 
         final Distance 최단_거리 = 경로.getTotalDistance();
         final List<RouteEdge> 최단_구간_목록 = 경로.getSections();
@@ -105,7 +105,7 @@ class RouteGraphServiceTest {
 
 
         // when
-        final Route 경로 = routeService.findRouteBy(List.of(노선1, 노선2), 역("A"), 역("F"));
+        final Route 경로 = routeFinder.findRouteBy(List.of(노선1, 노선2), 역("A"), 역("F"));
 
         final Distance 최단_거리 = 경로.getTotalDistance();
         final List<RouteEdge> 최단_구간_목록 = 경로.getSections();
@@ -141,7 +141,7 @@ class RouteGraphServiceTest {
 
 
         // when
-        final Route 경로 = routeService.findRouteBy(List.of(노선1, 노선2, 노선3), 역("A"), 역("F"));
+        final Route 경로 = routeFinder.findRouteBy(List.of(노선1, 노선2, 노선3), 역("A"), 역("F"));
 
         final Distance 최단_거리 = 경로.getTotalDistance();
         final List<RouteEdge> 최단_구간_목록 = 경로.getSections();
@@ -179,7 +179,7 @@ class RouteGraphServiceTest {
 
 
         // when
-        final Route 경로 = routeService.findRouteBy(List.of(노선1, 노선2, 노선3), 역("F"), 역("A"));
+        final Route 경로 = routeFinder.findRouteBy(List.of(노선1, 노선2, 노선3), 역("F"), 역("A"));
         final Station 출발역 = 경로.getStart();
         final Station 도착역 = 경로.getEnd();
         final List<Station> 환승역_목록 = 경로.getTransfers();

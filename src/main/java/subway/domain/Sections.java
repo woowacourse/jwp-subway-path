@@ -41,11 +41,11 @@ public class Sections {
     }
 
     private void addSectionBy(final Section newSection) {
-        final Optional<Section> maybeNewInnerSection = findOldInnerSection(newSection);
+        final Optional<Section> maybeOldInnerSection = findOldInnerSection(newSection);
         final Optional<Section> maybeOldOuterSection = findOldOuterSection(newSection);
 
-        if (maybeNewInnerSection.isPresent()) {
-            addSectionAfterRemoveOld(newSection, maybeNewInnerSection.get());
+        if (maybeOldInnerSection.isPresent()) {
+            addSectionAfterRemoveOld(newSection, maybeOldInnerSection.get());
             return;
         }
         if (maybeOldOuterSection.isPresent()) {

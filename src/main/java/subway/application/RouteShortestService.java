@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.response.QueryShortestRouteResponse;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.domain.route.RouteService;
+import subway.domain.route.RouteFinder;
 import subway.domain.route.Route;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -16,16 +16,16 @@ import java.util.List;
 @Service
 public class RouteShortestService {
 
-    private final RouteService routeService;
+    private final RouteFinder routeFinder;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
     public RouteShortestService(
-            final RouteService routeService,
+            final RouteFinder routeFinder,
             final LineRepository lineRepository,
             final StationRepository stationRepository
     ) {
-        this.routeService = routeService;
+        this.routeFinder = routeFinder;
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -37,7 +37,7 @@ public class RouteShortestService {
                 .orElseThrow(() -> new IllegalArgumentException("이름으로 조회된 도착역이 존재하지 않습니다."));
         final List<Line> lines = lineRepository.findAll();
 
-        final Route findRoute = routeService.findRouteBy(lines, startStation, endStation);
+        final Route findRoute = routeFinder.findRouteBy(lines, startStation, endStation);
         return QueryShortestRouteResponse.from(findRoute);
     }
 }

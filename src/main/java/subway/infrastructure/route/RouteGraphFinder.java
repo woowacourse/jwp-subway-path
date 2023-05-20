@@ -10,7 +10,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.route.Route;
 import subway.domain.route.RouteEdge;
-import subway.domain.route.RouteService;
+import subway.domain.route.RouteFinder;
 import subway.domain.vo.Distance;
 import subway.domain.vo.Money;
 
@@ -20,7 +20,7 @@ import java.util.Deque;
 import java.util.List;
 
 @Component
-public class RouteGraphService implements RouteService {
+public class RouteGraphFinder implements RouteFinder {
 
     @Override
     public Route findRouteBy(final List<Line> lines, final Station start, final Station end) {
