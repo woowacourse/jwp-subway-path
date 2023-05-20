@@ -30,7 +30,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class SubwayMapTest {
+class StationMapTest {
 
     static Stream<Arguments> getSections() {
         return Stream.of(
@@ -44,8 +44,8 @@ class SubwayMapTest {
     @ParameterizedTest
     @MethodSource("getSections")
     void getStations(final List<Section> sections) {
-        final SubwayMap subwayMap = SubwayMap.of(List.of(LINE1), sections);
-        assertThat(subwayMap.getStations(1L).getStations()).containsExactly(
+        final StationMap stationMap = StationMap.of(List.of(LINE1), sections);
+        assertThat(stationMap.getStations(1L).getStations()).containsExactly(
                 STATION1,
                 STATION2,
                 STATION3,
@@ -59,9 +59,9 @@ class SubwayMapTest {
     @DisplayName("모든 id에 대해 노선의 모든 역 조회")
     @Test
     void getAllStations() {
-        final SubwayMap subwayMap = SubwayMap.of(List.of(LINE1, LINE2), SECTIONS4);
+        final StationMap stationMap = StationMap.of(List.of(LINE1, LINE2), SECTIONS4);
         Assertions.assertAll(
-                () -> assertThat(subwayMap.getStations(LINE1.getId()).getStations()).containsExactly(
+                () -> assertThat(stationMap.getStations(LINE1.getId()).getStations()).containsExactly(
                         STATION1,
                         STATION2,
                         STATION3,
@@ -70,7 +70,7 @@ class SubwayMapTest {
                         STATION6,
                         STATION7
                 ),
-                () -> assertThat(subwayMap.getStations(LINE2.getId()).getStations()).containsExactly(
+                () -> assertThat(stationMap.getStations(LINE2.getId()).getStations()).containsExactly(
                         STATION8,
                         STATION9,
                         STATION10,

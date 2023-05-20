@@ -6,22 +6,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SubwayMap {
+public class StationMap {
 
     private final Lines lines;
     private final Map<Line, Stations> stationsByLine;
 
-    private SubwayMap(final Lines lines, final Map<Line, Stations> stationsByLine) {
+    private StationMap(final Lines lines, final Map<Line, Stations> stationsByLine) {
         this.lines = lines;
         this.stationsByLine = stationsByLine;
     }
 
-    public static SubwayMap of(final List<Line> lines, final List<Section> sections) {
-        final SubwayMap subwayMap = new SubwayMap(Lines.of(lines), new HashMap<>());
+    public static StationMap of(final List<Line> lines, final List<Section> sections) {
+        final StationMap stationMap = new StationMap(Lines.of(lines), new HashMap<>());
         final StationGraph stationGraph = StationGraph.of(sections);
 
-        subwayMap.createAllStations(stationGraph, sections);
-        return subwayMap;
+        stationMap.createAllStations(stationGraph, sections);
+        return stationMap;
     }
 
     private void createAllStations(final StationGraph stationGraph, final List<Section> sections) {

@@ -11,7 +11,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.SectionMap;
 import subway.domain.Station;
-import subway.domain.SubwayMap;
+import subway.domain.StationMap;
 import subway.dto.LineResponseWithSections;
 import subway.dto.LineResponseWithStations;
 
@@ -27,21 +27,21 @@ public class SubwayMapService {
     }
 
     public List<LineResponseWithStations> getLineResponsesWithStations() {
-        final SubwayMap subwayMap = getSubwayMap();
-        final Set<Long> lineIds = subwayMap.getAllLineIds();
+        final StationMap stationMap = getSubwayMap();
+        final Set<Long> lineIds = stationMap.getAllLineIds();
         return lineIds.stream()
-                .map(lineId -> getLineResponseWithStations(lineId, subwayMap))
+                .map(lineId -> getLineResponseWithStations(lineId, stationMap))
                 .collect(Collectors.toList());
     }
 
     public LineResponseWithStations getLineResponseWithStations(final Long lineId) {
-        final SubwayMap subwayMap = getSubwayMap();
-        return getLineResponseWithStations(lineId, subwayMap);
+        final StationMap stationMap = getSubwayMap();
+        return getLineResponseWithStations(lineId, stationMap);
     }
 
-    private LineResponseWithStations getLineResponseWithStations(final Long lineId, final SubwayMap subwayMap) {
-        final Line line = subwayMap.getLine(lineId);
-        final List<Station> stations = subwayMap.getStations(lineId).getStations();
+    private LineResponseWithStations getLineResponseWithStations(final Long lineId, final StationMap stationMap) {
+        final Line line = stationMap.getLine(lineId);
+        final List<Station> stations = stationMap.getStations(lineId).getStations();
         return new LineResponseWithStations(line.getId(), line.getName(), line.getColor(), stations);
     }
 
@@ -64,10 +64,10 @@ public class SubwayMapService {
         return new LineResponseWithSections(line.getId(), line.getName(), line.getColor(), sections);
     }
 
-    private SubwayMap getSubwayMap() {
+    private StationMap getSubwayMap() {
         final List<Line> lines = lineDao.findAll();
         final List<Section> sections = sectionDao.findAll();
-        return SubwayMap.of(lines, sections);
+        return StationMap.of(lines, sections);
     }
 
     private SectionMap getSectionMap() {
