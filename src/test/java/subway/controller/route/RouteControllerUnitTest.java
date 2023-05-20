@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.RouteController;
 import subway.dto.route.ShortestPathRequest;
 import subway.exception.ColorNotBlankException;
+import subway.exception.LinesEmptyException;
 import subway.service.SubwayMapService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -53,6 +54,22 @@ public class RouteControllerUnitTest {
         ShortestPathRequest req = new ShortestPathRequest("잠실역", "잠실역");
         doAnswer(invocation -> {
             throw new ColorNotBlankException();
+        }).when(subwayMapService).findShortestPath(any(ShortestPathRequest.class));
+
+        // when & then
+        mockMvc.perform(get("/routes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req))
+        ).andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("최단 경로를 찾을 때, Lines가 null이면 예외를 발생시킨다.")
+    @Test
+    void throws_exception_when_find_shortest_route_but_lines_empty() throws Exception {
+        //given
+        ShortestPathRequest req = new ShortestPathRequest("잠실역", "선릉역");
+        doAnswer(invocation -> {
+            throw new LinesEmptyException();
         }).when(subwayMapService).findShortestPath(any(ShortestPathRequest.class));
 
         // when & then
