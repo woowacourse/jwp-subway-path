@@ -40,8 +40,8 @@ public class PathService {
         Station downStation = stationMap.get(shortestPathRequest.getDownStationId());
 
         List<String> dijkstraShortestPath = subwayGraph.getDijkstraShortestPath(upStation, downStation);
-        double shortestPathWeight = subwayGraph.getShortestPathWeight(upStation, downStation);
-        int fare = fareCalculator.calculateFare((int) shortestPathWeight);
+        int shortestPathWeight = subwayGraph.getShortestPathWeight(upStation, downStation);
+        int fare = fareCalculator.calculateFare(shortestPathWeight);
         return new ShortestPathResponse(dijkstraShortestPath, shortestPathWeight, fare);
     }
 

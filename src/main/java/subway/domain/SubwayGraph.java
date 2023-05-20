@@ -30,7 +30,7 @@ public class SubwayGraph {
         return dijkstraShortestPath.getPath(upStation.getName(), downStation.getName()).getVertexList();
     }
 
-    public double getShortestPathWeight(final Station upStation, final Station downStation) {
-        return dijkstraShortestPath.getPathWeight(upStation.getName(), downStation.getName());
+    public int getShortestPathWeight(final Station upStation, final Station downStation) {
+        return (int) dijkstraShortestPath.getPathWeight(upStation.getName(), downStation.getName());
     }
 }

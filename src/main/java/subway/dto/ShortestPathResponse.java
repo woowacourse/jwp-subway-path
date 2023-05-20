@@ -5,10 +5,10 @@ import java.util.List;
 public class ShortestPathResponse {
 
     private List<String> path;
-    private double distance;
+    private int distance;
     private int fare;
 
-    public ShortestPathResponse(final List<String> path, final double distance, final int fare) {
+    public ShortestPathResponse(final List<String> path, final int distance, final int fare) {
         this.path = path;
         this.distance = distance;
         this.fare = fare;
@@ -18,7 +18,7 @@ public class ShortestPathResponse {
         return path;
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 
