@@ -1,6 +1,9 @@
 package subway.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -24,21 +27,42 @@ public class SectionDao {
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+        insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long save(final SectionEntity sectionEntity) {
+    public Long save(SectionEntity sectionEntity) {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(sectionEntity)).longValue();
     }
 
-    public List<SectionEntity> findByLineId(final Long lineId) {
+    public void batchSave(List<SectionEntity> sectionEntities) {
+        final String sql = "INSERT INTO section "
+                + "(`id`, `up_station_id`, `down_station_id`, `line_id`, `distance`)"
+                + " VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setLong(1, sectionEntities.get(i).getId());
+                ps.setLong(2, sectionEntities.get(i).getUpStationId());
+                ps.setLong(3, sectionEntities.get(i).getDownStationId());
+                ps.setLong(4, sectionEntities.get(i).getLineId());
+                ps.setInt(5, sectionEntities.get(i).getDistance());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return sectionEntities.size();
+            }
+        });
+    }
+
+    public List<SectionEntity> findByLineId(Long lineId) {
         final String sql = "SELECT * FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public int delete(final SectionEntity sectionEntity) {
+    public int delete(SectionEntity sectionEntity) {
         final String sql = "DELETE FROM section WHERE up_station_id = ? AND down_station_id = ? AND line_id = ?";
         return jdbcTemplate.update(
                 sql,
@@ -48,7 +72,7 @@ public class SectionDao {
         );
     }
 
-    public int deleteByLineId(final Long lineId) {
+    public int deleteByLineId(Long lineId) {
         final String sql = "DELETE FROM section WHERE line_id = ?";
         return jdbcTemplate.update(sql, lineId);
     }

@@ -104,14 +104,17 @@ public class SectionService {
     private void saveNewSections(long lineId, List<Section> originalSections, Line line) {
         List<Section> newSections = line.getSectionsByList();
         newSections.removeAll(originalSections);
-        for (Section newSection : newSections) {
-            sectionDao.save(new SectionEntity(
-                    newSection.getUpStation().getId(),
-                    newSection.getDownStation().getId(),
-                    lineId,
-                    newSection.getDistance())
-            );
-        }
+
+        List<SectionEntity> newSectionEntities = newSections.stream()
+                .map(section ->
+                        new SectionEntity(
+                                section.getUpStation().getId(),
+                                section.getDownStation().getId(),
+                                lineId,
+                                section.getDistance()))
+                .collect(Collectors.toList());
+
+        sectionDao.batchSave(newSectionEntities);
     }
 
     private void deleteOriginalSection(long lineId, List<Section> originalSections, Line line) {
