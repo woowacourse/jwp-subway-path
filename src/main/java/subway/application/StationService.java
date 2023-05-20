@@ -1,9 +1,9 @@
 package subway.application;
 
+import static subway.application.mapper.StationMapper.createStationResponses;
 import static subway.exception.ErrorCode.STATION_NAME_DUPLICATED;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.StationRequest;
@@ -44,14 +44,12 @@ public class StationService {
 
     public StationResponse getStationById(final Long id) {
         final Station station = stationRepository.findById(id);
-        return new StationResponse(id, station.getName().name());
+        return new StationResponse(id, station.name().name());
     }
 
     public List<StationResponse> getStations() {
         final List<StationRes> findStations = stationRepository.findAll();
-        return findStations.stream()
-            .map(res -> new StationResponse(res.getId(), res.getName()))
-            .collect(Collectors.toUnmodifiableList());
+        return createStationResponses(findStations);
     }
 
     private void validateDuplicatedName(final StationRequest stationRequest) {

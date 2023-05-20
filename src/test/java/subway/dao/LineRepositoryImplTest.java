@@ -114,7 +114,7 @@ class LineRepositoryImplTest {
 
         // then
         assertThat(line)
-            .extracting(Line::getName, Line::getColor, Line::getExtraFare)
+            .extracting(Line::name, Line::color, Line::extraFare)
             .containsExactly(new LineName("이호선"), "bg-green-600", new LineExtraFare(0));
     }
 

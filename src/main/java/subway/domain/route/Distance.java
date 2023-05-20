@@ -23,8 +23,8 @@ public class Distance {
         return new Distance((int) Math.ceil(dividedDistance));
     }
 
-    public boolean lessThan(final Distance distance) {
-        return this.distance < distance.distance;
+    public boolean moreThan(final Distance distance) {
+        return this.distance > distance.distance;
     }
 
     public boolean lessAndEqualsThan(final Distance distance) {

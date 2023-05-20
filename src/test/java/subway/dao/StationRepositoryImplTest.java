@@ -79,7 +79,7 @@ class StationRepositoryImplTest {
 
         // then
         assertThat(station)
-            .extracting(Station::getName)
+            .extracting(Station::name)
             .isEqualTo(new StationName("잠실역"));
     }
 

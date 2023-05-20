@@ -27,7 +27,7 @@ public class Station {
         return Objects.hash(name);
     }
 
-    public StationName getName() {
+    public StationName name() {
         return name;
     }
 }

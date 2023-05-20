@@ -52,18 +52,18 @@ class DistanceTest {
             .isEqualTo(4);
     }
 
-    @ParameterizedTest(name = "대상 거리가 주어진 거리보다 작으면 true, 크거나 같으면 false를 반환한다.")
-    @CsvSource(value = {"10:true", "3:false", "5:false"}, delimiter = ':')
-    void lessThan(final int distance, final boolean expected) {
+    @ParameterizedTest(name = "대상 거리가 주어진 거리보다 크면 true, 작거나 같으면 false를 반환한다.")
+    @CsvSource(value = {"3:true", "5:false", "10:false"}, delimiter = ':')
+    void moreThan(final int distance, final boolean expected) {
         // given
         final Distance target = new Distance(5);
 
         // expected
-        assertThat(target.lessThan(new Distance(distance)))
+        assertThat(target.moreThan(new Distance(distance)))
             .isSameAs(expected);
     }
 
-    @ParameterizedTest(name = "대상 거리가 주어진 거리보다 더 작거나 같으면 true, 크면 true를 반환한다.")
+    @ParameterizedTest(name = "대상 거리가 주어진 거리보다 더 작거나 같으면 true, 크면 false를 반환한다.")
     @CsvSource(value = {"5:true", "10:true", "3:false"}, delimiter = ':')
     void lessAndEqualsThan(final int distance, final boolean expected) {
         // given

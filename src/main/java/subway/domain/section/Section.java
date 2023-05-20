@@ -33,15 +33,15 @@ public class Section {
             (equalToSource(section.target) && equalToTarget(section.source));
     }
 
-    public Station getSource() {
+    public Station source() {
         return source;
     }
 
-    public Station getTarget() {
+    public Station target() {
         return target;
     }
 
-    public SectionDistance getDistance() {
+    public SectionDistance distance() {
         return distance;
     }
 }
