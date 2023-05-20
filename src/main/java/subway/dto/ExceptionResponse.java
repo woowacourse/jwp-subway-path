@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.dto;
 
 import java.util.List;
 

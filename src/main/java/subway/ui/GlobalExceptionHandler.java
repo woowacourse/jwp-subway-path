@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import subway.dto.ExceptionResponse;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineDuplicatedException;
 import subway.exception.NotFoundException;
-import subway.ui.dto.ExceptionResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

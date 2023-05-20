@@ -5,73 +5,53 @@ import org.springframework.stereotype.Service;
 import subway.domain.Direction;
 import subway.domain.Distance;
 import subway.domain.Line;
-import subway.domain.Section;
 import subway.domain.Station;
-import subway.repository.LineRepository;
-import subway.ui.dto.StationRequest;
-
+import subway.dto.StationCreateRequest;
+import subway.dto.StationInitialCreateRequest;
+import subway.repository.LineStationRepository;
 
 @Service
 public class StationService {
 
-    private final LineRepository lineRepository;
+    //todo 질문 :: 실제로 아래와 같이 lineName으로 line객체를 반환합니다. 또, 라인 안의 역을 추가, 삭제 하는 것인데
+    private LineStationRepository lineStationRepository;
 
-    public StationService(LineRepository lineRepository) {
-        this.lineRepository = lineRepository;
-    }
-
-    public void addStation(StationRequest request) {
-        Line line = lineRepository.findLineByName(request.getLineName())
-                .orElseThrow(() -> new IllegalStateException("해당 노선이 존재하지 않습니다"));
-        line.addStation(request.getBaseStationName(), request.getNewStationName(), request.getDirectionOfBaseStation(),
-                request.getDistance());
-        if (line.isEmpty()) {
-            addInitialStations(line, request);
-            return;
-        }
-        addNewStation(line, request);
-    }
-
-    private void addInitialStations(Line line, StationRequest request) {
-        Long baseStationId = lineRepository.addNewStationToLine(request.getBaseStationName(), line.getId());
-        Long newStationId = lineRepository.addNewStationToLine(request.getNewStationName(), line.getId());
-        lineRepository.addNewSectionToLine(
-                new Section(new Station(baseStationId, request.getBaseStationName()),
-                        new Station(newStationId, request.getNewStationName()),
-                        new Distance(request.getDistance())),
-                line.getId());
-    }
-
-    private void addNewStation(Line line, StationRequest request) {
-        Long lineId = line.getId();
-        Section sectionToRemove = findOriginSection(request, lineId);
-        lineRepository.deleteSectionInLine(sectionToRemove, lineId);
-
-        lineRepository.addNewStationToLine(request.getNewStationName(), lineId);
-        line.findSectionsByStationName(request.getNewStationName())
-                .forEach(section -> lineRepository.addNewSectionToLine(section, lineId));
+    public StationService(LineStationRepository lineStationRepository) {
+        this.lineStationRepository = lineStationRepository;
     }
 
 
-    private Section findOriginSection(StationRequest request, Long lineId) {
-        if (Direction.LEFT.isSameDirection(request.getDirectionOfBaseStation())) {
-            return lineRepository.findSectionByUpStation(request.getBaseStationName(), lineId);
-        }
-        return lineRepository.findSectionByDownStation(request.getBaseStationName(), lineId);
+    //todo: lineId를 가져와야 하는데 노선이 존재하는지 먼저 체크해야함
+    public List<Station> createInitialStations(Long lineId, StationInitialCreateRequest request) {
+        Line line = lineStationRepository.findLineById(lineId);
+//        Line line = lineStationRepository.findLineIdByName(request.getLineName());
+        line.addInitialStations(
+                new Station(null, request.getUpStationName()),
+                new Station(null, request.getDownStationName()),
+                new Distance(request.getDistance())
+        );
+        return lineStationRepository.saveInitialStations(line);
     }
 
-    public List<Station> findAllStations() {
-        return lineRepository.findAllStations();
+    public Station createStation(Long lineId, StationCreateRequest request) {
+        Line line = lineStationRepository.findLineById(lineId);
+//        Line line = lineStationRepository.findLineIdByName(request.getLineName());
+        line.addStation(
+                new Station(null, request.getBaseStationName()),
+                new Station(null, request.getNewStationName()),
+                Direction.findDirection(request.getDirectionOfBaseStation()),
+                new Distance(request.getDistance())
+        );
+        return lineStationRepository.saveStation(line, line.findStationByName(request.getNewStationName()));
     }
 
-    public Station findStationBy(Long stationId, Long lineId) {
-        return lineRepository.findStationById(stationId, lineId);
-    }
-
-    //line 도메인 이용해서 수정해야 함
-    public void deleteStationBy(Long stationId, Long lineId) {
-        lineRepository.deleteStationBy(stationId, lineId);
+    //1. 라인 가져와서 삭제한다음에
+    public void removeStation(Long lineId, Long stationId) {
+        Line line = lineStationRepository.findLineById(lineId);
+//        Line line = lineStationRepository.findLineIdByName(request.getLineName());
+        Station stationToRemove = lineStationRepository.findStationById(lineId, stationId);
+        line.removeStation(stationToRemove);
+        lineStationRepository.removeStation(line, stationToRemove);
     }
 
 }
-
