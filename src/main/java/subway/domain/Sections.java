@@ -8,7 +8,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import subway.exception.custom.SectionDistanceTooLongException;
 import subway.exception.custom.StartStationNotExistException;
+import subway.exception.custom.StationNotExistException;
 
 public final class Sections {
 
@@ -70,7 +72,7 @@ public final class Sections {
     }
 
     private void divideSection(final Station baseStation, final Section section) {
-        validateBaseStation(baseStation);
+        validateExistStation(baseStation);
 
         final Station upStation = section.getUpStation();
         final Station downStation = section.getDownStation();
@@ -85,17 +87,22 @@ public final class Sections {
         sections.put(upStation, section);
     }
 
-    private void validateBaseStation(final Station station) {
-        sections.values()
-            .stream()
-            .filter((section -> section.containsStation(station)))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("기준이 되는 역이 노선에 존재하지 않습니다."));
+    private void validateExistStation(final Station station) {
+        if (!getStations().contains(station)) {
+            throw new StationNotExistException(String.format("역이 노선에 존재하지 않습니다 ( 존재하지 않는 역: %s )", station.getName()));
+        }
     }
 
     private void divideWhenBaseStationInUp(final Station upStation, final Station downStation, final Section section) {
         final Station prevDownStation = sections.get(upStation).getDownStation();
-        final int subtractedDistance = sections.get(upStation).getDistance() - section.getDistance();
+        final int prevSectionDistance = sections.get(upStation).getDistance();
+        final int subtractedDistance = prevSectionDistance - section.getDistance();
+
+        if (subtractedDistance <= 0) {
+            throw new SectionDistanceTooLongException(String.format("역이 들어가야할 구간의 길이가 충분하지 않습니다.( 추가될 구간의 길이 : %d )",
+                prevSectionDistance));
+        }
+
         sections.put(downStation, Section.withNullId(downStation, prevDownStation, subtractedDistance));
     }
 
@@ -116,10 +123,7 @@ public final class Sections {
     }
 
     public void removeStation(final Station removeStation) {
-        if (isStartStation(removeStation)) {
-            sections.remove(removeStation);
-            return;
-        }
+        validateExistStation(removeStation);
 
         final Section upSection = findSectionGetAsDownStation(removeStation);
         final Section downSection = sections.get(removeStation);

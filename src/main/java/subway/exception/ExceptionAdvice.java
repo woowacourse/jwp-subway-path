@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.exception.custom.LineDoesNotContainStationException;
 import subway.exception.custom.LineNotExistException;
+import subway.exception.custom.SectionDistanceTooLongException;
 import subway.exception.custom.StartStationNotExistException;
 import subway.exception.custom.StationNotExistException;
 
@@ -48,6 +49,12 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(LineDoesNotContainStationException.class)
     public ResponseEntity<ExceptionResponse> handle(final LineDoesNotContainStationException exception) {
+        logger.error(exception.getMessage());
+        return ResponseEntity.badRequest().body(new ExceptionResponse(exception.getMessage()));
+    }
+
+    @ExceptionHandler(SectionDistanceTooLongException.class)
+    public ResponseEntity<ExceptionResponse> handle(final SectionDistanceTooLongException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.badRequest().body(new ExceptionResponse(exception.getMessage()));
     }

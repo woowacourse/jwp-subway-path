@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum PassengerAge {
-    TEENAGER(age -> 13 <= age && age < 19, 0.2, 350),
-    CHILD(age -> 6 <= age && age < 13, 0.5, 350),
     BABY(age -> 0 < age && age < 6, 1, 0),
+    CHILD(age -> 6 <= age && age < 13, 0.5, 350),
+    TEENAGER(age -> 13 <= age && age < 19, 0.2, 350),
     ADULT(age -> age >= 19, 0, 0);
 
     private final Predicate<Integer> ageValidator;
