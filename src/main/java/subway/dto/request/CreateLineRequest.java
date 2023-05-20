@@ -11,10 +11,6 @@ public class CreateLineRequest {
     @NotEmpty(message = "노선 색상이 입력되지 않았습니다.")
     private final String color;
 
-    public CreateLineRequest() {
-        this(null, null);
-    }
-
     public CreateLineRequest(final String name, final String color) {
         this.name = name;
         this.color = color;

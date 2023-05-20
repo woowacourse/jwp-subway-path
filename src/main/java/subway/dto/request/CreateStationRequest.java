@@ -19,11 +19,12 @@ public class CreateStationRequest {
     @Positive(message = "거리는 1 이상이어야 합니다.")
     private final Integer distance;
 
-    public CreateStationRequest() {
-        this(null, null, null, null);
-    }
-
-    public CreateStationRequest(final Long lineId, final String sourceStation, final String targetStation, final Integer distance) {
+    public CreateStationRequest(
+            final Long lineId,
+            final String sourceStation,
+            final String targetStation,
+            final Integer distance
+    ) {
         this.lineId = lineId;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;

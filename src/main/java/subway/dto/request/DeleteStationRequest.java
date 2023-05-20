@@ -12,10 +12,6 @@ public class DeleteStationRequest {
     @NotEmpty(message = "역 이름이 입력되지 않았습니다.")
     private final String station;
 
-    public DeleteStationRequest() {
-        this(null, null);
-    }
-
     public DeleteStationRequest(final Long lineId, final String station) {
         this.lineId = lineId;
         this.station = station;
