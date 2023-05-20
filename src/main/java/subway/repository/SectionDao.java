@@ -173,9 +173,19 @@ public class SectionDao {
                 "WHERE se.line_id = ?";
 
         final List<SectionDetailEntity> result = jdbcTemplate.query(sql, sectionDetailRowMapper, lineId);
+
         if (result.isEmpty()) {
             throw new LineNotFoundException();
         }
         return result;
+    }
+
+    public boolean isSectionNotExistInLine(final long lineId) {
+        try {
+            findSectionDetailByLineId(lineId);
+            return false;
+        } catch (LineNotFoundException e) {
+            return true;
+        }
     }
 }

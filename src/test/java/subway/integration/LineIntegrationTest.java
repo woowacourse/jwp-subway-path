@@ -428,33 +428,143 @@ public class LineIntegrationTest extends IntegrationTest {
         }
     }
 
-    @Test
+    @Nested
     @DisplayName("노선에 역을 삭제한다.")
     @Sql({"/line_test_data.sql", "/station_test_data.sql", "/section_test_data.sql"})
-    void unregisterSection() {
-        // given
-        final long lineId = 1L;
-        final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실");
+    class UnregisterStation {
 
-        // when
-        final ExtractableResponse<Response> response = RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().patch("/lines/{id}/unregister", lineId)
-                .then()
-                .extract();
+        @Test
+        @DisplayName("끝 역 제거")
+        void end() {
+            // given
+            final long lineId = 1L;
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실");
 
-        // then
-        final Configuration conf = Configuration.defaultConfiguration();
-        final DocumentContext documentContext = JsonPath.using(conf).parse(response.asString());
+            // when
+            final ExtractableResponse<Response> response = RestAssured
+                    .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().patch("/lines/{id}/unregister", lineId)
+                    .then()
+                    .extract();
 
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(documentContext.read("$.id", Long.class)).isEqualTo(lineId),
-                () -> assertThat(documentContext.read("$.stations.size()", Integer.class)).isEqualTo(2),
-                () -> assertThat(documentContext.read("$.stations[0].name", String.class)).isEqualTo("잠실새내"),
-                () -> assertThat(documentContext.read("$.stations[1].name", String.class)).isEqualTo("종합운동장")
-        );
+            // then
+            final Configuration conf = Configuration.defaultConfiguration();
+            final DocumentContext documentContext = JsonPath.using(conf).parse(response.asString());
+
+            assertAll(
+                    () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                    () -> assertThat(documentContext.read("$.id", Long.class)).isEqualTo(lineId),
+                    () -> assertThat(documentContext.read("$.stations.size()", Integer.class)).isEqualTo(2),
+                    () -> assertThat(documentContext.read("$.stations[0].name", String.class)).isEqualTo("잠실새내"),
+                    () -> assertThat(documentContext.read("$.stations[1].name", String.class)).isEqualTo("종합운동장")
+            );
+        }
+
+        @Test
+        @DisplayName("중간 역 제거")
+        void mid() {
+            // given
+            final long lineId = 1L;
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실새내");
+
+            // when
+            final ExtractableResponse<Response> response = RestAssured
+                    .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().patch("/lines/{id}/unregister", lineId)
+                    .then()
+                    .extract();
+
+            // then
+            final Configuration conf = Configuration.defaultConfiguration();
+            final DocumentContext documentContext = JsonPath.using(conf).parse(response.asString());
+
+            assertAll(
+                    () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                    () -> assertThat(documentContext.read("$.id", Long.class)).isEqualTo(lineId),
+                    () -> assertThat(documentContext.read("$.stations.size()", Integer.class)).isEqualTo(2),
+                    () -> assertThat(documentContext.read("$.stations[0].name", String.class)).isEqualTo("잠실"),
+                    () -> assertThat(documentContext.read("$.stations[1].name", String.class)).isEqualTo("종합운동장")
+            );
+        }
+
+        @Test
+        @DisplayName("노선 전체 삭제")
+        void delete_line() {
+            // given
+            final long lineId = 1L;
+            final StationUnregisterInLineRequest request1 = new StationUnregisterInLineRequest("잠실");
+            RestAssured
+                    .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request1)
+                    .when().patch("/lines/{id}/unregister", lineId)
+                    .then().log().all()
+                    .statusCode(HttpStatus.OK.value());
+
+            // when, then
+            final StationUnregisterInLineRequest request2 = new StationUnregisterInLineRequest("잠실새내");
+            RestAssured
+                    .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request2)
+                    .when().patch("/lines/{id}/unregister", lineId)
+                    .then().log().all()
+                    .statusCode(HttpStatus.NO_CONTENT.value());
+        }
+
+        @Test
+        @DisplayName("잘못된 line id")
+        void invalid_line_id() {
+            // given
+            final long lineId = 119L;
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실새내");
+
+            // when, then
+            RestAssured
+                    .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().patch("/lines/{id}/unregister", lineId)
+                    .then()
+                    .statusCode(HttpStatus.NOT_FOUND.value());
+        }
+
+        @Test
+        @DisplayName("노선에 존재하지 않는 역")
+        void station_not_found() {
+            // given
+            final long lineId = 1L;
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("송파");
+
+            // when, then
+            RestAssured
+                    .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().patch("/lines/{id}/unregister", lineId)
+                    .then()
+                    .statusCode(HttpStatus.NOT_FOUND.value());
+        }
+
+        @Test
+        @DisplayName("삭제할 역 이름이 blank 인 경우")
+        void request_body_station_name_is_blank() {
+            // given
+            final long lineId = 1L;
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("");
+
+            // when, then
+            RestAssured
+                    .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().patch("/lines/{id}/unregister", lineId)
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value());
+        }
     }
 }

@@ -14,6 +14,7 @@ import subway.repository.LineDao;
 import subway.repository.SectionDao;
 import subway.repository.StationDao;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,6 +95,9 @@ public class LineModifyService {
         final List<SectionEntity> relatedSectionEntities = sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, request.getStationName());
         if (relatedSectionEntities.size() == END_POINT_STATION_SIZE) {
             final List<SectionDetailEntity> sectionDetailEntities = unregisterEndStation(relatedSectionEntities.get(0));
+            if (sectionDetailEntities.isEmpty()) {
+                return Optional.empty();
+            }
             return Optional.of(convertToResponse(sectionDetailEntities));
         }
         final List<SectionDetailEntity> sectionDetailEntities = unregisterMidStation(relatedSectionEntities.get(0), relatedSectionEntities.get(1));
@@ -103,15 +107,11 @@ public class LineModifyService {
     private List<SectionDetailEntity> unregisterEndStation(final SectionEntity sectionEntity) {
         final long lineId = sectionEntity.getLineId();
         sectionDao.delete(sectionEntity);
-        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(lineId);
-        deleteLineIfSectionNonExist(lineId, sectionDetailEntities);
-        return sectionDetailEntities;
-    }
-
-    private void deleteLineIfSectionNonExist(final long lineId, final List<SectionDetailEntity> sectionDetailEntities) {
-        if (sectionDetailEntities.isEmpty()) {
+        if (sectionDao.isSectionNotExistInLine(lineId)) {
             lineDao.deleteById(lineId);
+            return Collections.emptyList();
         }
+        return sectionDao.findSectionDetailByLineId(lineId);
     }
 
     private List<SectionDetailEntity> unregisterMidStation(final SectionEntity previous, final SectionEntity next) {
