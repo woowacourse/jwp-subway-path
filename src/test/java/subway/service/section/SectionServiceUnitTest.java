@@ -49,7 +49,7 @@ public class SectionServiceUnitTest {
         Line line = new Line(sections, 2, "2호선", "green");
 
         given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
-        given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
+        given(lineRepository.findByLineNameWithSections(req.getLineName(), sections)).willReturn(line);
 
         // when
         sectionService.insertSection(req);
@@ -68,7 +68,7 @@ public class SectionServiceUnitTest {
         Line line = new Line(sections, 2, "2호선", "green");
 
         given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
-        given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
+        given(lineRepository.findByLineNameWithSections(req.getLineName(), sections)).willReturn(line);
 
         // when & then
         assertThatThrownBy(() -> sectionService.insertSection(req))
@@ -84,7 +84,7 @@ public class SectionServiceUnitTest {
         Line line = new Line(sections, 2, "2호선", "green");
 
         given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
-        given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
+        given(lineRepository.findByLineNameWithSections(req.getLineName(), sections)).willReturn(line);
 
         // when & then
         assertThatThrownBy(() -> sectionService.insertSection(req))
@@ -100,7 +100,7 @@ public class SectionServiceUnitTest {
         Line line = new Line(sections, 2, "2호선", "green");
 
         given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
-        given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
+        given(lineRepository.findByLineNameWithSections(req.getLineName(), sections)).willReturn(line);
 
         // when & then
         assertThatThrownBy(() -> sectionService.insertSection(req))

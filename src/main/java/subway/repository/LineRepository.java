@@ -46,7 +46,7 @@ public class LineRepository {
         return lineDao.findById(id);
     }
 
-    public Line findByLineNameAndSections(final String lineName, final Sections sections) {
+    public Line findByLineNameWithSections(final String lineName, final Sections sections) {
         LineEntity lineEntity = lineDao.findByName(lineName);
         return new Line(sections, lineEntity.getLineNumber(), lineEntity.getName(), lineEntity.getColor());
     }

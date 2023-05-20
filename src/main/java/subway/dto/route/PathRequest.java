@@ -2,7 +2,7 @@ package subway.dto.route;
 
 import javax.validation.constraints.NotBlank;
 
-public class ShortestPathRequest {
+public class PathRequest {
 
     @NotBlank(message = "출발 지점을 입력해주세요.")
     private String start;
@@ -10,10 +10,10 @@ public class ShortestPathRequest {
     @NotBlank(message = "도착 지점을 입력해주세요.")
     private String destination;
 
-    public ShortestPathRequest() {
+    public PathRequest() {
     }
 
-    public ShortestPathRequest(final String start, final String destination) {
+    public PathRequest(final String start, final String destination) {
         this.start = start;
         this.destination = destination;
     }

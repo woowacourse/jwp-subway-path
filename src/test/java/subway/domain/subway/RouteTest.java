@@ -22,7 +22,7 @@ class RouteTest {
         Route route = Route.from(createLines());
 
         // when
-        Map<Station, Set<String>> result = route.findShortestRoute("잠실역", "종합운동장역");
+        Map<Station, Set<String>> result = route.findShortestPath("잠실역", "종합운동장역");
         Set<Station> stations = result.keySet();
 
         // then
@@ -40,7 +40,7 @@ class RouteTest {
         Route route = Route.createDefault();
 
         // when & then
-        assertThatThrownBy(() -> route.findShortestRoute("선릉역", "잠실역"))
+        assertThatThrownBy(() -> route.findShortestPath("선릉역", "잠실역"))
                 .isInstanceOf(LinesEmptyException.class);
     }
 }

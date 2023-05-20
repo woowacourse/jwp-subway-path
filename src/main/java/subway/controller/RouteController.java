@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.dto.route.ShortestPathRequest;
-import subway.dto.route.ShortestPathResponse;
+import subway.dto.route.PathRequest;
+import subway.dto.route.PathsResponse;
 import subway.service.SubwayMapService;
 
 import javax.validation.Valid;
@@ -22,7 +22,7 @@ public class RouteController {
     }
 
     @GetMapping
-    public ResponseEntity<ShortestPathResponse> findShortestPath(@RequestBody @Valid final ShortestPathRequest shortestPathRequest) {
-        return ResponseEntity.ok(subwayMapService.findShortestPath(shortestPathRequest));
+    public ResponseEntity<PathsResponse> findShortestPath(@RequestBody @Valid final PathRequest pathRequest) {
+        return ResponseEntity.ok(subwayMapService.findShortestPath(pathRequest));
     }
 }

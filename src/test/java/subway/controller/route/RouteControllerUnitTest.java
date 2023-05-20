@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.RouteController;
-import subway.dto.route.ShortestPathRequest;
+import subway.dto.route.PathRequest;
 import subway.exception.ColorNotBlankException;
 import subway.exception.LinesEmptyException;
 import subway.service.SubwayMapService;
@@ -36,7 +36,7 @@ public class RouteControllerUnitTest {
     @DisplayName("최단 경로를 조회한다.")
     void find_shortest_route() throws Exception {
         // given
-        ShortestPathRequest req = new ShortestPathRequest("잠실역", "종합운동장역");
+        PathRequest req = new PathRequest("잠실역", "종합운동장역");
 
         // when & then
         mockMvc.perform(get("/routes")
@@ -44,17 +44,17 @@ public class RouteControllerUnitTest {
                 .content(objectMapper.writeValueAsString(req))
         ).andExpect(status().isOk());
 
-        verify(subwayMapService).findShortestPath(any(ShortestPathRequest.class));
+        verify(subwayMapService).findShortestPath(any(PathRequest.class));
     }
 
     @Test
     @DisplayName("같은 역을 조회시 예외를 발생시킨다.")
     void throws_exception_when_search_same_station() throws Exception {
         // given
-        ShortestPathRequest req = new ShortestPathRequest("잠실역", "잠실역");
+        PathRequest req = new PathRequest("잠실역", "잠실역");
         doAnswer(invocation -> {
             throw new ColorNotBlankException();
-        }).when(subwayMapService).findShortestPath(any(ShortestPathRequest.class));
+        }).when(subwayMapService).findShortestPath(any(PathRequest.class));
 
         // when & then
         mockMvc.perform(get("/routes")
@@ -67,10 +67,10 @@ public class RouteControllerUnitTest {
     @Test
     void throws_exception_when_find_shortest_route_but_lines_empty() throws Exception {
         //given
-        ShortestPathRequest req = new ShortestPathRequest("잠실역", "선릉역");
+        PathRequest req = new PathRequest("잠실역", "선릉역");
         doAnswer(invocation -> {
             throw new LinesEmptyException();
-        }).when(subwayMapService).findShortestPath(any(ShortestPathRequest.class));
+        }).when(subwayMapService).findShortestPath(any(PathRequest.class));
 
         // when & then
         mockMvc.perform(get("/routes")

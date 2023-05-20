@@ -18,7 +18,7 @@ public class LinesTest {
         Lines lines = createLines();
 
         // when
-        Map<String, Station> result = lines.getStationsFromNameMap();
+        Map<String, Station> result = lines.getStationsByName();
 
         // then
         assertThat(result.keySet().size()).isEqualTo(3);
@@ -32,7 +32,7 @@ public class LinesTest {
         Lines lines = createLines();
 
         // when
-        Set<String> result = lines.getLinesNameFromStation(station);
+        Set<String> result = lines.getLineNamesByStation(station);
 
         // then
         assertThat(result.size()).isEqualTo(1);

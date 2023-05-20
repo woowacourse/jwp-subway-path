@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.line.LineCreateRequest;
-import subway.dto.route.ShortestPathRequest;
+import subway.dto.route.PathRequest;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.station.StationCreateRequest;
 import subway.service.LineService;
@@ -45,7 +45,7 @@ class RouteControllerIntegrationTest {
     @DisplayName("최단 경로를 조회한다.")
     void find_shortest_route() {
         // given
-        ShortestPathRequest req = new ShortestPathRequest("잠실역", "종합운동장역");
+        PathRequest req = new PathRequest("잠실역", "종합운동장역");
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
         lineService.saveLine(lineCreateRequest);
 
@@ -69,12 +69,12 @@ class RouteControllerIntegrationTest {
                 .when().get("/routes")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("stations[0].station.name", equalTo("잠실역"))
-                .body("stations[0].lineNames[0]", equalTo("2호선"))
-                .body("stations[1].station.name", equalTo("잠실새내역"))
-                .body("stations[1].lineNames[0]", equalTo("2호선"))
-                .body("stations[2].station.name", equalTo("종합운동장역"))
-                .body("stations[2].lineNames[0]", equalTo("2호선"))
+                .body("paths[0].station.name", equalTo("잠실역"))
+                .body("paths[0].lineNames[0]", equalTo("2호선"))
+                .body("paths[1].station.name", equalTo("잠실새내역"))
+                .body("paths[1].lineNames[0]", equalTo("2호선"))
+                .body("paths[2].station.name", equalTo("종합운동장역"))
+                .body("paths[2].lineNames[0]", equalTo("2호선"))
                 .body("fee", equalTo(1250));
     }
 }

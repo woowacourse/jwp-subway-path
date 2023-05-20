@@ -10,8 +10,8 @@ import subway.domain.subway.Lines;
 import subway.domain.subway.Route;
 import subway.domain.subway.Sections;
 import subway.domain.subway.Station;
-import subway.dto.route.ShortestPathRequest;
-import subway.dto.route.ShortestPathResponse;
+import subway.dto.route.PathRequest;
+import subway.dto.route.PathsResponse;
 import subway.dto.station.LineMapResponse;
 import subway.dto.station.StationResponse;
 import subway.event.RouteUpdateEvent;
@@ -45,12 +45,12 @@ public class SubwayMapService {
     }
 
     @Transactional(readOnly = true)
-    public ShortestPathResponse findShortestPath(final ShortestPathRequest req) {
+    public PathsResponse findShortestPath(final PathRequest pathRequest) {
         Route route = RouteCache.getRoute();
 
-        Map<Station, Set<String>> StationWithLinesMap = route.findShortestRoute(req.getStart(), req.getDestination());
+        Map<Station, Set<String>> lineNamesByStation = route.findShortestPath(pathRequest.getStart(), pathRequest.getDestination());
 
-        return ShortestPathResponse.from(StationWithLinesMap, route.getFee());
+        return PathsResponse.from(lineNamesByStation, route.getFee());
     }
 
     @TransactionalEventListener
@@ -58,7 +58,7 @@ public class SubwayMapService {
         List<Line> lines = lineRepository.findAll().stream()
                 .map(lineEntity -> {
                     Sections sections = sectionRepository.findSectionsByLineNumber(lineEntity.getLineNumber());
-                    return lineRepository.findByLineNameAndSections(lineEntity.getName(), sections);
+                    return lineRepository.findByLineNameWithSections(lineEntity.getName(), sections);
                 })
                 .collect(Collectors.toList());
 

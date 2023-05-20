@@ -29,15 +29,15 @@ public class Route {
         return new Route(null, Fee.createDefault());
     }
 
-    public Map<Station, Set<String>> findShortestRoute(final String start, final String destination) {
+    public Map<Station, Set<String>> findShortestPath(final String start, final String destination) {
         validateEmptyLines();
 
         WeightedMultigraph<String, DefaultWeightedEdge> graph = initGraph();
 
-        GraphPath<String, DefaultWeightedEdge> route = calculateShortestPath(graph, start, destination);
-        fee.calculateFromDistance((int) route.getWeight());
+        GraphPath<String, DefaultWeightedEdge> shortestPath = calculateShortestPath(graph, start, destination);
+        fee.calculateFromDistance((int) shortestPath.getWeight());
 
-        return getStationAndLineNames(route);
+        return findLineNamesByStation(shortestPath);
     }
 
     private void validateEmptyLines() {
@@ -68,16 +68,16 @@ public class Route {
         }
     }
 
-    private Map<Station, Set<String>> getStationAndLineNames(final GraphPath<String, DefaultWeightedEdge> route) {
-        Map<String, Station> stationsFromName = lines.getStationsFromNameMap();
-        Map<Station, Set<String>> lineNamesFromStation = new LinkedHashMap<>();
+    private Map<Station, Set<String>> findLineNamesByStation(final GraphPath<String, DefaultWeightedEdge> path) {
+        Map<String, Station> StationsByName = lines.getStationsByName();
+        Map<Station, Set<String>> lineNamesByStation = new LinkedHashMap<>();
 
-        for (String stationName : route.getVertexList()) {
-            Station station = stationsFromName.get(stationName);
-            lineNamesFromStation.put(station, lines.getLinesNameFromStation(station));
+        for (String stationName : path.getVertexList()) {
+            Station station = StationsByName.get(stationName);
+            lineNamesByStation.put(station, lines.getLineNamesByStation(station));
         }
 
-        return lineNamesFromStation;
+        return lineNamesByStation;
     }
 
     private GraphPath<String, DefaultWeightedEdge> calculateShortestPath(final WeightedMultigraph<String, DefaultWeightedEdge> graph,

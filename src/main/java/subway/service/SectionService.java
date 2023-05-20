@@ -29,7 +29,7 @@ public class SectionService {
     @Transactional
     public void insertSection(final SectionCreateRequest request) {
         Sections sections = sectionRepository.findSectionsByLineName(request.getLineName());
-        Line line = lineRepository.findByLineNameAndSections(request.getLineName(), sections);
+        Line line = lineRepository.findByLineNameWithSections(request.getLineName(), sections);
 
         Station requestUpStation = new Station(request.getUpStation());
         Station requestDownStation = new Station(request.getDownStation());
