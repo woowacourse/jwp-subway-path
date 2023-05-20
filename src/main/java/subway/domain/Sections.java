@@ -7,18 +7,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import subway.exception.DuplicateException;
 import subway.exception.ErrorCode;
-import subway.exception.NotFoundException;
+import subway.exception.NoSuchException;
 
 public class Sections {
     private static final int TERMINAL_COUNT = 1;
 
     private final List<Section> sections;
 
-    public Sections(final List<Section> sections) {
+    public Sections(List<Section> sections) {
         this.sections = sections;
     }
 
-    public static Sections from(final List<Section> sections) {
+    public static Sections from(List<Section> sections) {
         Map<Station, Section> sectionByUpStation = new HashMap<>();
         for (Section section : sections) {
             sectionByUpStation.put(section.getUpStation(), section);
@@ -35,7 +35,7 @@ public class Sections {
         return new Sections(sortedSections);
     }
 
-    private static Station findFirstStation(final List<Section> sections) {
+    private static Station findFirstStation(List<Section> sections) {
         List<Station> upStations = new ArrayList<>();
         List<Station> downStations = new ArrayList<>();
 
@@ -64,7 +64,7 @@ public class Sections {
     }
 
 
-    public void addSection(final Section newSection) {
+    public void addSection(Section newSection) {
         if (isEmpty()) {
             sections.add(newSection);
             return;
@@ -79,14 +79,14 @@ public class Sections {
         addMiddleSection(newSection);
     }
 
-    private void validateDuplicateSection(final Station upStation, final Station downStation) {
+    private void validateDuplicateSection(Station upStation, Station downStation) {
         List<Station> stations = getStations();
         if (stations.contains(upStation) && stations.contains(downStation)) {
             throw new DuplicateException(ErrorCode.DUPLICATE_STATION);
         }
     }
 
-    private boolean isAddedTerminalSection(final Section newSection) {
+    private boolean isAddedTerminalSection(Section newSection) {
         if (isDownStationSameAsFirstStation(newSection)) {
             addFirstStation(newSection);
             return true;
@@ -98,32 +98,32 @@ public class Sections {
         return false;
     }
 
-    private boolean isDownStationSameAsFirstStation(final Section newSection) {
+    private boolean isDownStationSameAsFirstStation(Section newSection) {
         Station firstStation = sections.get(0).getUpStation();
         return firstStation.equals(newSection.getDownStation());
     }
 
-    private boolean isUpStationSameAsLastStation(final Section newSection) {
+    private boolean isUpStationSameAsLastStation(Section newSection) {
         Station lastStation = sections.get(sections.size() - 1).getDownStation();
         return lastStation.equals(newSection.getUpStation());
     }
 
-    private void addFirstStation(final Section newSection) {
+    private void addFirstStation(Section newSection) {
         sections.add(0, newSection);
     }
 
-    private void addLastStation(final Section newSection) {
+    private void addLastStation(Section newSection) {
         sections.add(newSection);
     }
 
-    private void addMiddleSection(final Section newSection) {
+    private void addMiddleSection(Section newSection) {
         List<Station> stations = getStations();
 
         addGoingUpSection(newSection, stations);
         addGoingDownSection(newSection, stations);
     }
 
-    private void addGoingUpSection(final Section newSection, final List<Station> stations) {
+    private void addGoingUpSection(Section newSection, List<Station> stations) {
         Station downStation = newSection.getDownStation();
         if (stations.contains(downStation)) {
             Section currentSection = sections.stream()
@@ -140,7 +140,7 @@ public class Sections {
         }
     }
 
-    private void addGoingDownSection(final Section newSection, final List<Station> stations) {
+    private void addGoingDownSection(Section newSection, List<Station> stations) {
         Station upStation = newSection.getUpStation();
         if (stations.contains(upStation)) {
             Section currentSection = sections.stream()
@@ -156,7 +156,7 @@ public class Sections {
         }
     }
 
-    public void deleteStation(final Station deletedStation) {
+    public void deleteStation(Station deletedStation) {
         List<Section> deletedSections = sections.stream()
                 .filter(section -> section.getUpStation().equals(deletedStation) || section.getDownStation()
                         .equals(deletedStation))
@@ -170,7 +170,7 @@ public class Sections {
         deleteMiddleSection(deletedStation, deletedSections);
     }
 
-    private void deleteMiddleSection(final Station deletedStation, final List<Section> deletedSections) {
+    private void deleteMiddleSection(Station deletedStation, List<Section> deletedSections) {
         int newDistance = deletedSections.stream()
                 .mapToInt(Section::getDistance)
                 .sum();
@@ -178,12 +178,12 @@ public class Sections {
         Section backSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getUpStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_STATION));
+                .orElseThrow(() -> new NoSuchException(ErrorCode.NO_SUCH_STATION));
 
         Section frontSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getDownStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_STATION));
+                .orElseThrow(() -> new NoSuchException(ErrorCode.NO_SUCH_STATION));
 
         Section newSection = new Section(frontSection.getUpStation(), backSection.getDownStation(), newDistance);
 
@@ -192,7 +192,7 @@ public class Sections {
         sections.removeAll(deletedSections);
     }
 
-    private boolean isOneSection(final List<Section> sections) {
+    private boolean isOneSection(List<Section> sections) {
         return sections.size() == TERMINAL_COUNT;
     }
 
