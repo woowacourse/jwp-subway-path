@@ -1,11 +1,5 @@
 package subway.domain;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.Graphs;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import subway.exeption.InvalidPathException;
 import subway.exeption.LineNotFoundException;
 
 import java.util.ArrayList;
@@ -43,9 +37,9 @@ public class Subway {
         newSections.createInitialSection(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
-    public Station addStation(final Line line, final Station upStation, final Station downStation, final int distance) {
+    public void addStation(final Line line, final Station upStation, final Station downStation, final int distance) {
         final Sections sections = findSectionsOf(line);
-        return sections.addStation(upStation, downStation, distance);
+        sections.addStation(upStation, downStation, distance);
     }
 
     public Sections findSectionsOf(final Line line) {
@@ -71,33 +65,11 @@ public class Subway {
                 .findAdjacentStationOf(station, element -> sections.getDownStationsOf(station));
     }
 
-    public WeightedMultigraph<Station, DefaultWeightedEdge> findAllStationGraph() {
-        final List<Graph> graphs = sections.stream()
-                .map(Sections::getGraph)
-                .collect(Collectors.toList());
-
-        WeightedMultigraph<Station, DefaultWeightedEdge> mergedGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        for (final Graph graph : graphs) {
-            Graphs.addGraph(mergedGraph, graph.getGraph());
-        }
-
-        return mergedGraph;
-    }
-
     public PathDto findShortestPath(final Station source, final Station target) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> allStationGraph = findAllStationGraph();
+        final ShortestPath shortestPath = ShortestPath.from(sections);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(allStationGraph);
-
-        final GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
-
-        if (path == null) {
-            throw new InvalidPathException("연결되지 않은 역에 대해 경로를 조회할 수 없습니다.");
-        }
-
-        final List<Station> stations = path.getVertexList();
-        double distance = shortestPath.getPathWeight(source, target);
+        final List<Station> stations = shortestPath.path(source, target);
+        double distance = shortestPath.distance(source, target);
 
         return new PathDto(stations, distance);
     }
