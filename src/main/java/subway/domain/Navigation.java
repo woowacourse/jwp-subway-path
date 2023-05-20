@@ -47,7 +47,9 @@ public class Navigation {
 
     public List<Station> getShortestPath(final Station source, final Station target) {
         validateStations(source, target);
-        final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        final DijkstraShortestPath<Station, Station> dijkstraShortestPath = new DijkstraShortestPath(graph);
+        final GraphPath<Station, Station> path = dijkstraShortestPath.getPath(source, target);
+        validatePath(path);
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
@@ -60,16 +62,17 @@ public class Navigation {
         }
     }
 
-    public int getDistance(final Station source, final Station target) {
-        final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        final GraphPath path = dijkstraShortestPath.getPath(source, target);
-        validatePath(path);
-        return (int) dijkstraShortestPath.getPath(source, target).getWeight();
-    }
-
-    private static void validatePath(final GraphPath path) {
+    private void validatePath(final GraphPath path) {
         if (path == null) {
             throw new PathNotFoundException();
         }
+    }
+
+    public int getDistance(final Station source, final Station target) {
+        validateStations(source, target);
+        final DijkstraShortestPath<Station, Station> dijkstraShortestPath = new DijkstraShortestPath(graph);
+        final GraphPath<Station, Station> path = dijkstraShortestPath.getPath(source, target);
+        validatePath(path);
+        return (int) path.getWeight();
     }
 }

@@ -80,6 +80,4 @@ class NavigationTest {
         // then
         assertThat(distance).isEqualTo(4);
     }
-
-
 }

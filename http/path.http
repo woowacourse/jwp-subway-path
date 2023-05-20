@@ -6,7 +6,7 @@ Accept: application/json
 
 {
   "sourceStation" : "수서역",
-  "targetStation" : "문정역"
+  "targetStation" : "장지역"
 }
 
 ### Response (최단 경로 조회 API)
@@ -20,11 +20,11 @@ Keep-Alive: timeout=60
 Connection: keep-alive
 
 {
-  "distance" : 15,
+  "distance" : 14,
   "fare" : 1350,
   "stations": [
     "수서역",
     "복정역",
-    "문정역"
+    "장지역"
   ]
 }
