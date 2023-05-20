@@ -10,7 +10,7 @@ import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 
 @RestControllerAdvice
-public class ExceptionController extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<String> handleIllegalArgumentException(final IllegalArgumentException exception) {
