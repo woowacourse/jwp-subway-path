@@ -6,12 +6,10 @@ import subway.domain.section.SingleLineSections;
 import subway.repository.SectionRepository;
 
 @Component
-public class DeleteUpTerminal implements DeleteStationStrategy {
-
-    private final SectionRepository sectionRepository;
+public class DeleteUpTerminal extends DeleteStationStrategy {
 
     public DeleteUpTerminal(SectionRepository sectionRepository) {
-        this.sectionRepository = sectionRepository;
+        super(sectionRepository);
     }
 
     @Override

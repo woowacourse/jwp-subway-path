@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.SectionStationDao;
 import subway.dao.StationDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
@@ -16,7 +17,7 @@ import subway.domain.Station;
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 @Sql("classpath:/remove-section-line.sql")
-@Import({StationDao.class, SectionDao.class, LineDao.class})
+@Import({StationDao.class, SectionDao.class, LineDao.class, SectionStationDao.class})
 public abstract class StrategyFixture {
 
     @Autowired
@@ -25,6 +26,9 @@ public abstract class StrategyFixture {
     protected SectionDao sectionDao;
     @Autowired
     protected LineDao lineDao;
+    @Autowired
+    protected SectionStationDao sectionStationDao;
+
     protected Long 이호선;
     protected Station 잠실역;
     protected Station 삼성역;

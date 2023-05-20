@@ -8,12 +8,10 @@ import subway.domain.section.SingleLineSections;
 import subway.repository.SectionRepository;
 
 @Component
-public class DeleteBetweenStation implements DeleteStationStrategy {
-
-    private final SectionRepository sectionRepository;
+public class DeleteBetweenStation extends DeleteStationStrategy {
 
     public DeleteBetweenStation(SectionRepository sectionRepository) {
-        this.sectionRepository = sectionRepository;
+        super(sectionRepository);
     }
 
     @Override

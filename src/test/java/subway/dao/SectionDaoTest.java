@@ -55,15 +55,6 @@ class SectionDaoTest extends SubwayJdbcFixture {
     }
 
     @Test
-    void 같은_구간이_존재하는지_확인한다() {
-        // when, then
-        assertAll(
-                () -> assertThat(sectionDao.exists(삼성역, 선릉역)).isTrue(),
-                () -> assertThat(sectionDao.exists(삼성역, 10L)).isFalse()
-        );
-    }
-
-    @Test
     void 구간을_삭제한다() {
         // given
         final Long id = sectionDao.insert(new SectionEntity(3, 잠실역, 10L, 팔호선));

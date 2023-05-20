@@ -19,6 +19,7 @@ public class SectionDeleter {
         for (DeleteStationStrategy strategy : strategies) {
             if (strategy.support(sections, targetStation)) {
                 strategy.delete(sections, targetStation);
+                break;
             }
         }
     }

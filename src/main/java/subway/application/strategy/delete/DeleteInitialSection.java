@@ -8,18 +8,16 @@ import subway.domain.section.SingleLineSections;
 import subway.repository.SectionRepository;
 
 @Component
-public class DeleteInitialSection implements DeleteStationStrategy {
+public class DeleteInitialSection extends DeleteStationStrategy {
 
-    private final SectionRepository sectionRepository;
     private final LineDao lineDao;
 
     public DeleteInitialSection(SectionRepository sectionRepository, LineDao lineDao) {
-        this.sectionRepository = sectionRepository;
+        super(sectionRepository);
         this.lineDao = lineDao;
     }
 
     @Override
-
     public boolean support(SingleLineSections sections, Station targetStation) {
         return sections.isInitialState();
     }

@@ -32,11 +32,6 @@ public class SectionDao {
         jdbcTemplate.update(sql, updateSection.getDistance(), updateSection.getUpStationId(), updateSection.getDownStationId());
     }
 
-    public boolean exists(Long upStationId, Long downStationId) {
-        final String sql = "SELECT EXISTS (SELECT 1 FROM section WHERE up_station_id = ? AND down_station_id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, upStationId, downStationId);
-    }
-
     public void delete(Long id) {
         final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.update(sql, id);
