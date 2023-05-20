@@ -26,23 +26,23 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    public Long save(StationEntity stationEntity) {
+        return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(stationEntity)).longValue();
+    }
+
     public StationEntity findById(Long id) {
         final String sql = "SELECT * FROM station WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Long save(StationEntity stationEntity) {
-        return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(stationEntity)).longValue();
+    public StationEntity findByName(String name) {
+        final String sql = "SELECT * FROM station WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
     public List<StationEntity> findAll() {
         final String sql = "SELECT * FROM station";
         return jdbcTemplate.query(sql, rowMapper);
-    }
-
-    public StationEntity findByName(String name) {
-        final String sql = "SELECT * FROM station WHERE name = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
     public int deleteByName(String name) {
