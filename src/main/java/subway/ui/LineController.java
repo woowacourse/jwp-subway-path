@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,7 +43,7 @@ public class LineController {
 	}
 
 	@PostMapping
-	public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+	public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
 		final LineDto requestDto = converToLineDto(lineRequest);
 		final LineDto lineDto = lineService.saveLine(requestDto);
 
@@ -72,7 +74,7 @@ public class LineController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+	public ResponseEntity<Void> updateLine(@PathVariable Long id, @Valid @RequestBody LineRequest lineUpdateRequest) {
 		final LineDto requestDto = converToLineDto(lineUpdateRequest);
 		lineService.updateLine(id, requestDto);
 		return ResponseEntity.ok().build();
@@ -86,7 +88,7 @@ public class LineController {
 
 	@PostMapping("/{id}/stations")
 	public ResponseEntity<List<SectionResponse>> addStationToLine(@PathVariable Long id,
-		@RequestBody SectionRequest sectionRequest) {
+		@Valid @RequestBody SectionRequest sectionRequest) {
 		final SectionDto sectionDto = convertToSectionDto(sectionRequest);
 		final List<SectionDto> sectionDtos = sectionService.addStationByLineId(id, sectionDto);
 

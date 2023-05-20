@@ -1,12 +1,22 @@
 package subway.ui.dto;
 
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+
+import org.hibernate.validator.constraints.Length;
 
 public class SectionRequest {
 
+	@NotBlank
+	@Length(min = 1, max = 10, message = "{min}자 ~ {max}자 사이의 역의 이름만 입력해주세요.")
 	private String departure;
+
+	@NotBlank
+	@Length(min = 1, max = 10, message = "{min}자 ~ {max}자 사이의 역의 이름만 입력해주세요.")
 	private String arrival;
-	@PositiveOrZero(message = "거리는 양의 정수여야 합니다.")
+
+	@NotBlank
+	@Positive(message = "거리는 양의 정수여야 합니다.")
 	private int distance;
 
 	public SectionRequest() {

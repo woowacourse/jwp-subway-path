@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,7 +33,7 @@ public class StationController {
 	}
 
 	@PostMapping
-	public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+	public ResponseEntity<StationResponse> createStation(@Valid @RequestBody StationRequest stationRequest) {
 		final StationDto requestDto = convertToDto(stationRequest);
 		final StationDto stationDto = stationService.saveStation(requestDto);
 
@@ -52,7 +54,8 @@ public class StationController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
+	public ResponseEntity<Void> updateStation(@PathVariable Long id,
+		@Valid @RequestBody StationRequest stationRequest) {
 		final StationDto requestDto = convertToDto(stationRequest);
 		stationService.updateStation(id, requestDto);
 		return ResponseEntity.ok().build();
