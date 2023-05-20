@@ -13,13 +13,13 @@ public class LineChargePolicy implements SubwayChargePolicy {
                      "2호선", 1000);
 
     @Override
-    public int calculate(final Route route) {
+    public Money calculate(final Route route) {
 
         final List<EdgeSection> shortestRouteSections = route.findShortestRouteSections();
 
         return shortestRouteSections.stream()
-                                    .mapToInt(it -> priceMap.getOrDefault(it.getLineName(), 0))
-                                    .max()
-                                    .orElse(0);
+                                    .reduce(Money.ZERO, (money, edgeSection) -> new Money(
+                                                    priceMap.getOrDefault(edgeSection.getLineName(), 0)),
+                                            (Money::max));
     }
 }

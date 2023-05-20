@@ -10,27 +10,26 @@ import static subway.domain.Distance.MID_DISTANCE;
 @Component
 public class DefaultChargePolicy implements SubwayChargePolicy {
 
-    private static final BigDecimal DEFAULT_PRICE = BigDecimal.valueOf(1250);
+    private static final Money DEFAULT_PRICE = new Money(1250);
     private static final BigDecimal ADDITIONAL_FEE = BigDecimal.valueOf(100);
     private static final int MID_DISTANCE_RATE = 5;
     private static final int LONG_DISTANCE_RATE = 8;
 
     @Override
-    public int calculate(final Route route) {
+    public Money calculate(final Route route) {
         final Distance distanceValue = route.findShortestRouteDistance();
 
         if (distanceValue.isDefaultDistance()) {
-            return DEFAULT_PRICE.intValue();
+            return DEFAULT_PRICE;
         }
 
         if (distanceValue.isLongDistance()) {
             return DEFAULT_PRICE.add(calculateMidDistance(MID_DISTANCE))
                                 .add(calculateLongDistance(distanceValue.minus(MID_DISTANCE)
-                                                                        .minus(DEFAULT_DISTANCE)))
-                                .intValue();
+                                                                        .minus(DEFAULT_DISTANCE)));
         }
 
-        return DEFAULT_PRICE.add(calculateMidDistance(distanceValue.minus(DEFAULT_DISTANCE))).intValue();
+        return DEFAULT_PRICE.add(calculateMidDistance(distanceValue.minus(DEFAULT_DISTANCE)));
     }
 
     private BigDecimal calculateMidDistance(final Distance distance) {

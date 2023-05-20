@@ -40,10 +40,10 @@ class PricePolicyCompositeTest {
         );
 
         //when
-        final int resultPrice = pricePolicyComposite.calculate(route);
+        final Money totalMoney = pricePolicyComposite.calculate(route);
 
         //then
-        assertEquals(2350, resultPrice);
+        assertEquals(new Money(2350), totalMoney);
     }
 
     private List<Line> createDefaultLines() {

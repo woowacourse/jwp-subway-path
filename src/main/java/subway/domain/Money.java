@@ -6,6 +6,8 @@ import java.util.Objects;
 
 public class Money {
 
+    public static final Money ZERO = new Money(BigDecimal.ZERO);
+
     private final BigDecimal value;
 
     private Money(final BigDecimal value) {
@@ -31,6 +33,18 @@ public class Money {
         final int discountedPercentage = 100 - percentage;
         return new Money(this.value.multiply(BigDecimal.valueOf(discountedPercentage))
                                    .divide(BigDecimal.valueOf(100), RoundingMode.HALF_DOWN));
+    }
+
+    public Money add(final BigDecimal value) {
+        return new Money(this.value.add(value));
+    }
+
+    public Money add(final Money money) {
+        return new Money(this.value.add(money.value));
+    }
+
+    public Money max(final Money other) {
+        return new Money(this.value.max(other.value));
     }
 
     public double getValue() {

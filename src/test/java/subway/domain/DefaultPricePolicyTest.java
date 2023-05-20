@@ -23,13 +23,13 @@ class DefaultPricePolicyTest {
     @ParameterizedTest
     @MethodSource("calculatePriceFromDistance")
     @DisplayName("calculate() : 거리에 따라 요금을 계산할 수 있다.")
-    void test_calculate(final Station from, final Station to, final int price) throws Exception {
+    void test_calculate(final Station from, final Station to, final Money price) throws Exception {
         //given
         final List<Line> lines = createDefaultLines();
         final Route route = new Route(lines, from, to);
 
         //when
-        final int result = subwayChargePolicy.calculate(route);
+        final Money result = subwayChargePolicy.calculate(route);
 
         //then
         assertEquals(result, price);
@@ -39,25 +39,25 @@ class DefaultPricePolicyTest {
 
         final Station start1 = new Station("A");
         final Station end1 = new Station("G");
-        final int price1 = 1350;
+        final Money money1 = new Money(1350);
 
         final Station start2 = new Station("A");
         final Station end2 = new Station("H");
-        final int price2 = 1250;
+        final Money money2 = new Money(1250);
 
         final Station start3 = new Station("G");
         final Station end3 = new Station("C");
-        final int price3 = 1350;
+        final Money money3 = new Money(1350);
 
         final Station start4 = new Station("F");
         final Station end4 = new Station("H");
-        final int price4 = 1350;
+        final Money money4 = new Money(1350);
 
         return Stream.of(
-                Arguments.of(start1, end1, price1),
-                Arguments.of(start2, end2, price2),
-                Arguments.of(start3, end3, price3),
-                Arguments.of(start4, end4, price4)
+                Arguments.of(start1, end1, money1),
+                Arguments.of(start2, end2, money2),
+                Arguments.of(start3, end3, money3),
+                Arguments.of(start4, end4, money4)
         );
     }
 

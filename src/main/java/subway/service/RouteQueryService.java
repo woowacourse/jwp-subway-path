@@ -51,11 +51,10 @@ public class RouteQueryService {
                 new Station(shortestRouteRequest.getEndStation())
         );
 
-        //TODO : charge 도 Money 로 변경
-        final int totalPrice = subwayChargePolicy.calculate(route);
+        final Money totalPrice = subwayChargePolicy.calculate(route);
 
-        return subwayDiscountPolicy.discount(new DiscountCondition(shortestRouteRequest.getAge()),
-                                             new Money(totalPrice)).getValue();
+        return subwayDiscountPolicy.discount(new DiscountCondition(shortestRouteRequest.getAge()), totalPrice)
+                                   .getValue();
     }
 
     public int searchShortestDistance(final ShortestRouteRequest shortestRouteRequest) {

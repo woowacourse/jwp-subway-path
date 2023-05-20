@@ -16,9 +16,9 @@ public class ChargePolicyComposite implements SubwayChargePolicy {
     }
 
     @Override
-    public int calculate(final Route route) {
+    public Money calculate(final Route route) {
         return policies.stream()
-                       .mapToInt(it -> it.calculate(route))
-                       .sum();
+                       .map(it -> it.calculate(route))
+                       .reduce(Money.ZERO, (Money::add));
     }
 }
