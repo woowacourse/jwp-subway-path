@@ -43,14 +43,13 @@ public class LineRepository {
                 .collect(Collectors.toList());
     }
 
-    //todo 2: 아래 메서드를 이용해서, 노선에 역 추가까지 할지생각해보기(현재 line은 섹션 정보도 가짐)
     public void updateLineInfo(Line line) {
         //todo :수정하기 전 노선의 이름과 색깔에 대한 중복검사 하기
         lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor()));
     }
 
     public void delete(Long lineId) {
-        //todo 3: 삭제하기 전 존재하는 라인인지 확인해보기 =>현재 서비스에서 해주고 있는데 수정해야
+        //todo 3: 삭제하기 전 존재하는 라인인지 확인해보기 =>현재 서비스에서 해주고 있는데 수정해야 한다
         lineDao.deleteById(lineId);
     }
 

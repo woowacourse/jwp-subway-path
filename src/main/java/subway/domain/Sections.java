@@ -25,7 +25,6 @@ public class Sections {
         sections.add(new Section(upStation, downStation, newDistance));
     }
 
-    //todo : addNewStation 메서드 길게 쓰지 말고, direction으로 전략패턴 사용하기
     public void addAdditionalSection(Station baseStation, Station newStation, Direction directionOfBase,
             Distance newDistance) {
         validateSectionToAdd(baseStation, newStation, directionOfBase, newDistance);
@@ -128,13 +127,4 @@ public class Sections {
         return new ArrayList<>(sections);
     }
 
-    //todo :지울 것
-
-
-    @Override
-    public String toString() {
-        return "Sections{" +
-                "sections=" + sections +
-                '}';
-    }
 }

@@ -1,6 +1,5 @@
 package subway.dao;
 
-import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.dao.DataAccessException;
@@ -33,8 +32,6 @@ public class StationDao {
     }
 
     public Long insert(StationEntity station) {
-        //todo : 지울것
-        System.out.println(station);
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         return insertAction.executeAndReturnKey(params).longValue();
     }
@@ -62,10 +59,4 @@ public class StationDao {
         jdbcTemplate.update(sql, new Object[]{savedStation.getName(), savedStation.getId()});
     }
 
-    //지울거
-    public List<StationEntity> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
-
-    }
 }

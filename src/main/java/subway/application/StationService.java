@@ -20,11 +20,8 @@ public class StationService {
         this.lineStationRepository = lineStationRepository;
     }
 
-
-    //todo: lineId를 가져와야 하는데 노선이 존재하는지 먼저 체크해야함
     public List<Station> createInitialStations(Long lineId, StationInitialCreateRequest request) {
         Line line = lineStationRepository.findLineById(lineId);
-//        Line line = lineStationRepository.findLineIdByName(request.getLineName());
         line.addInitialStations(
                 new Station(null, request.getUpStationName()),
                 new Station(null, request.getDownStationName()),
@@ -35,7 +32,6 @@ public class StationService {
 
     public Station createStation(Long lineId, StationCreateRequest request) {
         Line line = lineStationRepository.findLineById(lineId);
-//        Line line = lineStationRepository.findLineIdByName(request.getLineName());
         line.addStation(
                 new Station(null, request.getBaseStationName()),
                 new Station(null, request.getNewStationName()),
@@ -48,7 +44,6 @@ public class StationService {
     //1. 라인 가져와서 삭제한다음에
     public void removeStation(Long lineId, Long stationId) {
         Line line = lineStationRepository.findLineById(lineId);
-//        Line line = lineStationRepository.findLineIdByName(request.getLineName());
         Station stationToRemove = lineStationRepository.findStationById(lineId, stationId);
         line.removeStation(stationToRemove);
         lineStationRepository.removeStation(line, stationToRemove);
