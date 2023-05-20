@@ -20,8 +20,7 @@ public class SectionCreateRequest {
 
     }
 
-    public SectionCreateRequest(String upStation, String downStation, int distance,
-                                long lineId) {
+    public SectionCreateRequest(String upStation, String downStation, int distance, long lineId) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -40,7 +39,7 @@ public class SectionCreateRequest {
         return distance;
     }
 
-    public long getLineId() {
+    public Long getLineId() {
         return lineId;
     }
 }

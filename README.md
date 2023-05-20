@@ -25,14 +25,14 @@
 
 ### 리팩토링 목록
 
-- [ ] 역 추가, 구간 추가 기능 분리
+- [x] 역 추가, 구간 추가 기능 분리
   - [x] 역 추가 이후 연결할 구간을 추가하도록 변경
-  - [ ] StationService, SectionService 분리
+  - [x] StationService, SectionService 분리
 - [x] GlobalControllerAdvice 클래스 리팩토링
   - [x] CustomException 필드 변경
   - [x] CustomException 클래스 네이밍 변경
 - [x] Station DB table 컬럼 리팩토링
-- [ ] Station 객체가 id를 갖도록 리팩토링
+- [x] Station 객체가 id를 갖도록 리팩토링
 - [ ] StationService saveNewSections 메소드 내부 로직 변경 -> batchInsert문 사용
 - [x] isExisted 메소드 내부 로직 변경
 - [ ] 테스트 내부 예외 검증 시 예외 메시지도 함께 검증
@@ -52,13 +52,13 @@
 | Method | URI       | Description |
 |--------|-----------|-------------|
 | POST   | /stations | 역 추가        |
-| DELETE | /stations | 역 삭제        |
 
-### 노선 API
+### 구간 API
 
 | Method | URI       | Description |
 |--------|-----------|-------------|
-| POST   | /sections | 노선 추가       |
+| POST   | /sections | 노선에 역 추가    |
+| DELETE | /sections | 노선에 역 삭제    |
 
 ---
 
@@ -175,33 +175,14 @@ Content-Type: application/json
 Location: /stations/1
 ```
 
-#### DELETE : 특정 역 삭제
-
-`Request`
-
-```http request
-DELETE /stations HTTP/1.1
-Host: localhost:8080
-
-{
-    "name" : "잠실역"
-}
-```
-
-`Response`
-
-``` http request
-HTTP/1.1 204 No Content
-```
-
 ### Section API 요청 / 응답 예시
 
-#### POST : 노선 추가
+#### POST : 노선에 역 추가
 
 `Request`
 
 ```http request
-POST /stations HTTP/1.1
+POST /sections HTTP/1.1
 Host: localhost:8080
 
 {
@@ -218,4 +199,23 @@ Host: localhost:8080
 HTTP/1.1 201 Created
 Content-Type: application/json
 Location: /sections/1
+```
+
+#### DELETE : 노선에 역 삭제
+
+`Request`
+
+```http request
+DELETE /sections HTTP/1.1
+Host: localhost:8080
+
+{
+    "name" : "잠실역"
+}
+```
+
+`Response`
+
+``` http request
+HTTP/1.1 204 No Content
 ```

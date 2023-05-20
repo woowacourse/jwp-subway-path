@@ -5,17 +5,23 @@ import subway.exception.ErrorCode;
 import subway.exception.InvalidException;
 
 public class Station {
+    private final Long id;
     private final String name;
 
-    public Station(final String name) {
+    public Station(Long id, String name) {
         validateName(name);
+        this.id = id;
         this.name = name;
     }
 
-    private void validateName(final String name) {
+    private void validateName(String name) {
         if (name.isBlank()) {
             throw new InvalidException(ErrorCode.INVALID_BLANK_NAME);
         }
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -23,7 +29,7 @@ public class Station {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -31,11 +37,11 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return Objects.equals(name, station.name);
+        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id, name);
     }
 }

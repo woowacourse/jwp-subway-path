@@ -21,9 +21,9 @@ class SectionsTest {
 
     @BeforeEach
     void setUp() {
-        station1 = new Station("잠실역");
-        station2 = new Station("잠실새내역");
-        station3 = new Station("봉천역");
+        station1 = new Station(1L, "잠실역");
+        station2 = new Station(2L, "잠실새내역");
+        station3 = new Station(3L, "봉천역");
 
         section1 = new Section(station1, station2, 10);
         section2 = new Section(station2, station3, 4);
@@ -60,9 +60,8 @@ class SectionsTest {
     @DisplayName("새로운 구간을 추가한다.")
     void addSection() {
         // given
-        Station upStation = new Station("종합운동장역");
-        Station downStation = new Station("봉천역");
-        Section newSection = new Section(upStation, downStation, 2);
+        Station upStation = new Station(4L, "종합운동장역");
+        Section newSection = new Section(upStation, station3, 2);
 
         // when
         sections.addSection(newSection);
@@ -88,7 +87,7 @@ class SectionsTest {
     @DisplayName("새로운 역이 상행 종점으로 추가된다.")
     void addSectionFirstStation() {
         // given
-        Station newUpStation = new Station("베로역");
+        Station newUpStation = new Station(4L, "베로역");
         Section newSection = new Section(newUpStation, station1, 10);
 
         // when
@@ -102,7 +101,7 @@ class SectionsTest {
     @DisplayName("새로운 역이 하행 종점으로 추가된다.")
     void addSectionLastStation() {
         // given
-        Station newDownStation = new Station("베로역");
+        Station newDownStation = new Station(4L, "베로역");
         Section newSection = new Section(station3, newDownStation, 10);
 
         // when

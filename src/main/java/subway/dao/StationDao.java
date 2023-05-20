@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -32,6 +33,11 @@ public class StationDao {
 
     public Long save(StationEntity stationEntity) {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(stationEntity)).longValue();
+    }
+
+    public List<StationEntity> findAll() {
+        final String sql = "SELECT * FROM station";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public StationEntity findByName(String name) {

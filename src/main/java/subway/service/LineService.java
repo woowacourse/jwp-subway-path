@@ -1,6 +1,7 @@
 package subway.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
+import subway.dao.entity.StationEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -47,19 +49,24 @@ public class LineService {
         LineEntity lineEntity = lineDao.findById(id);
         Line line = Line.of(lineEntity.getName(), makeSections(id));
         List<StationResponse> stationsResponse = line.getStations().stream()
-                .map(station -> new StationResponse(station.getName()))
+                .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
 
-        return new LineResponse(lineEntity.getId(), lineEntity.getName(), stationsResponse);
+        return new LineResponse(id, lineEntity.getName(), stationsResponse);
     }
 
     private List<Section> makeSections(Long id) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
+        Map<Long, String> stationEntities = stationDao.findAll().stream()
+                .collect(Collectors.toMap(
+                        StationEntity::getId,
+                        StationEntity::getName)
+                );
 
         return sectionEntities.stream()
                 .map(entity -> new Section(
-                        new Station(stationDao.findById(entity.getUpStationId()).getName()),
-                        new Station(stationDao.findById(entity.getDownStationId()).getName()),
+                        new Station(entity.getUpStationId(), stationEntities.get(entity.getUpStationId())),
+                        new Station(entity.getDownStationId(), stationEntities.get(entity.getDownStationId())),
                         entity.getDistance()
                 )).collect(Collectors.toList());
     }
