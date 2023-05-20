@@ -35,7 +35,7 @@
 - [x] Station 객체가 id를 갖도록 리팩토링
 - [x] StationService saveNewSections 메소드 내부 로직 변경 -> batchInsert문 사용
 - [x] isExisted 메소드 내부 로직 변경
-- [ ] 테스트 내부 예외 검증 시 예외 메시지도 함께 검증
+- [x] 테스트 내부 예외 검증 시 예외 메시지도 함께 검증
 
 ## API 명세서
 
