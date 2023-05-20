@@ -43,7 +43,7 @@ public class StationGraph {
         final Set<Station> visitedStations = new HashSet<>();
         visitedStations.add(getStationByDirection(section, direction.getOpposite()));
         final List<Station> result = new ArrayList<>();
-        dfs(getStationByDirection(section, direction), visitedStations, result, lineId);
+        dfsStation(getStationByDirection(section, direction), visitedStations, result, lineId);
         return result;
     }
 
@@ -57,7 +57,7 @@ public class StationGraph {
         throw new IllegalArgumentException("존재하지 않는 방향입니다.");
     }
 
-    private void dfs(
+    private void dfsStation(
             final Station station,
             final Set<Station> visitedStations,
             final List<Station> result,
@@ -73,7 +73,7 @@ public class StationGraph {
         for (final Section section : sections) {
             final Station destination = getDestination(station, section);
             if (lineId.equals(section.getLineId())) {
-                dfs(destination, visitedStations, result, lineId);
+                dfsStation(destination, visitedStations, result, lineId);
             }
         }
     }
@@ -88,10 +88,55 @@ public class StationGraph {
     private List<Station> merge(final List<Station> upStations, final List<Station> downStations) {
         Collections.reverse(upStations);
 
-        final List<Station> stations = new ArrayList<>();
-        stations.addAll(upStations);
+        final List<Station> stations = new ArrayList<>(upStations);
         stations.addAll(downStations);
 
         return stations;
+    }
+
+    public List<Section> findSections(final Section section) {
+        final Long lineId = section.getLineId();
+        final List<Section> upSections = findSectionsByDirection(section, Direction.UP, lineId);
+        final List<Section> downSections = findSectionsByDirection(section, Direction.DOWN, lineId);
+        return merge(upSections, section, downSections);
+    }
+
+    private List<Section> findSectionsByDirection(final Section section, final Direction direction, final Long lineId) {
+        final Set<Station> visitedStations = new HashSet<>();
+        visitedStations.add(getStationByDirection(section, direction.getOpposite()));
+        final List<Section> result = new ArrayList<>();
+        dfsSection(getStationByDirection(section, direction), visitedStations, result, lineId);
+        return result;
+    }
+
+    private void dfsSection(
+            final Station station,
+            final Set<Station> visitedStations,
+            final List<Section> result,
+            final Long lineId
+    ) {
+        visitedStations.add(station);
+        final List<Section> sections = sectionsByStation.get(station);
+        for (final Section section : sections) {
+            final Station destination = getDestination(station, section);
+            if (lineId.equals(section.getLineId()) && isNotVisitedStation(visitedStations, destination)) {
+                result.add(section);
+                dfsSection(destination, visitedStations, result, lineId);
+            }
+        }
+    }
+
+    private boolean isNotVisitedStation(final Set<Station> visitedStations, final Station station) {
+        return !visitedStations.contains(station);
+    }
+
+    private List<Section> merge(final List<Section> upSections, final Section section, final List<Section> downSections) {
+        Collections.reverse(upSections);
+
+        final List<Section> sections = new ArrayList<>(upSections);
+        sections.add(section);
+        sections.addAll(downSections);
+
+        return sections;
     }
 }
