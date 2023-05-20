@@ -1,7 +1,12 @@
 package subway.acceptance;
 
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.*;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -39,7 +44,7 @@ class AcceptanceTest {
         RestAssured.port = port;
     }
 
-    @AfterEach
+    @BeforeEach
     void clear() {
         jdbcTemplate.update("TRUNCATE TABLE station");
         jdbcTemplate.update("TRUNCATE TABLE line");
@@ -168,24 +173,43 @@ class AcceptanceTest {
     }
 
     private StationResponse addStation(final StationRequest request) {
-        return RestAssured
+        ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/stations")
                 .then().log().all()
+                .extract();
+
+        String uri = createResponse.header("Location");
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(uri)
+                .then().log().all()
                 .extract().as(StationResponse.class);
     }
 
     private LineResponse addLine(final LineRequest request) {
-        return RestAssured
+        ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/lines")
                 .then().log().all()
+                .extract();
+
+        String uri = createResponse.header("Location");
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(uri)
+                .then().log().all()
                 .extract().as(LineResponse.class);
     }
+
 
     private void addSection(final CreateSectionRequest request, final long lineId) {
         RestAssured
