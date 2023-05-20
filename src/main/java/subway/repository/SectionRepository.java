@@ -26,6 +26,11 @@ public class SectionRepository {
         this.sectionStationDao = sectionStationDao;
     }
 
+    public Long insertAndUpdate(Section newSection, Section updateSection) {
+        update(updateSection);
+        return insert(newSection);
+    }
+
     public Long insert(Section section) {
         final SectionEntity sectionEntity = mapToEntity(section);
         return sectionDao.insert(sectionEntity);
@@ -66,7 +71,7 @@ public class SectionRepository {
 
     }
 
-    protected Section mapFrom(SectionStationResultMap resultMap) {
+    private Section mapFrom(SectionStationResultMap resultMap) {
         return new Section(
                 resultMap.getSectionId(),
                 Distance.from(resultMap.getDistance()),

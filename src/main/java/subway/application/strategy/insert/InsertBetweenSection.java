@@ -23,8 +23,7 @@ public abstract class InsertBetweenSection implements InsertStationStrategy {
         final Section updateSection = createUpdateSection(insertSection, targetSection);
         final Section newSection = createNewSection(insertSection, targetSection);
 
-        sectionRepository.update(updateSection);
-        return sectionRepository.insert(newSection);
+        return sectionRepository.insertAndUpdate(newSection, updateSection);
     }
 
     protected abstract Section findTargetSection(SingleLineSections sections, InsertSection insertSection);
