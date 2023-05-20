@@ -142,16 +142,20 @@ public class StationService {
     public void deleteStation(Long lineId, String name) {
         validateCanDelete(lineId, name);
         StationEntity deleteStation = stationDao.findByLineIdAndName(lineId, name);
+        int rowNumber;
         if (lineDao.isUpEndStation(lineId, name)) {
-            deleteUpEndStation(lineId, deleteStation);
+            rowNumber = deleteUpEndStation(lineId, deleteStation);
+            validateDeleteSuccess(rowNumber);
             return;
         }
         StationEntity upStation = stationDao.findByNextStationId(lineId, name);
         if (stationDao.isDownEndStation(lineId, name)) {
-            deleteDownEndStation(deleteStation, upStation);
+            rowNumber = deleteDownEndStation(deleteStation, upStation);
+            validateDeleteSuccess(rowNumber);
             return;
         }
-        deleteMiddleStation(deleteStation, upStation);
+        rowNumber = deleteMiddleStation(deleteStation, upStation);
+        validateDeleteSuccess(rowNumber);
     }
 
     private void validateCanDelete(Long lineId, String name) {
@@ -169,20 +173,26 @@ public class StationService {
         stationDao.findByLineIdAndName(lineId, name);
     }
 
-    private void deleteUpEndStation(Long lineId, StationEntity deleteStation) {
+    private int deleteUpEndStation(Long lineId, StationEntity deleteStation) {
         lineDao.updateHeadStation(lineId, deleteStation.getNext());
-        stationDao.deleteById(deleteStation.getId());
+        return stationDao.deleteById(deleteStation.getId());
     }
 
-    private void deleteDownEndStation(StationEntity deleteStation, StationEntity upStation) {
+    private int deleteDownEndStation(StationEntity deleteStation, StationEntity upStation) {
         stationDao.updateNextStationById(upStation.getId(), EMPTY_STATION_ID);
-        stationDao.deleteById(deleteStation.getId());
+        return stationDao.deleteById(deleteStation.getId());
     }
 
-    private void deleteMiddleStation(StationEntity deleteStation, StationEntity upStation) {
+    private int deleteMiddleStation(StationEntity deleteStation, StationEntity upStation) {
         int newDistance = upStation.getDistance() + deleteStation.getDistance();
         stationDao.updateDistanceById(upStation.getId(), newDistance);
         stationDao.updateNextStationById(upStation.getId(), deleteStation.getNext());
-        stationDao.deleteById(deleteStation.getId());
+        return stationDao.deleteById(deleteStation.getId());
+    }
+
+    private void validateDeleteSuccess(int rowNumber) {
+        if (rowNumber != 1) {
+            throw new NoSuchElementException("삭제하려는 역이 존재하지 않습니다.");
+        }
     }
 }
