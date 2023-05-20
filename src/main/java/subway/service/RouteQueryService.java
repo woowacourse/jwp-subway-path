@@ -3,6 +3,7 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import subway.domain.Line;
 import subway.domain.Route;
+import subway.domain.Station;
 import subway.domain.SubwayPricePolicy;
 import subway.service.dto.ShortestRouteRequest;
 
@@ -23,26 +24,37 @@ public class RouteQueryService {
 
         final List<Line> lines = lineQueryService.searchAllLine();
 
-        final Route route = new Route(lines);
-
-        return route.findShortestRoute(
-                shortestRouteRequest.getStartStation(),
-                shortestRouteRequest.getEndStation()
+        final Route route = new Route(
+                lines,
+                new Station(shortestRouteRequest.getStartStation()),
+                new Station(shortestRouteRequest.getEndStation())
         );
+
+        return route.findShortestRoute();
     }
 
     public int searchLeastCost(final ShortestRouteRequest shortestRouteRequest) {
-        return subwayPricePolicy.calculate(searchShortestDistance(shortestRouteRequest));
+        final List<Line> lines = lineQueryService.searchAllLine();
+
+        final Route route = new Route(
+                lines,
+                new Station(shortestRouteRequest.getStartStation()),
+                new Station(shortestRouteRequest.getEndStation())
+        );
+
+        return subwayPricePolicy.calculate(route);
     }
 
     public int searchShortestDistance(final ShortestRouteRequest shortestRouteRequest) {
         final List<Line> lines = lineQueryService.searchAllLine();
 
-        final Route route = new Route(lines);
+        final Route route = new Route(
+                lines,
+                new Station(shortestRouteRequest.getStartStation()),
+                new Station(shortestRouteRequest.getEndStation())
+        );
 
-        return route.findShortestRouteDistance(
-                            shortestRouteRequest.getStartStation(),
-                            shortestRouteRequest.getEndStation())
+        return route.findShortestRouteDistance()
                     .getValue();
     }
 

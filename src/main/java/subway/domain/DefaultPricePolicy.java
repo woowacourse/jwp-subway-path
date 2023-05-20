@@ -15,10 +15,9 @@ public class DefaultPricePolicy implements SubwayPricePolicy {
     private static final int MID_DISTANCE_RATE = 5;
     private static final int LONG_DISTANCE_RATE = 8;
 
-
     @Override
-    public int calculate(final int distance) {
-        final Distance distanceValue = new Distance(distance);
+    public int calculate(final Route route) {
+        final Distance distanceValue = route.findShortestRouteDistance();
 
         if (distanceValue.isDefaultDistance()) {
             return DEFAULT_PRICE.intValue();

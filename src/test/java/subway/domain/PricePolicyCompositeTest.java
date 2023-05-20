@@ -2,63 +2,48 @@ package subway.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DefaultPricePolicyTest {
+class PricePolicyCompositeTest {
 
-    private SubwayPricePolicy subwayPricePolicy;
+    private PricePolicyComposite pricePolicyComposite;
 
     @BeforeEach
     void setUp() {
-        subwayPricePolicy = new DefaultPricePolicy();
+        pricePolicyComposite = new PricePolicyComposite(
+                List.of(new DefaultPricePolicy(),
+                        new LinePricePolicy())
+        );
     }
 
-    @ParameterizedTest
-    @MethodSource("calculatePriceFromDistance")
-    @DisplayName("calculate() : 거리에 따라 요금을 계산할 수 있다.")
-    void test_calculate(final Station from, final Station to, final int price) throws Exception {
+    /**
+     * 11   5
+     * F -- G -- H
+     * 4 |         | 4
+     * |         |
+     * A -- B -- C -- D
+     * 1   2    3
+     */
+    @Test
+    @DisplayName("calculate() : 모든 추가 요금 정책을 계산할 수 있다.")
+    void test_calculate() throws Exception {
         //given
         final List<Line> lines = createDefaultLines();
-        final Route route = new Route(lines, from, to);
+        final Route route = new Route(
+                lines,
+                new Station("A"),
+                new Station("G")
+        );
 
         //when
-        final int result = subwayPricePolicy.calculate(route);
+        final int resultPrice = pricePolicyComposite.calculate(route);
 
         //then
-        assertEquals(result, price);
-    }
-
-    static Stream<Arguments> calculatePriceFromDistance() {
-
-        final Station start1 = new Station("A");
-        final Station end1 = new Station("G");
-        final int price1 = 1350;
-
-        final Station start2 = new Station("A");
-        final Station end2 = new Station("H");
-        final int price2 = 1250;
-
-        final Station start3 = new Station("G");
-        final Station end3 = new Station("C");
-        final int price3 = 1350;
-
-        final Station start4 = new Station("F");
-        final Station end4 = new Station("H");
-        final int price4 = 1350;
-
-        return Stream.of(
-                Arguments.of(start1, end1, price1),
-                Arguments.of(start2, end2, price2),
-                Arguments.of(start3, end3, price3),
-                Arguments.of(start4, end4, price4)
-        );
+        assertEquals(2350, resultPrice);
     }
 
     private List<Line> createDefaultLines() {

@@ -37,10 +37,10 @@ class RouteTest {
     ) throws Exception {
         //given
         final List<Line> lines = createDefaultLines();
-        final Route route = new Route(lines);
+        final Route route = new Route(lines, new Station(start), new Station(end));
 
         //when
-        final List<String> shortestRoute = route.findShortestRoute(start, end);
+        final List<String> shortestRoute = route.findShortestRoute();
 
         //then
         assertThat(shortestRoute).containsExactlyElementsOf(routes);
@@ -84,17 +84,17 @@ class RouteTest {
     @MethodSource("findShortestRouteDistance")
     @DisplayName("findShortestRouteDistance() : 시작점과 도착점이 주어지면 최단 거리를 구할 수 있다.")
     void test_findShortestRoutePrice(
-            final String start,
-            final String end,
+            final Station start,
+            final Station end,
             final double distance
     ) throws Exception {
 
         //given
         final List<Line> lines = createDefaultLines();
-        final Route route = new Route(lines);
+        final Route route = new Route(lines, start, end);
 
         //when
-        final Distance shortestRouteDistance = route.findShortestRouteDistance(start, end);
+        final Distance shortestRouteDistance = route.findShortestRouteDistance();
 
         //then
         assertEquals(distance, shortestRouteDistance.getValue());
@@ -102,20 +102,20 @@ class RouteTest {
 
     static Stream<Arguments> findShortestRouteDistance() {
 
-        final String start1 = "A";
-        final String end1 = "G";
+        final Station start1 = new Station("A");
+        final Station end1 = new Station("G");
         final double distance1 = 15.0;
 
-        final String start2 = "A";
-        final String end2 = "H";
+        final Station start2 = new Station("A");
+        final Station end2 = new Station("H");
         final double distance2 = 10.0;
 
-        final String start3 = "G";
-        final String end3 = "C";
+        final Station start3 = new Station("G");
+        final Station end3 = new Station("C");
         final double distance3 = 12.0;
 
-        final String start4 = "F";
-        final String end4 = "H";
+        final Station start4 = new Station("F");
+        final Station end4 = new Station("H");
         final double distance4 = 13.0;
 
         return Stream.of(
@@ -131,13 +131,13 @@ class RouteTest {
     void test_findShortestRoute_IllegalArgumentException_notContainStartOrEnd() throws Exception {
         //given
         final List<Line> lines = createDefaultLines();
-        final Route route = new Route(lines);
+        final Station from = new Station("A");
+        final Station notExistTo = new Station("K");
 
-        final String startStation = "A";
-        final String notExistEndStation = "K";
+        final Route route = new Route(lines, from, notExistTo);
 
         //when & then
-        assertThatThrownBy(() -> route.findShortestRoute(startStation, notExistEndStation))
+        assertThatThrownBy(route::findShortestRoute)
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -155,13 +155,13 @@ class RouteTest {
     void test_findShortestRouteSections() throws Exception {
         //given
         final List<Line> lines = createDefaultLines();
-        final Route route = new Route(lines);
+        final Station from = new Station("A");
+        final Station to = new Station("G");
 
-        final String start = "A";
-        final String end = "G";
+        final Route route = new Route(lines, from, to);
 
         //when
-        final List<EdgeSection> shortestRouteSections = route.findShortestRouteSections(start, end);
+        final List<EdgeSection> shortestRouteSections = route.findShortestRouteSections();
 
         //then
         final List<String> startStations =
