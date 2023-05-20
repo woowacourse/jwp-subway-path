@@ -9,9 +9,9 @@ import java.util.Set;
 public class SubwayMap {
 
     private final Lines lines;
-    private final Map<Line, List<Station>> stationsByLine;
+    private final Map<Line, Stations> stationsByLine;
 
-    private SubwayMap(final Lines lines, final Map<Line, List<Station>> stationsByLine) {
+    private SubwayMap(final Lines lines, final Map<Line, Stations> stationsByLine) {
         this.lines = lines;
         this.stationsByLine = stationsByLine;
     }
@@ -33,7 +33,7 @@ public class SubwayMap {
                 continue;
             }
             lineIds.add(lineId);
-            final List<Station> stations = stationGraph.findStations(section);
+            final Stations stations = stationGraph.findStations(section);
             stationsByLine.put(lines.getLine(lineId), stations);
         }
     }
@@ -46,7 +46,7 @@ public class SubwayMap {
         return lines.getAllIds();
     }
 
-    public List<Station> getStations(final Long lineId) {
+    public Stations getStations(final Long lineId) {
         final Line line = lines.getLine(lineId);
         if (stationsByLine.containsKey(line)) {
             return stationsByLine.get(line);

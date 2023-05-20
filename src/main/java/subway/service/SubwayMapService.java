@@ -35,7 +35,7 @@ public class SubwayMapService {
     public LineSearchResponse getLineSearchResponse(final Long lineId) {
         final SubwayMap subwayMap = getSubwayMap();
         final Line line = subwayMap.getLine(lineId);
-        final List<Station> stations = subwayMap.getStations(lineId);
+        final List<Station> stations = subwayMap.getStations(lineId).getStations();
         return new LineSearchResponse(line.getId(), line.getName(), line.getColor(), stations);
     }
 

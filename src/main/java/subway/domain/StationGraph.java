@@ -31,20 +31,20 @@ public class StationGraph {
         sectionsByStation.computeIfAbsent(station, key -> new ArrayList<>()).add(section);
     }
 
-    public List<Station> findStations(final Section section) {
+    public Stations findStations(final Section section) {
         final Long lineId = section.getLineId();
-        final List<Station> upStations = findStationsByDirection(section, Direction.UP, lineId);
-        final List<Station> downStations = findStationsByDirection(section, Direction.DOWN, lineId);
+        final Stations upStations = findStationsByDirection(section, Direction.UP, lineId);
+        final Stations downStations = findStationsByDirection(section, Direction.DOWN, lineId);
 
-        return merge(upStations, downStations);
+        return Stations.merge(upStations, downStations);
     }
 
-    private List<Station> findStationsByDirection(final Section section, final Direction direction, final Long lineId) {
+    private Stations findStationsByDirection(final Section section, final Direction direction, final Long lineId) {
         final Set<Station> visitedStations = new HashSet<>();
         visitedStations.add(getStationByDirection(section, direction.getOpposite()));
-        final List<Station> result = new ArrayList<>();
-        dfsStation(getStationByDirection(section, direction), visitedStations, result, lineId);
-        return result;
+        final Stations stations = new Stations();
+        dfsStation(getStationByDirection(section, direction), visitedStations, stations, lineId);
+        return stations;
     }
 
     private Station getStationByDirection(final Section section, final Direction direction) {
@@ -60,20 +60,20 @@ public class StationGraph {
     private void dfsStation(
             final Station station,
             final Set<Station> visitedStations,
-            final List<Station> result,
+            final Stations stations,
             final Long lineId
     ) {
         if (visitedStations.contains(station)) {
             return;
         }
-        result.add(station);
+        stations.add(station);
         visitedStations.add(station);
 
         final List<Section> sections = sectionsByStation.get(station);
         for (final Section section : sections) {
             final Station destination = getDestination(station, section);
             if (lineId.equals(section.getLineId())) {
-                dfsStation(destination, visitedStations, result, lineId);
+                dfsStation(destination, visitedStations, stations, lineId);
             }
         }
     }
@@ -83,15 +83,6 @@ public class StationGraph {
             return section.getDownStation();
         }
         return section.getUpStation();
-    }
-
-    private List<Station> merge(final List<Station> upStations, final List<Station> downStations) {
-        Collections.reverse(upStations);
-
-        final List<Station> stations = new ArrayList<>(upStations);
-        stations.addAll(downStations);
-
-        return stations;
     }
 
     public List<Section> findSections(final Section section) {
