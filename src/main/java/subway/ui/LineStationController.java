@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineStationService;
-import subway.dto.request.ConnectionRequest;
+import subway.dto.request.ConnectionEndpointRequest;
+import subway.dto.request.ConnectionInitRequest;
+import subway.dto.request.ConnectionMidRequest;
 import subway.dto.response.LineStationResponse;
 
 import javax.validation.Valid;
@@ -24,25 +26,44 @@ public class LineStationController {
         this.lineStationService = lineStationService;
     }
 
-    @PatchMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> addStationToLine(@PathVariable final Long lineId, @PathVariable final Long stationId, @RequestBody @Valid final ConnectionRequest request) {
-        if (ConnectionType.INIT == ConnectionType.from(request.getConnectionType())) {
-            lineStationService.addInitStations(lineId, stationId, request.getNextStationId(), request.getDistance());
-        }
-        if (ConnectionType.UP == ConnectionType.from(request.getConnectionType())) {
+    @PatchMapping("/{lineId}/stations/{stationId}/init")
+    public ResponseEntity<Void> addInitStation(
+            @PathVariable final Long lineId,
+            @PathVariable final Long stationId,
+            @RequestBody @Valid final ConnectionInitRequest request) {
+        lineStationService.addInitStations(lineId, stationId, request.getNextStationId(), request.getDistance());
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{lineId}/stations/{stationId}/endpoint")
+    public ResponseEntity<Void> addEndpointStation(
+            @PathVariable final Long lineId,
+            @PathVariable final Long stationId,
+            @RequestBody @Valid final ConnectionEndpointRequest request) {
+        if (EndpointType.UP == request.getConnectionType()) {
             lineStationService.addUpEndpoint(lineId, stationId, request.getDistance());
         }
-        if (ConnectionType.DOWN == ConnectionType.from(request.getConnectionType())) {
+        if (EndpointType.DOWN == request.getConnectionType()) {
             lineStationService.addDownEndpoint(lineId, stationId, request.getDistance());
-        }
-        if (ConnectionType.MID == ConnectionType.from(request.getConnectionType())) {
-            lineStationService.addIntermediate(lineId, stationId, request.getPrevStationId(), request.getDistance());
         }
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{lineId}/stations/{stationId}/mid")
+    public ResponseEntity<Void> addMidStation(
+            @PathVariable final Long lineId,
+            @PathVariable final Long stationId,
+            @RequestBody @Valid final ConnectionMidRequest request) {
+        lineStationService.addIntermediate(lineId, stationId, request.getPrevStationId(), request.getDistance());
+        return ResponseEntity.noContent().build();
+    }
+
+
     @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> deleteStationById(@PathVariable final Long lineId, @PathVariable final Long stationId) {
+    public ResponseEntity<Void> deleteStationById(
+            @PathVariable final Long lineId,
+            @PathVariable final Long stationId) {
         lineStationService.deleteStationInLine(lineId, stationId);
         return ResponseEntity.noContent().build();
     }

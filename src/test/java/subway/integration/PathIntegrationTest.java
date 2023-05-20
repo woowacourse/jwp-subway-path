@@ -8,9 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import subway.dto.request.ConnectionRequest;
+import subway.dto.request.ConnectionEndpointRequest;
+import subway.dto.request.ConnectionInitRequest;
 import subway.dto.request.LineRequest;
 import subway.dto.response.PathResponse;
+import subway.ui.EndpointType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -89,40 +91,40 @@ public class PathIntegrationTest extends IntegrationTest {
                 .when()
                 .post("/stations");
 
-        final ConnectionRequest connectRequest1 = new ConnectionRequest("init", null, 2L, 10);
+        final ConnectionInitRequest connectionInitRequest = new ConnectionInitRequest(2L, 10);
         RestAssured.given()
-                .body(connectRequest1)
+                .body(connectionInitRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/1");
+                .patch("/lines/1/stations/1/init");
 
-        final ConnectionRequest connectRequest2 = new ConnectionRequest("down", 2L, null, 12);
+        final ConnectionEndpointRequest connectionDownRequest1 = new ConnectionEndpointRequest(EndpointType.DOWN, 12);
         RestAssured.given()
-                .body(connectRequest2)
+                .body(connectionDownRequest1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/3");
+                .patch("/lines/1/stations/3/endpoint");
 
-        final ConnectionRequest connectRequest3 = new ConnectionRequest("down", 3L, null, 21);
+        final ConnectionEndpointRequest connectionDownRequest2 = new ConnectionEndpointRequest(EndpointType.DOWN, 12);
         RestAssured.given()
-                .body(connectRequest3)
+                .body(connectionDownRequest2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/4");
+                .patch("/lines/1/stations/4/endpoint");
 
-        final ConnectionRequest connectRequest4 = new ConnectionRequest("init", null, 5L, 12);
+        final ConnectionInitRequest connectionInitRequest2 = new ConnectionInitRequest(5L, 12);
         RestAssured.given()
-                .body(connectRequest4)
+                .body(connectionInitRequest2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/2/stations/1");
+                .patch("/lines/2/stations/1/init");
 
-        final ConnectionRequest connectRequest5 = new ConnectionRequest("down", 5L, null, 11);
+        final ConnectionEndpointRequest connectionDownRequest3 = new ConnectionEndpointRequest(EndpointType.DOWN, 11);
         RestAssured.given()
-                .body(connectRequest5)
+                .body(connectionDownRequest3)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/2/stations/4");
+                .patch("/lines/2/stations/4/endpoint");
     }
 
     @DisplayName("최단 경로를 조회하고 거리와 요금을 계산한다")

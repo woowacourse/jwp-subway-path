@@ -9,9 +9,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.request.ConnectionRequest;
+import subway.dto.request.ConnectionEndpointRequest;
+import subway.dto.request.ConnectionInitRequest;
+import subway.dto.request.ConnectionMidRequest;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineStationResponse;
+import subway.ui.EndpointType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -99,13 +102,13 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("초기 두 역을 등록한다")
     void init() {
         // when
-        final ConnectionRequest request = new ConnectionRequest("init", null, 2L, 10);
+        final ConnectionInitRequest request = new ConnectionInitRequest(2L, 10);
 
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/1")
+                .patch("/lines/1/stations/1/init")
                 .then().log().all()
                 .extract();
 
@@ -117,22 +120,22 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("상행 종점에 역을 연결한다")
     void up() {
         // given
-        final ConnectionRequest initRequest = new ConnectionRequest("init", null, 2L, 10);
+        final ConnectionInitRequest initRequest = new ConnectionInitRequest(2L, 10);
 
         RestAssured.given()
                 .body(initRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/1");
+                .patch("/lines/1/stations/1/init");
 
         // when
-        final ConnectionRequest request = new ConnectionRequest("up", null, 1L, 12);
+        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.UP, 12);
 
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/3")
+                .patch("/lines/1/stations/3/endpoint")
                 .then().log().all()
                 .extract();
 
@@ -144,22 +147,22 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("하행 종점에 역을 연결한다")
     void down() {
         // given
-        final ConnectionRequest initRequest = new ConnectionRequest("init", null, 2L, 10);
+        final ConnectionInitRequest initRequest = new ConnectionInitRequest(2L, 10);
 
         RestAssured.given()
                 .body(initRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/1");
+                .patch("/lines/1/stations/1/init");
 
         // when & then
-        final ConnectionRequest request = new ConnectionRequest("down", 2L, null, 21);
+        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.DOWN, 21);
 
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/4")
+                .patch("/lines/1/stations/4/endpoint")
                 .then().log().all()
                 .extract();
 
@@ -171,22 +174,22 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("연결되어있는 역 중간에 역을 등록한다")
     void mid() {
         // given
-        final ConnectionRequest initRequest = new ConnectionRequest("init", null, 2L, 10);
+        final ConnectionInitRequest initRequest = new ConnectionInitRequest(2L, 10);
 
         RestAssured.given()
                 .body(initRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/1");
+                .patch("/lines/1/stations/1/init");
 
         // when
-        final ConnectionRequest request = new ConnectionRequest("mid", 1L, 2L, 6);
+        final ConnectionMidRequest request = new ConnectionMidRequest(1L, 6);
 
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/3")
+                .patch("/lines/1/stations/3/mid")
                 .then().log().all()
                 .extract();
 
@@ -198,13 +201,13 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("라인에 등록된 역을 삭제한다")
     void delete() {
         // given
-        final ConnectionRequest initRequest = new ConnectionRequest("init", null, 2L, 10);
+        final ConnectionInitRequest initRequest = new ConnectionInitRequest(2L, 10);
 
         RestAssured.given()
                 .body(initRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/1");
+                .patch("/lines/1/stations/1/init");
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given()
@@ -221,21 +224,21 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @DisplayName("해당 라인에 등록된 역을 조회한다")
     void showStationsLineById() {
         // given
-        final ConnectionRequest line1Request = new ConnectionRequest("init", null, 2L, 10);
+        final ConnectionInitRequest line1Request = new ConnectionInitRequest(2L, 10);
 
         RestAssured.given()
                 .body(line1Request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/1");
+                .patch("/lines/1/stations/1/init");
 
-        final ConnectionRequest line2Request = new ConnectionRequest("init", null, 4L, 6);
+        final ConnectionInitRequest line2Request = new ConnectionInitRequest(4L, 6);
 
         RestAssured.given()
                 .body(line2Request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/2/stations/3");
+                .patch("/lines/2/stations/3/init");
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -258,21 +261,21 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @Test
     void showStations() {
         // given
-        final ConnectionRequest line1Request = new ConnectionRequest("init", null, 2L, 10);
+        final ConnectionInitRequest line1Request = new ConnectionInitRequest(2L, 10);
 
         RestAssured.given()
                 .body(line1Request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/1/stations/1");
+                .patch("/lines/1/stations/1/init");
 
-        final ConnectionRequest line2Request = new ConnectionRequest("init", null, 4L, 6);
+        final ConnectionInitRequest line2Request = new ConnectionInitRequest(4L, 6);
 
         RestAssured.given()
                 .body(line2Request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .patch("/lines/2/stations/3");
+                .patch("/lines/2/stations/3/init");
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()

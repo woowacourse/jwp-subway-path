@@ -1,5 +1,5 @@
 ### 초기 두 역 등록
-PATCH http://localhost:8080/lines/1/stations/1?type=init
+PATCH http://localhost:8080/lines/1/stations/1/init
 Content-Type: application/json
 
 {
@@ -8,24 +8,26 @@ Content-Type: application/json
 }
 
 ### 상행 종점 등록
-PATCH http://localhost:8080/lines/1/stations/3?type=up
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
 Content-Type: application/json
 
 {
+  "connectionType": "up",
   "distance": "1"
 }
 
 
 ### 하행 종점 등록
-PATCH http://localhost:8080/lines/1/stations/4?type=down
+PATCH http://localhost:8080/lines/1/stations/4/endpoint
 Content-Type: application/json
 
 {
+  "connectionType": "down",
   "distance": "1"
 }
 
 ### 중간역 등록
-PATCH http://localhost:8080/lines/1/stations/3?type=mid
+PATCH http://localhost:8080/lines/1/stations/3/mid
 Content-Type: application/json
 
 {
