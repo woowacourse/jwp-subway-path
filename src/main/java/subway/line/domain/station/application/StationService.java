@@ -20,8 +20,8 @@ public class StationService {
         return stationRepository.insert(stationRequest.getName());
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationRepository.findById(id));
+    public Station findById(Long id) {
+        return stationRepository.findById(id);
     }
 
     public List<StationResponse> findAllStationResponses() {

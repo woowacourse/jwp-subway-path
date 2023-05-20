@@ -6,6 +6,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
+import subway.line.application.dto.LineSavingInfo;
+import subway.line.application.dto.LineUpdatingInfo;
 import subway.line.application.strategy.sectionsaving.SectionSavingStrategy;
 import subway.line.application.strategy.stationdeleting.StationDeletingStrategy;
 import subway.line.domain.section.Section;
@@ -13,13 +15,9 @@ import subway.line.domain.section.application.SectionRepository;
 import subway.line.domain.section.application.ShortestPathResponse;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
-import subway.line.domain.station.application.StationRepository;
-import subway.line.dto.LineRequest;
-import subway.line.dto.LineResponse;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -30,58 +28,40 @@ public class LineService {
     public static final int SURCHARGE = 100;
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
-    private final StationRepository stationRepository;
     private final List<SectionSavingStrategy> sectionSavingStrategies;
     private final List<StationDeletingStrategy> stationDeletingStrategies;
 
-    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, StationRepository stationRepository, List<SectionSavingStrategy> sectionSavingStrategies, List<StationDeletingStrategy> stationDeletingStrategies) {
+    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, List<SectionSavingStrategy> sectionSavingStrategies, List<StationDeletingStrategy> stationDeletingStrategies) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
-        this.stationRepository = stationRepository;
         this.sectionSavingStrategies = sectionSavingStrategies;
         this.stationDeletingStrategies = stationDeletingStrategies;
     }
 
-    public Line saveLine(LineRequest request) {
-        return lineRepository.insert(request.getName(), request.getColor());
-    }
-
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor(), line.findAllStationsOrderByUp()))
-                .collect(Collectors.toList());
+    public Line saveLine(LineSavingInfo savingInfo) {
+        return lineRepository.makeLine(savingInfo.getName(), savingInfo.getColor());
     }
 
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line line = findLineById(id);
-        List<Station> stations = line.findAllStationsOrderByUp();
-        return LineResponse.of(line, stations);
-    }
-
     public Line findLineById(Long id) {
         return lineRepository.findById(id);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineRepository.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public void updateLine(LineUpdatingInfo updatingInfo) {
+        final var line = lineRepository.findById(updatingInfo.getLineId());
+        line.changeName(updatingInfo.getName());
+        line.changeColor(updatingInfo.getColor());
+        lineRepository.update(line);
     }
 
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    public ShortestPathResponse findShortestPath(String startingStationName, String destinationStationName) {
-        final var startingStation = stationRepository.findByName(startingStationName);
-        final var destinationStation = stationRepository.findByName(destinationStationName);
-        return findShortestPath(startingStation, destinationStation);
-    }
-
-    private ShortestPathResponse findShortestPath(Station startingStation, Station destinationStation) {
+    public ShortestPathResponse findShortestPath(Station startingStation, Station destinationStation) {
         final var graph = makeGraph();
         final var shortestPath = new DijkstraShortestPath<>(graph)
                 .getPath(startingStation, destinationStation);
@@ -96,28 +76,7 @@ public class LineService {
         return graph;
     }
 
-    public long saveSection(long lineId, String previousStationName, String nextStationName, Distance distance, boolean isDown) {
-        Line line = lineRepository.findById(lineId);
-        Station previousStation = stationRepository.findByName(previousStationName);
-        Station nextStation = stationRepository.findByName(nextStationName);
-
-        if (isDown) {
-            return insert(line, previousStation, nextStation, distance);
-        }
-        return insert(line, nextStation, previousStation, distance);
-    }
-
-    public long saveSection2(Line line, String previousStationName, String nextStationName, Distance distance, boolean isDown) {
-        Station previousStation = stationRepository.findByName(previousStationName);
-        Station nextStation = stationRepository.findByName(nextStationName);
-
-        if (isDown) {
-            return insert(line, previousStation, nextStation, distance);
-        }
-        return insert(line, nextStation, previousStation, distance);
-    }
-
-    private long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
+    public long saveSection(Line line, Station previousStation, Station nextStation, Distance distance) {
         for (SectionSavingStrategy strategy : sectionSavingStrategies) {
             if (strategy.support(line, previousStation, nextStation, distance)) {
                 return strategy.insert(line, previousStation, nextStation, distance);
@@ -162,15 +121,13 @@ public class LineService {
         return fare.add(new BigDecimal(SURCHARGE * Math.floor((km - 10) / 8)));
     }
 
-    public void deleteStation(Line line, String stationName) {
-        final var station = stationRepository.findByName(stationName);
+    public void deleteStation(Line line, Station station) {
         for (StationDeletingStrategy strategy : stationDeletingStrategies) {
             if (strategy.support(line, station)) {
                 strategy.deleteStation(line, station);
                 return;
             }
         }
-
         throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
     }
 }

@@ -2,6 +2,7 @@ package subway.line;
 
 import subway.line.domain.section.Section;
 import subway.line.domain.section.domain.Distance;
+import subway.line.domain.station.EmptyStation;
 import subway.line.domain.station.Station;
 
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ public class Line {
     public static final int MIN_STATIONS_SIZE = 2;
 
     private final Long id;
-    private final String name;
-    private final String color;
+    private String name;
+    private String color;
     private final List<Section> sections;
     private Station head;
 
@@ -118,7 +119,25 @@ public class Line {
     }
 
     public void changeHead(Station station) {
+        if (station == null) {
+            this.head = new EmptyStation();
+            return;
+        }
         this.head = station;
+    }
+
+    public void changeName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+        this.name = name;
+    }
+
+    public void changeColor(String color) {
+        if (color == null) {
+            throw new IllegalArgumentException();
+        }
+        this.color = color;
     }
 
     @Override

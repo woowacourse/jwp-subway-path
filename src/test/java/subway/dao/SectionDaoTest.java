@@ -41,7 +41,7 @@ class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        line = lineRepository.insert("1호선", "blue");
+        line = lineRepository.makeLine("1호선", "blue");
         stationS = stationDao.insert("송탄");
         stationJ = stationDao.insert("진위");
         stationO = stationDao.insert("오산");
@@ -51,7 +51,7 @@ class SectionDaoTest {
     @DisplayName("거리 정보는 양의 정수로 제한합니다.")
     void distanceFormat() {
         // when && then
-        assertThatThrownBy(() -> lineService.saveSection2(line, stationS.getName(), stationJ.getName(), Distance.of(-3), true))
+        assertThatThrownBy(() -> lineService.saveSection(line, stationS, stationJ, Distance.of(-3)))
                 .isInstanceOf(InvalidDistanceException.class)
                 .hasMessage("거리 정보는 양의 정수로 제한합니다.");
     }
@@ -64,12 +64,12 @@ class SectionDaoTest {
         // given
         List<Station> stations = List.of(stationS, stationJ, stationO);
 
-        lineService.saveSection(line.getId(), stationS.getName(), stationJ.getName(), Distance.of(6), true);
-        lineService.saveSection(line.getId(), stationO.getName(), stationJ.getName(), Distance.of(3), false);
+        lineService.saveSection(line, stationS, stationJ, Distance.of(6));
+        lineService.saveSection(line, stationJ, stationO, Distance.of(3));
 
         // when & then
         Station stationY = stationDao.insert("양평");
-        assertThatCode(() -> lineService.saveSection2(line, stations.get(index).getName(), stationY.getName(), Distance.of(2), true))
+        assertThatCode(() -> lineService.saveSection(line, stations.get(index), stationY, Distance.of(2)))
                 .doesNotThrowAnyException();
     }
 }

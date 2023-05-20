@@ -18,7 +18,7 @@ public class LineRepository {
         this.sectionRepository = sectionRepository;
     }
 
-    public Line insert(String name, String color) {
+    public Line makeLine(String name, String color) {
         return lineDao.insert(name, color);
     }
 

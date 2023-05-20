@@ -15,7 +15,7 @@ import subway.line.domain.station.EmptyStation;
 import subway.line.domain.station.Station;
 import subway.line.domain.station.application.StationService;
 import subway.line.domain.station.dto.StationRequest;
-import subway.line.dto.LineRequest;
+import subway.line.application.dto.LineSavingInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -38,21 +38,21 @@ public class DeletingStationFromLineTest {
 
     @BeforeEach
     void setup() {
-        line = lineService.saveLine(new LineRequest("1호선", "blue"));
+        line = lineService.saveLine(new LineSavingInfo("1호선", "blue"));
         stationB = stationService.saveStation(new StationRequest("봉천역"));
         stationS = stationService.saveStation(new StationRequest("신림역"));
         stationSD = stationService.saveStation(new StationRequest("신도림역"));
     }
 
-    private long saveSection(Line line, String startingStationName, String destinationStationName) {
-        return lineService.saveSection2(line, startingStationName, destinationStationName, Distance.of(4), true);
+    private long saveSection(Line line, Station startingStation, Station destinationStation) {
+        return lineService.saveSection(line, startingStation, destinationStation, Distance.of(4));
     }
 
     @Test
     @DisplayName("노선상의 역이 2개 뿐일 때 테스트")
     void Testcase1() {
         // given
-        saveSection(line, "봉천역", "신림역");
+        saveSection(line, stationB, stationS);
 
         assertAll(
                 () -> assertThat(line.getHead())
@@ -64,7 +64,7 @@ public class DeletingStationFromLineTest {
         );
 
         // when
-        lineService.deleteStation(line, "신림역");
+        lineService.deleteStation(line, stationS);
 
         // then
         assertAll(
@@ -82,8 +82,8 @@ public class DeletingStationFromLineTest {
     @DisplayName("노선 맨 앞의 역을 삭제할 때 테스트")
     void TestCase2() {
         // given
-        saveSection(line, "봉천역", "신림역");
-        saveSection(line, "신림역", "신도림역");
+        saveSection(line, stationB, stationS);
+        saveSection(line, stationS, stationSD);
         assertAll(
                 () -> assertThat(line.getHead())
                         .as("상행 끝 역은 봉천역이다.")
@@ -94,7 +94,7 @@ public class DeletingStationFromLineTest {
         );
 
         // when
-        lineService.deleteStation(line, "봉천역");
+        lineService.deleteStation(line, stationB);
 
         // then
         assertAll(
@@ -115,8 +115,8 @@ public class DeletingStationFromLineTest {
     @DisplayName("노선 맨 뒤의 역을 삭제할 때 테스트")
     void TestCase3() {
         // given
-        saveSection(line, "봉천역", "신림역");
-        saveSection(line, "신림역", "신도림역");
+        saveSection(line, stationB, stationS);
+        saveSection(line, stationS, stationSD);
         assertAll(
                 () -> assertThat(line.findByPreviousStation(stationS).or(() -> fail()).get().getNextStation())
                         .as("하행 끝에서 두 번째 구간의 다음 역 정보는 노선의 하행 끝에 있는 역을 가리킨다.")
@@ -127,7 +127,7 @@ public class DeletingStationFromLineTest {
         );
 
         // when
-        lineService.deleteStation(line, "신도림역");
+        lineService.deleteStation(line, stationSD);
 
         // then
         assertAll(
@@ -152,8 +152,8 @@ public class DeletingStationFromLineTest {
     @DisplayName("노선 한가운데 역을 삭제할 때 테스트")
     void TestCase4() {
         // given
-        saveSection(line, "봉천역", "신림역");
-        saveSection(line, "신림역", "신도림역");
+        saveSection(line, stationB, stationS);
+        saveSection(line, stationS, stationSD);
         assertAll(
                 () -> assertThat(line.findByPreviousStation(stationS).or(() -> fail()).get().getNextStation())
                         .as("삭제 대상 역을 current로 하는 구간 바로 앞의 구간은, next 역으로 삭제 대상 역을 가리킨다.")
@@ -164,7 +164,7 @@ public class DeletingStationFromLineTest {
         );
 
         // when
-        lineService.deleteStation(line, "신림역");
+        lineService.deleteStation(line, stationS);
 
         // then
         assertAll(

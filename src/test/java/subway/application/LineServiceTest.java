@@ -34,67 +34,73 @@ class LineServiceTest {
     @MockBean
     private SectionRepository sectionRepository;
 
+    private Line 칠호선 = new Line(1L, "7호선", "green");
+    private Line 분당선 = new Line(2L, "분당선", "yellow");
+    private Station 반포역 = new Station(1L, "반포역");
+    private Station 논현역 = new Station(2L, "논현역");
+    private Station 학동역 = new Station(3L, "학동역");
+    private Station 강남구청 = new Station(4L, "강남구청");
+    private Station 청담역 = new Station(5L, "청담역");
+    private Station 압구정로데오 = new Station(6L, "압구정로데오");
+    private Station 서울숲 = new Station(7L, "서울숲");
+
+
     @BeforeEach
     void setup() {
-        final var line7 = new Line(1L, "7호선", "green");
-        final var lineBD = new Line(2L, "분당선", "yellow");
-
         Mockito.when(lineRepository.findAll())
                 .thenReturn(List.of(
-                        line7,
-                        lineBD
+                        칠호선,
+                        분당선
                 ));
 
-        Mockito.when(sectionRepository.findAllByLineId(line7.getId()))
+        Mockito.when(sectionRepository.findAllByLineId(칠호선.getId()))
                 .thenReturn(List.of(
-                        new Section(1L, new Station(1L, "반포역"), new Station(2L, "논현역"), Distance.of(3)),
-                        new Section(2L, new Station(2L, "논현역"), new Station(3L, "학동역"), Distance.of(4)),
-                        new Section(3L, new Station(3L, "학동역"), new Station(4L, "강남구청"), Distance.of(3)),
-                        new Section(4L, new Station(4L, "강남구청"), new Station(5L, "청담역"), Distance.of(4)),
-                        new Section(5L, new Station(5L, "청담역"), new EmptyStation(), new EmptyDistance())
+                        new Section(1L, 반포역, 논현역, Distance.of(3)),
+                        new Section(2L, 논현역, 학동역, Distance.of(4)),
+                        new Section(3L, 학동역, 강남구청, Distance.of(3)),
+                        new Section(4L, 강남구청, 청담역, Distance.of(4)),
+                        new Section(5L, 청담역, new EmptyStation(), new EmptyDistance())
                 ));
 
-        Mockito.when(sectionRepository.findAllByLineId(lineBD.getId()))
+        Mockito.when(sectionRepository.findAllByLineId(분당선.getId()))
                 .thenReturn(List.of(
-                        new Section(6L, new Station(4L, "강남구청"), new Station(6L, "압구정로데오"), Distance.of(4)),
-                        new Section(7L, new Station(6L, "압구정로데오"), new Station(7L, "서울숲"), Distance.of(5)),
-                        new Section(8L, new Station(7L, "서울숲"), new EmptyStation(), new EmptyDistance())
+                        new Section(6L, 강남구청, 압구정로데오, Distance.of(4)),
+                        new Section(7L, 압구정로데오, 서울숲, Distance.of(5)),
+                        new Section(8L, 서울숲, new EmptyStation(), new EmptyDistance())
                 ));
 
-        Mockito.when(stationRepository.findByName("반포역")).thenReturn(new Station(1L, "반포역"));
-        Mockito.when(stationRepository.findByName("청담역")).thenReturn(new Station(5L, "청담역"));
-        Mockito.when(stationRepository.findByName("논현역")).thenReturn(new Station(2L, "논현역"));
-        Mockito.when(stationRepository.findByName("서울숲")).thenReturn(new Station(7L, "서울숲"));
+        Mockito.when(stationRepository.findByName("반포역")).thenReturn(반포역);
+        Mockito.when(stationRepository.findByName("청담역")).thenReturn(청담역);
+        Mockito.when(stationRepository.findByName("논현역")).thenReturn(논현역);
+        Mockito.when(stationRepository.findByName("서울숲")).thenReturn(서울숲);
     }
 
     @Test
     @DisplayName("같은 노선 위에 있는 두 역의 최단거리를 구할 수 있다.")
     void shortestDistance() {
-        assertThat(lineService.findShortestPath("반포역", "청담역").getShortestDistance())
+        assertThat(lineService.findShortestPath(반포역, 청담역).getShortestDistance())
                 .isEqualTo(14);
     }
 
     @Test
     @DisplayName("서로 다른 노선 위에 있는 두 역의 최단거리를 구할 수 있다.")
     void shortestDistanceOnDifferentLine() {
-        assertThat(lineService.findShortestPath("논현역", "서울숲").getShortestDistance())
+        assertThat(lineService.findShortestPath(논현역, 서울숲).getShortestDistance())
                 .isEqualTo(16);
     }
 
     @Test
     @DisplayName("같은 노선 위에 있는 두 역의 최단 경로를 구할 수 있다.")
     void shortestPath() {
-        assertThat(lineService.findShortestPath("반포역", "청담역").getShortestPath())
-                .extracting(Station::getName)
-                .containsExactly("반포역", "논현역", "학동역", "강남구청", "청담역");
+        assertThat(lineService.findShortestPath(반포역, 청담역).getShortestPath())
+                .containsExactly(반포역, 논현역, 학동역, 강남구청, 청담역);
     }
 
     @Test
     @DisplayName("다른 노선 위에 있는 두 역의 최단 경로를 구할 수 있다.")
     void shortestPathOnDifferent() {
-        assertThat(lineService.findShortestPath("논현역", "서울숲").getShortestPath())
-                .extracting(Station::getName)
-                .containsExactly("논현역", "학동역", "강남구청", "압구정로데오", "서울숲");
+        assertThat(lineService.findShortestPath(논현역, 서울숲).getShortestPath())
+                .containsExactly(논현역, 학동역, 강남구청, 압구정로데오, 서울숲);
     }
 
     @Test

@@ -37,11 +37,11 @@ class SectionServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineOne = lineRepository.insert("1호선", "blue");
+        lineOne = lineRepository.makeLine("1호선", "blue");
         stationS = stationRepository.insert("송탄");
         stationJ = stationRepository.insert("진위");
         stationO = stationRepository.insert("오산");
-        lineService.saveSection2(lineOne, "송탄", "진위", Distance.of(6), true);
+        lineService.saveSection(lineOne, stationS, stationJ, Distance.of(6));
     }
 
     @Test
@@ -64,7 +64,7 @@ class SectionServiceTest {
                 .isEqualTo(Distance.of(6));
 
         // when
-        lineService.saveSection2(lineOne, stationO.getName(), stationJ.getName(), Distance.of(2), true);
+        lineService.saveSection(lineOne, stationO, stationJ, Distance.of(2));
 
         // then
         assertThat(lineOne.findDistanceBetween(stationS, stationO))
@@ -87,7 +87,7 @@ class SectionServiceTest {
                 .isEqualTo(Distance.of(6));
 
         // when
-        lineService.saveSection2(lineOne, stationO.getName(), stationS.getName(), Distance.of(2), false);
+        lineService.saveSection(lineOne, stationS, stationO, Distance.of(2));
 
         // then
         assertThat(lineOne.findDistanceBetween(stationS, stationO))
@@ -105,7 +105,7 @@ class SectionServiceTest {
         // B-C역의 거리가 3km인 경우 B-D 거리는 3km보다 적어야 합니다.
         // B-C가 3km인데 B-D거리가 3km면 D-C거리는 0km가 되어야 하는데 거리는 양의 정수여야 하기 때문에 이 경우 등록이 불가능 해야합니다.
         // when
-        assertThatThrownBy(() -> lineService.saveSection2(lineOne, stationO.getName(), stationJ.getName(), Distance.of(6), true))
+        assertThatThrownBy(() -> lineService.saveSection(lineOne, stationO, stationJ, Distance.of(6)))
                 .isInstanceOf(InvalidDistanceException.class)
                 .hasMessage("거리 정보는 양의 정수로 제한합니다.");
     }
@@ -128,10 +128,10 @@ class SectionServiceTest {
     @DisplayName("하나의 역은 여러 노선에 등록될 수 있습니다.")
     void multipleSubwayMap() {
         // given
-        Line lineTwo = lineRepository.insert("2호선", "yellow");
+        Line lineTwo = lineRepository.makeLine("2호선", "yellow");
 
         // when
-        assertThatCode(() -> lineService.saveSection2(lineTwo, stationS.getName(), stationO.getName(), Distance.of(6), false))
+        assertThatCode(() -> lineService.saveSection(lineTwo, stationO, stationS, Distance.of(6)))
                 .as("송탄역을 1호선과 2호선 위에 동시에 올릴 수 있습니다.")
                 .doesNotThrowAnyException();
     }
@@ -149,7 +149,7 @@ class SectionServiceTest {
                 .as("본래는 송탄이 상행 최종역이지만")
                 .isEqualTo(stationS);
 
-        lineService.saveSection2(lineOne, "오산", "송탄", Distance.of(4), true);
+        lineService.saveSection(lineOne, stationO, stationS, Distance.of(4));
 
         assertThat(lineOne.getHead())
                 .as("오산을 송탄 앞에 배치한 이후로는 오산이 상행 최종역이다.")
@@ -160,7 +160,7 @@ class SectionServiceTest {
     @Test
     @DisplayName("특정 노선에 등록된 역을 상행부터 순서대로 조회합니다.")
     void findAllOrderByUp() {
-        lineService.saveSection2(lineOne, stationO.getName(), stationS.getName(), Distance.of(6), true);
+        lineService.saveSection(lineOne, stationO, stationS, Distance.of(6));
 
         assertThat(lineOne.findAllStationsOrderByUp())
                 .containsExactly(stationO, stationS, stationJ);
