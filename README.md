@@ -3,9 +3,6 @@
 ## 기능 요구 사항
 
 ### Domain
-- [x] Lines
-  - [x] line 중복 검증
-
 - [x] Graph
   - [x] 경로 탐색
   - [x] 거리 탐색

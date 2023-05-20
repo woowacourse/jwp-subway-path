@@ -29,17 +29,15 @@ public class PathService {
     }
 
     public PathResponse findPath(Long startStationId, Long endStationId) {
-        Lines lines = new Lines();
-        lineDao.findAll()
-                .forEach(it -> lines.addNewLine(new Line(it.getId(), it.getName(), new Sections(sectionDao.findByLineId(it.getId())))));
-
         Station startStation = stationDao.findById(startStationId)
                 .orElseThrow(InvalidStationException::new);
         Station endStation = stationDao.findById(endStationId)
                 .orElseThrow(InvalidStationException::new);
 
         List<Station> stations = stationDao.findAll();
-        List<Section> sections = lines.getLines().stream()
+
+        List<Section> sections = lineDao.findAll().stream()
+                .map(it -> new Line(it.getId(), it.getName(), new Sections(sectionDao.findByLineId(it.getId()))))
                 .flatMap(it -> it.getSections().getSections().stream())
                 .collect(Collectors.toList());
 

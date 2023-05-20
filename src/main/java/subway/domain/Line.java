@@ -7,19 +7,18 @@ import java.util.Objects;
 public class Line {
     private static final int NAME_MIN_LENGTH = 1;
     private static final int NAME_MAX_LENGTH = 10;
-    private Long id;
+    private final Long id;
 
-    private String name;
+    private final String name;
 
-    private Sections sections;
+    private final Sections sections;
 
     public Line(String name) {
-        this.name = name;
+        this(null,name,null);
     }
 
     public Line(Long id, String name) {
-        this.id = id;
-        this.name = name;
+        this(id,name,null);
     }
 
     public Line(String name, Sections sections) {

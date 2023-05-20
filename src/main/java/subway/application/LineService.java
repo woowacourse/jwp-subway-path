@@ -9,6 +9,7 @@ import subway.domain.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
+import subway.exception.DuplicateLineNameException;
 import subway.exception.InvalidLineException;
 
 import java.util.List;
@@ -18,13 +19,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class LineService {
-    private final Lines lines;
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
 
     public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
-        this.lines = new Lines();
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
@@ -32,38 +31,38 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Lines lines = new Lines();
-        lineDao.findAll()
-                .forEach(it -> lines.addNewLine(new Line(it.getId(),it.getName(), new Sections(sectionDao.findByLineId(it.getId())))));
+        if(lineDao.findByName(request.getLineName())){
+            throw new DuplicateLineNameException();
+        }
 
         addStationOfSection(request.getStartStation(), request.getEndStation());
 
-        Line line = lines.addNewLine(new Line(request.getLineName(), new Sections(
-                List.of(new Section(stationDao.findByName(request.getStartStation()), stationDao.findByName(request.getEndStation()), new Distance(request.getDistance())))
-        )));
+        Line line = new Line(request.getLineName(), new Sections(
+                List.of(new Section(stationDao.findByName(request.getStartStation()),
+                        stationDao.findByName(request.getEndStation()),
+                        new Distance(request.getDistance())))
+        ));
 
         Long savedId = lineDao.insert(line);
         sectionDao.insertAll(savedId, line.getSections().getSections());
-
-        List<StationResponse> stationsResponses = makeStationResponses(line.getSections().getSortedStations());
-        return new LineResponse(savedId, request.getLineName(), stationsResponses);
+        return new LineResponse(savedId, request.getLineName(), makeStationResponses(line.getSections().getSortedStations()));
     }
 
     public List<LineResponse> findAllLines() {
-        Lines lines = new Lines();
-        lineDao.findAll()
-                .forEach(it -> lines.addNewLine(new Line(it.getId(),it.getName(), new Sections(sectionDao.findByLineId(it.getId())))));
+        List<Line> lines = lineDao.findAll().stream()
+                .map(it -> new Line(it.getId(), it.getName(), new Sections(sectionDao.findByLineId(it.getId()))))
+                .collect(Collectors.toList());
 
-        return lines.getLines().stream()
+        return lines.stream()
                 .map(it -> new LineResponse(it.getId(), it.getName(), makeStationResponses(it.getSections().getSortedStations())))
                 .collect(Collectors.toList());
     }
 
     public LineResponse findLineResponseById(Long lineId) {
-        Line line = lineDao.findById(lineId).orElseThrow(InvalidLineException::new);
-        Line newLine = new Line(line.getId(), line.getName(), new Sections(sectionDao.findByLineId(line.getId())));
+        Line line = lineDao.findById(lineId).map(it -> new Line(it.getId(),it.getName(), new Sections(sectionDao.findByLineId(it.getId()))))
+                .orElseThrow(InvalidLineException::new);
 
-        return new LineResponse(newLine.getId(), newLine.getName(), makeStationResponses(newLine.getSections().getSortedStations()));
+        return new LineResponse(line.getId(), line.getName(), makeStationResponses(line.getSections().getSortedStations()));
     }
 
     private List<StationResponse> makeStationResponses(List<Station> sortedStations) {
