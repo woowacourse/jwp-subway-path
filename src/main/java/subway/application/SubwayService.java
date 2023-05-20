@@ -13,6 +13,7 @@ import subway.domain.line.Line;
 import subway.domain.line.Station;
 import subway.domain.route.JgraphtRouteGraph;
 import subway.domain.route.RouteGraph;
+import subway.domain.route.Subway;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -36,15 +37,16 @@ public class SubwayService {
         List<Line> lines = lineRepository.findAll();
         RouteGraph routeGraph = JgraphtRouteGraph.from(lines);
 
-        List<StationResponse> routes = findShortestRoute(routeGraph, startStation, endStation);
-        Distance distance = routeGraph.findShortestDistance(startStation, endStation);
+        Subway subway = new Subway(routeGraph);
+        List<StationResponse> routes = findShortestRoute(subway, startStation, endStation);
+        Distance distance = subway.findShortestDistance(startStation, endStation);
         Fare fare = farePolicy.calculate(distance);
         return new RouteSearchResponse(routes, distance.getValue(), fare.getValue());
     }
 
-    private static List<StationResponse> findShortestRoute(RouteGraph routeGraph, Station startStation,
+    private static List<StationResponse> findShortestRoute(Subway subway, Station startStation,
                                                            Station endStation) {
-        return routeGraph.findShortestRoute(startStation, endStation)
+        return subway.findShortestRoute(startStation, endStation)
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
