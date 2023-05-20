@@ -29,7 +29,7 @@ public class Route {
         return new Route(null, Fee.createDefault());
     }
 
-    public Map<Station, Set<String>> findShortestRouteWithLineNames(final String start, final String destination) {
+    public Map<Station, Set<String>> findShortestRoute(final String start, final String destination) {
         validateEmptyLines();
 
         WeightedMultigraph<String, DefaultWeightedEdge> graph = initGraph();
@@ -37,7 +37,7 @@ public class Route {
         GraphPath<String, DefaultWeightedEdge> route = calculateShortestPath(graph, start, destination);
         fee.calculateFromDistance((int) route.getWeight());
 
-        return getStationWithLineNames(route);
+        return getStationAndLineNames(route);
     }
 
     private void validateEmptyLines() {
@@ -68,7 +68,7 @@ public class Route {
         }
     }
 
-    private Map<Station, Set<String>> getStationWithLineNames(final GraphPath<String, DefaultWeightedEdge> route) {
+    private Map<Station, Set<String>> getStationAndLineNames(final GraphPath<String, DefaultWeightedEdge> route) {
         Map<String, Station> stationsFromName = lines.getStationsFromNameMap();
         Map<Station, Set<String>> lineNamesFromStation = new LinkedHashMap<>();
 
@@ -76,6 +76,7 @@ public class Route {
             Station station = stationsFromName.get(stationName);
             lineNamesFromStation.put(station, lines.getLinesNameFromStation(station));
         }
+
         return lineNamesFromStation;
     }
 

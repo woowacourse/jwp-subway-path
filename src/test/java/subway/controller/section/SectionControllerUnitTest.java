@@ -11,7 +11,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.SectionController;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
-import subway.exception.*;
+import subway.exception.InvalidDistanceException;
+import subway.exception.SectionDuplicatedException;
+import subway.exception.SectionForkedException;
+import subway.exception.SectionNotConnectException;
+import subway.exception.SectionNotFoundException;
+import subway.exception.UpStationNotFoundException;
 import subway.service.SectionService;
 import subway.service.SubwayMapService;
 

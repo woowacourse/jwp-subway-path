@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import subway.exception.InvalidDistanceException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class FeeTest {
 
