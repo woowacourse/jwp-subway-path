@@ -4,8 +4,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import subway.domain.path.graph.PathEdge;
-import subway.domain.path.graph.PathEdges;
+import subway.domain.path.PathSection;
+import subway.domain.path.PathSections;
 import subway.domain.station.Station;
 
 public class PathDto {
@@ -18,21 +18,19 @@ public class PathDto {
         this.pathDistance = pathDistance;
     }
 
-    public static PathDto from(final PathEdges pathEdges) {
-        int pathDistance = 0;
+    public static PathDto from(final PathSections pathSections) {
         final Set<Station> uniqueOrderedStation = new LinkedHashSet<>();
 
-        for (PathEdge pathEdge : pathEdges.getPathSections()) {
-            pathDistance += pathEdge.getDistance();
-            uniqueOrderedStation.add(pathEdge.getSourceStation());
-            uniqueOrderedStation.add(pathEdge.getTargetStation());
+        for (PathSection pathSection : pathSections.getPathSections()) {
+            uniqueOrderedStation.add(pathSection.sourceStation());
+            uniqueOrderedStation.add(pathSection.targetStation());
         }
 
         final List<ReadStationDto> readStationDtos = uniqueOrderedStation.stream()
                 .map(ReadStationDto::from)
                 .collect(Collectors.toList());
 
-        return new PathDto(readStationDtos, pathDistance);
+        return new PathDto(readStationDtos, pathSections.calculateSectionDistance());
     }
 
     public List<ReadStationDto> getStations() {

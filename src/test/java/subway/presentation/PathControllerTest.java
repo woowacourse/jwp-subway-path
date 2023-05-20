@@ -3,8 +3,8 @@ package subway.presentation;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,6 +24,8 @@ import subway.application.dto.ShortestPathInfoDto;
 import subway.application.dto.ShortestPathsDto;
 import subway.domain.fare.FareAmount;
 import subway.domain.line.Line;
+import subway.domain.path.Path;
+import subway.domain.path.PathSections;
 import subway.domain.path.graph.PathEdge;
 import subway.domain.path.graph.PathEdges;
 import subway.domain.section.Direction;
@@ -34,7 +36,7 @@ import subway.exception.GlobalExceptionHandler;
 @WebMvcTest(controllers = PathController.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings({"NonAsciiCharacters", "SpellCheckingInspection"})
-class PathGraphControllerTest {
+class PathControllerTest {
 
     @MockBean
     PathService pathService;
@@ -65,7 +67,8 @@ class PathGraphControllerTest {
         final PathEdge pathEdge = PathEdge.of(first, second, line);
         final PathEdges pathEdges = PathEdges.create();
         pathEdges.add(pathEdge);
-        final ShortestPathsDto shortestPathsDto = ShortestPathsDto.from(List.of(pathEdges));
+        final PathSections pathSections = pathEdges.to();
+        final ShortestPathsDto shortestPathsDto = ShortestPathsDto.from(Path.from(List.of(pathSections)));
         final FareAmount fareAmount = FareAmount.from(1250);
         final ShortestPathInfoDto shortestPathInfoDto = ShortestPathInfoDto.of(shortestPathsDto, fareAmount);
         given(pathService.findShortestPathInfo(anyLong(), anyLong())).willReturn(shortestPathInfoDto);

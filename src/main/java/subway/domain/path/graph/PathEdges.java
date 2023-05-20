@@ -22,11 +22,6 @@ public class PathEdges {
         this.pathEdges.add(pathEdge);
     }
 
-    public boolean isOtherLine(final PathEdge targetPathEdge) {
-        return pathEdges.stream()
-                .noneMatch(sourcePathSection -> sourcePathSection.isSameLine(targetPathEdge));
-    }
-
     public int calculateTotalPathSectionDistance() {
         return pathEdges.stream()
                 .mapToInt(PathEdge::getDistance)
@@ -39,6 +34,11 @@ public class PathEdges {
                 .collect(Collectors.toList());
 
         return PathSections.from(pathSections);
+    }
+
+    public boolean isOtherLine(final PathEdge targetPathEdge) {
+        return pathEdges.stream()
+                .noneMatch(sourcePathSection -> sourcePathSection.isSameLine(targetPathEdge));
     }
 
     public List<PathEdge> getPathSections() {
