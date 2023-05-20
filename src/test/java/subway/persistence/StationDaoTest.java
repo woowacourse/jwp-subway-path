@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.core.Station;
 
 @SpringBootTest
 @Transactional

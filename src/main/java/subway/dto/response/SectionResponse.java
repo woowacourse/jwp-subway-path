@@ -3,7 +3,7 @@ package subway.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import subway.domain.Section;
+import subway.domain.core.Section;
 
 public class SectionResponse {
 	private final Long id;

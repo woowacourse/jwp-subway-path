@@ -1,17 +1,20 @@
-package subway.domain;
+package subway.domain.core;
 
 import java.util.Objects;
 
-public class Line {
+public class Station {
 	private Long id;
 	private String name;
 
-	public Line(final String name) {
+	public Station() {
+	}
+
+	public Station(Long id, String name) {
+		this.id = id;
 		this.name = name;
 	}
 
-	public Line(final Long id, final String name) {
-		this.id = id;
+	public Station(String name) {
 		this.name = name;
 	}
 
@@ -29,12 +32,21 @@ public class Line {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		final Line line = (Line)o;
-		return Objects.equals(name, line.name);
+
+		Station station = (Station)o;
+
+		return Objects.equals(name, station.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name);
+		return name != null ? name.hashCode() : 0;
+	}
+
+	@Override
+	public String toString() {
+		return "Station{" +
+			"name='" + name + '\'' +
+			'}';
 	}
 }

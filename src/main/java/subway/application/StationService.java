@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.core.Line;
+import subway.domain.core.Section;
+import subway.domain.core.Sections;
+import subway.domain.core.Station;
 import subway.dto.request.StationUpdateRequest;
 import subway.dto.response.StationResponse;
 

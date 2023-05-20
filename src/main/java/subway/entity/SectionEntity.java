@@ -1,6 +1,6 @@
 package subway.entity;
 
-import subway.domain.Section;
+import subway.domain.core.Section;
 
 import java.util.List;
 import java.util.stream.Collectors;

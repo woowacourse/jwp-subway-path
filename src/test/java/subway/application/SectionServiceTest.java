@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import subway.domain.Section;
+import subway.domain.core.Section;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dto.request.SectionUpdateRequest;

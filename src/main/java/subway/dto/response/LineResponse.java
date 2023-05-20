@@ -1,6 +1,6 @@
 package subway.dto.response;
 
-import subway.domain.Line;
+import subway.domain.core.Line;
 
 import java.util.List;
 import java.util.stream.Collectors;

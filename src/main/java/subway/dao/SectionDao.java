@@ -8,9 +8,9 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.core.Line;
+import subway.domain.core.Section;
+import subway.domain.core.Station;
 import subway.entity.SectionEntity;
 
 @Repository

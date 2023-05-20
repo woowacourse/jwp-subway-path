@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import subway.dao.LineDao;
-import subway.domain.Line;
+import subway.domain.core.Line;
 
 @SpringBootTest
 class LineDaoTest {
