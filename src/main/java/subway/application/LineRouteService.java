@@ -3,6 +3,7 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDAO;
 import subway.dao.StationDao;
@@ -27,6 +28,7 @@ public class LineRouteService {
         this.sectionDAO = sectionDAO;
     }
     
+    @Transactional
     public LineRouteResponse findAllStationsInLine(final long lineId) {
         final Line line = this.lineDao.findById(lineId);
         final List<Section> sections = this.sectionDAO.findSectionsBy(lineId);
@@ -48,6 +50,7 @@ public class LineRouteService {
         return LineRouteResponse.of(line, orderedStations);
     }
     
+    @Transactional(readOnly = true)
     public List<LineRouteResponse> findAllStations() {
         final List<Line> lines = this.lineDao.findAll();
         return lines.stream()

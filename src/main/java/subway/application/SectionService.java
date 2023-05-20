@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDAO;
 import subway.dao.StationDao;
@@ -29,6 +30,7 @@ public class SectionService {
         this.stationDao = stationDao;
     }
     
+    @Transactional(readOnly = true)
     public List<SectionResponse> findAll() {
         return this.sectionDAO.findAll()
                 .stream()
@@ -36,6 +38,7 @@ public class SectionService {
                 .collect(Collectors.toUnmodifiableList());
     }
     
+    @Transactional(readOnly = true)
     public List<SectionResponse> findSectionsByLineId(final long lineId) {
         return this.sectionDAO.findSectionsBy(lineId)
                 .stream()
@@ -65,6 +68,7 @@ public class SectionService {
         }
     }
     
+    @Transactional
     public List<SectionResponse> insertSection(final SectionRequest sectionRequest) {
         final List<Section> sections = this.sectionDAO.findSectionsBy(sectionRequest.getLineId());
         final LineSections lineSections = LineSections.from(sections);
@@ -127,6 +131,7 @@ public class SectionService {
         return sections;
     }
     
+    @Transactional
     public void deleteSection(final DeleteSectionRequest deleteSectionRequest) {
         final List<Section> sections = this.findSections(deleteSectionRequest.getStationId(),
                 deleteSectionRequest.getLineId());

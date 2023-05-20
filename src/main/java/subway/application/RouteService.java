@@ -3,6 +3,7 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.DiscountPolicy;
 import subway.domain.FarePolicy;
 import subway.domain.Route;
@@ -24,6 +25,7 @@ public class RouteService {
         this.sectionService = sectionService;
     }
     
+    @Transactional(readOnly = true)
     public RouteResponse findRouteBetween(final RouteRequest routeRequest) {
         final List<Section> sections = this.sectionService.findAll()
                 .stream()
