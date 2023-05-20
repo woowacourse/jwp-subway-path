@@ -1,9 +1,9 @@
 package subway.ui;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -25,6 +25,12 @@ public class LineController {
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
+    }
+
+    @PostMapping
+    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest request) {
+        LineResponse line = LineResponse.of(lineService.createLine(request));
+        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
     @GetMapping
@@ -41,15 +47,8 @@ public class LineController {
         return ResponseEntity.ok(line);
     }
 
-    @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest request) {
-        LineResponse line = new LineResponse(lineService.createLine(request),
-                request.getName(), request.getColor(), Collections.emptyList());
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-    }
-
     @PutMapping("/{lineId}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody @Valid LineRequest lineUpdateRequest) {
         lineService.updateLineInfo(lineId, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }

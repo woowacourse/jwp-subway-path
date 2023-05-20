@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +20,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        List<String> stations = line.findAllStations().stream()
+        List<String> stations = line.findStations().stream()
                 .map(Station::getName)
                 .collect(Collectors.toList());
 
