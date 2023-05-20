@@ -9,9 +9,10 @@ import subway.domain.Station;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
-import subway.ui.dto.SectionCreateRequest;
-import subway.ui.dto.SectionDeleteRequest;
+import subway.ui.dto.request.SectionCreateRequest;
+import subway.ui.dto.request.SectionDeleteRequest;
 
+@Transactional(readOnly = true)
 @Service
 public class SectionService {
 

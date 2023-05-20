@@ -22,8 +22,8 @@ import subway.dao.StationDao;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
+import subway.ui.dto.request.LineRequest;
+import subway.ui.dto.response.LineResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {

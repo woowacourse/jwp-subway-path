@@ -3,13 +3,15 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.repository.LineRepository;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
-import subway.ui.dto.LineStationResponse;
-import subway.ui.dto.StationResponse;
+import subway.ui.dto.request.LineRequest;
+import subway.ui.dto.response.LineResponse;
+import subway.ui.dto.response.LineStationResponse;
+import subway.ui.dto.response.StationResponse;
 
+@Transactional(readOnly = true)
 @Service
 public class LineService {
 
@@ -19,6 +21,7 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line line = lineRepository.save(new Line(request.getName()));
         return LineResponse.from(line);
@@ -57,6 +60,7 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 노선이 없습니다."));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }

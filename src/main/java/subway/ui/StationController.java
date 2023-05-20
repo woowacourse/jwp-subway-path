@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
-import subway.ui.dto.StationRequest;
-import subway.ui.dto.StationResponse;
+import subway.ui.dto.request.StationRequest;
+import subway.ui.dto.response.StationResponse;
 
 @RestController
 @RequestMapping("/stations")
