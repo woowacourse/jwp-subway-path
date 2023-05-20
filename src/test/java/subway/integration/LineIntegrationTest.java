@@ -145,6 +145,22 @@ public class LineIntegrationTest extends IntegrationTest {
         );
     }
 
+    @DisplayName("존재하지 않는 지하철 노선을 조회한다.")
+    @Test
+    @Sql("/station_test_data.sql")
+    void getLineByInvalidId() {
+        // given
+        final Long lineId = 489L;
+
+        // when, then
+        RestAssured
+                .given()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{id}", lineId)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
     @Test
     @DisplayName("노선에 역을 추가한다.")
     @Sql({"/line_test_data.sql", "/station_test_data.sql", "/section_test_data.sql"})
@@ -206,5 +222,4 @@ public class LineIntegrationTest extends IntegrationTest {
                 () -> assertThat(documentContext.read("$.stations[1].name", String.class)).isEqualTo("종합운동장")
         );
     }
-
 }
