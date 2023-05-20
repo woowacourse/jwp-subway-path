@@ -8,25 +8,20 @@ import java.util.Set;
 
 public class SubwayMap {
 
-    private final Map<Long, Line> lineByLineId;
-    private final Map<Long, List<Station>> stationsByLineId;
+    private final Lines lines;
+    private final Map<Line, List<Station>> stationsByLine;
 
-    private SubwayMap(final Map<Long, Line> lineByLineId, final Map<Long, List<Station>> stationsByLineId) {
-        this.lineByLineId = lineByLineId;
-        this.stationsByLineId = stationsByLineId;
+    private SubwayMap(final Lines lines, final Map<Line, List<Station>> stationsByLine) {
+        this.lines = lines;
+        this.stationsByLine = stationsByLine;
     }
 
     public static SubwayMap of(final List<Line> lines, final List<Section> sections) {
-        final SubwayMap subwayMap = new SubwayMap(new HashMap<>(), new HashMap<>());
+        final SubwayMap subwayMap = new SubwayMap(Lines.of(lines), new HashMap<>());
         final StationGraph stationGraph = StationGraph.of(sections);
 
-        subwayMap.addLines(lines);
         subwayMap.createAllStations(stationGraph, sections);
         return subwayMap;
-    }
-
-    private void addLines(final List<Line> lines) {
-        lines.forEach(line -> lineByLineId.put(line.getId(), line));
     }
 
     private void createAllStations(final StationGraph stationGraph, final List<Section> sections) {
@@ -39,31 +34,23 @@ public class SubwayMap {
             }
             lineIds.add(lineId);
             final List<Station> stations = stationGraph.findStations(section);
-            stationsByLineId.put(lineId, stations);
+            stationsByLine.put(lines.getLine(lineId), stations);
         }
     }
 
     public Line getLine(final Long lineId) {
-        final Line line = lineByLineId.get(lineId);
-        if (line == null) {
-            throw new IllegalArgumentException("존재하지 않는 노선입니다.");
-        }
-        return line;
+        return lines.getLine(lineId);
     }
 
     public Set<Long> getAllLineIds() {
-        final Set<Long> lineIds = lineByLineId.keySet();
-        if (lineIds.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 노선입니다.");
-        }
-        return lineIds;
+        return lines.getAllIds();
     }
 
     public List<Station> getStations(final Long lineId) {
-        final List<Station> stations = stationsByLineId.get(lineId);
-        if (stations == null) {
-            throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+        final Line line = lines.getLine(lineId);
+        if (stationsByLine.containsKey(line)) {
+            return stationsByLine.get(line);
         }
-        return stations;
+        throw new IllegalArgumentException("존재하지 않는 노선입니다.");
     }
 }
