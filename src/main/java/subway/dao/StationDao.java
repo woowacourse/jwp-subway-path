@@ -22,9 +22,9 @@ public class StationDao {
                     rs.getString("name")
             );
 
-    public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("station_id");
     }
