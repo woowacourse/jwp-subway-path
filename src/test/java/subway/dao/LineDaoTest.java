@@ -21,42 +21,43 @@ class LineDaoTest {
     @BeforeEach
     void setUp() {
         lineDao = new LineDao(jdbcTemplate);
+
         LineEntity lineEntity = new LineEntity("2호선");
         id = lineDao.save(lineEntity);
     }
 
+    @DisplayName("Line을 저장한다.")
     @Test
-    @DisplayName("저장한다.")
     void save() {
         // when
         Long newId = lineDao.save(new LineEntity("3호선"));
 
-        // expected
+        // then
         assertThat(newId).isEqualTo(id + 1);
     }
 
-    @Test
     @DisplayName("Line 이름을 입력받아 해당하는 Line Entity 를 반환한다.")
+    @Test
     void findByName() {
         // when
         LineEntity newLineEntity = lineDao.findByName("2호선");
 
-        // expected
+        // then
         assertThat(newLineEntity.getId()).isEqualTo(id);
     }
 
-    @Test
     @DisplayName("Line id를 입력받아 해당하는 Line Entity 를 반환한다.")
+    @Test
     void findById() {
         // when
         LineEntity newLineEntity = lineDao.findById(id);
 
-        // expected
+        // then
         assertThat(newLineEntity.getId()).isEqualTo(id);
     }
 
-    @Test
     @DisplayName("모든 Line을 반환한다.")
+    @Test
     void findAll() {
         // given
         lineDao.save(new LineEntity("3호선"));
@@ -66,17 +67,27 @@ class LineDaoTest {
         // when
         List<LineEntity> lineEntities = lineDao.findAll();
 
-        // expected
+        // then
         assertThat(lineEntities).hasSize(4);
     }
 
-    @Test
     @DisplayName("Line id를 입력받아 일치하는 Line을 삭제한다.")
-    void deleteByName() {
+    @Test
+    void deleteById() {
         // when
         int deleteRowNumber = lineDao.deleteById(id);
 
-        // expected
+        // then
         assertThat(deleteRowNumber).isEqualTo(1);
+    }
+
+    @DisplayName("중복되는 이름인지 확인한다.")
+    @Test
+    void isExisted() {
+        // when
+        boolean duplicate = lineDao.isExisted("2호선");
+
+        // then
+        assertThat(duplicate).isTrue();
     }
 }
