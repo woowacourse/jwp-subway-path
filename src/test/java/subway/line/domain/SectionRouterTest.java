@@ -2,8 +2,8 @@ package subway.line.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.section.domain.SectionRouter;
-import subway.domain.section.entity.SectionEntity;
+import subway.domain.line.domain.SectionRouter;
+import subway.domain.line.entity.SectionEntity;
 import subway.domain.station.entity.StationEntity;
 
 import java.util.List;

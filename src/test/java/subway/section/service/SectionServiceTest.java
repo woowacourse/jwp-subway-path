@@ -11,10 +11,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.section.dao.SectionDao;
-import subway.domain.section.dto.SectionCreateRequest;
-import subway.domain.section.entity.SectionEntity;
-import subway.domain.section.service.SectionService;
+import subway.domain.line.dao.SectionDao;
+import subway.domain.line.dto.SectionCreateRequest;
+import subway.domain.line.entity.SectionEntity;
+import subway.domain.line.service.SectionService;
 import subway.section.dao.StubSectionDao;
 
 import java.util.List;

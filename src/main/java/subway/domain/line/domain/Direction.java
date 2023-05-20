@@ -1,4 +1,4 @@
-package subway.domain.section.domain;
+package subway.domain.line.domain;
 
 public enum Direction {
 

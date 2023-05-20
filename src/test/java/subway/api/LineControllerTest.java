@@ -12,8 +12,13 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.domain.line.controller.LineController;
 import subway.domain.line.dto.LineRequest;
+import subway.domain.line.dto.SectionCreateRequest;
 import subway.domain.line.entity.LineEntity;
+import subway.domain.line.entity.SectionEntity;
 import subway.domain.line.service.LineService;
+import subway.domain.line.service.SectionService;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -31,6 +36,9 @@ public class LineControllerTest {
 
     @MockBean
     private LineService lineService;
+
+    @MockBean
+    private SectionService sectionService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -73,5 +81,31 @@ public class LineControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
                         ));
+    }
+
+    @Test
+    void addStation() throws Exception {
+        SectionCreateRequest section = new SectionCreateRequest(1L, 1L, 2L, true, 5);
+
+        when(sectionService.createSection(any())).thenReturn(List.of(new SectionEntity(1L, 1L, 1L, 2L, 5)));
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/line/{lineId}",1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(section)))
+                .andExpect(status().isCreated())
+                .andDo(document("line-add-station",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
+    }
+
+    @Test
+    void deleteStation() throws Exception {
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/line/{lineId}/station/{stationId}",1L,2L))
+                .andExpect(status().isNoContent())
+                .andDo(document("line-delete-station",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 }

@@ -1,4 +1,4 @@
-package subway.domain.section.dao;
+package subway.domain.line.dao;
 
 
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -6,8 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.section.domain.Direction;
-import subway.domain.section.entity.SectionEntity;
+import subway.domain.line.domain.Direction;
+import subway.domain.line.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;

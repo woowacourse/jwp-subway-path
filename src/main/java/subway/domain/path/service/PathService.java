@@ -5,10 +5,10 @@ import subway.domain.path.domain.LinePath;
 import subway.domain.path.domain.Path;
 import subway.domain.line.entity.LineEntity;
 import subway.domain.line.service.LineService;
-import subway.domain.section.domain.SectionLocator;
-import subway.domain.section.domain.SectionRouter;
-import subway.domain.section.entity.SectionEntity;
-import subway.domain.section.service.SectionService;
+import subway.domain.line.domain.SectionLocator;
+import subway.domain.line.domain.SectionRouter;
+import subway.domain.line.entity.SectionEntity;
+import subway.domain.line.service.SectionService;
 import subway.domain.station.entity.StationEntity;
 import subway.domain.station.service.StationService;
 

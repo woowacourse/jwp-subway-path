@@ -21,6 +21,10 @@ public class ResultResponse {
         return new ResultResponse(httpStatus.value(), httpStatus.getReasonPhrase(), data);
     }
 
+    public static ResultResponse of(HttpStatus httpStatus) {
+        return new ResultResponse(httpStatus.value(), httpStatus.getReasonPhrase(), null);
+    }
+
     public int getStatus() {
         return status;
     }

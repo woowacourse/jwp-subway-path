@@ -1,6 +1,6 @@
-package subway.domain.section.dto;
+package subway.domain.line.dto;
 
-import subway.domain.section.entity.SectionEntity;
+import subway.domain.line.entity.SectionEntity;
 
 public class SectionResponse {
 

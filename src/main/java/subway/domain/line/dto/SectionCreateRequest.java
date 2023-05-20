@@ -1,4 +1,4 @@
-package subway.domain.section.dto;
+package subway.domain.line.dto;
 
 import javax.validation.constraints.NotNull;
 

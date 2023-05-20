@@ -3,8 +3,8 @@ package subway.line.domain;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.section.domain.SectionLocator;
-import subway.domain.section.entity.SectionEntity;
+import subway.domain.line.domain.SectionLocator;
+import subway.domain.line.entity.SectionEntity;
 import subway.domain.station.entity.StationEntity;
 
 import java.util.List;

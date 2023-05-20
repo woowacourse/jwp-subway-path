@@ -36,6 +36,27 @@ include::{snippets}/line-delete/http-request.adoc[]
 
 include::{snippets}/line-delete/http-response.adoc[]
 
+=== Line Station 추가
+
+==== Http request
+
+include::{snippets}/line-add-station/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/line-add-station/http-response.adoc[]
+
+=== Line Station 삭제
+
+==== Http request
+
+include::{snippets}/line-delete-station/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/line-delete-station/http-response.adoc[]
+
+
 == Station
 
 === Station 단일 조회
@@ -87,28 +108,6 @@ include::{snippets}/station-create/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/station-create/http-response.adoc[]
-
-== Section
-
-=== Section 생성
-
-==== HTTP request
-
-include::{snippets}/section-create/http-request.adoc[]
-
-==== HTTP response
-
-include::{snippets}/section-create/http-response.adoc[]
-
-=== Section 삭제
-
-==== HTTP request
-
-include::{snippets}/section-delete/http-request.adoc[]
-
-==== HTTP response
-
-include::{snippets}/section-delete/http-response.adoc[]
 
 == Path
 

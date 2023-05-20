@@ -1,6 +1,6 @@
-package subway.domain.section.domain;
+package subway.domain.line.domain;
 
-import subway.domain.section.entity.SectionEntity;
+import subway.domain.line.entity.SectionEntity;
 
 import java.util.*;
 

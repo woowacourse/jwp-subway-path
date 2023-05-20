@@ -1,7 +1,7 @@
-package subway.domain.section.dao;
+package subway.domain.line.dao;
 
-import subway.domain.section.domain.Direction;
-import subway.domain.section.entity.SectionEntity;
+import subway.domain.line.domain.Direction;
+import subway.domain.line.entity.SectionEntity;
 
 import java.util.List;
 import java.util.Optional;
