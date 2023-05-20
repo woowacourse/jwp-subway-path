@@ -29,7 +29,7 @@ public final class StationFixture {
     public static final StationEntity 산성역_엔티티 = new StationEntity(7L, "산성역");
     public static final Station 산성역 = new Station(산성역_엔티티.getName());
 
-    public static final StationRequest 역_요청_정보 = new StationRequest(잠실역.getName().name());
+    public static final StationRequest 역_요청_정보 = new StationRequest(잠실역.name().name());
 
     public static List<StationEntity> 역_엔티티들() {
         return List.of(잠실역_엔티티, 선릉역_엔티티, 강남역_엔티티, 신림역_엔티티, 복정역_엔티티, 남위례역_엔티티, 산성역_엔티티);

@@ -1,7 +1,9 @@
 package subway.application;
 
-import static subway.application.mapper.SectionProvider.createSections;
-import static subway.application.mapper.SectionProvider.getStationIdByName;
+import static subway.application.mapper.SectionMapper.createSubwayLines;
+import static subway.application.mapper.SectionMapper.getAllSections;
+import static subway.application.mapper.SectionMapper.getSectionsByLineId;
+import static subway.application.mapper.StationMapper.createStationResponses;
 
 import java.util.List;
 import java.util.Map;
@@ -10,18 +12,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.FareResponse;
 import subway.application.dto.RouteResponse;
-import subway.application.dto.StationResponse;
-import subway.application.mapper.SectionProvider;
-import subway.domain.fare.DiscountFare;
+import subway.domain.fare.ExtraFare;
 import subway.domain.fare.Fare;
-import subway.domain.fare.TotalFare;
+import subway.domain.fare.discount.ChildFarePolicy;
+import subway.domain.fare.discount.DiscountFarePolicy;
+import subway.domain.fare.discount.TeenagerFarePolicy;
+import subway.domain.fare.normal.BasicFarePolicy;
+import subway.domain.fare.normal.FarePolicy;
+import subway.domain.fare.normal.UnitEightFarePolicy;
+import subway.domain.fare.normal.UnitFiveFarePolicy;
 import subway.domain.line.LineRepository;
 import subway.domain.line.LineWithSectionRes;
 import subway.domain.route.Distance;
-import subway.domain.route.RouteGraph;
+import subway.domain.route.GraphProvider;
 import subway.domain.route.ShortestRoute;
 import subway.domain.section.Section;
-import subway.domain.section.Sections;
+import subway.domain.section.SubwayLine;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
 
@@ -29,13 +35,20 @@ import subway.domain.station.StationRepository;
 @Transactional(readOnly = true)
 public class RouteService {
 
+    private final GraphProvider graphProvider;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final List<FarePolicy> farePolicies;
+    private final List<DiscountFarePolicy> discountFarePolicies;
 
-    public RouteService(final LineRepository lineRepository,
+    public RouteService(final GraphProvider graphProvider,
+                        final LineRepository lineRepository,
                         final StationRepository stationRepository) {
+        this.graphProvider = graphProvider;
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.farePolicies = List.of(new BasicFarePolicy(), new UnitFiveFarePolicy(), new UnitEightFarePolicy());
+        discountFarePolicies = List.of(new TeenagerFarePolicy(), new ChildFarePolicy());
     }
 
     public RouteResponse getShortestRouteAndFare(final Long sourceStationId, final Long targetStationId) {
@@ -44,55 +57,45 @@ public class RouteService {
         final List<LineWithSectionRes> possibleSections = lineRepository.getPossibleSections(
             sourceStationId, targetStationId);
 
-        final Map<Long, List<LineWithSectionRes>> sectionsByLineId = possibleSections.stream()
-            .collect(Collectors.groupingBy(LineWithSectionRes::getLineId));
-
+        final Map<Long, List<LineWithSectionRes>> sectionsByLineId = getSectionsByLineId(possibleSections);
         final ShortestRoute shortestRoute = getShortestRoute(sourceStation, targetStation, sectionsByLineId);
         final List<Section> sections = getAllSections(sectionsByLineId);
-
         final Distance shortestDistance = shortestRoute.getShortestDistance(sections);
-        final Fare lineExtraFare = getMaxLineExtraFare(possibleSections);
-        final TotalFare totalFare = new TotalFare(shortestDistance, lineExtraFare);
-        return new RouteResponse(getStationResponses(possibleSections, shortestRoute.getShortestRoutes()),
-            getFareResponse(totalFare.totalFare()));
+
+        final ExtraFare lineExtraFare = new ExtraFare(possibleSections);
+        final Fare totalFare = getTotalFare(shortestDistance, lineExtraFare);
+        final List<Fare> discountFare = getDiscountFares(totalFare);
+
+        return new RouteResponse(
+            createStationResponses(possibleSections, shortestRoute.getShortestRoutes()),
+            getFareResponse(totalFare, discountFare));
     }
 
     private ShortestRoute getShortestRoute(final Station sourceStation, final Station targetStation,
                                            final Map<Long, List<LineWithSectionRes>> sectionsByLineId) {
-        final RouteGraph routeGraph = new RouteGraph();
-        sectionsByLineId.values().forEach(sectionRes -> {
-            final Sections sections = createSections(sectionRes);
-            routeGraph.addPossibleRoute(sections);
-        });
-        routeGraph.validateRequestRoute(sourceStation, targetStation);
-        return new ShortestRoute(routeGraph, sourceStation, targetStation);
+        final List<SubwayLine> subwayLines = createSubwayLines(sectionsByLineId);
+        final List<Station> shortestRoute = graphProvider.getShortestPath(subwayLines, sourceStation, targetStation);
+        return new ShortestRoute(shortestRoute);
     }
 
-    private Fare getMaxLineExtraFare(final List<LineWithSectionRes> possibleSections) {
-        final int maxFare = possibleSections.stream()
-            .mapToInt(LineWithSectionRes::getExtraFare)
-            .max().orElse(0);
-        return new Fare(maxFare);
+    private Fare getTotalFare(final Distance shortestDistance, final ExtraFare extraFare) {
+        return farePolicies.stream()
+            .filter(policy -> policy.isAvailable(shortestDistance))
+            .map(policy -> policy.calculateFare(shortestDistance))
+            .findFirst()
+            .orElseThrow()
+            .add(extraFare.fare());
     }
 
-    private List<Section> getAllSections(final Map<Long, List<LineWithSectionRes>> sectionsByLineId) {
-        return sectionsByLineId.values().stream()
-            .map(SectionProvider::createSections)
-            .flatMap(sections -> sections.getSections().stream())
-            .collect(Collectors.toList());
-    }
-
-    private List<StationResponse> getStationResponses(final List<LineWithSectionRes> possibleSections,
-                                                      final List<Station> shortestRoute) {
-        return shortestRoute.stream()
-            .map(station -> new StationResponse(
-                getStationIdByName(station.getName(), possibleSections), station.getName().name()))
+    private List<Fare> getDiscountFares(final Fare totalFare) {
+        return discountFarePolicies.stream()
+            .map(policy -> policy.calculateFare(totalFare))
             .collect(Collectors.toUnmodifiableList());
     }
 
-    private FareResponse getFareResponse(final Fare totalFare) {
-        final DiscountFare discountFare = new DiscountFare(totalFare);
-        return new FareResponse(totalFare.fare(), discountFare.calculateTeenagerFare().fare(),
-            discountFare.calculateChildFare().fare());
+    private FareResponse getFareResponse(final Fare totalFare, final List<Fare> discountFares) {
+        final Fare teenagerFare = discountFares.get(0);
+        final Fare childFare = discountFares.get(1);
+        return new FareResponse(totalFare.fare(), teenagerFare.fare(), childFare.fare());
     }
 }
