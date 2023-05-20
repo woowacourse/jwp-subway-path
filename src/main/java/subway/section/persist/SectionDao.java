@@ -1,4 +1,4 @@
-package subway.section.domain.repository;
+package subway.section.persist;
 
 
 import org.springframework.dao.DataAccessException;

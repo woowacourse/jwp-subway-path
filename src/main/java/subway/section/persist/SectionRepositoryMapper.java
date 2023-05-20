@@ -1,13 +1,14 @@
-package subway.section.domain.repository;
+package subway.section.persist;
 
 import org.springframework.stereotype.Repository;
 import subway.section.domain.Section;
 import subway.section.domain.Sections;
 import subway.section.domain.entity.SectionEntity;
+import subway.section.domain.repository.SectionRepository;
 import subway.section.exception.SectionNotFoundException;
 import subway.station.domain.Station;
-import subway.station.domain.repository.StationDao;
 import subway.station.exception.StationNotFoundException;
+import subway.station.persist.StationDao;
 
 import java.util.ArrayList;
 import java.util.List;

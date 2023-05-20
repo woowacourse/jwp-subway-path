@@ -1,8 +1,9 @@
-package subway.station.domain.repository;
+package subway.station.persist;
 
 import org.springframework.stereotype.Repository;
 import subway.station.domain.Station;
 import subway.station.domain.entity.StationEntity;
+import subway.station.domain.repository.StationRepository;
 import subway.station.exception.StationNotFoundException;
 
 import java.util.HashMap;
