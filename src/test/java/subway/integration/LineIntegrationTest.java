@@ -60,7 +60,7 @@ public class LineIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.jsonPath().getString("message"))
-                        .isEqualTo(ErrorMessage.DUPLICATE_NAME.getErrorMessage())
+                        .isEqualTo(ErrorMessage.DUPLICATE_LINE.getErrorMessage())
         );
     }
 
