@@ -34,7 +34,7 @@ import subway.exception.GlobalExceptionHandler;
 @WebMvcTest(controllers = PathController.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings({"NonAsciiCharacters", "SpellCheckingInspection"})
-class PathControllerTest {
+class PathGraphControllerTest {
 
     @MockBean
     PathService pathService;

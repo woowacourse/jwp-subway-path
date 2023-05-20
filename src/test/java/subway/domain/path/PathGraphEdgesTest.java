@@ -13,7 +13,7 @@ import subway.domain.station.Station;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings({"NonAsciiCharacters", "SpellCheckingInspection"})
-class PathEdgesTest {
+class PathGraphEdgesTest {
 
     PathEdges pathEdges;
 

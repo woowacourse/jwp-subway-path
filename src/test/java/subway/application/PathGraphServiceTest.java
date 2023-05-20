@@ -29,7 +29,7 @@ import subway.persistence.repository.StationRepository;
 @JdbcTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings({"NonAsciiCharacters", "SpellCheckingInspection"})
-class PathServiceTest {
+class PathGraphServiceTest {
 
     StationRepository stationRepository;
     LineRepository lineRepository;

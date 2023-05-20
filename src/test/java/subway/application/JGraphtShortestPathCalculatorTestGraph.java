@@ -12,7 +12,7 @@ import subway.domain.station.Station;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings({"NonAsciiCharacters", "SpellCheckingInspection"})
-class JGraphtShortestPathCalculatorTest {
+class JGraphtShortestPathCalculatorTestGraph {
 
     JGraphtShortestPathCalculator calculator;
 

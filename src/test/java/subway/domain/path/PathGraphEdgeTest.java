@@ -14,7 +14,7 @@ import subway.domain.station.Station;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings({"NonAsciiCharacters", "SpellCheckingInspection"})
-class PathEdgeTest {
+class PathGraphEdgeTest {
 
     Station sourceStation;
     Station targetStation;

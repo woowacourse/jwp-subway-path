@@ -14,7 +14,7 @@ import subway.domain.station.Station;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings({"NonAsciiCharacters", "SpellCheckingInspection"})
-class PathTest {
+class PathGraphTest {
 
     @Test
     void findShortestPathSections_메소드는_출발_역과_도착_역을_전달하면_최단_거리를_반환한다() {
@@ -43,9 +43,9 @@ class PathTest {
         secondLine.createSection(seventh, eighth, Distance.from(1), Direction.DOWN);
         secondLine.createSection(eighth, fifth, Distance.from(1), Direction.DOWN);
 
-        final Path path = Path.from(List.of(firstLine, secondLine));
+        final PathGraph pathGraph = PathGraph.from(List.of(firstLine, secondLine));
 
-        final List<PathEdges> actual = path.findShortestPathSections(first, nineth);
+        final List<PathEdges> actual = pathGraph.findShortestPathSections(first, nineth);
 
         assertAll(
                 () -> assertThat(actual).hasSize(3),

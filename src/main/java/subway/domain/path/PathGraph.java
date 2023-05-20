@@ -8,23 +8,23 @@ import subway.domain.line.Line;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 
-public class Path extends WeightedMultigraph<Station, PathEdge> {
+public class PathGraph extends WeightedMultigraph<Station, PathEdge> {
 
     private static final int FIRST_PATH_SECTION_INDEX = 0;
     private static final int START_PATH_SECTION_INDEX = 1;
 
-    private Path(final Class<? extends PathEdge> edgeClass) {
+    private PathGraph(final Class<? extends PathEdge> edgeClass) {
         super(edgeClass);
     }
 
-    public static Path from(List<Line> lines) {
-        final Path path = new Path(PathEdge.class);
+    public static PathGraph from(List<Line> lines) {
+        final PathGraph pathGraph = new PathGraph(PathEdge.class);
 
         for (Line line : lines) {
-            path.addSectionPath(line);
+            pathGraph.addSectionPath(line);
         }
 
-        return path;
+        return pathGraph;
     }
 
     private void addSectionPath(final Line line) {

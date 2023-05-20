@@ -3,7 +3,7 @@ package subway.application;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import subway.domain.line.Line;
-import subway.domain.path.Path;
+import subway.domain.path.PathGraph;
 import subway.domain.path.PathEdges;
 import subway.domain.path.ShortestPathCalculator;
 import subway.domain.station.Station;
@@ -15,10 +15,10 @@ public class JGraphtShortestPathCalculator implements ShortestPathCalculator {
     public List<PathEdges> findPath(final List<Line> lines, final Station sourceStation, final Station targetStation) {
         validateDuplicateStation(sourceStation, targetStation);
 
-        final Path path = Path.from(lines);
+        final PathGraph pathGraph = PathGraph.from(lines);
 
         try {
-            return path.findShortestPathSections(sourceStation, targetStation);
+            return pathGraph.findShortestPathSections(sourceStation, targetStation);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("해당 역은 노선에 등록되지 않은 역입니다.", e);
         }
