@@ -7,7 +7,6 @@ import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionCreateRequest;
 import subway.service.LineService;
-import subway.service.SubwayService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -18,12 +17,9 @@ import java.util.List;
 public class LineController {
 
     private final LineService lineService;
-    private final SubwayService subwayService;
 
-    public LineController(final LineService lineService,
-                          final SubwayService subwayService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
-        this.subwayService = subwayService;
     }
 
     @GetMapping

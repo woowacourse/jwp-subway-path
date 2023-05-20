@@ -54,6 +54,10 @@ public class Sections {
         }
     }
 
+    private boolean isNewStation(final Station station) {
+        return !graph.containsStation(station);
+    }
+
     private Station addStationToDirection(final Direction direction, final Station newStation, final Station existingStation, final int distance) {
         if (graph.isTerminal(direction, existingStation)) {
             direction.addStationToTerminal(graph, existingStation, newStation, distance);
@@ -64,10 +68,6 @@ public class Sections {
         final Station adjacentStation = findAdjacentStation(direction, adjacentSections);
         direction.addStationToMiddle(graph, existingStation, newStation, adjacentStation, distance);
         return newStation;
-    }
-
-    private boolean isNewStation(final Station station) {
-        return !graph.containsStation(station);
     }
 
     public boolean isSameLine(Line line) {
@@ -161,10 +161,6 @@ public class Sections {
         graph.addSection(upLineStation, downLineStation, distance);
         graph.removeAllSections(edgesToRemove);
         graph.removeStation(station);
-    }
-
-    public boolean containsStation(final Station station) {
-        return graph.stationSet().contains(station);
     }
 
     public Station findAdjacentStationOf(
