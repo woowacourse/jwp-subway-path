@@ -191,7 +191,8 @@ Content-Type: application/json
 ```
 
 ### ✅ GET /path?sourceStationID={sourceStationId}&destStationID={destStationId}
-- 역과 역 사이의 최단 거리를 구합니다.
+- 역과 역 사이의 최단 경로 정보를 구합니다.
+  - 최단 경로 정보는 경로에 속하는 역 리스트, 총 거리, 요금에 대한 정보를 가지고 있습니다.
 
 #### Request example
 ```text
