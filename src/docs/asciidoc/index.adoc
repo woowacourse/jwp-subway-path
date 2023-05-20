@@ -1,6 +1,3 @@
-ifndef::snippets[]
-:snippets: ../../../build/generated-snippets
-endif::[]
 = Subway Path
 :doctype: book
 :icons: font

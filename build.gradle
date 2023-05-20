@@ -2,17 +2,17 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.9'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-	id 'org.asciidoctor.convert' version '2.4.0'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 sourceCompatibility = '11'
 
-repositories {
-	mavenCentral()
+configurations {
+	asciidoctorExt
 }
 
-ext {
-	snippetsDir = file("build/generated-snippets")
+repositories {
+	mavenCentral()
 }
 
 dependencies {
@@ -27,24 +27,25 @@ dependencies {
 
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 }
 
 test {
 	useJUnitPlatform()
-	outputs.dir snippetsDir
 }
 
 asciidoctor {
-	inputs.dir snippetsDir
 	dependsOn test
-}
-
-asciidoctor.doFirst {
-	delete file("src/main/resources/static/docs")
+	configurations 'asciidoctorExt'
+	baseDirFollowsSourceFile()
 }
 
 tasks.register('copyApiDocument', Copy) {
 	dependsOn asciidoctor
+	doFirst {
+		delete file("src/main/resources/static/docs")
+	}
 	from asciidoctor.outputDir
 	into file("src/main/resources/static/docs")
 }
