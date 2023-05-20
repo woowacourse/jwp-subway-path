@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.dto;
 
 import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
