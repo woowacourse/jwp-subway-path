@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 
+import static fixtures.LineFixtures.LINE2;
+import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

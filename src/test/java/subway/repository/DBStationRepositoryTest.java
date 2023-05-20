@@ -13,6 +13,7 @@ import subway.domain.station.StationRepository;
 
 import java.util.List;
 
+import static fixtures.LineFixtures.LINE2_ID;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

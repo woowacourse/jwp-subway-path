@@ -7,7 +7,8 @@ import subway.domain.station.Station;
 import java.util.List;
 import java.util.Optional;
 
-import static fixtures.StationFixtures.*;
+import static fixtures.SectionFixtures.*;
+import static fixtures.StationFixtures.STATION_강변역;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SectionsTest {

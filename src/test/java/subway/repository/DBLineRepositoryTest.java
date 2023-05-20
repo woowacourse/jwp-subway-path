@@ -13,7 +13,7 @@ import subway.domain.line.LineRepository;
 
 import java.util.Optional;
 
-import static fixtures.StationFixtures.*;
+import static fixtures.LineFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest

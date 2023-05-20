@@ -12,6 +12,7 @@ import subway.entity.StationEntity;
 
 import java.util.Optional;
 
+import static fixtures.LineFixtures.LINE2_ID;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

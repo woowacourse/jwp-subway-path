@@ -15,6 +15,8 @@ import subway.dto.StationRequest;
 import java.util.List;
 import java.util.Optional;
 
+import static fixtures.LineFixtures.*;
+import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

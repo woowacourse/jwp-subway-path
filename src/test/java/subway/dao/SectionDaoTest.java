@@ -11,7 +11,10 @@ import subway.entity.SectionEntity;
 
 import java.util.Optional;
 
-import static fixtures.StationFixtures.*;
+import static fixtures.LineFixtures.LINE2_ID;
+import static fixtures.SectionFixtures.*;
+import static fixtures.StationFixtures.STATION_건대역_ID;
+import static fixtures.StationFixtures.STATION_잠실역_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 

@@ -1,6 +1,5 @@
 package subway.application;
 
-import fixtures.StationFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +12,8 @@ import subway.dto.LineFindResponse;
 
 import java.util.List;
 
+import static fixtures.LineFixtures.*;
+import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -32,7 +33,7 @@ class LineServiceTest {
     @DisplayName("노선 id에 맞는 노선의 역 이름을 상행역에서 하행역 순서대로 반환한다.")
     void findStationNamesByLineIdTest() {
         // given
-        Long lineId = StationFixtures.LINE2_ID;
+        Long lineId = LINE2_ID;
         when(lineDao.findById(lineId))
                 .thenReturn(LINE2_FIND_ENTITY);
         when(sectionRepository.findSectionsByLineId(lineId))

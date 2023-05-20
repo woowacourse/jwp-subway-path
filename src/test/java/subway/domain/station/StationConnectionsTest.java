@@ -6,6 +6,7 @@ import subway.domain.section.Section;
 
 import java.util.List;
 
+import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

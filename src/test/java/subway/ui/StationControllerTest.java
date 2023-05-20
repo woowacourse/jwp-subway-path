@@ -11,7 +11,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.application.StationService;
 import subway.dto.StationRequest;
 
-import static fixtures.StationFixtures.*;
+import static fixtures.LineFixtures.LINE2_ID;
+import static fixtures.StationFixtures.REQUEST_잠실역_TO_건대역;
+import static fixtures.StationFixtures.STATION_강변역_ID;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
