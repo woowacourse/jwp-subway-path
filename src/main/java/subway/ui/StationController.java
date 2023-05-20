@@ -17,7 +17,7 @@ import subway.dto.StationInitialCreateRequest;
 import subway.dto.StationResponse;
 
 @RestController
-@RequestMapping("lines/")
+@RequestMapping("/lines")
 public class StationController {
 
     private final StationService stationService;
@@ -44,11 +44,6 @@ public class StationController {
     public ResponseEntity<Void> deleteStation(@PathVariable Long lineId, @PathVariable Long stationId) {
         stationService.removeStation(lineId, stationId);
         return ResponseEntity.noContent().build();
-
-//    @DeleteMapping("/{lineId}/stations/{stationId}")
-//    public ResponseEntity<Void> deleteStation(@PathVariable Long lineId, @RequestBody StationRemoveRequest stationRemoveRequest) {
-//        stationService.removeStation(lineId, stationRemoveRequest);
-//        return ResponseEntity.noContent().build();
     }
 
 }
