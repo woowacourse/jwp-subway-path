@@ -26,15 +26,6 @@ public class RdsSectionDao implements SectionDao {
             Section.builder()
                     .id(rs.getLong("id"))
                     .lineId(rs.getLong("line_id"))
-                    .upStation(rs.getLong("up_station_id"))
-                    .downStation(rs.getLong("down_station_id"))
-                    .distance(rs.getInt("distance"))
-                    .build();
-
-    private final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
-            Section.builder()
-                    .id(rs.getLong("id"))
-                    .lineId(rs.getLong("line_id"))
                     .upStation(new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")))
                     .downStation(new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")))
                     .distance(new Distance(rs.getInt("distance")))
@@ -62,7 +53,17 @@ public class RdsSectionDao implements SectionDao {
 
     @Override
     public Optional<Section> findById(final Long id) {
-        final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION where id = ?";
+        final String sql = "SELECT sec.id," +
+                "s1.id AS up_station_id," +
+                "s1.name AS up_station_name," +
+                "s2.id AS down_station_id," +
+                "s2.name AS down_station_name," +
+                "sec.line_id," +
+                "sec.distance " +
+                "FROM SECTION sec " +
+                "JOIN STATION s1 ON sec.up_station_id = s1.id " +
+                "JOIN STATION s2 ON sec.down_station_id = s2.id " +
+                "WHERE sec.id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (final EmptyResultDataAccessException e) {
@@ -88,19 +89,39 @@ public class RdsSectionDao implements SectionDao {
                 "FROM SECTION sec " +
                 "JOIN STATION s1 ON sec.up_station_id = s1.id " +
                 "JOIN STATION s2 ON sec.down_station_id = s2.id";
-        return jdbcTemplate.query(sql, sectionRowMapper);
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
     public List<Section> findByLineId(final Long lineId) {
-        final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ?";
+        final String sql = "SELECT sec.id," +
+                "s1.id AS up_station_id," +
+                "s1.name AS up_station_name," +
+                "s2.id AS down_station_id," +
+                "s2.name AS down_station_name," +
+                "sec.line_id," +
+                "sec.distance " +
+                "FROM SECTION sec " +
+                "JOIN STATION s1 ON sec.up_station_id = s1.id " +
+                "JOIN STATION s2 ON sec.down_station_id = s2.id " +
+                "WHERE sec.line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     @Override
     public Optional<Section> findUpSection(final Long lineId, final Long stationId) {
         try {
-            final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and down_station_id = ?";
+            final String sql = "SELECT sec.id," +
+                    "s1.id AS up_station_id," +
+                    "s1.name AS up_station_name," +
+                    "s2.id AS down_station_id," +
+                    "s2.name AS down_station_name," +
+                    "sec.line_id," +
+                    "sec.distance " +
+                    "FROM SECTION sec " +
+                    "JOIN STATION s1 ON sec.up_station_id = s1.id " +
+                    "JOIN STATION s2 ON sec.down_station_id = s2.id " +
+                    "WHERE sec.line_id = ? and sec.down_station_id = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -110,7 +131,17 @@ public class RdsSectionDao implements SectionDao {
     @Override
     public Optional<Section> findDownSection(final Long lineId, final Long stationId) {
         try {
-            final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and up_station_id = ?";
+            final String sql = "SELECT sec.id," +
+                    "s1.id AS up_station_id," +
+                    "s1.name AS up_station_name," +
+                    "s2.id AS down_station_id," +
+                    "s2.name AS down_station_name," +
+                    "sec.line_id," +
+                    "sec.distance " +
+                    "FROM SECTION sec " +
+                    "JOIN STATION s1 ON sec.up_station_id = s1.id " +
+                    "JOIN STATION s2 ON sec.down_station_id = s2.id " +
+                    "WHERE sec.line_id = ? and sec.up_station_id = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
