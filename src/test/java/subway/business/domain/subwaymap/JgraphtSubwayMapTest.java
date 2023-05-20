@@ -22,9 +22,14 @@ import static subway.fixture.FixtureForSubwayMapTest.이호선;
 import static subway.fixture.FixtureForSubwayMapTest.총신대입구;
 
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import subway.business.domain.line.Station;
 import subway.business.domain.line.Stations;
 
 class JgraphtSubwayMapTest {
@@ -87,5 +92,20 @@ class JgraphtSubwayMapTest {
         }
     }
 
+    @DisplayName("경로에 알맞은 요금을 반환한다.")
+    @ParameterizedTest
+    @MethodSource("stationData")
+    void shouldReturnAppropriateFareWhenRequest(Station sourceStation, Station targetStation, int expectedFare) {
+        int fare = subwayMap.calculateFareOfPath(sourceStation, targetStation);
+        assertThat(fare).isEqualTo(expectedFare);
+    }
 
+    static Stream<Arguments> stationData() {
+        return Stream.of(
+                Arguments.of(봉천, 서울대입구, 1_250),
+                Arguments.of(봉천, 사당_2호선, 1_350),
+                Arguments.of(봉천, 동작, 1_550),
+                Arguments.of(동작, 고속터미널, 1_650)
+        );
+    }
 }

@@ -7,4 +7,6 @@ import subway.business.domain.line.Stations;
 public interface SubwayMap {
 
     List<Stations> calculateShortestPath(Station sourceStation, Station targetStation);
+
+    int calculateFareOfPath(Station sourceStation, Station targetStation);
 }

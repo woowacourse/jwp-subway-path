@@ -37,13 +37,6 @@ public class JgraphtSubwayMap implements SubwayMap {
         List<Station> stationList = new ArrayList<>();
         List<Stations> stationsListOfPath = new ArrayList<>();
 
-        // TODO 제거하기
-        for (StationEdge stationEdge : edgesOfPath) {
-            System.out.print(stationEdge.getSource().getName() + " - ");
-            System.out.print(stationEdge.getTarget().getName() + " : ");
-            System.out.println(stationEdge.getWeight());
-        }
-
         while (!edgesOfPath.isEmpty()) {
             StationEdge edge = popFirstEdge(edgesOfPath);
             stationList.add(edge.getSource());
@@ -57,6 +50,20 @@ public class JgraphtSubwayMap implements SubwayMap {
             }
         }
         return stationsListOfPath;
+    }
+
+    @Override
+    public int calculateFareOfPath(Station sourceStation, Station targetStation) {
+        validateSameStation(sourceStation, targetStation);
+        int weightSum = (int) pathAlgorithm.getPathWeight(sourceStation, targetStation);
+        // TODO 요금 정책 적용하며 리팩터링
+        if (weightSum < 10) {
+            return 1_250;
+        }
+        if (weightSum <= 50) {
+            return 1_250 + ((weightSum - 10) / 5 * 100);
+        }
+        return 2_050 + ((weightSum - 50) / 8 * 100);
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {
