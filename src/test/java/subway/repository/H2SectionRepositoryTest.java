@@ -32,7 +32,7 @@ import static subway.fixture.StationFixture.YUKSAM_NO_ID;
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest
 @Transactional
-@Sql("/schema.sql")
+@Sql("/schema-test.sql")
 class H2SectionRepositoryTest {
 
     @Autowired
