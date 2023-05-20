@@ -1,27 +1,36 @@
-package subway.dto;
+package subway.dao.entity;
 
-import subway.domain.Line;
+import subway.domain.*;
 
+import java.util.List;
 import java.util.Objects;
 
-public class LineResponse {
+public class LineEntity {
 
     private final Long id;
     private final String name;
     private final String color;
 
-    public LineResponse(final Long id, final String name, final String color) {
+    public LineEntity(final Long id, final String name, final String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
 
-    public static LineResponse from(final Line line) {
-        return new LineResponse(
+    public static LineEntity from(final Line line) {
+        return new LineEntity(
                 line.getId(),
                 line.getName(),
                 line.getColor()
         );
+    }
+
+    public Line convertToLine(final List<Section> sections) {
+        return new Line(
+                this.id,
+                new LineName(this.name),
+                new LineColor(this.color),
+                new Sections(sections));
     }
 
     public Long getId() {
@@ -40,7 +49,7 @@ public class LineResponse {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final LineResponse that = (LineResponse) o;
+        final LineEntity that = (LineEntity) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(color, that.color);
     }
 
@@ -51,7 +60,7 @@ public class LineResponse {
 
     @Override
     public String toString() {
-        return "LineResponse{" +
+        return "LineEntity{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +

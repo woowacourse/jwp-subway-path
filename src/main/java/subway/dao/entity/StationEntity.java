@@ -1,20 +1,28 @@
-package subway.dto;
+package subway.dao.entity;
 
 import subway.domain.Station;
 
 import java.util.Objects;
 
-public class StationResponse {
+public class StationEntity {
+
     private final Long id;
     private final String name;
 
-    public StationResponse(Long id, String name) {
+    public StationEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationResponse from(Station station) {
-        return new StationResponse(station.getId(), station.getName());
+    public static StationEntity from(final Station station) {
+        return new StationEntity(
+                station.getId(),
+                station.getName()
+        );
+    }
+
+    public Station convertToStation() {
+        return new Station(this.id, this.name);
     }
 
     public Long getId() {
@@ -29,8 +37,8 @@ public class StationResponse {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final StationResponse response = (StationResponse) o;
-        return Objects.equals(id, response.id) && Objects.equals(name, response.name);
+        final StationEntity that = (StationEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override
@@ -40,7 +48,7 @@ public class StationResponse {
 
     @Override
     public String toString() {
-        return "StationResponse{" +
+        return "StationEntity{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

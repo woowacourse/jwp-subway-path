@@ -1,5 +1,6 @@
 package subway.ui;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
@@ -7,8 +8,6 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
 import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
@@ -21,35 +20,39 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
+        Long savedId = lineService.saveLine(lineRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .location(URI.create("/lines/" + savedId))
+                .build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    @GetMapping("/{lineId}")
+    public ResponseEntity<LineResponse> readLine(@PathVariable Long lineId) {
+        LineResponse line = lineService.findLine(lineId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(line);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    @PutMapping("/{lineId}")
+    public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody LineRequest request) {
+        lineService.editLine(lineId, request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .location(URI.create("/lines/" + lineId))
+                .build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
+        lineService.deleteLine(lineId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

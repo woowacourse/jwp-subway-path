@@ -1,53 +1,53 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.repository.LineRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@Transactional(readOnly = true)
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    @Transactional
+    public Long saveLine(final LineRequest request) {
+        Subway subway = new Subway(lineRepository.findAll());
+        Line line = new Line(new LineName(request.getName()), new LineColor(request.getColor()), Sections.create());
+        subway.validateNotDuplicatedLine(line);
+        Line savedLine = lineRepository.save(line);
+        return savedLine.getId();
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public LineResponse findLine(final Long lineId) {
+        Line line = lineRepository.findById(lineId);
+        return LineResponse.from(line);
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    @Transactional
+    public void editLine(final Long lineId, final LineRequest request) {
+        Subway subway = new Subway(lineRepository.findAll());
+        Line line = lineRepository.findById(lineId);
+        Line updateLine = new Line(
+                lineId,
+                new LineName(request.getName()),
+                new LineColor(request.getColor()),
+                new Sections(line.getSections())
+        );
+        subway.deleteById(lineId).validateNotDuplicatedLine(updateLine);
+        lineRepository.update(updateLine);
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    @Transactional
+    public void deleteLine(final Long lineId) {
+        Line line = lineRepository.findById(lineId);
+        lineRepository.delete(line);
     }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
-    }
-
 }
