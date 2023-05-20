@@ -25,25 +25,25 @@ public class PathService {
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
-    private final ShortestPathCalculator calculator;
+    private final ShortestPathCalculator shortestPathCalculator;
     private final FarePolicy farePolicy;
 
     public PathService(
             final LineRepository lineRepository,
             final SectionRepository sectionRepository,
             final StationRepository stationRepository,
-            final ShortestPathCalculator calculator,
+            final ShortestPathCalculator shortestPathCalculator,
             final FarePolicy farePolicy
     ) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
-        this.calculator = calculator;
+        this.shortestPathCalculator = shortestPathCalculator;
         this.farePolicy = farePolicy;
     }
 
     public ShortestPathInfoDto findShortestPathInfo(final Long sourceStationId, final Long targetStationId) {
-        validateUniqueStationId(sourceStationId, targetStationId);
+        validateDifferentStationId(sourceStationId, targetStationId);
 
         final Map<Long, Station> stations = findStations(sourceStationId, targetStationId);
         final List<Line> lines = lineRepository.findAll()
@@ -51,7 +51,7 @@ public class PathService {
                 .map(sectionRepository::findAllByLine)
                 .collect(Collectors.toList());
 
-        final List<PathEdges> pathSections = calculator.findPath(lines,
+        final List<PathEdges> pathSections = shortestPathCalculator.findPath(lines,
                 stations.get(sourceStationId),
                 stations.get(targetStationId)
         );
@@ -70,7 +70,7 @@ public class PathService {
         return stations;
     }
 
-    private void validateUniqueStationId(final Long sourceStationId, final Long targetStationId) {
+    private void validateDifferentStationId(final Long sourceStationId, final Long targetStationId) {
         if (sourceStationId.equals(targetStationId)) {
             throw new IllegalArgumentException("출발 역과 도착 역이 동일할 수 없습니다.");
         }

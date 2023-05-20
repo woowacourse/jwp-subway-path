@@ -16,7 +16,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public ShortestPathCalculator calculator() {
+    public ShortestPathCalculator shortestPathCalculator() {
         return new JGraphtShortestPathCalculator();
     }
 }
