@@ -1,9 +1,7 @@
 package subway.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -54,7 +52,6 @@ class StationRepositoryTest {
         stationRepository.deleteById(savedStation.getId());
 
         // then
-        assertThatThrownBy(() -> stationRepository.findByName("강남역"))
-                .isInstanceOf(NoSuchElementException.class);
+        assertThat(stationRepository.findByName("강남역")).isEmpty();
     }
 }

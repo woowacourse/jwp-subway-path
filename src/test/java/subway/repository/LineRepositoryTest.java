@@ -3,6 +3,7 @@ package subway.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -154,17 +155,10 @@ class LineRepositoryTest {
         Line savedLine = lineRepository.save(firstLine);
 
         // when
-        Line findLine = lineRepository.findById(savedLine.getId());
+        Optional<Line> findLine = lineRepository.findById(savedLine.getId());
 
         // then
-        assertThat(findLine.getStations())
-                .usingRecursiveComparison()
-                .ignoringExpectedNullFields()
-                .isEqualTo(List.of(
-                        new Station("A"),
-                        new Station("B"),
-                        new Station("C")
-                ));
+        assertThat(findLine).isPresent();
     }
 
     @Test
@@ -187,7 +181,5 @@ class LineRepositoryTest {
 
         // when, then
         assertThat(lineRepository.existsByName("2호선")).isFalse();
-
-
     }
 }

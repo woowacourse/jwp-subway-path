@@ -1,6 +1,7 @@
 package subway.application;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,9 +39,11 @@ public class LineService {
 
     public void addSection(Long lineId, SectionAddRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
-        Line line = lineRepository.findById(lineId);
-        Station source = stationRepository.findByName(request.getSourceStation());
-        Station target = stationRepository.findByName(request.getTargetStation());
+        Line line = findById(lineId);
+        Station source = stationRepository.findByName(request.getSourceStation())
+                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
+        Station target = stationRepository.findByName(request.getTargetStation())
+                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
         subway.addStation(
                 line.getName(),
                 source,
@@ -52,9 +55,14 @@ public class LineService {
 
     public void deleteStation(Long lineId, StationDeleteRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
-        Line line = lineRepository.findById(lineId);
+        Line line = findById(lineId);
         subway.removeStation(line.getName(), request.getStationName());
         lineRepository.save(subway.findLineByName(line.getName()));
+    }
+
+    private Line findById(Long lineId) {
+        return lineRepository.findById(lineId)
+                .orElseThrow(() -> new NoSuchElementException("노선이 없습니다"));
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +75,7 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse findLineById(Long lineId) {
-        Line line = lineRepository.findById(lineId);
+        Line line = findById(lineId);
         return LineResponse.from(line);
     }
 

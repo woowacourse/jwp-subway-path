@@ -1,7 +1,7 @@
 package subway.repository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 import subway.repository.dao.SectionDao;
@@ -29,10 +29,8 @@ public class StationRepository {
         return new Station(savedEntity.getId(), savedEntity.getName());
     }
 
-    public Station findByName(String name) {
-        StationEntity stationEntity = stationDao.findByName(name)
-                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
-        return toStation(stationEntity);
+    public Optional<Station> findByName(String name) {
+        return stationDao.findByName(name).map(this::toStation);
     }
 
     public void deleteById(Long id) {

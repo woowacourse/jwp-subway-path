@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.toMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
@@ -39,11 +38,11 @@ public class LineRepository {
         if (lineEntity.isEmpty()) {
             LineEntity savedLineEntity = lineDao.insert(new LineEntity(line.getName()));
             updateSections(line, savedLineEntity.getId());
-            return findById(savedLineEntity.getId());
+            return findById(savedLineEntity.getId()).get();
         }
         LineEntity savedLineEntity = lineEntity.get();
         updateLine(line, savedLineEntity.getId());
-        return findById(savedLineEntity.getId());
+        return findById(savedLineEntity.getId()).get();
     }
 
     private void updateLine(Line line, Long lineId) {
@@ -118,13 +117,16 @@ public class LineRepository {
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
-    public Line findById(Long id) {
-        LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("노선이 없습니다"));
-        Map<Long, Station> idByStations = stationDao.findByLineId(lineEntity.getId()).stream()
+    public Optional<Line> findById(Long id) {
+        Optional<LineEntity> lineEntity = lineDao.findById(id);
+        if (lineEntity.isEmpty()) {
+            return Optional.empty();
+        }
+        LineEntity savedLineEntity = lineEntity.get();
+        Map<Long, Station> idByStations = stationDao.findByLineId(savedLineEntity.getId()).stream()
                 .collect(toMap(StationEntity::getId, this::toStation));
 
-        return toLine(lineEntity, sectionDao.findByLineId(id), idByStations);
+        return Optional.of(toLine(savedLineEntity, sectionDao.findByLineId(id), idByStations));
     }
 
     public void deleteById(Long id) {
@@ -144,11 +146,5 @@ public class LineRepository {
 
     public boolean existsByName(String lineName) {
         return lineDao.existsByName(lineName);
-    }
-
-    public Station findStationByStationName(String stationName) {
-        return stationDao.findByName(stationName)
-                .map(it -> new Station(it.getId(), it.getName()))
-                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
     }
 }
