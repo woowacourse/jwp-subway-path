@@ -25,7 +25,7 @@ public class Route {
         return new Route(lines, Fee.createDefault());
     }
 
-    public static Route createCache() {
+    public static Route createDefault() {
         return new Route(null, Fee.createDefault());
     }
 

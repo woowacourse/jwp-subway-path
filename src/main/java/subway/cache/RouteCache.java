@@ -8,7 +8,7 @@ public class RouteCache {
     private static final Route route;
 
     static {
-        route = Route.createCache();
+        route = Route.createDefault();
     }
 
     public static void update(final Lines lines) {
