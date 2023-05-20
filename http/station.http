@@ -1,0 +1,24 @@
+### 역 생성
+POST {{host}}/stations
+Content-Type: application/json
+
+{
+  "name": "잠실역"
+}
+
+### 모든 역 정보 조회
+GET {{host}}/stations
+
+### 단일 역 조회
+GET {{host}}/stations/1
+
+### 역 업데이트
+PUT {{host}}/stations/1
+Content-Type: application/json
+
+{
+  "name": "선릉역"
+}
+
+### 역 제거
+DELETE {{host}}/stations/1

@@ -55,5 +55,44 @@
 
 ### 도커 구동 방법
 ```
-docker-compose -p subway up -d
+docker-compose -p subwayLine up -d
 ```
+
+---
+
+### HTTP 요청 가이드
+- http 디렉터리를 http client를 활용하여 실행하시면 더 편하게 API 요청을 진행하실 수 있습니다!
+- Run With 옵션을 `local`로 설정해 주세요.
+
+### 노선 API (LineController)
+- line.http 
+
+|              | HTTP method |              요청 URI              |
+|:------------:|:-----------:|:--------------------------------:|
+|  **노선 추가**   |    POST     |              /lines              |
+|  **구간 추가**   |    POST     |         /lines/sections          |
+| **모든 노선 조회** |     GET     |              /lines              |
+| **단일 노선 조회** |     GET     |           /lines/{id}            |
+| **노선 업데이트**  |     PUT     |           /lines/{id}            |
+|  **노선 제거**   |   DELETE    |           /lines/{id}            |
+| **노선의 역 제거** |   DELETE    | /lines/{id}/stations/{stationId} |
+
+
+### 역 조회 API (StationController)
+- station.http  
+- 
+|             | HTTP method |              요청 URI              |
+|:-----------:|:-----------:|:--------------------------------:|
+|  **역 추가**   |    POST     |            /stations             |
+| **모든 역 조회** |     GET     |            /stations             |
+| **단일 역 조회** |     GET     |          /stations/{id}          |
+| **역 업데이트**  |     PUT     |           /stations/{id}            |
+|  **역 제거**   |   DELETE    |           /stations/{id}            |
+
+
+### 경로 조회 API (RouteController)
+- route.http  
+
+|              | HTTP method |                      요청 URI                       |
+|:------------:|:-----------:|:-------------------------------------------------:|
+| **최단 경로 조회** |     GET     | /routes?sourceStationId={id}&targetStationId={id} |
