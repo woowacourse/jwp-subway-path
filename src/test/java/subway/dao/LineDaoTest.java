@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.domain.Line;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ class LineDaoTest {
     @Test
     @DisplayName("line을 추가한다.")
     void insert() {
-        Long lineId = lineDao.insert(new LineEntity("1호선"));
+        Long lineId = lineDao.insert(new Line(1L, "1호선"));
 
         assertThat(lineId).isEqualTo(lineDao.findById(lineId).get().getId());
     }
@@ -35,9 +36,9 @@ class LineDaoTest {
     @Test
     @DisplayName("line전체를 조회한다.")
     void findAll() {
-        Long lineId = lineDao.insert(new LineEntity("1호선"));
-        Long lineId2 = lineDao.insert(new LineEntity("2호선"));
-        List<LineEntity> lines = lineDao.findAll();
+        Long lineId = lineDao.insert(new Line(1L, "1호선"));
+        Long lineId2 = lineDao.insert(new Line(2L, "2호선"));
+        List<Line> lines = lineDao.findAll();
 
         assertAll(
                 () -> assertThat(lines.size()).isEqualTo(2),
@@ -51,9 +52,9 @@ class LineDaoTest {
     @Test
     @DisplayName("line의 Id로 조회한다.")
     void findById() {
-        Long lineId = lineDao.insert(new LineEntity("2호선"));
+        Long lineId = lineDao.insert(new Line(1L, "2호선"));
 
-        LineEntity line = lineDao.findById(lineId).get();
+        Line line = lineDao.findById(lineId).get();
 
         assertAll(
                 () -> assertThat(line.getName()).isEqualTo("2호선"),

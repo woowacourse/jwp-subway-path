@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.domain.Station;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +17,8 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
-            new StationEntity(
+    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+            new Station(
                     rs.getLong("id"),
                     rs.getString("name")
             );
@@ -30,12 +31,12 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(StationEntity stationEntity) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
+    public Long insert(Station station) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public Optional<StationEntity> findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -49,9 +50,15 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public List<StationEntity> findAll() {
+    public List<Station> findAll() {
         String sql = "select * from station";
 
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public Station findByName(String name) {
+        String sql = "select * from station where name = ?";
+
+        return jdbcTemplate.queryForObject(sql,rowMapper,name);
     }
 }

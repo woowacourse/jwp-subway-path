@@ -31,14 +31,14 @@ public class PathService {
     public PathResponse findPath(Long startStationId, Long endStationId) {
         Lines lines = new Lines();
         lineDao.findAll()
-                .forEach(it -> lines.addNewLine(it.getName(), new Sections(toSections(sectionDao.findByLineId(it.getId())))));
+                .forEach(it -> lines.addNewLine(new Line(it.getId(), it.getName(), new Sections(sectionDao.findByLineId(it.getId())))));
 
-        StationEntity startStation = stationDao.findById(startStationId)
+        Station startStation = stationDao.findById(startStationId)
                 .orElseThrow(InvalidStationException::new);
-        StationEntity endStation = stationDao.findById(endStationId)
+        Station endStation = stationDao.findById(endStationId)
                 .orElseThrow(InvalidStationException::new);
 
-        List<Station> stations = toStations(stationDao.findAll());
+        List<Station> stations = stationDao.findAll();
         List<Section> sections = lines.getLines().stream()
                 .flatMap(it -> it.getSections().getSections().stream())
                 .collect(Collectors.toList());
@@ -50,30 +50,9 @@ public class PathService {
         return new PathResponse(makeStationResponses(pathStations), (int) pathDistance, cost.calculate((int)pathDistance));
     }
 
-    private List<Station> toStations(List<StationEntity> findStations) {
-        return findStations.stream()
-                .map(it -> new Station(it.getName()))
-                .collect(Collectors.toList());
-    }
-
-    private List<Section> toSections(List<SectionEntity> findSections) {
-        Map<Long, String> stations = stationDao.findAll()
-                .stream()
-                .collect(Collectors.toMap(StationEntity::getId, StationEntity::getName));
-
-        return findSections.stream()
-                .map(it -> new Section(
-                        new Station(stations.get(it.getStartStationId())),
-                        new Station(stations.get(it.getEndStationId())),
-                        new Distance(it.getDistance()))
-                )
-                .collect(Collectors.toList());
-    }
-
     private List<StationResponse> makeStationResponses(List<String> stationNames) {
-
         Map<String, Long> stations = stationDao.findAll().stream()
-                .collect(Collectors.toMap(StationEntity::getName, StationEntity::getId));
+                .collect(Collectors.toMap(Station::getName, Station::getId));
 
         return stationNames.stream()
                 .map(it -> new StationResponse(stations.get(it), it))

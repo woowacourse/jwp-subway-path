@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.domain.Station;
 
 import java.util.List;
 
@@ -29,30 +30,30 @@ class StationDaoTest {
     @Test
     @DisplayName("station을 추가한다.")
     void insert() {
-        StationEntity stationEntity = new StationEntity("잠실역");
+        Station station = new Station("잠실역");
 
-        assertDoesNotThrow(()->stationDao.insert(stationEntity));
+        assertDoesNotThrow(()->stationDao.insert(station));
     }
 
     @Test
     @DisplayName("id값으로 station을 조회한다.")
     void findById() {
-        StationEntity stationEntity = new StationEntity("잠실역");
-        Long stationId = stationDao.insert(stationEntity);
+        Station station = new Station("잠실역");
+        Long stationId = stationDao.insert(station);
 
-        StationEntity station = stationDao.findById(stationId).get();
+        Station findStation = stationDao.findById(stationId).get();
 
         assertAll(
-                () -> assertThat(station.getId()).isEqualTo(stationId),
-                () -> assertThat(station.getName()).isEqualTo("잠실역")
+                () -> assertThat(findStation.getId()).isEqualTo(stationId),
+                () -> assertThat(findStation.getName()).isEqualTo("잠실역")
         );
     }
 
     @Test
     @DisplayName("id값으로 station을 삭제한다.")
     void deleteById() {
-        StationEntity stationEntity = new StationEntity("잠실역");
-        Long stationId = stationDao.insert(stationEntity);
+        Station station = new Station("잠실역");
+        Long stationId = stationDao.insert(station);
 
         assertDoesNotThrow(()->stationDao.deleteById(stationId));
     }
@@ -60,12 +61,12 @@ class StationDaoTest {
     @Test
     @DisplayName("모든 Station을 찾는다.")
     void findAll(){
-        StationEntity stationEntity1 = new StationEntity("잠실역");
-        StationEntity stationEntity2 = new StationEntity("잠실새내역");
-        stationDao.insert(stationEntity1);
-        stationDao.insert(stationEntity2);
+        Station station1 = new Station("잠실역");
+        Station station2 = new Station("잠실새내역");
+        stationDao.insert(station1);
+        stationDao.insert(station2);
 
-        List<StationEntity> stations = stationDao.findAll();
+        List<Station> stations = stationDao.findAll();
 
         assertThat(stations.size()).isEqualTo(2);
     }

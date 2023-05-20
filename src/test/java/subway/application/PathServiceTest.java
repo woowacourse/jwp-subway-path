@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.common.Cost;
 import subway.dao.*;
-import subway.domain.Graph;
+import subway.domain.*;
 import subway.dto.PathResponse;
 import subway.dto.StationResponse;
 
@@ -38,15 +38,17 @@ class PathServiceTest {
     @Test
     @DisplayName("경로를 탐색한다.")
     void findPath() {
-        List<LineEntity> lines = List.of(new LineEntity("0호선"));
-        List<StationEntity> stationEntities = List.of(new StationEntity(1L, "인천역"), new StationEntity(2L, "서울역"));
-        List<SectionEntity> sectionEntities = List.of(new SectionEntity(1L, 1L, 2L, 5));
+        List<Line> lines = List.of(new Line(1L,"0호선"));
+        List<Station> stations = List.of(new Station(1L, "인천역"), new Station(2L, "서울역"));
+        Station 인천역 = new Station(1L, "인천역");
+        Station 서울역 = new Station(2L, "서울역");
+        List<Section> sections = List.of(new Section(1L, 인천역, 서울역, new Distance(5)));
         List<StationResponse> stationResponses = List.of(new StationResponse(1L, "인천역"), new StationResponse(2L, "서울역"));
         when(lineDao.findAll()).thenReturn(lines);
-        when(stationDao.findAll()).thenReturn(stationEntities);
-        when(sectionDao.findByLineId(any())).thenReturn(sectionEntities);
-        when(stationDao.findById(1L)).thenReturn(Optional.of(new StationEntity("인천역")));
-        when(stationDao.findById(2L)).thenReturn(Optional.of(new StationEntity("서울역")));
+        when(stationDao.findAll()).thenReturn(stations);
+        when(sectionDao.findByLineId(any())).thenReturn(sections);
+        when(stationDao.findById(1L)).thenReturn(Optional.of(new Station("인천역")));
+        when(stationDao.findById(2L)).thenReturn(Optional.of(new Station("서울역")));
         when(graph.findPath(any(),any())).thenReturn(List.of("인천역","서울역"));
         when(graph.findPathDistance(any(),any())).thenReturn(5.0);
         when(cost.calculate(anyInt())).thenReturn(5);

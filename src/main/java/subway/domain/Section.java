@@ -6,13 +6,19 @@ import subway.exception.NotExistStationException;
 import java.util.Objects;
 
 public class Section {
+    private final Long id;
     private final Station startStation;
     private final Station endStation;
     private final Distance distance;
 
     public Section(Station startStation, Station endStation, Distance distance) {
+        this(null, startStation,endStation,distance);
+    }
+
+    public Section(Long id, Station startStation, Station endStation, Distance distance) {
         validateExistStation(startStation, endStation);
         validateStationName(startStation, endStation);
+        this.id = id;
         this.startStation = startStation;
         this.endStation = endStation;
         this.distance = distance;
@@ -44,6 +50,10 @@ public class Section {
 
     public Distance subtractDistance(Section otherSection) {
         return this.distance.subtract(otherSection.distance);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Station getStartStation() {

@@ -147,6 +147,9 @@ public class Sections {
     }
 
     public List<Station> getSortedStations() {
+        if (sections.isEmpty()) {
+            return new ArrayList<>();
+        }
         List<Station> sortedStations = new ArrayList<>();
 
         Station startStation = getUpStation();

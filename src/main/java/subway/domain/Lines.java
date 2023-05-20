@@ -8,9 +8,8 @@ import java.util.List;
 public class Lines {
     private final List<Line> lines = new ArrayList<>();
 
-    public Line addNewLine(String lineName, Sections sections) {
-        validateDuplicate(lineName);
-        Line line = new Line(lineName, sections);
+    public Line addNewLine (Line line) {
+        validateDuplicate(line.getName());
         lines.add(line);
         return line;
     }

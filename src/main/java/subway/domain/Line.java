@@ -7,12 +7,27 @@ import java.util.Objects;
 public class Line {
     private static final int NAME_MIN_LENGTH = 1;
     private static final int NAME_MAX_LENGTH = 10;
+    private Long id;
 
-    private final String name;
+    private String name;
 
-    private final Sections sections;
+    private Sections sections;
+
+    public Line(String name) {
+        this.name = name;
+    }
+
+    public Line(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public Line(String name, Sections sections) {
+        this(null, name, sections);
+    }
+
+    public Line(Long id, String name, Sections sections) {
+        this.id = id;
         validateName(name);
         this.name = name;
         this.sections = sections;
@@ -22,6 +37,10 @@ public class Line {
         if (name == null || name.length() < NAME_MIN_LENGTH || NAME_MAX_LENGTH < name.length()) {
             throw new InValidLineNameException();
         }
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
