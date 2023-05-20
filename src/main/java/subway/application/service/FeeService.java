@@ -4,8 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.feecalculator.FeeCalculator;
 import subway.domain.Line;
-import subway.domain.ShortestWayCalculator;
+import subway.domain.ShortestWay;
 import subway.domain.Station;
+import subway.domain.util.ShortestWayCalculator;
 import subway.dto.response.ShortestWayResponse;
 import subway.dto.response.StationResponse;
 import subway.persistence.repository.SubwayRepository;
@@ -30,9 +31,9 @@ public class FeeService {
         final Station start = subwayRepository.findStationById(startStationId);
         final Station end = subwayRepository.findStationById(endStationId);
 
-        final ShortestWayCalculator calculator = new ShortestWayCalculator().calculate(start, end, lines);
-        final int fee = feeCalculator.calculateFee(calculator.getDistance());
+        final ShortestWay result = ShortestWayCalculator.calculate(start, end, lines);
+        final int fee = feeCalculator.calculateFee(result.getDistance());
 
-        return new ShortestWayResponse(fee, StationResponse.of(calculator.getWay()));
+        return new ShortestWayResponse(fee, StationResponse.of(result.getStations()));
     }
 }

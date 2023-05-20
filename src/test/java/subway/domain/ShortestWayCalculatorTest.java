@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.util.ShortestWayCalculator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,8 @@ class ShortestWayCalculatorTest {
         );
 
         //when
-        final var shortestWayCalculator = new ShortestWayCalculator().calculate(stationA, stationC, of(line));
-        final double distance = shortestWayCalculator.getDistance();
+        final ShortestWay result = ShortestWayCalculator.calculate(stationA, stationC, of(line));
+        final double distance = result.getDistance();
 
         //then
         assertThat(distance).isEqualTo(15);
@@ -50,8 +51,8 @@ class ShortestWayCalculatorTest {
         );
 
         //when
-        final var shortestWayCalculator = new ShortestWayCalculator().calculate(stationA, stationC, of(line));
-        final List<Station> way = shortestWayCalculator.getWay();
+        final ShortestWay result = ShortestWayCalculator.calculate(stationA, stationC, of(line));
+        final List<Station> way = result.getStations();
 
         //then
         assertThat(way).containsExactly(stationA, stationB, stationC);
@@ -77,8 +78,8 @@ class ShortestWayCalculatorTest {
         );
 
         //when
-        final var shortestWayCalculator = new ShortestWayCalculator().calculate(stationA, stationC, of(line, line2));
-        final double distance = shortestWayCalculator.getDistance();
+        final ShortestWay result = ShortestWayCalculator.calculate(stationA, stationC, of(line, line2));
+        final double distance = result.getDistance();
 
         //then
         assertThat(distance).isEqualTo(5);
@@ -104,7 +105,7 @@ class ShortestWayCalculatorTest {
         );
 
         //when,then
-        assertThatThrownBy(() -> new ShortestWayCalculator().calculate(stationB, stationD, of(line, line2)))
+        assertThatThrownBy(() -> ShortestWayCalculator.calculate(stationB, stationD, of(line, line2)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
