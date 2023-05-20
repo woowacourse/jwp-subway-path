@@ -55,7 +55,7 @@
 
 ### 도커 구동 방법
 ```
-docker-compose -p subwayLine up -d
+docker-compose -p subway up -d
 ```
 
 ---
@@ -79,8 +79,8 @@ docker-compose -p subwayLine up -d
 
 
 ### 역 조회 API (StationController)
-- station.http  
-- 
+- station.http
+
 |             | HTTP method |              요청 URI              |
 |:-----------:|:-----------:|:--------------------------------:|
 |  **역 추가**   |    POST     |            /stations             |
