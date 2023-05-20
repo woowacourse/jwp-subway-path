@@ -28,8 +28,8 @@ public class Section {
     }
 
     private void validateDistance(final int distance) {
-        if (distance < 0) {
-            throw new IllegalArgumentException("거리는 음의 정수가 될 수 없습니다.");
+        if (distance <= 0) {
+            throw new IllegalArgumentException("거리는 0 이상이어야 합니다.");
         }
     }
 
@@ -37,7 +37,7 @@ public class Section {
         return station.equals(upStation) || station.equals(downStation);
     }
 
-    public boolean isEqual(final Section section) {
+    public boolean isSameSection(final Section section) {
         return upStation.equals(section.getUpStation())
                 && downStation.equals(section.getDownStation());
     }

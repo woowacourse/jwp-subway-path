@@ -36,7 +36,7 @@ public class Sections {
 
     private void validateAlreadyExist(final Section target) {
         sections.stream()
-                .filter(section -> section.isEqual(target))
+                .filter(section -> section.isSameSection(target))
                 .findAny()
                 .ifPresent(section -> {
                     throw new IllegalArgumentException("이미 존재하는 구간입니다.");
@@ -126,7 +126,7 @@ public class Sections {
         }
     }
 
-    public void removeFinalSection(final Section deleteSection, final Station deleteStation) {
+    private void removeFinalSection(final Section deleteSection, final Station deleteStation) {
         if (deleteSection.getUpStation().equals(deleteStation)) { // 상행 종점인 경우
             decreaseOrder(1, deleteSection);
         }
@@ -134,7 +134,7 @@ public class Sections {
         sections.remove(deleteSection);
     }
 
-    public void removeMiddleSection(final List<Section> deleteSections, final Station deleteStation) {
+    private void removeMiddleSection(final List<Section> deleteSections, final Station deleteStation) {
         Section previousSection = deleteSections.get(0);
         Section nextSection = deleteSections.get(1);
         int newDistance = previousSection.getDistance() + nextSection.getDistance();
@@ -155,13 +155,13 @@ public class Sections {
         sections.removeAll(deleteSections);
     }
 
-    public void increaseOrder(final int order, final Section target) {
+    private void increaseOrder(final int order, final Section target) {
         sections.stream()
                 .filter(section -> section.getOrder() >= order && !section.equals(target))
                 .forEach(Section::increaseOrder);
     }
 
-    public void decreaseOrder(final int order, final Section target) {
+    private void decreaseOrder(final int order, final Section target) {
         sections.stream()
                 .filter(section -> section.getOrder() >= order && !section.equals(target))
                 .forEach(Section::decreaseOrder);
