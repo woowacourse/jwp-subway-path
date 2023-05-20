@@ -1,7 +1,5 @@
 package subway.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,9 +8,9 @@ import java.util.Set;
 
 public class StationGraph {
 
-    private final Map<Station, List<Section>> sectionsByStation;
+    private final Map<Station, Sections> sectionsByStation;
 
-    private StationGraph(final Map<Station, List<Section>> sectionsByStation) {
+    private StationGraph(final Map<Station, Sections> sectionsByStation) {
         this.sectionsByStation = sectionsByStation;
     }
 
@@ -28,7 +26,7 @@ public class StationGraph {
     }
 
     private void put(final Station station, final Section section) {
-        sectionsByStation.computeIfAbsent(station, key -> new ArrayList<>()).add(section);
+        sectionsByStation.computeIfAbsent(station, key -> new Sections()).add(section);
     }
 
     public Stations findStations(final Section section) {
@@ -69,7 +67,7 @@ public class StationGraph {
         stations.add(station);
         visitedStations.add(station);
 
-        final List<Section> sections = sectionsByStation.get(station);
+        final List<Section> sections = sectionsByStation.get(station).getSections();
         for (final Section section : sections) {
             final Station destination = getDestination(station, section);
             if (lineId.equals(section.getLineId())) {
@@ -85,29 +83,29 @@ public class StationGraph {
         return section.getUpStation();
     }
 
-    public List<Section> findSections(final Section section) {
+    public Sections findSections(final Section section) {
         final Long lineId = section.getLineId();
-        final List<Section> upSections = findSectionsByDirection(section, Direction.UP, lineId);
-        final List<Section> downSections = findSectionsByDirection(section, Direction.DOWN, lineId);
-        return merge(upSections, section, downSections);
+        final Sections upSections = findSectionsByDirection(section, Direction.UP, lineId);
+        final Sections downSections = findSectionsByDirection(section, Direction.DOWN, lineId);
+        return Sections.merge(upSections, section, downSections);
     }
 
-    private List<Section> findSectionsByDirection(final Section section, final Direction direction, final Long lineId) {
+    private Sections findSectionsByDirection(final Section section, final Direction direction, final Long lineId) {
         final Set<Station> visitedStations = new HashSet<>();
         visitedStations.add(getStationByDirection(section, direction.getOpposite()));
-        final List<Section> result = new ArrayList<>();
-        dfsSection(getStationByDirection(section, direction), visitedStations, result, lineId);
-        return result;
+        final Sections sections = new Sections();
+        dfsSection(getStationByDirection(section, direction), visitedStations, sections, lineId);
+        return sections;
     }
 
     private void dfsSection(
             final Station station,
             final Set<Station> visitedStations,
-            final List<Section> result,
+            final Sections result,
             final Long lineId
     ) {
         visitedStations.add(station);
-        final List<Section> sections = sectionsByStation.get(station);
+        final List<Section> sections = sectionsByStation.get(station).getSections();
         for (final Section section : sections) {
             final Station destination = getDestination(station, section);
             if (lineId.equals(section.getLineId()) && isNotVisitedStation(visitedStations, destination)) {
@@ -119,15 +117,5 @@ public class StationGraph {
 
     private boolean isNotVisitedStation(final Set<Station> visitedStations, final Station station) {
         return !visitedStations.contains(station);
-    }
-
-    private List<Section> merge(final List<Section> upSections, final Section section, final List<Section> downSections) {
-        Collections.reverse(upSections);
-
-        final List<Section> sections = new ArrayList<>(upSections);
-        sections.add(section);
-        sections.addAll(downSections);
-
-        return sections;
     }
 }

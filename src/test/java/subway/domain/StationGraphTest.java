@@ -110,7 +110,7 @@ class StationGraphTest {
     @MethodSource("getSections1")
     void findSections1(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
-        assertThat(stationGraph.findSections(sections.get(index))).containsExactly(
+        assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS1.get(0),
                 SECTIONS1.get(1),
                 SECTIONS1.get(2),
@@ -142,7 +142,7 @@ class StationGraphTest {
     @MethodSource("getSections2")
     void findSections2(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
-        assertThat(stationGraph.findSections(sections.get(index))).containsExactly(
+        assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS4.get(0),
                 SECTIONS4.get(1),
                 SECTIONS4.get(2),
@@ -172,7 +172,7 @@ class StationGraphTest {
     @MethodSource("getSections3")
     void findSections3(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
-        assertThat(stationGraph.findSections(sections.get(index))).containsExactly(
+        assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS4.get(6),
                 SECTIONS4.get(7),
                 SECTIONS4.get(8),
@@ -199,7 +199,7 @@ class StationGraphTest {
     @MethodSource("getSections4")
     void findSections4(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
-        assertThat(stationGraph.findSections(sections.get(index))).containsExactly(
+        assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS5.get(0),
                 SECTIONS5.get(1),
                 SECTIONS5.get(2)
@@ -224,7 +224,7 @@ class StationGraphTest {
     @MethodSource("getSections5")
     void findSections5(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
-        assertThat(stationGraph.findSections(sections.get(index))).containsExactly(
+        assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS5.get(3),
                 SECTIONS5.get(4),
                 SECTIONS5.get(5)
@@ -248,7 +248,7 @@ class StationGraphTest {
     @MethodSource("getSections6")
     void findSections6(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
-        assertThat(stationGraph.findSections(sections.get(index))).containsExactly(
+        assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS5.get(6),
                 SECTIONS5.get(7)
         );
