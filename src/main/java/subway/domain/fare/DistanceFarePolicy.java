@@ -1,7 +1,5 @@
 package subway.domain.fare;
 
-import subway.domain.section.Distance;
-
 public class DistanceFarePolicy implements FarePolicy {
 
     private static final int DEFAULT_DISTANCE = 10;
