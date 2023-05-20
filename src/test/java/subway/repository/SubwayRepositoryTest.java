@@ -108,4 +108,24 @@ class SubwayRepositoryTest {
         );
     }
 
+    @Test
+    void 이름으로_역을_조회할_수_있다() {
+        // given
+        final String name = "잠실역";
+        subwayRepository.registerStation(new Station(name));
+
+        // when
+        final Station station = subwayRepository.findStationByName(name);
+
+        // then
+        assertThat(station.getName()).isEqualTo("잠실역");
+    }
+
+    @Test
+    void 존재하지_않는_역을_조회하면_예외가_발생한다() {
+        // expect
+        assertThatThrownBy(() -> subwayRepository.findStationByName("터틀역"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("해당 이름을 가진 역이 존재하지 않습니다.");
+    }
 }
