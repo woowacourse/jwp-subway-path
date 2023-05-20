@@ -6,25 +6,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SubwayMap {
+public class SectionMap {
 
     private final Lines lines;
-    private final Map<Line, Stations> stationsByLine;
+    private final Map<Line, Sections> sectionsByLine;
 
-    private SubwayMap(final Lines lines, final Map<Line, Stations> stationsByLine) {
+    private SectionMap(final Lines lines, final Map<Line, Sections> sectionsByLine) {
         this.lines = lines;
-        this.stationsByLine = stationsByLine;
+        this.sectionsByLine = sectionsByLine;
     }
 
-    public static SubwayMap of(final List<Line> lines, final List<Section> sections) {
-        final SubwayMap subwayMap = new SubwayMap(Lines.of(lines), new HashMap<>());
+    public static SectionMap of(final List<Line> lines, final List<Section> sections) {
+        final SectionMap sectionMap = new SectionMap(Lines.of(lines), new HashMap<>());
         final StationGraph stationGraph = StationGraph.of(sections);
 
-        subwayMap.createAllStations(stationGraph, sections);
-        return subwayMap;
+        sectionMap.createAllSections(stationGraph, sections);
+        return sectionMap;
     }
 
-    private void createAllStations(final StationGraph stationGraph, final List<Section> sections) {
+    private void createAllSections(final StationGraph stationGraph, final List<Section> sections) {
         final Set<Long> lineIds = new HashSet<>();
 
         for (final Section section : sections) {
@@ -33,7 +33,7 @@ public class SubwayMap {
                 continue;
             }
             lineIds.add(lineId);
-            stationsByLine.put(lines.getLine(lineId), stationGraph.findStations(section));
+            sectionsByLine.put(lines.getLine(lineId), stationGraph.findSections(section));
         }
     }
 
@@ -45,10 +45,10 @@ public class SubwayMap {
         return lines.getAllIds();
     }
 
-    public Stations getStations(final Long lineId) {
+    public Sections getSections(final Long lineId) {
         final Line line = lines.getLine(lineId);
-        if (stationsByLine.containsKey(line)) {
-            return stationsByLine.get(line);
+        if (sectionsByLine.containsKey(line)) {
+            return sectionsByLine.get(line);
         }
         throw new IllegalArgumentException("존재하지 않는 노선입니다.");
     }

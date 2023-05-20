@@ -23,6 +23,7 @@ import static subway.domain.SectionFixture.STATION9;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -39,7 +40,7 @@ class SubwayMapTest {
         );
     }
 
-    @DisplayName("노선의 경로 조회 테스트")
+    @DisplayName("id에 해당하는 노선의 모든 역 조회")
     @ParameterizedTest
     @MethodSource("getSections")
     void getStations(final List<Section> sections) {
@@ -55,26 +56,28 @@ class SubwayMapTest {
         );
     }
 
-    @DisplayName("노선의 경로 조회 테스트")
+    @DisplayName("모든 id에 대해 노선의 모든 역 조회")
     @Test
     void getAllStations() {
         final SubwayMap subwayMap = SubwayMap.of(List.of(LINE1, LINE2), SECTIONS4);
-        assertThat(subwayMap.getStations(LINE1.getId()).getStations()).containsExactly(
-                STATION1,
-                STATION2,
-                STATION3,
-                STATION4,
-                STATION5,
-                STATION6,
-                STATION7
-        );
-        assertThat(subwayMap.getStations(LINE2.getId()).getStations()).containsExactly(
-                STATION8,
-                STATION9,
-                STATION10,
-                STATION4,
-                STATION11,
-                STATION12
+        Assertions.assertAll(
+                () -> assertThat(subwayMap.getStations(LINE1.getId()).getStations()).containsExactly(
+                        STATION1,
+                        STATION2,
+                        STATION3,
+                        STATION4,
+                        STATION5,
+                        STATION6,
+                        STATION7
+                ),
+                () -> assertThat(subwayMap.getStations(LINE2.getId()).getStations()).containsExactly(
+                        STATION8,
+                        STATION9,
+                        STATION10,
+                        STATION4,
+                        STATION11,
+                        STATION12
+                )
         );
     }
 }
