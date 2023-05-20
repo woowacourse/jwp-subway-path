@@ -7,25 +7,25 @@ public class Line {
     private final String name;
     private final Sections sections;
 
-    private Line(final String name, final Sections sections) {
+    private Line(String name, Sections sections) {
         this.name = name;
         this.sections = sections;
     }
 
-    public static Line of(final String name, final List<Section> sections) {
+    public static Line of(String name, List<Section> sections) {
         if (sections.isEmpty()) {
             return new Line(name, new Sections(sections));
         }
         return new Line(name, Sections.from(sections));
     }
 
-    public void addSection(final Station upStation, final Station downStation, final int distance) {
+    public void addSection(Station upStation, Station downStation, int distance) {
         Section newSection = new Section(upStation, downStation, distance);
         sections.addSection(newSection);
     }
 
-    public void deleteStation(final Station station) {
-        sections.deleteStation(station);
+    public void deleteSection(Station station) {
+        sections.deleteSection(station);
     }
 
     public String getName() {

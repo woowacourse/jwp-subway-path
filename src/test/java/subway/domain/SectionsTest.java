@@ -115,7 +115,7 @@ class SectionsTest {
     @DisplayName("중간 역을 삭제하면 연결된 구간이 삭제된다.")
     void delete() {
         // when
-        sections.deleteStation(station2);
+        sections.deleteSection(station2);
 
         // expected
         assertAll(
@@ -128,7 +128,7 @@ class SectionsTest {
     @DisplayName("종점을 삭제한다.")
     void deleteTerminal() {
         // when
-        sections.deleteStation(station1);
+        sections.deleteSection(station1);
 
         // expected
         assertAll(
@@ -144,7 +144,7 @@ class SectionsTest {
         sections = Sections.from(List.of(section1));
 
         // when
-        sections.deleteStation(station1);
+        sections.deleteSection(station1);
 
         // expected
         assertAll(

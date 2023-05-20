@@ -58,7 +58,7 @@ public class SectionService {
 
         List<Section> originalSections = line.getSectionsByList();
 
-        line.deleteStation(new Station(stationEntity.getId(), stationEntity.getName()));
+        line.deleteSection(new Station(stationEntity.getId(), stationEntity.getName()));
 
         if (line.isEmpty()) {
             sectionDao.deleteByLineId(lineId);
@@ -78,7 +78,7 @@ public class SectionService {
         }
     }
 
-    private Line makeLine(long lineId) {
+    private Line makeLine(Long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId);
         List<Section> sections = makeSections(lineId);
 
@@ -105,12 +105,9 @@ public class SectionService {
         List<Section> newSections = line.getSectionsByList();
         newSections.removeAll(originalSections);
         for (Section newSection : newSections) {
-            StationEntity newUpStation = stationDao.findByName(newSection.getUpStation().getName());
-            StationEntity newDownStation = stationDao.findByName(newSection.getDownStation().getName());
-
             sectionDao.save(new SectionEntity(
-                    newUpStation.getId(),
-                    newDownStation.getId(),
+                    newSection.getUpStation().getId(),
+                    newSection.getDownStation().getId(),
                     lineId,
                     newSection.getDistance())
             );
@@ -124,12 +121,9 @@ public class SectionService {
         List<Section> newSections = line.getSectionsByList();
         originalSections.removeAll(newSections);
         Section deletedSection = originalSections.get(0);
-        StationEntity deletedUpStation = stationDao.findByName(deletedSection.getUpStation().getName());
-        StationEntity deletedDownStation = stationDao.findByName(deletedSection.getDownStation().getName());
-
         sectionDao.delete(new SectionEntity(
-                deletedUpStation.getId(),
-                deletedDownStation.getId(),
+                deletedSection.getUpStation().getId(),
+                deletedSection.getDownStation().getId(),
                 lineId,
                 deletedSection.getDistance())
         );

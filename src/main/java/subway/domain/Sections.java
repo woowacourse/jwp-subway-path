@@ -82,7 +82,7 @@ public class Sections {
     private void validateDuplicateSection(Station upStation, Station downStation) {
         List<Station> stations = getStations();
         if (stations.contains(upStation) && stations.contains(downStation)) {
-            throw new DuplicateException(ErrorCode.DUPLICATE_STATION);
+            throw new DuplicateException(ErrorCode.DUPLICATE_SECTION);
         }
     }
 
@@ -156,18 +156,25 @@ public class Sections {
         }
     }
 
-    public void deleteStation(Station deletedStation) {
+    public void deleteSection(Station deletedStation) {
         List<Section> deletedSections = sections.stream()
-                .filter(section -> section.getUpStation().equals(deletedStation) || section.getDownStation()
-                        .equals(deletedStation))
+                .filter(section -> section.getUpStation().equals(deletedStation)
+                        || section.getDownStation().equals(deletedStation))
                 .collect(Collectors.toList());
 
-        if (isOneSection(deletedSections)) {
-            sections.remove(deletedSections.get(0));
+        if (isDeletedTerminalSection(deletedSections)) {
             return;
         }
 
         deleteMiddleSection(deletedStation, deletedSections);
+    }
+
+    private boolean isDeletedTerminalSection(List<Section> deletedSections) {
+        if (deletedSections.size() == TERMINAL_COUNT) {
+            sections.remove(deletedSections.get(0));
+            return true;
+        }
+        return false;
     }
 
     private void deleteMiddleSection(Station deletedStation, List<Section> deletedSections) {
@@ -190,10 +197,6 @@ public class Sections {
         int index = sections.indexOf(frontSection);
         sections.add(index, newSection);
         sections.removeAll(deletedSections);
-    }
-
-    private boolean isOneSection(List<Section> sections) {
-        return sections.size() == TERMINAL_COUNT;
     }
 
     public boolean isEmpty() {

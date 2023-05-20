@@ -45,6 +45,15 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
+    public List<LineResponse> findAll() {
+        List<LineEntity> lineEntities = lineDao.findAll();
+
+        return lineEntities.stream()
+                .map(lineEntity -> findById(lineEntity.getId()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public LineResponse findById(Long id) {
         LineEntity lineEntity = lineDao.findById(id);
         Line line = Line.of(lineEntity.getName(), makeSections(id));
@@ -69,13 +78,5 @@ public class LineService {
                         new Station(entity.getDownStationId(), stationEntities.get(entity.getDownStationId())),
                         entity.getDistance()
                 )).collect(Collectors.toList());
-    }
-
-    public List<LineResponse> findAll() {
-        List<LineEntity> lineEntities = lineDao.findAll();
-
-        return lineEntities.stream()
-                .map(lineEntity -> findById(lineEntity.getId()))
-                .collect(Collectors.toList());
     }
 }
