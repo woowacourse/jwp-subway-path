@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.subway.Station;
 import subway.dto.route.ShortestPathRequest;
@@ -38,9 +37,6 @@ class SubwayMapServiceIntegrationTest {
 
     @Autowired
     private LineRepository lineRepository;
-
-    @Autowired
-    private ApplicationEventPublisher publisher;
 
     @BeforeEach
     void setUp() {

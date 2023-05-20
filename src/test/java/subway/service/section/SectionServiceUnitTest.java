@@ -11,6 +11,7 @@ import subway.domain.subway.Line;
 import subway.domain.subway.Sections;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
+import subway.event.RouteUpdateEvent;
 import subway.exception.SectionDuplicatedException;
 import subway.exception.SectionForkedException;
 import subway.exception.SectionNotConnectException;
@@ -19,6 +20,7 @@ import subway.repository.SectionRepository;
 import subway.service.SectionService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static subway.fixture.SectionsFixture.createSections;
@@ -54,6 +56,7 @@ public class SectionServiceUnitTest {
 
         // then
         verify(lineRepository).insertSectionInLine(sections, line.getLineNumber());
+        verify(publisher).publishEvent(any(RouteUpdateEvent.class));
     }
 
     @Test
@@ -117,5 +120,6 @@ public class SectionServiceUnitTest {
 
         // then
         verify(lineRepository).insertSectionInLine(sections, req.getLineNumber());
+        verify(publisher).publishEvent(any(RouteUpdateEvent.class));
     }
 }

@@ -132,4 +132,20 @@ public class StationServiceIntegrationTest {
         assertThatThrownBy(() -> stationService.editStation(id, stationEditRequest))
                 .isInstanceOf(StationNotFoundException.class);
     }
+
+    @Test
+    @DisplayName("역을 삭제한다.")
+    void delete_station_success() {
+        // given
+        StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
+        long id = stationService.saveStation(stationCreateRequest);
+
+        // when
+        stationService.deleteStationById(id);
+
+        // then
+        StationsResponse expected = stationService.findAllStationResponses();
+
+        assertThat(expected.getStations().size()).isEqualTo(0);
+    }
 }
