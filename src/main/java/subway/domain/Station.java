@@ -9,9 +9,16 @@ public class Station {
     private final String name;
 
     public Station(Long id, String name) {
+        validateId(id);
         validateName(name);
         this.id = id;
         this.name = name;
+    }
+
+    private void validateId(Long id) {
+        if (id <= 0) {
+            throw new InvalidException(ErrorCode.INVALID_NOT_POSITIVE_ID);
+        }
     }
 
     private void validateName(String name) {

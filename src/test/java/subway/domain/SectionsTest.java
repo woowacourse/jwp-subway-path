@@ -33,31 +33,31 @@ class SectionsTest {
         sections = Sections.from(sectionList);
     }
 
-    @Test
     @DisplayName("생성 테스트")
+    @Test
     void createFrom() {
         // given
         sections = Sections.from(sectionList);
 
-        // expected
+        // then
         assertAll(
                 () -> assertThat(sections.getSections().get(0)).isEqualTo(section1),
                 () -> assertThat(sections.getSections().get(1)).isEqualTo(section2)
         );
     }
 
-    @Test
     @DisplayName("노선의 모든 역을 반환한다.")
+    @Test
     void getStations() {
         // when
         List<Station> stations = sections.getStations();
 
-        // expected
+        // then
         assertThat(stations).contains(station1, station2, station3);
     }
 
-    @Test
     @DisplayName("새로운 구간을 추가한다.")
+    @Test
     void addSection() {
         // given
         Station upStation = new Station(4L, "종합운동장역");
@@ -66,25 +66,27 @@ class SectionsTest {
         // when
         sections.addSection(newSection);
 
-        // expected
+        // then
         assertAll(
                 () -> assertThat(sections.getStations()).hasSize(4),
                 () -> assertThat(sections.getSections().get(1)).isEqualTo(newSection)
         );
     }
 
+    @DisplayName("새로운 구간의 역들이 노선에 이미 존재하는 경우 예외가 발생한다.")
     @Test
-    @DisplayName("새로운 역들이 노선에 이미 존재하는 경우 예외가 발생한다.")
     void validateDuplicateSection() {
         // given
         Section newSection = new Section(station1, station3, 2);
 
-        // expected
-        assertThatThrownBy(() -> sections.addSection(newSection)).isInstanceOf(DuplicateException.class);
+        // then
+        assertThatThrownBy(() -> sections.addSection(newSection))
+                .isInstanceOf(DuplicateException.class)
+                .hasMessage("이미 연결되어 있는 구간입니다.");
     }
 
-    @Test
     @DisplayName("새로운 역이 상행 종점으로 추가된다.")
+    @Test
     void addSectionFirstStation() {
         // given
         Station newUpStation = new Station(4L, "베로역");
@@ -93,12 +95,12 @@ class SectionsTest {
         // when
         sections.addSection(newSection);
 
-        // expected
+        // then
         assertThat(sections.getSections().get(0)).isEqualTo(newSection);
     }
 
-    @Test
     @DisplayName("새로운 역이 하행 종점으로 추가된다.")
+    @Test
     void addSectionLastStation() {
         // given
         Station newDownStation = new Station(4L, "베로역");
@@ -107,38 +109,38 @@ class SectionsTest {
         // when
         sections.addSection(newSection);
 
-        // expected
+        // then
         assertThat(sections.getSections().get(2)).isEqualTo(newSection);
     }
 
-    @Test
     @DisplayName("중간 역을 삭제하면 연결된 구간이 삭제된다.")
+    @Test
     void delete() {
         // when
         sections.deleteSection(station2);
 
-        // expected
+        // then
         assertAll(
                 () -> assertThat(sections.getStations()).hasSize(2),
                 () -> assertThat(sections.getSections()).hasSize(1)
         );
     }
 
-    @Test
     @DisplayName("종점을 삭제한다.")
+    @Test
     void deleteTerminal() {
         // when
         sections.deleteSection(station1);
 
-        // expected
+        // then
         assertAll(
                 () -> assertThat(sections.getStations()).hasSize(2),
                 () -> assertThat(sections.getSections()).hasSize(1)
         );
     }
 
-    @Test
     @DisplayName("노선에 역이 두 개 존재할 때, 모든 노선이 삭제된다.")
+    @Test
     void deleteAll() {
         // given
         sections = Sections.from(List.of(section1));
@@ -146,7 +148,7 @@ class SectionsTest {
         // when
         sections.deleteSection(station1);
 
-        // expected
+        // then
         assertAll(
                 () -> assertThat(sections.getStations()).hasSize(0),
                 () -> assertThat(sections.getSections()).hasSize(0)
