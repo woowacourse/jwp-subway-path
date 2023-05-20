@@ -18,6 +18,7 @@ public class StationDao {
     private static final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
+                    rs.getLong("line_id"),
                     rs.getString("name")
             );
 
@@ -32,35 +33,14 @@ public class StationDao {
     }
 
     public Long insert(StationEntity station) {
+        //todo : 지울것
+        System.out.println(station);
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<StationEntity> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
-    }
-
-    public Optional<StationEntity> findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        } catch (DataAccessException exception) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<StationEntity> findByName(String name, Long lineId) {
-        String sql = "select * from STATION where name = ? and line_id = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name, lineId));
-        } catch (DataAccessException exception) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<StationEntity> findByStationAndLineId(Long stationId, Long lineId) {
-        String sql = "select * from STATION where station_id =? and line_id = ?";
+    public Optional<StationEntity> findById(Long stationId, Long lineId) {
+        String sql = "select * from STATION where id = ? and line_id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, stationId, lineId));
         } catch (DataAccessException exception) {
@@ -68,26 +48,24 @@ public class StationDao {
         }
     }
 
-    public void deleteByStationAndLineId(Long stationId, Long lineId) {
-        String sql = "delete from STATION where station_id =? and line_id = ?";
-        jdbcTemplate.update(sql, stationId, lineId);
+    public Optional<StationEntity> findByName(String name, Long lineId) {
+        String sql = "select id, line_id, name from STATION where name = ? and line_id = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name, lineId));
+        } catch (DataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
-    //사용하지 않는 메서드 : 리팩터링 때 삭제
-    public List<StationEntity> findByLineId(Long lineId) {
-        String sql = "select * from STATION where line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
+    public void delete(StationEntity savedStation) {
+        String sql = "delete from STATION where name = ? and line_id = ?";
+        jdbcTemplate.update(sql, new Object[]{savedStation.getName(), savedStation.getId()});
     }
 
+    //지울거
+    public List<StationEntity> findAll() {
+        String sql = "select * from STATION";
+        return jdbcTemplate.query(sql, rowMapper);
 
-    public void update(StationEntity newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
-
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
 }

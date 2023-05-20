@@ -2,28 +2,39 @@ package subway.entity;
 
 public class StationEntity {
 
-    private Long lineId;
-    private Long id;
-    private String name;
+    private final Long id;
+    private final Long lineId;
+    private final String name;
+
+    public StationEntity(Long id, Long lineId, String name) {
+        this.id = id;
+        this.lineId = lineId;
+        this.name = name;
+    }
 
     public StationEntity(Long lineId, String name) {
-        this.lineId = lineId;
-        this.id = null;
-        this.name = name;
+        this(null, lineId, name);
     }
-
-    public StationEntity(Long lineId, Long id, String name) {
-        this.lineId = lineId;
-        this.id = id;
-        this.name = name;
-    }
-
 
     public Long getId() {
         return id;
     }
 
+    public Long getLineId() {
+        return lineId;
+    }
+
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "StationEntity{" +
+                "id=" + id +
+                ", lineId=" + lineId +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
 }
