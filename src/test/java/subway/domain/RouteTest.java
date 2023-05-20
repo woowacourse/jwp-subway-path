@@ -7,10 +7,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -137,6 +139,48 @@ class RouteTest {
         //when & then
         assertThatThrownBy(() -> route.findShortestRoute(startStation, notExistEndStation))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
+     * 11   5
+     * F -- G -- H
+     * 4 |         | 4
+     * |         |
+     * A -- B -- C -- D
+     * 1   2    3
+     */
+
+    @Test
+    @DisplayName("findShortestRouteSections() : 최단 경로에 속한 섹션들을 구할 수 있다.")
+    void test_findShortestRouteSections() throws Exception {
+        //given
+        final List<Line> lines = createDefaultLines();
+        final Route route = new Route(lines);
+
+        final String start = "A";
+        final String end = "G";
+
+        //when
+        final List<EdgeSection> shortestRouteSections = route.findShortestRouteSections(start, end);
+
+        //then
+        final List<String> startStations =
+                shortestRouteSections.stream()
+                                     .map(EdgeSection::getStartStation)
+                                     .collect(Collectors.toList());
+
+        final List<String> endStations =
+                shortestRouteSections.stream()
+                                     .map(EdgeSection::getEndStation)
+                                     .collect(Collectors.toList());
+
+        assertAll(
+                () -> assertEquals(5, shortestRouteSections.size()),
+                () -> assertThat(startStations).containsAnyElementsOf(
+                        List.of("A", "B", "C", "D", "H")),
+                () -> assertThat(endStations).containsAnyElementsOf(
+                        List.of("B", "C", "D", "H", "G"))
+        );
     }
 
     private List<Line> createDefaultLines() {

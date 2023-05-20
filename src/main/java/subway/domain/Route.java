@@ -17,4 +17,8 @@ public class Route {
     public Distance findShortestRouteDistance(final String startStation, final String endStation) {
         return routeFinder.findShortestRouteDistance(startStation, endStation);
     }
+
+    public List<EdgeSection> findShortestRouteSections(final String startStation, final String endStation) {
+        return routeFinder.findShortestRouteSections(startStation, endStation);
+    }
 }
