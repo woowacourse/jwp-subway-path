@@ -12,11 +12,11 @@ public class DiscountFarePolicyConfig {
 
     @Bean
     public DiscountFarePolicyComposite discountFarePolicies(
-        final TeenagerFarePolicy teenagerFarePolicy,
-        final ChildFarePolicy childFarePolicy
+        final ChildFarePolicy childFarePolicy,
+        final TeenagerFarePolicy teenagerFarePolicy
     ) {
         return new DiscountFarePolicyComposite(
-            List.of(teenagerFarePolicy, childFarePolicy)
+            List.of(childFarePolicy, teenagerFarePolicy)
         );
     }
 }

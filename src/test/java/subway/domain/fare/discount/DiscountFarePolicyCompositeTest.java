@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.fare.DiscountFare;
 import subway.domain.fare.Fare;
 
 class DiscountFarePolicyCompositeTest {
@@ -15,7 +16,7 @@ class DiscountFarePolicyCompositeTest {
     @BeforeEach
     void setUp() {
         discountFarePolicyComposite = new DiscountFarePolicyComposite(
-            List.of(new TeenagerFarePolicy(), new ChildFarePolicy())
+            List.of(new ChildFarePolicy(), new TeenagerFarePolicy())
         );
     }
 
@@ -26,11 +27,11 @@ class DiscountFarePolicyCompositeTest {
         final Fare fare = new Fare(1000);
 
         // when
-        final List<Fare> discountFares = discountFarePolicyComposite.getDiscountFares(fare);
+        final DiscountFare discountFare = discountFarePolicyComposite.getDiscountFares(fare);
 
         // then
-        assertThat(discountFares)
-            .extracting(Fare::fare)
-            .containsExactly(520, 325);
+        assertThat(discountFare)
+            .extracting(DiscountFare::getTeenagerFare, DiscountFare::getChildFare)
+            .containsExactly(new Fare(520), new Fare(325));
     }
 }

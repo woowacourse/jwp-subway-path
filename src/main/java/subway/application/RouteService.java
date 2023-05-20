@@ -13,6 +13,7 @@ import subway.application.dto.FareResponse;
 import subway.application.dto.RouteResponse;
 import subway.domain.fare.ExtraFare;
 import subway.domain.fare.Fare;
+import subway.domain.fare.DiscountFare;
 import subway.domain.fare.discount.DiscountFarePolicyComposite;
 import subway.domain.fare.normal.FarePolicyComposite;
 import subway.domain.line.LineRepository;
@@ -61,7 +62,7 @@ public class RouteService {
         final ExtraFare lineExtraFare = new ExtraFare(possibleSections);
         final Fare fare = farePolicies.getTotalFare(shortestDistance);
         final Fare totalFare = fare.add(lineExtraFare.fare());
-        final List<Fare> discountFare = discountFarePolicies.getDiscountFares(totalFare);
+        final DiscountFare discountFare = discountFarePolicies.getDiscountFares(totalFare);
 
         return new RouteResponse(
             createStationResponses(possibleSections, shortestRoute.getShortestRoutes()),
@@ -75,9 +76,8 @@ public class RouteService {
         return new ShortestRoute(shortestRoute);
     }
 
-    private FareResponse getFareResponse(final Fare totalFare, final List<Fare> discountFares) {
-        final Fare teenagerFare = discountFares.get(0);
-        final Fare childFare = discountFares.get(1);
-        return new FareResponse(totalFare.fare(), teenagerFare.fare(), childFare.fare());
+    private FareResponse getFareResponse(final Fare totalFare, final DiscountFare discountFare) {
+        return new FareResponse(totalFare.fare(), discountFare.getTeenagerFare().fare(),
+            discountFare.getChildFare().fare());
     }
 }

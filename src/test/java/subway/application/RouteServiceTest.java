@@ -24,6 +24,7 @@ import subway.application.dto.FareResponse;
 import subway.application.dto.RouteResponse;
 import subway.application.dto.StationResponse;
 import subway.domain.fare.Fare;
+import subway.domain.fare.DiscountFare;
 import subway.domain.fare.discount.DiscountFarePolicyComposite;
 import subway.domain.fare.normal.FarePolicyComposite;
 import subway.domain.line.LineRepository;
@@ -66,7 +67,7 @@ class RouteServiceTest {
         when(farePolicies.getTotalFare(any()))
             .thenReturn(new Fare(1450));
         when(discountFarePolicies.getDiscountFares(any()))
-            .thenReturn(List.of(new Fare(880), new Fare(550)));
+            .thenReturn(new DiscountFare(new Fare(550), new Fare(880)));
 
         // when
         final RouteResponse routeResponse = routeService.getShortestRouteAndFare(1L, 4L);
@@ -100,7 +101,7 @@ class RouteServiceTest {
         when(farePolicies.getTotalFare(any()))
             .thenReturn(new Fare(1450));
         when(discountFarePolicies.getDiscountFares(any()))
-            .thenReturn(List.of(new Fare(880), new Fare(550)));
+            .thenReturn(new DiscountFare(new Fare(550), new Fare(880)));
 
         // when
         final RouteResponse routeResponse = routeService.getShortestRouteAndFare(4L, 1L);
