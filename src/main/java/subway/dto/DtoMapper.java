@@ -1,9 +1,11 @@
 package subway.dto;
 
+import subway.domain.Path.Path;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.dto.response.LineResponse;
 import subway.dto.response.LineStationsResponse;
+import subway.dto.response.PathResponse;
 import subway.dto.response.StationResponse;
 
 import java.util.List;
@@ -30,5 +32,10 @@ public class DtoMapper {
                 convertToLineResponse(line),
                 convertToStationResponses(inOrderLineStations)
         );
+    }
+
+    public static PathResponse convertToPathResponse(Path path) {
+        List<StationResponse> stationResponses = convertToStationResponses(path.getOrderedStations());
+        return new PathResponse(stationResponses);
     }
 }

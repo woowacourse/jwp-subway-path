@@ -43,6 +43,11 @@ public class H2SectionRepository implements SectionRepository {
         return mapToSections(sectionDao.selectSectionsByLineId(line.getId()));
     }
 
+    @Override
+    public List<Section> readAllSections() {
+        return mapToSections(sectionDao.selectAllSections());
+    }
+
     private List<Section> mapToSections(List<SectionEntity> sectionEntities) {
         return sectionEntities.stream()
                 .map(entity -> Section.of(
