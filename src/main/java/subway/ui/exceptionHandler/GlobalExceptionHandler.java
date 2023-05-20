@@ -1,5 +1,7 @@
 package subway.ui.exceptionHandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -11,28 +13,29 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     public ResponseEntity<String> handleRuntimeException(final Exception e) {
-        e.printStackTrace();
+        logger.debug(e.getMessage());
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler({DataAccessException.class, EmptyResultDataAccessException.class})
     public ResponseEntity<Void> handleSQLException(final Exception e) {
-        e.printStackTrace();
+        logger.debug(e.getMessage());
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleMethodArgumentNotValidException(final Exception e) {
-        e.printStackTrace();
+        logger.debug(e.getMessage());
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void handleAll(final Exception e) {
-        e.printStackTrace();
+        logger.error(e.getMessage());
     }
 }
