@@ -20,7 +20,7 @@ public class LineService {
     public List<LineEntity> findAllLine() {
         Optional<List<LineEntity>> findLines = lineDao.findAll();
         if (findLines.isEmpty()) {
-            throw new IllegalArgumentException("노선이 존재하지 않습니다.");
+            throw new IllegalArgumentException("해당 노선이 존재하지 않습니다.");
         }
         return findLines.get();
     }
@@ -28,7 +28,7 @@ public class LineService {
     public LineEntity findLineById(Long id) {
         Optional<LineEntity> findLine = lineDao.findById(id);
         if (findLine.isEmpty()) {
-            throw new IllegalArgumentException("해당 ID의 노선이 존재하지 않습니다.");
+            throw new IllegalArgumentException("해당 노선이 존재하지 않습니다.");
         }
         return findLine.get();
     }
@@ -44,7 +44,7 @@ public class LineService {
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
         Optional<LineEntity> findLine = lineDao.findById(id);
         if (findLine.isEmpty()) {
-            throw new IllegalArgumentException("해당 ID의 노선이 존재하지 않습니다.");
+            throw new IllegalArgumentException("해당 노선이 존재하지 않습니다.");
         }
         lineDao.update(new LineEntity(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
@@ -52,7 +52,7 @@ public class LineService {
     public void deleteLineById(final Long id) {
         Optional<LineEntity> findLine = lineDao.findById(id);
         if (findLine.isEmpty()) {
-            throw new IllegalArgumentException("해당 ID의 노선이 존재하지 않습니다.");
+            throw new IllegalArgumentException("해당 노선이 존재하지 않습니다.");
         }
         lineDao.deleteById(id);
     }
