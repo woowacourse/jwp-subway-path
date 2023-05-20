@@ -7,11 +7,11 @@ import java.util.List;
 
 @Primary
 @Component
-public class PricePolicyComposite implements SubwayPricePolicy {
+public class ChargePolicyComposite implements SubwayChargePolicy {
 
-    private final List<SubwayPricePolicy> policies;
+    private final List<SubwayChargePolicy> policies;
 
-    public PricePolicyComposite(final List<SubwayPricePolicy> policies) {
+    public ChargePolicyComposite(final List<SubwayChargePolicy> policies) {
         this.policies = policies;
     }
 

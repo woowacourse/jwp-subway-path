@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.domain.Line;
 import subway.domain.Route;
 import subway.domain.Station;
-import subway.domain.SubwayPricePolicy;
+import subway.domain.SubwayChargePolicy;
 import subway.service.dto.ShortestRouteRequest;
 
 import java.util.List;
@@ -13,11 +13,11 @@ import java.util.List;
 public class RouteQueryService {
 
     private final LineQueryService lineQueryService;
-    private final SubwayPricePolicy subwayPricePolicy;
+    private final SubwayChargePolicy subwayChargePolicy;
 
-    public RouteQueryService(final LineQueryService lineQueryService, final SubwayPricePolicy subwayPricePolicy) {
+    public RouteQueryService(final LineQueryService lineQueryService, final SubwayChargePolicy subwayChargePolicy) {
         this.lineQueryService = lineQueryService;
-        this.subwayPricePolicy = subwayPricePolicy;
+        this.subwayChargePolicy = subwayChargePolicy;
     }
 
     public List<String> searchShortestRoute(final ShortestRouteRequest shortestRouteRequest) {
@@ -42,7 +42,7 @@ public class RouteQueryService {
                 new Station(shortestRouteRequest.getEndStation())
         );
 
-        return subwayPricePolicy.calculate(route);
+        return subwayChargePolicy.calculate(route);
     }
 
     public int searchShortestDistance(final ShortestRouteRequest shortestRouteRequest) {

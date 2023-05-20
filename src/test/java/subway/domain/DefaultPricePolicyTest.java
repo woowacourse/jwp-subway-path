@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DefaultPricePolicyTest {
 
-    private SubwayPricePolicy subwayPricePolicy;
+    private SubwayChargePolicy subwayChargePolicy;
 
     @BeforeEach
     void setUp() {
-        subwayPricePolicy = new DefaultPricePolicy();
+        subwayChargePolicy = new DefaultChargePolicy();
     }
 
     @ParameterizedTest
@@ -29,7 +29,7 @@ class DefaultPricePolicyTest {
         final Route route = new Route(lines, from, to);
 
         //when
-        final int result = subwayPricePolicy.calculate(route);
+        final int result = subwayChargePolicy.calculate(route);
 
         //then
         assertEquals(result, price);

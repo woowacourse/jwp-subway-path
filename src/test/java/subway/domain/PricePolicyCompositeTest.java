@@ -10,13 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PricePolicyCompositeTest {
 
-    private PricePolicyComposite pricePolicyComposite;
+    private ChargePolicyComposite pricePolicyComposite;
 
     @BeforeEach
     void setUp() {
-        pricePolicyComposite = new PricePolicyComposite(
-                List.of(new DefaultPricePolicy(),
-                        new LinePricePolicy())
+        pricePolicyComposite = new ChargePolicyComposite(
+                List.of(new DefaultChargePolicy(),
+                        new LineChargePolicy())
         );
     }
 

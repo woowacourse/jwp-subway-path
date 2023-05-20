@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class LinePricePolicy implements SubwayPricePolicy {
+public class LineChargePolicy implements SubwayChargePolicy {
 
     private static final Map<String, Integer> priceMap
             = Map.of("1호선", 500,
