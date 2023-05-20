@@ -5,11 +5,13 @@ import subway.exception.ErrorCode;
 import subway.exception.InvalidException;
 
 public class Section {
+    public static final int MIN_DISTANCE = 0;
+
     private final Station upStation;
     private final Station downStation;
     private final int distance;
 
-    public Section(final Station upStation, final Station downStation, final int distance) {
+    public Section(Station upStation, Station downStation, int distance) {
         validateDifferentUpAndDown(upStation, downStation);
         validatePositiveDistance(distance);
         this.upStation = upStation;
@@ -17,25 +19,25 @@ public class Section {
         this.distance = distance;
     }
 
-    private void validatePositiveDistance(final int distance) {
-        if (distance <= 0) {
+    private void validatePositiveDistance(int distance) {
+        if (distance <= MIN_DISTANCE) {
             throw new InvalidException(ErrorCode.INVALID_NOT_POSITIVE_DISTANCE);
         }
     }
 
-    private void validateDifferentUpAndDown(final Station upStation, final Station downStation) {
+    private void validateDifferentUpAndDown(Station upStation, Station downStation) {
         if (upStation.equals(downStation)) {
             throw new InvalidException(ErrorCode.INVALID_SAME_UP_AND_DOWN_STATION);
         }
     }
 
-    public void validateDistance(final int distance) {
+    public void validateDistance(int distance) {
         if (this.distance <= distance) {
             throw new InvalidException(ErrorCode.INVALID_DISTANCE);
         }
     }
 
-    public Section getDividedSection(final Section newSection) {
+    public Section getDividedSection(Section newSection) {
         validateDistance(newSection.distance);
 
         if (upStation.equals(newSection.upStation)) {
@@ -57,7 +59,7 @@ public class Section {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }

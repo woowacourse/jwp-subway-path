@@ -4,12 +4,12 @@ public class LineEntity {
     private final Long id;
     private final String name;
 
-    public LineEntity(final Long id, final String name) {
+    public LineEntity(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public LineEntity(final String name) {
+    public LineEntity(String name) {
         this(null, name);
     }
 

@@ -40,6 +40,7 @@ public class SectionDao {
         final String sql = "INSERT INTO section "
                 + "(`up_station_id`, `down_station_id`, `line_id`, `distance`)"
                 + " VALUES (?, ?, ?, ?)";
+
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {

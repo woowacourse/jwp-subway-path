@@ -6,7 +6,7 @@ public class SubwayException extends RuntimeException {
     private final String message;
     private final HttpStatus httpStatus;
 
-    public SubwayException(final String message, HttpStatus httpStatus) {
+    public SubwayException(String message, HttpStatus httpStatus) {
         this.message = message;
         this.httpStatus = httpStatus;
     }

@@ -53,7 +53,7 @@ public class SectionService {
 
     public void delete(SectionDeleteRequest sectionDeleteRequest) {
         StationEntity stationEntity = findStationByName(sectionDeleteRequest.getName());
-        Long lineId = sectionDeleteRequest.getLindId();
+        Long lineId = sectionDeleteRequest.getLineId();
         Line line = makeLine(lineId);
 
         List<Section> originalSections = line.getSectionsByList();

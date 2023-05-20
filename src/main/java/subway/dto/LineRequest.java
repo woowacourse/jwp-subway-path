@@ -9,7 +9,7 @@ public class LineRequest {
     public LineRequest() {
     }
 
-    public LineRequest(final String name) {
+    public LineRequest(String name) {
         this.name = name;
     }
 

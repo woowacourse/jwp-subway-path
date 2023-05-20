@@ -9,21 +9,21 @@ public class SectionDeleteRequest {
     private String name;
     @NotNull(message = "노선 아이디는 필수 입력값입니다.")
     @Positive(message = "노선 아이디는 양수여야 합니다.")
-    private Long lindId;
+    private Long lineId;
 
     public SectionDeleteRequest() {
     }
 
     public SectionDeleteRequest(String name, Long lineId) {
         this.name = name;
-        lindId = lineId;
+        this.lineId = lineId;
     }
 
     public String getName() {
         return name;
     }
 
-    public Long getLindId() {
-        return lindId;
+    public Long getLineId() {
+        return lineId;
     }
 }

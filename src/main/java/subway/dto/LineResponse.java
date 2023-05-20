@@ -7,7 +7,7 @@ public class LineResponse {
     private final String name;
     private final List<StationResponse> stations;
 
-    public LineResponse(final Long id, final String name, final List<StationResponse> stations) {
+    public LineResponse(Long id, String name, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.stations = stations;
