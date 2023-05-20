@@ -1,0 +1,65 @@
+### 역 생성
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name" : "잠실"
+}
+
+### 역 전체 조회
+GET http://localhost:8080/stations
+
+### 특정 역 조회
+GET http://localhost:8080/stations/1
+
+
+### 노선 등록
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "2호선",
+  "color": "green",
+  "upStationId": 1,
+  "downStationId": 2,
+  "distance": 10
+}
+
+### 노선 전체 조회
+GET http://localhost:8080/lines
+
+### 특정 노선 전체 조회
+GET http://localhost:8080/lines/1
+
+### 노선 삭제
+DELETE http://localhost:8080/lines/1
+
+
+### 구간 등록
+PATCH http://localhost:8080/lines/1/register
+Content-Type: application/json
+
+{
+  "upStationId": 1,
+  "downStationId": 2,
+  "distance": 10
+}
+
+### 구간 삭제
+PATCH http://localhost:8080/lines/1/unregister
+Content-Type: application/json
+
+{
+  "stationId": 1
+}
+
+
+### 경로 조회
+POST http://localhost:8080/path
+Content-Type: application/json
+
+{
+  "sourceStationId": 1,
+  "targetStationId": 2
+}
+

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS line
     name VARCHAR(255) NOT NULL UNIQUE,
     color VARCHAR(20) NOT NULL,
     PRIMARY KEY(id)
-)
+);
 
 CREATE TABLE IF NOT EXISTS section
 (
@@ -22,4 +22,3 @@ CREATE TABLE IF NOT EXISTS section
     distance INT NOT NULL,
     PRIMARY KEY(id)
 );
-
