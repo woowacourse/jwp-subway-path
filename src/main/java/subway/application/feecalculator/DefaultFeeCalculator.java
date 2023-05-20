@@ -14,23 +14,21 @@ public class DefaultFeeCalculator implements FeeCalculator {
     @Override
     public int calculateFee(final int distance) {
 
-        int fee = DEFAULT_FEE;
-        int distanceBeforeFifty;
-        int distanceAfterFifty;
-
-        distanceBeforeFifty = distance - BASIC_DISTANCE;
-        distanceAfterFifty = distance - ADDITIONAL_DISTANCE;
-        if (distance > ADDITIONAL_DISTANCE) {
-            distanceBeforeFifty = ADDITIONAL_DISTANCE - BASIC_DISTANCE;
+        if (distance <= BASIC_DISTANCE) {
+            return DEFAULT_FEE;
         }
+        return DEFAULT_FEE + calculateAdditionalFee(distance);
+    }
 
-        if (distanceBeforeFifty > 0) {
-            fee += Math.ceil(distanceBeforeFifty / UNIT_DISTANCE) * ADDITIONAL_FEE;
+    private int calculateAdditionalFee(final int distance) {
+        if (distance <= ADDITIONAL_DISTANCE) {
+            return calculateMathCeil(distance, BASIC_DISTANCE, UNIT_DISTANCE) * ADDITIONAL_FEE;
         }
-        if (distanceAfterFifty > 0) {
-            fee += Math.ceil(distanceAfterFifty / LONGER_UNIT_DISTANCE) * ADDITIONAL_FEE;
-        }
+        return calculateAdditionalFee(ADDITIONAL_DISTANCE) +
+                calculateMathCeil(distance, ADDITIONAL_DISTANCE, LONGER_UNIT_DISTANCE) * ADDITIONAL_FEE;
+    }
 
-        return fee;
+    private int calculateMathCeil(final int distance, final int subtractDistance, final double unitDistance) {
+        return (int) (Math.ceil((distance - subtractDistance) / unitDistance));
     }
 }
