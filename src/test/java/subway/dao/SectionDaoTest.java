@@ -13,11 +13,11 @@ import subway.dao.entity.SectionEntity;
 
 @JdbcTest
 class SectionDaoTest {
-    private final Long lineId = 1L;
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private SectionDao sectionDao;
     private SectionEntity sectionEntity;
+    private final Long lineId = 1L;
 
     @BeforeEach
     void setUp() {
