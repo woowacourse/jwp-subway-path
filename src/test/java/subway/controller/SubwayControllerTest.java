@@ -39,13 +39,14 @@ class SubwayControllerTest {
         void findShortestPath() throws Exception {
             final List<StationResponse> stations = List.of(new StationResponse(1L, "잠실역"),
                     new StationResponse(2L, "사당역"), new StationResponse(3L, "서울역"));
-            final SubwayShortestPathResponse response = new SubwayShortestPathResponse(stations, 7, 1250);
-            given(subwayService.findShortestPath(1L, 3L))
+            final SubwayShortestPathResponse response = new SubwayShortestPathResponse(stations, 7, 800);
+            given(subwayService.findShortestPath(1L, 3L, 12))
                     .willReturn(response);
 
             mockMvc.perform(get("/subways/shortest-path")
                             .queryParam("sourceStationId", String.valueOf(1L))
-                            .queryParam("destinationStationId", String.valueOf(3L)))
+                            .queryParam("destinationStationId", String.valueOf(3L))
+                            .queryParam("passengerAge", String.valueOf(12)))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.stations", hasSize(3)))
@@ -56,7 +57,7 @@ class SubwayControllerTest {
                     .andExpect(jsonPath("$.stations[2].id").value(3))
                     .andExpect(jsonPath("$.stations[2].name").value("서울역"))
                     .andExpect(jsonPath("$.distance").value(7))
-                    .andExpect(jsonPath("$.fare").value(1250));
+                    .andExpect(jsonPath("$.fare").value(800));
         }
 
         @ParameterizedTest

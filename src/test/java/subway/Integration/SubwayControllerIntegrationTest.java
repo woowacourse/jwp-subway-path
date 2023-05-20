@@ -51,7 +51,8 @@ class SubwayControllerIntegrationTest extends IntegrationTest {
 
             mockMvc.perform(get("/subways/shortest-path")
                             .queryParam("sourceStationId", String.valueOf(upward.getId()))
-                            .queryParam("destinationStationId", String.valueOf(downward.getId())))
+                            .queryParam("destinationStationId", String.valueOf(downward.getId()))
+                            .queryParam("passengerAge", String.valueOf(13)))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.stations", hasSize(3)))
@@ -62,7 +63,7 @@ class SubwayControllerIntegrationTest extends IntegrationTest {
                     .andExpect(jsonPath("$.stations[2].id").value(downward.getId()))
                     .andExpect(jsonPath("$.stations[2].name").value(downward.getName()))
                     .andExpect(jsonPath("$.distance").value(7))
-                    .andExpect(jsonPath("$.fare").value(1650));
+                    .andExpect(jsonPath("$.fare").value(1390));
         }
 
         @Test

@@ -221,7 +221,7 @@ response
 
 request
 ```http request
-GET /subways/shortest-paths?sourceStationId={sourceStationId}&destinationStationId={destinationStationId}
+GET /subways/shortest-paths?sourceStationId={sourceStationId}&destinationStationId={destinationStationId}&passengerAge={passengerAge}
 ```
 
 response

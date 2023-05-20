@@ -21,9 +21,14 @@ public class SubwayController {
     @GetMapping("/shortest-path")
     public ResponseEntity<SubwayShortestPathResponse> findShortestPath(
             @RequestParam Long sourceStationId,
-            @RequestParam Long destinationStationId
+            @RequestParam Long destinationStationId,
+            @RequestParam Integer passengerAge
     ) {
-        final SubwayShortestPathResponse response = subwayService.findShortestPath(sourceStationId, destinationStationId);
+        final SubwayShortestPathResponse response = subwayService.findShortestPath(
+                sourceStationId,
+                destinationStationId,
+                passengerAge
+        );
         return ResponseEntity.ok(response);
     }
 }

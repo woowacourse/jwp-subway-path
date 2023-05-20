@@ -10,6 +10,8 @@ import subway.exception.InvalidAgeException;
 @Component
 public final class DiscountPolicyByAge implements DiscountPolicy {
 
+    private static final Priority PRIORITY = Priority.AGE_POLICY;
+
     enum AgeGroup {
 
         INFANT(new Age(0), new Age(5), 1),
@@ -48,5 +50,10 @@ public final class DiscountPolicyByAge implements DiscountPolicy {
 
     private boolean isOneHundredPercent(final double discountRate) {
         return discountRate == 1;
+    }
+
+    @Override
+    public Priority getPriority() {
+        return PRIORITY;
     }
 }

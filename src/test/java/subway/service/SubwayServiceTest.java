@@ -21,6 +21,7 @@ import subway.controller.dto.StationResponse;
 import subway.controller.dto.SubwayShortestPathResponse;
 import subway.domain.Path;
 import subway.domain.line.Line;
+import subway.domain.passenger.Passenger;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.domain.subway.Subway;
@@ -74,9 +75,9 @@ class SubwayServiceTest {
             willDoNothing().given(subway).updateRouteMap(anyList());
             given(subway.findShortestPath(any(Station.class), any(Station.class))).willReturn(
                     new Path(List.of(upward, middle, downward), List.of(lineTwo, lineFour), 7));
-            given(subway.calculateFare(any(Path.class))).willReturn(new Fare(1250));
+            given(subway.calculateFare(any(Path.class), any(Passenger.class))).willReturn(new Fare(1250));
 
-            final SubwayShortestPathResponse shortestPath = subwayService.findShortestPath(1L, 3L);
+            final SubwayShortestPathResponse shortestPath = subwayService.findShortestPath(1L, 3L, 20);
 
             assertAll(
                     () -> assertThat(shortestPath.getStations()).extracting(StationResponse::getName)
