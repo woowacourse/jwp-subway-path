@@ -16,6 +16,8 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.SectionDto;
 import subway.dto.StationDto;
+import subway.repository.LineRepository;
+import subway.repository.StationRepository;
 import subway.repository.SubwayRepository;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -28,7 +30,10 @@ class StationServiceTest {
     private StationService stationService;
 
     @Autowired
-    private SubwayRepository subwayRepository;
+    private LineRepository lineRepository;
+
+    @Autowired
+    private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {
@@ -38,13 +43,13 @@ class StationServiceTest {
     @Test
     void 노선에_역을_등록할_수_있다() {
         // given
-        final Long lineId = subwayRepository.registerLine(new Line("8호선", "분홍색"));
+        final Long lineId = lineRepository.registerLine(new Line("8호선", "분홍색"));
 
         // when
         stationService.register(new SectionDto(lineId, "잠실역", "석촌역", 10));
 
         // then
-        final List<Station> stations = subwayRepository.findStations();
+        final List<Station> stations = stationRepository.findStations();
         assertThat(stations).contains(new Station("잠실역"), new Station("석촌역"));
     }
 
@@ -63,7 +68,7 @@ class StationServiceTest {
     @Test
     void 노선에_역을_제거할_수_있다() {
         // given
-        final Long lineId = subwayRepository.registerLine(new Line("8호선", "분홍색"));
+        final Long lineId = lineRepository.registerLine(new Line("8호선", "분홍색"));
         stationService.register(new SectionDto(lineId, "잠실역", "석촌역", 10));
         stationService.register(new SectionDto(lineId, "석촌역", "송파역", 10));
 
@@ -71,14 +76,14 @@ class StationServiceTest {
         stationService.delete(new StationDto(lineId, "석촌역"));
 
         // then
-        final List<Station> stations = subwayRepository.findStations();
+        final List<Station> stations = stationRepository.findStations();
         assertThat(stations).contains(new Station("잠실역"), new Station("송파역"));
     }
 
     @Test
     void 존재하지_않는_역을_제거하면_예외가_발생한다() {
         // given
-        final Long id = subwayRepository.registerLine(new Line("8호선", "분홍색"));
+        final Long id = lineRepository.registerLine(new Line("8호선", "분홍색"));
 
         // expect
         assertThatThrownBy(() -> stationService.delete(new StationDto(id, "터틀역")))

@@ -10,27 +10,30 @@ import subway.domain.Station;
 import subway.domain.Subway;
 import subway.dto.LineDto;
 import subway.dto.response.LineResponse;
+import subway.repository.LineRepository;
 import subway.repository.SubwayRepository;
 
 @Service
 public class LineService {
 
     private final SubwayRepository subwayRepository;
+    private final LineRepository lineRepository;
 
     @Autowired
-    public LineService(final SubwayRepository subwayRepository) {
+    public LineService(final SubwayRepository subwayRepository, final LineRepository lineRepository) {
         this.subwayRepository = subwayRepository;
+        this.lineRepository = lineRepository;
     }
 
     @Transactional
     public Long register(final LineDto lineDto) {
         final Line line = new Line(lineDto.getName(), lineDto.getColor());
-        return subwayRepository.registerLine(line);
+        return lineRepository.registerLine(line);
     }
 
     @Transactional(readOnly = true)
     public LineResponse read(final Long id) {
-        final Line line = subwayRepository.findLineById(id);
+        final Line line = lineRepository.findLineById(id);
         final List<Station> stations = line.stations();
         final List<String> stationResponses = stations.stream()
                 .map(Station::getName)

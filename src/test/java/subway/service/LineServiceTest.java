@@ -19,6 +19,7 @@ import subway.domain.Subway;
 import subway.dto.LineDto;
 import subway.dto.SectionDto;
 import subway.dto.response.LineResponse;
+import subway.repository.LineRepository;
 import subway.repository.SubwayRepository;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -37,6 +38,9 @@ class LineServiceTest {
 
     @Autowired
     private SubwayRepository subwayRepository;
+
+    @Autowired
+    private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {
@@ -59,7 +63,7 @@ class LineServiceTest {
     @Test
     void 존재하는_노선_이름으로_등록시_예외가_발생한다() {
         // given
-        subwayRepository.registerLine(new Line("8호선", "분홍색"));
+        lineRepository.registerLine(new Line("8호선", "분홍색"));
 
         // expect
         assertThatThrownBy(() -> lineService.register(new LineDto("8호선", "분홍색")))

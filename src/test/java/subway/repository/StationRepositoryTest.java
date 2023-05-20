@@ -1,58 +1,56 @@
 package subway.repository;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.controller.exception.BusinessException;
-import subway.domain.Line;
+import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.domain.Subway;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class SubwayRepositoryTest {
+class StationRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private SubwayRepository subwayRepository;
+    private StationRepository stationRepository;
 
     @Autowired
-    private LineRepository lineRepository;
+    private StationDao stationDao;
 
     @BeforeEach
     void setUp() {
-        jdbcTemplate.execute("DELETE FROM line");
         jdbcTemplate.execute("DELETE FROM station");
     }
 
+
     @Test
-    void 모든_노선을_찾을_수_있다() {
+    void 저장된_역들을_가져올_수_있다() {
         // given
-        lineRepository.registerLine(new Line("8호선", "분홍색"));
-        lineRepository.registerLine(new Line("2호선", "초록색"));
+        stationRepository.registerStation(new Station("잠실역"));
+        stationRepository.registerStation(new Station("석촌역"));
+        stationRepository.registerStation(new Station("송파역"));
 
         // when
-        final Subway subway = subwayRepository.findSubway();
+        final List<Station> stations = stationRepository.findStations();
 
         // then
-        assertThat(subway.getLines()).containsExactly(
-                new Line("8호선", "분홍색"),
-                new Line("2호선", "초록색")
-        );
+        assertThat(stations).hasSize(3);
     }
-
 
 }
