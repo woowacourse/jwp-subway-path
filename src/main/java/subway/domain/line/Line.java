@@ -85,7 +85,7 @@ public final class Line {
         }
 
         if (isLastSection(upwardPosition)) {
-            addDownwardSectionInLast(upward, downward, distance);
+            addDownwardSectionAtLast(upward, downward, distance);
             return;
         }
         addDownwardSectionBetweenStations(upward, downward, distance, upwardPosition);
@@ -129,7 +129,7 @@ public final class Line {
         return sections.size() - 1 == position;
     }
 
-    private void addDownwardSectionInLast(final Station upward, final Station downward, final int distance) {
+    private void addDownwardSectionAtLast(final Station upward, final Station downward, final int distance) {
         sections.deleteByPosition(sections.size() - 1);
         sections.add(sections.size(), new Section(upward, downward, distance));
         sections.add(sections.size(), new Section(downward, Station.TERMINAL, 0));
