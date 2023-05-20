@@ -35,25 +35,25 @@ public class Sections {
     }
 
     private void validateRegister(final Station source, final Station target) {
-        if (doesNotHave(source) && doesNotHave(target)) {
+        if (isNotExist(source) && isNotExist(target)) {
             throw new StationNotFoundException("기준역이 존재하지 않아 추가할 수 없습니다.");
         }
-        if (has(source) && has(target)) {
+        if (isExist(source) && isExist(target)) {
             throw new InvalidStationException("두 역 모두 노선에 존재하는 역입니다.");
         }
     }
 
-    private boolean doesNotHave(final Station station) {
-        return !has(station);
+    private boolean isNotExist(final Station station) {
+        return !isExist(station);
     }
 
-    private boolean has(final Station station) {
+    private boolean isExist(final Station station) {
         return sections.stream()
                 .anyMatch(section -> section.contains(station));
     }
 
     private Station getExistingStation(final Station source, final Station target) {
-        if (has(source)) {
+        if (isExist(source)) {
             return source;
         }
         return target;
@@ -116,7 +116,7 @@ public class Sections {
     }
 
     public void delete(final Station station) {
-        if (doesNotHave(station)) {
+        if (isNotExist(station)) {
             throw new StationNotFoundException("존재하지 않는 역을 삭제할 수 없습니다.");
         }
         if (sections.size() == CLEAR_SECTIONS_SIZE) {
