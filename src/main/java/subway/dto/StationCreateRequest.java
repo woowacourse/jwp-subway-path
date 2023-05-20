@@ -17,7 +17,7 @@ public class StationCreateRequest {
     @NotBlank
     private final String directionOfBaseStation;
 
-    @Range(min = 1, max = 100000, message = "역 사이의 거리는 양의 정수여야 합니다")
+    @Range(min = 1, max = 100000, message = "역 사이의 거리는 {min}이상 {max}이하여야 합니다")
     private final Integer distance;
 
     public StationCreateRequest(String baseStationName, String newStationName, String directionOfBaseStation,
