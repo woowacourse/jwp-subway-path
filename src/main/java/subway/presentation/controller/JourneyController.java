@@ -1,5 +1,6 @@
 package subway.presentation.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,7 @@ public class JourneyController {
     }
 
     @PostMapping
+    @Operation(summary = "make journey", description = "목적지까지의 최단경로/금액/거리 반환")
     public ResponseEntity<JourneyResponse> makeJourney(@RequestBody JourneyRequest request) {
         JourneyResult result = journeyService.findShortestJourney(
                 new JourneyCommand(request.getDeparture(), request.getTerminal()));

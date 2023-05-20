@@ -1,5 +1,6 @@
 package subway.presentation.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.core.service.LinePropertyService;
@@ -25,6 +26,7 @@ public class LinePropertyController {
     }
 
     @PostMapping
+    @Operation(summary = "create line property", description = "노선 정보 생성")
     public ResponseEntity<LinePropertyResponse> createLine(@RequestBody LineRequest lineRequest) {
         LinePropertyResult result = linePropertyService.saveLineProperty(
                 new SaveLinePropertyCommand(lineRequest.getName(), lineRequest.getColor()));
@@ -34,6 +36,7 @@ public class LinePropertyController {
     }
 
     @GetMapping
+    @Operation(summary = "find all line properties", description = "모든 노선 정보 반환")
     public ResponseEntity<List<LinePropertyResponse>> findAllLines() {
         List<LinePropertyResult> results = linePropertyService.findLinePropertyResponses();
         List<LinePropertyResponse> responses = results.stream()
@@ -44,6 +47,7 @@ public class LinePropertyController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "find line property by id", description = "노선 정보 반환")
     public ResponseEntity<LinePropertyResponse> findLineById(@PathVariable Long id) {
         LinePropertyResult result = linePropertyService.findLinePropertyResponseById(new IdCommand(id));
         LinePropertyResponse response = new LinePropertyResponse(result.getId(), result.getName(), result.getColor());
@@ -52,6 +56,7 @@ public class LinePropertyController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "update line property by id", description = "노선 정보 수정")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
         linePropertyService.updateLineProperty(
                 new UpdateLinePropertyCommand(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
@@ -60,6 +65,7 @@ public class LinePropertyController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "delete line property by id", description = "노선 정보 삭제")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         linePropertyService.deleteLinePropertyById(new IdCommand(id));
 

@@ -1,5 +1,6 @@
 package subway.presentation.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.core.service.dto.in.IdCommand;
@@ -25,6 +26,7 @@ public class StationController {
     }
 
     @PostMapping
+    @Operation(summary = "create station", description = "역 정보 생성")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResult result = stationService.saveStation(new SaveStationCommand(stationRequest.getName()));
         StationResponse response = new StationResponse(result.getId(), result.getName());
@@ -33,6 +35,7 @@ public class StationController {
     }
 
     @GetMapping
+    @Operation(summary = "show stations", description = "모든 역 정보 반환")
     public ResponseEntity<List<StationResponse>> showStations() {
         List<StationResult> result = stationService.findAllStationResponses();
         List<StationResponse> responses = result.stream()
@@ -43,6 +46,7 @@ public class StationController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "show station by id", description = "역 정보 반환")
     public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
         StationResult result = stationService.findStationResponseById(new IdCommand(id));
         StationResponse response = new StationResponse(result.getId(), result.getName());
@@ -51,6 +55,7 @@ public class StationController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "update station by id", description = "역 정보 수정")
     public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
         stationService.updateStation(new UpdateStationCommand(id, stationRequest.getName()));
 
@@ -58,6 +63,7 @@ public class StationController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "delete station by id", description = "역 정보 삭제")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(new IdCommand(id));
 

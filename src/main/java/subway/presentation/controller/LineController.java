@@ -1,5 +1,6 @@
 package subway.presentation.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +34,7 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}")
+    @Operation(summary = "enroll station", description = "노선에 역 추가")
     public ResponseEntity<Void> enrollStation(@PathVariable Long lineId,
                                               @RequestBody StationEnrollRequest request) {
         lineService.enrollStation(
@@ -42,6 +44,7 @@ public class LineController {
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
+    @Operation(summary = "delete station", description = "노선에서 역 제거")
     public ResponseEntity<Void> deleteStation(@PathVariable Long lineId, @PathVariable Long stationId) {
         lineService.deleteStation(new DeleteStationCommand(lineId, stationId));
 
@@ -50,6 +53,7 @@ public class LineController {
     }
 
     @GetMapping("/{lineId}")
+    @Operation(summary = "get route map", description = "노선도 반환")
     public ResponseEntity<List<StationResponse>> getRouteMap(@PathVariable Long lineId) {
         List<StationResult> results = lineService.findRouteMap(new IdCommand(lineId));
         List<StationResponse> responses = results.stream()
@@ -60,6 +64,7 @@ public class LineController {
     }
 
     @GetMapping
+    @Operation(summary = "get all route maps", description = "모든 노선도 반환")
     public ResponseEntity<Map<String, List<StationResponse>>> getAllRouteMap() {
         Map<String, List<StationResult>> result = lineService.findAllRouteMap();
         Map<String, List<StationResponse>> responses = result.entrySet().stream()
