@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.subway;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,6 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import subway.domain.subway.Section;
+import subway.domain.subway.Sections;
 
 class SectionsTest {
     private final List<Section> sections = new ArrayList<>();

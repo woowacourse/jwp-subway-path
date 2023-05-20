@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import subway.domain.Section;
+import subway.domain.subway.Section;
 
 @Repository
 public class SectionDao {

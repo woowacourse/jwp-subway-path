@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.SectionService;
 import subway.dto.InitialSectionAddRequest;
+import subway.dto.PathFindingRequest;
+import subway.dto.PathResponse;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
 import subway.dto.SectionDeleteRequest;
+import subway.dto.StationResponse;
 
 @RequestMapping("/sections")
 @RestController

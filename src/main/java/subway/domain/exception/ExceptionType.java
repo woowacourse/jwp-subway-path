@@ -1,4 +1,4 @@
-package subway.exception;
+package subway.domain.exception;
 
 public enum ExceptionType {
     INVALID_DISTANCE,
@@ -15,4 +15,6 @@ public enum ExceptionType {
     STATION_DOES_NOT_EXIST,
     NOT_UP_LINE_LAST_STOP,
     NOT_DOWN_LINE_LAST_STOP,
+    NO_PATH,
+    PATH_HAS_LOOP,
 }

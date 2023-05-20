@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.subway;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
 
 public class Sections {
     private final List<Section> sections;
@@ -88,7 +88,7 @@ public class Sections {
     public List<Section> findSectionsIncludeStation(Long stationId) {
         return sections.stream()
             .filter(section -> section.includeStation(stationId))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public boolean hasStation(Long stationId) {

@@ -1,11 +1,11 @@
-package subway.domain;
+package subway.domain.subway;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
 
 public class Subway {
     private final Map<Line, List<Station>> subway;

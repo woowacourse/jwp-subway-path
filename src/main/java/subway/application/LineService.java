@@ -11,16 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
-import subway.domain.Subway;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
+import subway.domain.subway.Line;
+import subway.domain.subway.Section;
+import subway.domain.subway.Sections;
+import subway.domain.subway.Station;
+import subway.domain.subway.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationsResponse;
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
 
 @Transactional(readOnly = true)
 @Service
@@ -56,17 +56,17 @@ public class LineService {
         Subway subway = new Subway(persistLines, persistStations, persistSections);
         Map<Line, List<Station>> lineMap = subway.getLineMap();
 
-        return getResponses(lineMap);
+        return getLineStationsResponses(lineMap);
     }
 
-    private List<LineStationsResponse> getResponses(Map<Line, List<Station>> lineMap) {
+    private List<LineStationsResponse> getLineStationsResponses(Map<Line, List<Station>> lineMap) {
         return lineMap.entrySet()
             .stream()
             .map(entry -> LineStationsResponse.of(entry.getKey(), entry.getValue()))
             .collect(Collectors.toUnmodifiableList());
     }
 
-    public List<Line> findLines() {
+    private List<Line> findLines() {
         return lineDao.findAll();
     }
 
@@ -92,7 +92,7 @@ public class LineService {
             .collect(Collectors.toUnmodifiableList());
     }
 
-    public Line findLineById(Long id) {
+    private Line findLineById(Long id) {
         return lineDao.findById(id);
     }
 
@@ -111,5 +111,4 @@ public class LineService {
         }
         lineDao.deleteById(id);
     }
-
 }

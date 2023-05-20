@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.subway;
 
 public class Line {
     private Long id;

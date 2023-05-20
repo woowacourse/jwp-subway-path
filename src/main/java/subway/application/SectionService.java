@@ -7,14 +7,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.SectionDao;
-import subway.domain.Section;
-import subway.domain.Sections;
+import subway.dao.StationDao;
+import subway.domain.subway.Section;
+import subway.domain.subway.Sections;
 import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
 import subway.dto.SectionDeleteRequest;
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
 
 @Service
 @Transactional(readOnly = true)

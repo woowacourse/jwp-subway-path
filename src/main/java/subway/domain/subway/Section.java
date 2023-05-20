@@ -1,7 +1,7 @@
-package subway.domain;
+package subway.domain.subway;
 
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
 
 public class Section {
     private final Long id;

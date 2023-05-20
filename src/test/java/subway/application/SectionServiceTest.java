@@ -13,15 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.StationDao;
-import subway.domain.Section;
+import subway.domain.subway.Section;
 import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
 import subway.dto.SectionDeleteRequest;
-import subway.exception.DomainException;
+import subway.domain.exception.DomainException;
 
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {

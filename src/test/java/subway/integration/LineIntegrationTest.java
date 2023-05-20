@@ -16,7 +16,6 @@ import org.springframework.test.context.jdbc.Sql;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineStationsResponse;
 import subway.dto.StationResponse;
@@ -95,7 +94,7 @@ public class LineIntegrationTest extends IntegrationTest {
         assertAll(
             () -> assertThat(result.stream()
                 .map(lineStationsResponse -> lineStationsResponse.getLine().getId())
-                .collect(Collectors.toList()))
+                .collect(Collectors.toUnmodifiableList()))
                 .containsAll(expectedLineIds),
 
             () -> assertThat(result.stream()
@@ -117,7 +116,7 @@ public class LineIntegrationTest extends IntegrationTest {
                     () -> assertThat(lineStations.get(1).getName()).isEqualTo("영등포구청"),
                     () -> assertThat(lineStations.get(2).getId()).isEqualTo(3L),
                     () -> assertThat(lineStations.get(2).getName()).isEqualTo("신대방")
-                    );
+                );
             });
     }
 
