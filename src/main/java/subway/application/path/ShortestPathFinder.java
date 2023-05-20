@@ -1,9 +1,9 @@
 package subway.application.path;
 
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.domain.Distance;
 import subway.domain.ShortestPath;
@@ -14,12 +14,14 @@ import subway.domain.section.Section;
 import java.util.List;
 
 @Component
-public class JgraphtPathFinder implements PathFinder {
+public class ShortestPathFinder implements PathFinder {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final Graph<Station, DefaultWeightedEdge> graph;
+    private final ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm;
 
-    public JgraphtPathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public ShortestPathFinder(Graph<Station, DefaultWeightedEdge> graph, ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm) {
         this.graph = graph;
+        this.shortestPathAlgorithm = shortestPathAlgorithm;
     }
 
     @Override
@@ -27,9 +29,7 @@ public class JgraphtPathFinder implements PathFinder {
         final List<Station> allStations = sections.getAllStations();
         initializeGraph(allStations, sections.getSections());
 
-        final DijkstraShortestPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph);
-
-        final GraphPath<Station, DefaultWeightedEdge> shortestPath = path.getPath(upStation, downStation);
+        final GraphPath<Station, DefaultWeightedEdge> shortestPath = shortestPathAlgorithm.getPath(upStation, downStation);
         return new ShortestPath(shortestPath.getVertexList(), Distance.from(shortestPath.getWeight()));
     }
 

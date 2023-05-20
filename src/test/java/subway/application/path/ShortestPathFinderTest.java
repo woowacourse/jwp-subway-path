@@ -1,5 +1,6 @@
 package subway.application.path;
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,37 +18,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SuppressWarnings("NonAsciiCharacters")
-class JgraphtPathFinderTest {
+class ShortestPathFinderTest {
 
-    private JgraphtPathFinder jgraphtPathFinder;
+    private ShortestPathFinder shortestPathFinder;
     private MultiLineSections sections;
     private Station 석촌;
     private Station 잠실새내;
 
     @BeforeEach
     void init() {
-        jgraphtPathFinder = new JgraphtPathFinder(new WeightedMultigraph<>(DefaultWeightedEdge.class));
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        shortestPathFinder = new ShortestPathFinder(graph, new DijkstraShortestPath<>(graph));
         sections = createSample();
     }
 
     /**
-     * 8호선                    9호선
-     * 몽촌토성                올림픽공원
-     * |                 /
-     * 10               20
-     * |              /
+     *       8호선                    9호선
+     *      몽촌토성                올림픽공원
+     *         |                 /
+     *        10               20
+     *         |              /
      * 2호선 : 잠실 -- 10 -- 잠실새내 -- 20 -- 삼성 -- 15 -- 선릉
-     * |          /
-     * 15       30
-     * |      /
-     * |    /
-     * 석촌
+     *         |          /
+     *        15       30
+     *         |      /
+     *         |    /
+     *         석촌
      */
     @Test
     void 최단_거리를_조회한다() {
         // when
-        final ShortestPath shortestPath = jgraphtPathFinder.findShortestPath(sections, 석촌, 잠실새내);
-        System.out.println(shortestPath.getRoutes());
+        final ShortestPath shortestPath = shortestPathFinder.findShortestPath(sections, 석촌, 잠실새내);
+
         // then
         assertAll(
                 () -> assertThat(shortestPath.getRoutes()).extracting("name")

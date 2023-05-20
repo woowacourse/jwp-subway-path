@@ -1,5 +1,8 @@
 package subway.config;
 
+import org.jgrapht.Graph;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +13,12 @@ import subway.domain.Station;
 public class PathConfig {
 
     @Bean
-    public WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultigraph() {
+    public Graph<Station, DefaultWeightedEdge> weightedMultigraph() {
         return new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    }
+
+    @Bean
+    public ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm() {
+        return new DijkstraShortestPath<>(weightedMultigraph());
     }
 }
