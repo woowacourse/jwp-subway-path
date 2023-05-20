@@ -12,10 +12,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.Line;
 import subway.line.application.LineRepository;
-import subway.line.domain.section.application.SectionService;
+import subway.line.application.LineService;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.domain.exception.InvalidDistanceException;
-import subway.line.domain.section.infrastructure.SectionDao;
 import subway.line.domain.station.Station;
 import subway.line.domain.station.infrastructure.StationDao;
 
@@ -29,14 +28,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @AutoConfigureTestDatabase
 class SectionDaoTest {
     @Autowired
-    private SectionService sectionService;
-
-    @Autowired
-    private SectionDao sectionDao;
-
-    @Autowired
     private LineRepository lineRepository;
-
+    @Autowired
+    private LineService lineService;
     @Autowired
     private StationDao stationDao;
 
@@ -57,7 +51,7 @@ class SectionDaoTest {
     @DisplayName("거리 정보는 양의 정수로 제한합니다.")
     void distanceFormat() {
         // when && then
-        assertThatThrownBy(() -> sectionDao.insert(line, stationS, stationJ, Distance.of(-3)))
+        assertThatThrownBy(() -> lineService.saveSection2(line, stationS.getName(), stationJ.getName(), Distance.of(-3), true))
                 .isInstanceOf(InvalidDistanceException.class)
                 .hasMessage("거리 정보는 양의 정수로 제한합니다.");
     }
@@ -70,12 +64,12 @@ class SectionDaoTest {
         // given
         List<Station> stations = List.of(stationS, stationJ, stationO);
 
-        sectionService.insert(line.getId(), stationS.getName(), stationJ.getName(), Distance.of(6), true);
-        sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), Distance.of(3), false);
+        lineService.saveSection(line.getId(), stationS.getName(), stationJ.getName(), Distance.of(6), true);
+        lineService.saveSection(line.getId(), stationO.getName(), stationJ.getName(), Distance.of(3), false);
 
         // when & then
         Station stationY = stationDao.insert("양평");
-        assertThatCode(() -> sectionDao.insert(line, stations.get(index), stationY, Distance.of(2)))
+        assertThatCode(() -> lineService.saveSection2(line, stations.get(index).getName(), stationY.getName(), Distance.of(2), true))
                 .doesNotThrowAnyException();
     }
 }

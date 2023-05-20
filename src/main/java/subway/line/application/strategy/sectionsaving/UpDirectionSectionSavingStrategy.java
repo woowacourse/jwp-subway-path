@@ -1,4 +1,4 @@
-package subway.line.domain.section.application.strategy;
+package subway.line.application.strategy.sectionsaving;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -10,29 +10,34 @@ import subway.line.domain.station.Station;
 
 @Component
 @Order(1)
-public class UpDirectionSectionInsertionStrategy implements SectionInsertionStrategy {
+public class UpDirectionSectionSavingStrategy implements SectionSavingStrategy {
     private final SectionRepository sectionRepository;
 
-    public UpDirectionSectionInsertionStrategy(SectionRepository sectionRepository) {
+    public UpDirectionSectionSavingStrategy(SectionRepository sectionRepository) {
         this.sectionRepository = sectionRepository;
     }
 
     @Override
     public boolean support(Line line, Station previousStation, Station nextStation, Distance distance) {
-        return sectionRepository.findByNextStation(nextStation, line).isPresent();
+        return line.findByNextStation(nextStation).isPresent();
     }
 
     @Override
     public long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
-        final var savedSection = sectionRepository.insert(line, previousStation, nextStation, distance);
+        final var savedSection = sectionRepository.insert(line.getId(), previousStation, nextStation, distance);
 
-        final var stationToUpdate = sectionRepository.findByNextStation(nextStation, line)
+        final var sectionToUpdate = line.findByNextStation(nextStation)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
-        sectionRepository.update(stationToUpdate.change()
-                .line(line)
+
+        final var updatedSection = sectionToUpdate.change()
                 .nextStation(previousStation)
                 .subtractDistance(distance)
-                .done());
+                .done();
+
+        sectionRepository.update(updatedSection);
+
+        line.addSection(savedSection);
+        line.updateSection(updatedSection);
 
         return savedSection.getId();
     }

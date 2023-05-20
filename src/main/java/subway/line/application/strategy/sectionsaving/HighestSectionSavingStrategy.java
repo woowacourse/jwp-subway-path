@@ -1,4 +1,4 @@
-package subway.line.domain.section.application.strategy;
+package subway.line.application.strategy.sectionsaving;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -10,11 +10,11 @@ import subway.line.domain.station.Station;
 
 @Component
 @Order(4)
-public class HighestSectionInsertionStrategy implements SectionInsertionStrategy {
+public class HighestSectionSavingStrategy implements SectionSavingStrategy {
     private final SectionRepository sectionRepository;
     private final LineRepository lineRepository;
 
-    public HighestSectionInsertionStrategy(SectionRepository sectionRepository, LineRepository lineRepository) {
+    public HighestSectionSavingStrategy(SectionRepository sectionRepository, LineRepository lineRepository) {
         this.sectionRepository = sectionRepository;
         this.lineRepository = lineRepository;
     }
@@ -26,8 +26,12 @@ public class HighestSectionInsertionStrategy implements SectionInsertionStrategy
 
     @Override
     public long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
-        final var sectionId = sectionRepository.insert(line, previousStation, nextStation, distance).getId();
+        final var section = sectionRepository.insert(line.getId(), previousStation, nextStation, distance);
         lineRepository.updateHeadStation(line, previousStation);
-        return sectionId;
+
+        line.addSection(section);
+        line.changeHead(previousStation);
+
+        return section.getId();
     }
 }

@@ -21,7 +21,7 @@ public class ClearLineStationDeletingStrategy implements StationDeletingStrategy
 
     @Override
     public void deleteStation(Line line, Station station) {
-        sectionRepository.clearStations(line);
+        sectionRepository.clearStations(line.getId());
 
         line.clearSection();
         line.changeHead(new EmptyStation());

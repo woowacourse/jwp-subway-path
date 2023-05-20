@@ -1,9 +1,10 @@
-package subway.line.domain.section.application.strategy;
+package subway.line.application.strategy.sectionsaving;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
+import subway.line.domain.section.Section;
 import subway.line.domain.section.application.SectionRepository;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.domain.EmptyDistance;
@@ -12,32 +13,35 @@ import subway.line.domain.station.Station;
 
 @Component
 @Order(2)
-public class LowestSectionInsertionStrategy implements SectionInsertionStrategy {
+public class LowestSectionSavingStrategy implements SectionSavingStrategy {
     private final SectionRepository sectionRepository;
 
-    public LowestSectionInsertionStrategy(SectionRepository sectionRepository) {
+    public LowestSectionSavingStrategy(SectionRepository sectionRepository) {
         this.sectionRepository = sectionRepository;
     }
 
     @Override
     public boolean support(Line line, Station previousStation, Station nextStation, Distance distance) {
-        final var previousSection = sectionRepository.findByPreviousStation(previousStation, line);
+        final var previousSection = line.findByPreviousStation(previousStation);
         return previousSection.isPresent() && previousSection.get().isNextStationEmpty();
     }
 
     @Override
     public long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
-        final var sectionToUpdate = sectionRepository.findByPreviousStation(previousStation, line)
+        final var sectionToUpdate = line.findByPreviousStation(previousStation)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
 
-        final var savedId = sectionRepository.insert(line, nextStation, new EmptyStation(), new EmptyDistance()).getId();
+        final var savedSection = sectionRepository.insert(line.getId(), nextStation, new EmptyStation(), new EmptyDistance());
 
-        sectionRepository.update(sectionToUpdate.change()
+        final var updatedSection = sectionToUpdate.change()
                 .previousStation(previousStation)
                 .nextStation(nextStation)
                 .distance(distance)
-                .done());
+                .done();
+        sectionRepository.update(updatedSection);
 
-        return savedId;
+        line.addSection(savedSection);
+        line.updateSection(updatedSection);
+        return savedSection.getId();
     }
 }

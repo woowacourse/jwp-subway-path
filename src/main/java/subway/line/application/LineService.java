@@ -4,11 +4,14 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
+import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
+import subway.line.application.strategy.sectionsaving.SectionSavingStrategy;
+import subway.line.application.strategy.stationdeleting.StationDeletingStrategy;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.application.SectionRepository;
-import subway.line.domain.section.application.SectionService;
 import subway.line.domain.section.application.ShortestPathResponse;
+import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
 import subway.line.domain.station.application.StationRepository;
 import subway.line.dto.LineRequest;
@@ -16,7 +19,6 @@ import subway.line.dto.LineResponse;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,15 +42,14 @@ public class LineService {
         this.stationDeletingStrategies = stationDeletingStrategies;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineRepository.insert(request.getName(), request.getColor());
-        return LineResponse.of(persistLine);
+    public Line saveLine(LineRequest request) {
+        return lineRepository.insert(request.getName(), request.getColor());
     }
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor(), sectionService.findAllStationsOrderByUp(line)))
+                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor(), line.findAllStationsOrderByUp()))
                 .collect(Collectors.toList());
     }
 
@@ -57,9 +58,9 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        List<Station> stations = sectionService.findAllStationsOrderByUp(persistLine);
-        return LineResponse.of(persistLine, stations);
+        Line line = findLineById(id);
+        List<Station> stations = line.findAllStationsOrderByUp();
+        return LineResponse.of(line, stations);
     }
 
     public Line findLineById(Long id) {
@@ -95,8 +96,38 @@ public class LineService {
         return graph;
     }
 
+    public long saveSection(long lineId, String previousStationName, String nextStationName, Distance distance, boolean isDown) {
+        Line line = lineRepository.findById(lineId);
+        Station previousStation = stationRepository.findByName(previousStationName);
+        Station nextStation = stationRepository.findByName(nextStationName);
+
+        if (isDown) {
+            return insert(line, previousStation, nextStation, distance);
+        }
+        return insert(line, nextStation, previousStation, distance);
+    }
+
+    public long saveSection2(Line line, String previousStationName, String nextStationName, Distance distance, boolean isDown) {
+        Station previousStation = stationRepository.findByName(previousStationName);
+        Station nextStation = stationRepository.findByName(nextStationName);
+
+        if (isDown) {
+            return insert(line, previousStation, nextStation, distance);
+        }
+        return insert(line, nextStation, previousStation, distance);
+    }
+
+    private long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
+        for (SectionSavingStrategy strategy : sectionSavingStrategies) {
+            if (strategy.support(line, previousStation, nextStation, distance)) {
+                return strategy.insert(line, previousStation, nextStation, distance);
+            }
+        }
+        throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
+    }
+
     private void saveLineInGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        final var sections = sectionRepository.findAllByLine(line);
+        final var sections = sectionRepository.findAllByLineId(line.getId());
         for (Section section : sections) {
             saveSectionInGraph(graph, section);
         }

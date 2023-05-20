@@ -19,18 +19,16 @@ import java.util.List;
 public class LineController {
 
     private final LineService lineService;
-    private final SectionService sectionService;
 
-    public LineController(LineService lineService, SectionService sectionService) {
+    public LineController(LineService lineService) {
         this.lineService = lineService;
-        this.sectionService = sectionService;
     }
 
-    @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-    }
+//    @PostMapping
+//    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+//        LineResponse line = lineService.saveLine(lineRequest);
+//        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+//    }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
@@ -56,14 +54,14 @@ public class LineController {
 
     @PostMapping("/{lineId}/section")
     public ResponseEntity<Void> insertSection(@PathVariable long lineId, @RequestBody SectionSavingRequest sectionSavingRequest) {
-        long savedId = sectionService.insert(lineId, sectionSavingRequest.getPreviousStationName(),
+        long savedId = lineService.saveSection(lineId, sectionSavingRequest.getPreviousStationName(),
                 sectionSavingRequest.getNextStationName(), sectionSavingRequest.getDistance(), sectionSavingRequest.isDown());
         return ResponseEntity.created(URI.create(String.format("/lines/%d/%d", lineId, savedId))).build();
     }
 
     @DeleteMapping("/{lineId}/section")
     public ResponseEntity<Void> deleteStation(@PathVariable long lineId, @RequestBody StationRequest stationRequest) {
-        lineService.deleteStation(lineId, stationRequest.getName());
+        lineService.deleteStation(null, stationRequest.getName());
         return ResponseEntity.ok().build();
     }
 

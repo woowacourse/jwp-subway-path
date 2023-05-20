@@ -45,20 +45,20 @@ class LineServiceTest {
                         lineBD
                 ));
 
-        Mockito.when(sectionRepository.findAllByLine(line7))
+        Mockito.when(sectionRepository.findAllByLineId(line7.getId()))
                 .thenReturn(List.of(
-                        new Section(1L, line7, new Station(1L, "반포역"), new Station(2L, "논현역"), Distance.of(3)),
-                        new Section(2L, line7, new Station(2L, "논현역"), new Station(3L, "학동역"), Distance.of(4)),
-                        new Section(3L, line7, new Station(3L, "학동역"), new Station(4L, "강남구청"), Distance.of(3)),
-                        new Section(4L, line7, new Station(4L, "강남구청"), new Station(5L, "청담역"), Distance.of(4)),
-                        new Section(5L, line7, new Station(5L, "청담역"), new EmptyStation(), new EmptyDistance())
+                        new Section(1L, new Station(1L, "반포역"), new Station(2L, "논현역"), Distance.of(3)),
+                        new Section(2L, new Station(2L, "논현역"), new Station(3L, "학동역"), Distance.of(4)),
+                        new Section(3L, new Station(3L, "학동역"), new Station(4L, "강남구청"), Distance.of(3)),
+                        new Section(4L, new Station(4L, "강남구청"), new Station(5L, "청담역"), Distance.of(4)),
+                        new Section(5L, new Station(5L, "청담역"), new EmptyStation(), new EmptyDistance())
                 ));
 
-        Mockito.when(sectionRepository.findAllByLine(lineBD))
+        Mockito.when(sectionRepository.findAllByLineId(lineBD.getId()))
                 .thenReturn(List.of(
-                        new Section(6L, lineBD, new Station(4L, "강남구청"), new Station(6L, "압구정로데오"), Distance.of(4)),
-                        new Section(7L, lineBD, new Station(6L, "압구정로데오"), new Station(7L, "서울숲"), Distance.of(5)),
-                        new Section(8L, lineBD, new Station(7L, "서울숲"), new EmptyStation(), new EmptyDistance())
+                        new Section(6L, new Station(4L, "강남구청"), new Station(6L, "압구정로데오"), Distance.of(4)),
+                        new Section(7L, new Station(6L, "압구정로데오"), new Station(7L, "서울숲"), Distance.of(5)),
+                        new Section(8L, new Station(7L, "서울숲"), new EmptyStation(), new EmptyDistance())
                 ));
 
         Mockito.when(stationRepository.findByName("반포역")).thenReturn(new Station(1L, "반포역"));

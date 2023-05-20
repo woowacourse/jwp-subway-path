@@ -1,4 +1,4 @@
-package subway.line.domain.section.application.strategy;
+package subway.line.application.strategy.sectionsaving;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -12,25 +12,29 @@ import subway.line.domain.station.Station;
 
 @Component
 @Order(0)
-public class InitializingSectionInsertionStrategy implements SectionInsertionStrategy {
+public class InitializingSectionSavingStrategy implements SectionSavingStrategy {
     private final SectionRepository sectionRepository;
     private final LineRepository lineRepository;
 
-    public InitializingSectionInsertionStrategy(SectionRepository sectionRepository, LineRepository lineRepository) {
+    public InitializingSectionSavingStrategy(SectionRepository sectionRepository, LineRepository lineRepository) {
         this.sectionRepository = sectionRepository;
         this.lineRepository = lineRepository;
     }
 
     @Override
     public boolean support(Line line, Station previousStation, Station nextStation, Distance distance) {
-        return sectionRepository.countStations(line) == 0;
+        return line.hasSection();
     }
 
     @Override
     public long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
-        final var sectionId = sectionRepository.insert(line, previousStation, nextStation, distance).getId();
-        sectionRepository.insert(line, nextStation, new EmptyStation(), new EmptyDistance());
+        final var previousSection = sectionRepository.insert(line.getId(), previousStation, nextStation, distance);
+        final var nextSection = sectionRepository.insert(line.getId(), nextStation, new EmptyStation(), new EmptyDistance());
         lineRepository.updateHeadStation(line, previousStation);
-        return sectionId;
+
+        line.addSection(previousSection);
+        line.addSection(nextSection);
+        line.changeHead(previousStation);
+        return previousSection.getId();
     }
 }

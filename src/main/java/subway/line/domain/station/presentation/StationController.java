@@ -18,11 +18,11 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
-    }
+//    @PostMapping
+//    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+//        StationResponse station = stationService.saveStation(stationRequest);
+//        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+//    }
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {

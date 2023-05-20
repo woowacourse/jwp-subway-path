@@ -16,9 +16,8 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.insert(stationRequest.getName());
-        return StationResponse.of(station);
+    public Station saveStation(StationRequest stationRequest) {
+        return stationRepository.insert(stationRequest.getName());
     }
 
     public StationResponse findStationResponseById(Long id) {
