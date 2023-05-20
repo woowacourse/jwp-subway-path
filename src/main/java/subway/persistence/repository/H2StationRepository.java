@@ -30,22 +30,18 @@ public class H2StationRepository implements StationRepository {
     public List<Station> findStationsById(Set<Long> ids) {
         List<StationEntity> stationsById = stationDao.findStationsById(ids);
         return stationsById.stream()
-                .map(this::toDomain)
+                .map(Station::from)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Station findById(Long id) {
         StationEntity stationEntity = stationDao.findById(id);
-        return toDomain(stationEntity);
+        return Station.from(stationEntity);
     }
 
     @Override
     public void deleteById(long stationId) {
         stationDao.deleteById(stationId);
-    }
-
-    private Station toDomain(StationEntity stationEntity) {
-        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 }

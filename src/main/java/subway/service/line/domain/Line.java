@@ -1,5 +1,7 @@
 package subway.service.line.domain;
 
+import subway.persistence.dao.entity.LineEntity;
+
 import java.util.Objects;
 
 public class Line {
@@ -19,6 +21,10 @@ public class Line {
         this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public static Line from(LineEntity lineEntity) {
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
     public Long getId() {

@@ -21,7 +21,7 @@ public class H2LineRepository implements LineRepository {
     public Line insert(Line line) {
         LineEntity lineEntity = new LineEntity(line.getName(), line.getColor());
         LineEntity savedLineEntity = lineDao.insert(lineEntity);
-        return toDomain(savedLineEntity);
+        return Line.from(savedLineEntity);
     }
 
     @Override
@@ -30,10 +30,6 @@ public class H2LineRepository implements LineRepository {
         if (foundLineEntity.isEmpty()) {
             throw new IllegalArgumentException("존재하지 않는 노선입니다.");
         }
-        return toDomain(foundLineEntity.get());
-    }
-
-    private Line toDomain(LineEntity lineEntity) {
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+        return Line.from(foundLineEntity.get());
     }
 }

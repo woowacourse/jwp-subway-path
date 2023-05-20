@@ -1,7 +1,10 @@
 package subway.service.section.domain;
 
+import subway.persistence.dao.entity.SectionEntity;
+import subway.persistence.dao.entity.StationEntity;
 import subway.service.station.domain.Station;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class Section {
@@ -19,6 +22,20 @@ public class Section {
 
     public Section(Station upStation, Station downStation, Distance distance) {
         this(null, upStation, downStation, distance);
+    }
+
+    public static Section of(SectionEntity sectionEntity, Map<Long, StationEntity> stationEntityMap) {
+        StationEntity upStationEntity = stationEntityMap.get(sectionEntity.getUpStationId());
+        Station upStation = new Station(upStationEntity.getId(), upStationEntity.getName());
+
+        StationEntity downStationEntity = stationEntityMap.get(sectionEntity.getDownStationId());
+        Station downStation = new Station(downStationEntity.getId(), downStationEntity.getName());
+        return new Section(
+                sectionEntity.getId(),
+                upStation,
+                downStation,
+                new Distance(sectionEntity.getDistance())
+        );
     }
 
     public boolean contains(Station station) {
