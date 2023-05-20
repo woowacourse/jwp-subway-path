@@ -16,6 +16,6 @@ public enum SectionDirection {
         return Arrays.stream(values())
             .filter((sectionDirection -> sectionDirection.message.equals(find)))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 구간 진행 방향이 존재하지 않습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("구간 진행 방향이 존재하지 않습니다. ( " + find + " )"));
     }
 }

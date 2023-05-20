@@ -270,6 +270,6 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().as(ExceptionResponse.class).getMessage()).isEqualTo("해당 이름의 역이 존재하지 않습니다. ( 없는역 )");
+        assertThat(response.body().as(ExceptionResponse.class).getMessage()).isEqualTo("노선에 역이 존재하지 않습니다. ( 없는역 )");
     }
 }

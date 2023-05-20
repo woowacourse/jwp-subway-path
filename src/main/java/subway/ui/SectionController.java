@@ -34,7 +34,7 @@ public class SectionController {
     }
 
     @DeleteMapping
-    public ResponseEntity<SectionsRemovedResponse> deleteContains(
+    public ResponseEntity<SectionsRemovedResponse> delete(
         @PathVariable(name = "lineId") final Long lineId,
         @RequestParam(name = "stationName") final String stationName
     ) {

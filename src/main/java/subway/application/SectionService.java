@@ -9,6 +9,7 @@ import subway.domain.SectionDirection;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionCreateRequest;
+import subway.exception.custom.LineDoesNotContainStationException;
 
 @Service
 public class SectionService {
@@ -21,31 +22,34 @@ public class SectionService {
 
     @Transactional
     public Long create(final Long lineId, final SectionCreateRequest request) {
-        final Sections sections = new Sections(sectionRepository.findAllByLineId(lineId));
-        final Station baseStation = sectionRepository.registerStationIfNotExist(request.getBaseStation());
-        final Station newStation = sectionRepository.registerStationIfNotExist(request.getNewStation());
+        final Sections sections = Sections.of(sectionRepository.findAllByLineId(lineId));
+        final Station baseStation = sectionRepository.insertStationIfNotExist(request.getBaseStation());
+        final Station newStation = sectionRepository.insertStationIfNotExist(request.getNewStation());
         final Section newSection = Section.of(baseStation, newStation,
             SectionDirection.get(request.getDirection()), request.getDistance());
 
         sections.addSection(baseStation, newSection);
-        updateSections(lineId, sections.getSections());
+        updateSectionsInLine(lineId, sections.getSections());
 
-        return sectionRepository.findId(lineId, newSection);
+        return sectionRepository.findIdBy(lineId, newSection);
     }
 
 
-    private void updateSections(final Long lineId, final List<Section> sections) {
+    private void updateSectionsInLine(final Long lineId, final List<Section> sections) {
         sectionRepository.deleteAllByLineId(lineId);
-        for (Section section : sections) {
-            sectionRepository.create(lineId, section);
-        }
+        sections.forEach(section -> sectionRepository.insert(lineId, section));
     }
 
     @Transactional
     public void delete(final Long lineId, final String stationName) {
-        final Sections sections = new Sections(sectionRepository.findAllByLineId(lineId));
-        final Station deleteStation = sectionRepository.findStationByName(stationName);
-        sections.removeStation(deleteStation);
-        updateSections(lineId, sections.getSections());
+        final Sections sections = Sections.of(sectionRepository.findAllByLineId(lineId));
+        final Station findStation = sections.getStations()
+            .stream()
+            .filter((station -> station.getName().equals(stationName)))
+            .findFirst()
+            .orElseThrow(() -> new LineDoesNotContainStationException("노선에 역이 존재하지 않습니다. ( " + stationName + " )"));
+
+        sections.removeStation(findStation);
+        updateSectionsInLine(lineId, sections.getSections());
     }
 }

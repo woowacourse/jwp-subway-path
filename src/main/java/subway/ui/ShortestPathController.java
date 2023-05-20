@@ -20,12 +20,11 @@ public class ShortestPathController {
 
     @GetMapping
     public ResponseEntity<ShortestPathResponse> findShortestPath(
-        @RequestParam(name = "start") final String startStationName,
-        @RequestParam(name = "end") final String endStationName,
+        @RequestParam(name = "start") final String startName,
+        @RequestParam(name = "end") final String endName,
         @RequestParam(name = "age") final int age
     ) {
-        final ShortestPathResponse shortestPathResponse = shortestPathService.getShortestPath(startStationName,
-            endStationName, age);
+        final ShortestPathResponse shortestPathResponse = shortestPathService.getPath(startName, endName, age);
         return ResponseEntity.ok(shortestPathResponse);
     }
 }

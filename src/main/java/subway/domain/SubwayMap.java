@@ -32,24 +32,20 @@ public class SubwayMap {
         return new ShortestPath(path.getVertexList(), (int) path.getWeight());
     }
 
-    public Line findLineContains(final Station station) {
-        return linesAndSections.entrySet()
-            .stream()
-            .filter((entry) -> entry.getValue().getSortedStations().contains(station))
-            .findFirst()
-            .orElseThrow(() -> new LineDoesNotContainStationException(String.format("%s 역을 포함한 라인이 존재하지 않습니다.",
-                station.getName()))).getKey();
-    }
-
     private WeightedMultigraph<LineStation, DefaultEdge> generateGraph() {
         final WeightedMultigraph<LineStation, DefaultEdge> graph = new WeightedMultigraph<>(DefaultEdge.class);
 
         linesAndSections.forEach((line, sections) -> {
-            addSectionStationsToVertex(graph, line, sections.getSortedStations());
+            addSectionStationsToVertex(graph, line, sections.getStations());
             addSectionsToEdge(graph, line, sections.getSections());
         });
 
         return graph;
+    }
+
+    private void addSectionStationsToVertex(final WeightedMultigraph<LineStation, DefaultEdge> graph, final Line line,
+        final List<Station> stations) {
+        stations.forEach((station) -> graph.addVertex(LineStation.of(line, station)));
     }
 
     private void addSectionsToEdge(final WeightedMultigraph<LineStation, DefaultEdge> graph, final Line line,
@@ -61,8 +57,12 @@ public class SubwayMap {
         });
     }
 
-    private void addSectionStationsToVertex(final WeightedMultigraph<LineStation, DefaultEdge> graph, final Line line,
-        final List<Station> stations) {
-        stations.forEach((station) -> graph.addVertex(LineStation.of(line, station)));
+    public Line findLineContains(final Station station) {
+        return linesAndSections.entrySet()
+            .stream()
+            .filter((entry) -> entry.getValue().getStations().contains(station))
+            .findFirst()
+            .orElseThrow(() -> new LineDoesNotContainStationException(String.format("%s 역을 포함한 라인이 존재하지 않습니다.",
+                station.getName()))).getKey();
     }
 }

@@ -2,7 +2,7 @@ package subway.domain;
 
 import java.util.Objects;
 
-public class LineStation {
+public final class LineStation {
 
     private Line line;
     private Station station;
@@ -12,12 +12,12 @@ public class LineStation {
         this.station = station;
     }
 
-    public static LineStation withNullLine(final Station station) {
-        return new LineStation(null, station);
-    }
-
     public static LineStation of(final Line line, final Station station) {
         return new LineStation(line, station);
+    }
+
+    public static LineStation withNullLine(final Station station) {
+        return new LineStation(null, station);
     }
 
     public Line getLine() {

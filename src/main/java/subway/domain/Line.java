@@ -2,7 +2,7 @@ package subway.domain;
 
 import java.util.Objects;
 
-public class Line {
+public final class Line {
 
     private Long id;
     private String name;
@@ -12,15 +12,19 @@ public class Line {
     Line() {
     }
 
-    public Line(Long id, String name, String color, Integer additionalFee) {
+    private Line(Long id, String name, String color, Integer additionalFee) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.additionalFee = additionalFee;
     }
 
-    public Line(String name, String color, Integer additionalFee) {
-        this(null, name, color, additionalFee);
+    public static Line of(final Long id, final String name, final String color, final Integer additionalFee) {
+        return new Line(id, name, color, additionalFee);
+    }
+
+    public static Line withNullId(final String name, final String color, final Integer additionalFee) {
+        return new Line(null, name, color, additionalFee);
     }
 
     public Long getId() {

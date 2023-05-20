@@ -2,7 +2,7 @@ package subway.domain;
 
 import java.util.List;
 
-public class ShortestPath {
+public final class ShortestPath {
 
     private final List<LineStation> path;
     private final int distance;

@@ -4,64 +4,50 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.dao.SectionRepository;
+import subway.dao.LineRepository;
 import subway.domain.Line;
+import subway.domain.Section;
 import subway.domain.Sections;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
-import subway.exception.custom.LineNotExistException;
 
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
-    private final SectionRepository sectionRepository;
+    private final LineRepository lineRepository;
 
-    public LineService(final LineDao lineDao, final SectionRepository sectionRepository) {
-        this.lineDao = lineDao;
-        this.sectionRepository = sectionRepository;
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(),
-            request.getAdditionalFee()));
-        return LineResponse.of(persistLine);
+    public LineResponse create(final LineRequest request) {
+        final Line line = lineRepository.insert(request.getName(), request.getColor(), request.getAdditionalFee());
+        return LineResponse.of(line);
     }
 
-    public List<LineResponse> findLineResponses() {
-        return findLines().stream()
-            .flatMap(line -> Stream.of(findLineResponseById(line.getId())))
+    public List<LineResponse> findAll() {
+        return lineRepository.findAll().stream()
+            .flatMap(line -> Stream.of(findById(line.getId())))
             .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(final Long id) {
-        final Line persistLine = findLineById(id);
-        final Sections sections = new Sections(sectionRepository.findAllByLineId(id));
-        final List<StationResponse> stationResponses = sections.getSortedStations()
+    public LineResponse findById(final Long id) {
+        final Line line = lineRepository.findById(id);
+        final List<Section> sectionsInLine = lineRepository.findSectionsByLineId(id);
+        final List<StationResponse> stationResponses = Sections.of(sectionsInLine).getSortedStations()
             .stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
 
-        return LineResponse.withStationResponses(persistLine, stationResponses);
+        return LineResponse.withStationResponses(line, stationResponses);
     }
 
-    public Line findLineById(final Long id) {
-        return lineDao.findById(id)
-            .orElseThrow(() -> new LineNotExistException("노선이 존재하지 않습니다."));
+    public void update(final Long id, final LineRequest lineUpdateRequest) {
+        lineRepository.update(id, lineUpdateRequest);
     }
 
-    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
-            lineUpdateRequest.getAdditionalFee()));
-    }
-
-    public void deleteLineById(final Long id) {
-        lineDao.deleteById(id);
+    public void deleteById(final Long id) {
+        lineRepository.deleteById(id);
     }
 }

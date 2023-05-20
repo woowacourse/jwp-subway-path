@@ -11,8 +11,8 @@ import subway.exception.custom.StationNotExistException;
 @Repository
 public class SectionRepository {
 
-    private final LineDao lineDao;
-    private final StationDao stationDao;
+    protected final LineDao lineDao;
+    protected final StationDao stationDao;
     private final SectionDao sectionDao;
 
     public SectionRepository(final LineDao lineDao, final StationDao stationDao, final SectionDao sectionDao) {
@@ -21,8 +21,25 @@ public class SectionRepository {
         this.sectionDao = sectionDao;
     }
 
-    public Section create(final Long lineId, final Section section) {
+    public Section insert(final Long lineId, final Section section) {
         return sectionDao.insert(lineId, section);
+    }
+
+    public Station insertStationIfNotExist(final String stationName) {
+        final Optional<Station> savedStation = stationDao.findByName(stationName);
+        return savedStation.orElseGet(() -> stationDao.insert(Station.from(stationName)));
+    }
+
+    public Long findIdBy(final Long lineId, final Section section) {
+        final String upStationName = section.getUpStation().getName();
+        final String downStationName = section.getDownStation().getName();
+
+        final Station upStation = stationDao.findByName(upStationName)
+            .orElseThrow(() -> new StationNotExistException("해당 이름의 역이 존재하지 않습니다. ( " + upStationName + " )"));
+        final Station downStation = stationDao.findByName(downStationName)
+            .orElseThrow(() -> new StationNotExistException("해당 이름의 역이 존재하지 않습니다. ( " + downStationName + " )"));
+
+        return sectionDao.findIdBy(lineId, Section.withNullId(upStation, downStation, section.getDistance()));
     }
 
     public List<Section> findAllByLineId(final Long lineId) {
@@ -32,33 +49,7 @@ public class SectionRepository {
         return sectionDao.findAllByLineId(lineId);
     }
 
-    public Long findId(final Long lineId, final Section section) {
-        final String upStationName = section.getUpStation().getName();
-        final String downStationName = section.getDownStation().getName();
-
-        final Station upStation = stationDao.findByName(upStationName)
-            .orElseThrow(() -> new StationNotExistException("해당 이름의 역이 존재하지 않습니다. ( " + upStationName + " )"));
-        final Station downStation = stationDao.findByName(downStationName)
-            .orElseThrow(() -> new StationNotExistException("해당 이름의 역이 존재하지 않습니다. ( " + downStationName + " )"));
-
-        return sectionDao.findId(lineId, Section.of(upStation, downStation, section.getDistance()));
-    }
-
     public void deleteAllByLineId(final Long lineId) {
         sectionDao.deleteAllByLineId(lineId);
-    }
-
-    public Station registerStation(final String stationName) {
-        return stationDao.insert(Station.from(stationName));
-    }
-
-    public Station findStationByName(final String stationName) {
-        return stationDao.findByName(stationName)
-            .orElseThrow(() -> new StationNotExistException("해당 이름의 역이 존재하지 않습니다. ( " + stationName + " )"));
-    }
-
-    public Station registerStationIfNotExist(final String stationName) {
-        final Optional<Station> savedStation = stationDao.findByName(stationName);
-        return savedStation.orElseGet(() -> stationDao.insert(Station.from(stationName)));
     }
 }

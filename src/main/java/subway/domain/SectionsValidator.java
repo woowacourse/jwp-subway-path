@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SectionsValidator {
+public final class SectionsValidator {
 
     private SectionsValidator() {
 
@@ -29,7 +29,7 @@ public class SectionsValidator {
             throw new IllegalArgumentException("두 개의 하행역으로 향하는 상행역이 존재합니다.");
         }
     }
-    
+
     private static void validateAllConnected(final List<Section> sections) {
         final Map<String, String> sectionInfo = sections.stream()
             .collect(Collectors.toMap(

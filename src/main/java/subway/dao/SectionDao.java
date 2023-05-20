@@ -42,6 +42,13 @@ public class SectionDao {
         return Section.of(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
+    public Long findIdBy(final Long lineId, final Section section) {
+        final String sql = "SELECT id FROM LINE_SECTION WHERE up_station_id = ? AND down_station_id = ? AND line_id = ?";
+        final Long upStationId = section.getUpStation().getId();
+        final Long downStationId = section.getDownStation().getId();
+        return jdbcTemplate.queryForObject(sql, LONG_ROW_MAPPER, upStationId, downStationId, lineId);
+    }
+
     public List<Section> findAllByLineId(final Long id) {
         final String sql = "SELECT "
             + "SEC.id AS line_id, SEC.distance AS distance, "
@@ -58,12 +65,5 @@ public class SectionDao {
     public void deleteAllByLineId(final Long lineId) {
         final String sql = "DELETE FROM LINE_SECTION WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
-    }
-
-    public Long findId(final Long lineId, final Section section) {
-        final String sql = "SELECT id FROM LINE_SECTION WHERE up_station_id = ? AND down_station_id = ? AND line_id = ?";
-        final Long upStationId = section.getUpStation().getId();
-        final Long downStationId = section.getDownStation().getId();
-        return jdbcTemplate.queryForObject(sql, LONG_ROW_MAPPER, upStationId, downStationId, lineId);
     }
 }

@@ -25,12 +25,11 @@ public class StationDao {
     public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
-            .withTableName("station")
+            .withTableName("STATION")
             .usingGeneratedKeyColumns("id");
     }
 
     public Station insert(final Station station) {
-        System.out.println("station.getName() = " + station.getName());
         final Long savedId = insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(station))
             .longValue();
         return Station.of(savedId, station.getName());
@@ -52,17 +51,17 @@ public class StationDao {
     }
 
     public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
+        final String sql = "SELECT * FROM STATION WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, STATION_ROW_MAPPER, id);
     }
 
     public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
+        final String sql = "UPDATE STATION SET name = ? WHERE id = ?";
         jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
+        final String sql = "DELETE FROM STATION WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 }

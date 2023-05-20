@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 
 class SubwayMapTest {
 
-    private static final Line FIRST_LINE = new Line(1L, "1호선", "빨강", 100);
-    private static final Line SECOND_LINE = new Line(2L, "2호선", "빨강", 0);
+    private static final Line FIRST_LINE = Line.of(1L, "1호선", "빨강", 100);
+    private static final Line SECOND_LINE = Line.of(2L, "2호선", "빨강", 0);
     private static final Station 첫번쩨_ = Station.of(1L, "첫번째");
     private static final Station 두번째_ = Station.of(2L, "두번째");
     private static final Station 세번째_ = Station.of(3L, "세번째");
@@ -19,9 +19,10 @@ class SubwayMapTest {
     @Test
     void getShortestPath_differentStation() {
         //given
-        final Sections firstLineInfo = new Sections(List.of(Section.of(첫번쩨_, 두번째_, 10), Section.of(두번째_, 세번째_,
-            15)));
-        final Sections secondLineInfo = new Sections(List.of(Section.of(첫번쩨_, 세번째_, 24)));
+        final Sections firstLineInfo = Sections.of(
+            List.of(Section.withNullId(첫번쩨_, 두번째_, 10), Section.withNullId(두번째_, 세번째_,
+                15)));
+        final Sections secondLineInfo = Sections.of(List.of(Section.withNullId(첫번쩨_, 세번째_, 24)));
         final SubwayMap subwayMap = new SubwayMap(List.of(FIRST_LINE, SECOND_LINE),
             List.of(firstLineInfo, secondLineInfo));
 
@@ -42,7 +43,7 @@ class SubwayMapTest {
     @Test
     void getShortestPath_sameStation() {
         //given
-        final Sections firstLineInfo = new Sections(List.of(Section.of(첫번쩨_, 두번째_, 10)));
+        final Sections firstLineInfo = Sections.of(List.of(Section.withNullId(첫번쩨_, 두번째_, 10)));
         final SubwayMap subwayMap = new SubwayMap(List.of(FIRST_LINE), List.of(firstLineInfo));
 
         //when

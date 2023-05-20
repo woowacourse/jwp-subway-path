@@ -44,7 +44,7 @@ class ShortestPathControllerTest {
         final ShortestPathResponse shortestPathResponse = new ShortestPathResponse(List.of(firstStation, secondStation),
             10, 2300);
 
-        Mockito.when(shortestPathService.getShortestPath(any(), any(), anyInt())).thenReturn(shortestPathResponse);
+        Mockito.when(shortestPathService.getPath(any(), any(), anyInt())).thenReturn(shortestPathResponse);
 
         //when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()

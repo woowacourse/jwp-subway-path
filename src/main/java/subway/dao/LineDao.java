@@ -9,14 +9,14 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import subway.domain.Line;
 
-@Repository
+@Component
 public class LineDao {
 
     private static final RowMapper<Line> LINE_ROW_MAPPER = (rs, rowNum) ->
-        new Line(
+        Line.of(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getString("color"),
@@ -41,12 +41,7 @@ public class LineDao {
         params.put("additional_fee", line.getAdditionalFee());
 
         final Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor(), line.getAdditionalFee());
-    }
-
-    public List<Line> findAll() {
-        final String sql = "SELECT * FROM LINE";
-        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
+        return Line.of(lineId, line.getName(), line.getColor(), line.getAdditionalFee());
     }
 
     public Optional<Line> findById(Long id) {
@@ -56,6 +51,11 @@ public class LineDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public List<Line> findAll() {
+        final String sql = "SELECT * FROM LINE";
+        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
     public void update(final Line newLine) {

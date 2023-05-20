@@ -2,6 +2,7 @@ package subway.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -49,5 +50,11 @@ public class ExceptionAdvice {
     public ResponseEntity<ExceptionResponse> handle(final LineDoesNotContainStationException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.badRequest().body(new ExceptionResponse(exception.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<Void> handle(DuplicateKeyException exception) {
+        logger.error(exception.getMessage());
+        return ResponseEntity.badRequest().build();
     }
 }
