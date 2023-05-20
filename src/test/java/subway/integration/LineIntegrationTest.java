@@ -50,12 +50,7 @@ class LineIntegrationTest extends IntegrationTest {
     @Test
     void 기존에_존재하는_지하철_노선_이름으로_지하철_노선을_생성한다() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createLineRequestOne)
-                .when().post("/lines")
-                .then().log().all();
+        지하철_생성(createLineRequestOne);
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -99,21 +94,8 @@ class LineIntegrationTest extends IntegrationTest {
     @Test
     void 지하철_노선_목록을_조회한다() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createLineRequestOne)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createLineRequestTwo)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+        지하철_생성(createLineRequestOne);
+        지하철_생성(createLineRequestTwo);
 
         // expect
         RestAssured.given().log().all()
@@ -128,4 +110,13 @@ class LineIntegrationTest extends IntegrationTest {
                 .statusCode(is(HttpStatus.OK.value()));
     }
 
+
+    private void 지하철_생성(final CreateLineRequest createLineRequest) {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(createLineRequest)
+                .when().post("/lines")
+                .then().log().all();
+    }
 }
