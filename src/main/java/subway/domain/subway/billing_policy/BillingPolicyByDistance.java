@@ -3,9 +3,11 @@ package subway.domain.subway.billing_policy;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 import subway.domain.Path;
 import subway.domain.section.Distance;
 
+@Component
 public final class BillingPolicyByDistance implements BillingPolicy {
 
     private static final int DEFAULT_FARE = 1250;

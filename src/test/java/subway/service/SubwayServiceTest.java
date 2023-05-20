@@ -1,9 +1,11 @@
 package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,10 +19,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.StationResponse;
 import subway.controller.dto.SubwayShortestPathResponse;
+import subway.domain.Path;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
-import subway.exception.InvalidStationException;
+import subway.domain.subway.Subway;
+import subway.domain.subway.billing_policy.Fare;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -36,6 +40,9 @@ class SubwayServiceTest {
     @Mock
     private LineRepository lineRepository;
 
+    @Mock
+    private Subway subway;
+
     @Nested
     @DisplayName("두 역 사이의 최단 거리 경로를 조회할 시 ")
     class FindShortestPath {
@@ -43,6 +50,8 @@ class SubwayServiceTest {
         private Station upward;
         private Station middle;
         private Station downward;
+        private Line lineTwo;
+        private Line lineFour;
 
         @BeforeEach
         void setUp() {
@@ -51,8 +60,8 @@ class SubwayServiceTest {
             downward = new Station(3L, "서울역");
             final List<Section> sectionForLineTwo = List.of(new Section(upward, middle, 3));
             final List<Section> sectionsForLineFour = List.of(new Section(middle, downward, 4));
-            final Line lineTwo = new Line(1L, "2호선", "초록색", 300, new LinkedList<>(sectionForLineTwo));
-            final Line lineFour = new Line(2L, "4호선", "하늘색", 400, new LinkedList<>(sectionsForLineFour));
+            lineTwo = new Line(1L, "2호선", "초록색", 300, new LinkedList<>(sectionForLineTwo));
+            lineFour = new Line(2L, "4호선", "하늘색", 400, new LinkedList<>(sectionsForLineFour));
             given(lineRepository.findAll()).willReturn(List.of(lineTwo, lineFour));
         }
 
@@ -62,6 +71,10 @@ class SubwayServiceTest {
 
             given(stationRepository.findById(1L)).willReturn(upward);
             given(stationRepository.findById(3L)).willReturn(downward);
+            willDoNothing().given(subway).updateRouteMap(anyList());
+            given(subway.findShortestPath(any(Station.class), any(Station.class))).willReturn(
+                    new Path(List.of(upward, middle, downward), List.of(lineTwo, lineFour), 7));
+            given(subway.calculateFare(any(Path.class))).willReturn(new Fare(1250));
 
             final SubwayShortestPathResponse shortestPath = subwayService.findShortestPath(1L, 3L);
 
@@ -71,18 +84,6 @@ class SubwayServiceTest {
                     () -> assertThat(shortestPath.getDistance()).isEqualTo(7),
                     () -> assertThat(shortestPath.getFare()).isEqualTo(1250)
             );
-        }
-
-        @Test
-        @DisplayName("노선에 등록되지 않은 역이라면 예외를 던진다.")
-        void findShortestPathWithInvalidStation() {
-            final Station unRegisteredStation = new Station(7L, "상수역");
-
-            given(stationRepository.findById(1L)).willReturn(upward);
-            given(stationRepository.findById(7L)).willReturn(unRegisteredStation);
-
-            assertThatThrownBy(() -> subwayService.findShortestPath(1L, 7L))
-                    .isInstanceOf(InvalidStationException.class);
         }
     }
 }

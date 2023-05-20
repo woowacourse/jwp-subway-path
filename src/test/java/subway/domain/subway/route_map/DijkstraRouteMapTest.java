@@ -39,7 +39,8 @@ class DijkstraRouteMapTest {
             final Line lineTwo = new Line(1L, "2호선", "초록색", 300, new LinkedList<>(sectionForLineTwo));
             final Line lineFour = new Line(2L, "4호선", "하늘색", 400, new LinkedList<>(sectionsForLineFour));
 
-            routeMap = new DijkstraRouteMap(List.of(lineTwo, lineFour));
+            routeMap = new DijkstraRouteMap();
+            routeMap.update(List.of(lineTwo, lineFour));
         }
 
         @Test

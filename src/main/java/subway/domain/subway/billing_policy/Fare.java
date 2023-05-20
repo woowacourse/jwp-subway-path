@@ -17,6 +17,10 @@ public final class Fare {
         }
     }
 
+    public Fare add(final Fare target) {
+        return new Fare(value + target.getValue());
+    }
+
     public Fare add(final int targetValue) {
         return new Fare(value + targetValue);
     }

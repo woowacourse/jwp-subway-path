@@ -7,9 +7,7 @@ import subway.controller.dto.SubwayShortestPathResponse;
 import subway.domain.Path;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
-import subway.domain.subway.route_map.DijkstraRouteMap;
 import subway.domain.subway.Subway;
-import subway.domain.subway.billing_policy.BillingPolicyByDistance;
 import subway.domain.subway.billing_policy.Fare;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -20,10 +18,16 @@ public class SubwayService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final Subway subway;
 
-    public SubwayService(final LineRepository lineRepository, final StationRepository stationRepository) {
+    public SubwayService(
+            final LineRepository lineRepository,
+            final StationRepository stationRepository,
+            final Subway subway
+    ) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.subway = subway;
     }
 
     public SubwayShortestPathResponse findShortestPath(final Long sourceStationId, final Long destinationStationId) {
@@ -31,7 +35,7 @@ public class SubwayService {
         final Station sourceStation = stationRepository.findById(sourceStationId);
         final Station destinationStation = stationRepository.findById(destinationStationId);
 
-        final Subway subway = new Subway(new DijkstraRouteMap(lines), new BillingPolicyByDistance());
+        subway.updateRouteMap(lines);
 
         final Path shortestPath = subway.findShortestPath(sourceStation, destinationStation);
         final Fare fare = subway.calculateFare(shortestPath);
