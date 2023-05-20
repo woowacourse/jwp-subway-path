@@ -17,8 +17,10 @@ public class StationMapper {
         return lineWithSections.stream()
             .filter(res -> res.isSourceOrTargetStation(stationId))
             .findFirst()
-            .map(res -> new Station(res.getStationNameByStationId(stationId)))
-            .orElseThrow(() -> new NotFoundException(STATION_NOT_FOUND.getMessage() + " id = " + stationId));
+            .map(res -> Station.create(res.getStationNameByStationId(stationId)))
+            .orElseThrow(() -> new NotFoundException(
+                STATION_NOT_FOUND,
+                STATION_NOT_FOUND.getMessage() + " id = " + stationId));
     }
 
     public static List<StationResponse> createStationResponses(final List<LineWithSectionRes> possibleSections,
@@ -35,7 +37,9 @@ public class StationMapper {
             .filter(res -> res.isSourceOrTargetStation(stationName))
             .findFirst()
             .map(res -> res.getStationIdByStationName(stationName))
-            .orElseThrow(() -> new NotFoundException(STATION_NOT_FOUND.getMessage() + " name = " + stationName));
+            .orElseThrow(() -> new NotFoundException(
+                STATION_NOT_FOUND,
+                STATION_NOT_FOUND.getMessage() + " name = " + stationName));
     }
 
     public static List<StationResponse> createStationResponses(final List<StationRes> findStations) {

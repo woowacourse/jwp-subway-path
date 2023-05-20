@@ -33,7 +33,7 @@ class LineWithSectionResTest {
             "잠실역", 2L, "선릉역", 10);
 
         // when
-        final boolean result = lineWithSectionRes.isSourceOrTargetStation(new StationName(stationName));
+        final boolean result = lineWithSectionRes.isSourceOrTargetStation(StationName.create(stationName));
 
         // then
         assertThat(result)
@@ -48,7 +48,7 @@ class LineWithSectionResTest {
             "잠실역", 2L, "선릉역", 10);
 
         // when
-        final Long stationId = lineWithSectionRes.getStationIdByStationName(new StationName("잠실역"));
+        final Long stationId = lineWithSectionRes.getStationIdByStationName(StationName.create("잠실역"));
 
         // then
         assertThat(stationId)

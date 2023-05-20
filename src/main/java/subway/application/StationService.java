@@ -26,14 +26,14 @@ public class StationService {
     @Transactional
     public Long saveStation(final StationRequest stationRequest) {
         validateDuplicatedName(stationRequest);
-        final Station requestStation = new Station(stationRequest.getName());
+        final Station requestStation = Station.create(stationRequest.getName());
         return stationRepository.insert(requestStation);
     }
 
     @Transactional
     public void updateStationById(Long id, StationRequest stationRequest) {
         validateDuplicatedName(stationRequest);
-        final Station station = new Station(stationRequest.getName());
+        final Station station = Station.create(stationRequest.getName());
         stationRepository.updateById(id, station);
     }
 

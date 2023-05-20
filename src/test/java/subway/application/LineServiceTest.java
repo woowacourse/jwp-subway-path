@@ -125,14 +125,15 @@ class LineServiceTest {
     void saveSection_non_exists_line_test() {
         // given
         when(lineRepository.findById(anyLong()))
-            .thenThrow(new NotFoundException(LINE_NOT_FOUND.getMessage()));
+            .thenThrow(new NotFoundException(LINE_NOT_FOUND, LINE_NOT_FOUND.getMessage()));
 
         final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 3);
 
         // expected
         assertThatThrownBy(() -> lineService.saveSection(sectionRequest))
             .isInstanceOf(NotFoundException.class)
-            .hasMessage("노선 정보가 존재하지 않습니다.");
+            .extracting("errorCode", "errorMessage")
+            .containsExactly(LINE_NOT_FOUND, "노선 정보가 존재하지 않습니다.");
     }
 
     @Test

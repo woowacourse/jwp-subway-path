@@ -6,8 +6,16 @@ public class Station {
 
     private final StationName name;
 
-    public Station(String name) {
-        this.name = new StationName(name);
+    private Station(final StationName name) {
+        this.name = name;
+    }
+
+    public static Station create(final String name) {
+        return new Station(StationName.create(name));
+    }
+
+    public static Station empty() {
+        return new Station(StationName.empty());
     }
 
     @Override

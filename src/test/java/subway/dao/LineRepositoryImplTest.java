@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static subway.exception.ErrorCode.LINE_NOT_FOUND;
 import static subway.fixture.LineFixture.이호선;
 import static subway.fixture.LineFixture.이호선_구간;
 import static subway.fixture.LineFixture.이호선_엔티티;
@@ -128,7 +129,8 @@ class LineRepositoryImplTest {
         // expected
         assertThatThrownBy(() -> lineRepository.findById(1L))
             .isInstanceOf(NotFoundException.class)
-            .hasMessage("노선 정보가 존재하지 않습니다. id = 1");
+            .extracting("errorCode", "errorMessage")
+            .containsExactly(LINE_NOT_FOUND, "노선 정보가 존재하지 않습니다. id = 1");
     }
 
     @Test

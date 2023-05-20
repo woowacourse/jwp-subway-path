@@ -29,8 +29,8 @@ public class LineWithSectionRes {
     }
 
     public boolean isSourceOrTargetStation(final StationName stationName) {
-        final StationName sourceName = new StationName(sourceStationName);
-        final StationName targetName = new StationName(targetStationName);
+        final StationName sourceName = StationName.create(sourceStationName);
+        final StationName targetName = StationName.create(targetStationName);
         return sourceName.equals(stationName) || targetName.equals(stationName);
     }
 
@@ -39,7 +39,7 @@ public class LineWithSectionRes {
     }
 
     public Long getStationIdByStationName(final StationName stationName) {
-        final StationName sourceName = new StationName(sourceStationName);
+        final StationName sourceName = StationName.create(sourceStationName);
         if (sourceName.equals(stationName)) {
             return sourceStationId;
         }

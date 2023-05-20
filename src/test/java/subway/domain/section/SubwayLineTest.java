@@ -62,8 +62,8 @@ class SubwayLineTest {
         savedSections.add(section);
         final SubwayLine subwayLine = new SubwayLine(savedSections);
 
-        final Station sourceStation = new Station(sourceStationName);
-        final Station targetStation = new Station(targetStationName);
+        final Station sourceStation = Station.create(sourceStationName);
+        final Station targetStation = Station.create(targetStationName);
         final Section requestSection = new Section(sourceStation, targetStation, 10);
 
         // expected
@@ -94,8 +94,8 @@ class SubwayLineTest {
         savedSections.add(section);
         final SubwayLine subwayLine = new SubwayLine(savedSections);
 
-        final Station sourceStation = new Station(sourceStationName);
-        final Station targetStation = new Station(targetStationName);
+        final Station sourceStation = Station.create(sourceStationName);
+        final Station targetStation = Station.create(targetStationName);
         final Section requestSection = new Section(sourceStation, targetStation, 10);
 
         // expected

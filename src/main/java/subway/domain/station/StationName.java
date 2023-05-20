@@ -12,12 +12,20 @@ public class StationName {
 
     private final String name;
 
-    public StationName(final String name) {
-        validateLength(name);
+    private StationName(final String name) {
         this.name = name;
     }
 
-    private void validateLength(final String name) {
+    public static StationName create(final String name) {
+        validateLength(name);
+        return new StationName(name);
+    }
+
+    public static StationName empty() {
+        return new StationName(null);
+    }
+
+    private static void validateLength(final String name) {
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
             throw new BadRequestException(STATION_NAME_LENGTH);
         }

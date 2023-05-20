@@ -49,8 +49,8 @@ class JgraphtServiceTest {
         final List<SubwayLine> 지하철_구간_정보들 = List.of(잠실_신림_구간_정보(), 잠실_신림_환승_구간_정보());
 
         // expected
-        final Station sourceStation = new Station(sourceStationName);
-        final Station targetStation = new Station(targetStationName);
+        final Station sourceStation = Station.create(sourceStationName);
+        final Station targetStation = Station.create(targetStationName);
         assertThatThrownBy(() -> jgraphtService.getShortestPath(지하철_구간_정보들, sourceStation, targetStation))
             .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")

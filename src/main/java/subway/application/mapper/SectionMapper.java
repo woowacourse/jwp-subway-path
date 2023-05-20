@@ -12,8 +12,11 @@ public final class SectionMapper {
 
     public static SubwayLine createSubwayLine(final List<LineWithSectionRes> lineWithSections) {
         final List<Section> sections = lineWithSections.stream().map(res -> {
-            final Station sourceStation = new Station(res.getSourceStationName());
-            final Station targetStation = new Station(res.getTargetStationName());
+            if (res.getSourceStationName() == null || res.getTargetStationName() == null) {
+                return Section.empty();
+            }
+            final Station sourceStation = Station.create(res.getSourceStationName());
+            final Station targetStation = Station.create(res.getTargetStationName());
             return new Section(sourceStation, targetStation, res.getDistance());
         }).collect(Collectors.toList());
         return new SubwayLine(sections);

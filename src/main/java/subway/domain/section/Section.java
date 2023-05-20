@@ -8,7 +8,7 @@ public class Section {
     private final Station target;
     private final SectionDistance distance;
 
-    public Section(final Station source, final Station target, final int distance) {
+    public Section(final Station source, final Station target, final Integer distance) {
         this.source = source;
         this.target = target;
         this.distance = SectionDistance.create(distance);
@@ -18,6 +18,10 @@ public class Section {
         this.source = source;
         this.target = target;
         this.distance = distance;
+    }
+
+    public static Section empty() {
+        return new Section(Station.empty(), Station.empty(), SectionDistance.zero());
     }
 
     public boolean equalToSource(final Station newStation) {

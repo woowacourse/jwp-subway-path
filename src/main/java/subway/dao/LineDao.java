@@ -72,10 +72,10 @@ public class LineDao {
             + "sec.source_station_id, sta1.name as source_station_name, "
             + "sec.target_station_id, sta2.name as target_station_name, sec.distance "
             + "FROM line l "
-            + "INNER JOIN section sec ON l.id = sec.line_id "
-            + "INNER JOIN station sta1 ON sec.source_station_id = sta1.id "
-            + "INNER JOIN station sta2 ON sec.target_station_id = sta2.id "
-            + "WHERE line_id = ?";
+            + "LEFT JOIN section sec ON l.id = sec.line_id "
+            + "LEFT JOIN station sta1 ON sec.source_station_id = sta1.id "
+            + "LEFT JOIN station sta2 ON sec.target_station_id = sta2.id "
+            + "WHERE l.id = ?";
 
         return jdbcTemplate.query(sql, lineWithSectionMapper, id);
     }
@@ -86,9 +86,9 @@ public class LineDao {
             + "sec.source_station_id, sta1.name as source_station_name, "
             + "sec.target_station_id, sta2.name as target_station_name, sec.distance "
             + "FROM line l "
-            + "INNER JOIN section sec ON l.id = sec.line_id "
-            + "INNER JOIN station sta1 ON sec.source_station_id = sta1.id "
-            + "INNER JOIN station sta2 ON sec.target_station_id = sta2.id ";
+            + "LEFT JOIN section sec ON l.id = sec.line_id "
+            + "LEFT JOIN station sta1 ON sec.source_station_id = sta1.id "
+            + "LEFT JOIN station sta2 ON sec.target_station_id = sta2.id ";
 
         return jdbcTemplate.query(sql, lineWithSectionMapper);
     }

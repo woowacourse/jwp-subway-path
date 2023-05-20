@@ -40,8 +40,10 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     public Station findById(final Long id) {
         final StationEntity stationEntity = stationDao.findById(id)
-            .orElseThrow(() -> new NotFoundException(STATION_NOT_FOUND.getMessage() + " id = " + id));
-        return new Station(stationEntity.getName());
+            .orElseThrow(() -> new NotFoundException(
+                STATION_NOT_FOUND,
+                STATION_NOT_FOUND.getMessage() + " id = " + id));
+        return Station.create(stationEntity.getName());
     }
 
     @Override

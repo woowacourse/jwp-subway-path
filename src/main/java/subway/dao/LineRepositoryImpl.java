@@ -47,7 +47,9 @@ public class LineRepositoryImpl implements LineRepository {
     public Line findById(final Long id) {
         return lineDao.findById(id)
             .map(entity -> new Line(entity.getName(), entity.getColor(), entity.getExtraFare()))
-            .orElseThrow(() -> new NotFoundException(LINE_NOT_FOUND.getMessage() + " id = " + id));
+            .orElseThrow(() -> new NotFoundException(
+                LINE_NOT_FOUND,
+                LINE_NOT_FOUND.getMessage() + " id = " + id));
     }
 
     @Override
