@@ -11,11 +11,11 @@ public class SubwayGraph {
     private final WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private final DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public SubwayGraph() {
-        this.dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+    public SubwayGraph(final List<Section> sections) {
+        this.dijkstraShortestPath = new DijkstraShortestPath<>(makeGraph(sections));
     }
 
-    public void makeGraph(final List<Section> sections) {
+    private WeightedMultigraph<String, DefaultWeightedEdge> makeGraph(final List<Section> sections) {
         sections.forEach(
                 section -> {
                     graph.addVertex(section.getUpStation().getName());
@@ -23,6 +23,7 @@ public class SubwayGraph {
                     graph.setEdgeWeight(graph.addEdge(section.getUpStation().getName(), section.getDownStation().getName()), section.getDistance());
                 }
         );
+        return graph;
     }
 
     public List<String> getDijkstraShortestPath(final Station upStation, final Station downStation) {

@@ -6,6 +6,8 @@ import subway.dao.StationDao;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.SubwayGraph;
+import subway.domain.fare.DistanceFareStrategy;
+import subway.domain.fare.FareCalculator;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
 import subway.entity.LineStationEntity;
@@ -21,23 +23,26 @@ public class PathService {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final FareCalculator fareCalculator;
 
     public PathService(final SectionDao sectionDao, final StationDao stationDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.fareCalculator = new FareCalculator(new DistanceFareStrategy());
     }
 
     public ShortestPathResponse findShortestPath(final ShortestPathRequest shortestPathRequest) {
-        SubwayGraph subwayGraph = new SubwayGraph();
         List<Section> sections = toDomain(sectionDao.findLineStationById());
         Map<Long, Station> stationMap = makeStationMap(stationDao.findAll());
+        SubwayGraph subwayGraph = new SubwayGraph(sections);
 
-        subwayGraph.makeGraph(sections);
         Station upStation = stationMap.get(shortestPathRequest.getUpStationId());
         Station downStation = stationMap.get(shortestPathRequest.getDownStationId());
+
         List<String> dijkstraShortestPath = subwayGraph.getDijkstraShortestPath(upStation, downStation);
         double shortestPathWeight = subwayGraph.getShortestPathWeight(upStation, downStation);
-        return new ShortestPathResponse(dijkstraShortestPath, shortestPathWeight);
+        int fare = fareCalculator.calculateFare((int) shortestPathWeight);
+        return new ShortestPathResponse(dijkstraShortestPath, shortestPathWeight, fare);
     }
 
     private List<Section> toDomain(final List<LineStationEntity> lineStationEntities) {
