@@ -20,7 +20,7 @@ public class RouteController {
     }
 
     @GetMapping
-    public ResponseEntity<RouteResponse> findResultShotCut(@RequestBody FindShortCutRequest findShortCutRequest) {
-        return ResponseEntity.ok(findRouteResultUseCase.findResultShotCut(findShortCutRequest));
+    public ResponseEntity<RouteResponse> findResultRouteResult(@RequestBody FindShortCutRequest findShortCutRequest) {
+        return ResponseEntity.ok(findRouteResultUseCase.findRouteResult(findShortCutRequest));
     }
 }
