@@ -1,6 +1,6 @@
 # jwp-subway-path
 
-## 요구사항
+## 1단계 요구사항
 
 ### API 요구사항
 
@@ -39,6 +39,18 @@
 ### 노선(Line)
 
 - [x] 이름을 갖는다.
+
+## 리팩토링 목록
+- [ ] 역 추가, 노선 추가 기능 분리
+  - [ ] 역 추가 이후 노선에 추가하도록 변경
+- [ ] GlobalControllerAdvice 클래스 리팩토링
+  - [ ] CustomException 필드 변경
+  - [ ] CustomException 클래스 네이밍 변경
+- [ ] Station DB table 컬럼 리팩토링
+- [ ] Station 객체가 id를 갖도록 리팩토링
+- [ ] StationService saveNewSections 메소드 내부 로직 변경 -> batchInsert문 사용
+- [ ] LineService isExisted 메소드 내부 로직 변경
+- [ ] 테스트 내부 예외 검증 시 예외 메시지도 함께 검증
 
 ## API 명세서
 
