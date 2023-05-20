@@ -55,7 +55,7 @@ HTTP/1.1 400 Bad Request
 Content-Type: application/json;
 
 {
-    "message": "기준이 되는 역이 노선에 존재하지 않습니다 ( 존재하지 않는 역: ${존재하지 않는 역})"
+    "message": "역이 노선에 존재하지 않습니다 ( 존재하지 않는 역: {역 이름} )"
 }
 ```
 
@@ -68,15 +68,15 @@ Content-Type: application/json;
 #### Request
 
 ```
-curl -X DELETE "https://localhost:8080/lines/${lineId}/sections?stationId=${delete_station_id}"
+curl -X DELETE "https://localhost:8080/lines/${lineId}/sections?stationName=${delete_station_name}"
 ```
 
 #### Request Parameter
 
-| Name      | Type | Description | Required |
-|-----------|------|-------------|----------|
-| lineId    | Long | 노선의 ID      | O        |
-| stationId | Long | 삭제하려는 역의 ID | O        |
+| Name        | Type   | Description | Required |
+|-------------|--------|-------------|----------|
+| lineId      | Long   | 노선의 ID      | O        |
+| stationName | String | 삭제하려는 역의 이름 | O        |
 
 #### Response
 
@@ -95,7 +95,7 @@ HTTP/1.1 400 Bad Request
 Content-Type: application/json;
 
 {
-  "message": "삭제하려는 역이 노선에 존재하지 않습니다."
+  "message": "역이 노선에 존재하지 않습니다 ( 존재하지 않는 역: {역 이름} )"
 }
 ```
 
@@ -132,6 +132,7 @@ Content-Type: application/json;
     "id": 1,
     "name": "노선 이름",
     "color": "노선 색상",
+    "additionalFee": 100
     "stations" : [
         {
             "id": 1,
@@ -155,19 +156,20 @@ Content-Type: application/json;
 HTTP/1.1 Bad Request
 Content-Type: application/json;
 {
-    "message" : "${lineId} 에 해당하는 노선이 존재하지 않습니다"
+    "message" : "노선이 존재하지 않습니다."
 }
 
 ```
 
 #### Response Parameter
 
-| Name     | Type      | Description    | Required |
-|----------|-----------|----------------|----------|
-| id       | Long      | 노선의 ID         | O        |
-| name     | String    | 노선의 이름         | O        |
-| color    | String    | 노선의 색상         | O        |
-| stations | Station[] | 노선에 등록된 역들의 목록 | O        |
+| Name          | Type      | Description    | Required |
+|---------------|-----------|----------------|----------|
+| id            | Long      | 노선의 ID         | O        |
+| name          | String    | 노선의 이름         | O        |
+| color         | String    | 노선의 색상         | O        |
+| additionalFee | Integer   | 노선 사용시 추가요금    | O        |
+| stations      | Station[] | 노선에 등록된 역들의 목록 | O        |
 
 Station
 
@@ -194,45 +196,49 @@ curl -X GET "https://localhost:8080/lines"
 
 #### Response
 
+```
 HTTP/1.1 OK
 Content-Type: application/json;
 {
-"lines" : [
-{
-"id": 1,
-"name": "노선 이름",
-"color": "노선 색상",
-"stations" : [
-{
-"id": 1,
-"name": "첫번째역 이름"
-},
-{
-"id": 2,
-"name": "두번째역 이름"
-},
-...
-]
-},
-{
-"id": 2,
-"name": "노선 이름",
-"color": "노선 색상",
-"stations" : [
-{
-"id": 3,
-"name": "첫번째역 이름"
-},
-{
-"id": 4,
-"name": "두번째역 이름"
-},
-...
-]
-},
-...
-]
+    "lines" : [
+        {
+            "id": 1,
+            "name": "노선 이름",
+            "color": "노선 색상",
+            "additionalFee": 100,
+            "stations" : [
+                {
+                    "id": 1,
+                    "name": "첫번째역 이름"
+                },
+                {
+                    "id": 2,
+                    "name": "두번째역 이름"
+                },
+                ...
+            ]
+        },
+        {
+            "id": 2,
+            "name": "노선 이름",
+            "color": "노선 색상",
+            "additionalFee": 200,
+            "stations" : [
+                {
+                    "id": 3,
+                    "name": "첫번째역 이름"
+                },
+                {
+                    "id": 4,
+                    "name": "두번째역 이름"
+                },
+                ...
+            ]
+        },
+        ...
+    ]
 }
+```
 
 #### Response Parameter
 
@@ -242,12 +248,13 @@ Content-Type: application/json;
 
 Line
 
-| Name     | Type      | Description    | Required |
-|----------|-----------|----------------|----------|
-| id       | Long      | 노선의 ID         | O        |
-| name     | String    | 노선의 이름         | O        |
-| color    | String    | 노선의 색상         | O        |
-| stations | Station[] | 노선에 등록된 역들의 목록 | O        |
+| Name          | Type      | Description    | Required |
+|---------------|-----------|----------------|----------|
+| id            | Long      | 노선의 ID         | O        |
+| name          | String    | 노선의 이름         | O        |
+| color         | String    | 노선의 색상         | O        |
+| additionalFee | Integer   | 노선 사용시 추가요금    | O        |
+| stations      | Station[] | 노선에 등록된 역들의 목록 | O        |
 
 Station
 
@@ -266,16 +273,17 @@ Station
 
 ```
 
-curl -X GET "https://localhost:8080/subway?start={start_station_id}&end={end_station_id}"
+curl -X GET "https://localhost:8080/subway?start={start}&end={end}&age={passenger_age}"
 
 ```
 
 #### Request Parameter
 
-| Name             | Type | Description | Required |
-|------------------|------|-------------|----------|
-| start_station_id | Long | 시작역의 ID     | O        |
-| end_station_id   | Long | 도착역의 ID     | O        |
+| Name  | Type    | Description | Required |
+|-------|---------|-------------|----------|
+| start | String  | 시작역의 이름     | O        |
+| end   | String  | 도착역의 이름     | O        |
+| age   | Integer | 승객의 나이      | O        |
 
 #### Response
 
@@ -284,32 +292,32 @@ curl -X GET "https://localhost:8080/subway?start={start_station_id}&end={end_sta
 HTTP/1.1 200 OK
 Content-Type: application/json;
 {
-"route":[
-{
-"stationId": 1,
-"name": "시작역",
-"lineId": 2,
-"lineName": "시작역 노선",
-"lineColor" : "시작역 노선 색상"
-},
-{
-"stationId": 7,
-"name": "다음역",
-"lineId": 3,
-"lineName": "다음역 노선",
-"lineColor" : "다음역 노선 색상"
-},
-...
-{
-"stationId": 3,
-"name": "도착역",
-"lineId": 2,
-"lineName": "도착역 노선",
-"lineColor" : "도착역 노선 색상"
-}
-],
-"totalDistance": 15,
-"totalBudget": 3400
+    "route":[
+        {
+            "stationId": 1,
+            "name": "시작역",
+            "lineId": 2,
+            "lineName": "시작역 노선",
+            "lineColor" : "시작역 노선 색상"
+        },
+        {
+            "stationId": 7,
+            "name": "다음역",
+            "lineId": 3,
+            "lineName": "다음역 노선",
+            "lineColor" : "다음역 노선 색상"
+        },
+        ...
+        {
+            "stationId": 3,
+            "name": "도착역",
+            "lineId": 2,
+            "lineName": "도착역 노선",
+            "lineColor" : "도착역 노선 색상"
+        }
+    ],
+    "totalDistance": 15,
+    "totalBudget": 3400
 }
 
 ```
@@ -338,60 +346,61 @@ LineStation
 
 ### 노선에 역 등록
 
--[ ] 아래 정보를 통해 노선에 역을 등록한다.
-    -[ ] 기준역의 이름
-    -[ ] 등록역의 이름
-    -[ ] 등록할 방향
-    -[ ] 두 역사이의 거리
--[ ] 노선이 비어있을 때 역을 등록한다.
-    -[ ] 등록할 방향으로 기준역과 등록역 모두 생성된다.
--[ ] 노선의 상행 종점의 상행방향과 하행 종점의 하행방향에 역을 등록한다.
-    -[ ] 기준역이 노선에 없을 경우 예외를 발생시킨다.
-    -[ ] 상행 종점의 상행방향에 역을 등록할 경우 추가된 역이 노선의 상행 종점이 된다.
-    -[ ] 하행 종점의 하행방향에 역을 등록할 경우 추가된 역이 노선의 하행 종점이 된다.
--[ ] 노선의 기존 구간 사이에 역을 등록한다. ( 전체 노선의 길이는 변하지 않는다. )
-    -[ ] 기준역이 노선에 없을 경우 예외를 발생시킨다.
-    -[ ] 상행역을 기준으로 하행역을 추가한다 .
-        -[ ] 기존의 상행역에서 추가역으로 하행하는 구간을 생성한다.
-        -[ ] 추가역에서 기존의 하행역으로 하행하는 구간을 생성한다.
-        -[ ] 기존 구간을 삭제된다.
-    -[ ] 하행역을 기준으로 상행역을 추가한다. ( 전체 노선의 길이는 변하지 않는다. )
-        -[ ] 기존 구간의 하행역에서 추가역으로 상행하는 구간을 생성한다.
-        -[ ] 추가역에서 기존 구간의 상행역으로 하행하는 구간을 생성한다.
-        -[ ] 기존 구간을 삭제한다.
-    -[ ] 기존 구간의 길이가 역이 등록되며 생기는 구간들보다 길지 않으면 예외를 발생시킨다.
+-[x] 아래 정보를 통해 노선에 역을 등록한다.
+    -[x] 기준역의 이름
+    -[x] 등록역의 이름
+    -[x] 등록할 방향
+    -[x] 두 역사이의 거리
+-[x] 노선이 비어있을 때 역을 등록한다.
+    -[x] 등록할 방향으로 기준역과 등록역 모두 생성된다.
+-[x] 노선의 상행 종점의 상행방향과 하행 종점의 하행방향에 역을 등록한다.
+    -[x] 기준역이 노선에 없을 경우 예외를 발생시킨다.
+    -[x] 상행 종점의 상행방향에 역을 등록할 경우 추가된 역이 노선의 상행 종점이 된다.
+    -[x] 하행 종점의 하행방향에 역을 등록할 경우 추가된 역이 노선의 하행 종점이 된다.
+-[x] 노선의 기존 구간 사이에 역을 등록한다. ( 전체 노선의 길이는 변하지 않는다. )
+    -[x] 기준역이 노선에 없을 경우 예외를 발생시킨다.
+    -[x] 상행역을 기준으로 하행역을 추가한다 .
+        -[x] 기존의 상행역에서 추가역으로 하행하는 구간을 생성한다.
+        -[x] 추가역에서 기존의 하행역으로 하행하는 구간을 생성한다.
+        -[x] 기존 구간을 삭제된다.
+    -[x] 하행역을 기준으로 상행역을 추가한다. ( 전체 노선의 길이는 변하지 않는다. )
+        -[x] 기존 구간의 하행역에서 추가역으로 상행하는 구간을 생성한다.
+        -[x] 추가역에서 기존 구간의 상행역으로 하행하는 구간을 생성한다.
+        -[x] 기존 구간을 삭제한다.
+    -[x] 기존 구간의 길이가 역이 등록되며 생기는 구간들보다 길지 않으면 예외를 발생시킨다.
 
 ### 노선에서 역 제거
 
--[ ] 노선에서 이름이 동일한 역을 제거한다.
--[ ] 이름이 동일한 역이 노선에 없을 경우 예외를 발생시킨다.
--[ ] 노선에 역이 두개일 경우 모든 구간을 삭제한다.
--[ ] 노선의 종점을 삭제한다.
-    -[ ] 해당 역이 포함된 구간 1개를 삭제한다.
--[ ] 노선의 중간에 있는 역을 삭제한다.
-    -[ ] 해당 역을 하행역으로 가진 구간의 상행역과 해당 역을 상행역으로 가진 구간의 하행역을 연결한 구간의 생성한다.
-    -[ ] 해당 역을 상행역으로 가진 구간을 삭제한다.
-    -[ ] 해당 역을 하행역으로 가진 구간을 삭제한다.
+-[x] 노선에서 이름이 동일한 역을 제거한다.
+-[x] 이름이 동일한 역이 노선에 없을 경우 예외를 발생시킨다.
+-[x] 노선에 역이 두개일 경우 모든 구간을 삭제한다.
+-[x] 노선의 종점을 삭제한다.
+    -[x] 해당 역이 포함된 구간 1개를 삭제한다.
+-[x] 노선의 중간에 있는 역을 삭제한다.
+    -[x] 해당 역을 하행역으로 가진 구간의 상행역과 해당 역을 상행역으로 가진 구간의 하행역을 연결한 구간의 생성한다.
+    -[x] 해당 역을 상행역으로 가진 구간을 삭제한다.
+    -[x] 해당 역을 하행역으로 가진 구간을 삭제한다.
 
 ### 노선의 역 순서대로 조회
 
--[ ] 노선의 모든 구간을 그래프 자료구조로 생성하여 순서대로 정렬한다.
+-[x] 노선의 모든 구간을 순서대로 정렬하여 반환한다.
 
 ### 운임 요금
 
 #### 기본 운임 요금 정책
 
--[ ] 기본운임(10㎞ 이내): 기본운임 1,250원
--[ ] 이용 거리 초과 시 추가운임 부과
-    -[ ] 10km~50km: 5km 까지 마다 100원 추가
-    -[ ] 50km 초과: 8km 까지 마다 100원 추가
+-[x] 기본운임(10㎞ 이내): 기본운임 1,250원
+-[x] 이용 거리 초과 시 추가운임 부과
+    -[x] 10km~50km: 5km 까지 마다 100원 추가
+    -[x] 50km 초과: 8km 까지 마다 100원 추가
 
 #### 노선별 추가 요금 정책
 
--[ ] 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가합니다.
--[ ] 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용합니다.
+-[x] 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가합니다.
+-[x] 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용합니다.
 
 #### 연령별 요금 할인 정책
 
--[ ] 청소년 (13세 이상~19세 미만) : 운임에서 350원을 공제한 금액의 20%할인
--[ ] 어린이 (6세 이상~13세 미만 ): 운임에서 350원을 공제한 금액의 50%할인
+-[x] 청소년 (13세 이상~19세 미만) : 운임에서 350원을 공제한 금액의 20%할인
+-[x] 어린이 (6세 이상~13세 미만): 운임에서 350원을 공제한 금액의 50%할인
+-[x] 아기 (6세 미만 : 운임료를 받지 않는다
