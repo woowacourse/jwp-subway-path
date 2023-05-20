@@ -1,10 +1,13 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import subway.domain.DiscountCondition;
 import subway.domain.Line;
+import subway.domain.Money;
 import subway.domain.Route;
 import subway.domain.Station;
 import subway.domain.SubwayChargePolicy;
+import subway.domain.SubwayDiscountPolicy;
 import subway.service.dto.ShortestRouteRequest;
 
 import java.util.List;
@@ -14,10 +17,16 @@ public class RouteQueryService {
 
     private final LineQueryService lineQueryService;
     private final SubwayChargePolicy subwayChargePolicy;
+    private final SubwayDiscountPolicy subwayDiscountPolicy;
 
-    public RouteQueryService(final LineQueryService lineQueryService, final SubwayChargePolicy subwayChargePolicy) {
+    public RouteQueryService(
+            final LineQueryService lineQueryService,
+            final SubwayChargePolicy subwayChargePolicy,
+            final SubwayDiscountPolicy subwayDiscountPolicy
+    ) {
         this.lineQueryService = lineQueryService;
         this.subwayChargePolicy = subwayChargePolicy;
+        this.subwayDiscountPolicy = subwayDiscountPolicy;
     }
 
     public List<String> searchShortestRoute(final ShortestRouteRequest shortestRouteRequest) {
@@ -33,7 +42,7 @@ public class RouteQueryService {
         return route.findShortestRoute();
     }
 
-    public int searchLeastCost(final ShortestRouteRequest shortestRouteRequest) {
+    public double searchLeastCost(final ShortestRouteRequest shortestRouteRequest) {
         final List<Line> lines = lineQueryService.searchAllLine();
 
         final Route route = new Route(
@@ -42,7 +51,11 @@ public class RouteQueryService {
                 new Station(shortestRouteRequest.getEndStation())
         );
 
-        return subwayChargePolicy.calculate(route);
+        //TODO : charge 도 Money 로 변경
+        final int totalPrice = subwayChargePolicy.calculate(route);
+
+        return subwayDiscountPolicy.discount(new DiscountCondition(shortestRouteRequest.getAge()),
+                                             new Money(totalPrice)).getValue();
     }
 
     public int searchShortestDistance(final ShortestRouteRequest shortestRouteRequest) {

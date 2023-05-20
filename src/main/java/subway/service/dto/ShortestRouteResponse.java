@@ -5,10 +5,10 @@ import java.util.List;
 public class ShortestRouteResponse {
 
     private final List<String> stations;
-    private final int cost;
+    private final double cost;
     private final int distance;
 
-    public ShortestRouteResponse(final List<String> stations, final int cost, final int distance) {
+    public ShortestRouteResponse(final List<String> stations, final double cost, final int distance) {
         this.stations = stations;
         this.cost = cost;
         this.distance = distance;
@@ -18,7 +18,7 @@ public class ShortestRouteResponse {
         return stations;
     }
 
-    public int getCost() {
+    public double getCost() {
         return cost;
     }
 

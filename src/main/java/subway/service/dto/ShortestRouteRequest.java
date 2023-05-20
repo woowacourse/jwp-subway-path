@@ -2,12 +2,14 @@ package subway.service.dto;
 
 public class ShortestRouteRequest {
 
-    private String startStation;
-    private String endStation;
+    private final String startStation;
+    private final String endStation;
+    private final Integer age;
 
-    public ShortestRouteRequest(final String startStation, final String endStation) {
+    public ShortestRouteRequest(final String startStation, final String endStation, final Integer age) {
         this.startStation = startStation;
         this.endStation = endStation;
+        this.age = age;
     }
 
     public String getStartStation() {
@@ -16,5 +18,9 @@ public class ShortestRouteRequest {
 
     public String getEndStation() {
         return endStation;
+    }
+
+    public Integer getAge() {
+        return age;
     }
 }
