@@ -17,6 +17,6 @@ public class StationFixture {
     public static Station 용산역 = new Station(10L, "용산역");
     public static Station 혜화역 = new Station(11L, "혜화역");
     public static Station 회현역 = new Station(12L, "회현역");
-    public static Station 신사역 = new Station(13L, "회현역");
-    public static Station 수서역 = new Station(14L, "회현역");
+    public static Station 신사역 = new Station(13L, "신사역");
+    public static Station 수서역 = new Station(14L, "수서역");
 }

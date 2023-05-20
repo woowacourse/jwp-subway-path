@@ -61,8 +61,9 @@ class SubwayServiceTest {
         RouteSearchResponse routeSearchResponse = subwayService.findRoute(startStationName, endStationName);
 
         assertAll(
-                () -> assertThat(routeSearchResponse.getRoutes()).containsExactly(response1, response2, response3,
-                        response4),
+                () -> assertThat(routeSearchResponse.getRoutes()).usingRecursiveComparison()
+                        .isEqualTo(List.of(response1, response2, response3,
+                                response4)),
                 () -> assertThat(routeSearchResponse.getDistance()).isEqualTo(20),
                 () -> assertThat(routeSearchResponse.getFare()).isEqualTo(1550)
         );

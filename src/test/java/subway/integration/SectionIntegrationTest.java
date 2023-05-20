@@ -20,6 +20,7 @@ import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
 @Sql("/truncate.sql")
+@DisplayName("구간 추가, 삭제 기능")
 public class SectionIntegrationTest extends IntegrationTest {
 
     @Autowired
