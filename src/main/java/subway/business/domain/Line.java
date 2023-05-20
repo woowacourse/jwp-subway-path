@@ -1,8 +1,10 @@
 package subway.business.domain;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Line {
     private final Long id;
@@ -27,6 +29,15 @@ public class Line {
         List<Section> sections = new LinkedList<>();
         sections.add(new Section(upwardStation, downwardStation, distance));
         return new Line(new Name(name), sections);
+    }
+
+    public List<Station> getStations() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(sections.get(0).getUpwardStation());
+        stations.addAll(sections.stream()
+                .map(Section::getDownwardStation)
+                .collect(Collectors.toList()));
+        return stations;
     }
 
     public void addStation(Station station, Station neighborhoodStation, Direction direction, int distance) {
