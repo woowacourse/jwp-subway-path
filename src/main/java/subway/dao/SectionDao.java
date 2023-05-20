@@ -38,16 +38,15 @@ public class SectionDao {
 
     public void batchSave(List<SectionEntity> sectionEntities) {
         final String sql = "INSERT INTO section "
-                + "(`id`, `up_station_id`, `down_station_id`, `line_id`, `distance`)"
-                + " VALUES (?, ?, ?, ?, ?)";
+                + "(`up_station_id`, `down_station_id`, `line_id`, `distance`)"
+                + " VALUES (?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setLong(1, sectionEntities.get(i).getId());
-                ps.setLong(2, sectionEntities.get(i).getUpStationId());
-                ps.setLong(3, sectionEntities.get(i).getDownStationId());
-                ps.setLong(4, sectionEntities.get(i).getLineId());
-                ps.setInt(5, sectionEntities.get(i).getDistance());
+                ps.setLong(1, sectionEntities.get(i).getUpStationId());
+                ps.setLong(2, sectionEntities.get(i).getDownStationId());
+                ps.setLong(3, sectionEntities.get(i).getLineId());
+                ps.setInt(4, sectionEntities.get(i).getDistance());
             }
 
             @Override

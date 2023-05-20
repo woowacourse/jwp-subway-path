@@ -16,65 +16,81 @@ class SectionDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private SectionDao sectionDao;
-    private SectionEntity sectionEntity;
-    private Long lineId;
 
     @BeforeEach
     void setUp() {
-        lineId = 1L;
         sectionDao = new SectionDao(jdbcTemplate);
-        sectionEntity = new SectionEntity(1L, 2L, lineId, 10);
     }
 
+    @DisplayName("Section을 저장한다.")
     @Test
-    @DisplayName("저장한다.")
     void save() {
+        // given
+        SectionEntity sectionEntity = new SectionEntity(1L, 2L, 1L, 10);
+
         // when
         sectionDao.save(sectionEntity);
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L);
 
-        // expected
+        // then
         assertThat(sectionEntities).hasSize(1);
     }
 
+    @DisplayName("여러 Section을 저장한다.")
     @Test
-    @DisplayName("Line id를 입력받아 해당하는 Section Entity 를 반환한다.")
-    void findById() {
+    void batchSave() {
         // given
-        sectionDao.save(sectionEntity);
+        List<SectionEntity> insertSections = List.of(
+                new SectionEntity(1L, 2L, 1L, 10),
+                new SectionEntity(2L, 3L, 1L, 10));
+
+        // when
+        sectionDao.batchSave(insertSections);
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L);
+
+        // then
+        assertThat(sectionEntities).hasSize(2);
+    }
+
+    @DisplayName("Line id를 입력받아 해당하는 Section Entity 를 반환한다.")
+    @Test
+    void findByLineId() {
+        // given
+        sectionDao.save(new SectionEntity(1L, 2L, 1L, 10));
         sectionDao.save(new SectionEntity(2L, 3L, 1L, 20));
         sectionDao.save(new SectionEntity(3L, 4L, 1L, 30));
 
         // when
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L);
 
-        // expected
+        // then
         assertThat(sectionEntities).hasSize(3);
     }
 
-    @Test
     @DisplayName("Section Entity 를 입력받아 일치하는 Section 을 삭제한다.")
+    @Test
     void deleteByName() {
         // when
+        SectionEntity sectionEntity = new SectionEntity(1L, 2L, 1L, 10);
         sectionDao.save(sectionEntity);
         int deleteRowNumber = sectionDao.delete(sectionEntity);
 
-        // expected
+        // then
         assertThat(deleteRowNumber).isEqualTo(1);
     }
 
-    @Test
     @DisplayName("Line id를 입력받아 일치하는 Section 들을 모두 삭제한다.")
+    @Test
     void deleteByLineId() {
         // given
-        sectionDao.save(sectionEntity);
+        sectionDao.save(new SectionEntity(1L, 2L, 1L, 10));
         sectionDao.save(new SectionEntity(2L, 3L, 1L, 20));
         sectionDao.save(new SectionEntity(3L, 4L, 1L, 30));
 
         // when
         int deleteRowNumber = sectionDao.deleteByLineId(1L);
 
-        // expected
+        // then
         assertThat(deleteRowNumber).isEqualTo(3);
     }
 }
