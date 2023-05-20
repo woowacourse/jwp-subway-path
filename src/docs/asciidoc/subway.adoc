@@ -1,0 +1,144 @@
+= Spring REST Docs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+
+== Line
+
+=== Line 생성
+
+==== HTTP request
+
+include::{snippets}/line-create/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/line-create/http-response.adoc[]
+
+=== Line 수정
+
+==== Http request
+
+include::{snippets}/line-update/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/line-update/http-response.adoc[]
+
+=== Line 삭제
+
+==== Http request
+
+include::{snippets}/line-delete/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/line-delete/http-response.adoc[]
+
+== Station
+
+=== Station 단일 조회
+
+==== HTTP request
+
+include::{snippets}/station-get-one/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/station-get-one/http-response.adoc[]
+
+=== Station 전체 조회
+
+==== HTTP request
+
+include::{snippets}/station-get-all/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/station-get-all/http-response.adoc[]
+
+=== Station 생성
+
+==== HTTP request
+
+include::{snippets}/station-create/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/station-create/http-response.adoc[]
+
+=== Station 수정
+
+==== HTTP request
+
+include::{snippets}/station-update/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/station-update/http-response.adoc[]
+
+=== Station 삭제
+
+==== HTTP request
+
+include::{snippets}/station-create/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/station-create/http-response.adoc[]
+
+== Section
+
+=== Section 생성
+
+==== HTTP request
+
+include::{snippets}/section-create/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/section-create/http-response.adoc[]
+
+=== Section 삭제
+
+==== HTTP request
+
+include::{snippets}/section-delete/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/section-delete/http-response.adoc[]
+
+== Path
+
+=== Path 모든 노선 조회
+
+==== HTTP request
+
+include::{snippets}/path-get-all-line/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/path-get-all-line/http-response.adoc[]
+
+=== Path 단일 노선 조회
+
+==== HTTP request
+
+include::{snippets}/path-get-line/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/path-get-line/http-response.adoc[]
+
+=== Path 최단 노선 조회
+
+==== HTTP request
+
+include::{snippets}/path-get/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/path-get/http-response.adoc[]
+
