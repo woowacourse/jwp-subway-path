@@ -111,8 +111,14 @@ public class SubwayRepository {
 
     private Station toStation(final Long stationId) {
         final StationEntity stationEntity = stationDao.findById(stationId)
-                .orElseThrow(() -> new BusinessException("역 정보가 잘못되엇습니다."));
+                .orElseThrow(() -> new BusinessException("역 정보가 잘못되었습니다."));
         return new Station(stationEntity.getName());
+    }
+
+    public Station findStationByName(final String stationName) {
+        final StationEntity stationEntity = stationDao.findByName(stationName)
+                .orElseThrow(() -> new BusinessException("해당 이름을 가진 역이 존재하지 않습니다."));
+        return toStation(stationEntity.getId());
     }
 
     public Subway findSubway() {

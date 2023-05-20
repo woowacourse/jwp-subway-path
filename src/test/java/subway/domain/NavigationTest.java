@@ -25,7 +25,9 @@ class NavigationTest {
         final Section firstSection = new Section("잠실역", "석촌역", 2);
         final Section secondSection = new Section("석촌역", "송파역", 2);
         final Section thirdSection = new Section("잠실역", "송파역", 10);
-        final Navigation navigation = Navigation.from(new Sections(List.of(firstSection, thirdSection, thirdSection)));
+        final Navigation navigation = Navigation.from(List.of(
+                new Sections(List.of(firstSection, secondSection, thirdSection)))
+        );
 
         // when
         final List<Station> shortestPath = navigation.getShortestPath(new Station("잠실역"), new Station("석촌역"));

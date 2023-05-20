@@ -58,6 +58,10 @@ public class Line {
         return color;
     }
 
+    public Sections getSections() {
+        return sections;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
