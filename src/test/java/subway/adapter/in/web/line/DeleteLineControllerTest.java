@@ -22,7 +22,7 @@ class DeleteLineControllerTest extends IntegrationTest {
     @Test
     @DisplayName("delete  /lines/{id} 노선을 삭제한다.")
     void deleteLine() {
-        final Long lineId = lineRepository.createLine(new Line("1호선"));
+        final Long lineId = lineRepository.createLine(new Line("1호선", 100));
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when().delete("/lines/" + lineId)

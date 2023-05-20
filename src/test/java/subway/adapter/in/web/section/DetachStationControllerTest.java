@@ -34,7 +34,7 @@ class DetachStationControllerTest extends IntegrationTest {
     @Test
     @DisplayName("delete /line/{id}/station 구간의 역을 삭제한다.")
     void deleteSection() {
-        final Long lineId = lineRepository.createLine(new Line("1호선"));
+        final Long lineId = lineRepository.createLine(new Line("1호선", 1000));
         stationRepository.createStation(new Station("비버"));
         stationRepository.createStation(new Station("라빈"));
         sectionRepository.saveSection(lineId, List.of(new Section(lineId, new Station("비버"), new Station("라빈"), 5L)));

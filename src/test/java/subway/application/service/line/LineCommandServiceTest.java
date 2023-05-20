@@ -35,7 +35,7 @@ class LineCommandServiceTest {
                 .willReturn(Optional.empty());
 
         assertThatNoException().isThrownBy(
-                () -> lineCommandService.createLine(new LineRequest("1호선"))
+                () -> lineCommandService.createLine(new LineRequest("1호선", 100))
         );
     }
 
@@ -43,17 +43,17 @@ class LineCommandServiceTest {
     @DisplayName("존재하는 노선이면 예외처리")
     void createLineException() {
         given(lineQueryPort.findByName(any()))
-                .willReturn(Optional.of(new Line(1L, "1호선")));
+                .willReturn(Optional.of(new Line(1L, "1호선", 10)));
 
         assertThatThrownBy(
-                () -> lineCommandService.createLine(new LineRequest("1호선"))
+                () -> lineCommandService.createLine(new LineRequest("1호선", 10))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("저장된 노선이 정상적으로 삭제되는지 테스트")
     void deleteLine() {
-        Long lineId = lineCommandPort.createLine(new Line("1호선"));
+        Long lineId = lineCommandPort.createLine(new Line("1호선", 1));
         lineCommandService.deleteLine(lineId);
 
         Assertions.assertThat(lineQueryPort.findAll()).hasSize(0);

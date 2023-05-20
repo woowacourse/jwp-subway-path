@@ -28,7 +28,7 @@ class CreateLineControllerTest extends IntegrationTest {
     @Test
     @DisplayName("post /lines  노선을 추가한다.")
     void createLine() {
-        final LineRequest lineRequest = new LineRequest("1호선");
+        final LineRequest lineRequest = new LineRequest("1호선", 10);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -40,7 +40,7 @@ class CreateLineControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
-                () -> assertThat(lineQueryPort.findAll()).usingRecursiveComparison().ignoringFields("id").isEqualTo(List.of(new Line(1L, "1호선"))
+                () -> assertThat(lineQueryPort.findAll()).usingRecursiveComparison().ignoringFields("id").isEqualTo(List.of(new Line(1L, "1호선", 10))
                 ));
     }
 }

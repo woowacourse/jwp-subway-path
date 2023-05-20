@@ -34,7 +34,7 @@ class AttachStationControllerTest extends IntegrationTest {
     @Test
     @DisplayName("post /line/{id}/station  구간을 추가한다.")
     void createSection() {
-        final Long lineId = lineRepository.createLine(new Line("1호선"));
+        final Long lineId = lineRepository.createLine(new Line("1호선", 10));
         stationRepository.createStation(new Station("비버"));
         stationRepository.createStation(new Station("라빈"));
 

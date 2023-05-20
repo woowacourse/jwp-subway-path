@@ -3,13 +3,14 @@ package subway.adapter.out.graph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.Route;
+import subway.adapter.out.graph.dto.RouteDto;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,15 +39,16 @@ class ShortPathAdapterTest {
                 new Section(2L, new Station("사"), new Station("라"), 1L)
         );
 
-        List<Sections> sections = sectionList.stream().collect(Collectors.groupingBy(Section::getLineId)).values()
-                .stream()
-                .map(Sections::new)
-                .collect(Collectors.toList());
+        final Map<Long, Sections> sectionsByLine = sectionList.stream()
+                .collect(Collectors.groupingBy(Section::getLineId, Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        Sections::new
+                )));
 
-        final Route route = shortPathAdapter.findSortPath(new Station("가"), new Station("라"), sections);
+        final RouteDto route = shortPathAdapter.findSortPath(new Station("가"), new Station("라"), sectionsByLine);
 
         assertAll(
-                () -> assertThat(route.calculateOverFare().getFare()).isEqualTo(1250L),
+                () -> assertThat(route.getLineIds()).hasSize(2),
                 () -> assertThat(route.getStations()).usingRecursiveComparison().isEqualTo(List.of(
                         new Station("가"),
                         new Station("나"),
@@ -70,13 +72,14 @@ class ShortPathAdapterTest {
                 new Section(2L, new Station("사"), new Station("라"), 1L)
         );
 
-        List<Sections> sections = sectionList.stream().collect(Collectors.groupingBy(Section::getLineId)).values()
-                .stream()
-                .map(Sections::new)
-                .collect(Collectors.toList());
+        final Map<Long, Sections> sectionsByLine = sectionList.stream()
+                .collect(Collectors.groupingBy(Section::getLineId, Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        Sections::new
+                )));
 
         assertThatThrownBy(
-                () -> shortPathAdapter.findSortPath(new Station("가"), new Station("비버"), sections)
+                () -> shortPathAdapter.findSortPath(new Station("가"), new Station("비버"), sectionsByLine)
         ).isInstanceOf(IllegalArgumentException.class).hasMessage("입력된 역이 없습니다.");
     }
 }

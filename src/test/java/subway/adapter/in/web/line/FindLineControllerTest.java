@@ -19,7 +19,7 @@ import subway.domain.Station;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class FindLineControllerTest extends IntegrationTest {
 
@@ -33,7 +33,7 @@ class FindLineControllerTest extends IntegrationTest {
     @Test
     @DisplayName("get /lines/{id}  정렬된 구간이 출력됩니다.")
     void findStationsByLine() {
-        Long lineId = lineJdbcAdapter.createLine(new Line("1호선"));
+        Long lineId = lineJdbcAdapter.createLine(new Line("1호선", 1));
 
         stationJdbcAdapter.createStation(new Station("비버"));
         stationJdbcAdapter.createStation(new Station("라빈"));

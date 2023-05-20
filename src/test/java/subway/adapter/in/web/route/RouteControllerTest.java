@@ -8,11 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import subway.adapter.in.web.route.dto.FindShortCutRequest;
 import subway.adapter.out.persistence.repository.LineJdbcAdapter;
 import subway.adapter.out.persistence.repository.SectionJdbcAdapter;
 import subway.adapter.out.persistence.repository.StationJdbcAdapter;
 import subway.application.dto.RouteResponse;
-import subway.adapter.in.web.route.dto.FindShortCutRequest;
 import subway.common.IntegrationTest;
 import subway.domain.Fare;
 import subway.domain.Line;
@@ -37,8 +37,8 @@ class RouteControllerTest extends IntegrationTest {
     @Test
     @DisplayName("GET /station/route 경로를 조회하면 최단 경로와 그 경로로 이동할때 발생하는 비용 테스트")
     void findResultShotCut() {
-        Long line1Id = lineJdbcAdapter.createLine(new Line("1호선"));
-        Long line2Id = lineJdbcAdapter.createLine(new Line("2호선"));
+        Long line1Id = lineJdbcAdapter.createLine(new Line("1호선", 100));
+        Long line2Id = lineJdbcAdapter.createLine(new Line("2호선", 10));
 
         stationJdbcAdapter.createStation(new Station("가"));
         stationJdbcAdapter.createStation(new Station("나"));
@@ -66,7 +66,7 @@ class RouteControllerTest extends IntegrationTest {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new FindShortCutRequest("가", "라"))
+                .body(new FindShortCutRequest("가", "라", 5000))
                 .when().get("/stations/route")
                 .then().log().all()
                 .extract();
@@ -75,7 +75,7 @@ class RouteControllerTest extends IntegrationTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.body().jsonPath().getObject("", RouteResponse.class))
                         .usingRecursiveComparison()
-                        .isEqualTo(new RouteResponse(List.of("가", "나", "다", "사", "라"), new Fare(1250L)))
+                        .isEqualTo(new RouteResponse(List.of("가", "나", "다", "사", "라"), new Fare(1350L)))
         );
     }
 }

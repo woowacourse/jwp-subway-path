@@ -7,22 +7,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.adapter.in.web.route.dto.FindShortCutRequest;
+import subway.adapter.out.graph.dto.RouteDto;
 import subway.application.port.out.graph.ShortPathPort;
+import subway.application.port.out.line.LineQueryPort;
 import subway.application.port.out.section.SectionQueryPort;
 import subway.application.port.out.station.StationQueryPort;
-import subway.domain.Route;
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +32,8 @@ class RouteQueryServiceTest {
     private SectionQueryPort sectionQueryPort;
     @Mock
     private StationQueryPort stationQueryPort;
+    @Mock
+    private LineQueryPort lineQueryPort;
     @InjectMocks
     private RouteQueryService routeQueryService;
 
@@ -55,19 +56,21 @@ class RouteQueryServiceTest {
                 .willReturn(Optional.of(new Station("가")));
         given(stationQueryPort.findByName(any()))
                 .willReturn(Optional.of(new Station("라")));
-        given(shortPathPort.findSortPath(any(), any(), anyList()))
-                .willReturn(new Route(
+        given(lineQueryPort.findLinesById(List.of(1L, 2L)))
+                .willReturn(List.of(new Line(1L, "1호선", 100), new Line(2L, "2호선", 100)));
+        given(shortPathPort.findSortPath(any(), any(), anyMap()))
+                .willReturn(new RouteDto(
                         List.of(new Station("가"),
                                 new Station("나"),
                                 new Station("다"),
                                 new Station("사"),
                                 new Station("라")
                         ),
-                        1250L)
+                        1250, Set.of(1L, 2L))
                 );
 
         assertThatNoException().isThrownBy(
-                () -> routeQueryService.findResultShotCut(new FindShortCutRequest("가", "라"))
+                () -> routeQueryService.findRouteResult(new FindShortCutRequest("가", "라", 25))
         );
     }
 
@@ -80,7 +83,7 @@ class RouteQueryServiceTest {
                 .willReturn(Optional.empty());
 
         assertThatThrownBy(
-                () -> routeQueryService.findResultShotCut(new FindShortCutRequest("가", "라"))
+                () -> routeQueryService.findRouteResult(new FindShortCutRequest("가", "라", 55))
         ).isInstanceOf(IllegalArgumentException.class).hasMessage("존재하지 않는 역입니다.");
     }
 
@@ -95,7 +98,7 @@ class RouteQueryServiceTest {
                 .willReturn(Optional.of(new Station("라")));
 
         assertThatThrownBy(
-                () -> routeQueryService.findResultShotCut(new FindShortCutRequest("가", "라"))
+                () -> routeQueryService.findRouteResult(new FindShortCutRequest("가", "라", 99))
         ).isInstanceOf(IllegalArgumentException.class).hasMessage("노선에 구간을 추가해주세요");
     }
 }

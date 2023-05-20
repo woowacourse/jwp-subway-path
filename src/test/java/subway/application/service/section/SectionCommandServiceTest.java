@@ -46,8 +46,8 @@ class SectionCommandServiceTest {
                 new Section(1L, new Station("라빈"), new Station("비버"), 5L),
                 new Section(1L, new Station("비버"), new Station("허브신"), 5L));
 
-        given(lineQueryPort.findById(1L))
-                .willReturn(Optional.of(new Line(1L, "1호선")));
+        given(lineQueryPort.findLineById(1L))
+                .willReturn(Optional.of(new Line(1L, "1호선", 100)));
         given(stationQueryPort.findByName(new Station("허브신")))
                 .willReturn(Optional.of(new Station("허브신")));
         given(stationQueryPort.findByName(new Station("나루토")))
@@ -67,8 +67,8 @@ class SectionCommandServiceTest {
                 new Section(1L, new Station("라빈"), new Station("비버"), 5L),
                 new Section(1L, new Station("비버"), new Station("허브신"), 5L));
 
-        given(lineQueryPort.findById(1L))
-                .willReturn(Optional.of(new Line(1L, "1호선")));
+        given(lineQueryPort.findLineById(1L))
+                .willReturn(Optional.of(new Line(1L, "1호선", 10)));
         given(sectionQueryPort.findAllByLineId(1L))
                 .willReturn(sections);
 
@@ -85,8 +85,8 @@ class SectionCommandServiceTest {
                 new Section(1L, new Station("라빈"), new Station("비버"), 5L),
                 new Section(1L, new Station("비버"), new Station("허브신"), 5L));
 
-        given(lineQueryPort.findById(1L))
-                .willReturn(Optional.of(new Line(1L, "1호선")));
+        given(lineQueryPort.findLineById(1L))
+                .willReturn(Optional.of(new Line(1L, "1호선", 10)));
         given(stationQueryPort.findByName(new Station("비버")))
                 .willReturn(Optional.of(new Station("비버")));
         given(sectionQueryPort.findAllByLineId(1L))
@@ -101,8 +101,8 @@ class SectionCommandServiceTest {
                 new Section(1L, new Station("라빈"), new Station("아코"), 5L),
                 new Section(1L, new Station("아코"), new Station("허브신"), 5L));
 
-        given(lineQueryPort.findById(1L))
-                .willReturn(Optional.of(new Line(1L, "1호선")));
+        given(lineQueryPort.findLineById(1L))
+                .willReturn(Optional.of(new Line(1L, "1호선", 10)));
         given(stationQueryPort.findByName(new Station("비버")))
                 .willReturn(Optional.empty());
         given(sectionQueryPort.findAllByLineId(1L))
@@ -114,8 +114,8 @@ class SectionCommandServiceTest {
     @Test
     @DisplayName("일치하는 노선이 없으면 예외처리")
     void deleteStation_lineNotFoundException() {
-        given(lineQueryPort.findById(1L))
-                .willReturn(Optional.of(new Line(1L, "1호선")));
+        given(lineQueryPort.findLineById(1L))
+                .willReturn(Optional.of(new Line(1L, "1호선", 1000)));
         given(stationQueryPort.findByName(new Station("비버")))
                 .willReturn(Optional.of(new Station("비버")));
         given(sectionQueryPort.findAllByLineId(1L))
