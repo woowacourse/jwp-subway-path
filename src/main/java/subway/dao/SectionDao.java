@@ -25,11 +25,6 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public boolean isLineIdExist(final Long lineId) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM section WHERE line_id = ?)";
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, lineId));
-    }
-
     public void batchSave(final List<SectionEntity> sectionEntities) {
         String sql = "INSERT INTO section (line_id, up_station_id, down_station_id, distance) VALUES (?, ?, ?, ?)";
         List<Object[]> batchValues = new ArrayList<>();
