@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.application.RoutingService;
 import subway.application.SectionService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionResponse;
+import subway.dto.StationResponse;
 import subway.dto.StationToLineRequest;
 
 @RestController
@@ -26,10 +28,12 @@ public class LineController {
 
     private final LineService lineService;
     private final SectionService sectionService;
+    private final RoutingService routingService;
 
-    public LineController(LineService lineService, SectionService sectionService) {
+    public LineController(LineService lineService, SectionService sectionService, final RoutingService routingService) {
         this.lineService = lineService;
         this.sectionService = sectionService;
+        this.routingService = routingService;
     }
 
     @PostMapping
@@ -64,6 +68,17 @@ public class LineController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/stations")
+    public ResponseEntity<List<StationResponse>> findAllStationByLineId(@PathVariable Long id) {
+        return ResponseEntity.ok(routingService.findStationResponses(id));
+    }
+
+    @DeleteMapping("/{id}/stations")
+    public ResponseEntity<Void> deleteAllSectionByLineId(@PathVariable Long id) {
+        sectionService.deleteAllByLineId(id);
         return ResponseEntity.noContent().build();
     }
 

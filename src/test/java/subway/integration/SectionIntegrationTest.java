@@ -8,6 +8,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,13 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .post("/stations")
                 .then().extract();
         stationId2 = Long.parseLong(createStationResponse2.header("Location").split("/")[2]);
+    }
+
+    @AfterEach
+    void cleanup() {
+        RestAssured
+                .given()
+                .when().delete("lines/{id}/stations", lineId);
     }
 
     @DisplayName("새로운 지하철 노선에 2개의 역을 등록한다.")
