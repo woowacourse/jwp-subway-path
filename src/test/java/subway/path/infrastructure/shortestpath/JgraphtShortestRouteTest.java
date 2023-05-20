@@ -18,7 +18,6 @@ import static subway.path.exception.PathExceptionType.NOT_EXIST_STATION_IN_LINES
 import static subway.path.exception.PathExceptionType.NO_PATH;
 import static subway.path.exception.PathExceptionType.START_AND_END_STATIONS_IS_SAME;
 
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -26,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import subway.common.exception.BaseExceptionType;
 import subway.line.domain.Line;
 import subway.line.domain.Section;
-import subway.line.domain.Sections;
 import subway.path.domain.Path;
 import subway.path.domain.ShortestRouteService;
 import subway.path.exception.PathException;
@@ -40,23 +38,23 @@ class JgraphtShortestRouteTest {
             new LineDispatcher(), new GraphCache());
 
     private final Path path = new Path(
-            new Line("1호선", new Sections(List.of(
+            new Line("1호선", 0,
                     new Section(역1, 역2, 10),
                     new Section(역2, 역3, 5),
                     new Section(역3, 역4, 7)
-            ))),
-            new Line("2호선", new Sections(List.of(
+            ),
+            new Line("2호선", 0,
                     new Section(역6, 역3, 7),
                     new Section(역3, 역5, 1)
-            ))),
-            new Line("3호선", new Sections(List.of(
+            ),
+            new Line("3호선", 0,
                     new Section(역1, 역7, 10),
                     new Section(역7, 역8, 5),
                     new Section(역8, 역6, 51)
-            ))),
-            new Line("4호선", new Sections(List.of(
+            ),
+            new Line("4호선", 0,
                     new Section(잠실, 선릉, 10)
-            )))
+            )
     );
 
     @Test

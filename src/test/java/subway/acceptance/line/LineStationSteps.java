@@ -13,13 +13,13 @@ import subway.line.presentation.request.DeleteStationFromLineRequest;
 public class LineStationSteps {
 
     public static ExtractableResponse<Response> 노선에_역_추가_요청(
-            final String lineName,
-            final String upStationName,
-            final String downStationName,
-            final Integer distance
+            final String 노선,
+            final String 상행역,
+            final String 하행역,
+            final Integer 거리
     ) {
         final AddStationToLineRequest request =
-                new AddStationToLineRequest(lineName, upStationName, downStationName, distance);
+                new AddStationToLineRequest(노선, 상행역, 하행역, 거리);
         return 노선에_역_추가_요청(request);
     }
 
@@ -35,16 +35,16 @@ public class LineStationSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 노선에_역_제거_요청(
-            final String lineName,
-            final String deleteStationName
+    public static ExtractableResponse<Response> 노선에서_역_제거_요청(
+            final String 노선,
+            final String 제거할_역
     ) {
-        final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest(lineName, deleteStationName);
-        return 노선에_역_제거_요청(request);
+        final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest(노선, 제거할_역);
+        return 노선에서_역_제거_요청(request);
     }
 
-    public static ExtractableResponse<Response> 노선에_역_제거_요청(final DeleteStationFromLineRequest request) {
-        final String body = toJson(request);
+    public static ExtractableResponse<Response> 노선에서_역_제거_요청(final DeleteStationFromLineRequest 노선에서_역_제거_요청) {
+        final String body = toJson(노선에서_역_제거_요청);
         return given().log().all()
                 .contentType(JSON)
                 .body(body)

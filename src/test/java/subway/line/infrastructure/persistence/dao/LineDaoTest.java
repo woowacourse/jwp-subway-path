@@ -23,7 +23,7 @@ class LineDaoTest {
     @Test
     void 노선을_저장한다() {
         // given
-        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선", 0);
 
         // when
         lineDao.save(lineEntity);
@@ -35,7 +35,7 @@ class LineDaoTest {
     @Test
     void 이름으로_노선을_조회한다() {
         // given
-        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선", 0);
         lineDao.save(lineEntity);
 
         // when & then
@@ -45,7 +45,7 @@ class LineDaoTest {
     @Test
     void ID로_노선을_조회한다() {
         // given
-        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선", 0);
         lineDao.save(lineEntity);
 
         // when & then
@@ -55,9 +55,9 @@ class LineDaoTest {
     @Test
     void 모든_노선을_조회한다() {
         // given
-        lineDao.save(new LineEntity(UUID.randomUUID(), "1호선"));
-        lineDao.save(new LineEntity(UUID.randomUUID(), "2호선"));
-        lineDao.save(new LineEntity(UUID.randomUUID(), "3호선"));
+        lineDao.save(new LineEntity(UUID.randomUUID(), "1호선", 0));
+        lineDao.save(new LineEntity(UUID.randomUUID(), "2호선", 0));
+        lineDao.save(new LineEntity(UUID.randomUUID(), "3호선", 0));
 
         // when & then
         assertThat(lineDao.findAll()).hasSize(3);
@@ -66,11 +66,11 @@ class LineDaoTest {
     @Test
     void 노선을_제거한다() {
         // given
-        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선", 0);
         lineDao.save(lineEntity);
 
         // when
-        lineDao.delete(new LineEntity(lineEntity.domainId(), lineEntity.name()));
+        lineDao.delete(new LineEntity(lineEntity.domainId(), lineEntity.name(), lineEntity.surcharge()));
 
         // then
         assertThat(lineDao.findByName("1호선")).isEmpty();

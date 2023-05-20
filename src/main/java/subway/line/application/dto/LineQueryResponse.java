@@ -8,10 +8,14 @@ import subway.line.domain.Section;
 public class LineQueryResponse {
 
     private final String lineName;
+    private final int surcharge;
     private final List<SectionQueryResponse> stationQueryResponseList;
 
-    public LineQueryResponse(final String lineName, final List<SectionQueryResponse> stationQueryResponseList) {
+    public LineQueryResponse(final String lineName,
+                             final int surcharge,
+                             final List<SectionQueryResponse> stationQueryResponseList) {
         this.lineName = lineName;
+        this.surcharge = surcharge;
         this.stationQueryResponseList = stationQueryResponseList;
     }
 
@@ -20,11 +24,15 @@ public class LineQueryResponse {
                 .stream()
                 .map(SectionQueryResponse::from)
                 .collect(Collectors.toList());
-        return new LineQueryResponse(line.name(), sectionQueryResponses);
+        return new LineQueryResponse(line.name(), line.surcharge(), sectionQueryResponses);
     }
 
     public String getLineName() {
         return lineName;
+    }
+
+    public int getSurcharge() {
+        return surcharge;
     }
 
     public List<SectionQueryResponse> getStationQueryResponseList() {

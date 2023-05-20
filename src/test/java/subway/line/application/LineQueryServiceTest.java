@@ -31,7 +31,7 @@ class LineQueryServiceTest {
     @Test
     void id_를_통해서_노선을_조회한다() {
         // given
-        final Line line = new Line("1호선",
+        final Line line = new Line("1호선", 0,
                 new Section(역1, 역2, 10),
                 new Section(역2, 역3, 10),
                 new Section(역3, 역4, 10)
@@ -44,23 +44,20 @@ class LineQueryServiceTest {
 
         // then
         assertThat(response.getLineName()).isEqualTo("1호선");
-        assertThat(response.getStationQueryResponseList())
-                .extracting(it -> it.getUpStationName() + "-[" + it.getDistance() + "km]-" + it.getDownStationName())
-                .containsExactly(
-                        "역1-[10km]-역2",
-                        "역2-[10km]-역3",
-                        "역3-[10km]-역4"
-                );
+        노선의_구간들을_검증한다(response,
+                "역1-[10km]-역2",
+                "역2-[10km]-역3",
+                "역3-[10km]-역4");
     }
 
     @Test
     void 모든_노선을_조회한다() {
         // given
-        final Line line1 = new Line("1호선",
+        final Line line1 = new Line("1호선", 0,
                 new Section(역1, 역2, 10),
                 new Section(역2, 역3, 10)
         );
-        final Line line2 = new Line("2호선",
+        final Line line2 = new Line("2호선", 0,
                 new Section(역3, 역4, 10),
                 new Section(역4, 역5, 10)
         );
@@ -73,17 +70,17 @@ class LineQueryServiceTest {
         // then
         assertThat(responses.get(0).getLineName()).isEqualTo("1호선");
         assertThat(responses.get(1).getLineName()).isEqualTo("2호선");
-        assertThat(responses.get(0).getStationQueryResponseList())
+        노선의_구간들을_검증한다(responses.get(0),
+                "역1-[10km]-역2",
+                "역2-[10km]-역3");
+        노선의_구간들을_검증한다(responses.get(1),
+                "역3-[10km]-역4",
+                "역4-[10km]-역5");
+    }
+
+    private void 노선의_구간들을_검증한다(final LineQueryResponse response, final String... sectionInfos) {
+        assertThat(response.getStationQueryResponseList())
                 .extracting(it -> it.getUpStationName() + "-[" + it.getDistance() + "km]-" + it.getDownStationName())
-                .containsExactly(
-                        "역1-[10km]-역2",
-                        "역2-[10km]-역3"
-                );
-        assertThat(responses.get(1).getStationQueryResponseList())
-                .extracting(it -> it.getUpStationName() + "-[" + it.getDistance() + "km]-" + it.getDownStationName())
-                .containsExactly(
-                        "역3-[10km]-역4",
-                        "역4-[10km]-역5"
-                );
+                .containsExactly(sectionInfos);
     }
 }

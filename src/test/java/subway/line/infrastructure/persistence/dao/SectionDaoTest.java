@@ -43,7 +43,7 @@ class SectionDaoTest {
         stationDao.save(역3);
         stationDao.save(역4);
         stationDao.save(역5);
-        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선", 0);
         lineDao.save(lineEntity);
         final UUID lineId = lineEntity.domainId();
         final List<SectionEntity> sectionEntities = List.of(
@@ -74,7 +74,7 @@ class SectionDaoTest {
         stationDao.save(역4);
         stationDao.save(역5);
 
-        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선", 0);
         lineDao.save(lineEntity);
         final UUID lineId = lineEntity.domainId();
 
@@ -107,7 +107,7 @@ class SectionDaoTest {
         stationDao.save(역4);
         stationDao.save(역5);
 
-        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선", 0);
         lineDao.save(lineEntity);
         final UUID lineId = lineEntity.domainId();
 

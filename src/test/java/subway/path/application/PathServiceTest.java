@@ -36,12 +36,14 @@ import subway.line.domain.Section;
 import subway.line.domain.StationRepository;
 import subway.line.exception.station.StationException;
 import subway.path.application.dto.ShortestRouteResponse;
+import subway.path.domain.DiscountPolicy;
+import subway.path.domain.PaymentPolicy;
 import subway.path.domain.ShortestRouteService;
-import subway.path.domain.payment.PaymentPolicy;
 import subway.path.exception.PathException;
 import subway.path.infrastructure.shortestpath.GraphCache;
 import subway.path.infrastructure.shortestpath.JgraphtShortestRoute;
 import subway.path.infrastructure.shortestpath.LineDispatcher;
+import subway.payment.domain.discount.AgeGroupDiscountPolicy;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -51,10 +53,11 @@ class PathServiceTest {
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final StationRepository stationRepository = mock(StationRepository.class);
     private final PaymentPolicy paymentPolicy = mock(PaymentPolicy.class);
+    private final DiscountPolicy discountPolicy = new AgeGroupDiscountPolicy();
     private final ShortestRouteService shortestRouteService =
             new JgraphtShortestRoute(new LineDispatcher(), new GraphCache());
     private final PathService pathService =
-            new PathService(stationRepository, lineRepository, shortestRouteService, paymentPolicy);
+            new PathService(stationRepository, lineRepository, shortestRouteService, paymentPolicy, discountPolicy);
 
     @Nested
     class 최단_경로_조회_시 {
@@ -69,21 +72,21 @@ class PathServiceTest {
          *     잠실 - 선릉
          */
         private final List<Line> lines = List.of(
-                new Line("1호선",
+                new Line("1호선", 0,
                         new Section(역1, 역2, 10),
                         new Section(역2, 역3, 5),
                         new Section(역3, 역4, 7)
                 ),
-                new Line("2호선",
+                new Line("2호선", 0,
                         new Section(역6, 역3, 7),
                         new Section(역3, 역5, 1)
                 ),
-                new Line("3호선",
+                new Line("3호선", 0,
                         new Section(역1, 역7, 10),
                         new Section(역7, 역8, 5),
                         new Section(역8, 역6, 51)
                 ),
-                new Line("4호선",
+                new Line("4호선", 0,
                         new Section(잠실, 선릉, 10)
                 )
         );
@@ -132,7 +135,14 @@ class PathServiceTest {
                             "3호선: 역1-[10km]-역7"
                     );
             assertThat(shortestRoute.getTransferCount()).isEqualTo(2);
-            assertThat(shortestRoute.getTotalFee()).isEqualTo(2000);
+            assertThat(shortestRoute.getFeeInfos())
+                    .extracting(it -> it.getInfo() + ": " + it.getFee())
+                    .containsExactly(
+                            "영유아: 0",
+                            "어린이: 825",
+                            "청소년: 1320",
+                            "성인: 2000",
+                            "노인: 0");
             assertThat(shortestRoute.getTransferStations())
                     .containsExactly("역3", "역1");
         }

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.line.domain.Line;
 import subway.line.domain.Section;
-import subway.line.domain.Sections;
 import subway.line.domain.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -101,14 +100,14 @@ public class JgraphtTest {
         final Station b1 = new Station("b1");
         final Station b2 = new Station("b2");
         final List<Line> lines = of(
-                new Line("1", new Sections(of(
+                new Line("1", 0,
                         new Section(a1, a2, 2),
                         new Section(a2, a3, 4)
-                ))),
-                new Line("2", new Sections(of(
+                ),
+                new Line("2", 0,
                         new Section(b1, a2, 6),
                         new Section(a2, b2, 8)
-                )))
+                )
         );
         final RouteGraphAdapter graph = RouteGraphAdapter.adapt(lines);
         final DijkstraShortestPath<Station, SectionAdapter> shortestPath = new DijkstraShortestPath<>(graph);

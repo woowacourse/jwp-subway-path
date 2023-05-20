@@ -55,7 +55,7 @@ class JdbcLineRepositoryTest {
         ));
 
         // when
-        lineRepository.save(new Line("1호선", sections));
+        lineRepository.save(new Line("1호선", 0, sections));
 
         // then
         final List<Line> lines = lineRepository.findAll();
@@ -74,7 +74,7 @@ class JdbcLineRepositoryTest {
                 new Section(역3, 역4, 3),
                 new Section(역4, 역5, 4)
         ));
-        lineRepository.save(new Line("1호선", sections));
+        lineRepository.save(new Line("1호선", 0, sections));
         final Line line = lineRepository.findByName("1호선").get();
         line.removeStation(역3);
         line.addSection(new Section(역4, 역6, 3));
@@ -101,7 +101,7 @@ class JdbcLineRepositoryTest {
                 new Section(역3, 역4, 3),
                 new Section(역4, 역5, 4)
         ));
-        final Line line = new Line("1호선", sections);
+        final Line line = new Line("1호선", 0, sections);
         lineRepository.save(line);
 
         // when
@@ -125,7 +125,7 @@ class JdbcLineRepositoryTest {
                 new Section(역3, 역4, 3),
                 new Section(역4, 역5, 4)
         ));
-        lineRepository.save(new Line("1호선", sections));
+        lineRepository.save(new Line("1호선", 0, sections));
 
         // when
         final List<Section> find = lineRepository.findByName("1호선").get().sections();
@@ -146,13 +146,13 @@ class JdbcLineRepositoryTest {
                 new Section(역1, 역2, 1),
                 new Section(역2, 역3, 2)
         ));
-        lineRepository.save(new Line("1호선", sections1));
+        lineRepository.save(new Line("1호선", 0, sections1));
 
         final Sections sections2 = new Sections(List.of(
                 new Section(역3, 역4, 3),
                 new Section(역4, 역5, 4)
         ));
-        lineRepository.save(new Line("2호선", sections2));
+        lineRepository.save(new Line("2호선", 0, sections2));
 
         // when
         final List<Line> lines = lineRepository.findAll();

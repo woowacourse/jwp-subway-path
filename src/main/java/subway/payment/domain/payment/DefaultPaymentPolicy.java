@@ -1,8 +1,9 @@
-package subway.path.domain.payment;
+package subway.payment.domain.payment;
 
 import org.springframework.stereotype.Component;
 import subway.line.exception.line.LineException;
 import subway.path.domain.Path;
+import subway.path.domain.PaymentPolicy;
 
 @Component
 public class DefaultPaymentPolicy implements PaymentPolicy {
@@ -15,10 +16,6 @@ public class DefaultPaymentPolicy implements PaymentPolicy {
     private static final int MID_LIMIT_DISTANCE = 40;
 
     private static final int LONG_DISTANCE_UNIT = 8;
-
-    private static boolean isMidDistance(final int remainBasic) {
-        return remainBasic <= MID_LIMIT_DISTANCE;
-    }
 
     @Override
     public int calculateFee(final Path path) {
@@ -48,6 +45,10 @@ public class DefaultPaymentPolicy implements PaymentPolicy {
             return BASIC_FEE + calculateSurcharge(remainBasicDistance, MID_DISTANCE_UNIT);
         }
         return longDistanceFee(remainBasicDistance);
+    }
+
+    private boolean isMidDistance(final int remainBasic) {
+        return remainBasic <= MID_LIMIT_DISTANCE;
     }
 
     private int longDistanceFee(final int remainMidDistance) {

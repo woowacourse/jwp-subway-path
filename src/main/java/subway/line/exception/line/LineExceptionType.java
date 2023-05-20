@@ -50,6 +50,11 @@ public enum LineExceptionType implements BaseExceptionType {
             HttpStatus.BAD_REQUEST,
             "기존에 등록된 구간과 불일치합니다."
     ),
+    SURCHARGE_IS_NEGATIVE(
+            209,
+            HttpStatus.BAD_REQUEST,
+            "추가 요금은 음수일 수 없습니다."
+    ),
     ABNORMAL_EXCEPTION(
             299,
             HttpStatus.INTERNAL_SERVER_ERROR,

@@ -28,7 +28,7 @@ public class LineDispatcher {
     private Line sectionOwner(final Path path, final Deque<Section> sections) {
         final Line sectionOwner = findSectionOwner(path, sections);
         final List<Section> result = addSectionsToLine(sectionOwner, sections);
-        return new Line(sectionOwner.id(), sectionOwner.name(), toSections(result));
+        return new Line(sectionOwner.id(), sectionOwner.name(), sectionOwner.surcharge(), toSections(result));
     }
 
     private Line findSectionOwner(final Path path, final Deque<Section> sections) {
