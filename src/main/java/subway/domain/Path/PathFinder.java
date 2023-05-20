@@ -39,7 +39,9 @@ public class PathFinder {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(graph);
         List<Station> shortestPath = dijkstraShortestPath.getPath(source, destination).getVertexList();
 
-        return Path.from(shortestPath);
+        int pathDistance = (int) dijkstraShortestPath.getPathWeight(source, destination);
+
+        return Path.from(shortestPath, pathDistance);
     }
 
     private static void validateStations(Station source, Station destination) {

@@ -1,7 +1,11 @@
 package subway.domain.Path;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static subway.domain.Path.PathTestFixture.*;
+import static subway.domain.Path.PathTestFixture.강동구청;
+import static subway.domain.Path.PathTestFixture.강변;
+import static subway.domain.Path.PathTestFixture.몽촌토성;
+import static subway.domain.Path.PathTestFixture.잠실;
+import static subway.domain.Path.PathTestFixture.잠실나루;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,12 +18,12 @@ import java.util.List;
 class PathTest {
 
     @Test
-    @DisplayName("경로는 여러개의 역들로 구성된다.")
+    @DisplayName("경로는 여러개의 역들과 총 소요 거리로 구성된다.")
     void createPathTest() {
         // given
         List<Station> orderedStation = new ArrayList<>(List.of(강변, 잠실나루, 잠실, 몽촌토성, 강동구청));
 
         // then
-        assertDoesNotThrow(() -> Path.from(orderedStation));
+        assertDoesNotThrow(() -> Path.from(orderedStation, 10));
     }
 }

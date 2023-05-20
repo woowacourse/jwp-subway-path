@@ -2,7 +2,16 @@ package subway.domain.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.Path.PathTestFixture.*;
+import static subway.domain.Path.PathTestFixture.강동구청;
+import static subway.domain.Path.PathTestFixture.강동구청_몽촌토성;
+import static subway.domain.Path.PathTestFixture.강변;
+import static subway.domain.Path.PathTestFixture.강변_잠실나루;
+import static subway.domain.Path.PathTestFixture.몽촌토성;
+import static subway.domain.Path.PathTestFixture.몽촌토성_잠실;
+import static subway.domain.Path.PathTestFixture.잠실;
+import static subway.domain.Path.PathTestFixture.잠실_석촌;
+import static subway.domain.Path.PathTestFixture.잠실나루;
+import static subway.domain.Path.PathTestFixture.잠실나루_잠실;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +34,20 @@ class PathFinderTest {
 
         // then
         assertThat(shortestPath.getOrderedStations()).containsExactly(강변, 잠실나루, 잠실);
+    }
+
+    @Test
+    @DisplayName("출발지와 목적지 역이 주어지면 최단 경로 거리를 찾아서 반환한다.")
+    void shortestPathDistanceFinderTest() {
+        // given
+        List<Section> _2호선_구간들 = List.of(강변_잠실나루, 잠실나루_잠실);
+        PathFinder pathFinder = PathFinder.from(_2호선_구간들);
+
+        // when
+        Path shortestPath = pathFinder.findShortestPath(강변, 잠실);
+
+        // then
+        assertThat(shortestPath.getDistance()).isEqualTo(10);
     }
 
     @Test
@@ -52,5 +75,19 @@ class PathFinderTest {
 
         // then
         assertThat(shortestPath.getOrderedStations()).containsExactly(잠실나루, 잠실, 몽촌토성, 강동구청);
+    }
+
+    @Test
+    @DisplayName("한 노선에서 경로 거리 계산 뿐만 아니라 여러 노선의 환승 거리도 계산한다.")
+    void shortestPathDistanceConsideringTransferLineTest() {
+        // given
+        List<Section> 전체_노선_구간들 = List.of(강변_잠실나루, 잠실나루_잠실, 강동구청_몽촌토성, 몽촌토성_잠실, 잠실_석촌);
+        PathFinder pathFinder = PathFinder.from(전체_노선_구간들);
+
+        // when
+        Path shortestPath = pathFinder.findShortestPath(잠실나루, 강동구청);
+
+        // then
+        assertThat(shortestPath.getDistance()).isEqualTo(26);
     }
 }
