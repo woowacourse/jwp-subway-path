@@ -26,7 +26,6 @@ class SectionDaoTest {
     @Autowired
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private final SimpleJdbcInsert simpleJdbcInsertForSection;
     private final SimpleJdbcInsert simpleJdbcInsertForLine;
 
     private SectionDao sectionDao;
@@ -43,10 +42,6 @@ class SectionDaoTest {
     SectionDaoTest(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.sectionDao = new SectionDao(namedParameterJdbcTemplate);
-        this.simpleJdbcInsertForSection = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
-                .withTableName("section")
-                .usingColumns("line_id", "upward_station_id", "downward_station_id", "distance")
-                .usingGeneratedKeyColumns("id");
         this.simpleJdbcInsertForLine = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("line")
                 .usingColumns("name", "upward_terminus_id", "downward_terminus_id")
