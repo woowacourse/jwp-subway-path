@@ -38,22 +38,22 @@ public class Sections {
         if (isNotExist(source) && isNotExist(target)) {
             throw new StationNotFoundException("기준역이 존재하지 않아 추가할 수 없습니다.");
         }
-        if (isExist(source) && isExist(target)) {
+        if (exist(source) && exist(target)) {
             throw new InvalidStationException("두 역 모두 노선에 존재하는 역입니다.");
         }
     }
 
     private boolean isNotExist(final Station station) {
-        return !isExist(station);
+        return !exist(station);
     }
 
-    private boolean isExist(final Station station) {
+    private boolean exist(final Station station) {
         return sections.stream()
                 .anyMatch(section -> section.contains(station));
     }
 
     private Station getExistingStation(final Station source, final Station target) {
-        if (isExist(source)) {
+        if (exist(source)) {
             return source;
         }
         return target;
