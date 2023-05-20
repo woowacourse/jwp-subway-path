@@ -76,8 +76,8 @@ public class LineService {
 
     public List<LineStationResponse> findAll() {
         List<LineEntity> lineEntities = findLines();
-
         List<Line> lines = lineRepository.findLinesWithSort();
+
         Map<Long, List<Section>> lineMap = lines.stream()
                 .collect(Collectors.toMap(Line::getId, Line::getSections));
 
