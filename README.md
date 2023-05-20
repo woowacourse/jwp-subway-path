@@ -42,3 +42,82 @@
     - [x] 이용 거리 초과 시 추가운임 부과
     - [x] 10km~50km: 5km 까지 마다 100원 추가
     - [x] 50km 초과: 8km 까지 마다 100원 추가
+
+## 데이터베이스 환경 설정
+
+### Docker 사용 방법
+
+1. docker directory를 생성한다.
+
+2. 생성한 directory 하위에 docker-compose.yml 파일 생성
+
+```
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0.33
+    platform: linux/amd64
+    restart: always
+    ports:
+      - "13306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: subway
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      TZ: Asia/Seoul
+```
+
+3. docker-compose.yml 파일이 있는 경로에서, docker 명령어로 Server를 실행
+
+```
+# Docker 실행하기
+docker-compose -p chess up -d
+```
+
+```
+# Docker 정지하기
+docker-compose -p chess down
+```
+
+### Local MYSQL 사용 방법
+
+1. MYSQL WorkBench를 설치하고 실행한다.
+
+2. 다음과 같이 연결 정보를 입력한다.
+
+```
+Hostname : localhost
+Port : 13306
+Username : root
+```
+
+3. 새로운 유저를 생성한다.
+
+```
+create user 'username'@'localhost' identified by 'password';
+```
+
+4. 생성한 유저에게 모든 db 및 테이블에 접근권한 부여
+
+```
+grant all privileges on *.* to 'username'@'localhost';
+```
+
+5. 설정한 권한 적용
+
+```
+flush privileges;
+```
+
+## 데이터베이스 생성 쿼리
+
+1. 데이터베이스 `subway`를 만듭니다.
+
+```
+CREATE DATABASE subway DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+```
+
+2. 테이블은 애플리케이션을 실행시키면 자동으로 생성됩니다.
+
+## 👏👏👏 모든 설정을 완료했습니다!! 👏👏👏
