@@ -41,7 +41,7 @@ class PathControllerTest extends IntegrationTest {
                 .then().log().all();
 
         ExtractableResponse<Response> pathResponse = RestAssured.given().log().uri()
-                .when().get("/subway/path/startStation/{startStationId}/endStation/{endStationId}", 1L, 3L)
+                .when().get("/subway/path?startStationId=1&endStationId=2")
                 .then()
                 .log().all().extract();
 

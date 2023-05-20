@@ -18,12 +18,14 @@ public class PathService {
     private final StationDao stationDao;
     private final LineDao lineDao;
     private final Cost cost;
+    private final Graph graph;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao, Cost cost) {
+    public PathService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao, Cost cost, Graph graph) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.cost = cost;
+        this.graph = graph;
     }
 
     public PathResponse findPath(Long startStationId, Long endStationId) {
@@ -41,7 +43,7 @@ public class PathService {
                 .flatMap(it -> it.getSections().getSections().stream())
                 .collect(Collectors.toList());
 
-        Graph graph = new Graph(stations, sections);
+        graph.set(stations,sections);
         List<String> pathStations = graph.findPath(startStation.getName(), endStation.getName());
         double pathDistance = graph.findPathDistance(startStation.getName(), endStation.getName());
 

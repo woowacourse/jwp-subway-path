@@ -6,7 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.common.Cost;
 import subway.dao.*;
+import subway.domain.Graph;
 import subway.dto.PathResponse;
 import subway.dto.StationResponse;
 
@@ -15,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +30,10 @@ class PathServiceTest {
     private StationDao stationDao;
     @Mock
     private SectionDao sectionDao;
+    @Mock
+    private Cost cost;
+    @Mock
+    private Graph graph;
 
     @Test
     @DisplayName("경로를 탐색한다.")
@@ -40,6 +47,9 @@ class PathServiceTest {
         when(sectionDao.findByLineId(any())).thenReturn(sectionEntities);
         when(stationDao.findById(1L)).thenReturn(Optional.of(new StationEntity("인천역")));
         when(stationDao.findById(2L)).thenReturn(Optional.of(new StationEntity("서울역")));
+        when(graph.findPath(any(),any())).thenReturn(List.of("인천역","서울역"));
+        when(graph.findPathDistance(any(),any())).thenReturn(5.0);
+        when(cost.calculate(anyInt())).thenReturn(5);
 
         assertThat(pathService.findPath(1L, 2L)).usingRecursiveComparison().isEqualTo(new PathResponse(stationResponses, 5, 5));
     }
