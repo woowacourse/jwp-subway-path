@@ -13,4 +13,6 @@ public interface LineRepository {
     Line update(Line line);
 
     Station findStationById(long stationId);
+
+    Line findLineByStationId(Long firstStationsId);
 }

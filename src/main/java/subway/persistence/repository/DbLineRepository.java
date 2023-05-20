@@ -88,6 +88,14 @@ public class DbLineRepository implements LineRepository {
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
+    @Override
+    public Line findLineByStationId(Long stationId) {
+        Long lineIdByStationId = stationDao.findLineIdByStationId(stationId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("입력한 ID와 일치하는 Station이 존재하지 않습니다. "
+                        + "(입력한 ID : %s)", stationId)));
+        return findById(lineIdByStationId);
+    }
+
     private void saveSectionIncludingStations(long lineId, Section section) {
         long savedUpwardStationId = stationDao.insert(
                 new StationEntity(lineId, section.getUpwardStation().getName())
