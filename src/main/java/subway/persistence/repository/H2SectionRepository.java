@@ -59,9 +59,9 @@ public class H2SectionRepository implements SectionRepository {
         }
         Set<Long> uniqueStationIds = makeUniqueStationIds(sectionEntities);
 
-        Map<Long, StationEntity> stationEntityMap = stationDao.findStationsById(uniqueStationIds).stream()
+        Map<Long, StationEntity> stationEntities = stationDao.findStationsById(uniqueStationIds).stream()
                 .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
-        List<Section> sections = makeSections(sectionEntities, stationEntityMap);
+        List<Section> sections = makeSections(sectionEntities, stationEntities);
 
         return new Sections(sections);
     }
@@ -83,9 +83,9 @@ public class H2SectionRepository implements SectionRepository {
             List<SectionEntity> entities = sectionEntitiesPerLineId.get(lineId);
             Set<Long> uniqueStationIds = makeUniqueStationIds(entities);
 
-            Map<Long, StationEntity> stationEntityMap = stationDao.findStationsById(uniqueStationIds).stream()
+            Map<Long, StationEntity> stationEntities = stationDao.findStationsById(uniqueStationIds).stream()
                     .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
-            Sections sections = new Sections(makeSections(entities, stationEntityMap));
+            Sections sections = new Sections(makeSections(entities, stationEntities));
             sectionsPerLine.put(line, sections);
         }
 
@@ -108,10 +108,10 @@ public class H2SectionRepository implements SectionRepository {
         List<SectionEntity> sectionEntities = sectionDao.findAll();
         Set<Long> uniqueStationIds = makeUniqueStationIds(sectionEntities);
 
-        Map<Long, StationEntity> stationEntityMap = stationDao.findStationsById(uniqueStationIds).stream()
+        Map<Long, StationEntity> stationEntities = stationDao.findStationsById(uniqueStationIds).stream()
                 .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
 
-        return makeSections(sectionEntities, stationEntityMap);
+        return makeSections(sectionEntities, stationEntities);
     }
 
     private List<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {
