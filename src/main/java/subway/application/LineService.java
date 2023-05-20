@@ -1,24 +1,24 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import subway.repository.LineRepository;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+
+    public LineService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = lineRepository.insert(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }
 
@@ -30,7 +30,7 @@ public class LineService {
     }
 
     public List<Line> findLines() {
-        return lineDao.findAll();
+        return lineRepository.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -39,15 +39,15 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineRepository.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineRepository.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
     }
 
 }
