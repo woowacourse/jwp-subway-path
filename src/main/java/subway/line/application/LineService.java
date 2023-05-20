@@ -29,13 +29,15 @@ public class LineService {
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
-    private final SectionService sectionService;
+    private final List<SectionSavingStrategy> sectionSavingStrategies;
+    private final List<StationDeletingStrategy> stationDeletingStrategies;
 
-    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, StationRepository stationRepository, SectionService sectionService) {
+    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, StationRepository stationRepository, List<SectionSavingStrategy> sectionSavingStrategies, List<StationDeletingStrategy> stationDeletingStrategies) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
-        this.sectionService = sectionService;
+        this.sectionSavingStrategies = sectionSavingStrategies;
+        this.stationDeletingStrategies = stationDeletingStrategies;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -129,25 +131,15 @@ public class LineService {
         return fare.add(new BigDecimal(SURCHARGE * Math.floor((km - 10) / 8)));
     }
 
-    public void deleteStation(long lineId, String stationName) {
-        Line line = lineRepository.findById(lineId);
-        Station station = stationRepository.findByName(stationName);
-
-        if (sectionRepository.countStations(line) == Section.MIN_STATION_COUNT) {
-            sectionRepository.clearStations(line);
-            return;
+    public void deleteStation(Line line, String stationName) {
+        final var station = stationRepository.findByName(stationName);
+        for (StationDeletingStrategy strategy : stationDeletingStrategies) {
+            if (strategy.support(line, station)) {
+                strategy.deleteStation(line, station);
+                return;
+            }
         }
 
-        Optional<Section> stationsToDeleteOptional = sectionRepository.findByPreviousStation(station, line);
-        Optional<Section> stationsLeftOptional = sectionRepository.findByNextStation(station, line);
-
-        if (stationsToDeleteOptional.isPresent() && stationsLeftOptional.isPresent()) {
-            Section sectionToDelete = stationsToDeleteOptional.get();
-            Section sectionLeft = stationsLeftOptional.get();
-
-            sectionRepository.update(new Section(sectionLeft.getId(), sectionLeft.getLine(), sectionLeft.getPreviousStation(), sectionToDelete.getNextStation(), sectionToDelete.getDistance().add(sectionLeft.getDistance())));
-        }
-
-        sectionRepository.deleteStation(station, line);
+        throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
     }
 }

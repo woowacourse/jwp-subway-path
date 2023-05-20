@@ -1,5 +1,6 @@
 package subway.cenario;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -131,13 +132,17 @@ public class DeletingStationFromLineTest {
         // then
         assertAll(
                 "노선 상행 끝의 역을 제거하면 2가지 변화가 생긴다.",
-                () -> assertThat(line.findByPreviousStation(stationB))
+                () -> assertThat(line.findByPreviousStation(stationSD))
                         .as("삭제된 역을 현재역으로 하는 구간이 제거된다.")
                         .isEmpty(),
-                () -> assertThat(line.findByPreviousStation(stationS).or(() -> fail()).get().getNextStation())
+                () -> assertThat(line.findByPreviousStation(stationS)
+                        .or(Assertions::fail).get()
+                        .getNextStation())
                         .as("하행 끝에서 두 번째 구간의 다음 역 정보가 사라진다.")
                         .isEqualTo(new EmptyStation()),
-                () -> assertThat(line.findByPreviousStation(stationS).or(() -> fail()).get().getDistance())
+                () -> assertThat(line.findByPreviousStation(stationS)
+                        .or(Assertions::fail).get()
+                        .getDistance())
                         .as("다음 역이 없으므로 거리정보도 사라진다.")
                         .isEqualTo(new EmptyDistance())
         );
@@ -167,10 +172,10 @@ public class DeletingStationFromLineTest {
                 () -> assertThat(line.findByPreviousStation(stationS))
                         .as("삭제된 역을 현재역으로 하는 구간이 제거된다.")
                         .isEmpty(),
-                () -> assertThat(line.findByPreviousStation(stationB).or(() -> fail()).get().getNextStation())
+                () -> assertThat(line.findByPreviousStation(stationB).or(Assertions::fail).get().getNextStation())
                         .as("삭제된 구간의 바로 앞 구간은, next 역으로 삭제된 구간의 next 역을 가리킨다.")
                         .isEqualTo(stationSD),
-                () -> assertThat(line.findByPreviousStation(stationB).or(() -> fail()).get().getDistance())
+                () -> assertThat(line.findByPreviousStation(stationB).or(Assertions::fail).get().getDistance())
                         .as("삭제된 구간의 바로 앞 구간 거리와 삭제된 구간의 거리가 병합된다.")
                         .isEqualTo(Distance.of(8))
         );
