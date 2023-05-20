@@ -44,7 +44,7 @@ public class LineIntegrationTest extends IntegrationTest {
         stationRequest4 = new StationRequest("서울역");
     }
 
-    private LineResponse createLine(LineRequest lineRequest) {
+    public static LineResponse createLine(LineRequest lineRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -56,7 +56,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .getObject("", LineResponse.class);
     }
 
-    private StationResponse createStation(StationRequest stationRequest) {
+    public static StationResponse createStation(StationRequest stationRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

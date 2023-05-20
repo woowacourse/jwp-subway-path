@@ -29,6 +29,8 @@
   - 노선에 포함된 역을 순서대로 보여주도록 응답한다.
 - [x] 노선 목록 조회 API 수정
   - 노선에 포함된 역을 순서대로 보여주도록 응답한다.
+- [x] 경로 조회 API 구현, 요금 조회 기능 추가
+
 - [x] 테이블 설계
   - [x] station
   - [x] line
@@ -237,5 +239,30 @@ Request
 }
 Response
 {
+}
+
+최단 경로 조회
+get /paths?startStationId={startStationId}&endStationId={endStationId}
+최단 경로와 거리, 요금을 반환한다. 최단 경로가 없는 경우 400 에러를 반환한다.
+Request
+startStationId={startStationId}&endStationId={endStationId}
+Response
+{
+    "sectionResponses": [
+        {
+            "lineId": 1,
+            "leftStationId": 1,
+            "rightStationId": 2,
+            "distance": 10
+        },
+        {
+            "lineId": 2,
+            "leftStationId": 2,
+            "rightStationId": 3,
+            "distance": 10
+        }
+    ],
+    "distance": 20,
+    "cost": 1450
 }
 ````
