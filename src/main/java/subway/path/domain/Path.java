@@ -33,11 +33,11 @@ public class Path {
         }
     }
 
-    public List<String> findPath(String start, String end) {
+    public List<String> findPath(final String start, final String end) {
         return new DijkstraShortestPath(graph).getPath(start, end).getVertexList();
     }
 
-    public double findPathDistance(String start, String end) {
+    public double findPathDistance(final String start, final String end) {
         return new DijkstraShortestPath(graph).getPath(start, end).getWeight();
     }
 

@@ -35,7 +35,7 @@ class SectionsTest {
         Assertions.assertAll(
                 () -> assertThat(stations.get(0).getId()).isEqualTo(1L),
                 () -> assertThat(stations.get(1).getId()).isEqualTo(2L),
-                () -> assertThat(stations.size()).isEqualTo(2)
+                () -> assertThat(stations.size()).isEqualTo(3)
         );
     }
 }

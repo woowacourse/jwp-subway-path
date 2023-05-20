@@ -18,12 +18,12 @@ public class Section {
         this.distance = distance;
     }
 
-    public static Section of(final Long id, final Station upStation, final Station downStation, final int distance) {
-        return new Section(id, upStation, downStation, Distance.from(distance));
+    public static Section of(final Long lineId, final Station upStation, final Station downStation, final int distance) {
+        return new Section(lineId, upStation, downStation, Distance.from(distance));
     }
 
-    public static Section of(final Long id, final Long upStationId, final Long downStationId, final int distance) {
-        return new Section(id, Station.from(upStationId), Station.from(downStationId), Distance.from(distance));
+    public static Section of(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+        return new Section(lineId, Station.from(upStationId), Station.from(downStationId), Distance.from(distance));
     }
 
     public static Section from(final SectionEntity sectionEntity) {
