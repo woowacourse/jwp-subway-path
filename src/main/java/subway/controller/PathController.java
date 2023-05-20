@@ -11,7 +11,7 @@ import subway.dto.request.ReadPathRequest;
 import subway.dto.response.PathResponse;
 import subway.service.PathService;
 
-@RequestMapping("/path")
+@RequestMapping("/paths")
 @Controller
 public class PathController {
 
