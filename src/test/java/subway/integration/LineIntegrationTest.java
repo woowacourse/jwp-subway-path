@@ -44,7 +44,7 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(new LineRequest("", ""))
+            .body(new LineRequest("", "", 1000))
             .when().post("/lines")
             .then().log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -127,7 +127,7 @@ public class LineIntegrationTest extends IntegrationTest {
     void getAllLines() {
         // given
         saveLine(new LineRequest("이호선", "bg-green-600"));
-        saveLine(new LineRequest("팔호선", "bg-pink-600"));
+        saveLine(new LineRequest("팔호선", "bg-pink-600", 1000));
         saveStation(new StationRequest("강남역"));
         saveStation(new StationRequest("역삼역"));
         saveStation(new StationRequest("남위례역"));
@@ -149,8 +149,31 @@ public class LineIntegrationTest extends IntegrationTest {
             .body("[0].stationResponses[1].name", equalTo("역삼역"))
             .body("[1].name", equalTo("팔호선"))
             .body("[1].color", equalTo("bg-pink-600"))
+            .body("[1].extraFare", equalTo(1000))
             .body("[1].stationResponses[0].name", equalTo("남위례역"))
             .body("[1].stationResponses[1].name", equalTo("산성역"));
+    }
+
+    @Test
+    @DisplayName("지하철 노선 전체 목록을 조회한다. (노선에 등록된 역이 없는 경우)")
+    void getAllLines_when_not_exists_station() {
+        // given
+        saveLine(new LineRequest("이호선", "bg-green-600"));
+        saveLine(new LineRequest("팔호선", "bg-pink-600", 1000));
+
+        // expected
+        RestAssured
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/lines")
+            .then().log().all()
+            .body("size", Matchers.is(2))
+            .body("[0].name", equalTo("이호선"))
+            .body("[0].color", equalTo("bg-green-600"))
+            .body("[0].extraFare", equalTo(0))
+            .body("[1].name", equalTo("팔호선"))
+            .body("[1].color", equalTo("bg-pink-600"))
+            .body("[1].extraFare", equalTo(1000));
     }
 
     @Test
@@ -173,6 +196,26 @@ public class LineIntegrationTest extends IntegrationTest {
             .body("extraFare", equalTo(1000))
             .body("stationResponses[0].name", equalTo("강남역"))
             .body("stationResponses[1].name", equalTo("역삼역"));
+    }
+
+    @Test
+    @DisplayName("지하철 노선 목록을 조회한다. (노선에 등록된 역이 없는 경우)")
+    void getLineById_when_not_exists_station() {
+        // given
+        saveLine(new LineRequest("이호선", "bg-green-600", 1000));
+        saveStation(new StationRequest("강남역"));
+        saveStation(new StationRequest("역삼역"));
+        saveSection(new SectionRequest(1L, 1L, 2L, 10));
+
+        // expected
+        RestAssured
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/lines/{id}", 1)
+            .then().log().all()
+            .body("name", equalTo("이호선"))
+            .body("color", equalTo("bg-green-600"))
+            .body("extraFare", equalTo(1000));
     }
 
     @Test

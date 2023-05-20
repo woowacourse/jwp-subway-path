@@ -1,7 +1,10 @@
 package subway.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 
+@JsonInclude(Include.NON_EMPTY)
 public class LineResponse {
 
     private final Long id;
