@@ -12,8 +12,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.domain.Section;
-import subway.persistence.SectionJdbcRepository;
-import subway.persistence.StationJdbcRepository;
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.ui.dto.request.SectionUpdateRequest;
 import subway.ui.dto.response.SectionResponse;
 
@@ -25,10 +25,10 @@ class SectionServiceTest {
 	@Autowired
 	SectionService sectionService;
 	@Autowired
-	SectionJdbcRepository sectionRepository;
+	SectionDao sectionRepository;
 
 	@Autowired
-	StationJdbcRepository stationRepository;
+	StationDao stationRepository;
 
 	String lineName;
 	String jamsil;

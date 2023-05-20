@@ -10,13 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import subway.dao.LineDao;
 import subway.domain.Line;
 
 @SpringBootTest
-class LineJdbcRepositoryTest {
+class LineDaoTest {
 
 	@Autowired
-	LineJdbcRepository repository;
+	LineDao repository;
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;

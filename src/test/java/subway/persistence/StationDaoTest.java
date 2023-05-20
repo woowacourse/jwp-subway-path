@@ -10,14 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import subway.dao.StationDao;
 import subway.domain.Station;
 
 @SpringBootTest
 @Transactional
-class StationJdbcRepositoryTest {
+class StationDaoTest {
 
 	@Autowired
-	StationJdbcRepository repository;
+	StationDao repository;
 
 	Station kyodae;
 	Station samsung;

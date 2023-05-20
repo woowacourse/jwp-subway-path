@@ -6,24 +6,24 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.domain.repository.SectionRepository;
-import subway.domain.repository.StationRepository;
 import subway.ui.dto.request.StationUpdateRequest;
 import subway.ui.dto.response.StationResponse;
 
 @Service
 @Transactional
 public class StationService {
-	private final StationRepository stationRepository;
-	private final SectionRepository sectionRepository;
+	private final StationDao stationDao;
+	private final SectionDao sectionDao;
 
-	public StationService(final StationRepository stationRepository, final SectionRepository sectionRepository) {
-		this.stationRepository = stationRepository;
-		this.sectionRepository = sectionRepository;
+	public StationService(final StationDao stationDao, final SectionDao sectionDao) {
+		this.stationDao = stationDao;
+		this.sectionDao = sectionDao;
 	}
 
 	public StationResponse createStation(final StationUpdateRequest stationUpdateRequest) {
@@ -35,21 +35,21 @@ public class StationService {
 		}
 		final Station station = new Station(stationUpdateRequest.getName());
 
-		final long stationId = stationRepository.createStation(station);
+		final long stationId = stationDao.createStation(station);
 		return new StationResponse(stationId, station.getName());
 	}
 
 	public List<StationResponse> findAll() {
-		return StationResponse.of(stationRepository.findAll());
+		return StationResponse.of(stationDao.findAll());
 	}
 
 	public StationResponse findById(final Long stationId) {
-		final Station station = stationRepository.findById(stationId);
+		final Station station = stationDao.findById(stationId);
 		return new StationResponse(stationId, station.getName());
 	}
 
 	public StationResponse updateStation(final long stationId, final StationUpdateRequest request) {
-		final boolean isUpdated = stationRepository.updateStation(stationId, new Station(request.getName()));
+		final boolean isUpdated = stationDao.updateStation(stationId, new Station(request.getName()));
 
 		if (!isUpdated) {
 			throw new IllegalStateException("역 갱신에 실패했습니다");
@@ -59,17 +59,17 @@ public class StationService {
 	}
 
 	public long deleteById(final Long stationId) {
-		final Station station = stationRepository.findById(stationId);
-		final boolean isDelete = stationRepository.deleteById(stationId);
+		final Station station = stationDao.findById(stationId);
+		final boolean isDelete = stationDao.deleteById(stationId);
 
 		if (!isDelete) {
 			throw new NullPointerException("삭제할 역이 존재하지 않습니다");
 		}
 
-		final Sections sections = new Sections(sectionRepository.findAll());
+		final Sections sections = new Sections(sectionDao.findAll());
 		final Map<Line, List<Section>> mergedSections = sections.remove(station);
 		mergedSections.keySet()
-			.forEach(line -> sectionRepository.createSection(line.getName(), mergedSections.get(line)));
+			.forEach(line -> sectionDao.createSection(line.getName(), mergedSections.get(line)));
 
 		return stationId;
 	}

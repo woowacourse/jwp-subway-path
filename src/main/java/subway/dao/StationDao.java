@@ -1,4 +1,4 @@
-package subway.persistence;
+package subway.dao;
 
 import java.util.List;
 
@@ -10,10 +10,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import subway.domain.Station;
-import subway.domain.repository.StationRepository;
 
 @Repository
-public class StationJdbcRepository implements StationRepository {
+public class StationDao {
 	private static final int UPDATED_COUNT = 1;
 	private static final int DELETED_COUNT = 1;
 	private final JdbcTemplate jdbcTemplate;
@@ -25,32 +24,28 @@ public class StationJdbcRepository implements StationRepository {
 			rs.getString("name")
 		);
 
-	public StationJdbcRepository(final JdbcTemplate jdbcTemplate) {
+	public StationDao(final JdbcTemplate jdbcTemplate) {
 		this.insert = new SimpleJdbcInsert(jdbcTemplate)
 			.withTableName("station")
 			.usingGeneratedKeyColumns("id");
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	@Override
 	public long createStation(final Station station) {
 		SqlParameterSource params = new BeanPropertySqlParameterSource(station);
 		return insert.executeAndReturnKey(params).longValue();
 	}
 
-	@Override
 	public List<Station> findAll() {
 		String sql = "SELECT * FROM station";
 		return jdbcTemplate.query(sql, stationRowMapper);
 	}
 
-	@Override
 	public Station findById(final Long stationIdRequest) {
 		String sql = "SELECT * FROM station WHERE id = ?";
 		return jdbcTemplate.queryForObject(sql, stationRowMapper, stationIdRequest);
 	}
 
-	@Override
 	public boolean updateStation(final long stationId, final Station station) {
 		final String sql = "UPDATE station SET name = ? WHERE id = ?";
 		final int updateCount = jdbcTemplate.update(sql, station.getName(), stationId);
@@ -58,7 +53,6 @@ public class StationJdbcRepository implements StationRepository {
 		return updateCount == UPDATED_COUNT;
 	}
 
-	@Override
 	public boolean deleteById(final Long stationId) {
 		String sql = "DELETE FROM station WHERE id = ?";
 		final int deleteCount = jdbcTemplate.update(sql, stationId);
@@ -66,7 +60,6 @@ public class StationJdbcRepository implements StationRepository {
 		return deleteCount == DELETED_COUNT;
 	}
 
-	@Override
 	public Station findStationWithId(final Station station) {
 		String sql = "SELECT * FROM station WHERE name = ?";
 		return jdbcTemplate.queryForObject(sql,stationRowMapper, station.getName());

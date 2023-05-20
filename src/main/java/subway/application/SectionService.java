@@ -6,12 +6,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import subway.dao.LineDao;
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.domain.repository.LineRepository;
-import subway.domain.repository.SectionRepository;
-import subway.persistence.StationJdbcRepository;
 import subway.ui.dto.request.SectionDeleteRequest;
 import subway.ui.dto.request.SectionUpdateRequest;
 import subway.ui.dto.response.SectionResponse;
@@ -20,19 +20,19 @@ import subway.ui.dto.response.StationResponse;
 @Service
 @Transactional
 public class SectionService {
-	private final SectionRepository sectionRepository;
-	private final LineRepository lineRepository;
-	private final StationJdbcRepository stationRepository;
+	private final SectionDao sectionDao;
+	private final LineDao lineDao;
+	private final StationDao stationDao;
 
-	public SectionService(final SectionRepository sectionRepository, final LineRepository lineRepository,
-		final StationJdbcRepository stationRepository) {
-		this.sectionRepository = sectionRepository;
-		this.lineRepository = lineRepository;
-		this.stationRepository = stationRepository;
+	public SectionService(final SectionDao sectionDao, final LineDao lineDao,
+		final StationDao stationDao) {
+		this.sectionDao = sectionDao;
+		this.lineDao = lineDao;
+		this.stationDao = stationDao;
 	}
 
 	public SectionResponse createSection(final SectionUpdateRequest sectionUpdateRequest) {
-		final Sections sections = new Sections(sectionRepository.findAllByLineName(sectionUpdateRequest.getLineName()));
+		final Sections sections = new Sections(sectionDao.findAllByLineName(sectionUpdateRequest.getLineName()));
 		final Section section = Section.of(
 			sectionUpdateRequest.getLineName(),
 			sectionUpdateRequest.getUpStationName(),
@@ -40,32 +40,32 @@ public class SectionService {
 			sectionUpdateRequest.getDistance()
 		);
 		sections.addSection(section);
-		sectionRepository.createSection(sectionUpdateRequest.getLineName(), sections.getSections());
-		final Long sectionId = sectionRepository.findIdByUpDown(sectionUpdateRequest.getUpStationName(),
+		sectionDao.createSection(sectionUpdateRequest.getLineName(), sections.getSections());
+		final Long sectionId = sectionDao.findIdByUpDown(sectionUpdateRequest.getUpStationName(),
 			sectionUpdateRequest.getDownStationName()).getId();
 		return new SectionResponse(sectionId, section.getLine().getName(), section.getUpStation().getName(),
 			section.getDownStation().getName(), section.getDistance());
 	}
 
 	public List<SectionResponse> findAll() {
-		return SectionResponse.of(sectionRepository.findAll());
+		return SectionResponse.of(sectionDao.findAll());
 	}
 
 	public List<StationResponse> findAllByLine(final long lineId) {
-		final String lineName = lineRepository.findById(lineId).getName();
-		final Sections sections = new Sections(sectionRepository.findAllByLineName(lineName));
+		final String lineName = lineDao.findById(lineId).getName();
+		final Sections sections = new Sections(sectionDao.findAllByLineName(lineName));
 		final List<Station> sortedStations = sections.getSortedStations();
 
 		List<Station> stations = new ArrayList<>();
 		for (Station station : sortedStations) {
-			stations.add(stationRepository.findStationWithId(station));
+			stations.add(stationDao.findStationWithId(station));
 		}
 		return StationResponse.of(stations);
 	}
 
 	public void deleteSection(final long lineId, final SectionDeleteRequest deleteRequest) {
-		final String lineName = lineRepository.findById(lineId).getName();
-		sectionRepository.deleteBySection(lineName, deleteRequest.getUpStationName(),
+		final String lineName = lineDao.findById(lineId).getName();
+		sectionDao.deleteBySection(lineName, deleteRequest.getUpStationName(),
 			deleteRequest.getDownStationName());
 	}
 }

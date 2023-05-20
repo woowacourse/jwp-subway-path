@@ -1,4 +1,4 @@
-package subway.persistence;
+package subway.dao;
 
 import java.util.List;
 
@@ -10,10 +10,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import subway.domain.Line;
-import subway.domain.repository.LineRepository;
 
 @Repository
-public class LineJdbcRepository implements LineRepository {
+public class LineDao {
 
 	private static final int DELETED_COUNT = 1;
 	private static final int UPDATED_COUNT = 1;
@@ -26,26 +25,23 @@ public class LineJdbcRepository implements LineRepository {
 			rs.getString("name")
 		);
 
-	public LineJdbcRepository(final JdbcTemplate jdbcTemplate) {
+	public LineDao(final JdbcTemplate jdbcTemplate) {
 		this.insert = new SimpleJdbcInsert(jdbcTemplate)
 			.withTableName("line")
 			.usingGeneratedKeyColumns("id");
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	@Override
 	public long createLine(final Line line) {
 		SqlParameterSource params = new BeanPropertySqlParameterSource(line);
 		return insert.executeAndReturnKey(params).longValue();
 	}
 
-	@Override
 	public List<Line> findAll() {
 		String sql = "SELECT * FROM line";
 		return jdbcTemplate.query(sql, lineRowMapper);
 	}
 
-	@Override
 	public Line findById(final long lineId) {
 		String sql = "SELECT * FROM line WHERE id = ?";
 		final Line line = jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
@@ -55,7 +51,6 @@ public class LineJdbcRepository implements LineRepository {
 		return line;
 	}
 
-	@Override
 	public boolean updateLine(final long lineId, final Line line) {
 		final String sql = "UPDATE line SET name = ? WHERE id = ?";
 		final int updateCount = jdbcTemplate.update(sql, line.getName(), lineId);
@@ -63,7 +58,6 @@ public class LineJdbcRepository implements LineRepository {
 		return updateCount == UPDATED_COUNT;
 	}
 
-	@Override
 	public boolean deleteById(final long lineId) {
 		String sql = "DELETE FROM line WHERE id = ?";
 		final int deleteCount = jdbcTemplate.update(sql, lineId);

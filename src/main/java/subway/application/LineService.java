@@ -5,18 +5,18 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import subway.dao.LineDao;
 import subway.domain.Line;
-import subway.domain.repository.LineRepository;
 import subway.ui.dto.request.LineCreateRequest;
 import subway.ui.dto.response.LineResponse;
 
 @Service
 @Transactional
 public class LineService {
-	private final LineRepository lineRepository;
+	private final LineDao lineDao;
 
-	public LineService(final LineRepository lineRepository) {
-		this.lineRepository = lineRepository;
+	public LineService(final LineDao lineDao) {
+		this.lineDao = lineDao;
 	}
 
 	public LineResponse createLine(final LineCreateRequest lineCreateRequest) {
@@ -26,7 +26,7 @@ public class LineService {
 			lineCreateRequest.validateName();
 		}
 		final Line line = new Line(lineCreateRequest.getName());
-		final long lineId = lineRepository.createLine(line);
+		final long lineId = lineDao.createLine(line);
 
 		return new LineResponse(lineId, lineCreateRequest.getName());
 	}
@@ -38,16 +38,16 @@ public class LineService {
 	}
 
 	public List<LineResponse> findAll() {
-		return LineResponse.of(lineRepository.findAll());
+		return LineResponse.of(lineDao.findAll());
 	}
 
 	public LineResponse findById(final long lineId) {
-		final Line line = lineRepository.findById(lineId);
+		final Line line = lineDao.findById(lineId);
 		return new LineResponse(lineId, line.getName());
 	}
 
 	public LineResponse updateLine(final long lineId, final LineCreateRequest request) {
-		final boolean isUpdated = lineRepository.updateLine(lineId, new Line(request.getName()));
+		final boolean isUpdated = lineDao.updateLine(lineId, new Line(request.getName()));
 
 		if (!isUpdated) {
 			throw new IllegalStateException("노선 갱신에 실패했습니다");
@@ -57,7 +57,7 @@ public class LineService {
 	}
 
 	public long deleteLine(final long lineId) {
-		final boolean isDeleted = lineRepository.deleteById(lineId);
+		final boolean isDeleted = lineDao.deleteById(lineId);
 
 		if (!isDeleted) {
 			throw new NullPointerException( "존재하지 않는 노선입니다");

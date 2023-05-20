@@ -1,4 +1,4 @@
-package subway.persistence;
+package subway.entity;
 
 import subway.domain.Section;
 
