@@ -1,7 +1,6 @@
 package subway.domain;
 
 public class Fare {
-    private static final int BASIC_RATE = 1250;
     private final long fare;
 
     public Fare(final long fare) {
@@ -11,8 +10,8 @@ public class Fare {
     }
 
     private void validate(final long fare) {
-        if (fare < BASIC_RATE) {
-            throw new IllegalArgumentException("기본요금은 1250원부터 입니다.");
+        if (fare < 0) {
+            throw new IllegalArgumentException("요금은 0원 이상이여야 합니다.");
         }
     }
 
