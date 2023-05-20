@@ -7,25 +7,28 @@ public final class Line {
     private Long id;
     private String name;
     private String color;
-    private Integer additionalFee;
+    private Integer additionalFare;
 
     Line() {
     }
 
-    private Line(Long id, String name, String color, Integer additionalFee) {
+    private Line(Long id, String name, String color, Integer additionalFare) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.additionalFee = additionalFee;
+        this.additionalFare = additionalFare;
     }
 
-    public static Line of(final Long id, final String name, final String color, final Integer additionalFee) {
-        return new Line(id, name, color, additionalFee);
+    public static Line of(final Long id, final String name, final String color, final Integer additionalFare) {
+        LineValidator.validate(name, color, additionalFare);
+        return new Line(id, name, color, additionalFare);
     }
 
-    public static Line withNullId(final String name, final String color, final Integer additionalFee) {
-        return new Line(null, name, color, additionalFee);
+    public static Line withNullId(final String name, final String color, final Integer additionalFare) {
+        LineValidator.validate(name, color, additionalFare);
+        return new Line(null, name, color, additionalFare);
     }
+
 
     public Long getId() {
         return id;
@@ -39,8 +42,8 @@ public final class Line {
         return color;
     }
 
-    public Integer getAdditionalFee() {
-        return additionalFee;
+    public Integer getAdditionalFare() {
+        return additionalFare;
     }
 
     @Override
@@ -61,5 +64,42 @@ public final class Line {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    static class LineValidator {
+
+        private static final int NAME_MAX_LENGTH = 10;
+        private static final int MIN_ADDITIONAL_FARE = 0;
+
+        private LineValidator() {
+
+        }
+
+        private static void validate(final String name, final String color, final int additionalFare) {
+            validateName(name);
+            validateColor(color);
+            validateAdditionalFare(additionalFare);
+        }
+
+        private static void validateName(final String name) {
+            if (name == null || name.isBlank()) {
+                throw new IllegalArgumentException("노선의 이름은 비어있을 수 없습니다.");
+            }
+            if (name.length() > NAME_MAX_LENGTH) {
+                throw new IllegalArgumentException("노선의 이름은 10자를 넘을 수 없습니다.");
+            }
+        }
+
+        private static void validateColor(final String color) {
+            if (color == null || color.isBlank()) {
+                throw new IllegalArgumentException("노선의 색은 비어있을 수 없습니다.");
+            }
+        }
+
+        private static void validateAdditionalFare(final int additionalFare) {
+            if (additionalFare < MIN_ADDITIONAL_FARE) {
+                throw new IllegalArgumentException("추가 요금은 0이상이여야 합니다.");
+            }
+        }
     }
 }

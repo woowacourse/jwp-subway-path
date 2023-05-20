@@ -19,6 +19,15 @@ public class Station {
         return new Station(null, name);
     }
 
+    private static void validate(final String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("역의 이름은 비어있을 수 없습니다.");
+        }
+        if (name.length() > 10) {
+            throw new IllegalArgumentException("역의 이름은 10자를 넘을 수 없습니다.");
+        }
+    }
+
     public static Station of(final Long id, final String name) {
         return new Station(id, name);
     }
