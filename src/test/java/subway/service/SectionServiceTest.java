@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.dto.LineStationRequest;
@@ -35,7 +36,7 @@ class SectionServiceTest {
         //given
         Long lineId = 1L;
         LineStationRequest lineStationRequest = new LineStationRequest(2L, 3L, 10L);
-        when(sectionRepository.toSection(lineId, lineStationRequest)).thenReturn(new Section(LINE_1, STATION_2, STATION_3, 10L));
+        when(sectionRepository.toSection(lineId, lineStationRequest)).thenReturn(new Section(LINE_1, STATION_2, STATION_3, new Distance(10)));
         when(sectionRepository.getCurrentLineSections(lineId)).thenReturn(new Sections(new ArrayList<>(List.of(SECTION_1))));
 
         //when

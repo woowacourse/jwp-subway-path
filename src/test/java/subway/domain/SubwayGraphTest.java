@@ -43,7 +43,7 @@ class SubwayGraphTest {
         ShortestPath shortestPath = subwayGraph.getDijkstraShortestPath(STATION_2, STATION_6);
 
         assertThat(shortestPath.getPath()).isEqualTo(new ArrayList<>(List.of(SECTION_2, SECTION_3, SECTION_4, SECTION_5)));
-        assertThat(shortestPath.getDistance()).isEqualTo(35);
+        assertThat(shortestPath.getDistance().getDistance()).isEqualTo(35);
         assertThat(shortestPath.getFare()).isEqualTo(1750);
     }
 
@@ -58,7 +58,7 @@ class SubwayGraphTest {
 
         assertThat(shortestPath.getPath()).isEqualTo(new ArrayList<>(
                 List.of(SECTION_2, SECTION_3, SECTION_4, SECTION_5, SECTION_6, SECTION_19, SECTION_18, SECTION_17, SECTION_16)));
-        assertThat(shortestPath.getDistance()).isEqualTo(67);
+        assertThat(shortestPath.getDistance().getDistance()).isEqualTo(67);
         assertThat(shortestPath.getFare()).isEqualTo(2350);
     }
 

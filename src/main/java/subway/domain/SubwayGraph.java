@@ -38,7 +38,7 @@ public class SubwayGraph {
             for (Section section : sections) {
                 SubwayPathWeightedEdge subwayPathWeightedEdge = new SubwayPathWeightedEdge(section.getLine());
                 graph.addEdge(section.getPreStation(), section.getStation(), subwayPathWeightedEdge);
-                graph.setEdgeWeight(subwayPathWeightedEdge, section.getDistance());
+                graph.setEdgeWeight(subwayPathWeightedEdge, section.getDistance().getDistance());
             }
         }
 
@@ -56,8 +56,8 @@ public class SubwayGraph {
         List<SubwayPathWeightedEdge> edgeList = path.getEdgeList();
         List<Section> pathSections = edgeList.stream()
                 .map(edge -> new Section(edge.getLine(), graph.getEdgeSource(edge),
-                        graph.getEdgeTarget(edge), (long) graph.getEdgeWeight(edge)))
+                        graph.getEdgeTarget(edge), new Distance(graph.getEdgeWeight(edge))))
                 .collect(Collectors.toList());
-        return ShortestPath.of(pathSections, path.getWeight());
+        return ShortestPath.of(pathSections, new Distance(path.getWeight()));
     }
 }

@@ -39,7 +39,7 @@ public class PathIntegrationTest extends IntegrationTest {
         //then
         assertThat(shortestPath.getPath()).isEqualTo(List.of(
                 SECTION_2, SECTION_3, SECTION_4, SECTION_7));
-        assertThat(shortestPath.getDistance()).isEqualTo(35);
+        assertThat(shortestPath.getDistance().getDistance()).isEqualTo(35);
         assertThat(shortestPath.getFare()).isEqualTo(1750);
     }
 

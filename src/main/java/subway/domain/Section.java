@@ -13,5 +13,5 @@ public class Section {
     private final Line line;
     private final Station preStation;
     private final Station station;
-    private final Long distance;
+    private final Distance distance;
 }

@@ -90,22 +90,22 @@ public class Sections {
 
     private Section addBeforeExistingStation(Section newSection, Station station) {
         Section original = getPreviousSection(station);
-        if (original.getDistance() <= newSection.getDistance()) {
+        if (original.getDistance().compareTo(newSection.getDistance()) != 1) {
             throw new SectionInsertionException("기존 구간의 길이보다 큰 길이의 구간은 해당 구간 사이에 추가할 수 없습니다.");
         }
         sections.add(newSection);
         return new Section(newSection.getLine(), original.getPreStation(),
-                newSection.getPreStation(), original.getDistance() - newSection.getDistance());
+                newSection.getPreStation(), original.getDistance().subtract(newSection.getDistance()));
     }
 
     private Section addAfterExistingStation(Section newSection, Station preStation) {
         Section original = getNextSection(preStation);
-        if (original.getDistance() <= newSection.getDistance()) {
+        if (original.getDistance().compareTo(newSection.getDistance()) != 1) {
             throw new SectionInsertionException("기존 구간의 길이보다 큰 길이의 구간은 해당 구간 사이에 추가할 수 없습니다.");
         }
         sections.add(newSection);
         return new Section(newSection.getLine(), newSection.getStation(),
-                original.getStation(), original.getDistance() - newSection.getDistance());
+                original.getStation(), original.getDistance().subtract(newSection.getDistance()));
     }
 
     private boolean isUpEndStation(Station station) {
@@ -122,7 +122,7 @@ public class Sections {
         sections.remove(postSection);
 
         Section newSection = new Section(preSection.getLine(), preSection.getPreStation(),
-                postSection.getStation(), preSection.getDistance() + postSection.getDistance());
+                postSection.getStation(), preSection.getDistance().add(postSection.getDistance()));
         sections.add(newSection);
         return newSection;
     }

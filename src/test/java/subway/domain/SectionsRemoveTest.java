@@ -55,7 +55,7 @@ public class SectionsRemoveTest {
         //given, when, then
         assertThat(sections.remove(STATION_2))
                 .isEqualTo(new Section(SECTION_1.getLine(),
-                        SECTION_1.getPreStation(), SECTION_2.getStation(), SECTION_1.getDistance() + SECTION_2.getDistance()));
+                        SECTION_1.getPreStation(), SECTION_2.getStation(), SECTION_1.getDistance().add(SECTION_2.getDistance())));
         assertThat(sections.getSections().size()).isEqualTo(1);
     }
 }

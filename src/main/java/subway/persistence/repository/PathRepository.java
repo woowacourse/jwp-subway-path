@@ -4,10 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionWithStationNameEntity;
 import subway.persistence.entity.StationEntity;
@@ -42,7 +39,7 @@ public class PathRepository {
         for (SectionWithStationNameEntity entity : sectionEntities) {
             Line line = findLineById(entity.getLineId());
             sections.add(new Section(line, new Station(entity.getPreStationName()),
-                    new Station(entity.getStationName()), entity.getDistance()));
+                    new Station(entity.getStationName()), new Distance(entity.getDistance())));
         }
         return new Sections(sections);
     }

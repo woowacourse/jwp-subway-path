@@ -16,6 +16,6 @@ public class LineStationRequest {
     @Min(value = 0, message = "{value} 이상의 번호를 입력해주세요")
     private Long stationId;
     @NotNull
-    @Min(value = 0, message = "{value} 이상의 가격을 입력해주세요")
+    @Min(value = 0, message = "{value} 이상의 거리를 입력해주세요")
     private Long distance;
 }
