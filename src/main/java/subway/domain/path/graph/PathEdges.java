@@ -36,9 +36,12 @@ public class PathEdges {
         return PathSections.from(pathSections);
     }
 
-    public boolean isOtherLine(final PathEdge targetPathEdge) {
+    public boolean isSameLine(final PathEdge targetPathEdge) {
+        if (pathEdges.isEmpty()) {
+            return true;
+        }
         return pathEdges.stream()
-                .noneMatch(sourcePathSection -> sourcePathSection.isSameLine(targetPathEdge));
+                .anyMatch(sourcePathEdge -> sourcePathEdge.isSameLine(targetPathEdge));
     }
 
     public List<PathEdge> getPathSections() {

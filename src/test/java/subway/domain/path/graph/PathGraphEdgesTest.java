@@ -7,8 +7,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import subway.domain.line.Line;
-import subway.domain.path.graph.PathEdge;
-import subway.domain.path.graph.PathEdges;
 import subway.domain.section.Direction;
 import subway.domain.section.Distance;
 import subway.domain.station.Station;
@@ -31,29 +29,29 @@ class PathGraphEdgesTest {
     }
 
     @Test
-    void isOtherLine_메소드는_pathSections에_저장한_pathSection과_다른_line의_pathSection을_전달하면_true를_반환한다() {
+    void isSameLine_메소드는_pathSections에_저장한_pathSection과_다른_line의_pathSection을_전달하면_false를_반환한다() {
         final Station sourceStation = Station.of(3L, "3역");
         final Station targetStation = Station.of(4L, "4역");
         final Line line = Line.of(2L, "2호선", "bg-red-500");
         line.createSection(sourceStation, targetStation, Distance.from(5), Direction.DOWN);
         final PathEdge pathEdge = PathEdge.of(sourceStation, targetStation, line);
 
-        final boolean actual = pathEdges.isOtherLine(pathEdge);
+        final boolean actual = pathEdges.isSameLine(pathEdge);
 
-        assertThat(actual).isTrue();
+        assertThat(actual).isFalse();
     }
 
     @Test
-    void isOtherLine_메소드는_pathSections에_저장한_pathSection과_같은_line의_pathSection을_전달하면_false를_반환한다() {
+    void isSameLine_메소드는_pathSections에_저장한_pathSection과_같은_line의_pathSection을_전달하면_true를_반환한다() {
         final Station sourceStation = Station.of(1L, "1역");
         final Station targetStation = Station.of(2L, "2역");
         final Line line = Line.of(1L, "1호선", "bg-red-500");
         line.createSection(sourceStation, targetStation, Distance.from(5), Direction.DOWN);
         final PathEdge pathEdge = PathEdge.of(sourceStation, targetStation, line);
 
-        final boolean actual = pathEdges.isOtherLine(pathEdge);
+        final boolean actual = pathEdges.isSameLine(pathEdge);
 
-        assertThat(actual).isFalse();
+        assertThat(actual).isTrue();
     }
 
     @Test
