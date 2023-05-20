@@ -8,11 +8,22 @@ public class SectionEntity {
     private final Long targetStationId;
     private final Integer distance;
 
-    public SectionEntity(final Long lineId, final Long sourceStationId, final Long targetStationId, final Integer distance) {
+    public SectionEntity(
+            final Long lineId,
+            final Long sourceStationId,
+            final Long targetStationId,
+            final Integer distance
+    ) {
         this(null, lineId, sourceStationId, targetStationId, distance);
     }
 
-    public SectionEntity(final Long id, final Long lineId, final Long sourceStationId, final Long targetStationId, final Integer distance) {
+    public SectionEntity(
+            final Long id,
+            final Long lineId,
+            final Long sourceStationId,
+            final Long targetStationId,
+            final Integer distance
+    ) {
         this.id = id;
         this.lineId = lineId;
         this.sourceStationId = sourceStationId;

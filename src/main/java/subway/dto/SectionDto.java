@@ -7,7 +7,12 @@ public class SectionDto {
     private final String targetStation;
     private final int distance;
 
-    public SectionDto(final Long lineId, final String sourceStation, final String targetStation, final int distance) {
+    public SectionDto(
+            final Long lineId,
+            final String sourceStation,
+            final String targetStation,
+            final int distance
+    ) {
         this.lineId = lineId;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;

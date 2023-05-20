@@ -56,7 +56,7 @@ public class LineDao {
         }
     }
 
-    public List<LineEntity> findAll(){
+    public List<LineEntity> findAll() {
         final String sql = "SELECT id, name, color FROM line";
         return jdbcTemplate.query(sql, ENTITY_MAPPER);
     }

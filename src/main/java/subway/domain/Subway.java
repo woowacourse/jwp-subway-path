@@ -33,7 +33,12 @@ public class Subway {
                 .anyMatch(it -> it.hasName(line.getName()));
     }
 
-    public void registerSection(final String name, final Station source, final Station target, final int distance) {
+    public void registerSection(
+            final String name,
+            final Station source,
+            final Station target,
+            final int distance
+    ) {
         final Line line = getLineByName(name);
         line.registerSection(source, target, distance);
     }

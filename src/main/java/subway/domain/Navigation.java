@@ -19,13 +19,19 @@ public class Navigation {
         return new Navigation(graph);
     }
 
-    private static void initialize(final List<Sections> allSections, final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private static void initialize(
+            final List<Sections> allSections,
+            final WeightedMultigraph<Station, DefaultWeightedEdge> graph
+    ) {
         for (Sections sections : allSections) {
             initializeSections(graph, sections);
         }
     }
 
-    private static void initializeSections(final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final Sections sections) {
+    private static void initializeSections(
+            final WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+            final Sections sections
+    ) {
         for (Section section : sections.get()) {
             final Station source = section.getSource();
             final Station target = section.getTarget();

@@ -16,8 +16,8 @@ public class ReadPathRequest {
         this.targetStation = targetStation;
     }
 
-    public ReadPathRequest() {
-        this(null, null);
+    public PathDto toDto() {
+        return new PathDto(sourceStation, targetStation);
     }
 
     public String getSourceStation() {
@@ -26,9 +26,5 @@ public class ReadPathRequest {
 
     public String getTargetStation() {
         return targetStation;
-    }
-
-    public PathDto toDto() {
-        return new PathDto(sourceStation, targetStation);
     }
 }

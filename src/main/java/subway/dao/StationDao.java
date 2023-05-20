@@ -25,7 +25,9 @@ public class StationDao {
     @Autowired
     public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(jdbcTemplate).withTableName("station").usingGeneratedKeyColumns("id");
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
     }
 
     public StationEntity insert(final String name) {

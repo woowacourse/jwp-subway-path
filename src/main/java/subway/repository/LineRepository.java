@@ -88,7 +88,8 @@ public class LineRepository {
                 .map(sectionEntity -> {
                     final Long sourceStationId = sectionEntity.getSourceStationId();
                     final Long downstreamId = sectionEntity.getTargetStationId();
-                    return new Section(toStation(sourceStationId), toStation(downstreamId), sectionEntity.getDistance());
+                    return new Section(
+                            toStation(sourceStationId), toStation(downstreamId), sectionEntity.getDistance());
                 })
                 .collect(Collectors.toList());
         return new Line(lineEntity.getName(), lineEntity.getColor(), sections);

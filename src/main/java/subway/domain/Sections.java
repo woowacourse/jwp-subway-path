@@ -82,7 +82,12 @@ public class Sections {
                 .findAny();
     }
 
-    private void changeDistance(final Station source, final Station target, final Section oldSection, final int distance) {
+    private void changeDistance(
+            final Station source,
+            final Station target,
+            final Section oldSection,
+            final int distance
+    ) {
         sections.add(new Section(source, target, oldSection.getDistance() - distance));
         sections.remove(oldSection);
     }
