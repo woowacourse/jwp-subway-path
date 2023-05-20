@@ -3,8 +3,8 @@ package subway.application;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import subway.domain.line.Line;
-import subway.domain.path.PathGraph;
-import subway.domain.path.PathEdges;
+import subway.domain.path.graph.PathGraph;
+import subway.domain.path.graph.PathEdges;
 import subway.domain.path.ShortestPathCalculator;
 import subway.domain.station.Station;
 

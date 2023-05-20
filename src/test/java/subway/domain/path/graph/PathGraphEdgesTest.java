@@ -1,4 +1,4 @@
-package subway.domain.path;
+package subway.domain.path.graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import subway.domain.line.Line;
+import subway.domain.path.graph.PathEdge;
+import subway.domain.path.graph.PathEdges;
 import subway.domain.section.Direction;
 import subway.domain.section.Distance;
 import subway.domain.station.Station;

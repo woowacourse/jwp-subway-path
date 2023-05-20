@@ -1,7 +1,9 @@
-package subway.domain.path;
+package subway.domain.path.graph;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.domain.line.Line;
+import subway.domain.path.PathSection;
+import subway.domain.section.Distance;
 import subway.domain.station.Station;
 
 public class PathEdge extends DefaultWeightedEdge {
@@ -35,6 +37,10 @@ public class PathEdge extends DefaultWeightedEdge {
         return new PathEdge(sourceStation, targetStation, line);
     }
 
+    public PathSection to() {
+        return PathSection.of(sourceStation, targetStation, findDistance());
+    }
+
     @Override
     protected Station getSource() {
         return sourceStation;
@@ -47,11 +53,15 @@ public class PathEdge extends DefaultWeightedEdge {
 
     @Override
     protected double getWeight() {
+        return findDistance()
+                .distance();
+    }
+
+    private Distance findDistance() {
         return line.getSections()
                 .sections()
                 .get(sourceStation)
-                .findDistanceByStation(targetStation)
-                .distance();
+                .findDistanceByStation(targetStation);
     }
 
     public boolean isSameLine(final PathEdge other) {

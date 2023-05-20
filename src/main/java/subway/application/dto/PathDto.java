@@ -4,8 +4,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import subway.domain.path.PathEdge;
-import subway.domain.path.PathEdges;
+import subway.domain.path.graph.PathEdge;
+import subway.domain.path.graph.PathEdges;
 import subway.domain.station.Station;
 
 public class PathDto {

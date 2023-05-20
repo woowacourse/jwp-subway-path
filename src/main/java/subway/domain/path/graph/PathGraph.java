@@ -1,4 +1,4 @@
-package subway.domain.path;
+package subway.domain.path.graph;
 
 import java.util.ArrayList;
 import java.util.List;

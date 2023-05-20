@@ -1,7 +1,10 @@
-package subway.domain.path;
+package subway.domain.path.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import subway.domain.path.PathSection;
+import subway.domain.path.PathSections;
 
 public class PathEdges {
 
@@ -28,6 +31,14 @@ public class PathEdges {
         return pathEdges.stream()
                 .mapToInt(PathEdge::getDistance)
                 .sum();
+    }
+
+    public PathSections to() {
+        final List<PathSection> pathSections = pathEdges.stream()
+                .map(PathEdge::to)
+                .collect(Collectors.toList());
+
+        return PathSections.from(pathSections);
     }
 
     public List<PathEdge> getPathSections() {

@@ -2,6 +2,7 @@ package subway.domain.path;
 
 import java.util.List;
 import subway.domain.line.Line;
+import subway.domain.path.graph.PathEdges;
 import subway.domain.station.Station;
 
 public interface ShortestPathCalculator {

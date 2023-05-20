@@ -10,7 +10,7 @@ import subway.application.dto.ShortestPathsDto;
 import subway.domain.fare.FareAmount;
 import subway.domain.fare.FarePolicy;
 import subway.domain.line.Line;
-import subway.domain.path.PathEdges;
+import subway.domain.path.graph.PathEdges;
 import subway.domain.path.ShortestPathCalculator;
 import subway.domain.station.Station;
 import subway.persistence.repository.LineRepository;

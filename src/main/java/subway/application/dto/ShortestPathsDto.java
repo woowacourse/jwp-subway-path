@@ -2,7 +2,7 @@ package subway.application.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import subway.domain.path.PathEdges;
+import subway.domain.path.graph.PathEdges;
 
 public class ShortestPathsDto {
 

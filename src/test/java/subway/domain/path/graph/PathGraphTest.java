@@ -1,4 +1,4 @@
-package subway.domain.path;
+package subway.domain.path.graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
