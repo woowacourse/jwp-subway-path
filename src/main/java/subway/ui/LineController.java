@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineStationResponse;
-import subway.dto.RegisterStationRequest;
+import subway.dto.LineStationRequest;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -30,9 +30,9 @@ public class LineController {
     @PostMapping("/{id}/stations")
     public ResponseEntity<Void> registerStation(
             @PathVariable final Long id,
-            @RequestBody final RegisterStationRequest registerStationRequest
+            @RequestBody final LineStationRequest lineStationRequest
     ) {
-        lineService.saveStationInLine(id, registerStationRequest);
+        lineService.saveStationInLine(id, lineStationRequest);
         return ResponseEntity.created(URI.create("/lines/" + id + "/stations/")).build();
     }
 

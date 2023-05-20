@@ -35,36 +35,36 @@ public class LineService {
         return persistLine.getId();
     }
 
-    public void saveStationInLine(final Long lineId, final RegisterStationRequest registerStationRequest) {
+    public void saveStationInLine(final Long lineId, final LineStationRequest lineStationRequest) {
         LineEntity lineEntity = findLineById(lineId);
 
-        validateDifferentStation(registerStationRequest);
-        validateExistStation(registerStationRequest);
+        validateDifferentStation(lineStationRequest);
+        validateExistStation(lineStationRequest);
 
         List<LineStationEntity> lineStationEntities = sectionDao.findLineStationByLineIdWithSort(lineId);
         Map<Long, Station> stationMap = makeStationMap(stationDao.findAll());
-        Station upStation = stationMap.get(registerStationRequest.getUpStationId());
-        Station downStation = stationMap.get(registerStationRequest.getDownStationId());
+        Station upStation = stationMap.get(lineStationRequest.getUpStationId());
+        Station downStation = stationMap.get(lineStationRequest.getDownStationId());
 
         List<Section> sections = toDomain(lineStationEntities);
         Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
-        Section section = new Section(upStation, downStation, registerStationRequest.getDistance());
+        Section section = new Section(upStation, downStation, lineStationRequest.getDistance());
         line.add(section);
         sync(lineId, line.getSections());
     }
 
-    private void validateDifferentStation(final RegisterStationRequest registerStationRequest) {
+    private void validateDifferentStation(final LineStationRequest lineStationRequest) {
         // 예외: 2개의 역이 동일한 역인 경우
-        if (Objects.equals(registerStationRequest.getUpStationId(), registerStationRequest.getDownStationId())) {
+        if (Objects.equals(lineStationRequest.getUpStationId(), lineStationRequest.getDownStationId())) {
             throw new IllegalArgumentException("구간은 서로 다른 역이여야 합니다.");
         }
     }
 
-    private void validateExistStation(final RegisterStationRequest registerStationRequest) {
+    private void validateExistStation(final LineStationRequest lineStationRequest) {
         // 예외: sectionRequest에 들어온 2개의 역이 모두 Station에 존재하는 역인지 검증
-        stationDao.findById(registerStationRequest.getUpStationId())
+        stationDao.findById(lineStationRequest.getUpStationId())
                 .orElseThrow(() -> new NoSuchElementException("해당하는 상행역이 존재하지 않습니다."));
-        stationDao.findById(registerStationRequest.getDownStationId())
+        stationDao.findById(lineStationRequest.getDownStationId())
                 .orElseThrow(() -> new NoSuchElementException("해당하는 하행역이 존재하지 않습니다."));
     }
 
