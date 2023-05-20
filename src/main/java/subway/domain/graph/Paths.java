@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class Paths {
     private final List<Path> paths;
 
-    public Paths(final List<Path> paths) {
+    private Paths(final List<Path> paths) {
         this.paths = new ArrayList<>(paths);
     }
 
