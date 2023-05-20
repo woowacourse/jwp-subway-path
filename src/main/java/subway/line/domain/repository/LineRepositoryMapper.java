@@ -36,7 +36,7 @@ public class LineRepositoryMapper implements LineRepository {
 
     @Override
     public Line findAllStationsByLineId(final Long lineId) {
-        List<SectionEntity> sectionEntities = sectionDao.findAllById(lineId);
+        List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
 
         List<Section> sectionList = new ArrayList<>();
         for (SectionEntity sectionEntity : sectionEntities) {

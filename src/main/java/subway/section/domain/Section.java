@@ -59,6 +59,10 @@ public class Section {
         return upStation.getId() == beforeStationId;
     }
 
+    public boolean downStationIdIsSameId(final Long beforeStationId) {
+        return downStation.getId() == beforeStationId;
+    }
+
     public Section getLeftSection(final Long lineId, final Long downStationId, final int distance) {
         return Section.of(lineId, upStation.getId(), downStationId, distance);
     }

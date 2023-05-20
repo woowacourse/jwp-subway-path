@@ -23,7 +23,7 @@ public class SectionService {
     @Transactional
     public void saveSection(final SectionSaveRequest request) {
         Optional<SectionEntity> sectionOptional = sectionRepository.findOptionalByUpStationId(request.getUpStationId());
-        if (sectionOptional.isPresent()) {
+        if (sectionOptional.isPresent() && request.getLineId() == sectionOptional.get().getLineId()) {
             SectionEntity sectionEntity = sectionOptional.get();
             Section section = Section.from(sectionEntity);
             Section leftSection = section.getLeftSection(sectionEntity.getLineId(), request.getDownStationId(), request.getDistance());

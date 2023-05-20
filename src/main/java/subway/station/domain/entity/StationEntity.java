@@ -47,4 +47,5 @@ public class StationEntity {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
 }

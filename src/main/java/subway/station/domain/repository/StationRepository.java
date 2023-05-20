@@ -13,8 +13,6 @@ public interface StationRepository {
 
     Station findFinalUpStation(Long lineId);
 
-    Station findFinalDownStation(Long lineId);
-
     Map<String, Station> getFinalStations(final Long lineId);
 
     List<Station> findAll();

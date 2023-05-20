@@ -39,13 +39,6 @@ public class StationRepositoryMapper implements StationRepository {
     }
 
     @Override
-    public Station findFinalDownStation(final Long lineId) {
-        return stationDao.findFinalDownStation(lineId)
-                .orElseThrow(() -> StationNotFoundException.THROW)
-                .toDomain();
-    }
-
-    @Override
     public List<Station> findAll() {
         return stationDao.findAll().stream()
                 .map(StationEntity::toDomain)

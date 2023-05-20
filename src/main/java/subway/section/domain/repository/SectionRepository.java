@@ -1,6 +1,7 @@
 package subway.section.domain.repository;
 
 import subway.section.domain.Section;
+import subway.section.domain.Sections;
 import subway.section.domain.entity.SectionEntity;
 
 import java.util.List;
@@ -25,4 +26,5 @@ public interface SectionRepository {
 
     Section findById(final Long id);
 
+    Sections findByLineId(Long lineId);
 }
