@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.dto.LineRequest;
 import subway.entity.LineEntity;
+import subway.entity.StationEntity;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -36,7 +37,22 @@ public class LineDao {
         return keyHolder.getKey().longValue();
     }
 
-    public List<LineEntity> findAll() {
+    public List<StationEntity> findAllStations(Long lineId) {
+        String sql = "SELECT * FROM STATION WHERE line_id = ?";
+
+        return jdbcTemplate.query(sql,
+                (resultSet, rowNum) -> {
+                    Long id = resultSet.getLong("id");
+                    String name = resultSet.getString("name");
+                    Long nextStationId = resultSet.getLong("next_station");
+                    int distance = resultSet.getInt("distance");
+                    Long entityLineId = resultSet.getLong("line_id");
+
+                    return new StationEntity(id, name, nextStationId, distance, entityLineId);
+                }, lineId);
+    }
+
+    public List<LineEntity> findAllLines() {
         String sql = "SELECT * FROM LINE";
 
         return jdbcTemplate.query(sql,
@@ -50,10 +66,10 @@ public class LineDao {
                 });
     }
 
-    public Integer update(Long id, LineRequest lineRequest) {
+    public Long update(Long id, LineRequest lineRequest) {
         String sql = "UPDATE LINE SET name = ?, color = ? WHERE id = ?";
 
-        return jdbcTemplate.update(sql, lineRequest.getName(), lineRequest.getColor(), id);
+        return Long.valueOf(jdbcTemplate.update(sql, lineRequest.getName(), lineRequest.getColor(), id));
     }
 
     public Optional<LineEntity> findLineEntityById(Long id) {
@@ -71,5 +87,15 @@ public class LineDao {
 
             return new LineEntity(id, name, color, headStation);
         };
+    }
+
+    public Long remove(Long id) {
+        String query = "DELETE FROM LINE WHERE id = ?";
+        return Long.valueOf(jdbcTemplate.update(query, id));
+    }
+
+    public void removeAll() {
+        String query = "DELETE FROM STATION";
+        jdbcTemplate.update(query);
     }
 }

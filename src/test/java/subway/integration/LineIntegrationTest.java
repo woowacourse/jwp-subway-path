@@ -3,38 +3,39 @@ package subway.integration;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Lines;
-import subway.domain.Station;
-import subway.domain.Stations;
+import subway.dao.LineDao;
+import subway.dao.StationDao;
 import subway.dto.LineCreateRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationRequest;
+import subway.entity.LineEntity;
+import subway.entity.StationEntity;
 import subway.service.LineService;
 
-import java.util.List;
+import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
-@Transactional
 public class LineIntegrationTest extends IntegrationTest {
 
     @Autowired
     private LineService lineService;
+    @Autowired
+    private LineDao lineDao;
+    @Autowired
+    private StationDao stationDao;
+
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
-    private Stations stations;
-    private Lines lines;
 
     @BeforeEach
     public void setUp() {
@@ -42,19 +43,26 @@ public class LineIntegrationTest extends IntegrationTest {
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
-        stations = lineService.getStations();
-        lines = lineService.getLines();
+    }
+
+    @AfterEach
+    public void after() {
+        stationDao.removeAll();
+        lineDao.removeAll();
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
-    void createLine() {
+    void createLine() throws SQLException {
         //given
-        stations.addStation(new Station("역삼역", new Distance(10)));
-        stations.addStation(new Station("선릉역", new Distance(0)));
+        StationEntity station = new StationEntity(1L, "역삼역", 2L, 10, 1L);
+        StationEntity nextStation = new StationEntity(2L, "선릉역", null, 0, 1L);
+        Long insert = stationDao.insert(station);
+        Long insert1 = stationDao.insert(nextStation);
 
         //when
-        LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
+        LineCreateRequest lineCreateRequest =
+                new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
 
         ExtractableResponse<Response> response = RestAssured.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).body(lineCreateRequest).when().post("/lines").then().log().all().extract();
 
@@ -92,18 +100,18 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLines() {
         // given
-        Station station = new Station("역삼역", new Distance(10));
-        stations.addStation(station);
-        Station nextStation = new Station("선릉역", new Distance(0));
-        stations.addStation(nextStation);
+        StationEntity station = new StationEntity(1L, "역삼역", 2L, 10, 1L);
+        StationEntity nextStation = new StationEntity(2L, "선릉역", null, 0, 1L);
+
+        stationDao.insert(station);
+        stationDao.insert(nextStation);
 
         //when
         LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
-
         LineCreateRequest lineCreateRequest2 = new LineCreateRequest(lineRequest2, new StationRequest("역삼역", "선릉역", 10));
 
-        lines.addLine(new Line(lineRequest1.getName(), lineRequest1.getColor(), new Stations(List.of(station, nextStation))));
-        lines.addLine(new Line(lineRequest2.getName(), lineRequest2.getColor(), new Stations(List.of(station, nextStation))));
+        lineDao.insert(new LineEntity(1L, lineRequest1.getName(), lineRequest1.getColor(), 1L));
+        lineDao.insert(new LineEntity(2L, lineRequest2.getName(), lineRequest2.getColor(), 1L));
 
 
         ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).body(lineCreateRequest).when().post("/lines").then().log().all().extract();
@@ -124,12 +132,12 @@ public class LineIntegrationTest extends IntegrationTest {
     void getLine() {
         // given
 
-        Station station = new Station("역삼역", new Distance(10));
-        stations.addStation(station);
-        Station nextStation = new Station("선릉역", new Distance(0));
-        stations.addStation(nextStation);
+        StationEntity station = new StationEntity(1L, "역삼역", 2L, 10, 1L);
+        StationEntity nextStation = new StationEntity(2L, "선릉역", null, 0, 1L);
+        stationDao.insert(station);
+        stationDao.insert(nextStation);
 
-        lines.addLine(new Line(lineRequest1.getName(), lineRequest1.getColor(), new Stations(List.of(station, nextStation))));
+        lineDao.insert(new LineEntity(1L, lineRequest1.getName(), lineRequest1.getColor(), 1L));
 
         //when
         LineCreateRequest lineCreateRequest =
@@ -161,12 +169,12 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void updateLine() {
         // given
-        Station station = new Station("역삼역", new Distance(10));
-        stations.addStation(station);
-        Station nextStation = new Station("선릉역", new Distance(0));
-        stations.addStation(nextStation);
-        Station thirdStation = new Station("강남역", new Distance(3));
-        stations.addStation(thirdStation);
+        StationEntity station = new StationEntity(1L, "역삼역", 2L, 10, 1L);
+        StationEntity nextStation = new StationEntity(2L, "선릉역", null, 0, 1L);
+        StationEntity thirdStation = new StationEntity(3L, "강남역", null, 3, 1L);
+        stationDao.insert(station);
+        stationDao.insert(nextStation);
+        stationDao.insert(thirdStation);
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
         LineCreateRequest lineCreateRequest2 = new LineCreateRequest(lineRequest1, new StationRequest("강남역", "선릉역", 10));

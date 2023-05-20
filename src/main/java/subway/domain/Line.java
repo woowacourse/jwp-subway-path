@@ -1,7 +1,7 @@
 package subway.domain;
 
 public class Line {
-
+    //TODO: stations 제거?? 동시성 문제. id도 마찬가지임.
     private static Long sequence = 1L;
     private final Long id;
     private final Stations stations;

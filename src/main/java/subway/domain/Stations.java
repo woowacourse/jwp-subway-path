@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +9,7 @@ public class Stations {
     private final List<Station> stations;
 
     public Stations(List<Station> stations) {
-        this.stations = stations;
+        this.stations = new ArrayList<>(stations);
     }
 
     public void addStation(Station station) {
