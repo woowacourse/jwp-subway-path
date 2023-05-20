@@ -39,7 +39,7 @@ public class StationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StationResponse> showStation(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(stationService.findStationEntityById(id));
+        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
     }
 
     @DeleteMapping("/{id}")
