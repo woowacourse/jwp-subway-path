@@ -3,7 +3,10 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.exception.OptionalHasNoStationException;
+import subway.domain.Path.Path;
 import subway.domain.Path.PathFinder;
+import subway.domain.fare.DistanceFarePolicy;
+import subway.domain.fare.FarePolicy;
 import subway.domain.section.SectionRepository;
 import subway.domain.station.Station;
 import subway.dto.DtoMapper;
@@ -30,6 +33,13 @@ public class PathService {
                 .orElseThrow(OptionalHasNoStationException::new);
 
         PathFinder pathFinder = PathFinder.from(sectionRepository.readAllSections());
-        return DtoMapper.convertToPathResponse(pathFinder.findShortestPath(source, destination));
+        FarePolicy farePolicy = DistanceFarePolicy.getInstance();
+
+        Path shortestPath = Path.from(
+                pathFinder.findShortestPath(source, destination),
+                pathFinder.findShortestDistance(source, destination)
+        );
+
+        return DtoMapper.convertToPathResponse(shortestPath, shortestPath.calculateFare(farePolicy));
     }
 }

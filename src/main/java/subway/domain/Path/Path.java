@@ -1,5 +1,6 @@
 package subway.domain.Path;
 
+import subway.domain.fare.FarePolicy;
 import subway.domain.station.Station;
 
 import java.util.ArrayList;
@@ -17,6 +18,10 @@ public class Path {
 
     public static Path from(List<Station> orderedStations, int pathDistance) {
         return new Path(new ArrayList<>(orderedStations), pathDistance);
+    }
+
+    public int calculateFare(FarePolicy farePolicy) {
+        return farePolicy.calculateFare(distance);
     }
 
     public List<Station> getOrderedStations() {

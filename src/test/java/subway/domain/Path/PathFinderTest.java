@@ -16,6 +16,7 @@ import static subway.domain.Path.PathTestFixture.잠실나루_잠실;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 import java.util.List;
 
@@ -30,10 +31,10 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(_2호선_구간들);
 
         // when
-        Path shortestPath = pathFinder.findShortestPath(강변, 잠실);
+        List<Station> shortestPath = pathFinder.findShortestPath(강변, 잠실);
 
         // then
-        assertThat(shortestPath.getOrderedStations()).containsExactly(강변, 잠실나루, 잠실);
+        assertThat(shortestPath).containsExactly(강변, 잠실나루, 잠실);
     }
 
     @Test
@@ -44,10 +45,10 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(_2호선_구간들);
 
         // when
-        Path shortestPath = pathFinder.findShortestPath(강변, 잠실);
+        int shortestDistance = pathFinder.findShortestDistance(강변, 잠실);
 
         // then
-        assertThat(shortestPath.getDistance()).isEqualTo(10);
+        assertThat(shortestDistance).isEqualTo(10);
     }
 
     @Test
@@ -71,10 +72,10 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(전체_노선_구간들);
 
         // when
-        Path shortestPath = pathFinder.findShortestPath(잠실나루, 강동구청);
+        List<Station> shortestPath = pathFinder.findShortestPath(잠실나루, 강동구청);
 
         // then
-        assertThat(shortestPath.getOrderedStations()).containsExactly(잠실나루, 잠실, 몽촌토성, 강동구청);
+        assertThat(shortestPath).containsExactly(잠실나루, 잠실, 몽촌토성, 강동구청);
     }
 
     @Test
@@ -85,9 +86,9 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(전체_노선_구간들);
 
         // when
-        Path shortestPath = pathFinder.findShortestPath(잠실나루, 강동구청);
+        int shortestDistance = pathFinder.findShortestDistance(잠실나루, 강동구청);
 
         // then
-        assertThat(shortestPath.getDistance()).isEqualTo(26);
+        assertThat(shortestDistance).isEqualTo(26);
     }
 }
