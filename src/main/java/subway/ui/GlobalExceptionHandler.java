@@ -1,7 +1,5 @@
 package subway.ui;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,13 +8,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.ui.dto.exception.ExceptionResponse;
 import subway.exception.IllegalDistanceException;
 import subway.exception.IllegalLineException;
 import subway.exception.IllegalSectionException;
 import subway.exception.IllegalStationException;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
+import subway.ui.dto.exception.ExceptionResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,7 +29,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        Map<String, String> validation = new HashMap<>();
         String exceptionMessage = e.getFieldErrors()
                 .stream()
                 .map(FieldError::getDefaultMessage)

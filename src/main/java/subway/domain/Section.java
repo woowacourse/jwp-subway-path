@@ -42,16 +42,8 @@ public class Section {
         return startStation;
     }
 
-    public String getStartStationName() {
-        return startStation.getName();
-    }
-
     public Station getEndStation() {
         return endStation;
-    }
-
-    public String getEndStationName() {
-        return endStation.getName();
     }
 
     public Long getStartStationId() {
