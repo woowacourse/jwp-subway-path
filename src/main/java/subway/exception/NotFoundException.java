@@ -1,7 +1,9 @@
 package subway.exception;
 
-public class NotFoundException extends CustomException {
+import org.springframework.http.HttpStatus;
+
+public class NotFoundException extends SubwayException {
     public NotFoundException(final ErrorCode errorCode) {
-        super(errorCode.getErrorMessage());
+        super(errorCode.getErrorMessage(), HttpStatus.NOT_FOUND);
     }
 }

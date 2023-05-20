@@ -43,9 +43,9 @@
 ## 리팩토링 목록
 - [ ] 역 추가, 노선 추가 기능 분리
   - [ ] 역 추가 이후 노선에 추가하도록 변경
-- [ ] GlobalControllerAdvice 클래스 리팩토링
-  - [ ] CustomException 필드 변경
-  - [ ] CustomException 클래스 네이밍 변경
+- [x] GlobalControllerAdvice 클래스 리팩토링
+  - [x] CustomException 필드 변경
+  - [x] CustomException 클래스 네이밍 변경
 - [ ] Station DB table 컬럼 리팩토링
 - [ ] Station 객체가 id를 갖도록 리팩토링
 - [ ] StationService saveNewSections 메소드 내부 로직 변경 -> batchInsert문 사용

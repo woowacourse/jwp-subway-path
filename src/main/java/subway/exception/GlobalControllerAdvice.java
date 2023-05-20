@@ -14,14 +14,9 @@ public class GlobalControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errorMessage));
     }
 
-    @ExceptionHandler({DuplicateException.class, InvalidException.class})
-    public ResponseEntity<ErrorResponse> handleDuplicateException(CustomException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<ErrorResponse> handleSubwayException(SubwayException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
