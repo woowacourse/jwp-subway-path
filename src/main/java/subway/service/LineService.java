@@ -1,15 +1,18 @@
-package subway.application;
+package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import org.springframework.transaction.annotation.Transactional;
+import subway.controller.exception.OptionalHasNoLineException;
+import subway.domain.line.Line;
+import subway.dto.request.LineRequest;
+import subway.dto.response.LineResponse;
+import subway.persistence.dao.LineDao;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class LineService {
     private final LineDao lineDao;
 
@@ -18,7 +21,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = lineDao.insert(Line.of(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }
 
@@ -39,11 +42,12 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+                .orElseThrow(OptionalHasNoLineException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineDao.update(Line.of(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {

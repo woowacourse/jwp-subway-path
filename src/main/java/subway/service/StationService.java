@@ -1,15 +1,18 @@
-package subway.application;
+package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import org.springframework.transaction.annotation.Transactional;
+import subway.controller.exception.OptionalHasNoStationException;
+import subway.domain.station.Station;
+import subway.dto.request.StationRequest;
+import subway.dto.response.StationResponse;
+import subway.persistence.dao.StationDao;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StationService {
     private final StationDao stationDao;
 
@@ -18,12 +21,14 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        Station station = stationDao.insert(Station.from(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        Station station = stationDao.findById(id)
+                .orElseThrow(OptionalHasNoStationException::new);
+        return StationResponse.of(station);
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -35,7 +40,7 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        stationDao.update(Station.of(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {
