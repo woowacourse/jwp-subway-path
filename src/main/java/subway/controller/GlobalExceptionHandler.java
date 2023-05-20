@@ -3,6 +3,7 @@ package subway.controller;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -10,7 +11,6 @@ import subway.controller.dto.response.ExceptionResponse;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.DuplicatedSectionException;
 import subway.exception.DuplicatedStationNameException;
-import subway.exception.InvalidDirectionException;
 import subway.exception.InvalidDistanceException;
 import subway.exception.LineNotFoundException;
 import subway.exception.LineOrStationNotFoundException;
@@ -62,9 +62,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(InvalidDirectionException.class)
-    public ResponseEntity<ExceptionResponse> handleInvalidDirectionException(InvalidDirectionException e) {
-        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException() {
+        return ResponseEntity.badRequest().body(new ExceptionResponse("잘못된 방향입니다."));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -76,7 +76,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ExceptionResponse> handleRuntimeException() {
+    public ResponseEntity<ExceptionResponse> handleRuntimeException(RuntimeException e) {
+        System.out.println(e.getClass());
         return ResponseEntity.internalServerError().body(new ExceptionResponse("서버 내부 오류입니다."));
     }
 }
