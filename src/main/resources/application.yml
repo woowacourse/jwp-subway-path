@@ -1,7 +1,13 @@
 spring:
+  datasource:
+    url: jdbc:mysql://localhost:13306/subway?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  sql:
+    init:
+      schema-locations: classpath:schema.sql
+      mode: always
   h2:
     console:
       enabled: true
-  datasource:
-    url: jdbc:h2:mem:subwaydb
-    driver-class-name: org.h2.Driver

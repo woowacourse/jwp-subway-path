@@ -27,7 +27,7 @@ public class LineDao {
     public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("lines")
+                .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -41,12 +41,12 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select id, name, color from LINES";
+        String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<LineEntity> findById(final Long id) {
-        String sql = "select id, name, color from LINES WHERE id = ?";
+        String sql = "select id, name, color from LINE WHERE id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (DataAccessException e) {
@@ -55,12 +55,12 @@ public class LineDao {
     }
 
     public void updateById(final Long id, final LineEntity lineEntity) {
-        String sql = "update LINES set name = ?, color = ? where id = ?";
+        String sql = "update LINE set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{lineEntity.getNameValue(), lineEntity.getColorValue(), id});
     }
 
     public void deleteById(final Long id) {
-        jdbcTemplate.update("delete from Lines where id = ?", id);
+        jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 
 }
