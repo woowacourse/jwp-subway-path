@@ -4,6 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+@Schema(
+        description = "지하철 승객 정보",
+        example = "{\"age\": 15, \"startStationId\": 1, \"endStationId\": 2}"
+)
 public class PassengerRequest {
 
     @Schema(description = "탑승자 나이")

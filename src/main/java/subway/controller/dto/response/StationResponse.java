@@ -3,6 +3,10 @@ package subway.controller.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import subway.domain.station.Station;
 
+@Schema(
+        description = "역 응답 정보",
+        example = "{\"id\": 1, \"name\": \"잠실역\"}"
+)
 public class StationResponse {
 
     @Schema(description = "역 ID")

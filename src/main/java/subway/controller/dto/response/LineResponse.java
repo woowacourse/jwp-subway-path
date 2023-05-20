@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 
+@Schema(
+        description = "역 응답 정보",
+        example = "{\"id\": 1, \"name\": \"2호선\", \"color\": \"초록색\", \"fare\": 1000, \"stations\": [{\"id\": 1, \"name\": \"잠실역\"}]}"
+)
 public class LineResponse {
 
     @Schema(description = "노선 ID")

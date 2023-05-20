@@ -4,6 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+@Schema(
+        description = "구간 정보 생성 요청 정보",
+        example = "{\"upwardStationId\": 1, \"downwardStationId\": 2, \"distance\": 5}"
+)
 public class SectionCreateRequest {
 
     @Schema(description = "상행 역 ID")

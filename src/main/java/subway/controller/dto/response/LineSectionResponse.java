@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import subway.domain.section.PathSection;
 
+@Schema(
+        description = "구간 응답 정보",
+        example = "{\"lineId\": 1, \"sections\": [{\"upwardStationName\": \"잠실역\", \"downwardStationName\": \"잠실새내역\", \"distance\": 5}]}"
+)
 public class LineSectionResponse {
 
     @Schema(description = "노선 ID")

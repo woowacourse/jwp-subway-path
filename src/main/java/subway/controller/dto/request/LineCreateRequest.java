@@ -5,6 +5,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+@Schema(
+        description = "노선 생성 요청 정보",
+        example = "{\"name\": \"2호선\", \"color\": \"초록색\", \"fare\": 1000}"
+)
 public class LineCreateRequest {
 
     @Schema(description = "노선 이름")

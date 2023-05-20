@@ -3,6 +3,10 @@ package subway.controller.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import subway.domain.section.PathSection;
 
+@Schema(
+        description = "구간 응답 정보",
+        example = "{\"upwardStationName\": \"잠실역\", \"downwardStationName\": \"잠실새내역\", \"distance\": 10}"
+)
 public class SectionResponse {
 
     @Schema(description = "상행역 이름")

@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import subway.domain.section.PathSection;
 
+@Schema(
+        description = "최단 경로 응답 정보",
+        example = "{\"transferCount\": 3, \"path\": [{\"lineId\": 1, \"sections\": [{\"upwardStationName\": \"잠실역\", \"downwardStationName\": \"잠실새내역\", \"distance\": 5}]}], \"totalDistance\": 10, \"subwayFare\": 2000}"
+)
 public class ShortestPathResponse {
 
     @Schema(description = "환승 횟수")
