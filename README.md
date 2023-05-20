@@ -18,7 +18,7 @@
 - 테이블 이름 - STATION
 
   | id | name | next | distance | line_id |
-    | --- | --- |------|----------| -------- |
+      | --- | --- |------|----------| -------- |
   | 1L | 노포역 | 2L | 10 | 1L |
   | 2L | 화정역 | 3L | 5 | 1L |
   | 3L | 잠실역 | 0L | null | 1L |
@@ -29,7 +29,7 @@ name next가 중복 허용
 - 테이블 이름 - LINE
 
   | id | name | color | head_station |
-  | --- | --- |-------| ------------ |
+    | --- | --- |-------| ------------ |
   | 1L | 1호선 | 파란색 | 1L |
   | 2L | 2호선 | 초록색 | 4L |
 
@@ -48,7 +48,7 @@ name next가 중복 허용
     - [x] 테스트코드 작성
 
   ```jsx
-  POST /stations/in/{line_id}
+  POST /lines/{line_id}/stations
   
   RequestBody = {
       upStation : "노포역",
@@ -69,7 +69,7 @@ name next가 중복 허용
     - [x] 테스트코드 작성
 
 ```jsx
-GET /stations/in/{line_id}
+GET /lines/{line_id}/stations
 ```
 
 ```jsx
@@ -96,7 +96,7 @@ ResponseBody = [
     - [x] 테스트코드 작성
 
 ```jsx
-DELETE /stations/in/{line_id}
+DELETE /lines/{line_id}/stations
 
 RequestBody = {
     name : "역삼역"
