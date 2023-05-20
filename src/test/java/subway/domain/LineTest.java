@@ -317,5 +317,20 @@ class LineTest {
                 .isInstanceOf(LineNotEmptyException.class)
                 .hasMessage("노선이 비어있지 않습니다.");
     }
+
+    @CsvSource({"B, true", "A, false"})
+    @ParameterizedTest(name = "노선 연결 상태가 [B-C]일 때 {0}역이 존재하는지 확인한다. 결과: {1}")
+    void 해당_호선이_입력받은_역을_포함하는지_확인한다(final String station, final boolean result) {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("B", "C", 3)
+        ));
+
+        // when
+        boolean hasStation = line.hasStation(station);
+
+        // then
+        assertThat(hasStation).isEqualTo(result);
+    }
 }
 

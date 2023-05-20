@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.Direction.LEFT;
+import static subway.fixture.SubwayFixtures.SUBWAY1;
+import static subway.fixture.SubwayFixtures.SUBWAY2;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -51,16 +54,7 @@ class SubwayTest {
     @Test
     void 노선에_구간이_정상적으로_등록된다() {
         // given
-        final Subway subway = new Subway(List.of(
-                new Line("1호선", "RED", List.of(
-                        new Section("A", "B", 5),
-                        new Section("B", "C", 5)
-                )),
-                new Line("2호선", "RED", List.of(
-                        new Section("Z", "B", 5),
-                        new Section("B", "Y", 5)
-                ))
-        ));
+        final Subway subway = SUBWAY1;
 
         // when
         subway.add("1호선", "B", "D", 3, LEFT);
@@ -152,16 +146,7 @@ class SubwayTest {
     @Test
     void 입력받은_라인_이름으로_라인을_찾는다() {
         // given
-        final Subway subway = new Subway(List.of(
-                new Line("1호선", "RED", List.of(
-                        new Section("A", "B", 5),
-                        new Section("B", "C", 5)
-                )),
-                new Line("2호선", "BLUE", List.of(
-                        new Section("Z", "B", 5),
-                        new Section("B", "Y", 5)
-                ))
-        ));
+        final Subway subway = SUBWAY1;
 
         // when
         Line line = subway.findLineByLineName("2호선");
@@ -175,5 +160,59 @@ class SubwayTest {
                         new Section("B", "Y", 5)
                 ))
         );
+    }
+
+    @Test
+    void 입력받은_출발역과_도착역의_최단경로를_조회한다_상행에서_하행방향의_경우() {
+        // given
+        final Subway subway = SUBWAY2;
+
+        // when
+        final Path shortestPath = subway.findShortestPath("A", "D");
+
+        // then
+        assertAll(
+                () -> assertThat(shortestPath.getPath()).containsExactly(
+                        new Station("A"), new Station("B"), new Station("D")),
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(new Distance(4))
+        );
+    }
+
+    @Test
+    void 입력받은_출발역과_도착역의_최단경로를_조회한다_하행에서_상행방향의_경우() {
+        // given
+        final Subway subway = SUBWAY2;
+
+        // when
+        final Path shortestPath = subway.findShortestPath("D", "A");
+
+        // then
+        assertAll(
+                () -> assertThat(shortestPath.getPath()).containsExactly(
+                        new Station("D"), new Station("B"), new Station("A")),
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(new Distance(4))
+        );
+    }
+
+    @Test
+    void 입력받은_출발역이_존재하지_않으면_예외를_던진다() {
+        // given
+        final Subway subway = SUBWAY2;
+
+        // expect
+        assertThatThrownBy(() -> subway.findShortestPath("Q", "B"))
+                .isInstanceOf(StationNotFoundException.class)
+                .hasMessageContaining("역을 찾을 수 없습니다.");
+    }
+
+    @Test
+    void 입력받은_도착역이_존재하지_않으면_예외를_던진다() {
+        // given
+        final Subway subway = SUBWAY2;
+
+        // expect
+        assertThatThrownBy(() -> subway.findShortestPath("B", "Q"))
+                .isInstanceOf(StationNotFoundException.class)
+                .hasMessageContaining("역을 찾을 수 없습니다.");
     }
 }
