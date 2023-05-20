@@ -50,7 +50,6 @@ class StationIntegrationTest extends IntegrationTest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-
     @Test
     void 기존에_모두_존재하는_이름으로_역을_생성한다() {
         // given
