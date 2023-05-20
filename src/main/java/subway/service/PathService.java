@@ -24,7 +24,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(final Long sourceId, final Long targetId) {
+    public PathResponse findShortestPath(final Long sourceId, final Long targetId, final int age) {
         final Subway subway = subwayService.findSubway();
 
         final Station source = stationRepository.findById(sourceId);
@@ -37,6 +37,11 @@ public class PathService {
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, Price.from(distance).getPrice());
+        final int price = Price
+                .from(distance)
+                .applyAge(age)
+                .getPrice();
+
+        return new PathResponse(stationResponses, price);
     }
 }

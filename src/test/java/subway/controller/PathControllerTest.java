@@ -47,7 +47,7 @@ class PathControllerTest {
 
         final Long sourceId = EXPRESS_BUS_TERMINAL_STATION.getId();
         final Long targetId = SAPYEONG_STATION.getId();
-        when(pathService.findShortestPath(sourceId, targetId))
+        when(pathService.findShortestPath(sourceId, targetId, 19))
                 .thenReturn(pathResponse);
 
         mockMvc.perform(get("/paths?source={sourceId}&target={targetId}", sourceId, targetId))

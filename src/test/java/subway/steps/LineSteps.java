@@ -86,4 +86,16 @@ public class LineSteps {
                 .then()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 나이를_포함해_두_역_사이의_최단_경로_조회_요청(final long sourceId, final long targetId, final int age) {
+        return RestAssured
+                .given()
+                .log().all()
+
+                .when()
+                .get("/paths?source=" + sourceId + "&target=" + targetId + "&age=" + age)
+
+                .then()
+                .extract();
+    }
 }
