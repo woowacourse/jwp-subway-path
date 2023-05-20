@@ -59,7 +59,7 @@ class PathServiceTest {
         );
         doReturn(sections).when(sectionRepository).findAll();
 
-        when(costCalculator.calculate(5)).thenReturn(1250);
+        when(costCalculator.calculateAdult(5)).thenReturn(1250);
 
         // when
         PathResponse response = pathService.findByDijkstra(1L, 3L);

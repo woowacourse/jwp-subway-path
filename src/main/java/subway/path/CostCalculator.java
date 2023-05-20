@@ -3,7 +3,7 @@ package subway.path;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CostCalculator {
+public class CostCalculator implements CostCalculatePolicy {
 
     private static final int START_COST = 1250;
     private static final int FEE = 100;
@@ -12,7 +12,7 @@ public class CostCalculator {
     private static final int UNIT_OF_FIRST_DISTANCE = 5;
     private static final int UNIT_OF_SECOND_DISTANCE = 8;
 
-    public int calculate(int distance) {
+    public int calculateAdult(int distance) {
         int cost = START_COST;
 
         if (distance >= BASIC_COST_DISTANCE) {

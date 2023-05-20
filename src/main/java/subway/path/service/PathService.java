@@ -1,6 +1,7 @@
 package subway.path.service;
 
 import org.springframework.stereotype.Service;
+import subway.path.CostCalculatePolicy;
 import subway.path.CostCalculator;
 import subway.path.domain.Path;
 import subway.path.presentation.dto.response.PathResponse;
@@ -17,12 +18,12 @@ import java.util.stream.Collectors;
 @Service
 public class PathService {
 
-    private final CostCalculator costCalculator;
+    private final CostCalculatePolicy costCalculatePolicy;
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public PathService(final CostCalculator costCalculator, final SectionRepository sectionRepository, final StationRepository stationRepository) {
-        this.costCalculator = costCalculator;
+    public PathService(final CostCalculator costCalculatePolicy, final SectionRepository sectionRepository, final StationRepository stationRepository) {
+        this.costCalculatePolicy = costCalculatePolicy;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
     }
@@ -34,7 +35,7 @@ public class PathService {
 
         List<String> stationNames = path.findPath(upStation.getNameValue(), downStation.getNameValue());
         double pathDistance = path.findPathDistance(upStation.getNameValue(), downStation.getNameValue());
-        int cost = costCalculator.calculate((int) pathDistance);
+        int cost = costCalculatePolicy.calculateAdult((int) pathDistance);
 
         return new PathResponse(makeStationResponses(stationNames), pathDistance, cost);
     }
