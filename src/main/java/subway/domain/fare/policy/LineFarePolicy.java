@@ -1,7 +1,8 @@
-package subway.domain.fare;
+package subway.domain.fare.policy;
 
 import java.util.Comparator;
 import subway.domain.Line;
+import subway.domain.fare.FareInformation;
 
 public class LineFarePolicy implements FarePolicy {
 

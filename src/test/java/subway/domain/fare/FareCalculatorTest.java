@@ -9,6 +9,10 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
 import subway.domain.Lines;
+import subway.domain.fare.policy.AgeDiscountPolicy;
+import subway.domain.fare.policy.DistanceFarePolicy;
+import subway.domain.fare.policy.FarePolicies;
+import subway.domain.fare.policy.LineFarePolicy;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)

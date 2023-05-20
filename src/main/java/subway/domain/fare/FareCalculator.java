@@ -1,5 +1,8 @@
 package subway.domain.fare;
 
+import subway.domain.fare.policy.DiscountPolicy;
+import subway.domain.fare.policy.FarePolicy;
+
 public class FareCalculator {
 
     private FarePolicy farePolicy;

@@ -1,7 +1,8 @@
-package subway.domain.fare;
+package subway.domain.fare.policy;
 
 
 import org.springframework.stereotype.Component;
+import subway.domain.fare.FareInformation;
 
 @Component
 public class DistanceFarePolicy implements FarePolicy {
