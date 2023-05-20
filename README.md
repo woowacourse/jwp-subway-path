@@ -190,7 +190,51 @@ Content-Type: application/json
 ]
 ```
 
+### ✅ GET /path?sourceStationID={sourceStationId}&destStationID={destStationId}
+- 역과 역 사이의 최단 거리를 구합니다.
+
+#### Request example
+```text
+GET /lines HTTP/1.1
+Content-type: application/json; charset=UTF-8
+Host: localhost:8080
+```
+
+#### Response example
+```text
+HTTP/1.1 200 OK
+Content-Type: application/json
+```
+
+```json
+{
+  "stationNamesOfShortestPath": [
+    "강남역",
+    "역삼역",
+    "잠실역"
+  ],
+  "totalDistance": 20,
+  "totalFare": 500
+}
+```
+
 # 기능 목록
+
+### SubwayGraph
+- [ ] 역과 역 사이의 최단 거리를 구한다.
+- [ ] 역과 역 사이 최단 거리 루트(역 리스트)를 구한다.
+
+### FareCalculator
+- [ ] 역과 역 사이를 최단 거리로 통행하는데 필요한 요금을 구한다.
+  - [ ] 거리가 10km 이하이면 기본 요금(1250)을 반환한다.
+  - [ ] 거리가 10km 초과이면서 50km 이하라면 5km마다 100원을 추가한다. 
+  - [ ] 거리가 50km 초과이면 8km마다 100원을 추가한다.
+```
+9km = 1250원
+12km = 10km + 2km = 1350원
+16km = 10km + 6km = 1450원
+58km = 10km + 40km + 8km = 2150원
+```
 
 ### Line
 - [x] 노선을 생성한다.
