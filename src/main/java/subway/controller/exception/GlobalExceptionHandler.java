@@ -38,6 +38,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
     }
 
+    @ExceptionHandler(PathNotFoundException.class)
+    public ResponseEntity<String> handlePathNotFoundException(final PathNotFoundException error) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
+    }
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<String> handleBusinessException(final BusinessException error) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
