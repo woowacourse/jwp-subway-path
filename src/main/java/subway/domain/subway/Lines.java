@@ -14,7 +14,7 @@ public class Lines {
         this.lines = lines;
     }
 
-    public Map<String, Station> getStationsByName() {
+    public Map<String, Station> getStationsByNameInfo() {
         Map<String, Station> StationFromName = new LinkedHashMap<>();
         lines.forEach(line -> fillStationsFromLine(StationFromName, line));
         return StationFromName;
@@ -30,7 +30,7 @@ public class Lines {
         }
     }
 
-    public Set<String> getLineNamesByStation(final Station station) {
+    public Set<String> getLineNamesFromStation(final Station station) {
         Set<String> lineNames = new LinkedHashSet<>();
 
         lines.forEach(line -> insertLineNames(lineNames, line, station));

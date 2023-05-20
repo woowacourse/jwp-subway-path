@@ -69,12 +69,12 @@ public class Route {
     }
 
     private Map<Station, Set<String>> findLineNamesByStation(final GraphPath<String, DefaultWeightedEdge> path) {
-        Map<String, Station> StationsByName = lines.getStationsByName();
+        Map<String, Station> StationsByName = lines.getStationsByNameInfo();
         Map<Station, Set<String>> lineNamesByStation = new LinkedHashMap<>();
 
         for (String stationName : path.getVertexList()) {
             Station station = StationsByName.get(stationName);
-            lineNamesByStation.put(station, lines.getLineNamesByStation(station));
+            lineNamesByStation.put(station, lines.getLineNamesFromStation(station));
         }
 
         return lineNamesByStation;
