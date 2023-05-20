@@ -15,37 +15,31 @@ public class StationDao {
     private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getLong("line_id")
+                    rs.getString("name")
             );
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+        insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public StationEntity findById(final Long id) {
+    public StationEntity findById(Long id) {
         final String sql = "SELECT * FROM station WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Long save(final StationEntity stationEntity) {
+    public Long save(StationEntity stationEntity) {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(stationEntity)).longValue();
     }
 
-    public StationEntity findByName(final String name) {
+    public StationEntity findByName(String name) {
         final String sql = "SELECT * FROM station WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public int deleteByLineId(final Long lineId) {
-        final String sql = "DELETE FROM station WHERE line_id = ?";
-        return jdbcTemplate.update(sql, lineId);
-    }
-
-    public int deleteByName(final String name) {
+    public int deleteByName(String name) {
         final String sql = "DELETE FROM station WHERE name = ?";
         return jdbcTemplate.update(sql, name);
     }

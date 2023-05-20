@@ -2,7 +2,6 @@ CREATE TABLE IF NOT EXISTS station
 (
     id      BIGINT       NOT NULL AUTO_INCREMENT,
     name    VARCHAR(255) NOT NULL UNIQUE,
-    line_id BIGINT       NOT NULL,
     PRIMARY KEY (id)
 );
 

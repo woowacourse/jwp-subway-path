@@ -1,5 +1,6 @@
 package subway.controller;
 
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,14 +16,14 @@ import subway.service.StationService;
 public class StationController {
     private final StationService stationService;
 
-    public StationController(final StationService stationService) {
+    public StationController(StationService stationService) {
         this.stationService = stationService;
     }
 
     @PostMapping
     public ResponseEntity<Void> createStation(@RequestBody StationCreateRequest stationCreateRequest) {
-        stationService.save(stationCreateRequest);
-        return ResponseEntity.ok().build();
+        Long id = stationService.save(stationCreateRequest);
+        return ResponseEntity.created(URI.create("/stations/" + id)).build();
     }
 
     @DeleteMapping

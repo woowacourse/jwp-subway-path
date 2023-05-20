@@ -13,6 +13,7 @@ import subway.dao.entity.StationEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.SectionCreateRequest;
 import subway.dto.StationCreateRequest;
 import subway.dto.StationDeleteRequest;
 
@@ -23,47 +24,52 @@ public class StationService {
     private final StationDao stationDao;
     private final LineDao lineDao;
 
-    public StationService(final SectionDao sectionDao, final StationDao stationDao, final LineDao lineDao) {
+    public StationService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.lineDao = lineDao;
     }
 
-    public void save(final StationCreateRequest stationCreateRequest) {
-        long lineId = stationCreateRequest.getLineId();
+    public Long save(StationCreateRequest stationCreateRequest) {
+        StationEntity stationEntity = new StationEntity(stationCreateRequest.getName());
+        return stationDao.save(stationEntity);
+    }
+
+    public void save(SectionCreateRequest sectionCreateRequest) {
+        long lineId = sectionCreateRequest.getLineId();
         Line line = makeLine(lineId);
 
         List<Station> originalStations = line.getStations();
         List<Section> originalSections = line.getSectionsByList();
 
         line.addSection(
-                new Station(stationCreateRequest.getUpStation()),
-                new Station(stationCreateRequest.getDownStation()),
-                stationCreateRequest.getDistance()
+                new Station(sectionCreateRequest.getUpStation()),
+                new Station(sectionCreateRequest.getDownStation()),
+                sectionCreateRequest.getDistance()
         );
 
-        saveNewStation(lineId, originalStations, line);
+        saveNewStation(originalStations, line);
         saveNewSections(lineId, originalSections, line);
         deleteOriginalSection(lineId, originalSections, line);
     }
 
-    private Line makeLine(final long lineId) {
+    private Line makeLine(long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId);
         List<Section> sections = makeSections(lineId);
 
         return Line.of(lineEntity.getName(), sections);
     }
 
-    private void saveNewStation(final long lineId, final List<Station> originalStations, final Line line) {
+    private void saveNewStation(List<Station> originalStations, Line line) {
         List<Station> newStations = line.getStations();
         newStations.removeAll(originalStations);
 
         for (Station newStation : newStations) {
-            stationDao.save(new StationEntity(newStation.getName(), lineId));
+            stationDao.save(new StationEntity(newStation.getName()));
         }
     }
 
-    private void saveNewSections(final long lineId, final List<Section> originalSections, final Line line) {
+    private void saveNewSections(long lineId, List<Section> originalSections, Line line) {
         List<Section> newSections = line.getSectionsByList();
         newSections.removeAll(originalSections);
         for (Section newSection : newSections) {
@@ -79,7 +85,7 @@ public class StationService {
         }
     }
 
-    private void deleteOriginalSection(final long lineId, final List<Section> originalSections, final Line line) {
+    private void deleteOriginalSection(long lineId, List<Section> originalSections, Line line) {
         if (originalSections.isEmpty()) {
             return;
         }
@@ -97,7 +103,7 @@ public class StationService {
         );
     }
 
-    private List<Section> makeSections(final Long id) {
+    private List<Section> makeSections(Long id) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
 
         return sectionEntities.stream()
@@ -108,16 +114,15 @@ public class StationService {
                 )).collect(Collectors.toList());
     }
 
-    public void delete(final StationDeleteRequest stationDeleteRequest) {
+    public void delete(StationDeleteRequest stationDeleteRequest) {
         StationEntity stationEntity = stationDao.findByName(stationDeleteRequest.getName());
-        Long lineId = stationEntity.getLineId();
+        Long lineId = stationDeleteRequest.getLindId();
         Line line = makeLine(lineId);
         List<Section> originalSections = line.getSectionsByList();
 
         line.deleteStation(new Station(stationEntity.getName()));
 
         if (line.isEmpty()) {
-            stationDao.deleteByLineId(lineId);
             sectionDao.deleteByLineId(lineId);
             lineDao.deleteById(lineId);
             return;

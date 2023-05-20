@@ -21,7 +21,7 @@ class StationDaoTest {
     void setUp() {
         stationDao = new StationDao(jdbcTemplate);
 
-        id = stationDao.save(new StationEntity("잠실역", 1L));
+        id = stationDao.save(new StationEntity("잠실역"));
     }
 
     @Test
@@ -38,7 +38,7 @@ class StationDaoTest {
     @DisplayName("저장한다.")
     void save() {
         // when
-        Long newId = stationDao.save(new StationEntity("잠실새내역", 1L));
+        Long newId = stationDao.save(new StationEntity("잠실새내역"));
 
         // expected
         assertThat(newId).isEqualTo(id + 1);
@@ -52,19 +52,6 @@ class StationDaoTest {
 
         // expected
         assertThat(newStationEntity.getId()).isEqualTo(id);
-    }
-
-    @Test
-    @DisplayName("Line id를 입력받아 일치하는 역들을 모두 삭제한다.")
-    void deleteByLineId() {
-        // given
-        stationDao.save(new StationEntity("잠실새내역", 1L));
-
-        // when
-        int deleteRowNumber = stationDao.deleteByLineId(1L);
-
-        // expected
-        assertThat(deleteRowNumber).isEqualTo(2);
     }
 
     @Test
