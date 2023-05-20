@@ -1,11 +1,11 @@
 package subway.adapter.out.persistence.repository;
 
 import org.springframework.stereotype.Repository;
+import subway.adapter.out.persistence.dao.LineDao;
 import subway.adapter.out.persistence.entity.LineEntity;
 import subway.application.port.out.line.LineCommandPort;
 import subway.application.port.out.line.LineQueryPort;
 import subway.domain.Line;
-import subway.adapter.out.persistence.dao.LineDao;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +24,7 @@ public class LineJdbcAdapter implements LineCommandPort, LineQueryPort {
 
     @Override
     public Long createLine(final Line line) {
-        final LineEntity lineEntity = new LineEntity(line.getName());
+        final LineEntity lineEntity = new LineEntity(line.getName(), line.getSurcharge());
 
         return lineDao.createLine(lineEntity);
     }
@@ -39,15 +39,22 @@ public class LineJdbcAdapter implements LineCommandPort, LineQueryPort {
         List<LineEntity> lineEntities = lineDao.findAll();
 
         return lineEntities.stream()
-                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getName()))
+                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getSurcharge()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Line> findById(final Long lineIdRequest) {
-        final Optional<LineEntity> lineEntity = lineDao.findById(lineIdRequest);
+    public Optional<Line> findLineById(final Long lineIdRequest) {
+        final Optional<LineEntity> lineEntity = lineDao.findLineById(lineIdRequest);
 
-        return lineEntity.map(line -> new Line(line.getId(), line.getName()));
+        return lineEntity.map(line -> new Line(line.getId(), line.getName(), line.getSurcharge()));
+    }
+
+    @Override
+    public List<Line> findLinesById(final List<Long> lineIds) {
+        return lineDao.findLinesById(lineIds).stream()
+                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getSurcharge()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -56,7 +63,7 @@ public class LineJdbcAdapter implements LineCommandPort, LineQueryPort {
 
         return lines.stream()
                 .filter(lineEntity -> lineEntity.getName().equals(line.getName()))
-                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getName()))
+                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getSurcharge()))
                 .findFirst();
     }
 }

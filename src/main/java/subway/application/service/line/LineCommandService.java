@@ -24,7 +24,7 @@ public class LineCommandService implements CreateLineUseCase, DeleteLineUseCase 
     }
 
     public Long createLine(final LineRequest lineRequest) {
-        final Line createLine = new Line(lineRequest.getName());
+        final Line createLine = new Line(lineRequest.getName(), lineRequest.getSurcharge());
 
         Optional<Line> line = lineQueryPort.findByName(createLine);
 

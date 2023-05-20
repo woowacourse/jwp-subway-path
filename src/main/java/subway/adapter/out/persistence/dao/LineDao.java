@@ -12,5 +12,6 @@ public interface LineDao {
 
     List<LineEntity> findAll();
 
-    Optional<LineEntity> findById(final Long lineId);
+    Optional<LineEntity> findLineById(final Long lineId);
+    List<LineEntity> findLinesById(final List<Long> lineId);
 }
