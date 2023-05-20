@@ -1,41 +1,29 @@
 package subway.domain;
 
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
+@Getter
+@EqualsAndHashCode
 public class Station {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final Name name;
 
-    public Station() {
+    public Station(final String name) {
+        this(null, name);
     }
 
-    public Station(Long id, String name) {
+    public Station(final Long id, String name) {
+        this.id = id;
+        this.name = new Name(name);
+    }
+
+    public Station(final Long id, Name name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+    public boolean equalsName(Station station) {
+        return this.name.equals(station.name);
     }
 }

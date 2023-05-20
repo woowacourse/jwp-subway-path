@@ -1,53 +1,53 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.repository.LineRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@Transactional
 @Service
 public class LineService {
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+        Line line = lineRepository.insert(new Line(request.getName(), request.getColor()));
+        return LineResponse.from(line);
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
+        List<Line> lines = findAll();
+        return lines.stream()
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    private List<Line> findAll() {
+        return lineRepository.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        Line line = findLineById(id);
+        return LineResponse.from(line);
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineRepository.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineRepository.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
     }
-
 }
