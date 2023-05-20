@@ -37,7 +37,7 @@ class SectionControllerTest {
         //when
         //then
         RestAssured.given().log().all()
-            .body(new SectionCreateRequest(null, null, null, null))
+            .body(new SectionCreateRequest("기준역", "추가역", "상행", 1))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/lines/1/sections")

@@ -37,6 +37,27 @@ public class SectionIntegrationTest extends IntegrationTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
+    @DisplayName("노선에 역을 등록할 때 방향이 상행, 하행이 아닐 경우 등록할 수 없다.")
+    @Test
+    void createSection_fail_invalidDirection() {
+        //given
+        final Long lineId = createLine();
+        final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("첫째역", "둘째역", "행행", 10);
+
+        //when
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .body(sectionCreateRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/lines/" + lineId + "/sections")
+            .then().log().all()
+            .extract();
+
+        /// then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().as(ExceptionResponse.class).getMessage()).isNotNull();
+    }
+
     private Long createLine() {
         final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 0);
 

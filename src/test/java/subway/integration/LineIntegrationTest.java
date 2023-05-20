@@ -16,6 +16,7 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionCreateRequest;
 import subway.dto.StationResponse;
+import subway.exception.ExceptionResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -46,6 +47,26 @@ public class LineIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    @DisplayName("지하철 노선의 추가 요금이 0보다 작을 경우 생성할 수 없다.")
+    @Test
+    void createTestLine_fail_additionalFareMinus() {
+        //given
+        final LineRequest request = new LineRequest("신분당선", "빨강", -1);
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(request)
+            .when().post("/lines")
+            .then().log().all().
+            extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().as(ExceptionResponse.class).getMessage()).isNotNull();
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
