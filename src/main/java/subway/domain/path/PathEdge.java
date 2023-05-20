@@ -4,13 +4,13 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 
-public class PathSection extends DefaultWeightedEdge {
+public class PathEdge extends DefaultWeightedEdge {
 
     private final Station sourceStation;
     private final Station targetStation;
     private final Line line;
 
-    private PathSection(final Station sourceStation, final Station targetStation, final Line line) {
+    private PathEdge(final Station sourceStation, final Station targetStation, final Line line) {
         validateStation(sourceStation, targetStation);
         validateLine(sourceStation, targetStation, line);
 
@@ -31,8 +31,8 @@ public class PathSection extends DefaultWeightedEdge {
         }
     }
 
-    public static PathSection of(final Station sourceStation, final Station targetStation, final Line line) {
-        return new PathSection(sourceStation, targetStation, line);
+    public static PathEdge of(final Station sourceStation, final Station targetStation, final Line line) {
+        return new PathEdge(sourceStation, targetStation, line);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PathSection extends DefaultWeightedEdge {
                 .distance();
     }
 
-    public boolean isSameLine(final PathSection other) {
+    public boolean isSameLine(final PathEdge other) {
         return this.line.equals(other.line);
     }
 

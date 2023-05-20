@@ -23,9 +23,9 @@ class PathSectionsTest {
         final Station targetStation = Station.of(2L, "2역");
         final Line line = Line.of(1L, "1호선", "bg-red-500");
         line.createSection(sourceStation, targetStation, Distance.from(5), Direction.DOWN);
-        final PathSection pathSection = PathSection.of(sourceStation, targetStation, line);
+        final PathEdge pathEdge = PathEdge.of(sourceStation, targetStation, line);
         pathSections = PathSections.create();
-        pathSections.add(pathSection);
+        pathSections.add(pathEdge);
     }
 
     @Test
@@ -34,9 +34,9 @@ class PathSectionsTest {
         final Station targetStation = Station.of(4L, "4역");
         final Line line = Line.of(2L, "2호선", "bg-red-500");
         line.createSection(sourceStation, targetStation, Distance.from(5), Direction.DOWN);
-        final PathSection pathSection = PathSection.of(sourceStation, targetStation, line);
+        final PathEdge pathEdge = PathEdge.of(sourceStation, targetStation, line);
 
-        final boolean actual = pathSections.isOtherLine(pathSection);
+        final boolean actual = pathSections.isOtherLine(pathEdge);
 
         assertThat(actual).isTrue();
     }
@@ -47,9 +47,9 @@ class PathSectionsTest {
         final Station targetStation = Station.of(2L, "2역");
         final Line line = Line.of(1L, "1호선", "bg-red-500");
         line.createSection(sourceStation, targetStation, Distance.from(5), Direction.DOWN);
-        final PathSection pathSection = PathSection.of(sourceStation, targetStation, line);
+        final PathEdge pathEdge = PathEdge.of(sourceStation, targetStation, line);
 
-        final boolean actual = pathSections.isOtherLine(pathSection);
+        final boolean actual = pathSections.isOtherLine(pathEdge);
 
         assertThat(actual).isFalse();
     }

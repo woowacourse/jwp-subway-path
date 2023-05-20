@@ -8,17 +8,17 @@ import subway.domain.line.Line;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 
-public class Path extends WeightedMultigraph<Station, PathSection> {
+public class Path extends WeightedMultigraph<Station, PathEdge> {
 
     private static final int FIRST_PATH_SECTION_INDEX = 0;
     private static final int START_PATH_SECTION_INDEX = 1;
 
-    private Path(final Class<? extends PathSection> edgeClass) {
+    private Path(final Class<? extends PathEdge> edgeClass) {
         super(edgeClass);
     }
 
     public static Path from(List<Line> lines) {
-        final Path path = new Path(PathSection.class);
+        final Path path = new Path(PathEdge.class);
 
         for (Line line : lines) {
             path.addSectionPath(line);
@@ -42,34 +42,34 @@ public class Path extends WeightedMultigraph<Station, PathSection> {
         for (Station adjustStation : adjustStations) {
             addVertex(adjustStation);
 
-            final PathSection pathSection = PathSection.of(station, adjustStation, line);
+            final PathEdge pathEdge = PathEdge.of(station, adjustStation, line);
 
-            addEdge(station, adjustStation, pathSection);
-            setEdgeWeight(pathSection, pathSection.getWeight());
+            addEdge(station, adjustStation, pathEdge);
+            setEdgeWeight(pathEdge, pathEdge.getWeight());
         }
     }
 
     public List<PathSections> findShortestPathSections(final Station sourceStation, final Station targetStation) {
-        final List<PathSection> shortestPathSections = calculateShortestPathEdge(sourceStation, targetStation);
+        final List<PathEdge> shortestPathEdges = calculateShortestPathEdge(sourceStation, targetStation);
         final List<PathSections> result = new ArrayList<>();
 
         PathSections pathSections = PathSections.create();
-        pathSections.add(shortestPathSections.get(FIRST_PATH_SECTION_INDEX));
+        pathSections.add(shortestPathEdges.get(FIRST_PATH_SECTION_INDEX));
 
-        for (int i = START_PATH_SECTION_INDEX; i < shortestPathSections.size(); i++) {
-            if (pathSections.isOtherLine(shortestPathSections.get(i))) {
+        for (int i = START_PATH_SECTION_INDEX; i < shortestPathEdges.size(); i++) {
+            if (pathSections.isOtherLine(shortestPathEdges.get(i))) {
                 result.add(pathSections);
                 pathSections = PathSections.create();
             }
-            pathSections.add(shortestPathSections.get(i));
+            pathSections.add(shortestPathEdges.get(i));
         }
         result.add(pathSections);
 
         return result;
     }
 
-    private List<PathSection> calculateShortestPathEdge(final Station sourceStation, final Station targetStation) {
-        final DijkstraShortestPath<Station, PathSection> dijkstraShortestPath = new DijkstraShortestPath<>(this);
+    private List<PathEdge> calculateShortestPathEdge(final Station sourceStation, final Station targetStation) {
+        final DijkstraShortestPath<Station, PathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(this);
 
         return dijkstraShortestPath.getPath(sourceStation, targetStation).getEdgeList();
     }

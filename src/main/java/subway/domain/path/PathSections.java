@@ -5,32 +5,32 @@ import java.util.List;
 
 public class PathSections {
 
-    private final List<PathSection> pathSections;
+    private final List<PathEdge> pathEdges;
 
-    public PathSections(final List<PathSection> pathSections) {
-        this.pathSections = pathSections;
+    public PathSections(final List<PathEdge> pathEdges) {
+        this.pathEdges = pathEdges;
     }
 
     public static PathSections create() {
         return new PathSections(new ArrayList<>());
     }
 
-    public void add(final PathSection pathSection) {
-        pathSections.add(pathSection);
+    public void add(final PathEdge pathEdge) {
+        this.pathEdges.add(pathEdge);
     }
 
-    public boolean isOtherLine(final PathSection targetPathSection) {
-        return pathSections.stream()
-                .noneMatch(sourcePathSection -> sourcePathSection.isSameLine(targetPathSection));
+    public boolean isOtherLine(final PathEdge targetPathEdge) {
+        return pathEdges.stream()
+                .noneMatch(sourcePathSection -> sourcePathSection.isSameLine(targetPathEdge));
     }
 
     public int calculateTotalPathSectionDistance() {
-        return pathSections.stream()
-                .mapToInt(PathSection::getDistance)
+        return pathEdges.stream()
+                .mapToInt(PathEdge::getDistance)
                 .sum();
     }
 
-    public List<PathSection> getPathSections() {
-        return pathSections;
+    public List<PathEdge> getPathSections() {
+        return pathEdges;
     }
 }
