@@ -1,6 +1,6 @@
 package subway.domain.subway.discount_policy;
 
-public enum Priority {
+enum Priority {
 
     AGE_POLICY(1),
     ;
