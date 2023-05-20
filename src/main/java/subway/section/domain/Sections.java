@@ -18,8 +18,12 @@ public class Sections {
         Long beforeStationId = finalUpStation.getId();
 
         while (true) {
-            Section nextSection = findNextSection(beforeStationId);
-            if (nextSection == null) break;
+            Section nextSection = findNextSectionOrNull(beforeStationId);
+            if (nextSection == null) {
+                Station finalStation = getFinalStationOrNull(beforeStationId);
+                stations.add(finalStation);
+                break;
+            }
             stations.add(nextSection.getUpStation());
             beforeStationId = nextSection.getDownStation().getId();
         }
@@ -27,9 +31,20 @@ public class Sections {
         return stations;
     }
 
-    private Section findNextSection(Long beforeStationId) {
+    private Station getFinalStationOrNull(final Long beforeStationId) {
         for (Section section : sections) {
-            if (section.upStationIdIsSameId(beforeStationId)) return section;
+            if (section.downStationIdIsSameId(beforeStationId)) {
+                return section.getDownStation();
+            }
+        }
+        return null;
+    }
+
+    private Section findNextSectionOrNull(final Long beforeStationId) {
+        for (Section section : sections) {
+            if (section.upStationIdIsSameId(beforeStationId)) {
+                return section;
+            }
         }
         return null;
     }
