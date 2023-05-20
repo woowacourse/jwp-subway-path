@@ -25,15 +25,16 @@
 
 ### 리팩토링 목록
 
-- [x] 역 추가, 구간 추가 기능 분리
+- [ ] 역 추가, 구간 추가 기능 분리
   - [x] 역 추가 이후 연결할 구간을 추가하도록 변경
+  - [ ] StationService, SectionService 분리
 - [x] GlobalControllerAdvice 클래스 리팩토링
   - [x] CustomException 필드 변경
   - [x] CustomException 클래스 네이밍 변경
 - [x] Station DB table 컬럼 리팩토링
 - [ ] Station 객체가 id를 갖도록 리팩토링
 - [ ] StationService saveNewSections 메소드 내부 로직 변경 -> batchInsert문 사용
-- [ ] LineService isExisted 메소드 내부 로직 변경
+- [x] isExisted 메소드 내부 로직 변경
 - [ ] 테스트 내부 예외 검증 시 예외 메시지도 함께 검증
 
 ## API 명세서

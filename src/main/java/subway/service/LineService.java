@@ -2,7 +2,6 @@ package subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
@@ -26,31 +25,25 @@ public class LineService {
     private final SectionDao sectionDao;
     private final StationDao stationDao;
 
-    public LineService(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
     }
 
-    public Long save(final LineRequest lineRequest) {
-        if (isExisted(lineRequest)) {
-            throw new DuplicateException(ErrorCode.DUPLICATE_NAME);
-        }
+    public Long save(LineRequest lineRequest) {
+        duplicateLineName(lineRequest.getName());
         return lineDao.save(new LineEntity(lineRequest.getName()));
     }
 
-    @Transactional(readOnly = true)
-    public boolean isExisted(final LineRequest lineRequest) {
-        try {
-            lineDao.findByName(lineRequest.getName());
-            return true;
-        } catch (EmptyResultDataAccessException e) {
-            return false;
+    private void duplicateLineName(String name) {
+        if (lineDao.isExisted(name)) {
+            throw new DuplicateException(ErrorCode.DUPLICATE_NAME);
         }
     }
 
     @Transactional(readOnly = true)
-    public LineResponse findById(final Long id) {
+    public LineResponse findById(Long id) {
         LineEntity lineEntity = lineDao.findById(id);
         Line line = Line.of(lineEntity.getName(), makeSections(id));
         List<StationResponse> stationsResponse = line.getStations().stream()
@@ -60,7 +53,7 @@ public class LineService {
         return new LineResponse(lineEntity.getId(), lineEntity.getName(), stationsResponse);
     }
 
-    private List<Section> makeSections(final Long id) {
+    private List<Section> makeSections(Long id) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
 
         return sectionEntities.stream()

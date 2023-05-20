@@ -21,7 +21,7 @@ public class LineDao {
 
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+        insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
@@ -30,12 +30,12 @@ public class LineDao {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(lineEntity)).longValue();
     }
 
-    public LineEntity findByName(final String name) {
+    public LineEntity findByName(String name) {
         final String sql = "SELECT * FROM line WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public LineEntity findById(final Long id) {
+    public LineEntity findById(Long id) {
         final String sql = "SELECT * FROM line WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
@@ -45,8 +45,13 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public int deleteById(final Long lineId) {
+    public int deleteById(Long lineId) {
         final String sql = "DELETE FROM line WHERE id = ?";
         return jdbcTemplate.update(sql, lineId);
+    }
+
+    public boolean isExisted(String name) {
+        final String sql = "SELECT EXISTS(SELECT * FROM line WHERE name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 }

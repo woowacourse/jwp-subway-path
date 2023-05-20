@@ -16,6 +16,8 @@ import subway.domain.Station;
 import subway.dto.SectionCreateRequest;
 import subway.dto.StationCreateRequest;
 import subway.dto.StationDeleteRequest;
+import subway.exception.DuplicateException;
+import subway.exception.ErrorCode;
 
 @Service
 @Transactional
@@ -31,8 +33,14 @@ public class StationService {
     }
 
     public Long save(StationCreateRequest stationCreateRequest) {
-        StationEntity stationEntity = new StationEntity(stationCreateRequest.getName());
-        return stationDao.save(stationEntity);
+        duplicateLineName(stationCreateRequest.getName());
+        return stationDao.save(new StationEntity(stationCreateRequest.getName()));
+    }
+
+    private void duplicateLineName(String name) {
+        if (stationDao.isExisted(name)) {
+            throw new DuplicateException(ErrorCode.DUPLICATE_NAME);
+        }
     }
 
     public void save(SectionCreateRequest sectionCreateRequest) {
