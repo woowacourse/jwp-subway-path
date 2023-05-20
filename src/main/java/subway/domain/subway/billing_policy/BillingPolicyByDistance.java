@@ -10,7 +10,6 @@ import subway.domain.section.Distance;
 @Component
 public final class BillingPolicyByDistance implements BillingPolicy {
 
-    private static final int DEFAULT_FARE = 1250;
     private static final int EXTRA_FARE_UNIT = 100;
 
     enum DistanceLevel {
@@ -46,7 +45,7 @@ public final class BillingPolicyByDistance implements BillingPolicy {
     @Override
     public Fare calculateFare(final Path path) {
         Distance distance = path.getDistance();
-        Fare fare = new Fare(DEFAULT_FARE);
+        Fare fare = new Fare(0);
 
         for (DistanceLevel distanceLevel : DistanceLevel.getValuesSortedByAscendingThreshold()) {
             if (distance.isGreaterThanOrEqualTo(distanceLevel.threshold)) {

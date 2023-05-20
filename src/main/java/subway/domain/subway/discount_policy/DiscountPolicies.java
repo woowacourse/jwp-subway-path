@@ -15,17 +15,17 @@ public final class DiscountPolicies {
         sortPoliciesByPriority();
     }
 
+    private void sortPoliciesByPriority() {
+        discountPolicies.sort(
+                (policy1, policy2) -> policy2.getPriority().getValue() - policy1.getPriority().getValue()
+        );
+    }
+
     public Fare calculateDiscountedFare(Fare fare, Passenger passenger) {
         Fare discountedFare = fare;
         for (DiscountPolicy discountPolicy : discountPolicies) {
             discountedFare = discountPolicy.calculateDiscountedFare(discountedFare, passenger);
         }
         return discountedFare;
-    }
-
-    private void sortPoliciesByPriority() {
-        discountPolicies.sort(
-                (policy1, policy2) -> policy2.getPriority().getValue() - policy1.getPriority().getValue()
-        );
     }
 }

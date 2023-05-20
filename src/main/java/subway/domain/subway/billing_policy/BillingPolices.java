@@ -7,6 +7,8 @@ import subway.domain.Path;
 @Component
 public final class BillingPolices {
 
+    private static final int DEFAULT_FARE = 1250;
+
     private final List<BillingPolicy> billingPolicies;
 
     public BillingPolices(final List<BillingPolicy> billingPolicies) {
@@ -16,6 +18,6 @@ public final class BillingPolices {
     public Fare calculateFare(final Path path) {
         return billingPolicies.stream()
                 .map(billingPolicy -> billingPolicy.calculateFare(path))
-                .reduce(new Fare(0), Fare::add);
+                .reduce(new Fare(DEFAULT_FARE), Fare::add);
     }
 }
