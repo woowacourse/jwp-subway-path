@@ -6,5 +6,5 @@ import subway.domain.station.Station;
 
 public interface ShortestPathCalculator {
 
-    List<PathSections> findPath(final List<Line> lines, final Station sourceStation, final Station targetStation);
+    List<PathEdges> findPath(final List<Line> lines, final Station sourceStation, final Station targetStation);
 }

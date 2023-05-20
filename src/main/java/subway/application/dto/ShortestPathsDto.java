@@ -2,7 +2,7 @@ package subway.application.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import subway.domain.path.PathSections;
+import subway.domain.path.PathEdges;
 
 public class ShortestPathsDto {
 
@@ -14,12 +14,12 @@ public class ShortestPathsDto {
         this.totalDistance = totalDistance;
     }
 
-    public static ShortestPathsDto from(final List<PathSections> shortestPathSections) {
+    public static ShortestPathsDto from(final List<PathEdges> shortestPathSections) {
         final List<PathDto> pathDtos = new ArrayList<>();
         int totalDistance = 0;
 
-        for (PathSections pathSections : shortestPathSections) {
-            final PathDto pathDto = PathDto.from(pathSections);
+        for (PathEdges pathEdges : shortestPathSections) {
+            final PathDto pathDto = PathDto.from(pathEdges);
             pathDtos.add(pathDto);
             totalDistance += pathDto.getPathDistance();
         }

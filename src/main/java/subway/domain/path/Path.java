@@ -49,21 +49,21 @@ public class Path extends WeightedMultigraph<Station, PathEdge> {
         }
     }
 
-    public List<PathSections> findShortestPathSections(final Station sourceStation, final Station targetStation) {
+    public List<PathEdges> findShortestPathSections(final Station sourceStation, final Station targetStation) {
         final List<PathEdge> shortestPathEdges = calculateShortestPathEdge(sourceStation, targetStation);
-        final List<PathSections> result = new ArrayList<>();
+        final List<PathEdges> result = new ArrayList<>();
 
-        PathSections pathSections = PathSections.create();
-        pathSections.add(shortestPathEdges.get(FIRST_PATH_SECTION_INDEX));
+        PathEdges pathEdges = PathEdges.create();
+        pathEdges.add(shortestPathEdges.get(FIRST_PATH_SECTION_INDEX));
 
         for (int i = START_PATH_SECTION_INDEX; i < shortestPathEdges.size(); i++) {
-            if (pathSections.isOtherLine(shortestPathEdges.get(i))) {
-                result.add(pathSections);
-                pathSections = PathSections.create();
+            if (pathEdges.isOtherLine(shortestPathEdges.get(i))) {
+                result.add(pathEdges);
+                pathEdges = PathEdges.create();
             }
-            pathSections.add(shortestPathEdges.get(i));
+            pathEdges.add(shortestPathEdges.get(i));
         }
-        result.add(pathSections);
+        result.add(pathEdges);
 
         return result;
     }

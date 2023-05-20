@@ -45,7 +45,7 @@ class PathTest {
 
         final Path path = Path.from(List.of(firstLine, secondLine));
 
-        final List<PathSections> actual = path.findShortestPathSections(first, nineth);
+        final List<PathEdges> actual = path.findShortestPathSections(first, nineth);
 
         assertAll(
                 () -> assertThat(actual).hasSize(3),

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import subway.domain.path.PathEdge;
-import subway.domain.path.PathSections;
+import subway.domain.path.PathEdges;
 import subway.domain.station.Station;
 
 public class PathDto {
@@ -18,11 +18,11 @@ public class PathDto {
         this.pathDistance = pathDistance;
     }
 
-    public static PathDto from(final PathSections pathSections) {
+    public static PathDto from(final PathEdges pathEdges) {
         int pathDistance = 0;
         final Set<Station> uniqueOrderedStation = new LinkedHashSet<>();
 
-        for (PathEdge pathEdge : pathSections.getPathSections()) {
+        for (PathEdge pathEdge : pathEdges.getPathSections()) {
             pathDistance += pathEdge.getDistance();
             uniqueOrderedStation.add(pathEdge.getSourceStation());
             uniqueOrderedStation.add(pathEdge.getTargetStation());

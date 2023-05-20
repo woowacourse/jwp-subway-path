@@ -13,9 +13,9 @@ import subway.domain.station.Station;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings({"NonAsciiCharacters", "SpellCheckingInspection"})
-class PathSectionsTest {
+class PathEdgesTest {
 
-    PathSections pathSections;
+    PathEdges pathEdges;
 
     @BeforeEach
     void setUp() {
@@ -24,8 +24,8 @@ class PathSectionsTest {
         final Line line = Line.of(1L, "1호선", "bg-red-500");
         line.createSection(sourceStation, targetStation, Distance.from(5), Direction.DOWN);
         final PathEdge pathEdge = PathEdge.of(sourceStation, targetStation, line);
-        pathSections = PathSections.create();
-        pathSections.add(pathEdge);
+        pathEdges = PathEdges.create();
+        pathEdges.add(pathEdge);
     }
 
     @Test
@@ -36,7 +36,7 @@ class PathSectionsTest {
         line.createSection(sourceStation, targetStation, Distance.from(5), Direction.DOWN);
         final PathEdge pathEdge = PathEdge.of(sourceStation, targetStation, line);
 
-        final boolean actual = pathSections.isOtherLine(pathEdge);
+        final boolean actual = pathEdges.isOtherLine(pathEdge);
 
         assertThat(actual).isTrue();
     }
@@ -49,14 +49,14 @@ class PathSectionsTest {
         line.createSection(sourceStation, targetStation, Distance.from(5), Direction.DOWN);
         final PathEdge pathEdge = PathEdge.of(sourceStation, targetStation, line);
 
-        final boolean actual = pathSections.isOtherLine(pathEdge);
+        final boolean actual = pathEdges.isOtherLine(pathEdge);
 
         assertThat(actual).isFalse();
     }
 
     @Test
     void calculateTotalPathSectionDistance_메소드는_호출하면_모든_pathSection의_길이를_더해서_반환한다() {
-        final int actual = pathSections.calculateTotalPathSectionDistance();
+        final int actual = pathEdges.calculateTotalPathSectionDistance();
 
         assertThat(actual).isEqualTo(5);
     }

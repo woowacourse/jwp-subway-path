@@ -10,7 +10,7 @@ import subway.application.dto.ShortestPathsDto;
 import subway.domain.fare.FareAmount;
 import subway.domain.fare.FarePolicy;
 import subway.domain.line.Line;
-import subway.domain.path.PathSections;
+import subway.domain.path.PathEdges;
 import subway.domain.path.ShortestPathCalculator;
 import subway.domain.station.Station;
 import subway.persistence.repository.LineRepository;
@@ -51,7 +51,7 @@ public class PathService {
                 .map(sectionRepository::findAllByLine)
                 .collect(Collectors.toList());
 
-        final List<PathSections> pathSections = calculator.findPath(lines,
+        final List<PathEdges> pathSections = calculator.findPath(lines,
                 stations.get(sourceStationId),
                 stations.get(targetStationId)
         );

@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import subway.domain.line.Line;
 import subway.domain.path.Path;
-import subway.domain.path.PathSections;
+import subway.domain.path.PathEdges;
 import subway.domain.path.ShortestPathCalculator;
 import subway.domain.station.Station;
 
@@ -12,7 +12,7 @@ import subway.domain.station.Station;
 public class JGraphtShortestPathCalculator implements ShortestPathCalculator {
 
     @Override
-    public List<PathSections> findPath(final List<Line> lines, final Station sourceStation, final Station targetStation) {
+    public List<PathEdges> findPath(final List<Line> lines, final Station sourceStation, final Station targetStation) {
         validateDuplicateStation(sourceStation, targetStation);
 
         final Path path = Path.from(lines);

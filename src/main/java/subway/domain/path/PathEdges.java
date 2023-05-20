@@ -3,16 +3,16 @@ package subway.domain.path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PathSections {
+public class PathEdges {
 
     private final List<PathEdge> pathEdges;
 
-    public PathSections(final List<PathEdge> pathEdges) {
+    public PathEdges(final List<PathEdge> pathEdges) {
         this.pathEdges = pathEdges;
     }
 
-    public static PathSections create() {
-        return new PathSections(new ArrayList<>());
+    public static PathEdges create() {
+        return new PathEdges(new ArrayList<>());
     }
 
     public void add(final PathEdge pathEdge) {
