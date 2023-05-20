@@ -53,6 +53,11 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, upBoundStationId, downBoundStationId, lineId);
     }
 
+    public List<Section> findAll() {
+        String sql = "select * from SECTION";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public void update(Section lineStation) {
         String sql = "update SECTION set up_bound_station_id = ?, down_bound_station_id = ?, distance = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{
