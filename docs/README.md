@@ -67,3 +67,8 @@
 12km = 10km + 2km = 1350원
 16km = 10km + 6km = 1450원
 58km = 10km + 40km + 8km = 2150원
+
+### 궁금한 내용
+- Docker에서 포트포워딩을 하는 것으로 알고 있는데, 커넥션을 생성할 때의 url에는 localhost:13306으로 설정해야 하는 이유?
+- application.yml에 상용 DB의 정보만 설정했음에도 테스트에서는 알아서 인메모리 DB를 띄우는 원리
+- DataSource.setDriverClassName를 할 때, environment.getProperty("spring.datasource.driver-class-name")이 안 되는 이유
