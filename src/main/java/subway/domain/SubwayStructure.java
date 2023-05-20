@@ -1,7 +1,7 @@
 package subway.domain;
 
+import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import subway.application.exception.SubwayServiceException;
 
 import java.util.Set;
@@ -10,9 +10,9 @@ public class SubwayStructure<T extends DefaultWeightedEdge> {
 
     private static final String INVALID_NOT_FOUND_STATION_MESSAGE = "역이 노선에 없습니다.";
 
-    private final SimpleDirectedWeightedGraph<Station, T> structure;
+    private final AbstractBaseGraph<Station, T> structure;
 
-    public SubwayStructure(SimpleDirectedWeightedGraph<Station, T> structure) {
+    public SubwayStructure(AbstractBaseGraph<Station, T> structure) {
         this.structure = structure;
     }
 
