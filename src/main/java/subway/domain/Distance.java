@@ -4,7 +4,10 @@ import java.util.Objects;
 
 public class Distance {
 
-    private final int value;
+    private int value;
+
+    private Distance() {
+    }
 
     public Distance(final int value) {
         validate(value);

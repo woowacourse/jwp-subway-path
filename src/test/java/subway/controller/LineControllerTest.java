@@ -15,8 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineRequest;
+import subway.dto.LineResponseWithSections;
 import subway.dto.LineResponseWithStations;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
@@ -147,6 +149,75 @@ class LineControllerTest extends ControllerTest {
                         new Station(5L, "5L"),
                         new Station(6L, "6L"),
                         new Station(7L, "7L")
+                )
+        );
+    }
+
+    @DisplayName("모든 노선의 구간들을 조회한다.")
+    @Test
+    @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
+    void findAllLinesWithSections() {
+        // when
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/sections")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        final List<LineResponseWithSections> result = response.jsonPath().getList(".", LineResponseWithSections.class);
+        assertAll(
+                () -> assertThat(result.get(0).getId()).isPositive(),
+                () -> assertThat(result.get(0).getName()).isEqualTo("1호선"),
+                () -> assertThat(result.get(0).getColor()).isEqualTo("파란색"),
+                () -> assertThat(result.get(0).getSections()).containsExactly(
+                        Section.builder().id(1L).build(),
+                        Section.builder().id(2L).build(),
+                        Section.builder().id(3L).build(),
+                        Section.builder().id(4L).build(),
+                        Section.builder().id(5L).build(),
+                        Section.builder().id(6L).build()
+                ),
+                () -> assertThat(result.get(1).getId()).isPositive(),
+                () -> assertThat(result.get(1).getName()).isEqualTo("2호선"),
+                () -> assertThat(result.get(1).getColor()).isEqualTo("초록색"),
+                () -> assertThat(result.get(1).getSections()).containsExactly(
+                        Section.builder().id(7L).build(),
+                        Section.builder().id(8L).build(),
+                        Section.builder().id(9L).build(),
+                        Section.builder().id(10L).build()
+                )
+        );
+    }
+
+    @DisplayName("특정 노선의 구간들을 조회한다.")
+    @Test
+    @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
+    void findLineWithSections() {
+        // when
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/sections/{lineId}", 1)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        final LineResponseWithSections result = response.as(LineResponseWithSections.class);
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(1),
+                () -> assertThat(result.getName()).isEqualTo("1호선"),
+                () -> assertThat(result.getColor()).isEqualTo("파란색"),
+                () -> assertThat(result.getSections()).containsExactly(
+                        Section.builder().id(1L).build(),
+                        Section.builder().id(2L).build(),
+                        Section.builder().id(3L).build(),
+                        Section.builder().id(4L).build(),
+                        Section.builder().id(5L).build(),
+                        Section.builder().id(6L).build()
                 )
         );
     }
