@@ -15,7 +15,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.jgrapht:jgrapht-core:1.5.2'
-    runtimeOnly 'mysql:mysql-connector-java:8.0.28'
 
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
 

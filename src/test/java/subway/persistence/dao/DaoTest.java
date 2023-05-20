@@ -8,8 +8,8 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.persistence.repository.SubwayRepository;
 
 
-@Sql("/test.sql")
-@Sql(value = "/drop.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql({"/scheme.sql", "/data.sql"})
+@Sql(value = "/truncate.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @JdbcTest
 public class DaoTest {
 

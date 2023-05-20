@@ -1,15 +1,15 @@
-INSERT INTO line (name, color)
-VALUES ('1호선', '파랑'),
-       ('2호선', '초록'),
-       ('empty', 'none');
+INSERT INTO line
+VALUES (1, '1호선', '파랑'),
+       (2, '2호선', '초록'),
+       (3, 'empty', 'none');
 
-INSERT INTO station (name)
-VALUES ('수원'),
-       ('잠실나루'),
-       ('의왕'),
-       ('선릉');
+INSERT INTO station
+VALUES (1, '수원'),
+       (2, '잠실나루'),
+       (3, '의왕'),
+       (4, '선릉');
 
-INSERT INTO paths (line_id, up_station_id, down_station_id, distance)
-VALUES (1, 1, 2, 5),
-       (2, 3, 1, 5),
-       (2, 1, 4, 7);
+INSERT INTO paths
+VALUES (1, 1, 1, 2, 5),
+       (2, 2, 3, 1, 5),
+       (3, 2, 1, 4, 7);
