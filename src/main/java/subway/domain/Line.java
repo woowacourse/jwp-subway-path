@@ -4,9 +4,9 @@ public class Line {
 
     private static Long sequence = 1L;
     private final Long id;
-    private final String name;
-    private final String color;
     private final Stations stations;
+    private String name;
+    private String color;
 
     public Line(String name, String color, Stations stations) {
         validateStations(stations);
@@ -31,8 +31,16 @@ public class Line {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getColor() {
         return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public Stations getStations() {

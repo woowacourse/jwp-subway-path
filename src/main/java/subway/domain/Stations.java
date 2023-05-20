@@ -33,6 +33,32 @@ public class Stations {
         return Optional.empty();
     }
 
+    public boolean isExistStation(String name) {
+        for (Station station : stations) {
+            if (station.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int findIndex(Station station) {
+        if (stations.contains(station)) {
+            return stations.indexOf(station);
+        }
+
+        throw new IllegalArgumentException("index를 찾으려고 하는 station이 등록되지 않았습니다");
+    }
+
+    public void addStationByIndex(int index, Station station) {
+        stations.add(index, station);
+    }
+
+    public Station findUpStation(Station station) {
+        int index = stations.indexOf(station);
+        return stations.get(index - 1);
+    }
+
     public List<Station> getStations() {
         return stations;
     }

@@ -1,22 +1,24 @@
 package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import subway.dto.LineRequest;
 import subway.entity.LineEntity;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public LineDao(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    public LineDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public Long insert(LineEntity lineEntity) {
@@ -46,5 +48,28 @@ public class LineDao {
 
                     return new LineEntity(id, name, color, headStationId);
                 });
+    }
+
+    public Integer update(Long id, LineRequest lineRequest) {
+        String sql = "UPDATE LINE SET name = ?, color = ? WHERE id = ?";
+
+        return jdbcTemplate.update(sql, lineRequest.getName(), lineRequest.getColor(), id);
+    }
+
+    public Optional<LineEntity> findLineEntityById(Long id) {
+        String sql = "SELECT * FROM LINE WHERE id = ?";
+        LineEntity lineEntity = jdbcTemplate.queryForObject(sql, getLineRowMapper(), id);
+        return Optional.of(lineEntity);
+    }
+
+    private RowMapper<LineEntity> getLineRowMapper() {
+        return (resultSet, rowNum) -> {
+            Long id = resultSet.getLong("id");
+            String name = resultSet.getString("name");
+            String color = resultSet.getString("color");
+            Long headStation = resultSet.getLong("head_station");
+
+            return new LineEntity(id, name, color, headStation);
+        };
     }
 }

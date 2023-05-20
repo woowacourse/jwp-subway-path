@@ -2,8 +2,8 @@ create table if not exists STATION
 (
     id bigint auto_increment not null,
     name varchar(255) not null,
-    next_station bigint null,
-    distance bigint null,
+    next_station bigint,
+    distance bigint,
     line_id bigint,
     primary key(id)
 );

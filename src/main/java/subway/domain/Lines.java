@@ -14,6 +14,16 @@ public class Lines {
         lines.add(line);
     }
 
+    public Line findById(Long id) {
+        for (Line line : lines) {
+            if (line.getId() == id) {
+                return line;
+            }
+        }
+
+        throw new IllegalArgumentException("id에 해당하는 Line은 존재하지 않습니다");
+    }
+
     public List<Line> getLines() {
         return lines;
     }

@@ -29,5 +29,4 @@ public class LineEntity {
     public Long getHeadStationId() {
         return headStationId;
     }
-
 }
