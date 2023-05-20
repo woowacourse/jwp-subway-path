@@ -9,11 +9,11 @@ import subway.service.line.domain.Line;
 import java.util.Optional;
 
 @Repository
-public class LineRepositoryImpl implements LineRepository {
+public class H2LineRepository implements LineRepository {
 
     private final LineDao lineDao;
 
-    public LineRepositoryImpl(LineDao lineDao) {
+    public H2LineRepository(LineDao lineDao) {
         this.lineDao = lineDao;
     }
 

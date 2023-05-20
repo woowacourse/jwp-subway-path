@@ -11,11 +11,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
-public class StationRepositoryImpl implements StationRepository {
+public class H2StationRepository implements StationRepository {
 
     private final StationDao stationDao;
 
-    public StationRepositoryImpl(StationDao stationDao) {
+    public H2StationRepository(StationDao stationDao) {
         this.stationDao = stationDao;
     }
 

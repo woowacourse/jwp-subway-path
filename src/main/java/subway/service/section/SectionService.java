@@ -3,7 +3,7 @@ package subway.service.section;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.section.dto.LineStationDeleteRequest;
-import subway.persistence.repository.SectionRepositoryImpl;
+import subway.persistence.repository.H2SectionRepository;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
@@ -37,7 +37,7 @@ public class SectionService {
     private final StationRepository stationRepository;
     private final FeePolicy feePolicy;
 
-    public SectionService(LineRepository lineRepository, SectionRepositoryImpl sectionRepository, StationRepository stationDao, FeePolicy feePolicy) {
+    public SectionService(LineRepository lineRepository, H2SectionRepository sectionRepository, StationRepository stationDao, FeePolicy feePolicy) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationDao;

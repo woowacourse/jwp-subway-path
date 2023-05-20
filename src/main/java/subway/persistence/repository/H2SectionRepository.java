@@ -23,13 +23,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
-public class SectionRepositoryImpl implements SectionRepository {
+public class H2SectionRepository implements SectionRepository {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
     private final LineDao lineDao;
 
-    public SectionRepositoryImpl(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
+    public H2SectionRepository(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.lineDao = lineDao;
