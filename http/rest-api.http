@@ -1,0 +1,209 @@
+### 순서1. 성공 테스트 : 1호선을 생성한다.
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "1호선",
+  "color": "빨강",
+  "additionalFee": 200
+}
+
+> {%
+	client.test("노선을 성공적으로 생성한다.", function () {
+		client.assert(response.status == 201, "201 상태코드를 반환한다.");
+		client.assert(response.headers.valueOf("Location") != null, "Location 에 정보를 담는다.");
+	});
+%}
+
+### 순서2. 성공 테스트 : 2호선을 생성한다.
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "2호선",
+  "color": "파랑",
+  "additionalFee": 100
+}
+
+> {%
+	client.test("노선을 성공적으로 생성한다.", function () {
+		client.assert(response.status == 201, "201 상태코드를 반환한다.");
+		client.assert(response.headers.valueOf("Location") != null, "Location 에 정보를 담는다.");
+	});
+%}
+
+### 순서3. 실패 테스트 : 노선을 생성한다. ( 같은 이름의 노선이 존재할 때 )
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "1호선",
+  "color": "빨강",
+  "additionalFee": 200
+}
+
+> {%
+	client.test("같은 이름의 노선이 있을 떄 생성에 실패한다.", function () {
+		client.assert(response.status == 400, "400 상태코드를 반환한다.");
+	});
+%}
+
+### 순서4. 성공 테스트 : 1호선에 역을 추가한다 ( 첫번쨰역 -> 두번째역 ).
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "두번째역",
+  "direction": "하행",
+  "distance": 4
+}
+
+> {%
+	client.test("노선에 역을 성공적으로 추가한다.", function () {
+		client.assert(response.status == 201, "201 상태코드를 반환한다.");
+		client.assert(response.headers.valueOf("Location") != null, "Location 에 정보를 담는다.");
+	});
+%}
+
+### 순서5. 성공 테스트 : 1호선에 역을 추가한다. ( 두번째역 -> 세번째역 )
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+
+{
+  "baseStation": "두번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+> {%
+	client.test("노선에 역을 성공적으로 추가한다.", function () {
+		client.assert(response.status == 201, "201 상태코드를 반환한다.");
+		client.assert(response.headers.valueOf("Location") != null, "Location 에 정보를 담는다.");
+	});
+%}
+
+### 순서6. 성공 테스트 : 1호선에 역을 추가한다. ( 세번째역 -> 네번째역 )
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+
+{
+  "baseStation": "세번째역",
+  "newStation": "네번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+> {%
+	client.test("노선에 역을 성공적으로 추가한다.", function () {
+		client.assert(response.status == 201, "201 상태코드를 반환한다.");
+		client.assert(response.headers.valueOf("Location") != null, "Location 에 정보를 담는다.");
+	});
+%}
+
+### 순서7. 성공 테스트 : 네번째역 삭제한다.
+DELETE http://localhost:8080/lines/1/sections/?stationName=네번째역
+Content-Type: application/json
+
+> {%
+	client.test("노선에 역을 성공적으로 삭제한다.", function () {
+		client.assert(response.status == 204, "204 상태코드를 반환한다.");
+	});
+%}
+
+### 순서8. 실패 테스트 : 1호선에 역을 추가한다. ( 추가될 구간의 길이가 충분하지 않을 때 )
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 10
+}
+
+> {%
+	client.test("노선에 역을 추가할 구간의 길이가 충분하지 않으면 실패한다.", function () {
+		client.assert(response.status == 400, "400 상태코드를 반환한다.");
+	});
+%}
+
+### 순서9. 성공 테스트 : 2호선에 역을 추가한다.
+POST http://localhost:8080/lines/2/sections
+Content-Type: application/json
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 10
+}
+
+> {%
+	client.test("노선에 역을 성공적으로 추가한다.", function () {
+		client.assert(response.status == 201, "201 상태코드를 반환한다.");
+		client.assert(response.headers.valueOf("Location") != null, "Location 에 정보를 담는다.");
+	});
+%}
+
+### 순서10. 성공 테스트 : 노선을 조회한다.
+GET http://localhost:8080/lines/1
+Accept: application/json
+
+> {%
+	client.test("노선을 조회한다.", function () {
+		client.assert(response.status === 200, "200 상태코드를 반환한다.");
+		const body = response.body.valueOf(JSON);
+		client.assert(body["id"] == 1, "노선 id를 가지고 있다.");
+		client.assert(body["name"] == "1호선", "노선 이름을 가지고 있다.");
+		client.assert(body["color"] == "빨강", "노선 색상을 가지고 있다.");
+		client.assert(body["additionalFee"] == 200, "노선 추가요금 정보를 가지고 있다.");
+		client.assert(body["stations"].length == 3, "노선에 있는 역을 가지고 있다.");
+	});
+%}
+
+### 순서11. 실패 테스트 : 노선을 조회한다 (없는 노선 ID ).
+GET http://localhost:8080/lines/3
+Accept: application/json
+
+> {%
+	client.test("노선을 조회한다.", function () {
+		client.assert(response.status === 400, "400 상태코드를 반환한다.");
+	});
+%}
+
+### 순서12. 성공 테스트 : 모든 노선을 조회한다.
+GET http://localhost:8080/lines
+Content-Type: application/json
+
+> {%
+	client.test("노선을 조회한다.", function () {
+		client.assert(response.status == 200, "200 상태코드를 반환한다.");
+		const body = response.body.valueOf(JSON);
+		client.assert(body[0]["id"] == 1, "노선 id를 가지고 있다.");
+		client.assert(body[0]["name"] == "1호선", "노선 이름을 가지고 있다.");
+		client.assert(body[0]["color"] == "빨강", "노선 색상을 가지고 있다.");
+		client.assert(body[0]["additionalFee"] == 200, "노선 추가요금 정보를 가지고 있다.");
+		client.assert(body[0]["stations"].length == 3, "노선에 있는 역을 가지고 있다.");
+		client.assert(body[1]["id"] == 2, "노선 id를 가지고 있다.");
+		client.assert(body[1]["name"] == "2호선", "노선 이름을 가지고 있다.");
+		client.assert(body[1]["color"] == "파랑", "노선 색상을 가지고 있다.");
+		client.assert(body[1]["additionalFee"] == 100, "노선 추가요금 정보를 가지고 있다.");
+		client.assert(body[1]["stations"].length == 2, "노선에 있는 역을 가지고 있다.");
+	});
+%}
+
+### 순서 13. 성공 테스트 : 최단 경로를 조회한다 ( 총거리는 9km, 요금은 기본요금 1250원에 1호선 추가요금 200원이 추가된 1450이다.).
+GET http://localhost:8080/shortest-path/?start=첫번째역&end=세번째역&age=20
+Accept: application/json
+
+> {%
+	client.test("최단 경로를 조회한다.", function () {
+		client.assert(response.status == 200, "200 상태코드를 반환한다.");
+		const body = response.body.valueOf(JSON);
+		client.assert(body["route"].length == 3);
+		client.assert(body["totalDistance"] == 9);
+		client.assert(body["totalFare"] == 1450);
+	});
+%}
