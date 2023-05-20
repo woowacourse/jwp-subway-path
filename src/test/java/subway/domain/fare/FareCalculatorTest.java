@@ -1,6 +1,5 @@
 package subway.domain.fare;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -11,13 +10,14 @@ import org.junit.jupiter.api.Test;
 import subway.domain.Line;
 import subway.domain.Lines;
 
-
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
-@DisplayName("FeePolicies 은(는)")
-class FarePoliciesTest {
+@DisplayName("FareCalculator 은(는)")
+class FareCalculatorTest {
 
-    private FarePolicies farePolicies = new FarePolicies(List.of(new LineFarePolicy(), new DistanceFarePolicy()));
+    private FareCalculator farePolicies = new FareCalculator(
+            new FarePolicies(List.of(new LineFarePolicy(), new DistanceFarePolicy())),
+            new AgeDiscountPolicy());
 
     @Test
     void 추가_요금이_없으면_기본_요금을_반환한다() {
@@ -28,7 +28,7 @@ class FarePoliciesTest {
                         new Line("2호선", null, 0)
                 )
         );
-        FareInformation fareInformation = new FareInformation(4, lines, null);
+        FareInformation fareInformation = new FareInformation(4, lines, AgeGroup.ADULT);
 
         // when
         int fee = farePolicies.calculate(fareInformation);
@@ -46,12 +46,12 @@ class FarePoliciesTest {
                         new Line("2호선", null, 500)
                 )
         );
-        FareInformation fareInformation = new FareInformation(11, lines, null);
+        FareInformation fareInformation = new FareInformation(11, lines, AgeGroup.CHILD);
 
         // when
         int fee = farePolicies.calculate(fareInformation);
 
         // then
-        assertThat(fee).isEqualTo(1850);
+        assertThat(fee).isEqualTo(750);
     }
 }

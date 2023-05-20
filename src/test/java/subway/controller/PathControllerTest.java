@@ -52,7 +52,7 @@ class PathControllerTest {
                 10,
                 1350
         );
-        final ShortestPathRequest request = new ShortestPathRequest("역삼역", "잠실역");
+        final ShortestPathRequest request = new ShortestPathRequest("역삼역", "잠실역", 20);
         given(pathService.findShortestPath(any()))
                 .willReturn(responseDto);
 
@@ -78,7 +78,7 @@ class PathControllerTest {
     @NullAndEmptySource
     void 시작역이_null이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
         // given
-        final ShortestPathRequest request = new ShortestPathRequest(nullAndEmpty, "사당역");
+        final ShortestPathRequest request = new ShortestPathRequest(nullAndEmpty, "사당역", 20);
 
         // when
         final MockHttpServletResponse response = 최단_거리_조회_요청(request);
@@ -91,7 +91,19 @@ class PathControllerTest {
     @NullAndEmptySource
     void 도착이_null이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
         // given
-        final ShortestPathRequest request = new ShortestPathRequest("사당역", nullAndEmpty);
+        final ShortestPathRequest request = new ShortestPathRequest("사당역", nullAndEmpty, 20);
+
+        // when
+        final MockHttpServletResponse response = 최단_거리_조회_요청(request);
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+    }
+
+    @Test
+    void 나이가_null이면_예외() throws Exception {
+        // given
+        final ShortestPathRequest request = new ShortestPathRequest("사당역", "잠실역", null);
 
         // when
         final MockHttpServletResponse response = 최단_거리_조회_요청(request);

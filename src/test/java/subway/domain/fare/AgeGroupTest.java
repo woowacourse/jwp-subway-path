@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.exception.IllegalAgeException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -63,7 +64,7 @@ class AgeGroupTest {
         @ValueSource(ints = {-1, -10, -100})
         void 잘못된_나이면_예외(int wrongAge) {
             assertThatThrownBy(() -> AgeGroup.from(wrongAge))
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(IllegalAgeException.class);
         }
     }
 

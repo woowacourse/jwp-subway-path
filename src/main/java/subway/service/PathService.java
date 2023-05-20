@@ -3,8 +3,9 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import subway.domain.Lines;
 import subway.domain.Station;
+import subway.domain.fare.AgeGroup;
+import subway.domain.fare.FareCalculator;
 import subway.domain.fare.FareInformation;
-import subway.domain.fare.FarePolicy;
 import subway.domain.path.Path;
 import subway.domain.path.PathFinder;
 import subway.dto.request.ShortestPathRequest;
@@ -19,18 +20,18 @@ public class PathService {
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
     private final PathFinder pathFinder;
-    private final FarePolicy farePolicy;
+    private final FareCalculator fareCalculator;
 
     public PathService(
             final StationRepository stationRepository,
             final LineRepository lineRepository,
             final PathFinder pathFinder,
-            final FarePolicy farePolicy
+            final FareCalculator fareCalculator
     ) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.pathFinder = pathFinder;
-        this.farePolicy = farePolicy;
+        this.fareCalculator = fareCalculator;
     }
 
     public ShortestPathResponse findShortestPath(final ShortestPathRequest request) {
@@ -40,13 +41,13 @@ public class PathService {
                 .orElseThrow(() -> new NotFoundStationException(request.getEndStation()));
         final Lines lines = lineRepository.findAll();
         final Path path = pathFinder.findShortestPath(startStation, endStation, lines);
-        final int fee = farePolicy.calculate(getFeeInformation(path, lines));
+        final int fee = fareCalculator.calculate(getFeeInformation(path, lines, request.getAge()));
 
         return ShortestPathResponse.of(path, fee);
     }
 
-    private static FareInformation getFeeInformation(Path path, Lines lines) {
+    private static FareInformation getFeeInformation(Path path, Lines lines, int age) {
         Lines findLines = lines.findLinesByContainSection(path.getSections());
-        return new FareInformation(path.getTotalDistance(), findLines);
+        return new FareInformation(path.getTotalDistance(), findLines, AgeGroup.from(age));
     }
 }

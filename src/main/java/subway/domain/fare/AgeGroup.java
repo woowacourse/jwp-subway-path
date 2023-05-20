@@ -1,6 +1,7 @@
 package subway.domain.fare;
 
 import java.util.Arrays;
+import subway.exception.IllegalAgeException;
 
 public enum AgeGroup {
 
@@ -25,7 +26,7 @@ public enum AgeGroup {
         return Arrays.stream(values())
                 .filter(ageGroup -> ageGroup.minAge <= age && age <= ageGroup.maxAge)
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("포함되지 않은 나이입니다."));
+                .orElseThrow(IllegalAgeException::new);
     }
 
     public int calculate(int fare) {
