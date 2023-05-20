@@ -1,5 +1,121 @@
 # jwp-subway-path
 
+## 테스트 환경 지하철 노선도
+
+<img width="762" alt="image" src="https://github.com/HangangNow/HangangNowServer/assets/68818952/0fa6e7ff-5251-4e34-997d-13dbe2020563">
+
+## 프로덕션 DB 설정
+
+### DB setting
+
+```shell
+1. install [h2database](http://h2database.com/html/main.html)
+
+2. cd Downloads/h2/bin
+
+3. ./h2.sh
+
+4. cd ~
+
+5. touch subway.mv.db
+
+6. connect H2 server with server mode  
+
+```
+
+### SCHEMA
+
+```sql
+create table if not exists STATION
+(
+    id
+    bigint
+    auto_increment
+    not
+    null,
+    name
+    varchar
+(
+    255
+) not null unique,
+    primary key
+(
+    id
+)
+    );
+
+create table if not exists LINE
+(
+    id
+    bigint
+    auto_increment
+    not
+    null,
+    name
+    varchar
+(
+    255
+) not null unique,
+    primary key
+(
+    id
+)
+    );
+
+create table if not exists SECTION
+(
+    id
+    bigint
+    auto_increment
+    not
+    null,
+    line_id
+    bigint
+    not
+    null,
+    left_station_id
+    bigint
+    not
+    null,
+    right_station_id
+    bigint
+    not
+    null,
+    distance
+    bigint
+    not
+    null,
+
+    primary
+    key
+(
+    id
+),
+    foreign key
+(
+    line_id
+) references line
+(
+    id
+),
+    foreign key
+(
+    left_station_id
+) references station
+(
+    id
+),
+    foreign key
+(
+    right_station_id
+) references station
+(
+    id
+)
+    );
+
+```
+
 ## API SPEC
 
 ### 경로조회
