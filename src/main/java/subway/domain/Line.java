@@ -33,8 +33,7 @@ public final class Line {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		final Line line = (Line)o;
-		return Objects.equals(id, line.id) && Objects.equals(name, line.name)
-			&& Objects.equals(color, line.color);
+		return Objects.equals(id, line.id);
 	}
 
 	@Override
