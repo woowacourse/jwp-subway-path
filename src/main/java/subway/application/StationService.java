@@ -13,7 +13,6 @@ import subway.repository.LineStationRepository;
 @Service
 public class StationService {
 
-    //todo 질문 :: 실제로 아래와 같이 lineName으로 line객체를 반환합니다. 또, 라인 안의 역을 추가, 삭제 하는 것인데
     private LineStationRepository lineStationRepository;
 
     public StationService(LineStationRepository lineStationRepository) {

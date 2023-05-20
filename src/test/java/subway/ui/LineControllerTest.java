@@ -105,7 +105,6 @@ class LineControllerTest {
                 .andDo(print());
     }
 
-    // todo : 수정에 성공했을 때 이를 클라이언트에게도 반환값을 통해 알릴 것인가?
     @DisplayName("특정 노선의 정보를 수정한다")
     @Test
     void updateLine() throws Exception {
