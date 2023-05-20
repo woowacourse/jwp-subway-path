@@ -37,7 +37,7 @@ class LinesTest {
     @Test
     void shouldThrowExceptionWhenNoLine() {
         final Lines lines = Lines.of(Collections.emptyList());
-        assertThatThrownBy(() -> lines.getAllIds())
+        assertThatThrownBy(lines::getAllIds)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("노선이 하나도 존재하지 않습니다.");
     }
