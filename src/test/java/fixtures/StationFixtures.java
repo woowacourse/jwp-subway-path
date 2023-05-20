@@ -9,7 +9,6 @@ import static fixtures.SectionFixtures.*;
 
 public class StationFixtures {
 
-
     /**
      * data
      */
@@ -18,7 +17,6 @@ public class StationFixtures {
     public static final long STATION_강변역_ID = 3L;
     public static final long STATION_대림역_ID = 3L;
     public static final long STATION_성수역_ID = 3L;
-    public static final long STATION_예외역_ID = 3L;
     public static final long STATION_온수역_ID = 3L;
     public static final long STATION_철산역_ID = 4L;
     public static final String STATION_잠실역_NAME = "잠실역";
@@ -27,7 +25,6 @@ public class StationFixtures {
     public static final String STATION_대림역_NAME = "대림역";
     public static final String STATION_성수역_NAME = "성수역";
     public static final String STATION_신림역_NAME = "신림역";
-    private static final String STATION_선릉역_NAME = "선릉역";
     public static final String STATION_예외역_NAME = "예외역";
     public static final String STATION_온수역_NAME = "온수역";
     public static final String STATION_철산역_NAME = "철산역";
@@ -41,8 +38,6 @@ public class StationFixtures {
     public static final StationRequest REQUEST_대림역_TO_잠실역 = new StationRequest(STATION_대림역_NAME, STATION_잠실역_NAME, DISTANCE_대림역_TO_잠실역, LINE2_NAME);
     public static final StationRequest REQUEST_건대역_TO_성수역 = new StationRequest(STATION_건대역_NAME, STATION_성수역_NAME, DISTANCE_건대역_TO_성수역, LINE2_NAME);
     public static final StationRequest REQUEST_대림역_TO_신림역 = new StationRequest(STATION_대림역_NAME, STATION_신림역_NAME, DISTANCE_대림역_TO_신림역, LINE2_NAME);
-    public static final StationRequest REQUEST_선릉역_TO_잠실역 = new StationRequest(STATION_선릉역_NAME, STATION_잠실역_NAME, DISTANCE_선릉역_TO_잠실역, LINE2_NAME);
-    public static final StationRequest REQUEST_온수역_TO_철산역 = new StationRequest(STATION_온수역_NAME, STATION_철산역_NAME, DISTANCE_온수역_TO_철산역, LINE7_NAME);
     public static final StationRequest REQUEST_LONG_DISTANCE = new StationRequest(STATION_잠실역_NAME, STATION_예외역_NAME, DISTANCE_잠실역_TO_예외역, LINE2_NAME);
 
     /**
@@ -59,8 +54,6 @@ public class StationFixtures {
     public static final Station STATION_성수역 = new Station(STATION_성수역_ID, STATION_성수역_NAME, LINE2);
     public static final Station STATION_TO_INSERT_성수역 = new Station(null, STATION_성수역_NAME, LINE2);
     public static final Station STATION_TO_INSERT_신림역 = new Station(null, STATION_신림역_NAME, LINE2);
-    public static final Station STATION_예외역 = new Station(STATION_예외역_ID, STATION_예외역_NAME, LINE2);
-    public static final Station STATION_TO_INSERT_예외역 = new Station(null, STATION_예외역_NAME, LINE2);
     public static final Station STATION_온수역 = new Station(STATION_온수역_ID, STATION_온수역_NAME, LINE7);
     public static final Station STATION_철산역 = new Station(STATION_철산역_ID, STATION_철산역_NAME, LINE7);
 

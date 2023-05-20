@@ -94,6 +94,19 @@ class StationServiceTest {
             }
 
             @Test
+            @DisplayName("노선 가운데에 역을 등록함으로써 역과 역 사이의 거리가 음수가 된다면 예외가 발생한다.")
+            void saveNewStationTest_fail_negativeDistance() {
+                // given
+                StationRequest request = REQUEST_LONG_DISTANCE;
+                when(lineRepository.findByLineName(LINE2_NAME)).thenReturn(Optional.of(LINE2));
+                when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
+
+                assertThatThrownBy(() -> stationService.saveSection(request))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("역 사이 거리는 0km이상 100km 이하여야 합니다.");
+            }
+
+            @Test
             @DisplayName("상행역이 이미 존재할 때, 노선 가운데에 역을 등록한다.")
             void saveNewStationTest_success_when_upStationExist() {
                 // given
