@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.*;
 import subway.dto.request.CreateSectionRequest;
 import subway.dto.request.RouteRequest;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class SectionService {
 
     private final LineRepository lineRepository;
@@ -52,6 +54,7 @@ public class SectionService {
         lineRepository.updateSections(line);
     }
 
+    @Transactional(readOnly = true)
     public RouteResponse getShortestRoute(final RouteRequest routeRequest) {
         Station sourceStation = stationRepository.findById(routeRequest.getSourceStation());
         Station targetStation = stationRepository.findById(routeRequest.getTargetStation());

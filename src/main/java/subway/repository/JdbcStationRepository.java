@@ -1,7 +1,6 @@
 package subway.repository;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.entity.StationEntity;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-@Transactional
 public class JdbcStationRepository implements StationRepository {
 
     private final StationDao stationDao;
@@ -22,7 +20,6 @@ public class JdbcStationRepository implements StationRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Station findById(final Long id) {
         StationEntity entity = stationDao.findById(id)
                 .orElseThrow(() -> new NoSuchStationException(id));
@@ -48,7 +45,6 @@ public class JdbcStationRepository implements StationRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Station> findAll() {
         return stationDao.findAll().stream()
                 .map(StationMapper::toStation)
