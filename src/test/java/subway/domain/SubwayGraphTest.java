@@ -277,4 +277,5 @@ class SubwayGraphTest {
 
         assertThat(weight).isNull();
     }
+
 }

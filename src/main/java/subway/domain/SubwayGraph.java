@@ -2,17 +2,24 @@ package subway.domain;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import subway.entity.EdgeEntity;
 import subway.exception.StationAlreadyExistException;
 
 import java.util.*;
 
 public class SubwayGraph {
-    private final DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+    private final DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> graph;
     private final Line line;
 
-    public SubwayGraph(final Line line) {
+    public SubwayGraph(DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> graph, Line line) {
+        this.graph = graph;
         this.line = line;
+    }
+
+    public SubwayGraph(final Line line) {
+        this(new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class), line);
+
     }
 
     private void createInitStations(Station upLineEndStation, Station downLineEndStation, int distance) {
@@ -249,5 +256,22 @@ public class SubwayGraph {
 
     public boolean isStationExist(Station station) {
         return graph.vertexSet().contains(station);
+    }
+
+    public WeightedMultigraph<Station, DefaultWeightedEdge> getMultiGraph() {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
+        for (Station station : this.graph.vertexSet()) {
+            graph.addVertex(station);
+        }
+
+        for (DefaultWeightedEdge defaultWeightedEdge : this.graph.edgeSet()) {
+            Station source = this.graph.getEdgeSource(defaultWeightedEdge);
+            Station target = this.graph.getEdgeTarget(defaultWeightedEdge);
+
+            graph.setEdgeWeight(graph.addEdge(source, target), findDistance(source));
+        }
+
+        return graph;
     }
 }
