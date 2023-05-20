@@ -58,7 +58,7 @@ class LineTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
     
-    @DisplayName("Line에 Session을 추가한다.")
+    @DisplayName("Line에 Section 추가한다.")
     @Test
     void add() {
         // given
@@ -78,7 +78,7 @@ class LineTest {
                 .containsExactly(강남역_선릉역, 선릉역_잠실역);
     }
 
-    @DisplayName("Line에 있는 Session을 삭제한다.")
+    @DisplayName("Line에 있는 Section을 삭제한다.")
     @Test
     void remove() {
         // given
