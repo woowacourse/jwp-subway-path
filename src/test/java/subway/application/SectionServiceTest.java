@@ -116,8 +116,6 @@ class SectionServiceTest {
                 .willReturn(sections);
         given(sectionRepository.findSectionByLineIdAndStationId(lineId, request.getDownStationId()))
                 .willReturn(Collections.emptyList());
-        Section section = new Section(lineId, 1L, 3L, 11);
-        when(sections.get(0)).thenReturn(section);
         Section mockSection = Mockito.mock(Section.class);
         given(sectionRepository.insert(any()))
                 .willReturn(mockSection);
