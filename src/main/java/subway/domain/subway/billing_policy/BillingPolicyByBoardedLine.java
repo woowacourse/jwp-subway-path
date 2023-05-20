@@ -1,10 +1,12 @@
 package subway.domain.subway.billing_policy;
 
 import java.util.List;
+import org.springframework.stereotype.Component;
 import subway.domain.Path;
 import subway.domain.line.Line;
 
-public final class BillingPolicyByBoardedLine implements BillingPolicy {
+@Component
+public class BillingPolicyByBoardedLine implements BillingPolicy {
 
     @Override
     public Fare calculateFare(final Path path) {
@@ -12,7 +14,8 @@ public final class BillingPolicyByBoardedLine implements BillingPolicy {
         return new Fare(
                 borderedLines.stream()
                         .mapToInt(Line::getExtraFare)
-                        .reduce(0, Integer::max)
+                        .max()
+                        .orElse(0)
         );
     }
 }

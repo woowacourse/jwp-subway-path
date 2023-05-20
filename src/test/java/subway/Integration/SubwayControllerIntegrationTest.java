@@ -62,7 +62,7 @@ class SubwayControllerIntegrationTest extends IntegrationTest {
                     .andExpect(jsonPath("$.stations[2].id").value(downward.getId()))
                     .andExpect(jsonPath("$.stations[2].name").value(downward.getName()))
                     .andExpect(jsonPath("$.distance").value(7))
-                    .andExpect(jsonPath("$.fare").value(1250));
+                    .andExpect(jsonPath("$.fare").value(1650));
         }
 
         @Test
