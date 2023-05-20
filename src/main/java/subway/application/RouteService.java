@@ -7,20 +7,14 @@ import static subway.application.mapper.StationMapper.createStationResponses;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.FareResponse;
 import subway.application.dto.RouteResponse;
 import subway.domain.fare.ExtraFare;
 import subway.domain.fare.Fare;
-import subway.domain.fare.discount.ChildFarePolicy;
-import subway.domain.fare.discount.DiscountFarePolicy;
-import subway.domain.fare.discount.TeenagerFarePolicy;
-import subway.domain.fare.normal.BasicFarePolicy;
-import subway.domain.fare.normal.FarePolicy;
-import subway.domain.fare.normal.UnitEightFarePolicy;
-import subway.domain.fare.normal.UnitFiveFarePolicy;
+import subway.domain.fare.discount.DiscountFarePolicyComposite;
+import subway.domain.fare.normal.FarePolicyComposite;
 import subway.domain.line.LineRepository;
 import subway.domain.line.LineWithSectionRes;
 import subway.domain.route.Distance;
@@ -38,17 +32,19 @@ public class RouteService {
     private final GraphProvider graphProvider;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
-    private final List<FarePolicy> farePolicies;
-    private final List<DiscountFarePolicy> discountFarePolicies;
+    private final FarePolicyComposite farePolicies;
+    private final DiscountFarePolicyComposite discountFarePolicies;
 
     public RouteService(final GraphProvider graphProvider,
                         final LineRepository lineRepository,
-                        final StationRepository stationRepository) {
+                        final StationRepository stationRepository,
+                        final FarePolicyComposite farePolicies,
+                        final DiscountFarePolicyComposite discountFarePolicies) {
         this.graphProvider = graphProvider;
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.farePolicies = List.of(new BasicFarePolicy(), new UnitFiveFarePolicy(), new UnitEightFarePolicy());
-        discountFarePolicies = List.of(new TeenagerFarePolicy(), new ChildFarePolicy());
+        this.farePolicies = farePolicies;
+        this.discountFarePolicies = discountFarePolicies;
     }
 
     public RouteResponse getShortestRouteAndFare(final Long sourceStationId, final Long targetStationId) {
@@ -63,8 +59,9 @@ public class RouteService {
         final Distance shortestDistance = shortestRoute.getShortestDistance(sections);
 
         final ExtraFare lineExtraFare = new ExtraFare(possibleSections);
-        final Fare totalFare = getTotalFare(shortestDistance, lineExtraFare);
-        final List<Fare> discountFare = getDiscountFares(totalFare);
+        final Fare fare = farePolicies.getTotalFare(shortestDistance);
+        final Fare totalFare = fare.add(lineExtraFare.fare());
+        final List<Fare> discountFare = discountFarePolicies.getDiscountFares(totalFare);
 
         return new RouteResponse(
             createStationResponses(possibleSections, shortestRoute.getShortestRoutes()),
@@ -76,21 +73,6 @@ public class RouteService {
         final List<SubwayLine> subwayLines = createSubwayLines(sectionsByLineId);
         final List<Station> shortestRoute = graphProvider.getShortestPath(subwayLines, sourceStation, targetStation);
         return new ShortestRoute(shortestRoute);
-    }
-
-    private Fare getTotalFare(final Distance shortestDistance, final ExtraFare extraFare) {
-        return farePolicies.stream()
-            .filter(policy -> policy.isAvailable(shortestDistance))
-            .map(policy -> policy.calculateFare(shortestDistance))
-            .findFirst()
-            .orElseThrow()
-            .add(extraFare.fare());
-    }
-
-    private List<Fare> getDiscountFares(final Fare totalFare) {
-        return discountFarePolicies.stream()
-            .map(policy -> policy.calculateFare(totalFare))
-            .collect(Collectors.toUnmodifiableList());
     }
 
     private FareResponse getFareResponse(final Fare totalFare, final List<Fare> discountFares) {

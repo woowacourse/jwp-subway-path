@@ -29,14 +29,15 @@ class UnitFiveFarePolicyTest {
             .isSameAs(expected);
     }
 
-    @Test
-    @DisplayName("기본 거리를 제외한 나머지 거리에 대해 5km당 100원씩 부과하여 요금을 계산한다.")
-    void calculateFare() {
+    @ParameterizedTest(name = "기본 거리를 제외한 나머지 거리에 대해 5km당 100원씩 부과하여 요금을 계산한다.")
+    @CsvSource(value = {"11:1350", "15:1350", "16:1450", "20:1450", "25:1550", "30:1650",
+        "35:1750", "40:1850", "45:1950", "50:2050"}, delimiter = ':')
+    void calculateFare(final int distance, final int fare) {
         // given
-        final Distance distance = new Distance(12);
+        final Distance targetDistance = new Distance(distance);
 
         // expected
-        assertThat(unitFiveFarePolicy.calculateFare(distance).fare())
-            .isEqualTo(1350);
+        assertThat(unitFiveFarePolicy.calculateFare(targetDistance).fare())
+            .isEqualTo(fare);
     }
 }

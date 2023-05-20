@@ -23,6 +23,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.dto.FareResponse;
 import subway.application.dto.RouteResponse;
 import subway.application.dto.StationResponse;
+import subway.domain.fare.Fare;
+import subway.domain.fare.discount.DiscountFarePolicyComposite;
+import subway.domain.fare.normal.FarePolicyComposite;
 import subway.domain.line.LineRepository;
 import subway.domain.route.GraphProvider;
 import subway.domain.station.StationRepository;
@@ -39,6 +42,12 @@ class RouteServiceTest {
     @Mock
     private GraphProvider graphProvider;
 
+    @Mock
+    private FarePolicyComposite farePolicies;
+
+    @Mock
+    private DiscountFarePolicyComposite discountFarePolicies;
+
     @InjectMocks
     private RouteService routeService;
 
@@ -54,6 +63,10 @@ class RouteServiceTest {
             .thenReturn(잠실_신림_이동_가능한_구간들());
         when(graphProvider.getShortestPath(anyList(), any(), any()))
             .thenReturn(List.of(잠실역, 선릉역, 남위례역, 신림역));
+        when(farePolicies.getTotalFare(any()))
+            .thenReturn(new Fare(1450));
+        when(discountFarePolicies.getDiscountFares(any()))
+            .thenReturn(List.of(new Fare(880), new Fare(550)));
 
         // when
         final RouteResponse routeResponse = routeService.getShortestRouteAndFare(1L, 4L);
@@ -84,6 +97,10 @@ class RouteServiceTest {
             .thenReturn(잠실_신림_이동_가능한_구간들());
         when(graphProvider.getShortestPath(anyList(), any(), any()))
             .thenReturn(List.of(신림역, 남위례역, 선릉역, 잠실역));
+        when(farePolicies.getTotalFare(any()))
+            .thenReturn(new Fare(1450));
+        when(discountFarePolicies.getDiscountFares(any()))
+            .thenReturn(List.of(new Fare(880), new Fare(550)));
 
         // when
         final RouteResponse routeResponse = routeService.getShortestRouteAndFare(4L, 1L);

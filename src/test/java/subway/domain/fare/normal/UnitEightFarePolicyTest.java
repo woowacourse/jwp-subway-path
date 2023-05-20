@@ -3,8 +3,6 @@ package subway.domain.fare.normal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import subway.domain.route.Distance;
@@ -29,14 +27,14 @@ class UnitEightFarePolicyTest {
             .isSameAs(expected);
     }
 
-    @Test
-    @DisplayName("기본 거리를 제외한 나머지 거리에 대해 8km당 100원씩 부과한 요금을 반환한다.")
-    void calculateFare() {
+    @ParameterizedTest(name = "기본 거리를 제외한 나머지 거리에 대해 8km당 100원씩 부과한 요금을 반환한다.")
+    @CsvSource(value = {"51:2150", "58:2150", "66:2250"}, delimiter = ':')
+    void calculateFare(final int distance, final int fare) {
         // given
-        final Distance distance = new Distance(58);
+        final Distance targetDistance = new Distance(distance);
 
         // expected
-        assertThat(unitEightFarePolicy.calculateFare(distance).fare())
-            .isEqualTo(2150);
+        assertThat(unitEightFarePolicy.calculateFare(targetDistance).fare())
+            .isEqualTo(fare);
     }
 }

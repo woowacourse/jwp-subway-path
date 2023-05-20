@@ -1,7 +1,9 @@
 package subway.domain.fare.discount;
 
+import org.springframework.stereotype.Component;
 import subway.domain.fare.Fare;
 
+@Component
 public class TeenagerFarePolicy implements DiscountFarePolicy {
 
     private static final int TEENAGER_DISCOUNT_RATE = 20;

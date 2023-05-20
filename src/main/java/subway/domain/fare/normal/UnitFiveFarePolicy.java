@@ -6,9 +6,11 @@ import static subway.domain.fare.normal.FareDistanceType.FARE_DISTANCE_UNIT_FIVE
 import static subway.domain.fare.normal.FareType.BASIC_FARE;
 import static subway.domain.fare.normal.FareType.EXTRA_FARE;
 
+import org.springframework.stereotype.Component;
 import subway.domain.fare.Fare;
 import subway.domain.route.Distance;
 
+@Component
 public class UnitFiveFarePolicy implements FarePolicy {
 
     @Override

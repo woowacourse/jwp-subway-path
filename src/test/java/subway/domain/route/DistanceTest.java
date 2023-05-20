@@ -1,4 +1,4 @@
-package subway.domain.fare;
+package subway.domain.route;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
