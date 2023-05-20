@@ -25,24 +25,21 @@ public class PathService {
     }
 
     public PathResponse findPath(final PathDto pathDto) {
-        final Station source = subwayRepository.findStationByName(pathDto.getSourceStation());
-        final Station target = subwayRepository.findStationByName(pathDto.getTargetStation());
+        final Station source = new Station(pathDto.getSourceStation());
+        final Station target = new Station(pathDto.getTargetStation());
 
         final List<Line> lines = subwayRepository.findSubway().getLines();
         final List<Sections> sections = lines.stream()
                 .map(Line::getSections)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
+        System.out.println(sections);
 
         final Navigation navigation = Navigation.from(sections);
         final List<Station> stations = navigation.getShortestPath(source, target);
 
-        final List<String> stationNames = stations.stream()
-                .map(Station::getName)
-                .collect(Collectors.toUnmodifiableList());
-
         final int distance = navigation.getDistance(source, target);
         final FareCalculator fareCalculator = new SubwayFareCalculator();
 
-        return new PathResponse(stationNames, fareCalculator.calculate(distance), distance );
+        return PathResponse.from(fareCalculator.calculate(distance), distance, stations);
     }
 }
