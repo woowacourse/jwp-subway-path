@@ -43,30 +43,14 @@ public class LineStationService {
     }
 
     public void addEndpoint(final EndpointType endpointType, final Long id, final Long stationId, final int distance) {
+        final Line line = lineService.findById(id);
+        final Station station = stationService.findById(stationId);
+
         if (EndpointType.UP == endpointType) {
-            addUpEndpoint(id, stationId, distance);
-            return;
+            line.addUpEndpoint(station, distance);
+        } else if (EndpointType.DOWN == endpointType) {
+            line.addDownEndpoint(station, distance);
         }
-        if (EndpointType.DOWN == endpointType) {
-            addDownEndpoint(id, stationId, distance);
-        }
-    }
-
-    private void addUpEndpoint(final Long id, final Long stationId, final int distance) {
-        final Line line = lineService.findById(id);
-        final Station station = stationService.findById(stationId);
-
-        line.addUpEndpoint(station, distance);
-
-        lineService.save(line);
-        updatePath();
-    }
-
-    private void addDownEndpoint(final Long id, final Long stationId, final int distance) {
-        final Line line = lineService.findById(id);
-        final Station station = stationService.findById(stationId);
-
-        line.addDownEndpoint(station, distance);
 
         lineService.save(line);
         updatePath();
