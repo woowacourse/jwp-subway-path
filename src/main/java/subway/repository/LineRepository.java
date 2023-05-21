@@ -41,7 +41,9 @@ public class LineRepository {
         LineEntity savedLineEntity = lineDao.insert(new LineEntity(lineName));
 
         List<StationEntity> stations = StationEntity.of(line);
-        stationDao.insertAll(stations);
+        for (StationEntity station : stations) {
+            saveNonExistStation(station);
+        }
 
         saveSections(savedLineEntity.getId(), line);
 
@@ -52,6 +54,13 @@ public class LineRepository {
         if (lineDao.existsByName(lineName)) {
             throw new DuplicatedNameException(lineName);
         }
+    }
+
+    private void saveNonExistStation(final StationEntity station) {
+        if (stationDao.existsByName(station.getName())) {
+            return;
+        }
+        stationDao.insert(station);
     }
 
     private void saveSections(Long lineId, Line line) {
