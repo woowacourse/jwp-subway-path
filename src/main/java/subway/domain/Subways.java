@@ -11,35 +11,35 @@ public class Subways {
 
     private static final String INVALID_NO_STATION_MESSAGE = "노선에 존재하지 않는 역을 입력했습니다.";
 
-    private final WeightedMultigraph<Station, SubwayEdge> subways;
+    private final WeightedMultigraph<Station, SubwaysEdge> subways;
 
-    private Subways(WeightedMultigraph<Station, SubwayEdge> subways) {
+    private Subways(WeightedMultigraph<Station, SubwaysEdge> subways) {
         this.subways = subways;
     }
 
     public static Subways from(final List<Section> sections) {
-        WeightedMultigraph<Station, SubwayEdge> subwayStructure = generateSubwayStructure(sections);
+        WeightedMultigraph<Station, SubwaysEdge> subwayStructure = generateSubwayStructure(sections);
         return new Subways(subwayStructure);
     }
 
-    private static WeightedMultigraph<Station, SubwayEdge> generateSubwayStructure(List<Section> sections) {
-        WeightedMultigraph<Station, SubwayEdge> subwayStructure = new WeightedMultigraph<>(SubwayEdge.class);
+    private static WeightedMultigraph<Station, SubwaysEdge> generateSubwayStructure(List<Section> sections) {
+        WeightedMultigraph<Station, SubwaysEdge> subwayStructure = new WeightedMultigraph<>(SubwaysEdge.class);
         for (Section section : sections) {
             Station left = section.getLeft();
             Station right = section.getRight();
-            SubwayEdge subwayEdge = new SubwayEdge(section.getLine(), section.getDistance());
+            SubwaysEdge subwaysEdge = new SubwaysEdge(section.getLine(), section.getDistance());
 
             subwayStructure.addVertex(left);
             subwayStructure.addVertex(right);
-            subwayStructure.addEdge(left, right, subwayEdge);
+            subwayStructure.addEdge(left, right, subwaysEdge);
         }
         return subwayStructure;
     }
 
-    public GraphPath<Station, SubwayEdge> getShortestPaths(final Station start, final Station end) {
+    public GraphPath<Station, SubwaysEdge> getShortestPaths(final Station start, final Station end) {
         validateGetPath(start, end);
-        DijkstraShortestPath<Station, SubwayEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subways);
-        GraphPath<Station, SubwayEdge> paths = dijkstraShortestPath.getPath(start, end);
+        DijkstraShortestPath<Station, SubwaysEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subways);
+        GraphPath<Station, SubwaysEdge> paths = dijkstraShortestPath.getPath(start, end);
         return paths;
     }
 

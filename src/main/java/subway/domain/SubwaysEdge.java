@@ -2,12 +2,12 @@ package subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class SubwayEdge extends DefaultWeightedEdge {
+public class SubwaysEdge extends DefaultWeightedEdge {
 
     private final Line line;
     private final int weight;
 
-    public SubwayEdge(Line line, int weight) {
+    public SubwaysEdge(Line line, int weight) {
         this.line = line;
         this.weight = weight;
     }

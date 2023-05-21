@@ -33,7 +33,7 @@ public class PathService {
         Station end = getStationDaoById(endStationId);
         List<Section> sections = sectionDao.findAll();
         Subways subways = Subways.from(sections);
-        GraphPath<Station, SubwayEdge> shortestPaths = subways.getShortestPaths(start, end);
+        GraphPath<Station, SubwaysEdge> shortestPaths = subways.getShortestPaths(start, end);
         
         List<StationResponse> stationResponses = getStationResponses(shortestPaths);
         int distance = (int) shortestPaths.getWeight();
@@ -55,7 +55,7 @@ public class PathService {
         }
     }
 
-    private List<StationResponse> getStationResponses(GraphPath<Station, SubwayEdge> shortestPaths) {
+    private List<StationResponse> getStationResponses(GraphPath<Station, SubwaysEdge> shortestPaths) {
         return shortestPaths.getVertexList()
                 .stream()
                 .map(StationResponse::of)
