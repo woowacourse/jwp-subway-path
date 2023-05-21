@@ -91,6 +91,10 @@ class SubwayTest {
         ));
 
         Line lineDuplicateName = new Line("1호선", "검정", new Sections());
+
+        assertThatThrownBy(() -> subway.addLine(lineDuplicateName))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("노선의 이름은 중복될 수 없습니다.");
     }
 
 
@@ -144,7 +148,7 @@ class SubwayTest {
                 new Line(2L, "2호선", "초록", new Sections())
         ));
 
-        Line lineToRemove = new Line("1호선", "파랑", new Sections());
+        Line lineToRemove = new Line(1L,"1호선", "파랑", new Sections());
 
         assertDoesNotThrow(() -> subway.removeLine(lineToRemove));
     }

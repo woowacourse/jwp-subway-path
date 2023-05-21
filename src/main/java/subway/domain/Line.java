@@ -66,6 +66,14 @@ public class Line {
         return sections.isEmpty();
     }
 
+    public boolean hasSameName(String otherName) {
+        return this.name.equals(otherName);
+    }
+
+    public boolean hasSameColor(String otherColor) {
+        return this.color.equals(otherColor);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
