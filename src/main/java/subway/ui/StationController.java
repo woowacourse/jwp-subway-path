@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
+import subway.domain.Station;
 import subway.ui.dto.station.StationCreateRequest;
 import subway.ui.dto.station.StationResponse;
 import subway.ui.dto.station.StationUpdateRequest;
@@ -34,11 +35,14 @@ public class StationController {
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
-        List<StationResponse> stationResponses = stationService.findAllStations()
-                .stream()
+        List<StationResponse> stationResponses = mapToStationResponse(stationService.findAllStations());
+        return ResponseEntity.ok().body(stationResponses);
+    }
+
+    private List<StationResponse> mapToStationResponse(List<Station> stations) {
+        return stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok().body(stationResponses);
     }
 
     @PutMapping("/{id}")

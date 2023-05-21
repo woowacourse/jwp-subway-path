@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.domain.Line;
 import subway.ui.dto.line.LineCreateRequest;
 import subway.ui.dto.line.LineResponse;
 import subway.ui.dto.line.LineUpdateRequest;
@@ -37,11 +38,14 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        List<LineResponse> lineResponses = lineService.findLines()
-                .stream()
+        List<LineResponse> lineResponses = mapToLineResponse(lineService.findLines());
+        return ResponseEntity.ok(lineResponses);
+    }
+
+    private List<LineResponse> mapToLineResponse(List<Line> lines) {
+        return lines.stream()
                 .map(LineResponse::from)
                 .collect(toList());
-        return ResponseEntity.ok(lineResponses);
     }
 
     @GetMapping("/{lineId}")
