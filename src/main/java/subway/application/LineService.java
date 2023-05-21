@@ -1,79 +1,66 @@
 package subway.application;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
 import subway.dto.SectionResponse;
 import subway.dto.StationResponse;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
+import subway.repository.LineRepository;
 
 @Service
 @Transactional
 public class LineService {
-    private static final String NO_SUCH_ID_MESSAGE = "해당하는 ID가 없습니다.";
 
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
+    private final LineRepository lineRepository;
 
-    public LineService(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public Long save(final LineRequest request) {
         final Line line = new Line(request.getName(), request.getColor());
-        return lineDao.insert(LineEntity.from(line));
+        return lineRepository.save(line);
     }
 
     public List<LineStationResponse> findAll() {
-        final List<LineEntity> lines = lineDao.findAll();
+        final List<Line> lines = lineRepository.findAll();
 
         return lines.stream()
-                .map(it -> findById(it.getId()))
+                .map(it -> LineStationResponse.from(LineResponse.of(it), getStationResponses(it),
+                        getSectionResponses(it)))
                 .collect(Collectors.toList());
     }
 
     public LineStationResponse findById(final Long id) {
-        final LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_ID_MESSAGE));
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
+        final Line line = lineRepository.findById(id);
+        final List<StationResponse> stationResponses = getStationResponses(line);
+        final List<SectionResponse> sectionResponses = getSectionResponses(line);
+        return LineStationResponse.from(LineResponse.of(line), stationResponses, sectionResponses);
+    }
 
-        final List<Section> sections = sectionEntities.stream()
-                .map(it -> it.toDomain(
-                        stationDao.findById(it.getUpStationId()).orElseThrow(NoSuchElementException::new).toDomain(),
-                        stationDao.findById(it.getDownStationId()).orElseThrow(NoSuchElementException::new).toDomain()
-                )).collect(Collectors.toList());
-        final Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
-
-        final List<StationResponse> stationResponses = line.sortStations().stream()
+    private List<StationResponse> getStationResponses(final Line line) {
+        return line.sortStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        final List<SectionResponse> sectionResponses = sectionEntities.stream()
+    }
+
+    private List<SectionResponse> getSectionResponses(final Line line) {
+        return line.getSections().stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
-        return LineStationResponse.from(LineResponse.of(lineEntity), stationResponses, sectionResponses);
     }
 
     public void update(final Long id, final LineRequest lineUpdateRequest) {
         final Line line = new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
-        lineDao.update(id, LineEntity.from(line));
+        lineRepository.update(id, line);
     }
 
     public void deleteById(final Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
     }
 }

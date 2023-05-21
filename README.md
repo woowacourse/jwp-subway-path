@@ -380,9 +380,9 @@ HTTP/1.1 204 No Content
 ### 0. 1단계 피드백 반영
 
 - [x] `toEntity()` 메서드 이름 변경
-- [ ] DB 접근 최소화
+- [x] DB 접근 최소화
 - [x] Line 조회에 Section 정보를 포함하도록 수정
-- [ ] repository를 이용해 persistence layer와 서비스 로직 분리
+- [x] repository를 이용해 persistence layer와 서비스 로직 분리
 
 ### 1. DB 설정
 

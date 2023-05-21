@@ -5,15 +5,14 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
-import subway.entity.SectionEntity;
+import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 @Service
 @Transactional
@@ -22,72 +21,55 @@ public class SectionService {
     private static final String NO_SUCH_STATION_MESSAGE = "해당하는 역이 존재하지 않습니다.";
     private static final String NO_SUCH_LINE_MESSAGE = "해당하는 호선이 존재하지 않습니다.";
 
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
-    private final LineDao lineDao;
+    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
 
-    public SectionService(final SectionDao sectionDao, final StationDao stationDao, final LineDao lineDao) {
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
-        this.lineDao = lineDao;
+    public SectionService(final SectionRepository sectionRepository, final StationRepository stationRepository,
+                          final LineRepository lineRepository) {
+        this.sectionRepository = sectionRepository;
+        this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
     }
 
     public void save(final SectionRequest sectionRequest) {
         validateExists(sectionRequest);
         final Sections sections = findSections(sectionRequest.getLineId());
 
-        final Station upStation = stationDao.findById(sectionRequest.getUpStationId())
-                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_STATION_MESSAGE))
-                .toDomain();
-        final Station downStation = stationDao.findById(sectionRequest.getDownStationId())
-                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_STATION_MESSAGE))
-                .toDomain();
+        final Station upStation = stationRepository.findById(sectionRequest.getUpStationId());
+        final Station downStation = stationRepository.findById(sectionRequest.getDownStationId());
         final Section section = new Section(upStation, downStation, sectionRequest.getDistance());
         sections.addSection(section);
 
-        sectionDao.deleteAllByLineId(sectionRequest.getLineId());
-        final List<SectionEntity> sectionEntities = sections.getSections().stream()
-                .map(it -> SectionEntity.of(sectionRequest.getLineId(), it))
-                .collect(Collectors.toList());
-        sectionDao.insertAll(sectionEntities);
+        sectionRepository.deleteAllByLineId(sectionRequest.getLineId());
+        sectionRepository.insertAll(sectionRequest.getLineId(), sections);
     }
 
     private void validateExists(final SectionRequest sectionRequest) {
-        if (lineDao.notExistsById(sectionRequest.getLineId())) {
+        if (lineRepository.notExistsById(sectionRequest.getLineId())) {
             throw new NoSuchElementException(NO_SUCH_LINE_MESSAGE);
         }
-        if (stationDao.notExistsById(sectionRequest.getUpStationId())
-                || stationDao.notExistsById(sectionRequest.getDownStationId())) {
+        if (stationRepository.notExistsById(sectionRequest.getUpStationId())
+                || stationRepository.notExistsById(sectionRequest.getDownStationId())) {
             throw new NoSuchElementException(NO_SUCH_STATION_MESSAGE);
         }
     }
 
     public void delete(final Long lineId, final Long stationId) {
         final Sections sections = findSections(lineId);
-        final Station station = stationDao.findById(stationId)
-                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_STATION_MESSAGE))
-                .toDomain();
+        final Station station = stationRepository.findById(stationId);
         sections.removeSectionByStation(station);
 
-        sectionDao.deleteAllByLineId(lineId);
-        final List<SectionEntity> sectionEntities = sections.getSections().stream()
-                .map(it -> SectionEntity.of(lineId, it))
-                .collect(Collectors.toList());
-        sectionDao.insertAll(sectionEntities);
+        sectionRepository.deleteAllByLineId(lineId);
+        sectionRepository.insertAll(lineId, sections);
     }
 
     private Sections findSections(final Long lineId) {
-        return new Sections(
-                sectionDao.findByLineId(lineId).stream()
-                        .map(it -> it.toDomain(
-                                stationDao.findById(it.getUpStationId()).orElseThrow().toDomain(),
-                                stationDao.findById(it.getDownStationId()).orElseThrow().toDomain()))
-                        .collect(Collectors.toList())
-        );
+        return sectionRepository.findByLineId(lineId);
     }
 
     public List<SectionResponse> findByLineId(final Long lineId) {
-        return sectionDao.findByLineId(lineId).stream()
+        return sectionRepository.findByLineId(lineId).getSections().stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
     }

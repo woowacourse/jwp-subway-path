@@ -9,43 +9,37 @@ import static org.mockito.BDDMockito.willDoNothing;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineStationResponse;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
+import subway.repository.LineRepository;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
 
     @Mock
-    private SectionDao sectionDao;
-    @Mock
-    private StationDao stationDao;
-    @Mock
-    private LineDao lineDao;
+    private LineRepository lineRepository;
     private LineService lineService;
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(lineDao, sectionDao, stationDao);
+        lineService = new LineService(lineRepository);
     }
 
     @DisplayName("Line이 정상적으로 저장되고 lineId 값을 반환한다.")
     @Test
     void save() {
         // given
-        given(lineDao.insert(any(LineEntity.class))).willReturn(1L);
+        given(lineRepository.save(any(Line.class))).willReturn(1L);
         LineRequest lineRequest = new LineRequest("2호선", "bg-green-600");
 
         // when, then
@@ -55,20 +49,13 @@ class LineServiceTest {
     @DisplayName("모든 노선의 정보와 각 노선에 있는 구간을 조회하여 순서대로 반환한다.")
     @Test
     void findAll() {
-        LineEntity line1 = LineEntity.of(1L, "1호선", "bg-red-500");
-        LineEntity line2 = LineEntity.of(2L, "2호선", "bg-green-600");
-        given(lineDao.findById(1L)).willReturn(Optional.of(line1));
-        given(lineDao.findById(2L)).willReturn(Optional.of(line2));
-        given(lineDao.findAll()).willReturn(List.of(line1, line2));
-
-        StationEntity station1 = StationEntity.of(1L, "용산역");
-        StationEntity station2 = StationEntity.of(2L, "죽전역");
-        given(stationDao.findById(1L)).willReturn(Optional.of(station1));
-        given(stationDao.findById(2L)).willReturn(Optional.of(station2));
-
-        SectionEntity section = new SectionEntity(2L, 1L, 2L, 3);
-        given(sectionDao.findByLineId(line1.getId())).willReturn(Collections.emptyList());
-        given(sectionDao.findByLineId(line2.getId())).willReturn(List.of(section));
+        // given
+        Station station1 = new Station(1L, "용산역");
+        Station station2 = new Station(2L, "죽전역");
+        Section section = new Section(station1, station2, 3);
+        Line line1 = new Line(1L, "1호선", "bg-red-500", new Sections(Collections.emptyList()));
+        Line line2 = new Line(2L, "2호선", "bg-green-600", new Sections(List.of(section)));
+        given(lineRepository.findAll()).willReturn(List.of(line1, line2));
 
         // when
         List<LineStationResponse> lineStationResponses = lineService.findAll();
@@ -87,19 +74,13 @@ class LineServiceTest {
     @Test
     void findById() {
         // given
-        LineEntity line = LineEntity.of(1L, "1호선", "bg-red-500");
-        given(lineDao.findById(anyLong())).willReturn(Optional.of(line));
-
-        StationEntity station1 = StationEntity.of(1L, "반월당역");
-        StationEntity station2 = StationEntity.of(2L, "신천역");
-        StationEntity station3 = StationEntity.of(3L, "동대구역");
-        given(stationDao.findById(1L)).willReturn(Optional.of(station1));
-        given(stationDao.findById(2L)).willReturn(Optional.of(station2));
-        given(stationDao.findById(3L)).willReturn(Optional.of(station3));
-
-        SectionEntity section1 = new SectionEntity(1L, 1L, 2L, 3);
-        SectionEntity section2 = new SectionEntity(1L, 2L, 3L, 4);
-        given(sectionDao.findByLineId(1L)).willReturn(List.of(section1, section2));
+        Station station1 = new Station(1L, "반월당역");
+        Station station2 = new Station(2L, "신천역");
+        Station station3 = new Station(3L, "동대구역");
+        Section section1 = new Section(station1, station2, 3);
+        Section section2 = new Section(station2, station3, 4);
+        Line line = new Line(1L, "1호선", "bg-red-500", new Sections(List.of(section1, section2)));
+        given(lineRepository.findById(anyLong())).willReturn(line);
 
         // when
         LineStationResponse lineStationResponse = lineService.findById(1L);
@@ -115,10 +96,10 @@ class LineServiceTest {
     @Test
     void update() {
         // given
-        given(lineDao.insert(any(LineEntity.class))).willReturn(1L);
+        given(lineRepository.save(any(Line.class))).willReturn(1L);
         LineRequest lineRequest = new LineRequest("1호선", "bg-red-500");
         lineService.save(lineRequest);
-        willDoNothing().given(lineDao).update(anyLong(), any(LineEntity.class));
+        willDoNothing().given(lineRepository).update(anyLong(), any(Line.class));
 
         // when, then
         LineRequest lineUpdateRequest = new LineRequest("2호선", "bg-green-600");
@@ -129,10 +110,10 @@ class LineServiceTest {
     @Test
     void deleteById() {
         // given
-        given(lineDao.insert(any(LineEntity.class))).willReturn(1L);
+        given(lineRepository.save(any(Line.class))).willReturn(1L);
         LineRequest lineRequest = new LineRequest("1호선", "bg-blue-500");
         lineService.save(lineRequest);
-        willDoNothing().given(lineDao).deleteById(anyLong());
+        willDoNothing().given(lineRepository).deleteById(anyLong());
 
         // when, then
         assertDoesNotThrow(() -> lineService.deleteById(1L));

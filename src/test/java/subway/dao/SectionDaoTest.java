@@ -15,6 +15,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.entity.SectionStationEntity;
 import subway.entity.StationEntity;
 
 @JdbcTest
@@ -48,11 +49,15 @@ class SectionDaoTest {
         // when
         sectionDao.insertAll(List.of(sectionEntity1, sectionEntity2));
         // then
+        final SectionStationEntity sectionStationEntity1 = new SectionStationEntity(lineId, stationId1, "용산역",
+                stationId2, "죽전역", 10);
+        final SectionStationEntity sectionStationEntity2 = new SectionStationEntity(lineId, stationId2, "죽전역",
+                stationId3, "감삼역", 5);
         assertAll(
                 () -> assertThat(sectionDao.findByLineId(lineId)).hasSize(2),
                 () -> assertThat(sectionDao.findByLineId(lineId))
                         .usingRecursiveComparison()
-                        .isEqualTo(List.of(sectionEntity1, sectionEntity2))
+                        .isEqualTo(List.of(sectionStationEntity1, sectionStationEntity2))
         );
     }
 
@@ -67,11 +72,13 @@ class SectionDaoTest {
                 new Section(new Station(stationId1, "용산역"), new Station(stationId2, "죽전역"), 10));
         sectionDao.insertAll(List.of(sectionEntity));
         // when
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        final List<SectionStationEntity> sectionStationEntities = sectionDao.findByLineId(lineId);
         // then
-        assertThat(sectionEntities)
+        final SectionStationEntity sectionStationEntity = new SectionStationEntity(lineId, stationId1, "용산역",
+                stationId2, "죽전역", 10);
+        assertThat(sectionStationEntities)
                 .usingRecursiveComparison()
-                .isEqualTo(List.of(sectionEntity));
+                .isEqualTo(List.of(sectionStationEntity));
     }
 
     @Test

@@ -7,48 +7,55 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
 import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
+import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
 
     @Mock
-    private SectionDao sectionDao;
+    private SectionRepository sectionRepository;
     @Mock
-    private StationDao stationDao;
+    private StationRepository stationRepository;
     @Mock
-    private LineDao lineDao;
+    private LineRepository lineRepository;
     private SectionService sectionService;
 
     @BeforeEach
     void setUp() {
-        sectionService = new SectionService(sectionDao, stationDao, lineDao);
+        sectionService = new SectionService(sectionRepository, stationRepository, lineRepository);
     }
 
     @Test
     @DisplayName("Section이 정상적으로 저장된다.")
     void save() {
         // given
-        given(stationDao.findById(anyLong())).willReturn(Optional.of(StationEntity.of(1L, "용산역")));
-        willDoNothing().given(sectionDao).insertAll(any());
+        final Station station1 = new Station(1L, "반월당역");
+        final Station station2 = new Station(2L, "신천역");
+        final Section section = new Section(station1, station2, 3);
+        final Sections sections = new Sections(new ArrayList<>());
+        sections.addSection(section);
+        given(stationRepository.findById(anyLong())).willReturn(station1);
+        given(sectionRepository.findByLineId(anyLong())).willReturn(sections);
+        willDoNothing().given(sectionRepository).insertAll(anyLong(), any());
 
         // when & then
         assertDoesNotThrow(() -> sectionService.save(
-                new SectionRequest(1L, 1L, 2L, 10))
+                new SectionRequest(1L, 1L, 2L, 3))
         );
     }
 
@@ -56,11 +63,14 @@ class SectionServiceTest {
     @DisplayName("Section이 정상적으로 삭제된다.")
     void delete() {
         // given
-        given(stationDao.findById(anyLong())).willReturn(Optional.of(StationEntity.of(1L, "용산역")));
-        given(sectionDao.findByLineId(anyLong())).willReturn(
-                List.of(new SectionEntity(1L, 1L, 2L, 10))
-        );
-        willDoNothing().given(sectionDao).deleteAllByLineId(anyLong());
+        final Station station1 = new Station(1L, "반월당역");
+        final Station station2 = new Station(2L, "신천역");
+        final Section section = new Section(station1, station2, 3);
+        final Sections sections = new Sections(new ArrayList<>());
+        sections.addSection(section);
+        given(stationRepository.findById(anyLong())).willReturn(station1);
+        given(sectionRepository.findByLineId(anyLong())).willReturn(sections);
+        willDoNothing().given(sectionRepository).deleteAllByLineId(anyLong());
 
         // when & then
         assertDoesNotThrow(() -> sectionService.delete(1L, 1L));
@@ -70,16 +80,18 @@ class SectionServiceTest {
     @DisplayName("lineId로 Section이 정상적으로 조회된다.")
     void findByLineId() {
         // given
-        final SectionEntity sectionEntity = new SectionEntity(1L, 1L, 2L, 10);
-        given(sectionDao.findByLineId(anyLong())).willReturn(List.of(sectionEntity));
+        final Station station1 = new Station(1L, "반월당역");
+        final Station station2 = new Station(2L, "신천역");
+        final Section section = new Section(station1, station2, 3);
+        given(sectionRepository.findByLineId(anyLong())).willReturn(new Sections(List.of(section)));
 
         // when
         final List<SectionResponse> sectionResponses = sectionService.findByLineId(1L);
 
         // then
         assertThat(sectionResponses.size()).isEqualTo(1);
-        assertThat(sectionResponses.get(0).getUpStationId()).isEqualTo(sectionEntity.getUpStationId());
-        assertThat(sectionResponses.get(0).getDownStationId()).isEqualTo(sectionEntity.getDownStationId());
-        assertThat(sectionResponses.get(0).getDistance()).isEqualTo(sectionEntity.getDistance());
+        assertThat(sectionResponses.get(0).getUpStationId()).isEqualTo(section.getUpStation().getId());
+        assertThat(sectionResponses.get(0).getDownStationId()).isEqualTo(section.getDownStation().getId());
+        assertThat(sectionResponses.get(0).getDistance()).isEqualTo(section.getDistance());
     }
 }

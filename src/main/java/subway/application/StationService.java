@@ -1,52 +1,46 @@
 package subway.application;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.entity.StationEntity;
+import subway.repository.StationRepository;
 
 @Service
 @Transactional
 public class StationService {
 
-    private static final String NO_SUCH_STATION_MESSAGE = "해당하는 역이 존재하지 않습니다.";
+    private final StationRepository stationRepository;
 
-    private final StationDao stationDao;
-
-    public StationService(final StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public Long save(final StationRequest stationRequest) {
         final Station station = new Station(stationRequest.getName());
-        return stationDao.insert(StationEntity.from(station));
+        return stationRepository.insert(station);
     }
 
     public StationResponse findById(final Long id) {
-        final Station station = stationDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_STATION_MESSAGE))
-                .toDomain();
+        final Station station = stationRepository.findById(id);
         return StationResponse.of(station);
     }
 
     public List<StationResponse> findAll() {
-        return stationDao.findAll().stream()
-                .map(it -> StationResponse.of(it.toDomain()))
+        return stationRepository.findAll().stream()
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
     public void update(final Long id, final StationRequest stationRequest) {
         final Station station = new Station(stationRequest.getName());
-        stationDao.update(id, StationEntity.from(station));
+        stationRepository.update(id, station);
     }
 
     public void deleteById(final Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteById(id);
     }
 }
