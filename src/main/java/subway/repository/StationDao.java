@@ -62,6 +62,12 @@ public class StationDao {
         }
     }
 
+    public boolean isNameExist(final String name) {
+        final String sql = "SELECT COUNT(*) FROM station WHERE name = ?";
+        final int count = jdbcTemplate.queryForObject(sql, Integer.class, name);
+        return count != 0;
+    }
+
     public void update(final StationEntity newStationEntity) {
         final String sql = "UPDATE station SET name = ? WHERE id = ?";
         try {

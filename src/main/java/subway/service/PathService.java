@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import subway.controller.dto.request.ShortestPathRequest;
 import subway.controller.dto.response.ShortestPathResponse;
 import subway.entity.SectionDetailEntity;
-import subway.entity.StationEntity;
 import subway.repository.SectionDao;
 import subway.repository.StationDao;
 
