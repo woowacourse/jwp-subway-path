@@ -1,7 +1,6 @@
 package subway.domain;
 
 import org.jgrapht.GraphPath;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.application.exception.SubwayServiceException;
@@ -48,7 +47,7 @@ class SubwaysTest {
                 StationFixture.FIXTURE_STATION_6, new Distance(10));
 
         Subways subways = Subways.from(List.of(start, middle1, middle2, middle3, end));
-        GraphPath<Station, SubwayEdge> shortestPaths = subways.getShortestPaths(StationFixture.FIXTURE_STATION_1, StationFixture.FIXTURE_STATION_6);
+        GraphPath<Station, SubwaysEdge> shortestPaths = subways.getShortestPaths(StationFixture.FIXTURE_STATION_1, StationFixture.FIXTURE_STATION_6);
         assertAll(
                 () -> assertThat(shortestPaths.getVertexList())
                         .containsExactly(
@@ -87,7 +86,7 @@ class SubwaysTest {
                 StationFixture.FIXTURE_STATION_6, new Distance(15));
 
         Subways subways = Subways.from(List.of(start, middle1, middle2, middle3, end, shortcut));
-        GraphPath<Station, SubwayEdge> shortestPaths = subways.getShortestPaths(StationFixture.FIXTURE_STATION_1, StationFixture.FIXTURE_STATION_6);
+        GraphPath<Station, SubwaysEdge> shortestPaths = subways.getShortestPaths(StationFixture.FIXTURE_STATION_1, StationFixture.FIXTURE_STATION_6);
         assertAll(
                 () -> assertThat(shortestPaths.getVertexList())
                         .containsExactly(
@@ -120,7 +119,7 @@ class SubwaysTest {
                 StationFixture.FIXTURE_STATION_6, new Distance(10));
 
         Subways subways = Subways.from(List.of(start, middle1, middle2, middle3, end));
-        GraphPath<Station, SubwayEdge> shortestPaths = subways.getShortestPaths(StationFixture.FIXTURE_STATION_1, StationFixture.FIXTURE_STATION_6);
+        GraphPath<Station, SubwaysEdge> shortestPaths = subways.getShortestPaths(StationFixture.FIXTURE_STATION_1, StationFixture.FIXTURE_STATION_6);
         assertAll(
                 () -> assertThat(shortestPaths.getVertexList())
                         .containsExactly(
@@ -158,7 +157,7 @@ class SubwaysTest {
                 StationFixture.FIXTURE_STATION_6, new Distance(15));
 
         Subways subways = Subways.from(List.of(start, middle1, middle2, middle3, end, shortcut));
-        GraphPath<Station, SubwayEdge> shortestPaths = subways.getShortestPaths(StationFixture.FIXTURE_STATION_1, StationFixture.FIXTURE_STATION_6);
+        GraphPath<Station, SubwaysEdge> shortestPaths = subways.getShortestPaths(StationFixture.FIXTURE_STATION_1, StationFixture.FIXTURE_STATION_6);
         assertAll(
                 () -> assertThat(shortestPaths.getVertexList())
                         .containsExactly(

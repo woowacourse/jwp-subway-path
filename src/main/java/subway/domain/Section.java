@@ -75,7 +75,8 @@ public class Section {
     @Override
     public String toString() {
         return "Section{" +
-                "left=" + left +
+                "line=" + line +
+                ", left=" + left +
                 ", right=" + right +
                 ", distance=" + distance +
                 '}';
