@@ -12,11 +12,11 @@ import subway.common.mapper.StationMapper;
 import subway.domain.Station;
 
 @Repository
-public class StationJdbcAdapter implements LoadStationPort, PersistStationPort {
+public class StationJdbcRepository implements LoadStationPort, PersistStationPort {
 
     private final StationDao stationDao;
 
-    public StationJdbcAdapter(final StationDao stationDao) {
+    public StationJdbcRepository(final StationDao stationDao) {
         this.stationDao = stationDao;
     }
 

@@ -23,7 +23,7 @@ import subway.fixture.StationFixture.역삼역;
 import subway.fixture.StationFixture.잠실역;
 
 @JdbcTest
-class LineJdbcAdapterTest {
+class LineJdbcRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -31,14 +31,14 @@ class LineJdbcAdapterTest {
     private LineDao lineDao;
     private StationDao stationDao;
     private SectionDao sectionDao;
-    private LineJdbcAdapter lineJdbcAdapter;
+    private LineJdbcRepository lineJdbcRepository;
 
     @BeforeEach
     void setUp() {
         lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
         sectionDao = new SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
         stationDao = new StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        lineJdbcAdapter = new LineJdbcAdapter(jdbcTemplate, lineDao, sectionDao);
+        lineJdbcRepository = new LineJdbcRepository(jdbcTemplate, lineDao, sectionDao);
     }
 
     @Test
@@ -56,7 +56,7 @@ class LineJdbcAdapterTest {
                 new SectionEntity(line.getId(), station2.getId(), station3.getId(), 7));
 
         // when
-        Line result = lineJdbcAdapter.findById(line.getId()).get();
+        Line result = lineJdbcRepository.findById(line.getId()).get();
 
         // then
         assertThat(result)
@@ -89,7 +89,7 @@ class LineJdbcAdapterTest {
         }
 
         // when
-        List<Long> actual = lineJdbcAdapter.findContainingLineIdsByStation(station);
+        List<Long> actual = lineJdbcRepository.findContainingLineIdsByStation(station);
 
         // then
         assertThat(actual)
@@ -113,7 +113,7 @@ class LineJdbcAdapterTest {
                 new SectionEntity(line.getId(), station2.getId(), station3.getId(), 7));
 
         // when
-        lineJdbcAdapter.updateSections(new Line(line.getId(), line.getName(), line.getColor(),
+        lineJdbcRepository.updateSections(new Line(line.getId(), line.getName(), line.getColor(),
                 List.of(new Section(new Station(station1.getId(), station1.getName()),
                         new Station(station3.getId(), station3.getName()), 12))));
 
@@ -135,7 +135,7 @@ class LineJdbcAdapterTest {
             lineDao.insert(new LineEntity("2호선", "GREEN"));
 
             // when
-            boolean result = lineJdbcAdapter.checkExistByName("2호선");
+            boolean result = lineJdbcRepository.checkExistByName("2호선");
 
             // then
             assertThat(result).isTrue();
@@ -144,7 +144,7 @@ class LineJdbcAdapterTest {
         @Test
         void 없으면_거짓() {
             // when
-            boolean result = lineJdbcAdapter.checkExistByName("2호선");
+            boolean result = lineJdbcRepository.checkExistByName("2호선");
 
             // then
             assertThat(result).isFalse();

@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.adapter.out.persistence.LineJdbcAdapter;
-import subway.adapter.out.persistence.StationJdbcAdapter;
+import subway.adapter.out.persistence.LineJdbcRepository;
+import subway.adapter.out.persistence.StationJdbcRepository;
 import subway.application.port.in.route.dto.response.RouteQueryResponse;
 import subway.domain.Line;
 import subway.domain.LineInfo;
@@ -32,44 +32,44 @@ import subway.fixture.StationFixture.신논현역;
 public class RouteIntegrationTest extends IntegrationTest {
 
     @Autowired
-    private LineJdbcAdapter lineJdbcAdapter;
+    private LineJdbcRepository lineJdbcRepository;
 
     @Autowired
-    private StationJdbcAdapter stationJdbcAdapter;
+    private StationJdbcRepository stationJdbcRepository;
 
     @Test
     void 최단경로를_조회한다() {
         // given
-        long 방배역Id = stationJdbcAdapter.create(방배역.STATION);
-        long 서초역Id = stationJdbcAdapter.create(서초역.STATION);
-        long 교대역Id = stationJdbcAdapter.create(교대역.STATION);
-        long 강남역Id = stationJdbcAdapter.create(강남역.STATION);
-        long 고터역Id = stationJdbcAdapter.create(고터역.STATION);
-        long 신논현역Id = stationJdbcAdapter.create(신논현역.STATION);
-        long 논현역Id = stationJdbcAdapter.create(논현역.STATION);
-        long 반포역Id = stationJdbcAdapter.create(반포역.STATION);
+        long 방배역Id = stationJdbcRepository.create(방배역.STATION);
+        long 서초역Id = stationJdbcRepository.create(서초역.STATION);
+        long 교대역Id = stationJdbcRepository.create(교대역.STATION);
+        long 강남역Id = stationJdbcRepository.create(강남역.STATION);
+        long 고터역Id = stationJdbcRepository.create(고터역.STATION);
+        long 신논현역Id = stationJdbcRepository.create(신논현역.STATION);
+        long 논현역Id = stationJdbcRepository.create(논현역.STATION);
+        long 반포역Id = stationJdbcRepository.create(반포역.STATION);
 
-        long 이호선Id = lineJdbcAdapter.create(new LineInfo("2호선", "GREEN"));
-        long 삼호선Id = lineJdbcAdapter.create(new LineInfo("3호선", "ORANGE"));
-        long 신분당선Id = lineJdbcAdapter.create(new LineInfo("신분당선", "RED"));
-        long 칠호선Id = lineJdbcAdapter.create(new LineInfo("7호선", "DARK_GREEN"));
+        long 이호선Id = lineJdbcRepository.create(new LineInfo("2호선", "GREEN"));
+        long 삼호선Id = lineJdbcRepository.create(new LineInfo("3호선", "ORANGE"));
+        long 신분당선Id = lineJdbcRepository.create(new LineInfo("신분당선", "RED"));
+        long 칠호선Id = lineJdbcRepository.create(new LineInfo("7호선", "DARK_GREEN"));
 
-        lineJdbcAdapter.updateSections(new Line(이호선Id, "2호선", "GREEN", List.of(
+        lineJdbcRepository.updateSections(new Line(이호선Id, "2호선", "GREEN", List.of(
                 new Section(new Station(방배역Id, "방배역"), new Station(서초역Id, "서초역"), 1),
                 new Section(new Station(서초역Id, "서초역"), new Station(교대역Id, "교대역"), 1),
                 new Section(new Station(교대역Id, "교대역"), new Station(강남역Id, "강남역"), 2)
         )));
 
-        lineJdbcAdapter.updateSections(new Line(삼호선Id, "3호선", "GREEN", List.of(
+        lineJdbcRepository.updateSections(new Line(삼호선Id, "3호선", "GREEN", List.of(
                 new Section(new Station(교대역Id, "교대역"), new Station(고터역Id, "고터역"), 3)
         )));
 
-        lineJdbcAdapter.updateSections(new Line(신분당선Id, "신분당선", "GREEN", List.of(
+        lineJdbcRepository.updateSections(new Line(신분당선Id, "신분당선", "GREEN", List.of(
                 new Section(new Station(강남역Id, "강남역"), new Station(신논현역Id, "신논현역"), 3),
                 new Section(new Station(신논현역Id, "신논현역"), new Station(논현역Id, "논현역"), 4)
         )));
 
-        lineJdbcAdapter.updateSections(new Line(칠호선Id, "7호선", "GREEN", List.of(
+        lineJdbcRepository.updateSections(new Line(칠호선Id, "7호선", "GREEN", List.of(
                 new Section(new Station(고터역Id, "고터역"), new Station(반포역Id, "반포역"), 3),
                 new Section(new Station(반포역Id, "반포역"), new Station(논현역Id, "논현역"), 2)
         )));
@@ -101,12 +101,12 @@ public class RouteIntegrationTest extends IntegrationTest {
     @Test
     void 최단경로_조회시_거리가_10이상이면_추가요금이_발생한다() {
         // given
-        long 방배역Id = stationJdbcAdapter.create(방배역.STATION);
-        long 서초역Id = stationJdbcAdapter.create(서초역.STATION);
+        long 방배역Id = stationJdbcRepository.create(방배역.STATION);
+        long 서초역Id = stationJdbcRepository.create(서초역.STATION);
 
-        long 이호선Id = lineJdbcAdapter.create(new LineInfo("2호선", "GREEN"));
+        long 이호선Id = lineJdbcRepository.create(new LineInfo("2호선", "GREEN"));
 
-        lineJdbcAdapter.updateSections(new Line(이호선Id, "2호선", "GREEN", List.of(
+        lineJdbcRepository.updateSections(new Line(이호선Id, "2호선", "GREEN", List.of(
                 new Section(new Station(방배역Id, "방배역"), new Station(서초역Id, "서초역"), 11)
         )));
 
@@ -135,12 +135,12 @@ public class RouteIntegrationTest extends IntegrationTest {
     @Test
     void 최단경로_조회시_거리가_50초과이면_초과_추가요금이_발생한다() {
         // given
-        long 방배역Id = stationJdbcAdapter.create(방배역.STATION);
-        long 서초역Id = stationJdbcAdapter.create(서초역.STATION);
+        long 방배역Id = stationJdbcRepository.create(방배역.STATION);
+        long 서초역Id = stationJdbcRepository.create(서초역.STATION);
 
-        long 이호선Id = lineJdbcAdapter.create(new LineInfo("2호선", "GREEN"));
+        long 이호선Id = lineJdbcRepository.create(new LineInfo("2호선", "GREEN"));
 
-        lineJdbcAdapter.updateSections(new Line(이호선Id, "2호선", "GREEN", List.of(
+        lineJdbcRepository.updateSections(new Line(이호선Id, "2호선", "GREEN", List.of(
                 new Section(new Station(방배역Id, "방배역"), new Station(서초역Id, "서초역"), 58)
         )));
 

@@ -20,7 +20,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 
 @Repository
-public class LineJdbcAdapter implements LoadLinePort, PersistLinePort {
+public class LineJdbcRepository implements LoadLinePort, PersistLinePort {
 
     private final JdbcTemplate jdbcTemplate;
     private final LineDao lineDao;
@@ -34,7 +34,7 @@ public class LineJdbcAdapter implements LoadLinePort, PersistLinePort {
                     rs.getInt(6)
             );
 
-    public LineJdbcAdapter(final JdbcTemplate jdbcTemplate, final LineDao lineDao, final SectionDao sectionDao) {
+    public LineJdbcRepository(final JdbcTemplate jdbcTemplate, final LineDao lineDao, final SectionDao sectionDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
@@ -88,7 +88,7 @@ public class LineJdbcAdapter implements LoadLinePort, PersistLinePort {
                 })
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public List<Long> findContainingLineIdsByStation(final Station station) {
         List<SectionEntity> sectionEntities = sectionDao.findByStationId(station.getId());
