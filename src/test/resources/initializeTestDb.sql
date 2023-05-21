@@ -17,7 +17,6 @@ create table if not exists LINE
     primary key (id)
 );
 
---//todo 물어볼 것 : 기본 키 id를 없애도 되는지?
 create table if not exists SECTION
 (
     id              bigint auto_increment not null,
