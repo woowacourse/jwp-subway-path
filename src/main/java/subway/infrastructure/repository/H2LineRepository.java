@@ -10,8 +10,8 @@ import subway.application.core.domain.Station;
 import subway.infrastructure.dao.LineDao;
 import subway.infrastructure.dao.SectionDao;
 import subway.infrastructure.dao.StationDao;
-import subway.infrastructure.row.LineRow;
-import subway.infrastructure.row.SectionRow;
+import subway.infrastructure.entity.LineRow;
+import subway.infrastructure.entity.SectionRow;
 
 import java.util.ArrayList;
 import java.util.Collections;

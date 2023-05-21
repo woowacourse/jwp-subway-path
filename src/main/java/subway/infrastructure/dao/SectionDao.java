@@ -3,7 +3,7 @@ package subway.infrastructure.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import subway.infrastructure.row.SectionRow;
+import subway.infrastructure.entity.SectionRow;
 
 import java.util.List;
 

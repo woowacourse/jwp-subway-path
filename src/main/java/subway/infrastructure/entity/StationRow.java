@@ -1,4 +1,4 @@
-package subway.infrastructure.row;
+package subway.infrastructure.entity;
 
 public class StationRow {
 

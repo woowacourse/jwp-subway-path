@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.application.core.domain.Station;
 import subway.application.port.StationRepository;
 import subway.infrastructure.dao.StationDao;
-import subway.infrastructure.row.StationRow;
+import subway.infrastructure.entity.StationRow;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.application.core.domain.LineProperty;
 import subway.application.port.LinePropertyRepository;
 import subway.infrastructure.dao.LineDao;
-import subway.infrastructure.row.LineRow;
+import subway.infrastructure.entity.LineRow;
 
 import java.util.List;
 import java.util.stream.Collectors;

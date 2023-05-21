@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.infrastructure.row.LineRow;
+import subway.infrastructure.entity.LineRow;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
