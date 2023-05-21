@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class AddStationStrategyTest {
+class StationAddStrategyTest {
 
-    private AddStationStrategy sut = (sections, base, additional, distance) -> {
+    private StationAddStrategy sut = (sections, base, additional, distance) -> {
     };
 
     @Test

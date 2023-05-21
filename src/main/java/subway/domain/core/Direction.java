@@ -3,14 +3,14 @@ package subway.domain.core;
 import java.util.List;
 
 public enum Direction {
-    LEFT(new AddStationToLeftStrategy()),
-    RIGHT(new AddStationToRightStrategy()),
+    LEFT(new StationAddLeftStrategy()),
+    RIGHT(new StationAddRightStrategy()),
     ;
 
-    private final AddStationStrategy addStationStrategy;
+    private final StationAddStrategy stationAddStrategy;
 
-    Direction(final AddStationStrategy addStationStrategy) {
-        this.addStationStrategy = addStationStrategy;
+    Direction(final StationAddStrategy stationAddStrategy) {
+        this.stationAddStrategy = stationAddStrategy;
     }
 
     public Direction flip() {
@@ -26,6 +26,6 @@ public enum Direction {
             final Station additional,
             final Distance distance
     ) {
-        addStationStrategy.add(sections, base, additional, distance);
+        stationAddStrategy.add(sections, base, additional, distance);
     }
 }

@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class AddStationToRightStrategyTest {
+class StationAddRightStrategyTest {
 
-    final AddStationStrategy addStationToLeftStrategy = new AddStationToRightStrategy();
+    final StationAddStrategy stationAddStrategy = new StationAddRightStrategy();
 
     @Test
     void 구간_사이에_오른쪽_방향으로_역을_추가한다() {
@@ -23,7 +23,7 @@ class AddStationToRightStrategyTest {
         ));
 
         // when
-        addStationToLeftStrategy.add(sections, new Station("B"), new Station("D"), new Distance(2));
+        stationAddStrategy.add(sections, new Station("B"), new Station("D"), new Distance(2));
 
         // then
         assertThat(sections).contains(
@@ -42,7 +42,7 @@ class AddStationToRightStrategyTest {
         ));
 
         // when
-        addStationToLeftStrategy.add(sections, new Station("C"), new Station("D"), new Distance(2));
+        stationAddStrategy.add(sections, new Station("C"), new Station("D"), new Distance(2));
 
         // then
         assertThat(sections).contains(

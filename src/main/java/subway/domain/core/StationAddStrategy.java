@@ -3,7 +3,7 @@ package subway.domain.core;
 import java.util.List;
 import java.util.Optional;
 
-public interface AddStationStrategy {
+public interface StationAddStrategy {
 
     void add(final List<Section> sections, final Station base, final Station additional, final Distance distance);
 
