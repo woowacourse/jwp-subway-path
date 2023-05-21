@@ -24,6 +24,6 @@ class PathTest {
         List<Station> orderedStation = new ArrayList<>(List.of(강변, 잠실나루, 잠실, 몽촌토성, 강동구청));
 
         // then
-        assertDoesNotThrow(() -> Path.from(orderedStation, 10, 0));
+        assertDoesNotThrow(() -> Path.from(orderedStation, 10, Fare.from(8)));
     }
 }

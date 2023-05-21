@@ -1,7 +1,6 @@
 package subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +9,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.line.Line;
 import subway.domain.line.Lines;
+import subway.domain.policy.basic.DistanceFarePolicy;
+import subway.domain.policy.basic.FarePolicy;
 
 import java.util.List;
 

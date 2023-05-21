@@ -1,6 +1,5 @@
 package subway.domain.Path;
 
-import subway.domain.fare.FarePolicy;
 import subway.domain.station.Station;
 
 import java.util.ArrayList;
@@ -10,15 +9,15 @@ public class Path {
 
     private final List<Station> orderedStations;
     private final int distance;
-    private final int fare;
+    private final Fare fare;
 
-    public Path(List<Station> orderedStations, int distance, int fare) {
+    public Path(List<Station> orderedStations, int distance, Fare fare) {
         this.orderedStations = orderedStations;
         this.distance = distance;
         this.fare = fare;
     }
 
-    public static Path from(List<Station> orderedStations, int pathDistance, int fare) {
+    public static Path from(List<Station> orderedStations, int pathDistance, Fare fare) {
         return new Path(new ArrayList<>(orderedStations), pathDistance, fare);
     }
 
@@ -31,6 +30,6 @@ public class Path {
     }
 
     public int getFare() {
-        return fare;
+        return fare.getFare();
     }
 }

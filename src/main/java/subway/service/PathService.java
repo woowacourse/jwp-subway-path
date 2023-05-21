@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.controller.exception.OptionalHasNoStationException;
 import subway.domain.Path.Path;
 import subway.domain.Path.PathFinder;
-import subway.domain.fare.DistanceFarePolicy;
-import subway.domain.fare.FarePolicy;
+import subway.domain.policy.basic.DistanceFarePolicy;
+import subway.domain.policy.discount.AgeDiscountPolicy;
 import subway.domain.section.SectionRepository;
 import subway.domain.station.Station;
 import subway.dto.DtoMapper;
@@ -38,6 +38,7 @@ public class PathService {
                 pathFinder.findShortestPath(source, destination),
                 pathFinder.findShortestDistance(source, destination),
                 pathFinder.calculateFare(source, destination)
+                        .applyDiscount(AgeDiscountPolicy.from(request.getAge()))
         );
 
         return DtoMapper.convertToPathResponse(shortestPath);

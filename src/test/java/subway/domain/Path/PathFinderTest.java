@@ -1,6 +1,5 @@
 package subway.domain.Path;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.domain.Path.PathTestFixture.강동구청;
@@ -15,12 +14,10 @@ import static subway.domain.Path.PathTestFixture.잠실_석촌;
 import static subway.domain.Path.PathTestFixture.잠실나루;
 import static subway.domain.Path.PathTestFixture.잠실나루_잠실;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.domain.fare.DistanceFarePolicy;
-import subway.domain.line.Lines;
+import subway.domain.policy.basic.DistanceFarePolicy;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 
@@ -110,10 +107,10 @@ class PathFinderTest {
             PathFinder pathFinder = PathFinder.from(전체_노선_구간들, DistanceFarePolicy.getInstance());
 
             // when
-            int fare = pathFinder.calculateFare(강변, 잠실);
+            Fare fare = pathFinder.calculateFare(강변, 잠실);
 
             // then
-            assertThat(fare).isEqualTo(2250);
+            assertThat(fare).isEqualTo(Fare.from(2250));
         }
 
         @Test
@@ -124,10 +121,10 @@ class PathFinderTest {
             PathFinder pathFinder = PathFinder.from(전체_노선_구간들, DistanceFarePolicy.getInstance());
 
             // when
-            int fare = pathFinder.calculateFare(석촌, 강동구청);
+            Fare fare = pathFinder.calculateFare(석촌, 강동구청);
 
             // then
-            assertThat(fare).isEqualTo(2150);
+            assertThat(fare).isEqualTo(Fare.from(2150));
         }
 
         @Test
@@ -138,10 +135,10 @@ class PathFinderTest {
             PathFinder pathFinder = PathFinder.from(전체_노선_구간들, DistanceFarePolicy.getInstance());
 
             // when
-            int fare = pathFinder.calculateFare(강변, 석촌);
+            Fare fare = pathFinder.calculateFare(강변, 석촌);
 
             // then
-            assertThat(fare).isEqualTo(2450);
+            assertThat(fare).isEqualTo(Fare.from(2450));
         }
     }
 }

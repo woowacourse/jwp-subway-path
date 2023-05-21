@@ -1,9 +1,8 @@
 package subway.domain.Path;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.domain.fare.FarePolicy;
+import subway.domain.policy.basic.FarePolicy;
 import subway.domain.line.Line;
 import subway.domain.line.Lines;
 import subway.domain.section.Section;
@@ -60,7 +59,7 @@ public class PathFinder {
     }
 
 
-    public int calculateFare(Station source, Station destination) {
+    public Fare calculateFare(Station source, Station destination) {
         List<SectionEdge> sectionEdges = dijkstraShortestPath
                 .getPath(source, destination)
                 .getEdgeList();
@@ -71,6 +70,6 @@ public class PathFinder {
 
         int shortestDistance = findShortestDistance(source, destination);
 
-        return farePolicy.calculateFare(shortestDistance, Lines.from(involvedLines));
+        return Fare.from(farePolicy.calculateFare(shortestDistance, Lines.from(involvedLines)));
     }
 }

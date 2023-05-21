@@ -87,7 +87,7 @@ public class SubwayPathIntegrationTest {
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        PathRequest request = new PathRequest(3L, 7L);
+        PathRequest request = new PathRequest(3L, 7L, 10);
 
         //then
         RestAssured
