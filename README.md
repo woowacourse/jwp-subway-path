@@ -131,7 +131,7 @@
   ```
 
 - [ ] 경로 조회 API 구현
-  - `/routes`
+  - `/paths`
   - GET
   - Request
   ```json

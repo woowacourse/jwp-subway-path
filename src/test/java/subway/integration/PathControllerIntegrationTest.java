@@ -27,21 +27,22 @@ import subway.ui.dto.station.StationCreateRequest;
 @AutoConfigureMockMvc
 @Sql("/line_initialize.sql")
 class PathControllerIntegrationTest {
-
+    private static final String BASE_URL = "/paths";
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
+    
 
     @Test
     @DisplayName("요청한 출발역에서 도착역까지의 최단경로와 거리, 비용을 조회할 수 있다.")
-    void findRoute_success() throws Exception {
+    void findPath_success() throws Exception {
         // given
         PathFindRequest request = new PathFindRequest("양재역", "서초역");
 
         // expect
-        mockMvc.perform(get("/routes")
+        mockMvc.perform(get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -53,12 +54,12 @@ class PathControllerIntegrationTest {
     @ParameterizedTest
     @CsvSource(value = {" :교대역", ":", "교대역:"}, delimiter = ':')
     @DisplayName("출발역 또는 도착역이 비어있다면 예외가 발생한다.")
-    void findRoute_emptyRequest_fail(String startStationName, String endStationName) throws Exception {
+    void findPath_emptyRequest_fail(String startStationName, String endStationName) throws Exception {
         // given
         PathFindRequest request = new PathFindRequest(startStationName, endStationName);
 
         // expect
-        mockMvc.perform(get("/routes")
+        mockMvc.perform(get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -66,12 +67,12 @@ class PathControllerIntegrationTest {
 
     @Test
     @DisplayName("출발역 또는 도착역이 존재하지 않는 역이라면 예외가 발생한다.")
-    void findRoute_stationNotFound_fail() throws Exception {
+    void findPath_stationNotFound_fail() throws Exception {
         // given
         PathFindRequest request = new PathFindRequest("신촌역", "교대역");
 
         // expect
-        mockMvc.perform(get("/routes")
+        mockMvc.perform(get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -79,13 +80,13 @@ class PathControllerIntegrationTest {
 
     @Test
     @DisplayName("출발역 또는 도착역이 노선 상에 존재하지 않는다면 예외가 발생한다.")
-    void findRoute_stationNotInLine_fail() throws Exception {
+    void findPath_stationNotInLine_fail() throws Exception {
         // given
         addNewStationNotInLine("신촌역");
         PathFindRequest request = new PathFindRequest("신촌역", "교대역");
 
         // expect
-        mockMvc.perform(get("/routes")
+        mockMvc.perform(get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -93,13 +94,13 @@ class PathControllerIntegrationTest {
 
     @Test
     @DisplayName("출발역에서 도착역으로 갈 수 있는 경로가 없다면 예외가 발생한다.")
-    void findRoute_noPath_fail() throws Exception {
+    void findPath_noPath_fail() throws Exception {
         // given
         addNewStationInNewLineNotConnected("정자역", "미금역");
         PathFindRequest request = new PathFindRequest("교대역", "미금역");
 
         // expect
-        mockMvc.perform(get("/routes")
+        mockMvc.perform(get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
