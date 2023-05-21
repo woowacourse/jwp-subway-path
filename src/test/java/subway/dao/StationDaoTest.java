@@ -89,6 +89,20 @@ class StationDaoTest {
     }
 
     @Test
+    @DisplayName("노선 ID에 해당하는 모든 행을 조회한다.")
+    void selectAllByLineId() {
+        // given
+        Long lineId = INITIAL_Line2.ID;
+
+        // when
+        List<Station> findStations = stationDao.selectAllByLineId(lineId);
+
+        // then
+        assertThat(findStations).usingRecursiveFieldByFieldElementComparator()
+                .contains(INITIAL_STATION_A.FIND_STATION, INITIAL_STATION_C.FIND_STATION);
+    }
+
+    @Test
     @DisplayName("모든 행을 조회한다.")
     void selectAll() {
         // when

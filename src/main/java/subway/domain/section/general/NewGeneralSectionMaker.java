@@ -6,10 +6,12 @@ import subway.domain.station.Station;
 
 public class NewGeneralSectionMaker {
 
-    public static GeneralSection makeSectionToSave(Line line, Station upStation,
+    public static GeneralSection makeSectionToSave(Station upStation,
                                                    Station downStation, Distance distance) {
         NearbyStations sectionToSaveNearByStations =
                 NearbyStations.createByUpStationAndDownStation(upStation, downStation);
+
+        Line line = sectionToSaveNearByStations.getDownStation().getLine();
 
         return new GeneralSection(null, sectionToSaveNearByStations, line, distance);
     }

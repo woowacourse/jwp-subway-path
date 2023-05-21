@@ -62,7 +62,7 @@ public class StationRemoveService {
         Station newDownStation = downSection.getDownStation();
 
         Line line = findStation.getLine();
-        GeneralSection sectionToSave = NewGeneralSectionMaker.makeSectionToSave(line, newUpStation, newDownStation, newDistance);
+        GeneralSection sectionToSave = NewGeneralSectionMaker.makeSectionToSave(newUpStation, newDownStation, newDistance);
         generalSectionRepository.saveSection(sectionToSave);
     }
 }

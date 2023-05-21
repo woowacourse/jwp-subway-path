@@ -26,7 +26,6 @@ class NewGeneralSectionMakerTest {
     void makeSectionToSave() {
         // when
         GeneralSection generatedSection = NewGeneralSectionMaker.makeSectionToSave(
-                INITIAL_Line2.FIND_LINE,
                 INITIAL_STATION_A.FIND_STATION,
                 INITIAL_STATION_C.FIND_STATION,
                 INITIAL_GENERAL_SECTION_A_TO_C.DISTANCE

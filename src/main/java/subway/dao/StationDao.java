@@ -60,6 +60,12 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper, stationName, lineName).stream().findAny();
     }
 
+    public List<Station> selectAllByLineId(Long lineId) {
+        String sql = STATION_LINE_JOIN_SQL + "WHERE line.id = ?";
+
+        return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
+
     public List<Station> selectAll() {
         String sql = STATION_LINE_JOIN_SQL;
 

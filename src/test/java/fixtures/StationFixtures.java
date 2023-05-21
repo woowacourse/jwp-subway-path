@@ -158,4 +158,9 @@ public class StationFixtures {
                         List.of(GeneralSectionDto.from(GENERAL_SECTION_C_TO_E.createDummy(stationC, dummyStationE, line2)))
                 );
     }
+
+    public static List<Station> ALL_LINE2_STATION = List.of(
+            INITIAL_STATION_A.FIND_STATION,
+            INITIAL_STATION_C.FIND_STATION
+    );
 }
