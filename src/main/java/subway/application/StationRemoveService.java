@@ -28,7 +28,6 @@ public class StationRemoveService {
 
     public void removeStationById(Long stationId) {
         Station findStation = stationRepository.findStationById(stationId);
-        System.out.println("findStation = " + findStation);
         Long lineId = findStation.getLine().getId();
         GeneralSections generalSections = new GeneralSections(generalSectionRepository.findAllSectionByLineId(lineId));
 
@@ -41,7 +40,6 @@ public class StationRemoveService {
 
     private void removeStationByCase(Station findStation, GeneralSections generalSections) {
         GeneralSectionCase generalSectionCase = generalSections.determineSectionCaseByStationId(findStation.getId());
-        System.out.println("findStation Id = " + findStation.getId());
         if (generalSectionCase.equals(GeneralSectionCase.END_SECTION)) {
             stationRepository.removeStationById(findStation.getId());
         }
