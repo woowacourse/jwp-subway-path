@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.dto.LineDto;
 import subway.dto.LineSaveDto;
-import subway.dto.LineStationResponse;
 
 @RestController
 @RequestMapping("/subway/lines")
@@ -27,17 +27,17 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<Void> createLine(@RequestBody LineSaveDto lineSaveDto) {
-        LineStationResponse line = lineService.saveLine(lineSaveDto);
+        LineDto line = lineService.saveLine(lineSaveDto);
         return ResponseEntity.created(URI.create("/subway/lines/" + line.getId())).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<LineStationResponse>> findAllLines() {
+    public ResponseEntity<List<LineDto>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineStationResponse> findLineById(@PathVariable Long id) {
+    public ResponseEntity<LineDto> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 

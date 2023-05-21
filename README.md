@@ -93,17 +93,7 @@ Response Headers {
 
 Response Body {
     id : 1L,
-    lineName : "1호선",
-    stations : [
-         {
-            id : 1L,
-            name : "회기"
-        },
-        {
-            id : 2L,
-            name : "청량리"
-        }
-   ]
+    lineName : "1호선"
 }
 ```
 
@@ -117,30 +107,14 @@ Response Headers {
 }
 
 Response Body {[
-    {id : 1L,
-    lineName : "1호선",
-    stations : [
-         {
-            id : 1L,
-            name : "회기"
-        },
-        {
-            id : 2L,
-            name : "청량리"
-        }
-   ]},
-   {id : 2L,
-    lineName : "2호선",
-    stations : [
-         {
-            id : 3L,
-            name : "잠실"
-        },
-        {
-            id : 4L,
-            name : "잠실새내"
-        }
-   ]}
+    {
+        id : 1L,
+        lineName : "1호선"
+    },
+   {
+        id : 2L,
+        lineName : "2호선"
+   }
 ]}
 ```
 

@@ -17,8 +17,8 @@ import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.dto.LineDto;
 import subway.dto.LineSaveDto;
-import subway.dto.LineStationResponse;
 
 @ExtendWith(SpringExtension.class)
 class LineServiceTest {
@@ -42,9 +42,9 @@ class LineServiceTest {
         when(lineDao.insert(any(LineEntity.class)))
                 .thenReturn(1L);
 
-        LineStationResponse lineStationResponse = lineService.saveLine(saveDto);
+        LineDto lineDto = lineService.saveLine(saveDto);
 
-        assertThat(lineStationResponse.getId()).isEqualTo(1L);
+        assertThat(lineDto.getId()).isEqualTo(1L);
 
         verify(lineDao, atLeastOnce()).insert(any(LineEntity.class));
     }
