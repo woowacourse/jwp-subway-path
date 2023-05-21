@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import subway.domain.routestrategy.RouteStrategy;
 
 public class Subway {
 
@@ -37,11 +38,11 @@ public class Subway {
         return null;
     }
 
-    public List<Station> findShortestRoute(Station start, Station end) {
+    public List<Station> findShortestRoute(Station start, Station end, RouteStrategy strategy) {
         return null;
     }
 
-    public Distance findShortestDistance(Station start, Station end) {
+    public Distance findShortestDistance(Station start, Station end, RouteStrategy strategy) {
         return null;
     }
 

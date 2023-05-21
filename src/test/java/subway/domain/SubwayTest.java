@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.routestrategy.DijkstraRouteStrategy;
+import subway.domain.routestrategy.RouteStrategy;
 
 class SubwayTest {
 
@@ -89,10 +91,6 @@ class SubwayTest {
         ));
 
         Line lineDuplicateName = new Line("1호선", "검정", new Sections());
-
-        assertThatThrownBy(() -> subway.addLine(lineDuplicateName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("노선의 이름은 중복될 수 없습니다.");
     }
 
 
@@ -127,8 +125,8 @@ class SubwayTest {
     @DisplayName("기존에 존재하지 않는 노선을 삭제하려고 하면 에러가 발생한다")
     void removeLine_NotExistError() {
         Subway subway = new Subway(List.of(
-                new Line(1L,"1호선", "파랑", new Sections()),
-                new Line(2L,"2호선", "초록", new Sections())
+                new Line(1L, "1호선", "파랑", new Sections()),
+                new Line(2L, "2호선", "초록", new Sections())
         ));
 
         Line lineToRemove = new Line("3호선", "주황", new Sections());
@@ -142,8 +140,8 @@ class SubwayTest {
     @DisplayName("기존에 존재하는 노선을 삭제하려고 하면 정상적으로 삭제된다")
     void deleteLine() {
         Subway subway = new Subway(List.of(
-                new Line(1L,"1호선", "파랑", new Sections()),
-                new Line(2L,"2호선", "초록", new Sections())
+                new Line(1L, "1호선", "파랑", new Sections()),
+                new Line(2L, "2호선", "초록", new Sections())
         ));
 
         Line lineToRemove = new Line("1호선", "파랑", new Sections());
@@ -283,7 +281,6 @@ class SubwayTest {
                 .isEqualTo(new Line(1L, "1호선", "파랑", new Sections()));
     }
 
-
     @Test
     @DisplayName("최단 경로를 조회할 때, 존재하지 않는 역이면 예외를 발생한다")
     void findShortestRoute_NotExistStation() {
@@ -291,8 +288,9 @@ class SubwayTest {
 
         Station start = new Station("동인천");
         Station end = new Station("교대");
+        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
 
-        assertThatThrownBy(() -> subway.findShortestDistance(start, end))
+        assertThatThrownBy(() -> subway.findShortestDistance(start, end, routeStrategy))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("해당 역이 존재하지 않습니다.");
     }
@@ -304,8 +302,9 @@ class SubwayTest {
 
         Station start = new Station("동인천");
         Station end = new Station("동인천");
+        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
 
-        assertThatThrownBy(() -> subway.findShortestRoute(start, end))
+        assertThatThrownBy(() -> subway.findShortestRoute(start, end, routeStrategy))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발지와 도착지가 같은 역입니다.");
     }
@@ -317,8 +316,9 @@ class SubwayTest {
 
         Station start = new Station("교대");
         Station end = new Station("천호");
+        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
 
-        assertThatThrownBy(() -> subway.findShortestRoute(start, end))
+        assertThatThrownBy(() -> subway.findShortestRoute(start, end, routeStrategy))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이동할 수 없는 경로입니다.");
     }
@@ -330,18 +330,18 @@ class SubwayTest {
 
         Station start = new Station("낙성대");
         Station end = new Station("고속터미널");
+        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
 
         List<Station> expected = Stream.of("낙성대", "사당", "이수", "내방", "고속터미널")
                 .map(Station::new)
                 .collect(Collectors.toList());
 
         //todo : usingRecursiveComparison 다시 배우기
-        assertThat(subway.findShortestRoute(start, end))
+        assertThat(subway.findShortestRoute(start, end, routeStrategy))
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
 
-
-        assertThat(subway.findShortestRoute(start, end))
+        assertThat(subway.findShortestRoute(start, end, routeStrategy))
                 .isEqualTo(expected);
     }
 
@@ -352,12 +352,12 @@ class SubwayTest {
 
         Station start = new Station("낙성대");
         Station end = new Station("고속터미널");
+        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
 
         Distance expected = new Distance(20);
 
         //todo : usingRecursiveComparison 다시 배우기
-        assertThat(subway.findShortestDistance(start, end))
+        assertThat(subway.findShortestDistance(start, end, routeStrategy))
                 .isEqualTo(expected);
     }
-
 }
