@@ -42,6 +42,15 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    public List<SectionStationMapper> findAll() {
+        String sql = "SELECT s.id, up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance "
+                + "FROM SECTION AS s "
+                + "JOIN STATION AS up ON s.up_station_id = up.id "
+                + "JOIN STATION AS down ON s.down_station_id = down.id ";
+
+        return jdbcTemplate.query(sql, sectionStationRowMapper);
+    }
+
     public List<SectionStationMapper> findSectionsByLineId(Long lineId) {
         String sql = "SELECT s.id, up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance "
                 + "FROM SECTION AS s "
@@ -134,5 +143,4 @@ public class SectionDao {
                 batch
         );
     }
-
 }
