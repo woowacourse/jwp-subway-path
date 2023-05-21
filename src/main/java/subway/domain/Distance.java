@@ -24,6 +24,14 @@ public final class Distance {
         }
     }
 
+    public boolean biggerThan(final Distance distance) {
+        return length > distance.length;
+    }
+
+    public boolean lessThanOrEqualTo(final Distance distance) {
+        return length <= distance.length;
+    }
+
     public int getLength() {
         return length;
     }
