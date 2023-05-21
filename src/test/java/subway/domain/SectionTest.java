@@ -11,8 +11,8 @@ class SectionTest {
     private final Station upStation = new Station(1L, "신림");
     private final Station downStation = new Station(2L, "봉천");
 
-    private final Line line = new Line(1L, "2호선", "초록색");
-    private final Line newLine = new Line(2L, "newLine", "newColor");
+    private final Line line = new Line(1L, "2호선", "초록색", 0);
+    private final Line newLine = new Line(2L, "newLine", "newColor", 0);
 
     private final Distance distance = new Distance(10);
 
@@ -139,9 +139,6 @@ class SectionTest {
 
     @Test
     void 같은_역을_가지는지_확인한다() {
-        assertAll(
-                () -> assertThat(section.hasSameStation(upStation)).isTrue(),
-                () -> assertThat(section.hasSameStation(downStation)).isTrue()
-        );
+        assertThat(section.isSameStations(upStation, downStation)).isTrue();
     }
 }

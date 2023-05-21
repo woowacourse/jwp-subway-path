@@ -55,6 +55,10 @@ public class Section {
         return this.downStation.equals(otherStation);
     }
 
+    public boolean isSameStations(final Station upStation, final Station downStation) {
+        return isSameUpStation(upStation) && isSameDownStation(downStation);
+    }
+
     public boolean isSameDistance(final Section upSection, final Section downSection) {
         Distance totalDistance = upSection.distance.add(downSection.distance);
         return this.distance.equals(totalDistance);
