@@ -8,21 +8,24 @@ import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
-import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 @Service
 public class PathService {
 
-    private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
 
-    public PathService(LineRepository lineRepository) {
-        this.lineRepository = lineRepository;
+    public PathService(SectionRepository sectionRepository, StationRepository stationRepository) {
+        this.sectionRepository = sectionRepository;
+        this.stationRepository = stationRepository;
     }
 
     public PathResponse findShortPath(final PathRequest pathRequest) {
-        Station departurestation = lineRepository.findStationByName(pathRequest.getDepartureStation(), pathRequest.getDepartureLine());
-        Station arrivalStation = lineRepository.findStationByName(pathRequest.getArrivalStation(), pathRequest.getArrivalLine());
-        Sections sections = lineRepository.readAllSection();
+        Station departurestation = stationRepository.findByName(pathRequest.getDepartureStation(), pathRequest.getDepartureLine());
+        Station arrivalStation = stationRepository.findByName(pathRequest.getArrivalStation(), pathRequest.getArrivalLine());
+        Sections sections = sectionRepository.readAllSection();
 
         PathFinder pathFinder = new PathFinder();
         Path shortestPath = pathFinder.findShortestPath(sections, departurestation, arrivalStation);

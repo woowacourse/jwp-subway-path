@@ -11,6 +11,8 @@ import subway.dto.StationInitResponse;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 import java.util.List;
 
@@ -18,9 +20,13 @@ import java.util.List;
 public class StationService {
 
     private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
 
-    public StationService(LineRepository lineRepository) {
+    public StationService(LineRepository lineRepository, SectionRepository sectionRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
+        this.stationRepository = stationRepository;
     }
 
     @Transactional
@@ -33,7 +39,7 @@ public class StationService {
                 stationInitRequest.getDistance());
 
         Section addedSection = line.addInitStations(section);
-        List<Station> stations = lineRepository.saveInitStations(addedSection, line.getId());
+        List<Station> stations = sectionRepository.saveInitStations(addedSection, line.getId());
 
         return new StationInitResponse(stations);
     }
@@ -41,11 +47,11 @@ public class StationService {
     @Transactional
     public StationResponse saveStation(final StationRequest stationRequest) {
         Line line = lineRepository.findByName(stationRequest.getLineName());
-        Station baseStation = lineRepository.findByNameAndLineId(stationRequest.getBaseStation(), line.getId());
-        Station registerStation = lineRepository.saveStation(new Station(stationRequest.getRegisterStationName()), line.getId());
+        Station baseStation = stationRepository.findByNameAndLineId(stationRequest.getBaseStation(), line.getId());
+        Station registerStation = stationRepository.save(new Station(stationRequest.getRegisterStationName()), line.getId());
 
         Sections updatedsections = line.addStation(baseStation, stationRequest.getDirection(), registerStation, stationRequest.getDistance());
-        lineRepository.updateSection(updatedsections, line.getId());
+        sectionRepository.updateSection(updatedsections, line.getId());
 
         return new StationResponse(registerStation.getId(), registerStation.getName());
     }
@@ -53,10 +59,10 @@ public class StationService {
     @Transactional
     public void deleteStation(Long stationId) {
         Line line = lineRepository.findByStationId(stationId);
-        Station station = lineRepository.findStationById(stationId);
+        Station station = stationRepository.findById(stationId);
 
         Sections updatedSections = line.deleteStation(station);
 
-        lineRepository.updateSectionAndDeleteStation(line.getId(), updatedSections, station);
+        sectionRepository.updateSectionAndDeleteStation(line.getId(), updatedSections, station);
     }
 }

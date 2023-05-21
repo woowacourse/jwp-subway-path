@@ -43,6 +43,15 @@
   - [x] section(station과 station의 매핑 테이블)
 
 ## 리팩토링 목록
-- [ ] repository 책임 분리하기
+- [x] repository 책임 분리하기
+  - lineRepository
+    - line 저장
+    - line 조회
+  - sectionRepository
+    - section 저장
+    - section 최신화
+  - stationRepository
+    - station 저장
+    - station 조회
 - [ ] 환경설정 파일을 properties에서 yml로 변경하기
 - [ ] pathfinder를 빈으로 관리하기

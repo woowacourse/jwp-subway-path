@@ -17,7 +17,6 @@ import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionStationEntity;
-import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -78,43 +77,6 @@ class LineRepositoryTest {
         assertThat(result.getName()).isEqualTo(lineEntity.getName());
         assertThat(result.getColor()).isEqualTo(lineEntity.getColor());
         assertThat(result.getSections().getSections().size()).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("노선에 초기 두 역을 저장한다.")
-    void register_() {
-        // given
-        List<StationEntity> stationEntities = List.of(
-                new StationEntity(1L, "잠실역", 1L),
-                new StationEntity(2L, "선릉역", 1L));
-        doReturn(stationEntities).when(stationDao).insertInit(any(List.class));
-
-
-        // when
-        List<Station> result = lineRepository.saveInitStations(
-                new Section(new Station("잠실역"), new Station("선릉역"), 10),
-                1L);
-
-        // then
-        assertThat(result.get(0).getId()).isEqualTo(stationEntities.get(0).getId());
-        assertThat(result.get(0).getName()).isEqualTo(stationEntities.get(0).getName());
-        assertThat(result.get(1).getId()).isEqualTo(stationEntities.get(1).getId());
-        assertThat(result.get(1).getName()).isEqualTo(stationEntities.get(1).getName());
-    }
-
-    @Test
-    @DisplayName("이름과 노선 아이디를 통해 역을 찾는다.")
-    void find_station_by_name_line_id() {
-        // given
-        StationEntity stationEntity = new StationEntity(1L, "잠실", 1L);
-        doReturn(Optional.of(stationEntity)).when(stationDao).findByNameAndLineId(any(String.class), any(Long.class));
-
-        // when
-        Station result = lineRepository.findByNameAndLineId("잠실", 1L);
-
-        // then
-        assertThat(result.getId()).isEqualTo(stationEntity.getId());
-        assertThat(result.getName()).isEqualTo(stationEntity.getName());
     }
 
     @Test
@@ -180,6 +142,5 @@ class LineRepositoryTest {
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(expect);
-
     }
 }
