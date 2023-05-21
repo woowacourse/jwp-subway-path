@@ -1,6 +1,5 @@
 package subway.application.service.station;
 
-import subway.common.exception.NoSuchStationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.port.in.station.CreateStationUseCase;
@@ -10,6 +9,8 @@ import subway.application.port.in.station.dto.command.CreateStationCommand;
 import subway.application.port.in.station.dto.command.UpdateStationCommand;
 import subway.application.port.out.station.LoadStationPort;
 import subway.application.port.out.station.PersistStationPort;
+import subway.common.exception.NoSuchStationException;
+import subway.common.exception.SubwayIllegalArgumentException;
 import subway.domain.Station;
 
 @Service
@@ -25,9 +26,12 @@ public class StationCommandService implements CreateStationUseCase, UpdateStatio
         this.persistStationPort = persistStationPort;
     }
 
-    // TODO: 이름 중복 검사
     @Override
     public long createStation(final CreateStationCommand command) {
+        loadStationPort.findByName(command.getName())
+                .ifPresent(it -> {
+                    throw new SubwayIllegalArgumentException("기존 역과 중복된 이름입니다.");
+                });
         return persistStationPort.create(new Station(command.getName()));
     }
 

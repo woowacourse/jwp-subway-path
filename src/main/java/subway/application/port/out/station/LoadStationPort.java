@@ -9,4 +9,6 @@ public interface LoadStationPort {
     Optional<Station> findById(Long id);
 
     List<Station> findAll();
+
+    Optional<Station> findByName(String name);
 }

@@ -8,8 +8,8 @@ import subway.adapter.out.persistence.dao.StationDao;
 import subway.adapter.out.persistence.entity.StationEntity;
 import subway.application.port.out.station.LoadStationPort;
 import subway.application.port.out.station.PersistStationPort;
-import subway.domain.Station;
 import subway.common.mapper.StationMapper;
+import subway.domain.Station;
 
 @Repository
 public class StationJdbcAdapter implements LoadStationPort, PersistStationPort {
@@ -35,6 +35,15 @@ public class StationJdbcAdapter implements LoadStationPort, PersistStationPort {
         return entities.stream()
                 .map(StationMapper::toStation)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Station> findByName(final String name) {
+        Optional<StationEntity> entity = stationDao.findByName(name);
+        if (entity.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(StationMapper.toStation(entity.get()));
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -105,6 +106,37 @@ class StationDaoTest {
 
         // then
         assertThat(station).isEmpty();
+    }
+
+    @Nested
+    class 이름으로_조회시_ {
+
+        @Test
+        void 존재하면_Optional_entity_반환() {
+            // given
+            Map<String, Object> params = new HashMap<>();
+            params.put("name", "삼성역");
+            Long stationId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+
+            // when
+            Optional<StationEntity> station = stationDao.findByName("삼성역");
+
+            // then
+            assertAll(
+                    () -> assertThat(station).isPresent(),
+                    () -> assertThat(station.get().getName())
+                            .isEqualTo("삼성역")
+            );
+        }
+
+        @Test
+        void 존재하지_않으면_Optional_empty_반환() {
+            // when
+            Optional<StationEntity> station = stationDao.findByName("삼성역");
+
+            // then
+            assertThat(station).isEmpty();
+        }
     }
 
     @Test

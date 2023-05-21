@@ -1,5 +1,6 @@
 package subway.application.service.station;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -11,10 +12,12 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import subway.application.port.in.station.dto.command.CreateStationCommand;
 import subway.application.port.in.station.dto.command.UpdateStationCommand;
 import subway.application.port.out.station.LoadStationPort;
 import subway.application.port.out.station.PersistStationPort;
 import subway.common.exception.NoSuchStationException;
+import subway.common.exception.SubwayIllegalArgumentException;
 import subway.fixture.StationFixture.역삼역;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -30,6 +33,38 @@ class StationCommandServiceTest {
         loadStationPort = mock(LoadStationPort.class);
         persistStationPort = mock(PersistStationPort.class);
         stationCommandService = new StationCommandService(loadStationPort, persistStationPort);
+    }
+
+    @Nested
+    class 역_생성시_ {
+
+        private final String name = "역삼역";
+        private final CreateStationCommand command = new CreateStationCommand(name);
+
+        @Test
+        void 이미_존재하는_이름이면_예외() {
+            // given
+            given(loadStationPort.findByName(name))
+                    .willReturn(Optional.of(역삼역.STATION));
+
+            // when then
+            assertThatThrownBy(() -> stationCommandService.createStation(command))
+                    .isInstanceOf(SubwayIllegalArgumentException.class)
+                    .hasMessage("기존 역과 중복된 이름입니다.");
+        }
+
+        @Test
+        void 성공() {
+            // given
+            given(loadStationPort.findByName(name))
+                    .willReturn(Optional.empty());
+
+            // when
+            long stationId = stationCommandService.createStation(command);
+
+            // then
+            assertThat(stationId).isNotNull();
+        }
     }
 
     @Nested
