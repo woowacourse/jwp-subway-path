@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.IllegalAgeException;
 
@@ -65,62 +64,6 @@ class AgeGroupTest {
         void 잘못된_나이면_예외(final int wrongAge) {
             assertThatThrownBy(() -> AgeGroup.from(wrongAge))
                     .isInstanceOf(IllegalAgeException.class);
-        }
-    }
-
-    @Nested
-    class 금액을_계산한다 {
-
-        @ParameterizedTest
-        @CsvSource(value = {"1000:1000", "1500:1500", "2000:2000"}, delimiter = ':')
-        void 성인의_경우(final int given, final int expected) {
-            // given
-            final AgeGroup adult = AgeGroup.ADULT;
-
-            // when
-            final int actual = adult.calculate(given);
-
-            // then
-            assertThat(actual).isEqualTo(expected);
-        }
-
-        @ParameterizedTest
-        @CsvSource(value = {"1350:800", "2350:1600"}, delimiter = ':')
-        void 청소년의_경우(final int given, final int expected) {
-            // given
-            final AgeGroup adult = AgeGroup.YOUTH;
-
-            // when
-            final int actual = adult.calculate(given);
-
-            // then
-            assertThat(actual).isEqualTo(expected);
-        }
-
-        @ParameterizedTest
-        @CsvSource(value = {"1350:500", "2350:1000"}, delimiter = ':')
-        void 어린이의_경우(int given, int expected) {
-            // given
-            final AgeGroup adult = AgeGroup.CHILD;
-
-            // when
-            final int actual = adult.calculate(given);
-
-            // then
-            assertThat(actual).isEqualTo(expected);
-        }
-
-        @ParameterizedTest
-        @CsvSource(value = {"1350:0", "2600:0"}, delimiter = ':')
-        void 미취학아동의_경우(int given, int expected) {
-            // given
-            final AgeGroup adult = AgeGroup.PRESCHOOLERS;
-
-            // when
-            final int actual = adult.calculate(given);
-
-            // then
-            assertThat(actual).isEqualTo(expected);
         }
     }
 }

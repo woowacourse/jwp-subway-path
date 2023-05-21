@@ -6,8 +6,9 @@ import subway.domain.fare.FareInformation;
 public class AgeDiscountPolicy implements DiscountPolicy {
 
     @Override
-    public int calculate(final int fare, final FareInformation fareInformation) {
+    public int calculate(int fare, final FareInformation fareInformation) {
         AgeGroup ageGroup = fareInformation.getAgeGroup();
-        return ageGroup.calculate(fare);
+        fare -= ageGroup.getDeductionAmount();
+        return (int) (fare * (1 - ageGroup.getDiscountRate()));
     }
 }

@@ -37,15 +37,18 @@ public class PathService {
     }
 
     public ShortestPathResponse findShortestPath(final ShortestPathRequest request) {
-        final Station startStation = stationRepository.findByName(request.getStartStation())
-                .orElseThrow(() -> new NotFoundStationException(request.getStartStation()));
-        final Station endStation = stationRepository.findByName(request.getEndStation())
-                .orElseThrow(() -> new NotFoundStationException(request.getEndStation()));
+        final Station startStation = findStationByName(request.getStartStation());
+        final Station endStation = findStationByName(request.getEndStation());
         final Lines lines = lineRepository.findAll();
         final Path path = pathFinder.findShortestPath(startStation, endStation, lines);
         final int fee = fareCalculator.calculate(getFeeInformation(path, lines, request.getAge()));
 
         return ShortestPathResponse.of(path, fee);
+    }
+
+    private Station findStationByName(String name) {
+        return stationRepository.findByName(name)
+                .orElseThrow(() -> new NotFoundStationException(name));
     }
 
     private FareInformation getFeeInformation(final Path path, final Lines lines, final int age) {

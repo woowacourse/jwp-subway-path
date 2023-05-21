@@ -28,11 +28,6 @@ public enum AgeGroup {
                 .orElseThrow(IllegalAgeException::new);
     }
 
-    public int calculate(int fare) {
-        fare -= deductionAmount;
-        return (int) (fare * (1 - discountRate));
-    }
-
     public int getMinAge() {
         return minAge;
     }
