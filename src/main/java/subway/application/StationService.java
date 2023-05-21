@@ -88,10 +88,16 @@ public class StationService {
             throw new IllegalArgumentException("해당 역이 존재하지 않습니다.");
         }
         stationRepository.remove(stationToDelete);
-        if (sectionsToCombine.size() == 1) {
+
+        if (sections.getSections().size() == 1) {
             lineRepository.remove(targetLine);
             return targetLine.getId();
         }
+
+        if (sectionsToCombine.size() == 1) {
+            return targetLine.getId();
+        }
+
         Section combinedSection = combineSections(sectionsToCombine);
         Section insertedSection = sectionRepository.insert(combinedSection);
         return insertedSection.getLineId();
