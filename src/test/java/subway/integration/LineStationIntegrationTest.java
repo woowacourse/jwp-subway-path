@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dto.LineRequest;
 import subway.dto.LineStationsRequest;
 
@@ -11,6 +12,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
 
+@Transactional
 @DisplayName("노선의 구간 관련")
 public class LineStationIntegrationTest extends  IntegrationTest{
 
