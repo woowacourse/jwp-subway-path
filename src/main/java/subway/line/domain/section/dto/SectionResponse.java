@@ -1,7 +1,7 @@
 package subway.line.domain.section.dto;
 
 import subway.line.domain.section.application.ShortestPathResponse;
-import subway.line.domain.station.dto.StationResponse;
+import subway.line.domain.station.presentation.dto.StationResponse;
 
 import java.math.BigDecimal;
 import java.util.List;

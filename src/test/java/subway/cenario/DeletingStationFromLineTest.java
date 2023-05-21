@@ -14,7 +14,8 @@ import subway.line.domain.section.domain.EmptyDistance;
 import subway.line.domain.station.EmptyStation;
 import subway.line.domain.station.Station;
 import subway.line.domain.station.application.StationService;
-import subway.line.domain.station.dto.StationRequest;
+import subway.line.domain.station.application.dto.StationSavingInfo;
+import subway.line.domain.station.presentation.dto.StationRequest;
 import subway.line.application.dto.LineSavingInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,9 +40,9 @@ public class DeletingStationFromLineTest {
     @BeforeEach
     void setup() {
         line = lineService.saveLine(new LineSavingInfo("1호선", "blue"));
-        stationB = stationService.saveStation(new StationRequest("봉천역"));
-        stationS = stationService.saveStation(new StationRequest("신림역"));
-        stationSD = stationService.saveStation(new StationRequest("신도림역"));
+        stationB = stationService.saveStation(new StationSavingInfo("봉천역"));
+        stationS = stationService.saveStation(new StationSavingInfo("신림역"));
+        stationSD = stationService.saveStation(new StationSavingInfo("신도림역"));
     }
 
     private long saveSection(Line line, Station startingStation, Station destinationStation) {
