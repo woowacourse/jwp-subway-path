@@ -26,21 +26,28 @@ public class Line {
     }
     
     private Line(final String name, final String color, final Long extraCharge, final Sections sections) {
-        validateNameAndColor(name, color);
+        validateNameAndColor(name, color, extraCharge);
         this.name = name;
         this.color = color;
         this.extraCharge = extraCharge;
         this.sections = sections;
     }
     
-    private void validateNameAndColor(final String name, final String color) {
+    private void validateNameAndColor(final String name, final String color, final Long extraCharge) {
         validateNullOrEmpty(name);
         validateNullOrEmpty(color);
+        validateNull(extraCharge);
     }
     
     private void validateNullOrEmpty(final String value) {
         if (Objects.isNull(value) || value.isBlank()) {
             throw new IllegalArgumentException("노선의 이름이나 색상은 null 또는 빈값일 수 없습니다.");
+        }
+    }
+    
+    private void validateNull(final Long extraCharge) {
+        if (Objects.isNull(extraCharge)) {
+            throw new IllegalArgumentException("추가 요금은 null일 수 없습니다.");
         }
     }
     
