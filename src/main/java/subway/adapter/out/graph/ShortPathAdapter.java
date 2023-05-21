@@ -30,8 +30,8 @@ public class ShortPathAdapter implements ShortPathPort {
             });
         }
 
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, LineWeightedEdge> dijkstraShortestPath
+                = new DijkstraShortestPath<>(graph);
 
         List<Station> shortestPath;
         int shortestDistance;
