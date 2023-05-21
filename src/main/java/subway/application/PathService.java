@@ -3,6 +3,8 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import subway.domain.Fare;
+import subway.domain.FarePolicy;
 import subway.domain.Station;
 import subway.domain.Subway;
 import subway.domain.SubwayGraph;
@@ -17,10 +19,14 @@ public class PathService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final FarePolicy farePolicy;
 
-    public PathService(final LineRepository lineRepository, final StationRepository stationRepository) {
+    public PathService(final LineRepository lineRepository,
+                       final StationRepository stationRepository,
+                       final FarePolicy farePolicy) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.farePolicy = farePolicy;
     }
 
     public ShortestPathSelectResponse findShortestPath(final Long sourceStationId, final Long targetStationId) {
@@ -34,11 +40,11 @@ public class PathService {
 
         final List<Station> shortestPath = subwayGraph.findShortestPath(sourceStation, targetStation);
         final int shortestDistance = subwayGraph.calculateShortestDistance(sourceStation, targetStation);
-        // TODO: 2023/05/21 요금 계산
+        final Fare fare = new Fare(farePolicy, shortestDistance);
 
         final List<StationSelectResponse> pathDto = shortestPath.stream()
                 .map(station -> new StationSelectResponse(station.getId(), station.getName()))
                 .collect(Collectors.toUnmodifiableList());
-        return new ShortestPathSelectResponse(pathDto, shortestDistance, 1250);
+        return new ShortestPathSelectResponse(pathDto, shortestDistance, fare.getValue());
     }
 }

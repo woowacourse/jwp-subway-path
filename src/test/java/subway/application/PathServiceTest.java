@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.domain.FarePolicy;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.ShortestPathSelectResponse;
@@ -23,7 +24,8 @@ class PathServiceTest {
 
     LineRepository lineRepository = mock(LineRepository.class);
     StationRepository stationRepository = mock(StationRepository.class);
-    PathService pathService = new PathService(lineRepository, stationRepository);
+    FarePolicy farePolicy = new FarePolicy();
+    PathService pathService = new PathService(lineRepository, stationRepository, farePolicy);
 
     private final List<Line> lines = List.of(
             new Line("2호선",
@@ -73,7 +75,7 @@ class PathServiceTest {
         assertThat(shortestPath.getPath()).map(StationSelectResponse::getName)
                 .containsExactly("역삼역", "강남역", "신논현역");
         assertThat(shortestPath.getDistance()).isEqualTo(17);
-        assertThat(shortestPath.getFare()).isEqualTo(1_250);
+        assertThat(shortestPath.getFare()).isEqualTo(1_450);
 
     }
 }

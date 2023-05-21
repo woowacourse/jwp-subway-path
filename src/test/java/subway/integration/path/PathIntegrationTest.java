@@ -68,6 +68,6 @@ public class PathIntegrationTest extends IntegrationTest {
         assertThat(pathSelectResponse.getPath()).map(StationSelectResponse::getName)
                 .containsExactly("역삼역", "강남역", "신논현역");
         assertThat(pathSelectResponse.getDistance()).isEqualTo(17);
-        assertThat(pathSelectResponse.getFare()).isEqualTo(1_250);
+        assertThat(pathSelectResponse.getFare()).isEqualTo(1_450);
     }
 }
