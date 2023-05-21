@@ -10,7 +10,7 @@ import java.util.Optional;
 public class DownStrategy implements DirectionStrategy {
     @Override
     public Section createSectionWith(Station baseStation, Station newStation, Distance distance, long lineId) {
-        return new Section(newStation, baseStation, distance, lineId);
+        return new Section(baseStation, newStation, distance, lineId);
     }
 
     @Override

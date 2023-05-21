@@ -7,8 +7,11 @@ import subway.domain.strategy.SecondaryAddStrategy;
 import subway.dto.SectionResponse;
 import subway.exception.InvalidInputException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -34,13 +37,22 @@ public class Line {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
     public AddSectionStrategy preprocess(
             Station baseStation,
             Station newStation,
             DirectionStrategy direction,
             int distance) {
+
         if (isBlank()) {
-            Section newSection = new Section(baseStation, newStation, new Distance(distance), id);
+            Section newSection = direction.createSectionWith(baseStation, newStation, new Distance(distance), id);
             return new FirstAddStrategy(newSection);
         }
         validateNotExist(newStation.getId());
@@ -116,5 +128,58 @@ public class Line {
                 section.getDownStation().getId(),
                 section.getDistance())
         ).collect(Collectors.toUnmodifiableList());
+    }
+
+    public List<Station> getAligned() {
+        if(sections.size()==0){
+            return Collections.emptyList();
+        }
+        Station firstStation = findFirstStation();
+        ArrayList<Station> alignedStations = new ArrayList<>();
+        alignedStations.add(firstStation);
+
+        while(true){
+
+//            Optional<Section> downStation = sections.stream()
+//                    .map(section -> section.findDownStationFrom(firstStation))
+//                    .filter(Optional::isPresent)
+//                    .findFirst();
+//
+//            if(downStation.isEmpty()){
+//                break;
+//            }
+            int startSize = alignedStations.size();
+
+            for(Section section: sections){
+                Optional<Station> downStation = section.findDownStationFrom(firstStation);
+
+                if(downStation.isPresent()){
+                    alignedStations.add(downStation.get());
+                    firstStation = downStation.get();
+                    break;
+                }
+            }
+            int endSize = alignedStations.size();
+            if(startSize == endSize){
+                break;
+            }
+        }
+        return alignedStations;
+    }
+
+    private Station findFirstStation() {
+        List<Station> upStations = findStations(Section::getUpStation);
+        List<Station> downStations = findStations(Section::getDownStation);
+
+        return upStations.stream()
+                .filter(station -> !downStations.contains(station))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private List<Station> findStations(final Function<Section, Station> function) {
+        return sections.stream()
+                .map(function)
+                .collect(toList());
     }
 }
