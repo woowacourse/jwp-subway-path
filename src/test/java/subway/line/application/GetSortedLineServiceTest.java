@@ -39,9 +39,9 @@ class GetSortedLineServiceTest {
         final String fourth = "선릉역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
-        final Section secondSection = new Section(second, third, distance);
-        final Section thirdSection = new Section(third, fourth, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
+        final Section secondSection = new Section(second, third, distance, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance, "1호선");
         
         final Set<Section> initSections = new HashSet<>(Set.of(firstSection, secondSection, thirdSection));
         final Line line1 = new Line("1호선", "파랑", initSections);

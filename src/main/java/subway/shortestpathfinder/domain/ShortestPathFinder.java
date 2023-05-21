@@ -36,7 +36,7 @@ public class ShortestPathFinder {
         
         final List<String> shortestPath = getShortestPath(graphPath, startStationName, endStationName);
         final Long shortestDistance = (long) graphPath.getWeight();
-        return new ShortestPathResult(shortestPath, shortestDistance, calculateFee(shortestDistance));
+        return new ShortestPathResult(shortestPath, shortestDistance, calculateFee(shortestDistance) + getExtraCharge(graphPath));
     }
     
     private void validateExistStation(final String stationName, final WeightedMultigraph<Station, Section> graph) {
@@ -75,6 +75,22 @@ public class ShortestPathFinder {
     
     private boolean isDistanceNegative(final long distance) {
         return distance <= 0;
+    }
+    
+    private long getExtraCharge(final GraphPath<Station, Section> graphPath) {
+        return graphPath.getEdgeList().stream()
+                .map(Section::getLineName)
+                .map(this::getMatchLine)
+                .mapToLong(Line::getExtraCharge)
+                .max()
+                .orElseThrow(() -> new IllegalArgumentException("경로의 구간이 존재하지 않습니다."));
+    }
+    
+    private Line getMatchLine(final String lineName) {
+        return lines.stream()
+                .filter(line ->  line.isSameName(lineName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선 이름입니다."));
     }
     
     public Set<Line> getLines() {

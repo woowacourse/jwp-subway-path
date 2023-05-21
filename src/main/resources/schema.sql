@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS section
     id     BIGINT AUTO_INCREMENT NOT NULL,
     first_station_id  BIGINT          NOT NULL,
     second_station_id BIGINT          NOT NULL,
-    distance       BIGINT,
-    line_id        BIGINT,
+    distance       BIGINT             NOT NULL,
+    line_id        BIGINT             NOT NULL,
     PRIMARY KEY (id)
 );

@@ -28,10 +28,10 @@ class SectionsTest {
         final long distance = 3L;
         
         // when
-        sections.initAddStation(left, right, distance);
+        sections.initAddStation(left, right, distance, "1호선");
         
         // then
-        assertThat(sections.getSections()).contains(new Section(left, right, distance));
+        assertThat(sections.getSections()).contains(new Section(left, right, distance, "1호선"));
     }
     
     @Test
@@ -43,9 +43,9 @@ class SectionsTest {
         final String fourth = "선릉역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
-        final Section secondSection = new Section(second, third, distance);
-        final Section thirdSection = new Section(third, fourth, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
+        final Section secondSection = new Section(second, third, distance, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -56,7 +56,7 @@ class SectionsTest {
         sections.addStation(first, Direction.LEFT, additionalStation, additionalDistance);
         
         // then
-        final Section additionalSection = new Section(additionalStation, first, additionalDistance);
+        final Section additionalSection = new Section(additionalStation, first, additionalDistance, "1호선");
         assertThat(sections.getSections()).contains(firstSection, secondSection, thirdSection, additionalSection);
     }
     
@@ -69,9 +69,9 @@ class SectionsTest {
         final String fourth = "선릉역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
-        final Section secondSection = new Section(second, third, distance);
-        final Section thirdSection = new Section(third, fourth, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
+        final Section secondSection = new Section(second, third, distance, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -82,7 +82,7 @@ class SectionsTest {
         sections.addStation(fourth, Direction.RIGHT, additionalStation, additionalDistance);
         
         // then
-        final Section additionalSection = new Section(fourth, additionalStation, additionalDistance);
+        final Section additionalSection = new Section(fourth, additionalStation, additionalDistance, "1호선");
         assertThat(sections.getSections()).contains(firstSection, secondSection, thirdSection, additionalSection);
     }
     
@@ -95,9 +95,9 @@ class SectionsTest {
         final String fourth = "선릉역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
-        final Section secondSection = new Section(second, third, distance);
-        final Section thirdSection = new Section(third, fourth, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
+        final Section secondSection = new Section(second, third, distance, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -108,8 +108,8 @@ class SectionsTest {
         sections.addStation(first, Direction.RIGHT, additionalStation, additionalDistance);
         
         // then
-        final Section additionalFirstSection = new Section(first, additionalStation, additionalDistance);
-        final Section additionalSecondSection = new Section(additionalStation, second, distance - additionalDistance);
+        final Section additionalFirstSection = new Section(first, additionalStation, additionalDistance, "1호선");
+        final Section additionalSecondSection = new Section(additionalStation, second, distance - additionalDistance, "1호선");
         assertThat(sections.getSections()).contains(secondSection, thirdSection, additionalFirstSection, additionalSecondSection);
     }
     
@@ -122,9 +122,9 @@ class SectionsTest {
         final String fourth = "선릉역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
-        final Section secondSection = new Section(second, third, distance);
-        final Section thirdSection = new Section(third, fourth, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
+        final Section secondSection = new Section(second, third, distance, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -146,7 +146,7 @@ class SectionsTest {
         final String second = "가양역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -167,9 +167,9 @@ class SectionsTest {
         final String fourth = "선릉역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
-        final Section secondSection = new Section(second, third, distance);
-        final Section thirdSection = new Section(third, fourth, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
+        final Section secondSection = new Section(second, third, distance, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -190,9 +190,9 @@ class SectionsTest {
         final String fourth = "선릉역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
-        final Section secondSection = new Section(second, third, distance);
-        final Section thirdSection = new Section(third, fourth, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
+        final Section secondSection = new Section(second, third, distance, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -213,9 +213,9 @@ class SectionsTest {
         final String fourth = "선릉역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
-        final Section secondSection = new Section(second, third, distance);
-        final Section thirdSection = new Section(third, fourth, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
+        final Section secondSection = new Section(second, third, distance, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -224,25 +224,25 @@ class SectionsTest {
         sections.removeStation(second);
         
         // then
-        final Section combinedSection = new Section(first, third, distance + distance);
+        final Section combinedSection = new Section(first, third, distance + distance, "1호선");
         assertThat(sections.getSections()).contains(thirdSection, combinedSection);
     }
     
     @Test
     void 최초_등록_시_구간이_하나라도_존재하면_예외_발생() {
         // given
-        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L));
+        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L, "1호선"));
         final Sections sections = new Sections(new HashSet<>(initSections));
         
         // when, then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> sections.initAddStation("선릉역", "강남역", 3L));
+                .isThrownBy(() -> sections.initAddStation("선릉역", "강남역", 3L, "1호선"));
     }
     
     @Test
     void 기준역이_존재하지_않으면_예외_발생() {
         // given
-        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L));
+        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L, "1호선"));
         final Sections sections = new Sections(new HashSet<>(initSections));
         
         // when, then
@@ -253,7 +253,7 @@ class SectionsTest {
     @Test
     void 추가하려는_역이_이미_존재하면_예외_발생() {
         // given
-        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L));
+        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L, "1호선"));
         final Sections sections = new Sections(new HashSet<>(initSections));
         
         // when, then
@@ -264,7 +264,7 @@ class SectionsTest {
     @Test
     void 삭제하려는_역이_존재하지_않을_시_예외_발생() {
         // given
-        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L));
+        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L, "1호선"));
         final Sections sections = new Sections(new HashSet<>(initSections));
         
         // when, then
@@ -281,9 +281,9 @@ class SectionsTest {
         final String fourth = "선릉역";
         final long distance = 5L;
         
-        final Section firstSection = new Section(first, second, distance);
-        final Section secondSection = new Section(second, third, distance);
-        final Section thirdSection = new Section(third, fourth, distance);
+        final Section firstSection = new Section(first, second, distance, "1호선");
+        final Section secondSection = new Section(second, third, distance, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -294,8 +294,8 @@ class SectionsTest {
         sections.addStation(third, Direction.LEFT, additionalStation, additionalDistance);
         
         // then
-        final Section additionalFirstSection = new Section(second, additionalStation, additionalDistance);
-        final Section additionalSecondSection = new Section(additionalStation, third, distance - additionalDistance);
+        final Section additionalFirstSection = new Section(second, additionalStation, additionalDistance, "1호선");
+        final Section additionalSecondSection = new Section(additionalStation, third, distance - additionalDistance, "1호선");
         assertThat(sections.getSections()).contains(firstSection, thirdSection, additionalFirstSection, additionalSecondSection);
     }
     
@@ -312,10 +312,10 @@ class SectionsTest {
         final int distance2 = 2;
         final int distance3 = 6;
         final int distance4 = 7;
-        final Section firstSection = new Section(first, second, distance1);
-        final Section secondSection = new Section(second, third, distance2);
-        final Section thirdSection = new Section(third, fourth, distance3);
-        final Section fourthSection = new Section(fourth, fifth, distance4);
+        final Section firstSection = new Section(first, second, distance1, "1호선");
+        final Section secondSection = new Section(second, third, distance2, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance3, "1호선");
+        final Section fourthSection = new Section(fourth, fifth, distance4, "1호선");
         
         final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         final Sections sections = new Sections(new HashSet<>(initSections));
@@ -346,8 +346,8 @@ class SectionsTest {
         
         final int distance1 = 3;
         final int distance2 = 2;
-        final Section firstSection = new Section(first, second, distance1);
-        final Section secondSection = new Section(second, third, distance2);
+        final Section firstSection = new Section(first, second, distance1, "1호선");
+        final Section secondSection = new Section(second, third, distance2, "1호선");
         final Set<Section> initSections1 = new HashSet<>(Set.of(firstSection, secondSection));
         
         final Sections sections = new Sections(initSections1);

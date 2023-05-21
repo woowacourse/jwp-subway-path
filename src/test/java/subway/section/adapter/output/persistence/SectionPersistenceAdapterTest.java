@@ -8,14 +8,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import subway.line.adapter.output.persistence.LineDao;
 import subway.line.adapter.output.persistence.LineEntity;
 import subway.line.domain.Line;
-import subway.line.domain.Subway;
 import subway.section.domain.Section;
 import subway.station.adapter.output.persistence.StationDao;
 import subway.station.adapter.output.persistence.StationEntity;
 
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
@@ -42,8 +42,8 @@ class SectionPersistenceAdapterTest {
         stationDao.insert(new StationEntity("잠실역"));
         stationDao.insert(new StationEntity("선릉역"));
         stationDao.insert(new StationEntity("청라역"));
-        final Section section1 = new Section("잠실역", "선릉역", 5L);
-        final Section section2 = new Section("선릉역", "청라역", 3L);
+        final Section section1 = new Section("잠실역", "선릉역", 5L, "1호선");
+        final Section section2 = new Section("선릉역", "청라역", 3L, "1호선");
         
         // expect
         assertThatNoException()
@@ -58,7 +58,7 @@ class SectionPersistenceAdapterTest {
         stationDao.insert(new StationEntity("선릉역"));
         
         // when
-        final Section section = new Section("잠실역", "선릉역", 5L);
+        final Section section = new Section("잠실역", "선릉역", 5L, "1호선");
         final Long id = adapter.save(section, lineId);
         
         // then
@@ -72,8 +72,8 @@ class SectionPersistenceAdapterTest {
         stationDao.insert(new StationEntity("잠실역"));
         stationDao.insert(new StationEntity("선릉역"));
         stationDao.insert(new StationEntity("청라역"));
-        final Section section1 = new Section("잠실역", "선릉역", 5L);
-        final Section section2 = new Section("선릉역", "청라역", 3L);
+        final Section section1 = new Section("잠실역", "선릉역", 5L, "1호선");
+        final Section section2 = new Section("선릉역", "청라역", 3L, "1호선");
         adapter.saveAll(Set.of(section1, section2), lineId);
         
         // expect
@@ -88,16 +88,16 @@ class SectionPersistenceAdapterTest {
         stationDao.insert(new StationEntity("잠실역"));
         stationDao.insert(new StationEntity("선릉역"));
         stationDao.insert(new StationEntity("청라역"));
-        final Section section1 = new Section("잠실역", "선릉역", 5L);
-        final Section section2 = new Section("선릉역", "청라역", 3L);
+        final Section section1 = new Section("잠실역", "선릉역", 5L, "1호선");
+        final Section section2 = new Section("선릉역", "청라역", 3L, "1호선");
         adapter.saveAll(Set.of(section1, section2), lineId1);
         
         final Long lineId2 = lineDao.insert(new LineEntity("2호선", "초록", 0L));
         stationDao.insert(new StationEntity("신도림역"));
         stationDao.insert(new StationEntity("홍대입구역"));
         stationDao.insert(new StationEntity("사당역"));
-        final Section section3 = new Section("신도림역", "홍대입구역", 5L);
-        final Section section4 = new Section("홍대입구역", "사당역", 3L);
+        final Section section3 = new Section("신도림역", "홍대입구역", 5L, "2호선");
+        final Section section4 = new Section("홍대입구역", "사당역", 3L, "2호선");
         adapter.saveAll(Set.of(section3, section4), lineId2);
         
         final Line line1 = new Line("1호선", "파랑", 0L);
@@ -114,15 +114,15 @@ class SectionPersistenceAdapterTest {
         stationDao.insert(new StationEntity("잠실역"));
         stationDao.insert(new StationEntity("선릉역"));
         stationDao.insert(new StationEntity("청라역"));
-        final Section section1 = new Section("잠실역", "선릉역", 5L);
-        final Section section2 = new Section("선릉역", "청라역", 3L);
+        final Section section1 = new Section("잠실역", "선릉역", 5L, "1호선");
+        final Section section2 = new Section("선릉역", "청라역", 3L, "1호선");
         
         lineDao.insert(new LineEntity("2호선", "초록", 0L));
         stationDao.insert(new StationEntity("신도림역"));
         stationDao.insert(new StationEntity("홍대입구역"));
         stationDao.insert(new StationEntity("사당역"));
-        final Section section3 = new Section("신도림역", "홍대입구역", 5L);
-        final Section section4 = new Section("홍대입구역", "사당역", 3L);
+        final Section section3 = new Section("신도림역", "홍대입구역", 5L, "2호선");
+        final Section section4 = new Section("홍대입구역", "사당역", 3L, "2호선");
         
         final Line line1 = new Line("1호선", "파랑", Set.of(section1, section2));
         final Line line2 = new Line("2호선", "초록", Set.of(section3, section4));

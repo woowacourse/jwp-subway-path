@@ -30,14 +30,14 @@ public class Line {
     }
     
     private Line(final String name, final String color, final Long extraCharge, final Sections sections) {
-        validateNameAndColor(name, color, extraCharge);
+        validate(name, color, extraCharge);
         this.name = name;
         this.color = color;
         this.extraCharge = extraCharge;
         this.sections = sections;
     }
     
-    private void validateNameAndColor(final String name, final String color, final Long extraCharge) {
+    private void validate(final String name, final String color, final Long extraCharge) {
         validateNullOrEmpty(name);
         validateNullOrEmpty(color);
         validateExtraCharge(extraCharge);
@@ -67,7 +67,7 @@ public class Line {
     }
     
     public void initAddStation(final String leftAdditional, final String rightAdditional, final long distance) {
-        sections.initAddStation(leftAdditional, rightAdditional, distance);
+        sections.initAddStation(leftAdditional, rightAdditional, distance, name);
     }
     
     public void addStation(

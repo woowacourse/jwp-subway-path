@@ -58,8 +58,8 @@ class LineTest {
         
         final int distance1 = 3;
         final int distance2 = 2;
-        final Section firstSection = new Section(first, second, distance1);
-        final Section secondSection = new Section(second, third, distance2);
+        final Section firstSection = new Section(first, second, distance1, "1호선");
+        final Section secondSection = new Section(second, third, distance2, "1호선");
         
         final Set<Section> initSections1 = new HashSet<>(Set.of(firstSection, secondSection));
         final Line line = new Line("1호선", "파랑", initSections1);

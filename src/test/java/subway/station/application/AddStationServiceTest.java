@@ -45,7 +45,7 @@ class AddStationServiceTest {
         // given
         final AddStationRequest request = new AddStationRequest(1L, "잠실역", Direction.RIGHT, "청라역", 3L);
         final Set<Section> sections = new HashSet<>();
-        sections.add(new Section("잠실역", "선릉역", 5L));
+        sections.add(new Section("잠실역", "선릉역", 5L, "1호선"));
         final Line line = new Line("1호선", "파랑", sections);
         given(getAllLinePort.getAll()).willReturn(Set.of(line));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line);

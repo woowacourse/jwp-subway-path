@@ -22,9 +22,9 @@ public class Sections {
         this.sections = sections;
     }
     
-    public void initAddStation(final String leftAdditional, final String rightAdditional, final long distance) {
+    public void initAddStation(final String leftAdditional, final String rightAdditional, final long distance, final String lineName) {
         validateInitAddCase();
-        sections.add(new Section(leftAdditional, rightAdditional, distance));
+        sections.add(new Section(leftAdditional, rightAdditional, distance, lineName));
     }
     
     private void validateInitAddCase() {

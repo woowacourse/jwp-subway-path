@@ -32,8 +32,8 @@ public class InitAddStationRequest {
         return List.of(new Station(firstStation), new Station(secondStation));
     }
     
-    public Section toSectionEntity() {
-        return new Section(firstStation, secondStation, distance);
+    public Section toSectionEntity(final String lineName) {
+        return new Section(firstStation, secondStation, distance, lineName);
     }
     
     public String getFirstStation() {

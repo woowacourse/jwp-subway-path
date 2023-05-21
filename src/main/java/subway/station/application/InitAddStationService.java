@@ -39,6 +39,6 @@ public class InitAddStationService implements InitAddStationUseCase {
         subway.initAddStation(line.getName(), request.getFirstStation(), request.getSecondStation(), request.getDistance());
         
         saveAllStationPort.saveAll(request.toEntities());
-        saveSectionPort.save(request.toSectionEntity(), request.getLineId());
+        saveSectionPort.save(request.toSectionEntity(line.getName()), request.getLineId());
     }
 }

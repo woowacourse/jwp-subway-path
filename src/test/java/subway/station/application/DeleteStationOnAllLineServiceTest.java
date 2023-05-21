@@ -42,7 +42,7 @@ class DeleteStationOnAllLineServiceTest {
     void stationId로_모든_노선에_있는_해당_역을_삭제한다() {
         // given
         final Set<Section> sections = new HashSet<>();
-        sections.add(new Section("잠실역", "선릉역", 5L));
+        sections.add(new Section("잠실역", "선릉역", 5L, "1호선"));
         final Line line = new Line("1호선", "파랑", sections);
         given(getAllLinePort.getAll()).willReturn(Set.of(line));
         given(getStationByIdPort.getStationById(1L)).willReturn(new Station("잠실역"));
@@ -56,7 +56,7 @@ class DeleteStationOnAllLineServiceTest {
     void 모든_노선에_존재하지_않는_역이면_예외_발생() {
         // given
         final Set<Section> sections = new HashSet<>();
-        sections.add(new Section("잠실역", "선릉역", 5L));
+        sections.add(new Section("잠실역", "선릉역", 5L, "1호선"));
         final Line line = new Line("1호선", "파랑", sections);
         given(getAllLinePort.getAll()).willReturn(Set.of(line));
         given(getStationByIdPort.getStationById(1L)).willReturn(new Station("청라역"));

@@ -7,7 +7,7 @@ Content-Type: application/json
 {
   "name": "1호선",
   "color": "파랑",
-  "extraCharge": 1000
+  "extraCharge": 500
 }
 
 > Expected response:
@@ -64,6 +64,7 @@ Accept: application/json
 > {
 >   "lineName": "1호선",
 >   "lineColor": "파랑",
+>   "extraCharge": 1000,
 >   "sortedStations": [
 >     "잠실역",
 >     "청라역",
@@ -114,7 +115,7 @@ Accept: application/json
 >     "가정역"
 >   ],
 >   "shortestDistance": 8,
->   "fee": 1250
+>   "fee": 2250
 > }
 
 
@@ -186,6 +187,7 @@ Accept: application/json
 >     {
 >       "lineName": "1호선",
 >       "lineColor": "파랑",
+>       "extraCharge": 1000,
 >       "sortedStations": [
 >         "잠실역",
 >         "청라역",
@@ -196,6 +198,7 @@ Accept: application/json
 >     {
 >       "lineName": "2호선",
 >       "lineColor": "초록",
+>       "extraCharge": 0,
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
@@ -210,6 +213,7 @@ Accept: application/json
 ###
 # @name deleteStation
 # @description Delete a specific station
+# 1호선 선릉역 삭제
 DELETE http://localhost:8080/stations/one
 Content-Type: application/json
 
@@ -221,7 +225,6 @@ Content-Type: application/json
 
 > Expected response:
 > Status: 204 No Content
-> 1호선 선릉역 삭제
 
 
 ###
@@ -238,6 +241,7 @@ Accept: application/json
 >     {
 >       "lineName": "1호선",
 >       "lineColor": "파랑",
+>       "extraCharge": 1000,
 >       "sortedStations": [
 >         "잠실역",
 >         "청라역",
@@ -247,6 +251,7 @@ Accept: application/json
 >     {
 >       "lineName": "2호선",
 >       "lineColor": "초록",
+>       "extraCharge": 0,
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
@@ -290,6 +295,7 @@ Accept: application/json
 >     {
 >       "lineName": "1호선",
 >       "lineColor": "파랑",
+>       "extraCharge": 1000,
 >       "sortedStations": [
 >         "잠실역",
 >         "청라역",
@@ -299,6 +305,7 @@ Accept: application/json
 >     {
 >       "lineName": "2호선",
 >       "lineColor": "초록",
+>       "extraCharge": 0,
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
@@ -332,7 +339,7 @@ Accept: application/json
 >     "신길역"
 >   ],
 >   "shortestDistance": 8,
->   "fee": 1250
+>   "fee": 2250
 > }
 
 
@@ -359,6 +366,7 @@ Accept: application/json
 >     {
 >       "lineName": "2호선",
 >       "lineColor": "초록",
+>       "extraCharge": 0,
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
@@ -368,6 +376,7 @@ Accept: application/json
 >     {
 >       "lineName": "1호선",
 >       "lineColor": "파랑",
+>       "extraCharge": 1000,
 >       "sortedStations": [
 >         "잠실역",
 >         "가정역"
@@ -401,6 +410,7 @@ Accept: application/json
 >     {
 >       "lineName": "2호선",
 >       "lineColor": "초록",
+>       "extraCharge": 0,
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",

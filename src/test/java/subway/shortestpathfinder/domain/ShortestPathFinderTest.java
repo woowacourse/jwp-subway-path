@@ -30,10 +30,10 @@ class ShortestPathFinderTest {
         long distance2 = 2L;
         long distance3 = 6L;
         long distance4 = 7L;
-        Section firstSection = new Section(first, second, distance1);
-        Section secondSection = new Section(second, third, distance2);
-        Section thirdSection = new Section(third, fourth, distance3);
-        Section fourthSection = new Section(fourth, fifth, distance4);
+        Section firstSection = new Section(first, second, distance1, "1호선");
+        Section secondSection = new Section(second, third, distance2, "1호선");
+        Section thirdSection = new Section(third, fourth, distance3, "1호선");
+        Section fourthSection = new Section(fourth, fifth, distance4, "1호선");
         
         Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
@@ -49,14 +49,14 @@ class ShortestPathFinderTest {
         distance2 = 6L;
         distance3 = 2L;
         distance4 = 2L;
-        firstSection = new Section(first, second, distance1);
-        secondSection = new Section(second, third, distance2);
-        thirdSection = new Section(third, fourth, distance3);
-        fourthSection = new Section(fourth, fifth, distance4);
+        firstSection = new Section(first, second, distance1, "2호선");
+        secondSection = new Section(second, third, distance2, "2호선");
+        thirdSection = new Section(third, fourth, distance3, "2호선");
+        fourthSection = new Section(fourth, fifth, distance4, "2호선");
         
         initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
-        final Line line2 = new Line("1호선", "파랑", initSections);
+        final Line line2 = new Line("2호선", "초록", initSections);
         final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(Set.of(line1, line2));
         
         // when
@@ -82,10 +82,10 @@ class ShortestPathFinderTest {
         long distance2 = 3L;
         long distance3 = 6L;
         long distance4 = 7L;
-        Section firstSection = new Section(first, second, distance1);
-        Section secondSection = new Section(second, third, distance2);
-        Section thirdSection = new Section(third, fourth, distance3);
-        Section fourthSection = new Section(fourth, fifth, distance4);
+        Section firstSection = new Section(first, second, distance1, "1호선");
+        Section secondSection = new Section(second, third, distance2, "1호선");
+        Section thirdSection = new Section(third, fourth, distance3, "1호선");
+        Section fourthSection = new Section(fourth, fifth, distance4, "1호선");
         
         Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
@@ -101,10 +101,10 @@ class ShortestPathFinderTest {
         distance2 = 6L;
         distance3 = 7L;
         distance4 = 8L;
-        firstSection = new Section(first, second, distance1);
-        secondSection = new Section(second, third, distance2);
-        thirdSection = new Section(third, fourth, distance3);
-        fourthSection = new Section(fourth, fifth, distance4);
+        firstSection = new Section(first, second, distance1, "2호선");
+        secondSection = new Section(second, third, distance2, "2호선");
+        thirdSection = new Section(third, fourth, distance3, "2호선");
+        fourthSection = new Section(fourth, fifth, distance4, "2호선");
         
         initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
@@ -129,10 +129,10 @@ class ShortestPathFinderTest {
         long distance2 = 3L;
         long distance3 = 6L;
         long distance4 = 7L;
-        Section firstSection = new Section(first, second, distance1);
-        Section secondSection = new Section(second, third, distance2);
-        Section thirdSection = new Section(third, fourth, distance3);
-        Section fourthSection = new Section(fourth, fifth, distance4);
+        Section firstSection = new Section(first, second, distance1, "1호선");
+        Section secondSection = new Section(second, third, distance2, "1호선");
+        Section thirdSection = new Section(third, fourth, distance3, "1호선");
+        Section fourthSection = new Section(fourth, fifth, distance4, "1호선");
         
         Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
@@ -148,10 +148,10 @@ class ShortestPathFinderTest {
         distance2 = 6L;
         distance3 = 7L;
         distance4 = 8L;
-        firstSection = new Section(first, second, distance1);
-        secondSection = new Section(second, third, distance2);
-        thirdSection = new Section(third, fourth, distance3);
-        fourthSection = new Section(fourth, fifth, distance4);
+        firstSection = new Section(first, second, distance1, "2호선");
+        secondSection = new Section(second, third, distance2, "2호선");
+        thirdSection = new Section(third, fourth, distance3, "2호선");
+        fourthSection = new Section(fourth, fifth, distance4, "2호선");
         
         initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
@@ -177,10 +177,10 @@ class ShortestPathFinderTest {
         long distance2 = 3L;
         long distance3 = 6L;
         long distance4 = 7L;
-        Section firstSection = new Section(first, second, distance1);
-        Section secondSection = new Section(second, third, distance2);
-        Section thirdSection = new Section(third, fourth, distance3);
-        Section fourthSection = new Section(fourth, fifth, distance4);
+        Section firstSection = new Section(first, second, distance1, "1호선");
+        Section secondSection = new Section(second, third, distance2, "1호선");
+        Section thirdSection = new Section(third, fourth, distance3, "1호선");
+        Section fourthSection = new Section(fourth, fifth, distance4, "1호선");
         
         Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         
@@ -196,10 +196,10 @@ class ShortestPathFinderTest {
         distance2 = 6L;
         distance3 = 7L;
         distance4 = 8L;
-        firstSection = new Section(first, second, distance1);
-        secondSection = new Section(second, third, distance2);
-        thirdSection = new Section(third, fourth, distance3);
-        fourthSection = new Section(fourth, fifth, distance4);
+        firstSection = new Section(first, second, distance1, "2호선");
+        secondSection = new Section(second, third, distance2, "2호선");
+        thirdSection = new Section(third, fourth, distance3, "2호선");
+        fourthSection = new Section(fourth, fifth, distance4, "2호선");
         
         initSections = Set.of(firstSection, secondSection, thirdSection, fourthSection);
         

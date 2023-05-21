@@ -45,7 +45,12 @@ public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, Get
                 .map(sectionEntity -> {
                     final StationEntity firstStationEntity = stationDao.findById(sectionEntity.getFirstStationId());
                     final StationEntity secondStationEntity = stationDao.findById(sectionEntity.getSecondStationId());
-                    return new Section(firstStationEntity.getName(), secondStationEntity.getName(), sectionEntity.getDistance());
+                    return new Section(
+                            firstStationEntity.getName(),
+                            secondStationEntity.getName(),
+                            sectionEntity.getDistance(),
+                            lineEntity.getName()
+                    );
                 })
                 .collect(Collectors.toSet());
         
@@ -66,7 +71,12 @@ public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, Get
                 .map(sectionEntity -> {
                     final StationEntity first = stationDao.findById(sectionEntity.getFirstStationId());
                     final StationEntity second = stationDao.findById(sectionEntity.getSecondStationId());
-                    return new Section(first.getName(), second.getName(), sectionEntity.getDistance());
+                    return new Section(
+                            first.getName(),
+                            second.getName(),
+                            sectionEntity.getDistance(),
+                            lineEntity.getName()
+                    );
                 })
                 .collect(Collectors.toSet());
         

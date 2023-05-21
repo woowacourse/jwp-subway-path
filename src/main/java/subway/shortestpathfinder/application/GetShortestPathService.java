@@ -1,8 +1,9 @@
-package subway.shortestpathfinder.application.port.input;
+package subway.shortestpathfinder.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.application.port.output.GetAllLinePort;
+import subway.shortestpathfinder.application.port.input.GetShortestPathUseCase;
 import subway.shortestpathfinder.domain.ShortestPathFinder;
 import subway.shortestpathfinder.domain.ShortestPathResult;
 import subway.shortestpathfinder.dto.GetShortestPathResponse;

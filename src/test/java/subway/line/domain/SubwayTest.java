@@ -138,10 +138,10 @@ class SubwayTest {
         final int distance2 = 2;
         final int distance3 = 6;
         final int distance4 = 7;
-        final Section firstSection = new Section(first, second, distance1);
-        final Section secondSection = new Section(second, third, distance2);
-        final Section thirdSection = new Section(third, fourth, distance3);
-        final Section fourthSection = new Section(fourth, fifth, distance4);
+        final Section firstSection = new Section(first, second, distance1, "1호선");
+        final Section secondSection = new Section(second, third, distance2, "1호선");
+        final Section thirdSection = new Section(third, fourth, distance3, "1호선");
+        final Section fourthSection = new Section(fourth, fifth, distance4, "1호선");
         
         final Set<Section> initSections1 = new HashSet<>(Set.of(firstSection, secondSection));
         final Set<Section> initSections2 = new HashSet<>(Set.of(thirdSection, fourthSection));
