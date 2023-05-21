@@ -55,7 +55,8 @@ public class PathServiceTest {
             // then
             assertAll(
                     () -> assertThat(result.getPath()).containsExactly("A", "B", "D"),
-                    () -> assertThat(result.getDistance()).isEqualTo(4)
+                    () -> assertThat(result.getDistance()).isEqualTo(4),
+                    () -> assertThat(result.getFare()).isEqualTo(1250)
             );
         }
     }

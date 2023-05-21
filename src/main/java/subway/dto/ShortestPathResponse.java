@@ -7,14 +7,16 @@ public class ShortestPathResponse {
 
     private final List<String> path;
     private final int distance;
+    private final int fare;
 
-    public ShortestPathResponse(final List<String> path, final int distance) {
+    public ShortestPathResponse(final List<String> path, final int distance, final int fare) {
         this.path = path;
         this.distance = distance;
+        this.fare = fare;
     }
 
-    public static ShortestPathResponse from(Path path) {
-        return new ShortestPathResponse(path.getAllStationName(), path.getDistance().getValue());
+    public static ShortestPathResponse of(final Path path, final int fare) {
+        return new ShortestPathResponse(path.getAllStationName(), path.getDistance().getValue(), fare);
     }
 
     public List<String> getPath() {
@@ -23,5 +25,9 @@ public class ShortestPathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

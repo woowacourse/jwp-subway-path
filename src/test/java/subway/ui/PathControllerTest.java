@@ -73,7 +73,8 @@ class PathControllerTest {
             // then
             assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                    () -> assertThat(response.body().jsonPath().getList("path")).containsExactly("A", "B", "D")
+                    () -> assertThat(response.body().jsonPath().getList("path")).containsExactly("A", "B", "D"),
+                    () -> assertThat(response.body().jsonPath().getInt("fare")).isEqualTo(1250)
             );
         }
     }
