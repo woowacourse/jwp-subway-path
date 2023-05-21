@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ import subway.ui.dto.section.SectionDeleteRequest;
 @Transactional
 @AutoConfigureMockMvc
 @Sql("/section_initialize.sql")
+@ActiveProfiles("test")
 class SectionControllerIntegrationTest {
     private static final Long lineId = 1L;
     private static final String baseUrl = "/lines/{lineId}/sections";

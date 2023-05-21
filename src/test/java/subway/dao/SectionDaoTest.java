@@ -11,12 +11,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.dto.SectionDto;
 import subway.dao.entity.SectionEntity;
 
 @JdbcTest
 @Sql("/section_initialize.sql")
+@ActiveProfiles("test")
 class SectionDaoTest {
     private static final long lineId = 1L;
     @Autowired
