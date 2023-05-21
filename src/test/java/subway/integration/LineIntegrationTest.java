@@ -110,8 +110,8 @@ public class LineIntegrationTest extends IntegrationTest {
 
         LineStationRequest lineStationRequest1 = new LineStationRequest(stationId1, stationId2, 10);
         LineStationRequest lineStationRequest2 = new LineStationRequest(stationId1, stationId3, 5);
-        ExtractableResponse<Response> registerStationResponse1 = 지하철_노선에_역_등록_요청(lineId1, lineStationRequest1);
-        ExtractableResponse<Response> registerStationResponse2 = 지하철_노선에_역_등록_요청(lineId2, lineStationRequest2);
+        지하철_노선에_역_등록_요청(lineId1, lineStationRequest1);
+        지하철_노선에_역_등록_요청(lineId2, lineStationRequest2);
 
         // when
         ExtractableResponse<Response> response = RestAssured

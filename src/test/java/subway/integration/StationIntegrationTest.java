@@ -43,7 +43,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void createStationWithDuplicateName() {
         // given
         StationRequest request = new StationRequest("강남역");
-        ExtractableResponse<Response> response1 = 지하철_역_생성_요청(request);
+        지하철_역_생성_요청(request);
 
         // when
         ExtractableResponse<Response> response2 = RestAssured.given().log().all()
@@ -128,7 +128,7 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // then
         StationResponse stationResponse = response.as(StationResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(stationResponse.getName()).isEqualTo("신천역");
         assertThat(stationResponse.getId()).isEqualTo(Long.parseLong(stationId));
     }
