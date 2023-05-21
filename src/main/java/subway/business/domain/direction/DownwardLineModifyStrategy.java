@@ -23,12 +23,12 @@ public class DownwardLineModifyStrategy implements LineModifyStrategy {
         Section sectionToAddUpward = Section.createToSave(
                 sectionToRemove.getUpwardStation(),
                 station,
-                sectionToRemove.calculateRemainingDistance(distance)
+                distance
         );
         Section sectionToAddDownward = Section.createToSave(
                 station,
                 sectionToRemove.getDownwardStation(),
-                distance
+                sectionToRemove.calculateRemainingDistance(distance)
         );
         int indexToAdd = sections.indexOf(sectionToRemove);
         sections.remove(sectionToRemove);

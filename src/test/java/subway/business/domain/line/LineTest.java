@@ -53,7 +53,8 @@ class LineTest {
         line.addStation("강남역", "몽촌토성역", Direction.UPWARD, 2);
 
         assertThat(line.getSections()).hasSize(2);
-        assertThat(line.getSections().get(0).getUpwardStation().getName()).isEqualTo("잠실역");
+        assertThat(line.getSections().get(1).getUpwardStation().getName()).isEqualTo("강남역");
+        assertThat(line.getSections().get(1).getDistance()).isEqualTo(2);
     }
 
     @DisplayName("이웃 역 기준 하행 방향에 역을 추가한다.")
@@ -63,7 +64,8 @@ class LineTest {
         line.addStation("강남역", "잠실역", Direction.DOWNWARD, 2);
 
         assertThat(line.getSections()).hasSize(2);
-        assertThat(line.getSections().get(1).getDownwardStation().getName()).isEqualTo("몽촌토성역");
+        assertThat(line.getSections().get(0).getDownwardStation().getName()).isEqualTo("강남역");
+        assertThat(line.getSections().get(0).getDistance()).isEqualTo(2);
     }
 
     @DisplayName("상행 종점에 역을 추가한다.")
@@ -74,6 +76,7 @@ class LineTest {
 
         assertThat(line.getSections()).hasSize(2);
         assertThat(line.getSections().get(0).getUpwardStation().getName()).isEqualTo("까치산역");
+        assertThat(line.getSections().get(0).getDistance()).isEqualTo(2);
     }
 
     @DisplayName("하행 종점에 역을 추가한다.")
@@ -84,6 +87,8 @@ class LineTest {
 
         assertThat(line.getSections()).hasSize(2);
         assertThat(line.getSections().get(1).getDownwardStation().getName()).isEqualTo("까치산역");
+        assertThat(line.getSections().get(1).getDistance()).isEqualTo(2);
+
     }
 
     @DisplayName("삭제하려는 역이 노선에 존재하지 않는 경우 예외가 발생한다.")
