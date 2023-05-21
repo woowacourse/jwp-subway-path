@@ -16,6 +16,7 @@ import subway.domain.entity.Section;
 import subway.domain.entity.Station;
 import subway.domain.exception.AbnormalRoutedStationsException;
 import subway.domain.exception.EmptyRoutedStationsSearchResultException;
+import subway.domain.exception.JgraphtException;
 import subway.domain.vo.Distance;
 
 // TODO 노선 별 요금 적용을 위해 StationEdge로 변경, 생성할 때 Line 전달받아 Edge에 저장하기 or Section이 Line을 가지면 해결되는 문제 아닌가?
@@ -33,10 +34,14 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
         validateMultiRoutes(sections);
 
         RoutedStations stations = new RoutedStations(DefaultWeightedEdge.class);
-        addVertexes(sections, stations);
-        addEdges(sections, stations);
-
-        return stations;
+        Set<Station> addingStations = getAllStations(sections);
+        try {
+            addVertexes(addingStations, stations);
+            addEdges(sections, stations);
+            return stations;
+        } catch (RuntimeException exception) {
+            throw new JgraphtException(exception.getMessage());
+        }
     }
 
     private static void validateSectionsDuplication(final List<Section> sections) {
@@ -85,18 +90,18 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
         return !leftStations.contains(station) && rightStations.contains(station);
     }
 
-    private static void addVertexes(final List<Section> sections,
-                                    final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
-        for (Station station : getAllStations(sections)) {
-            stations.addVertex(station);
-        }
-    }
-
     private static Set<Station> getAllStations(List<Section> sections) {
         return sections.stream()
                 .map(Section::getStations)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+
+    private static void addVertexes(final Set<Station> addingStations,
+                                    final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
+        for (Station station : addingStations) {
+            stations.addVertex(station);
+        }
     }
 
     private static void addEdges(final List<Section> sections,
@@ -153,7 +158,7 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
 
         return orderedStations;
     }
-    
+
     private Optional<Station> findStart() {
         return vertexSet().stream()
                 .filter(station -> incomingEdgesOf(station).isEmpty())

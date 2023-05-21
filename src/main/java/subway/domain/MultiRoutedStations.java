@@ -12,6 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import subway.domain.entity.Line;
 import subway.domain.entity.Section;
 import subway.domain.entity.Station;
+import subway.domain.exception.JgraphtException;
 
 public class MultiRoutedStations extends WeightedMultigraph<Station, LineClassifiableEdge> {
 
@@ -22,14 +23,22 @@ public class MultiRoutedStations extends WeightedMultigraph<Station, LineClassif
     // TODO Section이 Line을 가지면 Map으로 조회해 전달할 필요가 없는데 뭐가 더 좋을까?
     public static MultiRoutedStations from(Map<Line, RoutedStations> sectionsByLine) {
         MultiRoutedStations stations = new MultiRoutedStations(LineClassifiableEdge.class);
-
         Set<Station> addingStations = getAllStations(new ArrayList<>(sectionsByLine.values()));
-        addVertex(addingStations, stations);
-        for (Entry<Line, RoutedStations> entry : sectionsByLine.entrySet()) {
-            addEdge(entry.getKey(), entry.getValue(), stations);
+        
+        try {
+            addVertex(addingStations, stations);
+            addEdges(sectionsByLine, stations);
+            return stations;
+        } catch (RuntimeException exception) {
+            throw new JgraphtException(exception.getMessage());
         }
+    }
 
-        return stations;
+    private static Set<Station> getAllStations(final List<RoutedStations> routedStations) {
+        return routedStations.stream()
+                .map(AbstractBaseGraph::vertexSet)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 
     private static void addVertex(final Set<Station> adding,
@@ -39,11 +48,10 @@ public class MultiRoutedStations extends WeightedMultigraph<Station, LineClassif
         }
     }
 
-    private static Set<Station> getAllStations(final List<RoutedStations> routedStations) {
-        return routedStations.stream()
-                .map(AbstractBaseGraph::vertexSet)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+    private static void addEdges(final Map<Line, RoutedStations> sectionsByLine, final MultiRoutedStations stations) {
+        for (Entry<Line, RoutedStations> entry : sectionsByLine.entrySet()) {
+            addEdge(entry.getKey(), entry.getValue(), stations);
+        }
     }
 
     private static void addEdge(final Line line,
