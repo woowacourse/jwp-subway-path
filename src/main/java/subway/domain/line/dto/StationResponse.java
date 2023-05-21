@@ -1,6 +1,6 @@
-package subway.domain.station.dto;
+package subway.domain.line.dto;
 
-import subway.domain.station.entity.StationEntity;
+import subway.domain.line.entity.StationEntity;
 
 import java.util.Objects;
 

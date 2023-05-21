@@ -1,7 +1,7 @@
 package subway.domain.path.dto;
 
 import subway.domain.path.domain.Path;
-import subway.domain.station.dto.StationResponse;
+import subway.domain.line.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
