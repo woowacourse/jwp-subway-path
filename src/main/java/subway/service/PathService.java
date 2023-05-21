@@ -32,14 +32,14 @@ public class PathService {
         Station destination = stationDao.findById(request.getDestinationId())
                 .orElseThrow(OptionalHasNoStationException::new);
 
-        PathFinder pathFinder = PathFinder.from(sectionRepository.readAllSections());
-        FarePolicy farePolicy = DistanceFarePolicy.getInstance();
+        PathFinder pathFinder = PathFinder.from(sectionRepository.readAllSections(), DistanceFarePolicy.getInstance());
 
         Path shortestPath = Path.from(
                 pathFinder.findShortestPath(source, destination),
-                pathFinder.findShortestDistance(source, destination)
+                pathFinder.findShortestDistance(source, destination),
+                pathFinder.calculateFare(source, destination)
         );
 
-        return DtoMapper.convertToPathResponse(shortestPath, shortestPath.calculateFare(farePolicy));
+        return DtoMapper.convertToPathResponse(shortestPath);
     }
 }

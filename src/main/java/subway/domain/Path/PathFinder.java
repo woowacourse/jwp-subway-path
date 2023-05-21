@@ -3,22 +3,28 @@ package subway.domain.Path;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.fare.FarePolicy;
+import subway.domain.line.Line;
+import subway.domain.line.Lines;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PathFinder {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath;
+    private final FarePolicy farePolicy;
 
-    public PathFinder(DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
+    public PathFinder(DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath, FarePolicy farePolicy) {
         this.dijkstraShortestPath = dijkstraShortestPath;
+        this.farePolicy = farePolicy;
     }
 
-    public static PathFinder from(List<Section> allSections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph =
-                new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public static PathFinder from(List<Section> allSections, FarePolicy farePolicy) {
+        WeightedMultigraph<Station, SectionEdge> graph =
+                new WeightedMultigraph<>(SectionEdge.class);
 
         if (allSections.size() == 0) {
             throw new IllegalArgumentException("[ERROR] 경로를 찾을 구간들이 존재하지 않습니다.");
@@ -27,10 +33,13 @@ public class PathFinder {
         for (Section section : allSections) {
             graph.addVertex(section.getUpward());
             graph.addVertex(section.getDownward());
-            graph.setEdgeWeight(graph.addEdge(section.getUpward(), section.getDownward()), section.getDistance());
+            graph.addEdge(section.getUpward(), section.getDownward(), new SectionEdge(section.getLine()));
+
+            SectionEdge edge = graph.getEdge(section.getUpward(), section.getDownward());
+            graph.setEdgeWeight(edge, section.getDistance());
         }
 
-        return new PathFinder(new DijkstraShortestPath<>(graph));
+        return new PathFinder(new DijkstraShortestPath<>(graph), farePolicy);
     }
 
     public List<Station> findShortestPath(Station source, Station destination) {
@@ -48,5 +57,20 @@ public class PathFinder {
     public int findShortestDistance(Station source, Station destination) {
         validateStations(source, destination);
         return (int) dijkstraShortestPath.getPathWeight(source, destination);
+    }
+
+
+    public int calculateFare(Station source, Station destination) {
+        List<SectionEdge> sectionEdges = dijkstraShortestPath
+                .getPath(source, destination)
+                .getEdgeList();
+
+        List<Line> involvedLines = sectionEdges.stream()
+                .map(SectionEdge::getLine)
+                .collect(Collectors.toList());
+
+        int shortestDistance = findShortestDistance(source, destination);
+
+        return farePolicy.calculateFare(shortestDistance, Lines.from(involvedLines));
     }
 }

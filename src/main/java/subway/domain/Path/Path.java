@@ -10,18 +10,16 @@ public class Path {
 
     private final List<Station> orderedStations;
     private final int distance;
+    private final int fare;
 
-    private Path(List<Station> orderedStations, int distance) {
+    public Path(List<Station> orderedStations, int distance, int fare) {
         this.orderedStations = orderedStations;
         this.distance = distance;
+        this.fare = fare;
     }
 
-    public static Path from(List<Station> orderedStations, int pathDistance) {
-        return new Path(new ArrayList<>(orderedStations), pathDistance);
-    }
-
-    public int calculateFare(FarePolicy farePolicy) {
-        return farePolicy.calculateFare(distance);
+    public static Path from(List<Station> orderedStations, int pathDistance, int fare) {
+        return new Path(new ArrayList<>(orderedStations), pathDistance, fare);
     }
 
     public List<Station> getOrderedStations() {
@@ -30,5 +28,9 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

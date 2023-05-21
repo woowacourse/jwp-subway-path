@@ -34,8 +34,8 @@ public class DtoMapper {
         );
     }
 
-    public static PathResponse convertToPathResponse(Path path, int fare) {
+    public static PathResponse convertToPathResponse(Path path) {
         List<StationResponse> stationResponses = convertToStationResponses(path.getOrderedStations());
-        return new PathResponse(stationResponses, path.getDistance(), fare);
+        return new PathResponse(stationResponses, path.getDistance(), path.getFare());
     }
 }

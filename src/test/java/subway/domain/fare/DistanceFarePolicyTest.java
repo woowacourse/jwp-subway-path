@@ -8,9 +8,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.domain.line.Line;
+import subway.domain.line.Lines;
+
+import java.util.List;
 
 @DisplayName("distanceFarePolicy 기능 테스트")
 class DistanceFarePolicyTest {
+
+    private final Line _1호선 = Line.of(1L, "1호선", "남색", 0);
+    private final Lines lines = Lines.from(List.of(_1호선));
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 10})
@@ -20,7 +27,7 @@ class DistanceFarePolicyTest {
         FarePolicy farePolicy = DistanceFarePolicy.getInstance();
 
         // when
-        int fare = farePolicy.calculateFare(distance);
+        int fare = farePolicy.calculateFare(distance, lines);
 
         // then
         assertThat(fare).isEqualTo(1250);
@@ -34,7 +41,7 @@ class DistanceFarePolicyTest {
         FarePolicy farePolicy = DistanceFarePolicy.getInstance();
 
         // when
-        int fare = farePolicy.calculateFare(distance);
+        int fare = farePolicy.calculateFare(distance, lines);
 
         // then
         assertThat(fare).isEqualTo(expected);
@@ -49,7 +56,7 @@ class DistanceFarePolicyTest {
         FarePolicy farePolicy = DistanceFarePolicy.getInstance();
 
         // when
-        int fare = farePolicy.calculateFare(distance);
+        int fare = farePolicy.calculateFare(distance, lines);
 
         // then
         assertThat(fare).isEqualTo(expected);
@@ -62,7 +69,7 @@ class DistanceFarePolicyTest {
         FarePolicy farePolicy = DistanceFarePolicy.getInstance();
 
         // then
-        assertThatThrownBy(() -> farePolicy.calculateFare(-1))
+        assertThatThrownBy(() -> farePolicy.calculateFare(-1, lines))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 요금 계산 상 거리는 음수가 될 수 없습니다.");
     }

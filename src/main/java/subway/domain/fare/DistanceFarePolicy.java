@@ -1,5 +1,10 @@
 package subway.domain.fare;
 
+import subway.domain.line.Line;
+import subway.domain.line.Lines;
+
+import java.util.List;
+
 public class DistanceFarePolicy implements FarePolicy {
 
     public static final int DEFAULT_FARE = 1250;
@@ -17,14 +22,17 @@ public class DistanceFarePolicy implements FarePolicy {
     }
 
     @Override
-    public int calculateFare(int distance) {
+    public int calculateFare(int distance, Lines lines) {
         validateNegativeDistance(distance);
 
+        // lines에서 extraFare가 가장 비싼 거를 찾아서 더해주기
+        int mostExpensiveExtraFare = lines.findMostExpensiveExtraFare();
+
         if (distance <= FIRST_DISTANCE_CRITERION) {
-            return DEFAULT_FARE;
+            return DEFAULT_FARE + mostExpensiveExtraFare;
         }
 
-        return DEFAULT_FARE + calculateOverFare(distance);
+        return DEFAULT_FARE + calculateOverFare(distance) + mostExpensiveExtraFare;
     }
 
     private void validateNegativeDistance(int distance) {
