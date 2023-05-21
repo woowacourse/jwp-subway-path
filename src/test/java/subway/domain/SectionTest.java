@@ -10,7 +10,9 @@ import subway.domain.section.Section;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static subway.common.fixture.DomainFixture.*;
+import static subway.common.fixture.DomainFixture.디노;
+import static subway.common.fixture.DomainFixture.조앤;
+import static subway.common.fixture.DomainFixture.후추;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

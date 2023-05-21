@@ -65,6 +65,10 @@ public class Section {
         return to;
     }
 
+    public Distance getDistance() {
+        return distance;
+    }
+
     public int getDistanceValue() {
         return distance.getDistance();
     }
