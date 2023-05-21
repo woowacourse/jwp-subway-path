@@ -173,4 +173,11 @@ public class LineService {
         //TODO: Line의 Stations조회 전용 LineResponse생성?
         return new LineResponse(id, lineEntity.getName(), lineEntity.getColor(), stationsNamesInOrder);
     }
+
+    public Long deleteLineById(Long id) {
+        lineDao.findLineEntityById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 노선이 존재하지 않습니다"));
+
+        return lineDao.remove(id);
+    }
 }

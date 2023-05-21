@@ -201,27 +201,34 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-//    @DisplayName("지하철 노선을 제거한다.")
-//    @Test
-//    void deleteLine() {
-//        // given
-//        ExtractableResponse<Response> createResponse = RestAssured
-//                .given().log().all()
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .body(lineRequest1)
-//                .when().post("/lines")
-//                .then().log().all().
-//                extract();
-//
-//        // when
-//        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-//        ExtractableResponse<Response> response = RestAssured
-//                .given().log().all()
-//                .when().delete("/lines/{lineId}", lineId)
-//                .then().log().all()
-//                .extract();
-//
-//        // then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-//    }
+    @DisplayName("지하철 노선을 제거한다.")
+    @Test
+    void deleteLine() {
+        // given
+        StationEntity station = new StationEntity(1L, "역삼역", 2L, 10, 1L);
+        StationEntity nextStation = new StationEntity(2L, "선릉역", null, 0, 1L);
+        stationDao.insert(station);
+        stationDao.insert(nextStation);
+
+        LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
+        //lineDao.insert(new LineEntity(1L, lineRequest1.getName(), lineRequest1.getColor(), 1L));
+
+        ExtractableResponse<Response> createResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineCreateRequest)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .when().delete("/lines/{lineId}", 1)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }
