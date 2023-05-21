@@ -4,12 +4,12 @@ import subway.domain.line.Lines;
 
 public class DistanceFarePolicy implements FarePolicy {
 
-    public static final int DEFAULT_FARE = 1250;
-    public static final int FIRST_DISTANCE_CRITERION = 10;
-    public static final int SECOND_DISTANCE_CRITERION = 50;
-    public static final int FIRST_EXTRA_DISTANCE_UNIT = 5;
-    public static final int SECOND_EXTRA_DISTANCE_UNIT = 8;
-    public static final int EXTRA_FARE_UNIT = 100;
+    private static final int DEFAULT_FARE = 1250;
+    private static final int FIRST_DISTANCE_CRITERION = 10;
+    private static final int SECOND_DISTANCE_CRITERION = 50;
+    private static final int FIRST_EXTRA_DISTANCE_UNIT = 5;
+    private static final int SECOND_EXTRA_DISTANCE_UNIT = 8;
+    private static final int EXTRA_FARE_UNIT = 100;
 
     private DistanceFarePolicy() {
     }

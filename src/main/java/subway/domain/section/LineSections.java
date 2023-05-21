@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class LineSections {
 
-    public static final int MIDDLE_SECTION_SIZE = 2;
+    private static final int MIDDLE_SECTION_SIZE = 2;
 
     private final Line line;
     private final Map<Station, List<Section>> sectionsByStation;

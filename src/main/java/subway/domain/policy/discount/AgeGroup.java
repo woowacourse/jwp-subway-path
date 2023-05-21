@@ -1,6 +1,7 @@
 package subway.domain.policy.discount;
 
 public enum AgeGroup {
+
     BABY {
         @Override
         int calculate(int fare) {
