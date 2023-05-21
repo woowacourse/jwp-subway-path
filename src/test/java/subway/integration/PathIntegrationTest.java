@@ -86,5 +86,41 @@ public class PathIntegrationTest extends IntegrationTest {
                     () -> assertThat(documentContext.read("$.route[5].name", String.class)).isEqualTo("신도림")
             );
         }
+
+        @Test
+        @DisplayName("성공 - 50km 초과 추가 운임")
+        void success_50km_up() {
+            // given
+            final ShortestPathRequest request = new ShortestPathRequest("온수", "신대방");
+
+            // when
+            final ExtractableResponse<Response> response = RestAssured
+                    .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().get("/path")
+                    .then()
+                    .extract();
+
+            // then
+            final Configuration conf = Configuration.defaultConfiguration();
+            final DocumentContext documentContext = JsonPath.using(conf).parse(response.asString());
+
+            assertAll(
+                    () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                    () -> assertThat(documentContext.read("$.distance", Integer.class)).isEqualTo(68),
+                    () -> assertThat(documentContext.read("$.fee", Integer.class)).isEqualTo(2350),
+                    () -> assertThat(documentContext.read("$.route.size()", Integer.class)).isEqualTo(9),
+                    () -> assertThat(documentContext.read("$.route[0].name", String.class)).isEqualTo("온수"),
+                    () -> assertThat(documentContext.read("$.route[1].name", String.class)).isEqualTo("천왕"),
+                    () -> assertThat(documentContext.read("$.route[2].name", String.class)).isEqualTo("광명사거리"),
+                    () -> assertThat(documentContext.read("$.route[3].name", String.class)).isEqualTo("철산"),
+                    () -> assertThat(documentContext.read("$.route[4].name", String.class)).isEqualTo("가산디지털단지"),
+                    () -> assertThat(documentContext.read("$.route[5].name", String.class)).isEqualTo("남구로"),
+                    () -> assertThat(documentContext.read("$.route[6].name", String.class)).isEqualTo("대림"),
+                    () -> assertThat(documentContext.read("$.route[7].name", String.class)).isEqualTo("구로디지털단지"),
+                    () -> assertThat(documentContext.read("$.route[8].name", String.class)).isEqualTo("신대방")
+            );
+        }
     }
 }

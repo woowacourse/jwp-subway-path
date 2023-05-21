@@ -14,4 +14,4 @@ INSERT INTO section(line_id, distance, previous_station_id, next_station_id) VAL
                                                                                    (1, 4, 11, 5),
                                                                                    (2, 4, 12, 7),
                                                                                    (2, 4, 7, 13),
-                                                                                   (2, 4, 13, 14);
+                                                                                   (2, 40, 13, 14);
