@@ -327,6 +327,44 @@ HTTP/1.1 204 No Content
 
 ---
 
+## Path API
+
+### Path 조회
+
+Request
+```http
+GET /paths?upStationId=1&downStationId=3 HTTP/1.1
+Host: localhost:8080
+...
+```
+
+Response
+```http
+HTTP/1.1 200 OK
+...
+
+{
+    "stations": [
+        {
+            "id": 1,
+            "name": "청라언덕역"
+        },
+        {
+            "id": 2,
+            "name": "반월당역"
+        },
+        {
+            "id": 3,
+            "name": "경대병원역"
+        }
+    ],
+    "distance": 16,
+    "fare": 1450
+}
+```
+
+---
+
 
 ## 비즈니스 규칙
 
