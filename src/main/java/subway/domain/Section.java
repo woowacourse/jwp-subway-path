@@ -29,7 +29,10 @@ public class Section {
         if(direction == Direction.UP) {
             return upStation.equals(baseStation);
         }
-        return downStation.equals(baseStation);
+        if(direction == Direction.DOWN) {
+            return downStation.equals(baseStation);
+        }
+        return false;
     }
 
     @Override
