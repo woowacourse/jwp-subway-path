@@ -1,4 +1,4 @@
-create table if not exists stations
+create table if not exists station
 (
     id   bigint       not null auto_increment,
     name varchar(255) not null unique,
@@ -13,7 +13,7 @@ create table if not exists line
     primary key (id)
 );
 
-create table if not exists sections
+create table if not exists section
 (
     id              bigint  not null auto_increment,
     distance        int     not null,

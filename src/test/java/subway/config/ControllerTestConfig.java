@@ -30,8 +30,8 @@ public abstract class ControllerTestConfig {
 
     @AfterEach
     void tearDown() {
-        jdbcTemplate.update("TRUNCATE TABLE stations");
-        jdbcTemplate.update("TRUNCATE TABLE sections");
+        jdbcTemplate.update("TRUNCATE TABLE station");
+        jdbcTemplate.update("TRUNCATE TABLE section");
         jdbcTemplate.update("TRUNCATE TABLE line");
     }
 }
