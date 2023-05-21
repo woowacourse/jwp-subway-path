@@ -9,17 +9,21 @@ import java.util.List;
 public final class FareCalculator {
     private final DistanceFareStrategy distanceFareStrategy;
     private final LineAdditionalFareStrategy lineAdditionalFareStrategy;
+    private final AgeFareStrategy ageFareStrategy;
 
-    public FareCalculator(final DistanceFareStrategy distanceFareStrategy, final LineAdditionalFareStrategy lineAdditionalFareStrategy) {
+    public FareCalculator(final DistanceFareStrategy distanceFareStrategy, final LineAdditionalFareStrategy lineAdditionalFareStrategy, final AgeFareStrategy ageFareStrategy) {
         this.distanceFareStrategy = distanceFareStrategy;
         this.lineAdditionalFareStrategy = lineAdditionalFareStrategy;
+        this.ageFareStrategy = ageFareStrategy;
     }
 
-    public int of(final List<PathEdgeProxy> shortest) {
+    public int of(final List<PathEdgeProxy> shortest, final int age) {
         final int distance = shortest.stream()
                 .mapToInt(PathEdgeProxy::getDistance)
                 .sum();
 
-        return distanceFareStrategy.calculate(distance) + lineAdditionalFareStrategy.calculate(shortest);
+        final int fare = distanceFareStrategy.calculate(distance) +
+                lineAdditionalFareStrategy.calculate(shortest);
+        return ageFareStrategy.calculate(age, fare);
     }
 }

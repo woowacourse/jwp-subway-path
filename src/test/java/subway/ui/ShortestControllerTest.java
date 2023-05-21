@@ -36,11 +36,11 @@ class ShortestControllerTest {
         RestAssured.port = port;
     }
 
-    @DisplayName("한 노선에서 최단 경로를 조회할 수 있다")
+    @DisplayName("한 노선에서 최단 경로와 요금을 조회할 수 있다")
     @Test
     void getDijkstraShortestPath() {
         //given
-        Long lineId = lineService.saveLine(new LineRequest("1호선", "red")).getId();
+        Long lineId = lineService.saveLine(new LineRequest("1호선", "red", 500)).getId();
 
         Long stationId1 = stationService.saveStation(new StationRequest("광안역")).getId();
         Long stationId2 = stationService.saveStation(new StationRequest("전포역")).getId();
@@ -51,10 +51,12 @@ class ShortestControllerTest {
 
         //when, then
         given()
+                .queryParam("age", 10)
                 .get("/paths/start/{start-station-id}/end/{end-station-id}", stationId1, stationId3)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("totalDistance", equalTo(10));
+                .body("totalDistance", equalTo(10))
+                .body("totalCost", equalTo(700));
     }
 
     /**
@@ -85,6 +87,7 @@ class ShortestControllerTest {
 
         //when, then
         given()
+                .queryParam("age", 20)
                 .get("/paths/start/{start-station-id}/end/{end-station-id}", source, destination)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())

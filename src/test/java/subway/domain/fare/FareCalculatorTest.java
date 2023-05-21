@@ -21,6 +21,8 @@ class FareCalculatorTest {
     private DistanceFareStrategy distanceFareStrategy;
     @Mock
     private LineAdditionalFareStrategy lineAdditionalFareStrategy;
+    @Mock
+    private AgeFareStrategy ageFareStrategy;
 
     @DisplayName("모든 정책을 반영한 요금을 계산할 수 있다")
     @Test
@@ -30,8 +32,10 @@ class FareCalculatorTest {
                 .thenReturn(1250);
         when(lineAdditionalFareStrategy.calculate(anyList()))
                 .thenReturn(1000);
+        when(ageFareStrategy.calculate(anyInt(), anyInt()))
+                .thenReturn(2250);
 
         //when, then
-        assertThat(fareCalculator.of(emptyList())).isEqualTo(2250);
+        assertThat(fareCalculator.of(emptyList(), 20)).isEqualTo(2250);
     }
 }

@@ -26,7 +26,7 @@ public class ShortestService {
         this.fareCalculator = fareCalculator;
     }
 
-    public ShortestResponse findShortest(final Long startId, final Long endId) {
+    public ShortestResponse findShortest(final Long startId, final Long endId, final int age) {
         final Station start = stationDao.findById(startId);
         final Station end = stationDao.findById(endId);
 
@@ -34,6 +34,6 @@ public class ShortestService {
         final Shortest shortest = Shortest.from(lines);
 
         final List<PathEdgeProxy> result = shortest.findShortest(start, end);
-        return ShortestResponse.of(result, fareCalculator.of(result));
+        return ShortestResponse.of(result, fareCalculator.of(result, age));
     }
 }
