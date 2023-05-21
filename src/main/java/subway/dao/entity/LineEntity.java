@@ -1,12 +1,16 @@
-package subway.dto;
+package subway.dao.entity;
 
-public class StationResponse {
+public class LineEntity {
     private final Long id;
     private final String name;
 
-    public StationResponse(Long id, String name) {
+    public LineEntity(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public LineEntity(String name) {
+        this(null, name);
     }
 
     public Long getId() {

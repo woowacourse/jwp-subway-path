@@ -1,48 +1,46 @@
 package subway.domain;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
+    private final String name;
+    private final Sections sections;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
+    private Line(String name, Sections sections) {
         this.name = name;
-        this.color = color;
+        this.sections = sections;
     }
 
-    public Line(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+    public static Line of(String name, List<Section> sections) {
+        if (sections.isEmpty()) {
+            return new Line(name, new Sections(sections));
+        }
+        return new Line(name, Sections.from(sections));
     }
 
-    public Long getId() {
-        return id;
+    public void addSection(Station upStation, Station downStation, int distance) {
+        Section newSection = new Section(upStation, downStation, distance);
+        sections.addSection(newSection);
+    }
+
+    public void deleteSection(Station station) {
+        sections.deleteSection(station);
     }
 
     public String getName() {
         return name;
     }
 
-    public String getColor() {
-        return color;
+    public List<Section> getSectionsByList() {
+        return new ArrayList<>(sections.getSections());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+    public List<Station> getStations() {
+        return new ArrayList<>(sections.getStations());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 }
