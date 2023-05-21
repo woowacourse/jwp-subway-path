@@ -1,27 +1,28 @@
 package subway.dao;
 
+import java.util.Optional;
+import javax.sql.DataSource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import org.springframework.stereotype.Component;
+import subway.entity.StationEntity;
 
-import javax.sql.DataSource;
-import java.util.List;
-
-@Repository
+@Component
 public class StationDao {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private static final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
+                    rs.getLong("line_id"),
                     rs.getString("name")
             );
 
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -30,29 +31,32 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
+    public Long insert(StationEntity station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+    public Optional<StationEntity> findById(Long stationId, Long lineId) {
+        String sql = "select * from STATION where id = ? and line_id = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, stationId, lineId));
+        } catch (DataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<StationEntity> findByName(String name, Long lineId) {
+        String sql = "select id, line_id, name from STATION where name = ? and line_id = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name, lineId));
+        } catch (DataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+    public void delete(StationEntity savedStation) {
+        String sql = "delete from STATION where name = ? and line_id = ?";
+        jdbcTemplate.update(sql, new Object[]{savedStation.getName(), savedStation.getId()});
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
-    }
 }

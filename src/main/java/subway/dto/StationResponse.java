@@ -1,8 +1,10 @@
 package subway.dto;
 
+
 import subway.domain.Station;
 
 public class StationResponse {
+
     private Long id;
     private String name;
 
@@ -22,4 +24,5 @@ public class StationResponse {
     public String getName() {
         return name;
     }
+
 }
