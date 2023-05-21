@@ -6,6 +6,6 @@ import subway.domain.Station;
 
 import java.util.Map;
 
-public interface ShortPathPort {
+public interface ShortPathHandler {
     RouteDto findSortPath(final Station fromStation, final Station toStation, final Map<Long, Sections> sectionsByLine);
 }

@@ -6,7 +6,7 @@ import subway.adapter.in.web.route.dto.FindShortCutRequest;
 import subway.adapter.out.graph.dto.RouteDto;
 import subway.application.dto.RouteResponse;
 import subway.application.port.in.route.FindRouteResultUseCase;
-import subway.application.port.out.graph.ShortPathPort;
+import subway.application.port.out.graph.ShortPathHandler;
 import subway.application.port.out.line.LineQueryHandler;
 import subway.application.port.out.section.SectionQueryHandler;
 import subway.application.port.out.station.StationQueryHandler;
@@ -25,12 +25,12 @@ public class RouteQueryService implements FindRouteResultUseCase {
     private static final int FROM_STATION_INDEX = 0;
     private static final int TO_STATION_INDEX = 1;
 
-    private final ShortPathPort shortPathPort;
+    private final ShortPathHandler shortPathPort;
     private final SectionQueryHandler sectionQueryPort;
     private final StationQueryHandler stationQueryPort;
     private final LineQueryHandler lineQueryHandler;
 
-    public RouteQueryService(final ShortPathPort shortPathPort, final SectionQueryHandler sectionQueryPort, final StationQueryHandler stationQueryPort, final LineQueryHandler lineQueryHandler) {
+    public RouteQueryService(final ShortPathHandler shortPathPort, final SectionQueryHandler sectionQueryPort, final StationQueryHandler stationQueryPort, final LineQueryHandler lineQueryHandler) {
         this.shortPathPort = shortPathPort;
         this.sectionQueryPort = sectionQueryPort;
         this.stationQueryPort = stationQueryPort;

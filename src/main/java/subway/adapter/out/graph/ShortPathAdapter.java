@@ -4,7 +4,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.adapter.out.graph.dto.RouteDto;
-import subway.application.port.out.graph.ShortPathPort;
+import subway.application.port.out.graph.ShortPathHandler;
 import subway.domain.Sections;
 import subway.domain.Station;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ShortPathAdapter implements ShortPathPort {
+public class ShortPathAdapter implements ShortPathHandler {
 
     @Override
     public RouteDto findSortPath(final Station fromStation, final Station toStation, final Map<Long, Sections> sectionsByLine) {

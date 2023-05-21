@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.adapter.in.web.route.dto.FindShortCutRequest;
 import subway.adapter.out.graph.dto.RouteDto;
-import subway.application.port.out.graph.ShortPathPort;
+import subway.application.port.out.graph.ShortPathHandler;
 import subway.application.port.out.line.LineQueryHandler;
 import subway.application.port.out.section.SectionQueryHandler;
 import subway.application.port.out.station.StationQueryHandler;
@@ -27,7 +27,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class RouteQueryServiceTest {
     @Mock
-    private ShortPathPort shortPathPort;
+    private ShortPathHandler shortPathPort;
     @Mock
     private SectionQueryHandler sectionQueryPort;
     @Mock
