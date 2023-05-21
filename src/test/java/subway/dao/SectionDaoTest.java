@@ -29,9 +29,9 @@ class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        this.sectionDao = new SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        StationDao stationDao = new StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        LineDao lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        this.sectionDao = new SectionDao(jdbcTemplate);
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        LineDao lineDao = new LineDao(jdbcTemplate);
 
         stationDao.insert(신림역);
         stationDao.insert(봉천역);

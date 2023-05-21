@@ -17,16 +17,14 @@ import subway.domain.Line;
 class LineDaoTest {
 
     private LineDao lineDao;
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private final Line line = new Line(1L, "2호선", "초록색", 0);
 
-
     @BeforeEach
     void setUp() {
-        this.lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        this.lineDao = new LineDao(jdbcTemplate);
     }
 
     @Test
