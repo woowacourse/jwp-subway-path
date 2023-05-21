@@ -7,7 +7,6 @@ import subway.application.core.service.dto.out.PathFindResult;
 
 import java.util.List;
 
-@Component
 public interface PathFinder {
 
     PathFindResult findShortestPath(List<RouteMap> routeMap, Station departure, Station terminal);
