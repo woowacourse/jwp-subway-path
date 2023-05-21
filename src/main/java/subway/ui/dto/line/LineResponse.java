@@ -13,7 +13,6 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
-
     @JsonProperty("sections")
     private List<SectionResponse> sectionResponses;
 
@@ -26,7 +25,7 @@ public class LineResponse {
 
     public static LineResponse from(Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(),
-                mapToSectionResponses(line.getSectionsByList()));
+                mapToSectionResponses(line.getSortedSections()));
     }
 
     private static List<SectionResponse> mapToSectionResponses(List<Section> sections) {

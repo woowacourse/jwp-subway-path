@@ -12,31 +12,31 @@ import subway.exception.StationNotFoundException;
 
 class PathFinderTest {
 
-    private Sections sectionsOfLine1 = new Sections(List.of(
+    private static final Sections sections = new Sections(List.of(
             new Section(1L, new Station("미금역"), new Station("정자역"), 3),
             new Section(2L, new Station("정자역"), new Station("수내역"), 4),
             new Section(3L, new Station("수내역"), new Station("서현역"), 5),
-            new Section(4L, new Station("서현역"), new Station("판교역"), 4)
-    ));
+            new Section(4L, new Station("서현역"), new Station("판교역"), 4),
 
-    private Sections sectionsOfLine2 = new Sections(List.of(
             new Section(6L, new Station("정자역"), new Station("서현역"), 6),
             new Section(7L, new Station("서현역"), new Station("야탑역"), 6),
-            new Section(5L, new Station("야탑역"), new Station("판교역"), 2)
+            new Section(5L, new Station("야탑역"), new Station("판교역"), 2),
+
+            new Section(8L, new Station("복정역"), new Station("잠실역"), 10)
     ));
 
     @Test
     @DisplayName("모든 구간 정보를 가지고 있는 경로 조회 객체를 생성한다.")
     void createPathFinder() {
         // when, then
-        assertDoesNotThrow(() -> PathFinder.from(List.of(sectionsOfLine1, sectionsOfLine2)));
+        assertDoesNotThrow(() -> PathFinder.from(sections));
     }
 
     @Test
     @DisplayName("출발역과 도착역을 기반으로 하행 방향으로 노선에 상관없이 최단 경로, 거리를 계산한 Path를 반환한다.")
     void calculateShortestPath_upperWay_success() {
         // given
-        PathFinder pathFinder = PathFinder.from(List.of(sectionsOfLine1, sectionsOfLine2));
+        PathFinder pathFinder = PathFinder.from(sections);
 
         // when
         Path path = pathFinder.findShortestPath(new Station("판교역"), new Station("정자역"));
@@ -52,7 +52,7 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역을 기반으로 상행 방향으로 노선에 상관없이 최단 경로, 거리를 계산한 Path를 반환한다.")
     void calculateShortestPath_lowerWay_success() {
         // given
-        PathFinder pathFinder = PathFinder.from(List.of(sectionsOfLine1, sectionsOfLine2));
+        PathFinder pathFinder = PathFinder.from(sections);
 
         // when
         Path path = pathFinder.findShortestPath(new Station("미금역"), new Station("수내역"));
@@ -68,8 +68,7 @@ class PathFinderTest {
     @DisplayName("출발역에서 도착역으로 이동할 수 없다면 예외가 발생한다.")
     void calculateShortestPath_noPath_fail() {
         // given
-        Sections unconnectedSections = new Sections(List.of(new Section(new Station("복정역"), new Station("잠실역"), 10)));
-        PathFinder pathFinder = PathFinder.from(List.of(sectionsOfLine1, sectionsOfLine2, unconnectedSections));
+        PathFinder pathFinder = PathFinder.from(sections);
 
         // when, then
         assertThatThrownBy(() -> pathFinder.findShortestPath(new Station("서현역"), new Station("복정역")))
@@ -81,10 +80,10 @@ class PathFinderTest {
     @DisplayName("출발역 또는 도착역이 노선에 존재하지 않는다면 예외가 발생한다.")
     void calculateShortestPath_noStationInLine_fail() {
         // given
-        PathFinder pathFinder = PathFinder.from(List.of(sectionsOfLine1, sectionsOfLine2));
+        PathFinder pathFinder = PathFinder.from(sections);
 
         // when, then
-        assertThatThrownBy(() -> pathFinder.findShortestPath(new Station("복정역"), new Station("정자역")))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(new Station("장지역"), new Station("정자역")))
                 .isInstanceOf(StationNotFoundException.class);
     }
 }

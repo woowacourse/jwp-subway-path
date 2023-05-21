@@ -18,13 +18,12 @@ import subway.dao.entity.SectionEntity;
 @JdbcTest
 @Sql("/section_initialize.sql")
 class SectionDaoTest {
-
+    private static final long lineId = 1L;
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     SectionDao sectionDao;
 
-    private long lineId = 1L;
 
     @BeforeEach
     void setUp() {
@@ -143,6 +142,29 @@ class SectionDaoTest {
         assertThat(sectionDao.findAllByLineId(lineId))
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(new SectionEntity(savedId2, lineId, 2L, 3L, 1)));
+    }
+
+    @Test
+    @DisplayName("모든 노선에 존재하는 전체 구간을 조회한다.")
+    void findAllSections_inEveryLine() {
+        // given
+        Long savedId1 = sectionDao.insert(new SectionEntity(lineId, 1L, 2L, 1));
+        Long savedId2 = sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
+        Long savedId3 = sectionDao.insert(new SectionEntity(2L, 3L, 4L, 1));
+        Long savedId4 = sectionDao.insert(new SectionEntity(2L, 4L, 5L, 1));
+
+        // when
+        List<SectionDto> sectionsWithStationName = sectionDao.findAllSectionsWithStationName();
+
+        // then
+        assertThat(sectionsWithStationName)
+                .usingRecursiveComparison()
+                .isEqualTo(List.of(
+                        new SectionDto(savedId1, 1L, 2L, "삼성역", "선릉역", 1),
+                        new SectionDto(savedId2, 2L, 3L, "선릉역", "역삼역", 1),
+                        new SectionDto(savedId3, 3L, 4L, "역삼역", "강남역", 1),
+                        new SectionDto(savedId4, 4L, 5L, "강남역", "교대역", 1)
+                ));
     }
 
 }

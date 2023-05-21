@@ -16,16 +16,10 @@ public class PathFinder {
         this.graph = graph;
     }
 
-    public static PathFinder from(List<Sections> sections) {
+    public static PathFinder from(Sections sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        initializeWithSections(sections, graph);
+        addSectionsToGraph(sections.getSections(), graph);
         return new PathFinder(graph);
-    }
-
-    private static void initializeWithSections(List<Sections> totalSections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Sections sections : totalSections) {
-            addSectionsToGraph(sections.getSections(), graph);
-        }
     }
 
     private static void addSectionsToGraph(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {

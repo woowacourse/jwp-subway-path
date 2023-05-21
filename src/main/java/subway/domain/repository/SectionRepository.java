@@ -36,4 +36,11 @@ public class SectionRepository {
                 .map(SectionDto::toDomain)
                 .collect(Collectors.toList()));
     }
+
+    public Sections findAll() {
+        return new Sections(sectionDao.findAllSectionsWithStationName()
+                .stream()
+                .map(SectionDto::toDomain)
+                .collect(Collectors.toList()));
+    }
 }

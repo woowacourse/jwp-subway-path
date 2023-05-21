@@ -36,3 +36,4 @@ INSERT INTO STATION (name) VALUES ('역삼역');
 INSERT INTO STATION (name) VALUES ('강남역');
 INSERT INTO STATION (name) VALUES ('교대역');
 INSERT INTO LINE (name, color) VALUES ('2호선', 'green');
+INSERT INTO LINE(name, color) VALUES ('3호선', 'orange');

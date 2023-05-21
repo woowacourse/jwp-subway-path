@@ -27,16 +27,13 @@ import subway.ui.dto.section.SectionDeleteRequest;
 @AutoConfigureMockMvc
 @Sql("/section_initialize.sql")
 class SectionControllerIntegrationTest {
-
+    private static final Long lineId = 1L;
+    private static final String baseUrl = "/lines/{lineId}/sections";
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
-
-    private Long lineId = 1L;
-
-    private final String baseUrl = "/lines/{lineId}/sections";
 
     @Test
     @DisplayName("빈 노선에 구간을 추가하면 추가에 성공한다.")
@@ -292,7 +289,7 @@ class SectionControllerIntegrationTest {
     @DisplayName("존재하지 않는 노선에 대한 요청이 오면 실패한다.")
     void noLineIdFound_fail() throws Exception {
         // given
-        mockMvc.perform(get(baseUrl, 2L))
+        mockMvc.perform(get(baseUrl, 3L))
                 .andExpect(status().isBadRequest());
     }
 

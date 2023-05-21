@@ -136,7 +136,8 @@ public class SectionService {
     @Transactional(readOnly = true)
     public List<SectionResponse> findSectionsByLineId(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        return line.getSectionsByList().stream()
+        return line.getSortedSections()
+                .stream()
                 .map(SectionResponse::from)
                 .collect(toList());
     }
