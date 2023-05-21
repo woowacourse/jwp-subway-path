@@ -31,7 +31,6 @@ public class Sections {
             sortedSections.add(section);
             currentStation = section.getDownStation();
         }
-
         return new Sections(sortedSections);
     }
 
@@ -59,7 +58,6 @@ public class Sections {
                         .map(Section::getDownStation)
                         .collect(Collectors.toList())
         );
-
         return sortedStations;
     }
 
@@ -69,13 +67,10 @@ public class Sections {
             sections.add(newSection);
             return;
         }
-
         validateDuplicateSection(newSection.getUpStation(), newSection.getDownStation());
-
         if (isAddedTerminalSection(newSection)) {
             return;
         }
-
         addMiddleSection(newSection);
     }
 
@@ -118,7 +113,6 @@ public class Sections {
 
     private void addMiddleSection(Section newSection) {
         List<Station> stations = getStations();
-
         addGoingUpSection(newSection, stations);
         addGoingDownSection(newSection, stations);
     }
@@ -126,34 +120,32 @@ public class Sections {
     private void addGoingUpSection(Section newSection, List<Station> stations) {
         Station downStation = newSection.getDownStation();
         if (stations.contains(downStation)) {
-            Section currentSection = sections.stream()
+            Section existSection = sections.stream()
                     .filter(section -> section.getDownStation().equals(downStation))
                     .findAny()
                     .orElseThrow();
-
-            int currentSectionIndex = sections.indexOf(currentSection);
-            sections.remove(currentSectionIndex);
-
-            Section dividedSection = currentSection.getDividedSection(newSection);
-            sections.add(currentSectionIndex, newSection);
-            sections.add(currentSectionIndex + 1, dividedSection);
+            removeExistSectionAddNewSection(newSection, existSection);
         }
     }
 
     private void addGoingDownSection(Section newSection, List<Station> stations) {
         Station upStation = newSection.getUpStation();
         if (stations.contains(upStation)) {
-            Section currentSection = sections.stream()
+            Section existSection = sections.stream()
                     .filter(section -> section.getUpStation().equals(upStation))
                     .findAny()
                     .orElseThrow();
-
-            int currentSectionIndex = sections.indexOf(currentSection);
-
-            Section dividedSection = currentSection.getDividedSection(newSection);
-            sections.add(currentSectionIndex, newSection);
-            sections.add(currentSectionIndex + 1, dividedSection);
+            removeExistSectionAddNewSection(newSection, existSection);
         }
+    }
+
+    private void removeExistSectionAddNewSection(Section newSection, Section currentSection) {
+        int currentSectionIndex = sections.indexOf(currentSection);
+        sections.remove(currentSectionIndex);
+
+        Section dividedSection = currentSection.getDividedSection(newSection);
+        sections.add(currentSectionIndex, newSection);
+        sections.add(currentSectionIndex + 1, dividedSection);
     }
 
     public void deleteSection(Station deletedStation) {
@@ -161,11 +153,9 @@ public class Sections {
                 .filter(section -> section.getUpStation().equals(deletedStation)
                         || section.getDownStation().equals(deletedStation))
                 .collect(Collectors.toList());
-
         if (isDeletedTerminalSection(deletedSections)) {
             return;
         }
-
         deleteMiddleSection(deletedStation, deletedSections);
     }
 
