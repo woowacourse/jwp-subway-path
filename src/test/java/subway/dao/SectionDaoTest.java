@@ -61,8 +61,8 @@ class SectionDaoTest {
     void update_success() {
         // given
         SectionEntity sectionEntity = new SectionEntity(lineId, 1L, 2L, 1);
-        sectionDao.insert(sectionEntity);
-        sectionEntity = sectionDao.findAllByLineId(lineId).get(0);
+        long savedId = sectionDao.insert(sectionEntity);
+        sectionEntity = new SectionEntity(savedId, lineId, 1L, 2L, 1);
         sectionEntity.updateDistance(3);
         sectionEntity.updateEndStationId(3L);
         sectionEntity.updateStartStationId(2L);
@@ -70,10 +70,11 @@ class SectionDaoTest {
         // when
         sectionDao.update(sectionEntity);
 
-        List<SectionEntity> sections = sectionDao.findAllByLineId(lineId);
+        List<SectionDto> sections = sectionDao.findAllSectionsWithStationNameByLineId(lineId);
 
         List<SectionEntity> sectionEntities = List.of(sectionEntity);
         assertThat(sections).usingRecursiveComparison()
+                .ignoringFields("startStationName", "endStationName")
                 .isEqualTo(sectionEntities);
     }
 
@@ -118,7 +119,7 @@ class SectionDaoTest {
         long savedId2 = sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
 
         // when
-        List<SectionDto> sections = sectionDao.findAllSectionsByLineId(lineId);
+        List<SectionDto> sections = sectionDao.findAllSectionsWithStationNameByLineId(lineId);
 
         // then
         assertThat(sections).usingRecursiveComparison()
@@ -139,8 +140,9 @@ class SectionDaoTest {
         sectionDao.deleteById(savedId1);
 
         // then
-        assertThat(sectionDao.findAllByLineId(lineId))
+        assertThat(sectionDao.findAllSectionsWithStationNameByLineId(lineId))
                 .usingRecursiveComparison()
+                .ignoringFields("startStationName", "endStationName")
                 .isEqualTo(List.of(new SectionEntity(savedId2, lineId, 2L, 3L, 1)));
     }
 

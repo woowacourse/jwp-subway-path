@@ -31,7 +31,7 @@ public class SectionRepository {
     }
 
     public Sections findSectionsByLineId(Long lineId) {
-        return new Sections(sectionDao.findAllSectionsByLineId(lineId)
+        return new Sections(sectionDao.findAllSectionsWithStationNameByLineId(lineId)
                 .stream()
                 .map(SectionDto::toDomain)
                 .collect(Collectors.toList()));

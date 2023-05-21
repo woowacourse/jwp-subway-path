@@ -17,7 +17,7 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private static final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+    private static final RowMapper<LineEntity> ROW_MAPPER = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
@@ -38,13 +38,13 @@ public class LineDao {
 
     public List<LineEntity> findAll() {
         String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 
     public Optional<LineEntity> findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, ROW_MAPPER, id));
         } catch (DataAccessException exception) {
             return Optional.empty();
         }

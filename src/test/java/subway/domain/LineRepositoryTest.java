@@ -35,7 +35,7 @@ class LineRepositoryTest {
     void findById_success() {
         // given
         given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(2L, "3호선", "orange")));
-        given(sectionDao.findAllSectionsByLineId(anyLong())).willReturn(List.of(
+        given(sectionDao.findAllSectionsWithStationNameByLineId(anyLong())).willReturn(List.of(
                 new SectionDto(1L, 1L, 2L, "양재역", "남부터미널역", 10),
                 new SectionDto(2L, 2L, 3L, "남부터미널역", "교대역", 10)));
         // when

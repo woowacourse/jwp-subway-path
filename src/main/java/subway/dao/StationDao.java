@@ -15,7 +15,7 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private static final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+    private static final RowMapper<StationEntity> ROW_MAPPER = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
@@ -36,13 +36,13 @@ public class StationDao {
 
     public List<StationEntity> findAll() {
         String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 
     public Optional<StationEntity> findByName(String stationName) {
         String sql = "select * from STATION where name = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationName));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, ROW_MAPPER, stationName));
         } catch (DataAccessException exception) {
             return Optional.empty();
         }
@@ -51,7 +51,7 @@ public class StationDao {
     public Optional<StationEntity> findById(Long id) {
         String sql = "SELECT * FROM STATION WHERE id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, ROW_MAPPER, id));
         } catch (DataAccessException exception) {
             return Optional.empty();
         }
