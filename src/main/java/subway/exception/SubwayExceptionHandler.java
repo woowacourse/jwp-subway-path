@@ -18,7 +18,7 @@ public class SubwayExceptionHandler {
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<String> handleIllegalStateException(IllegalArgumentException exception) {
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException exception) {
         log.error("error message = " + exception.getMessage());
         exception.printStackTrace();
         return ResponseEntity.internalServerError().body("서버 관리자에게 문의하세요.");
