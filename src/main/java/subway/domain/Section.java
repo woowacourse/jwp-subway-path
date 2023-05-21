@@ -4,9 +4,9 @@ import java.util.Objects;
 import subway.exception.GlobalException;
 
 public class Section {
-    private final Station startStation;
-    private final Station endStation;
-    private final Distance distance;
+    private Station startStation;
+    private Station endStation;
+    private Distance distance;
 
     public Section(Station startStation, Station endStation, Distance distance) {
         validate(startStation, endStation);
@@ -78,5 +78,17 @@ public class Section {
 
     public boolean hasStation(Station otherStation) {
         return isSameStartStation(otherStation) || isSameEndStation(otherStation);
+    }
+
+    public void updateStartStation(final Station startStation) {
+        this.startStation = startStation;
+    }
+
+    public void updateEndStation(final Station endStation) {
+        this.endStation = endStation;
+    }
+
+    public void updateDistance(final Distance distance) {
+        this.distance = distance;
     }
 }

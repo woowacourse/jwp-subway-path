@@ -74,4 +74,29 @@ public class SectionDao {
 
         jdbcTemplate.update(sql, lineId);
     }
+
+    public void update(final SectionEntity sectionEntity) {
+        String sql = "update SECTION set end_station_id = ?, distance = ? where line_id = ? and start_station_id = ?";
+
+        jdbcTemplate.update(sql, sectionEntity.getEndStationId(), sectionEntity.getDistance(),
+                sectionEntity.getLineId(), sectionEntity.getStartStationId());
+    }
+
+    public void delete(final SectionEntity sectionEntity) {
+        String sql = "delete from SECTION where start_station_id = ? and end_station_id = ? and line_id = ?";
+
+        jdbcTemplate.update(sql, sectionEntity.getStartStationId(), sectionEntity.getEndStationId(),
+                sectionEntity.getLineId());
+    }
+
+    public void insert(final SectionEntity sectionEntity) {
+        String sql = "insert into SECTION (line_id, start_station_id, end_station_id, distance) values (?, ?, ?, ?)";
+
+        try {
+            jdbcTemplate.update(sql, sectionEntity.getLineId(), sectionEntity.getStartStationId(),
+                    sectionEntity.getEndStationId(), sectionEntity.getDistance());
+        } catch (DataIntegrityViolationException exception) {
+            throw new GlobalException("시작 역과 도착 역은 같을 수 없습니다.");
+        }
+    }
 }

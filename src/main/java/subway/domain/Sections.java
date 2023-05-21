@@ -1,5 +1,10 @@
 package subway.domain;
 
+import static subway.domain.ChangeSectionStatus.FOR_EDGE_SECTION;
+import static subway.domain.ChangeSectionStatus.FOR_MIDDLE_SECTION;
+import static subway.domain.ChangeSections.makeChangeSectionsForUpdateEdgeSectionsByStatus;
+import static subway.domain.ChangeSections.makeChangeSectionsForUpdateSectionsByStatus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +20,7 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public void remove(Station station) {
+    public ChangeSections remove(Station station) {
         List<Section> sectionsContainStation = sections.stream()
                 .filter(it -> it.hasStation(station))
                 .collect(Collectors.toList());
@@ -25,14 +30,21 @@ public class Sections {
         }
 
         if (sections.size() == 1) {
+            ChangeSections changeSections = makeChangeSectionsForUpdateEdgeSectionsByStatus(
+                    FOR_EDGE_SECTION,
+                    sections.get(0)
+            );
             sections.clear();
-            return;
+            return changeSections;
         }
 
         if (sectionsContainStation.size() == 1) {
             Section findSection = sectionsContainStation.get(0);
             sections.remove(findSection);
-            return;
+            return makeChangeSectionsForUpdateEdgeSectionsByStatus(
+                    FOR_EDGE_SECTION,
+                    findSection
+            );
         }
 
         int totalDistance = sectionsContainStation.stream()
@@ -51,18 +63,35 @@ public class Sections {
             endStation = firstSection.getEndStation();
         }
 
-        Section newSection = new Section(startStation, endStation, new Distance(totalDistance));
-
-        sections.add(newSection);
+//        Section newSection = new Section(startStation, endStation, new Distance(totalDistance));
+//
+//        sections.add(newSection);
+        if (firstSection.isSameStartStation(startStation)) {
+            firstSection.updateEndStation(endStation);
+            firstSection.updateDistance(new Distance(totalDistance));
+            sections.remove(secondSection);
+            return ChangeSections.makeChangeSectionsForUpdateSectionsByStatus(
+                    FOR_MIDDLE_SECTION,
+                    firstSection,
+                    secondSection
+            );
+        }
+        secondSection.updateEndStation(endStation);
+        secondSection.updateDistance(new Distance(totalDistance));
         sections.remove(firstSection);
-        sections.remove(secondSection);
-
+        return ChangeSections.makeChangeSectionsForUpdateSectionsByStatus(
+                FOR_MIDDLE_SECTION,
+                secondSection,
+                firstSection
+        );
     }
 
-    public void add(Section newSection) {
+    public ChangeSections add(Section newSection) {
         if (sections.isEmpty()) {
             sections.add(newSection);
-            return;
+            return makeChangeSectionsForUpdateEdgeSectionsByStatus(
+                    FOR_EDGE_SECTION,
+                    newSection);
         }
 
         if (sections.contains(newSection)) {
@@ -72,14 +101,13 @@ public class Sections {
         validateConnection(newSection);
         Station upStation = getUpStation();
         Station downStation = getDownStation();
-        if (newSection.isSameEndStation(upStation)) {
+        if (sections.isEmpty() || newSection.isSameEndStation(upStation) || newSection.isSameStartStation(
+                downStation)) {
             sections.add(newSection);
-            return;
-        }
-
-        if (newSection.isSameStartStation(downStation)) {
-            sections.add(newSection);
-            return;
+            return makeChangeSectionsForUpdateEdgeSectionsByStatus(
+                    FOR_EDGE_SECTION,
+                    newSection
+            );
         }
 
         Section findSection = findForAddByDistance(newSection);
@@ -89,19 +117,30 @@ public class Sections {
             Section devidedSection = new Section(newSection.getEndStation(), findSection.getEndStation(),
                     subtractedDistance);
 
-            sections.remove(findSection);
-            sections.add(newSection);
+            findSection.updateEndStation(newSection.getEndStation());
+            findSection.updateDistance(newSection.getDistance());
+
             sections.add(devidedSection);
-            return;
+            return makeChangeSectionsForUpdateSectionsByStatus(
+                    FOR_MIDDLE_SECTION,
+                    findSection,
+                    newSection
+            );
         }
 
         Distance subtractedDistance = findSection.subtractDistance(newSection);
         Section devidedSection = new Section(findSection.getStartStation(), newSection.getStartStation(),
                 subtractedDistance);
 
-        sections.remove(findSection);
-        sections.add(newSection);
+        findSection.updateStartStation(newSection.getStartStation());
+        findSection.updateDistance(newSection.getDistance());
+
         sections.add(devidedSection);
+        return makeChangeSectionsForUpdateSectionsByStatus(
+                FOR_MIDDLE_SECTION,
+                findSection,
+                newSection
+        );
     }
 
     private Section findForAddByDistance(Section newSection) {

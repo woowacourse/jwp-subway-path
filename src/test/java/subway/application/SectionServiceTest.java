@@ -2,7 +2,6 @@ package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
@@ -95,9 +94,7 @@ class SectionServiceTest {
 
         sectionService.deleteSection(1L, 1L);
 
-        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
-        verify(sectionDao, atLeastOnce()).findByLineId(anyLong());
-        verify(stationDao, atLeastOnce()).findById(anyLong());
+        verify(sectionDao, atLeastOnce()).delete(any(SectionEntity.class));
     }
 
     @DisplayName("구간 저장 테스트 (도착역이 새로운 역인 경우)")
@@ -141,8 +138,7 @@ class SectionServiceTest {
 
         sectionService.saveSection(1L, new SectionSaveDto("이역", "삼역", 3));
 
-        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
-        verify(sectionDao, atLeastOnce()).insertAll(any());
+        verify(sectionDao, atLeastOnce()).insert(any(SectionEntity.class));
     }
 
     @DisplayName("구간 저장 테스트 (출발역 새로운 역인 경우)")
@@ -186,8 +182,7 @@ class SectionServiceTest {
 
         sectionService.saveSection(1L, new SectionSaveDto("영역", "일역", 3));
 
-        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
-        verify(sectionDao, atLeastOnce()).insertAll(any());
+        verify(sectionDao, atLeastOnce()).insert(any());
     }
 
     @DisplayName("구간 저장 테스트 (도착역이 새로운 역이고 사이에 추가되는 경우)")
@@ -231,8 +226,8 @@ class SectionServiceTest {
 
         sectionService.saveSection(1L, new SectionSaveDto("일역", "삼역", 1));
 
-        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
-        verify(sectionDao, atLeastOnce()).insertAll(any());
+        verify(sectionDao, atLeastOnce()).update(any(SectionEntity.class));
+        verify(sectionDao, atLeastOnce()).insert(any(SectionEntity.class));
     }
 
     @DisplayName("구간 저장 테스트 (출발역이 새로운 역이고 사이에 추가되는 경우)")
@@ -276,8 +271,8 @@ class SectionServiceTest {
 
         sectionService.saveSection(1L, new SectionSaveDto("삼역", "이역", 1));
 
-        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
-        verify(sectionDao, atLeastOnce()).insertAll(any());
+        verify(sectionDao, atLeastOnce()).insert(any(SectionEntity.class));
+        verify(sectionDao, atLeastOnce()).update(any(SectionEntity.class));
     }
 
 
