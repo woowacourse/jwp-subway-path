@@ -34,8 +34,16 @@
 - [x] Station DB table 컬럼 리팩토링
 - [x] Station 객체가 id를 갖도록 리팩토링
 - [x] StationService saveNewSections 메소드 내부 로직 변경 -> batchInsert문 사용
-- [x] isExisted 메소드 내부 로직 변경
-- [x] 테스트 내부 예외 검증 시 예외 메시지도 함께 검증
+- [x] Service, DAO isExisted 메소드 내부 로직 변경
+- [x] Test 코드 내부 예외 검증 시 예외 메시지도 함께 검증
+- [ ] Controller 구간 추가 후 Location 헤더 값에 해당하는 노선 조회할 수 있는 값 지정해주기
+- [ ] Service `@Transactional` 어노테이션 사용시 필요하지 않은 부분에 `@Transactional` 읽기 전용 모드로 선언
+- [ ] SectionService 조회 메서드 make -> find로 네이밍 변경 (?)
+- [ ] SectionService 새로운 구간 등록, 삭제 할 때 업데이트 된 구간 DB에 저장하는 로직 변경
+- [ ] Section validateDistance 메서드 접근제어자 변경 및 책임 분리
+- [ ] Test 코드 내부 DisplayName 더 명확하게 수정
+- [ ] Test 코드 내부 테스트를 위한 사전 데이터 준비 과정의 중복 코드 제거
+- [ ] Test 코드 내부 `@Nested` 어노테이션을 통해 테스트 코드 가독성 증진
 
 ## API 명세서
 
