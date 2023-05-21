@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS SUBWAY_SECTION;
+DROP TABLE IF EXISTS GENERAL_SECTION;
 DROP TABLE IF EXISTS station;
 DROP TABLE IF EXISTS line;
 
@@ -12,12 +12,12 @@ create table if not exists LINE
 create table if not exists STATION
 (
     id bigint auto_increment not null,
-    name varchar(255) not null unique,
+    name varchar(255) not null,
     line_id bigint not null,
     primary key(id)
 );
 
-CREATE TABLE IF NOT EXISTS SUBWAY_SECTION
+CREATE TABLE IF NOT EXISTS GENERAL_SECTION
 (
     id bigint auto_increment not null,
     up_station_id bigint not null,

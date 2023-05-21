@@ -1,15 +1,58 @@
 package fixtures;
 
-import subway.dto.LineFindResponse;
+import static fixtures.StationFixtures.*;
 
 import java.util.List;
 
+import subway.domain.line.Line;
+import subway.dto.LineFindResponse;
+
 public class LineFixtures {
 
-    public static final String LINE2_NAME = "2호선";
-    public static final String LINE7_NAME = "7호선";
-    public static final LineFindResponse LINE2_노선도 = new LineFindResponse(LINE2_NAME, List.of("잠실역", "강변역", "건대역"));
-    public static final LineFindResponse LINE7_노선도 = new LineFindResponse(LINE7_NAME, List.of("온수역", "대림역", "논현역", "장암역"));
+    public static class INITIAL_Line2 {
+        public static final Long ID = 1L;
+        public static final String NAME = "2호선";
+        public static final Line FIND_LINE = new Line(ID, NAME);
+    }
 
-    public static final List<LineFindResponse> ALL_노선도 = List.of(LINE2_노선도, LINE7_노선도);
+    public static class INITIAL_Line7 {
+        public static final Long ID = 2L;
+        public static final String NAME = "7호선";
+        public static final Line FIND_LINE = new Line(ID, NAME);
+    }
+
+    public static class Line3 {
+
+        public static final String NAME = "3호선";
+        public static final Line INSERT_LINE = new Line(null, NAME);
+    }
+
+    /**
+     * Response
+     */
+    public static class LINE_FIND_RESPONSE_LINE2_A_TO_C_AND_C_TO_E {
+
+        public static final LineFindResponse RESPONSE =
+                new LineFindResponse(
+                        INITIAL_Line2.NAME,
+                        List.of(INITIAL_STATION_A.NAME, INITIAL_STATION_C.NAME, STATION_E.NAME)
+                );
+    }
+
+    public static class LINE_FIND_RESPONSE_LINE7_B_TO_D {
+
+        public static final LineFindResponse RESPONSE =
+                new LineFindResponse(
+                        INITIAL_Line7.NAME,
+                        List.of(STATION_B.NAME, STATION_D.NAME)
+                );
+    }
+
+    public static class ALL_LINE_FIND_RESPONSE_LINE2_AND_LINE7 {
+        public static final List<LineFindResponse> RESPONSE =
+                List.of(
+                        LINE_FIND_RESPONSE_LINE2_A_TO_C_AND_C_TO_E.RESPONSE,
+                        LINE_FIND_RESPONSE_LINE7_B_TO_D.RESPONSE
+                );
+    }
 }

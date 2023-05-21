@@ -4,18 +4,22 @@ import java.util.Objects;
 
 public class LineName {
 
-    public static final int MAX_LINE_NAME_LENGTH = 10;
+    private static final int MAX_LINE_NAME_LENGTH = 10;
     private final String lineName;
 
     public LineName(String lineName) {
-        validate(lineName);
+        validateLength(lineName);
         this.lineName = lineName;
     }
 
-    private void validate(String lineName) {
+    private void validateLength(String lineName) {
         if (lineName.length() > MAX_LINE_NAME_LENGTH) {
             throw new IllegalArgumentException("호선 이름은 10자 이하여야 합니다.");
         }
+    }
+
+    public boolean isSameName(String targetLineName) {
+        return lineName.equals(targetLineName);
     }
 
     public String getLineName() {

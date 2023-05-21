@@ -1,0 +1,5 @@
+### 노선 조회 API
+GET http://localhost:8080/lines/1
+
+### 노선 목록 조회 API
+GET http://localhost:8080/lines

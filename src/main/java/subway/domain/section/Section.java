@@ -1,56 +1,54 @@
 package subway.domain.section;
 
+import subway.domain.section.general.NearbyStations;
 import subway.domain.station.Station;
 
-import java.util.Objects;
+public abstract class Section {
 
-public class Section {
+    private final NearbyStations nearbyStations;
 
-    private final Station upStation;
-    private final Station downStation;
-    private final Distance distance;
-
-    public Section(Station upStation, Station downStation, int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = new Distance(distance);
+    public Section(final NearbyStations nearbyStations) {
+        this.nearbyStations = nearbyStations;
     }
 
+    public boolean isSameDownStationName(String downStationName) {
+        return nearbyStations.getDownStation().isSameStationName(downStationName);
+    }
+
+    public boolean isSameUpStationName(String upStationName) {
+        return nearbyStations.getUpStation().isSameStationName(upStationName);
+    }
+
+    public abstract boolean isSameLineId(Long lineId);
+
+    public abstract int getDistance();
+
+    public abstract boolean isTransferSection();
+
     public Station getUpStation() {
-        return upStation;
+        return nearbyStations.getUpStation();
     }
 
     public Station getDownStation() {
-        return downStation;
+        return nearbyStations.getDownStation();
     }
 
-    public int getDistance() {
-        return distance.getDistance();
+    public Long getUpStationId() {
+        return nearbyStations.getUpStation().getId();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Section section = (Section) o;
-        return Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance, section.distance);
+    public Long getDownStationId() {
+        return nearbyStations.getDownStation().getId();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(upStation, downStation, distance);
+    public NearbyStations getNearbyStations() {
+        return nearbyStations;
     }
 
     @Override
     public String toString() {
         return "Section{" +
-                "upStation=" + upStation +
-                ", downStation=" + downStation +
-                ", distance=" + distance +
+                "nearbyStations=" + nearbyStations +
                 '}';
     }
 }

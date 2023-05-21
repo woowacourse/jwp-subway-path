@@ -1,5 +1,7 @@
 package subway.ui;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,9 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.dto.LineFindResponse;
 
-import java.util.List;
-
-// TODO : ControllerAdvice 구현
 @RestController
 @RequestMapping("/lines")
 public class LineController {
@@ -23,11 +22,11 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineFindResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findAllLineStationNames());
+        return ResponseEntity.ok(lineService.findAllLineOrderedStationNames());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineFindResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findStationNamesByLineId(id));
+        return ResponseEntity.ok(lineService.findOrderedStationNamesByLineId(id));
     }
 }

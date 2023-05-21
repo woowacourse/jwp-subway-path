@@ -1,39 +1,50 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.domain.station.StationConnections;
-import subway.dto.LineFindResponse;
-import subway.entity.LineEntity;
-import subway.entity.SectionStationJoinEntity;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
+import org.springframework.stereotype.Service;
+import subway.domain.line.Line;
+import subway.domain.section.general.GeneralSections;
+import subway.domain.section.general.GeneralSectionsByLine;
+import subway.dto.LineFindResponse;
+import subway.repository.GeneralSectionRepository;
+import subway.repository.LineRepository;
 
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
+    private final LineRepository lineRepository;
+    private final GeneralSectionRepository generalSectionRepository;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao) {
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+    public LineService(final LineRepository lineRepository, final GeneralSectionRepository generalSectionRepository) {
+        this.lineRepository = lineRepository;
+        this.generalSectionRepository = generalSectionRepository;
     }
 
-    public LineFindResponse findStationNamesByLineId(Long lineId) {
-        LineEntity lineEntity = lineDao.findById(lineId);
-        List<SectionStationJoinEntity> findSectionStationEntities = sectionDao.findSectionStationByLineId(lineId);
-        StationConnections stationConnections = StationConnections.fromEntities(findSectionStationEntities);
-        return new LineFindResponse(lineEntity.getName(), stationConnections.getSortedStationNames());
+    public LineFindResponse findOrderedStationNamesByLineId(Long lineId) {
+        Line findLine = lineRepository.findLineById(lineId);
+        GeneralSections generalSections = new GeneralSections(generalSectionRepository.findAllSectionByLineId(lineId));
+
+        return new LineFindResponse(findLine.getName(), generalSections.getSortedStationNames());
     }
 
-    public List<LineFindResponse> findAllLineStationNames() {
-        List<LineEntity> lineEntities = lineDao.findAll();
-        return lineEntities.stream()
-                .map(lineEntity -> findStationNamesByLineId(lineEntity.getId()))
-                .collect(toList());
+    public List<LineFindResponse> findAllLineOrderedStationNames() {
+        List<Line> findLines = lineRepository.findAllLine();
+        Map<Line, GeneralSections> findAllSectionsByLine = findLines.stream()
+                .collect(toMap(
+                        line -> line,
+                        line -> new GeneralSections(generalSectionRepository.findAllSectionByLineId(line.getId())))
+                );
+
+        GeneralSectionsByLine generalSectionsByLine = new GeneralSectionsByLine(findAllSectionsByLine);
+        Map<Line, List<String>> allSortedStationNamesByLine = generalSectionsByLine.getAllSortedStationNamesByLine();
+
+        return allSortedStationNamesByLine.keySet().stream()
+                .map(line -> new LineFindResponse(line.getName(), allSortedStationNamesByLine.get(line)))
+                .collect(Collectors.toUnmodifiableList());
     }
 }

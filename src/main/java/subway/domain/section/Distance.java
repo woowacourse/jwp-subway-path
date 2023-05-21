@@ -4,18 +4,27 @@ import java.util.Objects;
 
 public class Distance {
 
-    public static final int MAX_DISTANCE = 100;
+    private static final int MAX_DISTANCE = 100;
+
     private final int distance;
 
     public Distance(int distance) {
-        validate(distance);
+        validateLength(distance);
         this.distance = distance;
     }
 
-    private void validate(int distance) {
+    private void validateLength(int distance) {
         if (distance > MAX_DISTANCE) {
             throw new IllegalArgumentException("역 사이 거리는 100km 이하여야 합니다.");
         }
+    }
+
+    public Distance subtract(Distance targetDistance) {
+        return new Distance(this.distance - targetDistance.getDistance());
+    }
+
+    public boolean isGreaterThanOrEqual(Distance targetDistance) {
+        return distance >= targetDistance.getDistance();
     }
 
     public int getDistance() {
