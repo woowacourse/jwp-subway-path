@@ -23,7 +23,6 @@ public class SubwayRepository {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
 
-    @Autowired
     public SubwayRepository(final LineDao lineDao, final StationDao stationDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;

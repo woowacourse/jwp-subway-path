@@ -23,7 +23,6 @@ public class LineDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert insertAction;
 
-    @Autowired
     public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)

@@ -17,7 +17,6 @@ public class PathController {
 
     private final PathService pathService;
 
-    @Autowired
     public PathController(final PathService pathService) {
         this.pathService = pathService;
     }

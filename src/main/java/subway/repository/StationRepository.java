@@ -14,7 +14,6 @@ public class StationRepository {
 
     private final StationDao stationDao;
 
-    @Autowired
     public StationRepository(final StationDao stationDao) {
         this.stationDao = stationDao;
     }

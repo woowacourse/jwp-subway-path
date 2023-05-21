@@ -20,7 +20,6 @@ public class PathService {
 
     private final SubwayRepository subwayRepository;
 
-    @Autowired
     public PathService(final SubwayRepository subwayRepository) {
         this.subwayRepository = subwayRepository;
     }

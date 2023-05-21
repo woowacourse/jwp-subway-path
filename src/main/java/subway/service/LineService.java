@@ -19,7 +19,6 @@ public class LineService {
     private final SubwayRepository subwayRepository;
     private final LineRepository lineRepository;
 
-    @Autowired
     public LineService(final SubwayRepository subwayRepository, final LineRepository lineRepository) {
         this.subwayRepository = subwayRepository;
         this.lineRepository = lineRepository;
