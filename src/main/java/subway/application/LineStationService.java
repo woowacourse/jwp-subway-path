@@ -7,6 +7,7 @@ import subway.domain.Lines;
 import subway.domain.Station;
 import subway.dto.response.LineStationResponse;
 import subway.dto.response.StationResponse;
+import subway.ui.EndpointType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +42,17 @@ public class LineStationService {
         pathService.update(lines);
     }
 
-    public void addUpEndpoint(final Long id, final Long stationId, final int distance) {
+    public void addEndpoint(final EndpointType endpointType, final Long id, final Long stationId, final int distance) {
+        if (EndpointType.UP == endpointType) {
+            addUpEndpoint(id, stationId, distance);
+            return;
+        }
+        if (EndpointType.DOWN == endpointType) {
+            addDownEndpoint(id, stationId, distance);
+        }
+    }
+
+    private void addUpEndpoint(final Long id, final Long stationId, final int distance) {
         final Line line = lineService.findById(id);
         final Station station = stationService.findById(stationId);
 
@@ -51,7 +62,7 @@ public class LineStationService {
         updatePath();
     }
 
-    public void addDownEndpoint(final Long id, final Long stationId, final int distance) {
+    private void addDownEndpoint(final Long id, final Long stationId, final int distance) {
         final Line line = lineService.findById(id);
         final Station station = stationService.findById(stationId);
 

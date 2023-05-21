@@ -72,7 +72,8 @@ class LineStationControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(lineStationService, times(1))
-                .addUpEndpoint(
+                .addEndpoint(
+                        request.getEndpointType(),
                         1L,
                         1L,
                         request.getDistance()
@@ -93,7 +94,8 @@ class LineStationControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(lineStationService, times(1))
-                .addDownEndpoint(
+                .addEndpoint(
+                        request.getEndpointType(),
                         1L,
                         1L,
                         request.getDistance()

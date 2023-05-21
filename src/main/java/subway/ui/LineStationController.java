@@ -41,12 +41,7 @@ public class LineStationController {
             @PathVariable final Long lineId,
             @PathVariable final Long stationId,
             @RequestBody @Valid final ConnectionEndpointRequest request) {
-        if (EndpointType.UP == request.getConnectionType()) {
-            lineStationService.addUpEndpoint(lineId, stationId, request.getDistance());
-        }
-        if (EndpointType.DOWN == request.getConnectionType()) {
-            lineStationService.addDownEndpoint(lineId, stationId, request.getDistance());
-        }
+        lineStationService.addEndpoint(request.getEndpointType(), lineId, stationId, request.getDistance());
         return ResponseEntity.noContent().build();
     }
 

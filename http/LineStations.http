@@ -12,7 +12,7 @@ PATCH http://localhost:8080/lines/1/stations/3/endpoint
 Content-Type: application/json
 
 {
-  "connectionType": "up",
+  "endpointType": "up",
   "distance": "1"
 }
 
@@ -22,7 +22,7 @@ PATCH http://localhost:8080/lines/1/stations/4/endpoint
 Content-Type: application/json
 
 {
-  "connectionType": "down",
+  "endpointType": "down",
   "distance": "1"
 }
 
