@@ -1,3 +1,7 @@
+delete from sections;
+delete from station;
+delete from line;
+
 insert into line (id, name, color) values (1, '1번라인', '파랑색');
 insert into line (id, name, color) values (2, '2번라인', '검정색');
 

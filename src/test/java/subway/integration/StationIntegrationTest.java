@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dto.response.StationResponse;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql("/resetTable.sql")
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
     @DisplayName("지하철역을 생성한다.")
