@@ -3,9 +3,7 @@ package subway.domain.section;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -29,12 +27,25 @@ public class Sections {
                 .findAny();
     }
 
+    public Set<String> getContainingStationNames() {
+        Set<String> stationNames = new HashSet<>();
+        for (Section section : sections) {
+            stationNames.add(section.getUpStationName());
+            stationNames.add(section.getDownStationName());
+        }
+        return stationNames;
+    }
+
     public Line getLine() {
         return sections.get(0).getLine();
     }
 
     public int getSectionsSize() {
         return sections.size();
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     @Override

@@ -112,6 +112,19 @@ class DBSectionRepositoryTest {
     }
 
     @Test
+    @DisplayName("주어진 노선 id에 해당하는 섹션을 가져온다.")
+    void findAllSectionsTest() {
+        // given
+        List<Section> expect = List.of(SECTION_잠실역_TO_건대역);
+
+        // when
+        List<Section> findSection = sectionRepository.findAllSections();
+
+        // then
+        assertThat(findSection).isEqualTo(expect);
+    }
+
+    @Test
     @DisplayName("섹션을 삭제한다.")
     void removeTest() {
         // given

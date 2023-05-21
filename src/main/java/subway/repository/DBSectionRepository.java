@@ -119,6 +119,26 @@ public class DBSectionRepository implements SectionRepository {
     }
 
     @Override
+    public List<Section> findAllSections() {
+        String sql = "SELECT " +
+                "ss.id AS section_id, " +
+                "us.id AS up_station_id, " +
+                "us.name AS up_station_name, " +
+                "ds.id AS down_station_id, " +
+                "ds.name AS down_station_name, " +
+                "ss.distance, " +
+                "ss.line_id, " +
+                "line.name AS line_name " +
+                "FROM " +
+                "section ss " +
+                "INNER JOIN station us ON us.line_id = ss.line_id AND us.id = ss.up_station_id " +
+                "INNER JOIN station ds ON ds.line_id = ss.line_id AND ds.id = ss.down_station_id " +
+                "INNER JOIN line ON ss.line_id = line.id ";
+
+        return jdbcTemplate.query(sql, sectionRowMapper);
+    }
+
+    @Override
     public void remove(Section sectionToModify) {
         sectionDao.deleteBySectionId(sectionToModify.getId());
     }

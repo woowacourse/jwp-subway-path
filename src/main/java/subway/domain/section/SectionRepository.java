@@ -8,5 +8,7 @@ public interface SectionRepository {
 
     List<Section> findSectionsByLineId(Long lineId);
 
+    List<Section> findAllSections();
+
     void remove(Section sectionToModify);
 }
