@@ -1,7 +1,6 @@
 package subway.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Station;
-import subway.exception.DuplicatedNameException;
 import subway.repository.dao.StationDao;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -44,14 +42,15 @@ class StationRepositoryTest {
     }
 
     @Test
-    void 이미_존재하는_역을_저장하면_예외가_발생한다() {
+    void 이미_존재하는_역을_저장하면_저장되어_있던_역을_조회해서_반환한다() {
         // given
         final Station saveStation = stationRepository.insert("강남역");
 
-        // when, then
-        assertThatThrownBy(() -> stationRepository.insert(saveStation.getName()))
-                .isInstanceOf(DuplicatedNameException.class)
-                .hasMessage("이미 존재하는 이름입니다. (입력값 : 강남역)");
+        // when
+        final Station saveExistsStation = stationRepository.insert("강남역");
+
+        // then
+        assertThat(saveExistsStation).isEqualTo(saveStation);
     }
 
     @Test

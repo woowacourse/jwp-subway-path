@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 import subway.entity.StationEntity;
-import subway.exception.DuplicatedNameException;
+import subway.exception.station.StationNotFoundException;
 import subway.repository.dao.StationDao;
 
 @Repository
@@ -17,15 +17,13 @@ public class StationRepository {
     }
 
     public Station insert(String stationName) {
-        validateDuplicatedStationName(stationName);
+        if (stationDao.existsByName(stationName)) {
+            final StationEntity findStation = stationDao.findByName(stationName)
+                    .orElseThrow(() -> new StationNotFoundException("해당 이름을 가진 역이 존재하지 않습니다"));
+            return findStation.toDomain();
+        }
         final StationEntity saveStation = stationDao.insert(new StationEntity(stationName));
         return new Station(saveStation.getId(), saveStation.getName());
-    }
-
-    private void validateDuplicatedStationName(final String stationName) {
-        if (stationDao.existsByName(stationName)) {
-            throw new DuplicatedNameException(stationName);
-        }
     }
 
     public Optional<Station> findById(Long stationId) {
