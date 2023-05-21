@@ -1,9 +1,6 @@
 package subway.domain;
 
-import subway.domain.strategy.AddSectionStrategy;
-import subway.domain.strategy.DirectionStrategy;
-import subway.domain.strategy.FirstAddStrategy;
-import subway.domain.strategy.SecondaryAddStrategy;
+import subway.domain.strategy.*;
 import subway.dto.SectionResponse;
 import subway.exception.InvalidInputException;
 
@@ -45,7 +42,7 @@ public class Line {
         return color;
     }
 
-    public AddSectionStrategy preprocess(
+    public AddSectionStrategy readyToSave(
             Station baseStation,
             Station newStation,
             DirectionStrategy direction,
@@ -106,17 +103,37 @@ public class Line {
         return sections;
     }
 
-    public void deleteSections(Station deletStation) {
-        List<Section> hasDeleteStationSections = sections.stream()
-                .filter(section ->
-                        section.hasUpStation(deletStation) ||
-                                section.hasDownStation(deletStation))
-                .collect(toList());
+    public DeleteSectionStrategy readyToDelete(Station deletStation) {
+        Optional<Section> downSection = sections.stream()
+                .filter(section ->section.hasUpStation(deletStation))
+                .findFirst();
 
-        if (hasDeleteStationSections.size() == 0) {
+        Optional<Section> upSection = sections.stream()
+                .filter(section ->section.hasDownStation(deletStation))
+                .findFirst();
+
+        if (downSection.isEmpty() && upSection.isEmpty()) {
             throw new InvalidInputException(deletStation.getId() + "는 라인 아이디 " + id + "에 존재하지 않는 역 아이디입니다.");
         }
-        hasDeleteStationSections.forEach(sections::remove);
+
+        if(downSection.isEmpty()){
+            return new DeleteTerminalStrategy(upSection.get());
+        }
+
+        if(upSection.isEmpty()){
+            return new DeleteTerminalStrategy(downSection.get());
+        }
+
+        return deleteMiddleSection(upSection.get(), downSection.get());
+    }
+
+    private DeleteSectionStrategy deleteMiddleSection(Section upSection, Section downSection) {
+        Distance newDistance = upSection.addDistance(downSection);
+        Section newSection = new Section(upSection.getUpStation(), downSection.getDownStation(), newDistance, id);
+        sections.add(newSection);
+        sections.remove(upSection);
+        sections.remove(downSection);
+        return new DeleteMiddleStrategy(this);
     }
 
     // TODO: 지우기
@@ -131,10 +148,10 @@ public class Line {
     }
 
     public List<Station> getAligned() {
-        if(sections.size()==0){
+        if (sections.size() == 0) {
             return Collections.emptyList();
         }
-        
+
         Station firstStation = findFirstStation();
         return getAlignedStations(firstStation);
     }
@@ -159,11 +176,11 @@ public class Line {
         ArrayList<Station> alignedStations = new ArrayList<>();
         alignedStations.add(upStation);
 
-        while(true){
+        while (true) {
             int startSize = alignedStations.size();
             upStation = addInOrderStation(upStation, alignedStations);
 
-            if(startSize == alignedStations.size()){
+            if (startSize == alignedStations.size()) {
                 break;
             }
         }
@@ -171,10 +188,10 @@ public class Line {
     }
 
     private Station addInOrderStation(Station firstStation, ArrayList<Station> alignedStations) {
-        for(Section section: sections){
+        for (Section section : sections) {
             Optional<Station> downStation = section.findDownStationFrom(firstStation);
 
-            if(downStation.isPresent()){
+            if (downStation.isPresent()) {
                 alignedStations.add(downStation.get());
                 firstStation = downStation.get();
                 break;

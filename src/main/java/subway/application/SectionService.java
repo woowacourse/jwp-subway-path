@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.strategy.AddSectionStrategy;
+import subway.domain.strategy.DeleteSectionStrategy;
 import subway.domain.strategy.DirectionStrategy;
 import subway.dto.DeleteSectionRequest;
 import subway.dto.SectionRequest;
@@ -35,7 +36,7 @@ public class SectionService {
         Station newStation = lineRepository.findStationById(sectionRequest.getNewStationId());
         Station baseStation = lineRepository.findStationById(sectionRequest.getBaseStationId());
 
-        AddSectionStrategy addSectionStrategy = findLine.preprocess(
+        AddSectionStrategy addSectionStrategy = findLine.readyToSave(
                 baseStation,
                 newStation,
                 DirectionStrategy.from(sectionRequest.getDirection()),
@@ -51,9 +52,7 @@ public class SectionService {
         Line findLine = lineRepository.findById(deleteSectionRequest.getLineId());
         Station deletStation = lineRepository.findStationById(deleteSectionRequest.getStationId());
 
-        findLine.deleteSections(deletStation);
-
-        lineRepository.removeSectionsByLineId(findLine.getId());
-        lineRepository.saveAllSectionsInLine(findLine);
+        DeleteSectionStrategy deleteSectionStrategy = findLine.readyToDelete(deletStation);
+        deleteSectionStrategy.execute(lineRepository);
     }
 }

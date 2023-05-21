@@ -94,4 +94,8 @@ public class LineRepository {
     public List<SectionEntity> getSections(long lineId) {
         return sectiondao.findSectionsBy(lineId);
     }
+
+    public void removeSectionById(long id) {
+        sectiondao.deleteById(id);
+    }
 }

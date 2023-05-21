@@ -46,8 +46,12 @@ public class Section {
     }
 
 
-    public Distance subtract(Section other) {
+    public Distance subtractDistance(Section other) {
         return distance.subtract(other.distance);
+    }
+
+    public Distance addDistance(Section other) {
+        return this.distance.add(other.distance);
     }
 
     public Station getUpStation() {

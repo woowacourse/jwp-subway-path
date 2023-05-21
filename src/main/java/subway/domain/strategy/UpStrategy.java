@@ -22,7 +22,7 @@ public class UpStrategy implements DirectionStrategy {
 
     @Override
     public Section createSectionBasedOn(Section originalSection, Section newSection) {
-        Distance newDistance = originalSection.subtract(newSection);
+        Distance newDistance = originalSection.subtractDistance(newSection);
         return new Section(
                 originalSection.getUpStation(),
                 newSection.getUpStation(),
