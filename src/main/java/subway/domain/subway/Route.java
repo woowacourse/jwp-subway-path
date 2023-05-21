@@ -7,16 +7,19 @@ import org.jgrapht.graph.WeightedMultigraph;
 import subway.domain.common.Fee;
 import subway.exception.LinesEmptyException;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class Route {
 
+    private WeightedMultigraph<String, DefaultWeightedEdge> graph;
     private Lines lines;
     private final Fee fee;
 
     private Route(final Lines lines, final Fee fee) {
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         this.lines = lines;
         this.fee = fee;
     }
@@ -29,15 +32,11 @@ public class Route {
         return new Route(null, Fee.createDefault());
     }
 
-    public Map<Station, Set<String>> findShortestPath(final String start, final String destination) {
+    public List<Station> findShortestPath(final String start, final String destination) {
         validateEmptyLines();
-
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = initGraph();
-
-        GraphPath<String, DefaultWeightedEdge> shortestPath = calculateShortestPath(graph, start, destination);
-        fee.calculateFromDistance((int) shortestPath.getWeight());
-
-        return findLineNamesByStation(shortestPath);
+        initGraph();
+        GraphPath<String, DefaultWeightedEdge> shortestPath = calculateShortestPath(start, destination);
+        return findStationsFromPath(shortestPath);
     }
 
     private void validateEmptyLines() {
@@ -46,17 +45,15 @@ public class Route {
         }
     }
 
-    private WeightedMultigraph<String, DefaultWeightedEdge> initGraph() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private void initGraph() {
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (Line line : lines.getLines()) {
-            fillGraph(graph, line);
+            fillGraph(line);
         }
-
-        return graph;
     }
 
-    private void fillGraph(final WeightedMultigraph<String, DefaultWeightedEdge> graph, final Line line) {
+    private void fillGraph(final Line line) {
         for (Section section : line.getSections()) {
             String upStation = section.getUpStation().getName();
             String downStation = section.getDownStation().getName();
@@ -68,24 +65,42 @@ public class Route {
         }
     }
 
-    private Map<Station, Set<String>> findLineNamesByStation(final GraphPath<String, DefaultWeightedEdge> path) {
-        Map<String, Station> StationsByName = lines.getStationsByNameInfo();
-        Map<Station, Set<String>> lineNamesByStation = new LinkedHashMap<>();
-
-        for (String stationName : path.getVertexList()) {
-            Station station = StationsByName.get(stationName);
-            lineNamesByStation.put(station, lines.getLineNamesFromStation(station));
-        }
-
-        return lineNamesByStation;
+    private GraphPath<String, DefaultWeightedEdge> calculateShortestPath(final String start, final String destination) {
+        DijkstraShortestPath<String, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<String, DefaultWeightedEdge> path = shortestPath.getPath(start, destination);
+        fee.calculateFromDistance((int) path.getWeight());
+        return path;
     }
 
-    private GraphPath<String, DefaultWeightedEdge> calculateShortestPath(final WeightedMultigraph<String, DefaultWeightedEdge> graph,
-                                                                         final String start,
-                                                                         final String destination
-    ) {
-        DijkstraShortestPath<String, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
-        return shortestPath.getPath(start, destination);
+    private List<Station> findStationsFromPath(final GraphPath<String, DefaultWeightedEdge> path) {
+        Map<String, Station> stationsByName = lines.getStationsByNameInfo();
+        List<Station> stations = new ArrayList<>();
+
+        for (String stationName : path.getVertexList()) {
+            Station station = stationsByName.get(stationName);
+            stations.add(station);
+        }
+
+        return stations;
+    }
+
+    public List<Set<String>> findShortestTransferLines(final String start, final String destination) {
+        validateEmptyLines();
+        initGraph();
+        GraphPath<String, DefaultWeightedEdge> shortestPath = calculateShortestPath(start, destination);
+        return findTransferLines(shortestPath);
+    }
+
+    private List<Set<String>> findTransferLines(final GraphPath<String, DefaultWeightedEdge> path) {
+        Map<String, Station> stationsByName = lines.getStationsByNameInfo();
+        List<Set<String>> transferLines = new ArrayList<>();
+
+        for (String stationName : path.getVertexList()) {
+            Station station = stationsByName.get(stationName);
+            transferLines.add(lines.getLineNamesFromStation(station));
+        }
+
+        return transferLines;
     }
 
     public void update(final Lines lines) {

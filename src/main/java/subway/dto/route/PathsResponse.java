@@ -2,10 +2,9 @@ package subway.dto.route;
 
 import subway.domain.subway.Station;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class PathsResponse {
 
@@ -17,10 +16,12 @@ public class PathsResponse {
         this.fee = fee;
     }
 
-    public static PathsResponse from(final Map<Station, Set<String>> lineNamesByStation, final int fee) {
-        List<PathResponse> paths = lineNamesByStation.keySet().stream()
-                .map(station -> PathResponse.from(station, lineNamesByStation.get(station)))
-                .collect(Collectors.toList());
+    public static PathsResponse from(final List<Station> stations, List<Set<String>> transferLines, final int fee) {
+        List<PathResponse> paths = new ArrayList<>();
+
+        for (int i = 0; i < stations.size(); i++) {
+            paths.add(PathResponse.from(stations.get(i), transferLines.get(i)));
+        }
 
         return new PathsResponse(paths, fee);
     }

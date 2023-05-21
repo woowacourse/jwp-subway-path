@@ -19,7 +19,6 @@ import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,11 +45,14 @@ public class SubwayMapService {
 
     @Transactional(readOnly = true)
     public PathsResponse findShortestPath(final PathRequest pathRequest) {
+        String start = pathRequest.getStart();
+        String destination = pathRequest.getDestination();
+
         Route route = RouteCache.getRoute();
+        List<Station> stations = route.findShortestPath(start, destination);
+        List<Set<String>> transferLines = route.findShortestTransferLines(start, destination);
 
-        Map<Station, Set<String>> lineNamesByStation = route.findShortestPath(pathRequest.getStart(), pathRequest.getDestination());
-
-        return PathsResponse.from(lineNamesByStation, route.getFee());
+        return PathsResponse.from(stations, transferLines, route.getFee());
     }
 
     @TransactionalEventListener
