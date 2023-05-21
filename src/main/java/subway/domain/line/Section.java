@@ -5,8 +5,8 @@ import subway.domain.Distance;
 public class Section {
 
     private Long id;
-    private Station upStation;
-    private Station downStation;
+    private final Station upStation;
+    private final Station downStation;
     private Distance distance;
 
     public Section(Long id, Station upStation, Station downStation, Distance distance) {
@@ -34,6 +34,9 @@ public class Section {
         return downStation.equals(station);
     }
 
+    public boolean hasSmallerDistanceThan(Distance distance) {
+        return this.distance.isSmallerThan(distance);
+    }
 
     public boolean isStationExistsAtDirection(Station station, Direction direction) {
         if (direction == Direction.UP) {

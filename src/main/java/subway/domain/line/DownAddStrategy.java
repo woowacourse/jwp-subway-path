@@ -12,7 +12,7 @@ public class DownAddStrategy implements AddStrategy {
         final Optional<Section> section = findSectionByStationExistsAtDirection(sections, upStation, Direction.UP);
         if (section.isPresent()) {
             final Section existingSection = section.get();
-            if (existingSection.getDistance().isSmallerThan(distance)) {
+            if (existingSection.hasSmallerDistanceThan(distance)) {
                 throw new IllegalArgumentException("추가하려는 거리가 기존의 거리보다 깁니다.");
             }
             sections.add(new Section(downStation, existingSection.getDownStation(), existingSection.getDistance().substract(distance)));
