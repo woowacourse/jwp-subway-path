@@ -16,19 +16,24 @@ classDiagram
     LineController --> LineService
     LineService --> LineRepository
     LineRepository <|.. DbLineRepository
-    DbLineRepository --> LineDao
-    DbLineRepository --> SectionDao
-    DbLineRepository --> StationDao
-    
-    LineController --> TransferService
+
+    WebEnvironment <--> TransferController
+    TransferController --> TransferService
     TransferService --> LineService
     TransferService  --> TransferRepository
     TransferRepository <|.. DbTransferRepository
+    
+    WebEnvironment <--> PathController
+    PathController --> SubwayMapService
+    SubwayMapService --> LineRepository
+    SubwayMapService  --> TransferRepository
 ```
 
 ### 클래스 다이어그램 - 도메인
 ```mermaid
 classDiagram
+    JgraphtSubwayMap --> Line
+    JgraphtSubwayMap --> Transfer
     Line *-- Section
     Section *-- Station
     Transfer *-- Station
@@ -46,6 +51,9 @@ classDiagram
     class Transfer {
         - Station firstStation
         - Station lastStation
+    }
+    class JgraphtSubwayMap{
+        - ShortestPathAlgorithm pathAlgorithm
     }
 ```
 
@@ -72,6 +80,11 @@ erDiagram
         BIGINT line_id FK
         VARCHAR(255) name
         DATE created_at
+    }
+    TRANSFER {
+        BIGINT id PK
+        BIGINT first_station_id
+        BIGINT last_station_id
     }
 ```
 
