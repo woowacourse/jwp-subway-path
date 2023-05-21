@@ -9,6 +9,8 @@ import subway.adapter.in.web.route.dto.FindShortCutRequest;
 import subway.application.dto.RouteResponse;
 import subway.application.port.in.route.FindRouteResultUseCase;
 
+import javax.validation.constraints.NotNull;
+
 @RestController
 @RequestMapping("/stations/route")
 public class RouteController {
@@ -20,9 +22,9 @@ public class RouteController {
     }
 
     @GetMapping
-    public ResponseEntity<RouteResponse> findResultRouteResult(@RequestParam String fromStation,
-                                                               @RequestParam String toStation,
-                                                               @RequestParam Integer age) {
+    public ResponseEntity<RouteResponse> findResultRouteResult(@RequestParam @NotNull(message = "출발지가 없습니다.") String fromStation,
+                                                               @RequestParam @NotNull(message = "목적지가 없습니다.") String toStation,
+                                                               @RequestParam @NotNull(message = "나이가 없습니다.") Integer age) {
         final FindShortCutRequest findShortCutRequest = new FindShortCutRequest(fromStation, toStation, age);
         return ResponseEntity.ok(findRouteResultUseCase.findRouteResult(findShortCutRequest));
     }
