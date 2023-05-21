@@ -53,5 +53,38 @@ public class PathIntegrationTest extends IntegrationTest {
                     () -> assertThat(documentContext.read("$.route[2].name", String.class)).isEqualTo("가산디지털단지")
             );
         }
+
+        @Test
+        @DisplayName("성공 - 10km ~ 50km 추가 운임")
+        void success_10km_to_50km() {
+            // given
+            final ShortestPathRequest request = new ShortestPathRequest("광명사거리", "신도림");
+
+            // when
+            final ExtractableResponse<Response> response = RestAssured
+                    .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().get("/path")
+                    .then()
+                    .extract();
+
+            // then
+            final Configuration conf = Configuration.defaultConfiguration();
+            final DocumentContext documentContext = JsonPath.using(conf).parse(response.asString());
+
+            assertAll(
+                    () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                    () -> assertThat(documentContext.read("$.distance", Integer.class)).isEqualTo(20),
+                    () -> assertThat(documentContext.read("$.fee", Integer.class)).isEqualTo(1450),
+                    () -> assertThat(documentContext.read("$.route.size()", Integer.class)).isEqualTo(6),
+                    () -> assertThat(documentContext.read("$.route[0].name", String.class)).isEqualTo("광명사거리"),
+                    () -> assertThat(documentContext.read("$.route[1].name", String.class)).isEqualTo("철산"),
+                    () -> assertThat(documentContext.read("$.route[2].name", String.class)).isEqualTo("가산디지털단지"),
+                    () -> assertThat(documentContext.read("$.route[3].name", String.class)).isEqualTo("남구로"),
+                    () -> assertThat(documentContext.read("$.route[4].name", String.class)).isEqualTo("대림"),
+                    () -> assertThat(documentContext.read("$.route[5].name", String.class)).isEqualTo("신도림")
+            );
+        }
     }
 }
