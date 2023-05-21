@@ -17,7 +17,11 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static subway.common.fixture.DomainFixture.*;
+import static subway.common.fixture.DomainFixture.디노;
+import static subway.common.fixture.DomainFixture.디노_조앤;
+import static subway.common.fixture.DomainFixture.조앤;
+import static subway.common.fixture.DomainFixture.후추;
+import static subway.common.fixture.DomainFixture.후추_디노;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
