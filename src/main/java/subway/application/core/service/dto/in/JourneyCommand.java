@@ -3,7 +3,7 @@ package subway.application.core.service.dto.in;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class JourneyCommand extends SelfValidating<JourneyCommand> {
+public class JourneyCommand {
 
     @NotNull
     private final Long departure;
@@ -13,7 +13,6 @@ public class JourneyCommand extends SelfValidating<JourneyCommand> {
     public JourneyCommand(Long departure, Long terminal) {
         this.departure = departure;
         this.terminal = terminal;
-        validateSelf();
     }
 
     public Long getDeparture() {

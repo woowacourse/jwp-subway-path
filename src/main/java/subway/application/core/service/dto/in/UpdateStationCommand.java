@@ -5,7 +5,7 @@ import subway.application.core.domain.Station;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class UpdateStationCommand extends SelfValidating<UpdateStationCommand> {
+public class UpdateStationCommand {
 
     @NotNull
     private final Long id;
@@ -15,7 +15,6 @@ public class UpdateStationCommand extends SelfValidating<UpdateStationCommand> {
     public UpdateStationCommand(Long id, String name) {
         this.id = id;
         this.name = name;
-        validateSelf();
     }
 
     public Station toEntity() {

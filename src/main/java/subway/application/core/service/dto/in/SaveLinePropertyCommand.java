@@ -4,7 +4,7 @@ import subway.application.core.domain.LineProperty;
 
 import javax.validation.constraints.NotEmpty;
 
-public class SaveLinePropertyCommand extends SelfValidating<SaveLinePropertyCommand> {
+public class SaveLinePropertyCommand {
 
     private final Long id;
     @NotEmpty
@@ -16,7 +16,6 @@ public class SaveLinePropertyCommand extends SelfValidating<SaveLinePropertyComm
         this.id = null;
         this.name = name;
         this.color = color;
-        validateSelf();
     }
 
     public LineProperty toEntity() {

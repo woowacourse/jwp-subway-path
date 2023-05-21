@@ -2,7 +2,7 @@ package subway.application.core.service.dto.in;
 
 import javax.validation.constraints.NotNull;
 
-public class DeleteStationCommand extends SelfValidating<DeleteStationCommand> {
+public class DeleteStationCommand {
 
     @NotNull
     private final Long lineId;
@@ -12,7 +12,6 @@ public class DeleteStationCommand extends SelfValidating<DeleteStationCommand> {
     public DeleteStationCommand(Long lineId, Long stationId) {
         this.lineId = lineId;
         this.stationId = stationId;
-        validateSelf();
     }
 
     public Long getLineId() {

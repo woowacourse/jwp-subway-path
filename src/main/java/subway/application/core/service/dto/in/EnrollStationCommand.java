@@ -3,7 +3,7 @@ package subway.application.core.service.dto.in;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-public class EnrollStationCommand extends SelfValidating<EnrollStationCommand> {
+public class EnrollStationCommand {
 
     @NotNull
     private final Long lineId;
@@ -19,7 +19,6 @@ public class EnrollStationCommand extends SelfValidating<EnrollStationCommand> {
         this.upBound = upBound;
         this.downBound = downBound;
         this.distance = distance;
-        validateSelf();
     }
 
     public Long getLineId() {

@@ -1,6 +1,8 @@
 package subway.application.core.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import subway.application.core.domain.Fare;
 import subway.application.core.domain.Line;
 import subway.application.core.domain.RouteMap;
@@ -12,10 +14,13 @@ import subway.application.port.LineRepository;
 import subway.application.port.PathFinder;
 import subway.application.port.StationRepository;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
+@Transactional(readOnly = true)
 public class JourneyService {
 
     private final StationRepository stationRepository;
@@ -28,7 +33,7 @@ public class JourneyService {
         this.pathFinder = pathFinder;
     }
 
-    public JourneyResult findShortestJourney(JourneyCommand journeyCommand) {
+    public JourneyResult findShortestJourney(@Valid JourneyCommand journeyCommand) {
         List<RouteMap> routeMaps = getAllRouteMaps();
         PathFindResult result = findShortestPath(journeyCommand, routeMaps);
         return new JourneyResult(result.getShortestPath(), result.getDistance(),

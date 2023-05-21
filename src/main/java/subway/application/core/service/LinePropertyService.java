@@ -2,6 +2,7 @@ package subway.application.core.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import subway.application.core.domain.LineProperty;
 import subway.application.core.service.dto.in.IdCommand;
 import subway.application.core.service.dto.in.SaveLinePropertyCommand;
@@ -9,10 +10,12 @@ import subway.application.core.service.dto.in.UpdateLinePropertyCommand;
 import subway.application.core.service.dto.out.LinePropertyResult;
 import subway.application.port.LinePropertyRepository;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 @Transactional
 public class LinePropertyService {
 
@@ -22,7 +25,7 @@ public class LinePropertyService {
         this.linePropertyRepository = linePropertyRepository;
     }
 
-    public LinePropertyResult saveLineProperty(SaveLinePropertyCommand command) {
+    public LinePropertyResult saveLineProperty(@Valid SaveLinePropertyCommand command) {
         LineProperty lineProperty = linePropertyRepository.insert(command.toEntity());
         return new LinePropertyResult(lineProperty);
     }
@@ -35,16 +38,16 @@ public class LinePropertyService {
                 .collect(Collectors.toList());
     }
 
-    public LinePropertyResult findLinePropertyById(IdCommand command) {
+    public LinePropertyResult findLinePropertyById(@Valid IdCommand command) {
         LineProperty lineProperty = linePropertyRepository.findById(command.getId());
         return new LinePropertyResult(lineProperty);
     }
 
-    public void updateLineProperty(UpdateLinePropertyCommand command) {
+    public void updateLineProperty(@Valid UpdateLinePropertyCommand command) {
         linePropertyRepository.update(command.toEntity());
     }
 
-    public void deleteLinePropertyById(IdCommand command) {
+    public void deleteLinePropertyById(@Valid IdCommand command) {
         linePropertyRepository.deleteById(command.getId());
     }
 }

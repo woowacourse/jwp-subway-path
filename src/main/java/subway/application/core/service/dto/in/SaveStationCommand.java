@@ -4,7 +4,7 @@ import subway.application.core.domain.Station;
 
 import javax.validation.constraints.NotEmpty;
 
-public class SaveStationCommand extends SelfValidating<SaveStationCommand> {
+public class SaveStationCommand {
 
     private final Long id;
     @NotEmpty
@@ -13,7 +13,6 @@ public class SaveStationCommand extends SelfValidating<SaveStationCommand> {
     public SaveStationCommand(String name) {
         this.id = null;
         this.name = name;
-        validateSelf();
     }
 
     public Station toEntity() {
