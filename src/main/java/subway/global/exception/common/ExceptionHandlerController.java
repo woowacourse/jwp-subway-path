@@ -33,7 +33,7 @@ public class ExceptionHandlerController {
         errorLogging(exception);
 
         return ResponseEntity.internalServerError()
-                             .body(new ExceptionResponse("전화 주세요"));
+                             .body(new ExceptionResponse(String.format("전화 주세요 : %s", exception.getMessage())));
     }
 
     @ExceptionHandler(DataAccessResourceFailureException.class)
