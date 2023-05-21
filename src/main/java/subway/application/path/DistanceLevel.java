@@ -1,15 +1,19 @@
 package subway.application.path;
 
 public enum DistanceLevel {
-    LEVEL1(10),
-    LEVEL2(50),
-    LEVEL3(Integer.MAX_VALUE);
+    LEVEL1(1, 10, 0),
+    LEVEL2(11, 50, 5),
+    LEVEL3(51, Integer.MAX_VALUE, 8);
 
-    DistanceLevel(int maxDistance) {
+    DistanceLevel(int minDistance, int maxDistance, int levelPerDistance) {
+        this.minDistance = minDistance;
         this.maxDistance = maxDistance;
+        this.levelPerDistance = levelPerDistance;
     }
 
+    private final int minDistance;
     private final int maxDistance;
+    private final int levelPerDistance;
 
     public static DistanceLevel from(int distance) {
         if (distance <= 0) {
@@ -22,5 +26,17 @@ public enum DistanceLevel {
             return LEVEL2;
         }
         return LEVEL3;
+    }
+
+    public int getMinDistance() {
+        return minDistance;
+    }
+
+    public int getMaxDistance() {
+        return maxDistance;
+    }
+
+    public int getLevelPerDistance() {
+        return levelPerDistance;
     }
 }
