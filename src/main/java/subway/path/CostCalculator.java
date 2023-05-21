@@ -2,36 +2,36 @@ package subway.path;
 
 import org.springframework.stereotype.Component;
 
+import static subway.path.CostInfo.BASIC_ADDITIONAL_COST_END_BOUNDARY;
+import static subway.path.CostInfo.BASIC_COST_DISTANCE;
+import static subway.path.CostInfo.FEE;
+import static subway.path.CostInfo.START_COST;
+import static subway.path.CostInfo.UNIT_OF_FIRST_DISTANCE;
+import static subway.path.CostInfo.UNIT_OF_SECOND_DISTANCE;
+
 @Component
 public class CostCalculator implements CostCalculatePolicy {
 
-    private static final int START_COST = 1250;
-    private static final int FEE = 100;
-    private static final int BASIC_COST_DISTANCE = 10;
-    private static final int BASIC_ADDITIONAL_COST_END_BOUNDARY = 50;
-    private static final int UNIT_OF_FIRST_DISTANCE = 5;
-    private static final int UNIT_OF_SECOND_DISTANCE = 8;
-
     public int calculateAdult(int distance) {
-        int cost = START_COST;
+        int cost = START_COST.getValue();
 
-        if (distance >= BASIC_COST_DISTANCE) {
-            cost += getFirstStateCost(distance - BASIC_COST_DISTANCE);
+        if (distance >= BASIC_COST_DISTANCE.getValue()) {
+            cost += getFirstStateCost(distance - BASIC_COST_DISTANCE.getValue());
         }
-        if (distance >= BASIC_ADDITIONAL_COST_END_BOUNDARY) {
-            cost += getSecondStateCost(distance - BASIC_ADDITIONAL_COST_END_BOUNDARY);
+        if (distance >= BASIC_ADDITIONAL_COST_END_BOUNDARY.getValue()) {
+            cost += getSecondStateCost(distance - BASIC_ADDITIONAL_COST_END_BOUNDARY.getValue());
         }
 
         return cost;
     }
 
     private int getFirstStateCost(int distance) {
-        int additionalDistance = Math.min(distance, BASIC_ADDITIONAL_COST_END_BOUNDARY - BASIC_COST_DISTANCE);
-        return ((additionalDistance + UNIT_OF_FIRST_DISTANCE - 1) / UNIT_OF_FIRST_DISTANCE) * FEE;
+        int additionalDistance = Math.min(distance, BASIC_ADDITIONAL_COST_END_BOUNDARY.getValue() - BASIC_COST_DISTANCE.getValue());
+        return ((additionalDistance + UNIT_OF_FIRST_DISTANCE.getValue() - 1) / UNIT_OF_FIRST_DISTANCE.getValue()) * FEE.getValue();
     }
 
     private int getSecondStateCost(int distance) {
-        return ((distance + UNIT_OF_SECOND_DISTANCE - 1) / UNIT_OF_SECOND_DISTANCE) * FEE;
+        return ((distance + UNIT_OF_SECOND_DISTANCE.getValue() - 1) / UNIT_OF_SECOND_DISTANCE.getValue()) * FEE.getValue();
     }
 
 }

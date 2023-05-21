@@ -25,9 +25,11 @@ public class Path {
 
     private void addEdge(List<Section> sections) {
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(
+            graph.setEdgeWeight(
+                    graph.addEdge(
                             section.getUpStation().getNameValue(),
-                            section.getDownStation().getNameValue()),
+                            section.getDownStation().getNameValue()
+                    ),
                     section.getDistanceValue()
             );
         }
