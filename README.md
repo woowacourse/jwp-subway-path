@@ -7,18 +7,38 @@
 - [x] 노선 목록 조회 API 수정
     - 노선에 포함된 역을 순서대로 보여주도록 응답을 개선합니다.
 
+
+- [x] 데이터베이스 설정을 프로덕션과 테스트를 다르게 한다.
+    - [x] 프로덕션의 데이터베이스는 로컬에 저장될 수 있도록 설정
+    - [X] 테스트용 데이터베이스는 인메모리로 동작할 수 있도록 설정
+
+
+- [ ] 경로 조회 API 구현
+    - [ ] 출발역과 도착역 사이의 최단 거리 경로를 구하는 API를 구현한다.
+    - [ ] 최단 거리 경로와 함께 총 거리 정보를 함께 응답한다.
+    - [ ] 한 노선에서 경로 찾기 뿐만 아니라 여러 노선의 환승도 고려한다.
+
+
+- [ ] 요금 조회 기능 추가
+    - [ ] 경로 조회 시 요금 정보를 포함하여 응답한다.
+    - [ ] 요금은 다음과 같은 기준으로 산정된다.
+        - 기본운임(10㎞ 이내): 기본운임 1,250원
+        - 이용 거리 초과 시 추가운임 부과
+        - 10km~50km: 5km 까지 마다 100원 추가
+        - 50km 초과: 8km 까지 마다 100원 추가
+
 ---
 
 # 용어 사전
 
-| 한글명 | 영문명 | 설명 |
-| --- | --- | --- |
-| 노선 | line | 구간의 모음, 이름을 가진다 |
-| 역 | station | 이름을 가진다 |
-| 구간 | section | 상행역, 하행역, 거리를 가진다. |
-| 상행역 | upStation | 위에 존재하는 역이다. |
-| 하행역 | downStation | 아래에 존재하는 역이다. |
-| 거리 | distance | 두 역 사이의 거리다. |
+| 한글명 | 영문명         | 설명                 |
+|-----|-------------|--------------------|
+| 노선  | line        | 구간의 모음, 이름을 가진다    |
+| 역   | station     | 이름을 가진다            |
+| 구간  | section     | 상행역, 하행역, 거리를 가진다. |
+| 상행역 | upStation   | 위에 존재하는 역이다.       |
+| 하행역 | downStation | 아래에 존재하는 역이다.      |
+| 거리  | distance    | 두 역 사이의 거리다.       |
 
 ---
 
@@ -49,15 +69,15 @@
 
 ## Line API
 
-| Method | URL | HttpStatus | Description |
-| --- | --- | --- | --- |
-| GET | /lines | 200 | 전체 노선 목록을 조회한다. |
-| GET | /lines/{lineId} | 200 | 해당 노선을 조회한다. |
-| POST | /lines | 201 | 노선을 생성한다. |
-| PUT | /lines/{lineId} | 200 | 해당 노선 정보를 수정한다. |
-| DELETE | /lines/{lineId} | 204 | 해당 노선을 삭제한다. |
-| POST | /lines/{lineId}/stations | 201 | 해당 노선에 구간을 추가한다. |
-| DELETE | /lines/{lineId}/stations/{stationId} | 204 | 해당 노선에서 해당 역을 삭제한다. |
+| Method | URL                                  | HttpStatus | Description         |
+|--------|--------------------------------------|------------|---------------------|
+| GET    | /lines                               | 200        | 전체 노선 목록을 조회한다.     |
+| GET    | /lines/{lineId}                      | 200        | 해당 노선을 조회한다.        |
+| POST   | /lines                               | 201        | 노선을 생성한다.           |
+| PUT    | /lines/{lineId}                      | 200        | 해당 노선 정보를 수정한다.     |
+| DELETE | /lines/{lineId}                      | 204        | 해당 노선을 삭제한다.        |
+| POST   | /lines/{lineId}/stations             | 201        | 해당 노선에 구간을 추가한다.    |
+| DELETE | /lines/{lineId}/stations/{stationId} | 204        | 해당 노선에서 해당 역을 삭제한다. |
 
 ### GET /lines
 
@@ -252,13 +272,14 @@ NONE
 
 ## Station API
 
-| Method | URL | HttpStatus | Description |
-| --- | --- | --- | --- |
-| GET | /stations | 200 | 전체 역 목록을 조회한다. |
-| GET | /stations/{id} | 200 | 해당 역을 조회한다. |
-| POST | /stations | 200 | 해당 역을 등록한다. |
-| PUT | /stations/{id} | 200 | 해당 역을 수정한다. |
-| DELETE | /stations/{id} | 204 | 해당 역을 삭제한다. |
+| Method | URL                      | HttpStatus | Description                |
+|--------|--------------------------|------------|----------------------------|
+| GET    | /stations                | 200        | 전체 역 목록을 조회한다.             |
+| GET    | /stations/{id}           | 200        | 해당 역을 조회한다.                |
+| POST   | /stations                | 200        | 해당 역을 등록한다.                |
+| PUT    | /stations/{id}           | 200        | 해당 역을 수정한다.                |
+| DELETE | /stations/{id}           | 204        | 해당 역을 삭제한다.                |
+| GET    | /stations/shortest-route | 200        | 최단거리경로, 총 거리정보, 요금정보를 구한다. |
 
 ### GET /stations
 
@@ -355,6 +376,42 @@ NONE
 #### Response
 
 NONE
+
+### GET /stations/shortest-route
+
+#### Request
+
+```json
+{
+  "sourceStation": 1,
+  "targetStation": 3
+}
+```
+
+#### Response
+
+Body
+
+```json
+{
+  "stations": [
+    {
+      "id": 1,
+      "name": "역삼역"
+    },
+    {
+      "id": 2,
+      "name": "삼성역"
+    },
+    {
+      "id": 3,
+      "name": "잠실역"
+    }
+  ],
+  "distance": 10,
+  "fare": 1250
+}
+```
 
 ---
 

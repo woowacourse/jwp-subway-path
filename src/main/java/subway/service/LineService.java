@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class LineService {
 
     private final LineRepository lineRepository;
@@ -19,11 +21,13 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineById(Long id) {
         Line line = lineRepository.findById(id);
         return LineMapper.toResponse(line);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findAllLine() {
         return lineRepository.findAll().stream()
                 .map(LineMapper::toResponse)

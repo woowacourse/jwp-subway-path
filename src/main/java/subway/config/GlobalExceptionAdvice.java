@@ -7,8 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import subway.exception.ApiException;
-import subway.exception.ApiIllegalArgumentException;
-import subway.exception.ApiNoSuchResourceException;
 import subway.exception.ErrorResponse;
 
 
@@ -25,18 +23,6 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(final ApiException e) {
-        log.warn(e.getMessage());
-        return ResponseEntity.badRequest().body(ErrorResponse.from(e.getMessage()));
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(final ApiIllegalArgumentException e) {
-        log.warn(e.getMessage());
-        return ResponseEntity.badRequest().body(ErrorResponse.from(e.getMessage()));
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(final ApiNoSuchResourceException e) {
         log.warn(e.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(e.getMessage()));
     }

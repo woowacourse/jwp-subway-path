@@ -1,34 +1,32 @@
 package subway.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.response.StationResponse;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static subway.fixture.StationFixture.잠실역;
+
 @DisplayName("지하철역 관련 기능")
-public class StationIntegrationTest extends IntegrationTest {
+class StationIntegrationTest extends IntegrationTest {
 
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
         // given
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
-
-        // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(params)
+                .body(잠실역.REQUEST)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
@@ -114,10 +112,8 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void getStation() {
         /// given
-        Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-                .body(params1)
+                .body(잠실역.REQUEST)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
@@ -143,14 +139,15 @@ public class StationIntegrationTest extends IntegrationTest {
     void updateStation() {
         // given
         Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-                .body(params)
+                .body(잠실역.REQUEST)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
                 .then().log().all()
                 .extract();
+
+        System.out.println(createResponse);
 
         // when
         Map<String, String> otherParams = new HashMap<>();

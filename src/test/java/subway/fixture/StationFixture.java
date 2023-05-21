@@ -52,4 +52,37 @@ public class StationFixture {
         public static final StationRequest REQUEST = new StationRequest(NAME);
         public static final StationResponse RESPONSE = new StationResponse(ID, NAME);
     }
+
+    public static class 강남역 {
+
+        private static final Long ID = 5L;
+        private static final String NAME = "강남역";
+
+        public static final Station STATION = new Station(ID, NAME);
+        public static final StationEntity ENTITY = new StationEntity(ID, NAME);
+        public static final StationRequest REQUEST = new StationRequest(NAME);
+        public static final StationResponse RESPONSE = new StationResponse(ID, NAME);
+    }
+
+    public static class 신논현역 {
+
+        private static final Long ID = 6L;
+        private static final String NAME = "신논현역";
+
+        public static final Station STATION = new Station(ID, NAME);
+        public static final StationEntity ENTITY = new StationEntity(ID, NAME);
+        public static final StationRequest REQUEST = new StationRequest(NAME);
+        public static final StationResponse RESPONSE = new StationResponse(ID, NAME);
+    }
+
+    public static class 종합운동장역 {
+
+        private static final Long ID = 7L;
+        private static final String NAME = "종합운동장역";
+
+        public static final Station STATION = new Station(ID, NAME);
+        public static final StationEntity ENTITY = new StationEntity(ID, NAME);
+        public static final StationRequest REQUEST = new StationRequest(NAME);
+        public static final StationResponse RESPONSE = new StationResponse(ID, NAME);
+    }
 }

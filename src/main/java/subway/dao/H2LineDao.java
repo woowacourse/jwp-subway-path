@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
+import subway.exception.NoSuchLineException;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -58,12 +59,23 @@ public class H2LineDao implements LineDao {
 
     @Override
     public void update(final LineEntity newLineEntity) {
+        if (!existsById(newLineEntity.getId())) {
+            throw new NoSuchLineException(newLineEntity.getId());
+        }
         String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
         jdbcTemplate.update(sql, newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId());
     }
 
     @Override
     public void deleteById(final Long id) {
+        if (!existsById(id)) {
+            throw new NoSuchLineException(id);
+        }
         jdbcTemplate.update("DELETE FROM line WHERE id = ?", id);
+    }
+
+    private boolean existsById(final Long id) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM line WHERE id = ?)";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, Boolean.class);
     }
 }

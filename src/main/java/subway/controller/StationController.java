@@ -2,10 +2,14 @@ package subway.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import subway.dto.request.RouteRequest;
 import subway.dto.request.StationRequest;
+import subway.dto.response.RouteResponse;
 import subway.dto.response.StationResponse;
+import subway.service.SectionService;
 import subway.service.StationService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,15 +19,17 @@ import java.util.List;
 public class StationController {
 
     private final StationService stationService;
+    private final SectionService sectionService;
 
-    public StationController(final StationService stationService) {
+    public StationController(final StationService stationService, SectionService sectionService) {
         this.stationService = stationService;
+        this.sectionService = sectionService;
     }
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+        return ResponseEntity.created(URI.create("/stations/" + station.getId())).build();
     }
 
     @GetMapping
@@ -46,6 +52,12 @@ public class StationController {
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/shortest-route")
+    public ResponseEntity<RouteResponse> createRoute(@Valid @RequestBody RouteRequest routeRequest) {
+        RouteResponse routeResponse = sectionService.getShortestRoute(routeRequest);
+        return ResponseEntity.ok().body(routeResponse);
     }
 
     @ExceptionHandler(SQLException.class)

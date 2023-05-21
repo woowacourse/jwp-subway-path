@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.StationEntity;
+import subway.exception.NoSuchStationException;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -52,13 +53,24 @@ public class H2StationDao implements StationDao {
 
     @Override
     public void update(final StationEntity newStationEntity) {
+        if (!existsById(newStationEntity.getId())) {
+            throw new NoSuchStationException(newStationEntity.getId());
+        }
         String sql = "UPDATE station SET name = ? WHERE id = ?";
         jdbcTemplate.update(sql, newStationEntity.getName(), newStationEntity.getId());
     }
 
     @Override
     public void deleteById(final Long id) {
+        if (!existsById(id)) {
+            throw new NoSuchStationException(id);
+        }
         String sql = "DELETE FROM station WHERE id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    private boolean existsById(final Long id) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE id = ?)";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, Boolean.class);
     }
 }
