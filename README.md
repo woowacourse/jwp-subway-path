@@ -1,6 +1,6 @@
 # jwp-subway-path
 
-### [API 명세](http://localhost:8080/docs/html5/index.html)
+### [API 명세](http://localhost:8080/docs/index.html)
 
 ### 기능 요구 사항
 
