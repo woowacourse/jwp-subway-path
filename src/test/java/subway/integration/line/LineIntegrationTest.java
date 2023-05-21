@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import subway.dto.ErrorResponse;
-import subway.dto.line.LineRequest;
+import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineSelectResponse;
 import subway.dto.line.LinesSelectResponse;
 import subway.dto.station.StationSaveRequest;
@@ -30,15 +30,15 @@ import subway.integration.IntegrationTest;
 @DisplayName("지하철 노선 관련 기능")
 @ActiveProfiles("test")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
+    private LineCreateRequest lineCreateRequest1;
+    private LineCreateRequest lineCreateRequest2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선", "강남역", "역삼역", 10);
-        lineRequest2 = new LineRequest("구신분당선", "강남역", "구역삼역", 10);
+        lineCreateRequest1 = new LineCreateRequest("신분당선", "강남역", "역삼역", 10);
+        lineCreateRequest2 = new LineCreateRequest("구신분당선", "강남역", "구역삼역", 10);
     }
 
     @Nested
@@ -48,7 +48,7 @@ public class LineIntegrationTest extends IntegrationTest {
         @Test
         void 지하철_노선을_생성한다() {
             // when
-            ExtractableResponse<Response> response = 노선_생성_요청(lineRequest1);
+            ExtractableResponse<Response> response = 노선_생성_요청(lineCreateRequest1);
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -58,16 +58,16 @@ public class LineIntegrationTest extends IntegrationTest {
         @Test
         void 기존에_존재하는_이름으로_생성하면_400에러를_반환한다() {
             // given
-            노선_생성_요청(lineRequest1);
+            노선_생성_요청(lineCreateRequest1);
 
             // when
-            ExtractableResponse<Response> response = 노선_생성_요청(lineRequest1);
+            ExtractableResponse<Response> response = 노선_생성_요청(lineCreateRequest1);
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
             ErrorResponse errorResponse = response.body().as(ErrorResponse.class);
             assertThat(errorResponse.getMessage()).isEqualTo(
-                    "이미 존재하는 이름입니다. (입력값 : " + lineRequest1.getLineName() + ")");
+                    "이미 존재하는 이름입니다. (입력값 : " + lineCreateRequest1.getLineName() + ")");
         }
 
     }
@@ -79,10 +79,10 @@ public class LineIntegrationTest extends IntegrationTest {
         @Test
         void 목록_전체를_조회한다() {
             // given
-            lineRequest1 = new LineRequest("1호선", "서울역", "명동역", 7);
-            lineRequest2 = new LineRequest("2호선", "강남역", "역삼역", 5);
-            final ExtractableResponse<Response> createResponse1 = 노선_생성_요청(lineRequest1);
-            final ExtractableResponse<Response> createResponse2 = 노선_생성_요청(lineRequest2);
+            lineCreateRequest1 = new LineCreateRequest("1호선", "서울역", "명동역", 7);
+            lineCreateRequest2 = new LineCreateRequest("2호선", "강남역", "역삼역", 5);
+            final ExtractableResponse<Response> createResponse1 = 노선_생성_요청(lineCreateRequest1);
+            final ExtractableResponse<Response> createResponse2 = 노선_생성_요청(lineCreateRequest2);
 
             // when
             ExtractableResponse<Response> response = 노선_전체_조회_요청();
@@ -103,10 +103,10 @@ public class LineIntegrationTest extends IntegrationTest {
 
         @Test
         void 지하철_노선을_단건_조회한다() {
-            lineRequest1 = new LineRequest("2호선", "교대역", "역삼역", 5);
+            lineCreateRequest1 = new LineCreateRequest("2호선", "교대역", "역삼역", 5);
 
             // given
-            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
+            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineCreateRequest1);
             Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
             노선에_역_등록_요청(lineId, new StationSaveRequest("강남역", "역삼역", 2));
 
@@ -129,9 +129,9 @@ public class LineIntegrationTest extends IntegrationTest {
 
         @Test
         void 지하철_노선에_역을_등록한다() {
-            lineRequest1 = new LineRequest("2호선", "교대역", "강남역", 10);
+            lineCreateRequest1 = new LineCreateRequest("2호선", "교대역", "강남역", 10);
             // given
-            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
+            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineCreateRequest1);
 
             // when
             Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
@@ -146,9 +146,9 @@ public class LineIntegrationTest extends IntegrationTest {
 
         @Test
         void 추가한_역이_기존의_노선과_연결되지_않는다면_예외가_발생한다() {
-            lineRequest1 = new LineRequest("2호선", "교대역", "강남역", 10);
+            lineCreateRequest1 = new LineCreateRequest("2호선", "교대역", "강남역", 10);
             // given
-            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
+            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineCreateRequest1);
 
             // when
             Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
@@ -163,9 +163,9 @@ public class LineIntegrationTest extends IntegrationTest {
 
         @Test
         void 기존_노선이_가지고_있는_구간과_완전히_겹치는_구간을_추가하면_예외가_발생한다() {
-            lineRequest1 = new LineRequest("2호선", "교대역", "강남역", 10);
+            lineCreateRequest1 = new LineCreateRequest("2호선", "교대역", "강남역", 10);
             // given
-            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
+            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineCreateRequest1);
 
             // when
             Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
@@ -180,9 +180,9 @@ public class LineIntegrationTest extends IntegrationTest {
 
         @Test
         void AC_구간_사이로_들어간_BC_구간의_길이가_AC_구간의_길이보다_길다면_예외가_발생한다() {
-            lineRequest1 = new LineRequest("2호선", "교대역", "역삼역", 20);
+            lineCreateRequest1 = new LineCreateRequest("2호선", "교대역", "역삼역", 20);
             // given
-            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
+            ExtractableResponse<Response> createResponse = 노선_생성_요청(lineCreateRequest1);
 
             // when
             Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);

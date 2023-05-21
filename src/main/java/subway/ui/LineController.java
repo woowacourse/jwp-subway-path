@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.dto.line.LineRequest;
-import subway.dto.line.LineResponse;
+import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineCreateResponse;
 import subway.dto.line.LineSelectResponse;
 import subway.dto.line.LinesSelectResponse;
 import subway.dto.station.StationSaveRequest;
@@ -29,8 +29,8 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
+    public ResponseEntity<LineCreateResponse> createLine(@RequestBody @Valid LineCreateRequest lineCreateRequest) {
+        LineCreateResponse line = lineService.saveLine(lineCreateRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import subway.domain.line.Line;
 import subway.domain.line.Station;
 import subway.domain.Subway;
-import subway.dto.line.LineRequest;
-import subway.dto.line.LineResponse;
+import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineCreateResponse;
 import subway.dto.line.LineSelectResponse;
 import subway.dto.line.LinesSelectResponse;
 import subway.dto.station.StationSaveRequest;
@@ -31,10 +31,10 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
+    public LineCreateResponse saveLine(LineCreateRequest request) {
         Line line = request.toDomain();
         Long saveId = lineRepository.save(line);
-        return new LineResponse(saveId);
+        return new LineCreateResponse(saveId);
     }
 
     public LinesSelectResponse findAllLine() {

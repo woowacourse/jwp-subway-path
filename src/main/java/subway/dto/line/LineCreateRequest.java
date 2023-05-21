@@ -5,18 +5,18 @@ import javax.validation.constraints.NotNull;
 import subway.domain.line.Line;
 import subway.domain.line.Section;
 
-public class LineRequest {
+public class LineCreateRequest {
 
     @NotNull
-    private String lineName;
+    private final String lineName;
     @NotNull
-    private String sourceStation;
+    private final String sourceStation;
     @NotNull
-    private String targetStation;
+    private final String targetStation;
     @NotNull
-    private Integer distance;
+    private final Integer distance;
 
-    public LineRequest(String lineName, String sourceStation, String targetStation, Integer distance) {
+    public LineCreateRequest(String lineName, String sourceStation, String targetStation, Integer distance) {
         this.lineName = lineName;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
