@@ -100,6 +100,8 @@ class DbLineRepositoryTest {
         given(sectionDao.findAllByLineId(any())).willReturn(List.of(
                 new SectionEntity(1L, 1L, 1L, 2L, 5)
         ));
+        given(stationDao.findByLineIdAndName(1L, "잠실역")).willReturn(Optional.of(new StationEntity(1L, 1L, "잠실역")));
+        given(stationDao.findByLineIdAndName(1L, "몽촌토성역")).willReturn(Optional.of(new StationEntity(2L, 1L, "몽촌토성역")));
         given(stationDao.findById(1L)).willReturn(Optional.of(new StationEntity(1L, 1L, "잠실역")));
         given(stationDao.findById(2L)).willReturn(Optional.of(new StationEntity(2L, 1L, "몽촌토성역")));
 
@@ -134,24 +136,5 @@ class DbLineRepositoryTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("입력한 ID와 일치하는 Station이 존재하지 않습니다. "
                         + "(입력한 ID : 100)");
-    }
-
-    @DisplayName("Station ID로 Line을 조회한다.")
-    @Test
-    void shouldFindLineWhenInputStationId() {
-        LineEntity lineEntity = new LineEntity(1L, "2호선");
-        given(lineDao.findById(any())).willReturn(lineEntity);
-        given(sectionDao.findAllByLineId(any())).willReturn(List.of(
-                new SectionEntity(1L, 1L, 1L, 2L, 5)
-        ));
-        given(stationDao.findById(1L)).willReturn(Optional.of(new StationEntity(1L, 1L, "잠실역")));
-        given(stationDao.findById(2L)).willReturn(Optional.of(new StationEntity(2L, 1L, "몽촌토성역")));
-        given(stationDao.findLineIdByStationId(1L)).willReturn(Optional.of(1L));
-
-        Line expectedLine = lineRepository.findLineByStationId(1L);
-
-        assertThat(expectedLine.getId()).isEqualTo(1L);
-        assertThat(expectedLine.getName()).isEqualTo("2호선");
-        assertThat(expectedLine.getSections()).hasSize(1);
     }
 }

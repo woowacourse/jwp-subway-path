@@ -73,9 +73,9 @@ class StationDaoTest {
         );
     }
 
-    @DisplayName("ID가 일치하는 Station의 Line ID를 반환한다.")
+    @DisplayName("Line ID와 이름이 일치하는 Station을 조회한다.")
     @Test
-    void shouldReturnLineIdOfStationWhenInputStationId() {
+    void shouldFindStationWhenInputLineIdAndName() {
         LineEntity lineEntity = new LineEntity("2호선");
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntity);
 
@@ -84,8 +84,10 @@ class StationDaoTest {
                 "강남역"
         );
         long insertedStationId = stationDao.insert(stationEntityToInsert);
-        Optional<Long> optionalLineId = stationDao.findLineIdByStationId(insertedStationId);
 
-        assertThat(optionalLineId.get()).isEqualTo(lineEntityAfterSave.getId());
+        StationEntity stationEntity = stationDao.findByLineIdAndName(lineEntityAfterSave.getId(), "강남역").get();
+
+        assertThat(stationEntity.getId()).isEqualTo(insertedStationId);
+        assertThat(stationEntity.getName()).isEqualTo("강남역");
     }
 }

@@ -20,8 +20,8 @@ import subway.business.service.dto.StationAddToLineRequest;
 import subway.ui.dto.StationDeleteRequest;
 
 @Tag(name = "Line", description = "노선 API Document")
-@RestController
 @RequestMapping("/lines")
+@RestController
 public class LineController {
     private final LineService lineService;
 

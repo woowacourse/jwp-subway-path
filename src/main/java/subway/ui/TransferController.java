@@ -14,8 +14,8 @@ import subway.business.service.dto.TransferRequest;
 import subway.business.service.dto.TransferResponse;
 
 @Tag(name = "Transfer", description = "환승 API Document")
-@RestController
 @RequestMapping("/transfers")
+@RestController
 public class TransferController {
     private final TransferService transferService;
 

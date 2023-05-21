@@ -50,13 +50,14 @@ public class StationDao {
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
-    public Optional<Long> findLineIdByStationId(Long stationId) {
-        String sql = "SELECT line_id FROM station WHERE id=:id";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", stationId);
-        return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(
-                sql,
-                sqlParameterSource,
-                (resultSet, rowNumber) -> resultSet.getLong("line_id")
-        ));
+    public Optional<StationEntity> findByLineIdAndName(Long lineId, String name) {
+        String sql = "SELECT id, line_id, name FROM station WHERE (line_id=:line_id AND name=:name)";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("line_id", lineId)
+                .addValue("name", name);
+        try {
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }

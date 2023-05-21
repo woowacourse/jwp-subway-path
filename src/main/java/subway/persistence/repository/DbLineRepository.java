@@ -37,7 +37,7 @@ public class DbLineRepository implements LineRepository {
         LineEntity savedLineEntity = lineDao.insert(lineEntityToSave);
 
         Section section = line.getSections().get(0);
-        saveSectionIncludingStations(savedLineEntity.getId(), section);
+        saveInitialSection(savedLineEntity.getId(), section);
 
         return findById(savedLineEntity.getId());
     }
@@ -73,11 +73,16 @@ public class DbLineRepository implements LineRepository {
         sectionDao.deleteAllByLineId(updatedLineEntity.getId());
         stationDao.deleteAllByLineId(updatedLineEntity.getId());
 
+        Long lineId = updatedLineEntity.getId();
+        List<Section> sections = line.getSections();
+
+        insertAllStations(lineId, sections);
+
         for (Section section : line.getSections()) {
-            saveSectionIncludingStations(updatedLineEntity.getId(), section);
+            saveSection(lineId, section);
         }
 
-        return findById(updatedLineEntity.getId());
+        return findById(lineId);
     }
 
     @Override
@@ -90,13 +95,26 @@ public class DbLineRepository implements LineRepository {
 
     @Override
     public Line findLineByStationId(Long stationId) {
-        Long lineIdByStationId = stationDao.findLineIdByStationId(stationId)
+        StationEntity stationEntity = stationDao.findById(stationId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("입력한 ID와 일치하는 Station이 존재하지 않습니다. "
                         + "(입력한 ID : %s)", stationId)));
-        return findById(lineIdByStationId);
+        return findById(stationEntity.getLineId());
     }
 
-    private void saveSectionIncludingStations(long lineId, Section section) {
+    private void insertAllStations(Long lineId, List<Section> sections) {
+        for (Section section : sections) {
+            stationDao.insert(new StationEntity(
+                    lineId,
+                    section.getUpwardStation().getName())
+            );
+        }
+        stationDao.insert(new StationEntity(
+                lineId,
+                sections.get(sections.size() - 1).getDownwardStation().getName())
+        );
+    }
+
+    private void saveInitialSection(long lineId, Section section) {
         long savedUpwardStationId = stationDao.insert(
                 new StationEntity(lineId, section.getUpwardStation().getName())
         );
@@ -111,6 +129,35 @@ public class DbLineRepository implements LineRepository {
                 section.getDistance()
         );
         sectionDao.insert(sectionEntityToSave);
+    }
+
+    private void saveSection(Long lineId, Section section) {
+        StationEntity upwardStationEntity = getUpwardStationEntityOf(lineId, section);
+        StationEntity downwardStationEntity = getDownwardStationEntityOf(lineId, section);
+
+        SectionEntity sectionEntityToSave = new SectionEntity(
+                lineId,
+                upwardStationEntity.getId(),
+                downwardStationEntity.getId(),
+                section.getDistance()
+        );
+        sectionDao.insert(sectionEntityToSave);
+    }
+
+    private StationEntity getUpwardStationEntityOf(Long lineId, Section section) {
+        return stationDao.findByLineIdAndName(
+                lineId,
+                section.getUpwardStation().getName()
+        ).orElseThrow(() -> new IllegalArgumentException(String.format("입력한 Line ID, 이름과 일치하는 Station이 존재하지 않습니다. "
+                + "(입력한 Line ID : %d / 입력한 이름 : %s)", lineId, section.getUpwardStation().getName())));
+    }
+
+    private StationEntity getDownwardStationEntityOf(Long lineId, Section section) {
+        return stationDao.findByLineIdAndName(
+                lineId,
+                section.getDownwardStation().getName()
+        ).orElseThrow(() -> new IllegalArgumentException(String.format("입력한 Line ID, 이름과 일치하는 Station이 존재하지 않습니다. "
+                + "(입력한 Line ID : %d / 입력한 이름 : %s)", lineId, section.getUpwardStation().getName())));
     }
 
     private List<Section> mapSectionEntitiesToSections(List<SectionEntity> sectionEntities) {
