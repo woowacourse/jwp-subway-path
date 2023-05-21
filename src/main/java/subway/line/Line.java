@@ -55,7 +55,7 @@ public class Line {
         return sections;
     }
 
-    public Optional<Section> findByPreviousStation(Station station) {
+    public Optional<Section> findSectionByPreviousStation(Station station) {
         return sections.stream()
                 .filter(section -> section.getPreviousStation().equals(station))
                 .findAny();
@@ -73,7 +73,7 @@ public class Line {
         return this.sections.isEmpty();
     }
 
-    public Optional<Section> findByNextStation(Station station) {
+    public Optional<Section> findSectionByNextStation(Station station) {
         return sections.stream()
                 .filter(section -> section.getNextStation().equals(station))
                 .findAny();
@@ -86,7 +86,7 @@ public class Line {
         while (station != null) {
             Station currentStation = station;
 
-            final var nextSection = findByPreviousStation(currentStation);
+            final var nextSection = findSectionByPreviousStation(currentStation);
 
             if (nextSection.isPresent()) {
                 stations.add(nextSection.get().getPreviousStation());
@@ -140,6 +140,18 @@ public class Line {
         this.color = color;
     }
 
+    public void clearSection() {
+        this.sections.clear();
+    }
+
+    public int getStationsSize() {
+        return findAllStationsOrderByUp().size();
+    }
+
+    public void removeSection(Section section) {
+        sections.remove(section);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -151,17 +163,5 @@ public class Line {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color, sections, head);
-    }
-
-    public void clearSection() {
-        this.sections.clear();
-    }
-
-    public int getStationsSize() {
-        return findAllStationsOrderByUp().size();
-    }
-
-    public void removeSection(Section section) {
-        sections.remove(section);
     }
 }

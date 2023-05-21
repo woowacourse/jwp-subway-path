@@ -17,16 +17,16 @@ public class MiddleStationDeletingStrategy implements StationDeletingStrategy {
     @Override
     public boolean support(Line line, Station station) {
         return !line.getHead().equals(station)
-                && line.findByPreviousStation(station)
+                && line.findSectionByPreviousStation(station)
                 .map(section -> !section.isNextStationEmpty())
                 .orElse(false);
     }
 
     @Override
     public void deleteStation(Line line, Station station) {
-        final var section = line.findByPreviousStation(station)
+        final var section = line.findSectionByPreviousStation(station)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
-        final var previousSection = line.findByNextStation(station)
+        final var previousSection = line.findSectionByNextStation(station)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED))
                 .change()
                 .nextStation(section.getNextStation())

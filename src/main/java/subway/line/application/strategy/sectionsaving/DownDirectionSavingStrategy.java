@@ -19,13 +19,13 @@ public class DownDirectionSavingStrategy implements SectionSavingStrategy {
 
     @Override
     public boolean support(Line line, Station previousStation, Station nextStation, Distance distance) {
-        final var previousSection = line.findByPreviousStation(previousStation);
+        final var previousSection = line.findSectionByPreviousStation(previousStation);
         return previousSection.isPresent() && !previousSection.get().isNextStationEmpty();
     }
 
     @Override
     public long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
-        final var sectionToUpdate = line.findByPreviousStation(previousStation)
+        final var sectionToUpdate = line.findSectionByPreviousStation(previousStation)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
 
         final var section = sectionRepository.insert(line.getId(), nextStation, sectionToUpdate.getNextStation(), sectionToUpdate.getDistance().subtract(distance));

@@ -7,14 +7,14 @@ import subway.line.domain.section.domain.exception.InvalidDistanceException;
 import java.util.Objects;
 
 public class Distance {
-    public static final int MIN_DISTANCE_VALUE = 0;
-    private final int value;
+    public static final double MIN_DISTANCE_VALUE = 0;
+    private final double value;
 
-    protected Distance(int value) {
+    protected Distance(double value) {
         this.value = value;
     }
 
-    public static Distance of(int value) {
+    public static Distance of(double value) {
         if (value <= MIN_DISTANCE_VALUE) {
             throw new InvalidDistanceException(ExceptionMessages.INVALID_DISTANCE);
         }
@@ -30,7 +30,7 @@ public class Distance {
     }
 
     @JsonValue
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 

@@ -10,6 +10,7 @@ import subway.line.application.dto.LineSavingInfo;
 import subway.line.application.dto.LineUpdatingInfo;
 import subway.line.application.strategy.sectionsaving.SectionSavingStrategy;
 import subway.line.application.strategy.stationdeleting.StationDeletingStrategy;
+import subway.line.domain.navigation.NavigationService;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.application.SectionRepository;
 import subway.line.domain.section.application.ShortestPathResponse;
@@ -18,6 +19,7 @@ import subway.line.domain.station.Station;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -28,12 +30,14 @@ public class LineService {
     public static final int SURCHARGE = 100;
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
+    private final NavigationService navigationService;
     private final List<SectionSavingStrategy> sectionSavingStrategies;
     private final List<StationDeletingStrategy> stationDeletingStrategies;
 
-    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, List<SectionSavingStrategy> sectionSavingStrategies, List<StationDeletingStrategy> stationDeletingStrategies) {
+    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, NavigationService navigationService, List<SectionSavingStrategy> sectionSavingStrategies, List<StationDeletingStrategy> stationDeletingStrategies) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
+        this.navigationService = navigationService;
         this.sectionSavingStrategies = sectionSavingStrategies;
         this.stationDeletingStrategies = stationDeletingStrategies;
     }
@@ -61,19 +65,30 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public ShortestPathResponse findShortestPath(Station startingStation, Station destinationStation) {
-        final var graph = makeGraph();
-        final var shortestPath = new DijkstraShortestPath<>(graph)
-                .getPath(startingStation, destinationStation);
-        return new ShortestPathResponse(startingStation, destinationStation, shortestPath.getVertexList(), shortestPath.getWeight());
+    public List<Station> findShortestPath(Station stationA, Station stationB) {
+        try {
+            return navigationService.findShortestPath(stationA, stationB);
+        } catch (IllegalArgumentException e) {
+            updateNavigation();
+            return navigationService.findShortestPath(stationA, stationB);
+        }
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph() {
-        final var graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        for (Line line : lineRepository.findAll()) {
-            saveLineInGraph(graph, line);
+    public Distance findShortestDistance(Station stationA, Station stationB) {
+        try {
+            return navigationService.findShortestDistance(stationA, stationB);
+        } catch (IllegalArgumentException e) {
+            updateNavigation();
+            return navigationService.findShortestDistance(stationA, stationB);
         }
-        return graph;
+    }
+
+    private void updateNavigation() {
+        final var lines = lineRepository.findAll();
+        final var sectionsOfAllLines = lines.stream()
+                .map(Line::getSections)
+                .collect(Collectors.toList());
+        navigationService.updateNavigation(sectionsOfAllLines);
     }
 
     public long saveSection(Line line, Station previousStation, Station nextStation, Distance distance) {
@@ -83,23 +98,6 @@ public class LineService {
             }
         }
         throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
-    }
-
-    private void saveLineInGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        final var sections = sectionRepository.findAllByLineId(line.getId());
-        for (Section section : sections) {
-            saveSectionInGraph(graph, section);
-        }
-    }
-
-    private static void saveSectionInGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section) {
-        graph.addVertex(section.getPreviousStation());
-        graph.addVertex(section.getNextStation());
-        if (section.isNextStationEmpty()) return;
-        graph.setEdgeWeight(
-                graph.addEdge(section.getPreviousStation(), section.getNextStation()),
-                section.getDistance().getValue()
-        );
     }
 
     public BigDecimal calculateFare(double km) {

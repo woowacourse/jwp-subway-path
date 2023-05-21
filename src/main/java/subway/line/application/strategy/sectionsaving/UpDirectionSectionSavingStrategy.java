@@ -19,14 +19,14 @@ public class UpDirectionSectionSavingStrategy implements SectionSavingStrategy {
 
     @Override
     public boolean support(Line line, Station previousStation, Station nextStation, Distance distance) {
-        return line.findByNextStation(nextStation).isPresent();
+        return line.findSectionByNextStation(nextStation).isPresent();
     }
 
     @Override
     public long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
         final var savedSection = sectionRepository.insert(line.getId(), previousStation, nextStation, distance);
 
-        final var sectionToUpdate = line.findByNextStation(nextStation)
+        final var sectionToUpdate = line.findSectionByNextStation(nextStation)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
 
         final var updatedSection = sectionToUpdate.change()

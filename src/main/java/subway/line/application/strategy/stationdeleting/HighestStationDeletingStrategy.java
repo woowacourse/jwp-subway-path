@@ -25,7 +25,7 @@ public class HighestStationDeletingStrategy implements StationDeletingStrategy {
 
     @Override
     public void deleteStation(Line line, Station station) {
-        final var section = line.findByPreviousStation(station)
+        final var section = line.findSectionByPreviousStation(station)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
 
         lineRepository.updateHeadStation(line, section.getNextStation());

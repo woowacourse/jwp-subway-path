@@ -5,7 +5,9 @@ import subway.line.Line;
 import subway.line.application.LineService;
 import subway.line.application.dto.LineUpdatingInfo;
 import subway.line.domain.section.application.ShortestPathResponse;
+import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.dto.SectionSavingRequest;
+import subway.line.domain.station.Station;
 import subway.line.domain.station.application.StationService;
 import subway.line.presentation.dto.LineRequest;
 import subway.line.presentation.dto.LineResponse;
@@ -81,7 +83,9 @@ public class LineServicePort {
     public ShortestPathResponse findShortestPath(Long startingStationId, Long destinationStationId) {
         final var startingStation = stationService.findById(startingStationId);
         final var destinationStation = stationService.findById(destinationStationId);
-        return lineService.findShortestPath(startingStation, destinationStation);
+        final var shortestPath = lineService.findShortestPath(startingStation, destinationStation);
+        final var shortestDistance = lineService.findShortestDistance(startingStation, destinationStation);
+        return new ShortestPathResponse(startingStation, destinationStation, shortestPath, shortestDistance.getValue());
     }
 
     public BigDecimal calculateFare(double distance) {

@@ -15,7 +15,6 @@ import subway.line.domain.station.EmptyStation;
 import subway.line.domain.station.Station;
 import subway.line.domain.station.application.StationService;
 import subway.line.domain.station.application.dto.StationSavingInfo;
-import subway.line.domain.station.presentation.dto.StationRequest;
 import subway.line.application.dto.LineSavingInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -106,7 +105,7 @@ public class DeletingStationFromLineTest {
                 () -> assertThat(line.getSections())
                         .as("노선에 등록된 구간은 2개이다.")
                         .hasSize(2),
-                () -> assertThat(line.findByPreviousStation(stationB))
+                () -> assertThat(line.findSectionByPreviousStation(stationB))
                         .as("삭제된 역을 현재역으로 하는 구간이 제거된다.")
                         .isEmpty()
         );
@@ -119,10 +118,10 @@ public class DeletingStationFromLineTest {
         saveSection(line, stationB, stationS);
         saveSection(line, stationS, stationSD);
         assertAll(
-                () -> assertThat(line.findByPreviousStation(stationS).or(() -> fail()).get().getNextStation())
+                () -> assertThat(line.findSectionByPreviousStation(stationS).or(() -> fail()).get().getNextStation())
                         .as("하행 끝에서 두 번째 구간의 다음 역 정보는 노선의 하행 끝에 있는 역을 가리킨다.")
                         .isEqualTo(stationSD),
-                () -> assertThat(line.findByPreviousStation(stationS).or(() -> fail()).get().getDistance())
+                () -> assertThat(line.findSectionByPreviousStation(stationS).or(() -> fail()).get().getDistance())
                         .as("거리 정보 또한 정상적으로 등록되어 있다.")
                         .isEqualTo(Distance.of(4))
         );
@@ -133,15 +132,15 @@ public class DeletingStationFromLineTest {
         // then
         assertAll(
                 "노선 상행 끝의 역을 제거하면 2가지 변화가 생긴다.",
-                () -> assertThat(line.findByPreviousStation(stationSD))
+                () -> assertThat(line.findSectionByPreviousStation(stationSD))
                         .as("삭제된 역을 현재역으로 하는 구간이 제거된다.")
                         .isEmpty(),
-                () -> assertThat(line.findByPreviousStation(stationS)
+                () -> assertThat(line.findSectionByPreviousStation(stationS)
                         .or(Assertions::fail).get()
                         .getNextStation())
                         .as("하행 끝에서 두 번째 구간의 다음 역 정보가 사라진다.")
                         .isEqualTo(new EmptyStation()),
-                () -> assertThat(line.findByPreviousStation(stationS)
+                () -> assertThat(line.findSectionByPreviousStation(stationS)
                         .or(Assertions::fail).get()
                         .getDistance())
                         .as("다음 역이 없으므로 거리정보도 사라진다.")
@@ -156,10 +155,10 @@ public class DeletingStationFromLineTest {
         saveSection(line, stationB, stationS);
         saveSection(line, stationS, stationSD);
         assertAll(
-                () -> assertThat(line.findByPreviousStation(stationS).or(() -> fail()).get().getNextStation())
+                () -> assertThat(line.findSectionByPreviousStation(stationS).or(() -> fail()).get().getNextStation())
                         .as("삭제 대상 역을 current로 하는 구간 바로 앞의 구간은, next 역으로 삭제 대상 역을 가리킨다.")
                         .isEqualTo(stationSD),
-                () -> assertThat(line.findByPreviousStation(stationS).or(() -> fail()).get().getDistance())
+                () -> assertThat(line.findSectionByPreviousStation(stationS).or(() -> fail()).get().getDistance())
                         .as("거리 정보 또한 정상적으로 등록되어 있다.")
                         .isEqualTo(Distance.of(4))
         );
@@ -170,13 +169,13 @@ public class DeletingStationFromLineTest {
         // then
         assertAll(
                 "노선 한가운데 역을 제거하면 2가지 변화가 생긴다.",
-                () -> assertThat(line.findByPreviousStation(stationS))
+                () -> assertThat(line.findSectionByPreviousStation(stationS))
                         .as("삭제된 역을 현재역으로 하는 구간이 제거된다.")
                         .isEmpty(),
-                () -> assertThat(line.findByPreviousStation(stationB).or(Assertions::fail).get().getNextStation())
+                () -> assertThat(line.findSectionByPreviousStation(stationB).or(Assertions::fail).get().getNextStation())
                         .as("삭제된 구간의 바로 앞 구간은, next 역으로 삭제된 구간의 next 역을 가리킨다.")
                         .isEqualTo(stationSD),
-                () -> assertThat(line.findByPreviousStation(stationB).or(Assertions::fail).get().getDistance())
+                () -> assertThat(line.findSectionByPreviousStation(stationB).or(Assertions::fail).get().getDistance())
                         .as("삭제된 구간의 바로 앞 구간 거리와 삭제된 구간의 거리가 병합된다.")
                         .isEqualTo(Distance.of(8))
         );

@@ -19,17 +19,17 @@ public class LowestStationDeletingStrategy implements StationDeletingStrategy {
 
     @Override
     public boolean support(Line line, Station station) {
-        return line.findByPreviousStation(station)
+        return line.findSectionByPreviousStation(station)
                 .map(Section::isNextStationEmpty)
                 .orElse(false);
     }
 
     @Override
     public void deleteStation(Line line, Station station) {
-        final var section = line.findByPreviousStation(station)
+        final var section = line.findSectionByPreviousStation(station)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
 
-        final var newLowestSection = line.findByNextStation(station)
+        final var newLowestSection = line.findSectionByNextStation(station)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED))
                 .change()
                 .nextStation(new EmptyStation())
