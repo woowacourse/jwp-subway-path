@@ -1,13 +1,12 @@
-package subway.domain;
+package subway.domain.route;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import subway.domain.Distance;
 import subway.domain.line.Line;
-import subway.domain.route.EdgeSection;
-import subway.domain.route.Route;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
