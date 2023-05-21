@@ -4,15 +4,17 @@ public class LineEntity {
     private Long id;
     private String name;
     private String color;
+    private Integer surcharge;
 
-    public LineEntity(String name, String color) {
-        this(null, name, color);
+    public LineEntity(final String name, final String color, final Integer surcharge) {
+        this(null, name, color, surcharge);
     }
 
-    public LineEntity(Long id, String name, String color) {
+    public LineEntity(final Long id, final String name, final String color, final Integer surcharge) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.surcharge = surcharge;
     }
 
     public Long getId() {
@@ -25,5 +27,9 @@ public class LineEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getSurcharge() {
+        return surcharge;
     }
 }

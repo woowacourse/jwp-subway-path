@@ -67,3 +67,8 @@ Content-Type: application/json
   "lineName": "1호선",
   "stationName": "B"
 }
+
+### 길찾기
+
+GET http://localhost:8080/shortest-path?start=C&end=A&age=19
+Content-Type: application/json

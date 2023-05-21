@@ -19,7 +19,8 @@ public class LineDao {
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("surcharge")
             );
 
     public LineDao(final JdbcTemplate jdbcTemplate) {
@@ -32,16 +33,16 @@ public class LineDao {
     public LineEntity insert(final LineEntity line) {
         final BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(line);
         Long lineId = jdbcInsert.executeAndReturnKey(parameterSource).longValue();
-        return new LineEntity(lineId, line.getName(), line.getColor());
+        return new LineEntity(lineId, line.getName(), line.getColor(), line.getSurcharge());
     }
 
     public List<LineEntity> findAll() {
-        String sql = "SELECT id, name, color FROM LINE";
+        String sql = "SELECT * FROM LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<LineEntity> findById(final Long id) {
-        String sql = "SELECT id, name, color FROM LINE WHERE id = ?";
+        String sql = "SELECT * FROM LINE WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (final EmptyResultDataAccessException e) {
@@ -50,7 +51,7 @@ public class LineDao {
     }
 
     public Optional<LineEntity> findByName(final String name) {
-        String sql = "SELECT id, name, color FROM LINE WHERE name = ?";
+        String sql = "SELECT * FROM LINE WHERE name = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
         } catch (final EmptyResultDataAccessException e) {

@@ -32,7 +32,7 @@ class LineDaoTest {
     @Test
     void 노선을_추가한다() {
         // given
-        final LineEntity line = new LineEntity("1호선", "RED");
+        final LineEntity line = new LineEntity("1호선", "RED", 0);
 
         // when
         final LineEntity result = lineDao.insert(line);
@@ -48,9 +48,9 @@ class LineDaoTest {
     @Test
     void 노선을_수정한다() {
         // given
-        final LineEntity line = new LineEntity("1호선", "RED");
+        final LineEntity line = new LineEntity("1호선", "RED", 0);
         final LineEntity insertLine = lineDao.insert(line);
-        final LineEntity newLine = new LineEntity(insertLine.getId(), "2호선", "BLUE");
+        final LineEntity newLine = new LineEntity(insertLine.getId(), "2호선", "BLUE", 0);
 
         // when
         lineDao.update(newLine);
@@ -66,7 +66,7 @@ class LineDaoTest {
     @Test
     void 노선을_삭제한다() {
         // given
-        final LineEntity line = new LineEntity("1호선", "RED");
+        final LineEntity line = new LineEntity("1호선", "RED", 0);
         final LineEntity insertLine = lineDao.insert(line);
 
         // when
@@ -79,8 +79,8 @@ class LineDaoTest {
     @Test
     void 노선을_전체_조회한다() {
         // given
-        final LineEntity line1 = new LineEntity("1호선", "RED");
-        final LineEntity line2 = new LineEntity("2호선", "BLUE");
+        final LineEntity line1 = new LineEntity("1호선", "RED", 0);
+        final LineEntity line2 = new LineEntity("2호선", "BLUE", 0);
         final LineEntity insertLine1 = lineDao.insert(line1);
         final LineEntity insertLine2 = lineDao.insert(line2);
 
@@ -94,7 +94,7 @@ class LineDaoTest {
     @Test
     void 노선을_id로_조회한다() {
         // given
-        final LineEntity line = new LineEntity("1호선", "RED");
+        final LineEntity line = new LineEntity("1호선", "RED", 0);
         final LineEntity insertLine = lineDao.insert(line);
 
         // when
@@ -107,7 +107,7 @@ class LineDaoTest {
     @Test
     void 노선을_이름으로_조회한다() {
         // given
-        final LineEntity line = new LineEntity("1호선", "RED");
+        final LineEntity line = new LineEntity("1호선", "RED", 0);
         lineDao.insert(line);
 
         // when

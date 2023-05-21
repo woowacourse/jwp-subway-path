@@ -3,7 +3,6 @@ package subway.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import subway.domain.Direction;
 
 public class StationSaveRequest {
 
@@ -17,7 +16,7 @@ public class StationSaveRequest {
     private final String additionalStationName;
 
     @NotNull(message = "왼쪽으로 등록할 경우 LEFT, 오른쪽으로 등록할 경우 RIGHT로 입력해주세요.")
-    private final Direction direction;
+    private final String direction;
 
     @Positive(message = "등록할 거리는 양수여야 합니다.")
     private final Integer distance;
@@ -26,7 +25,7 @@ public class StationSaveRequest {
             final String lineName,
             final String baseStationName,
             final String additionalStationName,
-            final Direction direction,
+            final String direction,
             final Integer distance
     ) {
         this.lineName = lineName;
@@ -48,7 +47,7 @@ public class StationSaveRequest {
         return additionalStationName;
     }
 
-    public Direction getDirection() {
+    public String getDirection() {
         return direction;
     }
 

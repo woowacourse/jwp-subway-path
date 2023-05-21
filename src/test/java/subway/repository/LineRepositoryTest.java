@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.core.Line;
+import subway.domain.core.Section;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -24,7 +24,7 @@ class LineRepositoryTest {
     @Test
     void 노선을_저장한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("B", "C", 3),
                 new Section("A", "B", 2),
                 new Section("D", "E", 5),
@@ -41,7 +41,7 @@ class LineRepositoryTest {
     @Test
     void 노선을_조회한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("B", "C", 3),
                 new Section("A", "B", 2),
                 new Section("D", "E", 5),
@@ -59,7 +59,7 @@ class LineRepositoryTest {
     @Test
     void 노선을_삭제한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("B", "C", 3),
                 new Section("A", "B", 2),
                 new Section("D", "E", 5),
@@ -78,7 +78,7 @@ class LineRepositoryTest {
     @Test
     void 이름을_입력받아_라인의_id를_반환한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("B", "C", 3),
                 new Section("A", "B", 2),
                 new Section("D", "E", 5),
@@ -96,7 +96,7 @@ class LineRepositoryTest {
     @Test
     void id를_입력받아_라인을_반환한다() {
         // given
-        final Line line = new Line("2호선", "RED", List.of(
+        final Line line = new Line("2호선", "RED", 0, List.of(
                 new Section("B", "C", 3),
                 new Section("A", "B", 2),
                 new Section("D", "E", 5),

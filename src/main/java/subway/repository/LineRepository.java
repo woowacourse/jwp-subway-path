@@ -14,9 +14,9 @@ import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.core.Line;
+import subway.domain.core.Section;
+import subway.domain.core.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
@@ -44,19 +44,17 @@ public class LineRepository {
 
     public Line save(final Line line) {
         if (Objects.isNull(line.getId())) {
-            return saveNewLine(line);
+            return saveLine(line);
         }
         final Line savedLine = findById(line.getId()).orElseThrow(LineNotFoundException::new);
-        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor()));
-        addNewStation(line);
-        addNewSection(line);
-        deleteRemovedSection(line, savedLine);
-        deleteRemovedStation(line, savedLine);
+        updateLine(line, savedLine);
         return findById(line.getId()).orElseThrow(LineNotFoundException::new);
     }
 
-    private Line saveNewLine(final Line line) {
-        final LineEntity lineEntity = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
+    private Line saveLine(final Line line) {
+        final LineEntity lineEntity = lineDao.insert(
+                new LineEntity(line.getName(), line.getColor(), line.getSurcharge())
+        );
 
         final List<StationEntity> stationEntities = lineMapper.toStationEntities(line, lineEntity.getId());
         stationDao.insertAll(stationEntities);
@@ -71,6 +69,14 @@ public class LineRepository {
 
         return findById(lineEntity.getId())
                 .orElseThrow(LineNotFoundException::new);
+    }
+
+    private void updateLine(final Line line, final Line savedLine) {
+        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor(), line.getSurcharge()));
+        addNewStation(line);
+        addNewSection(line);
+        deleteRemovedSection(line, savedLine);
+        deleteRemovedStation(line, savedLine);
     }
 
     private void addNewStation(final Line line) {

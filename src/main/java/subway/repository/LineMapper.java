@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.core.Distance;
+import subway.domain.core.Line;
+import subway.domain.core.Section;
+import subway.domain.core.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
@@ -57,7 +57,13 @@ public class LineMapper {
                 .map(sectionEntity -> toSection(stationIdByStationName, sectionEntity))
                 .collect(toList());
 
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor(),
+                lineEntity.getSurcharge(),
+                sections
+        );
     }
 
     private static Section toSection(
