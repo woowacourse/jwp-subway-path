@@ -2,6 +2,7 @@ package subway.ui;
 
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -90,9 +91,10 @@ public class LineController {
 	public ResponseEntity<List<SectionResponse>> addStationToLine(@PathVariable Long id,
 		@Valid @RequestBody SectionRequest sectionRequest) {
 		final SectionDto sectionDto = convertToSectionDto(sectionRequest);
-		final List<SectionDto> sectionDtos = sectionService.addStationByLineId(id, sectionDto);
+		final SectionDto addSectionDto = sectionService.addStationByLineId(id, sectionDto);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(convertToSectionResponses(sectionDtos));
+		return ResponseEntity.status(HttpStatus.CREATED).body(
+			Collections.singletonList(SectionResponse.from(addSectionDto)));
 	}
 
 	@DeleteMapping("/{lineId}/stations/{stationId}")

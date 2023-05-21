@@ -1,4 +1,4 @@
-package subway.domain.Sections;
+package subway.domain.state;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import subway.domain.Fixture;
 import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.command.SectionOperation;
 import subway.error.exception.StationNotFoundException;
 
 class EmptySectionsTest {
@@ -19,21 +21,21 @@ class EmptySectionsTest {
 	void addStationTest() {
 		// given
 		final Section addSection = Fixture.NEW_SECTION;
-		final StationAddable sections = SectionsFactory.createForAdd(Collections.emptyList(), addSection);
+		final Sections sections = new Sections(Collections.emptyList());
 
 		// when
-		final List<Section> actual = sections.addStation(addSection);
+		final List<SectionOperation> actual = sections.addStation(addSection);
 
 		// then
 		assertThat(actual).hasSize(1);
-		assertThat(actual.get(0)).isEqualTo(addSection);
+		assertThat(actual.get(0).getSection()).isEqualTo(addSection);
 	}
 
 	@Test
 	@DisplayName("기존 역 제거 시, 역이 포함된 구간이 없어서 예외가 발생한다.")
 	void removeStationTest() {
 		// given
-		final StationRemovable sections = SectionsFactory.createForRemove(Collections.emptyList());
+		final Sections sections = new Sections(Collections.emptyList());
 
 		// when & then
 		assertThatThrownBy(sections::removeStation)

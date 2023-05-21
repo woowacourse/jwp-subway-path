@@ -1,4 +1,4 @@
-package subway.domain.Sections;
+package subway.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static subway.domain.Fixture.*;
@@ -9,12 +9,19 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import subway.domain.Section;
-
-class FilledSectionsTest {
+class SectionsTest {
 
 	@Test
-	void sortingTest() {
+	void emptySectionsTest() {
+		final List<Section> expectedSections = Collections.emptyList();
+
+		final Sections sections = new Sections(expectedSections);
+
+		assertThat(sections.getSections()).isEqualTo(expectedSections);
+	}
+
+	@Test
+	void sortSectionTest() {
 		// given
 		final List<Section> expectedSections = LINE_NUMBER_2;
 		final List<Section> sections = new ArrayList<>(expectedSections);
@@ -22,10 +29,9 @@ class FilledSectionsTest {
 		Collections.shuffle(sections);
 
 		// when
-		final Sections result = SectionsFactory.createForFind(sections);
+		final Sections result = new Sections(sections);
 
 		// then
-		assertThat(result instanceof FilledSections).isTrue();
 		assertThat(result.getSections()).isEqualTo(expectedSections);
 	}
 

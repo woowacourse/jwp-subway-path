@@ -5,15 +5,14 @@ import java.util.Map;
 
 public interface SectionRepository {
 
+	Section addSection(final Long lineId, final Section newSection);
+
 	Map<Long, List<Section>> findAllSections();
 
 	List<Section> findSectionsByLineId(final Long id);
 
 	List<Section> findSectionsByLineIdAndStationId(final Long lineId, final Long StationId);
 
-	Section findByStationNames(final String departure, final String arrival, final Integer distance);
+	void removeSection(final Section section);
 
-	List<Section> addStation(final Long lineId, final List<Section> sections);
-
-	void removeStation(final Long lineId, final List<Section> sections);
 }

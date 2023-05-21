@@ -1,14 +1,17 @@
-package subway.domain.Sections;
+package subway.domain.state;
 
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import subway.domain.Fixture;
 import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.command.SectionOperation;
 
 class TerminalSectionsTest {
 
@@ -17,14 +20,14 @@ class TerminalSectionsTest {
 	void givenAddUpLineTerminalNewSection_thenReturnNewSectionList() {
 		//given
 		final Section addSection = new Section(2L, Fixture.NEW_DEPARTURE, Fixture.잠실역, Fixture.NEW_DISTANCE);
-		final StationAddable sections = SectionsFactory.createForAdd(Fixture.LINE_NUMBER_2, addSection);
+		final Sections sections = new Sections(Fixture.LINE_NUMBER_2);
 
 		//when
-		final List<Section> actual = sections.addStation(addSection);
+		final List<SectionOperation> actual = sections.addStation(addSection);
 
 		//then
 		assertThat(actual).hasSize(1);
-		assertThat(actual.get(0)).isEqualTo(addSection);
+		assertThat(getSections(actual)).contains(addSection);
 	}
 
 	@Test
@@ -32,14 +35,14 @@ class TerminalSectionsTest {
 	void givenAddDownLineNewSection_thenReturnNewSectionList() {
 		//given
 		final Section addSection = new Section(2L, Fixture.선릉역, Fixture.NEW_ARRIVAL, Fixture.NEW_DISTANCE);
-		final StationAddable sections = SectionsFactory.createForAdd(Fixture.LINE_NUMBER_2, addSection);
+		final Sections sections = new Sections(Fixture.LINE_NUMBER_2);
 
 		//when
-		final List<Section> actual = sections.addStation(addSection);
+		final List<SectionOperation> actual = sections.addStation(addSection);
 
 		//then
 		assertThat(actual).hasSize(1);
-		assertThat(actual.get(0)).isEqualTo(addSection);
+		assertThat(getSections(actual)).contains(addSection);
 	}
 
 	@Test
@@ -47,13 +50,18 @@ class TerminalSectionsTest {
 	void removeStationTest() {
 		// given
 		final Section removeSection = Fixture.NEW_SECTION;
-		final StationRemovable sections = SectionsFactory.createForRemove(List.of(removeSection));
+		final Sections sections = new Sections(List.of(removeSection));
 
 		// when
-		final List<Section> actual = sections.removeStation();
+		final List<SectionOperation> actual = sections.removeStation();
 
 		// then
 		assertThat(actual).hasSize(1);
-		assertThat(actual.get(0)).isEqualTo(removeSection);
+		assertThat(getSections(actual)).contains(removeSection);	}
+
+	private List<Section> getSections(final List<SectionOperation> actual) {
+		return actual.stream()
+			.map(SectionOperation::getSection)
+			.collect(Collectors.toList());
 	}
 }

@@ -1,15 +1,17 @@
-package subway.domain.Sections;
+package subway.domain.state;
 
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import subway.domain.Distance;
 import subway.domain.Fixture;
 import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.command.SectionOperation;
 
 class MiddleSectionsTest {
 
@@ -18,14 +20,13 @@ class MiddleSectionsTest {
 	void givenAddUpLineMiddleNewSection_thenReturnNewSectionList() {
 		//given
 		final Section addSection = new Section(2L, Fixture.잠실역, Fixture.NEW_ARRIVAL, Fixture.NEW_DISTANCE);
-		final StationAddable sections = SectionsFactory.createForAdd(Fixture.LINE_NUMBER_2, addSection);
+		final Sections sections = new Sections(Fixture.LINE_NUMBER_2);
 
 		//when
-		final List<Section> actual = sections.addStation(addSection);
-
+		final List<SectionOperation> actual = sections.addStation(addSection);
 		//then
 		assertThat(actual).hasSize(3);
-		assertThat(actual.get(0)).isEqualTo(addSection);
+		assertThat(getSections(actual)).contains(addSection);
 	}
 
 	@Test
@@ -33,14 +34,14 @@ class MiddleSectionsTest {
 	void givenAddDownLineMiddleNewSection_thenReturnNewSectionList() {
 		//given
 		final Section addSection = new Section(2L, Fixture.NEW_DEPARTURE, Fixture.선릉역, Fixture.NEW_DISTANCE);
-		final StationAddable sections = SectionsFactory.createForAdd(Fixture.LINE_NUMBER_2, addSection);
+		final Sections sections = new Sections(Fixture.LINE_NUMBER_2);
 
 		//when
-		final List<Section> actual = sections.addStation(addSection);
+		final List<SectionOperation> actual = sections.addStation(addSection);
 
 		//then
 		assertThat(actual).hasSize(3);
-		assertThat(actual.get(1)).isEqualTo(addSection);
+		assertThat(getSections(actual)).contains(addSection);
 	}
 
 	@Test
@@ -48,15 +49,20 @@ class MiddleSectionsTest {
 	void removeStationTest() {
 		// given
 		final List<Section> 상행_2호선 = List.of(Fixture.상행_경유_2호선, Fixture.상행_종점_2호선);
-		final Section addSection = new Section(null, Fixture.잠실역, Fixture.종합운동장역, new Distance(20));
-		final StationRemovable sections = SectionsFactory.createForRemove(상행_2호선);
+
+		final Sections sections = new Sections(상행_2호선);
 
 		// when
-		final List<Section> actual = sections.removeStation();
+		final List<SectionOperation> actual = sections.removeStation();
 
 		// then
 		assertThat(actual).hasSize(3);
-		assertThat(actual).contains(Fixture.상행_경유_2호선, Fixture.상행_종점_2호선);
-		assertThat(actual.get(2)).isEqualTo(addSection);
+		assertThat(getSections(actual)).contains(Fixture.상행_경유_2호선, Fixture.상행_종점_2호선);
+	}
+
+	private List<Section> getSections(final List<SectionOperation> actual) {
+		return actual.stream()
+			.map(SectionOperation::getSection)
+			.collect(Collectors.toList());
 	}
 }
