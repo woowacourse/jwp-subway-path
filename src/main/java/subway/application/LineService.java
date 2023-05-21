@@ -55,7 +55,7 @@ public class LineService {
         List<Optional<String>> requestStations = extractNullableStation(stationRequest, line);
         final String newStationName = extractStationNameToAdd(requestStations);
 
-        stationRepository.insert(newStationName);
+        final Station saveStation = stationRepository.insert(newStationName);
 
         subway.addStation(
                 line.getName(),
@@ -64,7 +64,7 @@ public class LineService {
                 stationRequest.getDistance()
         );
         saveUpdatedLine(subway, line.getName(), lineId);
-        return new StationSelectResponse(newStationName);
+        return new StationSelectResponse(saveStation.getId(), saveStation.getName());
     }
 
     private List<Optional<String>> extractNullableStation(
