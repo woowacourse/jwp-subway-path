@@ -1,3 +1,9 @@
+### 노선 조회 요청
+GET http://localhost:8080/lines
+
+### 역 조회 요청
+GET http://localhost:8080/stations
+
 ### 노선 등록 요청1 - 1호선
 POST http://localhost:8080/lines
 Content-Type: application/json
