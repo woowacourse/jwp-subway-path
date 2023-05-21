@@ -10,7 +10,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import subway.exception.GlobalException;
+import subway.exception.section.AlreadyConnectedSectionException;
+import subway.exception.section.DisconnectedSectionException;
+import subway.exception.section.DuplicateSectionException;
+import subway.exception.section.InvalidAddSectionLengthException;
+import subway.exception.section.NotFoundSectionException;
+import subway.exception.station.NotFoundStationException;
 
 public class Sections {
     private final List<Section> sections;
@@ -24,7 +29,7 @@ public class Sections {
         List<Section> sectionsContainStation = findSectionsContainingStation(station);
 
         if (sectionsContainStation.isEmpty()) {
-            throw new GlobalException("존재하지 않는 구간입니다.");
+            throw new NotFoundSectionException("존재하지 않는 구간입니다.");
         }
 
         if (sections.size() == 1) {
@@ -101,7 +106,7 @@ public class Sections {
         }
 
         if (sections.contains(newSection)) {
-            throw new GlobalException("이미 존재하는 구간입니다.");
+            throw new DuplicateSectionException("이미 존재하는 구간입니다.");
         }
 
         validateConnection(newSection);
@@ -171,7 +176,7 @@ public class Sections {
                 return findSection;
             }
         }
-        throw new GlobalException("구간 길이로 인해 연결할 수 없습니다.");
+        throw new InvalidAddSectionLengthException("구간 길이로 인해 연결할 수 없습니다.");
     }
 
     private void validateDuplication(List<Section> sections) {
@@ -184,7 +189,7 @@ public class Sections {
         }
 
         if (sections.size() != distinctSize) {
-            throw new GlobalException("구간은 중복될 수 없습니다.");
+            throw new DuplicateSectionException("이미 존재하는 구간입니다.");
         }
     }
 
@@ -198,11 +203,11 @@ public class Sections {
                         it.isSameEndStation(section.getEndStation()));
 
         if (isPresentSameStartStation && isPresentSameEndStation) {
-            throw new GlobalException("이미 연결되어 있는 구간입니다.");
+            throw new AlreadyConnectedSectionException("이미 연결되어 있는 구간입니다.");
         }
 
         if (!isPresentSameStartStation && !isPresentSameEndStation) {
-            throw new GlobalException("연결되어 있지 않은 구간입니다.");
+            throw new DisconnectedSectionException("연결되어 있지 않은 구간입니다.");
         }
     }
 
@@ -222,7 +227,7 @@ public class Sections {
                 return savedSection.getEndStation();
             }
         }
-        throw new GlobalException("하행 종점이 존재하지 않습니다.");
+        throw new NotFoundStationException("하행 종점이 존재하지 않습니다.");
     }
 
     public Station getUpStation() {
@@ -241,7 +246,7 @@ public class Sections {
                 return savedSection.getStartStation();
             }
         }
-        throw new GlobalException("상행 종점이 존재하지 않습니다.");
+        throw new NotFoundStationException("상행 종점이 존재하지 않습니다.");
     }
 
     public List<Section> getSections() {

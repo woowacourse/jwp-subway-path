@@ -17,7 +17,7 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.exception.GlobalException;
+import subway.exception.station.InvalidDeleteStationException;
 
 @ExtendWith(SpringExtension.class)
 class StationServiceTest {
@@ -53,7 +53,7 @@ class StationServiceTest {
                     .thenReturn(true);
 
             assertThatThrownBy(() -> stationService.deleteStation(1L))
-                    .isInstanceOf(GlobalException.class)
+                    .isInstanceOf(InvalidDeleteStationException.class)
                     .hasMessage("구간에 등록되어 있는 역은 삭제할 수 없습니다.");
 
             verify(stationDao, atLeast(0)).deleteById(any(Long.class));

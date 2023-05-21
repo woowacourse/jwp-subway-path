@@ -1,7 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.exception.GlobalException;
+import subway.exception.station.DuplicateStationNameException;
 
 public class Section {
     private Station startStation;
@@ -18,7 +18,7 @@ public class Section {
 
     private void validate(Station startStation, Station endStation) {
         if (startStation.equals(endStation)) {
-            throw new GlobalException("시작 역과 도착 역은 같을 수 없습니다.");
+            throw new DuplicateStationNameException("시작 역과 도착 역은 같을 수 없습니다.");
         }
     }
 

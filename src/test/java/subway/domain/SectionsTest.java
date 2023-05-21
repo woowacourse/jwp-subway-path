@@ -7,7 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.exception.GlobalException;
+import subway.exception.section.AlreadyConnectedSectionException;
+import subway.exception.section.DisconnectedSectionException;
+import subway.exception.section.DuplicateSectionException;
+import subway.exception.section.InvalidAddSectionLengthException;
+import subway.exception.section.NotFoundSectionException;
 
 class SectionsTest {
 
@@ -21,7 +25,8 @@ class SectionsTest {
         List<Section> sections = List.of(section1, section2);
 
         assertThatThrownBy(() -> new Sections(sections))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(DuplicateSectionException.class)
+                .hasMessage("이미 존재하는 구간입니다.");
     }
 
     @DisplayName("중복된 Section이 없는 리스트는 Sections를 만들 수 있다")
@@ -47,7 +52,8 @@ class SectionsTest {
         Sections sections = new Sections(List.of(section));
 
         assertThatThrownBy(() -> sections.add(section))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(DuplicateSectionException.class)
+                .hasMessage("이미 존재하는 구간입니다.");
     }
 
     @DisplayName("중복된 Section은 추가할 수 없다.")
@@ -63,7 +69,8 @@ class SectionsTest {
         Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(10));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(AlreadyConnectedSectionException.class)
+                .hasMessage("이미 연결되어 있는 구간입니다.");
     }
 
     @DisplayName("연결되지 않는 Section은 추가할 수 없다.")
@@ -79,7 +86,8 @@ class SectionsTest {
         Section sectionForAdd = new Section(잠실나루, 건대, new Distance(10));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(DisconnectedSectionException.class)
+                .hasMessage("연결되어 있지 않은 구간입니다.");
     }
 
     @DisplayName("상행 종점에 Section을 연결할 수 있다.")
@@ -150,7 +158,8 @@ class SectionsTest {
         Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(6));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(InvalidAddSectionLengthException.class)
+                .hasMessage("구간 길이로 인해 연결할 수 없습니다.");
     }
 
     @DisplayName("구간 사이에 Section 거리가 해당 구간보다 거리가 클 경우 연결할 수 없다.")
@@ -165,7 +174,8 @@ class SectionsTest {
         Section sectionForAdd = new Section(잠실나루, 잠실새내, new Distance(6));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(InvalidAddSectionLengthException.class)
+                .hasMessage("구간 길이로 인해 연결할 수 없습니다.");
     }
 
     @DisplayName("존재하지 않는 역을 삭제할 수 없다.")
@@ -179,7 +189,8 @@ class SectionsTest {
         Sections sections = new Sections(List.of(section));
 
         assertThatThrownBy(() -> sections.remove(잠실나루))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(NotFoundSectionException.class)
+                .hasMessage("존재하지 않는 구간입니다.");
     }
 
     @DisplayName("역이 단 두 개일때 삭제시, 모든 구간이 삭제된다.")

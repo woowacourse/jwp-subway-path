@@ -4,7 +4,10 @@ import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.exception.GlobalException;
+import subway.exception.route.MinimumSectionForRouteException;
+import subway.exception.section.DisconnectedSectionException;
+import subway.exception.station.DuplicateStationNameException;
+import subway.exception.station.NotFoundStationException;
 
 public class Route {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> route;
@@ -21,7 +24,7 @@ public class Route {
 
     private void validate(final List<Section> sections) {
         if (sections.isEmpty()) {
-            throw new GlobalException("구간은 최소 한개가 필요합니다.");
+            throw new MinimumSectionForRouteException("구간은 최소 한개가 필요합니다.");
         }
     }
 
@@ -36,7 +39,7 @@ public class Route {
                 );
             }
         } catch (IllegalArgumentException exception) {
-            throw new GlobalException("연결되어 있지 않은 구간은 조회할 수 없습니다.");
+            throw new DisconnectedSectionException("연결되어 있지 않은 구간은 조회할 수 없습니다.");
         }
     }
 
@@ -56,13 +59,13 @@ public class Route {
         try {
             return route.getPath(startStation, endStation).getVertexList();
         } catch (IllegalArgumentException exception) {
-            throw new GlobalException("출발역 또는 도착역이 존재하지 않습니다.");
+            throw new NotFoundStationException("출발역 또는 도착역이 존재하지 않습니다.");
         }
     }
 
     private void validateStations(final Station startStation, final Station endStation) {
         if (startStation.equals(endStation)) {
-            throw new GlobalException("같은 역으로 경로를 조회할 수 없습니다.");
+            throw new DuplicateStationNameException("같은 역으로 경로를 조회할 수 없습니다.");
         }
     }
 

@@ -1,7 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.exception.GlobalException;
+import subway.exception.station.InvalidStationNameLengthException;
 
 public class Station {
     private static final int NAME_MAX_LENGTH = 10;
@@ -14,7 +14,7 @@ public class Station {
 
     private void validate(String name) {
         if (name.isBlank() || name.length() > NAME_MAX_LENGTH) {
-            throw new GlobalException("역 이름은 1글자 이상, 10글자 이하여야 합니다.");
+            throw new InvalidStationNameLengthException("역 이름은 1글자 이상, 10글자 이하여야 합니다.");
         }
     }
 

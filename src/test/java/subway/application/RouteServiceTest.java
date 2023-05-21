@@ -23,7 +23,9 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.RouteDto;
-import subway.exception.GlobalException;
+import subway.exception.section.DisconnectedSectionException;
+import subway.exception.station.DuplicateStationNameException;
+import subway.exception.station.NotFoundStationException;
 
 @ExtendWith(SpringExtension.class)
 class RouteServiceTest {
@@ -101,7 +103,7 @@ class RouteServiceTest {
                     .thenReturn(sections);
 
             assertThatThrownBy(() -> routeService.getFeeByStations("일역", "일역"))
-                    .isInstanceOf(GlobalException.class)
+                    .isInstanceOf(DuplicateStationNameException.class)
                     .hasMessage("같은 역으로 경로를 조회할 수 없습니다.");
         }
 
@@ -125,7 +127,7 @@ class RouteServiceTest {
                     .thenReturn(sections);
 
             assertThatThrownBy(() -> routeService.getFeeByStations("일역", "삼역"))
-                    .isInstanceOf(GlobalException.class)
+                    .isInstanceOf(NotFoundStationException.class)
                     .hasMessage("출발역 또는 도착역이 존재하지 않습니다.");
         }
 
@@ -149,7 +151,7 @@ class RouteServiceTest {
                     .thenReturn(sections);
 
             assertThatThrownBy(() -> routeService.getFeeByStations("삼역", "이역"))
-                    .isInstanceOf(GlobalException.class)
+                    .isInstanceOf(NotFoundStationException.class)
                     .hasMessage("출발역 또는 도착역이 존재하지 않습니다.");
         }
 
@@ -178,7 +180,7 @@ class RouteServiceTest {
                     .thenReturn(sections);
 
             assertThatThrownBy(() -> routeService.getFeeByStations("일역", "사역"))
-                    .isInstanceOf(GlobalException.class)
+                    .isInstanceOf(DisconnectedSectionException.class)
                     .hasMessage("연결되어 있지 않은 구간은 조회할 수 없습니다.");
         }
 

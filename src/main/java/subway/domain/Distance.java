@@ -1,6 +1,6 @@
 package subway.domain;
 
-import subway.exception.GlobalException;
+import subway.exception.distance.InvalidDistanceLengthException;
 
 public class Distance {
     private static final int MIN_DISTANCE = 1;
@@ -14,7 +14,7 @@ public class Distance {
 
     private void validate(int distance) {
         if (distance < MIN_DISTANCE) {
-            throw new GlobalException("역간 최소 거리는 1km 입니다.");
+            throw new InvalidDistanceLengthException("역간 최소 거리는 1km 입니다.");
         }
     }
 

@@ -27,7 +27,9 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionSaveDto;
-import subway.exception.GlobalException;
+import subway.exception.section.DuplicateSectionException;
+import subway.exception.section.InvalidAddSectionLengthException;
+import subway.exception.station.DuplicateStationNameException;
 
 @ExtendWith(SpringExtension.class)
 class SectionServiceTest {
@@ -320,7 +322,7 @@ class SectionServiceTest {
                     .thenReturn(true);
 
             assertThatThrownBy(() -> sectionService.saveSection(1L, new SectionSaveDto("일역", "이역", 1)))
-                    .isInstanceOf(GlobalException.class)
+                    .isInstanceOf(DuplicateSectionException.class)
                     .hasMessage("이미 존재하는 구간입니다.");
         }
 
@@ -355,7 +357,7 @@ class SectionServiceTest {
                     .thenReturn(true);
 
             assertThatThrownBy(() -> sectionService.saveSection(1L, new SectionSaveDto("일역", "일역", 1)))
-                    .isInstanceOf(GlobalException.class)
+                    .isInstanceOf(DuplicateStationNameException.class)
                     .hasMessage("시작 역과 도착 역은 같을 수 없습니다.");
         }
 
@@ -399,7 +401,7 @@ class SectionServiceTest {
                     .thenReturn(true);
 
             assertThatThrownBy(() -> sectionService.saveSection(1L, new SectionSaveDto("일역", "삼역", 5)))
-                    .isInstanceOf(GlobalException.class)
+                    .isInstanceOf(InvalidAddSectionLengthException.class)
                     .hasMessage("구간 길이로 인해 연결할 수 없습니다.");
         }
 

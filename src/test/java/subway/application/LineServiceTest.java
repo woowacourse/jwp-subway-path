@@ -15,8 +15,6 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.dto.LineDto;
 import subway.dto.LineSaveDto;
 
@@ -25,12 +23,6 @@ class LineServiceTest {
 
     @Mock
     LineDao lineDao;
-
-    @Mock
-    StationDao stationDao;
-
-    @Mock
-    SectionDao sectionDao;
 
     @InjectMocks
     LineService lineService;

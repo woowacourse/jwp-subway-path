@@ -5,7 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import subway.exception.GlobalException;
+import subway.exception.station.DuplicateStationNameException;
 
 @Repository
 public class SectionDao {
@@ -37,7 +37,7 @@ public class SectionDao {
     }
 
     public boolean existStationByStationId(final Long stationId) {
-        String sql = "select exist(select * from SECTION where start_station_id = ? or end_station_id = ?)";
+        String sql = "select exists(select * from SECTION where start_station_id = ? or end_station_id = ?)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId, stationId));
     }
 
@@ -62,7 +62,7 @@ public class SectionDao {
             jdbcTemplate.update(sql, sectionEntity.getLineId(), sectionEntity.getStartStationId(),
                     sectionEntity.getEndStationId(), sectionEntity.getDistance());
         } catch (DataIntegrityViolationException exception) {
-            throw new GlobalException("시작 역과 도착 역은 같을 수 없습니다.");
+            throw new DuplicateStationNameException("시작 역과 도착 역은 같을 수 없습니다.");
         }
     }
 }
