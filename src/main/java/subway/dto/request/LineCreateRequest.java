@@ -1,5 +1,7 @@
 package subway.dto.request;
 
+import subway.dto.LineCreateDto;
+
 public class LineCreateRequest {
     private String lineName;
     private Integer extraCharge;
@@ -14,6 +16,10 @@ public class LineCreateRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public LineCreateDto toDto() {
+        return new LineCreateDto(lineName, extraCharge, upStationId, downStationId, distance);
     }
 
     public String getLineName() {

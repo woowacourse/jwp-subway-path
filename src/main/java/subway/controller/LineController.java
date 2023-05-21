@@ -33,7 +33,7 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineCreateResponse> createLine(@RequestBody LineCreateRequest request) {
-        Line createdLine = lineService.createNewLine(LineCreateDto.from(request));
+        Line createdLine = lineService.createNewLine(request.toDto());
 
         LineCreateResponse response = LineCreateResponse.fromDomain(createdLine);
         return ResponseEntity.created(URI.create("/lines/" + createdLine.getId())).body(response);
@@ -42,7 +42,7 @@ public class LineController {
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<AddStationToLineResponse> addStationToLine(@PathVariable Long lineId,
                                                                      @RequestBody AddStationToExistLineRequest request) {
-        Line updatedLine = lineService.addStationToExistLine(AddStationToExistLineDto.from(lineId, request));
+        Line updatedLine = lineService.addStationToExistLine(request.toDto(lineId));
 
         AddStationToLineResponse response = AddStationToLineResponse.fromDomain(updatedLine);
         return ResponseEntity.ok(response);

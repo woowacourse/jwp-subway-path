@@ -1,5 +1,7 @@
 package subway.dto.request;
 
+import subway.dto.AddStationToExistLineDto;
+
 public class AddStationToExistLineRequest {
 
     private final Long upStationId;
@@ -10,6 +12,10 @@ public class AddStationToExistLineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public AddStationToExistLineDto toDto(Long lineId) {
+        return new AddStationToExistLineDto(lineId, upStationId, downStationId, distance);
     }
 
     public Long getUpStationId() {
