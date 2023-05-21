@@ -62,7 +62,7 @@ class PathControllerTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new ReadPathRequest("문정역", "수서역"))
-                .when().post("/paths")
+                .when().get("/paths")
                 .then().log().all()
                 .body("distance", equalTo(12))
                 .body("fare", equalTo(1350))
