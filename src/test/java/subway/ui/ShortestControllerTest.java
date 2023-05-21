@@ -15,6 +15,7 @@ import subway.dto.LineRequest;
 import subway.dto.PathRequest;
 import subway.dto.StationRequest;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
@@ -49,7 +50,7 @@ class ShortestControllerTest {
         lineService.addPathToLine(lineId, new PathRequest(stationId2, stationId3, 5));
 
         //when, then
-        RestAssured.given()
+        given()
                 .get("/paths/start/{start-station-id}/end/{end-station-id}", stationId1, stationId3)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -59,14 +60,14 @@ class ShortestControllerTest {
     /**
      * 광안 <-5-> 전포 <-5-> 노포
      * 광안 <-1-> 부산 <-1-> 해운대 <-1-> 노포
-     * expect: 3
+     * expect: 3, 1550원
      */
-    @DisplayName("여러 경로 중 최단 경로를 조회할 수 있다")
+    @DisplayName("여러 경로 중 최단 경로와 요금을 조회할 수 있다")
     @Test
     void getDijkstraShortestPath2() {
         //given
-        Long lineId1 = lineService.saveLine(new LineRequest("1호선", "red")).getId();
-        Long lineId2 = lineService.saveLine(new LineRequest("2호선", "blue")).getId();
+        Long lineId1 = lineService.saveLine(new LineRequest("1호선", "red", 500)).getId();
+        Long lineId2 = lineService.saveLine(new LineRequest("2호선", "blue", 300)).getId();
 
         Long source = stationService.saveStation(new StationRequest("광안역")).getId();
         Long destination = stationService.saveStation(new StationRequest("노포역")).getId();
@@ -83,10 +84,11 @@ class ShortestControllerTest {
         lineService.addPathToLine(lineId2, new PathRequest(stationId4, destination, 1));
 
         //when, then
-        RestAssured.given()
+        given()
                 .get("/paths/start/{start-station-id}/end/{end-station-id}", source, destination)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("totalDistance", equalTo(3));
+                .body("totalDistance", equalTo(3))
+                .body("totalCost", equalTo(1550));
     }
 }
