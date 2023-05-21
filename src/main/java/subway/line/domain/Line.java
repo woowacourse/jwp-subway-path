@@ -25,7 +25,7 @@ public class Line {
         this(name, color, 0L, new Sections(sections));
     }
     
-    private Line(final String name, final String color, final Long extraCharge, final Sections sections) {
+    public Line(final String name, final String color, final Long extraCharge, final Sections sections) {
         validateNameAndColor(name, color, extraCharge);
         this.name = name;
         this.color = color;
@@ -36,7 +36,7 @@ public class Line {
     private void validateNameAndColor(final String name, final String color, final Long extraCharge) {
         validateNullOrEmpty(name);
         validateNullOrEmpty(color);
-        validateNull(extraCharge);
+        validateExtraCharge(extraCharge);
     }
     
     private void validateNullOrEmpty(final String value) {
@@ -45,9 +45,20 @@ public class Line {
         }
     }
     
+    private void validateExtraCharge(final Long extraCharge) {
+        validateNull(extraCharge);
+        validateNegative(extraCharge);
+    }
+    
     private void validateNull(final Long extraCharge) {
         if (Objects.isNull(extraCharge)) {
             throw new IllegalArgumentException("추가 요금은 null일 수 없습니다.");
+        }
+    }
+    
+    private void validateNegative(final Long extraCharge) {
+        if (extraCharge < 0) {
+            throw new IllegalArgumentException("노선의 추가 요금은 음수일 수 없습니다.");
         }
     }
     

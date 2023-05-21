@@ -30,6 +30,18 @@ class LineTest {
                 .isThrownBy(() -> new Line("1호선", color));
     }
     
+    @Test
+    void 노선_추가_요금이_null인_경우_예외_발생() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Line("1호선", "파랑", null, null));
+    }
+    
+    @Test
+    void 노선_추가_요금이_음수인_경우_예외_발생() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Line("1호선", "파랑", -1L, null));
+    }
+    
     @ParameterizedTest(name = "{displayName} : stationName = {0}, expectResult = {1}")
     @CsvSource(value = {"잠실역,true", "청라역,false"})
     void 해당_역이_포함되어있는지_확인(final String stationName, final boolean expectResult) {
