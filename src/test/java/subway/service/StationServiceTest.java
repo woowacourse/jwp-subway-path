@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,10 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.StationCreateRequest;
 import subway.controller.dto.StationResponse;
-import subway.dao.StationDao;
-import subway.entity.StationEntity;
-import subway.exception.InvalidStationException;
+import subway.domain.station.Station;
 import subway.exception.InvalidStationNameException;
+import subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class StationServiceTest {
@@ -28,7 +26,7 @@ class StationServiceTest {
     private StationService stationService;
 
     @Mock
-    private StationDao stationDao;
+    private StationRepository stationRepository;
 
     @Nested
     @DisplayName("역 생성 시 ")
@@ -38,8 +36,8 @@ class StationServiceTest {
         @DisplayName("정보가 유효하면 역을 생성한다.")
         void createStation() {
             final StationCreateRequest request = new StationCreateRequest("잠실역");
-            final StationEntity entity = new StationEntity(1L, "잠실역");
-            given(stationDao.save(any(StationEntity.class))).willReturn(entity);
+            final Station station = new Station(1L, "잠실역");
+            given(stationRepository.save(any(Station.class))).willReturn(station);
 
             final Long stationId = stationService.createStation(request);
 
@@ -63,8 +61,8 @@ class StationServiceTest {
         @Test
         @DisplayName("존재하는 역일시 역 정보를 반환한다.")
         void findStationById() {
-            final StationEntity entity = new StationEntity(1L, "잠실역");
-            given(stationDao.findById(1L)).willReturn(Optional.of(entity));
+            final Station entity = new Station(1L, "잠실역");
+            given(stationRepository.findById(1L)).willReturn(entity);
 
             final StationResponse station = stationService.findStationById(1L);
 
@@ -72,16 +70,6 @@ class StationServiceTest {
                     () -> assertThat(station.getId()).isEqualTo(1L),
                     () -> assertThat(station.getName()).isEqualTo("잠실역")
             );
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 역일시 예외를 던진다.")
-        void findStationByInvalidId() {
-            given(stationDao.findById(1L)).willReturn(Optional.empty());
-
-            assertThatThrownBy(() -> stationService.findStationById(1L))
-                    .isInstanceOf(InvalidStationException.class)
-                    .hasMessage("존재하지 않는 역입니다.");
         }
     }
 }

@@ -7,7 +7,6 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
-import subway.domain.station.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.exception.InvalidLineException;
@@ -24,8 +23,13 @@ public class LineRepository {
     }
 
     public Line save(final Line line) {
-        final LineEntity entity = lineDao.save(new LineEntity(line.getId(), line.getName(), line.getColor()));
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
+        final LineEntity entity = lineDao.save(new LineEntity(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                line.getExtraFare()
+        ));
+        return new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare());
     }
 
     public Line findById(final Long lineId) {
@@ -43,7 +47,7 @@ public class LineRepository {
     }
 
     public void update(final Line line) {
-        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor()));
+        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare()));
         sectionDao.deleteAllByLineId(line.getId());
         final List<SectionEntity> entities = generateSectionEntities(line);
         sectionDao.saveAll(entities);
@@ -54,6 +58,7 @@ public class LineRepository {
                 lineEntity.getId(),
                 lineEntity.getName(),
                 lineEntity.getColor(),
+                lineEntity.getExtraFare(),
                 generateSections(sectionEntities)
         );
     }
@@ -66,7 +71,6 @@ public class LineRepository {
 
     private List<SectionEntity> generateSectionEntities(final Line line) {
         final List<Section> sections = line.getSections();
-        sections.removeIf(section -> section.getDownward() == Station.TERMINAL);
         return sections.stream()
                 .map(section -> new SectionEntity(
                         line.getId(),

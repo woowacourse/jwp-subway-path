@@ -47,7 +47,7 @@ class LineRepositoryTest {
     @DisplayName("노선을 저장한다.")
     void save() {
         //given
-        final Line line = new Line("2호선", "초록색");
+        final Line line = new Line("2호선", "초록색", 300);
 
         //when
         final Line result = lineRepository.save(line);
@@ -56,7 +56,8 @@ class LineRepositoryTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getName()).isEqualTo("2호선"),
-                () -> assertThat(result.getColor()).isEqualTo("초록색")
+                () -> assertThat(result.getColor()).isEqualTo("초록색"),
+                () -> assertThat(result.getExtraFare()).isEqualTo(300)
         );
     }
 
@@ -68,7 +69,7 @@ class LineRepositoryTest {
 
         @BeforeEach
         void setUp() {
-            lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
+            lineEntity = lineDao.save(new LineEntity("2호선", "초록색", 300));
             final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
             final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
             sectionDao.save(new SectionEntity(lineEntity.getId(), upward.getId(), downward.getId(), 10));
@@ -87,13 +88,11 @@ class LineRepositoryTest {
                     () -> assertThat(result.getId()).isEqualTo(lineEntity.getId()),
                     () -> assertThat(result.getName()).isEqualTo(lineEntity.getName()),
                     () -> assertThat(result.getColor()).isEqualTo(lineEntity.getColor()),
-                    () -> assertThat(sections).hasSize(2),
+                    () -> assertThat(result.getExtraFare()).isEqualTo(lineEntity.getExtraFare()),
+                    () -> assertThat(sections).hasSize(1),
                     () -> assertThat(sections.get(0).getUpward().getName()).isEqualTo("잠실역"),
                     () -> assertThat(sections.get(0).getDownward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10),
-                    () -> assertThat(sections.get(1).getUpward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(1).getDownward().getName()).isEqualTo(Station.TERMINAL.getName()),
-                    () -> assertThat(sections.get(1).getDistance()).isEqualTo(0)
+                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10)
             );
         }
 
@@ -121,13 +120,10 @@ class LineRepositoryTest {
                     () -> assertThat(lines).hasSize(1),
                     () -> assertThat(lines.get(0).getName()).isEqualTo("2호선"),
                     () -> assertThat(lines.get(0).getColor()).isEqualTo("초록색"),
-                    () -> assertThat(sections).hasSize(2),
+                    () -> assertThat(sections).hasSize(1),
                     () -> assertThat(sections.get(0).getUpward().getName()).isEqualTo("잠실역"),
                     () -> assertThat(sections.get(0).getDownward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10),
-                    () -> assertThat(sections.get(1).getUpward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(1).getDownward().getName()).isEqualTo(Station.TERMINAL.getName()),
-                    () -> assertThat(sections.get(1).getDistance()).isEqualTo(0)
+                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10)
             );
         }
     }
@@ -140,7 +136,7 @@ class LineRepositoryTest {
         @DisplayName("섹션이 추가 됐을 때 노선 정보를 업데이트한다.")
         void updateWhenStationAdded() {
             //given
-            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
+            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색", 300));
             final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
             final StationEntity middle = stationDao.save(new StationEntity("종합운동장역"));
             final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
@@ -153,7 +149,7 @@ class LineRepositoryTest {
                     )
             );
             final Line line = generateLine(lineEntity, List.of(sectionEntity));
-            line.addSection(Station.from(upward), Station.from(middle), 3);
+            line.addSection(generateStation(upward), generateStation(middle), 3);
 
             //when
             lineRepository.update(line);
@@ -176,7 +172,7 @@ class LineRepositoryTest {
         @DisplayName("섹션이 삭제 됐을 때 노선 정보를 업데이트한다.")
         void updateWhenStationDeleted() {
             //given
-            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
+            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색", 300));
             final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
             final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
             final SectionEntity sectionEntity = sectionDao.save(
@@ -188,7 +184,7 @@ class LineRepositoryTest {
                     )
             );
             final Line line = generateLine(lineEntity, List.of(sectionEntity));
-            line.deleteStation(Station.from(upward));
+            line.deleteStation(generateStation(upward));
 
             //when
             lineRepository.update(line);
@@ -200,11 +196,16 @@ class LineRepositoryTest {
         }
     }
 
+    private Station generateStation(final StationEntity stationEntity) {
+        return new Station(stationEntity.getId(), stationEntity.getName());
+    }
+
     private Line generateLine(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
         return new Line(
                 lineEntity.getId(),
                 lineEntity.getName(),
                 lineEntity.getColor(),
+                lineEntity.getExtraFare(),
                 generateSections(sectionEntities)
         );
     }

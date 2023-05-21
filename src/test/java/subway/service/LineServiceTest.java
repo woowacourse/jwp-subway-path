@@ -50,8 +50,8 @@ class LineServiceTest {
         @DisplayName("유효한 정보라면 노선을 추가한다.")
         void createLine() {
             //given
-            final Line line = new Line(1L, "2호선", "초록색");
-            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색");
+            final Line line = new Line(1L, "2호선", "초록색", 300);
+            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색", 300);
             given(lineRepository.save(any(Line.class))).willReturn(line);
 
             //when
@@ -65,7 +65,7 @@ class LineServiceTest {
         @DisplayName("유효하지 않은 정보라면 예외를 던진다.")
         void createLineWithInvalidName() {
             //given
-            final LineCreateRequest request = new LineCreateRequest("경의중앙선", "초록색");
+            final LineCreateRequest request = new LineCreateRequest("경의중앙선", "초록색", 300);
 
             //when
             //then
@@ -85,7 +85,7 @@ class LineServiceTest {
             final List<Section> sections = List.of(
                     new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10)
             );
-            final Line line = new Line(1L, "2호선", "초록색", new LinkedList<>(sections));
+            final Line line = new Line(1L, "2호선", "초록색", 300, new LinkedList<>(sections));
 
             given(lineRepository.findById(1L)).willReturn(line);
 
@@ -97,6 +97,7 @@ class LineServiceTest {
                     () -> assertThat(response.getId()).isEqualTo(1L),
                     () -> assertThat(response.getName()).isEqualTo("2호선"),
                     () -> assertThat(response.getColor()).isEqualTo("초록색"),
+                    () -> assertThat(response.getExtraFare()).isEqualTo(300),
                     () -> assertThat(response.getStations()).hasSize(2),
                     () -> assertThat(response.getStations().get(0).getId()).isEqualTo(1L),
                     () -> assertThat(response.getStations().get(0).getName()).isEqualTo("잠실역"),
@@ -118,8 +119,8 @@ class LineServiceTest {
         ));
 
         final List<Line> lines = List.of(
-                new Line(1L, "2호선", "초록색", sectionsOfLineTwo),
-                new Line(2L, "4호선", "하늘색", sectionsOfLineFour)
+                new Line(1L, "2호선", "초록색", 300, sectionsOfLineTwo),
+                new Line(2L, "4호선", "하늘색", 400, sectionsOfLineFour)
         );
         given(lineRepository.findAll()).willReturn(lines);
 
@@ -132,6 +133,7 @@ class LineServiceTest {
                 () -> assertThat(response.getLines().get(0).getId()).isEqualTo(1L),
                 () -> assertThat(response.getLines().get(0).getName()).isEqualTo("2호선"),
                 () -> assertThat(response.getLines().get(0).getColor()).isEqualTo("초록색"),
+                () -> assertThat(response.getLines().get(0).getExtraFare()).isEqualTo(300),
                 () -> assertThat(response.getLines().get(0).getStations()).hasSize(2),
                 () -> assertThat(response.getLines().get(0).getStations().get(0).getId()).isEqualTo(1L),
                 () -> assertThat(response.getLines().get(0).getStations().get(0).getName()).isEqualTo("잠실역"),
@@ -140,6 +142,7 @@ class LineServiceTest {
                 () -> assertThat(response.getLines().get(1).getId()).isEqualTo(2L),
                 () -> assertThat(response.getLines().get(1).getName()).isEqualTo("4호선"),
                 () -> assertThat(response.getLines().get(1).getColor()).isEqualTo("하늘색"),
+                () -> assertThat(response.getLines().get(1).getExtraFare()).isEqualTo(400),
                 () -> assertThat(response.getLines().get(1).getStations()).hasSize(2),
                 () -> assertThat(response.getLines().get(1).getStations().get(0).getId()).isEqualTo(3L),
                 () -> assertThat(response.getLines().get(1).getStations().get(0).getName()).isEqualTo("이수역"),
@@ -160,7 +163,7 @@ class LineServiceTest {
             final List<Section> sections = List.of(
                     new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10)
             );
-            final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+            final Line line = new Line(1L, "2호선", "초록색", 300, new ArrayList<>(sections));
             given(lineRepository.findById(1L)).willReturn(line);
             given(stationRepository.findById(1L)).willReturn(new Station(1L, "잠실역"));
             given(stationRepository.findById(3L)).willReturn(new Station(3L, "종합운동장역"));
@@ -170,7 +173,7 @@ class LineServiceTest {
             lineService.createSection(1L, request);
 
             //then
-            assertThat(line.getSections()).hasSize(3);
+            assertThat(line.getSections()).hasSize(2);
         }
 
         @Test
@@ -182,7 +185,7 @@ class LineServiceTest {
                     new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
                     new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
             );
-            final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+            final Line line = new Line(1L, "2호선", "초록색", 300, new ArrayList<>(sections));
             given(lineRepository.findById(1L)).willReturn(line);
             given(stationRepository.findById(1L)).willReturn(new Station(1L, "잠실역"));
             given(stationRepository.findById(3L)).willReturn(new Station(3L, "종합운동장역"));
@@ -204,7 +207,7 @@ class LineServiceTest {
             final List<Section> sections = List.of(
                     new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10)
             );
-            final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+            final Line line = new Line(1L, "2호선", "초록색", 300, new ArrayList<>(sections));
             given(lineRepository.findById(1L)).willReturn(line);
             given(stationRepository.findById(1L)).willReturn(new Station(1L, "잠실역"));
             willDoNothing().given(lineRepository).update(any(Line.class));
@@ -221,7 +224,7 @@ class LineServiceTest {
                     new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
                     new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
             );
-            final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+            final Line line = new Line(1L, "2호선", "초록색", 300, new ArrayList<>(sections));
             given(lineRepository.findById(1L)).willReturn(line);
             given(stationRepository.findById(3L)).willReturn(new Station(3L, "종합운동장역"));
 

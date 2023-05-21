@@ -2,7 +2,7 @@ package subway.domain.section;
 
 import subway.exception.InvalidDistanceException;
 
-final class Distance {
+public final class Distance {
 
     private static final int MINIMUM_VALUE = 0;
 
@@ -17,6 +17,10 @@ final class Distance {
         if (value < MINIMUM_VALUE) {
             throw new InvalidDistanceException("역 사이의 거리는 0 이상이어야 합니다.");
         }
+    }
+
+    public boolean isGreaterThanOrEqualTo(final int targetValue) {
+        return value >= targetValue;
     }
 
     public int getValue() {

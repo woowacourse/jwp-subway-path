@@ -2,9 +2,11 @@ package subway.domain.line;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
+import subway.domain.subway.billing_policy.Fare;
 import subway.exception.InvalidDistanceException;
 import subway.exception.InvalidSectionException;
 
@@ -15,21 +17,29 @@ public final class Line {
 
     private final Long id;
     private final Name name;
+    private final Fare extraFare;
     private final Color color;
     private final Sections sections;
 
-    public Line(final String name, final String color) {
-        this(null, name, color);
+    public Line(final String name, final String color, final int fare) {
+        this(null, name, color, fare);
     }
 
-    public Line(final Long id, final String name, final String color) {
-        this(id, name, color, Collections.emptyList());
+    public Line(final Long id, final String name, final String color, final int extraFare) {
+        this(id, name, color, extraFare, Collections.emptyList());
     }
 
-    public Line(final Long id, final String name, final String color, final List<Section> sections) {
+    public Line(
+            final Long id,
+            final String name,
+            final String color,
+            final int extraFare,
+            final List<Section> sections
+    ) {
         this.id = id;
         this.name = new Name(name);
         this.color = new Color(color);
+        this.extraFare = new Fare(extraFare);
         this.sections = new Sections();
         loadSections(sections);
     }
@@ -75,7 +85,7 @@ public final class Line {
         }
 
         if (isLastSection(upwardPosition)) {
-            addDownwardSectionInLast(upward, downward, distance);
+            addDownwardSectionAtLast(upward, downward, distance);
             return;
         }
         addDownwardSectionBetweenStations(upward, downward, distance, upwardPosition);
@@ -119,7 +129,7 @@ public final class Line {
         return sections.size() - 1 == position;
     }
 
-    private void addDownwardSectionInLast(final Station upward, final Station downward, final int distance) {
+    private void addDownwardSectionAtLast(final Station upward, final Station downward, final int distance) {
         sections.deleteByPosition(sections.size() - 1);
         sections.add(sections.size(), new Section(upward, downward, distance));
         sections.add(sections.size(), new Section(downward, Station.TERMINAL, 0));
@@ -179,11 +189,34 @@ public final class Line {
         return color.getValue();
     }
 
+    public int getExtraFare() {
+        return extraFare.getValue();
+    }
+
     public List<Station> getStations() {
         return sections.getUpwards();
     }
 
     public List<Section> getSections() {
-        return sections.getValue();
+        final List<Section> sections = this.sections.getValue();
+        sections.removeIf(section -> section.getDownward() == Station.TERMINAL);
+        return sections;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

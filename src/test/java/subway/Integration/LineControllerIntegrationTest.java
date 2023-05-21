@@ -41,11 +41,11 @@ public class LineControllerIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        final LineEntity lineEntity = new LineEntity("2호선", "초록색");
-        lineTwo = lineRepository.save(new Line(lineEntity.getName(), lineEntity.getColor()));
+        final LineEntity lineEntity = new LineEntity("2호선", "초록색", 300);
+        lineTwo = lineRepository.save(new Line(lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraFare()));
         upward = stationDao.save(new StationEntity("잠실역"));
         downward = stationDao.save(new StationEntity("잠실새내역"));
-        lineTwo.addSection(Station.from(upward), Station.from(downward), 10);
+        lineTwo.addSection(generateStation(upward), generateStation(downward), 10);
         lineRepository.update(lineTwo);
     }
 
@@ -56,7 +56,7 @@ public class LineControllerIntegrationTest extends IntegrationTest {
         @Test
         @DisplayName("유효한 노선 정보라면 새로운 노선을 추가한다.")
         void createLine() throws Exception {
-            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색");
+            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색", 300);
 
             mockMvc.perform(post("/lines")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +69,7 @@ public class LineControllerIntegrationTest extends IntegrationTest {
         @Test
         @DisplayName("이름이 공백이라면 400 상태를 반환한다.")
         void createLineWithInvalidName() throws Exception {
-            final LineCreateRequest request = new LineCreateRequest(" ", "초록색");
+            final LineCreateRequest request = new LineCreateRequest(" ", "초록색", 300);
 
             mockMvc.perform(post("/lines")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +82,7 @@ public class LineControllerIntegrationTest extends IntegrationTest {
         @Test
         @DisplayName("색이 공백이라면 400 상태를 반환한다.")
         void createLineWithInvalidColor() throws Exception {
-            final LineCreateRequest request = new LineCreateRequest("2호선", " ");
+            final LineCreateRequest request = new LineCreateRequest("2호선", " ", 300);
 
             mockMvc.perform(post("/lines")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -125,11 +125,15 @@ public class LineControllerIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("노선 목록을 조회한다.")
     void findLines() throws Exception {
-        final LineEntity lineEntity = new LineEntity("4호선", "하늘색");
-        final Line lineFour = lineRepository.save(new Line(lineEntity.getName(), lineEntity.getColor()));
+        final LineEntity lineEntity = new LineEntity("4호선", "하늘색", 300);
+        final Line lineFour = lineRepository.save(new Line(
+                lineEntity.getName(),
+                lineEntity.getColor(),
+                lineEntity.getExtraFare()
+        ));
         final StationEntity lineFourUpward = stationDao.save(new StationEntity("이수역"));
         final StationEntity lineFourDownward = stationDao.save(new StationEntity("서울역"));
-        lineFour.addSection(Station.from(lineFourUpward), Station.from(lineFourDownward), 10);
+        lineFour.addSection(generateStation(lineFourUpward), generateStation(lineFourDownward), 10);
         lineRepository.update(lineFour);
 
         mockMvc.perform(get("/lines"))
@@ -256,5 +260,9 @@ public class LineControllerIntegrationTest extends IntegrationTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest());
         }
+    }
+
+    private Station generateStation(final StationEntity stationEntity) {
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 }
