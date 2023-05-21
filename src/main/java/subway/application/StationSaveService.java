@@ -87,15 +87,14 @@ public class StationSaveService {
 
         boolean isSavedStationMiddle = currentSectionHasRequestDownStationAsDownStation.isPresent();
         if (isSavedStationMiddle) {
-            return saveSectionWhenUpStationMiddle(savedUpStation, currentSectionHasRequestDownStationAsDownStation, sectionToSave);
+            return saveSectionWhenUpStationMiddle(savedUpStation, currentSectionHasRequestDownStationAsDownStation.get(), sectionToSave);
         }
 
         return saveSectionWhenEnd(savedUpStation, sectionToSave);
     }
 
-    private StationSaveResponse saveSectionWhenUpStationMiddle(Station savedUpStation, Optional<GeneralSection> currentSectionHasRequestDownStationAsDownStation,
+    private StationSaveResponse saveSectionWhenUpStationMiddle(Station savedUpStation, GeneralSection currentSection,
                                                                GeneralSection sectionToSave) {
-        GeneralSection currentSection = currentSectionHasRequestDownStationAsDownStation.get();
         Line line = currentSection.getLine();
         generalSectionRepository.removeSectionById(currentSection.getId());
         GeneralSection newUpSection = NewGeneralSectionMaker.makeNewUpSection(sectionToSave, currentSection);
@@ -126,15 +125,15 @@ public class StationSaveService {
         GeneralSection sectionToSave =
                 NewGeneralSectionMaker.makeSectionToSave(currentUpStation, savedDownStation, new Distance(stationRequest.getDistance()));
 
-        if (currentSectionHasRequestUpStationAsUpStation.isPresent()) {
-            return saveSectionWhenDownStationMiddle(savedDownStation, currentSectionHasRequestUpStationAsUpStation, sectionToSave);
+        boolean isSavedStationMiddle = currentSectionHasRequestUpStationAsUpStation.isPresent();
+        if (isSavedStationMiddle) {
+            return saveSectionWhenDownStationMiddle(savedDownStation, currentSectionHasRequestUpStationAsUpStation.get(), sectionToSave);
         }
         return saveSectionWhenEnd(savedDownStation, sectionToSave);
     }
 
-    private StationSaveResponse saveSectionWhenDownStationMiddle(Station savedDownStation,
-                                                                 Optional<GeneralSection> currentSectionHasRequestUpStationAsUpStation, GeneralSection sectionToSave) {
-        GeneralSection currentSection = currentSectionHasRequestUpStationAsUpStation.get();
+    private StationSaveResponse saveSectionWhenDownStationMiddle(Station savedDownStation, GeneralSection currentSection,
+                                                                 GeneralSection sectionToSave) {
         Line line = currentSection.getLine();
 
         generalSectionRepository.removeSectionById(currentSection.getId());
