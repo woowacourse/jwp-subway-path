@@ -11,8 +11,8 @@ import subway.config.TestConfiguration;
 @SpringBootTest
 class SubwayApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
