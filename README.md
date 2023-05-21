@@ -36,7 +36,7 @@
 - [x] StationService saveNewSections 메소드 내부 로직 변경 -> batchInsert문 사용
 - [x] Service, DAO isExisted 메소드 내부 로직 변경
 - [x] Test 코드 내부 예외 검증 시 예외 메시지도 함께 검증
-- [ ] Controller 구간 추가 후 Location 헤더 값에 해당하는 노선 조회할 수 있는 값 지정해주기
+- [x] Controller 구간 추가 후 Location 헤더 값에 해당하는 노선 조회할 수 있는 값 지정해주기
 - [ ] Service `@Transactional` 어노테이션 사용시 필요하지 않은 부분에 `@Transactional` 읽기 전용 모드로 선언
 - [ ] SectionService 조회 메서드 make -> find로 네이밍 변경 (?)
 - [ ] SectionService 새로운 구간 등록, 삭제 할 때 업데이트 된 구간 DB에 저장하는 로직 변경

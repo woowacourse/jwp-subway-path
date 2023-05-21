@@ -32,7 +32,7 @@ public class SectionService {
         this.lineDao = lineDao;
     }
 
-    public void save(SectionCreateRequest sectionCreateRequest) {
+    public Long save(SectionCreateRequest sectionCreateRequest) {
         Long lineId = sectionCreateRequest.getLineId();
         Line line = makeLine(lineId);
 
@@ -49,6 +49,8 @@ public class SectionService {
 
         saveNewSections(lineId, originalSections, line);
         deleteOriginalSection(lineId, originalSections, line);
+
+        return lineId;
     }
 
     public void delete(SectionDeleteRequest sectionDeleteRequest) {

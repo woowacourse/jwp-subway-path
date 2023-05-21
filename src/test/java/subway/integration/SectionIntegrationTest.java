@@ -71,7 +71,10 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header("Location")).isEqualTo("/lines/1")
+        );
     }
 
     @DisplayName("지하철 구간을 생성할 때 존재하지 않는 역이면 오류를 생성한다.")
