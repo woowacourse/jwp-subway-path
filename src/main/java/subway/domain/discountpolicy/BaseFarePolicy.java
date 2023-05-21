@@ -17,6 +17,7 @@ public class BaseFarePolicy implements FarePolicy {
     private int getMaxSurCharge(final List<Line> boardingLines) {
         return boardingLines.stream()
                 .mapToInt(Line::getSurcharge)
-                .max().getAsInt();
+                .max()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
