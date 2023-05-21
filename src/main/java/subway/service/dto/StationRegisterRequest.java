@@ -7,6 +7,21 @@ public class StationRegisterRequest {
     private String nextStationName;
     private int distance;
 
+    private StationRegisterRequest() {
+    }
+
+    public StationRegisterRequest(
+            final String lineName,
+            final String currentStationName,
+            final String nextStationName,
+            final int distance
+    ) {
+        this.lineName = lineName;
+        this.currentStationName = currentStationName;
+        this.nextStationName = nextStationName;
+        this.distance = distance;
+    }
+
     public String getLineName() {
         return lineName;
     }

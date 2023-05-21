@@ -32,6 +32,7 @@ public class StationController {
     }
 
     @DeleteMapping("/stations")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteStation(@RequestBody StationDeleteRequest stationDeleteRequest) {
         stationService.deleteStation(stationDeleteRequest);
     }
