@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.exception.GlobalException;
 
 @Transactional(readOnly = true)
 @Service
@@ -19,11 +20,11 @@ public class StationService {
 
     @Transactional
     public void deleteStation(Long stationId) {
-        boolean isExistStartStationInSections = sectionDao.existStartStationByStationId(stationId);
-        boolean isExistEndStationInSections = sectionDao.existEndStationByStationId(stationId);
+        boolean isExistStartStationInSections = sectionDao.existStationByStationId(stationId);
 
-        if (!isExistStartStationInSections && !isExistEndStationInSections) {
-            stationDao.deleteById(stationId);
+        if (isExistStartStationInSections) {
+            throw new GlobalException("구간에 등록되어 있는 역은 삭제할 수 없습니다.");
         }
+        stationDao.deleteById(stationId);
     }
 }
