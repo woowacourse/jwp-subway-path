@@ -11,15 +11,21 @@ public class Section {
     private final Station left;
     private final Station right;
     private final Distance distance;
+    private final String lineName;
     
-    public Section(final String left, final String right, final long distance) {
-        this(new Station(left), new Station(right), new Distance(distance));
+    public Section(final String left, final String right, final long distance) { // TODO
+        this(new Station(left), new Station(right), new Distance(distance), null);
     }
     
-    public Section(final Station left, final Station right, final Distance distance) {
+    private Section(final Station left, final Station right, final Distance distance) { // TODO
+        this(left, right, distance, null);
+    }
+    
+    public Section(final Station left, final Station right, final Distance distance, final String lineName) {
         this.left = left;
         this.right = right;
         this.distance = distance;
+        this.lineName = lineName;
     }
     
     public boolean hasStation(final String station) {
@@ -126,17 +132,21 @@ public class Section {
         return distance;
     }
     
+    public String getLineName() {
+        return lineName;
+    }
+    
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Section section = (Section) o;
-        return Objects.equals(left, section.left) && Objects.equals(right, section.right) && Objects.equals(distance, section.distance);
+        return Objects.equals(left, section.left) && Objects.equals(right, section.right) && Objects.equals(distance, section.distance) && Objects.equals(lineName, section.lineName);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(left, right, distance);
+        return Objects.hash(left, right, distance, lineName);
     }
     
     @Override
@@ -145,6 +155,7 @@ public class Section {
                 "left=" + left +
                 ", right=" + right +
                 ", distance=" + distance +
+                ", lineName='" + lineName + '\'' +
                 '}';
     }
 }

@@ -21,7 +21,7 @@ public class Line {
         this(name, color, 0L, new Sections(new HashSet<>()));
     }
     
-    public Line(final String name, final String color, final Set<Section> sections) {
+    public Line(final String name, final String color, final Set<Section> sections) { // TODO
         this(name, color, 0L, new Sections(sections));
     }
     
