@@ -7,7 +7,7 @@ import java.util.List;
 
 public class SubwayFarePolicy {
 
-    private static final int BASIC_RATE = 1250;
+    private static final int BASIC_RATE = 1_250;
 
     private final List<FarePolicy> farePolicies;
 
