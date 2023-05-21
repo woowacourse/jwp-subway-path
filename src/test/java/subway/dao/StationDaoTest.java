@@ -66,11 +66,10 @@ class StationDaoTest {
         int expected = 14;
 
         // when
-        List<StationEntity> entities = stationDao.findAll();
-        int actual = entities.size();
+        List<StationEntity> actual = stationDao.findAll();
 
         // then
-        Assertions.assertThat(actual).isEqualTo(expected);
+        Assertions.assertThat(actual).hasSize(expected);
     }
 
     @Test
@@ -80,11 +79,10 @@ class StationDaoTest {
         int expected = 6;
 
         // when
-        List<StationEntity> entities = stationDao.findByLineId(lineId);
-        int actual = entities.size();
+        List<StationEntity> actual = stationDao.findByLineId(lineId);
 
         // then
-        Assertions.assertThat(actual).isEqualTo(expected);
+        Assertions.assertThat(actual).hasSize(expected);
     }
 
     @ParameterizedTest
@@ -291,9 +289,9 @@ class StationDaoTest {
 
         // when
         stationDao.deleteByLineId(lineId);
-        int actual = stationDao.findByLineId(lineId).size();
+        List<StationEntity> actual = stationDao.findByLineId(lineId);
 
         // then
-        Assertions.assertThat(actual).isEqualTo(expected);
+        Assertions.assertThat(actual).hasSize(expected);
     }
 }
