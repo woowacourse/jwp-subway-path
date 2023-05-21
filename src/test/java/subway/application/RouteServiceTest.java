@@ -1,16 +1,14 @@
 package subway.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
 import static subway.fixture.LineFixture.FIXTURE_LINE_1;
 import static subway.fixture.LineFixture.FIXTURE_LINE_2;
 import static subway.fixture.LineFixture.FIXTURE_LINE_3;
 import static subway.fixture.SectionFixture.LINE1_SECTIONS;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
 import static subway.fixture.SectionFixture.LINE2_SECTIONS;
 import static subway.fixture.SectionFixture.LINE3_SECTIONS;
-import static subway.fixture.SectionFixture.LINE3_SECTION_ST2_ST9;
 import static subway.fixture.StationFixture.FIXTURE_STATION_1;
 import static subway.fixture.StationFixture.FIXTURE_STATION_9;
 
@@ -25,10 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.vo.Distance;
-import subway.domain.FareCalculator;
 import subway.domain.exception.RequestDataNotFoundException;
-import subway.dto.RouteResponse;
 
 @DisplayName("지하철 경로 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -58,18 +53,8 @@ class RouteServiceTest {
         when(sectionDao.findByLineId(2L)).thenReturn(LINE2_SECTIONS);
         when(sectionDao.findByLineId(3L)).thenReturn(LINE3_SECTIONS);
 
-        // when
-        RouteResponse result = routeService.findShortestRoute(1L, 9L);
-
-        // TODO 협력객체에 대한 의존을 피하고자 했는데, 결국 Dao 외에 도메인 협력객체에 대해서는 의존하여 테스트를 하고 있는 것이 아닌가?
-        // TODO 이렇게까지 서비스에서 테스트해야할까?
-        // then
-        Distance expectedTotalDistance = LINE1_SECTION_ST1_ST2.getDistance().plus(LINE3_SECTION_ST2_ST9.getDistance());
-        int expectedTotalFare = FareCalculator.calculate(expectedTotalDistance);
-        assertThat(result.getTotalDistance())
-                .isEqualTo(expectedTotalDistance.getValue());
-        assertThat(result.getTotalFare())
-                .isEqualTo(expectedTotalFare);
+        // when, then
+        assertDoesNotThrow(() -> routeService.findShortestRoute(1L, 9L));
     }
 
     @DisplayName("최단 경로 조회 시 출발 역이 DB에 존재하지 않으면 예외를 발생한다")

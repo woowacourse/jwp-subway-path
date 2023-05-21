@@ -212,6 +212,12 @@ GET /routes?sourceStationId={sourceStationId}&target={targetStationId} HTTP/1.1
 
 ## 2단계
 
+- 피드백 외 리팩터링
+    - [x] 서비스 테스트 코드의 불필요한 검증 삭제
+
 - 피드백
     - [x] 메서드 접근제한자 수정
     - [x] 변환 로직 정적 팩터리 메서드로 변경
+    - [ ] [요금 계산 클래스 분리 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616938)
+        - RoutedStations 에서 요금 정책을 전달받아 계산하도록 변경하기
+    - [ ] [테스트 픽스쳐 네이밍에서 무엇을 위한 객체인지 표현하도록 수정](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199617411)
