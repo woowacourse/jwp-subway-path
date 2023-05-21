@@ -25,7 +25,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static subway.common.fixture.DomainFixture.*;
+import static subway.common.fixture.DomainFixture.디노;
+import static subway.common.fixture.DomainFixture.디노_조앤;
+import static subway.common.fixture.DomainFixture.조앤;
+import static subway.common.fixture.DomainFixture.후추;
+import static subway.common.fixture.DomainFixture.후추_디노;
 import static subway.common.fixture.WebFixture.일호선_남색_요청;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
