@@ -36,6 +36,7 @@ public class RouteQueryService implements FindRouteUseCase {
         this.farePolicy = farePolicy;
     }
 
+    // TODO(질문): 요금 정보는 FindRouteUseCase에 포함되는건가..? 따로 CalculateFareUseCase로 분리하는게 올바른 방법일까?
     @Override
     public RouteQueryResponse findRoute(final FindRouteCommand command) {
         List<Line> lines = loadLinePort.findAll();

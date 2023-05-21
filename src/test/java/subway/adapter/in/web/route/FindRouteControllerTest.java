@@ -44,7 +44,6 @@ class FindRouteControllerTest {
     @Test
     void 최단_경로를_찾는다() throws Exception {
         // given
-        FindRouteRequest request = new FindRouteRequest(1L, 2L);
         RouteQueryResponse response = new RouteQueryResponse(List.of(역삼역.RESPONSE, 삼성역.RESPONSE, 잠실역.RESPONSE), 10,
                 1000);
         // TODO(질문): eq(command) 쓰고싶은데.. 그러면 FindRouteCommand에 equals&hasCode 재정의 해야한다. DTO에 재정의해도 되나?
@@ -53,7 +52,8 @@ class FindRouteControllerTest {
 
         // when
         MvcResult result = mockMvc.perform(get("/route")
-                        .content(objectMapper.writeValueAsString(request))
+                        .param("sourceStationId", Long.toString(1L))
+                        .param("targetStationId", Long.toString(2L))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -75,7 +75,7 @@ class FindRouteControllerTest {
 
         // when
         MvcResult result = mockMvc.perform(get("/route")
-                        .content(objectMapper.writeValueAsString(request))
+                        .param("targetStationId", Long.toString(2L))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
@@ -86,7 +86,7 @@ class FindRouteControllerTest {
 
         // then
         assertThat(actualResponse.getMessage())
-                .contains("출발역 id가 없습니다.");
+                .contains("요청 값이 잘못되었습니다.");
     }
 
     @Test

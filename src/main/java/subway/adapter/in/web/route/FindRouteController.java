@@ -1,12 +1,11 @@
 package subway.adapter.in.web.route;
 
-import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import subway.adapter.in.web.route.dto.FindRouteRequest;
 import subway.application.port.in.route.FindRouteUseCase;
+import subway.application.port.in.route.dto.command.FindRouteCommand;
 import subway.application.port.in.route.dto.response.RouteQueryResponse;
 
 @RestController
@@ -20,8 +19,10 @@ public class FindRouteController {
 
     @GetMapping("/route")
     public ResponseEntity<RouteQueryResponse> findRoute(
-            @RequestBody @Valid FindRouteRequest request) {
-        RouteQueryResponse response = findRouteUseCase.findRoute(request.toCommand());
+            @RequestParam Long sourceStationId,
+            @RequestParam Long targetStationId) {
+        RouteQueryResponse response = findRouteUseCase.findRoute(
+                new FindRouteCommand(sourceStationId, targetStationId));
 
         return ResponseEntity.ok(response);
     }

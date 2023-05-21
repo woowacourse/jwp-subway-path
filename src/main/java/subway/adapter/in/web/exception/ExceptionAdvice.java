@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.common.exception.SubwayIllegalArgumentException;
@@ -43,10 +44,9 @@ public class ExceptionAdvice {
                 .body(new ErrorResponse(stringBuilder.toString()));
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    private ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
-            HttpMessageNotReadableException exception) {
-        logger.warn("[HttpMessageNotReadableException]", exception);
+    @ExceptionHandler({HttpMessageNotReadableException.class, MissingServletRequestParameterException.class})
+    private ResponseEntity<ErrorResponse> handleIncorrectRequestException(Exception exception) {
+        logger.warn("[IncorrectRequestException]", exception);
 
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("요청 값이 잘못되었습니다."));
