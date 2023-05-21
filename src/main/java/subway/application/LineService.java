@@ -1,11 +1,9 @@
 package subway.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.dto.LineRequest;
-import subway.controller.dto.LineResponse;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
 import subway.dao.entity.SectionEntity;
@@ -31,24 +29,20 @@ public class LineService {
     }
 
     @Transactional
-    public LineResponse saveLine(LineRequest request) {
+    public Line saveLine(LineRequest request) {
         if (lineRepository.existsByName(request.getName())) {
             throw new LineNameException("동일한 이름을 가진 노선이 존재합니다.");
         }
 
-        Line line = lineRepository.save(new Line(null, request.getName(), null));
-        return LineResponse.of(line);
+        return lineRepository.save(new Line(null, request.getName(), null));
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line line = lineRepository.findById(id);
-        return LineResponse.of(line);
+    public Line findLineResponseById(Long id) {
+        return lineRepository.findById(id);
     }
 
-    public List<LineResponse> findLineResponses() {
-        return lineRepository.findAll().stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public List<Line> findLineResponses() {
+        return lineRepository.findAll();
     }
 
     @Transactional

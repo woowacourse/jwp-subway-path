@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,10 +24,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
 import subway.controller.dto.LineRequest;
-import subway.controller.dto.LineResponse;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
-import subway.controller.dto.StationResponse;
+import subway.domain.line.Distance;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Sections;
+import subway.domain.line.Station;
 
 @WebMvcTest(controllers = LineController.class)
 class LineControllerTest {
@@ -43,7 +46,7 @@ class LineControllerTest {
     @Test
     @DisplayName("노선을 생성한다.")
     void createLine() throws Exception {
-        given(lineService.saveLine(any())).willReturn(new LineResponse(1L, "1호선", new ArrayList<>()));
+        given(lineService.saveLine(any())).willReturn(createMockLine("1호선"));
 
         mockMvc.perform(post("/lines")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +73,7 @@ class LineControllerTest {
     void findLineById() throws Exception {
         Long id = 1L;
         given(lineService.findLineResponseById(any())).willReturn(
-                new LineResponse(id, "1호선", List.of(new StationResponse(1L, "잠실역"), new StationResponse(2L, "선릉역"))));
+                new Line(id, "1호선", new Sections(new LinkedList<>())));
 
         mockMvc.perform(get("/lines/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,11 +85,9 @@ class LineControllerTest {
     @Test
     @DisplayName("모든 노선의 모든 역 정보를 가져온다.")
     void findAllLines() throws Exception {
-        LineResponse lineResponse1 = new LineResponse(1L, "1호선",
-                List.of(new StationResponse(1L, "잠실역"), new StationResponse(2L, "선릉역")));
-        LineResponse lineResponse2 = new LineResponse(2L, "2호선",
-                List.of(new StationResponse(1L, "잠실역"), new StationResponse(4L, "강남역")));
-        given(lineService.findLineResponses()).willReturn(List.of(lineResponse1, lineResponse2));
+        Line line1 = createMockLine("1호선");
+        Line line2 = createMockLine("2호선");
+        given(lineService.findLineResponses()).willReturn(List.of(line1, line2));
 
         mockMvc.perform(get("/lines").
                         contentType(MediaType.APPLICATION_JSON)
@@ -163,5 +164,16 @@ class LineControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(containsString("역 이름은 빈 값이 될 수 없습니다.")))
                 .andDo(print());
+    }
+
+    private Line createMockLine(String name) {
+        Station station1 = new Station(1L, "잠실역");
+        Station station2 = new Station(2L, "강남역");
+        Station station3 = new Station(3L, "선릉역");
+
+        Section section1 = new Section(null, station1, station2, new Distance(5));
+        Section section2 = new Section(null, station2, station3, new Distance(7));
+
+        return new Line(null, name, new Sections(new LinkedList<>(List.of(section1, section2))));
     }
 }

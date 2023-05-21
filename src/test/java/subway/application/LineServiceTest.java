@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.LineRequest;
-import subway.controller.dto.LineResponse;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
 import subway.domain.line.Distance;
@@ -52,11 +51,11 @@ class LineServiceTest {
         given(lineRepository.save(new Line(null, lineRequest.getName(), null)))
                 .willReturn(new Line(1L, "1호선", new Sections(new LinkedList<>())));
 
-        LineResponse lineResponse = lineService.saveLine(lineRequest);
+        Line line = lineService.saveLine(lineRequest);
 
         assertAll(
-                () -> assertThat(lineResponse.getId()).isNotNull(),
-                () -> assertThat(lineResponse.getName()).isEqualTo(lineRequest.getName())
+                () -> assertThat(line.getId()).isNotNull(),
+                () -> assertThat(line.getName()).isEqualTo(lineRequest.getName())
         );
     }
 
@@ -79,11 +78,11 @@ class LineServiceTest {
         given(lineRepository.findById(any()))
                 .willReturn(line);
 
-        LineResponse response = lineService.findLineResponseById(1L);
+        Line findLine = lineService.findLineResponseById(1L);
 
         assertAll(
-                () -> assertThat(response.getId()).isEqualTo(line.getId()),
-                () -> assertThat(response.getName()).isEqualTo(line.getName())
+                () -> assertThat(findLine.getId()).isEqualTo(findLine.getId()),
+                () -> assertThat(findLine.getName()).isEqualTo(findLine.getName())
         );
     }
 
@@ -95,9 +94,9 @@ class LineServiceTest {
         given(lineRepository.findAll())
                 .willReturn(List.of(line1, line2));
 
-        List<LineResponse> responses = lineService.findLineResponses();
+        List<Line> lines = lineService.findLineResponses();
 
-        assertThat(responses).hasSize(2);
+        assertThat(lines).hasSize(2);
     }
 
     @Test
