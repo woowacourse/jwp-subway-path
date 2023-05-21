@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class Station {
 
-    public static final int MINIMUM_NAME_LENGTH = 2;
-    public static final int MAXIMUM_NAME_LENGTH = 15;
+    private static final int MINIMUM_NAME_LENGTH = 2;
+    private static final int MAXIMUM_NAME_LENGTH = 15;
 
     private final String name;
 

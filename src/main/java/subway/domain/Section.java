@@ -11,7 +11,7 @@ import static subway.domain.Line.EMPTY_ENDPOINT_STATION;
 
 public class Section {
 
-    public static final int MINIMUM_DISTANCE = 1;
+    private static final int MINIMUM_DISTANCE = 1;
 
     private final Station upstream;
     private final Station downstream;
