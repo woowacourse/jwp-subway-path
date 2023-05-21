@@ -37,8 +37,8 @@ public class StationDao {
 
     public StationEntity insert(StationEntity station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
         try {
+            Long id = insertAction.executeAndReturnKey(params).longValue();
             return new StationEntity(id, station.getName());
         } catch (DuplicateKeyException exception) {
             throw new DuplicatedException("이미 존재하는 역입니다.");

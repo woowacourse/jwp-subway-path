@@ -12,12 +12,14 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.entity.StationEntity;
+import subway.exception.DuplicatedException;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
@@ -55,7 +57,10 @@ class StationDaoTest {
     @DisplayName("역을 추가한다")
     @Test
     void insert() {
+        // when
         StationEntity insertStation = stationDao.insert(new StationEntity("노원역"));
+
+        // then
         StationEntity station = jdbcTemplate.queryForObject(
                 "select * from station WHERE id = :id",
                 new MapSqlParameterSource("id", insertStation.getId()),
@@ -68,15 +73,19 @@ class StationDaoTest {
     @DisplayName("이미 존재하는 역을 추가할 시 예외가 발생한다")
     @Test
     void insertException() {
+        //then
         assertThatThrownBy(() ->
                 stationDao.insert(new StationEntity("봉천역"))
-        ).isInstanceOf(DuplicateKeyException.class);
+        ).isInstanceOf(DuplicatedException.class);
     }
 
     @DisplayName("모든 역을 조회한다")
     @Test
     void findAll() {
+        // when
         List<StationEntity> stationEntities = stationDao.findAll();
+
+        //then
         assertThat(stationEntities).usingRecursiveFieldByFieldElementComparator()
                                    .containsAll(expectStations);
     }
@@ -84,8 +93,10 @@ class StationDaoTest {
     @DisplayName("특정 아이디로 역을 조회한다")
     @Test
     void findById() {
+        // when
         Optional<StationEntity> findStation = stationDao.findById(1L);
 
+        //then
         assertAll(
                 () -> assertThat(findStation).isPresent(),
                 () -> assertThat(findStation.get()).usingRecursiveComparison()
@@ -96,16 +107,23 @@ class StationDaoTest {
     @DisplayName("존재하지 않는 아이디로 역을 조회하면 빈 값 반환한다")
     @Test
     void findByIdNotExist() {
+        // given
         Long notExistId = 1000L;
+
+        // when
         Optional<StationEntity> findStation = stationDao.findById(notExistId);
+
+        //then
         assertThat(findStation).isEmpty();
     }
 
     @DisplayName("이름으로 특정 역을 조회할 수 있다")
     @Test
     void findByName() {
+        // when
         Optional<StationEntity> findStation = stationDao.findByName("서울대입구역");
 
+        //then
         assertAll(
                 () -> assertThat(findStation).isPresent(),
                 () -> assertThat(findStation.get()).usingRecursiveComparison()
@@ -116,22 +134,31 @@ class StationDaoTest {
     @DisplayName("존재하지 않는 이름으로 역 조회 시 빈 값을 반환한다")
     @Test
     void findByNameNotExist() {
+        // given
         String notExistName = "notExist";
+
+        // when
         Optional<StationEntity> findStation = stationDao.findByName(notExistName);
+
+        //then
         assertThat(findStation).isEmpty();
     }
 
     @DisplayName("특정 역 정보를 수정할 수 있다")
     @Test
     void update() {
+        // given
         StationEntity updateStation = new StationEntity(1L, "노원역");
+
+        // when
         stationDao.update(updateStation);
+
+        //then
         StationEntity stationEntity = jdbcTemplate.queryForObject(
                 "select * from station WHERE id = :id",
                 new BeanPropertySqlParameterSource(updateStation),
                 rowMapper
         );
-
         assertThat(stationEntity).usingRecursiveComparison()
                                  .isEqualTo(updateStation);
     }
@@ -139,7 +166,10 @@ class StationDaoTest {
     @DisplayName("특정 노선의 정보 수정 시 이미 존재하는 역 정보를 수정하면 예외가 발생한다")
     @Test
     void updateException() {
+        // when
         StationEntity updateStation = new StationEntity(1L, "봉천역");
+
+        //then
         assertThatThrownBy(() ->
                 stationDao.update(updateStation)
         ).isInstanceOf(DuplicateKeyException.class);
@@ -148,14 +178,17 @@ class StationDaoTest {
     @DisplayName("아이디로 특정 역을 삭제할 수 있다")
     @Test
     void deleteById() {
+        // given
         StationEntity deleteStation = jdbcTemplate.queryForObject(
                 "SELECT * FROM station WHERE id = :id",
                 new MapSqlParameterSource("id", 1L),
                 rowMapper
         );
 
+        // when
         stationDao.deleteById(deleteStation.getId());
 
+        //then
         List<StationEntity> stationEntities = jdbcTemplate.query(
                 "SELECT * FROM station",
                 rowMapper
