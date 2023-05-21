@@ -1,20 +1,24 @@
 package subway.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class ShortestPathRequest {
 
-    private Long upStationId;
-    private Long downStationId;
+    @NotNull(message = "출발역은 필수 입력값입니다.")
+    private final Long srcStationId;
+    @NotNull(message = "도착역은 필수 입력값입니다.")
+    private final Long dstStationId;
 
-    public ShortestPathRequest(final Long upStationId, final Long downStationId) {
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
+    public ShortestPathRequest(final Long srcStationId, final Long dstStationId) {
+        this.srcStationId = srcStationId;
+        this.dstStationId = dstStationId;
     }
 
-    public Long getUpStationId() {
-        return upStationId;
+    public Long getSrcStationId() {
+        return srcStationId;
     }
 
-    public Long getDownStationId() {
-        return downStationId;
+    public Long getDstStationId() {
+        return dstStationId;
     }
 }

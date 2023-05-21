@@ -34,8 +34,8 @@ public class PathService {
         Map<Long, Station> stationMap = makeStationMap(stationDao.findAll());
         SubwayGraph subwayGraph = new SubwayGraph(sections);
 
-        Station upStation = stationMap.get(shortestPathRequest.getUpStationId());
-        Station downStation = stationMap.get(shortestPathRequest.getDownStationId());
+        Station upStation = stationMap.get(shortestPathRequest.getSrcStationId());
+        Station downStation = stationMap.get(shortestPathRequest.getDstStationId());
 
         List<String> dijkstraShortestPath = subwayGraph.getDijkstraShortestPath(upStation, downStation);
         int shortestPathWeight = subwayGraph.getShortestPathWeight(upStation, downStation);
