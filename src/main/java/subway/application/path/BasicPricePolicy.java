@@ -24,10 +24,6 @@ public class BasicPricePolicy implements PricePolicy {
 
     @Override
     public int calculate(int distance) {
-        return calculatePrice(distance);
-    }
-
-    private int calculatePrice(int distance) {
         PriceLevel priceLevel = PriceLevel.from(distance);
         return PRICE_LEVEL_MAP.get(priceLevel).applyAsInt(distance);
     }
