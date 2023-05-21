@@ -26,9 +26,9 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<SectionRow> selectAllOfLineId(Long linePropertyId) {
+    public List<SectionRow> selectAllOfLineId(Long lineId) {
         String sectionSql = "select id, line_id, up_bound, down_bound, distance from section where line_id = ?";
-        return jdbcTemplate.query(sectionSql, rowMapper, linePropertyId);
+        return jdbcTemplate.query(sectionSql, rowMapper, lineId);
     }
 
     public void insertAll(List<SectionRow> rows) {
