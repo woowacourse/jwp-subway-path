@@ -25,6 +25,9 @@ public class Station {
     }
 
     public Long getId() {
+        if (id == null) {
+            throw new IllegalStateException("현재 id값이 존재 하지않습니다.");
+        }
         return id;
     }
 
