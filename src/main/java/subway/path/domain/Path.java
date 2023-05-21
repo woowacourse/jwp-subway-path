@@ -10,37 +10,37 @@ import java.util.List;
 
 public class Path {
 
-    private WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-    public Path(List<Station> stations, List<Section> sections) {
+    public Path(final List<Station> stations, final List<Section> sections) {
         addVertex(stations);
         addEdge(sections);
     }
 
-    private void addVertex(List<Station> stations) {
+    private void addVertex(final List<Station> stations) {
         for (Station station : stations) {
-            graph.addVertex(station.getNameValue());
+            graph.addVertex(station);
         }
     }
 
-    private void addEdge(List<Section> sections) {
+    private void addEdge(final List<Section> sections) {
         for (Section section : sections) {
             graph.setEdgeWeight(
                     graph.addEdge(
-                            section.getUpStation().getNameValue(),
-                            section.getDownStation().getNameValue()
+                            section.getUpStation(),
+                            section.getDownStation()
                     ),
                     section.getDistanceValue()
             );
         }
     }
 
-    public List<String> findPath(final String start, final String end) {
-        return new DijkstraShortestPath(graph).getPath(start, end).getVertexList();
+    public List<Station> findPath(final Station startStation, final Station endStation) {
+        return new DijkstraShortestPath(graph).getPath(startStation, endStation).getVertexList();
     }
 
-    public double findPathDistance(final String start, final String end) {
-        return new DijkstraShortestPath(graph).getPath(start, end).getWeight();
+    public double findPathDistance(final Station startStation, final Station endStation) {
+        return new DijkstraShortestPath(graph).getPath(startStation, endStation).getWeight();
     }
 
 }

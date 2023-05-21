@@ -33,11 +33,13 @@ public class PathService {
         Station downStation = stationRepository.findById(downStationId);
         Path path = getPath();
 
-        List<String> stationNames = path.findPath(upStation.getNameValue(), downStation.getNameValue());
-        double pathDistance = path.findPathDistance(upStation.getNameValue(), downStation.getNameValue());
+        List<String> stationsName = path.findPath(upStation, downStation).stream()
+                .map(Station::getNameValue)
+                .collect(Collectors.toList());
+        double pathDistance = path.findPathDistance(upStation, downStation);
         int cost = costCalculatePolicy.calculateAdult((int) pathDistance);
 
-        return new PathResponse(makeStationResponses(stationNames), pathDistance, cost);
+        return new PathResponse(makeStationResponses(stationsName), pathDistance, cost);
     }
 
     private Path getPath() {

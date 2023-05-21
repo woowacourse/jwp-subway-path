@@ -37,23 +37,31 @@ class PathTest {
     @DisplayName("Graph에 저장된 경로들을 조회해서 최단 경로를 찾아서 반환한다.")
     @Test
     void findPath() {
+        // given
+        Station 잠실역 = Station.of(1L, Name.from("잠실역"));
+        Station 선릉역 = Station.of(3L, Name.from("선릉역"));
+
         // when
-        List<String> paths = path.findPath("잠실역", "선릉역");
+        List<Station> paths = path.findPath(잠실역, 선릉역);
 
         // then
         assertAll(
                 () -> assertThat(paths.size()).isEqualTo(3),
-                () -> assertThat(paths.get(0)).isEqualTo("잠실역"),
-                () -> assertThat(paths.get(1)).isEqualTo("종합운동장"),
-                () -> assertThat(paths.get(2)).isEqualTo("선릉역")
+                () -> assertThat(paths.get(0).getNameValue()).isEqualTo("잠실역"),
+                () -> assertThat(paths.get(1).getNameValue()).isEqualTo("종합운동장"),
+                () -> assertThat(paths.get(2).getNameValue()).isEqualTo("선릉역")
         );
     }
 
     @DisplayName("Graph에 저장된 경로들을 조회해서 최단 경로를 찾아서 반환한다.")
     @Test
     void findPathDistance() {
+        // given
+        Station 잠실역 = Station.of(1L, Name.from("잠실역"));
+        Station 선릉역 = Station.of(3L, Name.from("선릉역"));
+
         // when
-        double distance = path.findPathDistance("잠실역", "선릉역");
+        double distance = path.findPathDistance(잠실역, 선릉역);
 
         // then
         assertThat(distance).isEqualTo(13);
