@@ -9,6 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Distance;
+import subway.domain.Fare;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -85,7 +86,9 @@ public class SectionService {
                 .map(station -> new StationInfo(station.getName()))
                 .collect(Collectors.toList());
 
-        return new PathResponse(pathDistance, stationInfos);
+        int fare = Fare.from(pathDistance).getValue();
+
+        return new PathResponse(fare, pathDistance, stationInfos);
     }
 
     @Transactional
