@@ -61,6 +61,29 @@ public class SectionService {
         Station fromStation = findStation(fromStationName);
         Station toStation = findStation(toStationName);
 
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeGraph();
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        int pathDistance = (int) dijkstraShortestPath.getPathWeight(fromStation, toStation);
+        int fare = Fare.from(pathDistance).getValue();
+        List<StationInfo> stationInfos = getStationInfos(fromStation, toStation, dijkstraShortestPath);
+
+        return new PathResponse(fare, pathDistance, stationInfos);
+    }
+
+    private List<StationInfo> getStationInfos(
+            Station fromStation,
+            Station toStation,
+            DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
+    ) {
+        return dijkstraShortestPath.getPath(fromStation, toStation)
+                .getVertexList()
+                .stream()
+                .map(station -> new StationInfo(station.getName()))
+                .collect(Collectors.toList());
+    }
+
+    private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         List<Station> stations = stationRepository.findAll();
@@ -68,27 +91,20 @@ public class SectionService {
             graph.addVertex(station);
         }
 
-        List<LinkedList<Section>> allSections = lineRepository.findAll()
-                .stream()
-                .map(Line::getSections)
-                .collect(Collectors.toList());
+        List<LinkedList<Section>> allSections = getAllSections();
         for (final LinkedList<Section> sections : allSections) {
             for (final Section section : sections) {
                 graph.setEdgeWeight(graph.addEdge(section.getLeft(), section.getRight()), section.getDistance());
             }
         }
+        return graph;
+    }
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        int pathDistance = (int) dijkstraShortestPath.getPathWeight(fromStation, toStation);
-        List<StationInfo> stationInfos = dijkstraShortestPath.getPath(fromStation, toStation)
-                .getVertexList()
+    private List<LinkedList<Section>> getAllSections() {
+        return lineRepository.findAll()
                 .stream()
-                .map(station -> new StationInfo(station.getName()))
+                .map(Line::getSections)
                 .collect(Collectors.toList());
-
-        int fare = Fare.from(pathDistance).getValue();
-
-        return new PathResponse(fare, pathDistance, stationInfos);
     }
 
     @Transactional
