@@ -16,7 +16,7 @@ import subway.dto.StationDto;
 import subway.dto.StationsDto;
 
 @RestController
-@RequestMapping("/lines")
+@RequestMapping("/lines/{lineId}/stations")
 public class SectionController {
     private final SectionService sectionService;
 
@@ -24,7 +24,7 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @PostMapping("/{lineId}/stations")
+    @PostMapping
     public ResponseEntity<StationDto> add(@PathVariable long lineId, @RequestBody @Valid SectionRequest request) {
         StationDto station = sectionService.add(request, lineId);
         return ResponseEntity
@@ -32,7 +32,7 @@ public class SectionController {
                 .body(station);
     }
 
-    @DeleteMapping("/{lineId}/stations/{stationId}")
+    @DeleteMapping("/{stationId}")
     public ResponseEntity<Void> delete(@PathVariable long lineId, @PathVariable long stationId) {
         sectionService.delete(stationId, lineId);
         return ResponseEntity
@@ -40,7 +40,7 @@ public class SectionController {
                 .build();
     }
 
-    @GetMapping("/{lineId}/stations")
+    @GetMapping
     public ResponseEntity<StationsDto> findAll(@PathVariable long lineId) {
         StationsDto stations = sectionService.findAll(lineId);
         return ResponseEntity
