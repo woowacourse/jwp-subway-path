@@ -35,40 +35,38 @@ public class SectionService {
     public Long save(SectionCreateRequest sectionCreateRequest) {
         Long lineId = sectionCreateRequest.getLineId();
         Line line = makeLine(lineId);
-
-        List<Section> originalSections = line.getSectionsByList();
-
         StationEntity upStationEntity = findStationByName(sectionCreateRequest.getUpStation());
         StationEntity downStationEntity = findStationByName(sectionCreateRequest.getDownStation());
-
         line.addSection(
                 new Station(upStationEntity.getId(), upStationEntity.getName()),
                 new Station(downStationEntity.getId(), downStationEntity.getName()),
                 sectionCreateRequest.getDistance()
         );
 
-        saveNewSections(lineId, originalSections, line);
-        deleteOriginalSection(lineId, originalSections, line);
+        sectionDao.deleteByLineId(lineId);
+        sectionDao.batchSave(getModifySections(lineId, line));
 
         return lineId;
     }
 
     public void delete(SectionDeleteRequest sectionDeleteRequest) {
-        StationEntity stationEntity = findStationByName(sectionDeleteRequest.getName());
         Long lineId = sectionDeleteRequest.getLineId();
         Line line = makeLine(lineId);
-
-        List<Section> originalSections = line.getSectionsByList();
-
+        StationEntity stationEntity = findStationByName(sectionDeleteRequest.getName());
         line.deleteSection(new Station(stationEntity.getId(), stationEntity.getName()));
 
-        if (line.isEmpty()) {
-            sectionDao.deleteByLineId(lineId);
-            return;
-        }
+        sectionDao.deleteByLineId(lineId);
+        sectionDao.batchSave(getModifySections(lineId, line));
+    }
 
-        saveNewSections(lineId, originalSections, line);
-        deleteOriginalSection(lineId, originalSections, line);
+    private List<SectionEntity> getModifySections(Long lineId, Line line) {
+        return line.getSectionsByList().stream()
+                .map(section -> new SectionEntity(
+                        section.getUpStation().getId(),
+                        section.getDownStation().getId(),
+                        lineId,
+                        section.getDistance()))
+                .collect(Collectors.toList());
     }
 
     private StationEntity findStationByName(String stationName) {
@@ -101,36 +99,5 @@ public class SectionService {
                         new Station(entity.getDownStationId(), stationEntities.get(entity.getDownStationId())),
                         entity.getDistance()
                 )).collect(Collectors.toList());
-    }
-
-    private void saveNewSections(long lineId, List<Section> originalSections, Line line) {
-        List<Section> newSections = line.getSectionsByList();
-        newSections.removeAll(originalSections);
-
-        List<SectionEntity> newSectionEntities = newSections.stream()
-                .map(section ->
-                        new SectionEntity(
-                                section.getUpStation().getId(),
-                                section.getDownStation().getId(),
-                                lineId,
-                                section.getDistance()))
-                .collect(Collectors.toList());
-
-        sectionDao.batchSave(newSectionEntities);
-    }
-
-    private void deleteOriginalSection(long lineId, List<Section> originalSections, Line line) {
-        if (originalSections.isEmpty()) {
-            return;
-        }
-        List<Section> newSections = line.getSectionsByList();
-        originalSections.removeAll(newSections);
-        Section deletedSection = originalSections.get(0);
-        sectionDao.delete(new SectionEntity(
-                deletedSection.getUpStation().getId(),
-                deletedSection.getDownStation().getId(),
-                lineId,
-                deletedSection.getDistance())
-        );
     }
 }
