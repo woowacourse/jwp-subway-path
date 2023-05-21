@@ -1,4 +1,4 @@
-package subway.line.domain.navigation.domain;
+package subway.line.domain.navigation;
 
 import subway.line.domain.section.Section;
 

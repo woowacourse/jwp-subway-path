@@ -1,4 +1,4 @@
-package subway.line.domain.navigation.domain;
+package subway.line.domain.navigation;
 
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;

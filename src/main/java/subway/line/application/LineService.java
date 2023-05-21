@@ -1,8 +1,5 @@
 package subway.line.application;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
@@ -10,10 +7,8 @@ import subway.line.application.dto.LineSavingInfo;
 import subway.line.application.dto.LineUpdatingInfo;
 import subway.line.application.strategy.sectionsaving.SectionSavingStrategy;
 import subway.line.application.strategy.stationdeleting.StationDeletingStrategy;
-import subway.line.domain.navigation.NavigationService;
-import subway.line.domain.section.Section;
+import subway.line.domain.navigation.application.NavigationService;
 import subway.line.domain.section.application.SectionRepository;
-import subway.line.domain.section.application.ShortestPathResponse;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
 

@@ -1,7 +1,8 @@
-package subway.line.domain.navigation;
+package subway.line.domain.navigation.application;
 
 import org.springframework.stereotype.Service;
-import subway.line.domain.navigation.domain.SubwayGraph;
+import subway.line.domain.navigation.Navigation;
+import subway.line.domain.navigation.SubwayGraph;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
@@ -18,24 +19,24 @@ public class NavigationService {
     }
 
     public void updateNavigation(List<List<Section>> sectionsOfAllLine) {
-        navigationThreadLocal.set(new Navigation(sectionsOfAllLine, subwayGraph));
+        subwayGraph.initialize(sectionsOfAllLine);
+        navigationThreadLocal.set(new Navigation(subwayGraph.makePath()));
     }
 
     public List<Station> findShortestPath(Station stationA, Station stationB) {
-        if (navigationThreadLocal.get() == null) {
-            throw new IllegalArgumentException("네비게이션 정보가 업데이트되지 않았습니다.");
-        }
-        return navigationThreadLocal
-                .get()
-                .findShortestPath(stationA, stationB);
+        final var navigation = getNavigation();
+        return navigation.findShortestPath(stationA, stationB);
     }
 
     public Distance findShortestDistance(Station stationA, Station stationB) {
+        final var navigation = getNavigation();
+        return navigation.findShortestDistance(stationA, stationB);
+    }
+
+    private static Navigation getNavigation() {
         if (navigationThreadLocal.get() == null) {
             throw new IllegalArgumentException("네비게이션 정보가 업데이트되지 않았습니다.");
         }
-        return navigationThreadLocal
-                .get()
-                .findShortestDistance(stationA, stationB);
+        return navigationThreadLocal.get();
     }
 }

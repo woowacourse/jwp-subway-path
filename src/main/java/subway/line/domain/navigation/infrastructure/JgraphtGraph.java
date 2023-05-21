@@ -1,8 +1,10 @@
-package subway.line.domain.navigation.domain;
+package subway.line.domain.navigation.infrastructure;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.line.domain.navigation.Path;
+import subway.line.domain.navigation.SubwayGraph;
 import subway.line.domain.section.Section;
 import subway.line.domain.station.Station;
 
