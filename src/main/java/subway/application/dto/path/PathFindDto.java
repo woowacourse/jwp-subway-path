@@ -1,19 +1,19 @@
 package subway.application.dto.path;
 
 public class PathFindDto {
-    private String sourceStationName;
-    private String destStationName;
+    private Long sourceStationId;
+    private Long destStationId;
 
-    public PathFindDto(String sourceStationName, String destStationName) {
-        this.sourceStationName = sourceStationName;
-        this.destStationName = destStationName;
+    public PathFindDto(Long sourceStationId, Long destStationId) {
+        this.sourceStationId = sourceStationId;
+        this.destStationId = destStationId;
     }
 
-    public String getSourceStationName() {
-        return sourceStationName;
+    public Long getSourceStationId() {
+        return sourceStationId;
     }
 
-    public String getDestStationName() {
-        return destStationName;
+    public Long getDestStationId() {
+        return destStationId;
     }
 }

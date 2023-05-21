@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.exception.IllegalDistanceException;
@@ -36,7 +37,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ExceptionResponse(exceptionMessage));
     }
 
-    @ExceptionHandler({IllegalSectionException.class, IllegalDistanceException.class, IllegalStationException.class, IllegalLineException.class})
+    @ExceptionHandler({IllegalSectionException.class, IllegalDistanceException.class, IllegalStationException.class,
+            IllegalLineException.class})
     public ResponseEntity<ExceptionResponse> handleIllegalException(RuntimeException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
@@ -44,5 +46,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({StationNotFoundException.class, LineNotFoundException.class})
     public ResponseEntity<ExceptionResponse> handleNotFoundException(RuntimeException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ExceptionResponse> handleRequiredParamException(MissingServletRequestParameterException e) {
+        String parameterName = e.getParameterName();
+        String message = parameterName + "는 비어있을 수 없습니다.";
+        return ResponseEntity.badRequest().body(new ExceptionResponse(message));
     }
 }

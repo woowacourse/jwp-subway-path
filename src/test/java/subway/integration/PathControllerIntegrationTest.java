@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,8 +18,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import subway.ui.dto.line.LineCreateRequest;
-import subway.ui.dto.path.PathFindRequest;
 import subway.ui.dto.section.SectionCreateRequest;
 import subway.ui.dto.station.StationCreateRequest;
 
@@ -30,21 +32,25 @@ class PathControllerIntegrationTest {
     private static final String BASE_URL = "/paths";
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     ObjectMapper objectMapper;
-    
+    private MultiValueMap<String, String> params;
+
+    @BeforeEach
+    void setUp() {
+        this.params = new LinkedMultiValueMap<>();
+    }
 
     @Test
     @DisplayName("요청한 출발역에서 도착역까지의 최단경로와 거리, 비용을 조회할 수 있다.")
     void findPath_success() throws Exception {
         // given
-        PathFindRequest request = new PathFindRequest("양재역", "서초역");
+        params.set("sourceStationId", String.valueOf(8L));
+        params.set("destStationId", String.valueOf(2L));
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .params(params))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pathStations.size()").value(4))
                 .andExpect(jsonPath("$.distance").value(30))
@@ -52,16 +58,16 @@ class PathControllerIntegrationTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {" :교대역", ":", "교대역:"}, delimiter = ':')
+    @CsvSource(value = {" :1", ":", "1:"}, delimiter = ':')
     @DisplayName("출발역 또는 도착역이 비어있다면 예외가 발생한다.")
-    void findPath_emptyRequest_fail(String startStationName, String endStationName) throws Exception {
+    void findPath_emptyRequest_fail(String startStationId, String endStationId) throws Exception {
         // given
-        PathFindRequest request = new PathFindRequest(startStationName, endStationName);
+        params.set("sourceStationId", startStationId);
+        params.set("destStationId", endStationId);
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .params(params))
                 .andExpect(status().isBadRequest());
     }
 
@@ -69,12 +75,12 @@ class PathControllerIntegrationTest {
     @DisplayName("출발역 또는 도착역이 존재하지 않는 역이라면 예외가 발생한다.")
     void findPath_stationNotFound_fail() throws Exception {
         // given
-        PathFindRequest request = new PathFindRequest("신촌역", "교대역");
+        params.set("sourceStationId", String.valueOf(1L));
+        params.set("destStationId", String.valueOf(9L));
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .params(params))
                 .andExpect(status().isBadRequest());
     }
 
@@ -83,12 +89,12 @@ class PathControllerIntegrationTest {
     void findPath_stationNotInLine_fail() throws Exception {
         // given
         addNewStationNotInLine("신촌역");
-        PathFindRequest request = new PathFindRequest("신촌역", "교대역");
+        params.set("sourceStationId", String.valueOf(9L));
+        params.set("destStationId", String.valueOf(1L));
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .params(params))
                 .andExpect(status().isBadRequest());
     }
 
@@ -97,12 +103,12 @@ class PathControllerIntegrationTest {
     void findPath_noPath_fail() throws Exception {
         // given
         addNewStationInNewLineNotConnected("정자역", "미금역");
-        PathFindRequest request = new PathFindRequest("교대역", "미금역");
+        params.set("sourceStationId", String.valueOf(1L));
+        params.set("destStationId", String.valueOf(10L));
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .params(params))
                 .andExpect(status().isBadRequest());
     }
 

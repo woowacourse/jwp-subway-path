@@ -133,13 +133,13 @@
 - [ ] 경로 조회 API 구현
   - `/paths`
   - GET
-  - Request
-  ```json
-  {
-    "sourceStationName":"강남역",
-    "destStationName":"양재역"
-  }
-  ```
+  - Query String Parameter
+
+|      Name       | Type | Required | Description |
+|:---------------:|:----:|:--------:|:-----------:|
+| sourceStationId | Long |    O     |   출발역 id    |
+|  destStationId  | Long |    O     |   도착역 id    |
+
 
   - Response
   ```json

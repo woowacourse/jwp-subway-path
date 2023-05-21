@@ -31,8 +31,8 @@ public class PathService {
 
     public ShortestPathDto findPath(PathFindDto pathFindDto) {
         PathFinder pathFinder = PathFinder.from(findAllSections());
-        Station source = stationRepository.findByName(pathFindDto.getSourceStationName());
-        Station dest = stationRepository.findByName(pathFindDto.getDestStationName());
+        Station source = stationRepository.findById(pathFindDto.getSourceStationId());
+        Station dest = stationRepository.findById(pathFindDto.getDestStationId());
 
         Path path = pathFinder.findShortestPath(source, dest);
         int fare = fareCalculator.calculate(path);
