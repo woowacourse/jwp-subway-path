@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class PathService {
 
     private static final String INVALID_STATION_MESSAGE = "기존에 저장된 역 번호를 입력해주세요.";
+    private static final String INVALID_SAME_STATIONS_MESSAGE = "동일한 역의 경로는 찾을 수 없습니다.";
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -27,6 +28,7 @@ public class PathService {
     }
 
     public PathsResponse findShortestPaths(final Long startStationId, final Long endStationId) {
+        validateStations(startStationId, endStationId);
         Station start = getStationDaoById(startStationId);
         Station end = getStationDaoById(endStationId);
         List<Section> sections = sectionDao.findAll();
@@ -36,8 +38,13 @@ public class PathService {
         List<StationResponse> stationResponses = getStationResponses(shortestPaths);
         int distance = (int) shortestPaths.getWeight();
         int fare = Fare.getFare(distance);
-        
         return PathsResponse.of(stationResponses, distance, fare);
+    }
+
+    private void validateStations(Long startStationId, Long endStationId) {
+        if (startStationId.equals(endStationId)) {
+            throw new SubwayServiceException(INVALID_SAME_STATIONS_MESSAGE);
+        }
     }
 
     private Station getStationDaoById(Long startStationId) {

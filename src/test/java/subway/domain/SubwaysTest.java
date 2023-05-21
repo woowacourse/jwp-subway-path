@@ -167,40 +167,6 @@ class SubwaysTest {
         );
     }
 
-    @DisplayName("시작과 끝 역이 같을 때 경로를 구하면 예외가 발생한다.")
-    @Test
-    void getShortestPath_SameStartWithEnd() {
-        Section start = new Section(
-                LineFixture.FIXTURE_LINE_1, StationFixture.FIXTURE_STATION_1,
-                StationFixture.FIXTURE_STATION_2, new Distance(5));
-
-        Section middle1 = new Section(
-                LineFixture.FIXTURE_LINE_1, StationFixture.FIXTURE_STATION_2,
-                StationFixture.FIXTURE_STATION_3, new Distance(7));
-
-        Section middle2 = new Section(
-                LineFixture.FIXTURE_LINE_1, StationFixture.FIXTURE_STATION_3,
-                StationFixture.FIXTURE_STATION_4, new Distance(4));
-
-        Section middle3 = new Section(
-                LineFixture.FIXTURE_LINE_1, StationFixture.FIXTURE_STATION_4,
-                StationFixture.FIXTURE_STATION_5, new Distance(2));
-
-        Section end = new Section(
-                LineFixture.FIXTURE_LINE_2, StationFixture.FIXTURE_STATION_4,
-                StationFixture.FIXTURE_STATION_6, new Distance(10));
-
-        Section shortcut = new Section(
-                LineFixture.FIXTURE_LINE_2, StationFixture.FIXTURE_STATION_2,
-                StationFixture.FIXTURE_STATION_6, new Distance(15));
-
-        Subways subways = Subways.from(List.of(start, middle1, middle2, middle3, end, shortcut));
-
-        assertThatThrownBy(() -> subways.getShortestPaths(StationFixture.FIXTURE_STATION_1, StationFixture.FIXTURE_STATION_1))
-                .isInstanceOf(SubwayServiceException.class)
-                .hasMessageContaining("동일한 역의 경로는 찾을 수 없습니다.");
-    }
-
     @DisplayName("노선에 존재하지 않는 역을 전달하면 예외가 발생한다.")
     @Test
     void getShortestPath_noStation() {

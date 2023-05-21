@@ -10,7 +10,6 @@ import java.util.List;
 public class Subways {
 
     private static final String INVALID_NO_STATION_MESSAGE = "노선에 존재하지 않는 역을 입력했습니다.";
-    private static final String INVALID_SAME_STATIONS_MESSAGE = "동일한 역의 경로는 찾을 수 없습니다.";
 
     private final WeightedMultigraph<Station, SubwayEdge> subways;
 
@@ -47,9 +46,6 @@ public class Subways {
     private void validateGetPath(Station start, Station end) {
         if (hasNoStation(start) || hasNoStation(end)) {
             throw new SubwayServiceException(INVALID_NO_STATION_MESSAGE);
-        }
-        if (start.equals(end)) {
-            throw new SubwayServiceException(INVALID_SAME_STATIONS_MESSAGE);
         }
     }
 

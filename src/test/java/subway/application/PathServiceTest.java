@@ -6,24 +6,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
-import org.springframework.dao.DataAccessException;
 import subway.application.dto.PathsResponse;
 import subway.application.dto.StationResponse;
 import subway.application.exception.SubwayServiceException;
-import subway.config.CustomDataAccessException;
+import subway.config.TestDataAccessException;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.SectionFixture;
-import subway.domain.Station;
-import subway.domain.StationFixture;
+import subway.domain.*;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 import static subway.domain.SectionFixture.*;
 import static subway.domain.StationFixture.*;
@@ -71,10 +66,19 @@ class PathServiceTest {
     @Test
     void findShortestPaths_fail_noStation() {
         when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
-        when(stationDao.findById(6L)).thenThrow(new CustomDataAccessException(""));
+        when(stationDao.findById(6L)).thenThrow(new TestDataAccessException(""));
 
         Assertions.assertThatThrownBy(() -> pathService.findShortestPaths(1L, 6L))
                 .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("기존에 저장된 역 번호를 입력해주세요.");
+    }
+
+
+    @DisplayName("시작과 끝 역이 같을 때 경로를 구하면 예외가 발생한다.")
+    @Test
+    void getShortestPath_SameStartWithEnd() {
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPaths(1L, 1L))
+                .isInstanceOf(SubwayServiceException.class)
+                .hasMessageContaining("동일한 역의 경로는 찾을 수 없습니다.");
     }
 }
