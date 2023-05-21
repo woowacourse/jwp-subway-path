@@ -61,14 +61,14 @@ public class Sections {
     }
 
     public List<Station> orderStations() {
-        Station upEndStation = findUpwardStation();
+        Station upEndStation = findUpwardEndStation();
         Map<Station, Station> stationPair = sections.stream()
                 .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
 
         List<Station> stationsInOrder = new ArrayList<>();
 
         Station currentStation = upEndStation;
-        while (stationsInOrder.size() != stationPair.size()) {
+        while (hasUnvisitedStation(stationPair, stationsInOrder)) {
             stationsInOrder.add(currentStation);
             currentStation = stationPair.get(currentStation);
         }
@@ -76,7 +76,11 @@ public class Sections {
         return stationsInOrder;
     }
 
-    private Station findUpwardStation() {
+    private static boolean hasUnvisitedStation(Map<Station, Station> stationPair, List<Station> stationsInOrder) {
+        return stationsInOrder.size() != stationPair.size();
+    }
+
+    private Station findUpwardEndStation() {
         List<Station> upStations = findUpStations();
         List<Station> downStations = findDownStations();
         upStations.removeAll(downStations);
