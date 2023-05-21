@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.domain.Line;
-import subway.domain.LineRepository;
-import subway.domain.StationRepository;
+import subway.domain.repository.LineRepository;
+import subway.domain.repository.StationRepository;
 import subway.presentation.dto.request.SectionRequest;
 
 public class SectionIntegrationTest extends IntegrationTest {

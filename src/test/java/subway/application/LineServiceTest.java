@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import subway.application.dto.LineDto;
 import subway.domain.*;
+import subway.domain.repository.SectionRepository;
+import subway.domain.repository.StationRepository;
 
 import java.util.List;
 

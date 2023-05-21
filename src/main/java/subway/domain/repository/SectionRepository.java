@@ -1,4 +1,7 @@
-package subway.domain;
+package subway.domain.repository;
+
+import subway.domain.Section;
+import subway.domain.Sections;
 
 import java.util.List;
 

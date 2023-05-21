@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.PathDto;
 import subway.application.dto.StationDto;
 import subway.domain.*;
+import subway.domain.repository.SectionRepository;
+import subway.domain.repository.StationRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

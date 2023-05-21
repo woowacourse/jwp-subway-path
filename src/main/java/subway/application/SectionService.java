@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.SectionDto;
 import subway.domain.*;
+import subway.domain.repository.SectionRepository;
+import subway.domain.repository.StationRepository;
 
 @Transactional(readOnly = true)
 @Service

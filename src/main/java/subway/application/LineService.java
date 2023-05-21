@@ -5,6 +5,9 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.LineDto;
 import subway.application.dto.StationDto;
 import subway.domain.*;
+import subway.domain.repository.LineRepository;
+import subway.domain.repository.SectionRepository;
+import subway.domain.repository.StationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
