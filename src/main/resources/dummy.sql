@@ -52,3 +52,8 @@ INSERT INTO section(id, line_id, upward_station_id, downward_station_id, distanc
 INSERT INTO section(id, line_id, upward_station_id, downward_station_id, distance) VALUES (16, 4, 19, 20, 5);
 INSERT INTO section(id, line_id, upward_station_id, downward_station_id, distance) VALUES (17, 4, 20, 21, 5);
 
+-- 환승
+INSERT INTO transfer(id, first_station_id, last_station_id) VALUES (1, 4, 14);
+INSERT INTO transfer(id, first_station_id, last_station_id) VALUES (2, 7, 10);
+INSERT INTO transfer(id, first_station_id, last_station_id) VALUES (3, 11, 20);
+INSERT INTO transfer(id, first_station_id, last_station_id) VALUES (4, 15, 18);

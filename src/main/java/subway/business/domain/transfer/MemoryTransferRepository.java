@@ -2,9 +2,7 @@ package subway.business.domain.transfer;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class MemoryTransferRepository implements TransferRepository {
     private final List<Transfer> transfers = new ArrayList<>();
     private long serial = 1;

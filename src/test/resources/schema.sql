@@ -27,3 +27,12 @@ CREATE TABLE IF NOT EXISTS station
     PRIMARY KEY (id),
     FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS transfer
+(
+    id                  BIGINT AUTO_INCREMENT  NOT NULL,
+    first_station_id    BIGINT                 NOT NULL,
+    last_station_id     BIGINT                 NOT NULL,
+    created_at          TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+    );

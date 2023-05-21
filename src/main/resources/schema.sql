@@ -1,6 +1,7 @@
-DROP TABLE STATION;
-DROP TABLE SECTION;
-DROP TABLE LINE;
+DROP TABLE station;
+DROP TABLE section;
+DROP TABLE transfer;
+DROP TABLE line;
 
 CREATE TABLE IF NOT EXISTS line
 (
@@ -17,7 +18,7 @@ CREATE TABLE IF NOT EXISTS station
     name                VARCHAR(255)           NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
-    );
+);
 
 CREATE TABLE IF NOT EXISTS section
 (
@@ -29,4 +30,13 @@ CREATE TABLE IF NOT EXISTS section
     created_at          TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS transfer
+(
+    id                  BIGINT AUTO_INCREMENT  NOT NULL,
+    first_station_id    BIGINT                 NOT NULL,
+    last_station_id     BIGINT                 NOT NULL,
+    created_at          TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
 );
