@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import subway.domain.addstrategy.AddStationStrategy;
 
 public class Sections {
 
@@ -16,6 +17,10 @@ public class Sections {
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public Sections() {
+        this(new ArrayList<>());
     }
 
     public void addInitialSection(Station upStation, Station downStation, Distance newDistance) {

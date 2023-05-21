@@ -22,6 +22,10 @@ public class Line {
         validateNameLength(name);
     }
 
+    public Line(String name, String color, Sections sections) {
+        this(null, name, color, sections);
+    }
+
     private void validateNameLength(String name) {
         if(name.length()<MIN_LENGTH_NAME || name.length() > MAX_LENGTH_NAME) {
             throw new IllegalArgumentException("노선 이름은 1자 이상 10자 이하여야 합니다.");
@@ -71,12 +75,13 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
-        return Objects.equals(name, line.name) || Objects.equals(color, line.color);
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name)
+                && Objects.equals(color, line.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, color);
+        return Objects.hash(id, name, color);
     }
 
     public Long getId() {
@@ -94,5 +99,4 @@ public class Line {
     public List<Section> getSections() {
         return new LinkedList<>(sections.getSections());
     }
-
 }
