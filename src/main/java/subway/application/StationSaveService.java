@@ -49,16 +49,16 @@ public class StationSaveService {
         Line savedLine = lineRepository.saveLine(new Line(null, stationRequest.getLineName()));
 
         Station savedUpStation = stationRepository.saveStation(new Station(null, stationRequest.getUpStationName(), savedLine));
-        Station SavedDownStation = stationRepository.saveStation(new Station(null, stationRequest.getDownStationName(), savedLine));
+        Station savedDownStation = stationRepository.saveStation(new Station(null, stationRequest.getDownStationName(), savedLine));
 
         GeneralSection sectionToSave = NewGeneralSectionMaker.makeSectionToSave(
-                savedUpStation, SavedDownStation, new Distance(stationRequest.getDistance())
+                savedUpStation, savedDownStation, new Distance(stationRequest.getDistance())
         );
         GeneralSection savedSection = generalSectionRepository.saveSection(sectionToSave);
 
         return new StationSaveResponse(
                 LineDto.from(savedLine),
-                List.of(StationSaveDto.from(savedUpStation), StationSaveDto.from(SavedDownStation)),
+                List.of(StationSaveDto.from(savedUpStation), StationSaveDto.from(savedDownStation)),
                 List.of(GeneralSectionDto.from(savedSection))
         );
     }
