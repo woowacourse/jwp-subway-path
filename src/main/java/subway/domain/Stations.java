@@ -60,6 +60,10 @@ public class Stations {
         return stations.get(index - 1);
     }
 
+    public boolean remove(Station station) {
+        return stations.remove(station);
+    }
+
     public List<Station> getStations() {
         return stations;
     }

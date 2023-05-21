@@ -281,124 +281,86 @@ class LineTest {
             assertThat(actualFirst).isEqualTo(6);
             assertThat(actualSecond).isEqualTo(4);
         }
-
-//        @Test
-//        @DisplayName("두 역 사이에 역을 추가할 때 새로운 역과 기존 역 간 거리가 기존의 두 역 간 거리보다 크거나 같으면 예외 발생")
-//        void between_upStation_fail() {
-//            //given
-//            String newStationName = "삼성역";
-//            Distance distance = new Distance(10);
-//            Station station = new Station(newStationName, downEndStation, distance);
-//
-//            //when, then
-//            assertThatThrownBy(() -> line.addStation(station))
-//                    .isInstanceOf(IllegalArgumentException.class)
-//                    .hasMessage("거리는 양의 정수여야 합니다");
-//        }
-
-//        @Test
-//        @DisplayName("두 역 사이에 역을 추가할 때 기존 역의 하행 위치에 역을 추가할 수 있다")
-//        void between_downStation_fail() {
-//            //given
-//            String newStationName = "삼성역";
-//            Station newStation = new Station(newStationName);
-//            Distance distance = new Distance(10);
-//            Station station = new Station("강남역", newStation, distance);
-//
-//            //when, then
-//            assertThatThrownBy(() -> line.addStation(station))
-//                    .isInstanceOf(IllegalArgumentException.class)
-//                    .hasMessage("거리는 양의 정수여야 합니다");
-//        }
-
-//        @Test
-//        @DisplayName("상행역과 하행역 모두 노선에 존재할 경우 예외 발생")
-//        void exist_downStation_fail() {
-//            //given
-//            String newStationName = "역삼역";
-//            Station newStation = new Station(newStationName);
-//            Distance distance = new Distance(6);
-//            Station station = new Station("강남역", newStation, distance);
-//
-//            //when, then
-//            assertThatThrownBy(() -> line.addStation(station))
-//                    .isInstanceOf(IllegalArgumentException.class)
-//                    .hasMessage("이미 존재하는 역입니다.");
-//        }
     }
 }
-//
-//    @Nested
-//    @DisplayName("removeStation을 호출할 때")
-//    class removeStation {
-//        private Line line;
-//        private Station upEndStation;
-//        private Station downEndStation;
-//
-//        @BeforeEach
-//        void init() {
-//            String name = "강남역";
-//            downEndStation = new Station("역삼역");
-//            Distance distance = new Distance(10);
-//            upEndStation = new Station(name, downEndStation, distance);
-//
-//            line = new Line("2호선", "초록색", upEndStation);
-//            line.addStation(new Station(name, new Station("잠실역"), new Distance(6)));
-//        }
-//
-//        @Test
-//        @DisplayName("상행 종점을 삭제할 수 있다")
-//        void upEndStation_success() {
-//            //given
-//            String removeName = "강남역";
-//
-//            //when
-//            line.removeStation(removeName);
-//            int expectedSize = line.findSize();
-//            Station newUpEndStation = line.getStations().get(0);
-//
-//            //then
-//            assertThat(expectedSize).isEqualTo(2);
-//            assertThat(newUpEndStation.getName()).isEqualTo("잠실역");
-//
-//            assertThat(newUpEndStation.getDistance().getValue()).isEqualTo(4);
-//
-//        }
-//
-//        @Test
-//        @DisplayName("하행 종점을 삭제할 수 있다")
-//        void downEndStation_success() {
-//            //given
-//            String removeName = "역삼역";
-//
-//            //when
-//            line.removeStation(removeName);
-//            int expectedSize = line.findSize();
-//            Station newDownEndStation = line.getStations().get(1);
-//
-//            //then
-//            assertThat(expectedSize).isEqualTo(2);
-//            assertThat(newDownEndStation.getName()).isEqualTo("잠실역");
-//
-//            assertThat(newDownEndStation.getNext()).isEqualTo(Station.emptyStation);
-//        }
-//
-//        @Test
-//        @DisplayName("두 역 사이에 있는 역을 삭제할 수 있다")
-//        void middle_Station_success() {
-//            //given
-//            String removeName = "잠실역";
-//
-//            //when
-//            line.removeStation(removeName);
-//            int expectedSize = line.findSize();
-//            Station upEndStation = line.getStations().get(0);
-//            Station nextStation = upEndStation.getNext();
-//            //then
-//            assertThat(expectedSize).isEqualTo(2);
-//            assertThat(nextStation.getName()).isEqualTo("역삼역");
-//
-//            assertThat(upEndStation.getDistance().getValue()).isEqualTo(10);
-//        }
-//    }
-//}
+
+@Nested
+@DisplayName("remove를 호출할 때")
+class removeStation {
+    private Line line;
+    private Lines lines;
+    private Station upEndStation;
+    private Station downEndStation;
+    private Station newStation;
+
+    @BeforeEach
+    void init() {
+        lines = new Lines(new ArrayList<>());
+
+        String name = "강남역";
+        downEndStation = new Station("역삼역", new Distance(0));
+        Distance distance = new Distance(10);
+        upEndStation = new Station(name, distance);
+
+        line = new Line("2호선", "초록색", new Stations(List.of(upEndStation, downEndStation)));
+        newStation = new Station("선릉역", new Distance(4));
+
+        line.getStations().addStation(newStation);
+        line.getStations().findByName("역삼역").setDistance(new Distance(4));
+
+        lines.addLine(line);
+    }
+
+    @Test
+    @DisplayName("상행 종점을 삭제할 수 있다")
+    void upEndStation_success() {
+        //given
+        String removeName = "강남역";
+
+        //when
+        line.getStations().remove(upEndStation);
+        int expectedSize = line.getStations().getStationsSize();
+        Station newUpEndStation = line.getStations().getStations().get(0);
+
+        //then
+        assertThat(expectedSize).isEqualTo(2);
+        assertThat(newUpEndStation.getName()).isEqualTo("역삼역");
+
+        assertThat(newUpEndStation.getDistance().getValue()).isEqualTo(4);
+
+    }
+
+    @Test
+    @DisplayName("하행 종점을 삭제할 수 있다")
+    void downEndStation_success() {
+        //given
+        String removeName = "선릉역";
+
+        //when
+        line.getStations().remove(newStation);
+        int expectedSize = line.getStations().getStationsSize();
+        Station newDownEndStation = line.getStations().getStations().get(1);
+
+        //then
+        assertThat(expectedSize).isEqualTo(2);
+        assertThat(newDownEndStation.getName()).isEqualTo("역삼역");
+    }
+
+    @Test
+    @DisplayName("두 역 사이에 있는 역을 삭제할 수 있다")
+    void middle_Station_success() {
+        //given
+        String removeName = "역삼역";
+
+        //when
+        line.getStations().remove(downEndStation);
+        int expectedSize = line.getStations().getStationsSize();
+
+        Station upEndStation = line.getStations().getStations().get(0);
+        Station nextStation = line.getStations().getStations().get(1);
+
+        //then
+        assertThat(expectedSize).isEqualTo(2);
+        assertThat(nextStation.getName()).isEqualTo("선릉역");
+    }
+}
