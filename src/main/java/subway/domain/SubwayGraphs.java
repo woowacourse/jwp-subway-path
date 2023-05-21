@@ -3,12 +3,12 @@ package subway.domain;
 import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.entity.EdgeEntity;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,11 +55,6 @@ public class SubwayGraphs {
         return lineGraph;
     }
 
-    public Optional<Station> findStationByName(Line line, String name) {
-        final SubwayGraph subwayGraph = findSubwayGraph(line);
-        return subwayGraph.findStationByName(name);
-    }
-
     public boolean isStationExistInAnyLine(Station station) {
         return subwayGraphs.stream()
                 .anyMatch(subwayGraph -> subwayGraph.isStationExist(station));
@@ -86,8 +81,17 @@ public class SubwayGraphs {
     }
 
     public ShortestPath getShortestPath(Station source, Station destination) {
+        validateStationExist(source);
+        validateStationExist(destination);
+
         DijkstraShortestPath calculator = new DijkstraShortestPath(getSubwayMap());
         GraphPath<Station, DefaultWeightedEdge> path = calculator.getPath(source, destination);
         return new ShortestPath(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private void validateStationExist(Station source) {
+        if (!isStationExistInAnyLine(source)) {
+            throw new StationNotFoundException();
+        }
     }
 }
