@@ -2,6 +2,7 @@ package subway.domain.line;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.IllegalLineNameException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -15,7 +16,7 @@ class LineNameTest {
 
         // when, then
         assertThatThrownBy(() -> new LineName(invalidLineName))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalLineNameException.class)
                 .hasMessage("호선 이름은 10자 이하여야 합니다.");
     }
 }

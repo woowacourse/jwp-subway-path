@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.line.LineRepository;
 import subway.domain.section.SectionRepository;
 import subway.domain.station.StationRepository;
+import subway.exception.StationNotFoundException;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ class DeleteStationServiceTest {
 
         // when, then
         assertThatThrownBy(() -> deleteStationService.deleteStationById(wrongId))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(StationNotFoundException.class)
                 .hasMessage("해당 역이 존재하지 않습니다.");
     }
 

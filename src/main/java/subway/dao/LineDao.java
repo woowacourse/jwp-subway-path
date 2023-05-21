@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
+import subway.exception.DuplicateLineException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +31,7 @@ public class LineDao {
     public LineEntity insert(LineEntity lineEntity) {
         Optional<LineEntity> findLineEntity = findByLineName(lineEntity.getLineName());
         if (findLineEntity.isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 노선입니다.");
+            throw new DuplicateLineException();
         }
         Map<String, String> params = new HashMap<>();
         params.put("name", lineEntity.getLineName());

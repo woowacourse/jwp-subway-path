@@ -1,6 +1,7 @@
 package subway.domain.station;
 
 import subway.domain.section.Section;
+import subway.exception.StationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class StationConnections {
         List<Station> downStations = new ArrayList<>(stationConnections.values());
         upStations.removeAll(downStations);
         if (upStations.size() != 1) {
-            throw new IllegalStateException("상행 종점을 찾을 수 없습니다.");
+            throw new StationNotFoundException("상행 종점을 찾을 수 없습니다.");
         }
         return upStations.get(0);
     }

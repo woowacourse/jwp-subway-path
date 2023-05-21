@@ -2,6 +2,9 @@ package subway.domain.section;
 
 import subway.domain.line.Line;
 import subway.domain.station.Station;
+import subway.exception.CannotLinkException;
+import subway.exception.DuplicateSectionException;
+import subway.exception.LineNotFoundException;
 
 import java.util.Objects;
 
@@ -38,7 +41,7 @@ public class Section {
             Distance newDistance = this.distance.subtract(sectionToSubtract.getDistance());
             return new Section(null, upStation, newDownStation, newDistance);
         }
-        throw new IllegalArgumentException("현재 등록된 역 중에 하나를 포함해야합니다.");
+        throw new CannotLinkException();
     }
 
     public Section combine(Section sectionToCombine) {
@@ -53,12 +56,12 @@ public class Section {
             Distance newDistance = this.distance.add(sectionToCombine.getDistance());
             return new Section(null, newUpStation, downStation, newDistance);
         }
-        throw new IllegalArgumentException("현재 등록된 역 중에 하나를 포함해야합니다.");
+        throw new CannotLinkException();
     }
 
     private void validateIsSameSection(Section otherSection) {
         if (isSameSection(otherSection)) {
-            throw new IllegalArgumentException("이미 포함되어 있는 구간입니다.");
+            throw new DuplicateSectionException();
         }
     }
 
@@ -116,7 +119,7 @@ public class Section {
         if (upStation.getLineName().equals(downStation.getLineName())) {
             return upStation.getLine();
         }
-        throw new IllegalArgumentException("노선을 찾을 수 없습니다.");
+        throw new LineNotFoundException();
     }
 
     public Long getLineId() {

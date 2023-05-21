@@ -12,6 +12,7 @@ import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
+import subway.exception.DuplicateSectionException;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +58,7 @@ public class DBSectionRepository implements SectionRepository {
 
     private void validateIsExistSection(Section sectionToAdd) {
         if (isExistSection(sectionToAdd)) {
-            throw new IllegalArgumentException("이미 포함되어 있는 구간입니다.");
+            throw new DuplicateSectionException();
         }
     }
 

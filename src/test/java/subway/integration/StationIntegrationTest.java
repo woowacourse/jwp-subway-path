@@ -170,6 +170,49 @@ class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        assertThat(response.body().asString()).isEqualTo("역 사이 거리는 0km이상 100km 이하여야 합니다.");
+    }
+
+    @Test
+    @DisplayName("노선에 역을 추가할 때 기준이 되는 역을 포함시키지 않으면 예외가 발생한다.")
+    void postStationInLineTest_fail_cannotLink() {
+        // given
+        StationRequest request = REQUEST_대림역_TO_신림역;
+
+        // when
+        ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .body(request)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .post("/stations")
+                        .then().log().all()
+                        .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        assertThat(response.body().asString()).isEqualTo("현재 등록된 역 중에 하나를 포함해야합니다.");
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 구간을 저장하려고 하면 예외가 발생한다.")
+    void postStationInLineTest_fail_duplicateSection() {
+        // given
+        StationRequest request = REQUEST_잠실역_TO_강변역;
+
+        // when
+        ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .body(request)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .post("/stations")
+                        .then().log().all()
+                        .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        assertThat(response.body().asString()).isEqualTo("이미 포함되어 있는 구간입니다.");
     }
 
     @Test

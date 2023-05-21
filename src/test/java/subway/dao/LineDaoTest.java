@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.entity.LineEntity;
+import subway.exception.DuplicateLineException;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +51,7 @@ class LineDaoTest {
 
         // when, then
         assertThatThrownBy(() -> lineDao.insert(entityToInsert))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(DuplicateLineException.class)
                 .hasMessage("이미 존재하는 노선입니다.");
     }
 

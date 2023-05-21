@@ -4,6 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
+import subway.exception.CannotLinkException;
+import subway.exception.DuplicateSectionException;
+import subway.exception.LineNotFoundException;
 
 import static fixtures.LineFixtures.LINE2;
 import static fixtures.SectionFixtures.*;
@@ -35,7 +38,7 @@ class SectionTest {
 
         // when, then
         assertThatThrownBy(() -> section.getLine())
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(LineNotFoundException.class)
                 .hasMessage("노선을 찾을 수 없습니다.");
     }
 
@@ -63,7 +66,7 @@ class SectionTest {
 
         // when, then
         assertThatThrownBy(() -> currentSection.subtract(sectionToSubtract))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(DuplicateSectionException.class)
                 .hasMessage("이미 포함되어 있는 구간입니다.");
     }
 
@@ -76,7 +79,7 @@ class SectionTest {
 
         // when, then
         assertThatThrownBy(() -> currentSection.combine(sectionToSubtract))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(CannotLinkException.class)
                 .hasMessage("현재 등록된 역 중에 하나를 포함해야합니다.");
     }
 
@@ -89,7 +92,7 @@ class SectionTest {
 
         // when, then
         assertThatThrownBy(() -> currentSection.subtract(sectionToSubtract))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(CannotLinkException.class)
                 .hasMessage("현재 등록된 역 중에 하나를 포함해야합니다.");
     }
 

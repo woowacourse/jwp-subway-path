@@ -3,6 +3,7 @@ package subway.domain.station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.section.Section;
+import subway.exception.StationNotFoundException;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ class StationConnectionsTest {
 
         // when, then
         assertThatThrownBy(() -> stationConnections.getSortedStationNames())
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(StationNotFoundException.class)
                 .hasMessage("상행 종점을 찾을 수 없습니다.");
     }
 }

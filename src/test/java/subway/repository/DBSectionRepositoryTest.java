@@ -13,6 +13,7 @@ import subway.dao.StationDao;
 import subway.domain.section.Section;
 import subway.domain.section.SectionRepository;
 import subway.domain.station.StationRepository;
+import subway.exception.DuplicateSectionException;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ class DBSectionRepositoryTest {
 
             // when, then
             assertThatThrownBy(() -> sectionRepository.insert(section))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(DuplicateSectionException.class)
                     .hasMessage("이미 포함되어 있는 구간입니다.");
         }
 

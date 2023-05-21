@@ -2,6 +2,7 @@ package subway.domain.station;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.IllegalStationNameException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -15,7 +16,7 @@ class StationNameTest {
 
         // when, then
         assertThatThrownBy(() -> new StationName(invalidStationName))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalStationNameException.class)
                 .hasMessage("역 이름은 10자 이하여야 합니다.");
     }
 }

@@ -2,6 +2,7 @@ package subway.domain.section;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.IllegalDistanceException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -15,7 +16,7 @@ class DistanceTest {
 
         // when, then
         assertThatThrownBy(() -> new Distance(invalidDistance))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalDistanceException.class)
                 .hasMessage("역 사이 거리는 0km이상 100km 이하여야 합니다.");
     }
 
@@ -27,7 +28,7 @@ class DistanceTest {
 
         // when, then
         assertThatThrownBy(() -> new Distance(invalidDistance))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalDistanceException.class)
                 .hasMessage("역 사이 거리는 0km이상 100km 이하여야 합니다.");
     }
 }

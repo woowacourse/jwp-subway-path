@@ -1,5 +1,7 @@
 package subway.domain.section;
 
+import subway.exception.IllegalDistanceException;
+
 import java.util.Objects;
 
 public class Distance {
@@ -15,7 +17,7 @@ public class Distance {
 
     private void validate(int distance) {
         if (distance < MIN_DISTANCE || distance > MAX_DISTANCE) {
-            throw new IllegalArgumentException("역 사이 거리는 0km이상 100km 이하여야 합니다.");
+            throw new IllegalDistanceException();
         }
     }
 

@@ -9,6 +9,7 @@ import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
+import subway.exception.StationNotFoundException;
 
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class DeleteStationService {
 
     private void removeStationIfExist(Station stationToDelete, List<Section> sectionsToCombine) {
         if (sectionsToCombine.isEmpty()) {
-            throw new IllegalArgumentException("해당 역이 존재하지 않습니다.");
+            throw new StationNotFoundException();
         }
         stationRepository.remove(stationToDelete);
     }

@@ -1,5 +1,7 @@
 package subway.domain.station;
 
+import subway.exception.IllegalStationNameException;
+
 import java.util.Objects;
 
 public class StationName {
@@ -14,7 +16,7 @@ public class StationName {
 
     private void validate(String stationName) {
         if (stationName.length() > MAX_STATION_NAME_LENGTH) {
-            throw new IllegalArgumentException("역 이름은 10자 이하여야 합니다.");
+            throw new IllegalStationNameException();
         }
     }
 

@@ -10,6 +10,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.line.LineRepository;
 import subway.domain.section.SectionRepository;
 import subway.dto.StationRequest;
+import subway.exception.CannotLinkException;
+import subway.exception.DuplicateSectionException;
+import subway.exception.IllegalDistanceException;
 
 import java.util.List;
 import java.util.Optional;
@@ -68,7 +71,7 @@ class SaveSectionServiceTest {
             when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
             // when, then
             assertThatThrownBy(() -> saveSectionService.saveSection(request))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(CannotLinkException.class)
                     .hasMessage("현재 등록된 역 중에 하나를 포함해야합니다.");
         }
 
@@ -82,7 +85,7 @@ class SaveSectionServiceTest {
 
             // when, then
             assertThatThrownBy(() -> saveSectionService.saveSection(request))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(DuplicateSectionException.class)
                     .hasMessage("이미 포함되어 있는 구간입니다.");
         }
 
@@ -95,7 +98,7 @@ class SaveSectionServiceTest {
             when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
 
             assertThatThrownBy(() -> saveSectionService.saveSection(request))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(IllegalDistanceException.class)
                     .hasMessage("역 사이 거리는 0km이상 100km 이하여야 합니다.");
         }
 

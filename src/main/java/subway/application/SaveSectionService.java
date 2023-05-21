@@ -10,6 +10,7 @@ import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.dto.StationRequest;
+import subway.exception.CannotLinkException;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +44,7 @@ public class SaveSectionService {
         List<Section> sectionsContainUpStation = sections.findSectionsContainStation(sectionToAdd.getUpStation());
         List<Section> sectionsContainDownStation = sections.findSectionsContainStation(sectionToAdd.getDownStation());
         if (sectionsContainUpStation.isEmpty() && sectionsContainDownStation.isEmpty()) {
-            throw new IllegalArgumentException("현재 등록된 역 중에 하나를 포함해야합니다.");
+            throw new CannotLinkException();
         }
     }
 
