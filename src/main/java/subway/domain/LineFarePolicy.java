@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class LineChargePolicy implements SubwayChargePolicy {
+public class LineFarePolicy implements SubwayFarePolicy {
 
     private static final Map<String, Integer> priceMap
             = Map.of("1호선", 500,
@@ -18,8 +18,8 @@ public class LineChargePolicy implements SubwayChargePolicy {
         final List<EdgeSection> shortestRouteSections = route.findShortestRouteSections();
 
         return shortestRouteSections.stream()
-                                    .reduce(Money.ZERO, (money, edgeSection) -> new Money(
-                                                    priceMap.getOrDefault(edgeSection.getLineName(), 0)),
+                                    .reduce(Money.ZERO, (money, edgeSection) ->
+                                                    new Money(priceMap.getOrDefault(edgeSection.getLineName(), 0)),
                                             (Money::max));
     }
 }

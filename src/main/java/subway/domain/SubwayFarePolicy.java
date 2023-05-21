@@ -1,6 +1,6 @@
 package subway.domain;
 
-public interface SubwayChargePolicy {
+public interface SubwayFarePolicy {
 
     Money calculate(final Route route);
 }

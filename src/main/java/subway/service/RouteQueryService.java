@@ -1,13 +1,12 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import subway.domain.ChargePolicyComposite;
 import subway.domain.DiscountCondition;
 import subway.domain.Line;
 import subway.domain.Money;
 import subway.domain.Route;
 import subway.domain.Station;
-import subway.domain.SubwayChargePolicy;
-import subway.domain.SubwayDiscountPolicy;
 import subway.service.dto.ShortestRouteRequest;
 
 import java.util.List;
@@ -16,17 +15,14 @@ import java.util.List;
 public class RouteQueryService {
 
     private final LineQueryService lineQueryService;
-    private final SubwayChargePolicy subwayChargePolicy;
-    private final SubwayDiscountPolicy subwayDiscountPolicy;
+    private final ChargePolicyComposite chargePolicyComposite;
 
     public RouteQueryService(
             final LineQueryService lineQueryService,
-            final SubwayChargePolicy subwayChargePolicy,
-            final SubwayDiscountPolicy subwayDiscountPolicy
+            final ChargePolicyComposite chargePolicyComposite
     ) {
         this.lineQueryService = lineQueryService;
-        this.subwayChargePolicy = subwayChargePolicy;
-        this.subwayDiscountPolicy = subwayDiscountPolicy;
+        this.chargePolicyComposite = chargePolicyComposite;
     }
 
     public List<String> searchShortestRoute(final ShortestRouteRequest shortestRouteRequest) {
@@ -51,10 +47,10 @@ public class RouteQueryService {
                 new Station(shortestRouteRequest.getEndStation())
         );
 
-        final Money totalPrice = subwayChargePolicy.calculate(route);
+        final Money totalPrice = chargePolicyComposite.calculate(route);
 
-        return subwayDiscountPolicy.discount(new DiscountCondition(shortestRouteRequest.getAge()), totalPrice)
-                                   .getValue();
+        return chargePolicyComposite.discount(new DiscountCondition(shortestRouteRequest.getAge()), totalPrice)
+                                    .getValue();
     }
 
     public int searchShortestDistance(final ShortestRouteRequest shortestRouteRequest) {

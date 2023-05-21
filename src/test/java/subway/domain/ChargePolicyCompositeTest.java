@@ -8,15 +8,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PricePolicyCompositeTest {
+class ChargePolicyCompositeTest {
 
     private ChargePolicyComposite pricePolicyComposite;
 
     @BeforeEach
     void setUp() {
         pricePolicyComposite = new ChargePolicyComposite(
-                List.of(new DefaultChargePolicy(),
-                        new LineChargePolicy())
+                List.of(new DefaultFarePolicy(),
+                        new LineFarePolicy()),
+                List.of(new AgeDiscountPolicy())
         );
     }
 
@@ -44,6 +45,20 @@ class PricePolicyCompositeTest {
 
         //then
         assertEquals(new Money(2350), totalMoney);
+    }
+
+    @Test
+    @DisplayName("discount() : 모든 할인 요금 정책을 계산할 수 있다.")
+    void test_discount() throws Exception {
+        //given
+        final DiscountCondition discountCondition = new DiscountCondition(14);
+        final Money money = new Money(10350);
+
+        //when
+        final Money discountedMoney = pricePolicyComposite.discount(discountCondition, money);
+
+        //then
+        assertEquals(new Money(8000), discountedMoney);
     }
 
     private List<Line> createDefaultLines() {

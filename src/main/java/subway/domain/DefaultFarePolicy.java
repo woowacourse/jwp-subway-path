@@ -8,7 +8,7 @@ import static subway.domain.Distance.DEFAULT_DISTANCE;
 import static subway.domain.Distance.MID_DISTANCE;
 
 @Component
-public class DefaultChargePolicy implements SubwayChargePolicy {
+public class DefaultFarePolicy implements SubwayFarePolicy {
 
     private static final Money DEFAULT_PRICE = new Money(1250);
     private static final BigDecimal ADDITIONAL_FEE = BigDecimal.valueOf(100);
