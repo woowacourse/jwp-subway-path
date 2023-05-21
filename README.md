@@ -64,22 +64,31 @@
 
 - Line(노선)
   - id
-  - String name
-  - String color
+  - Name name
+  - Color color
 
-- Sections
+- SingleLineSections
   - List<Section> sections 
 
+- MultiLineSections
+  - List<Section> sections 
+ 
 - Section(구간)
-  - Long downStationId
-  - Long upStationId
+  - Station downStation
+  - Station upStation
   - Long lineId
-  - int distance
+  - Distance distance
 
 - Station(역)
   - id ID
-  - String 이름
+  - Name 이름
 
+- Fare(요금)
+  - int fare
+
+- ShortestPath(최단거리)
+  - List<Station> stations
+  - Distance distance
 
 ## API 문서
-- [API 구현 목록](https://documenter.getpostman.com/view/22400395/2s93ebTAmd#85e97606-4a86-4627-8ee1-e7feaf8d80b5)
+- [API 구현 목록](src/main/resources/static/docs)
