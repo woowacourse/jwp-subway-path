@@ -31,7 +31,7 @@ public class LineController {
 
     @GetMapping("/lines")
     @ResponseStatus(HttpStatus.OK)
-    public List<LineResponse> showLines(@RequestParam(value = "lineName", required = false) String lineName) {
+    public List<LineResponse> showLine(@RequestParam(value = "lineName", required = false) String lineName) {
         final List<Line> lines = lineQueryService.searchLines(lineName);
 
         return lines.stream()
@@ -40,7 +40,7 @@ public class LineController {
     }
 
     @GetMapping("/lines/{line-id}")
-    public LineResponse showLines(@PathVariable("line-id") Long lineId) {
+    public LineResponse showLine(@PathVariable("line-id") Long lineId) {
         final Line line = lineQueryService.searchByLineId(lineId);
 
         return new LineResponse(line.getName(), mapToSectionResponseFrom(line), line.getId());
