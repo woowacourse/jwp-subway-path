@@ -6,21 +6,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.Route;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.dao.StationDao;
 import subway.dao.StationEntity;
 import subway.domain.Distance;
-import subway.domain.Fee;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.DistanceDto;
-import subway.dto.FeeDto;
-import subway.dto.RouteDto;
 import subway.dto.SectionSaveDto;
-import subway.exception.GlobalException;
 
 @Transactional(readOnly = true)
 @Service
@@ -90,44 +84,6 @@ public class SectionService {
         sections.remove(removedStation);
 
         updateSections(lineId, sections);
-    }
-
-    public RouteDto getFeeByStations(final Long startStationId, final Long endStationId) {
-        validateStations(startStationId, endStationId);
-
-        StationEntity startStationEntity = stationDao.findById(startStationId);
-        StationEntity endStationEntity = stationDao.findById(endStationId);
-
-        Station startStation = new Station(startStationEntity.getName());
-        Station endStation = new Station(endStationEntity.getName());
-
-        List<SectionEntity> sectionEntities = sectionDao.findAll();
-        Sections sections = sectionsMapper.mapFrom(sectionEntities);
-
-        Route route = new Route(sections.getSections());
-
-        List<Station> shortestPath = route.getPath(startStation, endStation);
-        Distance distance = new Distance(route.getPathWeight(startStation, endStation));
-
-        Fee fee = Fee.toDistance(distance.getDistance());
-
-        return new RouteDto(new DistanceDto(distance.getDistance()), new FeeDto(fee.getFee()),
-                convertToStationNamesByStations(shortestPath));
-    }
-
-    private static List<String> convertToStationNamesByStations(final List<Station> shortestPath) {
-        return shortestPath.stream()
-                .map(Station::getName)
-                .collect(Collectors.toList());
-    }
-
-    private void validateStations(final Long startStationId, final Long endStationId) {
-        if (startStationId.equals(endStationId)) {
-            throw new GlobalException("출발역과 도착역이 같을 수는 없습니다.");
-        }
-        if (!stationDao.isExistStationById(startStationId) || !stationDao.isExistStationById(endStationId)) {
-            throw new GlobalException("존재하지 않는 역입니다. 역을 다시 한번 확인해주세요.");
-        }
     }
 
 }

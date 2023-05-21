@@ -2,7 +2,10 @@ package subway.dto;
 
 public class FeeDto {
 
-    private final Integer fee;
+    private Integer fee;
+
+    private FeeDto() {
+    }
 
     public FeeDto(final Integer fee) {
         this.fee = fee;

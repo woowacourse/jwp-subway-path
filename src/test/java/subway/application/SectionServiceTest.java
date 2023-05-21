@@ -1,6 +1,5 @@
 package subway.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -28,7 +27,6 @@ import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.RouteDto;
 import subway.dto.SectionSaveDto;
 import subway.exception.GlobalException;
 
@@ -282,56 +280,6 @@ class SectionServiceTest {
         verify(sectionDao, atLeastOnce()).insertAll(any());
     }
 
-    @DisplayName("구간에 따른 요금 반환 테스트")
-    @Test
-    void getFeeByStations() {
-        int distanceValue = 3;
-        Distance distance = new Distance(distanceValue);
-        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, distanceValue);
-
-        List<SectionEntity> sectionEntities = List.of(sectionEntity1);
-        StationEntity stationEntity1 = new StationEntity(1L, "일역");
-        StationEntity stationEntity2 = new StationEntity(2L, "이역");
-        Station station1 = new Station("일역");
-        Station station2 = new Station("이역");
-        Section section = new Section(station1, station2, distance);
-        Sections sections = new Sections(List.of(section));
-
-        when(sectionDao.findAll())
-                .thenReturn(sectionEntities);
-
-        when(sectionsMapper.mapFrom(sectionEntities))
-                .thenReturn(sections);
-
-        when(stationDao.findById(1L))
-                .thenReturn(stationEntity1);
-
-        when(stationDao.findById(2L))
-                .thenReturn(stationEntity2);
-
-        when(stationDao.findById(1L))
-                .thenReturn(stationEntity1);
-
-        when(stationDao.findById(2L))
-                .thenReturn(stationEntity2);
-
-        stationFactory.when(() -> StationFactory.toStation(stationEntity1))
-                .thenReturn(new Station("일역"));
-
-        stationFactory.when(() -> StationFactory.toStation(stationEntity2))
-                .thenReturn(new Station("이역"));
-
-        when(stationDao.isExistStationById(1L))
-                .thenReturn(true);
-
-        when(stationDao.isExistStationById(2L))
-                .thenReturn(true);
-
-        RouteDto routeDto = sectionService.getFeeByStations(1L, 2L);
-
-        assertThat(routeDto.getDistance().getDistance()).isEqualTo(3);
-        assertThat(routeDto.getFee().getFee()).isEqualTo(1250);
-    }
 
     @DisplayName("구간 추가 예외")
     @Nested
@@ -458,56 +406,6 @@ class SectionServiceTest {
             assertThatThrownBy(() -> sectionService.saveSection(1L, new SectionSaveDto("일역", "삼역", 5)))
                     .isInstanceOf(GlobalException.class)
                     .hasMessage("구간 길이로 인해 연결할 수 없습니다.");
-        }
-
-    }
-
-    @Nested
-    @DisplayName("구간 요금 조회 예외 테스트")
-    class ValidateSectionFee {
-
-        @DisplayName("출발역과 도착역이 같은 경우 예외 테스트")
-        @Test
-        void validateFeeBySameStations() {
-            Long sameStationId = 1L;
-
-            assertThatThrownBy(() -> sectionService.getFeeByStations(sameStationId, sameStationId))
-                    .isInstanceOf(GlobalException.class)
-                    .hasMessage("출발역과 도착역이 같을 수는 없습니다.");
-        }
-
-        @DisplayName("출발역은 존재하지만 도착역이 존재하지 않는 경우 예외 테스트")
-        @Test
-        void validateFeeByNotExistsStations1() {
-            Long existsStationId = 1L;
-            Long notExistsStationId = 3L;
-
-            when(stationDao.isExistStationById(existsStationId))
-                    .thenReturn(true);
-
-            when(stationDao.isExistStationById(notExistsStationId))
-                    .thenReturn(false);
-
-            assertThatThrownBy(() -> sectionService.getFeeByStations(existsStationId, notExistsStationId))
-                    .isInstanceOf(GlobalException.class)
-                    .hasMessage("존재하지 않는 역입니다. 역을 다시 한번 확인해주세요.");
-        }
-
-        @DisplayName("도착역은 존재하지만 출발역이 존재하지 않는 경우 예외 테스트")
-        @Test
-        void validateFeeByNotExistsStations2() {
-            Long notExistsStationId = 1L;
-            Long existsStationId = 3L;
-
-            when(stationDao.isExistStationById(notExistsStationId))
-                    .thenReturn(false);
-
-            when(stationDao.isExistStationById(existsStationId))
-                    .thenReturn(true);
-
-            assertThatThrownBy(() -> sectionService.getFeeByStations(notExistsStationId, existsStationId))
-                    .isInstanceOf(GlobalException.class)
-                    .hasMessage("존재하지 않는 역입니다. 역을 다시 한번 확인해주세요.");
         }
 
     }

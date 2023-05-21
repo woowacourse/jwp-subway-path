@@ -2,7 +2,10 @@ package subway.dto;
 
 public class DistanceDto {
 
-    private final Integer distance;
+    private Integer distance;
+
+    private DistanceDto() {
+    }
 
     public DistanceDto(final Integer distance) {
         this.distance = distance;

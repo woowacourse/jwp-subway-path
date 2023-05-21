@@ -147,7 +147,7 @@ Response Body {[
 구간 요금 조회
 
 ```text
-GET /subway/lines/sections/{start_station_id}/{end_station_id}}
+GET /routes?startStationName=회기&endStationName=청량리
 
 Response Headers {
     Status : 200
