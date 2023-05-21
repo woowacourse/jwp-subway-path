@@ -37,7 +37,8 @@ class GetAllSortedLineControllerTest {
     @Test
     void 모든_노선의_역을_정렬하기() {
         // given
-        final GetAllSortedLineResponse response = new GetAllSortedLineResponse(List.of(new GetSortedLineResponse(List.of("잠실역", "청라역", "선릉역"))));
+        final GetAllSortedLineResponse response =
+                new GetAllSortedLineResponse(List.of(new GetSortedLineResponse("1호선", "파랑", List.of("잠실역", "청라역", "선릉역"))));
         given(useCase.getAllSortedLine()).willReturn(response);
         
         // expect
@@ -47,6 +48,8 @@ class GetAllSortedLineControllerTest {
                 .contentType(ContentType.JSON)
                 .status(HttpStatus.OK)
                 .body("allSortedLines.size()", is(1))
+                .body("allSortedLines[0].lineName", is("1호선"))
+                .body("allSortedLines[0].lineColor", is("파랑"))
                 .body("allSortedLines[0].sortedStations", contains("잠실역", "청라역", "선릉역"));
     }
 }

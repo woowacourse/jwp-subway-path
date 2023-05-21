@@ -61,6 +61,8 @@ Accept: application/json
 > Status: 200 OK
 > Body:
 > {
+>   "lineName": "1호선",
+>   "lineColor": "파랑",
 >   "sortedStations": [
 >     "잠실역",
 >     "청라역",
@@ -180,6 +182,8 @@ Accept: application/json
 > {
 >   "allSortedLines": [
 >     {
+>       "lineName": "1호선",
+>       "lineColor": "파랑",
 >       "sortedStations": [
 >         "잠실역",
 >         "청라역",
@@ -188,6 +192,8 @@ Accept: application/json
 >       ]
 >     },
 >     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
@@ -228,6 +234,8 @@ Accept: application/json
 > {
 >   "allSortedLines": [
 >     {
+>       "lineName": "1호선",
+>       "lineColor": "파랑",
 >       "sortedStations": [
 >         "잠실역",
 >         "청라역",
@@ -235,6 +243,8 @@ Accept: application/json
 >       ]
 >     },
 >     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
@@ -276,6 +286,8 @@ Accept: application/json
 > {
 >   "allSortedLines": [
 >     {
+>       "lineName": "1호선",
+>       "lineColor": "파랑",
 >       "sortedStations": [
 >         "잠실역",
 >         "청라역",
@@ -283,6 +295,8 @@ Accept: application/json
 >       ]
 >     },
 >     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
@@ -341,6 +355,8 @@ Accept: application/json
 > {
 >   "allSortedLines": [
 >     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
@@ -348,6 +364,8 @@ Accept: application/json
 >       ]
 >     },
 >     {
+>       "lineName": "1호선",
+>       "lineColor": "파랑",
 >       "sortedStations": [
 >         "잠실역",
 >         "가정역"
@@ -379,6 +397,8 @@ Accept: application/json
 > {
 >   "allSortedLines": [
 >     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",

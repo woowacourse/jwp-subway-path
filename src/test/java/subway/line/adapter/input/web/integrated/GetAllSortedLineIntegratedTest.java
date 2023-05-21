@@ -69,6 +69,8 @@ class GetAllSortedLineIntegratedTest extends IntegrationTest {
                 .contentType(ContentType.JSON)
                 .statusCode(HttpStatus.OK.value())
                 .body("allSortedLines.size()", is(1))
+                .body("allSortedLines[0].lineName", is("1호선"))
+                .body("allSortedLines[0].lineColor", is("파랑"))
                 .body("allSortedLines[0].sortedStations", contains("잠실역", "청라역", "선릉역"));
     }
 }

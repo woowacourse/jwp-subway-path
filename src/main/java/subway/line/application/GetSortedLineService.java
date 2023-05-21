@@ -24,6 +24,6 @@ public class GetSortedLineService implements GetSortedLineUseCase {
     public GetSortedLineResponse getSortedLine(final Long lineId) {
         final Subway subway = new Subway(getAllLinePort.getAll());
         final Line lineById = getLineByIdPort.getLineById(lineId);
-        return new GetSortedLineResponse(subway.getSortedStations(lineById.getName()));
+        return new GetSortedLineResponse(lineById.getName(), lineById.getColor(), subway.getSortedStations(lineById.getName()));
     }
 }

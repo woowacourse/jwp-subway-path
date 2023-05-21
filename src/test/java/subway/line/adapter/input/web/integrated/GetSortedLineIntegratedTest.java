@@ -67,6 +67,8 @@ class GetSortedLineIntegratedTest extends IntegrationTest {
                 .when().get("/lines/" + Long.parseLong(lineId))
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
+                .body("lineName", is("1호선"))
+                .body("lineColor", is("파랑"))
                 .body("sortedStations", contains("잠실역", "청라역", "선릉역"));
     }
     
