@@ -40,10 +40,11 @@ public class LineCommandService implements CreateLineUseCase, UpdateLineInfoUseC
         persistLinePort.updateInfo(command.getLineId(), new LineInfo(command.getName(), command.getColor()));
     }
 
-    // TODO: 해당 Line에 존재하는 section 정보 전부 삭제.
     @Override
     public void deleteLine(final long lineId) {
         validateLineId(lineId);
+
+        persistLinePort.deleteSectionsByLineId(lineId);
 
         persistLinePort.deleteById(lineId);
     }

@@ -122,6 +122,11 @@ public class LineJdbcRepository implements LoadLinePort, PersistLinePort {
     }
 
     @Override
+    public void deleteSectionsByLineId(final long lindId) {
+        sectionDao.deleteAllByLineId(lindId);
+    }
+
+    @Override
     public void deleteById(final long lineId) {
         lineDao.deleteById(lineId);
     }

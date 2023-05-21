@@ -11,5 +11,7 @@ public interface PersistLinePort {
 
     void updateSections(Line line);
 
+    void deleteSectionsByLineId(long lineId);
+
     void deleteById(long lineId);
 }
