@@ -10,6 +10,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.exception.IllegalDistanceException;
+import subway.exception.IllegalFareException;
 import subway.exception.IllegalLineException;
 import subway.exception.IllegalSectionException;
 import subway.exception.IllegalStationException;
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({IllegalSectionException.class, IllegalDistanceException.class, IllegalStationException.class,
-            IllegalLineException.class})
+            IllegalLineException.class, IllegalFareException.class})
     public ResponseEntity<ExceptionResponse> handleIllegalException(RuntimeException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }

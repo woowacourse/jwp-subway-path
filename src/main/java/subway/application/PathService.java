@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.path.PathFindDto;
 import subway.application.dto.path.ShortestPathDto;
+import subway.domain.Fare;
 import subway.domain.FareCalculator;
 import subway.domain.Path;
 import subway.domain.PathFinder;
@@ -32,7 +33,7 @@ public class PathService {
         Station dest = stationRepository.findById(pathFindDto.getDestStationId());
 
         Path path = pathFinder.findShortestPath(source, dest);
-        int fare = fareCalculator.calculate(path);
+        Fare fare = fareCalculator.calculate(path);
         return new ShortestPathDto(path, fare);
     }
 

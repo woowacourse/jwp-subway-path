@@ -1,5 +1,6 @@
 package subway.ui.dto.path;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.application.dto.path.ShortestPathDto;
@@ -8,9 +9,9 @@ import subway.ui.dto.station.StationResponse;
 public class ShortestPathResponse {
     private List<StationResponse> pathStations;
     private double distance;
-    private int fare;
+    private BigDecimal fare;
 
-    public ShortestPathResponse(List<StationResponse> pathStations, double distance, int fare) {
+    public ShortestPathResponse(List<StationResponse> pathStations, double distance, BigDecimal fare) {
         this.pathStations = pathStations;
         this.distance = distance;
         this.fare = fare;
@@ -32,7 +33,7 @@ public class ShortestPathResponse {
         return distance;
     }
 
-    public int getFare() {
+    public BigDecimal getFare() {
         return fare;
     }
 }

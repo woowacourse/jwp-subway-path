@@ -2,6 +2,7 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,10 +17,10 @@ class FareCalculatorTest {
     @DisplayName("거리가 10km 이내일 때는 기본 요금 1250원이 적용된다.")
     void calculate_lessThan10(double distance) {
         // when
-        int fare = fareCalculator.calculate(Path.of(Collections.emptyList(), Distance.from(distance)));
+        Fare fare = fareCalculator.calculate(Path.of(Collections.emptyList(), Distance.from(distance)));
 
         // then
-        assertThat(fare).isEqualTo(1250);
+        assertThat(fare).isEqualTo(Fare.from(BigDecimal.valueOf(1250)));
     }
 
     @ParameterizedTest
@@ -27,10 +28,10 @@ class FareCalculatorTest {
     @DisplayName("거리가 10km 초과 50km 이하면 5km당 100원이 추가된다.")
     void calculate_lessThan50_over10(double distance, int expectedFare) {
         // when
-        int fare = fareCalculator.calculate(Path.of(Collections.emptyList(), Distance.from(distance)));
+        Fare fare = fareCalculator.calculate(Path.of(Collections.emptyList(), Distance.from(distance)));
 
         // then
-        assertThat(fare).isEqualTo(expectedFare);
+        assertThat(fare).isEqualTo(Fare.from(BigDecimal.valueOf(expectedFare)));
     }
 
     @ParameterizedTest
@@ -38,9 +39,9 @@ class FareCalculatorTest {
     @DisplayName("거리가 50km 초과면 8km당 100원이 추가된다.")
     void calculate_over50(double distance, int expectedFare) {
         // when
-        int fare = fareCalculator.calculate(Path.of(Collections.emptyList(), Distance.from(distance)));
+        Fare fare = fareCalculator.calculate(Path.of(Collections.emptyList(), Distance.from(distance)));
 
         // then
-        assertThat(fare).isEqualTo(expectedFare);
+        assertThat(fare).isEqualTo(Fare.from(BigDecimal.valueOf(expectedFare)));
     }
 }
