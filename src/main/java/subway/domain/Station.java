@@ -18,6 +18,14 @@ public class Station {
         this.name = new Name(name);
     }
 
+    public static Station of(Long id, String name) {
+        return new Station(id, name);
+    }
+
+    public static Station from(String name) {
+        return new Station(null, name);
+    }
+
     public Station(final Long id, Name name) {
         this.id = id;
         this.name = name;

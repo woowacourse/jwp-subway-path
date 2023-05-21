@@ -108,9 +108,9 @@ class SectionRepositoryImplTest {
     @DisplayName("id로 역을 조회한다.")
     void findStationById() {
         // given
-        StationEntity exPectedStationEntity = StationEntity.of(1L, "강남");
+        StationEntity expectedStationEntity = StationEntity.of(1L, "강남");
         willReturn(true).given(stationDao).existsById(anyLong());
-        willReturn(exPectedStationEntity).given(stationDao).findById(anyLong());
+        willReturn(expectedStationEntity).given(stationDao).findById(anyLong());
 
         // when
         Station station = sectionRepositoryImpl.findStationById(1L);

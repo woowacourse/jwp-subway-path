@@ -60,17 +60,15 @@ public class SectionDao {
                 + " INNER JOIN STATION AS S2 ON SEC.down_id = S2.id "
                 + " WHERE SEC.line_id = ?";
 
-        return jdbcTemplate.query(sql, upStationMapper(), lineId);
+        return jdbcTemplate.query(sql, sectionVoMapper(), lineId);
     }
 
-    private RowMapper<SectionVo> upStationMapper() {
+    private RowMapper<SectionVo> sectionVoMapper() {
         return (rs, rowNum) -> SectionVo.of(
                 rs.getLong(1), rs.getString(2),
                 rs.getLong(3), rs.getString(4),
                 rs.getInt(5));
     }
-
-
 
     public void deleteSections(List<Section> sections, long lineId) {
         String sql = "DELETE sections WHERE up_id = ? AND down_id = ? AND line_id =?";

@@ -1,10 +1,7 @@
 package subway.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import java.util.Objects;
 
-@Getter
-@EqualsAndHashCode
 public class Distance {
     private final int value;
 
@@ -12,9 +9,17 @@ public class Distance {
         validatePositive(value);
         this.value = value;
     }
+
+    private void validatePositive(int value) {
+        if (value <= 0) {
+            throw new IllegalArgumentException("구간(역-역)의 거리는 1 이상이어야 합니다.");
+        }
+    }
+
     public Distance add(Distance other) {
         return new Distance(this.value + other.value);
     }
+
     public Distance minus(Distance other) {
         return new Distance(Math.abs(this.value - other.value));
     }
@@ -23,9 +28,24 @@ public class Distance {
         return value > other.value;
     }
 
-    private void validatePositive(int value) {
-        if (value <= 0) {
-            throw new IllegalArgumentException("구간(역-역)의 거리는 1 이상이어야 합니다.");
+    public int getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
         }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Distance distance = (Distance) o;
+        return value == distance.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
