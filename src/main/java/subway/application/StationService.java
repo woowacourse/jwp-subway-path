@@ -1,15 +1,14 @@
 package subway.application;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 import subway.entity.StationEntity;
 
 @Service
@@ -26,7 +25,7 @@ public class StationService {
 
     public Long save(final StationRequest stationRequest) {
         final Station station = new Station(stationRequest.getName());
-        return stationDao.insert(StationEntity.toEntity(station));
+        return stationDao.insert(StationEntity.from(station));
     }
 
     public StationResponse findById(final Long id) {
@@ -44,7 +43,7 @@ public class StationService {
 
     public void update(final Long id, final StationRequest stationRequest) {
         final Station station = new Station(stationRequest.getName());
-        stationDao.update(id, StationEntity.toEntity(station));
+        stationDao.update(id, StationEntity.from(station));
     }
 
     public void deleteById(final Long id) {

@@ -32,7 +32,7 @@ class LineDaoTest {
         final String name = "2호선";
         final String color = "bg-green-500";
         // when
-        final Long id = lineDao.insert(LineEntity.toEntity(new Line(name, color)));
+        final Long id = lineDao.insert(LineEntity.from(new Line(name, color)));
         // then
         assertThat(lineDao.findById(id)).isNotNull();
     }
@@ -41,8 +41,8 @@ class LineDaoTest {
     @DisplayName("전체 Line 조회 테스트")
     void findAll() {
         // given
-        final Long id1 = lineDao.insert(LineEntity.toEntity(new Line("1호선", "bg-red-500")));
-        final Long id2 = lineDao.insert(LineEntity.toEntity(new Line("2호선", "bg-green-600")));
+        final Long id1 = lineDao.insert(LineEntity.from(new Line("1호선", "bg-red-500")));
+        final Long id2 = lineDao.insert(LineEntity.from(new Line("2호선", "bg-green-600")));
         // when
         final List<LineEntity> lineEntities = lineDao.findAll();
         // then
@@ -61,7 +61,7 @@ class LineDaoTest {
     @DisplayName("id로 Line 조회 테스트")
     void findById() {
         // given
-        final Long id = lineDao.insert(LineEntity.toEntity(new Line("1호선", "bg-red-500")));
+        final Long id = lineDao.insert(LineEntity.from(new Line("1호선", "bg-red-500")));
         // when
         final LineEntity lineEntity = lineDao.findById(id).orElseThrow();
         // then
@@ -74,11 +74,11 @@ class LineDaoTest {
     @DisplayName("Line 수정 테스트")
     void update() {
         // given
-        final Long id = lineDao.insert(LineEntity.toEntity(new Line("1호선", "bg-red-500")));
+        final Long id = lineDao.insert(LineEntity.from(new Line("1호선", "bg-red-500")));
         final String name = "2호선";
         final String color = "bg-green-500";
         // when
-        lineDao.update(id, LineEntity.toEntity(new Line(name, color)));
+        lineDao.update(id, LineEntity.from(new Line(name, color)));
         // then
         assertThat(lineDao.findById(id).orElseThrow())
                 .usingRecursiveComparison()
@@ -89,7 +89,7 @@ class LineDaoTest {
     @DisplayName("Line 삭제 테스트")
     void deleteById() {
         // given
-        final Long id = lineDao.insert(LineEntity.toEntity(new Line("1호선", "bg-red-500")));
+        final Long id = lineDao.insert(LineEntity.from(new Line("1호선", "bg-red-500")));
         // when
         lineDao.deleteById(id);
         // then
@@ -100,7 +100,7 @@ class LineDaoTest {
     @DisplayName("Line 존재 여부 테스트")
     void notExistsById() {
         // given
-        final Long id = lineDao.insert(LineEntity.toEntity(new Line("1호선", "bg-red-500")));
+        final Long id = lineDao.insert(LineEntity.from(new Line("1호선", "bg-red-500")));
         // when
         final boolean isNotExists = lineDao.notExistsById(id);
         // then

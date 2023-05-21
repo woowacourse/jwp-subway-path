@@ -1,5 +1,7 @@
 package subway.application;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +16,6 @@ import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
 import subway.dto.StationResponse;
 import subway.entity.LineEntity;
-
-import java.util.*;
 
 @Service
 @Transactional
@@ -34,7 +34,7 @@ public class LineService {
 
     public Long save(final LineRequest request) {
         final Line line = new Line(request.getName(), request.getColor());
-        return lineDao.insert(LineEntity.toEntity(line));
+        return lineDao.insert(LineEntity.from(line));
     }
 
     public List<LineStationResponse> findAll() {
@@ -63,7 +63,7 @@ public class LineService {
 
     public void update(final Long id, final LineRequest lineUpdateRequest) {
         final Line line = new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
-        lineDao.update(id, LineEntity.toEntity(line));
+        lineDao.update(id, LineEntity.from(line));
     }
 
     public void deleteById(final Long id) {

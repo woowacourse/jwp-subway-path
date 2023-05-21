@@ -1,5 +1,7 @@
 package subway.application;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,9 +14,6 @@ import subway.domain.Station;
 import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
 import subway.entity.SectionEntity;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -48,7 +47,7 @@ public class SectionService {
 
         sectionDao.deleteAllByLineId(sectionRequest.getLineId());
         final List<SectionEntity> sectionEntities = sections.getSections().stream()
-                .map(it -> SectionEntity.toEntity(sectionRequest.getLineId(), it))
+                .map(it -> SectionEntity.of(sectionRequest.getLineId(), it))
                 .collect(Collectors.toList());
         sectionDao.insertAll(sectionEntities);
     }
@@ -72,7 +71,7 @@ public class SectionService {
 
         sectionDao.deleteAllByLineId(lineId);
         final List<SectionEntity> sectionEntities = sections.getSections().stream()
-                .map(it -> SectionEntity.toEntity(lineId, it))
+                .map(it -> SectionEntity.of(lineId, it))
                 .collect(Collectors.toList());
         sectionDao.insertAll(sectionEntities);
     }
