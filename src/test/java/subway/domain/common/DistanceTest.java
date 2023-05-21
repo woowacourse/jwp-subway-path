@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import subway.exception.InvalidDistanceException;
+import subway.exception.DistanceLessThatOneException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -18,7 +18,7 @@ class DistanceTest {
 	void exception_whenDistanceInvalid(final long givenDistance) {
 		// then
 		assertThatThrownBy(() -> new Distance(givenDistance))
-			.isInstanceOf(InvalidDistanceException.class);
+			.isInstanceOf(DistanceLessThatOneException.class);
 	}
 
 	@Test

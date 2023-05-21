@@ -1,6 +1,6 @@
 package subway.domain.common;
 
-import subway.exception.InvalidDistanceException;
+import subway.exception.DistanceLessThatOneException;
 
 import java.util.Objects;
 
@@ -17,7 +17,7 @@ public class Distance {
 
 	private void validateDistance(final long distance) {
 		if (distance < MIN_DISTANCE) {
-			throw new InvalidDistanceException();
+			throw new DistanceLessThatOneException();
 		}
 	}
 
