@@ -46,10 +46,7 @@ public class SectionService {
     }
 
     private void updateSections(final Long lineId, final ChangeSections sectionsForUpdate) {
-        if (sectionsForUpdate.isChangeMiddle()) {
-            SectionEntity updateSectionEntity = makeSectionEntity(lineId, sectionsForUpdate.getUpdateSection());
-            sectionDao.update(updateSectionEntity);
-        }
+        updateSectionIfChangedMiddleSection(lineId, sectionsForUpdate);
         SectionEntity newSectionEntity = makeSectionEntity(lineId, sectionsForUpdate.getInsertOrRemoveSection());
         sectionDao.insert(newSectionEntity);
     }
@@ -89,12 +86,16 @@ public class SectionService {
     }
 
     private void removeSections(final Long lineId, final ChangeSections sectionsForRemove) {
+        updateSectionIfChangedMiddleSection(lineId, sectionsForRemove);
+        SectionEntity removeSectionEntity = makeSectionEntity(lineId, sectionsForRemove.getInsertOrRemoveSection());
+        sectionDao.delete(removeSectionEntity);
+    }
+
+    private void updateSectionIfChangedMiddleSection(final Long lineId, final ChangeSections sectionsForRemove) {
         if (sectionsForRemove.isChangeMiddle()) {
             SectionEntity updateSectionEntity = makeSectionEntity(lineId, sectionsForRemove.getUpdateSection());
             sectionDao.update(updateSectionEntity);
         }
-        SectionEntity removeSectionEntity = makeSectionEntity(lineId, sectionsForRemove.getInsertOrRemoveSection());
-        sectionDao.delete(removeSectionEntity);
     }
 
 }

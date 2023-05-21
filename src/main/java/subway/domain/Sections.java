@@ -21,9 +21,7 @@ public class Sections {
     }
 
     public ChangeSections remove(Station station) {
-        List<Section> sectionsContainStation = sections.stream()
-                .filter(it -> it.hasStation(station))
-                .collect(Collectors.toList());
+        List<Section> sectionsContainStation = findSectionsContainingStation(station);
 
         if (sectionsContainStation.isEmpty()) {
             throw new GlobalException("존재하지 않는 구간입니다.");
@@ -47,10 +45,7 @@ public class Sections {
             );
         }
 
-        int totalDistance = sectionsContainStation.stream()
-                .map(Section::getDistance)
-                .mapToInt(Distance::getDistance)
-                .sum();
+        int totalDistance = calculateTotalDistance(sectionsContainStation);
 
         Section firstSection = sectionsContainStation.get(0);
         Section secondSection = sectionsContainStation.get(1);
@@ -73,6 +68,7 @@ public class Sections {
                     secondSection
             );
         }
+
         secondSection.updateEndStation(endStation);
         secondSection.updateDistance(new Distance(totalDistance));
         sections.remove(firstSection);
@@ -81,6 +77,19 @@ public class Sections {
                 secondSection,
                 firstSection
         );
+    }
+
+    private List<Section> findSectionsContainingStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.hasStation(station))
+                .collect(Collectors.toList());
+    }
+
+    private int calculateTotalDistance(List<Section> sections) {
+        return sections.stream()
+                .map(Section::getDistance)
+                .mapToInt(Distance::getDistance)
+                .sum();
     }
 
     public ChangeSections add(Section newSection) {
@@ -195,13 +204,6 @@ public class Sections {
         if (!isPresentSameStartStation && !isPresentSameEndStation) {
             throw new GlobalException("연결되어 있지 않은 구간입니다.");
         }
-    }
-
-    private Section getSectionHavingSameStartStation(Station startStation) {
-        return sections.stream()
-                .filter(it -> it.isSameStartStation(startStation))
-                .findFirst()
-                .orElseThrow(() -> new GlobalException("해당 역을 출발 역으로 갖는 구간이 없습니다."));
     }
 
     public Station getDownStation() {
