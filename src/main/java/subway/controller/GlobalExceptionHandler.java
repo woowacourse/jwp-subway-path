@@ -2,6 +2,7 @@ package subway.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(responses);
     }
 
-    @ExceptionHandler(SQLException.class)
+    @ExceptionHandler({SQLException.class, DuplicateKeyException.class})
     public ResponseEntity<Void> handleSQLException(SQLException exception) {
         log.error("Error from handleSQLException", exception);
         return ResponseEntity.badRequest().build();
@@ -47,5 +48,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({OptionalHasNoLineException.class, OptionalHasNoStationException.class})
     public ResponseEntity<ErrorResponse> handleNoSuchElementException(Exception exception) {
         return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Void> handleUnexpectedException(Exception exception) {
+        log.error("Error from unexpectedException", exception);
+        return ResponseEntity.internalServerError().build();
     }
 }
