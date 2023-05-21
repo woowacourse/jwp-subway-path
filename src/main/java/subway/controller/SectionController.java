@@ -14,6 +14,7 @@ import subway.dto.request.SectionRequest;
 import subway.service.SectionService;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/lines/{lineId}/sections")
@@ -28,7 +29,7 @@ public class SectionController {
     @PostMapping
     public ResponseEntity<Void> createSection(@Valid @RequestBody SectionRequest request) {
         sectionService.saveSectionInLine(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.created(URI.create("/line-stations/" + request.getLineId())).build();
     }
 
     @DeleteMapping
