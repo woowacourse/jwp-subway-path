@@ -7,13 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import subway.application.LineService;
 import subway.application.SectionService;
 import subway.application.dto.LineDto;
@@ -26,10 +21,7 @@ import java.util.stream.Collectors;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("test")
-@Sql("/initialization.sql")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class PathIntegrationTest {
+class PathIntegrationTest extends IntegrationTest {
 
     @Autowired
     private LineService lineService;
@@ -37,12 +29,9 @@ class PathIntegrationTest {
     @Autowired
     private SectionService sectionService;
 
-    @LocalServerPort
-    private int port;
-
     @BeforeEach
     void setUp() {
-        RestAssured.port = port;
+        RestAssured.port = super.port;
     }
 
     @DisplayName("최단 경로를 조회할 수 있다.")

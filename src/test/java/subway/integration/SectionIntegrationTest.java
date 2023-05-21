@@ -5,33 +5,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Line;
 import subway.domain.LineRepository;
 import subway.domain.StationRepository;
 import subway.presentation.dto.request.SectionRequest;
 
-@ActiveProfiles("test")
-@Sql("/initialization.sql")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SectionIntegrationTest {
+public class SectionIntegrationTest extends IntegrationTest {
     @Autowired
     private LineRepository lineRepository;
 
     @Autowired
     private StationRepository stationRepository;
 
-    @LocalServerPort
-    private int port;
-
     @BeforeEach
     public void setUp() {
-        RestAssured.port = port;
+        RestAssured.port = super.port;
     }
 
     @DisplayName("특정 구간을 생성할 수 있다.")
