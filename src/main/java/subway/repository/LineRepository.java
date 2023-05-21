@@ -34,7 +34,6 @@ public class LineRepository {
         this.lineMapper = lineMapper;
     }
 
-
     public List<Line> findAll() {
         List<LineEntity> lineEntities = lineDao.findAll();
         List<SectionEntity> sectionEntities = sectiondao.findAll();

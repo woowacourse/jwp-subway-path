@@ -56,11 +56,11 @@ public class Line {
             return new FirstAddStrategy(newSection);
         }
         validateNotExist(newStation.getId());
-        baseStation = getStation(baseStation.getId());
+        baseStation = addInOrderStation(baseStation.getId());
         return add(direction, baseStation, newStation, new Distance(distance));
     }
 
-    public Station getStation(long baseStationId) {
+    public Station addInOrderStation(long baseStationId) {
         return sections.stream()
                 .map(section -> section.getUpOrDownStation(baseStationId))
                 .filter(Optional::isPresent)
@@ -134,37 +134,9 @@ public class Line {
         if(sections.size()==0){
             return Collections.emptyList();
         }
+        
         Station firstStation = findFirstStation();
-        ArrayList<Station> alignedStations = new ArrayList<>();
-        alignedStations.add(firstStation);
-
-        while(true){
-
-//            Optional<Section> downStation = sections.stream()
-//                    .map(section -> section.findDownStationFrom(firstStation))
-//                    .filter(Optional::isPresent)
-//                    .findFirst();
-//
-//            if(downStation.isEmpty()){
-//                break;
-//            }
-            int startSize = alignedStations.size();
-
-            for(Section section: sections){
-                Optional<Station> downStation = section.findDownStationFrom(firstStation);
-
-                if(downStation.isPresent()){
-                    alignedStations.add(downStation.get());
-                    firstStation = downStation.get();
-                    break;
-                }
-            }
-            int endSize = alignedStations.size();
-            if(startSize == endSize){
-                break;
-            }
-        }
-        return alignedStations;
+        return getAlignedStations(firstStation);
     }
 
     private Station findFirstStation() {
@@ -181,5 +153,33 @@ public class Line {
         return sections.stream()
                 .map(function)
                 .collect(toList());
+    }
+
+    private ArrayList<Station> getAlignedStations(Station upStation) {
+        ArrayList<Station> alignedStations = new ArrayList<>();
+        alignedStations.add(upStation);
+
+        while(true){
+            int startSize = alignedStations.size();
+            upStation = addInOrderStation(upStation, alignedStations);
+
+            if(startSize == alignedStations.size()){
+                break;
+            }
+        }
+        return alignedStations;
+    }
+
+    private Station addInOrderStation(Station firstStation, ArrayList<Station> alignedStations) {
+        for(Section section: sections){
+            Optional<Station> downStation = section.findDownStationFrom(firstStation);
+
+            if(downStation.isPresent()){
+                alignedStations.add(downStation.get());
+                firstStation = downStation.get();
+                break;
+            }
+        }
+        return firstStation;
     }
 }

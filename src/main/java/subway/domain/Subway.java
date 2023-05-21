@@ -3,15 +3,12 @@ package subway.domain;
 import java.util.List;
 
 public class Subway {
-    private final Lines lines;
+    private final List<Line> lines;
 
-    public Subway(Lines lines) {
+    public Subway(List<Line> lines) {
         this.lines = lines;
     }
 
-    public static Subway from(List<Line> lines) {
-        return new Subway(new Lines(lines));
-    }
 
 //    public AddSectionStrategy add(
 //            long lineId,

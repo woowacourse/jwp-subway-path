@@ -26,10 +26,6 @@ public class Section {
         this(null, lineId, upStation, downStation, distance);
     }
 
-//    public static  Section from(Station upStation, Station downStation, Distance distance) {
-//        return new Section (null, null, upStation, downStation, distance);
-//    }
-
     public Optional<Station> getUpOrDownStation(long baseStationId) {
         if (upStation.isEqualsTo(baseStationId)) {
             return Optional.of(upStation);
@@ -86,5 +82,12 @@ public class Section {
     // TODO: 지우기
     public long getId() {
         return id;
+    }
+
+    public Optional<Station> findDownStationFrom(Station station) {
+        if(upStation.equals(station)){
+            return Optional.of(downStation);
+        }
+        return Optional.empty();
     }
 }

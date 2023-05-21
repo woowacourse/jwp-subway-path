@@ -1,19 +1,16 @@
 package subway.integration;
 
 import io.restassured.RestAssured;
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.SectionRequest;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-import subway.dto.SubwayResponse;
+import subway.dto.*;
 
-public class SubwayIntegrationTest extends IntegrationTest {
+import java.util.List;
+
+public class SubwayMapIntegrationTest extends IntegrationTest {
     
     @BeforeEach
     void setSubway() {
@@ -54,12 +51,12 @@ public class SubwayIntegrationTest extends IntegrationTest {
     @DisplayName("한 노선의 지하철 역들을 순서대로 출력한다")
     @Test
     void findAllStationsInLine() {
-        final SubwayResponse subwayResponse = RestAssured.given().log().all()
+        final SubwayMapResponse subwayMapResponse = RestAssured.given().log().all()
                 .when().get("/lines/1/stations")
                 .then().log().all()
-                .extract().as(SubwayResponse.class);
+                .extract().as(SubwayMapResponse.class);
         
-        final List<StationResponse> orderedStations = subwayResponse.getStationResponses();
+        final List<StationResponse> orderedStations = subwayMapResponse.getStationResponses();
         Assertions.assertThat(orderedStations.size()).isEqualTo(5);
         Assertions.assertThat(orderedStations.get(0).getName()).isEqualTo("강남역");
         Assertions.assertThat(orderedStations.get(1).getName()).isEqualTo("성수역");
@@ -77,7 +74,6 @@ public class SubwayIntegrationTest extends IntegrationTest {
         final LineRequest line = new LineRequest("8호선", "pink");
         
         this.postStationRequest(stationRequest1);
-        
         this.postStationRequest(stationRequest2);
         
         this.postLineRequest(line);
@@ -88,16 +84,16 @@ public class SubwayIntegrationTest extends IntegrationTest {
         this.postSectionRequest(sectionRequest1);
         this.postSectionRequest(sectionRequest2);
         
-        final List<SubwayResponse> subwayResponses = RestAssured.given().log().all()
+        final List<SubwayMapResponse> subwayMapResponse = RestAssured.given().log().all()
                 .when().get("/lines/stations")
                 .then().log().all()
-                .extract().jsonPath().getList(".", SubwayResponse.class);
+                .extract().jsonPath().getList(".", SubwayMapResponse.class);
         
-        Assertions.assertThat(subwayResponses.size()).isEqualTo(2);
-        Assertions.assertThat(subwayResponses.get(0).getLineResponse().getName()).isEqualTo("2호선");
-        Assertions.assertThat(subwayResponses.get(0).getStationResponses().size()).isEqualTo(5);
-        Assertions.assertThat(subwayResponses.get(1).getLineResponse().getName()).isEqualTo("8호선");
-        Assertions.assertThat(subwayResponses.get(1).getStationResponses().size()).isEqualTo(3);
+        Assertions.assertThat(subwayMapResponse.size()).isEqualTo(2);
+        Assertions.assertThat(subwayMapResponse.get(0).getLineResponse().getName()).isEqualTo("2호선");
+        Assertions.assertThat(subwayMapResponse.get(0).getStationResponses().size()).isEqualTo(5);
+        Assertions.assertThat(subwayMapResponse.get(1).getLineResponse().getName()).isEqualTo("8호선");
+        Assertions.assertThat(subwayMapResponse.get(1).getStationResponses().size()).isEqualTo(3);
     }
     
     @DisplayName("만약 노선에 역이 아무것도 없는 경우 아무 역도 출력하지 않는다")
@@ -106,12 +102,12 @@ public class SubwayIntegrationTest extends IntegrationTest {
         final LineRequest lineRequest = new LineRequest("3호선", "green");
         this.postLineRequest(lineRequest);
         
-        final SubwayResponse subwayResponse = RestAssured.given().log().all()
+        final SubwayMapResponse subwayMapResponse = RestAssured.given().log().all()
                 .when().get("/lines/2/stations")
                 .then().log().all()
-                .extract().as(SubwayResponse.class);
+                .extract().as(SubwayMapResponse.class);
         
-        final List<StationResponse> orderedStations = subwayResponse.getStationResponses();
+        final List<StationResponse> orderedStations = subwayMapResponse.getStationResponses();
         Assertions.assertThat(orderedStations.size()).isEqualTo(0);
     }
     
