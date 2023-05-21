@@ -56,8 +56,8 @@ public class SectionDao {
     public List<SectionVo> findSectionsByLineId(final long lineId) {
         String sql = "SELECT S1.id, S1.name, S2.id, S2.name, SEC.distance"
                 + " FROM SECTIONS AS SEC "
-                + " JOIN STATION AS S1 ON SEC.up_id = S1.id "
-                + " JOIN STATION AS S2 ON SEC.down_id = S2.id "
+                + " INNER JOIN STATION AS S1 ON SEC.up_id = S1.id "
+                + " INNER JOIN STATION AS S2 ON SEC.down_id = S2.id "
                 + " WHERE SEC.line_id = ?";
 
         return jdbcTemplate.query(sql, upStationMapper(), lineId);
