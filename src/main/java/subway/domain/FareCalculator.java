@@ -2,19 +2,18 @@ package subway.domain;
 
 public enum FareCalculator {
 
-    BETWEEN_10KM_50KM(10, 50, 5, 100),
-    OVER_50KM(50, Integer.MAX_VALUE, 8, 100);
+    FIRST_DISTANCE_FARE(10, 1, 0),
+    SECOND_DISTANCE_FARE(50, 5, 100),
+    THIRD_DISTANCE_FARE(Integer.MAX_VALUE, 8, 100);
 
     private static final int DEFAULT_FARE = 1_250;
 
-    private final int minDistance;
-    private final int maxDistance;
+    private final int distance;
     private final int additionalDistance;
     private final int additionalFare;
 
-    FareCalculator(final int minDistance, final int maxDistance, final int additionalDistance, final int additionalFare) {
-        this.minDistance = minDistance;
-        this.maxDistance = maxDistance;
+    FareCalculator(final int distance, final int additionalDistance, final int additionalFare) {
+        this.distance = distance;
         this.additionalDistance = additionalDistance;
         this.additionalFare = additionalFare;
     }
@@ -25,12 +24,14 @@ public enum FareCalculator {
         }
 
         int additionalFare = 0;
+        int startDistance = 0;
+
         for (FareCalculator value : FareCalculator.values()) {
-            if (value.maxDistance < distance) {
-                additionalFare += Math.ceil((value.maxDistance - value.minDistance) / value.additionalDistance) * value.additionalFare;
-            }
-            if (value.minDistance < distance && distance < value.maxDistance) {
-                additionalFare += Math.ceil((distance - value.minDistance) / value.additionalDistance) * value.additionalFare;
+            for (; startDistance <= value.distance; startDistance += value.additionalDistance) {
+                if (startDistance > distance) {
+                    return DEFAULT_FARE + additionalFare;
+                }
+                additionalFare += value.additionalFare;
             }
         }
         return DEFAULT_FARE + additionalFare;
