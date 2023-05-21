@@ -31,12 +31,12 @@ class PathFinderTest {
         final PathFinder pathFinder = new PathFinder(subway);
 
         // when
-        final PathFindResult pathFindResult = pathFinder.find("A", "Y");
+        final Path path = pathFinder.find("A", "Y");
 
         // then
         assertAll(
-                () -> assertThat(pathFindResult.getDistanceValue()).isEqualTo(7),
-                () -> assertThat(pathFindResult.getPath())
+                () -> assertThat(path.calculateTotalDistance()).isEqualTo(7),
+                () -> assertThat(path.getSectionEdges())
                         .extracting(SectionEdge::toSection)
                         .usingRecursiveComparison()
                         .ignoringExpectedNullFields()

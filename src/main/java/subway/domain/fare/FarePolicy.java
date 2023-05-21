@@ -1,8 +1,8 @@
 package subway.domain.fare;
 
-import subway.domain.path.PathFindResult;
+import subway.domain.path.Path;
 
 public interface FarePolicy {
 
-    int calculate(final PathFindResult result, final Passenger passenger, final int fare);
+    int calculate(final Path path, final Passenger passenger, final int fare);
 }

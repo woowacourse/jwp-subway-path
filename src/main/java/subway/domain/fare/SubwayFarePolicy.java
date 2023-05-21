@@ -1,7 +1,7 @@
 package subway.domain.fare;
 
 import java.util.List;
-import subway.domain.path.PathFindResult;
+import subway.domain.path.Path;
 
 public class SubwayFarePolicy implements FarePolicy {
 
@@ -12,10 +12,10 @@ public class SubwayFarePolicy implements FarePolicy {
     }
 
     @Override
-    public int calculate(final PathFindResult result, final Passenger passenger, final int fare) {
+    public int calculate(final Path path, final Passenger passenger, final int fare) {
         int calculatedFare = fare;
         for (FarePolicy farePolicy : farePolicies) {
-            calculatedFare = farePolicy.calculate(result, passenger, calculatedFare);
+            calculatedFare = farePolicy.calculate(path, passenger, calculatedFare);
         }
         return calculatedFare;
     }

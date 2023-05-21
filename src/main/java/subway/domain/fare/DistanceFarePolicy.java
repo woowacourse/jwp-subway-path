@@ -3,7 +3,7 @@ package subway.domain.fare;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import subway.domain.path.PathFindResult;
+import subway.domain.path.Path;
 
 public class DistanceFarePolicy implements FarePolicy {
 
@@ -14,8 +14,8 @@ public class DistanceFarePolicy implements FarePolicy {
     private static final int MORE_THAN_EXTRA_FARE_UNIT = 8;
 
     @Override
-    public int calculate(final PathFindResult result, final Passenger passenger, final int fare) {
-        final int distance = result.getDistanceValue();
+    public int calculate(final Path path, final Passenger passenger, final int fare) {
+        final int distance = path.calculateTotalDistance();
 
         final int extraDistance = min(
                 EXTRA_FARE_SEGMENT - NO_EXTRA_FARE_DISTANCE,

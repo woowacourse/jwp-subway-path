@@ -18,7 +18,7 @@ public class Path {
                 .sum();
     }
 
-    public List<SectionEdge> sectionEdges() {
+    public List<SectionEdge> getSectionEdges() {
         return sectionEdges;
     }
 }

@@ -3,7 +3,6 @@ package subway.domain.path;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.domain.core.Distance;
 import subway.domain.core.Line;
 import subway.domain.core.Section;
 import subway.domain.core.Station;
@@ -17,10 +16,10 @@ public class PathFinder {
         this.subway = subway;
     }
 
-    public PathFindResult find(final String start, final String end) {
+    public Path find(final String start, final String end) {
         final DijkstraShortestPath<String, SectionEdge> shortestPath = initializeShortestPath();
         final GraphPath<String, SectionEdge> path = shortestPath.getPath(start, end);
-        return new PathFindResult(new Distance(path.getWeight()), path.getEdgeList());
+        return new Path(path.getEdgeList());
     }
 
     private DijkstraShortestPath<String, SectionEdge> initializeShortestPath() {
