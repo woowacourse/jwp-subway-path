@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.exceptions.IllegalDistanceException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
@@ -15,7 +16,7 @@ class DistanceTest {
     @ValueSource(ints = {0, -1})
     void init_throw(final int value) {
         assertThatThrownBy(() -> new Distance(value))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalDistanceException.class);
     }
 
     @ParameterizedTest(name = "거리가 {0}(양의 정수이면) 예외가 발생하지 않는다")
@@ -41,6 +42,6 @@ class DistanceTest {
         final Distance ten = new Distance(10);
 
         assertThatThrownBy(() -> six.sub(ten))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalDistanceException.class);
     }
 }

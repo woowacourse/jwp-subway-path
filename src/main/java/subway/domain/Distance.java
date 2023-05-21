@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exceptions.IllegalDistanceException;
+
 import java.util.Objects;
 
 public class Distance {
@@ -14,13 +16,13 @@ public class Distance {
 
     private void validate(final int value) {
         if (value < MIN_VALUE) {
-            throw new IllegalArgumentException("거리는 1 이상만 가능합니다.");
+            throw new IllegalDistanceException("거리는 1 이상만 가능합니다.");
         }
     }
 
     public Distance sub(final Distance distance) {
         if (value - distance.value < MIN_VALUE) {
-            throw new IllegalArgumentException("거리 계산 결과는 음수 또는 0이 될 수 없습니다");
+            throw new IllegalDistanceException("거리 계산 결과는 음수 또는 0이 될 수 없습니다");
         }
         return new Distance(value - distance.value);
     }

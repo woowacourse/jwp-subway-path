@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exceptions.SectionStateException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -25,7 +27,7 @@ public class Sections {
 
     private void validateInit() {
         if (sections.size() > 0) {
-            throw new IllegalStateException("라인에 이미 등록된 역이 있습니다.");
+            throw new SectionStateException("라인에 이미 등록된 역이 있습니다.");
         }
     }
 
@@ -61,7 +63,7 @@ public class Sections {
 
     private void validateHasSize() {
         if (sections.size() < 1) {
-            throw new IllegalStateException("라인에 등록되어 있는 역이 없습니다.");
+            throw new SectionStateException("라인에 등록되어 있는 역이 없습니다.");
         }
     }
 
@@ -114,7 +116,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.contains(station))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("역을 포함하고 있는 구간이 존재하지 않습니다."));
+                .orElseThrow(() -> new SectionStateException("역을 포함하고 있는 구간이 존재하지 않습니다."));
     }
 
     private Section getSectionUpIs(final Station station) {
@@ -129,14 +131,14 @@ public class Sections {
         return sections.stream()
                 .filter(direction)
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 역입니다."));
+                .orElseThrow(() -> new SectionStateException("라인에 등록되지 않은 역입니다."));
     }
 
     private int getIndex(final Section section) {
         return IntStream.range(0, sections.size())
                 .filter(i -> sections.get(i).equals(section))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 구간입니다."));
+                .orElseThrow(() -> new SectionStateException("라인에 등록되지 않은 구간입니다."));
     }
 
     public List<Station> getAllStations() {

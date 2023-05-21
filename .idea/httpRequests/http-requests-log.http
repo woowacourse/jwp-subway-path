@@ -1,5 +1,37 @@
 PATCH http://localhost:8080/lines/1/stations/3/endpoint
 Content-Type: application/json
+Content-Length: 47
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "sadf",
+  "distance": "1"
+}
+
+<> 2023-05-22T001036.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "up",
+  "distance": "1"
+}
+
+<> 2023-05-22T001030.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
 Content-Length: 45
 Connection: Keep-Alive
 User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
@@ -657,33 +689,6 @@ Accept-Encoding: br,deflate,gzip,x-gzip
 
 {
   "distance": "1"
-}
-
-###
-
-PATCH http://localhost:8080/lines/1/stations/1?type=init
-Content-Type: application/json
-Content-Length: 45
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "nextStationId": "2",
-  "distance": "3"
-}
-
-###
-
-POST http://localhost:8080/stations
-Content-Type: application/json
-Content-Length: 25
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "name": "구의역"
 }
 
 ###

@@ -1,5 +1,8 @@
 package subway.domain;
 
+import subway.exceptions.IllegalStationException;
+import subway.exceptions.SectionStateException;
+
 import java.util.Objects;
 
 public class Section {
@@ -16,7 +19,7 @@ public class Section {
 
     private void validateSameStation(final Station up, final Station down) {
         if (up.equals(down)) {
-            throw new IllegalArgumentException("구간의 두 역이 같을 수 없습니다.");
+            throw new IllegalStationException("구간의 두 역이 같을 수 없습니다.");
         }
     }
 
@@ -38,7 +41,7 @@ public class Section {
 
     public Section deleteStation(final Section upIsStation) {
         if (!down.equals(upIsStation.up)) {
-            throw new IllegalStateException("삭제하려는 두 구간이 이어져있지 않습니다.");
+            throw new SectionStateException("삭제하려는 두 구간이 이어져있지 않습니다.");
         }
         return new Section(up, upIsStation.down, distance.sum(upIsStation.distance));
     }

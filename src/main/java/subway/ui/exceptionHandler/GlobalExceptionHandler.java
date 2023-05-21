@@ -10,13 +10,16 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import subway.exceptions.IllegalDistanceException;
+import subway.exceptions.IllegalStationException;
+import subway.exceptions.SectionStateException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
-    public ResponseEntity<String> handleRuntimeException(final Exception e) {
+    @ExceptionHandler({IllegalDistanceException.class, IllegalStationException.class, SectionStateException.class})
+    public ResponseEntity<String> handleCustomExceptions(final Exception e) {
         logger.debug(e.getMessage());
         return ResponseEntity.badRequest().body(e.getMessage());
     }
