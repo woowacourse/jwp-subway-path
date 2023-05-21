@@ -14,27 +14,27 @@
 
 ### 2. 노선 역 제거 API
 
-- [ ] DELETE '/stations/{stationId}' uri 맵핑
+- [x] DELETE '/stations/{stationId}' uri 맵핑
 - Request
-    - @PathVariable
-- Response
-    - 제거 Message
+    - @PathVariable {stationId}
+- Response X
 
 ### 3. 노선 조회 API
 
-- [ ] GET '/lines/{color}'
+- [x] GET '/lines/{lineId}'
     - Request
-        - @Pathvariable 노선 색상
+        - @Pathvariable {lineId}
     - Response
         - List<StationName>
         - 역 이름은 순서대로 보여준다. (상행종점 -> 하행종점)
 
 ### 4. 노선 목록 조회 API
 
-- [ ] GET '/lines'
+- [x] GET '/lines'
     - Request X
     - Response
-        - Map<Color, List<StationName>>
+        - List<List<StationName>>
+        - 각 노선의 역 이름은 순서대로 보여준다. (상행종점 -> 하행종점))
 
 ---
 
