@@ -5,11 +5,13 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 
+@Component
 public class DijkstraRouteStrategy implements RouteStrategy {
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
@@ -19,7 +21,7 @@ public class DijkstraRouteStrategy implements RouteStrategy {
     @Override
     public List<Station> findShortestRoute(List<Line> lines, Station start, Station end) {
         initialize(lines);
-        validateExistVertex(start, end, graph);
+        validateExistVertex(start, end);
         GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(start, end);
         if (path == null) {
             throw new IllegalArgumentException("이동할 수 없는 경로입니다.");
@@ -27,8 +29,7 @@ public class DijkstraRouteStrategy implements RouteStrategy {
         return path.getVertexList();
     }
 
-    private static void validateExistVertex(Station start, Station end,
-            WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void validateExistVertex(Station start, Station end) {
         if (!graph.containsVertex(start) || !graph.containsVertex(end)) {
             throw new IllegalArgumentException("해당 역이 존재하지 않습니다.");
         }
@@ -56,7 +57,7 @@ public class DijkstraRouteStrategy implements RouteStrategy {
     @Override
     public Distance findShortestDistance(List<Line> lines, Station start, Station end) {
         initialize(lines);
-        validateExistVertex(start, end, graph);
+        validateExistVertex(start, end);
         double shortestDistance = new DijkstraShortestPath<>(graph).getPathWeight(start, end);
         if(shortestDistance == Double.POSITIVE_INFINITY) {
             throw new IllegalArgumentException("이동할 수 없는 경로입니다.");
