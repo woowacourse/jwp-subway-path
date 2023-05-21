@@ -23,7 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.StationService;
 import subway.controller.dto.StationRequest;
-import subway.controller.dto.StationResponse;
+import subway.domain.line.Station;
 import subway.exception.StationNotFoundException;
 
 @WebMvcTest(controllers = StationController.class)
@@ -41,7 +41,7 @@ class StationControllerTest {
     @DisplayName("역을 등록한다.")
     void createStation() throws Exception {
         given(stationService.saveStation(any()))
-                .willReturn(new StationResponse(1L, "서울역"));
+                .willReturn(new Station(1L, "서울역"));
 
         mockMvc.perform(post("/stations")
                         .content(objectMapper.writeValueAsString(new StationRequest("서울역")))
@@ -66,8 +66,8 @@ class StationControllerTest {
     @Test
     @DisplayName("모든 역을 가져온다.")
     void findAllStations() throws Exception {
-        given(stationService.findAllStationResponses())
-                .willReturn(List.of(new StationResponse(1L, "서울역"), new StationResponse(2L, "부산역")));
+        given(stationService.findAllStations())
+                .willReturn(List.of(new Station(1L, "서울역"), new Station(2L, "부산역")));
 
         mockMvc.perform(get("/stations")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -80,8 +80,8 @@ class StationControllerTest {
     @Test
     @DisplayName("ID에 해당하는 역을 가져온다.")
     void findStation() throws Exception {
-        given(stationService.findStationResponseById(any()))
-                .willReturn(new StationResponse(1L, "서울역"));
+        given(stationService.findStationById(any()))
+                .willReturn(new Station(1L, "서울역"));
 
         mockMvc.perform(get("/stations/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +93,7 @@ class StationControllerTest {
     @Test
     @DisplayName("ID에 해당하는 역이 없으면 NOT FOUND를 반환한다.")
     void findStationFail() throws Exception {
-        given(stationService.findStationResponseById(any()))
+        given(stationService.findStationById(any()))
                 .willThrow(new StationNotFoundException("일치하는 역이 존재하지 않습니다."));
 
         mockMvc.perform(get("/stations/{id}", 1L)
