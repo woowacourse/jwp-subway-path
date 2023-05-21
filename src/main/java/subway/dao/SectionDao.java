@@ -58,16 +58,14 @@ public class SectionDao {
                 + "JOIN STATION AS down ON s.down_station_id = down.id "
                 + "WHERE s.line_id = :line_id";
 
-        SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("line_id", lineId);
+        SqlParameterSource source = new MapSqlParameterSource("line_id", lineId);
 
         return jdbcTemplate.query(sql, source, sectionStationRowMapper);
     }
 
     public Optional<List<SectionEntity>> findByLineId(Long lineId) {
         String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id";
-        SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("line_id", lineId);
+        SqlParameterSource source = new MapSqlParameterSource("line_id", lineId);
         try {
             return Optional.of(jdbcTemplate.query(sql, source, sectionEntityRowMapper));
         } catch (DataAccessException exception) {
@@ -77,9 +75,8 @@ public class SectionDao {
 
     public Optional<SectionEntity> findByUpStationId(Long upStationId, Long lineId) {
         String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND up_station_id = :up_station_id";
-        SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("up_station_id", upStationId)
-                .addValue("line_id", lineId);
+        SqlParameterSource source = new MapSqlParameterSource().addValue("up_station_id", upStationId)
+                                                               .addValue("line_id", lineId);
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, source, sectionEntityRowMapper));
         } catch (DataAccessException exception) {
@@ -89,9 +86,8 @@ public class SectionDao {
 
     public Optional<SectionEntity> findByDownStationId(Long downStationId, Long lineId) {
         String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND down_station_id = :down_station_id";
-        SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("down_station_id", downStationId)
-                .addValue("line_id", lineId);
+        SqlParameterSource source = new MapSqlParameterSource().addValue("down_station_id", downStationId)
+                                                               .addValue("line_id", lineId);
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, source, sectionEntityRowMapper));
         } catch (DataAccessException exception) {
@@ -106,11 +102,9 @@ public class SectionDao {
 
     public void insertAll(List<SectionEntity> sectionEntities) {
         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(sectionEntities.toArray());
-        jdbcTemplate.batchUpdate(
-                "INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance) " +
-                        "VALUES (:lineId, :upStationId, :downStationId, :distance)",
-                batch
-        );
+        String sql = "INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance) "
+                + "VALUES (:lineId, :upStationId, :downStationId, :distance)";
+        jdbcTemplate.batchUpdate(sql, batch);
     }
 
     public void updateByUpStationId(SectionEntity sectionEntity) {
@@ -138,9 +132,7 @@ public class SectionDao {
 
     public void deleteAll(List<SectionEntity> sectionEntities) {
         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(sectionEntities.toArray());
-        jdbcTemplate.batchUpdate(
-                "DELETE FROM SECTION WHERE id = :id",
-                batch
-        );
+        String sql = "DELETE FROM SECTION WHERE id = :id";
+        jdbcTemplate.batchUpdate(sql, batch);
     }
 }
