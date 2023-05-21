@@ -9,15 +9,12 @@ import java.util.stream.Collectors;
 
 public class QueryShortestRouteResponse {
 
-    private String startStation;
-    private String endStation;
-    private List<String> transferStations;
-    private List<RouteEdgeResponse> sections;
-    private Integer totalDistance;
-    private String totalPrice;
-
-    public QueryShortestRouteResponse() {
-    }
+    private final String startStation;
+    private final String endStation;
+    private final List<String> transferStations;
+    private final List<RouteEdgeResponse> sections;
+    private final Integer totalDistance;
+    private final String totalPrice;
 
     public QueryShortestRouteResponse(
             final String startStation,

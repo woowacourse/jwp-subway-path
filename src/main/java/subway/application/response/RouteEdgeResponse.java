@@ -4,13 +4,10 @@ import subway.domain.route.RouteEdge;
 
 public class RouteEdgeResponse {
 
-    private String startStationName;
-    private String endStationName;
-    private String lineName;
-    private Integer distance;
-
-    public RouteEdgeResponse() {
-    }
+    private final String startStationName;
+    private final String endStationName;
+    private final String lineName;
+    private final Integer distance;
 
     public RouteEdgeResponse(final String startStationName, final String endStationName, final String lineName, final Integer distance) {
         this.startStationName = startStationName;
