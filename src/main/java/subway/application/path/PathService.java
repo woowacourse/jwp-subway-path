@@ -21,12 +21,12 @@ import subway.exception.path.IllegalPathException;
 public class PathService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
-    private final PricePolicy pricePolicy;
+    private final DistancePricePolicy distancePricePolicy;
 
-    public PathService(StationDao stationDao, SectionDao sectionDao, PricePolicy pricePolicy) {
+    public PathService(StationDao stationDao, SectionDao sectionDao, DistancePricePolicy distancePricePolicy) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
-        this.pricePolicy = pricePolicy;
+        this.distancePricePolicy = distancePricePolicy;
     }
 
     @Transactional(readOnly = true)
@@ -36,7 +36,7 @@ public class PathService {
         Path path = getPath(new Station(originStationName), new Station(destinationStationName));
         List<String> stations = path.getStations();
         int distance = path.getTotalDistance();
-        return new PathResponse(stations, distance, pricePolicy.calculate(distance));
+        return new PathResponse(stations, distance, distancePricePolicy.calculate(distance));
     }
 
     private void validateSameStation(String originStationName, String destinationStationName) {

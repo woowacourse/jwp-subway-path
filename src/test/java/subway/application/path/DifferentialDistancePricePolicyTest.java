@@ -8,16 +8,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class BasicPricePolicyTest {
+class DifferentialDistancePricePolicyTest {
 
-    BasicPricePolicy basicPricePolicy = new BasicPricePolicy();
+    DifferentialDistancePricePolicy differentialDistancePricePolicy = new DifferentialDistancePricePolicy();
 
     @ParameterizedTest
     @ValueSource(ints = {1, 10})
     @DisplayName("거리가 10km 이하이면 1250원이 계산되어야 한다.")
     void calculate_lessThen10(int distance) {
         // when
-        int price = basicPricePolicy.calculate(distance);
+        int price = differentialDistancePricePolicy.calculate(distance);
 
         // then
         assertThat(price)
@@ -40,7 +40,7 @@ class BasicPricePolicyTest {
     @DisplayName("거리가 10~50km 사이면 1250 + 거리 5km 마다 100원이 추가되어야 한다.")
     void calculate_between10And50(int distance, int expect) {
         // when
-        int price = basicPricePolicy.calculate(distance);
+        int price = differentialDistancePricePolicy.calculate(distance);
 
         // then
         assertThat(price)
@@ -62,7 +62,7 @@ class BasicPricePolicyTest {
     @DisplayName("거리가 50km를 초과하면 8km 마다 100원이 추가되어야 한다.")
     void calculate_overThan50(int distance, int expect) {
         // when
-        int price = basicPricePolicy.calculate(distance);
+        int price = differentialDistancePricePolicy.calculate(distance);
 
         // then
         assertThat(price)
@@ -74,7 +74,7 @@ class BasicPricePolicyTest {
     @DisplayName("거리가 1 미만이면 예외가 발생해야 한다.")
     void calculate_lessThan1(int distance) {
         // expect
-        assertThatThrownBy(() -> basicPricePolicy.calculate(distance))
+        assertThatThrownBy(() -> differentialDistancePricePolicy.calculate(distance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 1 이상의 값이어야 합니다.");
     }

@@ -1,5 +1,5 @@
 package subway.application.path;
 
-public interface PricePolicy {
+public interface DistancePricePolicy {
     int calculate(int distance);
 }

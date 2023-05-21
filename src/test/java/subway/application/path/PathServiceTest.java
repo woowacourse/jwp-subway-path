@@ -29,7 +29,7 @@ class PathServiceTest {
 
     StationDao stationDao = mock(StationDao.class);
 
-    PricePolicy pricePolicy = mock(PricePolicy.class);
+    DistancePricePolicy distancePricePolicy = mock(DistancePricePolicy.class);
 
     /*
      *   [A역]-7-[B역]-8-[C역]
@@ -56,7 +56,7 @@ class PathServiceTest {
     @BeforeEach
     void setUp() {
         InMemorySectionDao sectionDao = new InMemorySectionDao();
-        pathService = new PathService(stationDao, sectionDao, pricePolicy);
+        pathService = new PathService(stationDao, sectionDao, distancePricePolicy);
 
         sectionDao.insert(1L, new Section(new Station("A역"), new Station("D역"), new Distance(5)));
         sectionDao.insert(1L, new Section(new Station("D역"), new Station("E역"), new Distance(8)));

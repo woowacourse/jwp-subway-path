@@ -6,16 +6,16 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.IntUnaryOperator;
 
-public class BasicPricePolicy implements PricePolicy {
+public class DifferentialDistancePricePolicy implements DistancePricePolicy {
     private static final int DEFAULT_PRICE = 1250;
     private static final int EXTRA_PRICE_RATE = 100;
     private static final Map<DistanceLevel, IntUnaryOperator> DISTANCE_LEVEL_MAP = new EnumMap<>(
             DistanceLevel.class);
 
     static {
-        DISTANCE_LEVEL_MAP.put(LEVEL1, BasicPricePolicy::distanceLevel1Calculate);
-        DISTANCE_LEVEL_MAP.put(LEVEL2, BasicPricePolicy::distanceLevel2Calculate);
-        DISTANCE_LEVEL_MAP.put(LEVEL3, BasicPricePolicy::distanceLevel3Calculate);
+        DISTANCE_LEVEL_MAP.put(LEVEL1, DifferentialDistancePricePolicy::distanceLevel1Calculate);
+        DISTANCE_LEVEL_MAP.put(LEVEL2, DifferentialDistancePricePolicy::distanceLevel2Calculate);
+        DISTANCE_LEVEL_MAP.put(LEVEL3, DifferentialDistancePricePolicy::distanceLevel3Calculate);
     }
 
     private static int distanceLevel1Calculate(int distance) {
