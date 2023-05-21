@@ -3,10 +3,10 @@ package subway.domain.strategy;
 import subway.domain.Section;
 import subway.repository.LineRepository;
 
-public class FirstAddStrategy implements AddSectionStrategy {
+public class AddFirstSectionStrategy implements AddSectionStrategy {
     private final Section section;
 
-    public FirstAddStrategy(Section section) {
+    public AddFirstSectionStrategy(Section section) {
         this.section = section;
     }
 

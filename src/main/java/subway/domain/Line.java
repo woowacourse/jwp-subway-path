@@ -50,7 +50,7 @@ public class Line {
 
         if (isBlank()) {
             Section newSection = direction.createSectionWith(baseStation, newStation, new Distance(distance), id);
-            return new FirstAddStrategy(newSection);
+            return new AddFirstSectionStrategy(newSection);
         }
         validateNotExist(newStation.getId());
         baseStation = addInOrderStation(baseStation.getId());
@@ -86,7 +86,7 @@ public class Line {
         Optional<Section> findSection = direction.findSection(baseStation, sections);
 
         if (findSection.isEmpty()) {
-            return new FirstAddStrategy(newSection);
+            return new AddFirstSectionStrategy(newSection);
         }
 
         Section originalSection = findSection.get();
@@ -96,7 +96,7 @@ public class Line {
         sections.add(newSection);
         sections.add(newSectionBasedOnOriginal);
 
-        return new SecondaryAddStrategy(this);
+        return new AddMiddleSectionStrategy(this);
     }
 
     public List<Section> getSections() {
