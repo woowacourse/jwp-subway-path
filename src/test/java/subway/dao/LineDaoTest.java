@@ -19,7 +19,8 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
@@ -121,7 +122,6 @@ class LineDaoTest {
         assertThat(findLine).isEmpty();
     }
 
-
     @DisplayName("색으로 특정 노선을 조회할 수 있다")
     @ParameterizedTest(name = "색이 {0}인 노선 조회")
     @ValueSource(strings = {"초록색", "파랑색"})
@@ -134,7 +134,6 @@ class LineDaoTest {
         );
     }
 
-
     @DisplayName("존재하지 않는 이름으로 노선 조회시 빈 값이 반환된다")
     @Test
     void findByColorNotExist() {
@@ -144,7 +143,6 @@ class LineDaoTest {
 
         assertThat(findLine).isEmpty();
     }
-
 
     @DisplayName("특정 노선의 정보를 수정할 수 있다")
     @Test

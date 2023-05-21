@@ -50,7 +50,6 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    //todo 찾아볼 것 : queryForObject이 null을 반환하는 경우가 무엇인지?
     public Optional<LineEntity> findById(Long id) {
         String sql = "SELECT id, name, color FROM line WHERE id = :id";
         SqlParameterSource source = new MapSqlParameterSource("id", id);
@@ -60,18 +59,6 @@ public class LineDao {
         catch (DataAccessException e) {
             return Optional.empty();
         }
-    }
-
-    public void update(LineEntity newLineEntity) {
-        String sql = "UPDATE line SET name = :name, color = :color WHERE id = :id";
-        SqlParameterSource source = new BeanPropertySqlParameterSource(newLineEntity);
-        jdbcTemplate.update(sql, source);
-    }
-
-    public void deleteById(Long id) {
-        String sql = "DELETE FROM line WHERE id = :id";
-        SqlParameterSource source = new MapSqlParameterSource("id", id);
-        jdbcTemplate.update(sql, source);
     }
 
     public Optional<LineEntity> findByName(String name) {
@@ -94,5 +81,17 @@ public class LineDao {
         catch (DataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public void update(LineEntity newLineEntity) {
+        String sql = "UPDATE line SET name = :name, color = :color WHERE id = :id";
+        SqlParameterSource source = new BeanPropertySqlParameterSource(newLineEntity);
+        jdbcTemplate.update(sql, source);
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM line WHERE id = :id";
+        SqlParameterSource source = new MapSqlParameterSource("id", id);
+        jdbcTemplate.update(sql, source);
     }
 }
