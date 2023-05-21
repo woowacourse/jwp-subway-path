@@ -48,3 +48,21 @@ asciidoctor {
 	configurations 'asciidoctorExt'
 	dependsOn test
 }
+
+bootJar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}") {
+		into 'static/docs'
+	}
+}
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
+}

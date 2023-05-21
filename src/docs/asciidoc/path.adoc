@@ -10,9 +10,9 @@
 
 === Request
 
-include::{snippets}/path/http-request.adoc[]
+include::{snippets}/paths/http-request.adoc[]
 
 === Response
 
-include::{snippets}/path/http-response.adoc[]
+include::{snippets}/paths/http-response.adoc[]
 
