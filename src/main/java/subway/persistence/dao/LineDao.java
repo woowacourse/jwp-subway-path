@@ -45,5 +45,4 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper, lineId).stream()
                 .findAny();
     }
-
 }

@@ -1,6 +1,7 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
+import subway.exception.NotExistException;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
@@ -78,7 +79,9 @@ public class H2SectionRepository implements SectionRepository {
 
         Map<Line, Sections> sectionsPerLine = new HashMap<>();
         for (Long lineId : sectionEntitiesPerLineId.keySet()) {
-            LineEntity lineEntity = lineDao.findLineById(lineId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+            LineEntity lineEntity = lineDao.findLineById(lineId).orElseThrow(
+                    () -> new NotExistException("존재하지 않는 노선입니다.")
+            );
             Line line = Line.from(lineEntity);
             List<SectionEntity> entities = sectionEntitiesPerLineId.get(lineId);
             Set<Long> uniqueStationIds = makeUniqueStationIds(entities);

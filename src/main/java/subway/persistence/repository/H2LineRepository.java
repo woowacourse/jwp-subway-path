@@ -1,12 +1,11 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
+import subway.exception.NotExistException;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.entity.LineEntity;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
-
-import java.util.Optional;
 
 @Repository
 public class H2LineRepository implements LineRepository {
@@ -26,10 +25,9 @@ public class H2LineRepository implements LineRepository {
 
     @Override
     public Line findById(long lineId) {
-        Optional<LineEntity> foundLineEntity = lineDao.findLineById(lineId);
-        if (foundLineEntity.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 노선입니다.");
-        }
-        return Line.from(foundLineEntity.get());
+        LineEntity foundLineEntity = lineDao.findLineById(lineId).orElseThrow(
+                () -> new NotExistException("존재하지 않는 노선입니다.")
+        );
+        return Line.from(foundLineEntity);
     }
 }

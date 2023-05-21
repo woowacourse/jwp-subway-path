@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.section.dto.LineStationDeleteRequest;
+import subway.exception.NotExistException;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
@@ -63,7 +64,7 @@ class SectionServiceTest {
     void 존재하지_않는_노선에_역을_추가하려고_하면_예외() {
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 2L, 10, 20L);
         assertThatThrownBy(() -> sectionService.insert(sectionCreateRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotExistException.class)
                 .hasMessage("존재하지 않는 노선입니다.");
     }
 
@@ -106,11 +107,11 @@ class SectionServiceTest {
 
 
         assertThatThrownBy(() -> stationRepository.findById(savedGangnam.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotExistException.class)
                 .hasMessage("존재하지 않는 stationId입니다.");
 
         assertThatThrownBy(() -> stationRepository.findById(savedJamsil.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotExistException.class)
                 .hasMessage("존재하지 않는 stationId입니다.");
     }
 
@@ -124,7 +125,7 @@ class SectionServiceTest {
         sectionService.delete(new LineStationDeleteRequest(savedSeonleung.getId()));
 
         assertThatThrownBy(() -> stationRepository.findById(savedSeonleung.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotExistException.class)
                 .hasMessage("존재하지 않는 stationId입니다.");
 
         assertDoesNotThrow(() -> stationRepository.findById(savedGangnam.getId()));
@@ -141,7 +142,7 @@ class SectionServiceTest {
 
         assertAll(
                 () -> assertThatThrownBy(() -> stationRepository.findById(savedSeonleung.getId()))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(NotExistException.class)
                         .hasMessage("존재하지 않는 stationId입니다."),
                 () -> assertDoesNotThrow(() -> stationRepository.findById(savedGangnam.getId())),
                 () -> assertDoesNotThrow(() -> stationRepository.findById(savedJamsil.getId()))
@@ -166,10 +167,10 @@ class SectionServiceTest {
 
         assertAll(
                 () -> assertThatThrownBy(() -> stationRepository.findById(savedJamsil.getId()))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(NotExistException.class)
                         .hasMessage("존재하지 않는 stationId입니다."),
                 () -> assertThatThrownBy(() -> stationRepository.findById(savedSeokchon.getId()))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(NotExistException.class)
                         .hasMessage("존재하지 않는 stationId입니다."),
                 () -> assertThat(sectionRepository.isLastSectionInLine(savedLine)).isTrue()
         );

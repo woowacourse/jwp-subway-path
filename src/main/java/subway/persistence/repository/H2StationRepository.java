@@ -1,6 +1,7 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
+import subway.exception.NotExistException;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.StationEntity;
 import subway.service.station.StationRepository;
@@ -36,7 +37,9 @@ public class H2StationRepository implements StationRepository {
 
     @Override
     public Station findById(Long id) {
-        StationEntity stationEntity = stationDao.findById(id);
+        StationEntity stationEntity = stationDao.findById(id).orElseThrow(
+                () -> new NotExistException("존재하지 않는 stationId입니다.")
+        );
         return Station.from(stationEntity);
     }
 

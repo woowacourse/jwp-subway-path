@@ -54,25 +54,21 @@ public class SectionDao {
 
     public List<SectionEntity> findSectionsByLine(long lineId) {
         String sql = "SELECT * FROM section WHERE line_id = ?";
-
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     public void delete(long sectionId) {
         String sql = "DELETE FROM section WHERE id = ?";
-
         jdbcTemplate.update(sql, sectionId);
     }
 
     public List<SectionEntity> findSectionsByStation(Long stationId) {
         String sql = "SELECT * FROM section WHERE up_station_id = ? OR down_station_id = ?";
-
         return jdbcTemplate.query(sql, rowMapper, stationId, stationId);
     }
 
     public List<SectionEntity> findAll() {
         String sql = "SELECT * FROM section";
-
         return jdbcTemplate.query(sql, rowMapper);
     }
 }
