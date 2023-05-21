@@ -23,6 +23,8 @@ import subway.common.exception.NoSuchStationException;
 import subway.domain.Line;
 import subway.domain.Route;
 import subway.domain.Station;
+import subway.domain.fare.Fare;
+import subway.domain.fare.FarePolicy;
 import subway.fixture.StationFixture.강남역;
 import subway.fixture.StationFixture.삼성역;
 
@@ -35,6 +37,7 @@ class RouteQueryServiceTest {
     private LoadLinePort loadLinePort;
     private LoadStationPort loadStationPort;
     private RouteFinderPort routeFinderPort;
+    private FarePolicy farePolicy;
 
 
     @BeforeEach
@@ -42,7 +45,8 @@ class RouteQueryServiceTest {
         loadLinePort = mock(LoadLinePort.class);
         loadStationPort = mock(LoadStationPort.class);
         routeFinderPort = mock(RouteFinderPort.class);
-        routeQueryService = new RouteQueryService(loadLinePort, loadStationPort, routeFinderPort);
+        farePolicy = mock(FarePolicy.class);
+        routeQueryService = new RouteQueryService(loadLinePort, loadStationPort, routeFinderPort, farePolicy);
     }
 
     @Nested
@@ -69,7 +73,7 @@ class RouteQueryServiceTest {
                     .willReturn(Optional.empty());
 
             // when then
-            assertThatThrownBy(() -> routeQueryService.foundRoute(new FindRouteCommand(sourceId, targetId)))
+            assertThatThrownBy(() -> routeQueryService.findRoute(new FindRouteCommand(sourceId, targetId)))
                     .isInstanceOf(NoSuchStationException.class);
         }
 
@@ -80,7 +84,7 @@ class RouteQueryServiceTest {
                     .willReturn(Optional.empty());
 
             // when then
-            assertThatThrownBy(() -> routeQueryService.foundRoute(new FindRouteCommand(sourceId, targetId)))
+            assertThatThrownBy(() -> routeQueryService.findRoute(new FindRouteCommand(sourceId, targetId)))
                     .isInstanceOf(NoSuchStationException.class);
         }
 
@@ -93,9 +97,11 @@ class RouteQueryServiceTest {
                     .willReturn(lines);
             given(routeFinderPort.findRoute(source, target, lines))
                     .willReturn(route);
+            given(farePolicy.calculate(route))
+                    .willReturn(new Fare(1250));
 
             // when
-            RouteQueryResponse response = routeQueryService.foundRoute(command);
+            RouteQueryResponse response = routeQueryService.findRoute(command);
 
             // then
             assertAll(
@@ -106,7 +112,9 @@ class RouteQueryServiceTest {
                                     source.getName(),
                                     강남역.STATION.getName(),
                                     삼성역.STATION.getName(),
-                                    target.getName())
+                                    target.getName()),
+                    () -> assertThat(response.getFare())
+                            .isEqualTo(1250)
             );
         }
     }

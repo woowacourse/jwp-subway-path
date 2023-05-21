@@ -21,7 +21,7 @@ public class FindRouteController {
     @GetMapping("/route")
     public ResponseEntity<RouteQueryResponse> findRoute(
             @RequestBody @Valid FindRouteRequest request) {
-        RouteQueryResponse response = findRouteUseCase.foundRoute(request.toCommand());
+        RouteQueryResponse response = findRouteUseCase.findRoute(request.toCommand());
 
         return ResponseEntity.ok(response);
     }

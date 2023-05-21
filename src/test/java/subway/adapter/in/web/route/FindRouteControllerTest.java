@@ -45,9 +45,10 @@ class FindRouteControllerTest {
     void 최단_경로를_찾는다() throws Exception {
         // given
         FindRouteRequest request = new FindRouteRequest(1L, 2L);
-        RouteQueryResponse response = new RouteQueryResponse(List.of(역삼역.RESPONSE, 삼성역.RESPONSE, 잠실역.RESPONSE), 10);
+        RouteQueryResponse response = new RouteQueryResponse(List.of(역삼역.RESPONSE, 삼성역.RESPONSE, 잠실역.RESPONSE), 10,
+                1000);
         // TODO(질문): eq(command) 쓰고싶은데.. 그러면 FindRouteCommand에 equals&hasCode 재정의 해야한다. DTO에 재정의해도 되나?
-        given(findRouteUseCase.foundRoute(any(FindRouteCommand.class)))
+        given(findRouteUseCase.findRoute(any(FindRouteCommand.class)))
                 .willReturn(response);
 
         // when

@@ -15,6 +15,8 @@ import subway.common.mapper.RouteMapper;
 import subway.domain.Line;
 import subway.domain.Route;
 import subway.domain.Station;
+import subway.domain.fare.Fare;
+import subway.domain.fare.FarePolicy;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,17 +25,19 @@ public class RouteQueryService implements FindRouteUseCase {
     private final LoadLinePort loadLinePort;
     private final LoadStationPort loadStationPort;
     private final RouteFinderPort routeFinderPort;
+    private final FarePolicy farePolicy;
 
     public RouteQueryService(final LoadLinePort loadLinePort,
             final LoadStationPort loadStationPort,
-            final RouteFinderPort routeFinderPort) {
+            final RouteFinderPort routeFinderPort, final FarePolicy farePolicy) {
         this.loadLinePort = loadLinePort;
         this.loadStationPort = loadStationPort;
         this.routeFinderPort = routeFinderPort;
+        this.farePolicy = farePolicy;
     }
 
     @Override
-    public RouteQueryResponse foundRoute(final FindRouteCommand command) {
+    public RouteQueryResponse findRoute(final FindRouteCommand command) {
         List<Line> lines = loadLinePort.findAll();
         Optional<Station> source = loadStationPort.findById(command.getSourceStationId());
         Optional<Station> target = loadStationPort.findById(command.getTargetStationId());
@@ -42,7 +46,8 @@ public class RouteQueryService implements FindRouteUseCase {
         }
 
         Route route = routeFinderPort.findRoute(source.get(), target.get(), lines);
+        Fare fare = farePolicy.calculate(route);
 
-        return RouteMapper.toResponse(route);
+        return RouteMapper.toResponse(route, fare);
     }
 }

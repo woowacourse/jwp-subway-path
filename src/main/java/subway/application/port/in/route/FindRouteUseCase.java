@@ -5,5 +5,5 @@ import subway.application.port.in.route.dto.response.RouteQueryResponse;
 
 public interface FindRouteUseCase {
 
-    RouteQueryResponse foundRoute(FindRouteCommand command);
+    RouteQueryResponse findRoute(FindRouteCommand command);
 }
