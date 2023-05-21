@@ -172,14 +172,14 @@ public class Line {
         }
     }
 
-    public Section getUpwardEndSection() {
+    private Section getUpwardEndSection() {
         return sections.stream()
                 .filter(Section::isEndOfUpward)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("[ERROR] 상행 종점을 찾을 수 없습니다."));
     }
 
-    public Section getDownwardEndSection() {
+    private Section getDownwardEndSection() {
         return sections.stream()
                 .filter(Section::isEndOfDownward)
                 .findFirst()
