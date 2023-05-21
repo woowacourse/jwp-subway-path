@@ -47,27 +47,25 @@ class PathServiceTest {
         노선_역_더미_등록();
     }
 
+    //
+    //              가락시장
+    //              /    \
+    //             /      4
+    //            /        \
+    //           /         문정
+    //          /            \
+    //         8              8
+    //        /                \
+    //       /                 장지
+    //      /                    \
+    //     /                      10
+    //    /                        \
+    //   수서 -------- 4 ---------- 복정
+    //
+    //    경기광주 ----- 10 ------- 삼동
+
     @Test
     void 시작역부터_도착역의_최단_경로를_구할_수_있다() {
-        // given
-        //
-        //              가락시장
-        //              /    \
-        //             /      4
-        //            /        \
-        //           /         문정
-        //          /            \
-        //         8              8
-        //        /                \
-        //       /                 장지
-        //      /                    \
-        //     /                      10
-        //    /                        \
-        //   수서 -------- 4 ---------- 복정
-        //
-        //
-        //    경기광주 ----- 10 ------- 삼동
-        //
         // when
         final PathResponse pathResponse = pathService.findPath(new PathDto("수서역", "장지역"));
 
@@ -81,7 +79,7 @@ class PathServiceTest {
 
     @Test
     void 출발역이_노선에_없을_경우_예외가_발생한다() {
-        // then
+        // expect
         assertThatThrownBy(() -> pathService.findPath(new PathDto("터틀역", "수서역")))
                 .isInstanceOf(StationNotFoundException.class)
                 .hasMessageContaining("출발역이 존재하지 않습니다.");
@@ -89,7 +87,7 @@ class PathServiceTest {
 
     @Test
     void 도착역이_노선에_없을_경우_예외가_발생한다() {
-        // then
+        // expect
         assertThatThrownBy(() -> pathService.findPath(new PathDto("수서역", "터틀역")))
                 .isInstanceOf(StationNotFoundException.class)
                 .hasMessageContaining("도착역이 존재하지 않습니다.");
@@ -97,26 +95,7 @@ class PathServiceTest {
 
     @Test
     void 두_역_사이_경로가_존재하지_않는_경우_예외가_발생한다() {
-        // given
-        //
-        //              가락시장
-        //              /    \
-        //             /      4
-        //            /        \
-        //           /         문정
-        //          /            \
-        //         8              8
-        //        /                \
-        //       /                 장지
-        //      /                    \
-        //     /                      10
-        //    /                        \
-        //   수서 -------- 4 ---------- 복정
-        //
-        //
-        //    경기광주 ----- 10 ------- 삼동
-        //
-        // when
+        // expect
         assertThatThrownBy(() -> pathService.findPath(new PathDto("경기광주역", "수서역")))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageContaining("두 역 사이의 경로가 존재하지 않습니다");

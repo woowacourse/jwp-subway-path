@@ -113,7 +113,6 @@ class LineIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        // expect
         return Long.parseLong(createResponse.header("Location").split("/")[2]);
     }
 }
