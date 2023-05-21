@@ -1,4 +1,4 @@
-package subway.application.service.Route;
+package subway.application.service.route;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

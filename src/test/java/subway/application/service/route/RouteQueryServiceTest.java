@@ -1,4 +1,4 @@
-package subway.application.service.Route;
+package subway.application.service.route;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
