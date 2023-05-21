@@ -37,7 +37,7 @@ class PathFinderTest {
 
     @Test
     void 모든_Section_정보를_토대로_그래프_자료구조를_초기화한다() {
-        Graph<Station, DefaultEdge> subwayRoute = pathFinder.getSubwayRoute();
+        Graph<Station, StationEdge> subwayRoute = pathFinder.getSubwayRoute();
 
         assertThat(subwayRoute.vertexSet().isEmpty()).isFalse();
         assertThat(subwayRoute.edgeSet().isEmpty()).isFalse();

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PathFinder {
 
-    private final Graph<Station, DefaultEdge> subwayRoute = new DefaultUndirectedWeightedGraph<>(DefaultEdge.class);
+    private final Graph<Station, StationEdge> subwayRoute = new DefaultUndirectedWeightedGraph<>(StationEdge.class);
 
     public PathFinder(final List<Section> sections) {
         for (final Section section : sections) {
@@ -24,18 +24,19 @@ public class PathFinder {
 
         subwayRoute.addVertex(upStation);
         subwayRoute.addVertex(downStation);
-        subwayRoute.addEdge(upStation, downStation);
+        StationEdge stationEdge = new StationEdge(section.getDistance(), section.getLine());
+        subwayRoute.addEdge(upStation, downStation, stationEdge);
         subwayRoute.setEdgeWeight(upStation, downStation, distance.getValue());
     }
 
     public List<Station> findShortestPath(final Station startStation, final Station endStation) {
-        DijkstraShortestPath<Station, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayRoute);
+        DijkstraShortestPath<Station, StationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayRoute);
 
         return dijkstraShortestPath.getPath(startStation, endStation).getVertexList();
     }
 
     public double calculateShortestDistance(final Station startStation, final Station endStation) {
-        DijkstraShortestPath<Station, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayRoute);
+        DijkstraShortestPath<Station, StationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayRoute);
 
         return dijkstraShortestPath.getPathWeight(startStation, endStation);
     }
