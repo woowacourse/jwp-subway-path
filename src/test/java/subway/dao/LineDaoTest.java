@@ -21,7 +21,7 @@ class LineDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private final Line line = new Line(1L, "2호선", "초록색");
+    private final Line line = new Line(1L, "2호선", "초록색", 0);
 
 
     @BeforeEach
@@ -71,7 +71,7 @@ class LineDaoTest {
         Line savedLine = lineDao.insert(line);
         Long id = savedLine.getId();
 
-        Line newLine = new Line(id, "신림선", "청색");
+        Line newLine = new Line(id, "신림선", "청색", 0);
 
         // when
         lineDao.update(newLine);

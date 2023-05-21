@@ -45,7 +45,7 @@ class SectionRepositoryTest {
 
         this.신림역 = new Station(1L, "신림");
         this.봉천역 = new Station(2L, "봉천");
-        this._2호선 = new Line(1L, "2호선", "초록색");
+        this._2호선 = new Line(1L, "2호선", "초록색", 0);
     }
 
     private void insert_신림역_봉천역_2호선() {

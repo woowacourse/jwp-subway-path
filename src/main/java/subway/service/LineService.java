@@ -18,15 +18,15 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFee()));
         return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-            .map(LineResponse::of)
-            .collect(Collectors.toList());
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -34,7 +34,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFee()));
     }
 
     public void deleteLineById(Long id) {

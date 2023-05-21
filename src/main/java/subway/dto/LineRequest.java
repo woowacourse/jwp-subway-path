@@ -3,15 +3,16 @@ package subway.dto;
 public class LineRequest {
     private final String name;
     private final String color;
+    private final Integer extraFee;
 
     private LineRequest() {
-        this.name = null;
-        this.color = null;
+        this(null, null, null);
     }
 
-    public LineRequest(String name, String color) {
+    public LineRequest(String name, String color, Integer extraFee) {
         this.name = name;
         this.color = color;
+        this.extraFee = extraFee;
     }
 
     public String getName() {
@@ -22,4 +23,7 @@ public class LineRequest {
         return color;
     }
 
+    public Integer getExtraFee() {
+        return extraFee;
+    }
 }

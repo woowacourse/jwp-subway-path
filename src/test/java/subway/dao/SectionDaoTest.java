@@ -25,7 +25,7 @@ class SectionDaoTest {
 
     private final Station 신림역 = new Station(1L, "신림");
     private final Station 봉천역 = new Station(2L, "봉천");
-    private final Line _2호선 = new Line(1L, "2호선", "초록색");
+    private final Line _2호선 = new Line(1L, "2호선", "초록색", 0);
 
     @BeforeEach
     void setUp() {

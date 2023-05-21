@@ -20,8 +20,8 @@ class SectionsTest {
     private final Station 낙성대역 = new Station(3L, "낙성대");
     private final Station 서울대입구역 = new Station(4L, "서울대입구");
 
-    private final Line _2호선 = new Line(1L, "2호선", "green");
-    private final Line 신림선 = new Line(2L, "신림선", "청색");
+    private final Line _2호선 = new Line(1L, "2호선", "green", 0);
+    private final Line 신림선 = new Line(2L, "신림선", "청색", 0);
 
     private final Section _2호선_신림_봉천_거리5 = new Section(1L, _2호선, 신림역, 봉천역, new Distance(5));
     private final Section _2호선_봉천_낙성대_거리5 = new Section(2L, _2호선, 봉천역, 낙성대역, new Distance(5));

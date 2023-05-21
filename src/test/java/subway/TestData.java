@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TestData {
 
-    public static final Line 신림선 = new Line(1L, "신림선", "신림선");
+    public static final Line 신림선 = new Line(1L, "신림선", "신림선", 100);
     public static final Station 신림역 = new Station(1L, "신림");
     public static final Station 당곡역 = new Station(2L, "당곡");
     public static final Station 보라매병원역 = new Station(3L, "보라매병원");
@@ -17,18 +17,18 @@ public class TestData {
     public static final Station 서울지방병무청역 = new Station(5L, "서울지방병무청");
     public static final Station 서원역 = new Station(6L, "서원");
 
-    public static final Line _2호선 = new Line(2L, "2호선", "2호선");
+    public static final Line _2호선 = new Line(2L, "2호선", "2호선", 0);
     public static final Station 봉천역 = new Station(7L, "봉천");
     public static final Station 서울대입구역 = new Station(8L, "서울대입구");
     public static final Station 사당역 = new Station(9L, "사당");
     public static final Station 방배역 = new Station(10L, "방배");
 
-    public static final Line _4호선 = new Line(3L, "4호선", "4호선");
+    public static final Line _4호선 = new Line(3L, "4호선", "4호선", 300);
     public static final Station 총신대입구역 = new Station(11L, "총신대입구");
     public static final Station 동작역 = new Station(12L, "동작");
     public static final Station 남태령역 = new Station(13L, "남태령");
 
-    public static final Line _7호선 = new Line(4L, "7호선", "7호선");
+    public static final Line _7호선 = new Line(4L, "7호선", "7호선", 400);
     public static final Station 내방역 = new Station(14L, "내방");
     public static final Station 남성역 = new Station(15L, "남성");
     public static final Station 상도역 = new Station(16L, "상도");
