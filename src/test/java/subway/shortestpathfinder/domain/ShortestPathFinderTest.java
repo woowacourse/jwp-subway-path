@@ -11,6 +11,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static subway.shortestpathfinder.domain.AgeGroupFeeCalculator.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 class ShortestPathFinderTest {
@@ -60,7 +61,7 @@ class ShortestPathFinderTest {
         final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(Set.of(line1, line2));
         
         // when
-        final ShortestPathResult result = shortestPathFinder.getShortestPath("김포공항역", "잠실역");
+        final ShortestPathResult result = shortestPathFinder.getShortestPath("김포공항역", "잠실역", ADULT);
         
         // then
         assertThat(result.getShortestPath()).containsExactly("김포공항역", "마곡나루역", "화정역", "가양역", "잠실역");
@@ -113,7 +114,7 @@ class ShortestPathFinderTest {
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> shortestPathFinder.getShortestPath(startStationName, endStationName));
+                .isThrownBy(() -> shortestPathFinder.getShortestPath(startStationName, endStationName, ADULT));
     }
     
     @Test
@@ -160,7 +161,7 @@ class ShortestPathFinderTest {
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> shortestPathFinder.getShortestPath("김포공항역", "가양역"));
+                .isThrownBy(() -> shortestPathFinder.getShortestPath("김포공항역", "가양역", ADULT));
     }
     
     @ParameterizedTest(name = "{displayName} : stationName = {0}")
@@ -208,6 +209,6 @@ class ShortestPathFinderTest {
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> shortestPathFinder.getShortestPath(stationName, "가양역"));
+                .isThrownBy(() -> shortestPathFinder.getShortestPath(stationName, "가양역", ADULT));
     }
 }

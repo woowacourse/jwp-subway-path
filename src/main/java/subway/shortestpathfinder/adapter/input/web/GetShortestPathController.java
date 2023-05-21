@@ -20,7 +20,11 @@ public class GetShortestPathController {
     
     @GetMapping("/shortest-path")
     public ResponseEntity<GetShortestPathResponse> getShortestPath(@RequestBody @Valid final GetShortestPathRequest request) {
-        final GetShortestPathResponse response = useCase.getShortestPath(request.getStartStationName(), request.getEndStationName());
+        final GetShortestPathResponse response = useCase.getShortestPath(
+                request.getStartStationName(),
+                request.getEndStationName(),
+                request.getAgeGroupFeeCalculator()
+        );
         return ResponseEntity.ok(response);
     }
 }

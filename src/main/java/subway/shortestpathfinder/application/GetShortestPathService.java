@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.application.port.output.GetAllLinePort;
 import subway.shortestpathfinder.application.port.input.GetShortestPathUseCase;
+import subway.shortestpathfinder.domain.AgeGroupFeeCalculator;
 import subway.shortestpathfinder.domain.ShortestPathFinder;
 import subway.shortestpathfinder.domain.ShortestPathResult;
 import subway.shortestpathfinder.dto.GetShortestPathResponse;
@@ -18,9 +19,13 @@ public class GetShortestPathService implements GetShortestPathUseCase {
     }
     
     @Override
-    public GetShortestPathResponse getShortestPath(final String startStationName, final String endStationName) {
+    public GetShortestPathResponse getShortestPath(
+            final String startStationName,
+            final String endStationName,
+            final AgeGroupFeeCalculator ageGroupFeeCalculator
+    ) {
         final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(getAllLinePort.getAll());
-        final ShortestPathResult result = shortestPathFinder.getShortestPath(startStationName, endStationName);
+        final ShortestPathResult result = shortestPathFinder.getShortestPath(startStationName, endStationName, ageGroupFeeCalculator);
         return new GetShortestPathResponse(result);
     }
 }

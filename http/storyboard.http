@@ -7,7 +7,7 @@ Content-Type: application/json
 {
   "name": "1호선",
   "color": "파랑",
-  "extraCharge": 500
+  "extraCharge": 1000
 }
 
 > Expected response:
@@ -95,13 +95,15 @@ Content-Type: application/json
 ###
 # @name getShortestPath
 # @description Retrieve shortest shortestPathFinder
+# 성인 요금
 GET http://localhost:8080/shortest-path
 Content-Type: application/json
 Accept: application/json
 
 {
   "startStationName": "잠실역",
-  "endStationName": "가정역"
+  "endStationName": "가정역",
+  "ageGroupFeeCalculator": "ADULT"
 }
 
 > Expected response:
@@ -116,6 +118,64 @@ Accept: application/json
 >   ],
 >   "shortestDistance": 8,
 >   "fee": 2250
+> }
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+# 청소년 요금
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "가정역",
+  "ageGroupFeeCalculator": "TEENAGER"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "선릉역",
+>     "가정역"
+>   ],
+>   "shortestDistance": 8,
+>   "fee": 1520
+> }
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+# 어린이 요금
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "가정역",
+  "ageGroupFeeCalculator": "CHILD"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "선릉역",
+>     "가정역"
+>   ],
+>   "shortestDistance": 8,
+>   "fee": 950
 > }
 
 
@@ -326,7 +386,8 @@ Accept: application/json
 
 {
   "startStationName": "잠실역",
-  "endStationName": "신길역"
+  "endStationName": "화정역",
+  "ageGroupFeeCalculator": "ADULT"
 }
 
 > Expected response:
@@ -336,10 +397,67 @@ Accept: application/json
 >   "shortestPath": [
 >     "잠실역",
 >     "청라역",
->     "신길역"
+>     "신도림역",
+>     "화정역"
 >   ],
->   "shortestDistance": 8,
->   "fee": 2250
+>   "shortestDistance": 11,
+>   "fee": 2350
+> }
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "화정역",
+  "ageGroupFeeCalculator": "TEENAGER"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "신도림역",
+>     "화정역"
+>   ],
+>   "shortestDistance": 11,
+>   "fee": 1600
+> }
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "화정역",
+  "ageGroupFeeCalculator": "CHILD"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "신도림역",
+>     "화정역"
+>   ],
+>   "shortestDistance": 11,
+>   "fee": 1000
 > }
 
 

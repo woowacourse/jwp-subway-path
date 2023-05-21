@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
 import subway.shortestpathfinder.adapter.input.web.GetShortestPathController;
 import subway.shortestpathfinder.application.port.input.GetShortestPathUseCase;
+import subway.shortestpathfinder.domain.AgeGroupFeeCalculator;
 import subway.shortestpathfinder.dto.GetShortestPathResponse;
 
 import java.util.HashMap;
@@ -44,12 +45,13 @@ class GetShortestPathControllerTest {
         final Long shortestDistance = 59L;
         final Long fee = 2250L;
         final GetShortestPathResponse shortestPathResponse = new GetShortestPathResponse(shortestPath, shortestDistance, fee);
-        given(useCase.getShortestPath("잠실역", "계양역")).willReturn(shortestPathResponse);
+        given(useCase.getShortestPath("잠실역", "계양역", AgeGroupFeeCalculator.ADULT)).willReturn(shortestPathResponse);
         
         // expect
         final Map<String, Object> params = new HashMap<>();
         params.put("startStationName", "잠실역");
         params.put("endStationName", "계양역");
+        params.put("ageGroupFeeCalculator", "ADULT");
         
         RestAssuredMockMvc.given().log().all()
                 .contentType(ContentType.JSON)
@@ -70,6 +72,7 @@ class GetShortestPathControllerTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("startStationName", startStationName);
         params.put("endStationName", "계양역");
+        params.put("ageGroupFeeCalculator", "ADULT");
         
         RestAssuredMockMvc.given().log().all()
                 .contentType(ContentType.JSON)
@@ -87,6 +90,41 @@ class GetShortestPathControllerTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("startStationName", "강남역");
         params.put("endStationName", endStationName);
+        params.put("ageGroupFeeCalculator", "ADULT");
+        
+        RestAssuredMockMvc.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().get("/shortest-path")
+                .then().log().all()
+                .assertThat()
+                .status(HttpStatus.BAD_REQUEST);
+    }
+    
+    @Test
+    void 최단_경로를_조회시_ageGroup이_null이면_예외_발생() {
+        // given
+        final Map<String, Object> params = new HashMap<>();
+        params.put("startStationName", "강남역");
+        params.put("endStationName", "잠실역");
+        params.put("ageGroup", null);
+        
+        RestAssuredMockMvc.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().get("/shortest-path")
+                .then().log().all()
+                .assertThat()
+                .status(HttpStatus.BAD_REQUEST);
+    }
+    
+    @Test
+    void 최단_경로를_조회시_ageGroup에_없는_것을_입력_시_예외_발생() {
+        // given
+        final Map<String, Object> params = new HashMap<>();
+        params.put("startStationName", "강남역");
+        params.put("endStationName", "잠실역");
+        params.put("ageGroup", "adult");
         
         RestAssuredMockMvc.given().log().all()
                 .contentType(ContentType.JSON)

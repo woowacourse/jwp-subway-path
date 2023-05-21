@@ -26,7 +26,11 @@ public class ShortestPathFinder {
         this.lines = lines;
     }
     
-    public ShortestPathResult getShortestPath(final String startStationName, final String endStationName) {
+    public ShortestPathResult getShortestPath(
+            final String startStationName,
+            final String endStationName,
+            final AgeGroupFeeCalculator ageGroupFeeCalculator
+    ) {
         final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
         final DijkstraShortestPath<Station, Section> path = new DijkstraShortestPath<>(graph);
         lines.forEach(line -> line.addLineToGraph(graph));
@@ -36,7 +40,8 @@ public class ShortestPathFinder {
         
         final List<String> shortestPath = getShortestPath(graphPath, startStationName, endStationName);
         final Long shortestDistance = (long) graphPath.getWeight();
-        return new ShortestPathResult(shortestPath, shortestDistance, calculateFee(shortestDistance) + getExtraCharge(graphPath));
+        final Long fee = ageGroupFeeCalculator.calculateFee(calculateFee(shortestDistance) + getExtraCharge(graphPath));
+        return new ShortestPathResult(shortestPath, shortestDistance, fee);
     }
     
     private void validateExistStation(final String stationName, final WeightedMultigraph<Station, Section> graph) {

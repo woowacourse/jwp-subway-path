@@ -6,6 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import subway.integrated.IntegrationTest;
@@ -17,8 +18,9 @@ import static org.hamcrest.Matchers.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 class GetShortestPathIntegratedTest extends IntegrationTest {
-    @Test
-    void 최단_경로를_조회한다() {
+    @ParameterizedTest(name = "{displayName} : ageGroup = {0}, fee = {1}")
+    @CsvSource(value = {"ADULT,4250", "TEENAGER,3120", "CHILD,1950"})
+    void 최단_경로를_조회한다(final String ageGroup, final int fee) {
         // given
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
@@ -123,6 +125,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         params.clear();
         params.put("startStationName", "잠실역");
         params.put("endStationName", "계양역");
+        params.put("ageGroupFeeCalculator", ageGroup);
         
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -133,7 +136,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("shortestPath", contains("잠실역", "청라역", "계양역"))
                 .body("shortestDistance", is(59))
-                .body("fee", is(4250));
+                .body("fee", is(fee));
     }
     
     @Test
@@ -242,6 +245,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         params.clear();
         params.put("startStationName", "강남역");
         params.put("endStationName", "계양역");
+        params.put("ageGroup", "ADULT");
         
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -258,6 +262,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("startStationName", startStationName);
         params.put("endStationName", "계양역");
+        params.put("ageGroup", "ADULT");
         
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -275,6 +280,41 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("startStationName", "강남역");
         params.put("endStationName", endStationName);
+        params.put("ageGroup", "ADULT");
+        
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().get("/shortest-path")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
+    void 최단_경로를_조회시_ageGroup이_null이면_예외_발생() {
+        // given
+        final Map<String, Object> params = new HashMap<>();
+        params.put("startStationName", "강남역");
+        params.put("endStationName", "잠실역");
+        params.put("ageGroup", null);
+        
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().get("/shortest-path")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
+    void 최단_경로를_조회시_ageGroup에_없는_것을_입력_시_예외_발생() {
+        // given
+        final Map<String, Object> params = new HashMap<>();
+        params.put("startStationName", "강남역");
+        params.put("endStationName", "잠실역");
+        params.put("ageGroupFeeCalculator", "adult");
         
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

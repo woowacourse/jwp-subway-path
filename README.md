@@ -145,7 +145,7 @@
 
 ## step3
 ### 도메인
-- [ ] 노선별 추가 요금 정책 반영
+- [x] 노선별 추가 요금 정책 반영
   - [x] Line
     - [x] 해당 노선의 추가 요금 정보도 가진다. (extraCharge)
     - [x] 예외 처리
@@ -156,11 +156,13 @@
   - [x] ShortestPathFinder
     - [x] 요금 계산 시, 거쳐간 노선 중 가장 추가 요금이 높은 노선의 추가 요금을 더한다.
 
-- [ ] 연령별 요금 할인 정책 반영
-  - [ ] AgeGroup (Enum class)
-    - [ ] 각 연령층마다의 요금 계산식이 다르다.
-  - [ ] ShortestPathFinder
-    - [ ] 연령층 정보(AgeGroup)를 같이 받아서 AgeGroup를 통해 요금을 최종 계산한다.
+- [x] 연령별 요금 할인 정책 반영
+  - [x] AgeGroup (Enum class)
+    - [x] 각 연령층마다의 요금 계산식이 다르다.
+  - [x] ShortestPathFinder
+    - [x] 연령층 정보(AgeGroup)를 같이 받아서 AgeGroup를 통해 요금을 최종 계산한다.
+      - 청소년: 운임에서 350원을 공제한 금액의 20%할인
+      - 어린이: 운임에서 350원을 공제한 금액의 50%할인
 
 ### API
 - [x] 노선 입력 시, 해당 노선의 추가 요금 정보도 입력하는 것으로 변경
@@ -170,9 +172,9 @@
     - [x] [제한 사항] 추가 요금은 음수일 수 없다.
 - [x] 노선 조회 시, 노선의 추가 요금 정보도 같이 가져오는 것으로 변경
 - [x] 경로 조회 시, 거쳐간 노선 중 가장 추가 요금이 높은 노선의 추가 요금을 더해서 반환하는 것으로 변경
-- [ ] 경로 조회 시, AgeGroup(CHILD, TEENAGER, ADULT 셋 중 하나)을 더 입력하는 것으로 변경
-  - [ ] [제한 사항] AgeGroup은 Null일 수 없다.
-  - [ ] [제한 사항] CHILD, TEENAGER, ADULT 셋 중 하나만 입력할 수 있다.
+- [x] 경로 조회 시, AgeGroup(CHILD, TEENAGER, ADULT 셋 중 하나)을 더 입력하는 것으로 변경
+  - [x] [제한 사항] AgeGroup은 Null일 수 없다.
+  - [x] [제한 사항] CHILD, TEENAGER, ADULT 셋 중 하나만 입력할 수 있다.
 
 ### DB
 - [x] LINE 테이블에 extra_charge 컬럼 추가

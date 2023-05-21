@@ -16,6 +16,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
+import static subway.shortestpathfinder.domain.AgeGroupFeeCalculator.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
@@ -73,7 +74,7 @@ class GetShortestPathServiceTest {
         given(getAllLinePort.getAll()).willReturn(Set.of(line1, line2));
         
         // when
-        final GetShortestPathResponse response = service.getShortestPath("김포공항역", "선릉역");
+        final GetShortestPathResponse response = service.getShortestPath("김포공항역", "선릉역", ADULT);
         
         // then
         assertAll(
