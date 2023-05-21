@@ -1,29 +1,12 @@
 package subway.domain.path;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.domain.core.Section;
 
-public class SectionEdge extends DefaultWeightedEdge {
+public interface SectionEdge {
 
-    private final Section section;
-    private final int surcharge;
-    private final long lineId;
+    Section toSection();
 
-    public SectionEdge(final Section section, final int surcharge, final long lineId) {
-        this.section = section;
-        this.surcharge = surcharge;
-        this.lineId = lineId;
-    }
+    int getSurcharge();
 
-    public Section toSection() {
-        return section;
-    }
-
-    public int getSurcharge() {
-        return surcharge;
-    }
-
-    public long getLineId() {
-        return lineId;
-    }
+    long getLineId();
 }

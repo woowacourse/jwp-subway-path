@@ -17,6 +17,7 @@ import subway.dto.SectionDto;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
 import subway.exception.LineNotFoundException;
+import subway.jgraph.JgraphtPathFinder;
 import subway.repository.LineRepository;
 
 @Transactional(readOnly = true)
@@ -33,7 +34,7 @@ public class PathService {
 
     public ShortestPathResponse shortestPath(final ShortestPathRequest request) {
         final Subway subway = new Subway(lineRepository.findAll());
-        final PathFinder pathFinder = new PathFinder(subway);
+        final PathFinder pathFinder = new JgraphtPathFinder(subway);
         final Path path = pathFinder.find(request.getStart(), request.getEnd());
         final int fare = farePolicy.calculate(path, new Passenger(request.getAge()), 0);
         return new ShortestPathResponse(toLineDtos(path.getSectionEdges()), path.calculateTotalDistance(), fare);

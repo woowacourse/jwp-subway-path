@@ -1,8 +1,9 @@
 package subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -20,7 +21,7 @@ class BaseFarePolicyTest {
     @Test
     void 기본운임은_입력받은_운임에_1250원을_더한값을_반환한다() {
         // given
-        final Path path = new Path(Collections.emptyList());
+        final Path path = mock(Path.class);
         final Passenger passenger = new Passenger(20);
 
         // when
@@ -33,11 +34,11 @@ class BaseFarePolicyTest {
     @Test
     void 기본운임은_입력받은_운임에_1250원과_노선운임_중_가장높은_값을_더하여_반환한다() {
         // given
-        final Path path = new Path(List.of(
-                new SectionEdge(new Section("A", "B", 5), 100, 1),
-                new SectionEdge(new Section("B", "C", 10), 100, 1),
-                new SectionEdge(new Section("C", "T", 10), 300, 2),
-                new SectionEdge(new Section("T", "D", 10), 100, 1)
+        final Path path = mock(Path.class);
+        given(path.getSectionEdges()).willReturn(List.of(
+                generateSectionEdgeStub(100),
+                generateSectionEdgeStub(300),
+                generateSectionEdgeStub(100)
         ));
         final Passenger passenger = new Passenger(20);
 
@@ -46,5 +47,24 @@ class BaseFarePolicyTest {
 
         // then
         assertThat(result).isEqualTo(1550);
+    }
+
+    private SectionEdge generateSectionEdgeStub(final int surcharge) {
+        return new SectionEdge() {
+            @Override
+            public Section toSection() {
+                return null;
+            }
+
+            @Override
+            public int getSurcharge() {
+                return surcharge;
+            }
+
+            @Override
+            public long getLineId() {
+                return 0;
+            }
+        };
     }
 }

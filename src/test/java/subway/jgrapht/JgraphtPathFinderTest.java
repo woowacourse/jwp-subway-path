@@ -1,4 +1,4 @@
-package subway.domain.path;
+package subway.jgrapht;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -10,10 +10,14 @@ import org.junit.jupiter.api.Test;
 import subway.domain.core.Line;
 import subway.domain.core.Section;
 import subway.domain.core.Subway;
+import subway.domain.path.Path;
+import subway.domain.path.PathFinder;
+import subway.domain.path.SectionEdge;
+import subway.jgraph.JgraphtPathFinder;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class PathFinderTest {
+class JgraphtPathFinderTest {
 
     @Test
     void 최단_경로를_탐색한다() {
@@ -28,7 +32,7 @@ class PathFinderTest {
                         new Section("B", "Y", 5)
                 ))
         ));
-        final PathFinder pathFinder = new PathFinder(subway);
+        final PathFinder pathFinder = new JgraphtPathFinder(subway);
 
         // when
         final Path path = pathFinder.find("A", "Y");
