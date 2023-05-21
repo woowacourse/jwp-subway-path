@@ -4,6 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jmx.export.SpringModelMBean;
 import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
 import subway.persistence.NullChecker;
@@ -23,7 +24,8 @@ public class H2LineDao implements LineDao {
             Line.of(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("extra_fare")
             );
 
     public H2LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -39,21 +41,22 @@ public class H2LineDao implements LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return Line.of(lineId, line.getName(), line.getColor());
+        return Line.of(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override
     public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "select id, name, color, extra_fare from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
     public Optional<Line> findById(Long id) {
         NullChecker.isNull(id);
-        String sql = "select id, name, color from LINE WHERE id = ?";
+        String sql = "select id, name, color, extra_fare from LINE WHERE id = ?";
 
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -65,8 +68,8 @@ public class H2LineDao implements LineDao {
     @Override
     public void update(Line newLine) {
         NullChecker.isNull(newLine);
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
+        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getExtraFare(), newLine.getId()});
     }
 
     @Override

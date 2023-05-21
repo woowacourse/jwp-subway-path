@@ -13,8 +13,8 @@ public class PathTestFixture {
     public static final Station 몽촌토성 = Station.of(8L, "몽촌토성");
     public static final Station 석촌 = Station.of(9L, "석촌");
 
-    public static final Line _2호선 = Line.of(1L, "2호선", "초록색");
-    public static final Line _8호선 = Line.of(3L, "8호선", "분홍색");
+    public static final Line _2호선 = Line.of(1L, "2호선", "초록색", 0);
+    public static final Line _8호선 = Line.of(3L, "8호선", "분홍색", 0);
 
     public static final Section 강변_잠실나루 = Section.of(_2호선, 강변, 잠실나루, 3);
     public static final Section 잠실나루_잠실 = Section.of(_2호선, 잠실나루, 잠실, 7);

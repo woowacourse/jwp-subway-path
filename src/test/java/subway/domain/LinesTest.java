@@ -19,8 +19,8 @@ class LinesTest {
     @DisplayName("노선들을 갖는다.")
     void linesCreateTest() {
         // given
-        Line line1 = Line.of(1L, "1호선", "남색");
-        Line line2 = Line.of(2L, "2호선", "초록색");
+        Line line1 = Line.of(1L, "1호선", "남색", 1000);
+        Line line2 = Line.of(2L, "2호선", "초록색", 1000);
 
         // then
         assertDoesNotThrow(() -> Lines.from(new ArrayList<>(List.of(line1, line2))));
@@ -30,9 +30,9 @@ class LinesTest {
     @DisplayName("중복된 이름을 가지는 노선을 생성할 수 없다.")
     void duplicatedLineNameExceptionTest() {
         // given
-        Line line1 = Line.of(1L, "1호선", "남색");
-        Line line2 = Line.of(2L, "2호선", "초록색");
-        Line line3 = Line.of("2호선", "빨간색");
+        Line line1 = Line.of(1L, "1호선", "남색", 1000);
+        Line line2 = Line.of(2L, "2호선", "초록색", 1000);
+        Line line3 = Line.of("2호선", "빨간색", 1000);
         Lines lines = Lines.from(new ArrayList<>(List.of(line1, line2)));
 
         // then
@@ -45,9 +45,9 @@ class LinesTest {
     @DisplayName("중복된 색상을 가지는 노선을 생성할 수 없다.")
     void duplicatedLineColorExceptionTest() {
         // given
-        Line line1 = Line.of(1L, "1호선", "남색");
-        Line line2 = Line.of(2L, "2호선", "초록색");
-        Line line3 = Line.of("3호선", "초록색");
+        Line line1 = Line.of(1L, "1호선", "남색", 1000);
+        Line line2 = Line.of(2L, "2호선", "초록색", 1000);
+        Line line3 = Line.of("3호선", "초록색", 1000);
         Lines lines = Lines.from(new ArrayList<>(List.of(line1, line2)));
 
         // then

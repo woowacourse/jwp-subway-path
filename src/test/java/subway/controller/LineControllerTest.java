@@ -32,7 +32,7 @@ class LineControllerTest {
     @Test
     @DisplayName("createLine 요청 메세지 검증 기능 테스트")
     void validateCreateLineDtoProperties() throws Exception {
-        LineRequest request = new LineRequest(null, null);
+        LineRequest request = new LineRequest(null, null, null);
         LineResponse response = new LineResponse(1L, null, null);
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -49,7 +49,7 @@ class LineControllerTest {
     @Test
     @DisplayName("updateLine 요청 메세지 검증 기능 테스트")
     void validateUpdateLineDtoProperties() throws Exception {
-        LineRequest request = new LineRequest(null, null);
+        LineRequest request = new LineRequest(null, null, null);
         ObjectMapper objectMapper = new ObjectMapper();
 
         mockMvc.perform(put("/lines/1")

@@ -11,9 +11,10 @@ create table if not exists STATION
 
 create table if not exists LINE
 (
-    id      bigint          auto_increment not null,
-    name    varchar(255)    not null unique,
-    color   varchar(20)     not null,
+    id          bigint          auto_increment not null,
+    name        varchar(255)    not null unique,
+    color       varchar(20)     not null,
+    extra_fare  int             not null,
     primary key(id)
 );
 
@@ -30,9 +31,9 @@ create table if not exists SECTION
     foreign     key(line_id)        references LINE(id)
 );
 
-INSERT INTO line(name, color) VALUES ('1호선', '남색');
-INSERT INTO line(name, color) VALUES ('2호선', '초록색');
-INSERT INTO line(name, color) VALUES ('8호선', '분홍색');
+INSERT INTO line(name, color, extra_fare) VALUES ('1호선', '남색', 0);
+INSERT INTO line(name, color, extra_fare) VALUES ('2호선', '초록색', 0);
+INSERT INTO line(name, color, extra_fare) VALUES ('8호선', '분홍색', 0);
 
 INSERT INTO station(name) VALUES ('잠실나루');
 INSERT INTO station(name) VALUES ('잠실');

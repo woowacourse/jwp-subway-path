@@ -21,8 +21,8 @@ class LineSectionsTest {
     private final Station 잠실나루 = Station.of(1L, "잠실나루");
     private final Station 잠실 = Station.of(2L, "잠실");
     private final Station 강변 = Station.of(3L, "강변");
-    private final Line _2호선 = Line.of(1L, "2호선", "초록색");
-    private final Line _3호선 = Line.of(2L, "3호선", "주황색");
+    private final Line _2호선 = Line.of(1L, "2호선", "초록색", 0);
+    private final Line _3호선 = Line.of(2L, "3호선", "주황색", 0);
 
     @Test
     @DisplayName("역마다 연결된 구간 정보를 관리한다.")

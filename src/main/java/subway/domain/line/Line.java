@@ -6,19 +6,21 @@ public class Line {
     private final Long id;
     private final LineName name;
     private final LineColor color;
+    private final int extraFare;
 
-    private Line(Long id, String name, String color) {
+    public Line(Long id, LineName name, LineColor color, int extraFare) {
         this.id = id;
-        this.name = LineName.from(name);
-        this.color = LineColor.from(color);
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public static Line of(Long id, String name, String color) {
-        return new Line(id, name, color);
+    public static Line of(Long id, String name, String color, int extraFare) {
+        return new Line(id, LineName.from(name), LineColor.from(color), extraFare);
     }
 
-    public static Line of(String name, String color) {
-        return new Line(null, name, color);
+    public static Line of(String name, String color, int extraFare) {
+        return new Line(null, LineName.from(name), LineColor.from(color), extraFare);
     }
 
     public boolean isSameName(Line line) {
@@ -39,6 +41,10 @@ public class Line {
 
     public String getColor() {
         return color.getLineColor();
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override

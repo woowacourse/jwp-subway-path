@@ -1,5 +1,7 @@
 package subway.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +17,8 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    Logger log = LoggerFactory.getLogger(getClass());
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
@@ -35,7 +39,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
+    public ResponseEntity<Void> handleSQLException(SQLException exception) {
+        log.error("Error from handleSQLException", exception);
         return ResponseEntity.badRequest().build();
     }
 
