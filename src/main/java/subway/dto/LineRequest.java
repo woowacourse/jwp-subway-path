@@ -1,6 +1,7 @@
 package subway.dto;
 
 public class LineRequest {
+
     private String name;
     private String color;
 
@@ -19,5 +20,4 @@ public class LineRequest {
     public String getColor() {
         return color;
     }
-
 }

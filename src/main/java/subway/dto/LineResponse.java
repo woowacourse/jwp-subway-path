@@ -1,11 +1,16 @@
 package subway.dto;
 
-import subway.domain.Line;
+import java.util.List;
 
 public class LineResponse {
+
     private Long id;
     private String name;
     private String color;
+    private List<String> stations;
+
+    public LineResponse() {
+    }
 
     public LineResponse(Long id, String name, String color) {
         this.id = id;
@@ -13,8 +18,11 @@ public class LineResponse {
         this.color = color;
     }
 
-    public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+    public LineResponse(Long id, String name, String color, List<String> stations) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.stations = stations;
     }
 
     public Long getId() {

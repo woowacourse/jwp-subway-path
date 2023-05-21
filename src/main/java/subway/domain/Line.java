@@ -1,24 +1,26 @@
 package subway.domain;
 
-import java.util.Objects;
-
 public class Line {
-    private Long id;
+    //TODO: stations 제거?? 동시성 문제. id도 마찬가지임.
+    private static Long sequence = 1L;
+    private final Long id;
+    private final Stations stations;
     private String name;
     private String color;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
+    public Line(String name, String color, Stations stations) {
+        validateStations(stations);
+        this.id = sequence++;
         this.name = name;
         this.color = color;
+        this.stations = stations;
     }
 
-    public Line(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+
+    private void validateStations(Stations stations) {
+        if (stations.getStationsSize() < 2) {
+            throw new IllegalArgumentException("노선 생성시 역을 2개 입력해야합니다");
+        }
     }
 
     public Long getId() {
@@ -29,20 +31,19 @@ public class Line {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getColor() {
         return color;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
+    public Stations getStations() {
+        return stations;
     }
 }
