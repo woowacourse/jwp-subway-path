@@ -18,10 +18,11 @@ class SectionIntegrationTest {
 
     @LocalServerPort
     private int port;
-    private long 잠실나루 = 1L;
-    private long 잠실 = 2L;
-    private long 강변 = 3L;
-    private long _2호선 = 2L;
+    private long 노량진 = 4L;
+    private long 용산 = 5L;
+    private long 서울역 = 6L;
+    
+    private long _1호선 = 1L;
 
     @BeforeEach
     public void setUp() {
@@ -31,13 +32,13 @@ class SectionIntegrationTest {
     @DisplayName("처음 노선에 구간을 등록할 수 있다.")
     @Test
     void createInitSections() {
-        SectionRequest request = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
+        SectionRequest request = new SectionRequest(_1호선, 노량진, 용산, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -46,24 +47,24 @@ class SectionIntegrationTest {
     @Test
     void createSection() {
         //given
-        SectionRequest initRequest = new SectionRequest(_2호선, 강변, 잠실, 10);
+        SectionRequest initRequest = new SectionRequest(_1호선, 서울역, 용산, 10);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         // then
-        SectionRequest mainRequest = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
+        SectionRequest mainRequest = new SectionRequest(_1호선, 노량진, 용산, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -72,24 +73,24 @@ class SectionIntegrationTest {
     @Test
     void createEndSection() {
         // given
-        SectionRequest initRequest = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
+        SectionRequest initRequest = new SectionRequest(_1호선, 노량진, 용산, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         // then
-        SectionRequest mainRequest = new SectionRequest(_2호선, 강변, 잠실나루, 3);
+        SectionRequest mainRequest = new SectionRequest(_1호선, 서울역, 노량진, 3);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -98,23 +99,23 @@ class SectionIntegrationTest {
     @Test
     void deleteSection() {
         // given
-        SectionRequest initRequest1 = new SectionRequest(_2호선, 강변, 잠실, 10);
+        SectionRequest initRequest1 = new SectionRequest(_1호선, 서울역, 용산, 10);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        SectionRequest mainRequest = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
+        SectionRequest mainRequest = new SectionRequest(_1호선, 노량진, 용산, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
@@ -122,7 +123,7 @@ class SectionIntegrationTest {
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete(String.format("/lines/%d/sections?station-id=%d", _2호선, 잠실나루))
+                .when().delete(String.format("/lines/%d/sections?station-id=%d", _1호선, 노량진))
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -132,23 +133,23 @@ class SectionIntegrationTest {
     @Test
     void deleteEndSection() {
         // given
-        SectionRequest initRequest1 = new SectionRequest(_2호선, 강변, 잠실, 10);
+        SectionRequest initRequest1 = new SectionRequest(_1호선, 서울역, 용산, 10);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        SectionRequest mainRequest = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
+        SectionRequest mainRequest = new SectionRequest(_1호선, 노량진, 용산, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
@@ -156,7 +157,7 @@ class SectionIntegrationTest {
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete(String.format("/lines/%d/sections?station-id=%d", _2호선, 강변))
+                .when().delete(String.format("/lines/%d/sections?station-id=%d", _1호선, 서울역))
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -165,13 +166,13 @@ class SectionIntegrationTest {
     @Test
     void deleteLastSection() {
         // given
-        SectionRequest initRequest1 = new SectionRequest(_2호선, 강변, 잠실, 10);
+        SectionRequest initRequest1 = new SectionRequest(_1호선, 서울역, 용산, 10);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post(String.format("/lines/%d/sections", _2호선))
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
@@ -179,7 +180,7 @@ class SectionIntegrationTest {
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete(String.format("/lines/%d/sections?station-id=%d", _2호선, 강변))
+                .when().delete(String.format("/lines/%d/sections?station-id=%d", _1호선, 서울역))
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
