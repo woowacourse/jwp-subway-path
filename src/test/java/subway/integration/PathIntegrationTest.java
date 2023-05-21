@@ -40,7 +40,7 @@ public class PathIntegrationTest extends IntegrationTest {
         assertThat(shortestPath.getPath()).isEqualTo(List.of(
                 SECTION_2, SECTION_3, SECTION_4, SECTION_7));
         assertThat(shortestPath.getDistance().getDistance()).isEqualTo(35);
-        assertThat(shortestPath.getFare()).isEqualTo(1750);
+        assertThat(shortestPath.getFare().getFare()).isEqualTo(1750);
     }
 
     @DisplayName("출발역이 노선에 포함되어 있지 않으면 예외가 발생한다")

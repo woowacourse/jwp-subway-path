@@ -3,6 +3,10 @@ package subway.domain;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.service.DistanceFareCalculator;
+import subway.service.FareCalculator;
+import subway.service.ShortestPath;
+import subway.service.SubwayGraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +20,7 @@ import static subway.fixture.StationFixture.*;
 class SubwayGraphTest {
     static Subway subway;
     static SubwayGraph subwayGraph;
+    static FareCalculator fareCalculator;
     /*
      용산 -> 이촌 -> 서빙고 -> 한남 -> 옥수 -> 응봉 -> 왕십리
                                   ⬇️                ↘️
@@ -34,6 +39,7 @@ class SubwayGraphTest {
     static void setUp() {
         subway = Subway.from(SECTIONS);
         subwayGraph = SubwayGraph.from(subway);
+        fareCalculator = new DistanceFareCalculator();
 
     }
 
@@ -41,10 +47,11 @@ class SubwayGraphTest {
     @Test
     void getShortestPathInOneLine() {
         ShortestPath shortestPath = subwayGraph.getDijkstraShortestPath(STATION_2, STATION_6);
+        Fare fare = fareCalculator.calculate(shortestPath);
 
         assertThat(shortestPath.getPath()).isEqualTo(new ArrayList<>(List.of(SECTION_2, SECTION_3, SECTION_4, SECTION_5)));
         assertThat(shortestPath.getDistance().getDistance()).isEqualTo(35);
-        assertThat(shortestPath.getFare()).isEqualTo(1750);
+        assertThat(fare.getFare()).isEqualTo(1750);
     }
 
     /*
@@ -55,11 +62,12 @@ class SubwayGraphTest {
     @Test
     void getShortestPathInMultiLines() {
         ShortestPath shortestPath = subwayGraph.getDijkstraShortestPath(STATION_2, STATION_19);
+        Fare fare = fareCalculator.calculate(shortestPath);
 
         assertThat(shortestPath.getPath()).isEqualTo(new ArrayList<>(
                 List.of(SECTION_2, SECTION_3, SECTION_4, SECTION_5, SECTION_6, SECTION_19, SECTION_18, SECTION_17, SECTION_16)));
         assertThat(shortestPath.getDistance().getDistance()).isEqualTo(67);
-        assertThat(shortestPath.getFare()).isEqualTo(2350);
+        assertThat(fare.getFare()).isEqualTo(2350);
     }
 
     @DisplayName("최단경로가 존재하지 않을 때 예외를 발생한다")

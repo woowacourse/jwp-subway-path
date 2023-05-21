@@ -1,8 +1,12 @@
-package subway.domain;
+package subway.service;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.Distance;
+import subway.domain.Section;
+import subway.domain.Station;
+import subway.domain.Subway;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +56,7 @@ public class SubwayGraph {
         if (path == null) {
             throw new IllegalArgumentException("최단 경로를 찾을 수 없습니다");
         }
-        
+
         List<SubwayPathWeightedEdge> edgeList = path.getEdgeList();
         List<Section> pathSections = edgeList.stream()
                 .map(edge -> new Section(edge.getLine(), graph.getEdgeSource(edge),

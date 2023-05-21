@@ -1,7 +1,8 @@
-package subway.domain;
+package subway.service;
 
 import lombok.Getter;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.domain.Line;
 
 @Getter
 public class SubwayPathWeightedEdge extends DefaultWeightedEdge {

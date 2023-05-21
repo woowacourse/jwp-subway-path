@@ -1,0 +1,2 @@
+### 최단 경로 조회
+GET http://localhost:8080/path?departure=1&arrival=3
