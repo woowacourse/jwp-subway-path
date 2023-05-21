@@ -2,7 +2,7 @@ package subway.dto;
 
 import java.util.List;
 
-public class RouteResponse {
+public final class RouteResponse {
     
     private final List<StationResponse> stations;
     private final int distance;

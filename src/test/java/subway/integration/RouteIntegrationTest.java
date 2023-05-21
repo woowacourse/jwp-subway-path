@@ -63,4 +63,16 @@ public class RouteIntegrationTest extends IntegrationTest {
         Assertions.assertThat(routeResponse.getDistance()).isEqualTo(29);
         Assertions.assertThat(routeResponse.getFare()).isEqualTo(1650);
     }
+    
+    @Test
+    @DisplayName("경로 조회 요청 검증 - 역 아이디가 1보다 작은 경우")
+    void findRouteBetweenWithInvalidLineId() {
+        final RouteRequest routeRequest = new RouteRequest(0, 1);
+        RestAssured.given().log().all()
+                .body(routeRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/route")
+                .then().log().all()
+                .statusCode(400);
+    }
 }

@@ -171,4 +171,41 @@ public class DeleteSectionIntegrationTest extends IntegrationTest {
         
         Assertions.assertThat(finalSize).isEqualTo(0);
     }
+    
+    @DisplayName("구간 삭제 요청 검증 - 라인 아이디가 0 이하인 경우")
+    @Test
+    void deleteSection5() {
+        final DeleteSectionRequest deleteSectionRequest = new DeleteSectionRequest(this.lastStationId + 2,
+                0);
+        final ExtractableResponse<Response> response = RestAssured.
+                given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(deleteSectionRequest)
+                .when().delete("/sections")
+                .then().log().all()
+                .extract();
+        
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        Assertions.assertThat(response.body().asString())
+                .contains("[Min] deleteSectionRequest lineId must be greater than or equal to 1");
+    }
+    
+    @DisplayName("구간 삭제 요청 검증 - 역 아이디가 0 이하인 경우")
+    @Test
+    void deleteSection6() {
+        final DeleteSectionRequest deleteSectionRequest = new DeleteSectionRequest(0,
+                this.lastLineId);
+        final ExtractableResponse<Response> response = RestAssured.
+                given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(deleteSectionRequest)
+                .when().delete("/sections")
+                .then().log().all()
+                .extract();
+        
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        Assertions.assertThat(response.body().asString())
+                .contains("[Min] deleteSectionRequest stationId must be greater than or equal to 1");
+    }
+    
 }

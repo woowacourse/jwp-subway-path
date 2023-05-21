@@ -1,13 +1,20 @@
 package subway.dto;
 
 import java.util.Objects;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 
 public class SectionRequest {
     
+    @Min(1)
     long lineId;
+    @Min(1)
     long newStationId;
+    @Min(1)
     long baseStationId;
+    @Pattern(regexp = "UP|DOWN")
     String direction;
+    @Min(1)
     int distance;
     
     public SectionRequest(final long lineId, final long newStationId, final long baseStationId, final String direction,

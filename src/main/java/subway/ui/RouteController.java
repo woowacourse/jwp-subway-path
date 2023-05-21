@@ -1,5 +1,6 @@
 package subway.ui;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ public class RouteController {
     }
     
     @GetMapping()
-    public ResponseEntity<RouteResponse> findRouteBetween(@RequestBody final RouteRequest routeRequest) {
+    public ResponseEntity<RouteResponse> findRouteBetween(@RequestBody @Valid final RouteRequest routeRequest) {
         final RouteResponse routeStations = this.routeService.findRouteBetween(routeRequest);
         return ResponseEntity.ok(routeStations);
     }
