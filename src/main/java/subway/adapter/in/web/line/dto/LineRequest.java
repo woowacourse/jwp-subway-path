@@ -1,17 +1,17 @@
 package subway.adapter.in.web.line.dto;
 
-import org.springframework.lang.NonNull;
+import javax.validation.constraints.NotNull;
 
 public class LineRequest {
-    @NonNull
+    @NotNull
     private String name;
-    @NonNull
+    @NotNull
     private Integer surcharge;
 
     public LineRequest() {
     }
 
-    public LineRequest(@NonNull final String name, @NonNull final Integer surcharge) {
+    public LineRequest(final String name, final Integer surcharge) {
         this.name = name;
         this.surcharge = surcharge;
     }
