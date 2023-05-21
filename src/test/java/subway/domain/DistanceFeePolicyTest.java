@@ -2,9 +2,9 @@ package subway.domain;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import subway.service.path.domain.DistanceFeePolicy;
+import subway.service.path.domain.SectionEdge;
 import subway.service.section.domain.Distance;
-import subway.service.section.domain.DistanceFeePolicy;
-import subway.service.section.domain.SectionEdge;
 
 import java.util.List;
 

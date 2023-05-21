@@ -1,8 +1,9 @@
 package subway.domain;
 
 import org.junit.jupiter.api.Test;
+import subway.service.path.domain.JgraphtRoute;
+import subway.service.path.dto.ShortestPath;
 import subway.service.section.domain.Distance;
-import subway.service.section.domain.JgraphtRoute;
 import subway.service.section.domain.Section;
 import subway.service.station.domain.Station;
 
@@ -29,8 +30,8 @@ class JgraphtRouteTest {
         Section gangnamSeonleung = new Section(SEONLEUNG, GANGNAM, new Distance(3));
 
         List<Section> sections = List.of(jangjiJamsil, seonleungJamsil, gangnamJangji, gangnamSeonleung);
-        JgraphtRoute shortestPath = JgraphtRoute.of(sections, GANGNAM, JAMSIL);
-
+        JgraphtRoute jgraphtRoute = new JgraphtRoute();
+        ShortestPath shortestPath = jgraphtRoute.findShortestPath(sections, GANGNAM, JAMSIL);
         List<Station> pathStations = shortestPath.getStations();
 
         assertThat(pathStations).containsExactlyInAnyOrder(GANGNAM, SEONLEUNG, JAMSIL);

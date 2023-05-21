@@ -1,4 +1,4 @@
-package subway.service.section.domain;
+package subway.service.path.domain;
 
 import org.springframework.stereotype.Component;
 
@@ -7,12 +7,12 @@ import java.util.List;
 @Component
 public class DistanceFeePolicy implements FeePolicy {
 
-    private static int BASE_FEE = 1250;
-    private static int BASE_FEE_BOUNDARY = 10;
-    private static int SURCHARGE = 100;
-    private static int SURCHARGE_BOUNDARY = 50;
-    private static int FIRST_SURCHARGE_UNIT = 5;
-    private static int SECOND_SURCHARGE_UNIT = 8;
+    private static final int BASE_FEE = 1250;
+    private static final int BASE_FEE_BOUNDARY = 10;
+    private static final int SURCHARGE = 100;
+    private static final int SURCHARGE_BOUNDARY = 50;
+    private static final int FIRST_SURCHARGE_UNIT = 5;
+    private static final int SECOND_SURCHARGE_UNIT = 8;
 
     @Override
     public int calculateFee(List<SectionEdge> edges) {
