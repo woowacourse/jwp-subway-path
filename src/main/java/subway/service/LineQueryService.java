@@ -28,7 +28,7 @@ public class LineQueryService {
             return searchAllLine();
         }
 
-        return List.of(searchSpecificLine(lineName));
+        return List.of(searchByLineName(lineName));
     }
 
     public List<Line> searchAllLine() {
@@ -41,10 +41,6 @@ public class LineQueryService {
                                    lineEntity.getName(),
                                    sectionQueryService.searchSectionsByLineId(lineEntity.getId())))
                            .collect(Collectors.toList());
-    }
-
-    private Line searchSpecificLine(final String lineName) {
-        return searchByLineName(lineName);
     }
 
     public Line searchByLineName(final String lineName) {
