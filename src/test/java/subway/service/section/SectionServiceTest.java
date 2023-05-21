@@ -164,7 +164,6 @@ class SectionServiceTest {
         LineStationDeleteRequest lineStationDeleteRequest = new LineStationDeleteRequest(savedJamsil.getId());
         sectionService.delete(lineStationDeleteRequest);
 
-
         assertAll(
                 () -> assertThatThrownBy(() -> stationRepository.findById(savedJamsil.getId()))
                         .isInstanceOf(NotExistException.class)

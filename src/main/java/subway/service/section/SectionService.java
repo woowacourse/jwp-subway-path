@@ -10,6 +10,7 @@ import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
 import subway.service.section.domain.Sections;
 import subway.service.section.dto.AddResult;
+import subway.service.section.dto.DeleteResult;
 import subway.service.section.dto.SectionCreateRequest;
 import subway.service.section.dto.SectionCreateResponse;
 import subway.service.section.dto.SectionResponse;
@@ -57,9 +58,28 @@ public class SectionService {
 
         for (Line perLine : sectionsPerLine.keySet()) {
             Sections sections = sectionsPerLine.get(perLine);
-            deleteStationLastSection(station, perLine, sections);
+            System.out.println(sections.getSections());
+            deleteSection(station, perLine, sections);
         }
         stationRepository.deleteById(station.getId());
+
+    }
+
+    private void deleteSection(Station station, Line perLine, Sections sections) {
+        boolean isLastSection = sectionRepository.isLastSectionInLine(perLine);
+        if (isLastSection) {
+            Section lastSection = sections.getSections().get(0);
+            deleteStationsInLastSection(station, lastSection);
+            return;
+        }
+        DeleteResult deleteResult = sections.deleteSection(station);
+        for (Section addedSection : deleteResult.getAddedSections()) {
+            sectionRepository.insertSection(addedSection, perLine);
+        }
+
+        for (Section deletedSection : deleteResult.getDeletedSections()) {
+            sectionRepository.deleteSection(deletedSection);
+        }
     }
 
     private void deleteExistSection(AddResult addResult) {
@@ -72,14 +92,6 @@ public class SectionService {
         for (Section section : addResult.getAddedResults()) {
             Section savedSection = sectionRepository.insertSection(section, line);
             addedSectionResponses.add(SectionResponse.from(savedSection));
-        }
-    }
-
-    private void deleteStationLastSection(Station station, Line perLine, Sections sections) {
-        boolean isLastSection = sectionRepository.isLastSectionInLine(perLine);
-        if (isLastSection) {
-            Section lastSection = sections.getSections().get(0);
-            deleteStationsInLastSection(station, lastSection);
         }
     }
 
