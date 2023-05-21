@@ -45,6 +45,16 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+    public Optional<LineEntity> findByLineId(final Long lineId) {
+        final String sql = "SELECT * FROM LINE L WHERE L.id = ?";
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineId));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+
     public void deleteById(final Long lineId) {
         final String sql = "DELETE FROM LINE L WHERE L.id = ?";
 

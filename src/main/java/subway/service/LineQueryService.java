@@ -55,6 +55,19 @@ public class LineQueryService {
         );
     }
 
+    public Line searchByLineId(final Long lineId) {
+
+        final LineEntity lineEntity =
+                lineDao.findByLineId(lineId)
+                       .orElseThrow(() -> new CanNotFoundLineException("해당 노선은 존재하지 않습니다."));
+
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                sectionQueryService.searchSectionsByLineId(lineEntity.getId())
+        );
+    }
+
     public boolean isExistLine(final String lineName) {
         return lineDao.findByLineName(lineName).isPresent();
     }
