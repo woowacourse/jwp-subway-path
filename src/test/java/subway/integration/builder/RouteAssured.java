@@ -46,7 +46,7 @@ public class RouteAssured {
         private ExtractableResponse<Response> response;
 
         public RouteRequestBuilder 출발역과_도착역의_최단경로를_조회한다(final String 출발역명, final String 도착역명) {
-            response = RestAssuredFixture.get("/route", Map.of(
+            response = RestAssuredFixture.get("/routes", Map.of(
                     "startStationName", 출발역명,
                     "endStationName", 도착역명
             ));

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.RouteShortestService;
 import subway.application.response.QueryShortestRouteResponse;
 
-@RequestMapping("/route")
+@RequestMapping("/routes")
 @RestController
 public class RouteController {
 
