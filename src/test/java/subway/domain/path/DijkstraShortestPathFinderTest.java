@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 class DijkstraShortestPathFinderTest {
 
@@ -23,7 +22,7 @@ class DijkstraShortestPathFinderTest {
 
     @Test
     @DisplayName("노량진 - 신촌")
-    void findShortestPath() {
+    void case1() {
         // given
         final ShortestPathFinder shortestPathFinder = new DijkstraShortestPathFinder();
         final List<Section> sections = dummyData.getSections();
@@ -34,10 +33,32 @@ class DijkstraShortestPathFinderTest {
         final Path path = shortestPathFinder.find(sections, start, end);
 
         // then
-        final List<String> nextStationNames = path.getSections().stream()
-                .map(section -> section.getNextStation().getName())
+        final List<Long> sectionIds = path.getSections().stream()
+                .map(Section::getId)
                 .collect(Collectors.toUnmodifiableList());
-        final List<String> expectedNextStationNames = List.of("용산", "남영", "서울역", "시청", "충정로", "아현", "이대", "신촌");
-        assertThat(nextStationNames).isEqualTo(expectedNextStationNames);
+        final List<Long> expectedSectionIds = List.of(5L, 4L, 3L, 2L, 12L, 13L, 14L, 15L);
+
+        assertThat(sectionIds).isEqualTo(expectedSectionIds);
+    }
+
+    @Test
+    @DisplayName("홍대입구 - 신길")
+    void case2() {
+        // given
+        final ShortestPathFinder shortestPathFinder = new DijkstraShortestPathFinder();
+        final List<Section> sections = dummyData.getSections();
+        final Station start = dummyData.getStationByName("홍대입구");
+        final Station end = dummyData.getStationByName("신길");
+
+        // when
+        final Path path = shortestPathFinder.find(sections, start, end);
+
+        // then
+        final List<Long> sectionIds = path.getSections().stream()
+                .map(Section::getId)
+                .collect(Collectors.toUnmodifiableList());
+        final List<Long> expectedSectionIds = List.of(17L, 18L, 19L, 20L, 21L, 9L, 8L);
+
+        assertThat(sectionIds).isEqualTo(expectedSectionIds);
     }
 }
