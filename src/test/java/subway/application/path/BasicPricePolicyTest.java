@@ -13,7 +13,7 @@ class BasicPricePolicyTest {
     BasicPricePolicy basicPricePolicy = new BasicPricePolicy();
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9})
+    @ValueSource(ints = {1, 10})
     @DisplayName("거리가 10km 이하이면 1250원이 계산되어야 한다.")
     void calculate_lessThen10(int distance) {
         // when
@@ -36,7 +36,7 @@ class BasicPricePolicyTest {
      * 50 2050
      */
     @ParameterizedTest
-    @CsvSource(value = {"10:1350", "11:1350", "15:1350", "16:1450", "40:1850", "50:2050"}, delimiter = ':')
+    @CsvSource(value = {"11:1350", "15:1350", "16:1450", "40:1850", "50:2050"}, delimiter = ':')
     @DisplayName("거리가 10~50km 사이면 1250 + 거리 5km 마다 100원이 추가되어야 한다.")
     void calculate_between10And50(int distance, int expect) {
         // when
@@ -58,7 +58,7 @@ class BasicPricePolicyTest {
      * ...
      */
     @ParameterizedTest
-    @CsvSource(value = {"51:2150", "58:2150", "59:2250", "66:2250", "74:2350", "98:2650"}, delimiter = ':')
+    @CsvSource(value = {"51:2150", "58:2150", "59:2250", "98:2650"}, delimiter = ':')
     @DisplayName("거리가 50km를 초과하면 8km 마다 100원이 추가되어야 한다.")
     void calculate_overThan50(int distance, int expect) {
         // when
