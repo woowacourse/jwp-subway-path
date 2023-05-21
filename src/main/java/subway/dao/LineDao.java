@@ -3,7 +3,7 @@ package subway.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Component
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
@@ -52,7 +52,7 @@ public class LineDao {
 
     public void update(LineEntity newLineEntity) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId()});
+        jdbcTemplate.update(sql, newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId());
     }
 
     public void deleteById(Long id) {
