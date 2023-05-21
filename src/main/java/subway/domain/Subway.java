@@ -1,7 +1,9 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import subway.domain.routestrategy.RouteStrategy;
 
 public class Subway {
@@ -10,25 +12,12 @@ public class Subway {
 
     public Subway(List<Line> lines) {
         this.lines = new ArrayList<>(lines);
-        validate(lines);
     }
 
-    private void validate(List<Line> lines) {
-        for (int i = 0; i < lines.size(); i++) {
-            Line line = lines.get(i);
-            boolean hasDuplicatedName = lines.subList(i + 1, lines.size())
-                    .stream()
-                    .anyMatch(other -> line.hasSameName(other.getName()));
-            boolean hasDuplicatedColor = lines.subList(i + 1, lines.size())
-                    .stream()
-                    .anyMatch(other -> line.hasSameColor(other.getColor()));
-            if (hasDuplicatedName) {
-                throw new IllegalArgumentException("노선의 이름은 중복될 수 없습니다.");
-            }
-            if (hasDuplicatedColor) {
-                throw new IllegalArgumentException("노선의 색상은 중복될 수 없습니다.");
-            }
-        }
+    public void addLine(Line newLine) {
+        validateDuplicatedName(newLine.getName());
+        validateDuplicatedColor(newLine.getColor());
+        lines.add(newLine);
     }
 
     private void validateDuplicatedName(String name) {
@@ -45,12 +34,6 @@ public class Subway {
         if (hasDuplicatedColor) {
             throw new IllegalArgumentException("노선의 색상은 중복될 수 없습니다.");
         }
-    }
-
-    public void addLine(Line newLine) {
-        validateDuplicatedName(newLine.getName());
-        validateDuplicatedColor(newLine.getColor());
-        lines.add(newLine);
     }
 
     public void removeLine(Line line) {
@@ -79,27 +62,52 @@ public class Subway {
         lines.add(new Line(lineId, oldLine.getName(), newColor, new Sections(oldLine.getSections())));
     }
 
-    //todo : 노선이 라고 에러메시지 바꾸기
+    public void initLine(Long lineId, Station upStation, Station downStation, Distance distance) {
+        Line line = findLineById(lineId);
+        checkIfExistSection(upStation, downStation, distance);
+        line.addInitialStations(upStation, downStation,distance);
+    }
+
+    private void checkIfExistSection(Station upStation, Station downStation, Distance distance) {
+        if(lines.stream()
+                .anyMatch(savedLine -> savedLine.hasSameSection(new Section(upStation, downStation, distance)))) {
+            throw new IllegalArgumentException("지하철에 이미 존재하는 구간입니다.");
+        }
+    }
+
+    public void addStationToLine(Long lineId, Station upStation, Station downStation, Direction directionOfBase,
+            Distance distance) {
+        Line line = findLineById(lineId);
+        checkIfExistSection(upStation, downStation, distance);
+        line.addStation(upStation, downStation, directionOfBase, distance);
+    }
+
     public Line findLineById(Long id) {
         return lines.stream()
                 .filter(line -> line.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 노선이 존재하지 않습니다."));
     }
 
-    public Line findLineByName(String name) {
+    public List<Station> findAllStations() {
         return lines.stream()
-                .filter(line -> line.hasSameName(name))
+                .map(Line::findStations)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public Station findStationByName(String name) {
+        return findAllStations().stream()
+                .filter(station -> station.hasSameName(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다"));
     }
 
     public List<Station> findShortestRoute(Station start, Station end, RouteStrategy strategy) {
-        //같은역인지
         if (start.equals(end)) {
             throw new IllegalArgumentException("출발지와 도착지가 같은 역입니다.");
         }
-        // 해당역이 지하철 노선 안에 존재하느닞 확인하기
         return strategy.findShortestRoute(lines, start, end);
     }
 

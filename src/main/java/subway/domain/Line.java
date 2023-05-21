@@ -47,10 +47,6 @@ public class Line {
         return sections.findAllStations();
     }
 
-    public List<Section> findSectionByStation(Station station) {
-        return sections.findSectionsByStation(station);
-    }
-
     public Station findStationByName(String stationName) {
         return findStations().stream()
                 .filter(station -> station.getName().equals(stationName))
@@ -72,6 +68,10 @@ public class Line {
 
     public boolean hasSameColor(String otherColor) {
         return this.color.equals(otherColor);
+    }
+
+    public boolean hasSameSection(Section section) {
+        return sections.hasSameSection(section);
     }
 
     @Override

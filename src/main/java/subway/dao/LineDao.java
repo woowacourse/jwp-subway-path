@@ -64,14 +64,4 @@ public class LineDao {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
 
-    public Optional<LineEntity> findByName(String name) {
-        String sql = "select id, name, color from LINE WHERE name = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        }
-        catch (DataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
 }

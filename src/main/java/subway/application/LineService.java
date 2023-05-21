@@ -1,10 +1,11 @@
 package subway.application;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Sections;
+import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.repository.LineRepository;
 
@@ -18,27 +19,33 @@ public class LineService {
     }
 
     public Line createLine(LineRequest request) {
-        return lineRepository.saveNewLine(new Line(null, request.getName(), request.getColor(), new Sections(
-                new ArrayList<>())));
+        Subway subway = new Subway(lineRepository.findAll());
+        Line newLine = new Line(null, request.getName(), request.getColor(), new Sections());
+        subway.addLine(newLine);
+        return lineRepository.saveLine(newLine);
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long lineId) {
         return lineRepository.findLineById(lineId);
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
     public void updateLineInfo(Long lineId, LineRequest request) {
-        Line line = findLineById(lineId);
-        Line lineToUpdate = new Line(lineId, request.getName(), request.getColor(), new Sections(line.getSections()));
-        lineRepository.updateLineInfo(lineToUpdate);
+        Subway subway = new Subway(lineRepository.findAll());
+        subway.updateLineName(lineId, request.getName());
+        subway.updateLineColor(lineId, request.getColor());
+        lineRepository.updateLineInfo(subway.findLineById(lineId));
     }
 
-    public void deleteLineById(Long lineId) {
-        Line line = findLineById(lineId);
-        lineRepository.delete(line.getId());
+    public void removeLine(Long lineId) {
+        Subway subway = new Subway(lineRepository.findAll());
+        Line linToRemove = subway.findLineById(lineId);
+        lineRepository.delete(linToRemove);
     }
 
 }
