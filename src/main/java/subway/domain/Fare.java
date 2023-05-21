@@ -42,8 +42,8 @@ public class Fare {
         return new Fare(fare + extraFare);
     }
 
-    public Fare applyDiscountRateOfAge(final Age age) {
-        int discountedFare = (int) ((fare - age.getDeduction()) * (1 - age.getDiscountRate()));
+    public Fare applyDiscountRateOfAge(final AgeGroup ageGroup) {
+        int discountedFare = (int) ((fare - ageGroup.getDeduction()) * (1 - ageGroup.getDiscountRate()));
         return new Fare(discountedFare);
     }
 

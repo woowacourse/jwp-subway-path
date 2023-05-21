@@ -33,7 +33,7 @@ class PathControllerTest {
         void successTest() {
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/paths?from=8&to=6&age=adult")
+                    .when().get("/paths?from=8&to=6&age=25")
                     .then().log().all()
                     .statusCode(HttpStatus.OK.value());
         }
@@ -43,7 +43,7 @@ class PathControllerTest {
         void failTest1() {
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/paths?from=8&to=2&age=adult")
+                    .when().get("/paths?from=8&to=2&age=25")
                     .then().log().all()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }
@@ -53,7 +53,7 @@ class PathControllerTest {
         void failTest2() {
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/paths?from=8&to=8&age=adult")
+                    .when().get("/paths?from=8&to=8&age=25")
                     .then().log().all()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }

@@ -22,7 +22,7 @@ public class PathController {
     public ResponseEntity<PathResponse> findShortestPath(
             @RequestParam("from") long departureStationId,
             @RequestParam("to") long arrivalStationId,
-            @RequestParam("age") String age
+            @RequestParam("age") int age
     ) {
         PathResponse path = pathService.findPath(departureStationId, arrivalStationId, age);
         return ResponseEntity.ok().body(path);

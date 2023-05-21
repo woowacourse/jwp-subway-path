@@ -64,7 +64,7 @@ class FareTest {
 
     @Nested
     @DisplayName("연령대에 따른 요금을 계산하는 applyDiscountRateOfAge 메서드 테스트")
-    class ApplyDiscountRateOfAgeTest {
+    class ApplyDiscountRateOfAgeTestGroup {
 
         @DisplayName("연령대가 성인이면 요금을 그대로 유지한다.")
         @Test
@@ -73,7 +73,7 @@ class FareTest {
             Fare fare = Fare.from(1);
 
             //when
-            int fareValue = fare.applyDiscountRateOfAge(Age.ADULT).getFare();
+            int fareValue = fare.applyDiscountRateOfAge(AgeGroup.ADULT).getFare();
 
             //then
             assertThat(fareValue).isEqualTo(BASIC_FARE);
@@ -86,7 +86,7 @@ class FareTest {
             Fare fare = Fare.from(1);
 
             //when
-            int fareValue = fare.applyDiscountRateOfAge(Age.TEENAGER).getFare();
+            int fareValue = fare.applyDiscountRateOfAge(AgeGroup.TEENAGER).getFare();
 
             //then
             assertThat(fareValue).isEqualTo((int) ((BASIC_FARE - 350) * 0.8));
@@ -99,10 +99,36 @@ class FareTest {
             Fare fare = Fare.from(1);
 
             //when
-            int fareValue = fare.applyDiscountRateOfAge(Age.CHILDREN).getFare();
+            int fareValue = fare.applyDiscountRateOfAge(AgeGroup.CHILDREN).getFare();
 
             //then
             assertThat(fareValue).isEqualTo((int) ((BASIC_FARE - 350) * 0.5));
+        }
+
+        @DisplayName("연령대가 노인이면 요금이 무료다.")
+        @Test
+        void oldTest() {
+            //given
+            Fare fare = Fare.from(40);
+
+            //when
+            int fareValue = fare.applyDiscountRateOfAge(AgeGroup.OLD).getFare();
+
+            //then
+            assertThat(fareValue).isEqualTo(0);
+        }
+
+        @DisplayName("연령대가 유아면 요금이 무료다.")
+        @Test
+        void infantTest() {
+            //given
+            Fare fare = Fare.from(40);
+
+            //when
+            int fareValue = fare.applyDiscountRateOfAge(AgeGroup.INFANT).getFare();
+
+            //then
+            assertThat(fareValue).isEqualTo(0);
         }
     }
 }

@@ -143,10 +143,10 @@ Content-Type: application/json
 }
 
 ### 경로 찾기 - 노량진 <-> 서울역, 성인
-GET http://localhost:8080/paths?from=3&to=1&age=adult
+GET http://localhost:8080/paths?from=3&to=1&age=25
 
 ### 경로 찾기 - 노량진 <-> 서울역, 청소년
-GET http://localhost:8080/paths?from=3&to=1&age=teenager
+GET http://localhost:8080/paths?from=3&to=1&age=18
 
 ### 경로 찾기 - 노량진 <-> 서울역, 어린이
-GET http://localhost:8080/paths?from=3&to=1&age=children
+GET http://localhost:8080/paths?from=3&to=1&age=10

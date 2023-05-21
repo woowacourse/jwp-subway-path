@@ -2,7 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.domain.Age;
+import subway.domain.AgeGroup;
 import subway.domain.Station;
 import subway.domain.SubwayGuide;
 import subway.dto.response.PathResponse;
@@ -21,8 +21,8 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse findPath(final long departureStationId, final long arrivalStationId, final String age) {
-        Age validAge = Age.searchAge(age);
+    public PathResponse findPath(final long departureStationId, final long arrivalStationId, final int age) {
+        AgeGroup validAgeGroup = AgeGroup.matchAgeGroup(age);
         Station departureStation = stationDao.findById(departureStationId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역이 출발역으로 지정되어 있습니다."));
         Station arrivalStation = stationDao.findById(arrivalStationId)
@@ -30,7 +30,7 @@ public class PathService {
         SubwayGuide subwayGuide = SubwayGuide.from(lineRepository.findAll());
 
         List<Station> stations = subwayGuide.findPath(departureStation, arrivalStation);
-        int fare = subwayGuide.calculateFare(departureStation, arrivalStation, validAge);
+        int fare = subwayGuide.calculateFare(departureStation, arrivalStation, validAgeGroup);
 
         return PathResponse.of(fare, stations);
     }

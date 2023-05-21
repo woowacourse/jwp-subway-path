@@ -28,7 +28,7 @@ public class SubwayGuide {
         return path.getShortestPathStations(from, to);
     }
 
-    public int calculateFare(final Station from, final Station to, final Age age) {
+    public int calculateFare(final Station from, final Station to, final AgeGroup ageGroup) {
         int maxExtraFare = path.getShortestPathSections(from, to)
                 .stream()
                 .mapToInt(section -> sectionLines.get(section).getExtraFare())
@@ -36,7 +36,7 @@ public class SubwayGuide {
                 .orElseThrow(() -> new IllegalStateException("[ERROR] 노선별 추가요금의 최대값을 찾을 수 없습니다."));
         return Fare.from(path.getShortestPathDistance(from, to))
                 .applyExtraFare(maxExtraFare)
-                .applyDiscountRateOfAge(age)
+                .applyDiscountRateOfAge(ageGroup)
                 .getFare();
     }
 }
