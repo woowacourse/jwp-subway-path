@@ -29,14 +29,16 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.dto.request.ShortestPathRequest;
 import subway.dto.response.ShortestPathResponse;
 
+
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
-@DisplayName("pathControllerIntegration 은(는)")
+@DisplayName("pathController 통합테스트 은(는)")
 @Sql("/truncate.sql")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class PathControllerIntegrationTest {
 
     private static final String API_URL = "/path-shorted";
+
     @LocalServerPort
     private int port;
 
@@ -52,10 +54,10 @@ public class PathControllerIntegrationTest {
         역_생성_요청("사당역");
         역_생성_요청("경북대북문역");
         역_생성_요청("경북대정문역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 1);
-        노선_생성_요청("2호선", "사당역", "경북대북문역", 2);
+        노선_생성_요청("1호선", "잠실역", "사당역", 1, 0);
+        노선_생성_요청("2호선", "사당역", "경북대북문역", 2, 0);
         노선에_역_추가_요청("2호선", "경북대북문역", "경북대정문역", 3);
-        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역", 30);
 
         // when
         final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
@@ -77,10 +79,11 @@ public class PathControllerIntegrationTest {
         역_생성_요청("사당역");
         역_생성_요청("경북대북문역");
         역_생성_요청("경북대정문역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 5);
-        노선_생성_요청("2호선", "사당역", "경북대북문역", 5);
+        노선_생성_요청("1호선", "잠실역", "사당역", 5, 100);
+        노선_생성_요청("2호선", "사당역", "경북대북문역", 5, 400);
         노선에_역_추가_요청("2호선", "경북대북문역", "경북대정문역", 10);
-        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역", 10);
+
         // when
         final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 
@@ -91,14 +94,14 @@ public class PathControllerIntegrationTest {
         노선에_포함된_N번째_구간을_검증한다(responseDto, 2, "경북대북문역", "경북대정문역", 10);
         assertThat(response.statusCode()).isEqualTo(OK.value());
         assertThat(responseDto.getTotalDistance()).isEqualTo(20);
-        assertThat(responseDto.getFee()).isEqualTo(1450);
+        assertThat(responseDto.getFee()).isEqualTo(750);
     }
 
     @Test
     void 시작역이_없으면_예외() {
         // given
         역_생성_요청("사당역");
-        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "사당역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "사당역", 30);
 
         // when
         final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
@@ -111,7 +114,7 @@ public class PathControllerIntegrationTest {
     void 도착역이_없으면_예외() {
         // given
         역_생성_요청("잠실역");
-        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "사당역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "사당역", 30);
 
         // when
         final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
@@ -120,14 +123,15 @@ public class PathControllerIntegrationTest {
         assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
     }
 
+
     @Test
     void 경로를_못찾으면_예외_역은_있으나_노선에_없는_경우() {
         // given
         역_생성_요청("사당역");
         역_생성_요청("잠실역");
         역_생성_요청("경북대입구역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 10);
-        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역");
+        노선_생성_요청("1호선", "잠실역", "사당역", 10, 100);
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역", 30);
 
         // when
         final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
@@ -143,9 +147,9 @@ public class PathControllerIntegrationTest {
         역_생성_요청("잠실역");
         역_생성_요청("경북대입구역");
         역_생성_요청("경북대북문역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 10);
-        노선_생성_요청("2호선", "경북대입구역", "경북대북문역", 10);
-        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역");
+        노선_생성_요청("1호선", "잠실역", "사당역", 10, 100);
+        노선_생성_요청("2호선", "경북대입구역", "경북대북문역", 10, 100);
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역", 30);
 
         // when
         final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
@@ -154,11 +158,55 @@ public class PathControllerIntegrationTest {
         assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
     }
 
+    @Test
+    void 나이가_잘못되면_예외() {
+        // given
+        역_생성_요청("잠실역");
+        역_생성_요청("사당역");
+        역_생성_요청("경북대북문역");
+        역_생성_요청("경북대정문역");
+        노선_생성_요청("1호선", "잠실역", "사당역", 5, 100);
+        노선_생성_요청("2호선", "사당역", "경북대북문역", 5, 400);
+        노선에_역_추가_요청("2호선", "경북대북문역", "경북대정문역", 10);
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역", -10);
+
+        // when
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     void 시작역이_null이거나_공백이면_예외(final String nullAndEmpty) {
         // given
-        final ShortestPathRequest request = new ShortestPathRequest(nullAndEmpty, "사당역");
+        final ShortestPathRequest request = new ShortestPathRequest(nullAndEmpty, "사당역", 30);
+
+        // when
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    void 도착역_null이거나_공백이면_예외(final String nullAndEmpty) {
+        // given
+        final ShortestPathRequest request = new ShortestPathRequest("사당역", nullAndEmpty, 30);
+
+        // when
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+    }
+
+    @Test
+    void 나이가_null이면_예외() {
+        // given
+        final ShortestPathRequest request = new ShortestPathRequest("사당역", "잠실역", null);
 
         // when
         final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
@@ -183,7 +231,7 @@ public class PathControllerIntegrationTest {
     @NullAndEmptySource
     void 도착이_null이거나_공백이면_예외(final String nullAndEmpty) {
         // given
-        final ShortestPathRequest request = new ShortestPathRequest("사당역", nullAndEmpty);
+        final ShortestPathRequest request = new ShortestPathRequest("사당역", nullAndEmpty, 30);
 
         // when
         final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);

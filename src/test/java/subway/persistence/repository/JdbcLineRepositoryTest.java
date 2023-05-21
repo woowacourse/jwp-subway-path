@@ -58,7 +58,7 @@ class JdbcLineRepositoryTest {
         lineRepository.save(new Line("1호선", sections));
 
         // then
-        final List<Line> lines = lineRepository.findAll();
+        final List<Line> lines = lineRepository.findAll().getLines();
         assertThat(lines).hasSize(1);
         assertThat(lines.get(0).getSections()).hasSize(4);
     }
@@ -153,7 +153,7 @@ class JdbcLineRepositoryTest {
         lineRepository.save(new Line("2호선", sections2));
 
         // when
-        final List<Line> lines = lineRepository.findAll();
+        final List<Line> lines = lineRepository.findAll().getLines();
 
         // then
         assertThat(lines).hasSize(2);

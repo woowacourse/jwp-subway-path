@@ -1,13 +1,18 @@
 package subway.persistence.repository;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.persistence.dao.LineDao;
@@ -35,7 +40,7 @@ public class JdbcLineRepository implements LineRepository {
         final Long lineId = lineDao.save(LineEntity.from(line));
         final List<SectionEntity> entities = line.getSections().stream()
                 .map(it -> SectionEntity.of(it, lineId))
-                .collect(Collectors.toList());
+                .collect(toList());
         sectionDao.batchSave(entities);
         return lineId;
     }
@@ -44,7 +49,7 @@ public class JdbcLineRepository implements LineRepository {
     public void update(final Line line) {
         final List<SectionEntity> entities = line.getSections().stream()
                 .map(it -> SectionEntity.of(it, line.getId()))
-                .collect(Collectors.toList());
+                .collect(toList());
         sectionDao.deleteAllByLineName(line.getName());
         sectionDao.batchSave(entities);
     }
@@ -66,7 +71,7 @@ public class JdbcLineRepository implements LineRepository {
         final Set<Long> stationIds = getStationIds(sectionEntities);
         final Map<Long, StationEntity> idStationEntityMap = stationDao.findAllByIds(stationIds)
                 .stream()
-                .collect(Collectors.toMap(StationEntity::getId, it -> it));
+                .collect(toMap(StationEntity::getId, it -> it));
         final List<Section> sections = new ArrayList<>();
         for (final SectionEntity sectionEntity : sectionEntities) {
             final Section section = mapToSection(idStationEntityMap, sectionEntity);
@@ -78,7 +83,7 @@ public class JdbcLineRepository implements LineRepository {
     private Set<Long> getStationIds(final List<SectionEntity> sectionEntities) {
         final Set<Long> stationIds = sectionEntities.stream()
                 .map(SectionEntity::getDownStationId)
-                .collect(Collectors.toSet());
+                .collect(toSet());
         stationIds.add(sectionEntities.get(0).getUpStationId());
         return stationIds;
     }
@@ -92,11 +97,11 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     @Override
-    public List<Line> findAll() {
+    public Lines findAll() {
         return lineDao.findAll()
                 .stream()
                 .map(it -> it.toDomain(getSections(it.getName())))
-                .collect(Collectors.toList());
+                .collect(collectingAndThen(toList(), Lines::new));
     }
 
     @Override

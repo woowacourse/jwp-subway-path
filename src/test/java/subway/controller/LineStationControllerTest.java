@@ -24,8 +24,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import subway.dto.request.AddStationToLineRequest;
-import subway.dto.request.DeleteStationFromLineRequest;
+import subway.dto.request.StationAddToLineRequest;
+import subway.dto.request.StationDeleteFromLineRequest;
 import subway.service.LineService;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -48,7 +48,7 @@ class LineStationControllerTest {
         @Test
         void 성공한다() throws Exception {
             // given
-            final AddStationToLineRequest request = new AddStationToLineRequest("1호선", "잠실역", "잠실나루역", 10);
+            final StationAddToLineRequest request = new StationAddToLineRequest("1호선", "잠실역", "잠실나루역", 10);
 
             // when
             final MvcResult mvcResult = 노선_역_추가_요청(request);
@@ -63,7 +63,7 @@ class LineStationControllerTest {
         @NullAndEmptySource
         void 호선이_널이나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final AddStationToLineRequest request = new AddStationToLineRequest(nullAndEmpty, "잠실역", "잠실나루역", 10);
+            final StationAddToLineRequest request = new StationAddToLineRequest(nullAndEmpty, "잠실역", "잠실나루역", 10);
 
             // when
             final MvcResult mvcResult = 노선_역_추가_요청(request);
@@ -77,7 +77,7 @@ class LineStationControllerTest {
         @NullAndEmptySource
         void 상행선이_널이나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            AddStationToLineRequest request = new AddStationToLineRequest("1호선", nullAndEmpty, "잠실나루역", 10);
+            StationAddToLineRequest request = new StationAddToLineRequest("1호선", nullAndEmpty, "잠실나루역", 10);
 
             // when
             MvcResult mvcResult = 노선_역_추가_요청(request);
@@ -91,7 +91,7 @@ class LineStationControllerTest {
         @NullAndEmptySource
         void 하행선_널이나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final AddStationToLineRequest request = new AddStationToLineRequest("1호선", "잠실역", nullAndEmpty, 10);
+            final StationAddToLineRequest request = new StationAddToLineRequest("1호선", "잠실역", nullAndEmpty, 10);
 
             // when
             final MvcResult mvcResult = 노선_역_추가_요청(request);
@@ -104,7 +104,7 @@ class LineStationControllerTest {
         @Test
         void 거리가_널이면_예외() throws Exception {
             // given
-            final AddStationToLineRequest request = new AddStationToLineRequest("1호선", "잠실역", "잠실나루역", null);
+            final StationAddToLineRequest request = new StationAddToLineRequest("1호선", "잠실역", "잠실나루역", null);
 
             // when
             final MvcResult mvcResult = 노선_역_추가_요청(request);
@@ -114,7 +114,7 @@ class LineStationControllerTest {
             assertThat(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
 
-        private MvcResult 노선_역_추가_요청(final AddStationToLineRequest request) throws Exception {
+        private MvcResult 노선_역_추가_요청(final StationAddToLineRequest request) throws Exception {
             return mockMvc.perform(post(API_URL)
                             .contentType(APPLICATION_JSON)
                             .content(toJson(request)))
@@ -129,7 +129,7 @@ class LineStationControllerTest {
         @Test
         void 성공한다() throws Exception {
             // given
-            final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", "잠실역");
+            final StationDeleteFromLineRequest request = new StationDeleteFromLineRequest("1호선", "잠실역");
 
             // when
             final MvcResult mvcResult = 노선에_역_제거_요청(request);
@@ -144,7 +144,7 @@ class LineStationControllerTest {
         @NullAndEmptySource
         void 노선이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest(nullAndEmpty, "잠실역");
+            final StationDeleteFromLineRequest request = new StationDeleteFromLineRequest(nullAndEmpty, "잠실역");
 
             // when
             final MvcResult mvcResult = 노선에_역_제거_요청(request);
@@ -158,7 +158,7 @@ class LineStationControllerTest {
         @NullAndEmptySource
         void 역이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", nullAndEmpty);
+            final StationDeleteFromLineRequest request = new StationDeleteFromLineRequest("1호선", nullAndEmpty);
 
             // when
             final MvcResult mvcResult = 노선에_역_제거_요청(request);
@@ -169,7 +169,7 @@ class LineStationControllerTest {
         }
 
 
-        private MvcResult 노선에_역_제거_요청(final DeleteStationFromLineRequest request) throws Exception {
+        private MvcResult 노선에_역_제거_요청(final StationDeleteFromLineRequest request) throws Exception {
             return mockMvc.perform(delete(API_URL)
                             .contentType(APPLICATION_JSON)
                             .content(toJson(request)))

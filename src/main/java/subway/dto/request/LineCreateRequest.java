@@ -17,17 +17,20 @@ public class LineCreateRequest {
     @NotNull(message = "역간의 거리를 입력해주세요.")
     private Integer distance;
 
+    @NotNull(message = "추가 요금을 입력해주세요")
+    private Integer additionalFee;
+
     private LineCreateRequest() {
     }
 
-    public LineCreateRequest(final String lineName, final String upTerminalName, final String downTerminalName,
-                             final Integer distance) {
+    public LineCreateRequest(String lineName, String upTerminalName, String downTerminalName, Integer distance,
+                             Integer additionalFee) {
         this.lineName = lineName;
         this.upTerminalName = upTerminalName;
         this.downTerminalName = downTerminalName;
         this.distance = distance;
+        this.additionalFee = additionalFee;
     }
-
 
     public String getLineName() {
         return lineName;
@@ -43,5 +46,9 @@ public class LineCreateRequest {
 
     public Integer getDistance() {
         return distance;
+    }
+
+    public Integer getAdditionalFee() {
+        return additionalFee;
     }
 }

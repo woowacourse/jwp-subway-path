@@ -1,13 +1,11 @@
 package subway.persistence.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import subway.persistence.RepositoryTest;
 import subway.persistence.entity.LineEntity;
@@ -24,7 +22,7 @@ class LineDaoTest {
     @Test
     void 노선을_저장한다() {
         // given
-        final LineEntity lineEntity = new LineEntity("1호선");
+        final LineEntity lineEntity = new LineEntity("1호선", 500);
 
         // when
         lineDao.save(lineEntity);
@@ -36,7 +34,7 @@ class LineDaoTest {
     @Test
     void 이름으로_노선을_조회한다() {
         // given
-        final LineEntity lineEntity = new LineEntity("1호선");
+        final LineEntity lineEntity = new LineEntity("1호선", 500);
         lineDao.save(lineEntity);
 
         // when & then
@@ -46,7 +44,7 @@ class LineDaoTest {
     @Test
     void ID로_노선을_조회한다() {
         // given
-        final LineEntity lineEntity = new LineEntity("1호선");
+        final LineEntity lineEntity = new LineEntity("1호선", 500);
         final Long id = lineDao.save(lineEntity);
 
         // when & then
@@ -56,9 +54,9 @@ class LineDaoTest {
     @Test
     void 모든_노선을_조회한다() {
         // given
-        lineDao.save(new LineEntity("1호선"));
-        lineDao.save(new LineEntity("2호선"));
-        lineDao.save(new LineEntity("3호선"));
+        lineDao.save(new LineEntity("1호선", 500));
+        lineDao.save(new LineEntity("2호선", 300));
+        lineDao.save(new LineEntity("3호선", 200));
 
         // when & then
         assertThat(lineDao.findAll()).hasSize(3);
@@ -67,12 +65,12 @@ class LineDaoTest {
     @Test
     void 노선을_제거한다() {
         // given
-        final LineEntity lineEntity = new LineEntity("1호선");
+        final LineEntity lineEntity = new LineEntity("1호선", 400);
         final Long id = lineDao.save(lineEntity);
 
 
         // when
-        lineDao.delete(new LineEntity(id, lineEntity.getName()));
+        lineDao.delete(new LineEntity(id, lineEntity.getName(), lineEntity.getAdditionalFee()));
 
         // then
         assertThat(lineDao.findByName("1호선")).isEmpty();

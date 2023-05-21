@@ -6,9 +6,8 @@ import static subway.integration.common.JsonMapper.toJson;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.mockito.BDDMockito;
-import subway.dto.request.AddStationToLineRequest;
-import subway.dto.request.DeleteStationFromLineRequest;
+import subway.dto.request.StationAddToLineRequest;
+import subway.dto.request.StationDeleteFromLineRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineStationSteps {
@@ -21,12 +20,12 @@ public class LineStationSteps {
             final String downStationName,
             final Integer distance
     ) {
-        final AddStationToLineRequest request =
-                new AddStationToLineRequest(lineName, upStationName, downStationName, distance);
+        final StationAddToLineRequest request =
+                new StationAddToLineRequest(lineName, upStationName, downStationName, distance);
         return 노선에_역_추가_요청(request);
     }
 
-    public static ExtractableResponse<Response> 노선에_역_추가_요청(final AddStationToLineRequest request) {
+    public static ExtractableResponse<Response> 노선에_역_추가_요청(final StationAddToLineRequest request) {
         final String body = toJson(request);
         return given().log().all()
                 .contentType(JSON)
@@ -42,11 +41,11 @@ public class LineStationSteps {
             final String lineName,
             final String deleteStationName
     ) {
-        final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest(lineName, deleteStationName);
+        final StationDeleteFromLineRequest request = new StationDeleteFromLineRequest(lineName, deleteStationName);
         return 노선에_역_제거_요청(request);
     }
 
-    public static ExtractableResponse<Response> 노선에_역_제거_요청(final DeleteStationFromLineRequest request) {
+    public static ExtractableResponse<Response> 노선에_역_제거_요청(final StationDeleteFromLineRequest request) {
         final String body = toJson(request);
         return given().log().all()
                 .contentType(JSON)

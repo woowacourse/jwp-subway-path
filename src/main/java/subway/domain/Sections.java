@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import subway.exception.ArgumentNotValidException;
 import subway.exception.LineStationAddException;
 
@@ -134,6 +135,14 @@ public class Sections {
         if (!stations.contains(removedStation)) {
             throw new IllegalArgumentException("없는 역은 제거할 수 없습니다.");
         }
+    }
+
+    public boolean contains(final Section section) {
+        return sections.contains(section);
+    }
+
+    public Stream<Section> stream() {
+        return sections.stream();
     }
 
     public List<Station> getStations() {

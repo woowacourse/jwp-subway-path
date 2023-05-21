@@ -1,6 +1,6 @@
 package subway.controller;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,21 +54,21 @@ class LineControllerTest {
         @Test
         void 성공한다() throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10);
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10, 0);
             given(lineService.create(any()))
-                    .willReturn(Long.MAX_VALUE);
+                    .willReturn(1L);
 
             // when & then
             노선을_생성한다(request)
                     .andExpect(status().isCreated())
-                    .andExpect(header().string("location", containsString(String.valueOf(Long.MAX_VALUE))));
+                    .andExpect(header().string("location", endsWith("1")));
         }
 
         @ParameterizedTest
         @NullAndEmptySource
         void 노선이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest(nullAndEmpty, "잠실역", "사당역", 10);
+            final LineCreateRequest request = new LineCreateRequest(nullAndEmpty, "잠실역", "사당역", 10, 0);
 
             // when & then
             노선을_생성한다(request)
@@ -79,7 +79,7 @@ class LineControllerTest {
         @NullAndEmptySource
         void 상행역이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", nullAndEmpty, "사당역", 10);
+            final LineCreateRequest request = new LineCreateRequest("1호선", nullAndEmpty, "사당역", 10, 0);
 
             // when & then
             노선을_생성한다(request)
@@ -90,7 +90,7 @@ class LineControllerTest {
         @NullAndEmptySource
         void 하행역이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", nullAndEmpty, 10);
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", nullAndEmpty, 10, 0);
 
             // when & then
             노선을_생성한다(request)
@@ -100,7 +100,17 @@ class LineControllerTest {
         @Test
         void 거리가_널이면_예외() throws Exception {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", null);
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", null, 0);
+
+            // when & then
+            노선을_생성한다(request)
+                    .andExpect(status().isUnprocessableEntity());
+        }
+
+        @Test
+        void 추가요금이_널이면_예외() throws Exception {
+            // given
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10, null);
 
             // when & then
             노선을_생성한다(request)

@@ -1,8 +1,8 @@
 package subway.persistence.repository;
 
-import java.util.List;
 import java.util.Optional;
 import subway.domain.Line;
+import subway.domain.Lines;
 
 public interface LineRepository {
 
@@ -14,7 +14,7 @@ public interface LineRepository {
 
     Optional<Line> findByName(final String name);
 
-    List<Line> findAll();
+    Lines findAll();
 
     void delete(final Line line);
 }

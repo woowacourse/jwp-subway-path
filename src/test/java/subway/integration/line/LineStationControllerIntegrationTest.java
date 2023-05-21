@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.mockito.BDDMockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -55,7 +54,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("말랑역");
             역_생성_요청("경유역");
             역_생성_요청("오리역");
-            final Long 생성된_노선_아이디 = 노선_생성하고_아이디_반환("1호선", "말랑역", "오리역", 10);
+            final Long 생성된_노선_아이디 = 노선_생성하고_아이디_반환("1호선", "말랑역", "오리역", 10, 100);
 
             // when
             final ExtractableResponse<Response> response =
@@ -74,7 +73,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("말랑역");
             역_생성_요청("경유역");
             역_생성_요청("오리역");
-            노선_생성_요청("1호선", "말랑역", "오리역", 10);
+            노선_생성_요청("1호선", "말랑역", "오리역", 10, 100);
 
             // when
             final ExtractableResponse<Response> response =
@@ -89,7 +88,7 @@ public class LineStationControllerIntegrationTest {
             // given
             역_생성_요청("말랑역");
             역_생성_요청("오리역");
-            노선_생성_요청("1호선", "말랑역", "오리역", 10);
+            노선_생성_요청("1호선", "말랑역", "오리역", 10, 100);
 
             // when
             final ExtractableResponse<Response> response =
@@ -104,7 +103,7 @@ public class LineStationControllerIntegrationTest {
             // given
             역_생성_요청("말랑역");
             역_생성_요청("오리역");
-            노선_생성_요청("1호선", "말랑역", "오리역", 10);
+            노선_생성_요청("1호선", "말랑역", "오리역", 10, 100);
 
             // when
             final ExtractableResponse<Response> response =
@@ -120,7 +119,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("말랑역");
             역_생성_요청("경유역");
             역_생성_요청("오리역");
-            노선_생성_요청("1호선", "말랑역", "오리역", 10);
+            노선_생성_요청("1호선", "말랑역", "오리역", 10, 100);
 
             // when
             final ExtractableResponse<Response> response =
@@ -136,7 +135,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("말랑역");
             역_생성_요청("경유역");
             역_생성_요청("오리역");
-            노선_생성_요청("1호선", "말랑역", "오리역", 10);
+            노선_생성_요청("1호선", "말랑역", "오리역", 10, 100);
             노선에_역_추가_요청("1호선", "말랑역", "경유역", 3);
 
             // when
@@ -200,7 +199,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("잠실역");
             역_생성_요청("선릉역");
             역_생성_요청("사당역");
-            final Long 노선_아이디 = 노선_생성하고_아이디_반환("1호선", "잠실역", "선릉역", 10);
+            final Long 노선_아이디 = 노선_생성하고_아이디_반환("1호선", "잠실역", "선릉역", 10, 100);
             노선에_역_추가_요청("1호선", "선릉역", "사당역", 5);
 
             // when
@@ -218,7 +217,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("잠실역");
             역_생성_요청("선릉역");
             역_생성_요청("사당역");
-            final Long 노선_아이디 = 노선_생성하고_아이디_반환("1호선", "잠실역", "선릉역", 10);
+            final Long 노선_아이디 = 노선_생성하고_아이디_반환("1호선", "잠실역", "선릉역", 10, 100);
             노선에_역_추가_요청("1호선", "선릉역", "사당역", 5);
             노선에_역_제거_요청("1호선", "선릉역");
 
@@ -235,7 +234,7 @@ public class LineStationControllerIntegrationTest {
             // given
             역_생성_요청("잠실역");
             역_생성_요청("선릉역");
-            노선_생성_요청("1호선", "잠실역", "선릉역", 10);
+            노선_생성_요청("1호선", "잠실역", "선릉역", 10, 100);
 
             // when
             final ExtractableResponse<Response> response = 노선에_역_제거_요청("1호선", "사당역");

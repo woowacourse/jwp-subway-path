@@ -42,10 +42,10 @@ class JgraphtPathFinderTest {
                 new Section(지름길, 육번역, 10)
         );
 
-        final List<Line> lines = List.of(
+        final Lines lines = new Lines(List.of(
                 new Line("1호선", new Sections(sections1)),
                 new Line("2호선", new Sections(sections2))
-        );
+        ));
 
         // when
         final Path path = jgraphtPathFinder.findShortestPath(일번역, 육번역, lines);
@@ -70,10 +70,10 @@ class JgraphtPathFinderTest {
                 new Section(지름길, 오번역, 15)
         );
 
-        final List<Line> lines = List.of(
+        final Lines lines = new Lines(List.of(
                 new Line("1호선", new Sections(sections1)),
                 new Line("2호선", new Sections(sections2))
-        );
+        ));
 
         // when & then
         assertThatThrownBy(() -> jgraphtPathFinder.findShortestPath(일번역, 오번역, lines))
@@ -89,9 +89,9 @@ class JgraphtPathFinderTest {
                 new Section(삼번역, 사번역, 12)
         );
 
-        final List<Line> lines = List.of(
+        final Lines lines = new Lines(List.of(
                 new Line("1호선", new Sections(sections1))
-        );
+        ));
 
         // when & then
         assertThatThrownBy(() -> jgraphtPathFinder.findShortestPath(일번역, 오번역, lines))
