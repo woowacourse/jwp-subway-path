@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LineRepository {
 
-    void insert(Line line);
+    Line insert(Line line);
 
     Line findById(Long linePropertyId);
 

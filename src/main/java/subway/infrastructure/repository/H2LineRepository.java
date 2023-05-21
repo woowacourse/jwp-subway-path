@@ -92,7 +92,7 @@ public class H2LineRepository implements LineRepository {
                 .collect(Collectors.toList());
     }
 
-    public void insert(Line line) {
+    public Line insert(Line line) {
         List<SectionRow> sectionRows = line.getSections().stream()
                 .map(section -> new SectionRow(null, line.getId(), section.getUpBound().getId(),
                         section.getDownBound().getId(), section.getDistance().value()))
@@ -100,5 +100,6 @@ public class H2LineRepository implements LineRepository {
 
         sectionDao.removeSections(line.getId());
         sectionDao.insertAll(sectionRows);
+        return findById(line.getId());
     }
 }
