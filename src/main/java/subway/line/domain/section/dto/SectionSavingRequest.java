@@ -3,24 +3,24 @@ package subway.line.domain.section.dto;
 import subway.line.domain.section.domain.Distance;
 
 public class SectionSavingRequest {
-    String previousStationName;
-    String nextStationName;
-    Distance distance;
-    boolean isDown;
+    private final Long previousStationId;
+    private final Long nextStationId;
+    private final Distance distance;
+    private final boolean isDown;
 
-    public SectionSavingRequest(String previousStationName, String nextStationName, int distance, boolean isDown) {
-        this.previousStationName = previousStationName;
-        this.nextStationName = nextStationName;
-        this.distance = Distance.of(distance);
+    public SectionSavingRequest(Long previousStationId, Long nextStationId, Distance distance, boolean isDown) {
+        this.previousStationId = previousStationId;
+        this.nextStationId = nextStationId;
+        this.distance = distance;
         this.isDown = isDown;
     }
 
-    public String getPreviousStationName() {
-        return previousStationName;
+    public Long getPreviousStationId() {
+        return previousStationId;
     }
 
-    public String getNextStationName() {
-        return nextStationName;
+    public Long getNextStationId() {
+        return nextStationId;
     }
 
     public Distance getDistance() {

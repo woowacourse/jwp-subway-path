@@ -1,4 +1,4 @@
-package subway.line.dto;
+package subway.line.presentation.dto;
 
 public class LineRequest {
     private String name;

@@ -6,7 +6,6 @@ import subway.line.domain.station.application.StationService;
 import subway.line.domain.station.dto.StationRequest;
 import subway.line.domain.station.dto.StationResponse;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -29,10 +28,10 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
+//        return ResponseEntity.ok().body(stationService.findById(id));
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {

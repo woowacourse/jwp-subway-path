@@ -1,18 +1,19 @@
 package subway.line.domain.section.dto;
 
 public class SectionRequest {
-    private final String startingStation;
-    private final String destinationStation;
-    public SectionRequest(String startingStation, String destinationStation) {
-        this.startingStation = startingStation;
-        this.destinationStation = destinationStation;
+    private final Long startingStationId;
+    private final Long destinationStationId;
+
+    public SectionRequest(Long startingStationId, Long destinationStationId) {
+        this.startingStationId = startingStationId;
+        this.destinationStationId = destinationStationId;
     }
 
-    public String getStartingStation() {
-        return startingStation;
+    public Long getStartingStationId() {
+        return startingStationId;
     }
 
-    public String getDestinationStation() {
-        return destinationStation;
+    public Long getDestinationStationId() {
+        return destinationStationId;
     }
 }
