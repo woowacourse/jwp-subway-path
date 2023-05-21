@@ -35,7 +35,13 @@ class GetSortedLineControllerTest {
     @Test
     void lineId로_해당_노선의_정렬된_역들을_가져오기() {
         // given
-        given(useCase.getSortedLine(1L)).willReturn(new GetSortedLineResponse("1호선", "파랑", List.of("잠실역", "선릉역")));
+        given(useCase.getSortedLine(1L)).willReturn(
+                new GetSortedLineResponse(
+                        "1호선",
+                        "파랑",
+                        0L,
+                        List.of("잠실역", "선릉역")
+                ));
         
         // expect
         RestAssuredMockMvc.given().log().all()

@@ -38,7 +38,13 @@ class GetAllSortedLineControllerTest {
     void 모든_노선의_역을_정렬하기() {
         // given
         final GetAllSortedLineResponse response =
-                new GetAllSortedLineResponse(List.of(new GetSortedLineResponse("1호선", "파랑", List.of("잠실역", "청라역", "선릉역"))));
+                new GetAllSortedLineResponse(List.of(
+                        new GetSortedLineResponse(
+                                "1호선",
+                                "파랑",
+                                0L,
+                                List.of("잠실역", "청라역", "선릉역"))
+                ));
         given(useCase.getAllSortedLine()).willReturn(response);
         
         // expect

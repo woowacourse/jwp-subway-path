@@ -6,7 +6,8 @@ Content-Type: application/json
 
 {
   "name": "1호선",
-  "color": "파랑"
+  "color": "파랑",
+  "extraCharge": 1000
 }
 
 > Expected response:
@@ -125,7 +126,8 @@ Content-Type: application/json
 
 {
   "name": "2호선",
-  "color": "초록"
+  "color": "초록",
+  "extraCharge": 0
 }
 
 > Expected response:

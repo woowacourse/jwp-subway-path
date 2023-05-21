@@ -80,7 +80,12 @@ public class Subway {
     public GetAllSortedLineResponse getAllSortedStations() {
         return new GetAllSortedLineResponse(
                 lines.stream()
-                        .map(line -> new GetSortedLineResponse(line.getName(), line.getColor(), getSortedStations(line.getName())))
+                        .map(line -> new GetSortedLineResponse(
+                                line.getName(),
+                                line.getColor(),
+                                line.getExtraCharge(),
+                                getSortedStations(line.getName())
+                        ))
                         .collect(Collectors.toUnmodifiableList())
         );
     }
