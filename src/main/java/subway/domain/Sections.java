@@ -63,9 +63,6 @@ public class Sections {
             endStation = firstSection.getEndStation();
         }
 
-//        Section newSection = new Section(startStation, endStation, new Distance(totalDistance));
-//
-//        sections.add(newSection);
         if (firstSection.isSameStartStation(startStation)) {
             firstSection.updateEndStation(endStation);
             firstSection.updateDistance(new Distance(totalDistance));
