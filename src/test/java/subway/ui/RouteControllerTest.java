@@ -38,7 +38,7 @@ class RouteControllerTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionSaveDto)
-                .when().post("/subway/lines/{lineId}/sections", lineId)
+                .when().post("/sections/{lineId}", lineId)
                 .then().log().all().
                 extract();
 

@@ -14,7 +14,7 @@ import subway.application.StationService;
 import subway.dto.SectionSaveDto;
 
 @RestController
-@RequestMapping("/subway/lines")
+@RequestMapping("/sections")
 public class SectionController {
 
     private final SectionService sectionService;
@@ -25,7 +25,7 @@ public class SectionController {
         this.stationService = stationService;
     }
 
-    @PostMapping("/{lineId}/sections")
+    @PostMapping("/{lineId}")
     public ResponseEntity<Void> createSection(@PathVariable Long lineId,
                                               @RequestBody SectionSaveDto sectionSaveDto) {
         sectionService.saveSection(lineId, sectionSaveDto);

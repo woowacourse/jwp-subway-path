@@ -59,7 +59,7 @@ Response Headers {
 노선에 역 구간 등록
 
 ```text
-POST /subway/lines/{line_id}/sections
+POST /sections/{line_id}
 
 Request {
     startStation : "회기",
