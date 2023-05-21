@@ -1,6 +1,3 @@
-ifndef::snippets[]
-:snippets: ../../../build/generated-snippets
-endif::[]
 = Subway Path
 :doctype: book
 :icons: font
@@ -13,3 +10,5 @@ include::line-api.adoc[]
 include::station-api.adoc[]
 
 include::section-api.adoc[]
+
+include::path-api.adoc[]

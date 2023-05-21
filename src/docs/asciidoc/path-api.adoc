@@ -1,0 +1,13 @@
+[[Path-API]]
+== 경로
+
+[[Path-조회]]
+=== 조회
+
+*요청*
+include::{snippets}/path/find/http-request.adoc[]
+include::{snippets}/path/find/request-parameters.adoc[]
+
+*응답*
+include::{snippets}/path/find/http-response.adoc[]
+include::{snippets}/path/find/response-fields.adoc[]

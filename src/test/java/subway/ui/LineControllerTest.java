@@ -31,8 +31,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.LineService;
-import subway.application.SectionService;
+import subway.application.line.LineService;
+import subway.application.section.SectionService;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
@@ -94,7 +94,7 @@ class LineControllerTest {
     @ParameterizedTest
     @NullSource
     @EmptySource
-    @DisplayName("Line을 생성할 때, Line의 이름과 색은 비어있으면 HTTP 400 코드와 응답이 반환되어야 한다.")
+    @DisplayName("Line을 생성할 때, Line의 이름과 색이 비어있으면 HTTP 400 코드와 응답이 반환되어야 한다.")
     void createLine_notBlank(String input) throws Exception {
         // given
         LineCreateRequest request = new LineCreateRequest(input, input);
@@ -119,7 +119,7 @@ class LineControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.validation.lineName").value("노선의 이름은 15글자를 초과할 수 없습니다."));
+                .andExpect(jsonPath("$.validation.lineName").value("노선의 이름은 3글자 이상, 15글자를 미만이어야 합니다."));
     }
 
     @Test

@@ -3,7 +3,7 @@ package subway.dao;
 import java.util.List;
 import java.util.Optional;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Section;
+import subway.domain.section.Section;
 
 public interface SectionDao {
 
@@ -24,4 +24,8 @@ public interface SectionDao {
     Optional<SectionEntity> findByEndStationNameAndLineId(String downBoundStationName, Long lineId);
 
     void deleteBy(SectionEntity sectionEntity);
+
+    List<SectionEntity> findAll();
+
+    boolean doesNotExistByStationName(String stationName);
 }

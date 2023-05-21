@@ -7,12 +7,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.dto.response.Response;
-import subway.exception.DuplicateLineException;
-import subway.exception.DuplicateStationException;
-import subway.exception.IllegalDistanceException;
-import subway.exception.IllegalSectionException;
-import subway.exception.LineNotFoundException;
-import subway.exception.StationNotFoundException;
+import subway.exception.line.DuplicateLineException;
+import subway.exception.station.DuplicateStationException;
+import subway.exception.section.IllegalDistanceException;
+import subway.exception.path.IllegalPathException;
+import subway.exception.section.IllegalSectionException;
+import subway.exception.line.LineNotFoundException;
+import subway.exception.station.StationNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -81,6 +82,13 @@ public class GlobalExceptionHandler {
         return Response.badRequest()
                 .message(BAD_REQUEST_MESSAGE)
                 .validation("lineId", e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(IllegalPathException.class)
+    public ResponseEntity<Response> handleIllegalPathException(IllegalPathException e) {
+        return Response.badRequest()
+                .message(e.getMessage())
                 .build();
     }
 }
