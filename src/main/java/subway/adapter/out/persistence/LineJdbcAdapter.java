@@ -89,6 +89,12 @@ public class LineJdbcAdapter implements LoadLinePort, PersistLinePort {
     }
 
     @Override
+    public boolean checkExistByName(final String name) {
+        Optional<LineEntity> entity = lineDao.findByName(name);
+        return entity.isPresent();
+    }
+
+    @Override
     public void updateInfo(final long lineId, final LineInfo lineInfo) {
         lineDao.update(LineMapper.toEntity(lineId, lineInfo));
     }

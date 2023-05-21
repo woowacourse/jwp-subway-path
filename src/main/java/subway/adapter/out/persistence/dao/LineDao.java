@@ -58,12 +58,23 @@ public class LineDao {
         }
     }
 
+    public Optional<LineEntity> findByName(final String name) {
+        String sql = "SELECT id, name, color FROM line where name = ?";
+
+        try {
+            LineEntity line = jdbcTemplate.queryForObject(sql, rowMapper, name);
+            return Optional.of(line);
+        } catch (IncorrectResultSizeDataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+    
     public void update(LineEntity newLineEntity) {
         String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
         jdbcTemplate.update(sql,
                 new Object[]{newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId()});
     }
-    
+
     public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM line WHERE id = ?", id);
     }

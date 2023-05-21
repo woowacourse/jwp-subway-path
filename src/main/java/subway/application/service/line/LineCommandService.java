@@ -10,6 +10,7 @@ import subway.application.port.in.line.dto.command.UpdateLineInfoCommand;
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
 import subway.common.exception.NoSuchLineException;
+import subway.common.exception.SubwayIllegalArgumentException;
 import subway.domain.LineInfo;
 
 @Service
@@ -24,9 +25,11 @@ public class LineCommandService implements CreateLineUseCase, UpdateLineInfoUseC
         this.persistLinePort = persistLinePort;
     }
 
-    // TODO: 이름 및 색상 중복 검사? 서비스 or 일급컬렉션
     @Override
     public long createLine(final CreateLineCommand command) {
+        if (loadLinePort.checkExistByName(command.getName())) {
+            throw new SubwayIllegalArgumentException("기존 노선과 중복된 이름입니다.");
+        }
         return persistLinePort.create(new LineInfo(command.getName(), command.getColor()));
     }
 

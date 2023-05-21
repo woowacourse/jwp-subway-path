@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -91,5 +92,30 @@ class LineJdbcAdapterTest {
                 .ignoringFields("id")
                 .ignoringCollectionOrder()
                 .isEqualTo(List.of(new SectionEntity(line.getId(), station1.getId(), station3.getId(), 12)));
+    }
+
+    @Nested
+    class 이름으로_노선_유무_조회시_ {
+
+        @Test
+        void 있으면_참() {
+            // given
+            lineDao.insert(new LineEntity("2호선", "GREEN"));
+
+            // when
+            boolean result = lineJdbcAdapter.checkExistByName("2호선");
+
+            // then
+            assertThat(result).isTrue();
+        }
+
+        @Test
+        void 없으면_거짓() {
+            // when
+            boolean result = lineJdbcAdapter.checkExistByName("2호선");
+
+            // then
+            assertThat(result).isFalse();
+        }
     }
 }

@@ -115,6 +115,35 @@ class LineDaoTest {
     }
 
     @Test
+    void 이름으로_조회_테스트() {
+        // given
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "2호선");
+        params.put("color", "GREEN");
+        Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+
+        // when
+        Optional<LineEntity> line = lineDao.findByName("2호선");
+
+        // then
+        assertAll(
+                () -> assertThat(line).isPresent(),
+                () -> assertThat(line.get())
+                        .usingRecursiveComparison()
+                        .isEqualTo(new LineEntity(lineId, "2호선", "GREEN"))
+        );
+    }
+
+    @Test
+    void 이름으로_조회시_존재하지_않으면_Optional_Empty_반환() {
+        // when
+        Optional<LineEntity> line = lineDao.findByName("2호선");
+
+        // then
+        assertThat(line).isEmpty();
+    }
+
+    @Test
     void 갱신_테스트() {
         // given
         Map<String, Object> params = new HashMap<>();

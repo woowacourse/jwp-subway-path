@@ -11,4 +11,6 @@ public interface LoadLinePort {
     Optional<Line> findById(long lineId);
 
     List<Line> findAll();
+
+    boolean checkExistByName(String name);
 }
