@@ -47,8 +47,14 @@ public class SectionEntity {
         return new SectionEntity(id, lineId, upStationId, downStationId, distance);
     }
 
-    public SectionEntity reverseDirection() {
-        return new SectionEntity(id, lineId, downStationId, upStationId, distance);
+    public SectionEntity mergeSection(SectionEntity sectionEntity) {
+        if (this.upStationId == sectionEntity.downStationId) {
+            return new SectionEntity(id, lineId, sectionEntity.upStationId, downStationId, distance + sectionEntity.distance);
+        }
+        if (this.downStationId == sectionEntity.upStationId) {
+            return new SectionEntity(id, lineId, sectionEntity.downStationId, upStationId, distance + sectionEntity.distance);
+        }
+        throw new IllegalArgumentException("합칠수 없는 Section 입니다.");
     }
 
     public Long getId() {

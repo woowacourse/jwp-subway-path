@@ -2,7 +2,6 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.SectionSelector;
 import subway.dao.SectionDao;
 import subway.dto.StationRegisterRequest;
 import subway.entity.SectionEntity;
@@ -29,8 +28,7 @@ public class SectionService {
 
     @Transactional
     public List<SectionEntity> createSection(Long lineId, StationRegisterRequest request) {
-        SectionEntity section = new SectionEntity(
-                lineId,
+        SectionEntity section = new SectionEntity(lineId,
                 request.getUpStationId(),
                 request.getDownStationId(),
                 request.getDistance()
@@ -41,64 +39,69 @@ public class SectionService {
             return List.of(insert);
         }
 
-        Optional<SectionEntity> upSectionOfUpStation = sectionDao.findByUpStationId(lineId, request.getUpStationId());
-        Optional<SectionEntity> downSectionOfUpStation = sectionDao.findByDownStationId(lineId, request.getUpStationId());
-        Optional<SectionEntity> upSectionOfDownStation = sectionDao.findByUpStationId(lineId, request.getDownStationId());
-        Optional<SectionEntity> downSectionOfDownStation = sectionDao.findByDownStationId(lineId, request.getDownStationId());
+        Optional<SectionEntity> updateSection = findUpdateSection(lineId, request);
 
-        SectionSelector sectionSelector = new SectionSelector(upSectionOfUpStation, downSectionOfUpStation, upSectionOfDownStation, downSectionOfDownStation);
-
-        if (sectionSelector.isNotFoundSection()) {
-            throw new IllegalArgumentException("해당 구간이 존재하지 않습니다.");
+        if (updateSection.isPresent()) {
+            sectionDao.update(updateSection.get());
+            SectionEntity insert = sectionDao.insert(section);
+            return List.of(insert, updateSection.get());
         }
 
-        if (sectionSelector.isEndSection()) {
+        if (updateSection.isEmpty() && isEndSection(lineId, request)) {
             SectionEntity insert = sectionDao.insert(section);
             return List.of(insert);
-        }
-
-        if (sectionSelector.isUpSection()) {
-            SectionEntity insert = sectionDao.insert(section);
-            SectionEntity section1 = downSectionOfDownStation.get().setDownStationId(request.getUpStationId())
-                    .setDistance(downSectionOfDownStation.get().getDistance() - request.getDistance());
-            sectionDao.update(section1);
-            return List.of(insert, section1);
-        }
-
-        if (sectionSelector.isDownSection()) {
-            SectionEntity insert = sectionDao.insert(section);
-            SectionEntity section1 = upSectionOfUpStation.get().setUpStationId(request.getDownStationId())
-                    .setDistance(upSectionOfUpStation.get().getDistance() - request.getDistance());
-            sectionDao.update(section1);
-            return List.of(insert, section1);
         }
 
         throw new IllegalArgumentException("해당 구간이 존재하지 않습니다.");
     }
 
+    private Optional<SectionEntity> findUpdateSection(Long lineId, StationRegisterRequest request) {
+        Optional<SectionEntity> upSectionOfUpStation = sectionDao.findByUpStationId(lineId, request.getUpStationId());
+        Optional<SectionEntity> downSectionOfUpStation = sectionDao.findByDownStationId(lineId, request.getUpStationId());
+        Optional<SectionEntity> upSectionOfDownStation = sectionDao.findByUpStationId(lineId, request.getDownStationId());
+        Optional<SectionEntity> downSectionOfDownStation = sectionDao.findByDownStationId(lineId, request.getDownStationId());
+
+        if (upSectionOfUpStation.isEmpty() && upSectionOfDownStation.isPresent() &&
+                downSectionOfUpStation.isEmpty() && downSectionOfDownStation.isPresent()) {
+            return Optional.ofNullable(downSectionOfDownStation.get().setDownStationId(request.getUpStationId())
+                    .setDistance(downSectionOfDownStation.get().getDistance() - request.getDistance()));
+        }
+
+        if (upSectionOfUpStation.isPresent() && upSectionOfDownStation.isEmpty() &&
+                downSectionOfUpStation.isPresent() && downSectionOfDownStation.isEmpty()) {
+            return Optional.ofNullable(upSectionOfUpStation.get().setUpStationId(request.getDownStationId())
+                    .setDistance(upSectionOfUpStation.get().getDistance() - request.getDistance()));
+        }
+
+        return Optional.empty();
+    }
+
+    private boolean isEndSection(Long lineId, StationRegisterRequest request) {
+        Optional<SectionEntity> upSectionOfUpStation = sectionDao.findByUpStationId(lineId, request.getUpStationId());
+        Optional<SectionEntity> downSectionOfDownStation = sectionDao.findByDownStationId(lineId, request.getDownStationId());
+        return upSectionOfUpStation.isPresent() || downSectionOfDownStation.isPresent();
+    }
+
     @Transactional
     public void deleteSection(final Long lineId, final Long stationId) {
-        Optional<SectionEntity> up = sectionDao.findByUpStationId(lineId, stationId);
-        Optional<SectionEntity> down = sectionDao.findByDownStationId(lineId, stationId);
+        Optional<SectionEntity> upSection = sectionDao.findByUpStationId(lineId, stationId);
+        Optional<SectionEntity> downSection = sectionDao.findByDownStationId(lineId, stationId);
 
-        if (up.isEmpty() && down.isEmpty()) {
+        if (upSection.isEmpty() && downSection.isEmpty()) {
             throw new IllegalArgumentException("등록되어있지 않은 역은 지울 수 없습니다.");
         }
 
-        if (up.isPresent() && down.isEmpty()) {
-            sectionDao.deleteById(up.get().getId());
+        if (upSection.isPresent() && downSection.isEmpty()) {
+            sectionDao.deleteById(upSection.get().getId());
             return;
         }
 
-        if (up.isEmpty() && down.isPresent()) {
-            sectionDao.deleteById(down.get().getId());
+        if (upSection.isEmpty() && downSection.isPresent()) {
+            sectionDao.deleteById(downSection.get().getId());
             return;
         }
 
-        SectionEntity updateSection = down.get().setUpStationId(up.get().getUpStationId())
-                .setDistance(down.get().getDistance() + up.get().getDistance());
-
-        sectionDao.update(updateSection);
-        sectionDao.deleteById(up.get().getId());
+        sectionDao.update(upSection.get().mergeSection(downSection.get()));
+        sectionDao.deleteById(upSection.get().getId());
     }
 }
