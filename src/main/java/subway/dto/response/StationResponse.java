@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StationResponse {
-    private Long id;
+    private long id;
     private String name;
 
     private StationResponse() {

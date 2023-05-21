@@ -6,7 +6,7 @@ import java.util.List;
 
 public class PathResponse {
 
-    private Integer fare;
+    private int fare;
     private List<StationResponse> stations;
 
     private PathResponse() {
