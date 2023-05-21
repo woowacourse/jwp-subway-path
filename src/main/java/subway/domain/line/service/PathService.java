@@ -1,10 +1,10 @@
-package subway.domain.path.service;
+package subway.domain.line.service;
 
 import org.springframework.stereotype.Service;
 import subway.domain.line.domain.SectionRouter;
 import subway.domain.line.service.LineService;
 import subway.domain.line.service.SectionService;
-import subway.domain.path.domain.Path;
+import subway.domain.line.domain.Path;
 import subway.domain.line.entity.StationEntity;
 import subway.domain.line.service.StationService;
 
@@ -13,13 +13,11 @@ import java.util.List;
 @Service
 public class PathService {
 
-    private final LineService lineService;
     private final SectionService sectionService;
     private final StationService stationService;
 
 
-    public PathService(final LineService lineService, final SectionService sectionService, final StationService stationService) {
-        this.lineService = lineService;
+    public PathService(final SectionService sectionService, final StationService stationService) {
         this.sectionService = sectionService;
         this.stationService = stationService;
     }

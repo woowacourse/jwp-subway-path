@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.domain.line.dto.LineResponse;
 import subway.domain.line.dto.StationResponse;
-import subway.domain.path.dto.PathResponse;
+import subway.domain.line.dto.PathResponse;
 
 import java.util.List;
 

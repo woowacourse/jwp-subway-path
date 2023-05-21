@@ -8,9 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.domain.path.controller.PathController;
-import subway.domain.path.domain.Path;
-import subway.domain.path.service.PathService;
+import subway.domain.line.controller.PathController;
+import subway.domain.line.domain.Path;
+import subway.domain.line.service.PathService;
 import subway.domain.line.entity.StationEntity;
 
 import java.util.List;
