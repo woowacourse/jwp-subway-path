@@ -18,9 +18,10 @@ class AddLineIntegratedTest extends IntegrationTest {
     @Test
     void 노선_추가하기() {
         // given
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 0L);
         
         // expect
         RestAssured.given().log().all()
@@ -35,9 +36,10 @@ class AddLineIntegratedTest extends IntegrationTest {
     @Test
     void 이미_존재하는_노선_이름으로_추가할_시_예외_발생() {
         // given
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 0L);
         
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -51,6 +53,7 @@ class AddLineIntegratedTest extends IntegrationTest {
         params.clear();
         params.put("name", "1호선");
         params.put("color", "초록");
+        params.put("extraCharge", 0L);
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
@@ -65,9 +68,10 @@ class AddLineIntegratedTest extends IntegrationTest {
     @Test
     void 이미_존재하는_노선_색상으로_추가할_시_예외_발생() {
         // given
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 0L);
         
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -81,6 +85,7 @@ class AddLineIntegratedTest extends IntegrationTest {
         params.clear();
         params.put("name", "2호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 0L);
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
@@ -96,9 +101,10 @@ class AddLineIntegratedTest extends IntegrationTest {
     @NullAndEmptySource
     void 이름이_null_또는_empty일_수_없다(final String name) {
         // given
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("color", "파랑");
+        params.put("extraCharge", 0L);
         
         // expect
         RestAssured.given().log().all()
@@ -115,9 +121,10 @@ class AddLineIntegratedTest extends IntegrationTest {
     @NullAndEmptySource
     void 색상이_null_또는_empty일_수_없다(final String color) {
         // given
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", color);
+        params.put("extraCharge", 0L);
         
         // expect
         RestAssured.given().log().all()
@@ -128,5 +135,43 @@ class AddLineIntegratedTest extends IntegrationTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .contentType(ContentType.JSON)
                 .body("message", is("[ERROR] 노선의 색상은 null 또는 빈값일 수 없습니다."));
+    }
+    
+    @Test
+    void 추가_요금이_null일_수_없다() {
+        // given
+        final Map<String, Object> params = new HashMap<>();
+        params.put("name", "1호선");
+        params.put("color", "파랑");
+        params.put("extraCharge", null);
+        
+        // expect
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .contentType(ContentType.JSON)
+                .body("message", is("[ERROR] 노선의 추가 요금은 null일 수 없습니다."));
+    }
+    
+    @Test
+    void 추가_요금이_음수일_수_없다() {
+        // given
+        final Map<String, Object> params = new HashMap<>();
+        params.put("name", "1호선");
+        params.put("color", "파랑");
+        params.put("extraCharge", -1L);
+        
+        // expect
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .contentType(ContentType.JSON)
+                .body("message", is("[ERROR] 노선의 추가 요금은 음수일 수 없습니다."));
     }
 }

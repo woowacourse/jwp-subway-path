@@ -17,15 +17,19 @@ public class Line {
     private final Long extraCharge;
     private final Sections sections;
     
-    public Line(final String name, final String color) {
-        this(name, color, 0L, new Sections(new HashSet<>()));
-    }
-    
-    public Line(final String name, final String color, final Set<Section> sections) { // TODO
+    public Line(final String name, final String color, final Set<Section> sections) {
         this(name, color, 0L, new Sections(sections));
     }
     
-    public Line(final String name, final String color, final Long extraCharge, final Sections sections) {
+    public Line(final String name, final String color, final Long extraCharge) {
+        this(name, color, extraCharge, new Sections(new HashSet<>()));
+    }
+    
+    public Line(final String name, final String color, final Long extraCharge, final Set<Section> sections) {
+        this(name, color, extraCharge, new Sections(sections));
+    }
+    
+    private Line(final String name, final String color, final Long extraCharge, final Sections sections) {
         validateNameAndColor(name, color, extraCharge);
         this.name = name;
         this.color = color;

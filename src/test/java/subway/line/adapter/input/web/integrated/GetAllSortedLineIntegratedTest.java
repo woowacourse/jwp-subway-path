@@ -21,6 +21,7 @@ class GetAllSortedLineIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()

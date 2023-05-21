@@ -22,7 +22,7 @@ public class AddLineService implements AddLineUseCase {
     @Override
     public Long addLine(final AddLineRequest addLineRequest) {
         final Subway subway = new Subway(getAllLinePort.getAll());
-        subway.addLine(addLineRequest.getName(), addLineRequest.getColor());
+        subway.addLine(addLineRequest.getName(), addLineRequest.getColor(), addLineRequest.getExtraCharge());
         
         return saveLinePort.save(addLineRequest.toEntity());
     }

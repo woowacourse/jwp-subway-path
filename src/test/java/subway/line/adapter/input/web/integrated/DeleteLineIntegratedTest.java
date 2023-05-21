@@ -22,6 +22,7 @@ class DeleteLineIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         // expect
         final String locationStartsWith = "/lines/";
@@ -49,6 +50,7 @@ class DeleteLineIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         // expect
         final String locationStartsWith = "/lines/";
@@ -77,6 +79,7 @@ class DeleteLineIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         // expect
         final String locationStartsWith = "/lines/";

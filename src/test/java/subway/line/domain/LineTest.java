@@ -1,6 +1,5 @@
 package subway.line.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -12,22 +11,29 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 class LineTest {
+    @ParameterizedTest(name = "{displayName} : extraCharge = {0}")
+    @ValueSource(longs = {0, 1, 1000})
+    void 노선_정상_생성(final Long extraCharge) {
+        // expect
+        assertThatNoException()
+                .isThrownBy(() -> new Line("1호선", "파랑", extraCharge));
+    }
+    
     @ParameterizedTest(name = "{displayName} : name = {0}")
     @NullAndEmptySource
     void 노선_이름이_Null_or_Empty인_경우_예외_발생(final String name) {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Line(name, "파랑"));
+                .isThrownBy(() -> new Line(name, "파랑", 0L));
     }
     
     @ParameterizedTest(name = "{displayName} : color = {0}")
     @NullAndEmptySource
     void 노선_색상이_Null_or_Empty인_경우_예외_발생(final String color) {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Line("1호선", color));
+                .isThrownBy(() -> new Line("1호선", color, 0L));
     }
     
     @Test

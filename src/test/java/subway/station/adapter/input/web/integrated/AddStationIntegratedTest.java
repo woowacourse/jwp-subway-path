@@ -25,6 +25,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -74,6 +75,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -123,6 +125,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -172,6 +175,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -222,6 +226,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -271,6 +276,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -302,7 +308,6 @@ class AddStationIntegratedTest extends IntegrationTest {
         params.put("lineId", Long.parseLong(lineId));
         params.put("baseStation", "선릉역");
         params.put("direction", "right");
-//        params.put("additionalStation", "청라역");
         params.put("additionalStation", "청라역");
         params.put("distance", 5L);
         
@@ -322,6 +327,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -371,6 +377,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -420,6 +427,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -469,6 +477,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -518,6 +527,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -568,6 +578,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()

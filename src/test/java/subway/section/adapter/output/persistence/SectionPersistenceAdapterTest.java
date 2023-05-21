@@ -38,7 +38,7 @@ class SectionPersistenceAdapterTest {
     @Test
     void 여러_구간_저장하기() {
         // given
-        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑"));
+        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑", 0L));
         stationDao.insert(new StationEntity("잠실역"));
         stationDao.insert(new StationEntity("선릉역"));
         stationDao.insert(new StationEntity("청라역"));
@@ -53,7 +53,7 @@ class SectionPersistenceAdapterTest {
     @Test
     void 구간_저장하기() {
         // given
-        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑"));
+        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑", 0L));
         stationDao.insert(new StationEntity("잠실역"));
         stationDao.insert(new StationEntity("선릉역"));
         
@@ -68,7 +68,7 @@ class SectionPersistenceAdapterTest {
     @Test
     void lineId로_구간_삭제하기() {
         // given
-        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑"));
+        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑", 0L));
         stationDao.insert(new StationEntity("잠실역"));
         stationDao.insert(new StationEntity("선릉역"));
         stationDao.insert(new StationEntity("청라역"));
@@ -84,7 +84,7 @@ class SectionPersistenceAdapterTest {
     @Test
     void lines로_구간_삭제하기() {
         // given
-        final Long lineId1 = lineDao.insert(new LineEntity("1호선", "파랑"));
+        final Long lineId1 = lineDao.insert(new LineEntity("1호선", "파랑", 0L));
         stationDao.insert(new StationEntity("잠실역"));
         stationDao.insert(new StationEntity("선릉역"));
         stationDao.insert(new StationEntity("청라역"));
@@ -92,7 +92,7 @@ class SectionPersistenceAdapterTest {
         final Section section2 = new Section("선릉역", "청라역", 3L);
         adapter.saveAll(Set.of(section1, section2), lineId1);
         
-        final Long lineId2 = lineDao.insert(new LineEntity("2호선", "초록"));
+        final Long lineId2 = lineDao.insert(new LineEntity("2호선", "초록", 0L));
         stationDao.insert(new StationEntity("신도림역"));
         stationDao.insert(new StationEntity("홍대입구역"));
         stationDao.insert(new StationEntity("사당역"));
@@ -100,7 +100,7 @@ class SectionPersistenceAdapterTest {
         final Section section4 = new Section("홍대입구역", "사당역", 3L);
         adapter.saveAll(Set.of(section3, section4), lineId2);
         
-        final Line line1 = new Line("1호선", "파랑");
+        final Line line1 = new Line("1호선", "파랑", 0L);
         
         // expect
         assertThatNoException()
@@ -110,14 +110,14 @@ class SectionPersistenceAdapterTest {
     @Test
     void 해당하는_lines의_Sections들을_모두_저장() {
         // given
-        lineDao.insert(new LineEntity("1호선", "파랑"));
+        lineDao.insert(new LineEntity("1호선", "파랑", 0L));
         stationDao.insert(new StationEntity("잠실역"));
         stationDao.insert(new StationEntity("선릉역"));
         stationDao.insert(new StationEntity("청라역"));
         final Section section1 = new Section("잠실역", "선릉역", 5L);
         final Section section2 = new Section("선릉역", "청라역", 3L);
         
-        lineDao.insert(new LineEntity("2호선", "초록"));
+        lineDao.insert(new LineEntity("2호선", "초록", 0L));
         stationDao.insert(new StationEntity("신도림역"));
         stationDao.insert(new StationEntity("홍대입구역"));
         stationDao.insert(new StationEntity("사당역"));

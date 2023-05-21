@@ -35,7 +35,7 @@ class SectionDaoTest {
         // given
         final Long stationId1 = stationDao.insert(new StationEntity("잠실역"));
         final Long stationId2 = stationDao.insert(new StationEntity("선릉역"));
-        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑"));
+        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑", 0L));
         final SectionEntity entity = new SectionEntity(stationId1, stationId2, 3L, lineId);
         
         // when
@@ -50,7 +50,7 @@ class SectionDaoTest {
         // given
         final Long stationId1 = stationDao.insert(new StationEntity("잠실역"));
         final Long stationId2 = stationDao.insert(new StationEntity("선릉역"));
-        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑"));
+        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑", 0L));
         final SectionEntity entity = new SectionEntity(stationId1, stationId2, 3L, lineId);
         final Long sectionId = sectionDao.insert(entity);
         
@@ -64,7 +64,7 @@ class SectionDaoTest {
     @Test
     void 노선_id로_구간들_가져오기() {
         // given
-        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑"));
+        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑", 0L));
         final Long stationId1 = stationDao.insert(new StationEntity("잠실역"));
         final Long stationId2 = stationDao.insert(new StationEntity("선릉역"));
         final SectionEntity entity1 = new SectionEntity(stationId1, stationId2, 3L, lineId);
@@ -87,7 +87,7 @@ class SectionDaoTest {
     @Test
     void 노선_id로_구간들_삭제하기() {
         // given
-        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑"));
+        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑", 0L));
         final Long stationId1 = stationDao.insert(new StationEntity("잠실역"));
         final Long stationId2 = stationDao.insert(new StationEntity("선릉역"));
         final SectionEntity entity1 = new SectionEntity(stationId1, stationId2, 3L, lineId);

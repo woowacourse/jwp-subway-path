@@ -33,8 +33,8 @@ class LinePersistenceAdapterTest {
     @Test
     void 노선_저장하기() {
         // given
-        final Line line1 = new Line("1호선", "파랑");
-        final Line line2 = new Line("2호선", "초록");
+        final Line line1 = new Line("1호선", "파랑", 0L);
+        final Line line2 = new Line("2호선", "초록", 0L);
         
         // when
         final Long lineId1 = adapter.save(line1);
@@ -51,8 +51,8 @@ class LinePersistenceAdapterTest {
     @Test
     void 모든_노선_찾기() {
         // given
-        final Line line1 = new Line("1호선", "파랑");
-        final Line line2 = new Line("2호선", "초록");
+        final Line line1 = new Line("1호선", "파랑", 0L);
+        final Line line2 = new Line("2호선", "초록", 0L);
         adapter.save(line1);
         adapter.save(line2);
         
@@ -68,14 +68,14 @@ class LinePersistenceAdapterTest {
         // given
         final String name = "1호선";
         final String color = "파랑";
-        final Line line = new Line(name, color);
+        final Line line = new Line(name, color, 0L);
         final Long id = adapter.save(line);
         
         // when
         final Line result = adapter.getLineById(id);
         
         // then
-        assertThat(result).isEqualTo(new Line(name, color));
+        assertThat(result).isEqualTo(new Line(name, color, 0L));
     }
     
     @Test
@@ -93,7 +93,7 @@ class LinePersistenceAdapterTest {
         // given
         final String name = "1호선";
         final String color = "파랑";
-        final Line line = new Line(name, color);
+        final Line line = new Line(name, color, 0L);
         final Long id = adapter.save(line);
         
         // expect

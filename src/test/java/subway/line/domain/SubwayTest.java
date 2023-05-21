@@ -31,11 +31,11 @@ class SubwayTest {
         final Subway subway = new Subway();
         
         // when
-        subway.addLine("1호선", "파랑");
+        subway.addLine("1호선", "파랑", 0L);
         final Set<Line> lines = subway.getLines();
         
         // then
-        assertThat(lines).contains(new Line("1호선", "파랑"));
+        assertThat(lines).contains(new Line("1호선", "파랑", 0L));
     }
     
     @Test
@@ -44,21 +44,21 @@ class SubwayTest {
         final Subway subway = new Subway();
         
         // when
-        subway.addLine("1호선", "파랑");
-        subway.addLine("2호선", "초록");
+        subway.addLine("1호선", "파랑", 0L);
+        subway.addLine("2호선", "초록", 0L);
         subway.removeLine("1호선");
         final Set<Line> lines = subway.getLines();
         
         // then
-        assertThat(lines).contains(new Line("2호선", "초록"));
+        assertThat(lines).contains(new Line("2호선", "초록", 0L));
     }
     
     @Test
     void 역_최초_등록시_존재하지_않는_노선을_가리키면_예외_발생() {
         // given
         final Subway subway = new Subway();
-        subway.addLine("1호선", "파랑");
-        subway.addLine("2호선", "초록");
+        subway.addLine("1호선", "파랑", 0L);
+        subway.addLine("2호선", "초록", 0L);
         
         // expect
         assertThatIllegalArgumentException()
@@ -69,7 +69,7 @@ class SubwayTest {
     void 역_추가시_존재하지_않는_노선을_가리키면_예외_발생() {
         // given
         final Subway subway = new Subway();
-        subway.addLine("1호선", "파랑");
+        subway.addLine("1호선", "파랑", 0L);
         subway.initAddStation("1호선", "강남역", "선릉역", 3L);
         
         // expect
@@ -81,7 +81,7 @@ class SubwayTest {
     void 역_삭제시_존재하지_않는_노선을_가리키면_예외_발생() {
         // given
         final Subway subway = new Subway();
-        subway.addLine("1호선", "파랑");
+        subway.addLine("1호선", "파랑", 0L);
         subway.initAddStation("1호선", "강남역", "선릉역", 3L);
         
         // expect
@@ -93,32 +93,32 @@ class SubwayTest {
     void 노선_추가시_이미_존재하는_노선의_이름이면_예외_발생() {
         // given
         final Subway subway = new Subway();
-        subway.addLine("1호선", "파랑");
-        subway.addLine("2호선", "초록");
+        subway.addLine("1호선", "파랑", 0L);
+        subway.addLine("2호선", "초록", 0L);
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> subway.addLine("2호선", "노랑"));
+                .isThrownBy(() -> subway.addLine("2호선", "노랑", 0L));
     }
     
     @Test
     void 노선_추가시_이미_존재하는_노선의_색상이면_예외_발생() {
         // given
         final Subway subway = new Subway();
-        subway.addLine("1호선", "파랑");
-        subway.addLine("2호선", "초록");
+        subway.addLine("1호선", "파랑", 0L);
+        subway.addLine("2호선", "초록", 0L);
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> subway.addLine("3호선", "초록"));
+                .isThrownBy(() -> subway.addLine("3호선", "초록", 0L));
     }
     
     @Test
     void 노선_삭제시_존재하지_않는_노선을_가리키면_예외_발생() {
         // given
         final Subway subway = new Subway();
-        subway.addLine("1호선", "파랑");
-        subway.addLine("2호선", "초록");
+        subway.addLine("1호선", "파랑", 0L);
+        subway.addLine("2호선", "초록", 0L);
         
         // expect
         assertThatIllegalArgumentException()

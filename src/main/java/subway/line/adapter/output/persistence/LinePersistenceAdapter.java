@@ -49,12 +49,12 @@ public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, Get
                 })
                 .collect(Collectors.toSet());
         
-        return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
+        return new Line(lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraCharge(), sections);
     }
     
     @Override
     public Long save(final Line line) {
-        return lineDao.insert(new LineEntity(line.getName(), line.getColor()));
+        return lineDao.insert(new LineEntity(line.getName(), line.getColor(), line.getExtraCharge()));
     }
     
     @Override
@@ -70,7 +70,7 @@ public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, Get
                 })
                 .collect(Collectors.toSet());
         
-        return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
+        return new Line(lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraCharge(), sections);
     }
     
     private void validateNotExistLine(final Long id) {

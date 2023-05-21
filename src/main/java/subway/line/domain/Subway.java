@@ -21,13 +21,13 @@ public class Subway {
         this.lines = lines;
     }
     
-    public void addLine(final String lineName, final String lineColor) {
+    public void addLine(final String lineName, final String lineColor, final Long extraCharge) {
         if (isExistNameOrColor(lineName, lineColor)) {
             throw new IllegalArgumentException("이미 존재하는 노선의 이름 또는 색상으로는 노선을 추가할 수 없습니다. " +
                     "lineName : " + lineName + ", lineColor : " + lineColor);
         }
         
-        lines.add(new Line(lineName, lineColor));
+        lines.add(new Line(lineName, lineColor, extraCharge));
     }
     
     private boolean isExistNameOrColor(final String lineName, final String lineColor) {

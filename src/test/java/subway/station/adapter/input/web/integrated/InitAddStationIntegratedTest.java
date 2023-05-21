@@ -25,6 +25,7 @@ class InitAddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -59,6 +60,7 @@ class InitAddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -95,6 +97,7 @@ class InitAddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -131,6 +134,7 @@ class InitAddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -166,6 +170,7 @@ class InitAddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -201,9 +206,10 @@ class InitAddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
                 .when().post("/lines")
@@ -212,8 +218,6 @@ class InitAddStationIntegratedTest extends IntegrationTest {
                 .header("Location", startsWith(locationStartsWith))
                 .extract();
         
-        final String lineId = response.header("Location").substring(locationStartsWith.length());
-        final long lineIdOutOfRange = Long.parseLong(lineId) + 1L;
         params.clear();
         params.put("firstStation", "잠실역");
         params.put("secondStation", "선릉역");
@@ -237,6 +241,7 @@ class InitAddStationIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response = RestAssured.given().log().all()

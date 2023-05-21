@@ -23,6 +23,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response1 = RestAssured.given().log().all()
@@ -71,6 +72,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         params.clear();
         params.put("name", "2호선");
         params.put("color", "초록");
+        params.put("extraCharge", 3L);
         
         final ExtractableResponse<Response> response2 = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -140,6 +142,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
         params.put("color", "파랑");
+        params.put("extraCharge", 3L);
         
         final String locationStartsWith = "/lines/";
         final ExtractableResponse<Response> response1 = RestAssured.given().log().all()
@@ -188,6 +191,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         params.clear();
         params.put("name", "2호선");
         params.put("color", "초록");
+        params.put("extraCharge", 3L);
         
         final ExtractableResponse<Response> response2 = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

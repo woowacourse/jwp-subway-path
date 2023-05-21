@@ -29,14 +29,14 @@ class AddLineServiceTest {
     @Test
     void 노선을_추가한다() {
         // given
-        final Line line1 = new Line("1호선", "파랑");
-        final Line line2 = new Line("2호선", "초록");
-        final Line line3 = new Line("3호선", "주황");
+        final Line line1 = new Line("1호선", "파랑", 0L);
+        final Line line2 = new Line("2호선", "초록", 0L);
+        final Line line3 = new Line("3호선", "주황", 0L);
         given(getAllLinePort.getAll()).willReturn(new HashSet<>(Set.of(line1, line2)));
         given(saveLinePort.save(line3)).willReturn(3L);
         
         // when
-        final Long LineId = addLineService.addLine(new AddLineRequest("3호선", "주황"));
+        final Long LineId = addLineService.addLine(new AddLineRequest("3호선", "주황",  0L));
         
         // then
         assertThat(LineId).isEqualTo(3L);

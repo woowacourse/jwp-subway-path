@@ -36,8 +36,8 @@ class DeleteLineServiceTest {
     @Test
     void lineId로_노선_삭제() {
         // given
-        final Line line1 = new Line("1호선", "파랑");
-        final Line line2 = new Line("2호선", "초록");
+        final Line line1 = new Line("1호선", "파랑", 0L);
+        final Line line2 = new Line("2호선", "초록", 0L);
         given(getAllLinePort.getAll()).willReturn(new HashSet<>(Set.of(line1, line2)));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line1);
         

@@ -18,7 +18,8 @@ public class LineDao {
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getLong("extra_charge")
             );
     
     public LineDao(final JdbcTemplate jdbcTemplate) {
@@ -32,6 +33,7 @@ public class LineDao {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getName());
         params.put("color", lineEntity.getColor());
+        params.put("extra_charge", lineEntity.getExtraCharge());
 
         return insertAction.executeAndReturnKey(params).longValue();
     }

@@ -45,7 +45,7 @@ class GetSortedLineServiceTest {
         
         final Set<Section> initSections = new HashSet<>(Set.of(firstSection, secondSection, thirdSection));
         final Line line1 = new Line("1호선", "파랑", initSections);
-        final Line line2 = new Line("2호선", "초록");
+        final Line line2 = new Line("2호선", "초록", 0L);
         final String additionalStation = "화정역";
         final long additionalDistance = 3L;
         line1.addStation(third, Direction.LEFT, additionalStation, additionalDistance);
