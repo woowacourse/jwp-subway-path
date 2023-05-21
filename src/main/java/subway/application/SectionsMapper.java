@@ -5,6 +5,7 @@ import static subway.application.StationFactory.toStation;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionEntity;
 import subway.dao.StationDao;
 import subway.domain.Distance;
@@ -12,6 +13,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 
+@Transactional(readOnly = true)
 @Component
 public class SectionsMapper {
 

@@ -197,19 +197,6 @@ public class Sections {
         }
     }
 
-    public List<Station> getSortedStations() {
-        List<Station> sortedStations = new ArrayList<>();
-
-        Station startStation = getUpStation();
-        sortedStations.add(startStation);
-        while (sortedStations.size() <= sections.size()) {
-            Section section = getSectionHavingSameStartStation(startStation);
-            sortedStations.add(section.getEndStation());
-            startStation = section.getEndStation();
-        }
-        return sortedStations;
-    }
-
     private Section getSectionHavingSameStartStation(Station startStation) {
         return sections.stream()
                 .filter(it -> it.isSameStartStation(startStation))
