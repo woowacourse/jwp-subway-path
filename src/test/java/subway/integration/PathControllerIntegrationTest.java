@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,7 +67,6 @@ class PathControllerIntegrationTest {
 
     static Stream<Arguments> illegalPathRequest() {
         return Stream.of(
-                Arguments.of("없는 역을 조회", "A역", "없는역", "해당 역이 구간에 존재하지 않습니다."),
                 Arguments.of("같은 역을 조회", "A역", "A역", "조회할 역이 서로 같습니다."),
                 Arguments.of("구간에 없는 역을 조회", "A역", "없는역", "해당 역이 구간에 존재하지 않습니다."),
                 Arguments.of("갈 수 없는 경로를 조회", "A역", "Z역", "해당 경로를 찾을 수 없습니다.")
