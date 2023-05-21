@@ -1,26 +1,20 @@
 package subway.domain.line.dto;
 
-public class SectionRequest {
-
-    private Long lineId;
+public class StationRegisterRequest {
+    
     private Long upStationId;
     private Long downStationId;
     private int distance;
 
-    private SectionRequest() {
+    private StationRegisterRequest() {
     }
 
-    public SectionRequest(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
-        this.lineId = lineId;
+    public StationRegisterRequest(final Long upStationId, final Long downStationId, final int distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
     }
-
-    public Long getLineId() {
-        return lineId;
-    }
-
+    
     public Long getUpStationId() {
         return upStationId;
     }

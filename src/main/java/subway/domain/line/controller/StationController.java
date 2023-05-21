@@ -1,12 +1,12 @@
-package subway.domain.station.controller;
+package subway.domain.line.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.domain.station.dto.StationRequest;
-import subway.domain.station.dto.StationResponse;
-import subway.domain.station.entity.StationEntity;
-import subway.domain.station.service.StationService;
+import subway.domain.line.dto.StationCreateRequest;
+import subway.domain.line.dto.StationResponse;
+import subway.domain.line.entity.StationEntity;
+import subway.domain.line.service.StationService;
 import subway.global.common.ResultResponse;
 
 import javax.validation.Valid;
@@ -24,8 +24,8 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<ResultResponse> createStation(@RequestBody @Valid final StationRequest stationRequest) {
-        StationEntity stationEntity = stationService.saveStation(stationRequest);
+    public ResponseEntity<ResultResponse> createStation(@RequestBody @Valid final StationCreateRequest stationCreateRequest) {
+        StationEntity stationEntity = stationService.saveStation(stationCreateRequest);
         return ResponseEntity.created(URI.create("/stations/" + stationEntity.getId())).body(ResultResponse.of(HttpStatus.CREATED, stationEntity));
     }
 
@@ -47,8 +47,8 @@ public class StationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResultResponse> updateStation(@PathVariable final Long id, @RequestBody @Valid final StationRequest stationRequest) {
-        stationService.updateStation(id, stationRequest);
+    public ResponseEntity<ResultResponse> updateStation(@PathVariable final Long id, @RequestBody @Valid final StationCreateRequest stationCreateRequest) {
+        stationService.updateStation(id, stationCreateRequest);
         return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, id));
     }
 

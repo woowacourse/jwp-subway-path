@@ -1,9 +1,9 @@
-package subway.domain.station.service;
+package subway.domain.line.service;
 
 import org.springframework.stereotype.Service;
-import subway.domain.station.dao.StationDao;
-import subway.domain.station.dto.StationRequest;
-import subway.domain.station.entity.StationEntity;
+import subway.domain.line.dao.StationDao;
+import subway.domain.line.dto.StationCreateRequest;
+import subway.domain.line.entity.StationEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -13,20 +13,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
+
     private final StationDao stationDao;
 
     public StationService(final StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
-    public StationEntity saveStation(final StationRequest stationRequest) {
-        Optional<StationEntity> findStation = stationDao.findByName(stationRequest.getName());
+    public StationEntity saveStation(final StationCreateRequest stationCreateRequest) {
+        Optional<StationEntity> findStation = stationDao.findByName(stationCreateRequest.getName());
 
         if (findStation.isPresent()) {
             throw new IllegalArgumentException("역 이름이 이미 존재합니다. 유일한 역 이름을 사용해주세요.");
         }
 
-        return stationDao.insert(new StationEntity(stationRequest.getName()));
+        return stationDao.insert(new StationEntity(stationCreateRequest.getName()));
     }
 
     public StationEntity findStationById(final Long id) {
@@ -64,14 +65,14 @@ public class StationService {
         return findStations.get();
     }
 
-    public void updateStation(final Long id, final StationRequest stationRequest) {
+    public void updateStation(final Long id, final StationCreateRequest stationCreateRequest) {
         Optional<StationEntity> findStation = stationDao.findById(id);
 
         if (findStation.isEmpty()) {
             throw new IllegalArgumentException("해당 ID의 역이 존재하지 않습니다.");
         }
 
-        stationDao.update(new StationEntity(id, stationRequest.getName()));
+        stationDao.update(new StationEntity(id, stationCreateRequest.getName()));
     }
 
     public void deleteStationById(final Long id) {

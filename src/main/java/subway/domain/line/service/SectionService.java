@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.line.dao.SectionDao;
 import subway.domain.line.domain.SectionSelector;
-import subway.domain.line.dto.SectionRequest;
+import subway.domain.line.dto.StationRegisterRequest;
 import subway.domain.line.entity.SectionEntity;
 
 import java.util.List;
@@ -28,23 +28,23 @@ public class SectionService {
     }
 
     @Transactional
-    public List<SectionEntity> createSection(SectionRequest request) {
+    public List<SectionEntity> createSection(Long lineId, StationRegisterRequest request) {
         SectionEntity section = new SectionEntity(
-                request.getLineId(),
+                lineId,
                 request.getUpStationId(),
                 request.getDownStationId(),
                 request.getDistance()
         );
 
-        if (sectionDao.isEmpty(request.getLineId())) {
+        if (sectionDao.isEmpty(lineId)) {
             SectionEntity insert = sectionDao.insert(section);
             return List.of(insert);
         }
 
-        Optional<SectionEntity> upSectionOfUpStation = sectionDao.findByUpStationId(request.getLineId(), request.getUpStationId());
-        Optional<SectionEntity> downSectionOfUpStation = sectionDao.findByDownStationId(request.getLineId(), request.getUpStationId());
-        Optional<SectionEntity> upSectionOfDownStation = sectionDao.findByUpStationId(request.getLineId(), request.getDownStationId());
-        Optional<SectionEntity> downSectionOfDownStation = sectionDao.findByDownStationId(request.getLineId(), request.getDownStationId());
+        Optional<SectionEntity> upSectionOfUpStation = sectionDao.findByUpStationId(lineId, request.getUpStationId());
+        Optional<SectionEntity> downSectionOfUpStation = sectionDao.findByDownStationId(lineId, request.getUpStationId());
+        Optional<SectionEntity> upSectionOfDownStation = sectionDao.findByUpStationId(lineId, request.getDownStationId());
+        Optional<SectionEntity> downSectionOfDownStation = sectionDao.findByDownStationId(lineId, request.getDownStationId());
 
         SectionSelector sectionSelector = new SectionSelector(upSectionOfUpStation, downSectionOfUpStation, upSectionOfDownStation, downSectionOfDownStation);
 

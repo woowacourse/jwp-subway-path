@@ -3,14 +3,14 @@ package subway.domain.line.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import subway.domain.line.domain.Line;
 import subway.domain.line.dto.LineRequest;
 import subway.domain.line.dto.LineResponse;
-import subway.domain.line.dto.SectionRequest;
+import subway.domain.line.dto.StationRegisterRequest;
 import subway.domain.line.dto.SectionResponse;
 import subway.domain.line.entity.LineEntity;
 import subway.domain.line.entity.SectionEntity;
 import subway.domain.line.service.LineService;
-import subway.domain.line.service.SectionService;
 import subway.global.common.ResultResponse;
 
 import javax.validation.Valid;
@@ -23,11 +23,25 @@ import java.util.stream.Collectors;
 public class LineController {
 
     private final LineService lineService;
-    private final SectionService sectionService;
 
-    public LineController(final LineService lineService, final SectionService sectionService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
-        this.sectionService = sectionService;
+    }
+
+    @GetMapping
+    public ResponseEntity<ResultResponse> findAllLine() {
+        List<Line> lines = lineService.findAllLine();
+        List<LineResponse> linePathResponse = lines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, linePathResponse));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResultResponse> findLineById(@PathVariable final Long id) {
+        Line line = lineService.findLineById(id);
+        LineResponse response = LineResponse.of(line);
+        return ResponseEntity.ok().body(ResultResponse.of(HttpStatus.OK, response));
     }
 
     @PostMapping
@@ -50,8 +64,8 @@ public class LineController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<ResultResponse> addStation(@PathVariable final Long id, @RequestBody @Valid final SectionRequest sectionRequest) {
-        final List<SectionEntity> sectionEntities = sectionService.createSection(sectionRequest);
+    public ResponseEntity<ResultResponse> addStation(@PathVariable final Long id, @RequestBody @Valid final StationRegisterRequest stationRegisterRequest) {
+        final List<SectionEntity> sectionEntities = lineService.addStation(id, stationRegisterRequest);
         final List<SectionResponse> sectionResponses = sectionEntities.stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
@@ -60,7 +74,7 @@ public class LineController {
 
     @DeleteMapping("/{lineId}/station/{stationId}")
     public ResponseEntity<ResultResponse> deleteStation(@PathVariable final Long lineId, @PathVariable final Long stationId) {
-        sectionService.deleteSection(lineId, stationId);
+        lineService.deleteStation(lineId, stationId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResultResponse.of(HttpStatus.NO_CONTENT));
     }
 }
