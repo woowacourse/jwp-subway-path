@@ -38,15 +38,15 @@ public class StationService {
                 .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
 
-        Station upLineStation = subwayGraphs.findStationByName(line, stationAddRequest.getUpLineStationName())
+        Station upLineStation = stationDao.findByName(stationAddRequest.getUpLineStationName())
                 .orElseGet(
-                        () -> stationDao.saveStation(new StationEntity(stationAddRequest.getUpLineStationName()))
-                                .toDomain());
+                        () -> stationDao.saveStation(new StationEntity(stationAddRequest.getUpLineStationName())))
+                .toDomain();
 
-        Station downLineStation = subwayGraphs.findStationByName(line, stationAddRequest.getDownLineStationName())
+        Station downLineStation = stationDao.findByName(stationAddRequest.getDownLineStationName())
                 .orElseGet(
-                        () -> stationDao.saveStation(new StationEntity(stationAddRequest.getDownLineStationName()))
-                                .toDomain());
+                        () -> stationDao.saveStation(new StationEntity(stationAddRequest.getDownLineStationName())))
+                .toDomain();
 
         final int distance = stationAddRequest.getDistance();
 
