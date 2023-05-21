@@ -76,7 +76,7 @@ public class Sections {
         return stationsInOrder;
     }
 
-    private static boolean hasUnvisitedStation(Map<Station, Station> stationPair, List<Station> stationsInOrder) {
+    private boolean hasUnvisitedStation(Map<Station, Station> stationPair, List<Station> stationsInOrder) {
         return stationsInOrder.size() != stationPair.size();
     }
 
@@ -97,14 +97,18 @@ public class Sections {
         return sectionsOfContainDeleteStation.stream()
                 .filter(section -> section.isUpStation(station))
                 .findFirst()
-                .get();
+                .orElseThrow(
+                        () -> new IllegalStateException("현재 section이 존재하지 않습니다.")
+                );
     }
 
     private Section findSectionDeleteStationIsDownStation(Station station, List<Section> sectionsOfContainDeleteStation) {
         return sectionsOfContainDeleteStation.stream()
                 .filter(section -> section.isDownStation(station))
                 .findFirst()
-                .get();
+                .orElseThrow(
+                        () -> new IllegalStateException("현재 section이 존재하지 않습니다.")
+                );
     }
 
 
