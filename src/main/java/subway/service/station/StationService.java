@@ -2,9 +2,9 @@ package subway.service.station;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.controller.station.dto.StationCreateRequest;
 import subway.service.station.domain.Station;
 import subway.service.station.dto.StationCreateResponse;
+import subway.service.station.dto.StationInsertRequest;
 
 @Service
 @Transactional
@@ -15,8 +15,8 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public StationCreateResponse saveStation(StationCreateRequest stationCreateRequest) {
-        Station station = new Station(stationCreateRequest.getName());
+    public StationCreateResponse saveStation(StationInsertRequest stationInsertRequest) {
+        Station station = new Station(stationInsertRequest.getName());
         Station savedStation = stationRepository.insert(station);
         return StationCreateResponse.from(savedStation);
     }

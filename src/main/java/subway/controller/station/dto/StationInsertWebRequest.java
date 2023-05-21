@@ -1,12 +1,12 @@
 package subway.controller.station.dto;
 
-public class StationCreateRequest {
+public class StationInsertWebRequest {
     private String name;
 
-    public StationCreateRequest() {
+    public StationInsertWebRequest() {
     }
 
-    public StationCreateRequest(String name) {
+    public StationInsertWebRequest(String name) {
         this.name = name;
     }
 

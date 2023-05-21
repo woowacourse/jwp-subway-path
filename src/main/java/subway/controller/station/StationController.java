@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.controller.section.dto.LineStationDeleteRequest;
-import subway.controller.station.dto.StationCreateRequest;
 import subway.service.section.SectionService;
 import subway.service.station.StationService;
 import subway.service.station.dto.StationCreateResponse;
-import subway.service.station.dto.StationRequest;
+import subway.service.station.dto.StationInsertRequest;
 
 import java.net.URI;
 
@@ -28,9 +27,9 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationCreateResponse> createStation(@RequestBody StationRequest stationRequest) {
-        StationCreateRequest stationCreateRequest = new StationCreateRequest(stationRequest.getName());
-        StationCreateResponse station = stationService.saveStation(stationCreateRequest);
+    public ResponseEntity<StationCreateResponse> createStation(@RequestBody StationInsertRequest stationInsertWebRequest) {
+        StationInsertRequest stationInsertRequest = new StationInsertRequest(stationInsertWebRequest.getName());
+        StationCreateResponse station = stationService.saveStation(stationInsertRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 

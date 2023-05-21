@@ -2,7 +2,7 @@ package subway.service.line;
 
 import org.springframework.stereotype.Service;
 import subway.service.line.domain.Line;
-import subway.service.line.dto.LineRequest;
+import subway.service.line.dto.LineInsertRequest;
 import subway.service.line.dto.LineResponse;
 import subway.service.section.domain.Sections;
 import subway.service.section.repository.SectionRepository;
@@ -22,7 +22,7 @@ public class LineService {
         this.sectionRepository = sectionRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
+    public LineResponse saveLine(LineInsertRequest request) {
         Line persistLine = lineRepository.insert(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }

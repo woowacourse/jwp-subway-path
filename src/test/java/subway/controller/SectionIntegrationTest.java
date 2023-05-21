@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.controller.section.dto.SectionCreateControllerRequest;
+import subway.controller.section.dto.SectionInsertWebRequest;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
@@ -66,7 +66,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 노선에_아무것도_없는_경우_섹션_추가() throws JsonProcessingException {
-        SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
+        SectionInsertWebRequest requestParam = new SectionInsertWebRequest(
                 savedUpStation.getId(),
                 savedDownStation.getId(),
                 10,
@@ -87,7 +87,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 동일한_역_2개를_저장_입력으로_작성하면_예외() throws JsonProcessingException {
-        SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
+        SectionInsertWebRequest requestParam = new SectionInsertWebRequest(
                 savedUpStation.getId(),
                 savedUpStation.getId(),
                 10,
@@ -116,7 +116,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         Station gangnam = stationRepository.insert(GANGNAM_NO_ID);
         Station seonleung = stationRepository.insert(SEONLEUNG_NO_ID);
-        SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
+        SectionInsertWebRequest requestParam = new SectionInsertWebRequest(
                 gangnam.getId(),
                 seonleung.getId(),
                 10,
@@ -143,7 +143,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         Section section = new Section(savedUpStation, savedDownStation, new Distance(10));
         sectionRepository.insertSection(section, savedSecondLine);
 
-        SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
+        SectionInsertWebRequest requestParam = new SectionInsertWebRequest(
                 savedUpStation.getId(),
                 savedDownStation.getId(),
                 10,
@@ -171,7 +171,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         sectionRepository.insertSection(section, savedSecondLine);
 
         Station gangnam = stationRepository.insert(GANGNAM_NO_ID);
-        SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
+        SectionInsertWebRequest requestParam = new SectionInsertWebRequest(
                 savedUpStation.getId(),
                 gangnam.getId(),
                 10,
@@ -199,7 +199,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         sectionRepository.insertSection(section, savedSecondLine);
 
         Station gangnam = stationRepository.insert(GANGNAM_NO_ID);
-        SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
+        SectionInsertWebRequest requestParam = new SectionInsertWebRequest(
                 savedDownStation.getId(),
                 gangnam.getId(),
                 10,
@@ -224,7 +224,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         sectionRepository.insertSection(section, savedSecondLine);
 
         Station mongchon = stationRepository.insert(MONGCHON_NO_ID);
-        SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
+        SectionInsertWebRequest requestParam = new SectionInsertWebRequest(
                 mongchon.getId(),
                 savedUpStation.getId(),
                 10,
@@ -249,7 +249,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         sectionRepository.insertSection(section, savedSecondLine);
 
         Station seonleung = stationRepository.insert(SEONLEUNG_NO_ID);
-        SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
+        SectionInsertWebRequest requestParam = new SectionInsertWebRequest(
                 savedUpStation.getId(),
                 seonleung.getId(),
                 5,
@@ -274,7 +274,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         sectionRepository.insertSection(section, savedSecondLine);
 
         Station seonleung = stationRepository.insert(SEONLEUNG_NO_ID);
-        SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
+        SectionInsertWebRequest requestParam = new SectionInsertWebRequest(
                 seonleung.getId(),
                 savedDownStation.getId(),
                 5,

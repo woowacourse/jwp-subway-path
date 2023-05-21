@@ -1,13 +1,13 @@
-package subway.service.line.dto;
+package subway.controller.line.dto;
 
-public class LineRequest {
+public class LineInsertWebRequest {
     private String name;
     private String color;
 
-//    public LineRequest() {
-//    }
+    public LineInsertWebRequest() {
+    }
 
-    public LineRequest(String name, String color) {
+    public LineInsertWebRequest(String name, String color) {
         this.name = name;
         this.color = color;
     }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.controller.section.dto.PathRequest;
-import subway.controller.section.dto.SectionCreateControllerRequest;
+import subway.controller.section.dto.SectionInsertWebRequest;
 import subway.service.section.SectionService;
 import subway.service.section.dto.PathResult;
 import subway.service.section.dto.SectionCreateRequest;
@@ -23,12 +23,12 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createSection(@RequestBody SectionCreateControllerRequest sectionCreateControllerRequest) {
+    public ResponseEntity<Void> createSection(@RequestBody SectionInsertWebRequest sectionInsertWebRequest) {
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(
-                sectionCreateControllerRequest.getUpStationId(),
-                sectionCreateControllerRequest.getDownStationId(),
-                sectionCreateControllerRequest.getDistance(),
-                sectionCreateControllerRequest.getLineId());
+                sectionInsertWebRequest.getUpStationId(),
+                sectionInsertWebRequest.getDownStationId(),
+                sectionInsertWebRequest.getDistance(),
+                sectionInsertWebRequest.getLineId());
         sectionService.insert(sectionCreateRequest);
         return ResponseEntity.ok().build();
     }

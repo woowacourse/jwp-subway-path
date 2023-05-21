@@ -1,19 +1,19 @@
 package subway.controller.section.dto;
 
-public class SectionCreateControllerRequest {
+public class SectionInsertWebRequest {
     private long upStationId;
     private long downStationId;
     private int distance;
     private long lineId;
 
-    public SectionCreateControllerRequest(long upStationId, long downStationId, int distance, long lineId) {
+    public SectionInsertWebRequest(long upStationId, long downStationId, int distance, long lineId) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
         this.lineId = lineId;
     }
 
-    private SectionCreateControllerRequest() {
+    private SectionInsertWebRequest() {
 
     }
 
