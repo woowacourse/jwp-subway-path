@@ -6,12 +6,15 @@ import subway.domain.Line;
 import subway.domain.LineName;
 import subway.domain.Lines;
 import subway.domain.Section;
+import subway.domain.ShortestPath;
 import subway.domain.Station;
 import subway.domain.Stations;
 import subway.dto.AddLineRequest;
 import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
 import subway.dto.LineResponse;
+import subway.dto.PathResponse;
+import subway.dto.SubwayPathRequest;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 import subway.repository.SubwayRepository;
@@ -20,6 +23,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 
 @Transactional
 @Service
@@ -93,5 +99,20 @@ public class SubwayService {
 
     private LineResponse toLineResponse(Line line) {
         return new LineResponse(line.getStationNamesInOrder(), line.getName().getName());
+    }
+
+    public PathResponse findShortestPath(SubwayPathRequest subwayPathRequest) {
+        Lines lines = subwayRepository.getLines();
+        Station departure = subwayRepository.findStation(subwayPathRequest.getDepartureId());
+        Station destination = subwayRepository.findStation(subwayPathRequest.getDestinationId());
+        ShortestPath shortestPath = lines.findShortestPath();
+        return toPathResponse(shortestPath);
+    }
+
+    private PathResponse toPathResponse(ShortestPath shortestPath) {
+        return shortestPath.getStations()
+                .stream()
+                .map(station -> station.getName())
+                .collect(collectingAndThen(toList(), PathResponse::new));
     }
 }

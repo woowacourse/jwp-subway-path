@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
@@ -20,12 +21,16 @@ import subway.domain.Line;
 import subway.domain.LineName;
 import subway.domain.Station;
 import subway.dto.AddStationRequest;
+import subway.dto.SubwayPathRequest;
 import subway.entity.LineEntity;
 import subway.repository.SubwayRepository;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
 import static subway.domain.Line.EMPTY_ENDPOINT_STATION;
@@ -60,6 +65,8 @@ public class StationIntegrationTest {
     private Line line;
     private Station upstream;
     private Station downstream;
+    private long upstreamId;
+    private long downstreamId;
 
     @BeforeEach
     public void setUp() {
@@ -69,8 +76,8 @@ public class StationIntegrationTest {
         line = new Line(new LineName(VALID_LINE_NAME), List.of(JAMSIL_TO_JAMSILNARU));
 
         lineDao.insert(new LineEntity.Builder().name(VALID_LINE_NAME).build());
-        subwayRepository.addStation(upstream);
-        subwayRepository.addStation(downstream);
+        upstreamId = subwayRepository.addStation(upstream);
+        downstreamId = subwayRepository.addStation(downstream);
         subwayRepository.updateLine(line);
     }
 
@@ -117,8 +124,8 @@ public class StationIntegrationTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @Test
     @DisplayName("/line/stations에 post 요청 노선이 등록되어 있지 않으면 역을 추가할 수 없다.")
+    @Test
     void addStationFail3() {
         final String invalidLineName = "10호선";
 
@@ -133,8 +140,8 @@ public class StationIntegrationTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @Test
     @DisplayName("/line/stations에 post 상행역이 없으면 역을 추가할 수 없다.")
+    @Test
     void addStationFail4() {
         given()
                 .contentType(ContentType.JSON)
@@ -147,8 +154,8 @@ public class StationIntegrationTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @Test
     @DisplayName("/line/stations에 post 하행역이 없으면 역을 추가할 수 없다.")
+    @Test
     void addStationFail5() {
         given()
                 .contentType(ContentType.JSON)
@@ -161,8 +168,8 @@ public class StationIntegrationTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @Test
     @DisplayName("/line/stations에 post upstream-distance가 기존 상행역 하행역 간의 거리와 같거나 크면 추가할 수 없다.")
+    @Test
     void addStationFail6() {
         given()
                 .contentType(ContentType.JSON)
@@ -175,8 +182,8 @@ public class StationIntegrationTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @Test
     @DisplayName("/line/stations에 상행역과 하행역이 Section을 이루지 않는 경우 추가할 수 없다.")
+    @Test
     void addStationFail7() {
         Line newLine = new Line(line);
         Station newStation = new Station("건대입구");
@@ -212,8 +219,8 @@ public class StationIntegrationTest {
         });
     }
 
-    @Test
     @DisplayName("/line/stations에 post station-name이 이미 Line에 존재하는 경우 추가할 수 없다.")
+    @Test
     void addStationFail8() {
         given()
                 .contentType(ContentType.JSON)
@@ -224,5 +231,35 @@ public class StationIntegrationTest {
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * 2호선 (LINE_NUMBER_TWO)
+     * 잠실 --(3)--> 선릉 --(2)--> 잠실나루
+     * JAMSIL : Station id = 1
+     * JAMSIL_NARU : Station id = 2
+     * SULLENG : Station id = 3
+     */
+    @DisplayName("/line/paths에 get 출발역과 도착역을 전달 받아 최단 경로를 전달한다.")
+    @Test
+    void findShortestPath() {
+        Map<String, Long> params = new LinkedHashMap<>();
+        params.put("departure", upstreamId);
+        params.put("destination", downstreamId);
+
+        ExtractableResponse<Response> response = given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new SubwayPathRequest(1L, 1L, 2L))
+                .when()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .get("/lines/paths")
+                .then().log().all()
+                .extract();
+
+        assertSoftly(softly -> {
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(response.jsonPath()).toString()
+                    .contains("선릉");
+        });
     }
 }

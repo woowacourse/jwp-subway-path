@@ -3,6 +3,7 @@ package subway.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
+import subway.dao.PathDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
@@ -29,12 +30,14 @@ public class SubwayRepository {
     private final StationDao stationDao;
     private final LineDao lineDao;
     private final SectionDao sectionDao;
+    private final PathDao pathDao;
 
     @Autowired
-    public SubwayRepository(StationDao stationDao, LineDao lineDao, SectionDao sectionDao) {
+    public SubwayRepository(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, PathDao pathDao) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
+        this.pathDao = pathDao;
     }
 
     public Stations getStations() {
@@ -61,17 +64,18 @@ public class SubwayRepository {
                 .collect(collectingAndThen(toList(), (sections) -> new Line(new LineName(lineName), sections)));
     }
 
-    private Station findStation(long stationId) {
+    public Station findStation(long stationId) {
         StationEntity stationEntity = stationDao.findById(stationId)
                 .orElseThrow(() -> new StationNotFoundException("찾는 역이 존재하지 않습니다."));
         return new Station(stationEntity.getName());
     }
 
-    public void addStation(Station stationToAdd) {
+    public long addStation(Station stationToAdd) {
         StationEntity stationEntity = new StationEntity.Builder()
                 .name(stationToAdd.getName())
                 .build();
-        stationDao.insert(stationEntity);
+        return stationDao.insert(stationEntity)
+                .getId();
     }
 
     public Optional<Long> findStationIdByName(String name) {

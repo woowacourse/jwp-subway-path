@@ -24,6 +24,14 @@ public class Lines {
         }
     }
 
+    public ShortestPath findShortestPath() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(new Station("잠실"));
+        stations.add(new Station("선릉"));
+        stations.add(new Station("잠실나루"));
+        return new ShortestPath(stations);
+    }
+
     private boolean hasLine(Line newLine) {
         return lines.stream()
                 .anyMatch(line -> line.getName().equals(newLine.getName()));

@@ -17,4 +17,11 @@ public class Stations {
                 .filter(station -> station.getName().equals(stationName))
                 .findAny();
     }
+
+    @Override
+    public String toString() {
+        return "Stations{" +
+                "stations=" + stations +
+                '}';
+    }
 }
