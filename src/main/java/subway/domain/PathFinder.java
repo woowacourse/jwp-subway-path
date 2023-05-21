@@ -1,8 +1,9 @@
 package subway.domain;
 
+import static java.util.stream.Collectors.toList;
+
 import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.GraphDelegator;
 import java.util.List;
@@ -41,7 +42,17 @@ public class PathFinder {
         return dijkstraShortestPath.getPathWeight(startStation, endStation);
     }
 
-    public Graph<Station, DefaultEdge> getSubwayRoute() {
+    public List<Line> findPassLine(final Station startStation, final Station endStation) {
+        DijkstraShortestPath<Station, StationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayRoute);
+
+        List<StationEdge> edges = dijkstraShortestPath.getPath(startStation, endStation).getEdgeList();
+        return edges.stream()
+                .map(StationEdge::getLine)
+                .distinct()
+                .collect(toList());
+    }
+
+    public Graph<Station, StationEdge> getSubwayRoute() {
         return new GraphDelegator<>(subwayRoute);
     }
 }

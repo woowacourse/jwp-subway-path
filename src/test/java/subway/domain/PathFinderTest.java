@@ -2,6 +2,9 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static subway.TestData._2호선;
+import static subway.TestData._4호선;
+import static subway.TestData._7호선;
 import static subway.TestData.남성역;
 import static subway.TestData.당곡역;
 import static subway.TestData.보라매병원역;
@@ -11,12 +14,12 @@ import static subway.TestData.사당역;
 import static subway.TestData.상도역;
 import static subway.TestData.서울대입구역;
 import static subway.TestData.서원역;
+import static subway.TestData.신림선;
 import static subway.TestData.신림역;
 import static subway.TestData.장승배기역;
 import static subway.TestData.총신대입구역;
 
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -90,6 +93,22 @@ class PathFinderTest {
 
         assertThatIllegalArgumentException().isThrownBy(
                 () -> pathFinder.calculateShortestDistance(신림역, 천안역)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("startToEndStationAndExpectLines")
+    void 최단_거리를_지날_때_거치는_모든_라인을_구한다(final Station startStation, final Station endStation, final List<Line> expect) {
+        var result = pathFinder.findPassLine(startStation, endStation);
+
+        assertThat(result).isEqualTo(expect);
+    }
+
+    private static Stream<Arguments> startToEndStationAndExpectLines() {
+        return Stream.of(
+                Arguments.arguments(서원역, 상도역, List.of(신림선, _7호선)),
+                Arguments.arguments(서울대입구역, 보라매역, List.of(_2호선, 신림선)),
+                Arguments.arguments(서울대입구역, 장승배기역, List.of(_2호선, _4호선, _7호선))
         );
     }
 }
