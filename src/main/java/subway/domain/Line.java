@@ -6,9 +6,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
     private final Sections sections;
 
     public Line(String name, String color) {
