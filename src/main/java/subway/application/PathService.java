@@ -1,13 +1,12 @@
 package subway.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import subway.domain.Subway;
+import subway.domain.SubwayGraph;
 import subway.domain.fare.Fare;
 import subway.domain.fare.FarePolicy;
 import subway.domain.line.Station;
-import subway.domain.Subway;
-import subway.domain.SubwayGraph;
 import subway.dto.path.ShortestPathSelectResponse;
 import subway.dto.station.StationSelectResponse;
 import subway.exception.station.StationNotFoundException;
@@ -42,9 +41,10 @@ public class PathService {
         final int shortestDistance = subwayGraph.calculateShortestDistance(sourceStation, targetStation);
         final Fare fare = new Fare(farePolicy, shortestDistance);
 
-        final List<StationSelectResponse> pathDto = shortestPath.stream()
-                .map(station -> new StationSelectResponse(station.getId(), station.getName()))
-                .collect(Collectors.toUnmodifiableList());
-        return new ShortestPathSelectResponse(pathDto, shortestDistance, fare.getValue());
+        return new ShortestPathSelectResponse(
+                StationSelectResponse.from(shortestPath),
+                shortestDistance,
+                fare.getValue()
+        );
     }
 }
