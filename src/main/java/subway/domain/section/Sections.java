@@ -1,5 +1,6 @@
 package subway.domain.section;
 
+import subway.domain.line.Line;
 import subway.domain.station.Station;
 
 import java.util.List;
@@ -26,6 +27,14 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.isContainSection(containedSection))
                 .findAny();
+    }
+
+    public Line getLine() {
+        return sections.get(0).getLine();
+    }
+
+    public int getSectionsSize() {
+        return sections.size();
     }
 
     public List<Section> getSections() {

@@ -10,7 +10,6 @@ import subway.domain.section.Section;
 import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
-import subway.domain.station.StationRepository;
 import subway.dto.StationRequest;
 
 import java.util.List;
@@ -18,15 +17,13 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class StationService {
+public class SaveSectionService {
 
     private final LineRepository lineRepository;
-    private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
-    public StationService(LineRepository lineRepository, StationRepository stationRepository, SectionRepository sectionRepository) {
+    public SaveSectionService(LineRepository lineRepository, SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
     }
 
@@ -36,10 +33,7 @@ public class StationService {
             return saveInitialSection(stationRequest);
         }
         Line line = findNullableLine.get();
-        Station upStation = new Station(null, stationRequest.getUpStationName(), line);
-        Station downStation = new Station(null, stationRequest.getDownStationName(), line);
-        Distance distance = new Distance(stationRequest.getDistance());
-        Section sectionToAdd = new Section(null, upStation, downStation, distance);
+        Section sectionToAdd = getSectionFromRequest(stationRequest, line);
 
         Sections sections = new Sections(sectionRepository.findSectionsByLineId(line.getId()));
         validateSectionCanLink(sections, sectionToAdd);
@@ -56,56 +50,37 @@ public class StationService {
 
     private Long saveInitialSection(StationRequest stationRequest) {
         Line line = lineRepository.insert(new Line(null, stationRequest.getLineName()));
+        Section sectionToAdd = getSectionFromRequest(stationRequest, line);
+        Section insertedSection = sectionRepository.insert(sectionToAdd);
+        return insertedSection.getLineId();
+    }
+
+    private Section getSectionFromRequest(StationRequest stationRequest, Line line) {
         Station upStation = new Station(null, stationRequest.getUpStationName(), line);
         Station downStation = new Station(null, stationRequest.getDownStationName(), line);
         Distance distance = new Distance(stationRequest.getDistance());
-        Section sectionToAdd = new Section(null, upStation, downStation, distance);
-        Section insertedSection = sectionRepository.insert(sectionToAdd);
-        return insertedSection.getLineId();
+        return new Section(null, upStation, downStation, distance);
     }
 
     private Long saveAdditionalSection(Sections sections, Section sectionToAdd) {
         Optional<Section> nullableSectionToModify = sections.findSectionContainSection(sectionToAdd);
         if (nullableSectionToModify.isEmpty()) {
-            Section insertedSection = sectionRepository.insert(sectionToAdd);
-            return insertedSection.getLineId();
+            return insertToEnd(sectionToAdd);
         }
-        Section sectionToModify = nullableSectionToModify.get();
+        return insertToMiddle(sectionToAdd, nullableSectionToModify.get());
+    }
+
+    private Long insertToEnd(Section sectionToAdd) {
+        Section insertedSection = sectionRepository.insert(sectionToAdd);
+        return insertedSection.getLineId();
+    }
+
+    private Long insertToMiddle(Section sectionToAdd, Section sectionToModify) {
         Section modifiedSection = sectionToModify.subtract(sectionToAdd);
 
         sectionRepository.insert(modifiedSection);
         sectionRepository.insert(sectionToAdd);
         sectionRepository.remove(sectionToModify);
         return sectionToAdd.getLineId();
-    }
-
-    public Long deleteStationById(Long id) {
-        Station stationToDelete = stationRepository.findStationById(id);
-        Line targetLine = stationToDelete.getLine();
-        Sections sections = new Sections(sectionRepository.findSectionsByLineId(targetLine.getId()));
-        List<Section> sectionsToCombine = sections.findSectionsContainStation(stationToDelete);
-        if (sectionsToCombine.isEmpty()) {
-            throw new IllegalArgumentException("해당 역이 존재하지 않습니다.");
-        }
-        stationRepository.remove(stationToDelete);
-
-        if (sections.getSections().size() == 1) {
-            lineRepository.remove(targetLine);
-            return targetLine.getId();
-        }
-
-        if (sectionsToCombine.size() == 1) {
-            return targetLine.getId();
-        }
-
-        Section combinedSection = combineSections(sectionsToCombine);
-        Section insertedSection = sectionRepository.insert(combinedSection);
-        return insertedSection.getLineId();
-    }
-
-    private Section combineSections(List<Section> sectionsToCombine) {
-        Section section1 = sectionsToCombine.get(0);
-        Section section2 = sectionsToCombine.get(1);
-        return section1.combine(section2);
     }
 }
