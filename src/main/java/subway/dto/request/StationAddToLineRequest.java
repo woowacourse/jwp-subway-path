@@ -3,7 +3,7 @@ package subway.dto.request;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class AddStationToLineRequest {
+public class StationAddToLineRequest {
 
     @NotBlank(message = "노선을 입력해주세요.")
     private String lineName;
@@ -17,10 +17,10 @@ public class AddStationToLineRequest {
     @NotNull(message = "역간의 거리를 입력해주세요.")
     private Integer distance;
 
-    private AddStationToLineRequest() {
+    private StationAddToLineRequest() {
     }
 
-    public AddStationToLineRequest(final String lineName, final String upStationName,
+    public StationAddToLineRequest(final String lineName, final String upStationName,
                                    final String downStationName, final Integer distance) {
         this.lineName = lineName;
         this.upStationName = upStationName;

@@ -48,7 +48,7 @@ public class PathService {
         return ShortestPathResponse.of(path, fee);
     }
 
-    private static FareInformation getFeeInformation(Path path, Lines lines, int age) {
+    private FareInformation getFeeInformation(final Path path, final Lines lines, final int age) {
         Lines findLines = lines.findLinesByContainSection(path.getSections());
         return new FareInformation(path.getTotalDistance(), findLines, AgeGroup.from(age));
     }

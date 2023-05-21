@@ -6,9 +6,9 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.request.AddStationToLineRequest;
-import subway.dto.request.DeleteStationFromLineRequest;
 import subway.dto.request.LineCreateRequest;
+import subway.dto.request.StationAddToLineRequest;
+import subway.dto.request.StationDeleteFromLineRequest;
 import subway.exception.DuplicateLineException;
 import subway.exception.NotFoundLineException;
 import subway.exception.NotFoundStationException;
@@ -43,7 +43,7 @@ public class LineService {
                 .orElseThrow(() -> new NotFoundStationException(name));
     }
 
-    public void addStation(final AddStationToLineRequest request) {
+    public void addStation(final StationAddToLineRequest request) {
         final Line line = findLineByName(request.getLineName());
         final Station up = findStationByName(request.getUpStationName());
         final Station down = findStationByName(request.getDownStationName());
@@ -57,7 +57,7 @@ public class LineService {
                 .orElseThrow(() -> new NotFoundLineException(name));
     }
 
-    public void removeStation(final DeleteStationFromLineRequest request) {
+    public void removeStation(final StationDeleteFromLineRequest request) {
         final Line line = findLineByName(request.getLineName());
         final Station station = findStationByName(request.getDeleteStationName());
         line.removeStation(station);

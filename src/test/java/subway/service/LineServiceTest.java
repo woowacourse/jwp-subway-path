@@ -21,9 +21,9 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.request.AddStationToLineRequest;
-import subway.dto.request.DeleteStationFromLineRequest;
 import subway.dto.request.LineCreateRequest;
+import subway.dto.request.StationAddToLineRequest;
+import subway.dto.request.StationDeleteFromLineRequest;
 import subway.exception.DuplicateLineException;
 import subway.exception.NotFoundLineException;
 import subway.exception.NotFoundStationException;
@@ -103,7 +103,7 @@ class LineServiceTest {
     @Nested
     class 노선에_역을_추가시 {
 
-        final AddStationToLineRequest request = new AddStationToLineRequest(
+        final StationAddToLineRequest request = new StationAddToLineRequest(
                 "1호선",
                 "잠실역",
                 "사당역",
@@ -170,7 +170,7 @@ class LineServiceTest {
         final Sections sections = new Sections(List.of(
                 createSection("역1", "역2", 10),
                 createSection("역2", "역3", 10)));
-        final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", "역2");
+        final StationDeleteFromLineRequest request = new StationDeleteFromLineRequest("1호선", "역2");
         final Line line = new Line("1호선", sections);
         given(lineRepository.findByName("1호선"))
                 .willReturn(Optional.of(line));
@@ -188,7 +188,7 @@ class LineServiceTest {
     void 노션에_역이_두개일떄_노선에서_역_제거시_노선도_제거된다() {
         // given
         final Sections sections = new Sections(createSection("역1", "역2", 10));
-        final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", "역2");
+        final StationDeleteFromLineRequest request = new StationDeleteFromLineRequest("1호선", "역2");
         final Line line = new Line("1호선", sections);
         given(lineRepository.findByName("1호선"))
                 .willReturn(Optional.of(line));
