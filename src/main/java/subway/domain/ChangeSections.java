@@ -29,8 +29,8 @@ public class ChangeSections {
         return new ChangeSections(status, newSection);
     }
 
-    public boolean isChangeMiddle(final ChangeSectionStatus status) {
-        return this.status.equals(status);
+    public boolean isChangeMiddle() {
+        return this.status.equals(ChangeSectionStatus.FOR_MIDDLE_SECTION);
     }
 
     public Section getUpdateSection() {
