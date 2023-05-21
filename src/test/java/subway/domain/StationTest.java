@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.EmptySource;
 import subway.exception.InvalidException;
 
 class StationTest {
-    @DisplayName("Station 생성 테스트")
+    @DisplayName("역을 생성한다.")
     @Test
     void create() {
         // then

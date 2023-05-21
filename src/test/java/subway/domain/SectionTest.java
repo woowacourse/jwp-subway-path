@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.InvalidException;
 
 class SectionTest {
-    @DisplayName("생성 테스트")
+    @DisplayName("구간을 생성한다.")
     @Test
     void create() {
         // given
@@ -23,7 +23,7 @@ class SectionTest {
         assertDoesNotThrow(() -> new Section(upStation, downStation, 10));
     }
 
-    @DisplayName("거리가 양수가 아닐 때 예외가 발생한다.")
+    @DisplayName("구간의 거리가 양수가 아닐 때 예외가 발생한다.")
     @ParameterizedTest(name = "{displayName}[{index}] = ''{0}''")
     @ValueSource(ints = {0, -10})
     void createNotPositiveDistance(int distance) {
@@ -37,7 +37,7 @@ class SectionTest {
                 .hasMessage("거리는 양수여야 합니다.");
     }
 
-    @DisplayName("시작역과 도착역이 같을 때 예외가 발생한다.")
+    @DisplayName("구간 내 시작역과 도착역이 같을 때 예외가 발생한다.")
     @Test
     void createDuplicateStations() {
         // given
