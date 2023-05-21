@@ -131,7 +131,7 @@ public class LineStationIntegrationTest extends IntegrationTest {
                 .patch("/lines/1/stations/1/init");
 
         // when
-        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.UP, 12);
+        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.UP.getValue(), 12);
 
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(request)
@@ -158,7 +158,7 @@ public class LineStationIntegrationTest extends IntegrationTest {
                 .patch("/lines/1/stations/1/init");
 
         // when & then
-        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.DOWN, 21);
+        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.DOWN.getValue(), 21);
 
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(request)

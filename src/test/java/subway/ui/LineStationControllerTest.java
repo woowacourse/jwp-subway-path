@@ -62,7 +62,7 @@ class LineStationControllerTest {
     @DisplayName("patch /lines/{lineId}/stations/{stationId}/endpoint : noContent를 반환한다.")
     void addStationToLine_up() throws Exception {
         // given
-        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.UP, 1);
+        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.UP.getValue(), 1);
         final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then
@@ -84,7 +84,7 @@ class LineStationControllerTest {
     @DisplayName("patch /lines/{lineId}/stations/{stationId}/endpoint : noContent를 반환한다.")
     void addStationToLine_down() throws Exception {
         // given
-        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.DOWN, 1);
+        final ConnectionEndpointRequest request = new ConnectionEndpointRequest(EndpointType.DOWN.getValue(), 1);
         final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then

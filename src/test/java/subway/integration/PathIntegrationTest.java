@@ -98,14 +98,14 @@ public class PathIntegrationTest extends IntegrationTest {
                 .when()
                 .patch("/lines/1/stations/1/init");
 
-        final ConnectionEndpointRequest connectionDownRequest1 = new ConnectionEndpointRequest(EndpointType.DOWN, 12);
+        final ConnectionEndpointRequest connectionDownRequest1 = new ConnectionEndpointRequest(EndpointType.DOWN.getValue(), 12);
         RestAssured.given()
                 .body(connectionDownRequest1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/1/stations/3/endpoint");
 
-        final ConnectionEndpointRequest connectionDownRequest2 = new ConnectionEndpointRequest(EndpointType.DOWN, 12);
+        final ConnectionEndpointRequest connectionDownRequest2 = new ConnectionEndpointRequest(EndpointType.DOWN.getValue(), 12);
         RestAssured.given()
                 .body(connectionDownRequest2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -119,7 +119,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .when()
                 .patch("/lines/2/stations/1/init");
 
-        final ConnectionEndpointRequest connectionDownRequest3 = new ConnectionEndpointRequest(EndpointType.DOWN, 11);
+        final ConnectionEndpointRequest connectionDownRequest3 = new ConnectionEndpointRequest(EndpointType.DOWN.getValue(), 11);
         RestAssured.given()
                 .body(connectionDownRequest3)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

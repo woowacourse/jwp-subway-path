@@ -7,18 +7,18 @@ import javax.validation.constraints.Positive;
 
 public class ConnectionEndpointRequest {
     @NotNull
-    private final EndpointType endpointType;
+    private final String endpointType;
     @Positive
     @NotNull
     private final int distance;
 
-    public ConnectionEndpointRequest(final EndpointType connectType, final int distance) {
+    public ConnectionEndpointRequest(final String connectType, final int distance) {
         this.endpointType = connectType;
         this.distance = distance;
     }
 
     public EndpointType getEndpointType() {
-        return endpointType;
+        return EndpointType.fromValue(endpointType);
     }
 
     public int getDistance() {
