@@ -43,6 +43,7 @@ class LineJdbcAdapterTest {
 
     @Test
     void 아이디로_조회_테스트() {
+        // given
         LineEntity line = lineDao.insert(new LineEntity("2호선", "GREEN"));
 
         StationEntity station1 = stationDao.insert(잠실역.ENTITY);
@@ -54,7 +55,10 @@ class LineJdbcAdapterTest {
         SectionEntity sectionEntity2 = sectionDao.insert(
                 new SectionEntity(line.getId(), station2.getId(), station3.getId(), 7));
 
+        // when
         Line result = lineJdbcAdapter.findById(line.getId()).get();
+
+        // then
         assertThat(result)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -68,9 +72,35 @@ class LineJdbcAdapterTest {
                         )));
     }
 
+    @Test
+    void 역을_포함하는_노선_아이디_리스트_조회() {
+        // given
+        long stationId = 1L;
+        Station station = new Station(stationId, "잠실역");
+        List<Long> expectedLineIds = List.of(1L, 2L, 3L);
+        List<Long> unExpectedLindIds = List.of(4L, 5L);
+
+        for (final Long lineId : expectedLineIds) {
+            sectionDao.insert(new SectionEntity(lineId, stationId, 2L, 5));
+        }
+
+        for (final Long lineId : unExpectedLindIds) {
+            sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 5));
+        }
+
+        // when
+        List<Long> actual = lineJdbcAdapter.findContainingLineIdsByStation(station);
+
+        // then
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(expectedLineIds);
+    }
 
     @Test
     void 구간_갱신_테스트() {
+        // given
         LineEntity line = lineDao.insert(new LineEntity("2호선", "GREEN"));
 
         StationEntity station1 = stationDao.insert(잠실역.ENTITY);
@@ -82,10 +112,12 @@ class LineJdbcAdapterTest {
         sectionDao.insert(
                 new SectionEntity(line.getId(), station2.getId(), station3.getId(), 7));
 
+        // when
         lineJdbcAdapter.updateSections(new Line(line.getId(), line.getName(), line.getColor(),
                 List.of(new Section(new Station(station1.getId(), station1.getName()),
                         new Station(station3.getId(), station3.getName()), 12))));
 
+        // then
         List<SectionEntity> sections = sectionDao.findByLineId(line.getId());
         assertThat(sections)
                 .usingRecursiveComparison()

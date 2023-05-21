@@ -70,6 +70,11 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
+    public List<SectionEntity> findByStationId(final long stationId) {
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE up_station_id = ? OR down_station_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, stationId, stationId);
+    }
+
     public void update(SectionEntity newSectionEntity) {
         String sql = "UPDATE section SET line_id = ? , up_station_id = ?, down_station_id = ?, distance = ? WHERE id = ?";
         jdbcTemplate.update(sql,

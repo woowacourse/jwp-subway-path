@@ -4,16 +4,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import subway.application.port.in.section.RemoveStationFromLineUseCase;
 import subway.application.port.in.station.dto.command.CreateStationCommand;
 import subway.application.port.in.station.dto.command.UpdateStationCommand;
+import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.station.LoadStationPort;
 import subway.application.port.out.station.PersistStationPort;
 import subway.common.exception.NoSuchStationException;
@@ -22,18 +26,23 @@ import subway.fixture.StationFixture.역삼역;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
+@ExtendWith(MockitoExtension.class)
 class StationCommandServiceTest {
 
+    @Mock
     private LoadStationPort loadStationPort;
-    private PersistStationPort persistStationPort;
-    private StationCommandService stationCommandService;
 
-    @BeforeEach
-    void setUp() {
-        loadStationPort = mock(LoadStationPort.class);
-        persistStationPort = mock(PersistStationPort.class);
-        stationCommandService = new StationCommandService(loadStationPort, persistStationPort);
-    }
+    @Mock
+    private PersistStationPort persistStationPort;
+
+    @Mock
+    private LoadLinePort loadLinePort;
+
+    @Mock
+    private RemoveStationFromLineUseCase removeStationFromLineUseCase;
+
+    @InjectMocks
+    private StationCommandService stationCommandService;
 
     @Nested
     class 역_생성시_ {

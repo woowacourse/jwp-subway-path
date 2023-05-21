@@ -72,6 +72,7 @@ public class LineJdbcAdapter implements LoadLinePort, PersistLinePort {
     }
 
     // TODO: n번 쿼리를 날리는 구조 개선....
+
     @Override
     public List<Line> findAll() {
 
@@ -85,6 +86,15 @@ public class LineJdbcAdapter implements LoadLinePort, PersistLinePort {
                     }
                     return line.get();
                 })
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<Long> findContainingLineIdsByStation(final Station station) {
+        List<SectionEntity> sectionEntities = sectionDao.findByStationId(station.getId());
+        return sectionEntities.stream()
+                .map(SectionEntity::getLineId)
+                .distinct()
                 .collect(Collectors.toList());
     }
 

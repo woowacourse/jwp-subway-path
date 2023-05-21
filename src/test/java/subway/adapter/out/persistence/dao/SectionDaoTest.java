@@ -155,6 +155,40 @@ class SectionDaoTest {
     }
 
     @Test
+    void 역_아이디로_조회() {
+        // given
+        long stationId = 1L;
+        List<SectionEntity> targetEntities = List.of(
+                new SectionEntity(1L, stationId, 2L, 1),
+                new SectionEntity(2L, 2L, stationId, 2)
+        );
+        List<SectionEntity> otherEntities = List.of(
+                new SectionEntity(1L, 2L, 3L, 1),
+                new SectionEntity(2L, 3L, 4L, 2)
+        );
+
+        List<SectionEntity> entities = new ArrayList<>();
+        entities.addAll(targetEntities);
+        entities.addAll(otherEntities);
+
+        for (final SectionEntity entity : entities) {
+            jdbcTemplate.update(
+                    "INSERT INTO section(line_id, up_station_id, down_station_id, distance) VALUES (?,?,?,?)",
+                    entity.getLineId(), entity.getUpStationId(), entity.getDownStationId(), entity.getDistance());
+        }
+
+        // when
+        List<SectionEntity> responses = sectionDao.findByStationId(stationId);
+
+        // then
+        assertThat(responses)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .ignoringCollectionOrder()
+                .isEqualTo(targetEntities);
+    }
+
+    @Test
     void 갱신_테스트() {
         // given
         Map<String, Object> params = new HashMap<>();
