@@ -70,7 +70,7 @@ class SectionTest {
         Section firstSection = new Section(JAMSIL, SEONLEUNG, new Distance(10));
         Section secondSection = new Section(SEONLEUNG, GANGNAM, new Distance(7));
 
-        Distance distance = firstSection.calcuateCombineDistance(secondSection);
+        Distance distance = firstSection.calculateCombineDistance(secondSection);
         assertThat(distance).isEqualTo(new Distance(17));
     }
 }

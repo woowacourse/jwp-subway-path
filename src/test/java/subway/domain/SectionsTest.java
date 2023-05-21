@@ -328,7 +328,7 @@ class SectionsTest {
             List<Section> deletedSections = deleteResult.getDeletedSections();
             Section addedSection = deleteResult.getAddedSections().get(0);
 
-            Section newSection = new Section(JAMSIL, GANGNAM, jamsilSeonleungSection.calcuateCombineDistance(gangnameSeonleungSection));
+            Section newSection = new Section(JAMSIL, GANGNAM, jamsilSeonleungSection.calculateCombineDistance(gangnameSeonleungSection));
 
             assertAll(
                     () -> assertThat(deletedSections).containsExactlyInAnyOrder(jamsilSeonleungSection, gangnameSeonleungSection),

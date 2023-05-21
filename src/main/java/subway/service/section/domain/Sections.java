@@ -54,7 +54,7 @@ public class Sections {
         Section sectionOfDeleteStationIsDown = findSectionDeleteStationIsDownStation(station, sectionsOfContainDeleteStation);
         Section sectionOfDeleteStationIsUp = findSectionDeleteStationIsUpStation(station, sectionsOfContainDeleteStation);
 
-        Distance combinedDistance = sectionOfDeleteStationIsDown.calcuateCombineDistance(sectionOfDeleteStationIsUp);
+        Distance combinedDistance = sectionOfDeleteStationIsDown.calculateCombineDistance(sectionOfDeleteStationIsUp);
 
         Section newSection = new Section(sectionOfDeleteStationIsDown.getUpStation(), sectionOfDeleteStationIsUp.getDownStation(), combinedDistance);
         return new DeleteResult(List.of(newSection), List.of(sectionOfDeleteStationIsUp, sectionOfDeleteStationIsDown), false);

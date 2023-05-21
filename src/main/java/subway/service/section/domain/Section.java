@@ -54,7 +54,7 @@ public class Section {
         return this.distance.reduce(another);
     }
 
-    public Distance calcuateCombineDistance(Section another) {
+    public Distance calculateCombineDistance(Section another) {
         return this.distance.plus(another.distance);
     }
 
