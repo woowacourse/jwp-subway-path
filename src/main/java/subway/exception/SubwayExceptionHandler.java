@@ -14,6 +14,7 @@ public class SubwayExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
+        log.warn(exception.getMessage());
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
@@ -26,6 +27,7 @@ public class SubwayExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> handleNotFoundException(NotFoundException exception) {
+        log.warn(exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
