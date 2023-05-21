@@ -21,6 +21,10 @@ public class Distance {
         return distance > otherDistance;
     }
 
+    public boolean isNotLongerThan(final int distance) {
+        return this.distance <= distance;
+    }
+
     public int subtract(int otherDistance) {
         return distance - otherDistance;
     }
