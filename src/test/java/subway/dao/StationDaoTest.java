@@ -73,7 +73,7 @@ class StationDaoTest {
     @DisplayName("이미 존재하는 역을 추가할 시 예외가 발생한다")
     @Test
     void insertException() {
-        //then
+        // then
         assertThatThrownBy(() ->
                 stationDao.insert(new StationEntity("봉천역"))
         ).isInstanceOf(DuplicatedException.class);
@@ -85,7 +85,7 @@ class StationDaoTest {
         // when
         List<StationEntity> stationEntities = stationDao.findAll();
 
-        //then
+        // then
         assertThat(stationEntities).usingRecursiveFieldByFieldElementComparator()
                                    .containsAll(expectStations);
     }
@@ -96,7 +96,7 @@ class StationDaoTest {
         // when
         Optional<StationEntity> findStation = stationDao.findById(1L);
 
-        //then
+        // then
         assertAll(
                 () -> assertThat(findStation).isPresent(),
                 () -> assertThat(findStation.get()).usingRecursiveComparison()
@@ -113,7 +113,7 @@ class StationDaoTest {
         // when
         Optional<StationEntity> findStation = stationDao.findById(notExistId);
 
-        //then
+        // then
         assertThat(findStation).isEmpty();
     }
 
@@ -123,7 +123,7 @@ class StationDaoTest {
         // when
         Optional<StationEntity> findStation = stationDao.findByName("서울대입구역");
 
-        //then
+        // then
         assertAll(
                 () -> assertThat(findStation).isPresent(),
                 () -> assertThat(findStation.get()).usingRecursiveComparison()
@@ -140,7 +140,7 @@ class StationDaoTest {
         // when
         Optional<StationEntity> findStation = stationDao.findByName(notExistName);
 
-        //then
+        // then
         assertThat(findStation).isEmpty();
     }
 
@@ -153,7 +153,7 @@ class StationDaoTest {
         // when
         stationDao.update(updateStation);
 
-        //then
+        // then
         StationEntity stationEntity = jdbcTemplate.queryForObject(
                 "select * from station WHERE id = :id",
                 new BeanPropertySqlParameterSource(updateStation),
@@ -169,7 +169,7 @@ class StationDaoTest {
         // when
         StationEntity updateStation = new StationEntity(1L, "봉천역");
 
-        //then
+        // then
         assertThatThrownBy(() ->
                 stationDao.update(updateStation)
         ).isInstanceOf(DuplicateKeyException.class);
@@ -188,7 +188,7 @@ class StationDaoTest {
         // when
         stationDao.deleteById(deleteStation.getId());
 
-        //then
+        // then
         List<StationEntity> stationEntities = jdbcTemplate.query(
                 "SELECT * FROM station",
                 rowMapper

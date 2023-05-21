@@ -59,8 +59,10 @@ class SectionDaoTest {
     @DisplayName("전체 구간 정보를 SectionStationMapper 객체로 반환한다")
     @Test
     void findAll() {
+        // when
         List<SectionStationMapper> sections = sectionDao.findAll();
 
+        // then
         assertThat(sections).usingRecursiveFieldByFieldElementComparator()
                             .contains(
                                     SECTION_STATION_MAPPER_봉천_서울대입구,
@@ -75,8 +77,10 @@ class SectionDaoTest {
     @DisplayName("노선의 id를 입력했을 때, 해당 노선의 구간 정보를 SectionStationMapper 객체로 반환한다")
     @Test
     void findSectionsByLineId() {
+        // when
         List<SectionStationMapper> sections = sectionDao.findSectionsByLineId(1L);
 
+        // then
         assertThat(sections).usingRecursiveFieldByFieldElementComparator()
                             .contains(
                                     SECTION_STATION_MAPPER_봉천_서울대입구,
@@ -90,9 +94,11 @@ class SectionDaoTest {
     @DisplayName("노선의 id를 입력했을 때, 해당 노선의 구간 정보를 SectionEntity 체로 반환한다")
     @Test
     void findByLineId() {
+        // when
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L)
                                                         .get();
 
+        // then
         assertThat(sectionEntities).usingRecursiveFieldByFieldElementComparator()
                                    .containsExactly(
                                            SECTION_ENTITY_봉천_서울대입구,
@@ -107,9 +113,11 @@ class SectionDaoTest {
     @DisplayName("노선의 UpStationId를 입력했을 때, 해당 구간 정보를 SectionEntity 객체로 반환한다")
     @Test
     void findByUpStationId() {
+        // when
         SectionEntity section = sectionDao.findByUpStationId(1L, 1L)
                                           .get();
 
+        // then
         assertThat(section).usingRecursiveComparison()
                            .isEqualTo(SECTION_ENTITY_서울대입구_사당);
     }
@@ -117,9 +125,11 @@ class SectionDaoTest {
     @DisplayName("노선의 DownStationId를 입력했을 때, 해당 구간 정보를 SectionEntity 객체로 반환한다")
     @Test
     void findByDownStationId() {
+        // when
         SectionEntity section = sectionDao.findByDownStationId(1L, 1L)
                                           .get();
 
+        // then
         assertThat(section).usingRecursiveComparison()
                            .isEqualTo(SECTION_ENTITY_봉천_서울대입구);
     }
@@ -127,8 +137,10 @@ class SectionDaoTest {
     @DisplayName("특정 노선에 구간을 추가한다")
     @Test
     void insert() {
+        // when
         sectionDao.insert(new SectionEntity(1L, 1L, 3L, 5));
 
+        // then
         List<SectionEntity> sectionEntities = jdbcTemplate.query(
                 "SELECT * FROM section WHERE line_id = :line_id",
                 new MapSqlParameterSource()
@@ -143,18 +155,20 @@ class SectionDaoTest {
     @DisplayName("특정 노선에 여러 구간을 한 번에 추가한다")
     @Test
     void insertAll() {
+        // given
         SectionEntity addSection1 = new SectionEntity(1L, 3L, 2L, 6);
         SectionEntity addSection2 = new SectionEntity(1L, 4L, 6L, 7);
         List<SectionEntity> addSections = List.of(addSection1, addSection2);
 
+        // when
         sectionDao.insertAll(addSections);
 
+        // then
         List<SectionEntity> resultSections = jdbcTemplate.query(
                 "SELECT * FROM section WHERE line_id = :line_id",
                 new MapSqlParameterSource("line_id", 1L),
                 sectionEntityRowMapper
         );
-
         assertThat(resultSections).usingRecursiveFieldByFieldElementComparator()
                                   .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                                   .containsAll(addSections);
@@ -163,10 +177,13 @@ class SectionDaoTest {
     @DisplayName("특정 노선의 상행선 아이디를 통해 구간을 수정한다")
     @Test
     void updateByUpStationId() {
+        // given
         SectionEntity updateSection = new SectionEntity(1L, 1L, 2L, 6L, 5);
 
+        // when
         sectionDao.updateByUpStationId(updateSection);
 
+        // then
         SectionEntity sectionEntities = jdbcTemplate.queryForObject(
                 "SELECT * FROM section WHERE line_id = :lineId AND up_station_id = :upStationId",
                 new BeanPropertySqlParameterSource(updateSection),
@@ -179,10 +196,13 @@ class SectionDaoTest {
     @DisplayName("특정 노선의 상행선 아이디를 통해 구간을 수정한다")
     @Test
     void updateByDownStationId() {
+        // given
         SectionEntity updateSection = new SectionEntity(1L, 1L, 6L, 1L, 5);
 
+        // when
         sectionDao.updateByDownStationId(updateSection);
 
+        // then
         SectionEntity sectionEntities = jdbcTemplate.queryForObject(
                 "SELECT * FROM section WHERE id = :id",
                 new BeanPropertySqlParameterSource(updateSection),
@@ -195,10 +215,13 @@ class SectionDaoTest {
     @DisplayName("특정 노선에 구간을 삭제한다")
     @Test
     void delete() {
+        // given
         SectionEntity deleteSection = new SectionEntity(1L, 1L, 2L, 1L, 5);
 
+        // when
         sectionDao.delete(deleteSection);
 
+        // then
         List<SectionEntity> sectionEntities = jdbcTemplate.query(
                 "SELECT * FROM section",
                 sectionEntityRowMapper
@@ -210,12 +233,15 @@ class SectionDaoTest {
     @DisplayName("특정 노선에 여러 구간을 한 번에 삭제한다")
     @Test
     void deleteAll() {
+        // given
         SectionEntity deleteSection1 = new SectionEntity(1L, 1L, 2L, 1L, 5);
         SectionEntity deleteSection2 = new SectionEntity(2L, 1L, 2L, 1L, 5);
         List<SectionEntity> deleteSections = List.of(deleteSection1, deleteSection2);
 
+        // when
         sectionDao.deleteAll(deleteSections);
 
+        // then
         List<SectionEntity> sectionEntities = jdbcTemplate.query(
                 "SELECT * FROM section",
                 sectionEntityRowMapper

@@ -52,7 +52,10 @@ class LineDaoTest {
     @DisplayName("노선을 추가한다")
     @Test
     void insert() {
+        // when
         LineEntity insertLine = lineDao.insert(new LineEntity("4호선", "bg-yellow-600"));
+
+        // then
         LineEntity line = jdbcTemplate.queryForObject(
                 "SELECT id, name, color FROM line WHERE id = :id",
                 new MapSqlParameterSource("id", insertLine.getId()),
@@ -65,6 +68,7 @@ class LineDaoTest {
     @DisplayName("이미 존재하는 노선을 추가하면 예외가 발생한다")
     @Test
     void insertException() {
+        // then
         assertThatThrownBy(() ->
                 lineDao.insert(new LineEntity("2호선", "초록색"))
         ).isInstanceOf(DuplicateKeyException.class);
@@ -73,7 +77,10 @@ class LineDaoTest {
     @DisplayName("전체 노선 목록을 조회한다")
     @Test
     void findAll() {
+        // when
         List<LineEntity> findLines = lineDao.findAll();
+
+        // then
         assertThat(findLines).usingRecursiveComparison()
                              .isEqualTo(expectLines);
     }
@@ -82,9 +89,11 @@ class LineDaoTest {
     @ParameterizedTest(name = "{0}번 아이를 가진 노선 조회")
     @ValueSource(longs = {1L, 2L})
     void findById(Long findId) {
+        // when
         Optional<LineEntity> findLine = lineDao.findById(findId);
-        int findIndex = (int) (findId - 1);
 
+        // then
+        int findIndex = (int) (findId - 1);
         assertAll(
                 () -> assertThat(findLine).isPresent(),
                 () -> assertThat(findLine.get()).usingRecursiveComparison()
@@ -95,8 +104,13 @@ class LineDaoTest {
     @DisplayName("존재하지 않는 아이디를 조회하면 빈 값을 반환한다")
     @Test
     void findByIdNotExist() {
+        // given
         Long notExistId = 1000L;
+
+        // when
         Optional<LineEntity> findLine = lineDao.findById(notExistId);
+
+        // then
         assertThat(findLine).isEmpty();
     }
 
@@ -104,8 +118,10 @@ class LineDaoTest {
     @ParameterizedTest(name = "이름이 {0}인 노선 조회")
     @ValueSource(strings = {"2호선", "1호선"})
     void findByName(String name) {
+        // when
         Optional<LineEntity> findLine = lineDao.findByName(name);
 
+        // then
         assertAll(
                 () -> assertThat(findLine).isPresent(),
                 () -> assertThat(findLine.get().getName()).isEqualTo(name)
@@ -115,10 +131,13 @@ class LineDaoTest {
     @DisplayName("존재하지 않는 이름으로 노선 조회시 빈 값이 반환된다")
     @Test
     void findByNameNotExist() {
+        // given
         String notExistName = "존재하지 않음";
 
+        // when
         Optional<LineEntity> findLine = lineDao.findByName(notExistName);
 
+        // then
         assertThat(findLine).isEmpty();
     }
 
@@ -126,8 +145,10 @@ class LineDaoTest {
     @ParameterizedTest(name = "색이 {0}인 노선 조회")
     @ValueSource(strings = {"초록색", "파랑색"})
     void findByColor(String color) {
+        // when
         Optional<LineEntity> findLine = lineDao.findByColor(color);
 
+        // then
         assertAll(
                 () -> assertThat(findLine).isPresent(),
                 () -> assertThat(findLine.get().getColor()).isEqualTo(color)
@@ -137,18 +158,26 @@ class LineDaoTest {
     @DisplayName("존재하지 않는 이름으로 노선 조회시 빈 값이 반환된다")
     @Test
     void findByColorNotExist() {
+        // given
         String notExistColor = "존재하지 않음";
 
+        // when
         Optional<LineEntity> findLine = lineDao.findByColor(notExistColor);
 
+        // then
         assertThat(findLine).isEmpty();
     }
 
     @DisplayName("특정 노선의 정보를 수정할 수 있다")
     @Test
     void update() {
+        // given
         LineEntity updateEntity = new LineEntity(1L, "2호선", "노랑색");
+
+        // when
         lineDao.update(updateEntity);
+
+        // then
         LineEntity lineEntity = jdbcTemplate.queryForObject(
                 "SELECT id, name, color FROM line WHERE id = :id",
                 new BeanPropertySqlParameterSource(updateEntity),
@@ -161,6 +190,7 @@ class LineDaoTest {
     @DisplayName("특정 노선의 정보를 수정 시 이미 존재하는 이름 혹은 색인 경우 예외를 반환한다")
     @Test
     void updateException() {
+        // then
         assertThatThrownBy(() ->
                 lineDao.update(new LineEntity(1L, "2호선", "파랑색"))
         ).isInstanceOf(DuplicateKeyException.class);
@@ -169,14 +199,17 @@ class LineDaoTest {
     @DisplayName("아이디로 특정 노선을 삭제할 수 있다")
     @Test
     void deleteById() {
+        // given
         LineEntity deleteLine = jdbcTemplate.queryForObject(
                 "SELECT * FROM line WHERE id = :id",
                 new MapSqlParameterSource("id", 1L),
                 rowMapper
         );
 
+        // when
         lineDao.deleteById(deleteLine.getId());
 
+        // then
         List<LineEntity> lineEntities = jdbcTemplate.query(
                 "SELECT * FROM line",
                 rowMapper
