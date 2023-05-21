@@ -12,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.StationCreateRequest;
+import subway.integration.step.StationStep;
 
 @DisplayName("지하철역 관련 기능")
+@SuppressWarnings("NonAsciiCharacters")
 public class StationIntegrationTest extends IntegrationTest {
     @Override
     @BeforeEach
@@ -47,21 +49,14 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void createStationWithDuplicateName() {
         // given
-        StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
-
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationCreateRequest)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        StationCreateRequest 잠실역 = new StationCreateRequest("잠실역");
+        StationStep.역을_생성한다(잠실역);
 
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationCreateRequest)
+                .body(잠실역)
                 .when().post("/stations")
                 .then().log().all()
                 .extract();
