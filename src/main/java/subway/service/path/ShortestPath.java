@@ -1,4 +1,4 @@
-package subway.service;
+package subway.service.path;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

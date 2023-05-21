@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.dto.PathResponse;
-import subway.service.PathService;
+import subway.service.path.PathService;
 
 @RestController
 @RequestMapping("/path")

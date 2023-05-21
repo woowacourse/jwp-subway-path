@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.LineStationRequest;
 import subway.dto.LineStationResponse;
-import subway.service.SectionService;
+import subway.service.section.SectionService;
 
 import javax.validation.Valid;
 import java.net.URI;

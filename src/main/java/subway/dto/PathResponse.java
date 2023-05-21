@@ -5,7 +5,7 @@ import lombok.Getter;
 import subway.domain.Distance;
 import subway.domain.Fare;
 import subway.domain.Section;
-import subway.service.ShortestPath;
+import subway.service.path.ShortestPath;
 
 import java.util.List;
 

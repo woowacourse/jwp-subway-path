@@ -1,12 +1,15 @@
-package subway.domain;
+package subway.service;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.service.DistanceFareCalculator;
-import subway.service.FareCalculator;
-import subway.service.ShortestPath;
-import subway.service.SubwayGraph;
+import subway.domain.Fare;
+import subway.domain.Sections;
+import subway.domain.Subway;
+import subway.service.path.DistanceFareCalculator;
+import subway.service.path.FareCalculator;
+import subway.service.path.ShortestPath;
+import subway.service.path.SubwayGraph;
 
 import java.util.ArrayList;
 import java.util.List;

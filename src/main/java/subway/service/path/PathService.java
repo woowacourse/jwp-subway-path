@@ -1,4 +1,4 @@
-package subway.service;
+package subway.service.path;
 
 import org.springframework.stereotype.Service;
 import subway.domain.Fare;
