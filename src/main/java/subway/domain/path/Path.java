@@ -1,18 +1,16 @@
 package subway.domain.path;
 
-import subway.domain.section.Distance;
-
 import java.util.List;
 import java.util.Objects;
 
 public class Path {
 
     private final List<String> stationNames;
-    private final Distance distance;
+    private final int distance;
 
     public Path(List<String> stationNames, int distance) {
         this.stationNames = stationNames;
-        this.distance = new Distance(distance);
+        this.distance = distance;
     }
 
     public List<String> getStationNames() {
@@ -20,7 +18,7 @@ public class Path {
     }
 
     public int getDistance() {
-        return distance.getDistance();
+        return distance;
     }
 
     @Override
@@ -32,7 +30,7 @@ public class Path {
             return false;
         }
         Path path = (Path) o;
-        return Objects.equals(stationNames, path.stationNames) && Objects.equals(distance, path.distance);
+        return distance == path.distance && Objects.equals(stationNames, path.stationNames);
     }
 
     @Override
