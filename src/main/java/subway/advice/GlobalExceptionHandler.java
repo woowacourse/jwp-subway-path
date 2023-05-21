@@ -18,6 +18,13 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
+    public ResponseEntity<ExceptionResponse> handleException(final Exception exception) {
+        final String message = "[ERROR] 서버가 응답할 수 없습니다.";
+        logger.error(message);
+        return ResponseEntity.badRequest().body(new ExceptionResponse(message));
+    }
+    
+    @ExceptionHandler
     public ResponseEntity<ExceptionResponse> handleIllegalArgumentException (final IllegalArgumentException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.badRequest().body(new ExceptionResponse("[ERROR] " + exception.getMessage()));
@@ -59,18 +66,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         
         logger.error(exceptionMessage);
         return ResponseEntity.badRequest().body(new ExceptionResponse(exceptionMessage));
-    }
-    
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(
-            final Exception ex,
-            final Object body,
-            final HttpHeaders headers,
-            final HttpStatus status,
-            final WebRequest request
-    ) {
-        final String message = "[ERROR] 서버가 응답할 수 없습니다.";
-        logger.error(message);
-        return ResponseEntity.badRequest().body(new ExceptionResponse(message));
     }
 }

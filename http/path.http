@@ -1,7 +1,7 @@
 ###
 # @name getShortestPath
 # @description Retrieve shortest shortestPathFinder
-GET http://localhost:8080/shortestPathFinder
+GET http://localhost:8080/shortest-path
 Content-Type: application/json
 Accept: application/json
 

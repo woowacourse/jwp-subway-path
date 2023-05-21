@@ -91,7 +91,7 @@ Content-Type: application/json
 ###
 # @name getShortestPath
 # @description Retrieve shortest shortestPathFinder
-GET http://localhost:8080/shortestPathFinder
+GET http://localhost:8080/shortest-path
 Content-Type: application/json
 Accept: application/json
 
@@ -297,7 +297,7 @@ Accept: application/json
 ###
 # @name getShortestPath
 # @description Retrieve shortest shortestPathFinder
-GET http://localhost:8080/shortestPathFinder
+GET http://localhost:8080/shortest-path
 Content-Type: application/json
 Accept: application/json
 
@@ -325,6 +325,7 @@ Accept: application/json
 # @description Deletes a station from all lines.
 # @method DELETE
 # @shortestPathFinder /stations/{stationId}
+# 청라역 삭제
 DELETE http://localhost:8080/stations/3
 
 
@@ -381,7 +382,6 @@ Accept: application/json
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
->         "청라역",
 >         "신길역"
 >       ]
 >     }

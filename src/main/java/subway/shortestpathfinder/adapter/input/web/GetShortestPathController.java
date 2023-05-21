@@ -18,7 +18,7 @@ public class GetShortestPathController {
         this.useCase = useCase;
     }
     
-    @GetMapping("/path")
+    @GetMapping("/shortest-path")
     public ResponseEntity<GetShortestPathResponse> getShortestPath(@RequestBody @Valid final GetShortestPathRequest request) {
         final GetShortestPathResponse response = useCase.getShortestPath(request.getStartStationName(), request.getEndStationName());
         return ResponseEntity.ok(response);
