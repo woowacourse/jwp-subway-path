@@ -94,6 +94,7 @@ public class LineRepository {
                 .collect(Collectors.toList());
         return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
     }
+
     private Station toStation(final Long stationId) {
         final StationEntity stationEntity = stationDao.findById(stationId)
                 .orElseThrow(() -> new BusinessException("역 정보가 잘못되었습니다."));
