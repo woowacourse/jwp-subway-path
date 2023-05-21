@@ -69,6 +69,7 @@ public class LineQueryService {
     }
 
     public boolean isExistLine(final String lineName) {
+        //TODO : Line 에 이름 인덱스 생성해보기
         return lineDao.findByLineName(lineName).isPresent();
     }
 }
