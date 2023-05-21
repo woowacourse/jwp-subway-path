@@ -88,4 +88,12 @@ public class SectionDao {
         });
     }
 
+    public List<SectionVo> findAll() {
+        String sql = "SELECT S1.id, S1.name, S2.id, S2.name, SEC.distance"
+                + " FROM SECTIONS AS SEC "
+                + " INNER JOIN STATION AS S1 ON SEC.up_id = S1.id "
+                + " INNER JOIN STATION AS S2 ON SEC.down_id = S2.id ";
+
+        return jdbcTemplate.query(sql, sectionVoMapper());
+    }
 }
