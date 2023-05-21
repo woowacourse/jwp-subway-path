@@ -1,29 +1,33 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.9'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+    id 'org.springframework.boot' version '2.7.9'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
 sourceCompatibility = '11'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
-	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
-	implementation 'org.slf4j:slf4j-api:1.7.31'
+    implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.slf4j:slf4j-api:1.7.31'
 
-	testImplementation 'io.rest-assured:rest-assured:4.4.0'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.28'
 
-	runtimeOnly 'com.h2database:h2'
+    implementation group: 'org.jgrapht', name: 'jgrapht-core', version: '1.5.1'
+
+    testImplementation 'io.rest-assured:rest-assured:4.4.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    runtimeOnly 'com.h2database:h2'
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

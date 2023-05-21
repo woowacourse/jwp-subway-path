@@ -18,6 +18,7 @@ import subway.dto.station.StationsResponse;
 import subway.exception.StationNotFoundException;
 import subway.repository.StationRepository;
 import subway.service.StationService;
+import subway.service.SubwayMapService;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +28,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StationController.class)
@@ -38,6 +41,9 @@ public class StationControllerUnitTest {
 
     @MockBean
     private StationRepository stationRepository;
+
+    @MockBean
+    private SubwayMapService subwayMapService;
 
     @Autowired
     private MockMvc mockMvc;

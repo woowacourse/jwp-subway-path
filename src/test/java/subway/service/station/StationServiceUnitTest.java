@@ -6,11 +6,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import subway.domain.subway.Station;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationEditRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
+import subway.event.RouteUpdateEvent;
 import subway.exception.NameIsBlankException;
 import subway.repository.StationRepository;
 import subway.service.StationService;
@@ -20,6 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,6 +35,9 @@ public class StationServiceUnitTest {
 
     @Mock
     private StationRepository stationRepository;
+
+    @Mock
+    private ApplicationEventPublisher publisher;
 
     @Test
     @DisplayName("역을 저장한다.")
@@ -104,6 +110,21 @@ public class StationServiceUnitTest {
 
         // then
         verify(stationRepository).update(id, station);
+        verify(publisher).publishEvent(any(RouteUpdateEvent.class));
+    }
+
+    @DisplayName("역을 삭제한다.")
+    @Test
+    void delete_station_success() {
+        // given
+        long id = 1L;
+
+        // when
+        stationService.deleteStationById(id);
+
+        // then
+        verify(stationRepository).deleteById(id);
+        verify(publisher).publishEvent(any(RouteUpdateEvent.class));
     }
 }
 

@@ -9,7 +9,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.dto.exception.ExceptionResponse;
-import subway.exception.*;
+import subway.exception.ColorNotBlankException;
+import subway.exception.InvalidDistanceException;
+import subway.exception.LineNotFoundException;
+import subway.exception.LineNumberUnderMinimumNumber;
+import subway.exception.LinesEmptyException;
+import subway.exception.NameIsBlankException;
+import subway.exception.SectionDuplicatedException;
+import subway.exception.SectionForkedException;
+import subway.exception.SectionNotConnectException;
+import subway.exception.SectionNotFoundException;
+import subway.exception.StationNotFoundException;
+import subway.exception.UpStationNotFoundException;
 
 import java.util.stream.Collectors;
 
@@ -78,6 +89,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SectionNotConnectException.class)
     public ResponseEntity<ExceptionResponse> sectionNotConnectExceptionHandler(final SectionNotConnectException exception) {
+        return getResponseOfBadRequest(exception);
+    }
+
+    @ExceptionHandler(LinesEmptyException.class)
+    public ResponseEntity<ExceptionResponse> linesEmptyExceptionHandler(final LinesEmptyException exception) {
         return getResponseOfBadRequest(exception);
     }
 

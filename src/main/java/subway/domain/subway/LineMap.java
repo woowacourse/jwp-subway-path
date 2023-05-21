@@ -2,7 +2,12 @@ package subway.domain.subway;
 
 import subway.exception.UpStationNotFoundException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 public class LineMap {
@@ -46,13 +51,21 @@ public class LineMap {
             Station station = queue.poll();
             stations.add(station);
             visited.put(station, true);
-            for (Station nextStation : lineMap.get(station)) {
-                if (!visited.get(nextStation)) {
-                    queue.add(nextStation);
-                }
-            }
+            addNextStation(visited, queue, station);
         }
         return stations;
+    }
+
+    private void addNextStation(final Map<Station, Boolean> visited, final Queue<Station> queue, final Station station) {
+        for (Station nextStation : lineMap.get(station)) {
+            addNotVisitedStation(visited, queue, nextStation);
+        }
+    }
+
+    private void addNotVisitedStation(final Map<Station, Boolean> visited, final Queue<Station> queue, final Station nextStation) {
+        if (!visited.get(nextStation)) {
+            queue.add(nextStation);
+        }
     }
 
     private Map<Station, Boolean> initVisited() {

@@ -6,10 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import subway.domain.subway.Line;
 import subway.domain.subway.Sections;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
+import subway.event.RouteUpdateEvent;
 import subway.exception.SectionDuplicatedException;
 import subway.exception.SectionForkedException;
 import subway.exception.SectionNotConnectException;
@@ -18,6 +20,7 @@ import subway.repository.SectionRepository;
 import subway.service.SectionService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static subway.fixture.SectionsFixture.createSections;
@@ -34,6 +37,9 @@ public class SectionServiceUnitTest {
     @Mock
     private LineRepository lineRepository;
 
+    @Mock
+    private ApplicationEventPublisher publisher;
+
     @Test
     @DisplayName("구간을 삽입한다.")
     void save_section_success() {
@@ -43,13 +49,14 @@ public class SectionServiceUnitTest {
         Line line = new Line(sections, 2, "2호선", "green");
 
         given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
-        given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
+        given(lineRepository.findByLineNameWithSections(req.getLineName(), sections)).willReturn(line);
 
         // when
         sectionService.insertSection(req);
 
         // then
         verify(lineRepository).insertSectionInLine(sections, line.getLineNumber());
+        verify(publisher).publishEvent(any(RouteUpdateEvent.class));
     }
 
     @Test
@@ -61,7 +68,7 @@ public class SectionServiceUnitTest {
         Line line = new Line(sections, 2, "2호선", "green");
 
         given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
-        given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
+        given(lineRepository.findByLineNameWithSections(req.getLineName(), sections)).willReturn(line);
 
         // when & then
         assertThatThrownBy(() -> sectionService.insertSection(req))
@@ -77,7 +84,7 @@ public class SectionServiceUnitTest {
         Line line = new Line(sections, 2, "2호선", "green");
 
         given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
-        given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
+        given(lineRepository.findByLineNameWithSections(req.getLineName(), sections)).willReturn(line);
 
         // when & then
         assertThatThrownBy(() -> sectionService.insertSection(req))
@@ -93,7 +100,7 @@ public class SectionServiceUnitTest {
         Line line = new Line(sections, 2, "2호선", "green");
 
         given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
-        given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
+        given(lineRepository.findByLineNameWithSections(req.getLineName(), sections)).willReturn(line);
 
         // when & then
         assertThatThrownBy(() -> sectionService.insertSection(req))
@@ -113,5 +120,6 @@ public class SectionServiceUnitTest {
 
         // then
         verify(lineRepository).insertSectionInLine(sections, req.getLineNumber());
+        verify(publisher).publishEvent(any(RouteUpdateEvent.class));
     }
 }

@@ -6,10 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineEditRequest;
 import subway.dto.line.LinesResponse;
 import subway.entity.LineEntity;
+import subway.event.RouteUpdateEvent;
 import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
 import subway.service.LineService;
@@ -35,6 +37,9 @@ class LineServiceUnitTest {
 
     @Mock
     private LineRepository lineRepository;
+
+    @Mock
+    private ApplicationEventPublisher publisher;
 
     @Test
     @DisplayName("노선을 저장한다.")
@@ -82,6 +87,7 @@ class LineServiceUnitTest {
 
         // then
         assertThat(lineEntity.getColor()).isEqualTo(lineEditRequest.getColor());
+        verify(publisher).publishEvent(any(RouteUpdateEvent.class));
     }
 
     @Test
@@ -106,5 +112,6 @@ class LineServiceUnitTest {
 
         // then
         verify(lineRepository).deleteLineById(id);
+        verify(publisher).publishEvent(any(RouteUpdateEvent.class));
     }
 }
