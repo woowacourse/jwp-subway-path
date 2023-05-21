@@ -5,10 +5,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.domain.LineMap;
+import subway.domain.RoutedStations;
 import subway.domain.entity.Line;
 import subway.domain.entity.Section;
-import subway.domain.entity.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
@@ -38,24 +37,16 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stationResponses = createStationResponse(persistLine);
-        return LineResponse.of(persistLine, stationResponses);
+        return LineResponse.of(persistLine, createStationResponse(persistLine));
     }
 
     private List<StationResponse> createStationResponse(final Line persistLine) {
         List<Section> sections = sectionDao.findByLineId(persistLine.getId());
-        return convertToOrderedStationResponses(sections);
+        RoutedStations routedStations = RoutedStations.from(sections);
+        return StationResponse.from(routedStations.extractOrderedStations());
     }
 
-    private List<StationResponse> convertToOrderedStationResponses(final List<Section> sections) {
-        LineMap lineMap = LineMap.of(sections);
-        List<Station> orderedStations = lineMap.getOrderedStations();
-        return orderedStations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public Line findLineById(Long id) {
+    private Line findLineById(Long id) {
         return lineDao.findById(id);
     }
 

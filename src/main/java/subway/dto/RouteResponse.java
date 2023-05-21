@@ -1,6 +1,8 @@
 package subway.dto;
 
 import java.util.List;
+import subway.domain.FareCalculator;
+import subway.domain.RoutedStations;
 
 public class RouteResponse {
 
@@ -8,10 +10,18 @@ public class RouteResponse {
     private final int totalDistance;
     private final int totalFare;
 
-    public RouteResponse(final List<StationResponse> stations, final int totalDistance, final int totalFare) {
+    private RouteResponse(final List<StationResponse> stations, final int totalDistance, final int totalFare) {
         this.stations = stations;
         this.totalDistance = totalDistance;
         this.totalFare = totalFare;
+    }
+
+    public static RouteResponse from(final RoutedStations route) {
+        return new RouteResponse(
+                StationResponse.from(route.extractOrderedStations()),
+                route.totalDistance().getValue(),
+                FareCalculator.calculate(route.totalDistance())
+        );
     }
 
     public List<StationResponse> getStations() {

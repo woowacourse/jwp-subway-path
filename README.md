@@ -209,3 +209,9 @@ GET /routes?sourceStationId={sourceStationId}&target={targetStationId} HTTP/1.1
     - [x] [예측하지 못한 예외 정보 콘솔 출력 대신 로그 사용하기](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192856978)
     - [x] [여러 DB 수행이 존재하는 메서드 Transaction 처리](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192857631)
     - [x] [데이터 초기화 Controller 대신 Spring 설정 사용하기(별도 bean 분리/sql 파일 사용)](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192858741)
+
+## 2단계
+
+- 피드백
+    - [x] 메서드 접근제한자 수정
+    - [x] 변환 로직 정적 팩터리 메서드로 변경

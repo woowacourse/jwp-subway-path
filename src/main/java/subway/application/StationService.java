@@ -20,20 +20,20 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        return StationResponse.from(station);
     }
 
     public StationResponse findStationResponseById(Long id) {
         Station found = stationDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
-        return StationResponse.of(found);
+        return StationResponse.from(found);
     }
 
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 

@@ -150,9 +150,9 @@ public class LineIntegrationTest extends IntegrationTest {
                 () -> assertThat(resultResponse.getId()).isEqualTo(1),
                 () -> assertThat(resultResponse.getStationResponses())
                         .containsExactly(
-                                StationResponse.of(FIXTURE_STATION_1),
-                                StationResponse.of(FIXTURE_STATION_2),
-                                StationResponse.of(FIXTURE_STATION_3)
+                                StationResponse.from(FIXTURE_STATION_1),
+                                StationResponse.from(FIXTURE_STATION_2),
+                                StationResponse.from(FIXTURE_STATION_3)
                         )
         );
 

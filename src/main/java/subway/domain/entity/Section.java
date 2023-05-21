@@ -2,11 +2,12 @@ package subway.domain.entity;
 
 import static subway.domain.vo.Direction.DOWN;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import subway.domain.exception.IllegalSectionArgumentException;
 import subway.domain.vo.Direction;
 import subway.domain.vo.Distance;
-import subway.domain.exception.IllegalSectionArgumentException;
 
 public class Section {
 
@@ -69,6 +70,10 @@ public class Section {
 
     public Station getRight() {
         return right;
+    }
+
+    public List<Station> getStations() {
+        return List.of(left, right);
     }
 
     public Distance getDistance() {

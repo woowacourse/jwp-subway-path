@@ -1,18 +1,22 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
-import subway.domain.vo.Distance;
 import subway.domain.entity.Section;
 import subway.domain.entity.Station;
 import subway.domain.exception.AbnormalRoutedStationsException;
+import subway.domain.exception.EmptyRoutedStationsSearchResultException;
+import subway.domain.vo.Distance;
 
 // TODO 노선 별 요금 적용을 위해 StationEdge로 변경, 생성할 때 Line 전달받아 Edge에 저장하기 or Section이 Line을 가지면 해결되는 문제 아닌가?
 // Section이 Line을 가지면, Line이 사실상 비즈니스 로직에 필요 없을 때에도 Line을 저장해야 한다 (노선 역 등록/삭제)
@@ -90,7 +94,7 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
 
     private static Set<Station> getAllStations(List<Section> sections) {
         return sections.stream()
-                .map(section -> List.of(section.getLeft(), section.getRight()))
+                .map(Section::getStations)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
@@ -103,13 +107,61 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
         }
     }
 
-    // TODO 어느 클래스 책임?
+    public Optional<Section> findRightSection(Station station) {
+        try {
+            DefaultWeightedEdge edge = outgoingEdgesOf(station).iterator().next();
+            return Optional.of(
+                    new Section(station, getEdgeTarget(edge), new Distance((int) getEdgeWeight(edge)))
+            );
+        } catch (NoSuchElementException exception) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Section> findLeftSection(Station station) {
+        try {
+            DefaultWeightedEdge edge = incomingEdgesOf(station).iterator().next();
+            return Optional.of(
+                    new Section(getEdgeSource(edge), station, new Distance((int) getEdgeWeight(edge)))
+            );
+        } catch (NoSuchElementException exception) {
+            return Optional.empty();
+        }
+    }
+
     public List<Section> extractSections() {
-        return edgeSet()
-                .stream()
+        return edgeSet().stream()
                 .map(edge -> new Section(getEdgeSource(edge), getEdgeTarget(edge),
                         new Distance((int) getEdgeWeight(edge))))
                 .collect(Collectors.toList());
+    }
+
+    public List<Station> extractOrderedStations() {
+        List<Station> orderedStations = new ArrayList<>();
+        if (isEmpty()) {
+            return orderedStations;
+        }
+
+        Station station = findStart().orElseThrow(
+                () -> new EmptyRoutedStationsSearchResultException("하행 종점을 찾을 수 없습니다."));
+        while (!outgoingEdgesOf(station).isEmpty()) {
+            orderedStations.add(station);
+            Section rightSection = findRightSection(station).get();
+            station = rightSection.getRight();
+        }
+        orderedStations.add(station);
+
+        return orderedStations;
+    }
+    
+    private Optional<Station> findStart() {
+        return vertexSet().stream()
+                .filter(station -> incomingEdgesOf(station).isEmpty())
+                .findFirst();
+    }
+
+    public boolean isEmpty() {
+        return edgeSet().isEmpty();
     }
 
     public Distance totalDistance() {

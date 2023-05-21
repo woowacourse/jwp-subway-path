@@ -2,22 +2,18 @@ package subway.domain;
 
 import static subway.domain.vo.Direction.DOWN;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import subway.domain.vo.Direction;
-import subway.domain.vo.Distance;
 import subway.domain.entity.Section;
 import subway.domain.entity.Station;
-import subway.domain.exception.EmptyRoutedStationsSearchResultException;
 import subway.domain.exception.EmptySectionOperationException;
 import subway.domain.exception.IllegalDistanceArgumentException;
 import subway.domain.exception.IllegalLineMapArgumentException;
+import subway.domain.vo.Direction;
+import subway.domain.vo.Distance;
 
 public class LineMap {
 
@@ -51,7 +47,7 @@ public class LineMap {
         if (Objects.equals(base, adding)) {
             throw new IllegalLineMapArgumentException("기준 역과 등록할 역은 동일할 수 없습니다.");
         }
-        if (isStationsEmpty()) {
+        if (routedStations.isEmpty()) {
             routedStations.addVertex(base);
         }
         validateExisting(base);
@@ -77,33 +73,9 @@ public class LineMap {
 
     private Optional<Section> findExistingSectionByDirection(final Station base, final Direction direction) {
         if (direction == DOWN) {
-            return findRightSection(base);
+            return routedStations.findRightSection(base);
         }
-        return findLeftSection(base);
-    }
-
-    private Optional<Section> findRightSection(Station station) {
-        try {
-            DefaultWeightedEdge edge = routedStations.outgoingEdgesOf(station).iterator().next();
-            return Optional.of(
-                    new Section(station, routedStations.getEdgeTarget(edge),
-                            new Distance((int) routedStations.getEdgeWeight(edge)))
-            );
-        } catch (NoSuchElementException exception) {
-            return Optional.empty();
-        }
-    }
-
-    private Optional<Section> findLeftSection(Station station) {
-        try {
-            DefaultWeightedEdge edge = routedStations.incomingEdgesOf(station).iterator().next();
-            return Optional.of(
-                    new Section(routedStations.getEdgeSource(edge), station,
-                            new Distance((int) routedStations.getEdgeWeight(edge)))
-            );
-        } catch (NoSuchElementException exception) {
-            return Optional.empty();
-        }
+        return routedStations.findLeftSection(base);
     }
 
     private void updateSimpleAddingEdgeForStations(final Section addingSection) {
@@ -140,8 +112,8 @@ public class LineMap {
             return;
         }
 
-        Optional<Section> leftFound = findLeftSection(station);
-        Optional<Section> rightFound = findRightSection(station);
+        Optional<Section> leftFound = routedStations.findLeftSection(station);
+        Optional<Section> rightFound = routedStations.findRightSection(station);
 
         if (leftFound.isPresent() && rightFound.isPresent()) {
             Section leftSection = leftFound.get();
@@ -160,31 +132,6 @@ public class LineMap {
     }
 
     public List<Station> getOrderedStations() {
-        List<Station> orderedStations = new ArrayList<>();
-        if (isStationsEmpty()) {
-            return orderedStations;
-        }
-
-        Station station = findStart().orElseThrow(
-                () -> new EmptyRoutedStationsSearchResultException("하행 종점을 찾을 수 없습니다."));
-        while (!routedStations.outgoingEdgesOf(station).isEmpty()) {
-            orderedStations.add(station);
-            Section rightSection = findRightSection(station).get();
-            station = rightSection.getRight();
-        }
-        orderedStations.add(station);
-
-        return orderedStations;
-    }
-
-    private Optional<Station> findStart() {
-        return routedStations.vertexSet()
-                .stream()
-                .filter(station -> routedStations.incomingEdgesOf(station).isEmpty())
-                .findFirst();
-    }
-
-    private boolean isStationsEmpty() {
-        return routedStations.edgeSet().isEmpty();
+        return routedStations.extractOrderedStations();
     }
 }
