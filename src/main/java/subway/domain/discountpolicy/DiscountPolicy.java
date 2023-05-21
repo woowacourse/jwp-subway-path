@@ -14,7 +14,6 @@ public class DiscountPolicy implements FarePolicy {
         if (age >= 6 && age < 13) {
             return (int) ((fare - 350) * 0.5);
         }
-        System.out.println(fare);
         return fare;
     }
 }
