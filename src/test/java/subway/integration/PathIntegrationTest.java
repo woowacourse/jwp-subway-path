@@ -6,9 +6,9 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.line.dto.LineResponse;
-import subway.domain.line.dto.StationResponse;
-import subway.domain.line.dto.PathResponse;
+import subway.dto.LineResponse;
+import subway.dto.StationResponse;
+import subway.dto.PathResponse;
 
 import java.util.List;
 

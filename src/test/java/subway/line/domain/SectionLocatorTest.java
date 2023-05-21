@@ -3,9 +3,9 @@ package subway.line.domain;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.line.domain.SectionLocator;
-import subway.domain.line.entity.SectionEntity;
-import subway.domain.line.entity.StationEntity;
+import subway.domain.SectionLocator;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 
 import java.util.List;
 

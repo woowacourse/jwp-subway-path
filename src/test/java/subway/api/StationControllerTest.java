@@ -10,10 +10,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.domain.line.controller.StationController;
-import subway.domain.line.dto.StationCreateRequest;
-import subway.domain.line.entity.StationEntity;
-import subway.domain.line.service.StationService;
+import subway.controller.StationController;
+import subway.dto.StationCreateRequest;
+import subway.entity.StationEntity;
+import subway.service.StationService;
 
 import java.util.List;
 

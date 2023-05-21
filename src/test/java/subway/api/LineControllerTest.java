@@ -10,15 +10,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.domain.line.controller.LineController;
-import subway.domain.line.domain.Line;
-import subway.domain.line.dto.LineRequest;
-import subway.domain.line.dto.StationRegisterRequest;
-import subway.domain.line.entity.LineEntity;
-import subway.domain.line.entity.SectionEntity;
-import subway.domain.line.entity.StationEntity;
-import subway.domain.line.service.LineService;
-import subway.domain.line.service.SectionService;
+import subway.controller.LineController;
+import subway.domain.Line;
+import subway.dto.LineRequest;
+import subway.dto.StationRegisterRequest;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
+import subway.service.LineService;
+import subway.service.SectionService;
 
 import java.util.List;
 

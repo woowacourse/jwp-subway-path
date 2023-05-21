@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.line.dao.SectionDao;
-import subway.domain.line.dto.StationRegisterRequest;
-import subway.domain.line.entity.SectionEntity;
-import subway.domain.line.service.SectionService;
+import subway.dao.SectionDao;
+import subway.dto.StationRegisterRequest;
+import subway.entity.SectionEntity;
+import subway.service.SectionService;
 
 import javax.sql.DataSource;
 import java.util.List;

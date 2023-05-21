@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.line.domain.Path;
-import subway.domain.line.service.PathService;
-import subway.domain.line.entity.StationEntity;
+import subway.domain.Path;
+import subway.service.PathService;
+import subway.entity.StationEntity;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 

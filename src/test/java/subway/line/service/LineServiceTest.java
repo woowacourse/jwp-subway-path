@@ -7,10 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.line.dao.LineDao;
-import subway.domain.line.dto.LineRequest;
-import subway.domain.line.entity.LineEntity;
-import subway.domain.line.service.LineService;
+import subway.dao.LineDao;
+import subway.dto.LineRequest;
+import subway.entity.LineEntity;
+import subway.service.LineService;
 
 import java.util.ArrayList;
 import java.util.Optional;

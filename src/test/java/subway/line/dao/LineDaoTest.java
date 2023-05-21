@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.line.dao.LineDao;
-import subway.domain.line.entity.LineEntity;
+import subway.dao.LineDao;
+import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
 import java.util.List;

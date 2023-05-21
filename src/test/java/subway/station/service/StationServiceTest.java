@@ -8,10 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.line.dao.StationDao;
-import subway.domain.line.dto.StationCreateRequest;
-import subway.domain.line.entity.StationEntity;
-import subway.domain.line.service.StationService;
+import subway.dao.StationDao;
+import subway.dto.StationCreateRequest;
+import subway.entity.StationEntity;
+import subway.service.StationService;
 
 import java.util.ArrayList;
 import java.util.Optional;

@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.line.domain.Line;
-import subway.domain.line.dto.LineRequest;
-import subway.domain.line.dto.SectionResponse;
-import subway.domain.line.dto.StationRegisterRequest;
-import subway.domain.line.entity.StationEntity;
-import subway.domain.line.service.LineService;
+import subway.domain.Line;
+import subway.dto.LineRequest;
+import subway.dto.SectionResponse;
+import subway.dto.StationRegisterRequest;
+import subway.entity.StationEntity;
+import subway.service.LineService;
 
 import java.util.List;
 
