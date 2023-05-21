@@ -91,4 +91,8 @@ public class LineRepository {
         line.getSections()
                 .forEach(this::saveSection);
     }
+
+    public List<SectionEntity> getSections(long lineId) {
+        return sectiondao.findSectionsBy(lineId);
+    }
 }

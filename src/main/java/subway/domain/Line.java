@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 public class Line {
     private final Long id;
 
@@ -90,6 +92,19 @@ public class Line {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public void deleteSections(Station deletStation) {
+        List<Section> hasDeleteStationSections = sections.stream()
+                .filter(section ->
+                        section.hasUpStation(deletStation) ||
+                                section.hasDownStation(deletStation))
+                .collect(toList());
+
+        if (hasDeleteStationSections.size() == 0) {
+            throw new InvalidInputException(deletStation.getId() + "는 라인 아이디 " + id + "에 존재하지 않는 역 아이디입니다.");
+        }
+        hasDeleteStationSections.forEach(sections::remove);
     }
 
     // TODO: 지우기
