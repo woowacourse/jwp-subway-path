@@ -15,54 +15,31 @@ import subway.dto.LineRequest;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.StationCreateRequest;
+import subway.integration.step.LineStep;
+import subway.integration.step.SectionStep;
+import subway.integration.step.StationStep;
 
 @DisplayName("지하철 구간 관련 기능")
+@SuppressWarnings("NonAsciiCharacters")
 public class SectionIntegrationTest extends IntegrationTest {
-    private SectionCreateRequest sectionCreateRequest;
-
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        // 노선을 생성한다.
-        LineRequest lineRequest = new LineRequest("2호선");
-        RestAssured.given().log().all()
-                .body(lineRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
-
-        // 역을 생성한다.
-        StationCreateRequest createRequest1 = new StationCreateRequest("잠실역");
-        StationCreateRequest createRequest2 = new StationCreateRequest("잠실새내역");
-
-        RestAssured.given().log().all()
-                .body(createRequest1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
-
-        RestAssured.given().log().all()
-                .body(createRequest2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
-
-        sectionCreateRequest = new SectionCreateRequest("잠실역", "잠실새내역", 10, 1);
     }
 
     @DisplayName("지하철 구간을 생성한다.")
     @Test
     void createStation() {
+        // given
+        Long lineId = LineStep.노선을_생성한다(new LineRequest("2호선"));
+        StationStep.역을_생성한다(new StationCreateRequest("잠실역"));
+        StationStep.역을_생성한다(new StationCreateRequest("잠실새내역"));
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("잠실역", "잠실새내역", 10, 1);
+
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
                 .body(sectionCreateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -73,7 +50,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(response.header("Location")).isEqualTo("/lines/1")
+                () -> assertThat(response.header("Location")).isEqualTo("/lines/" + lineId)
         );
     }
 
@@ -81,10 +58,14 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void createStationWhenNoExistStation() {
         // given
-        sectionCreateRequest = new SectionCreateRequest("잠실역", "봉천역", 10, 1);
+        LineStep.노선을_생성한다(new LineRequest("2호선"));
+        StationStep.역을_생성한다(new StationCreateRequest("잠실역"));
+        StationStep.역을_생성한다(new StationCreateRequest("잠실새내역"));
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("잠실역", "봉천역", 10, 1);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
                 .body(sectionCreateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -103,18 +84,16 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void deleteStation() {
         // given
+        LineStep.노선을_생성한다(new LineRequest("2호선"));
+        StationStep.역을_생성한다(new StationCreateRequest("잠실역"));
+        StationStep.역을_생성한다(new StationCreateRequest("잠실새내역"));
+        SectionStep.구간을_생성한다(new SectionCreateRequest("잠실역", "잠실새내역", 10, 1));
+
         SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest("잠실역", 1L);
 
-        RestAssured.given().log().all()
-                .body(sectionCreateRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/sections")
-                .then().log().all()
-                .extract();
-
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
                 .body(sectionDeleteRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -130,10 +109,15 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void deleteStationWhenNoExistStation() {
         // given
+        LineStep.노선을_생성한다(new LineRequest("2호선"));
+        StationStep.역을_생성한다(new StationCreateRequest("잠실역"));
+        StationStep.역을_생성한다(new StationCreateRequest("잠실새내역"));
+        SectionStep.구간을_생성한다(new SectionCreateRequest("잠실역", "잠실새내역", 10, 1));
         SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest("봉천역", 1L);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
                 .body(sectionDeleteRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
