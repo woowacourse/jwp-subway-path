@@ -1,5 +1,9 @@
 package subway.domain;
 
+import subway.exception.LineNotFoundException;
+import java.util.List;
+import java.util.OptionalInt;
+
 public class FeeCalculator {
 
     private static final int DEFAULT_FEE = 1250;
@@ -34,5 +38,21 @@ public class FeeCalculator {
         }
 
         return defaultExtraFee + ((extraDistance / unit) * EXTRA_FEE);
+    }
+
+    public int addExtraFeeByLine(final int fee, final List<Line> passLines) {
+        OptionalInt maxExtraFeeByLine = passLines.stream()
+                .mapToInt(Line::getExtraFee)
+                .max();
+
+        if (maxExtraFeeByLine.isPresent()) {
+            return fee + maxExtraFeeByLine.getAsInt();
+        }
+        throw new LineNotFoundException("통과한 노선이 존재하지 않습니다.");
+    }
+
+
+    public int discountByAge(final int fee, final int age) {
+        return DiscountPolicy.discount(fee, age);
     }
 }
