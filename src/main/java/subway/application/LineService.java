@@ -39,7 +39,7 @@ public class LineService {
         Optional<Station> downStation = stationDao.findById(request.getDownStationId());
         validateStationsPresence(upStation, downStation);
 
-        Line line = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line line = lineDao.insert(new Line(request.getName(), request.getColor(), request.getAdditionalCharge()));
         sectionDao.insert(new Section(upStation.get(), downStation.get(), line, request.getDistance()));
         return PostLineResponse.of(line);
     }

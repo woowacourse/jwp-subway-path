@@ -34,8 +34,12 @@ class LineDaoTest {
     }
 
     @Test
+    void 새로운_역을_등록한다() {
+        assertDoesNotThrow(() -> lineDao.insert(new Line("8호선", "pink", 0)));
+    }
+    @Test
     void 등록된_역을_삭제한다() {
-        Line line8 = lineDao.insert(new Line("8호선", "pink"));
+        Line line8 = lineDao.insert(new Line("8호선", "pink", 0));
 
         assertDoesNotThrow(() -> lineDao.deleteById(line8.getId()));
     }

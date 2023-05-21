@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -59,7 +58,7 @@ public class SectionIntegrationTest {
         persistCheonho = stationDao.insert(cheonho);
         persistJamsil = stationDao.insert(jamsil);
         Station persistJangji = stationDao.insert(jangji);
-        persistLine8 = lineDao.insert(new Line("8호선", "pink"));
+        persistLine8 = lineDao.insert(new Line("8호선", "pink", 0));
         sectionDao.insert(new Section(persistCheonho, persistJamsil, persistLine8, 10));
         sectionDao.insert(new Section(persistJamsil, persistJangji, persistLine8, 10));
     }

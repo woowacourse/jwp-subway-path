@@ -27,7 +27,7 @@ public class SectionDao {
             rs.getLong("id"),
             new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")),
             new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")),
-            new Line(rs.getLong("line_id"), rs.getString("line_name"), rs.getString("line_color")),
+            new Line(rs.getLong("line_id"), rs.getString("line_name"), rs.getString("line_color"), rs.getInt("additional_charge")),
             rs.getInt("distance")
         );
 
@@ -41,7 +41,8 @@ public class SectionDao {
     public List<Section> findAll() {
         String sql = "SELECT se.id, station1.id AS up_station_id, station1.name AS up_station_name,"
             + " station2.id AS down_station_id, station2.name AS down_station_name,"
-            + " l.id AS line_id, l.name AS line_name, l.color AS line_color, se.distance FROM section AS se"
+            + " l.id AS line_id, l.name AS line_name, l.color AS line_color, l.additional_charge AS additional_charge,"
+            + " se.distance FROM section AS se"
             + " LEFT JOIN station AS station1 ON se.up_station_id = station1.id"
             + " LEFT JOIN station AS station2 ON se.down_station_id = station2.id"
             + " LEFT JOIN line AS l ON se.line_id = l.id";
@@ -51,7 +52,8 @@ public class SectionDao {
     public List<Section> findAllByLineId(long lineId) {
         String sql = "SELECT se.id, station1.id AS up_station_id, station1.name AS up_station_name,"
             + " station2.id AS down_station_id, station2.name AS down_station_name,"
-            + " l.id AS line_id, l.name AS line_name, l.color AS line_color, se.distance FROM section AS se"
+            + " l.id AS line_id, l.name AS line_name, l.color AS line_color, l.additional_charge AS additional_charge,"
+            + " se.distance FROM section AS se"
             + " LEFT JOIN station AS station1 ON se.up_station_id = station1.id"
             + " LEFT JOIN station AS station2 ON se.down_station_id = station2.id"
             + " LEFT JOIN line AS l ON se.line_id = l.id"
