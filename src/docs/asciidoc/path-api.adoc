@@ -6,7 +6,7 @@
 
 *요청*
 include::{snippets}/path/find/http-request.adoc[]
-include::{snippets}/path/find/request-fields.adoc[]
+include::{snippets}/path/find/request-parameters.adoc[]
 
 *응답*
 include::{snippets}/path/find/http-response.adoc[]

@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.mock;
 import static subway.helper.SubwayPathFixture.stationsFixture;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,6 @@ import subway.dao.StationDao;
 import subway.domain.section.Distance;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
-import subway.dto.path.PathRequest;
 import subway.dto.path.PathResponse;
 import subway.exception.path.IllegalPathException;
 
@@ -77,13 +77,13 @@ class PathServiceTest {
     @MethodSource("pathCase")
     @ParameterizedTest
     @DisplayName("경로가 정확하게 조회되어야 한다.")
-    void findPath_success(PathRequest pathRequest, String result) {
+    void findPath_success(List<String> stations, String result) {
         // given
         given(stationDao.findAll())
                 .willReturn(stationsFixture());
 
         // when
-        PathResponse path = pathService.findPath(pathRequest);
+        PathResponse path = pathService.findPath(stations.get(0), stations.get(1));
 
         // then
         assertThat(path).extracting(
@@ -92,11 +92,11 @@ class PathServiceTest {
     }
 
     static Stream<Arguments> pathCase() {
-        Map<PathRequest, String> testData = new HashMap<>();
-        testData.put(new PathRequest("A역", "I역"), "A역 D역 F역 G역 I역:11");
-        testData.put(new PathRequest("D역", "C역"), "D역 F역 G역 C역:6");
-        testData.put(new PathRequest("C역", "E역"), "C역 G역 I역 H역 E역:8");
-        testData.put(new PathRequest("X역", "Z역"), "X역 Z역:1");
+        Map<List<String>, String> testData = new HashMap<>();
+        testData.put(List.of("A역", "I역"), "A역 D역 F역 G역 I역:11");
+        testData.put(List.of("D역", "C역"), "D역 F역 G역 C역:6");
+        testData.put(List.of("C역", "E역"), "C역 G역 I역 H역 E역:8");
+        testData.put(List.of("X역", "Z역"), "X역 Z역:1");
         return testData.entrySet().stream()
                 .map(data -> Arguments.of(data.getKey(), data.getValue()));
     }
@@ -105,10 +105,11 @@ class PathServiceTest {
     @DisplayName("구간에 없는 역을 조회하면 예외가 발생해야 한다.")
     void findPath_stationNotOnSection() {
         // given
-        PathRequest pathRequest = new PathRequest("A역", "없는역");
+        String originStationName = "A역";
+        String destinationStationName = "없는역";
 
         // expect
-        assertThatThrownBy(() -> pathService.findPath(pathRequest))
+        assertThatThrownBy(() -> pathService.findPath(originStationName, destinationStationName))
                 .isInstanceOf(IllegalPathException.class)
                 .hasMessage("해당 역이 구간에 존재하지 않습니다.");
     }
@@ -117,10 +118,11 @@ class PathServiceTest {
     @DisplayName("없는 역을 조회하면 예외가 발생해야 한다.")
     void findPath_invalidStation() {
         // given
-        PathRequest pathRequest = new PathRequest("A역", "?역");
+        String originStationName = "A역";
+        String destinationStationName = "?역";
 
         // expect
-        assertThatThrownBy(() -> pathService.findPath(pathRequest))
+        assertThatThrownBy(() -> pathService.findPath(originStationName, destinationStationName))
                 .isInstanceOf(IllegalPathException.class)
                 .hasMessage("해당 역이 구간에 존재하지 않습니다.");
     }
@@ -129,12 +131,13 @@ class PathServiceTest {
     @DisplayName("경로를 찾을 수 없으면 예외가 발생해야 한다.")
     void findPath_invalidPath() {
         // given
-        PathRequest pathRequest = new PathRequest("A역", "Z역");
+        String originStationName = "A역";
+        String destinationStationName = "Z역";
         given(stationDao.findAll())
                 .willReturn(stationsFixture());
 
         // expect
-        assertThatThrownBy(() -> pathService.findPath(pathRequest))
+        assertThatThrownBy(() -> pathService.findPath(originStationName, destinationStationName))
                 .isInstanceOf(IllegalPathException.class)
                 .hasMessage("해당 경로를 찾을 수 없습니다.");
     }

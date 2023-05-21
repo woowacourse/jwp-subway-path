@@ -13,7 +13,6 @@ import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.path.Path;
 import subway.domain.station.Station;
-import subway.dto.path.PathRequest;
 import subway.dto.path.PathResponse;
 import subway.exception.path.IllegalPathException;
 
@@ -31,26 +30,24 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(PathRequest pathRequest) {
-        validateSameStation(pathRequest);
-        Station originStation = new Station(pathRequest.getOriginStationName());
-        Station destinationStation = new Station(pathRequest.getDestinationStationName());
-        validateStationInSection(originStation, destinationStation);
-        Path path = getPath(originStation, destinationStation);
+    public PathResponse findPath(String originStationName, String destinationStationName) {
+        validateSameStation(originStationName, destinationStationName);
+        validateStationInSection(originStationName, destinationStationName);
+        Path path = getPath(new Station(originStationName), new Station(destinationStationName));
         List<String> stations = path.getStations();
         int distance = path.getTotalDistance();
         return new PathResponse(stations, distance, pricePolicy.calculate(distance));
     }
 
-    private void validateSameStation(PathRequest request) {
-        if (Objects.equals(request.getOriginStationName(), request.getDestinationStationName())) {
+    private void validateSameStation(String originStationName, String destinationStationName) {
+        if (Objects.equals(originStationName, destinationStationName)) {
             throw new IllegalPathException("조회할 역이 서로 같습니다.");
         }
     }
 
-    private void validateStationInSection(Station originStation, Station destinationStation) {
-        if (sectionDao.doesNotExistByStationName(originStation.getName()) || sectionDao.doesNotExistByStationName(
-                destinationStation.getName())) {
+    private void validateStationInSection(String originStationName, String destinationStationName) {
+        if (sectionDao.doesNotExistByStationName(originStationName) || sectionDao.doesNotExistByStationName(
+                destinationStationName)) {
             throw new IllegalPathException("해당 역이 구간에 존재하지 않습니다.");
         }
     }

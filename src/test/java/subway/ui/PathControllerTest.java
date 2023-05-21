@@ -1,11 +1,12 @@
 package subway.ui;
 
-import static org.mockito.BDDMockito.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static subway.helper.RestDocsHelper.constraint;
 import static subway.helper.RestDocsHelper.prettyDocument;
@@ -19,9 +20,9 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.path.PathService;
-import subway.dto.path.PathRequest;
 import subway.dto.path.PathResponse;
 
 @WebMvcTest(PathController.class)
@@ -38,11 +39,12 @@ class PathControllerTest {
     PathService pathService;
 
     @Test
-    @DisplayName("/path로 POST 요청과 함께 path의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
+    @DisplayName("/path로 GET 요청과 함께 path의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void findPath_success() throws Exception {
         // given
-        PathRequest request = new PathRequest("서울역", "용산역");
-        given(pathService.findPath(any(PathRequest.class)))
+        String originStationName = "서울역";
+        String destinationStationName = "용산역";
+        given(pathService.findPath(anyString(), anyString()))
                 .willReturn(new PathResponse(
                         List.of(
                                 "서울역",
@@ -55,15 +57,16 @@ class PathControllerTest {
                 ));
 
         // expect
-        mockMvc.perform(post("/path")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}",
+                                originStationName, destinationStationName)
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(prettyDocument("path/find",
-                        requestFields(
-                                fieldWithPath("originStationName").description("출발역")
+                        requestParameters(
+                                RequestDocumentation.
+                                parameterWithName("originStation").description("출발역")
                                         .attributes(constraint("10글자 이내")),
-                                fieldWithPath("destinationStationName").description("도착역")
+                                parameterWithName("destinationStation").description("도착역")
                                         .attributes(constraint("10글자 이내"))
                         ),
                         relaxedResponseFields(
