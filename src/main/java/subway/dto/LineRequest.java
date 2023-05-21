@@ -12,11 +12,12 @@ public class LineRequest {
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color,int extraCharge,String upStation, String downStation,
+    public LineRequest(String name, String color, int extraCharge, String upStation,
+        String downStation,
         int distance) {
         this.name = name;
         this.color = color;
-        this.extraCharge=extraCharge;
+        this.extraCharge = extraCharge;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
