@@ -31,15 +31,7 @@ public class Section {
         }
     }
 
-    public void validateDistance(int distance) {
-        if (this.distance <= distance) {
-            throw new InvalidException(ErrorCode.INVALID_DISTANCE);
-        }
-    }
-
     public Section getDividedSection(Section newSection) {
-        validateDistance(newSection.distance);
-
         if (upStation.equals(newSection.upStation)) {
             return new Section(newSection.downStation, downStation, distance - newSection.distance);
         }

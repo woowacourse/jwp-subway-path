@@ -49,20 +49,6 @@ class SectionTest {
                 .hasMessage("시작역과 도착역은 같을 수 없습니다.");
     }
 
-    @DisplayName("역이 구간 사이에 추가될 때 기존 구간의 거리보다 크거나 같으면 예외가 발생한다.")
-    @Test
-    void validateDistance() {
-        // given
-        Station upStation = new Station(1L, "잠실역");
-        Station downStation = new Station(2L, "잠실새내역");
-        Section originalSection = new Section(upStation, downStation, 10);
-
-        // then
-        assertThatThrownBy(() -> originalSection.validateDistance(10))
-                .isInstanceOf(InvalidException.class)
-                .hasMessage("기존에 존재하는 역 사이의 거리보다 작아야 합니다.");
-    }
-
     @DisplayName("새로운 구간이 뒤에 추가될 때 나누어지는 구간을 리턴한다.")
     @Test
     void getDividedSectionBack() {

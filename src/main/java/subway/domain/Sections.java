@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import subway.exception.DuplicateException;
 import subway.exception.ErrorCode;
+import subway.exception.InvalidException;
 import subway.exception.NoSuchException;
 
 public class Sections {
@@ -139,13 +140,21 @@ public class Sections {
         }
     }
 
-    private void removeExistSectionAddNewSection(Section newSection, Section currentSection) {
-        int currentSectionIndex = sections.indexOf(currentSection);
-        sections.remove(currentSectionIndex);
+    private void removeExistSectionAddNewSection(Section newSection, Section existSection) {
+        validateDistance(newSection.getDistance(), existSection.getDistance());
 
-        Section dividedSection = currentSection.getDividedSection(newSection);
+        int currentSectionIndex = sections.indexOf(existSection);
+        Section dividedSection = existSection.getDividedSection(newSection);
+
+        sections.remove(currentSectionIndex);
         sections.add(currentSectionIndex, newSection);
         sections.add(currentSectionIndex + 1, dividedSection);
+    }
+
+    private void validateDistance(int newDistance, int existDistance) {
+        if (existDistance <= newDistance) {
+            throw new InvalidException(ErrorCode.INVALID_DISTANCE);
+        }
     }
 
     public void deleteSection(Station deletedStation) {

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.exception.DuplicateException;
+import subway.exception.InvalidException;
 
 class SectionsTest {
     private List<Section> sectionList;
@@ -83,6 +84,19 @@ class SectionsTest {
         assertThatThrownBy(() -> sections.addSection(newSection))
                 .isInstanceOf(DuplicateException.class)
                 .hasMessage("이미 연결되어 있는 구간입니다.");
+    }
+
+    @DisplayName("역이 기존에 존재하는 구간 사이에 추가될 때 추가되는 구간의 거리가 기존 구간의 거리보다 크거나 같으면 예외가 발생한다.")
+    @Test
+    void validateDistance() {
+        // given
+        Station newStation = new Station(4L, "종합운동장역");
+        Section newSection = new Section(station2, newStation, 4);
+
+        // then
+        assertThatThrownBy(() -> sections.addSection(newSection))
+                .isInstanceOf(InvalidException.class)
+                .hasMessage("기존에 존재하는 역 사이의 거리보다 작아야 합니다.");
     }
 
     @DisplayName("새로운 역이 상행 종점으로 추가된다.")
