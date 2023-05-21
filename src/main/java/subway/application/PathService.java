@@ -7,10 +7,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
 import subway.dao.vo.SectionStationMapper;
-import subway.domain.Map;
-import subway.domain.Path;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.dto.request.PathRequest;
 import subway.dto.response.PathResponse;
 import subway.exception.NotFoundException;
@@ -34,7 +31,8 @@ public class PathService {
 
         Map map = getMap();
         Path path = map.getShortestPath(startStation, endStation);
-        return new PathResponse(path.getPath(), path.getDistance());
+        Fare fare = Fare.createByDistance(path.getDistance());
+        return new PathResponse(path.getPath(), path.getDistance(), fare.getFare());
     }
 
     private Station getStationById(Long id) {

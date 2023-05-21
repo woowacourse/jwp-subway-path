@@ -6,10 +6,12 @@ public class PathResponse {
 
     private final List<String> stations;
     private final Integer distance;
+    private final Integer fare;
 
-    public PathResponse(List<String> stations, Integer distance) {
+    public PathResponse(List<String> stations, Integer distance, Integer fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public List<String> getStations() {
@@ -18,5 +20,9 @@ public class PathResponse {
 
     public Integer getDistance() {
         return distance;
+    }
+
+    public Integer getFare() {
+        return fare;
     }
 }
