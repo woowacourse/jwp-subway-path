@@ -20,11 +20,11 @@ public class ExceptionAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<Void> handle(final Exception exception) {
-//        logger.error(exception.getMessage());
-//        return ResponseEntity.internalServerError().build();
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Void> handle(final Exception exception) {
+        logger.error(exception.getMessage());
+        return ResponseEntity.internalServerError().build();
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExceptionResponse> handle(final IllegalArgumentException exception) {
