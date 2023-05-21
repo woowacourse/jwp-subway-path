@@ -40,9 +40,9 @@
 - [x] SectionService 조회 메서드 make -> convertTo...ByEntity로 네이밍 변경
 - [x] SectionService 새로운 구간 등록, 삭제 할 때 업데이트 된 구간 DB에 저장하는 로직 변경
 - [x] Section validateDistance 메서드 접근제어자 변경 및 책임 분리
-- [ ] Test 코드 내부 DisplayName 더 명확하게 수정
+- [x] Test 코드 내부 DisplayName 더 명확하게 수정
 - [ ] Test 코드 내부 테스트를 위한 사전 데이터 준비 과정의 중복 코드 제거
-- [ ] Test 코드 내부 `@Nested` 어노테이션을 통해 테스트 코드 가독성 증진
+- [x] Test 코드 내부 `@Nested` 어노테이션을 통해 테스트 코드 가독성 증진
 
 ## API 명세서
 

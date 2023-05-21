@@ -7,38 +7,30 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.exception.DuplicateException;
 import subway.exception.InvalidException;
 
 class SectionsTest {
-    private List<Section> sectionList;
-    private Section section1;
-    private Section section2;
-    private Station station1;
-    private Station station2;
-    private Station station3;
     private Sections sections;
 
     @BeforeEach
     void setUp() {
-        station1 = new Station(1L, "잠실역");
-        station2 = new Station(2L, "잠실새내역");
-        station3 = new Station(3L, "봉천역");
-
-        section1 = new Section(station1, station2, 10);
-        section2 = new Section(station2, station3, 4);
-
-        sectionList = List.of(section2, section1);
-
-        sections = Sections.from(sectionList);
+        Section section1 = new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10);
+        Section section2 = new Section(new Station(2L, "잠실새내역"), new Station(3L, "봉천역"), 4);
+        sections = Sections.from(List.of(section2, section1));
     }
 
-    @DisplayName("생성 테스트")
+    @DisplayName("Sections가 생성되면 자동으로 순서대로 정렬된다.")
     @Test
     void createFrom() {
         // given
-        sections = Sections.from(sectionList);
+        Section section1 = new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10);
+        Section section2 = new Section(new Station(2L, "잠실새내역"), new Station(3L, "봉천역"), 4);
+
+        // when
+        sections = Sections.from(List.of(section2, section1));
 
         // then
         assertAll(
@@ -47,125 +39,137 @@ class SectionsTest {
         );
     }
 
-    @DisplayName("노선의 모든 역을 반환한다.")
+    @DisplayName("구간 내의 모든 역을 반환한다.")
     @Test
     void getStations() {
         // when
         List<Station> stations = sections.getStations();
 
         // then
-        assertThat(stations).contains(station1, station2, station3);
+        assertThat(stations).contains(
+                new Station(1L, "잠실역"),
+                new Station(2L, "잠실새내역"),
+                new Station(3L, "봉천역"));
     }
 
-    @DisplayName("새로운 구간을 추가한다.")
-    @Test
-    void addSection() {
-        // given
-        Station upStation = new Station(4L, "종합운동장역");
-        Section newSection = new Section(upStation, station3, 2);
+    @DisplayName("[구간 추가] A-B-C 구간이 연결되어 있을 때")
+    @Nested
+    class addSection {
+        @DisplayName("새로운 B-D 구간이 B-C 사이에 추가된다.")
+        @Test
+        void addSectionInMiddle() {
+            // given
+            Station newStation = new Station(4L, "종합운동장역");
+            Section newSection = new Section(newStation, new Station(3L, "봉천역"), 2);
 
-        // when
-        sections.addSection(newSection);
+            // when
+            sections.addSection(newSection);
 
-        // then
-        assertAll(
-                () -> assertThat(sections.getStations()).hasSize(4),
-                () -> assertThat(sections.getSections().get(1)).isEqualTo(newSection)
-        );
+            // then
+            assertAll(
+                    () -> assertThat(sections.getStations()).hasSize(4),
+                    () -> assertThat(sections.getSections().get(1)).isEqualTo(newSection)
+            );
+        }
+
+        @DisplayName("연결되어 있는 A-C 구간이 입력될 경우 예외가 발생한다.")
+        @Test
+        void validateDuplicateSection() {
+            // given
+            Section newSection = new Section(new Station(1L, "잠실역"), new Station(3L, "봉천역"), 2);
+
+            // then
+            assertThatThrownBy(() -> sections.addSection(newSection))
+                    .isInstanceOf(DuplicateException.class)
+                    .hasMessage("이미 연결되어 있는 구간입니다.");
+        }
+
+        @DisplayName("새로운 B-D 구간이 B-C 사이에 추가될 때 B-D 구간의 거리가 B-C 거리보다 크거나 같으면 예외가 발생한다.")
+        @Test
+        void validateDistance() {
+            // given
+            Station newStation = new Station(4L, "종합운동장역");
+            Section newSection = new Section(new Station(2L, "잠실새내역"), newStation, 4);
+
+            // then
+            assertThatThrownBy(() -> sections.addSection(newSection))
+                    .isInstanceOf(InvalidException.class)
+                    .hasMessage("기존에 존재하는 역 사이의 거리보다 작아야 합니다.");
+        }
+
+        @DisplayName("새로운 D-A 구간이 A-B 앞에 추가된다.")
+        @Test
+        void addSectionFirstStation() {
+            // given
+            Station newStation = new Station(4L, "베로역");
+            Section newSection = new Section(newStation, new Station(1L, "잠실역"), 10);
+
+            // when
+            sections.addSection(newSection);
+
+            // then
+            assertThat(sections.getSections().get(0)).isEqualTo(newSection);
+        }
+
+        @DisplayName("새로운 C-D 구간이 B-C 뒤에 추가된다.")
+        @Test
+        void addSectionLastStation() {
+            // given
+            Station newStation = new Station(4L, "베로역");
+            Section newSection = new Section(new Station(3L, "봉천역"), newStation, 10);
+
+            // when
+            sections.addSection(newSection);
+
+            // then
+            assertThat(sections.getSections().get(2)).isEqualTo(newSection);
+        }
     }
 
-    @DisplayName("새로운 구간의 역들이 노선에 이미 존재하는 경우 예외가 발생한다.")
-    @Test
-    void validateDuplicateSection() {
-        // given
-        Section newSection = new Section(station1, station3, 2);
+    @DisplayName("[구간 삭제]")
+    @Nested
+    class deleteSection {
+        @DisplayName("A-B-C 구간이 연결되어 있을 때 B 역과 연결된 구간을 삭제하면 A-B, B-C 구간이 삭제되고 A-C 구간이 추가된다.")
+        @Test
+        void delete() {
+            // when
+            sections.deleteSection(new Station(2L, "잠실새내역"));
 
-        // then
-        assertThatThrownBy(() -> sections.addSection(newSection))
-                .isInstanceOf(DuplicateException.class)
-                .hasMessage("이미 연결되어 있는 구간입니다.");
-    }
+            // then
+            assertAll(
+                    () -> assertThat(sections.getStations()).hasSize(2),
+                    () -> assertThat(sections.getSections()).hasSize(1)
+            );
+        }
 
-    @DisplayName("역이 기존에 존재하는 구간 사이에 추가될 때 추가되는 구간의 거리가 기존 구간의 거리보다 크거나 같으면 예외가 발생한다.")
-    @Test
-    void validateDistance() {
-        // given
-        Station newStation = new Station(4L, "종합운동장역");
-        Section newSection = new Section(station2, newStation, 4);
+        @DisplayName("A-B-C 구간이 연결되어 있을 때 A 역과 연결된 삭제하면 A-B 구간이 삭제된다.")
+        @Test
+        void deleteTerminal() {
+            // when
+            sections.deleteSection(new Station(1L, "잠실역"));
 
-        // then
-        assertThatThrownBy(() -> sections.addSection(newSection))
-                .isInstanceOf(InvalidException.class)
-                .hasMessage("기존에 존재하는 역 사이의 거리보다 작아야 합니다.");
-    }
+            // then
+            assertAll(
+                    () -> assertThat(sections.getStations()).hasSize(2),
+                    () -> assertThat(sections.getSections()).hasSize(1)
+            );
+        }
 
-    @DisplayName("새로운 역이 상행 종점으로 추가된다.")
-    @Test
-    void addSectionFirstStation() {
-        // given
-        Station newUpStation = new Station(4L, "베로역");
-        Section newSection = new Section(newUpStation, station1, 10);
+        @DisplayName("A-B 구간 하나만 존재할 때 역을 삭제하면 모든 구간이 삭제된다.")
+        @Test
+        void deleteAll() {
+            // given
+            Section section1 = new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10);
+            sections = Sections.from(List.of(section1));
 
-        // when
-        sections.addSection(newSection);
+            // when
+            sections.deleteSection(new Station(1L, "잠실역"));
 
-        // then
-        assertThat(sections.getSections().get(0)).isEqualTo(newSection);
-    }
-
-    @DisplayName("새로운 역이 하행 종점으로 추가된다.")
-    @Test
-    void addSectionLastStation() {
-        // given
-        Station newDownStation = new Station(4L, "베로역");
-        Section newSection = new Section(station3, newDownStation, 10);
-
-        // when
-        sections.addSection(newSection);
-
-        // then
-        assertThat(sections.getSections().get(2)).isEqualTo(newSection);
-    }
-
-    @DisplayName("중간 역을 삭제하면 연결된 구간이 삭제된다.")
-    @Test
-    void delete() {
-        // when
-        sections.deleteSection(station2);
-
-        // then
-        assertAll(
-                () -> assertThat(sections.getStations()).hasSize(2),
-                () -> assertThat(sections.getSections()).hasSize(1)
-        );
-    }
-
-    @DisplayName("종점을 삭제한다.")
-    @Test
-    void deleteTerminal() {
-        // when
-        sections.deleteSection(station1);
-
-        // then
-        assertAll(
-                () -> assertThat(sections.getStations()).hasSize(2),
-                () -> assertThat(sections.getSections()).hasSize(1)
-        );
-    }
-
-    @DisplayName("노선에 역이 두 개 존재할 때, 모든 노선이 삭제된다.")
-    @Test
-    void deleteAll() {
-        // given
-        sections = Sections.from(List.of(section1));
-
-        // when
-        sections.deleteSection(station1);
-
-        // then
-        assertAll(
-                () -> assertThat(sections.getStations()).hasSize(0),
-                () -> assertThat(sections.getSections()).hasSize(0)
-        );
+            // then
+            assertAll(
+                    () -> assertThat(sections.getStations()).hasSize(0),
+                    () -> assertThat(sections.getSections()).hasSize(0)
+            );
+        }
     }
 }
