@@ -10,12 +10,6 @@ public class StationEntity {
     private final StationName stationName;
     private final Long lineId;
 
-    public StationEntity(Long id, StationName stationName, Long lineId) {
-        this.id = id;
-        this.stationName = stationName;
-        this.lineId = lineId;
-    }
-
     public StationEntity(Long id, String stationName, Long lineId) {
         this.id = id;
         this.stationName = new StationName(stationName);

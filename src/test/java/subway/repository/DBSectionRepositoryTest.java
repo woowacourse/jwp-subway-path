@@ -27,16 +27,13 @@ class DBSectionRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private StationDao stationDao;
-    private SectionDao sectionDao;
     private SectionRepository sectionRepository;
-    private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate);
-        sectionDao = new SectionDao(jdbcTemplate);
-        stationRepository = new DBStationRepository(jdbcTemplate, stationDao);
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        SectionDao sectionDao = new SectionDao(jdbcTemplate);
+        StationRepository stationRepository = new DBStationRepository(jdbcTemplate, stationDao);
         sectionRepository = new DBSectionRepository(jdbcTemplate, stationRepository, stationDao, sectionDao);
     }
 

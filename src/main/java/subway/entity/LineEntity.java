@@ -9,11 +9,6 @@ public class LineEntity {
     private final Long id;
     private final LineName lineName;
 
-    public LineEntity(Long id, LineName lineName) {
-        this.id = id;
-        this.lineName = lineName;
-    }
-
     public LineEntity(Long id, String lineName) {
         this.id = id;
         this.lineName = new LineName(lineName);

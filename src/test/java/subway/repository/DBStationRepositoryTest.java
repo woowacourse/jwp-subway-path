@@ -23,12 +23,11 @@ class DBStationRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private StationDao stationDao;
     private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate);
+        StationDao stationDao = new StationDao(jdbcTemplate);
         stationRepository = new DBStationRepository(jdbcTemplate, stationDao);
     }
 

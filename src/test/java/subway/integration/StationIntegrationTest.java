@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.*;
 
 @DisplayName("지하철역 관련 기능")
-public class StationIntegrationTest extends IntegrationTest {
+class StationIntegrationTest extends IntegrationTest {
 
     private ObjectMapper objectMapper;
 
@@ -154,7 +154,7 @@ public class StationIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("역과 역 사이애 새로운 역을 등록할 때 각 역 사이의 거릭가 음수가 되면 예외가 발생한다.")
-    void postStationInLineTest_insertMiddle_fail() throws JsonProcessingException {
+    void postStationInLineTest_insertMiddle_fail() {
         // given
         StationRequest request = REQUEST_잠실역_TO_성수역;
 

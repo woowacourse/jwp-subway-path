@@ -3,10 +3,10 @@ package subway.dto;
 import java.util.Objects;
 
 public class StationRequest {
-    private String upStationName;
-    private String downStationName;
-    private int distance;
-    private String lineName;
+    private final String upStationName;
+    private final String downStationName;
+    private final int distance;
+    private final String lineName;
 
     public StationRequest(String upStationName, String downStationName, int distance, String lineName) {
         this.upStationName = upStationName;

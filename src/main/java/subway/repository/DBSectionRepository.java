@@ -43,19 +43,19 @@ public class DBSectionRepository implements SectionRepository {
 
     @Override
     public Section insert(Section sectionToAdd) {
-        Optional<StationEntity> findUpStationEntity = stationDao.findByStationNameAndLineId(sectionToAdd.getUpStationName(), sectionToAdd.getLineId());
-        Optional<StationEntity> findDownStationEntity = stationDao.findByStationNameAndLineId(sectionToAdd.getDownStationName(), sectionToAdd.getLineId());
-        validateIsExistSection(findUpStationEntity, findDownStationEntity, sectionToAdd);
-        if (findUpStationEntity.isPresent()) {
-            return insertDownStationAndSection(sectionToAdd, findUpStationEntity);
+        Optional<StationEntity> findNullableUpStationEntity = stationDao.findByStationNameAndLineId(sectionToAdd.getUpStationName(), sectionToAdd.getLineId());
+        Optional<StationEntity> findNullableDownStationEntity = stationDao.findByStationNameAndLineId(sectionToAdd.getDownStationName(), sectionToAdd.getLineId());
+        validateIsExistSection(sectionToAdd);
+        if (findNullableUpStationEntity.isPresent()) {
+            return insertDownStationAndSection(sectionToAdd, findNullableUpStationEntity.get());
         }
-        if (findDownStationEntity.isPresent()) {
-            return insertUpStationAndSection(sectionToAdd, findDownStationEntity);
+        if (findNullableDownStationEntity.isPresent()) {
+            return insertUpStationAndSection(sectionToAdd, findNullableDownStationEntity.get());
         }
         return insertAllStationsAndSection(sectionToAdd);
     }
 
-    private void validateIsExistSection(Optional<StationEntity> findUpStationEntity, Optional<StationEntity> findDownStationEntity, Section sectionToAdd) {
+    private void validateIsExistSection(Section sectionToAdd) {
         if (isExistSection(sectionToAdd)) {
             throw new IllegalArgumentException("이미 포함되어 있는 구간입니다.");
         }
@@ -66,18 +66,18 @@ public class DBSectionRepository implements SectionRepository {
         return findSectionEntity.isPresent();
     }
 
-    private Section insertDownStationAndSection(Section sectionToAdd, Optional<StationEntity> findUpStationEntity) {
+    private Section insertDownStationAndSection(Section sectionToAdd, StationEntity findUpStationEntity) {
         Station downStationToAdd = sectionToAdd.getDownStation();
         Station insertedDownStation = stationRepository.insert(downStationToAdd);
-        Station existUpStation = stationRepository.findStationById(findUpStationEntity.get().getId());
+        Station existUpStation = stationRepository.findStationById(findUpStationEntity.getId());
         sectionToAdd = new Section(null, existUpStation, insertedDownStation, sectionToAdd.getDistance());
         return add(sectionToAdd);
     }
 
-    private Section insertUpStationAndSection(Section sectionToAdd, Optional<StationEntity> findDownStationEntity) {
+    private Section insertUpStationAndSection(Section sectionToAdd, StationEntity findDownStationEntity) {
         Station upStationToAdd = sectionToAdd.getUpStation();
         Station insertedUpStation = stationRepository.insert(upStationToAdd);
-        Station existDownStation = stationRepository.findStationById(findDownStationEntity.get().getId());
+        Station existDownStation = stationRepository.findStationById(findDownStationEntity.getId());
         sectionToAdd = new Section(null, insertedUpStation, existDownStation, sectionToAdd.getDistance());
         return add(sectionToAdd);
     }

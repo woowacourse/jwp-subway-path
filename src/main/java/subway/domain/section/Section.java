@@ -30,15 +30,13 @@ public class Section {
         validateIsSameSection(sectionToSubtract);
         if (upStation.isSameStation(sectionToSubtract.getUpStation())) {
             Station newUpStation = sectionToSubtract.getDownStation();
-            Station newDownStation = this.downStation;
             Distance newDistance = this.distance.subtract(sectionToSubtract.getDistance());
-            return new Section(null, newUpStation, newDownStation, newDistance);
+            return new Section(null, newUpStation, downStation, newDistance);
         }
         if (downStation.isSameStation(sectionToSubtract.getDownStation())) {
-            Station newUpStation = this.upStation;
             Station newDownStation = sectionToSubtract.getUpStation();
             Distance newDistance = this.distance.subtract(sectionToSubtract.getDistance());
-            return new Section(null, newUpStation, newDownStation, newDistance);
+            return new Section(null, upStation, newDownStation, newDistance);
         }
         throw new IllegalArgumentException("현재 등록된 역 중에 하나를 포함해야합니다.");
     }
@@ -46,16 +44,14 @@ public class Section {
     public Section combine(Section sectionToCombine) {
         validateIsSameSection(sectionToCombine);
         if (downStation.isSameStation(sectionToCombine.getUpStation())) {
-            Station newUpStation = this.upStation;
             Station newDownStation = sectionToCombine.getDownStation();
             Distance newDistance = this.distance.add(sectionToCombine.getDistance());
-            return new Section(null, newUpStation, newDownStation, newDistance);
+            return new Section(null, upStation, newDownStation, newDistance);
         }
         if (upStation.isSameStation(sectionToCombine.getDownStation())) {
             Station newUpStation = sectionToCombine.getUpStation();
-            Station newDownStation = this.downStation;
             Distance newDistance = this.distance.add(sectionToCombine.getDistance());
-            return new Section(null, newUpStation, newDownStation, newDistance);
+            return new Section(null, newUpStation, downStation, newDistance);
         }
         throw new IllegalArgumentException("현재 등록된 역 중에 하나를 포함해야합니다.");
     }

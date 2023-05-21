@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
-import subway.domain.line.LineStatus;
 import subway.domain.section.Distance;
 import subway.domain.section.Section;
 import subway.domain.section.SectionRepository;
@@ -29,12 +28,12 @@ public class SaveSectionService {
 
     public Long saveSection(StationRequest stationRequest) {
         Optional<Line> findNullableLine = lineRepository.findByLineName(stationRequest.getLineName());
-        if (LineStatus.of(findNullableLine) == LineStatus.INITIAL) {
+        if (findNullableLine.isEmpty()) {
             return saveInitialSection(stationRequest);
         }
+
         Line line = findNullableLine.get();
         Section sectionToAdd = getSectionFromRequest(stationRequest, line);
-
         Sections sections = new Sections(sectionRepository.findSectionsByLineId(line.getId()));
         validateSectionCanLink(sections, sectionToAdd);
         return saveAdditionalSection(sections, sectionToAdd);

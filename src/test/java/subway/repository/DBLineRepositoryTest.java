@@ -22,12 +22,11 @@ class DBLineRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private LineDao lineDao;
     private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {
-        lineDao = new LineDao(jdbcTemplate);
+        LineDao lineDao = new LineDao(jdbcTemplate);
         lineRepository = new DBLineRepository(lineDao);
     }
 

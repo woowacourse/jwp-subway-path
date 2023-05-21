@@ -14,7 +14,7 @@ import static fixtures.IntegrationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineIntegrationTest extends IntegrationTest {
+class LineIntegrationTest extends IntegrationTest {
 
     private ObjectMapper objectMapper;
 
