@@ -14,27 +14,25 @@ import subway.domain.line.Station;
 import subway.domain.route.JgraphtRouteGraph;
 import subway.domain.route.RouteGraph;
 import subway.domain.route.Subway;
-import subway.repository.LineRepository;
-import subway.repository.StationRepository;
 
 @Transactional(readOnly = true)
 @Service
 public class SubwayService {
 
-    private final LineRepository lineRepository;
-    private final StationRepository stationRepository;
+    private final LineService lineService;
+    private final StationService stationService;
     private final FarePolicy farePolicy;
 
-    public SubwayService(LineRepository lineRepository, StationRepository stationRepository, FarePolicy farePolicy) {
-        this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
+    public SubwayService(LineService lineService, StationService stationService, FarePolicy farePolicy) {
+        this.lineService = lineService;
+        this.stationService = stationService;
         this.farePolicy = farePolicy;
     }
 
     public RouteSearchResponse findRoute(String startStationName, String endStationName) {
-        Station startStation = stationRepository.findByName(startStationName);
-        Station endStation = stationRepository.findByName(endStationName);
-        List<Line> lines = lineRepository.findAll();
+        Station startStation = stationService.findByName(startStationName);
+        Station endStation = stationService.findByName(endStationName);
+        List<Line> lines = lineService.findAllLines();
         RouteGraph routeGraph = JgraphtRouteGraph.from(lines);
 
         Subway subway = new Subway(routeGraph);

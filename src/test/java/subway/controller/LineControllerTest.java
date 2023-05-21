@@ -72,7 +72,7 @@ class LineControllerTest {
     @DisplayName("노선 ID에 해당하는 정보를 가져온다.")
     void findLineById() throws Exception {
         Long id = 1L;
-        given(lineService.findLineResponseById(any())).willReturn(
+        given(lineService.findLineById(any())).willReturn(
                 new Line(id, "1호선", new Sections(new LinkedList<>())));
 
         mockMvc.perform(get("/lines/{id}", id)
@@ -87,7 +87,7 @@ class LineControllerTest {
     void findAllLines() throws Exception {
         Line line1 = createMockLine("1호선");
         Line line2 = createMockLine("2호선");
-        given(lineService.findLineResponses()).willReturn(List.of(line1, line2));
+        given(lineService.findAllLines()).willReturn(List.of(line1, line2));
 
         mockMvc.perform(get("/lines").
                         contentType(MediaType.APPLICATION_JSON)

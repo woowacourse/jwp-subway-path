@@ -78,7 +78,7 @@ class LineServiceTest {
         given(lineRepository.findById(any()))
                 .willReturn(line);
 
-        Line findLine = lineService.findLineResponseById(1L);
+        Line findLine = lineService.findLineById(1L);
 
         assertAll(
                 () -> assertThat(findLine.getId()).isEqualTo(findLine.getId()),
@@ -94,7 +94,7 @@ class LineServiceTest {
         given(lineRepository.findAll())
                 .willReturn(List.of(line1, line2));
 
-        List<Line> lines = lineService.findLineResponses();
+        List<Line> lines = lineService.findAllLines();
 
         assertThat(lines).hasSize(2);
     }

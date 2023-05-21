@@ -37,11 +37,11 @@ public class LineService {
         return lineRepository.save(new Line(null, request.getName(), null));
     }
 
-    public Line findLineResponseById(Long id) {
+    public Line findLineById(Long id) {
         return lineRepository.findById(id);
     }
 
-    public List<Line> findLineResponses() {
+    public List<Line> findAllLines() {
         return lineRepository.findAll();
     }
 

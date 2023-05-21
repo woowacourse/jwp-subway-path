@@ -38,7 +38,7 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        List<Line> lines = lineService.findLineResponses();
+        List<Line> lines = lineService.findAllLines();
         List<LineResponse> lineResponses = lines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
@@ -47,7 +47,7 @@ public class LineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        Line line = lineService.findLineResponseById(id);
+        Line line = lineService.findLineById(id);
         LineResponse lineResponse = LineResponse.of(line);
         return ResponseEntity.ok(lineResponse);
     }
