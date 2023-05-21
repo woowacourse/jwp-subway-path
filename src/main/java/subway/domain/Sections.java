@@ -59,9 +59,7 @@ public class Sections {
     private boolean isExistingSectionIsLongerThanNewSection(Station baseStation, Direction directionOfBase,
             Distance newDistance) {
         Optional<Section> sectionToRevise = findSectionIncludingStationOnDirection(baseStation, directionOfBase);
-        return sectionToRevise
-                .map(section -> section.isLongerThan(newDistance))
-                .orElse(false);
+        return sectionToRevise.map(section -> section.isLongerThan(newDistance)).orElse(true);
     }
 
     public List<Station> findAllStations() {
@@ -87,16 +85,6 @@ public class Sections {
         return stations.stream()
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("상행 종점을 찾을 수 없습니다"));
-    }
-
-    public List<Section> findSectionsByStation(Station station) {
-        List<Section> sectionWithStation = sections.stream()
-                .filter(section -> section.hasStationInSection(station))
-                .collect(Collectors.toList());
-        if(sectionWithStation.isEmpty()) {
-            throw new IllegalArgumentException("해당 역이 존재하지 않습니다.");
-        }
-        return sectionWithStation;
     }
 
     public void removeStation(Station stationToRemove) {
@@ -126,6 +114,11 @@ public class Sections {
 
     public boolean isEmpty() {
         return sections.isEmpty();
+    }
+
+    public boolean hasSameSection(Section section) {
+        return sections.stream()
+                .anyMatch(savedSection -> savedSection.equals(section));
     }
 
     public List<Section> getSections() {
