@@ -29,13 +29,13 @@ public class LineService {
 
     private void validateDuplicatedName(final Line oldLine) {
         if (lineRepository.countByName(oldLine.getName()) != 0) {
-            throw new IllegalArgumentException("[Error] 중복된 노선 이름을 등록할 수 없습니다.");
+            throw new IllegalArgumentException("[ERROR] 중복된 노선 이름을 등록할 수 없습니다.");
         }
     }
 
     private void validateDuplicatedColor(final Line newLine) {
         if (lineRepository.countByColor(newLine.getColor()) != 0) {
-            throw new IllegalArgumentException("[Error] 중복된 노선 색상을 등록할 수 없습니다.");
+            throw new IllegalArgumentException("[ERROR] 중복된 노선 색상을 등록할 수 없습니다.");
         }
     }
 

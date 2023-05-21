@@ -24,9 +24,9 @@ public class PathService {
     public PathResponse findPath(final long departureStationId, final long arrivalStationId, final int age) {
         AgeGroup validAgeGroup = AgeGroup.matchAgeGroup(age);
         Station departureStation = stationDao.findById(departureStationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역이 출발역으로 지정되어 있습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 역이 출발역으로 지정되어 있습니다."));
         Station arrivalStation = stationDao.findById(arrivalStationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역이 도착역으로 지정되어 있습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 역이 도착역으로 지정되어 있습니다."));
         SubwayGuide subwayGuide = SubwayGuide.from(lineRepository.findAll());
 
         List<Station> stations = subwayGuide.findPath(departureStation, arrivalStation);
