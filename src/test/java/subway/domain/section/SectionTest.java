@@ -1,8 +1,7 @@
-package subway.domain;
+package subway.domain.section;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
 
