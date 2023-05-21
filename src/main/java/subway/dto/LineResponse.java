@@ -18,6 +18,13 @@ public class LineResponse {
         this.color = color;
     }
 
+    public LineResponse(Long id, String name, String color, List<String> stations) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.stations = stations;
+    }
+
     public Long getId() {
         return id;
     }

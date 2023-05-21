@@ -71,9 +71,4 @@ public class StationDao {
         String query = "DELETE FROM STATION";
         jdbcTemplate.update(query);
     }
-
-    public int count() {
-        String query = "SELECT COUNT(*) FROM STATION";
-        return jdbcTemplate.queryForObject(query, Integer.class);
-    }
 }

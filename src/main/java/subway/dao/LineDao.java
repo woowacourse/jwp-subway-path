@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
@@ -37,7 +38,7 @@ public class LineDao {
         return keyHolder.getKey().longValue();
     }
 
-    public List<StationEntity> findAllStations(Long lineId) {
+    public List<StationEntity> findAllStationsById(Long lineId) {
         String sql = "SELECT * FROM STATION WHERE line_id = ?";
 
         return jdbcTemplate.query(sql,
@@ -72,6 +73,12 @@ public class LineDao {
         return Long.valueOf(jdbcTemplate.update(sql, lineRequest.getName(), lineRequest.getColor(), id));
     }
 
+    public Long updateHeadStation(Long id, Station upStation) {
+        String sql = "UPDATE LINE SET head_station = ? WHERE id = ?";
+
+        return Long.valueOf(jdbcTemplate.update(sql, upStation.getId(), id));
+    }
+
     public Optional<LineEntity> findLineEntityById(Long id) {
         String sql = "SELECT * FROM LINE WHERE id = ?";
         LineEntity lineEntity = jdbcTemplate.queryForObject(sql, getLineRowMapper(), id);
@@ -98,4 +105,5 @@ public class LineDao {
         String query = "DELETE FROM STATION";
         jdbcTemplate.update(query);
     }
+
 }

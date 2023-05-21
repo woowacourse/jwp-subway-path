@@ -14,13 +14,13 @@ import subway.dto.StationRequest;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class LineService {
-    
     private final LineDao lineDao;
     private final StationDao stationDao;
 
@@ -63,7 +63,7 @@ public class LineService {
     }
 
     public Long updateLineNameAndColor(Long id, LineRequest request) {
-        lineDao.findLineEntityById(id)
+        LineEntity lineEntity = lineDao.findLineEntityById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 노선이 존재하지 않습니다"));
 
         return lineDao.update(id, request);
@@ -71,12 +71,12 @@ public class LineService {
 
     public void updateLine(Long id, LineCreateRequest updateRequest) {
         //line의 이름, 혹은 color를 수정하고 싶은 경우
-        LineEntity lineEntity = lineDao.findLineEntityById(id)
+        lineDao.findLineEntityById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 노선이 존재하지 않습니다"));
         updateLineNameAndColor(id, updateRequest.getLineRequest());
 
         StationRequest stationRequest = updateRequest.getStationRequest();
-        List<StationEntity> allStations = lineDao.findAllStations(id);
+        List<StationEntity> allStations = lineDao.findAllStationsById(id);
         Stations lineStations = createStationsFromStationEntity(allStations);
 
         if (isUpStationAdd(stationRequest, lineStations)) {
@@ -132,6 +132,8 @@ public class LineService {
             if (lineStations.findNextStationById(downStation.getId()).isPresent()) {
                 nextStationId = lineStations.findNextStationById(downStation.getId()).get().getId();
             }
+        } else {
+            lineDao.updateHeadStation(lineId, upStation);
         }
 
         lineStations.addStationByIndex(downStationIndex, upStation);
@@ -151,6 +153,24 @@ public class LineService {
         LineEntity lineEntity = lineDao.findLineEntityById(id)
                 .orElseThrow(() -> new IllegalArgumentException("찾고자하는 id에 해당하는 LineResponse를 생성할 수 없습니다."));
 
-        return new LineResponse(id, lineEntity.getName(), lineEntity.getColor());
+
+        //TODO: Line의 station들 LineDao로 받아오기
+        List<StationEntity> allStations = lineDao.findAllStationsById(id);
+
+        //TODO: Line의 head_station을 기준으로 next 타고가면서 list에 추가하기
+        List<String> stationsNamesInOrder = new ArrayList<>();
+        Long targetId = lineEntity.getHeadStationId();
+
+        for (int i = 0; i < allStations.size(); i++) {
+            StationEntity stationEntity = allStations.get(i);
+            if (targetId == stationEntity.getId()) {
+                stationsNamesInOrder.add(stationEntity.getName());
+                targetId = stationEntity.getNextStationId();
+                i = -1;
+            }
+        }
+
+        //TODO: Line의 Stations조회 전용 LineResponse생성?
+        return new LineResponse(id, lineEntity.getName(), lineEntity.getColor(), stationsNamesInOrder);
     }
 }
