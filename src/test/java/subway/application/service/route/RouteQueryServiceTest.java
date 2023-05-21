@@ -53,14 +53,13 @@ class RouteQueryServiceTest {
         given(sectionQueryPort.findAll())
                 .willReturn(sections);
         given(stationQueryPort.findByName(any()))
-                .willReturn(Optional.of(new Station("가")));
-        given(stationQueryPort.findByName(any()))
+                .willReturn(Optional.of(new Station("가")))
                 .willReturn(Optional.of(new Station("라")));
-        given(lineQueryPort.findLinesById(List.of(1L, 2L)))
-                .willReturn(List.of(new Line(1L, "1호선", 100), new Line(2L, "2호선", 100)));
+        given(lineQueryPort.findLinesById(any()))
+                .willReturn(Arrays.asList(new Line(1L, "1호선", 100), new Line(2L, "2호선", 100)));
         given(shortPathPort.findSortPath(any(), any(), anyMap()))
                 .willReturn(new RouteDto(
-                        List.of(new Station("가"),
+                        Arrays.asList(new Station("가"),
                                 new Station("나"),
                                 new Station("다"),
                                 new Station("사"),
