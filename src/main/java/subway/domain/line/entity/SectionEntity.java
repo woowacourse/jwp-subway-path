@@ -35,6 +35,22 @@ public class SectionEntity {
         throw new IllegalArgumentException("거리는 양의 정수만 가능합니다.");
     }
 
+    public SectionEntity setUpStationId(Long stationId) {
+        return new SectionEntity(id, lineId, stationId, downStationId, distance);
+    }
+
+    public SectionEntity setDownStationId(Long stationId) {
+        return new SectionEntity(id, lineId, upStationId, stationId, distance);
+    }
+
+    public SectionEntity setDistance(int distance) {
+        return new SectionEntity(id, lineId, upStationId, downStationId, distance);
+    }
+
+    public SectionEntity reverseDirection() {
+        return new SectionEntity(id, lineId, downStationId, upStationId, distance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -68,47 +84,14 @@ public class SectionEntity {
         return Objects.hash(id);
     }
 
-    public static class Builder {
-
-        private Long id;
-        private Long lineId;
-        private Long upStationId;
-        private Long downStationId;
-        private int distance;
-
-        public Builder() {
-        }
-
-        public Builder setId(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder setLineId(Long lineId) {
-            this.lineId = lineId;
-            return this;
-        }
-
-        public Builder setUpStationId(final Long upStationId) {
-            this.upStationId = upStationId;
-            return this;
-        }
-
-        public Builder setDownStationId(final Long downStationId) {
-            this.downStationId = downStationId;
-            return this;
-        }
-
-        public Builder setDistance(final int distance) {
-            this.distance = distance;
-            return this;
-        }
-
-        public SectionEntity build() {
-            if (id == null) {
-                return new SectionEntity(null, lineId, upStationId, downStationId, distance);
-            }
-            return new SectionEntity(id, lineId, upStationId, downStationId, distance);
-        }
+    @Override
+    public String toString() {
+        return "SectionEntity{" +
+                "id=" + id +
+                ", lineId=" + lineId +
+                ", upStationId=" + upStationId +
+                ", downStationId=" + downStationId +
+                ", distance=" + distance +
+                '}';
     }
 }

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.domain.line.dto.LineRequest;
-import subway.domain.line.dto.SectionCreateRequest;
+import subway.domain.line.dto.SectionRequest;
 import subway.domain.line.dto.SectionResponse;
 
 import java.util.List;
@@ -127,13 +127,13 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("노선에 역을 등록한다.")
     @Test
     void createSection() {
-        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 1L, 2L, true, 3);
+        SectionRequest sectionRequest = new SectionRequest(1L,8L, 2L, 3);
 
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionCreateRequest)
+                .body(sectionRequest)
                 .when().post("/line/{lineId}", 1L)
                 .then().log().all()
                 .extract();
@@ -143,20 +143,19 @@ public class LineIntegrationTest extends IntegrationTest {
         final List<SectionResponse> result = response.jsonPath().getList("data.", SectionResponse.class);
         Assertions.assertAll(
                 () -> assertThat(result.get(0).getId()).isPositive(),
-                () -> assertThat(result.get(0).getLineId()).isEqualTo(1L),
-                () -> assertThat(result.get(0).getUpStationId()).isEqualTo(2L),
-                () -> assertThat(result.get(0).getDownStationId()).isEqualTo(1L),
+                () -> assertThat(result.get(0).getUpStationId()).isEqualTo(8L),
+                () -> assertThat(result.get(0).getDownStationId()).isEqualTo(2L),
                 () -> assertThat(result.get(0).getDistance()).isEqualTo(3)
         );
     }
 
-    @DisplayName("노선에서 역을 삭제한다.")
+    @DisplayName("노선에서 첫번째 역을 삭제한다")
     @Test
-    void deleteSection() {
+    void 노선에서_첫번째_역을_삭제한다() {
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .when().delete("/line/{lineId}/station/{stationId}", 1L, 1L)
+                .when().delete("/line/{lineId}/station/{stationId}",1L,1L)
                 .then().log().all()
                 .extract();
 

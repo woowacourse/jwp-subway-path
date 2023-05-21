@@ -12,7 +12,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.domain.line.controller.LineController;
 import subway.domain.line.dto.LineRequest;
-import subway.domain.line.dto.SectionCreateRequest;
+import subway.domain.line.dto.SectionRequest;
 import subway.domain.line.entity.LineEntity;
 import subway.domain.line.entity.SectionEntity;
 import subway.domain.line.service.LineService;
@@ -85,7 +85,7 @@ public class LineControllerTest {
 
     @Test
     void addStation() throws Exception {
-        SectionCreateRequest section = new SectionCreateRequest(1L, 1L, 2L, true, 5);
+        SectionRequest section = new SectionRequest(1L, 2L, 1L, 5);
 
         when(sectionService.createSection(any())).thenReturn(List.of(new SectionEntity(1L, 1L, 1L, 2L, 5)));
 

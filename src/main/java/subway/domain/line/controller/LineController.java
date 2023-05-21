@@ -3,7 +3,10 @@ package subway.domain.line.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.domain.line.dto.*;
+import subway.domain.line.dto.LineRequest;
+import subway.domain.line.dto.LineResponse;
+import subway.domain.line.dto.SectionRequest;
+import subway.domain.line.dto.SectionResponse;
 import subway.domain.line.entity.LineEntity;
 import subway.domain.line.entity.SectionEntity;
 import subway.domain.line.service.LineService;
@@ -47,8 +50,8 @@ public class LineController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<ResultResponse> addStation(@PathVariable final Long id, @RequestBody @Valid final SectionCreateRequest sectionCreateRequest) {
-        final List<SectionEntity> sectionEntities = sectionService.createSection(sectionCreateRequest);
+    public ResponseEntity<ResultResponse> addStation(@PathVariable final Long id, @RequestBody @Valid final SectionRequest sectionRequest) {
+        final List<SectionEntity> sectionEntities = sectionService.createSection(sectionRequest);
         final List<SectionResponse> sectionResponses = sectionEntities.stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
