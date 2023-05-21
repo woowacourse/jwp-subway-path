@@ -17,8 +17,8 @@ public class RouteController {
     }
 
     @GetMapping("/routes")
-    public ResponseEntity<RouteResponse> getShortestPath(@RequestParam final Long startStationId, @RequestParam final Long endStationId) {
-        RouteResponse response = routeService.findShortestRoute(startStationId, endStationId);
+    public ResponseEntity<RouteResponse> getShortestPath(@RequestParam final Long startStationId, @RequestParam final Long endStationId, @RequestParam final int age) {
+        RouteResponse response = routeService.findShortestRoute(startStationId, endStationId, age);
 
         return ResponseEntity.ok(response);
     }

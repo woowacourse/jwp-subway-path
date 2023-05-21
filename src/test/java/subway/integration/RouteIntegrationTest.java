@@ -51,7 +51,7 @@ public class RouteIntegrationTest extends IntegrationTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.when()
-                .get("/routes?startStationId=" + 서원역ID + "&endStationId=" + 상도역ID)
+                .get("/routes?startStationId=" + 서원역ID + "&endStationId=" + 상도역ID + "&age=" + 14)
                 .then()
                 .contentType(ContentType.JSON)
                 .extract();
