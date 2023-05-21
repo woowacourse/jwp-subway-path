@@ -48,7 +48,7 @@ public class StationDao {
         }
     }
 
-    public Optional<StationEntity> findById(Long id) {
+    public Optional<StationEntity> findById(long id) {
         String sql = "SELECT * FROM STATION WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, ROW_MAPPER, id));
@@ -62,7 +62,7 @@ public class StationDao {
         jdbcTemplate.update(sql, station.getName(), station.getId());
     }
 
-    public void deleteById(Long stationId) {
+    public void deleteById(long stationId) {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, stationId);
     }

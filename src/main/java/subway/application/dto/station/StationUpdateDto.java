@@ -1,15 +1,15 @@
 package subway.application.dto.station;
 
 public class StationUpdateDto {
-    private Long id;
+    private long id;
     private String name;
 
-    public StationUpdateDto(Long id, String name) {
+    public StationUpdateDto(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

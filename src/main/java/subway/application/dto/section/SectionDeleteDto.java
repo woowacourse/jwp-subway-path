@@ -1,15 +1,15 @@
 package subway.application.dto.section;
 
 public class SectionDeleteDto {
-    private Long id;
+    private long id;
     private String stationName;
 
-    public SectionDeleteDto(Long id, String stationName) {
+    public SectionDeleteDto(long id, String stationName) {
         this.id = id;
         this.stationName = stationName;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

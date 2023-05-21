@@ -43,7 +43,7 @@ public class SectionService {
 
     private Section addSection(Line line, Section sectionToAdd) {
         if (line.isEmpty()) {
-            Long savedId = sectionRepository.save(line.getId(), sectionToAdd);
+            long savedId = sectionRepository.save(line.getId(), sectionToAdd);
             return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
                     sectionToAdd.getDistance());
         }
@@ -76,7 +76,7 @@ public class SectionService {
             saveStation(line.getId(), prevSection.getStartStation(), sectionToAdd.getStartStation(),
                     prevSection.getDistance().subtract(sectionToAdd.getDistance()));
         });
-        Long savedId = sectionRepository.save(line.getId(), sectionToAdd);
+        long savedId = sectionRepository.save(line.getId(), sectionToAdd);
         return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
                 sectionToAdd.getDistance());
     }
@@ -86,7 +86,7 @@ public class SectionService {
         sectionRepository.delete(prevSection);
     }
 
-    private void saveStation(Long lineId, Station startStation, Station endStation, Distance distance) {
+    private void saveStation(long lineId, Station startStation, Station endStation, Distance distance) {
         sectionRepository.save(lineId, new Section(startStation, endStation, distance));
     }
 
@@ -97,7 +97,7 @@ public class SectionService {
             saveStation(line.getId(), sectionToAdd.getEndStation(), prevSection.getEndStation(),
                     prevSection.getDistance().subtract(sectionToAdd.getDistance()));
         });
-        Long savedId = sectionRepository.save(line.getId(), sectionToAdd);
+        long savedId = sectionRepository.save(line.getId(), sectionToAdd);
         return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
                 sectionToAdd.getDistance());
     }
@@ -128,7 +128,7 @@ public class SectionService {
         throw new StationNotFoundException();
     }
 
-    private void mergeSection(Long lineId, Section frontSection, Section backSection) {
+    private void mergeSection(long lineId, Section frontSection, Section backSection) {
         Section mergedSection = new Section(frontSection.getStartStation(), backSection.getEndStation(),
                 frontSection.getDistance().add(backSection.getDistance()));
         sectionRepository.save(lineId, mergedSection);

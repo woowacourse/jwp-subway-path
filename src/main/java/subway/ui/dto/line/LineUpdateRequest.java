@@ -20,7 +20,7 @@ public class LineUpdateRequest {
         this.color = color;
     }
 
-    public LineUpdateDto toLineUpdateDto(Long id) {
+    public LineUpdateDto toLineUpdateDto(long id) {
         return new LineUpdateDto(id, name, color);
     }
 

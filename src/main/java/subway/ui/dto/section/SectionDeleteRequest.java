@@ -13,7 +13,7 @@ public class SectionDeleteRequest {
         this.stationName = stationName;
     }
 
-    public SectionDeleteDto toSectionDeleteDto(Long id) {
+    public SectionDeleteDto toSectionDeleteDto(long id) {
         return new SectionDeleteDto(id, stationName);
     }
 

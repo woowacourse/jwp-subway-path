@@ -10,13 +10,13 @@ import subway.ui.dto.section.SectionResponse;
 
 public class LineResponse {
 
-    private Long id;
+    private long id;
     private String name;
     private String color;
     @JsonProperty("sections")
     private List<SectionResponse> sectionResponses;
 
-    public LineResponse(Long id, String name, String color, List<SectionResponse> sectionResponses) {
+    public LineResponse(long id, String name, String color, List<SectionResponse> sectionResponses) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -34,7 +34,7 @@ public class LineResponse {
                 .collect(toList());
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

@@ -22,7 +22,7 @@ public class LineRepository {
         this.sectionDao = sectionDao;
     }
 
-    public Line findById(Long id) {
+    public Line findById(long id) {
         Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
         if (optionalLineEntity.isEmpty()) {
             throw new LineNotFoundException();
@@ -38,7 +38,7 @@ public class LineRepository {
                 .collect(Collectors.toList());
     }
 
-    private Sections findSectionsInLine(Long lineId) {
+    private Sections findSectionsInLine(long lineId) {
         List<SectionDto> foundSections = sectionDao.findAllSectionsWithStationNameByLineId(lineId);
         return new Sections(foundSections.stream()
                 .map(SectionDto::toDomain)
@@ -53,7 +53,7 @@ public class LineRepository {
         return lineDao.existsByNameAndColor(line.getColor(), line.getName());
     }
 
-    public Line findByIdWithNoSections(Long id) {
+    public Line findByIdWithNoSections(long id) {
         Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
         if (optionalLineEntity.isEmpty()) {
             throw new LineNotFoundException();

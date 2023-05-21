@@ -29,7 +29,7 @@ public class StationRepository {
         return stationDao.existsByName(station.getName());
     }
 
-    public Long save(Station station) {
+    public long save(Station station) {
         return stationDao.insert(new StationEntity(station.getName()));
     }
 
@@ -51,7 +51,7 @@ public class StationRepository {
         return findById(station.getId());
     }
 
-    public Station findById(Long id) {
+    public Station findById(long id) {
         Optional<StationEntity> optionalStationEntity = stationDao.findById(id);
         if (optionalStationEntity.isEmpty()) {
             throw new StationNotFoundException();

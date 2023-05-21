@@ -17,7 +17,7 @@ public class SectionRepository {
         this.sectionDao = sectionDao;
     }
 
-    public Long save(Long lineId, Section section) {
+    public long save(long lineId, Section section) {
         return sectionDao.insert(new SectionEntity(
                 lineId,
                 section.getStartStationId(),
@@ -30,7 +30,7 @@ public class SectionRepository {
         sectionDao.deleteById(section.getId());
     }
 
-    public Sections findSectionsByLineId(Long lineId) {
+    public Sections findSectionsByLineId(long lineId) {
         return new Sections(sectionDao.findAllSectionsWithStationNameByLineId(lineId)
                 .stream()
                 .map(SectionDto::toDomain)

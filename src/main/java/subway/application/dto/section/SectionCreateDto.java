@@ -1,19 +1,19 @@
 package subway.application.dto.section;
 
 public class SectionCreateDto {
-    private Long lineId;
+    private long lineId;
     private String startStationName;
     private String endStationName;
     private double distance;
 
-    public SectionCreateDto(Long lineId, String startStationName, String endStationName, double distance) {
+    public SectionCreateDto(long lineId, String startStationName, String endStationName, double distance) {
         this.lineId = lineId;
         this.startStationName = startStationName;
         this.endStationName = endStationName;
         this.distance = distance;
     }
 
-    public Long getLineId() {
+    public long getLineId() {
         return lineId;
     }
 

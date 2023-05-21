@@ -3,12 +3,12 @@ package subway.ui.dto.section;
 import subway.domain.Section;
 
 public class SectionResponse {
-    private Long id;
+    private long id;
     private String startStationName;
     private String endStationName;
     private double distance;
 
-    public SectionResponse(Long id, String startStationName, String endStationName, double distance) {
+    public SectionResponse(long id, String startStationName, String endStationName, double distance) {
         this.id = id;
         this.startStationName = startStationName;
         this.endStationName = endStationName;
@@ -35,7 +35,7 @@ public class SectionResponse {
         return distance;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 }

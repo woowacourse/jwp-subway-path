@@ -22,7 +22,7 @@ public class SectionCreateRequest {
         this.distance = distance;
     }
 
-    public SectionCreateDto toSectionCreateDto(Long lineId) {
+    public SectionCreateDto toSectionCreateDto(long lineId) {
         return new SectionCreateDto(lineId, startStationName, endStationName, distance);
     }
 

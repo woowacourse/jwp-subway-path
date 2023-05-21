@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -53,6 +54,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleRequiredParamException(MissingServletRequestParameterException e) {
         String parameterName = e.getParameterName();
         String message = parameterName + "는 비어있을 수 없습니다.";
+        return ResponseEntity.badRequest().body(new ExceptionResponse(message));
+    }
+
+    @ExceptionHandler(MissingPathVariableException.class)
+    public ResponseEntity<ExceptionResponse> handleRequiredPathVariableException(MissingPathVariableException e) {
+        String pathVariableName = e.getVariableName();
+        String message = pathVariableName + "는 비어있을 수 없습니다.";
         return ResponseEntity.badRequest().body(new ExceptionResponse(message));
     }
 }

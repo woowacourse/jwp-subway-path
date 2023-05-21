@@ -16,7 +16,7 @@ public class StationUpdateRequest {
         this.name = name;
     }
 
-    public StationUpdateDto toStationUpdateDto(Long id) {
+    public StationUpdateDto toStationUpdateDto(long id) {
         return new StationUpdateDto(id, name);
     }
 

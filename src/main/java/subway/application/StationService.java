@@ -23,7 +23,7 @@ public class StationService {
         if (stationRepository.isDuplicateStation(station)) {
             throw new IllegalStationException("이미 존재하는 역입니다.");
         }
-        Long savedId = stationRepository.save(station);
+        long savedId = stationRepository.save(station);
         return new Station(savedId, station.getName());
     }
 
@@ -36,7 +36,7 @@ public class StationService {
         return stationRepository.update(new Station(requestedStation.getId(), requestedStation.getName()));
     }
 
-    public void deleteStationById(Long id) {
+    public void deleteStationById(long id) {
         Station station = stationRepository.findById(id);
         stationRepository.delete(station);
     }

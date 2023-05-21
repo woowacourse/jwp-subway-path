@@ -41,7 +41,7 @@ public class LineDao {
         return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 
-    public Optional<LineEntity> findById(Long id) {
+    public Optional<LineEntity> findById(long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, ROW_MAPPER, id));
@@ -60,7 +60,7 @@ public class LineDao {
         jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 }

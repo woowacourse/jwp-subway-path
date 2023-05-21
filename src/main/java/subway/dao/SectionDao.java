@@ -43,12 +43,12 @@ public class SectionDao {
                 section.getDistance(), section.getId());
     }
 
-    public Long countByLineId(Long lineId) {
+    public Long countByLineId(long lineId) {
         String sql = "SELECT count(*) FROM SECTION WHERE line_id = ?";
         return jdbcTemplate.queryForObject(sql, Long.class, lineId);
     }
 
-    public List<SectionDto> findAllSectionsWithStationNameByLineId(Long lineId) {
+    public List<SectionDto> findAllSectionsWithStationNameByLineId(long lineId) {
         String sql = "SELECT section.id AS id, start_station.id AS start_station_id, end_station.id AS end_station_id, "
                 + "start_station.name AS start_station_name, end_station.name AS end_station_name, section.distance FROM section "
                 + "JOIN station AS start_station ON section.start_station_id = start_station.id "
@@ -66,17 +66,17 @@ public class SectionDao {
         return jdbcTemplate.query(sql, SECTION_WITH_NAME_ROW_MAPPER);
     }
 
-    public boolean isStationInLineById(Long lineId, long stationId) {
+    public boolean isStationInLineById(long lineId, long stationId) {
         String sql = "SELECT COUNT(*) FROM SECTION WHERE start_station_id = ? OR end_station_id = ? AND line_id = ? LIMIT 1";
         return jdbcTemplate.queryForObject(sql, Long.class, stationId, stationId, lineId) > 0;
     }
 
-    public boolean isEmptyByLineId(Long lineId) {
+    public boolean isEmptyByLineId(long lineId) {
         String sql = "SELECT COUNT(*) FROM SECTION WHERE line_id = ? LIMIT 1";
         return jdbcTemplate.queryForObject(sql, Long.class, lineId) == 0;
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         String sql = "DELETE FROM SECTION WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
