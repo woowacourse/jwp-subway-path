@@ -198,7 +198,7 @@ class StationIntegrationTest extends IntegrationTest {
     @DisplayName("이미 존재하는 구간을 저장하려고 하면 예외가 발생한다.")
     void postStationInLineTest_fail_duplicateSection() {
         // given
-        StationRequest request = REQUEST_잠실역_TO_강변역;
+        StationRequest request = REQUEST_선릉역_TO_잠실역;
 
         // when
         ExtractableResponse<Response> response =

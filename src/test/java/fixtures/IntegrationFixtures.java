@@ -27,6 +27,7 @@ public class IntegrationFixtures {
     public static final String STATION_온수역_NAME = "온수역";
     public static final String STATION_철산역_NAME = "철산역";
 
+    public static final int DISTANCE_선릉역_TO_잠실역 = 5;
     public static final int DISTANCE_잠실역_TO_강변역 = 3;
     public static final int DISTANCE_강변역_TO_건대역 = 7;
     public static final int DISTANCE_대림역_TO_선릉역 = 5;
