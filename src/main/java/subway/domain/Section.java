@@ -9,21 +9,26 @@ public class Section {
     private final Station downStation;
     private final int distance;
 
-    public Section(final Station upStation, final Station downStation, final int distance) {
-        validateDifferentUpAndDown(upStation, downStation);
-        validatePositiveDistance(distance);
+    private Section(final Station upStation, final Station downStation, final int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    private void validatePositiveDistance(final int distance) {
+    public static Section of(final Station upStation, final Station downStation, final int distance) {
+        validateDifferentUpAndDown(upStation, downStation);
+        validatePositiveDistance(distance);
+
+        return new Section(upStation, downStation, distance);
+    }
+
+    private static void validatePositiveDistance(final int distance) {
         if (distance <= 0) {
             throw new InvalidException(ErrorMessage.INVALID_NOT_POSITIVE_DISTANCE);
         }
     }
 
-    private void validateDifferentUpAndDown(final Station upStation, final Station downStation) {
+    private static void validateDifferentUpAndDown(final Station upStation, final Station downStation) {
         if (upStation.getId() == null || downStation.getId() == null) {
             return;
         }

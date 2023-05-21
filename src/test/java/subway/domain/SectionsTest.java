@@ -19,7 +19,7 @@ class SectionsTest {
     }
 
     private Section 구간을_생성한다(final Station 시작역, final Station 도착역, final int 거리) {
-        return new Section(시작역, 도착역, 거리);
+        return Section.of(시작역, 도착역, 거리);
     }
 
     @Test
@@ -74,7 +74,7 @@ class SectionsTest {
 
         // when
         Station 새로운_도착역 = new Station(4L, "삼성역");
-        Section 새로운_구간 = new Section(세번째_역, 새로운_도착역, 2);
+        Section 새로운_구간 = Section.of(세번째_역, 새로운_도착역, 2);
         구간들.addSection(새로운_구간);
 
         // expected
@@ -96,7 +96,7 @@ class SectionsTest {
 
         Sections 구간들 = Sections.from(List.of(첫번째_구간, 두번째_구간));
 
-        Section 새로운_구간 = new Section(첫번째_역, 세번째_역, 5);
+        Section 새로운_구간 = Section.of(첫번째_역, 세번째_역, 5);
 
         // expected
         assertThatThrownBy(() -> 구간들.addSection(새로운_구간))
@@ -117,7 +117,7 @@ class SectionsTest {
         Sections 구간들 = Sections.from(List.of(첫번째_구간, 두번째_구간));
 
         Station 새로운_상행_종점_역 = new Station(4L, "새로운상행종점역");
-        Section 새로운_구간 = new Section(새로운_상행_종점_역, 첫번째_역, 10);
+        Section 새로운_구간 = Section.of(새로운_상행_종점_역, 첫번째_역, 10);
 
         // when
         구간들.addSection(새로운_구간);
@@ -139,7 +139,7 @@ class SectionsTest {
         Sections 구간들 = Sections.from(List.of(첫번째_구간, 두번째_구간));
 
         Station 새로운_하행_종점_역 = new Station(4L, "베로역");
-        Section 새로운_구간 = new Section(세번째_역, 새로운_하행_종점_역, 10);
+        Section 새로운_구간 = Section.of(세번째_역, 새로운_하행_종점_역, 10);
 
         // when
         구간들.addSection(새로운_구간);

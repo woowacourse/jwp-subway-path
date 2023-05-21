@@ -55,7 +55,7 @@ class SectionRepositoryTest {
         Station ID가_있는_시작역 = new Station(시작역_ID, 시작역.getName());
         Station ID가_있는_도착역 = new Station(도착역_ID, 도착역.getName());
 
-        Section 구간 = new Section(ID가_있는_시작역, ID가_있는_도착역, 20);
+        Section 구간 = Section.of(ID가_있는_시작역, ID가_있는_도착역, 20);
 
         // when
         sectionRepository.save(노선_ID, 구간);
@@ -78,7 +78,7 @@ class SectionRepositoryTest {
         Station ID가_있는_시작역 = new Station(시작역_ID, 시작역.getName());
         Station ID가_있는_도착역 = new Station(도착역_ID, 도착역.getName());
 
-        Section 구간 = new Section(ID가_있는_시작역, ID가_있는_도착역, 20);
+        Section 구간 = Section.of(ID가_있는_시작역, ID가_있는_도착역, 20);
         sectionRepository.save(노선_ID, 구간);
 
         // then
@@ -100,7 +100,7 @@ class SectionRepositoryTest {
         Station ID가_있는_시작역 = new Station(시작역_ID, 시작역.getName());
         Station ID가_있는_도착역 = new Station(도착역_ID, 도착역.getName());
 
-        Section 구간 = new Section(ID가_있는_시작역, ID가_있는_도착역, 20);
+        Section 구간 = Section.of(ID가_있는_시작역, ID가_있는_도착역, 20);
         sectionRepository.save(노선_ID, 구간);
 
         // then
@@ -120,7 +120,7 @@ class SectionRepositoryTest {
         Station ID가_있는_시작역 = new Station(시작역_ID, 시작역.getName());
         Station ID가_있는_도착역 = new Station(도착역_ID, 도착역.getName());
 
-        Section 구간 = new Section(ID가_있는_시작역, ID가_있는_도착역, 20);
+        Section 구간 = Section.of(ID가_있는_시작역, ID가_있는_도착역, 20);
 
         // then
         assertThatThrownBy(() -> sectionRepository.delete(노선_ID, 구간))
@@ -141,7 +141,7 @@ class SectionRepositoryTest {
         Station ID가_있는_시작역 = new Station(시작역_ID, 시작역.getName());
         Station ID가_있는_도착역 = new Station(도착역_ID, 도착역.getName());
 
-        Section 구간 = new Section(ID가_있는_시작역, ID가_있는_도착역, 20);
+        Section 구간 = Section.of(ID가_있는_시작역, ID가_있는_도착역, 20);
         sectionRepository.save(노선_ID, 구간);
 
         // when

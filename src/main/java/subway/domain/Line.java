@@ -28,7 +28,7 @@ public class Line {
     }
 
     public void addSection(final Station upStation, final Station downStation, final int distance) {
-        Section newSection = new Section(upStation, downStation, distance);
+        Section newSection = Section.of(upStation, downStation, distance);
         sections.addSection(newSection);
     }
 

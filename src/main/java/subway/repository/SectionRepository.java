@@ -44,7 +44,7 @@ public class SectionRepository {
         StationEntity downStationEntity = stationDao.findById(sectionEntity.getDownStationId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_STATION));
 
-        return new Section(
+        return Section.of(
                 new Station(upStationEntity.getId(), upStationEntity.getName()),
                 new Station(downStationEntity.getId(), downStationEntity.getName()),
                 sectionEntity.getDistance()
