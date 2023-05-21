@@ -29,7 +29,7 @@ public class LineService {
         this.stationDao = stationDao;
     }
 
-    public LineResponse addLine(LineCreateRequest request) {
+    public LineResponse saveLine(LineCreateRequest request) {
         StationRequest stationRequest = request.getStationRequest();
 
         StationEntity stationEntity = stationDao.findByName(stationRequest.getName())
@@ -153,11 +153,8 @@ public class LineService {
         LineEntity lineEntity = lineDao.findLineEntityById(id)
                 .orElseThrow(() -> new IllegalArgumentException("찾고자하는 id에 해당하는 LineResponse를 생성할 수 없습니다."));
 
-
-        //TODO: Line의 station들 LineDao로 받아오기
         List<StationEntity> allStations = lineDao.findAllStationsById(id);
 
-        //TODO: Line의 head_station을 기준으로 next 타고가면서 list에 추가하기
         List<String> stationsNamesInOrder = new ArrayList<>();
         Long targetId = lineEntity.getHeadStationId();
 
@@ -170,7 +167,6 @@ public class LineService {
             }
         }
 
-        //TODO: Line의 Stations조회 전용 LineResponse생성?
         return new LineResponse(id, lineEntity.getName(), lineEntity.getColor(), stationsNamesInOrder);
     }
 

@@ -18,7 +18,6 @@ import subway.dto.LineResponse;
 import subway.dto.StationRequest;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
-import subway.service.LineService;
 
 import java.sql.SQLException;
 
@@ -27,8 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
 
-    @Autowired
-    private LineService lineService;
     @Autowired
     private LineDao lineDao;
     @Autowired
@@ -211,7 +208,6 @@ public class LineIntegrationTest extends IntegrationTest {
         stationDao.insert(nextStation);
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
-        //lineDao.insert(new LineEntity(1L, lineRequest1.getName(), lineRequest1.getColor(), 1L));
 
         ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
