@@ -1,5 +1,6 @@
 package subway.controller;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.application.StationService;
 import subway.controller.dto.StationRequest;
 import subway.controller.dto.StationResponse;
+import subway.exception.StationNotFoundException;
 
 @WebMvcTest(controllers = StationController.class)
 class StationControllerTest {
@@ -57,6 +59,7 @@ class StationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(containsString("역 이름은 빈 값이 될 수 없습니다.")))
                 .andDo(print());
     }
 
@@ -80,10 +83,24 @@ class StationControllerTest {
         given(stationService.findStationResponseById(any()))
                 .willReturn(new StationResponse(1L, "서울역"));
 
-        mockMvc.perform(get("/stations")
+        mockMvc.perform(get("/stations/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("ID에 해당하는 역이 없으면 NOT FOUND를 반환한다.")
+    void findStationFail() throws Exception {
+        given(stationService.findStationResponseById(any()))
+                .willThrow(new StationNotFoundException("일치하는 역이 존재하지 않습니다."));
+
+        mockMvc.perform(get("/stations/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value(containsString("일치하는 역이 존재하지 않습니다.")))
                 .andDo(print());
     }
 

@@ -1,5 +1,6 @@
 package subway.controller;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -60,6 +61,7 @@ class LineControllerTest {
                         .content(objectMapper.writeValueAsString(new LineRequest("")))
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(containsString("노선 이름은 빈 값이 될 수 없습니다.")))
                 .andDo(print());
     }
 
@@ -130,7 +132,9 @@ class LineControllerTest {
                         .content(objectMapper.writeValueAsString(new SectionCreateRequest("", "", 10)))
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().isBadRequest()).andDo(print());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(containsString("역 이름은 빈 값이 될 수 없습니다.")))
+                .andDo(print());
     }
 
     @Test
@@ -157,6 +161,7 @@ class LineControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(containsString("역 이름은 빈 값이 될 수 없습니다.")))
                 .andDo(print());
     }
 }
