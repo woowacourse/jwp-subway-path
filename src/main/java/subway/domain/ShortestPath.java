@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ShortestPath {
@@ -13,14 +14,11 @@ public class ShortestPath {
     }
 
     public List<Station> getPath() {
-        return path;
+        return Collections.unmodifiableList(path);
     }
 
     public int getDistance() {
         return distance;
     }
 
-    public int getFare() {
-        return 0;
-    }
 }
