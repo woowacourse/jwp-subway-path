@@ -68,7 +68,7 @@ public class Sections {
 
     private void validateSameDirection(final Section otherSection) {
         boolean isSameDirection = sections.stream()
-                .anyMatch(section -> section.isSameDirection(otherSection));
+                .anyMatch(section -> section.isSameDirection(otherSection) && section.isSameLine(otherSection));
 
         if (isSameDirection) {
             throw new IllegalAddSectionException("이미 같은 방향인 Section이 존재합니다.");
