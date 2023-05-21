@@ -35,7 +35,7 @@ public class LineController {
         final List<Line> lines = lineQueryService.searchLines(lineName);
 
         return lines.stream()
-                    .map(line -> new LineResponse(line.getName(), mapToSectionResponseFrom(line)))
+                    .map(line -> new LineResponse(line.getName(), mapToSectionResponseFrom(line), line.getId()))
                     .collect(Collectors.toList());
     }
 
@@ -43,7 +43,7 @@ public class LineController {
     public LineResponse showLines(@PathVariable("line-id") Long lineId) {
         final Line line = lineQueryService.searchByLineId(lineId);
 
-        return new LineResponse(line.getName(), mapToSectionResponseFrom(line));
+        return new LineResponse(line.getName(), mapToSectionResponseFrom(line), line.getId());
     }
 
     @PostMapping("/lines")
@@ -53,7 +53,7 @@ public class LineController {
 
         final Line line = lineQueryService.searchByLineName(registerLineRequest.getLineName());
 
-        return new LineResponse(line.getName(), mapToSectionResponseFrom(line));
+        return new LineResponse(line.getName(), mapToSectionResponseFrom(line), line.getId());
     }
 
     private List<SectionResponse> mapToSectionResponseFrom(final Line line) {
