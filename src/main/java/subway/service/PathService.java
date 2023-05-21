@@ -2,12 +2,12 @@ package subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.FareCalculator;
 import subway.domain.Line;
 import subway.domain.Navigation;
+import subway.domain.SubwayNavigation;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.SubwayFareCalculator;
@@ -34,10 +34,10 @@ public class PathService {
                 .map(Line::getSections)
                 .collect(Collectors.toList());
 
-        final Navigation navigation = Navigation.from(sections);
-        final List<Station> stations = navigation.getShortestPath(source, target);
+        final Navigation subwayNavigation = SubwayNavigation.from(sections);
+        final List<Station> stations = subwayNavigation.getShortestPath(source, target);
 
-        final int distance = navigation.getDistance(source, target);
+        final int distance = subwayNavigation.getDistance(source, target);
         final FareCalculator fareCalculator = new SubwayFareCalculator();
 
         return PathResponse.from(fareCalculator.calculate(distance), distance, stations);

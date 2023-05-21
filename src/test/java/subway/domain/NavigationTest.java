@@ -1,21 +1,14 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 import java.util.List;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import subway.controller.exception.StationNotFoundException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -28,7 +21,7 @@ class NavigationTest {
         final Section firstSection = new Section("잠실역", "석촌역", 2);
         final Section secondSection = new Section("석촌역", "송파역", 2);
         final Section thirdSection = new Section("송파역", "가락시장역", 10);
-        final Navigation navigation = Navigation.from(List.of(
+        final SubwayNavigation navigation = SubwayNavigation.from(List.of(
                 new Sections(List.of(firstSection, secondSection, thirdSection)))
         );
 
@@ -42,7 +35,7 @@ class NavigationTest {
     @Test
     void 출발역이_노선에_존재하지_않을_경우_예외가_발생한다() {
         // given
-        final Navigation navigation = Navigation.from(Collections.emptyList());
+        final SubwayNavigation navigation = SubwayNavigation.from(Collections.emptyList());
 
         // expect
         assertThatThrownBy(() -> navigation.getShortestPath(new Station("잠실역"), new Station("석촌역")))
@@ -54,7 +47,7 @@ class NavigationTest {
     void 도착역이_노선에서_존재하지_않는_경우_예외가_발생한다() {
         // given
         final Section sections = new Section("잠실역", "석촌역", 2);
-        final Navigation navigation = Navigation.from(List.of(
+        final SubwayNavigation navigation = SubwayNavigation.from(List.of(
                 new Sections(List.of(sections)))
         );
 
@@ -70,7 +63,7 @@ class NavigationTest {
         final Section firstSection = new Section("잠실역", "석촌역", 2);
         final Section secondSection = new Section("석촌역", "송파역", 2);
         final Section thirdSection = new Section("송파역", "가락시장역", 10);
-        final Navigation navigation = Navigation.from(List.of(
+        final SubwayNavigation navigation = SubwayNavigation.from(List.of(
                 new Sections(List.of(firstSection, secondSection, thirdSection)))
         );
 
