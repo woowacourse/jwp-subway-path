@@ -37,7 +37,7 @@ public class LineController {
     }
 
     @GetMapping("/{lineId}")
-    public ResponseEntity<LineStationsResponse> findStations(@PathVariable long lineId) {
+    public ResponseEntity<LineStationsResponse> findStations(@PathVariable Long lineId) {
         List<StationResponse> stationsByLine = lineService.findStationsByLine(lineId);
         List<StationWebResponse> stations = stationsByLine.stream()
                 .map(stationResponse -> new StationWebResponse(stationResponse.getId(), stationResponse.getName()))
