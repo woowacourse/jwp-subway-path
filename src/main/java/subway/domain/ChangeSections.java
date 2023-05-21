@@ -4,17 +4,18 @@ public class ChangeSections {
 
     private final ChangeSectionStatus status;
     private Section updateSection;
-    private Section newSection;
+    private Section insertOrRemoveSection;
 
-    private ChangeSections(final ChangeSectionStatus status, final Section updateSection, final Section newSection) {
+    private ChangeSections(final ChangeSectionStatus status, final Section updateSection,
+                           final Section insertOrRemoveSection) {
         this.status = status;
         this.updateSection = updateSection;
-        this.newSection = newSection;
+        this.insertOrRemoveSection = insertOrRemoveSection;
     }
 
-    public ChangeSections(final ChangeSectionStatus status, final Section newSection) {
+    public ChangeSections(final ChangeSectionStatus status, final Section insertOrRemoveSection) {
         this.status = status;
-        this.newSection = newSection;
+        this.insertOrRemoveSection = insertOrRemoveSection;
     }
 
     public static ChangeSections makeChangeSectionsForUpdateSectionsByStatus(final ChangeSectionStatus status,
@@ -36,8 +37,8 @@ public class ChangeSections {
         return updateSection;
     }
 
-    public Section getNewSection() {
-        return newSection;
+    public Section getInsertOrRemoveSection() {
+        return insertOrRemoveSection;
     }
 
 }

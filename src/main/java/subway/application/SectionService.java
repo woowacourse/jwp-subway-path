@@ -51,7 +51,7 @@ public class SectionService {
             SectionEntity updateSectionEntity = makeSectionEntity(lineId, sectionsForUpdate.getUpdateSection());
             sectionDao.update(updateSectionEntity);
         }
-        SectionEntity newSectionEntity = makeSectionEntity(lineId, sectionsForUpdate.getNewSection());
+        SectionEntity newSectionEntity = makeSectionEntity(lineId, sectionsForUpdate.getInsertOrRemoveSection());
         sectionDao.insert(newSectionEntity);
     }
 
@@ -94,7 +94,7 @@ public class SectionService {
             SectionEntity updateSectionEntity = makeSectionEntity(lineId, sectionsForRemove.getUpdateSection());
             sectionDao.update(updateSectionEntity);
         }
-        SectionEntity removeSectionEntity = makeSectionEntity(lineId, sectionsForRemove.getNewSection());
+        SectionEntity removeSectionEntity = makeSectionEntity(lineId, sectionsForRemove.getInsertOrRemoveSection());
         sectionDao.delete(removeSectionEntity);
     }
 
