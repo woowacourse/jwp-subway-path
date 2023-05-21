@@ -14,8 +14,10 @@ import subway.domain.Sections;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
+import subway.dto.SectionResponse;
 import subway.dto.StationResponse;
 import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
 
 @Service
 @Transactional
@@ -48,7 +50,9 @@ public class LineService {
     public LineStationResponse findById(final Long id) {
         final LineEntity lineEntity = lineDao.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(NO_SUCH_ID_MESSAGE));
-        final List<Section> sections = sectionDao.findByLineId(id).stream()
+        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
+
+        final List<Section> sections = sectionEntities.stream()
                 .map(it -> it.toDomain(
                         stationDao.findById(it.getUpStationId()).orElseThrow(NoSuchElementException::new).toDomain(),
                         stationDao.findById(it.getDownStationId()).orElseThrow(NoSuchElementException::new).toDomain()
@@ -58,7 +62,10 @@ public class LineService {
         final List<StationResponse> stationResponses = line.sortStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return LineStationResponse.from(LineResponse.of(lineEntity), stationResponses);
+        final List<SectionResponse> sectionResponses = sectionEntities.stream()
+                .map(SectionResponse::of)
+                .collect(Collectors.toList());
+        return LineStationResponse.from(LineResponse.of(lineEntity), stationResponses, sectionResponses);
     }
 
     public void update(final Long id, final LineRequest lineUpdateRequest) {

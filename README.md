@@ -150,6 +150,13 @@ HTTP/1.1 200 OK
                 "id": 2,
                 "name": "동대구역"
             }
+        ],
+        "sectionResponses": [
+            {
+                "upStationId": 1,
+                "downStationId": 2,
+                "distance": 10
+            }
         ]
     },
     {
@@ -166,6 +173,13 @@ HTTP/1.1 200 OK
             {
                 "id": 4,
                 "name": "죽전역"
+            }
+        ],
+        "sectionResponses": [
+            {
+                "upStationId": 3,
+                "downStationId": 4,
+                "distance": 10
             }
         ]
     }
@@ -200,6 +214,13 @@ HTTP/1.1 200 OK
         {
             "id": 2,
             "name": "동대구역"
+        }
+    ],
+    "sectionResponses": [
+        {
+            "upStationId": 1,
+            "downStationId": 2,
+            "distance": 10
         }
     ]
 }
@@ -360,7 +381,7 @@ HTTP/1.1 204 No Content
 
 - [x] `toEntity()` 메서드 이름 변경
 - [ ] DB 접근 최소화
-- [ ] Line 조회에 Section 정보를 포함하도록 수정
+- [x] Line 조회에 Section 정보를 포함하도록 수정
 - [ ] repository를 이용해 persistence layer와 서비스 로직 분리
 
 ### 1. DB 설정
