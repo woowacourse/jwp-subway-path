@@ -1,8 +1,5 @@
 package subway.domain.fare;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class FareCalculator {
 
     private final FarePolicy farePolicy;

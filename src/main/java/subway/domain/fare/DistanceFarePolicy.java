@@ -1,8 +1,5 @@
 package subway.domain.fare;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class DistanceFarePolicy implements FarePolicy {
 
     private static final int BASIC_FARE = 1250;
