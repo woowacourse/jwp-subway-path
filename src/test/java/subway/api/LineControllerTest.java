@@ -11,16 +11,19 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.domain.line.controller.LineController;
+import subway.domain.line.domain.Line;
 import subway.domain.line.dto.LineRequest;
-import subway.domain.line.dto.SectionRequest;
+import subway.domain.line.dto.StationRegisterRequest;
 import subway.domain.line.entity.LineEntity;
 import subway.domain.line.entity.SectionEntity;
+import subway.domain.line.entity.StationEntity;
 import subway.domain.line.service.LineService;
 import subway.domain.line.service.SectionService;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -56,7 +59,7 @@ public class LineControllerTest {
                 .andDo(document("line-create",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
-                        ));
+                ));
     }
 
     @Test
@@ -80,16 +83,16 @@ public class LineControllerTest {
                 .andDo(document("line-delete",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
-                        ));
+                ));
     }
 
     @Test
     void addStation() throws Exception {
-        SectionRequest section = new SectionRequest(1L, 2L, 1L, 5);
+        StationRegisterRequest section = new StationRegisterRequest(2L, 1L, 5);
 
-        when(sectionService.createSection(any())).thenReturn(List.of(new SectionEntity(1L, 1L, 1L, 2L, 5)));
+        when(sectionService.createSection(any(), any())).thenReturn(List.of(new SectionEntity(1L, 1L, 1L, 2L, 5)));
 
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/line/{lineId}",1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/line/{lineId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(section)))
                 .andExpect(status().isCreated())
@@ -101,9 +104,50 @@ public class LineControllerTest {
 
     @Test
     void deleteStation() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/line/{lineId}/station/{stationId}",1L,2L))
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/line/{lineId}/station/{stationId}", 1L, 2L))
                 .andExpect(status().isNoContent())
                 .andDo(document("line-delete-station",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
+    }
+
+    @Test
+    void findLineById() throws Exception {
+        Line line = new Line(1L, "2호선", "초록색", List.of(
+                new StationEntity(1L, "신림역"),
+                new StationEntity(2L, "봉천역"),
+                new StationEntity(2L, "서울대입구역")
+        ));
+
+        when(lineService.findLineById(anyLong())).thenReturn(line);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/line/{lineId}", 1L))
+                .andExpect(status().isOk())
+                .andDo(document("path-get-line",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
+    }
+
+    @Test
+    void findAllLine() throws Exception {
+        List<Line> line = List.of(new Line(1L, "2호선", "초록색", List.of(
+                        new StationEntity(1L, "신림역"),
+                        new StationEntity(2L, "봉천역"),
+                        new StationEntity(2L, "서울대입구역")
+                )),
+                new Line(1L, "2호선", "초록색", List.of(
+                        new StationEntity(1L, "신림역"),
+                        new StationEntity(2L, "봉천역"),
+                        new StationEntity(2L, "서울대입구역")
+                )));
+
+        when(lineService.findAllLine()).thenReturn(line);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/line"))
+                .andExpect(status().isOk())
+                .andDo(document("path-get-all-line",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
                 ));

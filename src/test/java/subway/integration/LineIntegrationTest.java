@@ -7,18 +7,26 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import subway.domain.line.domain.Line;
 import subway.domain.line.dto.LineRequest;
-import subway.domain.line.dto.SectionRequest;
 import subway.domain.line.dto.SectionResponse;
+import subway.domain.line.dto.StationRegisterRequest;
+import subway.domain.line.entity.StationEntity;
+import subway.domain.line.service.LineService;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
+
+    @Autowired
+    private LineService lineService;
 
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
@@ -127,13 +135,13 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("노선에 역을 등록한다.")
     @Test
     void createSection() {
-        SectionRequest sectionRequest = new SectionRequest(1L,8L, 2L, 3);
+        StationRegisterRequest stationRegisterRequest = new StationRegisterRequest(8L, 2L, 3);
 
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
+                .body(stationRegisterRequest)
                 .when().post("/line/{lineId}", 1L)
                 .then().log().all()
                 .extract();
@@ -155,11 +163,31 @@ public class LineIntegrationTest extends IntegrationTest {
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .when().delete("/line/{lineId}/station/{stationId}",1L,1L)
+                .when().delete("/line/{lineId}/station/{stationId}", 1L, 1L)
                 .then().log().all()
                 .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 한_라인_노선도_조회() {
+        Line line = lineService.findLineById(1L);
+
+        List<StationEntity> stations = line.getStations();
+
+        assertAll(
+                () -> org.assertj.core.api.Assertions.assertThat(stations).containsExactly(
+                        new StationEntity(1L, "신림역"),
+                        new StationEntity(2L, "봉천역"),
+                        new StationEntity(3L, "서울대입구역"),
+                        new StationEntity(4L, "낙성대역"),
+                        new StationEntity(5L, "사당역"),
+                        new StationEntity(6L, "방배역"),
+                        new StationEntity(7L, "서초역")
+                ),
+                () -> org.assertj.core.api.Assertions.assertThat(line.getId()).isEqualTo(1L)
+        );
     }
 }

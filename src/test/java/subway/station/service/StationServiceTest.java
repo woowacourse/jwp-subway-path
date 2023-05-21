@@ -8,10 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.station.dao.StationDao;
-import subway.domain.station.dto.StationRequest;
-import subway.domain.station.entity.StationEntity;
-import subway.domain.station.service.StationService;
+import subway.domain.line.dao.StationDao;
+import subway.domain.line.dto.StationCreateRequest;
+import subway.domain.line.entity.StationEntity;
+import subway.domain.line.service.StationService;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -61,7 +61,7 @@ class StationServiceTest {
         given(stationDao.findById(anyLong())).willReturn(Optional.of(new StationEntity(1L, null)));
 
         //when
-        stationService.updateStation(anyLong(), new StationRequest("동대구역"));
+        stationService.updateStation(anyLong(), new StationCreateRequest("동대구역"));
 
         //then
         verify(stationDao).update(any(StationEntity.class));
@@ -82,12 +82,12 @@ class StationServiceTest {
     @Test
     void 노선_정보를_추가_테스트() {
         //given
-        StationRequest stationRequest = new StationRequest("상인역");
-        given(stationDao.findByName(stationRequest.getName())).willReturn(Optional.empty());
+        StationCreateRequest stationCreateRequest = new StationCreateRequest("상인역");
+        given(stationDao.findByName(stationCreateRequest.getName())).willReturn(Optional.empty());
         StationEntity stationEntity = new StationEntity("상인역");
         given(stationDao.insert(stationEntity)).willReturn(stationEntity);
         //when
-        StationEntity saveStationEntity = stationService.saveStation(stationRequest);
+        StationEntity saveStationEntity = stationService.saveStation(stationCreateRequest);
 
         //then
         verify(stationDao).insert(any());
@@ -99,11 +99,11 @@ class StationServiceTest {
     @Test
     void 노선_정보를_추가할_때_중복된_이름의_노선이_존재하면_예외_발생() {
         //given
-        StationRequest stationRequest = new StationRequest("상인역");
-        given(stationDao.findByName(stationRequest.getName())).willReturn(Optional.of(new StationEntity(stationRequest.getName())));
+        StationCreateRequest stationCreateRequest = new StationCreateRequest("상인역");
+        given(stationDao.findByName(stationCreateRequest.getName())).willReturn(Optional.of(new StationEntity(stationCreateRequest.getName())));
 
         //then
-        assertThatThrownBy(() -> stationService.saveStation(stationRequest))
+        assertThatThrownBy(() -> stationService.saveStation(stationCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("역 이름이 이미 존재합니다. 유일한 역 이름을 사용해주세요.");
     }

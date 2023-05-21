@@ -1,6 +1,5 @@
 package subway.line.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.line.dao.LineDao;
 import subway.domain.line.dto.LineRequest;
-import subway.domain.line.dto.LineResponse;
 import subway.domain.line.entity.LineEntity;
 import subway.domain.line.service.LineService;
 
@@ -47,18 +45,6 @@ class LineServiceTest {
     }
 
     @Test
-    void 단일_노선_정보_조회_성공_테스트() {
-        //given
-        given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(1L, null, null)));
-
-        // when
-        lineService.findLineById(anyLong());
-
-        // then
-        verify(lineDao).findById(anyLong());
-    }
-
-    @Test
     void 노선_정보_삭제_테스트() {
         //given
         given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(1L, null, null)));
@@ -83,24 +69,6 @@ class LineServiceTest {
 
         // then
         verify(lineDao).update(any(LineEntity.class));
-    }
-
-    @Test
-    void 노선_정보를_추가_테스트() {
-        //given
-        LineRequest lineRequest = new LineRequest("2호선", "초록색");
-        given(lineDao.findByName(lineRequest.getName())).willReturn(Optional.empty());
-        LineEntity lineEntity = new LineEntity(lineRequest.getName(), lineRequest.getColor());
-        given(lineDao.insert(lineEntity)).willReturn(lineEntity);
-        //when
-        LineEntity savelineEntity = lineService.saveLine(lineRequest);
-        LineResponse lineResponse = LineResponse.of(savelineEntity);
-
-        //then
-        verify(lineDao).insert(any());
-        Assertions.assertThat(lineResponse).usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(lineEntity);
     }
 
     @Test

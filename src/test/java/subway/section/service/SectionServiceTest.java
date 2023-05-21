@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.line.dao.SectionDao;
-import subway.domain.line.dto.SectionRequest;
+import subway.domain.line.dto.StationRegisterRequest;
 import subway.domain.line.entity.SectionEntity;
 import subway.domain.line.service.SectionService;
 
@@ -92,8 +92,8 @@ public class SectionServiceTest {
     @DisplayName("첫번째 역 앞에 역 추가")
     @Test
     void 첫번째_역_앞에_역_추가() {
-        SectionRequest request = new SectionRequest(1L, 1L, 8L, 5);
-        final List<SectionEntity> sectionEntities = sectionService.createSection(request);
+        StationRegisterRequest request = new StationRegisterRequest(1L, 8L, 5);
+        final List<SectionEntity> sectionEntities = sectionService.createSection(1L, request);
         assertThat(sectionEntities.get(0)).usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(new SectionEntity(null, 1L, 1L, 8L, 5));
@@ -102,8 +102,8 @@ public class SectionServiceTest {
     @DisplayName("마지막 역 뒤에 역 추가")
     @Test
     void 마지막_역_뒤에_역_추가() {
-        SectionRequest request = new SectionRequest(1L, 8L, 7L, 5);
-        final List<SectionEntity> sectionEntities = sectionService.createSection(request);
+        StationRegisterRequest request = new StationRegisterRequest(8L, 7L, 5);
+        final List<SectionEntity> sectionEntities = sectionService.createSection(1L, request);
         assertThat(sectionEntities.get(0)).usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(new SectionEntity(null, 1L, 8L, 7L, 5));
@@ -112,8 +112,8 @@ public class SectionServiceTest {
     @DisplayName("역 중간에 역 추가")
     @Test
     void 역_중간에_역_추가() {
-        SectionRequest request = new SectionRequest(1L, 2L, 8L, 3);
-        final List<SectionEntity> sections = sectionService.createSection(request);
+        StationRegisterRequest request = new StationRegisterRequest(2L, 8L, 3);
+        final List<SectionEntity> sections = sectionService.createSection(1L, request);
 
         assertThat(sections.get(0)).usingRecursiveComparison()
                 .ignoringFields("id")
@@ -126,8 +126,8 @@ public class SectionServiceTest {
     @DisplayName("역 중간에 역 추가2")
     @Test
     void 역_중간에_역_추가2() {
-        SectionRequest request = new SectionRequest(1L, 8L, 3L, 3);
-        final List<SectionEntity> sections = sectionService.createSection(request);
+        StationRegisterRequest request = new StationRegisterRequest(8L, 3L, 3);
+        final List<SectionEntity> sections = sectionService.createSection(1L, request);
 
         assertThat(sections.get(1)).usingRecursiveComparison()
                 .ignoringFields("id")
@@ -140,8 +140,8 @@ public class SectionServiceTest {
     @DisplayName("역 중간에 역 추가2")
     @Test
     void 역_중간에_역_추가3() {
-        SectionRequest request = new SectionRequest(1L, 9L, 5L, 3);
-        final List<SectionEntity> sections = sectionService.createSection(request);
+        StationRegisterRequest request = new StationRegisterRequest(9L, 5L, 3);
+        final List<SectionEntity> sections = sectionService.createSection(1L, request);
 
         assertThat(sections.get(1)).usingRecursiveComparison()
                 .ignoringFields("id")

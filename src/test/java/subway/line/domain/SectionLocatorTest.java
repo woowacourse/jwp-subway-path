@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.line.domain.SectionLocator;
 import subway.domain.line.entity.SectionEntity;
-import subway.domain.station.entity.StationEntity;
+import subway.domain.line.entity.StationEntity;
 
 import java.util.List;
 

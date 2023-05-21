@@ -7,9 +7,8 @@ import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.domain.line.dto.LineResponse;
-import subway.domain.path.dto.LinePathResponse;
+import subway.domain.line.dto.StationResponse;
 import subway.domain.path.dto.PathResponse;
-import subway.domain.station.dto.StationResponse;
 
 import java.util.List;
 
@@ -28,17 +27,17 @@ class PathIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/path/line/{lineId}", 1L)
+                .when().get("/line/{lineId}", 1L)
                 .then().log().all()
                 .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        final LinePathResponse linePathResponse = response.jsonPath().getObject("data.", LinePathResponse.class);
+        final LineResponse lineResponse = response.jsonPath().getObject("data.", LineResponse.class);
 
-        assertThat(linePathResponse.getLineDetail()).isEqualTo(new LineResponse(1L, "2호선", "초록색"));
-        assertThat(linePathResponse.getStations()).containsExactly(
+        assertThat(lineResponse.getId()).isEqualTo(1L);
+        assertThat(lineResponse.getStationResponses()).containsExactly(
                 new StationResponse(1L, "신림역"),
                 new StationResponse(2L, "봉천역"),
                 new StationResponse(3L, "서울대입구역"),
@@ -56,7 +55,7 @@ class PathIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/path/lines")
+                .when().get("/line")
                 .then().log().all()
                 .extract();
 
@@ -64,11 +63,11 @@ class PathIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
 
-        List<LinePathResponse> result = response.jsonPath().getList("data.", LinePathResponse.class);
+        List<LineResponse> result = response.jsonPath().getList("data.", LineResponse.class);
 
         assertAll(
-                () -> assertThat(result.get(0).getLineDetail()).isEqualTo(new LineResponse(1L, "2호선", "초록색")),
-                () -> assertThat(result.get(0).getStations()).containsExactly(
+                () -> assertThat(result.get(0).getId()).isEqualTo(1L),
+                () -> assertThat(result.get(0).getStationResponses()).containsExactly(
                         new StationResponse(1L, "신림역"),
                         new StationResponse(2L, "봉천역"),
                         new StationResponse(3L, "서울대입구역"),
@@ -77,8 +76,8 @@ class PathIntegrationTest extends IntegrationTest {
                         new StationResponse(6L, "방배역"),
                         new StationResponse(7L, "서초역")
                 ),
-                () -> assertThat(result.get(1).getLineDetail()).isEqualTo(new LineResponse(2L, "3호선", "파란색")),
-                () -> assertThat(result.get(1).getStations()).containsExactly(
+                () -> assertThat(result.get(1).getId()).isEqualTo(2L),
+                () -> assertThat(result.get(1).getStationResponses()).containsExactly(
                         new StationResponse(8L, "교대역"),
                         new StationResponse(9L, "강남역"),
                         new StationResponse(4L, "낙성대역"),

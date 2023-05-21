@@ -10,10 +10,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.domain.station.controller.StationController;
-import subway.domain.station.dto.StationRequest;
-import subway.domain.station.entity.StationEntity;
-import subway.domain.station.service.StationService;
+import subway.domain.line.controller.StationController;
+import subway.domain.line.dto.StationCreateRequest;
+import subway.domain.line.entity.StationEntity;
+import subway.domain.line.service.StationService;
 
 import java.util.List;
 
@@ -71,7 +71,7 @@ public class StationControllerTest {
 
     @Test
     void create() throws Exception {
-        StationRequest request = new StationRequest("봉천역");
+        StationCreateRequest request = new StationCreateRequest("봉천역");
         StationEntity station = new StationEntity(1L, "봉천역");
         when(stationService.saveStation(any())).thenReturn(station);
 
@@ -88,7 +88,7 @@ public class StationControllerTest {
 
     @Test
     void update() throws Exception {
-        StationRequest station = new StationRequest("봉천역");
+        StationCreateRequest station = new StationCreateRequest("봉천역");
         mockMvc.perform(RestDocumentationRequestBuilders.put("/stations/{stationId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(station)))
