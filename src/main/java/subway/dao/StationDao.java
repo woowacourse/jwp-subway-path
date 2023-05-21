@@ -30,11 +30,6 @@ public class StationDao {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(stationEntity)).longValue();
     }
 
-    public StationEntity findById(Long id) {
-        final String sql = "SELECT * FROM station WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
     public StationEntity findByName(String name) {
         final String sql = "SELECT * FROM station WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
@@ -43,11 +38,6 @@ public class StationDao {
     public List<StationEntity> findAll() {
         final String sql = "SELECT * FROM station";
         return jdbcTemplate.query(sql, rowMapper);
-    }
-
-    public int deleteByName(String name) {
-        final String sql = "DELETE FROM station WHERE name = ?";
-        return jdbcTemplate.update(sql, name);
     }
 
     public boolean isExisted(String name) {

@@ -6,15 +6,12 @@ import java.util.List;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
 
 @Repository
 public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
             new SectionEntity(
@@ -27,13 +24,6 @@ public class SectionDao {
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("section")
-                .usingGeneratedKeyColumns("id");
-    }
-
-    public Long save(SectionEntity sectionEntity) {
-        return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(sectionEntity)).longValue();
     }
 
     public void batchSave(List<SectionEntity> sectionEntities) {
@@ -60,16 +50,6 @@ public class SectionDao {
     public List<SectionEntity> findByLineId(Long lineId) {
         final String sql = "SELECT * FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
-    }
-
-    public int delete(SectionEntity sectionEntity) {
-        final String sql = "DELETE FROM section WHERE up_station_id = ? AND down_station_id = ? AND line_id = ?";
-        return jdbcTemplate.update(
-                sql,
-                sectionEntity.getUpStationId(),
-                sectionEntity.getDownStationId(),
-                sectionEntity.getLineId()
-        );
     }
 
     public int deleteByLineId(Long lineId) {

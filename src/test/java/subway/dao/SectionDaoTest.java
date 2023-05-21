@@ -29,7 +29,7 @@ class SectionDaoTest {
         SectionEntity sectionEntity = new SectionEntity(1L, 2L, 1L, 10);
 
         // when
-        sectionDao.save(sectionEntity);
+        sectionDao.batchSave(List.of(sectionEntity));
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L);
 
         // then
@@ -56,9 +56,11 @@ class SectionDaoTest {
     @Test
     void findByLineId() {
         // given
-        sectionDao.save(new SectionEntity(1L, 2L, 1L, 10));
-        sectionDao.save(new SectionEntity(2L, 3L, 1L, 20));
-        sectionDao.save(new SectionEntity(3L, 4L, 1L, 30));
+        sectionDao.batchSave(List.of(
+                new SectionEntity(1L, 2L, 1L, 10),
+                new SectionEntity(2L, 3L, 1L, 20),
+                new SectionEntity(3L, 4L, 1L, 30)
+        ));
 
         // when
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L);
@@ -67,25 +69,15 @@ class SectionDaoTest {
         assertThat(sectionEntities).hasSize(3);
     }
 
-    @DisplayName("Section Entity 를 입력받아 일치하는 Section 을 삭제한다.")
-    @Test
-    void deleteByName() {
-        // when
-        SectionEntity sectionEntity = new SectionEntity(1L, 2L, 1L, 10);
-        sectionDao.save(sectionEntity);
-        int deleteRowNumber = sectionDao.delete(sectionEntity);
-
-        // then
-        assertThat(deleteRowNumber).isEqualTo(1);
-    }
-
     @DisplayName("Line id를 입력받아 일치하는 Section 들을 모두 삭제한다.")
     @Test
     void deleteByLineId() {
         // given
-        sectionDao.save(new SectionEntity(1L, 2L, 1L, 10));
-        sectionDao.save(new SectionEntity(2L, 3L, 1L, 20));
-        sectionDao.save(new SectionEntity(3L, 4L, 1L, 30));
+        sectionDao.batchSave(List.of(
+                new SectionEntity(1L, 2L, 1L, 10),
+                new SectionEntity(2L, 3L, 1L, 20),
+                new SectionEntity(3L, 4L, 1L, 30)
+        ));
 
         // when
         int deleteRowNumber = sectionDao.deleteByLineId(1L);

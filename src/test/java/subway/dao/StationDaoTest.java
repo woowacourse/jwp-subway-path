@@ -16,40 +16,30 @@ class StationDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private StationDao stationDao;
-    private Long id;
 
     @BeforeEach
     void setUp() {
         stationDao = new StationDao(jdbcTemplate);
-
-        id = stationDao.save(new StationEntity("잠실역"));
     }
 
-    @DisplayName("저장한다.")
+    @DisplayName("Station을 저장한다.")
     @Test
     void save() {
         // when
-        Long newId = stationDao.save(new StationEntity("잠실새내역"));
+        Long id = stationDao.save(new StationEntity("잠실새내역"));
 
         // then
-        assertThat(newId).isEqualTo(id + 1);
-    }
-
-    @DisplayName("Station id를 입력받아 해당하는 Station Entity 를 반환한다.")
-    @Test
-    void findById() {
-        // when
-        StationEntity newStationEntity = stationDao.findById(id);
-
-        // then
-        assertThat(newStationEntity.getId()).isEqualTo(id);
+        assertThat(stationDao.findByName("잠실새내역").getId()).isEqualTo(id);
     }
 
     @DisplayName("Station 이름을 입력받아 해당하는 Station Entity 를 반환한다.")
     @Test
     void findByName() {
+        // given
+        Long id = stationDao.save(new StationEntity("잠실새내역"));
+
         // when
-        StationEntity newStationEntity = stationDao.findByName("잠실역");
+        StationEntity newStationEntity = stationDao.findByName("잠실새내역");
 
         // then
         assertThat(newStationEntity.getId()).isEqualTo(id);
@@ -67,22 +57,15 @@ class StationDaoTest {
         List<StationEntity> stationEntities = stationDao.findAll();
 
         // then
-        assertThat(stationEntities).hasSize(4);
-    }
-
-    @Test
-    @DisplayName("Station 이름을 입력받아 일치하는 역을 삭제한다.")
-    void deleteByName() {
-        // when
-        int deleteRowNumber = stationDao.deleteByName("잠실역");
-
-        // then
-        assertThat(deleteRowNumber).isEqualTo(1);
+        assertThat(stationEntities).hasSize(3);
     }
 
     @DisplayName("중복되는 이름인지 확인한다.")
     @Test
     void isExisted() {
+        // given
+        stationDao.save(new StationEntity("잠실역"));
+
         // when
         boolean duplicate = stationDao.isExisted("잠실역");
 

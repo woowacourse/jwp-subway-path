@@ -30,11 +30,6 @@ public class LineDao {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(lineEntity)).longValue();
     }
 
-    public LineEntity findByName(String name) {
-        final String sql = "SELECT * FROM line WHERE name = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, name);
-    }
-
     public LineEntity findById(Long id) {
         final String sql = "SELECT * FROM line WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
@@ -43,11 +38,6 @@ public class LineDao {
     public List<LineEntity> findAll() {
         final String sql = "SELECT * FROM line";
         return jdbcTemplate.query(sql, rowMapper);
-    }
-
-    public int deleteById(Long lineId) {
-        final String sql = "DELETE FROM line WHERE id = ?";
-        return jdbcTemplate.update(sql, lineId);
     }
 
     public boolean isExisted(String name) {
