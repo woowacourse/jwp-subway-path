@@ -1,7 +1,5 @@
 package subway.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,8 +19,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
     public GlobalExceptionHandler() {
         super();
     }
@@ -39,11 +35,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private void logInfo(final String message) {
-        log.info(message);
+        logger.info(message);
     }
 
     private void logError(final String message) {
-        log.error(message);
+        logger.error(message);
     }
 
     @Override
@@ -79,6 +75,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     private ResponseEntity<Object> handleException(final Exception ex) {
         logError(ex.getMessage());
-        return errorResponse(ex.getMessage());
+        return errorResponse("예상하지 못한 문제가 발생하였습니다. 관리자에게 문의해주세요.");
     }
 }
