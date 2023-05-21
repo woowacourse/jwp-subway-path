@@ -2,6 +2,7 @@ package subway.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -11,6 +12,7 @@ import subway.domain.Station;
 import subway.entity.StationEntity;
 import subway.entity.vo.SectionVo;
 
+@Component
 public class SectionRepositoryImpl implements SectionRepository {
 
     private final LineDao lineDao;
