@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import subway.adapter.in.web.route.dto.FindShortCutRequest;
 import subway.adapter.out.persistence.repository.LineJdbcRepository;
 import subway.adapter.out.persistence.repository.SectionJdbcRepository;
 import subway.adapter.out.persistence.repository.StationJdbcRepository;
