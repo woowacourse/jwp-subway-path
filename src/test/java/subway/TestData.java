@@ -35,27 +35,27 @@ public class TestData {
     public static final Station 장승배기역 = new Station(17L, "장승배기");
     public static final Station 신풍역 = new Station(18L, "신풍");
 
-    public static final Section 신림선_당곡_신림_3 = new Section(신림선, 당곡역, 신림역, new Distance(3));
-    public static final Section 신림선_보라매병원_당곡_4 = new Section(신림선, 보라매병원역, 당곡역, new Distance(4));
-    public static final Section 신림선_보라매_보라매병원_3 = new Section(신림선, 보라매역, 보라매병원역, new Distance(3));
-    public static final Section 신림선_서울지방병무청_보라매_11 = new Section(신림선, 서울지방병무청역, 보라매역, new Distance(11));
-    public static final Section 신림선_신림_서원_7 = new Section(신림선, 신림역, 서원역, new Distance(7));
+    public static final Section 신림선_당곡_신림_3 = new Section(1L, 신림선, 당곡역, 신림역, new Distance(3));
+    public static final Section 신림선_보라매병원_당곡_4 = new Section(2L, 신림선, 보라매병원역, 당곡역, new Distance(4));
+    public static final Section 신림선_보라매_보라매병원_3 = new Section(3L, 신림선, 보라매역, 보라매병원역, new Distance(3));
+    public static final Section 신림선_서울지방병무청_보라매_11 = new Section(4L, 신림선, 서울지방병무청역, 보라매역, new Distance(11));
+    public static final Section 신림선_신림_서원_7 = new Section(5L, 신림선, 신림역, 서원역, new Distance(7));
 
-    public static final Section _2호선_신림_봉천_7 = new Section(_2호선, 신림역, 봉천역, new Distance(7));
-    public static final Section _2호선_봉천_서울대입구_10 = new Section(_2호선, 봉천역, 서울대입구역, new Distance(10));
-    public static final Section _2호선_서울대입구_사당_6 = new Section(_2호선, 서울대입구역, 사당역, new Distance(6));
-    public static final Section _2호선_사당_방배_9 = new Section(_2호선, 사당역, 방배역, new Distance(9));
+    public static final Section _2호선_신림_봉천_7 = new Section(6L, _2호선, 신림역, 봉천역, new Distance(7));
+    public static final Section _2호선_봉천_서울대입구_10 = new Section(7L, _2호선, 봉천역, 서울대입구역, new Distance(10));
+    public static final Section _2호선_서울대입구_사당_6 = new Section(8L, _2호선, 서울대입구역, 사당역, new Distance(6));
+    public static final Section _2호선_사당_방배_9 = new Section(9L, _2호선, 사당역, 방배역, new Distance(9));
 
-    public static final Section _4호선_총신대입구_사당_5 = new Section(_4호선, 총신대입구역, 사당역, new Distance(5));
-    public static final Section _4호선_동작_총신대입구_5 = new Section(_4호선, 동작역, 총신대입구역, new Distance(5));
-    public static final Section _4호선_사당_남태령_3 = new Section(_4호선, 사당역, 남태령역, new Distance(3));
+    public static final Section _4호선_총신대입구_사당_5 = new Section(10L, _4호선, 총신대입구역, 사당역, new Distance(5));
+    public static final Section _4호선_동작_총신대입구_5 = new Section(11L, _4호선, 동작역, 총신대입구역, new Distance(5));
+    public static final Section _4호선_사당_남태령_3 = new Section(12L, _4호선, 사당역, 남태령역, new Distance(3));
 
-    public static final Section _7호선_총신대입구_내방_13 = new Section(_7호선, 총신대입구역, 내방역, new Distance(13));
-    public static final Section _7호선_남성_총신대입구_2 = new Section(_7호선, 남성역, 총신대입구역, new Distance(2));
-    public static final Section _7호선_상도_남성_5 = new Section(_7호선, 상도역, 남성역, new Distance(5));
-    public static final Section _7호선_장승배기_상도_4 = new Section(_7호선, 장승배기역, 상도역, new Distance(4));
-    public static final Section _7호선_보라매_장승배기_13 = new Section(_7호선, 보라매역, 장승배기역, new Distance(13));
-    public static final Section _7호선_신풍_보라매_6 = new Section(_7호선, 신풍역, 보라매역, new Distance(6));
+    public static final Section _7호선_총신대입구_내방_13 = new Section(13L, _7호선, 총신대입구역, 내방역, new Distance(13));
+    public static final Section _7호선_남성_총신대입구_2 = new Section(14L, _7호선, 남성역, 총신대입구역, new Distance(2));
+    public static final Section _7호선_상도_남성_5 = new Section(15L, _7호선, 상도역, 남성역, new Distance(5));
+    public static final Section _7호선_장승배기_상도_4 = new Section(16L, _7호선, 장승배기역, 상도역, new Distance(4));
+    public static final Section _7호선_보라매_장승배기_13 = new Section(17L, _7호선, 보라매역, 장승배기역, new Distance(13));
+    public static final Section _7호선_신풍_보라매_6 = new Section(18L, _7호선, 신풍역, 보라매역, new Distance(6));
 
     public static List<Station> getAllStations() {
         return List.of(
