@@ -45,6 +45,10 @@ public class Lines {
                 .forEach(lineNamesFromStation::add);
     }
 
+    public boolean isEmptyLines() {
+        return lines.size() == 0;
+    }
+
     public List<Line> getLines() {
         return lines;
     }

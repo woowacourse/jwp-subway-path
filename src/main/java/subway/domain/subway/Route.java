@@ -41,7 +41,7 @@ public class Route {
     }
 
     private void validateEmptyLines() {
-        if (this.lines == null) {
+        if (lines == null || lines.isEmptyLines()) {
             throw new LinesEmptyException();
         }
     }

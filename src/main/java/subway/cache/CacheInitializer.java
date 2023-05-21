@@ -6,13 +6,13 @@ import subway.event.RouteUpdateEvent;
 import subway.service.SubwayMapService;
 
 @Component
-public class InitCache implements SmartLifecycle {
+public class CacheInitializer implements SmartLifecycle {
 
     private final SubwayMapService subwayMapService;
 
     private boolean running;
 
-    public InitCache(final SubwayMapService subwayMapService) {
+    public CacheInitializer(final SubwayMapService subwayMapService) {
         this.subwayMapService = subwayMapService;
     }
 
