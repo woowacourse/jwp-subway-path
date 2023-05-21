@@ -1,6 +1,7 @@
-package subway.dto;
+package subway.dto.path;
 
 import java.util.List;
+import subway.dto.station.StationSelectResponse;
 
 public class ShortestPathSelectResponse {
     private final List<StationSelectResponse> path;

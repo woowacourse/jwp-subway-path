@@ -72,6 +72,7 @@
 - Docker에서 포트포워딩을 하는 것으로 알고 있는데, 커넥션을 생성할 때의 url에는 localhost:13306으로 설정해야 하는 이유?
 - application.yml에 상용 DB의 정보만 설정했음에도 테스트에서는 알아서 인메모리 DB를 띄우는 원리
 - DataSource.setDriverClassName를 할 때, environment.getProperty("spring.datasource.driver-class-name")이 안 되는 이유
+- ResponseDto의 필드에 null이 들어가는 경우에도 Jackson이 역직렬화를 할 수 없다는 에러 메시지를 띄워줬다.
 
 ### 리팩토링 해야 되는 내용
 - distance 자료형 double로 변경

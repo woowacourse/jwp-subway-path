@@ -18,11 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import subway.dto.ErrorResponse;
-import subway.dto.LineRequest;
-import subway.dto.LineSelectResponse;
-import subway.dto.LinesSelectResponse;
-import subway.dto.StationSaveRequest;
-import subway.dto.StationSelectResponse;
+import subway.dto.line.LineRequest;
+import subway.dto.line.LineSelectResponse;
+import subway.dto.line.LinesSelectResponse;
+import subway.dto.station.StationSaveRequest;
+import subway.dto.station.StationSelectResponse;
 import subway.integration.IntegrationTest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)

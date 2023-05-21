@@ -18,7 +18,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
-import subway.dto.StationSelectResponse;
+import subway.dto.station.StationSelectResponse;
 import subway.integration.IntegrationTest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)

@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.dto.path;
 
 public class PathSelectRequest {
     private final Long sourceStationId;

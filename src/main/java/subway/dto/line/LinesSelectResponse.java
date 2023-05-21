@@ -1,8 +1,8 @@
-package subway.dto;
+package subway.dto.line;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 public class LinesSelectResponse {
     private List<LineSelectResponse> lines;

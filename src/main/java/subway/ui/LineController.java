@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.LineSelectResponse;
-import subway.dto.LinesSelectResponse;
-import subway.dto.StationSaveRequest;
-import subway.dto.StationSelectResponse;
+import subway.dto.line.LineRequest;
+import subway.dto.line.LineResponse;
+import subway.dto.line.LineSelectResponse;
+import subway.dto.line.LinesSelectResponse;
+import subway.dto.station.StationSaveRequest;
+import subway.dto.station.StationSelectResponse;
 
 @RestController
 @RequestMapping("/lines")

@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.StationSaveRequest;
+import subway.dto.line.LineRequest;
+import subway.dto.station.StationSaveRequest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

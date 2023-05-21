@@ -10,11 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.domain.FarePolicy;
-import subway.domain.Line;
-import subway.domain.Station;
-import subway.dto.ShortestPathSelectResponse;
-import subway.dto.StationSelectResponse;
+import subway.domain.fare.FarePolicy;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
+import subway.dto.path.ShortestPathSelectResponse;
+import subway.dto.station.StationSelectResponse;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.fare.Fare;
+import subway.domain.fare.FarePolicy;
 import subway.exception.section.DistanceNotPositiveException;
 
 class FareTest {

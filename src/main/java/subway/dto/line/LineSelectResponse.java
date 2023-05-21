@@ -1,9 +1,10 @@
-package subway.dto;
+package subway.dto.line;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
+import subway.dto.station.StationSelectResponse;
 
 public class LineSelectResponse {
     private final Long lineId;

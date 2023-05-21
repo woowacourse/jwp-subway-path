@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.PathService;
-import subway.dto.PathSelectRequest;
-import subway.dto.ShortestPathSelectResponse;
+import subway.dto.path.PathSelectRequest;
+import subway.dto.path.ShortestPathSelectResponse;
 
 @RestController
 public class PathController {

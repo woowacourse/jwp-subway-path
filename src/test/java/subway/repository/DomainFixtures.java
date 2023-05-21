@@ -1,7 +1,7 @@
 package subway.repository;
 
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class DomainFixtures {

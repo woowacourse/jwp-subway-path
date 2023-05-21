@@ -1,9 +1,9 @@
-package subway.dto;
+package subway.dto.line;
 
 import java.util.List;
 import javax.validation.constraints.NotNull;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
 
 public class LineRequest {
 

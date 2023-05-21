@@ -2,8 +2,8 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.dto.StationRequest;
-import subway.dto.StationSelectResponse;
+import subway.dto.station.StationRequest;
+import subway.dto.station.StationSelectResponse;
 import subway.application.StationService;
 
 import java.net.URI;
