@@ -16,7 +16,7 @@ class FareCalculatorTest {
     @DisplayName("거리가 10km 이내일 때는 기본 요금 1250원이 적용된다.")
     void calculate_lessThan10(double distance) {
         // when
-        int fare = fareCalculator.calculate(Path.of(Collections.emptyList(), distance));
+        int fare = fareCalculator.calculate(Path.of(Collections.emptyList(), Distance.from(distance)));
 
         // then
         assertThat(fare).isEqualTo(1250);
@@ -27,7 +27,7 @@ class FareCalculatorTest {
     @DisplayName("거리가 10km 초과 50km 이하면 5km당 100원이 추가된다.")
     void calculate_lessThan50_over10(double distance, int expectedFare) {
         // when
-        int fare = fareCalculator.calculate(Path.of(Collections.emptyList(), distance));
+        int fare = fareCalculator.calculate(Path.of(Collections.emptyList(), Distance.from(distance)));
 
         // then
         assertThat(fare).isEqualTo(expectedFare);
@@ -38,7 +38,7 @@ class FareCalculatorTest {
     @DisplayName("거리가 50km 초과면 8km당 100원이 추가된다.")
     void calculate_over50(double distance, int expectedFare) {
         // when
-        int fare = fareCalculator.calculate(Path.of(Collections.emptyList(), distance));
+        int fare = fareCalculator.calculate(Path.of(Collections.emptyList(), Distance.from(distance)));
 
         // then
         assertThat(fare).isEqualTo(expectedFare);

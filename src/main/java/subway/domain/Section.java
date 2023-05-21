@@ -1,29 +1,20 @@
 package subway.domain;
 
-import subway.exception.IllegalDistanceException;
-
 public class Section {
     private final Long id;
     private final Station startStation;
     private final Station endStation;
-    private final int distance;
+    private final Distance distance;
 
-    public Section(Station startStation, Station endStation, int distance) {
+    public Section(Station startStation, Station endStation, Distance distance) {
         this(null, startStation, endStation, distance);
     }
 
-    public Section(Long id, Station startStation, Station endStation, int distance) {
-        validateDistance(distance);
+    public Section(Long id, Station startStation, Station endStation, Distance distance) {
         this.id = id;
         this.startStation = startStation;
         this.endStation = endStation;
         this.distance = distance;
-    }
-
-    private void validateDistance(int distance) {
-        if (distance <= 0) {
-            throw new IllegalDistanceException("구간의 길이는 1 이상 이어야 합니다.");
-        }
     }
 
     public boolean hasStation(Station station) {
@@ -54,8 +45,12 @@ public class Section {
         return endStation.getId();
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
+    }
+
+    public double getDistanceByValue() {
+        return distance.value();
     }
 
     public Long getId() {

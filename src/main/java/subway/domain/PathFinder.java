@@ -28,14 +28,14 @@ public class PathFinder {
             Station dest = section.getEndStation();
             graph.addVertex(source);
             graph.addVertex(dest);
-            graph.setEdgeWeight(graph.addEdge(source, dest), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(source, dest), section.getDistanceByValue());
         }
     }
 
     public Path findShortestPath(Station source, Station dest) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         validateTargetInPath(source, dest);
-        return Path.of(getShortestPathStations(shortestPath, source, dest), shortestPath.getPathWeight(source, dest));
+        return Path.of(getShortestPathStations(shortestPath, source, dest), Distance.from(shortestPath.getPathWeight(source, dest)));
     }
 
     private void validateTargetInPath(Station source, Station dest) {

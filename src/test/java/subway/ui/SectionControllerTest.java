@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.SectionService;
 import subway.application.dto.section.SectionCreateDto;
+import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.ui.dto.section.SectionCreateRequest;
@@ -41,7 +42,7 @@ class SectionControllerTest {
         Long lineId = 1L;
         SectionCreateRequest request = new SectionCreateRequest("잠실역", "잠실나루역", 10);
         given(sectionService.saveSection(any(SectionCreateDto.class))).willReturn(
-                new Section(1L, new Station("잠실역"), new Station("잠실나루역"), 10));
+                new Section(1L, new Station("잠실역"), new Station("잠실나루역"), Distance.from(10)));
 
         // expect
         mockMvc.perform(post("/lines/{lineId}/sections", lineId)

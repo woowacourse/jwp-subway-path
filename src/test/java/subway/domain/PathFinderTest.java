@@ -13,16 +13,16 @@ import subway.exception.StationNotFoundException;
 class PathFinderTest {
 
     private static final Sections sections = new Sections(List.of(
-            new Section(1L, new Station("미금역"), new Station("정자역"), 3),
-            new Section(2L, new Station("정자역"), new Station("수내역"), 4),
-            new Section(3L, new Station("수내역"), new Station("서현역"), 5),
-            new Section(4L, new Station("서현역"), new Station("판교역"), 4),
+            new Section(1L, new Station("미금역"), new Station("정자역"), Distance.from(3)),
+            new Section(2L, new Station("정자역"), new Station("수내역"), Distance.from(4)),
+            new Section(3L, new Station("수내역"), new Station("서현역"), Distance.from(5)),
+            new Section(4L, new Station("서현역"), new Station("판교역"), Distance.from(4)),
 
-            new Section(6L, new Station("정자역"), new Station("서현역"), 6),
-            new Section(7L, new Station("서현역"), new Station("야탑역"), 6),
-            new Section(5L, new Station("야탑역"), new Station("판교역"), 2),
+            new Section(6L, new Station("정자역"), new Station("서현역"), Distance.from(6)),
+            new Section(7L, new Station("서현역"), new Station("야탑역"), Distance.from(6)),
+            new Section(5L, new Station("야탑역"), new Station("판교역"), Distance.from(2)),
 
-            new Section(8L, new Station("복정역"), new Station("잠실역"), 10)
+            new Section(8L, new Station("복정역"), new Station("잠실역"), Distance.from(10))
     ));
 
     @Test
@@ -45,7 +45,7 @@ class PathFinderTest {
         assertThat(path).usingRecursiveComparison()
                 .isEqualTo(Path.of(
                         List.of(new Station("판교역"), new Station("서현역"), new Station("정자역")),
-                        10));
+                        Distance.from(10)));
     }
 
     @Test
@@ -61,7 +61,7 @@ class PathFinderTest {
         assertThat(path).usingRecursiveComparison()
                 .isEqualTo(Path.of(
                         List.of(new Station("미금역"), new Station("정자역"), new Station("수내역")),
-                        7));
+                        Distance.from(7)));
     }
 
     @Test

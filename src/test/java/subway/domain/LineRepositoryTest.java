@@ -45,8 +45,8 @@ class LineRepositoryTest {
         assertThat(line).usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(new Line(2L, "3호선", "orange", new Sections(List.of(
-                        new Section(1L, new Station(1L, "양재역"), new Station(2L, "남부터미널역"), 10),
-                        new Section(2L, new Station(2L, "남부터미널역"), new Station(3L, "교대역"), 10)
+                        new Section(1L, new Station(1L, "양재역"), new Station(2L, "남부터미널역"), Distance.from(10)),
+                        new Section(2L, new Station(2L, "남부터미널역"), new Station(3L, "교대역"), Distance.from(10))
                 ))));
     }
 

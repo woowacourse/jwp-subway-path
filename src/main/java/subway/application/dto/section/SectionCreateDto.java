@@ -4,9 +4,9 @@ public class SectionCreateDto {
     private Long lineId;
     private String startStationName;
     private String endStationName;
-    private int distance;
+    private double distance;
 
-    public SectionCreateDto(Long lineId, String startStationName, String endStationName, int distance) {
+    public SectionCreateDto(Long lineId, String startStationName, String endStationName, double distance) {
         this.lineId = lineId;
         this.startStationName = startStationName;
         this.endStationName = endStationName;
@@ -25,7 +25,7 @@ public class SectionCreateDto {
         return endStationName;
     }
 
-    public int getDistance() {
+    public double getDistance() {
         return distance;
     }
 }

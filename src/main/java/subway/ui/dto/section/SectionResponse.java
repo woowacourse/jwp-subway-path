@@ -6,9 +6,9 @@ public class SectionResponse {
     private Long id;
     private String startStationName;
     private String endStationName;
-    private int distance;
+    private double distance;
 
-    public SectionResponse(Long id, String startStationName, String endStationName, int distance) {
+    public SectionResponse(Long id, String startStationName, String endStationName, double distance) {
         this.id = id;
         this.startStationName = startStationName;
         this.endStationName = endStationName;
@@ -20,7 +20,7 @@ public class SectionResponse {
                 section.getId(),
                 section.getStartStation().getName(),
                 section.getEndStation().getName(),
-                section.getDistance());
+                section.getDistanceByValue());
     }
 
     public String getStartStationName() {
@@ -31,7 +31,7 @@ public class SectionResponse {
         return endStationName;
     }
 
-    public int getDistance() {
+    public double getDistance() {
         return distance;
     }
 

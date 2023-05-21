@@ -23,7 +23,7 @@ create table SECTION
     line_id            bigint                not null,
     start_station_id   bigint                not null,
     end_station_id     bigint                not null,
-    distance           int                   not null,
+    distance           double                   not null,
     primary key (id),
     foreign key (line_id) REFERENCES LINE (id),
     foreign key (start_station_id) REFERENCES STATION (id),

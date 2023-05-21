@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 
 class LineTest {
     private Sections sections = new Sections(List.of(
-            new Section(new Station("강남역"), new Station("교대역"), 10),
-            new Section(new Station("교대역"), new Station("잠실역"), 5)));
+            new Section(new Station("강남역"), new Station("교대역"), Distance.from(10)),
+            new Section(new Station("교대역"), new Station("잠실역"), Distance.from(5))));
 
     @Test
     @DisplayName("노선이 비어있음다면 true가 반환된다.")
     void isEmpty() {
-        Line line = new Line(1L, "2호선", "green", new Sections(Collections.EMPTY_LIST));
+        Line line = new Line(1L, "2호선", "green", new Sections(Collections.emptyList()));
         assertThat(line.isEmpty()).isTrue();
     }
 
@@ -41,7 +41,7 @@ class LineTest {
                 .isPresent()
                 .get()
                 .usingRecursiveComparison()
-                .isEqualTo(new Section(new Station("강남역"), new Station("교대역"), 10));
+                .isEqualTo(new Section(new Station("강남역"), new Station("교대역"), Distance.from(10)));
     }
 
     @Test
@@ -52,6 +52,6 @@ class LineTest {
                 .isPresent()
                 .get()
                 .usingRecursiveComparison()
-                .isEqualTo(new Section(new Station("교대역"), new Station("잠실역"), 5));
+                .isEqualTo(new Section(new Station("교대역"), new Station("잠실역"), Distance.from(5)));
     }
 }

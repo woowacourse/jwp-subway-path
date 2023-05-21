@@ -8,16 +8,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.section.SectionCreateDto;
 import subway.application.dto.section.SectionDeleteDto;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.repository.LineRepository;
 import subway.domain.repository.SectionRepository;
 import subway.domain.repository.StationRepository;
-import subway.ui.dto.section.SectionResponse;
 import subway.exception.IllegalDistanceException;
 import subway.exception.IllegalSectionException;
 import subway.exception.StationNotFoundException;
+import subway.ui.dto.section.SectionResponse;
 
 @Service
 @Transactional
@@ -37,7 +38,7 @@ public class SectionService {
         Station startStation = stationRepository.findByName(requestedSection.getStartStationName());
         Station endStation = stationRepository.findByName(requestedSection.getEndStationName());
         Line line = lineRepository.findById(requestedSection.getLineId());
-        return addSection(line, new Section(startStation, endStation, requestedSection.getDistance()));
+        return addSection(line, new Section(startStation, endStation, Distance.from(requestedSection.getDistance())));
     }
 
     private Section addSection(Line line, Section sectionToAdd) {
@@ -73,7 +74,7 @@ public class SectionService {
         prevExistingSection.ifPresent(prevSection -> {
             changePrevSectionToNewSection(prevSection, sectionToAdd);
             saveStation(line.getId(), prevSection.getStartStation(), sectionToAdd.getStartStation(),
-                    prevSection.getDistance() - sectionToAdd.getDistance());
+                    prevSection.getDistance().subtract(sectionToAdd.getDistance()));
         });
         Long savedId = sectionRepository.save(line.getId(), sectionToAdd);
         return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
@@ -85,7 +86,7 @@ public class SectionService {
         sectionRepository.delete(prevSection);
     }
 
-    private void saveStation(Long lineId, Station startStation, Station endStation, int distance) {
+    private void saveStation(Long lineId, Station startStation, Station endStation, Distance distance) {
         sectionRepository.save(lineId, new Section(startStation, endStation, distance));
     }
 
@@ -94,15 +95,15 @@ public class SectionService {
         prevExistingSection.ifPresent(prevSection -> {
             changePrevSectionToNewSection(prevSection, sectionToAdd);
             saveStation(line.getId(), sectionToAdd.getEndStation(), prevSection.getEndStation(),
-                    prevSection.getDistance() - sectionToAdd.getDistance());
+                    prevSection.getDistance().subtract(sectionToAdd.getDistance()));
         });
         Long savedId = sectionRepository.save(line.getId(), sectionToAdd);
         return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
                 sectionToAdd.getDistance());
     }
 
-    private void validateDistance(int distance, int newDistance) {
-        if (distance <= newDistance) {
+    private void validateDistance(Distance distance, Distance newDistance) {
+        if (distance.isLessThanOrEqualTo(newDistance)) {
             throw new IllegalDistanceException("새로운 구간의 길이는 기존 구간의 길이보다 작아야 합니다.");
         }
     }
@@ -129,7 +130,7 @@ public class SectionService {
 
     private void mergeSection(Long lineId, Section frontSection, Section backSection) {
         Section mergedSection = new Section(frontSection.getStartStation(), backSection.getEndStation(),
-                frontSection.getDistance() + backSection.getDistance());
+                frontSection.getDistance().add(backSection.getDistance()));
         sectionRepository.save(lineId, mergedSection);
     }
 

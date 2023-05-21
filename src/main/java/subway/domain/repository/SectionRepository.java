@@ -22,7 +22,7 @@ public class SectionRepository {
                 lineId,
                 section.getStartStationId(),
                 section.getEndStationId(),
-                section.getDistance()
+                section.getDistance().value()
         ));
     }
 

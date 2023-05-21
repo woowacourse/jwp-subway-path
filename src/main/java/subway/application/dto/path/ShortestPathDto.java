@@ -1,12 +1,13 @@
 package subway.application.dto.path;
 
 import java.util.List;
+import subway.domain.Distance;
 import subway.domain.Path;
 import subway.domain.Station;
 
 public class ShortestPathDto {
     private List<Station> stations;
-    private double distance;
+    private Distance distance;
     private int fare;
 
     public ShortestPathDto(Path path, int fare) {
@@ -20,7 +21,7 @@ public class ShortestPathDto {
     }
 
     public double getDistance() {
-        return distance;
+        return distance.value();
     }
 
     public int getFare() {
