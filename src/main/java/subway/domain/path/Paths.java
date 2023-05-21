@@ -127,12 +127,6 @@ public final class Paths {
                 .collect(Collectors.toList());
     }
 
-    public long getTotalDistance() {
-        return paths.stream()
-                .mapToLong(Path::getDistance)
-                .sum();
-    }
-
     public List<Path> toList() {
         return new ArrayList<>(paths);
     }

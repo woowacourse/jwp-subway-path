@@ -7,8 +7,15 @@ public class LineRequest {
     private String name;
     @NotBlank(message = "노선 색상이 필요합니다.")
     private String color;
+    private int additionalFare;
 
     public LineRequest() {
+    }
+
+    public LineRequest(final String name, final String color, final int additionalFare) {
+        this.name = name;
+        this.color = color;
+        this.additionalFare = additionalFare;
     }
 
     public LineRequest(final String name, final String color) {
@@ -24,4 +31,7 @@ public class LineRequest {
         return color;
     }
 
+    public int getAdditionalFare() {
+        return additionalFare;
+    }
 }

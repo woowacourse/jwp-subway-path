@@ -10,6 +10,7 @@ import subway.dto.PathRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/lines")
@@ -30,7 +31,11 @@ public final class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findAllLines());
+        final List<LineResponse> lines = lineService.findAllLines().stream()
+                .map(LineResponse::from)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(lines);
     }
 
     @GetMapping("/{id}")

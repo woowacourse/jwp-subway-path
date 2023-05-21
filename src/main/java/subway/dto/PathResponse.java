@@ -1,6 +1,7 @@
 package subway.dto;
 
 import subway.domain.path.Path;
+import subway.domain.path.PathEdgeProxy;
 
 public final class PathResponse {
     private final Long id;
@@ -18,6 +19,12 @@ public final class PathResponse {
     public static PathResponse from(final Path path) {
         final StationResponse up = StationResponse.of(path.getUp());
         final StationResponse down = StationResponse.of(path.getDown());
+        return new PathResponse(path.getId(), up, down, path.getDistance());
+    }
+
+    public static PathResponse from(final PathEdgeProxy path) {
+        final StationResponse up = StationResponse.of(path.getSource());
+        final StationResponse down = StationResponse.of(path.getTarget());
         return new PathResponse(path.getId(), up, down, path.getDistance());
     }
 

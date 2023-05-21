@@ -40,6 +40,10 @@ public final class Line {
         this(null, name, color, new Paths());
     }
 
+    public Line(final String name, final String color, final int additionalFare) {
+        this(null, name, color, additionalFare, new Paths());
+    }
+
     public Line(final Line line) {
         this(line.id, line.name, line.color, line.additionalFare, line.paths);
     }
@@ -65,6 +69,10 @@ public final class Line {
 
     public int getAdditionalFare() {
         return additionalFare;
+    }
+
+    public Paths getPaths() {
+        return paths;
     }
 
     public int getPathsSize() {

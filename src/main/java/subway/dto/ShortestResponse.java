@@ -1,7 +1,6 @@
 package subway.dto;
 
-import subway.domain.FareStrategy;
-import subway.domain.path.Paths;
+import subway.domain.path.PathEdgeProxy;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,14 +16,16 @@ public final class ShortestResponse {
         this.paths = paths;
     }
 
-    public static ShortestResponse of(final Paths paths, final FareStrategy fareStrategy) {
-        final long distance = paths.getTotalDistance();
-        final int fare = fareStrategy.calculate(distance);
-        final List<PathResponse> pathResponses = paths.toList().stream()
+    public static ShortestResponse of(final List<PathEdgeProxy> paths, final int totalCost) {
+        final long distance = paths.stream()
+                .mapToLong(PathEdgeProxy::getDistance)
+                .sum();
+
+        final List<PathResponse> pathResponses = paths.stream()
                 .map(PathResponse::from)
                 .collect(Collectors.toUnmodifiableList());
 
-        return new ShortestResponse(distance, fare, pathResponses);
+        return new ShortestResponse(distance, totalCost, pathResponses);
     }
 
     public Long getTotalDistance() {

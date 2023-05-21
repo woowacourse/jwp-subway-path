@@ -1,11 +1,11 @@
-package subway.domain;
+package subway.domain.fare;
 
 import org.springframework.stereotype.Component;
 
 import static java.lang.Math.floor;
 
 @Component
-public final class FareStrategyImpl implements FareStrategy {
+public final class DistanceFareStrategyImpl implements DistanceFareStrategy {
 
     private static final int BASE_DISTANCE = 10;
     private static final int BASE_FARE = 1250;

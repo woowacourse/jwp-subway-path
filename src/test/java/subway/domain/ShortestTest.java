@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.domain.path.Path;
+import subway.domain.path.PathEdgeProxy;
 import subway.domain.path.Paths;
 
 import java.util.List;
@@ -14,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class ShortestTest {
 
-    @DisplayName("Paths를 받아서 그래프를 만들 수 있다.")
+    @DisplayName("Line들을 받아서 그래프를 만들 수 있다.")
     @Test
     void construct() {
-        assertDoesNotThrow(() -> Shortest.from(List.of(new Paths())));
+        assertDoesNotThrow(() -> Shortest.from(List.of(new Line("1호선", "blue"))));
     }
 
     @Nested
@@ -49,15 +50,19 @@ class ShortestTest {
 
             final Paths paths1 = new Paths(List.of(path1, path2));
             final Paths paths2 = new Paths(List.of(path3, path4, path5));
-            final Shortest shortest = Shortest.from(List.of(paths1, paths2));
+
+            final Line line1 = new Line("1호선", "blue", paths1);
+            final Line line2 = new Line("2호선", "red", paths2);
+            final Shortest shortest = Shortest.from(List.of(line1, line2));
 
             //when
-            final Paths found = shortest.findShortest(source, target);
+            final List<PathEdgeProxy> found = shortest.findShortest(source, target);
+            final long distance = found.stream().mapToLong(PathEdgeProxy::getDistance).sum();
 
             //then
             assertAll(
-                    () -> assertThat(found.getTotalDistance()).isEqualTo(4),
-                    () -> assertThat(found.toList()).hasSize(3));
+                    () -> assertThat(distance).isEqualTo(4),
+                    () -> assertThat(found).hasSize(3));
         }
 
         /**
@@ -94,15 +99,20 @@ class ShortestTest {
             final Paths paths1 = new Paths(List.of(path1, path2));
             final Paths paths2 = new Paths(List.of(path3, path4, path5));
             final Paths paths3 = new Paths(List.of(path6, path7));
-            final Shortest shortest = Shortest.from(List.of(paths1, paths2, paths3));
+
+            final Line line1 = new Line("1호선", "blue", paths1);
+            final Line line2 = new Line("2호선", "red", paths2);
+            final Line line3 = new Line("2호선", "yellow", paths3);
+            final Shortest shortest = Shortest.from(List.of(line1, line2, line3));
 
             //when
-            final Paths found = shortest.findShortest(source, target);
+            final List<PathEdgeProxy> found = shortest.findShortest(source, target);
+            final long distance = found.stream().mapToLong(PathEdgeProxy::getDistance).sum();
 
             //then
             assertAll(
-                    () -> assertThat(found.getTotalDistance()).isEqualTo(2),
-                    () -> assertThat(found.toList()).hasSize(2));
+                    () -> assertThat(distance).isEqualTo(2),
+                    () -> assertThat(found).hasSize(2));
         }
 
         @DisplayName("존재하지 않는 경로로 최단 경로를 조회하면 빈 경로가 반환된다")
@@ -120,15 +130,19 @@ class ShortestTest {
 
             final Paths paths1 = new Paths(List.of(path1));
             final Paths paths2 = new Paths(List.of(path2));
-            final Shortest shortest = Shortest.from(List.of(paths1, paths2));
+
+            final Line line1 = new Line("1호선", "blue", paths1);
+            final Line line2 = new Line("2호선", "resd", paths2);
+            final Shortest shortest = Shortest.from(List.of(line1, line2));
 
             //when
-            final Paths found = shortest.findShortest(source, target);
+            final List<PathEdgeProxy> found = shortest.findShortest(source, target);
+            final long distance = found.stream().mapToLong(PathEdgeProxy::getDistance).sum();
 
             //then
             assertAll(
-                    () -> assertThat(found.getTotalDistance()).isZero(),
-                    () -> assertThat(found.toList()).isEmpty());
+                    () -> assertThat(distance).isZero(),
+                    () -> assertThat(found).isEmpty());
         }
     }
 }
