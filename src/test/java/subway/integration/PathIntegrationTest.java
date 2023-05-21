@@ -8,123 +8,56 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dto.request.ConnectionEndpointRequest;
 import subway.dto.request.ConnectionInitRequest;
-import subway.dto.request.LineRequest;
 import subway.dto.response.PathResponse;
 import subway.ui.EndpointType;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@Sql("/dummy.sql")
 public class PathIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
+
+    private static void patchEndpoint(final ConnectionEndpointRequest request, final String lineId, final String stationId) {
+        RestAssured.given()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .patch("/lines/" + lineId + "/stations/" + stationId + "/endpoint");
+    }
+
+    private static void patchInit(final ConnectionInitRequest request, final String lineId, final String stationId) {
+        RestAssured.given()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .patch("/lines/" + lineId + "/stations/" + stationId + "/init");
+    }
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-
         // 신분당선 : 강남역 -3- 잠실역 -2- 건대입구역 -1- 선릉역
         // 구신분당선 : 강남역 -2- 구의역 -1- 선릉역
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
-
-        RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines");
-
-        RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().post("/lines");
-
-        final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-
-        RestAssured.given()
-                .body(params1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
-
-        final Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "잠실역");
-
-        RestAssured.given()
-                .body(params2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
-
-        final Map<String, String> params3 = new HashMap<>();
-        params3.put("name", "건대입구역");
-
-        RestAssured.given()
-                .body(params3)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
-
-        final Map<String, String> params4 = new HashMap<>();
-        params4.put("name", "선릉역");
-
-        RestAssured.given()
-                .body(params4)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
-
-        final Map<String, String> params5 = new HashMap<>();
-        params5.put("name", "구의역");
-
-        RestAssured.given()
-                .body(params5)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
 
         final ConnectionInitRequest connectionInitRequest = new ConnectionInitRequest(2L, 10);
-        RestAssured.given()
-                .body(connectionInitRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .patch("/lines/1/stations/1/init");
+        patchInit(connectionInitRequest, "1", "1");
 
         final ConnectionEndpointRequest connectionDownRequest1 = new ConnectionEndpointRequest(EndpointType.DOWN.getValue(), 12);
-        RestAssured.given()
-                .body(connectionDownRequest1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .patch("/lines/1/stations/3/endpoint");
+        patchEndpoint(connectionDownRequest1, "1", "3");
 
         final ConnectionEndpointRequest connectionDownRequest2 = new ConnectionEndpointRequest(EndpointType.DOWN.getValue(), 12);
-        RestAssured.given()
-                .body(connectionDownRequest2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .patch("/lines/1/stations/4/endpoint");
+        patchEndpoint(connectionDownRequest2, "1", "4");
 
         final ConnectionInitRequest connectionInitRequest2 = new ConnectionInitRequest(5L, 12);
-        RestAssured.given()
-                .body(connectionInitRequest2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .patch("/lines/2/stations/1/init");
+        patchInit(connectionInitRequest2, "2", "1");
 
         final ConnectionEndpointRequest connectionDownRequest3 = new ConnectionEndpointRequest(EndpointType.DOWN.getValue(), 11);
-        RestAssured.given()
-                .body(connectionDownRequest3)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .patch("/lines/2/stations/4/endpoint");
+        patchEndpoint(connectionDownRequest3, "2", "4");
     }
 
     @DisplayName("최단 경로를 조회하고 거리와 요금을 계산한다")

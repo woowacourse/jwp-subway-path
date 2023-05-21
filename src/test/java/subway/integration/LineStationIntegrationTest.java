@@ -9,95 +9,33 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dto.request.ConnectionEndpointRequest;
 import subway.dto.request.ConnectionInitRequest;
 import subway.dto.request.ConnectionMidRequest;
-import subway.dto.request.LineRequest;
 import subway.dto.response.LineStationResponse;
 import subway.dto.response.StationResponse;
 import subway.ui.EndpointType;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@Sql("/dummy.sql")
 public class LineStationIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
+    // 신분당선
+    // 구신분당선
+    // 1: 강남역
+    // 2: 잠실역
+    // 3: 건대입구역
+    // 4: 선릉역
+    // 5: 구의역
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        // 신분당선
-        // 구신분당선
-        // 1: 강남역
-        // 2: 잠실역
-        // 3: 건대입구역
-        // 4: 선릉역
-        // 5: 구의역
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
-
-        RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines");
-
-        RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().post("/lines");
-
-        final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-
-        RestAssured.given()
-                .body(params1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
-
-        final Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "잠실역");
-
-        RestAssured.given()
-                .body(params2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
-
-        final Map<String, String> params3 = new HashMap<>();
-        params3.put("name", "건대입구역");
-
-        RestAssured.given()
-                .body(params3)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
-
-        final Map<String, String> params4 = new HashMap<>();
-        params4.put("name", "선릉역");
-
-        RestAssured.given()
-                .body(params4)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
-
-        final Map<String, String> params5 = new HashMap<>();
-        params5.put("name", "구의역");
-
-        RestAssured.given()
-                .body(params5)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations");
     }
 
     @Test
