@@ -45,7 +45,7 @@ public class PathService {
                 .collect(Collectors.toList());
         Cost cost = new Cost(distance);
 
-        return new PathDto(stationDtos, cost.getFare());
+        return new PathDto(stationDtos, cost.getCost());
     }
 
     private StationDto toStationDto(Station station) {

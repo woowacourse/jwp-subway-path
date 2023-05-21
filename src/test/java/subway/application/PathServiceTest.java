@@ -37,9 +37,9 @@ class PathServiceTest {
         Long lineId1 = lineRepository.save(호선1);
         Long lineId2 = lineRepository.save(호선2);
 
-        Long 회기Id = stationRepository.save(회기);
+        stationRepository.save(회기);
+        stationRepository.save(왕십리);
         Long 청량리Id = stationRepository.save(청량리);
-        Long 왕십리Id = stationRepository.save(왕십리);
         Long 잠실Id = stationRepository.save(잠실);
         sectionRepository.saveAll(lineId1, new Sections(List.of(회기_청량리, 청량리_왕십리)));
         sectionRepository.saveAll(lineId2, new Sections(List.of(왕십리_잠실)));
