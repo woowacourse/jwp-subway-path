@@ -18,16 +18,10 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleException(final Exception exception) {
+    public ResponseEntity<Object> handleInternalServerException(final Exception exception, final WebRequest request) {
         final String message = "[ERROR] 서버가 응답할 수 없습니다.";
         logger.error(message);
-        return ResponseEntity.internalServerError().body(new ExceptionResponse(message));
-    }
-    
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException (final IllegalArgumentException exception) {
-        logger.error(exception.getMessage());
-        return ResponseEntity.badRequest().body(new ExceptionResponse("[ERROR] " + exception.getMessage()));
+        return this.handleExceptionInternal(exception, null, HttpHeaders.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
     
     @Override
@@ -66,5 +60,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         
         logger.error(exceptionMessage);
         return ResponseEntity.badRequest().body(new ExceptionResponse(exceptionMessage));
+    }
+    
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(
+            final Exception ex,
+            final Object body,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
+    ) {
+        String message = "[ERROR] 서버가 응답할 수 없습니다.";
+        if (ex instanceof IllegalArgumentException) {
+            message = "[ERROR] " + ex.getMessage();
+        }
+        logger.error(message);
+        return ResponseEntity.badRequest().body(new ExceptionResponse(message));
     }
 }
