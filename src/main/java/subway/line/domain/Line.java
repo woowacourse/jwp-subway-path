@@ -14,20 +14,22 @@ import java.util.Set;
 public class Line {
     private final String name;
     private final String color;
+    private final Long extraCharge;
     private final Sections sections;
     
     public Line(final String name, final String color) {
-        this(name, color, new HashSet<>());
+        this(name, color, 0L, new Sections(new HashSet<>()));
     }
     
     public Line(final String name, final String color, final Set<Section> sections) {
-        this(name, color, new Sections(sections));
+        this(name, color, 0L, new Sections(sections));
     }
     
-    public Line(final String name, final String color, final Sections sections) {
+    private Line(final String name, final String color, final Long extraCharge, final Sections sections) {
         validateNameAndColor(name, color);
         this.name = name;
         this.color = color;
+        this.extraCharge = extraCharge;
         this.sections = sections;
     }
     
@@ -87,6 +89,10 @@ public class Line {
         return color;
     }
     
+    public Long getExtraCharge() {
+        return extraCharge;
+    }
+    
     public Sections getSections() {
         return sections;
     }
@@ -96,12 +102,12 @@ public class Line {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Line line = (Line) o;
-        return Objects.equals(name, line.name) && Objects.equals(color, line.color) && Objects.equals(sections, line.sections);
+        return Objects.equals(name, line.name) && Objects.equals(color, line.color) && Objects.equals(extraCharge, line.extraCharge) && Objects.equals(sections, line.sections);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(name, color, sections);
+        return Objects.hash(name, color, extraCharge, sections);
     }
     
     @Override
@@ -109,6 +115,7 @@ public class Line {
         return "Line{" +
                 "name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", extraCharge=" + extraCharge +
                 ", sections=" + sections +
                 '}';
     }
