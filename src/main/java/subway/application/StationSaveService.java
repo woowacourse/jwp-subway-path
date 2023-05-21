@@ -35,9 +35,7 @@ public class StationSaveService {
     }
 
     public StationSaveResponse saveStation(StationRequest stationRequest) {
-        List<Line> findLines = lineRepository.findAllLine();
-        Lines lines = new Lines(findLines);
-        Optional<Line> findNullableLine = lines.findByLineName(stationRequest.getLineName());
+        Optional<Line> findNullableLine = lineRepository.findLineByName(stationRequest.getLineName());
         if (findNullableLine.isEmpty()) {
             return saveInitialStations(stationRequest);
         }

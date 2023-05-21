@@ -73,6 +73,34 @@ class LineDaoTest {
         assertThat(findNullableLine.isEmpty()).isTrue();
     }
 
+    @Test
+    @DisplayName("노선 이름에 해당하는 행을 조회한다.")
+    void findByNameTest() {
+        // given
+        String line2Name = INITIAL_Line2.NAME;
+
+        // when
+        Optional<Line> findLine = lineDao.selectByName(line2Name);
+
+        // then
+        assertThat(findLine.get()).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(INITIAL_Line2.FIND_LINE);
+    }
+
+    @Test
+    @DisplayName("노선 이름에 해당하는 행이 없으면 빈 Optional이 반환된다.")
+    void findByName_EmptyOptional() {
+        // given
+        String dummyName = "없는 노선";
+
+        // when
+        Optional<Line> findNullableLine = lineDao.selectByName(dummyName);
+
+        // then
+        assertThat(findNullableLine.isEmpty()).isTrue();
+    }
+
+
     @DisplayName("모든 행을 조회한다.")
     @Test
     void findAll() {
