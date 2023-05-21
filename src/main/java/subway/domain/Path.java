@@ -1,19 +1,47 @@
 package subway.domain;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Path {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
+    private final List<Station> path;
+    private final int distance;
 
-    public Path(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph) {
-        this.shortestPath = new DijkstraShortestPath<>(stationGraph);
+    public Path(List<Station> path, int distance) {
+        this.path = path;
+        this.distance = distance;
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station startStation, Station endStation) {
-        return shortestPath.getPath(startStation, endStation);
+    public List<String> getPath() {
+        return path.stream()
+                   .map(Station::getName)
+                   .collect(Collectors.toList());
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Path path1 = (Path) o;
+        return distance == path1.distance && Objects.equals(path, path1.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path, distance);
+    }
+
+    @Override
+    public String toString() {
+        return "Path{" +
+                "path=" + path +
+                ", distance=" + distance +
+                '}';
     }
 }

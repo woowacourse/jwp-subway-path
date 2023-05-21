@@ -1,6 +1,5 @@
 package subway.application;
 
-import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
@@ -8,6 +7,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
 import subway.dao.vo.SectionStationMapper;
+import subway.domain.Map;
 import subway.domain.Path;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -16,7 +16,6 @@ import subway.dto.response.PathResponse;
 import subway.exception.NotFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -33,18 +32,9 @@ public class PathService {
         Station startStation = getStationById(pathRequest.getStartStationId());
         Station endStation = getStationById(pathRequest.getEndStationId());
 
-        Path path = getPath();
-        GraphPath<Station, DefaultWeightedEdge> pathGraph = path.getShortestPath(startStation, endStation);
-        List<String> stations = getStations(pathGraph);
-        int distance = (int) pathGraph.getWeight();
-        return new PathResponse(stations, distance);
-    }
-
-    private List<String> getStations(GraphPath<Station, DefaultWeightedEdge> pathGraph) {
-        List<Station> stations = pathGraph.getVertexList();
-        return stations.stream()
-                       .map(Station::getName)
-                       .collect(Collectors.toList());
+        Map map = getMap();
+        Path path = map.getShortestPath(startStation, endStation);
+        return new PathResponse(path.getPath(), path.getDistance());
     }
 
     private Station getStationById(Long id) {
@@ -53,13 +43,13 @@ public class PathService {
         return Station.from(stationEntity);
     }
 
-    private Path getPath() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private Map getMap() {
+        WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         addVertex(stationGraph);
         addEdgeWight(stationGraph);
 
-        return new Path(stationGraph);
+        return new Map(stationGraph);
     }
 
     private void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph) {
