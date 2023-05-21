@@ -1,4 +1,4 @@
-package subway.repository;
+package subway.adapter.out.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.adapter.out.persistence.LineJdbcAdapter;
 import subway.adapter.out.persistence.dao.LineDao;
 import subway.adapter.out.persistence.dao.SectionDao;
 import subway.adapter.out.persistence.dao.StationDao;
@@ -23,7 +22,7 @@ import subway.fixture.StationFixture.역삼역;
 import subway.fixture.StationFixture.잠실역;
 
 @JdbcTest
-class LineRepositoryTest {
+class LineJdbcAdapterTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -31,14 +30,14 @@ class LineRepositoryTest {
     private LineDao lineDao;
     private StationDao stationDao;
     private SectionDao sectionDao;
-    private LineJdbcAdapter lineRepository;
+    private LineJdbcAdapter lineJdbcAdapter;
 
     @BeforeEach
     void setUp() {
         lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
         sectionDao = new SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
         stationDao = new StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        lineRepository = new LineJdbcAdapter(jdbcTemplate, lineDao, sectionDao);
+        lineJdbcAdapter = new LineJdbcAdapter(jdbcTemplate, lineDao, sectionDao);
     }
 
     @Test
@@ -54,7 +53,7 @@ class LineRepositoryTest {
         SectionEntity sectionEntity2 = sectionDao.insert(
                 new SectionEntity(line.getId(), station2.getId(), station3.getId(), 7));
 
-        Line result = lineRepository.findById(line.getId()).get();
+        Line result = lineJdbcAdapter.findById(line.getId()).get();
         assertThat(result)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -82,7 +81,7 @@ class LineRepositoryTest {
         sectionDao.insert(
                 new SectionEntity(line.getId(), station2.getId(), station3.getId(), 7));
 
-        lineRepository.updateSections(new Line(line.getId(), line.getName(), line.getColor(),
+        lineJdbcAdapter.updateSections(new Line(line.getId(), line.getName(), line.getColor(),
                 List.of(new Section(new Station(station1.getId(), station1.getName()),
                         new Station(station3.getId(), station3.getName()), 12))));
 
