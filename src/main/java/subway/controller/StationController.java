@@ -12,6 +12,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/stations")
 public class StationController {
     private final StationService stationService;
 
@@ -20,7 +21,7 @@ public class StationController {
     }
 
     // TODO: 2023/05/17 헤더값 문제??
-    @PostMapping("/stations")
+    @PostMapping
     public ResponseEntity<List<StationResponse>> addStation(@Valid @RequestBody StationAddRequest stationRequest) {
         List<StationResponse> stationResponses = stationService.addStation(stationRequest);
         return ResponseEntity
@@ -28,7 +29,7 @@ public class StationController {
                 .body(stationResponses);
     }
 
-    @DeleteMapping("/stations/station")
+    @DeleteMapping("/station")
     public ResponseEntity<List<StationResponse>> deleteStation(@Valid @RequestBody StationDeleteRequest stationDeleteRequest) {
         List<StationResponse> stationResponses = stationService.deleteStation(stationDeleteRequest);
         return ResponseEntity

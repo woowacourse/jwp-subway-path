@@ -59,7 +59,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/line/" + id)
+                .when().get("/lines/" + id)
                 .then().log().all().
                 extract();
 
@@ -75,7 +75,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/line/" + lineResponse.getId())
+                .when().get("/lines/" + lineResponse.getId())
                 .then().log().all().
                 extract();
 

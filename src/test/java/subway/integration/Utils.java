@@ -21,7 +21,7 @@ public class Utils {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new LineCreateRequest(lineName))
-                .when().post("/line")
+                .when().post("/lines")
                 .then().log().all().
                 extract();
         return response;

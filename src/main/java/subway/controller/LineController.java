@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
@@ -18,7 +19,7 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping("/line")
+    @PostMapping
     public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineCreateRequest lineCreateRequest) {
         final LineResponse lineResponse = lineService.createLine(lineCreateRequest);
         return ResponseEntity
@@ -26,7 +27,7 @@ public class LineController {
                 .body(lineResponse);
     }
 
-    @DeleteMapping("/line/{lineId}")
+    @DeleteMapping("/{lineId}")
     public ResponseEntity<String> deleteLine(@PathVariable Long lineId) {
         String lineName = lineService.deleteLine(lineId);
         return ResponseEntity
@@ -34,7 +35,7 @@ public class LineController {
                 .body(lineName);
     }
 
-    @GetMapping("/line/{lineId}")
+    @GetMapping("/{lineId}")
     public ResponseEntity<LineResponse> findLine(@PathVariable Long lineId) {
         LineResponse lineResponse = lineService.findLine(lineId);
         return ResponseEntity
@@ -42,7 +43,7 @@ public class LineController {
                 .body(lineResponse);
     }
 
-    @GetMapping("/lines")
+    @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         List<LineResponse> lineResponses = lineService.findAllLines();
         return ResponseEntity
