@@ -66,7 +66,9 @@ class RouteControllerTest extends IntegrationTest {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new FindShortCutRequest("가", "라", 5000))
+                .param("fromStation", "가")
+                .param("toStation", "라")
+                .param("age", 5000)
                 .when().get("/stations/route")
                 .then().log().all()
                 .extract();
@@ -111,7 +113,9 @@ class RouteControllerTest extends IntegrationTest {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new FindShortCutRequest("가", "라", 13))
+                .param("fromStation", "가")
+                .param("toStation", "라")
+                .param("age", 13)
                 .when().get("/stations/route")
                 .then().log().all()
                 .extract();
@@ -156,7 +160,9 @@ class RouteControllerTest extends IntegrationTest {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new FindShortCutRequest("가", "라", 7))
+                .param("fromStation", "가")
+                .param("toStation", "라")
+                .param("age", 7)
                 .when().get("/stations/route")
                 .then().log().all()
                 .extract();
@@ -201,7 +207,9 @@ class RouteControllerTest extends IntegrationTest {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new FindShortCutRequest("가", "라", 27))
+                .param("fromStation", "가")
+                .param("toStation", "라")
+                .param("age", 27)
                 .when().get("/stations/route")
                 .then().log().all()
                 .extract();
