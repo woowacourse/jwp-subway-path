@@ -29,9 +29,9 @@ public class RouteIntegrationTest extends IntegrationTest {
     void setUp() {
         super.setUp();
 
-        StationDao stationDao = new StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        LineDao lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        SectionDao sectionDao = new SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        LineDao lineDao = new LineDao(jdbcTemplate);
+        SectionDao sectionDao = new SectionDao(jdbcTemplate);
         SectionRepository sectionRepository = new SectionRepository(stationDao, lineDao, sectionDao);
 
         for (final Station station : TestData.getAllStations()) {
