@@ -1,97 +1,162 @@
-# jwp-subway-path
+## 1. api 재설계
 
-## API 기능 요구사항 구현하기
+### 현재 : station하나를 다른 노선에 공통으로 사용하지 않음
+line 컨트롤러
+- post : /lines
+- get : /lines/{lineId}
+- get : /lines
+- update : /lines/{lineId}
+- delete : /lines/{lineId}
 
-1. 노선에 역 등록 API 신규 구현
-    1. 노선 신규 등록
-       :ux를 고려했을 때, 신규 노선을 등록할 때, 초기 역을 함께 설정하는 것이 적합하다고 판단함
-         ```
-         POST /lines
-         {
-             "name": "2호선"
-             "color": "Green"
-         }
-         ```
-
-    2. 기존 노선에 역 등록
-       ```
-         POST /lines/{lineId}/stations
-         {
-             "upStation": "낙성대id"
-             "downStation": "사당id"
-             "distance": 1
-         }
-         ```
-        - 빈 노선인 경우,두 역을 동시에 등록해야 한다
-        - 빈노선이 아닌 경우, 한 역은 해당 노선에 존재하는 역이어야 하고, 다른 역은 노선에 등록되지 않은 역이어야 한다 
-        - 거리 정보는 양의 정수로 제한한다
-
-2. 노선에 역 제거 API 신규 구현
-    1. 노선 삭제
-       :ux를 고려했을 때, 신규 노선을 등록할 때, 초기 역을 함께 설정하는 것이 적합하다고 판단함
-         ```
-         DELETE /lines/{lineId}
-         ```
-
-    2. 노선에 역 삭제
-       ```
-         DELETE /lines/{lineId}/stations/{stationId}
-       ```
-       - 
-3. 노선 조회 API 수정
-    1. 노선 조회
-        ```
-          GET /lines/{lineId}
-        ```
-    
-    2. 노선 목록 조회
-        ```
-          GET /lines
-        ```
-    
-4. 테스트 하기
- - 노선에 역이 하나도 등록되지 않은 상황에서 최초 등록 시 두 역을 동시에 등록해야 합니다. 
-   - 하나의 역은 여러 노선에 등록이 될 수 있습니다.
-     (1호선: A-B-C, 2호선: Z-B-D 처럼 B역은 두개 이상의 노선에 포함될 수 있습니다.)
-   - 노선 가운데 역이 등록 될 경우 거리 정보를 고려해야 합니다.
-     A-B-C 노선에서 B 다음에 D 역을 등록하려고 하는데
-     B-C가 3km, B-D거리가 2km라면 B-D거리는 2km로 등록되어야 하고 D-C 거리는 1km로 등록되어야 합니다.
-   - 노선 가운데 역이 등록 될 경우 거리는 양의 정수라는 비즈니스 규칙을 지켜야 합니다. 
-     A-B-C 노선에서 B 다음에 D 역을 등록하려고 하는데
-     B-C역의 거리가 3km인 경우 B-D 거리는 3km보다 적어야 합니다.
-   - 노선에 역 제거 테스트
-     - 노선에서 역을 제거할 경우 정상 동작을 위해 재배치 되어야 합니다.
-        A-B-C-D 역이 있는 노선에서 C역이 제거되는 경우 A-B-D 순으로 재배치됩니다.
-     - 노선에서 역이 제거될 경우 역과 역 사이의 거리도 재배정되어야 합니다. 
-       A-B가 2km, B-C가 3km, C-D가 4km인 경우 C역이 제거되면 B-D 거리가 7km가 되어야 합니다.
-     - 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거되어야 합니다. 
-       A-B 노선에서 B를 제거할 때 거리 정보를 포함할 수 없기 때문에 두 역 모두 제거되어야 합니다.
+lineStation컨트롤러
+- post : lines/{lineId}/stations/init (초기 구간 등록)
+- post : lines/{lineId}/stations")
 
 
-## 도메인 설계하기
-### Line
-- 필드
-  - Long id
-  - String name => LineName name (-선으로 끝나야함) endwith
-  - String color => Color color
-  - Sections
-- 기능
-  - 역 목록 조회하기
+### 수정 : station하나를 다른 노선에 공통으로 사용함
+line 컨트롤러
+- post : /lines
+- get : /lines/{lineId}
+- get : /lines
+- update : /lines/{lineId}
+- delete : /lines/{lineId}
 
-### Sections
-- 필드
-  - List<Section>
-- 기능
-  - 역 상행-하행 순으로 정렬하기
-  - 역 목록 조회하기
+station 컨트롤러
+- post : /stations
+- get : /stations
+- get : /stations/{stationId} (역 정보 조회)
+- update : /stations/{stationId}
+- delete : /stations/{stationId}
+    - 특정 노선 삭제시, 모든 노선의 해당 station 삭제 및 이어주기
 
-### Section
-- 필드
-  - Station upStation
-  - Station downStation
-  - Integer distance => Distance distance
+lineStation컨트롤러
+- post : lines/{lineId}/stations/init
+    - (빈 노선 등록)
+    - 이유: 빈 노선에 등록할 때는, 기준역과 새로운 역의 구분이 있기 떄문에, 요청 페이지가 달라야 한다고 생각한다
+- post : lines/{lineId}/stations
+- delete : lines/{lineId}/stations/{stationId}
+    - 특정 노선의 역 삭제
 
-### Station
-- 필드
-  - Long id
-  - String name => StaionName name (-역으로 끝나야함)  endwith
+## 2. 데이터 베이스 재 설계
+line
+- id : pk
+- name : unique
+- color : unique
+
+station
+- id : pk
+- name : unique
+
+section
+- id
+- lineId
+- stationId
+- distance
+- unique : lineId, stationId
+
+
+---
+2단계 시작
+
+## 3. 데이터 베이스 설정 및 영속성 레이어 인터페이스로 만들기
+- 프로덕션의 데이터베이스는 로컬에 저장될 수 있도록 설정
+- 테스트용 데이터베이스는 인메모리로 동작할 수 있도록 설정
+
+
+## 4. 기능 구현 목록
+
+### 경로 조회 API 구현
+:출발역과 도착역 사이의 최단 거리 경로를 구하는 API를 구현
+
+1. 비즈니스 로직
+- subway
+    - [ ] List<Line>
+    - [ ] 새로운 노선 추가할 때, 이름 중복/색깔 중복 없는지 확인 기능 추가하기
+    - [ ] 노선 추가 기능
+    - [ ] 노선 삭제 기능
+    - [ ] 노선 수정 기능
+    - [ ] 노선 조회 기능
+
+    - [ ] id로 노선 조회 기능 (* 고민해보기)
+    - [ ] 이름으로 노선 조회 기능
+
+    - [ ] 출발역과 도착역 사이의 최단 경로 구하기 기능 (인터페이스 사용하기)
+    - [ ] 최단 거리 경로 조회하기 List<Station>
+    - [ ] 최단 총 거리 길이 조회하기
+
+- 최단 경로 구하기 기능 구체화
+    - 입력 : 출발역, 도착역
+    - 출발역의 line 가져오기
+    - 도착역의 line 가져오기
+    - 예를 들어,
+        - 2호선 : 서울대 - 낙성대 - 사당 - 교대 - 방배 - 서초 - 강남
+        - 3호선 : 압구정 - 신사 - 잠원 - 고속터미널 - 교대 - 남부터미널
+        - 4호선 : 사당 - 이수 - 동작
+        - 7호선 : 이수 - 내방 - 고속터미널 - 반포
+        - 출발역 : 낙성대 / 도착역 : 고속터미널
+
+        - 가능한 경로
+            - 낙성 - 사당 - 교대 - 고속터미널 (2->3호선) 1번 환승
+            - 낙성 - 사당(2,4) - 이수(4,7) - 고속터미널 (2->4->7호선) 2번 환승
+
+2. api 명세
+- RouteController
+- get : /route
+    - 경로
+    - 총 거리
+
+3. api 구조
+- RouteController
+- RouteService
+    - [] 경로 조회 전략 패턴 의존성 주입받아서 저장하기
+    - [] 질문 : RouteService의 내부 변수로 calculator을 저장하는 것이 맞는지?
+- LineRepository
+    - 모든 line목록 조회해서, subway 만들기
+
+
+### 요금 조회 기능 추가
+: 경로 조회 시 요금 정보를 포함하여 응답한다
+요금 계산 방법
+기본운임(10㎞ 이내): 기본운임 1,250원
+이용 거리 초과 시 추가운임 부과
+10km~50km: 5km 까지 마다 100원 추가
+50km 초과: 8km 까지 마다 100원 추가
+
+1. 비즈니스 로직
+- [ ] 고민점1 : 요금 조회 기능을 subway가 가지고 있는 것이 맞나?
+    - 만약 갖는다고 하자, 최단 경로도 구하고 + 주어진 경로의 요금도 조회할 수 있다
+    - 안가지면 누가 경로조회 기능을 가지고 요금 조회기능을 가질것인가?
+
+- subway
+    - [x] 출발역과 도착역 사이의 최단 경로 구하기 기능 (인터페이스 => 다익스트라)
+        - [X] 최단 거리 경로 조회하기 List<Station>
+        - [X] 총 거리 길이 조회하기
+
+- subwayFare
+    - [ ] 요금 조회 기능 (인터페이스 => 다익스트라)
+        - [ ] 입력값 : 총 distance
+        - [ ] distance가
+            - 기본운임(10㎞ 이내): 기본운임 1,250원
+            - 이용 거리 초과 시 추가운임 부과
+                - distance-10km(기본 운임거리)가
+                    - 10km~50km 인 경우: 5km 까지 마다 100원 추가
+                        - 예) 28km이면, 18km는 추가 운임 부과
+                        - 나머지는 버린다
+                    - 50km 초과: 8km 까지 마다 100원 추가
+                        - 예) 60km 인 경우
+
+2. api 명세
+- RouteController
+- get : /route
+    - 경로
+    - 총 거리
+    - 총 금액
+
+3. api 구조
+- RouteController
+- RouteService
+    - [] 경로 조회하기
+        - [] 최단 경로 조회하기
+        - [] 최단 경로의 거리 조회하기
+- FareService
+    - [] 거리에 따른 요금 조회하기
