@@ -1,8 +1,8 @@
 package subway.application;
 
-import static subway.application.StationService.EMPTY_STATION_ID;
-
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
@@ -28,7 +28,8 @@ public class LineService {
 
     public Long saveLine(LineRequest request) {
         validateNewLine(request);
-        LineEntity newLine = new LineEntity(request.getName(), request.getColor(), null);
+        LineEntity newLine = new LineEntity(request.getName(), request.getColor(),
+            request.getExtraCharge());
         Long newLineId = lineDao.insert(newLine);
         Long upEndStationId = insertEndStations(request, newLineId);
         lineDao.updateHeadStation(newLineId, upEndStationId);
@@ -43,7 +44,7 @@ public class LineService {
 
     private void validateExistLine(LineRequest request) {
         if (lineDao.isExist(request.getName())) {
-            throw new IllegalArgumentException("이미 같은 이름의 노선이 존재합니다");
+            throw new DuplicateKeyException("이미 같은 이름의 노선이 존재합니다");
         }
     }
 
@@ -60,7 +61,7 @@ public class LineService {
     }
 
     private Long insertEndStations(LineRequest request, Long newLineId) {
-        StationEntity downEndStation = new StationEntity(request.getDownStation(), EMPTY_STATION_ID, null,
+        StationEntity downEndStation = new StationEntity(request.getDownStation(),
             newLineId);
         Long downEndStationId = stationDao.insert(downEndStation);
 
@@ -69,6 +70,7 @@ public class LineService {
         return stationDao.insert(upEndStation);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<LineResponse> findLineResponses() {
         List<LineEntity> persistLines = lineDao.findAll();
         return persistLines.stream()
@@ -76,6 +78,7 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public LineResponse findLineResponseById(Long id) {
         LineEntity persistLine = lineDao.findById(id);
         return LineResponse.of(persistLine);

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import javax.sql.DataSource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,12 +18,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.entity.StationEntity;
 
+@Sql({"/schema-test.sql", "/data-test.sql"})
 @JdbcTest
 class StationDaoTest {
 
-    Long lineId;
+    private Long lineId;
     private StationDao stationDao;
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -57,17 +60,29 @@ class StationDaoTest {
     }
 
     @Test
+    @DisplayName("findAll()를 호출하면 모든 역을 반환한다")
+    void findAll() {
+        // given
+        int expected = 14;
+
+        // when
+        List<StationEntity> actual = stationDao.findAll();
+
+        // then
+        Assertions.assertThat(actual).hasSize(expected);
+    }
+
+    @Test
     @DisplayName("findByLineId()를 호출하면 노선의 모든 역을 반환한다")
     void findByLineId() {
         // given
         int expected = 6;
 
         // when
-        List<StationEntity> entities = stationDao.findByLineId(lineId);
-        int actual = entities.size();
+        List<StationEntity> actual = stationDao.findByLineId(lineId);
 
         // then
-        Assertions.assertThat(actual).isEqualTo(expected);
+        Assertions.assertThat(actual).hasSize(expected);
     }
 
     @ParameterizedTest
@@ -90,7 +105,7 @@ class StationDaoTest {
         // given, when, then
         Assertions.assertThatThrownBy(
                 () -> stationDao.findByNextStationId(lineId, notExistPreviousStation))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(NoSuchElementException.class)
             .hasMessage("노선에 존재하지 않는 역이거나 이전 역이 존재하지 않는 역입니다.");
     }
 
@@ -99,18 +114,13 @@ class StationDaoTest {
     void findByLineIdAndName() {
         // given
         String stationName = "역삼역";
+        StationEntity expected=new StationEntity(2L, stationName,4L,5,lineId);
 
         // when
-        StationEntity entity = stationDao.findByLineIdAndName(lineId, stationName);
+        StationEntity actual = stationDao.findByLineIdAndName(lineId, stationName);
 
         // then
-        assertAll(
-            () -> Assertions.assertThat(entity.getId()).isEqualTo(2L),
-            () -> Assertions.assertThat(entity.getName()).isEqualTo(stationName),
-            () -> Assertions.assertThat(entity.getNext()).isEqualTo(4L),
-            () -> Assertions.assertThat(entity.getDistance()).isEqualTo(5),
-            () -> Assertions.assertThat(entity.getLineId()).isEqualTo(lineId)
-        );
+        Assertions.assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
 
     }
 
@@ -154,25 +164,47 @@ class StationDaoTest {
     }
 
     @Test
-    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 역이 노선에 존재한다면 true를 반환한다")
-    void isExist_true() {
+    @DisplayName("isExistInLine()를 호출할 때 입력한 name를 갖는 역이 노선에 존재한다면 true를 반환한다")
+    void isExistInLine_true() {
         // given, when
         String name = "선릉역";
-        boolean isExistLine = stationDao.isExist(lineId, name);
+        boolean isExistLine = stationDao.isExistInLine(lineId, name);
 
         // then
         Assertions.assertThat(isExistLine).isTrue();
     }
 
     @Test
-    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 역이 노선에 존재하지 않는다면 false를 반환한다")
-    void isExist_false() {
+    @DisplayName("isExistInLine()를 호출할 때 입력한 name를 갖는 역이 노선에 존재하지 않는다면 false를 반환한다")
+    void isExistInLine_false() {
         // given, when
         String name = "없는역";
-        boolean isExistLine = stationDao.isExist(lineId, name);
+        boolean isExistLine = stationDao.isExistInLine(lineId, name);
 
         // then
         Assertions.assertThat(isExistLine).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"선릉역", "왕십리역", "강남역", "잠실역"})
+    @DisplayName("isNotExist()를 호출할 때 입력한 name를 갖는 역이 모든 노선을 통틀어 존재한다면 false를 반환한다")
+    void isNotExist_false(String name) {
+        // given, when
+        boolean isNotExist = stationDao.isNotExist(name);
+
+        // then
+        Assertions.assertThat(isNotExist).isFalse();
+    }
+
+    @Test
+    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 역이 모든 노선을 통틀어 존재하지 않는다면 true를 반환한다")
+    void isNotExist_true() {
+        // given, when
+        String name = "없는역";
+        boolean isNotExist = stationDao.isNotExist(name);
+
+        // then
+        Assertions.assertThat(isNotExist).isTrue();
     }
 
     @Test
@@ -245,7 +277,7 @@ class StationDaoTest {
 
         // then
         Assertions.assertThatThrownBy(() -> stationDao.findByLineIdAndName(lineId, stationName))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(NoSuchElementException.class)
             .hasMessage(String.format("노선에 %s이 존재하지 않습니다.", stationName));
     }
 
@@ -257,10 +289,9 @@ class StationDaoTest {
 
         // when
         stationDao.deleteByLineId(lineId);
-        int actual = stationDao.findByLineId(lineId).size();
+        List<StationEntity> actual = stationDao.findByLineId(lineId);
 
         // then
-        Assertions.assertThat(actual).isEqualTo(expected);
+        Assertions.assertThat(actual).hasSize(expected);
     }
-
 }

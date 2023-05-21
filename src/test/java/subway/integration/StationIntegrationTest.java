@@ -35,7 +35,7 @@ public class StationIntegrationTest extends IntegrationTest {
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .post("/stations/lines/1")
+            .post("/lines/1/stations")
             .then().log().all()
             .extract();
 
@@ -52,20 +52,13 @@ public class StationIntegrationTest extends IntegrationTest {
         params.put("upStation", "강남역");
         params.put("downStation", "역삼역");
         params.put("distance", "5");
-        RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-
+        
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .post("/stations/lines/1")
+            .post("/lines/1/stations")
             .then()
             .log().all()
             .extract();
@@ -90,7 +83,7 @@ public class StationIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .when()
             .contentType("application/json;charset=UTF-8")
-            .get("/stations/lines/1")
+            .get("/lines/1/stations")
             .then().log().all()
             .extract();
 
@@ -117,7 +110,7 @@ public class StationIntegrationTest extends IntegrationTest {
             .contentType("application/json;charset=UTF-8")
             .body("강남역")
             .when()
-            .delete("/stations/lines/1")
+            .delete("/lines/1/stations")
             .then().log().all()
             .extract();
 

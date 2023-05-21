@@ -10,23 +10,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.application.StationService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
 import java.util.List;
+import subway.dto.StationRequest;
+import subway.dto.StationResponse;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
+    private final StationService stationService;
 
-    public LineController(LineService lineService) {
+    public LineController(LineService lineService, StationService stationService) {
         this.lineService = lineService;
+        this.stationService = stationService;
     }
 
     /**
      * 노선 추가
+     *
      * @param lineRequest
      * @return
      */
@@ -63,4 +69,42 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * 특정 노선의 역 목록 조회
+     *
+     * @param lineId
+     * @return
+     */
+    @GetMapping("/{lineId}/stations")
+    public ResponseEntity<List<StationResponse>> findLineStationsById(@PathVariable Long lineId) {
+        return ResponseEntity.ok(stationService.findLineStationResponsesById(lineId));
+    }
+
+    /**
+     * 노선에 역 추가
+     *
+     * @param lineId
+     * @param request
+     * @return
+     */
+    @PostMapping("/{lineId}/stations")
+    public ResponseEntity<Long> createStation(@PathVariable Long lineId,
+        @RequestBody StationRequest request) {
+        Long newStationId = stationService.saveStation(lineId, request);
+        return ResponseEntity.created(URI.create("/stations/" + newStationId)).body(newStationId);
+    }
+
+    /**
+     * 특정 노선의 역 제거
+     *
+     * @param name
+     * @param lineId
+     * @return
+     */
+    @DeleteMapping("/{lineId}/stations")
+    public ResponseEntity<List<StationResponse>> deleteStation(@RequestBody String name,
+        @PathVariable Long lineId) {
+        stationService.deleteStation(lineId, name);
+        return ResponseEntity.noContent().build();
+    }
 }

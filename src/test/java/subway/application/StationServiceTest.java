@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.assertj.core.api.Assertions;
@@ -15,12 +16,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
+@Sql({"/schema-test.sql", "/data-test.sql"})
 @JdbcTest
 class StationServiceTest {
 
@@ -214,7 +218,7 @@ class StationServiceTest {
 
             //when, then
             assertThatThrownBy(() -> stationService.saveStation(lineId, stationRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(DuplicateKeyException.class)
                 .hasMessage("이미 존재하는 역입니다.");
         }
 
@@ -228,7 +232,7 @@ class StationServiceTest {
 
             //when, then
             assertThatThrownBy(() -> stationService.saveStation(lineId, stationRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("해당 노선에 기준이 될 역이 없습니다");
         }
 
@@ -269,7 +273,7 @@ class StationServiceTest {
             assertAll(
                 () -> Assertions.assertThatThrownBy(
                         () -> stationDao.findByLineIdAndName(lineId, upEndStationName))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(NoSuchElementException.class)
                     .hasMessage(String.format("노선에 %s이 존재하지 않습니다.", upEndStationName)),
                 () -> Assertions.assertThat(afterSize).isEqualTo(beforeSize - 1),
                 () -> Assertions.assertThat(afterStationNames)
@@ -295,7 +299,7 @@ class StationServiceTest {
             assertAll(
                 () -> Assertions.assertThatThrownBy(
                         () -> stationDao.findByLineIdAndName(lineId, downEndStationName))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(NoSuchElementException.class)
                     .hasMessage(String.format("노선에 %s이 존재하지 않습니다.", downEndStationName)),
                 () -> Assertions.assertThat(afterSize).isEqualTo(beforeSize - 1),
                 () -> Assertions.assertThat(afterStationNames)
@@ -325,7 +329,7 @@ class StationServiceTest {
             assertAll(
                 () -> Assertions.assertThatThrownBy(
                         () -> stationDao.findByLineIdAndName(lineId, deleteStationName))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(NoSuchElementException.class)
                     .hasMessage(String.format("노선에 %s이 존재하지 않습니다.", deleteStationName)),
                 () -> Assertions.assertThat(afterSize).isEqualTo(beforeSize - 1),
                 () -> Assertions.assertThat(afterStationNames)
@@ -344,7 +348,7 @@ class StationServiceTest {
             // when, then
             Assertions.assertThatThrownBy(
                     () -> stationService.deleteStation(lineId, notExistStationName))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(String.format("노선에 %s이 존재하지 않습니다.", notExistStationName));
         }
     }

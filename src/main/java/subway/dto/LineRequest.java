@@ -4,6 +4,7 @@ public class LineRequest {
 
     private String name;
     private String color;
+    private int extraCharge;
     private String upStation;
     private String downStation;
     private int distance;
@@ -11,10 +12,12 @@ public class LineRequest {
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, String upStation, String downStation,
+    public LineRequest(String name, String color, int extraCharge, String upStation,
+        String downStation,
         int distance) {
         this.name = name;
         this.color = color;
+        this.extraCharge = extraCharge;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -26,6 +29,10 @@ public class LineRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraCharge() {
+        return extraCharge;
     }
 
     public String getUpStation() {

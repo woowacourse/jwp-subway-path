@@ -20,6 +20,7 @@ INSERT INTO STATION (name, next_station, distance, line_id)
 values('삼성역', 5, 8, 1);
 
 
+
 INSERT INTO LINE (name, color,extra_charge, head_station)
 values('2호선', '초록색',300, 7);
 

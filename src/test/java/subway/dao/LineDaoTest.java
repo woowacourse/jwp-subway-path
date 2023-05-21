@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import javax.sql.DataSource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +17,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.entity.LineEntity;
 
+@Sql({"/schema-test.sql", "/data-test.sql"})
 @JdbcTest
 class LineDaoTest {
 
-    Long lineId;
+    private Long lineId;
     private LineDao lineDao;
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -39,7 +42,7 @@ class LineDaoTest {
     @DisplayName("insert()를 호출할 때 유효한 LineEntity를 입력하면 정상적으로 노선이 추가된다.")
     void insert_success() {
         // given
-        LineEntity entity = new LineEntity("수인분당선", "노란색", 7L);
+        LineEntity entity = new LineEntity("수인분당선", "노란색", 700, 7L);
         int beforeSize = lineDao.findAll().size();
 
         // when
@@ -161,7 +164,7 @@ class LineDaoTest {
 
         // then
         Assertions.assertThatThrownBy(() -> lineDao.findById(lineId))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(NoSuchElementException.class)
             .hasMessage("존재하지 않는 노선입니다.");
     }
 }

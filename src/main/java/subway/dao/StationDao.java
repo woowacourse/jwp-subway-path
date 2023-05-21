@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.util.NoSuchElementException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -53,6 +54,11 @@ public class StationDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
+    public List<StationEntity> findAll() {
+        String sql = "select * from STATION";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public List<StationEntity> findByLineId(Long lineId) {
         String sql = "select * from STATION where line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
@@ -65,7 +71,7 @@ public class StationDao {
                 + "where S1.line_id = ? and S2.name = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, lineId, nextStationName);
         } catch (EmptyResultDataAccessException exception) {
-            throw new IllegalArgumentException("노선에 존재하지 않는 역이거나 이전 역이 존재하지 않는 역입니다.");
+            throw new NoSuchElementException("노선에 존재하지 않는 역이거나 이전 역이 존재하지 않는 역입니다.");
         }
     }
 
@@ -74,7 +80,7 @@ public class StationDao {
             String sql = "select * from STATION where line_id = ? AND name = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, lineId, name);
         } catch (EmptyResultDataAccessException exception) {
-            throw new IllegalArgumentException(String.format("노선에 %s이 존재하지 않습니다.", name));
+            throw new NoSuchElementException(String.format("노선에 %s이 존재하지 않습니다.", name));
         }
     }
 
@@ -96,10 +102,16 @@ public class StationDao {
             rs.getBoolean("IS_DOWN_END_STATION"), lineId, name));
     }
 
-    public boolean isExist(Long lineId, String name) {
+    public boolean isExistInLine(Long lineId, String name) {
         String sql = "select exists(select * from STATION where line_id = ? and name = ?) as is_exist";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
             rs.getBoolean("IS_EXIST"), lineId, name));
+    }
+
+    public boolean isNotExist(String name) {
+        String sql = "select not exists(select * from STATION where name = ?) as is_not_exist";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+            rs.getBoolean("IS_NOT_EXIST"), name));
     }
 
     public int updateNextStationById(Long id, Long newNextStation) {

@@ -27,8 +27,8 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        newLineRequest = new LineRequest("신분당선", "노란색", "왕십리", "인천", 100);
-        existLineRequest = new LineRequest("1호선", "연두색", "북한산우이", "신설동", 100);
+        newLineRequest = new LineRequest("신분당선", "노란색", 500, "왕십리", "인천", 100);
+        existLineRequest = new LineRequest("1호선", "연두색", 600, "북한산우이", "신설동", 100);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -69,7 +69,7 @@ public class LineIntegrationTest extends IntegrationTest {
     void getLines() {
         // given
         List<LineResponse> expectedResponses = List.of(
-            new LineResponse(1L,"1호선", "파란색")
+            new LineResponse(1L, "1호선", "파란색", 0)
         );
 
         // when

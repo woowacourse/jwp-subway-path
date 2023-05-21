@@ -2,11 +2,12 @@
 
 # 📚 도메인 모델 네이밍 사전
 
-| 한글명 | 영문명      | 설명     | 분류    |
-|-----|----------|--------|-------|
-| 역   | Station  | 지하철 역  | class |
-| 노선  | Line     | 구간의 모음 | class |
-| 거리  | Distance | 구간의 거리 | class |
+| 한글명 | 영문명      | 설명                 | 분류    |
+|-----|----------|--------------------|-------|
+| 역   | Station  | 지하철 역              | class |
+| 노선  | Line     | 구간의 모음             | class |
+| 거리  | Distance | 역 간 거리 또는 경로의 총 거리 | class |
+| 요금  | Charge   | 특정 경로에 대한 운임 요금    | class |
 
 <br>
 
@@ -16,21 +17,21 @@
 - DB 테이블 설계
 - 테이블 이름 - STATION
 
-  | id | name | next | distance | line_id  |
-                                  | --- | --- |------|----------| -------- |
-  | 1L | 노포역 | 2L | 10   | 1L       |
-  | 2L | 화정역 | 3L | 5    | 1L       |
-  | 3L | 잠실역 | 0L | null | 1L       |
-  | 4L | 화정역 | 5L | 8    | 2L       |
+  | id | name | next | distance | line_id |
+      | --- | --- |------|----------| -------- |
+  | 1L | 노포역 | 2L | 10 | 1L |
+  | 2L | 화정역 | 3L | 5 | 1L |
+  | 3L | 잠실역 | 0L | null | 1L |
+  | 4L | 화정역 | 5L | 8 | 2L |
 
 name next가 중복 허용
 
 - 테이블 이름 - LINE
 
   | id | name | color | head_station |
-                                  | --- | --- |-------| ------------ |
-  | 1L | 1호선 | 파란색 | 1L    |
-  | 2L | 2호선 | 초록색 | 4L    |
+    | --- | --- |-------| ------------ |
+  | 1L | 1호선 | 파란색 | 1L |
+  | 2L | 2호선 | 초록색 | 4L |
 
 # 👨‍🍳 기능 목록
 
@@ -47,7 +48,7 @@ name next가 중복 허용
     - [x] 테스트코드 작성
 
   ```jsx
-  POST /stations/lines/{line_id}
+  POST /lines/{line_id}/stations
   
   RequestBody = {
       upStation : "노포역",
@@ -68,7 +69,7 @@ name next가 중복 허용
     - [x] 테스트코드 작성
 
 ```jsx
-GET /stations/lines/{line_id}
+GET /lines/{line_id}/stations
 ```
 
 ```jsx
@@ -95,7 +96,7 @@ ResponseBody = [
     - [x] 테스트코드 작성
 
 ```jsx
-DELETE /stations/lines/{line_id}
+DELETE /lines/{line_id}/stations
 
 RequestBody = {
     name : "역삼역"
@@ -185,6 +186,34 @@ DELETE /lines/{lineId}
 ```jsx
 noContent
 ```
+
+## 2단계 구현
+
+- [x] 경로 조회 API 구현
+    - [x] 출발 역과 도착 역 사이의 최단 거리 경로와 그 거리를 구한다.
+    - [x] 존재하지 않는 역의 정보가 입력된다면 예외처리한다.
+    - [x] 출발역과 도착역의 이름이 같을 경우 예외처리 한다.
+        - 한 노선에서 경로찾기 뿐만 아니라 여러 노선의 환승도 고려해야 한다.
+    - [x] 요금 계산 규칙에 따라 요금을 계산하고 경로 조회 API에서 함께 반환한다.
+    - [x] (3단계) 연령에 따른 할인 제도 적용
+    - [x] (3단계) 노선에 따른 할증 제도 적용
+    - [x] 테스트코드 작성
+  ```jsx
+  GET /path
+  
+  RequestBody = {
+    startStation: "성수역",
+    endStation: "건대입구역"
+  }
+  ```
+  ```jsx
+  ResponseBody = {
+    path: ["성수역", "뚝섬역", "잠실역", "건대입구역"],
+    distance: 26,
+    charge: 1650,
+  }
+  ```
+- [x] 데이터베이스 설정을 프로덕션과 테스트를 다르게 한다.
 
 # 📌 Commit Convention
 

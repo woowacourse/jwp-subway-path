@@ -1,8 +1,11 @@
 package subway.application;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
@@ -42,30 +45,29 @@ public class StationService {
 
     private void validateBothExist(Long lineId, StationRequest request) {
         if (isExistBoth(lineId, request)) {
-            throw new IllegalArgumentException("이미 존재하는 역입니다.");
+            throw new DuplicateKeyException("이미 존재하는 역입니다.");
         }
     }
 
     private boolean isExistBoth(Long lineId, StationRequest request) {
-        return stationDao.isExist(lineId, request.getUpStation())
-            && stationDao.isExist(lineId, request.getDownStation());
+        return stationDao.isExistInLine(lineId, request.getUpStation())
+            && stationDao.isExistInLine(lineId, request.getDownStation());
     }
 
     private void validateBothNotExist(Long lineId, StationRequest request) {
         if (isNotExistBoth(lineId, request)) {
-            throw new IllegalArgumentException("해당 노선에 기준이 될 역이 없습니다");
+            throw new NoSuchElementException("해당 노선에 기준이 될 역이 없습니다");
         }
     }
 
     private boolean isNotExistBoth(Long lineId, StationRequest request) {
-        return !stationDao.isExist(lineId, request.getUpStation())
-            && !stationDao.isExist(lineId, request.getDownStation());
+        return !stationDao.isExistInLine(lineId, request.getUpStation())
+            && !stationDao.isExistInLine(lineId, request.getDownStation());
     }
 
     private Long saveDownEndStation(Long lineId, StationRequest request) {
         Long originTailId = stationDao.findTailStationByLineId(lineId);
-        StationEntity newStation = new StationEntity(request.getDownStation(),
-            EMPTY_STATION_ID, null, lineId);
+        StationEntity newStation = new StationEntity(request.getDownStation(), lineId);
         Long newHeadId = stationDao.insert(newStation);
         stationDao.updateDistanceById(originTailId, request.getDistance());
         stationDao.updateNextStationById(originTailId, newHeadId);
@@ -84,7 +86,7 @@ public class StationService {
 
     private Long saveMiddle(Long lineId, StationRequest request) {
         StationEntity upStationOfNew;
-        if (stationDao.isExist(lineId, request.getUpStation())) {   //하행 방향으로 추가
+        if (stationDao.isExistInLine(lineId, request.getUpStation())) {   //하행 방향으로 추가
             upStationOfNew = stationDao.findByLineIdAndName(lineId, request.getUpStation());
             validateDistance(upStationOfNew, request);
             return saveMiddleStation(lineId, request.getDownStation(), upStationOfNew,
@@ -114,6 +116,7 @@ public class StationService {
         return newStationId;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<StationResponse> findLineStationResponsesById(Long lineId) {
         List<StationEntity> rawStations = stationDao.findByLineId(lineId);
         StationEntity currentStation = stationDao.findHeadStationByLineId(lineId);
@@ -139,16 +142,20 @@ public class StationService {
     public void deleteStation(Long lineId, String name) {
         validateCanDelete(lineId, name);
         StationEntity deleteStation = stationDao.findByLineIdAndName(lineId, name);
+        int rowNumber;
         if (lineDao.isUpEndStation(lineId, name)) {
-            deleteUpEndStation(lineId, deleteStation);
+            rowNumber = deleteUpEndStation(lineId, deleteStation);
+            validateDeleteSuccess(rowNumber);
             return;
         }
         StationEntity upStation = stationDao.findByNextStationId(lineId, name);
         if (stationDao.isDownEndStation(lineId, name)) {
-            deleteDownEndStation(deleteStation, upStation);
+            rowNumber = deleteDownEndStation(deleteStation, upStation);
+            validateDeleteSuccess(rowNumber);
             return;
         }
-        deleteMiddleStation(deleteStation, upStation);
+        rowNumber = deleteMiddleStation(deleteStation, upStation);
+        validateDeleteSuccess(rowNumber);
     }
 
     private void validateCanDelete(Long lineId, String name) {
@@ -158,7 +165,7 @@ public class StationService {
 
     private void validateStationCount(Long lineId) {
         if (stationDao.findByLineId(lineId).size() <= MIN_STATION_COUNT) {
-            throw new IllegalArgumentException("노선에는 최소 2개 이상의 역이 존재해야 합니다.");
+            throw new IllegalStateException("노선에는 최소 2개 이상의 역이 존재해야 합니다.");
         }
     }
 
@@ -166,20 +173,26 @@ public class StationService {
         stationDao.findByLineIdAndName(lineId, name);
     }
 
-    private void deleteUpEndStation(Long lineId, StationEntity deleteStation) {
+    private int deleteUpEndStation(Long lineId, StationEntity deleteStation) {
         lineDao.updateHeadStation(lineId, deleteStation.getNext());
-        stationDao.deleteById(deleteStation.getId());
+        return stationDao.deleteById(deleteStation.getId());
     }
 
-    private void deleteDownEndStation(StationEntity deleteStation, StationEntity upStation) {
+    private int deleteDownEndStation(StationEntity deleteStation, StationEntity upStation) {
         stationDao.updateNextStationById(upStation.getId(), EMPTY_STATION_ID);
-        stationDao.deleteById(deleteStation.getId());
+        return stationDao.deleteById(deleteStation.getId());
     }
 
-    private void deleteMiddleStation(StationEntity deleteStation, StationEntity upStation) {
+    private int deleteMiddleStation(StationEntity deleteStation, StationEntity upStation) {
         int newDistance = upStation.getDistance() + deleteStation.getDistance();
         stationDao.updateDistanceById(upStation.getId(), newDistance);
         stationDao.updateNextStationById(upStation.getId(), deleteStation.getNext());
-        stationDao.deleteById(deleteStation.getId());
+        return stationDao.deleteById(deleteStation.getId());
+    }
+
+    private void validateDeleteSuccess(int rowNumber) {
+        if (rowNumber != 1) {
+            throw new NoSuchElementException("삭제하려는 역이 존재하지 않습니다.");
+        }
     }
 }

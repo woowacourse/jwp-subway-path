@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.util.NoSuchElementException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -20,6 +21,7 @@ public class LineDao {
             rs.getLong("id"),
             rs.getString("name"),
             rs.getString("color"),
+            rs.getInt("extra_charge"),
             rs.getLong("head_station")
         );
     private final JdbcTemplate jdbcTemplate;
@@ -36,6 +38,7 @@ public class LineDao {
         Map<String, Object> params = new HashMap<>();
         params.put("name", entity.getName());
         params.put("color", entity.getColor());
+        params.put("extra_charge", entity.getExtraCharge());
         params.put("head_station", entity.getHeadStation());
 
         return insertAction.executeAndReturnKey(params).longValue();
@@ -51,7 +54,7 @@ public class LineDao {
             String sql = "select * from LINE WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException exception) {
-            throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+            throw new NoSuchElementException("존재하지 않는 노선입니다.");
         }
     }
 
