@@ -54,7 +54,7 @@ class GetShortestPathControllerTest {
         RestAssuredMockMvc.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().get("/path")
+                .when().get("/shortest-path")
                 .then().log().all()
                 .contentType(ContentType.JSON)
                 .status(HttpStatus.OK)
@@ -74,7 +74,7 @@ class GetShortestPathControllerTest {
         RestAssuredMockMvc.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().get("/path")
+                .when().get("/shortest-path")
                 .then().log().all()
                 .assertThat()
                 .status(HttpStatus.BAD_REQUEST);
@@ -91,7 +91,7 @@ class GetShortestPathControllerTest {
         RestAssuredMockMvc.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().get("/path")
+                .when().get("/shortest-path")
                 .then().log().all()
                 .assertThat()
                 .status(HttpStatus.BAD_REQUEST);

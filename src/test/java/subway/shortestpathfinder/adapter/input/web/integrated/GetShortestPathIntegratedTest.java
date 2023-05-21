@@ -125,7 +125,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().get("/path")
+                .when().get("/shortest-path")
                 .then().log().all()
                 .contentType(ContentType.JSON)
                 .statusCode(HttpStatus.OK.value())
@@ -242,7 +242,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().get("/path")
+                .when().get("/shortest-path")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -258,7 +258,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().get("/path")
+                .when().get("/shortest-path")
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -275,7 +275,7 @@ class GetShortestPathIntegratedTest extends IntegrationTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().get("/path")
+                .when().get("/shortest-path")
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());

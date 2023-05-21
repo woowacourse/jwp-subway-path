@@ -1,5 +1,4 @@
 spring:
-  h2.console.enabled: true
   sql.init.mode: always
   datasource:
     url: jdbc:mysql://localhost:13306/subway?serverTimezone=UTC&characterEncoding=UTF-8

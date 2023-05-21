@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(final Exception exception) {
         final String message = "[ERROR] 서버가 응답할 수 없습니다.";
         logger.error(message);
-        return ResponseEntity.badRequest().body(new ExceptionResponse(message));
+        return ResponseEntity.internalServerError().body(new ExceptionResponse(message));
     }
     
-    @ExceptionHandler
+    @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExceptionResponse> handleIllegalArgumentException (final IllegalArgumentException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.badRequest().body(new ExceptionResponse("[ERROR] " + exception.getMessage()));
