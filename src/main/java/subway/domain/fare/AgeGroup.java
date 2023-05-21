@@ -29,8 +29,11 @@ public enum AgeGroup {
                 .orElseThrow(InvalidAgeException::new);
     }
 
-    public int calculateFare(final int fare) {
-        final int result = fare - discountFare;
-        return (int) (result - result * discountRatio);
+    public int getDiscountFare() {
+        return discountFare;
+    }
+
+    public double getDiscountRatio() {
+        return discountRatio;
     }
 }

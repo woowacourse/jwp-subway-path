@@ -11,15 +11,14 @@ import org.junit.jupiter.api.Test;
 class PassengerTest {
 
     @Test
-    void 나이에_따라_금액을_계산한다() {
+    void 나이에_해당하는_AgeGroup을_반환한다() {
         // given
         final Passenger passenger = new Passenger(17);
-        final int fare = 1250;
 
         // when
-        final int result = passenger.calculateFare(fare);
+        final AgeGroup result = passenger.calulateAgeGroup();
 
         // then
-        assertThat(result).isEqualTo(720);
+        assertThat(result).isEqualTo(AgeGroup.YOUTH);
     }
 }

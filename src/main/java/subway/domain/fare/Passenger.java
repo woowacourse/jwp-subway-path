@@ -2,13 +2,13 @@ package subway.domain.fare;
 
 public class Passenger {
 
-    private AgeGroup ageGroup;
+    private int age;
 
     public Passenger(final int age) {
-        this.ageGroup = AgeGroup.from(age);
+        this.age = age;
     }
 
-    public int calculateFare(final int fare) {
-        return ageGroup.calculateFare(fare);
+    public AgeGroup calulateAgeGroup() {
+        return AgeGroup.from(age);
     }
 }
