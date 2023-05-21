@@ -1,7 +1,6 @@
 package subway.shortestpathfinder.dto;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
 
 public class GetShortestPathRequest {
     @NotBlank(message = "startStationName은 null 또는 empty일 수 없습니다.")
@@ -22,19 +21,6 @@ public class GetShortestPathRequest {
     
     public String getEndStationName() {
         return endStationName;
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final GetShortestPathRequest that = (GetShortestPathRequest) o;
-        return Objects.equals(startStationName, that.startStationName) && Objects.equals(endStationName, that.endStationName);
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(startStationName, endStationName);
     }
     
     @Override

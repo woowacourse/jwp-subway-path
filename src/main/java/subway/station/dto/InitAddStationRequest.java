@@ -7,7 +7,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.List;
-import java.util.Objects;
 
 public class InitAddStationRequest {
     @NotBlank (message = "역 이름은 null 또는 빈값이 올 수 없습니다.")
@@ -51,19 +50,6 @@ public class InitAddStationRequest {
     
     public Long getLineId() {
         return lineId;
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final InitAddStationRequest that = (InitAddStationRequest) o;
-        return Objects.equals(firstStation, that.firstStation) && Objects.equals(secondStation, that.secondStation) && Objects.equals(distance, that.distance) && Objects.equals(lineId, that.lineId);
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(firstStation, secondStation, distance, lineId);
     }
     
     @Override

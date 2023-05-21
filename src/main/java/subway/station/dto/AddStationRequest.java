@@ -4,7 +4,6 @@ import subway.section.domain.Direction;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 public class AddStationRequest {
     @NotNull(message = "lineId는 null일 수 없습니다.")
@@ -52,19 +51,6 @@ public class AddStationRequest {
     
     public Long getDistance() {
         return distance;
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final AddStationRequest that = (AddStationRequest) o;
-        return Objects.equals(lineId, that.lineId) && Objects.equals(baseStation, that.baseStation) && direction == that.direction && Objects.equals(additionalStation, that.additionalStation) && Objects.equals(distance, that.distance);
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(lineId, baseStation, direction, additionalStation, distance);
     }
     
     @Override
