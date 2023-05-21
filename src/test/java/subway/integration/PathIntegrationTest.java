@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.request.ShortestPathRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;

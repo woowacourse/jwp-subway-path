@@ -6,12 +6,12 @@ public class ShortestPathResponse {
 
     private final int distance;
     private final int fee;
-    private final List<StationResponse> route;
+    private final List<StationResponse> path;
 
-    public ShortestPathResponse(final int distance, final int fee, final List<StationResponse> route) {
+    public ShortestPathResponse(final int distance, final int fee, final List<StationResponse> path) {
         this.distance = distance;
         this.fee = fee;
-        this.route = route;
+        this.path = path;
     }
 
     public int getDistance() {
@@ -22,7 +22,7 @@ public class ShortestPathResponse {
         return fee;
     }
 
-    public List<StationResponse> getRoute() {
-        return route;
+    public List<StationResponse> getPath() {
+        return path;
     }
 }
