@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.service.LineCommandService;
 import subway.service.LineQueryService;
 import subway.service.dto.LineResponse;

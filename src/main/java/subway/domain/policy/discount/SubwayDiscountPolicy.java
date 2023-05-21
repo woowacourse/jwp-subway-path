@@ -1,4 +1,6 @@
-package subway.domain;
+package subway.domain.policy.discount;
+
+import subway.domain.Money;
 
 public interface SubwayDiscountPolicy {
 

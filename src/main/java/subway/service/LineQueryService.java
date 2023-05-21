@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.global.exception.line.CanNotFoundLineException;
 
 import java.util.List;

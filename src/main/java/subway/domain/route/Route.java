@@ -1,4 +1,8 @@
-package subway.domain;
+package subway.domain.route;
+
+import subway.domain.Distance;
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 
 import java.util.List;
 

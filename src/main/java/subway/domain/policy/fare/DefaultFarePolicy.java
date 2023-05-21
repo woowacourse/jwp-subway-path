@@ -1,6 +1,9 @@
-package subway.domain;
+package subway.domain.policy.fare;
 
 import org.springframework.stereotype.Component;
+import subway.domain.Distance;
+import subway.domain.Money;
+import subway.domain.route.Route;
 
 import java.math.BigDecimal;
 

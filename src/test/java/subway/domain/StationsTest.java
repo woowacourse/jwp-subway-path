@@ -2,6 +2,8 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.station.Station;
+import subway.domain.station.Stations;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

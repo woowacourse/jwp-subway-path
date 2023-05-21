@@ -1,8 +1,18 @@
-package subway.domain;
+package subway.domain.policy;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.Money;
+import subway.domain.line.Line;
+import subway.domain.policy.discount.AgeDiscountPolicy;
+import subway.domain.policy.discount.DiscountCondition;
+import subway.domain.policy.fare.DefaultFarePolicy;
+import subway.domain.policy.fare.LineFarePolicy;
+import subway.domain.route.Route;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
+import subway.domain.station.Stations;
 
 import java.util.List;
 

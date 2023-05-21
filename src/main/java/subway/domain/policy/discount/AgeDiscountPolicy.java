@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.policy.discount;
 
 import org.springframework.stereotype.Component;
+import subway.domain.Money;
 
 import java.util.EnumMap;
 import java.util.Map;

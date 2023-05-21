@@ -3,9 +3,9 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.domain.Stations;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
+import subway.domain.station.Stations;
 
 import java.util.List;
 import java.util.stream.Collectors;

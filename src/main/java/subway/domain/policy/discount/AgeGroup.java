@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.policy.discount;
 
 import java.util.Arrays;
 import java.util.Objects;

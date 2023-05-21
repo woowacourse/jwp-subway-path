@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.policy.discount;
 
 public class DiscountCondition {
 

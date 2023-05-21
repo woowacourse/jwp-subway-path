@@ -1,12 +1,12 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.domain.ChargePolicyComposite;
-import subway.domain.DiscountCondition;
-import subway.domain.Line;
 import subway.domain.Money;
-import subway.domain.Route;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.policy.ChargePolicyComposite;
+import subway.domain.policy.discount.DiscountCondition;
+import subway.domain.route.Route;
+import subway.domain.station.Station;
 import subway.service.dto.ShortestRouteRequest;
 
 import java.util.List;

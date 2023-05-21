@@ -1,6 +1,9 @@
-package subway.domain;
+package subway.domain.policy.fare;
 
 import org.springframework.stereotype.Component;
+import subway.domain.Money;
+import subway.domain.route.EdgeSection;
+import subway.domain.route.Route;
 
 import java.util.List;
 import java.util.Map;
