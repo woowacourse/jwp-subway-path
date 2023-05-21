@@ -24,4 +24,11 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("DB 조회에 실패하였습니다. 처리되지 않은 예외이니 관리자에게 문의하세요.");
         return ResponseEntity.internalServerError().body(errorResponse);
     }
+
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<ErrorResponse> handleNotHandledException(
+        Exception exception) {
+        ErrorResponse errorResponse = new ErrorResponse("처리되지 않은 예외입니다. 관리자에게 문의하세요.");
+        return ResponseEntity.internalServerError().body(errorResponse);
+    }
 }
