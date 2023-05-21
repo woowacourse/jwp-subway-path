@@ -1,7 +1,6 @@
 package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.core.Direction.RIGHT;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +39,7 @@ public class StationServiceTest {
                 new Section("Z", "B", 2),
                 new Section("B", "Y", 3)
         )));
-        final StationSaveRequest request = new StationSaveRequest("1호선", "B", "C", RIGHT, 3);
+        final StationSaveRequest request = new StationSaveRequest("1호선", "B", "C", "RIGHT", 3);
 
         // when
         stationService.save(request);

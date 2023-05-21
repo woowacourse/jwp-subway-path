@@ -2,7 +2,6 @@ package subway.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.core.Direction.RIGHT;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -33,7 +32,7 @@ public class StationControllerTest extends IntegrationTest {
         lineRepository.save(new Line("1호선", "RED", 0, List.of(
                 new Section("A", "B", 2)
         )));
-        final StationSaveRequest request = new StationSaveRequest("1호선", "B", "C", RIGHT, 3);
+        final StationSaveRequest request = new StationSaveRequest("1호선", "B", "C", "RIGHT", 3);
 
         // when
         ExtractableResponse<Response> response = RestAssured

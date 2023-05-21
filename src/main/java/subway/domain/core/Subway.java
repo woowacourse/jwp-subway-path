@@ -21,11 +21,12 @@ public class Subway {
             final String baseStationName,
             final String additionalStationName,
             final int distanceValue,
-            final Direction direction
+            final String directionValue
     ) {
         final Station base = new Station(baseStationName);
         final Station additional = new Station(additionalStationName);
         final Distance distance = new Distance(distanceValue);
+        final Direction direction = Direction.valueOf(directionValue);
 
         if (lines.stream().anyMatch(line -> line.containsAll(base, additional))) {
             throw new InvalidSectionException("지하철 전체 노선에 이미 존재하는 구간입니다.");

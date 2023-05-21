@@ -2,7 +2,6 @@ package subway.domain.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.core.Direction.LEFT;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +31,7 @@ class SubwayTest {
         final Subway subway = new Subway(List.of(line1, line2));
 
         // expect
-        assertThatThrownBy(() -> subway.add("1호선", "B", "Y", 5, LEFT))
+        assertThatThrownBy(() -> subway.add("1호선", "B", "Y", 5, "LEFT"))
                 .isInstanceOf(InvalidSectionException.class)
                 .hasMessage("지하철 전체 노선에 이미 존재하는 구간입니다.");
     }
@@ -43,7 +42,7 @@ class SubwayTest {
         final Subway subway = new Subway(Collections.emptyList());
 
         // expect
-        assertThatThrownBy(() -> subway.add("1호선", "B", "Y", 5, LEFT))
+        assertThatThrownBy(() -> subway.add("1호선", "B", "Y", 5, "LEFT"))
                 .isInstanceOf(LineNotFoundException.class)
                 .hasMessage("노선을 찾을 수 없습니다.");
     }
@@ -63,7 +62,7 @@ class SubwayTest {
         ));
 
         // when
-        subway.add("1호선", "B", "D", 3, LEFT);
+        subway.add("1호선", "B", "D", 3, "LEFT");
 
         // then
         assertThat(subway.getLines()).flatExtracting(Line::getSections).containsAll(List.of(
