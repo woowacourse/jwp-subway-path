@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.SectionRequest;
+import subway.dto.request.SectionRequest;
 import subway.dto.StationDto;
 import subway.dto.StationsDto;
 import subway.repository.SectionRepository;
