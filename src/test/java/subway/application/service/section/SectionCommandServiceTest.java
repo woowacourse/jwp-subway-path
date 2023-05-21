@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import subway.adapter.in.web.section.dto.SectionCreateRequest;
 import subway.adapter.in.web.section.dto.SectionDeleteRequest;
-import subway.application.port.out.line.LineQueryPort;
-import subway.application.port.out.section.SectionCommandPort;
-import subway.application.port.out.section.SectionQueryPort;
-import subway.application.port.out.station.StationQueryPort;
+import subway.application.port.out.line.LineQueryHandler;
+import subway.application.port.out.section.SectionCommandHandler;
+import subway.application.port.out.section.SectionQueryHandler;
+import subway.application.port.out.station.StationQueryHandler;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -22,20 +22,20 @@ import java.util.Optional;
 import static org.mockito.BDDMockito.given;
 
 class SectionCommandServiceTest {
-    private LineQueryPort lineQueryPort;
-    private SectionCommandPort sectionCommandPort;
-    private SectionQueryPort sectionQueryPort;
-    private StationQueryPort stationQueryPort;
+    private LineQueryHandler lineQueryHandler;
+    private SectionCommandHandler sectionCommandPort;
+    private SectionQueryHandler sectionQueryPort;
+    private StationQueryHandler stationQueryPort;
     private SectionCommandService sectionCommandService;
 
     @BeforeEach
     void setUp() {
-        lineQueryPort = Mockito.mock(LineQueryPort.class);
-        sectionCommandPort = Mockito.mock(SectionCommandPort.class);
-        sectionQueryPort = Mockito.mock(SectionQueryPort.class);
-        stationQueryPort = Mockito.mock(StationQueryPort.class);
+        lineQueryHandler = Mockito.mock(LineQueryHandler.class);
+        sectionCommandPort = Mockito.mock(SectionCommandHandler.class);
+        sectionQueryPort = Mockito.mock(SectionQueryHandler.class);
+        stationQueryPort = Mockito.mock(StationQueryHandler.class);
 
-        sectionCommandService = new SectionCommandService(lineQueryPort, sectionCommandPort, sectionQueryPort, stationQueryPort);
+        sectionCommandService = new SectionCommandService(lineQueryHandler, sectionCommandPort, sectionQueryPort, stationQueryPort);
     }
 
     @Test
@@ -46,7 +46,7 @@ class SectionCommandServiceTest {
                 new Section(1L, new Station("라빈"), new Station("비버"), 5L),
                 new Section(1L, new Station("비버"), new Station("허브신"), 5L));
 
-        given(lineQueryPort.findLineById(1L))
+        given(lineQueryHandler.findLineById(1L))
                 .willReturn(Optional.of(new Line(1L, "1호선", 100)));
         given(stationQueryPort.findByName(new Station("허브신")))
                 .willReturn(Optional.of(new Station("허브신")));
@@ -67,7 +67,7 @@ class SectionCommandServiceTest {
                 new Section(1L, new Station("라빈"), new Station("비버"), 5L),
                 new Section(1L, new Station("비버"), new Station("허브신"), 5L));
 
-        given(lineQueryPort.findLineById(1L))
+        given(lineQueryHandler.findLineById(1L))
                 .willReturn(Optional.of(new Line(1L, "1호선", 10)));
         given(sectionQueryPort.findAllByLineId(1L))
                 .willReturn(sections);
@@ -85,7 +85,7 @@ class SectionCommandServiceTest {
                 new Section(1L, new Station("라빈"), new Station("비버"), 5L),
                 new Section(1L, new Station("비버"), new Station("허브신"), 5L));
 
-        given(lineQueryPort.findLineById(1L))
+        given(lineQueryHandler.findLineById(1L))
                 .willReturn(Optional.of(new Line(1L, "1호선", 10)));
         given(stationQueryPort.findByName(new Station("비버")))
                 .willReturn(Optional.of(new Station("비버")));
@@ -101,7 +101,7 @@ class SectionCommandServiceTest {
                 new Section(1L, new Station("라빈"), new Station("아코"), 5L),
                 new Section(1L, new Station("아코"), new Station("허브신"), 5L));
 
-        given(lineQueryPort.findLineById(1L))
+        given(lineQueryHandler.findLineById(1L))
                 .willReturn(Optional.of(new Line(1L, "1호선", 10)));
         given(stationQueryPort.findByName(new Station("비버")))
                 .willReturn(Optional.empty());
@@ -114,7 +114,7 @@ class SectionCommandServiceTest {
     @Test
     @DisplayName("일치하는 노선이 없으면 예외처리")
     void deleteStation_lineNotFoundException() {
-        given(lineQueryPort.findLineById(1L))
+        given(lineQueryHandler.findLineById(1L))
                 .willReturn(Optional.of(new Line(1L, "1호선", 1000)));
         given(stationQueryPort.findByName(new Station("비버")))
                 .willReturn(Optional.of(new Station("비버")));

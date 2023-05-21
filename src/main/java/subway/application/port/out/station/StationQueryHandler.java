@@ -4,6 +4,6 @@ import subway.domain.Station;
 
 import java.util.Optional;
 
-public interface StationQueryPort {
+public interface StationQueryHandler {
     Optional<Station> findByName(Station station);
 }

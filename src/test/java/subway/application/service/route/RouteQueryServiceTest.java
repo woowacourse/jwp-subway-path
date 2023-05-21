@@ -9,9 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.adapter.in.web.route.dto.FindShortCutRequest;
 import subway.adapter.out.graph.dto.RouteDto;
 import subway.application.port.out.graph.ShortPathPort;
-import subway.application.port.out.line.LineQueryPort;
-import subway.application.port.out.section.SectionQueryPort;
-import subway.application.port.out.station.StationQueryPort;
+import subway.application.port.out.line.LineQueryHandler;
+import subway.application.port.out.section.SectionQueryHandler;
+import subway.application.port.out.station.StationQueryHandler;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -29,11 +29,11 @@ class RouteQueryServiceTest {
     @Mock
     private ShortPathPort shortPathPort;
     @Mock
-    private SectionQueryPort sectionQueryPort;
+    private SectionQueryHandler sectionQueryPort;
     @Mock
-    private StationQueryPort stationQueryPort;
+    private StationQueryHandler stationQueryPort;
     @Mock
-    private LineQueryPort lineQueryPort;
+    private LineQueryHandler lineQueryHandler;
     @InjectMocks
     private RouteQueryService routeQueryService;
 
@@ -55,7 +55,7 @@ class RouteQueryServiceTest {
         given(stationQueryPort.findByName(any()))
                 .willReturn(Optional.of(new Station("가")))
                 .willReturn(Optional.of(new Station("라")));
-        given(lineQueryPort.findLinesById(any()))
+        given(lineQueryHandler.findLinesById(any()))
                 .willReturn(Arrays.asList(new Line(1L, "1호선", 100), new Line(2L, "2호선", 100)));
         given(shortPathPort.findSortPath(any(), any(), anyMap()))
                 .willReturn(new RouteDto(

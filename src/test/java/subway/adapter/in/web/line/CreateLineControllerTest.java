@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import subway.adapter.in.web.line.dto.LineRequest;
-import subway.application.port.out.line.LineQueryPort;
+import subway.application.port.out.line.LineQueryHandler;
 import subway.common.IntegrationTest;
 import subway.domain.Line;
 
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class CreateLineControllerTest extends IntegrationTest {
 
     @Autowired
-    private LineQueryPort lineQueryPort;
+    private LineQueryHandler lineQueryHandler;
 
     @Test
     @DisplayName("post /lines  노선을 추가한다.")
@@ -40,7 +40,7 @@ class CreateLineControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
-                () -> assertThat(lineQueryPort.findAll()).usingRecursiveComparison().ignoringFields("id").isEqualTo(List.of(new Line(1L, "1호선", 10))
+                () -> assertThat(lineQueryHandler.findAll()).usingRecursiveComparison().ignoringFields("id").isEqualTo(List.of(new Line(1L, "1호선", 10))
                 ));
     }
 }

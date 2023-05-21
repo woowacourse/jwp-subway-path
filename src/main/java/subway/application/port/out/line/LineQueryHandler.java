@@ -5,7 +5,7 @@ import subway.domain.Line;
 import java.util.List;
 import java.util.Optional;
 
-public interface LineQueryPort {
+public interface LineQueryHandler {
     List<Line> findAll();
 
     Optional<Line> findLineById(Long lineIdRequest);

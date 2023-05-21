@@ -5,8 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import subway.adapter.in.web.station.dto.StationCreateRequest;
-import subway.application.port.out.station.StationCommandPort;
-import subway.application.port.out.station.StationQueryPort;
+import subway.application.port.out.station.StationCommandHandler;
+import subway.application.port.out.station.StationQueryHandler;
 import subway.domain.Station;
 
 import java.util.Optional;
@@ -17,13 +17,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 class StationCommandServiceTest {
-    private StationQueryPort stationQueryPort;
+    private StationQueryHandler stationQueryPort;
     private StationCommandService stationCommandService;
 
     @BeforeEach
     void setUp() {
-        StationCommandPort stationCommandPort = Mockito.mock(StationCommandPort.class);
-        stationQueryPort = Mockito.mock(StationQueryPort.class);
+        StationCommandHandler stationCommandPort = Mockito.mock(StationCommandHandler.class);
+        stationQueryPort = Mockito.mock(StationQueryHandler.class);
         stationCommandService = new StationCommandService(stationCommandPort, stationQueryPort);
     }
 

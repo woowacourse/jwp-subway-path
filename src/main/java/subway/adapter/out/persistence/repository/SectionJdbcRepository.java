@@ -3,8 +3,8 @@ package subway.adapter.out.persistence.repository;
 import org.springframework.stereotype.Repository;
 import subway.adapter.out.persistence.dao.SectionDao;
 import subway.adapter.out.persistence.entity.SectionEntity;
-import subway.application.port.out.section.SectionCommandPort;
-import subway.application.port.out.section.SectionQueryPort;
+import subway.application.port.out.section.SectionCommandHandler;
+import subway.application.port.out.section.SectionQueryHandler;
 import subway.domain.Section;
 import subway.domain.Station;
 
@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class SectionJdbcAdapter implements SectionCommandPort , SectionQueryPort {
+public class SectionJdbcRepository implements SectionCommandHandler, SectionQueryHandler {
     private final SectionDao sectionDao;
 
-    public SectionJdbcAdapter(final SectionDao sectionDao) {
+    public SectionJdbcRepository(final SectionDao sectionDao) {
         this.sectionDao = sectionDao;
     }
 

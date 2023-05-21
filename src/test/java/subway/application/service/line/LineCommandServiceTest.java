@@ -8,8 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.adapter.in.web.line.dto.LineRequest;
-import subway.application.port.out.line.LineCommandPort;
-import subway.application.port.out.line.LineQueryPort;
+import subway.application.port.out.line.LineCommandHandler;
+import subway.application.port.out.line.LineQueryHandler;
 import subway.domain.Line;
 
 import java.util.Optional;
@@ -22,16 +22,16 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class LineCommandServiceTest {
     @Mock
-    private LineCommandPort lineCommandPort;
+    private LineCommandHandler lineCommandHandler;
     @Mock
-    private LineQueryPort lineQueryPort;
+    private LineQueryHandler lineQueryHandler;
     @InjectMocks
     private LineCommandService lineCommandService;
 
     @Test
     @DisplayName("노선이 중복되지않으면 정상적으로 노선을 만든다.")
     void createLine() {
-        given(lineQueryPort.findByName(any()))
+        given(lineQueryHandler.findByName(any()))
                 .willReturn(Optional.empty());
 
         assertThatNoException().isThrownBy(
@@ -42,7 +42,7 @@ class LineCommandServiceTest {
     @Test
     @DisplayName("존재하는 노선이면 예외처리")
     void createLineException() {
-        given(lineQueryPort.findByName(any()))
+        given(lineQueryHandler.findByName(any()))
                 .willReturn(Optional.of(new Line(1L, "1호선", 10)));
 
         assertThatThrownBy(
@@ -53,9 +53,9 @@ class LineCommandServiceTest {
     @Test
     @DisplayName("저장된 노선이 정상적으로 삭제되는지 테스트")
     void deleteLine() {
-        Long lineId = lineCommandPort.createLine(new Line("1호선", 1));
+        Long lineId = lineCommandHandler.createLine(new Line("1호선", 1));
         lineCommandService.deleteLine(lineId);
 
-        Assertions.assertThat(lineQueryPort.findAll()).hasSize(0);
+        Assertions.assertThat(lineQueryHandler.findAll()).hasSize(0);
     }
 }

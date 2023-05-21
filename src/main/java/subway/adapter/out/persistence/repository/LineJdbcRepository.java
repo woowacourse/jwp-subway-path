@@ -3,8 +3,8 @@ package subway.adapter.out.persistence.repository;
 import org.springframework.stereotype.Repository;
 import subway.adapter.out.persistence.dao.LineDao;
 import subway.adapter.out.persistence.entity.LineEntity;
-import subway.application.port.out.line.LineCommandPort;
-import subway.application.port.out.line.LineQueryPort;
+import subway.application.port.out.line.LineCommandHandler;
+import subway.application.port.out.line.LineQueryHandler;
 import subway.domain.Line;
 
 import java.util.HashSet;
@@ -14,11 +14,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
-public class LineJdbcAdapter implements LineCommandPort, LineQueryPort {
+public class LineJdbcRepository implements LineCommandHandler, LineQueryHandler {
 
     private final LineDao lineDao;
 
-    public LineJdbcAdapter(final LineDao lineDao) {
+    public LineJdbcRepository(final LineDao lineDao) {
         this.lineDao = lineDao;
     }
 

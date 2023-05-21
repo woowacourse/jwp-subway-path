@@ -7,9 +7,9 @@ import subway.adapter.out.graph.dto.RouteDto;
 import subway.application.dto.RouteResponse;
 import subway.application.port.in.route.FindRouteResultUseCase;
 import subway.application.port.out.graph.ShortPathPort;
-import subway.application.port.out.line.LineQueryPort;
-import subway.application.port.out.section.SectionQueryPort;
-import subway.application.port.out.station.StationQueryPort;
+import subway.application.port.out.line.LineQueryHandler;
+import subway.application.port.out.section.SectionQueryHandler;
+import subway.application.port.out.station.StationQueryHandler;
 import subway.domain.*;
 import subway.domain.discountpolicy.SubwayFarePolicy;
 
@@ -26,15 +26,15 @@ public class RouteQueryService implements FindRouteResultUseCase {
     private static final int TO_STATION_INDEX = 1;
 
     private final ShortPathPort shortPathPort;
-    private final SectionQueryPort sectionQueryPort;
-    private final StationQueryPort stationQueryPort;
-    private final LineQueryPort lineQueryPort;
+    private final SectionQueryHandler sectionQueryPort;
+    private final StationQueryHandler stationQueryPort;
+    private final LineQueryHandler lineQueryHandler;
 
-    public RouteQueryService(final ShortPathPort shortPathPort, final SectionQueryPort sectionQueryPort, final StationQueryPort stationQueryPort, final LineQueryPort lineQueryPort) {
+    public RouteQueryService(final ShortPathPort shortPathPort, final SectionQueryHandler sectionQueryPort, final StationQueryHandler stationQueryPort, final LineQueryHandler lineQueryHandler) {
         this.shortPathPort = shortPathPort;
         this.sectionQueryPort = sectionQueryPort;
         this.stationQueryPort = stationQueryPort;
-        this.lineQueryPort = lineQueryPort;
+        this.lineQueryHandler = lineQueryHandler;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class RouteQueryService implements FindRouteResultUseCase {
                 sectionsByLine);
 
         final Fare fare = subwayFarePolicy.calculateFare(
-                lineQueryPort.findLinesById(routeDto.getLineIds()),
+                lineQueryHandler.findLinesById(routeDto.getLineIds()),
                 routeDto.getDistance(),
                 findShortCutRequest.getAge()
         );

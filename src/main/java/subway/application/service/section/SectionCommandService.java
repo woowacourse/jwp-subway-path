@@ -6,10 +6,10 @@ import subway.adapter.in.web.section.dto.SectionCreateRequest;
 import subway.adapter.in.web.section.dto.SectionDeleteRequest;
 import subway.application.port.in.section.AttachStationUseCase;
 import subway.application.port.in.section.DetachStationUseCase;
-import subway.application.port.out.line.LineQueryPort;
-import subway.application.port.out.section.SectionCommandPort;
-import subway.application.port.out.section.SectionQueryPort;
-import subway.application.port.out.station.StationQueryPort;
+import subway.application.port.out.line.LineQueryHandler;
+import subway.application.port.out.section.SectionCommandHandler;
+import subway.application.port.out.section.SectionQueryHandler;
+import subway.application.port.out.station.StationQueryHandler;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -22,13 +22,13 @@ import java.util.Optional;
 @Transactional
 public class SectionCommandService implements AttachStationUseCase, DetachStationUseCase {
 
-    private final LineQueryPort lineQueryPort;
-    private final SectionCommandPort sectionCommandPort;
-    private final SectionQueryPort sectionQueryPort;
-    private final StationQueryPort stationQueryPort;
+    private final LineQueryHandler lineQueryHandler;
+    private final SectionCommandHandler sectionCommandPort;
+    private final SectionQueryHandler sectionQueryPort;
+    private final StationQueryHandler stationQueryPort;
 
-    public SectionCommandService(final LineQueryPort lineCommandPort, final SectionCommandPort sectionCommandPort, final SectionQueryPort sectionQueryPort, final StationQueryPort stationQueryPort) {
-        this.lineQueryPort = lineCommandPort;
+    public SectionCommandService(final LineQueryHandler lineCommandPort, final SectionCommandHandler sectionCommandPort, final SectionQueryHandler sectionQueryPort, final StationQueryHandler stationQueryPort) {
+        this.lineQueryHandler = lineCommandPort;
         this.sectionCommandPort = sectionCommandPort;
         this.sectionQueryPort = sectionQueryPort;
         this.stationQueryPort = stationQueryPort;
@@ -61,7 +61,7 @@ public class SectionCommandService implements AttachStationUseCase, DetachStatio
     }
 
     private void validateLineId(final long lineId) {
-        final Optional<Line> optionalLine = lineQueryPort.findLineById(lineId);
+        final Optional<Line> optionalLine = lineQueryHandler.findLineById(lineId);
         if (optionalLine.isEmpty()) {
             throw new IllegalArgumentException("노선이 없습니다");
         }

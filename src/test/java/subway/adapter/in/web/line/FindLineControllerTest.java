@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import subway.adapter.out.persistence.repository.LineJdbcAdapter;
-import subway.adapter.out.persistence.repository.SectionJdbcAdapter;
-import subway.adapter.out.persistence.repository.StationJdbcAdapter;
+import subway.adapter.out.persistence.repository.LineJdbcRepository;
+import subway.adapter.out.persistence.repository.SectionJdbcRepository;
+import subway.adapter.out.persistence.repository.StationJdbcRepository;
 import subway.application.dto.StationResponse;
 import subway.common.IntegrationTest;
 import subway.domain.Line;
@@ -24,21 +24,21 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class FindLineControllerTest extends IntegrationTest {
 
     @Autowired
-    private LineJdbcAdapter lineJdbcAdapter;
+    private LineJdbcRepository lineJdbcRepository;
     @Autowired
-    private StationJdbcAdapter stationJdbcAdapter;
+    private StationJdbcRepository stationJdbcRepository;
     @Autowired
-    private SectionJdbcAdapter sectionJdbcAdapter;
+    private SectionJdbcRepository sectionJdbcAdapter;
 
     @Test
     @DisplayName("get /lines/{id}  정렬된 구간이 출력됩니다.")
     void findStationsByLine() {
-        Long lineId = lineJdbcAdapter.createLine(new Line("1호선", 1));
+        Long lineId = lineJdbcRepository.createLine(new Line("1호선", 1));
 
-        stationJdbcAdapter.createStation(new Station("비버"));
-        stationJdbcAdapter.createStation(new Station("라빈"));
-        stationJdbcAdapter.createStation(new Station("허브신"));
-        stationJdbcAdapter.createStation(new Station("허브신도"));
+        stationJdbcRepository.createStation(new Station("비버"));
+        stationJdbcRepository.createStation(new Station("라빈"));
+        stationJdbcRepository.createStation(new Station("허브신"));
+        stationJdbcRepository.createStation(new Station("허브신도"));
 
         List<Section> sections = List.of(
                 new Section(lineId, new Station("비버"), new Station("라빈"), 5L),
