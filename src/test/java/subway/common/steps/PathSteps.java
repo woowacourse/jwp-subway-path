@@ -23,8 +23,10 @@ public class PathSteps {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post("/shortest-path")
+                .queryParam("start", request.getStart())
+                .queryParam("end", request.getEnd())
+                .queryParam("age", request.getAge())
+                .when().get("/shortest-path")
                 .then().log().all()
                 .extract();
     }

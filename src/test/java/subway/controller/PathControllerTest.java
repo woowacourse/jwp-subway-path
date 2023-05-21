@@ -37,14 +37,16 @@ public class PathControllerTest extends IntegrationTest {
                 new Section("Y", "Z", 5),
                 new Section("C", "Y", 3)
         )));
-        final ShortestPathRequest shortestPathRequest = new ShortestPathRequest("C", "A", 17);
+        final ShortestPathRequest request = new ShortestPathRequest("C", "A", 17);
 
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(shortestPathRequest)
-                .when().post("/shortest-path")
+                .queryParam("start", request.getStart())
+                .queryParam("end", request.getEnd())
+                .queryParam("age", request.getAge())
+                .when().get("/shortest-path")
                 .then().log().all()
                 .extract();
 

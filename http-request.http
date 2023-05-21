@@ -70,11 +70,5 @@ Content-Type: application/json
 
 ### 길찾기
 
-POST http://localhost:8080/shortest-path
+GET http://localhost:8080/shortest-path?start=C&end=A&age=19
 Content-Type: application/json
-
-{
-  "start": "C",
-  "end": "A",
-  "age": 19
-}

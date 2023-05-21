@@ -2,8 +2,8 @@ package subway.controller;
 
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
@@ -18,8 +18,8 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @PostMapping("/shortest-path")
-    public ResponseEntity<ShortestPathResponse> shortestPath(@RequestBody @Valid final ShortestPathRequest request) {
+    @GetMapping("/shortest-path")
+    public ResponseEntity<ShortestPathResponse> shortestPath(@ModelAttribute @Valid final ShortestPathRequest request) {
         final ShortestPathResponse response = pathService.shortestPath(request);
         return ResponseEntity.ok(response);
     }
