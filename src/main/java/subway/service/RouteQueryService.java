@@ -65,5 +65,4 @@ public class RouteQueryService {
         return route.findShortestRouteDistance()
                     .getValue();
     }
-
 }
