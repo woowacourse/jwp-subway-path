@@ -1,6 +1,8 @@
 package fixtures;
 
 import subway.dto.LineFindResponse;
+import subway.dto.PathRequest;
+import subway.dto.PathResponse;
 import subway.dto.StationRequest;
 
 import java.util.List;
@@ -33,10 +35,13 @@ public class IntegrationFixtures {
     public static final int DISTANCE_대림역_TO_선릉역 = 5;
     public static final int DISTANCE_건대역_TO_성수역 = 15;
     public static final int DISTANCE_잠실역_TO_성수역 = 25;
-    public static final int DISTANCE_온수역_TO_철산역 = 11;
     public static final int DISTANCE_대림역_TO_신림역 = 8;
+    public static final int DISTANCE_잠실역_TO_암사역 = 8;
+    public static final int DISTANCE_온수역_TO_철산역 = 11;
 
-    public static final StationRequest REQUEST_잠실역_TO_강변역 = new StationRequest(STATION_잠실역_NAME, STATION_강변역_NAME, DISTANCE_잠실역_TO_강변역, LINE2_NAME);
+    public static final int FARE_선릉역_TO_암사역 = 1350;
+
+    public static final StationRequest REQUEST_선릉역_TO_잠실역 = new StationRequest(STATION_선릉역_NAME, STATION_잠실역_NAME, DISTANCE_선릉역_TO_잠실역, LINE2_NAME);
     public static final StationRequest REQUEST_강변역_TO_건대역 = new StationRequest(STATION_강변역_NAME, STATION_건대역_NAME, DISTANCE_강변역_TO_건대역, LINE2_NAME);
     public static final StationRequest REQUEST_대림역_TO_선릉역 = new StationRequest(STATION_대림역_NAME, STATION_선릉역_NAME, DISTANCE_대림역_TO_선릉역, LINE2_NAME);
     public static final StationRequest REQUEST_건대역_TO_성수역 = new StationRequest(STATION_건대역_NAME, STATION_성수역_NAME, DISTANCE_건대역_TO_성수역, LINE2_NAME);
@@ -44,6 +49,7 @@ public class IntegrationFixtures {
     public static final StationRequest REQUEST_대림역_TO_신림역 = new StationRequest(STATION_대림역_NAME, STATION_신림역_NAME, DISTANCE_대림역_TO_신림역, LINE2_NAME);
     public static final StationRequest REQUEST_온수역_TO_철산역 = new StationRequest(STATION_온수역_NAME, STATION_철산역_NAME, DISTANCE_온수역_TO_철산역, LINE7_NAME);
 
+    public static final PathRequest REQUEST_PATH_선릉역_TO_암사역 = new PathRequest(STATION_선릉역_NAME, STATION_암사역_NAME);
 
     public static final LineFindResponse LINE2_노선도 = new LineFindResponse(LINE2_NAME, List.of(STATION_선릉역_NAME, STATION_잠실역_NAME, STATION_건대역_NAME));
     public static final LineFindResponse LINE7_노선도_AFTER_INITIAL_INSERT = new LineFindResponse(LINE7_NAME, List.of(STATION_온수역_NAME, STATION_철산역_NAME));
@@ -55,4 +61,10 @@ public class IntegrationFixtures {
     public static final LineFindResponse LINE2_노선도_AFTER_DELETE_잠실역 = new LineFindResponse(LINE2_NAME, List.of(STATION_선릉역_NAME, STATION_건대역_NAME));
     public static final LineFindResponse LINE8_노선도 = new LineFindResponse(LINE8_NAME, List.of(STATION_잠실역_NAME, STATION_암사역_NAME));
     public static final List<LineFindResponse> ALL_LINE_노선도 = List.of(LINE2_노선도, LINE8_노선도);
+
+    public static final PathResponse PATH_선릉역_TO_암사역 = new PathResponse(
+            List.of(STATION_선릉역_NAME, STATION_잠실역_NAME, STATION_암사역_NAME),
+            DISTANCE_선릉역_TO_잠실역 + DISTANCE_잠실역_TO_암사역,
+            FARE_선릉역_TO_암사역);
+
 }
