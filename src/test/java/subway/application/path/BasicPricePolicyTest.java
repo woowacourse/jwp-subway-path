@@ -59,7 +59,7 @@ class BasicPricePolicyTest {
      */
     @ParameterizedTest
     @CsvSource(value = {"51:2150", "58:2150", "59:2250", "66:2250", "74:2350", "98:2650"}, delimiter = ':')
-    @DisplayName("거리가 50km를 초과하면 8km 마다 1000원이 추가되어야 한다.")
+    @DisplayName("거리가 50km를 초과하면 8km 마다 100원이 추가되어야 한다.")
     void calculate_overThan50(int distance, int expect) {
         // when
         int price = basicPricePolicy.calculate(distance);
