@@ -13,7 +13,6 @@ import subway.service.section.domain.Section;
 import subway.service.section.domain.SectionEdge;
 import subway.service.section.domain.Sections;
 import subway.service.section.dto.AddResult;
-import subway.service.section.dto.DeleteResult;
 import subway.service.section.dto.PathResult;
 import subway.service.section.dto.SectionCreateRequest;
 import subway.service.section.dto.SectionCreateResponse;
@@ -79,23 +78,16 @@ public class SectionService {
 
         for (Line perLine : sectionsPerLine.keySet()) {
             Sections sections = sectionsPerLine.get(perLine);
-            deleteSection(station, perLine, sections);
+            deleteStationLastSection(station, perLine, sections);
         }
         stationRepository.deleteById(station.getId());
-
     }
 
-    private void deleteSection(Station station, Line perLine, Sections sections) {
+    private void deleteStationLastSection(Station station, Line perLine, Sections sections) {
         boolean isLastSection = sectionRepository.isLastSectionInLine(perLine);
         if (isLastSection) {
             Section lastSection = sections.getSections().get(0);
             deleteStationsInLastSection(station, lastSection);
-            return;
-        }
-        DeleteResult deleteResult = sections.deleteSection(station);
-
-        for (Section addedSection : deleteResult.getAddedSections()) {
-            sectionRepository.insertSection(addedSection, perLine);
         }
     }
 
