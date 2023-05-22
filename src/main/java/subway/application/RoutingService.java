@@ -46,11 +46,7 @@ public class RoutingService {
     }
 
     private Section findFirstSection(List<Section> sections) {
-        List<Long> endStationIds = new LinkedList<>();
-        for (Section section : sections) {
-            findOnlyOneId(endStationIds, section.getUpStationId());
-            findOnlyOneId(endStationIds, section.getDownStationId());
-        }
+        List<Long> endStationIds = findEndStationIds(sections);
 
         return sections.stream()
                 .filter(section ->
@@ -59,7 +55,16 @@ public class RoutingService {
                 .findAny().orElseThrow(() -> new IllegalStateException("호선에 역이 존재하지 않습니다."));
     }
 
-    private void findOnlyOneId(final List<Long> result, final Long stationId) {
+    private List<Long> findEndStationIds(final List<Section> sections) {
+        List<Long> endStationIds = new LinkedList<>();
+        for (Section section : sections) {
+            toggleAddRemove(endStationIds, section.getUpStationId());
+            toggleAddRemove(endStationIds, section.getDownStationId());
+        }
+        return endStationIds;
+    }
+
+    private void toggleAddRemove(final List<Long> result, final Long stationId) {
         if (result.contains(stationId)) {
             result.remove(stationId);
             return;
