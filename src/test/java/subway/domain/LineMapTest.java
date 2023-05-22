@@ -4,11 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.domain.vo.Direction.DOWN;
 import static subway.domain.vo.Direction.UP;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST2_ST3;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST3_ST4;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST4_ST5;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST5_ST6;
+import static subway.fixture.SectionFixture.SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.SECTION_ST2_ST3;
+import static subway.fixture.SectionFixture.SECTION_ST3_ST4;
+import static subway.fixture.SectionFixture.SECTION_ST4_ST5;
+import static subway.fixture.SectionFixture.SECTION_ST5_ST6;
 import static subway.fixture.StationFixture.FIXTURE_STATION_1;
 import static subway.fixture.StationFixture.FIXTURE_STATION_2;
 import static subway.fixture.StationFixture.FIXTURE_STATION_3;
@@ -47,11 +47,11 @@ class LineMapTest {
     @Test
     void addStationByDownDirection() {
         LineMap lineMap = LineMap.of(List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         ));
 
         Station adding = new Station(7L, "추가역");
@@ -61,11 +61,11 @@ class LineMapTest {
                 .containsOnly(
                         new Section(FIXTURE_STATION_1, adding, new Distance(6)),
                         new Section(adding, FIXTURE_STATION_2,
-                                new Distance(LINE1_SECTION_ST1_ST2.getDistance().getValue() - 6)),
-                        LINE1_SECTION_ST2_ST3,
-                        LINE1_SECTION_ST3_ST4,
-                        LINE1_SECTION_ST4_ST5,
-                        LINE1_SECTION_ST5_ST6
+                                new Distance(SECTION_ST1_ST2.getDistance().getValue() - 6)),
+                        SECTION_ST2_ST3,
+                        SECTION_ST3_ST4,
+                        SECTION_ST4_ST5,
+                        SECTION_ST5_ST6
                 );
     }
 
@@ -73,11 +73,11 @@ class LineMapTest {
     @Test
     void addStationAtHead() {
         LineMap lineMap = LineMap.of(List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         ));
 
         Station adding = new Station(7L, "추가역");
@@ -86,11 +86,11 @@ class LineMapTest {
         assertThat(lineMap.extractSections())
                 .containsOnly(
                         new Section(adding, FIXTURE_STATION_1, new Distance(6)),
-                        LINE1_SECTION_ST1_ST2,
-                        LINE1_SECTION_ST2_ST3,
-                        LINE1_SECTION_ST3_ST4,
-                        LINE1_SECTION_ST4_ST5,
-                        LINE1_SECTION_ST5_ST6
+                        SECTION_ST1_ST2,
+                        SECTION_ST2_ST3,
+                        SECTION_ST3_ST4,
+                        SECTION_ST4_ST5,
+                        SECTION_ST5_ST6
                 );
     }
 
@@ -98,11 +98,11 @@ class LineMapTest {
     @Test
     void addStationAtTail() {
         LineMap lineMap = LineMap.of(List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         ));
 
         Station adding = new Station(7L, "추가역");
@@ -110,11 +110,11 @@ class LineMapTest {
 
         assertThat(lineMap.extractSections())
                 .containsOnly(
-                        LINE1_SECTION_ST1_ST2,
-                        LINE1_SECTION_ST2_ST3,
-                        LINE1_SECTION_ST3_ST4,
-                        LINE1_SECTION_ST4_ST5,
-                        LINE1_SECTION_ST5_ST6,
+                        SECTION_ST1_ST2,
+                        SECTION_ST2_ST3,
+                        SECTION_ST3_ST4,
+                        SECTION_ST4_ST5,
+                        SECTION_ST5_ST6,
                         new Section(FIXTURE_STATION_6, adding, new Distance(6))
                 );
     }
@@ -123,15 +123,15 @@ class LineMapTest {
     @Test
     void addStationByDownDirectionFailInvalidDistance() {
         LineMap lineMap = LineMap.of(List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         ));
 
         assertThatThrownBy(() -> lineMap.add(FIXTURE_STATION_1, new Station(7L, "추가역"),
-                new Distance(LINE1_SECTION_ST1_ST2.getDistance().getValue() + 1), DOWN))
+                new Distance(SECTION_ST1_ST2.getDistance().getValue() + 1), DOWN))
                 .isInstanceOf(IllegalDistanceArgumentException.class)
                 .hasMessageContaining("기존 역 간 거리보다 크거나 같은 거리에 위치하는 새 역을 등록할 수 없습니다.");
     }
@@ -140,11 +140,11 @@ class LineMapTest {
     @Test
     void addStationByDownDirectionFailInvalidSection() {
         LineMap lineMap = LineMap.of(List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         ));
 
         assertThatThrownBy(() -> lineMap.add(FIXTURE_STATION_1, FIXTURE_STATION_1,
@@ -157,11 +157,11 @@ class LineMapTest {
     @Test
     void deleteStation() {
         LineMap lineMap = LineMap.of(List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         ));
 
         lineMap.delete(FIXTURE_STATION_2);
@@ -169,11 +169,11 @@ class LineMapTest {
         assertThat(lineMap.extractSections())
                 .containsOnly(
                         new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(
-                                LINE1_SECTION_ST1_ST2.getDistance().getValue()
-                                        + LINE1_SECTION_ST2_ST3.getDistance().getValue())),
-                        LINE1_SECTION_ST3_ST4,
-                        LINE1_SECTION_ST4_ST5,
-                        LINE1_SECTION_ST5_ST6
+                                SECTION_ST1_ST2.getDistance().getValue()
+                                        + SECTION_ST2_ST3.getDistance().getValue())),
+                        SECTION_ST3_ST4,
+                        SECTION_ST4_ST5,
+                        SECTION_ST5_ST6
                 );
     }
 
@@ -181,21 +181,21 @@ class LineMapTest {
     @Test
     void deleteTailStation() {
         LineMap lineMap = LineMap.of(List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         ));
 
         lineMap.delete(FIXTURE_STATION_1);
 
         assertThat(lineMap.extractSections())
                 .containsOnly(
-                        LINE1_SECTION_ST2_ST3,
-                        LINE1_SECTION_ST3_ST4,
-                        LINE1_SECTION_ST4_ST5,
-                        LINE1_SECTION_ST5_ST6
+                        SECTION_ST2_ST3,
+                        SECTION_ST3_ST4,
+                        SECTION_ST4_ST5,
+                        SECTION_ST5_ST6
                 );
     }
 
@@ -203,28 +203,28 @@ class LineMapTest {
     @Test
     void deleteHeadStation() {
         LineMap lineMap = LineMap.of(List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         ));
 
         lineMap.delete(FIXTURE_STATION_6);
 
         assertThat(lineMap.extractSections())
                 .containsOnly(
-                        LINE1_SECTION_ST1_ST2,
-                        LINE1_SECTION_ST2_ST3,
-                        LINE1_SECTION_ST3_ST4,
-                        LINE1_SECTION_ST4_ST5
+                        SECTION_ST1_ST2,
+                        SECTION_ST2_ST3,
+                        SECTION_ST3_ST4,
+                        SECTION_ST4_ST5
                 );
     }
 
     @DisplayName("노선의 역이 두 개이면, 역을 삭제할 때 모두 삭제한다")
     @Test
     void deleteAllWhenTwoStationsLeft() {
-        LineMap lineMap = LineMap.of(List.of(LINE1_SECTION_ST1_ST2));
+        LineMap lineMap = LineMap.of(List.of(SECTION_ST1_ST2));
 
         lineMap.delete(FIXTURE_STATION_1);
 
@@ -236,11 +236,11 @@ class LineMapTest {
     @Test
     void getOrderedStations() {
         LineMap lineMap = LineMap.of(List.of(
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST5_ST6,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5
+                SECTION_ST2_ST3,
+                SECTION_ST1_ST2,
+                SECTION_ST5_ST6,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5
         ));
         assertThat(lineMap.getOrderedStations())
                 .containsExactly(

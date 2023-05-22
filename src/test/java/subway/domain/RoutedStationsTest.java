@@ -2,11 +2,11 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST2_ST3;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST3_ST4;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST4_ST5;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST5_ST6;
+import static subway.fixture.SectionFixture.SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.SECTION_ST2_ST3;
+import static subway.fixture.SectionFixture.SECTION_ST3_ST4;
+import static subway.fixture.SectionFixture.SECTION_ST4_ST5;
+import static subway.fixture.SectionFixture.SECTION_ST5_ST6;
 import static subway.fixture.StationFixture.FIXTURE_STATION_4;
 import static subway.fixture.StationFixture.FIXTURE_STATION_6;
 
@@ -24,11 +24,11 @@ class RoutedStationsTest {
     @Test
     void create() {
         List<Section> sections = List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         );
 
         RoutedStations result = RoutedStations.from(sections);
@@ -45,11 +45,11 @@ class RoutedStationsTest {
     @Test
     void createFailSectionsDuplicated() {
         List<Section> sections = List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST1_ST2,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         );
 
         assertThatThrownBy(() -> RoutedStations.from(sections))
@@ -61,10 +61,10 @@ class RoutedStationsTest {
     @Test
     void createFailDisconnected() {
         List<Section> sections = List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
-                LINE1_SECTION_ST5_ST6
+                SECTION_ST1_ST2,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
+                SECTION_ST5_ST6
         );
 
         assertThatThrownBy(() -> RoutedStations.from(sections))
@@ -76,10 +76,10 @@ class RoutedStationsTest {
     @Test
     void createFailForked() {
         List<Section> sections = List.of(
-                LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_ST2_ST3,
-                LINE1_SECTION_ST3_ST4,
-                LINE1_SECTION_ST4_ST5,
+                SECTION_ST1_ST2,
+                SECTION_ST2_ST3,
+                SECTION_ST3_ST4,
+                SECTION_ST4_ST5,
                 new Section(FIXTURE_STATION_4, FIXTURE_STATION_6, new Distance(10))
         );
 

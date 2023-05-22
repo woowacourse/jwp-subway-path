@@ -3,8 +3,8 @@ package subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.fixture.LineFixture.FIXTURE_LINE_1;
 import static subway.fixture.LineFixture.FIXTURE_LINE_2;
-import static subway.fixture.SectionFixture.LINE1_SECTIONS;
-import static subway.fixture.SectionFixture.LINE2_SECTIONS;
+import static subway.fixture.SectionFixture.ROUTED_SECTIONS_1_TRANSFER_2_AT_ST1;
+import static subway.fixture.SectionFixture.ROUTED_SECTIONS_2_TRANSFER_1_AT_ST1_3_AT_ST9;
 
 import java.util.List;
 import java.util.Map;
@@ -25,8 +25,8 @@ class MultiRoutedStationsTest {
     @Test
     void create() {
         Map<Line, RoutedStations> sectionsByLine = Map.of(
-                FIXTURE_LINE_1, RoutedStations.from(LINE1_SECTIONS),
-                FIXTURE_LINE_2, RoutedStations.from(LINE2_SECTIONS)
+                FIXTURE_LINE_1, RoutedStations.from(ROUTED_SECTIONS_1_TRANSFER_2_AT_ST1),
+                FIXTURE_LINE_2, RoutedStations.from(ROUTED_SECTIONS_2_TRANSFER_1_AT_ST1_3_AT_ST9)
         );
 
         MultiRoutedStations result = MultiRoutedStations.from(sectionsByLine);

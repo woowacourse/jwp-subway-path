@@ -6,9 +6,9 @@ import static org.mockito.Mockito.when;
 import static subway.fixture.LineFixture.FIXTURE_LINE_1;
 import static subway.fixture.LineFixture.FIXTURE_LINE_2;
 import static subway.fixture.LineFixture.FIXTURE_LINE_3;
-import static subway.fixture.SectionFixture.LINE1_SECTIONS;
-import static subway.fixture.SectionFixture.LINE2_SECTIONS;
-import static subway.fixture.SectionFixture.LINE3_SECTIONS;
+import static subway.fixture.SectionFixture.ROUTED_SECTIONS_1_TRANSFER_2_AT_ST1;
+import static subway.fixture.SectionFixture.ROUTED_SECTIONS_2_TRANSFER_1_AT_ST1_3_AT_ST9;
+import static subway.fixture.SectionFixture.ROUTED_SECTIONS_3_TRANSFER_1_AT_ST2_TRANSFER_2_AT_ST9;
 import static subway.fixture.StationFixture.FIXTURE_STATION_1;
 import static subway.fixture.StationFixture.FIXTURE_STATION_9;
 
@@ -49,9 +49,9 @@ class RouteServiceTest {
         when(stationDao.findById(1L)).thenReturn(Optional.of(FIXTURE_STATION_1));
         when(stationDao.findById(9L)).thenReturn(Optional.of(FIXTURE_STATION_9));
         when(lineDao.findAll()).thenReturn(List.of(FIXTURE_LINE_1, FIXTURE_LINE_2, FIXTURE_LINE_3));
-        when(sectionDao.findByLineId(1L)).thenReturn(LINE1_SECTIONS);
-        when(sectionDao.findByLineId(2L)).thenReturn(LINE2_SECTIONS);
-        when(sectionDao.findByLineId(3L)).thenReturn(LINE3_SECTIONS);
+        when(sectionDao.findByLineId(1L)).thenReturn(ROUTED_SECTIONS_1_TRANSFER_2_AT_ST1);
+        when(sectionDao.findByLineId(2L)).thenReturn(ROUTED_SECTIONS_2_TRANSFER_1_AT_ST1_3_AT_ST9);
+        when(sectionDao.findByLineId(3L)).thenReturn(ROUTED_SECTIONS_3_TRANSFER_1_AT_ST2_TRANSFER_2_AT_ST9);
 
         // when, then
         assertDoesNotThrow(() -> routeService.findShortestRoute(1L, 9L));

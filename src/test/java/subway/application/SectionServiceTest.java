@@ -3,8 +3,8 @@ package subway.application;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST2_ST3;
+import static subway.fixture.SectionFixture.SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.SECTION_ST2_ST3;
 import static subway.fixture.StationFixture.FIXTURE_STATION_1;
 import static subway.fixture.StationFixture.FIXTURE_STATION_2;
 import static subway.fixture.StationFixture.FIXTURE_STATION_3;
@@ -20,9 +20,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.vo.Distance;
 import subway.domain.entity.Section;
 import subway.domain.exception.RequestDataNotFoundException;
+import subway.domain.vo.Distance;
 import subway.dto.SectionRequest;
 import subway.dto.SectionStations;
 
@@ -46,7 +46,7 @@ class SectionServiceTest {
     @DisplayName("역 등록 시 DB의 해당 노선에 대한 구간 정보를 갱신한다")
     @Test
     void addStations() {
-        when(sectionDao.findByLineId(1L)).thenReturn(List.of(LINE1_SECTION_ST1_ST2));
+        when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_ST1_ST2));
         when(stationDao.findById(1L)).thenReturn(Optional.of(FIXTURE_STATION_1));
         when(stationDao.findById(3L)).thenReturn(Optional.of(FIXTURE_STATION_3));
 
@@ -58,7 +58,7 @@ class SectionServiceTest {
                 .insertAllByLineId(1L, List.of(
                         new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(6)),
                         new Section(FIXTURE_STATION_3, FIXTURE_STATION_2,
-                                LINE1_SECTION_ST1_ST2.getDistance().minus(new Distance(6)))
+                                SECTION_ST1_ST2.getDistance().minus(new Distance(6)))
                 ));
     }
 
@@ -88,7 +88,7 @@ class SectionServiceTest {
     @DisplayName("역 삭제 시 DB의 해당 노선에 대한 구간 정보를 갱신한다")
     @Test
     void deleteStation() {
-        when(sectionDao.findByLineId(1L)).thenReturn(List.of(LINE1_SECTION_ST1_ST2, LINE1_SECTION_ST2_ST3));
+        when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_ST1_ST2, SECTION_ST2_ST3));
         when(stationDao.findById(1L)).thenReturn(Optional.of(FIXTURE_STATION_1));
 
         sectionService.deleteStation(1L, 1L);
@@ -96,13 +96,13 @@ class SectionServiceTest {
         InOrder inOrder = inOrder(sectionDao);
         inOrder.verify(sectionDao).deleteByLineId(1L);
         inOrder.verify(sectionDao)
-                .insertAllByLineId(1L, List.of(LINE1_SECTION_ST2_ST3));
+                .insertAllByLineId(1L, List.of(SECTION_ST2_ST3));
     }
 
     @DisplayName("역 삭제 시 전달받은 역이 존재하지 않으면 예외를 발생한다")
     @Test
     void deleteStationFailNotValidStationId() {
-        when(sectionDao.findByLineId(1L)).thenReturn(List.of(LINE1_SECTION_ST1_ST2, LINE1_SECTION_ST2_ST3));
+        when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_ST1_ST2, SECTION_ST2_ST3));
         when(stationDao.findById(3L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> sectionService.deleteStation(1L, 3L))
