@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.SectionMap;
-import subway.domain.Station;
-import subway.domain.StationMap;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
+import subway.domain.subwaymap.SectionMap;
+import subway.domain.subwaymap.StationMap;
 import subway.dto.LineResponseWithSections;
 import subway.dto.LineResponseWithStations;
 

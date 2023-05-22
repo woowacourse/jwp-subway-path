@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import subway.dao.StubSectionDao;
-import subway.domain.Section;
+import subway.domain.section.Section;
 import subway.dto.SectionCreateRequest;
 
 class SectionCreateServiceTest {

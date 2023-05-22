@@ -1,6 +1,9 @@
-package subway.domain;
+package subway.domain.section;
 
 import java.util.List;
+
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 
 public class SectionFixture {
 

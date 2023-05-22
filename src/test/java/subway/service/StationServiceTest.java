@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.dao.StubStationDao;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 

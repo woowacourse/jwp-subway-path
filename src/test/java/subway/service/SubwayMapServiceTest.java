@@ -10,9 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.dao.StubLineDao;
 import subway.dao.StubSectionDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 import subway.dto.LineResponseWithSections;
 import subway.dto.LineResponseWithStations;
 

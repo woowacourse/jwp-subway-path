@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.domain.Section;
+import subway.domain.section.Section;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineResponseWithSections;

@@ -1,6 +1,8 @@
-package subway.domain;
+package subway.domain.section;
 
 import java.util.Objects;
+
+import subway.domain.station.Station;
 
 public class Section {
 

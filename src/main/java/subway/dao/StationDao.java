@@ -2,7 +2,7 @@ package subway.dao;
 
 import java.util.List;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public interface StationDao {
 

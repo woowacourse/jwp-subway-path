@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponseWithStations;
 import subway.dto.SectionCreateRequest;

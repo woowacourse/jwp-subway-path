@@ -7,8 +7,8 @@ import static subway.domain.fare.SubwayFareCalculator.DISTANCE_THRESHOLD;
 import static subway.domain.fare.SubwayFareCalculator.SECONDARY_INCREASE_DISTANCE;
 
 import org.springframework.stereotype.Component;
-import subway.domain.Distance;
 import subway.domain.fare.Fare;
+import subway.domain.section.Distance;
 
 @Component
 public class SecondaryAdditionalFareStrategy implements FareStrategy {

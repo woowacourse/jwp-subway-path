@@ -2,7 +2,7 @@ package subway.dto;
 
 import java.util.List;
 
-import subway.domain.Section;
+import subway.domain.section.Section;
 
 public class LineResponseWithSections {
 

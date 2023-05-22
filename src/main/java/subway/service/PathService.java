@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
-import subway.domain.Path;
-import subway.domain.PathFinder;
-import subway.domain.Section;
-import subway.domain.Station;
 import subway.domain.fare.Fare;
 import subway.domain.fare.FareCalculator;
+import subway.domain.path.Path;
+import subway.domain.path.PathFinder;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 import subway.dto.PathSearchRequest;
 import subway.dto.PathSearchResponse;
 

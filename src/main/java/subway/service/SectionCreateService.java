@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
-import subway.domain.Direction;
-import subway.domain.Section;
+import subway.domain.graph.Direction;
+import subway.domain.section.Section;
 import subway.dto.SectionCreateRequest;
 
 @Transactional

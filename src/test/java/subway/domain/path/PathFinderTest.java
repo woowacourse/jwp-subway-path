@@ -1,18 +1,18 @@
-package subway.domain;
+package subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.SectionFixture.SECTIONS1;
-import static subway.domain.SectionFixture.SECTIONS4;
-import static subway.domain.SectionFixture.SECTIONS5;
-import static subway.domain.SectionFixture.STATION1;
-import static subway.domain.SectionFixture.STATION10;
-import static subway.domain.SectionFixture.STATION2;
-import static subway.domain.SectionFixture.STATION3;
-import static subway.domain.SectionFixture.STATION4;
-import static subway.domain.SectionFixture.STATION5;
-import static subway.domain.SectionFixture.STATION9;
+import static subway.domain.section.SectionFixture.SECTIONS1;
+import static subway.domain.section.SectionFixture.SECTIONS4;
+import static subway.domain.section.SectionFixture.SECTIONS5;
+import static subway.domain.section.SectionFixture.STATION1;
+import static subway.domain.section.SectionFixture.STATION10;
+import static subway.domain.section.SectionFixture.STATION2;
+import static subway.domain.section.SectionFixture.STATION3;
+import static subway.domain.section.SectionFixture.STATION4;
+import static subway.domain.section.SectionFixture.STATION5;
+import static subway.domain.section.SectionFixture.STATION9;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -22,6 +22,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 class PathFinderTest {
 
@@ -78,7 +81,9 @@ class PathFinderTest {
     @Test
     void validateSectionsHasStation() {
         final PathFinder pathFinder = new PathFinder(SECTIONS1);
-        assertThatThrownBy(() -> pathFinder.findShortestPath(new Station(8L), new Station(9L)))
+        final Station departure = new Station(8L);
+        final Station arrival = new Station(9L);
+        assertThatThrownBy(() -> pathFinder.findShortestPath(departure, arrival))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("노선에 등록되지 않은 역입니다.: " + 8L);
     }

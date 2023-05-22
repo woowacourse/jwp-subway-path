@@ -1,6 +1,6 @@
 package subway.domain.fare;
 
-import subway.domain.Distance;
+import subway.domain.section.Distance;
 
 public interface FareCalculator {
 

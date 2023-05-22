@@ -1,22 +1,22 @@
-package subway.domain;
+package subway.domain.graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.SectionFixture.SECTIONS1;
-import static subway.domain.SectionFixture.SECTIONS2;
-import static subway.domain.SectionFixture.SECTIONS4;
-import static subway.domain.SectionFixture.SECTIONS5;
-import static subway.domain.SectionFixture.STATION1;
-import static subway.domain.SectionFixture.STATION10;
-import static subway.domain.SectionFixture.STATION11;
-import static subway.domain.SectionFixture.STATION12;
-import static subway.domain.SectionFixture.STATION2;
-import static subway.domain.SectionFixture.STATION3;
-import static subway.domain.SectionFixture.STATION4;
-import static subway.domain.SectionFixture.STATION5;
-import static subway.domain.SectionFixture.STATION6;
-import static subway.domain.SectionFixture.STATION7;
-import static subway.domain.SectionFixture.STATION8;
-import static subway.domain.SectionFixture.STATION9;
+import static subway.domain.section.SectionFixture.SECTIONS1;
+import static subway.domain.section.SectionFixture.SECTIONS2;
+import static subway.domain.section.SectionFixture.SECTIONS4;
+import static subway.domain.section.SectionFixture.SECTIONS5;
+import static subway.domain.section.SectionFixture.STATION1;
+import static subway.domain.section.SectionFixture.STATION10;
+import static subway.domain.section.SectionFixture.STATION11;
+import static subway.domain.section.SectionFixture.STATION12;
+import static subway.domain.section.SectionFixture.STATION2;
+import static subway.domain.section.SectionFixture.STATION3;
+import static subway.domain.section.SectionFixture.STATION4;
+import static subway.domain.section.SectionFixture.STATION5;
+import static subway.domain.section.SectionFixture.STATION6;
+import static subway.domain.section.SectionFixture.STATION7;
+import static subway.domain.section.SectionFixture.STATION8;
+import static subway.domain.section.SectionFixture.STATION9;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -25,6 +25,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import subway.domain.section.Section;
 
 class StationGraphTest {
 

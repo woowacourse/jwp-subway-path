@@ -3,8 +3,8 @@ package subway.domain.fare;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
-import subway.domain.Distance;
 import subway.domain.fare.strategy.FareStrategy;
+import subway.domain.section.Distance;
 
 @Component
 public class SubwayFareCalculator implements FareCalculator {

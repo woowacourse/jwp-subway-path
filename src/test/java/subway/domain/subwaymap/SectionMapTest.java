@@ -1,12 +1,12 @@
-package subway.domain;
+package subway.domain.subwaymap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.SectionFixture.LINE1;
-import static subway.domain.SectionFixture.LINE2;
-import static subway.domain.SectionFixture.SECTIONS1;
-import static subway.domain.SectionFixture.SECTIONS2;
-import static subway.domain.SectionFixture.SECTIONS4;
+import static subway.domain.section.SectionFixture.LINE1;
+import static subway.domain.section.SectionFixture.LINE2;
+import static subway.domain.section.SectionFixture.SECTIONS1;
+import static subway.domain.section.SectionFixture.SECTIONS2;
+import static subway.domain.section.SectionFixture.SECTIONS4;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import subway.domain.section.Section;
 
 class SectionMapTest {
 

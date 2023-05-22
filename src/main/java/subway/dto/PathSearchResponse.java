@@ -2,7 +2,7 @@ package subway.dto;
 
 import java.util.List;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class PathSearchResponse {
 

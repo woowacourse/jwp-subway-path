@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.path;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +10,8 @@ import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 public class PathFinder {
 

@@ -1,10 +1,16 @@
-package subway.domain;
+package subway.domain.subwaymap;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import subway.domain.graph.StationGraph;
+import subway.domain.line.Line;
+import subway.domain.line.Lines;
+import subway.domain.section.Section;
+import subway.domain.station.Stations;
 
 public class StationMap {
 
