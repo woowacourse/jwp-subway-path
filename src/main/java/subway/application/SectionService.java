@@ -64,6 +64,10 @@ public class SectionService {
         Station downStation = convertToStation(sectionToAdd.getDownStationId());
         sections.addSection(Section.of(sectionToAdd.getId(), upStation, downStation, sectionToAdd.getDistance()));
 
+        updateSection(lineId, sectionsSnapshot, sections);
+    }
+
+    private void updateSection(Long lineId, Set<Section> sectionsSnapshot, Sections sections) {
         Set<Section> updateSections = Set.copyOf(sections.getSections());
 
         Set<Section> deleteSections = getDifference(sectionsSnapshot, updateSections);
@@ -108,15 +112,9 @@ public class SectionService {
         Set<Section> sectionsSnapshot = Set.copyOf(findSections);
         Station removeStation = convertToStation(stationIdToRemove);
         Sections sections = new Sections(findSections);
-
         sections.removeStation(removeStation);
-        Set<Section> updateSections = Set.copyOf(sections.getSections());
 
-        Set<Section> deleteSections = getDifference(sectionsSnapshot, updateSections);
-        Set<Section> insertSections = getDifference(updateSections, sectionsSnapshot);
-
-        sectionDao.deleteAll(convertToSectionEntities(deleteSections, lineId));
-        sectionDao.insertAll(convertToSectionEntities(insertSections, lineId));
+        updateSection(lineId, sectionsSnapshot, sections);
     }
 
 
