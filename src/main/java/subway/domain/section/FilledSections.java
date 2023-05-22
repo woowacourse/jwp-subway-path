@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import subway.domain.Distance;
 import subway.domain.Station;
 import subway.domain.section.strategy.UpdateHeadStrategy;
@@ -43,8 +44,7 @@ public class FilledSections extends Sections {
     @Override
     public List<Station> getAllStations() {
         return sections.stream()
-                .map(section -> List.of(section.getPrevStation(), section.getNextStation()))
-                .flatMap(List::stream)
+                .flatMap(section -> Stream.of(section.getPrevStation(), section.getNextStation()))
                 .distinct()
                 .collect(Collectors.toUnmodifiableList());
     }
