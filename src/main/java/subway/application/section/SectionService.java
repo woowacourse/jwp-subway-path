@@ -15,6 +15,7 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
 import subway.domain.command.SectionOperation;
+import subway.error.exception.SectionConnectionException;
 
 @Service
 @Transactional
@@ -79,7 +80,15 @@ public class SectionService {
 		final Station departureStation = getStation(sectionDto.getDeparture());
 		final Station arriavalStation = getStation(sectionDto.getArrival());
 
+		validateSameStation(departureStation, arriavalStation);
+
 		return new Section(null, departureStation, arriavalStation, new Distance(sectionDto.getDistance()));
+	}
+
+	private void validateSameStation(final Station departure, final Station arrival) {
+		if (departure.equals(arrival)) {
+			throw new SectionConnectionException("같은 역은 연결될 수 없습니다.");
+		}
 	}
 
 	private Station getStation(final String departure) {

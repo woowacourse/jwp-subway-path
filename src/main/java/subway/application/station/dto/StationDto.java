@@ -1,14 +1,19 @@
 package subway.application.station.dto;
 
+import subway.domain.Station;
 import subway.persistence.entity.StationEntity;
 
 public class StationDto {
 
-	private Long id;
-	private String name;
+	private final Long id;
+	private final String name;
 
 	public StationDto(final StationEntity stationEntity) {
 		this(stationEntity.getId(), stationEntity.getName());
+	}
+
+	public StationDto(final Station station) {
+		this(station.getId(), station.getName());
 	}
 
 	public StationDto(final Long id, final String name) {
