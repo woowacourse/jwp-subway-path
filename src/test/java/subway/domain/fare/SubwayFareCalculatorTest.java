@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,6 +7,10 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import subway.domain.Distance;
+import subway.domain.fare.strategy.DefaultFareStrategy;
+import subway.domain.fare.strategy.InitialAdditionalFareStrategy;
+import subway.domain.fare.strategy.SecondaryAdditionalFareStrategy;
 
 class SubwayFareCalculatorTest {
 

@@ -1,9 +1,11 @@
-package subway.domain;
+package subway.domain.fare.strategy;
 
-import static subway.domain.SubwayFareCalculator.DEFAULT_DISTANCE;
-import static subway.domain.SubwayFareCalculator.DEFAULT_FARE;
+import static subway.domain.fare.SubwayFareCalculator.DEFAULT_DISTANCE;
+import static subway.domain.fare.SubwayFareCalculator.DEFAULT_FARE;
 
 import org.springframework.stereotype.Component;
+import subway.domain.Distance;
+import subway.domain.fare.Fare;
 
 @Component
 public class DefaultFareStrategy implements FareStrategy {

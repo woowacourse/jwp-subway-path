@@ -1,4 +1,7 @@
-package subway.domain;
+package subway.domain.fare.strategy;
+
+import subway.domain.Distance;
+import subway.domain.fare.Fare;
 
 public interface FareStrategy {
 

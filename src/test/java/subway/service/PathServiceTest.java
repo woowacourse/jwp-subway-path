@@ -9,10 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.dao.StubSectionDao;
-import subway.domain.DefaultFareStrategy;
-import subway.domain.InitialAdditionalFareStrategy;
-import subway.domain.SecondaryAdditionalFareStrategy;
-import subway.domain.SubwayFareCalculator;
+import subway.domain.fare.SubwayFareCalculator;
+import subway.domain.fare.strategy.DefaultFareStrategy;
+import subway.domain.fare.strategy.InitialAdditionalFareStrategy;
+import subway.domain.fare.strategy.SecondaryAdditionalFareStrategy;
 import subway.dto.PathSearchRequest;
 import subway.dto.PathSearchResponse;
 

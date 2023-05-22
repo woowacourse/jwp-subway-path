@@ -1,12 +1,14 @@
-package subway.domain;
+package subway.domain.fare.strategy;
 
-import static subway.domain.SubwayFareCalculator.ADDITIONAL_FARE;
-import static subway.domain.SubwayFareCalculator.COUNT_TO_INITIAL_INCREASE;
-import static subway.domain.SubwayFareCalculator.DEFAULT_FARE;
-import static subway.domain.SubwayFareCalculator.DISTANCE_THRESHOLD;
-import static subway.domain.SubwayFareCalculator.SECONDARY_INCREASE_DISTANCE;
+import static subway.domain.fare.SubwayFareCalculator.ADDITIONAL_FARE;
+import static subway.domain.fare.SubwayFareCalculator.COUNT_TO_INITIAL_INCREASE;
+import static subway.domain.fare.SubwayFareCalculator.DEFAULT_FARE;
+import static subway.domain.fare.SubwayFareCalculator.DISTANCE_THRESHOLD;
+import static subway.domain.fare.SubwayFareCalculator.SECONDARY_INCREASE_DISTANCE;
 
 import org.springframework.stereotype.Component;
+import subway.domain.Distance;
+import subway.domain.fare.Fare;
 
 @Component
 public class SecondaryAdditionalFareStrategy implements FareStrategy {
