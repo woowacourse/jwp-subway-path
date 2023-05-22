@@ -32,12 +32,9 @@ public class PathController {
     @GetMapping
     public ResponseEntity<ShortestPathResponse> getPath(@RequestParam Long departureStationId,
                                                         @RequestParam Long arrivalStationId) {
-        if (departureStationId == arrivalStationId) {
-            throw new ArrivalSameWithDepartureException();
-        }
-        List<Station> stations = stationService.findById(List.of(departureStationId, arrivalStationId));
-        Station departure = stations.get(0);
-        Station arrival = stations.get(1);
+        Station departure = stationService.findById(departureStationId);
+        Station arrival = stationService.findById(arrivalStationId);
+
         PathResult pathResult = pathService.getShortestPath(departure, arrival);
         Distance distance = pathResult.getPath().calculateTotalDistance();
         Fare fare = fareService.calculateFareOf(distance);
