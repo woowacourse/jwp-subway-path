@@ -28,7 +28,7 @@ public class RouteService {
                 .map(lineEntity -> lineMakerService.mapToLineFrom(lineEntity.getLineName()))
                 .collect(Collectors.toList());
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(lines);
+        RouteMap routeMap = RouteMap.generateRouteMap(lines);
 
         List<String> shortestPath = routeMap.findShortestPath(routeFindingRequest.getStartStation(), routeFindingRequest.getEndStation());
         double shortestDistance = routeMap.findShortestDistance(routeFindingRequest.getStartStation(), routeFindingRequest.getEndStation());

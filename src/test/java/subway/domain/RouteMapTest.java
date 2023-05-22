@@ -40,7 +40,7 @@ class RouteMapTest {
 
 
         //when & then
-        assertDoesNotThrow(() -> RouteMap.GenerateRouteMap(List.of(line)));
+        assertDoesNotThrow(() -> RouteMap.generateRouteMap(List.of(line)));
     }
 
 
@@ -72,7 +72,7 @@ class RouteMapTest {
         final Section section4 = new Section(stations4);
         line.add(section4);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line));
 
         //when
         WeightedMultigraph<String, DefaultWeightedEdge> graph = routeMap.getGraph();
@@ -115,7 +115,7 @@ class RouteMapTest {
         final Section section4 = new Section(stations4);
         line.add(section4);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line));
 
         //when
         WeightedMultigraph<String, DefaultWeightedEdge> graph = routeMap.getGraph();
@@ -157,7 +157,7 @@ class RouteMapTest {
         final Section section4 = new Section(stations4);
         line.add(section4);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line));
 
         //when
         WeightedMultigraph<String, DefaultWeightedEdge> graph = routeMap.getGraph();
@@ -201,7 +201,7 @@ class RouteMapTest {
         final Section section4 = new Section(stations4);
         line.add(section4);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line));
 
         //when
         List<String> shortestPath = routeMap.findShortestPath("B", "D");
@@ -240,7 +240,7 @@ class RouteMapTest {
         final Section section4 = new Section(stations4);
         line.add(section4);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line));
 
         //when
         double distance = routeMap.findShortestDistance("B", "D");
@@ -291,7 +291,7 @@ class RouteMapTest {
         final Section section6 = new Section(stations6);
         line2.add(section6);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line1, line2));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line1, line2));
 
         //when
         List<String> shortestPath = routeMap.findShortestPath("B", "Y");
@@ -342,7 +342,7 @@ class RouteMapTest {
         final Section section6 = new Section(stations6);
         line2.add(section6);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line1, line2));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line1, line2));
 
         //when
         double shortestDistance = routeMap.findShortestDistance("B", "Y");
@@ -393,7 +393,7 @@ class RouteMapTest {
         final Section section6 = new Section(stations6);
         line2.add(section6);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line1, line2));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line1, line2));
 
         //when
         double shortestDistance = routeMap.findShortestDistance("B", "Y");
@@ -446,7 +446,7 @@ class RouteMapTest {
         final Section section6 = new Section(stations6);
         line2.add(section6);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line1, line2));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line1, line2));
 
         //when
         double shortestDistance = routeMap.findShortestDistance("B", "Y");
@@ -499,7 +499,7 @@ class RouteMapTest {
         final Section section6 = new Section(stations6);
         line2.add(section6);
 
-        RouteMap routeMap = RouteMap.GenerateRouteMap(List.of(line1, line2));
+        RouteMap routeMap = RouteMap.generateRouteMap(List.of(line1, line2));
 
         //when
         double shortestDistance = routeMap.findShortestDistance("B", "Y");

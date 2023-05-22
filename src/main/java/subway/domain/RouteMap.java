@@ -23,7 +23,7 @@ public class RouteMap {
         this.graph = graph;
     }
 
-    public static RouteMap GenerateRouteMap(List<Line> lines) {
+    public static RouteMap generateRouteMap(List<Line> lines) {
         return new RouteMap(makeGraph(lines));
     }
 
