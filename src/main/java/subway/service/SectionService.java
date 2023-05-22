@@ -61,7 +61,7 @@ public class SectionService {
 
         int distance = routeFinder.getDistance(sourceStation, targetStation);
         int surcharge = routeFinder.getSurcharge(sourceStation, targetStation);
-        long fare = FareCalculator.calculate(distance, surcharge);
+        long fare = FareCalculator.calculate(distance, surcharge, routeRequest.getAge());
         List<StationResponse> route = routeFinder.findRoute(sourceStation, targetStation).stream()
                 .map(StationMapper::toResponse)
                 .collect(Collectors.toList());

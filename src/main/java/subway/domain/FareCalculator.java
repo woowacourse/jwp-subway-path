@@ -18,6 +18,12 @@ public class FareCalculator {
         return calculate(distance) + surcharge;
     }
 
+    public static long calculate(int distance, int surcharge, int age) {
+        long cost = calculate(distance, surcharge);
+        AgePolicy policy = AgePolicy.of(age);
+        return policy.applyPolicy(cost);
+    }
+
     private static int getDistanceFare(int distance, int result) {
         if (distance >= 50) {
             result = DEFAULT_FARE_OVER_50KM;

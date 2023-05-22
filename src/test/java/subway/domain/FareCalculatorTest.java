@@ -17,4 +17,12 @@ class FareCalculatorTest {
         Assertions.assertThat(FareCalculator.calculate(distance))
                 .isEqualTo(fare);
     }
+
+    @ParameterizedTest(name = "거리가 {0}km 이고, 추가요금이 {1}원, 탑승자의 나이가 {2}라면 운행요금은 {3}원이다.")
+    @CsvSource(delimiter = ':', value = {"9:0:10:450", "12:200:10:600", "50:0:14:1360"})
+    void calculate_메서드는_(int distance, int surcharge, int age, long fare) {
+        //when & then
+        Assertions.assertThat(FareCalculator.calculate(distance, surcharge, age))
+                .isEqualTo(fare);
+    }
 }

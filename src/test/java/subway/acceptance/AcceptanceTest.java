@@ -155,7 +155,7 @@ class AcceptanceTest {
         addSection(강남_종합운동장_5, 이호선.getId());
 
         // 최단경로를 구한다.
-        RouteRequest request = new RouteRequest(강남.getId(), 종합운동장.getId());
+        RouteRequest request = new RouteRequest(강남.getId(), 종합운동장.getId(), 0);
 
         RouteResponse routeResponse = RestAssured
                 .given().log().all()
