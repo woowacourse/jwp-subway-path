@@ -14,25 +14,22 @@ public class DefaultFarePolicy implements FarePolicy {
     public static final int UNIT_OVER_FARE = 100;
 
     @Override
-    public int calculate(final SubwayPath subwayPath) {
+    public Fare calculate(final SubwayPath subwayPath) {
         int restDistance = subwayPath.getTotalDistance();
-        int totalFare = DEFAULT_FARE;
+        Fare totalFare = new Fare(DEFAULT_FARE);
         if (restDistance > DISTANCE_BOUNDARY_50) {
             final int overDistance = restDistance - DISTANCE_BOUNDARY_50;
             restDistance = DISTANCE_BOUNDARY_50;
-            final int overFare = getOverFare(overDistance, UNIT_DISTANCE_FOR_BOUNDARY_50);
-            totalFare += overFare;
+            totalFare = totalFare.add(getOverFare(overDistance, UNIT_DISTANCE_FOR_BOUNDARY_50));
         }
         if (restDistance > DISTANCE_BOUNDARY_10) {
             final int overDistance = restDistance - DISTANCE_BOUNDARY_10;
-            final int overFare = getOverFare(overDistance, UNIT_DISTANCE_FOR_BOUNDARY_10);
-            totalFare += overFare;
+            totalFare = totalFare.add(getOverFare(overDistance, UNIT_DISTANCE_FOR_BOUNDARY_10));
         }
         return totalFare;
     }
 
-    private int getOverFare(final int overDistance, final double unitDistanceForBoundary) {
-        return (int) Math.ceil(overDistance / unitDistanceForBoundary) * UNIT_OVER_FARE;
+    private Fare getOverFare(final int overDistance, final double unitDistanceForBoundary) {
+        return new Fare((int) Math.ceil(overDistance / unitDistanceForBoundary) * UNIT_OVER_FARE);
     }
-
 }

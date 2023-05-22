@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.LineDirection;
 import subway.domain.Subway;
+import subway.domain.farepolicy.Fare;
 import subway.domain.farepolicy.FarePolicy;
 import subway.domain.line.Line;
 import subway.domain.navigation.PathNavigation;
@@ -118,7 +119,7 @@ public class SubwayService {
         final SubwayPath path = subway.findPath(startStationId, endStationId, pathNavigation);
 
         final int totalDistance = path.getTotalDistance();
-        final int fare = farePolicy.calculate(path);
+        final Fare fare = farePolicy.calculate(path);
         final List<LinePath> linePaths = path.getLinePaths();
 
         final List<LineDto> linePath = linePaths.stream()
@@ -129,6 +130,6 @@ public class SubwayService {
                 })
                 .collect(Collectors.toUnmodifiableList());
 
-        return new PathDto(totalDistance, fare, linePath);
+        return new PathDto(totalDistance, fare.getValue(), linePath);
     }
 }
