@@ -1,5 +1,6 @@
 package subway.repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +10,7 @@ import subway.dao.SectionDao;
 import subway.domain.Section;
 
 @Repository
-public class SectionRepositoryImpl implements SectionRepository{
+public class SectionRepositoryImpl implements SectionRepository {
 
     private static final HashMap<Long, Section> store = new HashMap<>();
 
@@ -26,6 +27,20 @@ public class SectionRepositoryImpl implements SectionRepository{
         return storedSection;
     }
 
+    @Override
+    public List<Section> findAll() {
+        init();
+        return new ArrayList<>(store.values());
+    }
+
+    @Override
+    public List<Section> findAllByLineId(final Long lineId) {
+        init();
+        return store.values().stream()
+                .filter(section -> section.getLineId().equals(lineId))
+                .collect(Collectors.toUnmodifiableList());
+    }
+
     private void init() {
         if (store.isEmpty()) {
             List<Section> sections = sectionDao.findAll();
@@ -36,19 +51,12 @@ public class SectionRepositoryImpl implements SectionRepository{
     }
 
     @Override
-    public List<Section> findAllByLineId(final Long lineId) {
-        init();
-        return store.values().stream()
-                .filter(section -> section.getLineId() == lineId)
-                .collect(Collectors.toUnmodifiableList());
-    }
-
-    @Override
     public List<Section> findSectionByLineIdAndStationId(final Long lineId, final Long stationId) {
         init();
         return store.values().stream()
-                .filter(section -> section.getLineId() == lineId)
-                .filter(section -> section.getUpStationId() == stationId || section.getDownStationId() == stationId)
+                .filter(section -> section.getLineId().equals(lineId))
+                .filter(section -> section.getUpStationId().equals(stationId) ||
+                        section.getDownStationId().equals(stationId))
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -56,7 +64,7 @@ public class SectionRepositoryImpl implements SectionRepository{
     public int countByLineId(final Long lineId) {
         init();
         return (int) store.values().stream()
-                .filter(section -> section.getLineId() == lineId)
+                .filter(section -> section.getLineId().equals(lineId))
                 .count();
     }
 
@@ -76,7 +84,7 @@ public class SectionRepositoryImpl implements SectionRepository{
     public void deleteAllByLineId(final Long lineId) {
         sectionDao.deleteAllByLineId(lineId);
         Set<Long> ids = store.values().stream()
-                .filter(section -> section.getLineId() == lineId)
+                .filter(section -> section.getLineId().equals(lineId))
                 .map(Section::getId)
                 .collect(Collectors.toSet());
         for (Long id : ids) {
@@ -87,8 +95,9 @@ public class SectionRepositoryImpl implements SectionRepository{
     @Override
     public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
         Set<Long> ids = store.values().stream()
-                .filter(section -> section.getLineId() == lineId)
-                .filter(section -> section.getUpStationId() == stationId || section.getDownStationId() == stationId)
+                .filter(section -> section.getLineId().equals(lineId))
+                .filter(section -> section.getUpStationId().equals(stationId)
+                        || section.getDownStationId().equals(stationId))
                 .map(Section::getId)
                 .collect(Collectors.toSet());
         for (Long id : ids) {

@@ -1,13 +1,16 @@
 package subway.integration;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
+import subway.dto.RoutesResponse;
+import subway.dto.StationResponse;
 import subway.dto.StationToLineRequest;
 
 
@@ -22,6 +27,12 @@ import subway.dto.StationToLineRequest;
 public class RoutingIntegrationTest extends IntegrationTest {
 
     private Long lineId;
+
+    private Long stationId1;
+    private Long stationId2;
+    private Long stationId3;
+    private Long stationId4;
+
 
     @BeforeEach
     public void setUp() {
@@ -45,7 +56,7 @@ public class RoutingIntegrationTest extends IntegrationTest {
                 .when()
                 .post("/stations")
                 .then().extract();
-        Long stationId1 = Long.parseLong(createStationResponse1.header("Location").split("/")[2]);
+        stationId1 = Long.parseLong(createStationResponse1.header("Location").split("/")[2]);
 
         params.put("name", "삼성역");
 
@@ -55,7 +66,7 @@ public class RoutingIntegrationTest extends IntegrationTest {
                 .when()
                 .post("/stations")
                 .then().extract();
-        Long stationId2 = Long.parseLong(createStationResponse2.header("Location").split("/")[2]);
+        stationId2 = Long.parseLong(createStationResponse2.header("Location").split("/")[2]);
 
         params.put("name", "선릉역");
 
@@ -66,7 +77,7 @@ public class RoutingIntegrationTest extends IntegrationTest {
                 .post("/stations")
                 .then()
                 .extract();
-        Long stationId3 = Long.parseLong(createStationResponse3.header("Location").split("/")[2]);
+        stationId3 = Long.parseLong(createStationResponse3.header("Location").split("/")[2]);
 
         params.put("name", "잠실역");
 
@@ -77,7 +88,7 @@ public class RoutingIntegrationTest extends IntegrationTest {
                 .post("/stations")
                 .then()
                 .extract();
-        Long stationId4 = Long.parseLong(createStationResponse4.header("Location").split("/")[2]);
+        stationId4 = Long.parseLong(createStationResponse4.header("Location").split("/")[2]);
 
         StationToLineRequest sectionReq1 = new StationToLineRequest(stationId1, stationId2, 4);
         StationToLineRequest sectionReq2 = new StationToLineRequest(stationId2, stationId3, 4);
@@ -111,7 +122,7 @@ public class RoutingIntegrationTest extends IntegrationTest {
 
     @DisplayName("호선에 해당하는 역들을 순서대로 반환한다.")
     @Test
-    void RoutingIntegrationTest() {
+    void findAllStationByLineId() {
         //when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -119,9 +130,29 @@ public class RoutingIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
         //then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-        );
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 
+    @DisplayName("경로를 조회하면 해당하는 역들과 총 거리를 반환한다.")
+    @Test
+    void findRoutes() {
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given()
+                .queryParam("startStationId", stationId1)
+                .queryParam("endStationId", stationId4)
+                .log().all()
+                .when().get("/routes")
+                .then().log().all()
+                .extract();
+        RoutesResponse routesResponse = response.body().as(RoutesResponse.class);
+        //then
+        List<Long> stationIds = routesResponse.getStationResponses().stream().map(StationResponse::getId)
+                .collect(Collectors.toList());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(stationIds).containsExactly(stationId1, stationId2, stationId3, stationId4),
+                () -> assertThat(routesResponse.getTotalDistance()).isEqualTo(12)
+        );
     }
 }
