@@ -60,7 +60,7 @@ public class LineService {
                           .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
+    private List<Line> findLines() {
         List<LineEntity> lineEntities = lineDao.findAll();
         return lineEntities.stream()
                            .map(lineEntity -> findLineById(lineEntity.getId()))
