@@ -39,4 +39,8 @@ public class StationRepository {
 	public void update(final long id, final Station station) {
 		stationDao.update(id, station);
 	}
+
+	public void deleteById(final long stationId) {
+		stationDao.deleteById(stationId);
+	}
 }

@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,12 @@ public class StationController {
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateStation(@PathVariable final Long id, @Valid @RequestBody StationEditRequest stationEditRequest) {
 		stationService.updateStation(id, stationEditRequest);
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
+		stationService.deleteStationById(id);
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -44,4 +44,9 @@ public class StationService {
 		station.update(stationEditRequest.getName());
 		stationRepository.update(id, station);
 	}
+
+	@Transactional
+	public void deleteStationById(final Long id) {
+		stationRepository.deleteById(id);
+	}
 }

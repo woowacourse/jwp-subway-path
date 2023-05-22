@@ -58,4 +58,9 @@ public class StationDao {
 		String sql = "UPDATE station SET name = ? WHERE stationId = ?";
 		jdbcTemplate.update(sql, station.getName(), id);
 	}
+
+	public void deleteById(final Long id) {
+		String sql = "DELETE FROM station WHERE stationId = ?";
+		jdbcTemplate.update(sql, id);
+	}
 }
