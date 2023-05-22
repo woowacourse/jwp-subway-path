@@ -5,23 +5,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Subway {
+public class Lines {
 
     private final List<Line> lines;
 
-    public Subway(final List<Line> lines) {
+    public Lines(final List<Line> lines) {
         this.lines = lines;
     }
 
-    // TODO: 5/17/23 처음 도메인의 아이디를 이용해본 시도
-    public Subway deleteById(final Long lineId) {
+    public Lines deleteById(final Long lineId) {
         Line targetLine = lines.stream()
                 .filter(line -> line.getId().equals(lineId))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("삭제하려는 역이 존재하지 않습니다,"));
         List<Line> updateLines = new ArrayList<>(lines);
         updateLines.remove(targetLine);
-        return new Subway(updateLines);
+        return new Lines(updateLines);
     }
 
     public void validateNotDuplicatedStation(final Station station) {
@@ -53,8 +52,8 @@ public class Subway {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Subway subway = (Subway) o;
-        return Objects.equals(lines, subway.lines);
+        final Lines lines = (Lines) o;
+        return Objects.equals(this.lines, lines.lines);
     }
 
     @Override

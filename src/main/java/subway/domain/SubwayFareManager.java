@@ -10,7 +10,7 @@ public class SubwayFareManager {
 
     public Integer calculateChargeForDistance(final Integer totalDistance) {
         if (totalDistance > ONE_STEP_DISTANCE_LIMIT) {
-            int oneStepAdditional = (int) ((ONE_STEP_DISTANCE_LIMIT - BASIC_CHARGE) / ONE_STEP_DISTANCE_UNIT);
+            int oneStepAdditional = (int) ((ONE_STEP_DISTANCE_LIMIT - BASIC_DISTANCE_LIMIT) / ONE_STEP_DISTANCE_UNIT);
             int twoStepAdditional = (int) Math.ceil((totalDistance - ONE_STEP_DISTANCE_LIMIT)/ TWO_STEP_DISTANCE_UNIT);
             return BASIC_CHARGE
                     + oneStepAdditional * ADDITIONAL_CHARGE

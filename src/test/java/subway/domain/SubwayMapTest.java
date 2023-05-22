@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SubwayMapTest {
 
-
     private final Station STATION1 = new Station("잠실새내");
     private final Station STATION2 = new Station("잠실");
     private final Station STATION3 = new Station("잠실나루");

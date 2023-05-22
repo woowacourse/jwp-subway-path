@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-class SubwayTest {
+class LinesTest {
 
     private final Station STATION1 = new Station("잠실새내");
     private final Station STATION2 = new Station("잠실");
@@ -26,27 +26,27 @@ class SubwayTest {
     @DisplayName("생성한다")
     @Test
     void 생성한다() {
-        assertDoesNotThrow(() -> new Subway(LINES));
+        assertDoesNotThrow(() -> new Lines(LINES));
     }
 
     @DisplayName("라인을 ID로 지운다")
     @Test
     void 라인을_지운다() {
         //given
-        Subway subway = new Subway(LINES);
+        Lines lines = new Lines(LINES);
         //when
-        Subway updateSubway = subway.deleteById(1L);
+        Lines updateLines = lines.deleteById(1L);
         //then
-        assertThat(updateSubway.getLines()).isEmpty();
+        assertThat(updateLines.getLines()).isEmpty();
     }
 
     @DisplayName("중복 역을 검증한다")
     @Test
     void 중복_역을_검증한다() {
         //given
-        Subway subway = new Subway(LINES);
+        Lines lines = new Lines(LINES);
         //then
-        assertThatThrownBy(() -> subway.validateNotDuplicatedStation(STATION1))
+        assertThatThrownBy(() -> lines.validateNotDuplicatedStation(STATION1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -54,9 +54,9 @@ class SubwayTest {
     @Test
     void 중복_노선을_검증한다() {
         //given
-        Subway subway = new Subway(LINES);
+        Lines lines = new Lines(LINES);
         //then
-        assertThatThrownBy(() -> subway.validateNotDuplicatedLine(LINE))
+        assertThatThrownBy(() -> lines.validateNotDuplicatedLine(LINE))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
