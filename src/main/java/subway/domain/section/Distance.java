@@ -24,6 +24,10 @@ public class Distance {
         return new Distance(this.distance + other.distance);
     }
 
+    public boolean isLongerThan(final Distance other) {
+        return this.distance > other.distance;
+    }
+
     public int distance() {
         return distance;
     }

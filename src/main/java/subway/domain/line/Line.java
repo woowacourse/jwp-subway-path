@@ -3,6 +3,7 @@ package subway.domain.line;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
+import subway.domain.station.Stations;
 
 public class Line {
 
@@ -64,6 +65,10 @@ public class Line {
                 this.lineColor,
                 this.sections.removeStation(other)
         );
+    }
+
+    public Stations getStations() {
+        return sections.getStations();
     }
 
     public boolean isSectionsEmpty() {
