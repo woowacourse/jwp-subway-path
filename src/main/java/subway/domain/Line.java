@@ -129,4 +129,8 @@ public class Line {
     public Sections getSections() {
         return sections;
     }
+
+    public Long getCharge() {
+        return charge;
+    }
 }
