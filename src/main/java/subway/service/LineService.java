@@ -96,6 +96,11 @@ public class LineService {
         }
     }
 
+    private boolean isUpStationAdd(StationRequest stationRequest, Stations lineStations) {
+        return !lineStations.isExistStation(stationRequest.getName())
+                && lineStations.isExistStation(stationRequest.getNextStationName());
+    }
+
     private void addUpStation(Long lineId, StationRequest stationRequest, Stations lineStations) {
         //downStation이 line에 존재, 새로운 upStation을 삽입하고자 하는 경우
         Station downStation = lineStations.findByName(stationRequest.getNextStationName());
@@ -116,13 +121,15 @@ public class LineService {
         }
 
         lineStations.addStationByIndex(downStationIndex, upStation);
-
         StationEntity stationEntity = new StationEntity(upStation.getId(), upStation.getName(), downStation.getId(), upStation.getDistance().getValue(), lineId);
         stationDao.insert(stationEntity);
         stationDao.update(downStation.getId(), new StationEntity(
                 downStation.getId(), downStation.getName(), nextStationId, downStation.getDistance().getValue(), lineId));
     }
 
+    private boolean isDownStationAdd(StationRequest stationRequest, Stations lineStations) {
+        return lineStations.isExistStation(stationRequest.getName()) && !lineStations.isExistStation(stationRequest.getNextStationName());
+    }
 
     private void addDownStation(Long lineId, StationRequest stationRequest, Stations lineStations) {
         //upStation이 line에 존재, 새로운 downStation을 삽입하고자 하는 경우
@@ -135,22 +142,12 @@ public class LineService {
         }
 
         upStation.setDistance(new Distance(stationRequest.getDistance()));
-        lineStations.addStationByIndex(upStationIndex + 1, downStation);
 
+        lineStations.addStationByIndex(upStationIndex + 1, downStation);
         StationEntity stationEntity = new StationEntity(downStation.getId(), downStation.getName(), downStation.getId(), downStation.getDistance().getValue(), lineId);
         stationDao.insert(stationEntity);
         stationDao.update(upStation.getId(), new StationEntity(
                 upStation.getId(), upStation.getName(), downStation.getId(), upStation.getDistance().getValue(), lineId));
-    }
-
-    private boolean isDownStationAdd(StationRequest stationRequest, Stations lineStations) {
-        return lineStations.isExistStation(stationRequest.getName()) && !lineStations.isExistStation(stationRequest.getNextStationName());
-    }
-
-
-    private boolean isUpStationAdd(StationRequest stationRequest, Stations lineStations) {
-        return !lineStations.isExistStation(stationRequest.getName())
-                && lineStations.isExistStation(stationRequest.getNextStationName());
     }
 
     public LineResponse findById(Long id) {
@@ -159,6 +156,12 @@ public class LineService {
         List<String> stationsNamesInOrder = sortStations(lineEntity, allStations);
 
         return new LineResponse(id, lineEntity.getName(), lineEntity.getColor(), stationsNamesInOrder);
+    }
+
+    private LineEntity validateLineResponseById(Long id) {
+        LineEntity lineEntity = lineDao.findLineEntityById(id)
+                .orElseThrow(() -> new IllegalArgumentException("찾고자하는 id에 해당하는 LineResponse를 생성할 수 없습니다."));
+        return lineEntity;
     }
 
     private List<String> sortStations(LineEntity lineEntity, List<StationEntity> allStations) {
@@ -174,12 +177,6 @@ public class LineService {
             }
         }
         return stationsNamesInOrder;
-    }
-
-    private LineEntity validateLineResponseById(Long id) {
-        LineEntity lineEntity = lineDao.findLineEntityById(id)
-                .orElseThrow(() -> new IllegalArgumentException("찾고자하는 id에 해당하는 LineResponse를 생성할 수 없습니다."));
-        return lineEntity;
     }
 
     public Long deleteLineById(Long id) {

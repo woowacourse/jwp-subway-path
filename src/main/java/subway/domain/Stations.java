@@ -27,7 +27,7 @@ public class Stations {
 
     public Optional<Station> findNextStationById(Long id) {
         for (Station station : stations) {
-            if (station.getId() == id) {
+            if (station.getId() == id && !station.equals(stations.get(stations.size() - 1))) {
                 return Optional.of(station);
             }
         }
