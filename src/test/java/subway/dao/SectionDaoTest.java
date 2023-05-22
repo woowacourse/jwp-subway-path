@@ -16,25 +16,13 @@ import subway.dao.vo.SectionStationMapper;
 import javax.sql.DataSource;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.TestFeature.*;
 
 @JdbcTest
 @Sql("classpath:initializeTestDb.sql")
 class SectionDaoTest {
-
-    public static final SectionStationMapper SECTION_STATION_MAPPER_봉천_서울대입구 = new SectionStationMapper(1L, 2L, "봉천역", 1L, "서울대입구역", 5);
-    public static final SectionStationMapper SECTION_STATION_MAPPER_서울대입구_사당 = new SectionStationMapper(2L, 1L, "서울대입구역", 4L, "사당역", 7);
-    public static final SectionStationMapper SECTION_STATION_MAPPER_방배_봉천 = new SectionStationMapper(3L, 5L, "방배역", 2L, "봉천역", 8);
-    public static final SectionStationMapper SECTION_STATION_MAPPER_인천_방배 = new SectionStationMapper(4L, 7L, "인천역", 5L, "방배역", 3);
-    public static final SectionStationMapper SECTION_STATION_MAPPER_사당_동인천 = new SectionStationMapper(5L, 4L, "사당역", 8L, "동인천역", 4);
-    public static final SectionStationMapper SECTION_STATION_MAPPER_사당_낙성 = new SectionStationMapper(6L, 4L, "사당역", 3L, "낙성대역", 7);
-
-    public static final SectionEntity SECTION_ENTITY_봉천_서울대입구 = new SectionEntity(1L, 1L, 2L, 1L, 5);
-    public static final SectionEntity SECTION_ENTITY_서울대입구_사당 = new SectionEntity(2L, 1L, 1L, 4L, 7);
-    public static final SectionEntity SECTION_ENTITY_방배_봉천 = new SectionEntity(3L, 1L, 5L, 2L, 8);
-    public static final SectionEntity SECTION_ENTITY_인천_방배 = new SectionEntity(4L, 1L, 7L, 5L, 3);
-    public static final SectionEntity SECTION_ENTITY_사당_동인천 = new SectionEntity(5L, 1L, 4L, 8L, 4);
 
     private static final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rowNum) ->
             new SectionEntity(
@@ -216,7 +204,7 @@ class SectionDaoTest {
     @Test
     void delete() {
         // given
-        SectionEntity deleteSection = new SectionEntity(1L, 1L, 2L, 1L, 5);
+        SectionEntity deleteSection = SECTION_ENTITY_봉천_서울대입구;
 
         // when
         sectionDao.delete(deleteSection);
@@ -234,8 +222,8 @@ class SectionDaoTest {
     @Test
     void deleteAll() {
         // given
-        SectionEntity deleteSection1 = new SectionEntity(1L, 1L, 2L, 1L, 5);
-        SectionEntity deleteSection2 = new SectionEntity(2L, 1L, 2L, 1L, 5);
+        SectionEntity deleteSection1 = SECTION_ENTITY_봉천_서울대입구;
+        SectionEntity deleteSection2 = SECTION_ENTITY_서울대입구_사당;
         List<SectionEntity> deleteSections = List.of(deleteSection1, deleteSection2);
 
         // when

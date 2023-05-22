@@ -18,9 +18,9 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.TestFeature.*;
 
 @JdbcTest
 @Sql("classpath:initializeTestDb.sql")
@@ -33,14 +33,14 @@ class StationDaoTest {
             );
 
     private List<StationEntity> expectStations = List.of(
-            new StationEntity(1L, "서울대입구역"),
-            new StationEntity(2L, "봉천역"),
-            new StationEntity(3L, "낙성대역"),
-            new StationEntity(4L, "사당역"),
-            new StationEntity(5L, "방배역"),
-            new StationEntity(6L, "교대역"),
-            new StationEntity(7L, "인천역"),
-            new StationEntity(8L, "동인천역")
+            STATION_ENTITY_서울대입구,
+            STATION_ENTITY_봉천역,
+            STATION_ENTITY_낙성대역,
+            STATION_ENTITY_사당역,
+            STATION_ENTITY_방배역,
+            STATION_ENTITY_교대역,
+            STATION_ENTITY_인천역,
+            STATION_ENTITY_동인천역
     );
 
     @Autowired

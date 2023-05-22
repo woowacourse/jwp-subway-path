@@ -31,16 +31,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.*;
+import static subway.TestFeature.*;
 
 @ExtendWith(MockitoExtension.class)
 @Sql("classpath:initializeTestDb.sql")
 class LineServiceTest {
-
-    public static final LineEntity LINE_2_ENTITY = new LineEntity(1L, "2호선", "초록색");
-    public static final LineEntity LINE_1_ENTITY = new LineEntity(2L, "1호선", "파랑색");
-
-    public static final SectionStationMapper SECTION_STATION_MAPPER_봉천_서울대입구 = new SectionStationMapper(1L, 2L, "봉천역", 1L, "서울대입구역", 5);
-    public static final SectionStationMapper SECTION_STATION_MAPPER_서울대입구_사당 = new SectionStationMapper(2L, 1L, "서울대입구역", 4L, "사당역", 7);
 
     @Mock
     private LineDao lineDao;
@@ -79,7 +74,7 @@ class LineServiceTest {
         String lineName = "2호선";
         String lineColor = "주황색";
         given(lineDao.findByName(lineName))
-                .willReturn(Optional.of(LINE_2_ENTITY));
+                .willReturn(Optional.of(LINE_ENTITY_2호선));
 
         // then
         assertThatThrownBy(() -> lineService.saveLine(new LineRequest(lineName, lineColor)))
@@ -93,7 +88,7 @@ class LineServiceTest {
         String lineName = "3호선";
         String lineColor = "초록색";
         given(lineDao.findByColor(lineColor))
-                .willReturn(Optional.of(LINE_2_ENTITY));
+                .willReturn(Optional.of(LINE_ENTITY_2호선));
 
         // then
         assertThatThrownBy(() -> lineService.saveLine(new LineRequest(lineName, lineColor)))
@@ -109,7 +104,7 @@ class LineServiceTest {
         List<Section> sections = sectionMappers.stream()
                                                .map(Section::from)
                                                .collect(Collectors.toList());
-        given(lineDao.findById(findId)).willReturn(Optional.of(LINE_2_ENTITY));
+        given(lineDao.findById(findId)).willReturn(Optional.of(LINE_ENTITY_2호선));
         given(sectionDao.findSectionsByLineId(findId)).willReturn(sectionMappers);
 
         // when
@@ -117,7 +112,7 @@ class LineServiceTest {
 
         // then
         assertThat(findLineResponse).isEqualTo(
-                LineSectionResponse.of(new Line(findId, LINE_2_ENTITY.getName(), LINE_2_ENTITY.getColor(), new Sections(sections)))
+                LineSectionResponse.of(new Line(findId, LINE_ENTITY_2호선.getName(), LINE_ENTITY_2호선.getColor(), new Sections(sections)))
         );
     }
 
@@ -125,7 +120,7 @@ class LineServiceTest {
     @Test
     void findLineResponses() {
         // given
-        List<LineEntity> lineEntities = new ArrayList<>(List.of(LINE_2_ENTITY, LINE_1_ENTITY));
+        List<LineEntity> lineEntities = new ArrayList<>(List.of(LINE_ENTITY_2호선, LINE_ENTITY_1호선));
         given(lineDao.findAll()).willReturn(lineEntities);
         given(lineDao.findById(1L)).willReturn(Optional.of(new LineEntity(1L, "2호선", "초록색")));
         given(lineDao.findById(2L)).willReturn(Optional.of(new LineEntity(2L, "1호선", "파랑색")));

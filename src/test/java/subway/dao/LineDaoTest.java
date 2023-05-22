@@ -19,9 +19,9 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.TestFeature.*;
 
 @JdbcTest
 @Sql("classpath:initializeTestDb.sql")
@@ -34,9 +34,9 @@ class LineDaoTest {
                     rs.getString("color")
             );
     private List<LineEntity> expectLines = List.of(
-            new LineEntity(1L, "2호선", "초록색"),
-            new LineEntity(2L, "1호선", "파랑색"),
-            new LineEntity(3L, "7호선", "올리브색")
+            LINE_ENTITY_2호선,
+            LINE_ENTITY_1호선,
+            LINE_ENTITY_3호선
     );
 
     @Autowired
