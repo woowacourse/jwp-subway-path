@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ class SectionServiceTest {
         Sections emptySections = new Sections();
 
         // when
-        when(sectionDao.findSectionsByLineId(1L).get()).thenReturn(emptySections);
+        when(sectionDao.findSectionsByLineId(1L)).thenReturn(Optional.empty());
         sectionService.addSection(line.getId(), sectionRequest);
 
         // then
@@ -64,7 +65,7 @@ class SectionServiceTest {
                 new Section(new Station(2L, "디노"), new Station(3L, "조앤"), 7)));
 
         // when
-        when(sectionDao.findSectionsByLineId(1L).get()).thenReturn(sections);
+        when(sectionDao.findSectionsByLineId(1L)).thenReturn(Optional.of(sections));
         sectionService.addSection(line.getId(), sectionRequest);
 
         // then
@@ -88,7 +89,7 @@ class SectionServiceTest {
                 new Section(new Station(2L, "디노"), new Station(3L, "조앤"), 7)));
 
         // when
-        when(sectionDao.findSectionsByLineId(line.getId()).get()).thenReturn(sections);
+        when(sectionDao.findSectionsByLineId(line.getId())).thenReturn(Optional.of(sections));
         sectionService.addSection(line.getId(), sectionRequest);
 
         // then
@@ -161,7 +162,7 @@ class SectionServiceTest {
         ));
 
         // when
-        when(sectionDao.findSectionsByLineId(line.getId()).get()).thenReturn(sections);
+        when(sectionDao.findSectionsByLineId(line.getId())).thenReturn(Optional.of(sections));
         sectionService.showStations(line);
 
         // then

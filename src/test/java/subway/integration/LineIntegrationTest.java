@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationResponse;
 import subway.dto.StationsByLineResponse;
@@ -247,13 +246,12 @@ public class LineIntegrationTest extends IntegrationTest {
                 .extract();
 
         StationsByLineResponse stationsByLineResponse = response.as(StationsByLineResponse.class);
-        LineResponse lineResponse = stationsByLineResponse.getLineResponse();
         List<StationResponse> stationResponses = stationsByLineResponse.getStations();
 
         assertSoftly(softly -> {
-            softly.assertThat(lineResponse.getId()).isEqualTo(1L);
-            softly.assertThat(lineResponse.getName()).isEqualTo("2호선");
-            softly.assertThat(lineResponse.getColor()).isEqualTo("Green");
+            softly.assertThat(stationsByLineResponse.getLineId()).isEqualTo(1L);
+            softly.assertThat(stationsByLineResponse.getName()).isEqualTo("2호선");
+            softly.assertThat(stationsByLineResponse.getColor()).isEqualTo("Green");
 
             softly.assertThat(stationResponses.size()).isEqualTo(4);
             softly.assertThat(stationResponses.get(0).getId()).isEqualTo(1L);
@@ -284,12 +282,11 @@ public class LineIntegrationTest extends IntegrationTest {
             softly.assertThat(stationsByLineResponses.size()).isEqualTo(2);
 
             StationsByLineResponse stationsByLineResponse1 = stationsByLineResponses.get(0);
-            LineResponse line1 = stationsByLineResponse1.getLineResponse();
             List<StationResponse> stations1 = stationsByLineResponse1.getStations();
 
-            softly.assertThat(line1.getId()).isEqualTo(1L);
-            softly.assertThat(line1.getName()).isEqualTo("2호선");
-            softly.assertThat(line1.getColor()).isEqualTo("Green");
+            softly.assertThat(stationsByLineResponse1.getLineId()).isEqualTo(1L);
+            softly.assertThat(stationsByLineResponse1.getName()).isEqualTo("2호선");
+            softly.assertThat(stationsByLineResponse1.getColor()).isEqualTo("Green");
             softly.assertThat(stations1.size()).isEqualTo(4);
             softly.assertThat(stations1.get(0).getId()).isEqualTo(1L);
             softly.assertThat(stations1.get(0).getName()).isEqualTo("후추");
@@ -301,12 +298,11 @@ public class LineIntegrationTest extends IntegrationTest {
             softly.assertThat(stations1.get(3).getName()).isEqualTo("로운");
 
             StationsByLineResponse stationsByLineResponse2 = stationsByLineResponses.get(1);
-            LineResponse line2 = stationsByLineResponse2.getLineResponse();
             List<StationResponse> stations2 = stationsByLineResponse2.getStations();
 
-            softly.assertThat(line2.getId()).isEqualTo(2L);
-            softly.assertThat(line2.getName()).isEqualTo("8호선");
-            softly.assertThat(line2.getColor()).isEqualTo("pink");
+            softly.assertThat(stationsByLineResponse2.getLineId()).isEqualTo(2L);
+            softly.assertThat(stationsByLineResponse2.getName()).isEqualTo("8호선");
+            softly.assertThat(stationsByLineResponse2.getColor()).isEqualTo("pink");
             softly.assertThat(stations2.size()).isEqualTo(3);
             softly.assertThat(stations2.get(0).getId()).isEqualTo(3L);
             softly.assertThat(stations2.get(0).getName()).isEqualTo("조앤");

@@ -153,7 +153,8 @@ public class Sections {
 
     public boolean isExist(Long stationId) {
         return sections.stream()
-                .anyMatch(section -> section.getFrom().getId() == stationId || section.getTo().getId() == stationId);
+                .anyMatch(section -> Objects.equals(section.getFrom().getId(), stationId) || Objects.equals(
+                        section.getTo().getId(), stationId));
     }
 
     public int getSize() {

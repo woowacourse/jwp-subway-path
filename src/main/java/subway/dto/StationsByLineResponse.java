@@ -24,8 +24,16 @@ public class StationsByLineResponse {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public LineResponse getLineResponse() {
-        return new LineResponse(lineId, name, color);
+    public Long getLineId() {
+        return lineId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public List<StationResponse> getStations() {

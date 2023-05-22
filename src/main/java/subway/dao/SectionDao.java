@@ -19,12 +19,22 @@ public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<Section> SECTION_STATION_ROW_MAPPER = (rs, rowNum) ->
-            new Section(
-                    new Station(rs.getLong("from_id"), rs.getString("from_name")),
-                    new Station(rs.getLong("to_id"), rs.getString("to_name")),
-                    rs.getInt("distance")
-            );
+    private final RowMapper<Section> SECTION_STATION_ROW_MAPPER = (rs, rowNum) -> {
+        Optional<Station> fromStation = Optional.ofNullable(
+                new Station(rs.getLong("from_id"), rs.getString("from_name"))
+        );
+        Optional<Station> toStation = Optional.ofNullable(
+                new Station(rs.getLong("to_id"), rs.getString("to_name"))
+        );
+
+        int distance = rs.getInt("distance");
+
+        if (fromStation.isPresent() && toStation.isPresent()) {
+            return new Section(fromStation.get(), toStation.get(), distance);
+        }
+        return null;
+    };
+
 
     public SectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -59,7 +69,9 @@ public class SectionDao {
 
         Optional<List<Section>> sectionResource = Optional.ofNullable(
                 jdbcTemplate.query(sql, SECTION_STATION_ROW_MAPPER, lineId));
-
+        if (sectionResource.get().isEmpty()) {
+            return Optional.empty();
+        }
         Sections sections = new Sections(sectionResource.get());
         return Optional.of(sections);
     }

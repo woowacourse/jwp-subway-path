@@ -21,7 +21,6 @@ public class SectionService {
 
     public void addSection(final Long lineId, final SectionRequest sectionRequest) {
         Optional<Sections> sectionsByLineId = sectionDao.findSectionsByLineId(lineId);
-
         if (sectionsByLineId.isEmpty()) {  // 빈 노선에 섹션 추가
             sectionDao.insert(sectionRequest.getFromId(), sectionRequest.getToId(), sectionRequest.getDistance(),
                     lineId);
