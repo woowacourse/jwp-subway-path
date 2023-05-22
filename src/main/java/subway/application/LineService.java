@@ -86,19 +86,8 @@ public class LineService {
         final Station right = stationService.findById(request.getToStation());
         final Section section = new Section(left, right, new Distance(request.getDistance()));
         line.addSection(section);
-        sectionDao.save(toEntities(line.getId(), line.getSections()));
+        sectionDao.save(SectionEntity.toEntities(line.getId(), line.getSections()));
         return new SectionResponse(lineId, left, right);
-    }
-
-    private List<SectionEntity> toEntities(final Long lineId, final List<Section> sections) {
-        return sections.stream()
-                .map(section -> new SectionEntity(
-                        lineId,
-                        section.getLeft().getName(),
-                        section.getRight().getName(),
-                        section.getDistance().getDistance())
-                )
-                .collect(Collectors.toList());
     }
 
     private Line makeLineBy(final Long lineId) {
@@ -126,7 +115,7 @@ public class LineService {
     public void deleteStation(final Long lineId, final Long stationId) {
         final Line line = makeLineBy(lineId);
         line.deleteStation(stationService.findById(stationId));
-        sectionDao.save(toEntities(lineId, line.getSections()));
+        sectionDao.save(SectionEntity.toEntities(lineId, line.getSections()));
     }
 
     @Transactional(readOnly = true)
