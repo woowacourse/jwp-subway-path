@@ -11,6 +11,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 import subway.line.domain.FareCriteria;
 import subway.line.domain.Line;
 import subway.line.domain.LineNameKey;
@@ -19,28 +20,36 @@ import subway.line.dto.TraverseStationDto;
 import subway.section.domain.Section;
 import subway.station.domain.Station;
 
+@Component
 public class JgraphtShortestPathFinder implements ShortestPathFinder{
 
   private static final int DEFAULT_FARE = 1250;
   private static final int ADDITIONAL_FARE = 100;
   private final int DISTANCE_FROM_GAP_FROM_SECOND_TO_THIRD = SECOND_SECTION.getDistanceFrom() - FIRST_SECTION.getDistanceFrom();
 
-  private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-  private final Map<LineNameKey, String> lineNames;
-
-  public JgraphtShortestPathFinder() {
-    this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    this.lineNames = new HashMap<>();
-  }
-
   @Override
-  public void makeGraph(final List<Line> lines) {
-      for (Line line : lines) {
-        makeGraphBySection(line);
-      }
+  public ShortestPathResponse getShortestPathResponse(final List<Line> lines, final Station fromStation, final Station toStation) {
+    final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+        DefaultWeightedEdge.class);
+    final Map<LineNameKey, String> lineNames = new HashMap<>();
+
+    makeGraph(lines, graph, lineNames);
+
+    final GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(
+        graph).getPath(fromStation, toStation);
+    final double distance = shortestPath.getWeight();
+    return new ShortestPathResponse(distance, calculateFare((int) distance), getTraverseStationDtos(shortestPath, lineNames));
   }
 
-  private void makeGraphBySection(final Line line) {
+  private void makeGraph(final List<Line> lines, final WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+      final Map<LineNameKey, String> lineNames) {
+    for (Line line : lines) {
+      makeGraphBySection(line, graph, lineNames);
+    }
+  }
+
+  private void makeGraphBySection(final Line line, final WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+      final Map<LineNameKey, String> lineNames) {
     for (Section section : line.getSections()) {
       final Station upStation = section.getUpStation();
       final Station downStation = section.getDownStation();
@@ -52,14 +61,6 @@ public class JgraphtShortestPathFinder implements ShortestPathFinder{
       graph.addEdge(upStation, downStation);
       graph.setEdgeWeight(upStation, downStation, section.getDistance());
     }
-  }
-
-  @Override
-  public ShortestPathResponse getShortestPathResponse(final Station fromStation, final Station toStation) {
-    final GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(
-        graph).getPath(fromStation, toStation);
-    final double distance = shortestPath.getWeight();
-    return new ShortestPathResponse(distance, calculateFare((int) distance), getTraverseStationDtos(shortestPath));
   }
 
   private int calculateFare(int distance) {
@@ -83,7 +84,8 @@ public class JgraphtShortestPathFinder implements ShortestPathFinder{
     return (int) ((Math.ceil((distance - 1) / fareCriteria.getDistancePer()) + 1) * ADDITIONAL_FARE);
   }
 
-  private List<TraverseStationDto> getTraverseStationDtos(final GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+  private List<TraverseStationDto> getTraverseStationDtos(final GraphPath<Station, DefaultWeightedEdge> shortestPath,
+      final Map<LineNameKey, String> lineNames) {
     final List<Station> vertexList = shortestPath.getVertexList();
     final List<TraverseStationDto> traverseStationDtos = new ArrayList<>();
     final int size = vertexList.size();

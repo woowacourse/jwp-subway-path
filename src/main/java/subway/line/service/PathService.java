@@ -16,10 +16,13 @@ public class PathService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final ShortestPathFinder shortestPathFinder;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    public PathService(final LineRepository lineRepository, final StationRepository stationRepository,
+        final ShortestPathFinder shortestPathFinder) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.shortestPathFinder = shortestPathFinder;
     }
 
     public ShortestPathResponse findShortestPath(final ShortestPathRequest shortestPathRequest) {
@@ -27,11 +30,7 @@ public class PathService {
         final Station toStation = stationRepository.findById(shortestPathRequest.getToStationId());
         final List<Line> lines = lineRepository.findAll();
 
-        final ShortestPathFinder shortestPathFinder = new JgraphtShortestPathFinder();
-        shortestPathFinder.makeGraph(lines);
-
-        final ShortestPathResponse shortestPathResponse = shortestPathFinder.getShortestPathResponse(fromStation,
+        return shortestPathFinder.getShortestPathResponse(lines, fromStation,
             toStation);
-        return shortestPathResponse;
     }
 }

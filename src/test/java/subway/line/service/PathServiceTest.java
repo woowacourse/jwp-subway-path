@@ -2,6 +2,7 @@ package subway.line.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
@@ -33,6 +34,9 @@ class PathServiceTest {
   @Mock
   private StationRepository stationRepository;
 
+  @Mock
+  private ShortestPathFinder shortestPathFinder;
+
   @InjectMocks
   private PathService pathService;
 
@@ -40,7 +44,6 @@ class PathServiceTest {
   void findShortestPath() {
     given(stationRepository.findById(잠실새내역.getId())).willReturn(잠실새내역);
     given(stationRepository.findById(잠실역.getId())).willReturn(잠실역);
-
     given(lineRepository.findAll()).willReturn(List.of(
         new Line(1L, "1호선", Sections.values(
             List.of(
@@ -58,6 +61,12 @@ class PathServiceTest {
             )
         ))
     ));
+    given(shortestPathFinder.getShortestPathResponse(any(), any(), any()))
+        .willReturn(new ShortestPathResponse(58, 2150, List.of(
+            new TraverseStationDto("1호선", "잠실새내역"),
+            new TraverseStationDto("3호선", "잠실나루역"),
+            new TraverseStationDto("3호선", "잠실역")
+        )));
 
     final ShortestPathResponse shortestPath = pathService.findShortestPath(
         new ShortestPathRequest(잠실새내역.getId(), 잠실역.getId()));
