@@ -28,14 +28,10 @@ public class RouteMap {
     }
 
     public static WeightedMultigraph<String, DefaultWeightedEdge> makeGraph(List<Line> lines) {
-
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         for (Line line : lines) {
             addVertex(graph, line);
-        }
-
-        for (Line line : lines) {
             addEdge(graph, line);
         }
 
