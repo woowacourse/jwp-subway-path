@@ -17,6 +17,8 @@ public class Section {
     private final Distance distance;
 
     private Section(final Station upStation, final Station downStation, final Distance distance) {
+        validateDuplicationStation(upStation, downStation);
+
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -24,6 +26,12 @@ public class Section {
 
     public static Section of(final Station upStation, final Station downStation, final Distance distance) {
         return new Section(upStation, downStation, distance);
+    }
+
+    private void validateDuplicationStation(final Station upStation, final Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new IllegalArgumentException("구간을 등록하는 두 역이 같을 수 없습니다.");
+        }
     }
 
     public boolean isEndSection() {

@@ -21,6 +21,13 @@ class SectionTest {
     private final Station DOWN_END_STATION = Station.of(4L, "삼성역", Position.DOWN);
 
     @Test
+    void 구간에_같은_역이_들어오면_예외가_들어오는지_확인한다() {
+        assertThatThrownBy(() -> Section.of(MID_STATION_ONE, MID_STATION_ONE, Distance.from(10)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("구간을 등록하는 두 역이 같을 수 없습니다.");
+    }
+
+    @Test
     void 구간이_종점역을_가지고_있는지_확인한다() {
         final Section upEndSection = Section.of(UP_END_STATION, MID_STATION_ONE, Distance.from(10));
         final Section downEndSection = Section.of(MID_STATION_ONE, DOWN_END_STATION, Distance.from(10));
