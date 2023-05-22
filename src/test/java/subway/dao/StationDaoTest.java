@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -70,9 +71,9 @@ class StationDaoTest {
         final Station huchu = new Station("huchu");
         final Long id = stationDao.insert(huchu).getId();
         // when
-        final Station actualStation = stationDao.findById(id);
+        final Optional<Station> actualStation = stationDao.findById(id);
         // then
-        assertThat(actualStation.getName()).isEqualTo("huchu");
+        assertThat(actualStation.get().getName()).isEqualTo("huchu");
     }
 
     @Test
@@ -83,8 +84,8 @@ class StationDaoTest {
         // when
         stationDao.update(new Station(id, "dino"));
         // then
-        final Station station = stationDao.findById(id);
-        assertThat(station.getName()).isEqualTo("dino");
+        final Optional<Station> station = stationDao.findById(id);
+        assertThat(station.get().getName()).isEqualTo("dino");
     }
 
     @Test
