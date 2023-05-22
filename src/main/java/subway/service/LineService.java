@@ -61,10 +61,7 @@ public class LineService {
 
         final Station upStation = stationRepository.findById(request.getUpStationId());
         final Station downStation = stationRepository.findById(request.getDownStationId());
-
-        if (upStation == null || downStation == null) {
-            throw new StationNotFoundException("존재하는 역의 id를 입력해 주세요.");
-        }
+        validateStationsExists(upStation, downStation);
 
         final int distance = request.getDistance();
 
@@ -84,10 +81,7 @@ public class LineService {
 
         final Station upStation = stationRepository.findById(request.getUpStationId());
         final Station downStation = stationRepository.findById(request.getDownStationId());
-
-        if (upStation == null || downStation == null) {
-            throw new StationNotFoundException("존재하는 역의 id를 입력해 주세요.");
-        }
+        validateStationsExists(upStation, downStation);
 
         final int distance = request.getDistance();
 
@@ -104,6 +98,12 @@ public class LineService {
         final List<StationResponse> stationResponse = mapToStationResponse(stationsInOrder);
 
         return LineResponse.of(line, stationResponse);
+    }
+
+    private static void validateStationsExists(final Station upStation, final Station downStation) {
+        if (upStation == null || downStation == null) {
+            throw new StationNotFoundException("존재하는 역의 id를 입력해 주세요.");
+        }
     }
 
     @Transactional
