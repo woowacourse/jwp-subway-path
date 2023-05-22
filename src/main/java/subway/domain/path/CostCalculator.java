@@ -11,11 +11,8 @@ public final class CostCalculator {
 
 
     public static int calculateCost(int distance) {
-        if (distance < BASE_COST_DISTANCE) {
+        if (distance <= BASE_COST_DISTANCE) {
             return DEFAULT_COST;
-        }
-        if (distance == BASE_COST_DISTANCE) {
-            return DEFAULT_COST + ADDITIONAL_COST;
         }
         if (distance <= SECOND_EXTRA_COST_DISTANCE) {
             distance -= BASE_COST_DISTANCE;
