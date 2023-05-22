@@ -24,19 +24,21 @@ public final class Sections {
         return new Sections(sections);
     }
 
-    public void initializeSections(final Station upStation, final Station downStation, final int distance) {
+    public void initializeSections(final Section section) {
         if (!sections.isEmpty()) {
             throw new IllegalArgumentException("이미 역들이 존재하는 노선입니다.");
         }
-        sections.add(Section.of(upStation, downStation, distance));
+        sections.add(section);
     }
 
-    public void addSection(final Station upStation, final Station downStation, final int distance) {
+    public void addSection(final Section section) {
         if (sections.size() < INITIALIZE_SECTION_COUNT) {
             throw new IllegalArgumentException("노선에는 한 구간이라도 존재해야 역이 추가 가능합니다.");
         }
+        final Station upStation = section.getUpStation();
+        final Station downStation = section.getDownStation();
         validateSection(upStation, downStation);
-        addSectionByPosition(upStation, downStation, distance);
+        addSectionByPosition(upStation, downStation, section.getDistance());
     }
 
     private void validateSection(final Station upStation, final Station downStation) {

@@ -25,20 +25,20 @@ public class Line {
         this.sections = sections;
     }
 
-    public void add(Section section) {
+    public void add(final Section section) {
         if (sections.isEmpty()) {
-            initializeLine(section.getUpStation(), section.getDownStation(), section.getDistance());
+            initializeLine(section);
             return;
         }
-        addStation(section.getUpStation(), section.getDownStation(), section.getDistance());
+        addStation(section);
     }
 
-    private void initializeLine(final Station upStation, final Station downStation, final int distance) {
-        sections.initializeSections(upStation, downStation, distance);
+    private void initializeLine(final Section section) {
+        sections.initializeSections(section);
     }
 
-    private void addStation(final Station upStation, final Station downStation, final int distance) {
-        sections.addSection(upStation, downStation, distance);
+    private void addStation(final Section section) {
+        sections.addSection(section);
     }
 
     public void removeStation(final Station station) {

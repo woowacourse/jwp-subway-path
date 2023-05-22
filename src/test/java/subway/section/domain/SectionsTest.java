@@ -21,7 +21,7 @@ class SectionsTest {
       final Sections sections = Sections.empty();
 
       //when
-      sections.initializeSections(잠실새내역, 잠실역, 3);
+      sections.initializeSections(Section.of(잠실새내역, 잠실역, 3));
 
       //then
       assertAll(
@@ -37,11 +37,11 @@ class SectionsTest {
   void initializeLineWithFail() {
     //given
     final Sections sections = Sections.empty();
-    sections.initializeSections(잠실새내역, 잠실역, 3);
+    sections.initializeSections(Section.of(잠실새내역, 잠실역, 3));
 
     //when
     //then
-    Assertions.assertThatThrownBy(() -> sections.initializeSections(잠실역, 잠실새내역, 4));
+    Assertions.assertThatThrownBy(() -> sections.initializeSections(Section.of(잠실역, 잠실새내역, 4)));
   }
 
     @DisplayName("노선의 제일 앞에 역을 추가한다")
@@ -49,10 +49,10 @@ class SectionsTest {
     void addStationStartOfLine() {
         //given
         final Sections sections = Sections.empty();
-        sections.initializeSections(잠실역, 잠실나루역, 3);
+        sections.initializeSections(Section.of(잠실역, 잠실나루역, 3));
 
         //when
-        sections.addSection(잠실새내역, 잠실역, 4);
+        sections.addSection(Section.of(잠실새내역, 잠실역, 4));
 
         //then
         assertAll(
@@ -68,10 +68,10 @@ class SectionsTest {
     void addStationEndOfLine() {
         //given
         final Sections sections = Sections.empty();
-        sections.initializeSections(잠실새내역, 잠실역, 3);
+        sections.initializeSections(Section.of(잠실새내역, 잠실역, 3));
 
         //when
-        sections.addSection(잠실역, 잠실나루역, 4);
+        sections.addSection(Section.of(잠실역, 잠실나루역, 4));
 
         //then
         assertAll(
@@ -87,10 +87,10 @@ class SectionsTest {
     void addStationMiddleOfLineUpToDown() {
         //given
         final Sections sections = Sections.empty();
-        sections.initializeSections(잠실새내역, 잠실나루역, 3);
+        sections.initializeSections(Section.of(잠실새내역, 잠실나루역, 3));
 
         //when
-        sections.addSection(잠실새내역, 잠실역, 2);
+        sections.addSection(Section.of(잠실새내역, 잠실역, 2));
 
         //then
         assertAll(
@@ -109,10 +109,10 @@ class SectionsTest {
     void addStationMiddleOfLineDownToUp() {
         //given
         final Sections sections = Sections.empty();
-        sections.initializeSections(잠실새내역, 잠실나루역, 3);
+        sections.initializeSections(Section.of(잠실새내역, 잠실나루역, 3));
 
         //when
-        sections.addSection(잠실역, 잠실나루역, 2);
+        sections.addSection(Section.of(잠실역, 잠실나루역, 2));
 
         //then
         assertAll(
@@ -131,11 +131,11 @@ class SectionsTest {
   void addStationWithLonger() {
     //given
     final Sections sections = Sections.empty();
-    sections.initializeSections(잠실새내역, 잠실나루역, 3);
+    sections.initializeSections(Section.of(잠실새내역, 잠실나루역, 3));
 
     //when
     //then
-    Assertions.assertThatThrownBy(() -> sections.addSection(잠실역, 잠실나루역, 4))
+    Assertions.assertThatThrownBy(() -> sections.addSection(Section.of(잠실역, 잠실나루역, 4)))
         .isInstanceOf(IllegalArgumentException.class);
   }
 
@@ -147,7 +147,7 @@ class SectionsTest {
 
     //when
     //then
-    Assertions.assertThatThrownBy(() -> sections.addSection(잠실역, 잠실나루역, 4))
+    Assertions.assertThatThrownBy(() -> sections.addSection(Section.of(잠실역, 잠실나루역, 4)))
         .isInstanceOf(IllegalArgumentException.class);
   }
 
@@ -156,11 +156,11 @@ class SectionsTest {
   void addExistedStations() {
     //given
     final Sections sections = Sections.empty();
-    sections.initializeSections(잠실새내역, 잠실나루역, 3);
+    sections.initializeSections(Section.of(잠실새내역, 잠실나루역, 3));
 
     //when
     //then
-    Assertions.assertThatThrownBy(() -> sections.addSection(잠실새내역, 잠실나루역, 4))
+    Assertions.assertThatThrownBy(() -> sections.addSection(Section.of(잠실새내역, 잠실나루역, 4)))
         .isInstanceOf(IllegalArgumentException.class);
   }
 
@@ -169,8 +169,8 @@ class SectionsTest {
     void removeStationStartOfLine() {
         //given
         final Sections sections = Sections.empty();
-        sections.initializeSections(잠실새내역, 잠실역, 3);
-        sections.addSection(잠실역, 잠실나루역, 2);
+        sections.initializeSections(Section.of(잠실새내역, 잠실역, 3));
+        sections.addSection(Section.of(잠실역, 잠실나루역, 2));
 
         //when
         sections.removeStation(잠실새내역);
@@ -189,8 +189,8 @@ class SectionsTest {
     void removeStationEndOfLine() {
       //given
       final Sections sections = Sections.empty();
-      sections.initializeSections(잠실새내역, 잠실역, 3);
-      sections.addSection(잠실역, 잠실나루역, 2);
+      sections.initializeSections(Section.of(잠실새내역, 잠실역, 3));
+      sections.addSection(Section.of(잠실역, 잠실나루역, 2));
 
       //when
       sections.removeStation(잠실나루역);
@@ -209,8 +209,8 @@ class SectionsTest {
     void removeStation() {
         //given
       final Sections sections = Sections.empty();
-      sections.initializeSections(잠실새내역, 잠실역, 3);
-      sections.addSection(잠실역, 잠실나루역, 2);
+      sections.initializeSections(Section.of(잠실새내역, 잠실역, 3));
+      sections.addSection(Section.of(잠실역, 잠실나루역, 2));
 
         //when
         sections.removeStation(잠실역);
