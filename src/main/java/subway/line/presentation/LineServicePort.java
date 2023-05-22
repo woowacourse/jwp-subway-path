@@ -3,15 +3,15 @@ package subway.line.presentation;
 import org.springframework.stereotype.Component;
 import subway.line.Line;
 import subway.line.application.LineService;
+import subway.line.application.dto.LineSavingInfo;
 import subway.line.application.dto.LineUpdatingInfo;
+import subway.line.domain.fare.application.faremeterpolicy.CustomerCondition;
 import subway.line.domain.section.application.ShortestPathResponse;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.dto.SectionSavingRequest;
-import subway.line.domain.station.Station;
 import subway.line.domain.station.application.StationService;
 import subway.line.presentation.dto.LineRequest;
 import subway.line.presentation.dto.LineResponse;
-import subway.line.application.dto.LineSavingInfo;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -89,6 +89,8 @@ public class LineServicePort {
     }
 
     public BigDecimal calculateFare(double distance) {
-        return lineService.calculateFare(distance);
+        final var customerCondition = new CustomerCondition(Distance.of(distance));
+        final var fare = lineService.calculateFare(customerCondition);
+        return fare.getMoney();
     }
 }

@@ -53,4 +53,12 @@ public class Distance {
                 "value=" + value +
                 '}';
     }
+
+    public boolean isMoreThanOrEquals(Distance distance) {
+        return distance.value <= this.value;
+    }
+
+    public boolean isLessThanOrEquals(Distance distance) {
+        return this.value <= distance.value;
+    }
 }

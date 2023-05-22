@@ -7,6 +7,10 @@ import subway.line.application.dto.LineSavingInfo;
 import subway.line.application.dto.LineUpdatingInfo;
 import subway.line.application.strategy.sectionsaving.SectionSavingStrategy;
 import subway.line.application.strategy.stationdeleting.StationDeletingStrategy;
+import subway.line.domain.fare.Fare;
+import subway.line.domain.fare.application.SubwayFareMeter;
+import subway.line.domain.fare.application.faremeterpolicy.CustomerCondition;
+import subway.line.domain.fare.application.faremeterpolicy.FareMeterPolicy;
 import subway.line.domain.navigation.application.NavigationService;
 import subway.line.domain.section.application.SectionRepository;
 import subway.line.domain.section.domain.Distance;
@@ -19,20 +23,19 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
     public static final int DEFAULT_FARE = 1250;
-    public static final int MIN_5KM_FARE_DISTANCE = 10;
     public static final int MAX_5KM_FARE_DISTANCE = 50;
     public static final int MIN_8KM_FARE_DISTANCE = 51;
     public static final int SURCHARGE = 100;
     private final LineRepository lineRepository;
-    private final SectionRepository sectionRepository;
     private final NavigationService navigationService;
+    private final SubwayFareMeter subwayFareMeter;
     private final List<SectionSavingStrategy> sectionSavingStrategies;
     private final List<StationDeletingStrategy> stationDeletingStrategies;
 
-    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, NavigationService navigationService, List<SectionSavingStrategy> sectionSavingStrategies, List<StationDeletingStrategy> stationDeletingStrategies) {
+    public LineService(LineRepository lineRepository, NavigationService navigationService, SubwayFareMeter subwayFareMeter, List<SectionSavingStrategy> sectionSavingStrategies, List<StationDeletingStrategy> stationDeletingStrategies) {
         this.lineRepository = lineRepository;
-        this.sectionRepository = sectionRepository;
         this.navigationService = navigationService;
+        this.subwayFareMeter = subwayFareMeter;
         this.sectionSavingStrategies = sectionSavingStrategies;
         this.stationDeletingStrategies = stationDeletingStrategies;
     }
@@ -58,6 +61,25 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
+    }
+
+    public long saveSection(Line line, Station previousStation, Station nextStation, Distance distance) {
+        for (SectionSavingStrategy strategy : sectionSavingStrategies) {
+            if (strategy.support(line, previousStation, nextStation, distance)) {
+                return strategy.insert(line, previousStation, nextStation, distance);
+            }
+        }
+        throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
+    }
+
+    public void deleteStation(Line line, Station station) {
+        for (StationDeletingStrategy strategy : stationDeletingStrategies) {
+            if (strategy.support(line, station)) {
+                strategy.deleteStation(line, station);
+                return;
+            }
+        }
+        throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
     }
 
     public List<Station> findShortestPath(Station stationA, Station stationB) {
@@ -86,41 +108,7 @@ public class LineService {
         navigationService.updateNavigation(sectionsOfAllLines);
     }
 
-    public long saveSection(Line line, Station previousStation, Station nextStation, Distance distance) {
-        for (SectionSavingStrategy strategy : sectionSavingStrategies) {
-            if (strategy.support(line, previousStation, nextStation, distance)) {
-                return strategy.insert(line, previousStation, nextStation, distance);
-            }
-        }
-        throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
-    }
-
-    public BigDecimal calculateFare(double km) {
-        var fare = new BigDecimal(DEFAULT_FARE);
-        if (MIN_5KM_FARE_DISTANCE <= km && km <= MAX_5KM_FARE_DISTANCE) {
-            fare = calculate5kmFare(km, fare);
-        }
-        if (MIN_8KM_FARE_DISTANCE <= km) {
-            fare = calculate8kmFare(km, fare);
-        }
-        return fare;
-    }
-
-    private static BigDecimal calculate5kmFare(double km, BigDecimal fare) {
-        return fare.add(new BigDecimal(SURCHARGE * Math.floor((km - 10) / 5)));
-    }
-
-    private static BigDecimal calculate8kmFare(double km, BigDecimal fare) {
-        return fare.add(new BigDecimal(SURCHARGE * Math.floor((km - 10) / 8)));
-    }
-
-    public void deleteStation(Line line, Station station) {
-        for (StationDeletingStrategy strategy : stationDeletingStrategies) {
-            if (strategy.support(line, station)) {
-                strategy.deleteStation(line, station);
-                return;
-            }
-        }
-        throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
+    public Fare calculateFare(CustomerCondition customerCondition) {
+        return subwayFareMeter.calculateFare(customerCondition);
     }
 }

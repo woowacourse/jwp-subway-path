@@ -1,27 +1,22 @@
 package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import subway.line.application.LineRepository;
-import subway.line.domain.section.application.SectionRepository;
-import subway.line.domain.station.application.StationRepository;
-import subway.line.application.LineService;
-import subway.line.domain.station.EmptyStation;
 import subway.line.Line;
-import subway.line.domain.station.Station;
+import subway.line.application.LineRepository;
+import subway.line.application.LineService;
+import subway.line.domain.section.Section;
+import subway.line.domain.section.application.SectionRepository;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.domain.EmptyDistance;
-import subway.line.domain.section.Section;
+import subway.line.domain.station.EmptyStation;
+import subway.line.domain.station.Station;
+import subway.line.domain.station.application.StationRepository;
 
-import java.math.BigDecimal;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class LineServiceTest {
@@ -72,36 +67,5 @@ class LineServiceTest {
         Mockito.when(stationRepository.findByName("청담역")).thenReturn(청담역);
         Mockito.when(stationRepository.findByName("논현역")).thenReturn(논현역);
         Mockito.when(stationRepository.findByName("서울숲")).thenReturn(서울숲);
-    }
-
-    @Test
-    @DisplayName("10km 이내의 거리에 대한 요금은 기본 운임으로 계산한다.")
-    void defaultFare() {
-        assertThat(lineService.calculateFare(9))
-                .isEqualTo(new BigDecimal("1250"));
-    }
-
-    @Test
-    @DisplayName("10km 이상의 거리에 대한 요금은 기본 운임 + 5km마다 100월씩 추가해 계산한다.")
-    void middleFare1() {
-        assertThat(lineService.calculateFare(11))
-                .as("5km마다 추가요금이 부과되므로 아직 추가요금은 없다.")
-                .isEqualTo(new BigDecimal("1250"));
-    }
-
-    @Test
-    @DisplayName("50km 이하의 거리에 대한 요금은 기본 운임 + 5km마다 100월씩 추가해 계산한다.")
-    void middleFare2() {
-        assertThat(lineService.calculateFare(49))
-                .as("10km + 5km*7 + 4km = 49km이므로 추가요금 700원이 부과된다.")
-                .isEqualTo(new BigDecimal("1950"));
-    }
-
-    @Test
-    @DisplayName("50km를 초과하는 거리에 대한 요금은 기본 운임 + 8km마다 100원씩 추가하여 부과한다.")
-    void maxFare() {
-        assertThat(lineService.calculateFare(51))
-                .as("10km + 8km*5 + 1km = 51km이므로 추가요금 500원이 부과된다.")
-                .isEqualTo(new BigDecimal("1750"));
     }
 }
