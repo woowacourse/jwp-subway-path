@@ -6,6 +6,11 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+
 # 테스트 환경
 ---
 spring:
