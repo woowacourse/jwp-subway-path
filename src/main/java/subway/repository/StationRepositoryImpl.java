@@ -16,33 +16,41 @@ public class StationRepositoryImpl implements StationRepository {
 
     public StationRepositoryImpl(final StationDao stationDao) {
         this.stationDao = stationDao;
+        init();
     }
 
     @Override
     public Station insert(Station station) {
+        validateDuplicate(station);
         Station storedStation = stationDao.insert(station);
         store.put(storedStation.getId(), storedStation);
         return storedStation;
     }
 
+    private void validateDuplicate(final Station station) {
+        boolean isPresent = store.values().stream()
+                .filter(iter -> iter.getName().equals(station.getName()))
+                .findAny()
+                .isPresent();
+        if (isPresent) {
+            throw new IllegalArgumentException("이미 존재하는 역입니다.");
+        }
+    }
+
     @Override
     public List<Station> findAll() {
-        init();
         return new ArrayList<>(store.values());
     }
 
     private void init() {
-        if (store.isEmpty()) {
-            List<Station> stations = stationDao.findAll();
-            for (Station station : stations) {
-                store.put(station.getId(), station);
-            }
+        List<Station> stations = stationDao.findAll();
+        for (Station station : stations) {
+            store.put(station.getId(), station);
         }
     }
 
     @Override
     public Station findById(Long id) {
-        init();
         return store.get(id);
     }
 

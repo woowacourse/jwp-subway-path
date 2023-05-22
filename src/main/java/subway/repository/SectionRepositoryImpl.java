@@ -18,6 +18,7 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     public SectionRepositoryImpl(final SectionDao sectionDao) {
         this.sectionDao = sectionDao;
+        init();
     }
 
     @Override
@@ -29,30 +30,25 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     @Override
     public List<Section> findAll() {
-        init();
         return new ArrayList<>(store.values());
     }
 
     @Override
     public List<Section> findAllByLineId(final Long lineId) {
-        init();
         return store.values().stream()
                 .filter(section -> section.getLineId().equals(lineId))
                 .collect(Collectors.toUnmodifiableList());
     }
 
     private void init() {
-        if (store.isEmpty()) {
-            List<Section> sections = sectionDao.findAll();
-            for (Section section : sections) {
-                store.put(section.getId(), section);
-            }
+        List<Section> sections = sectionDao.findAll();
+        for (Section section : sections) {
+            store.put(section.getId(), section);
         }
     }
 
     @Override
     public List<Section> findSectionByLineIdAndStationId(final Long lineId, final Long stationId) {
-        init();
         return store.values().stream()
                 .filter(section -> section.getLineId().equals(lineId))
                 .filter(section -> section.getUpStationId().equals(stationId) ||
@@ -62,7 +58,6 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     @Override
     public int countByLineId(final Long lineId) {
-        init();
         return (int) store.values().stream()
                 .filter(section -> section.getLineId().equals(lineId))
                 .count();

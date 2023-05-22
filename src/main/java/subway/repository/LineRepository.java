@@ -16,30 +16,38 @@ public class LineRepository {
 
     public LineRepository(final LineDao lineDao) {
         this.lineDao = lineDao;
+        init();
     }
 
     public Line insert(Line line) {
+        validateDuplicate(line);
         Line storedLine = lineDao.insert(line);
         store.put(storedLine.getId(), storedLine);
         return storedLine;
     }
 
+    private void validateDuplicate(final Line line) {
+        boolean isPresent = store.values().stream()
+                .filter(iter -> iter.getName().equals(line.getName()))
+                .findAny()
+                .isPresent();
+        if (isPresent) {
+            throw new IllegalArgumentException("이미 존재하는 호선입니다.");
+        }
+    }
+
     public List<Line> findAll() {
-        init();
         return new ArrayList<>(store.values());
     }
 
     private void init() {
-        if (store.isEmpty()) {
-            List<Line> lines = lineDao.findAll();
-            for (Line line : lines) {
-                store.put(line.getId(), line);
-            }
+        List<Line> lines = lineDao.findAll();
+        for (Line line : lines) {
+            store.put(line.getId(), line);
         }
     }
 
     public Line findById(Long id) {
-        init();
         return store.get(id);
     }
 
