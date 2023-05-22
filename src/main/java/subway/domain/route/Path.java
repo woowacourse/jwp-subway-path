@@ -5,18 +5,18 @@ import subway.domain.Station;
 
 public class Path {
     private final List<Station> path;
-    private final int shortestDistance;
+    private final int distance;
 
-    public Path(final List<Station> path, final int shortestDistance) {
+    public Path(final List<Station> path, final int distance) {
         this.path = path;
-        this.shortestDistance = shortestDistance;
+        this.distance = distance;
     }
 
     public List<Station> getPath() {
         return path;
     }
 
-    public int getShortestDistance() {
-        return shortestDistance;
+    public int getDistance() {
+        return distance;
     }
 }

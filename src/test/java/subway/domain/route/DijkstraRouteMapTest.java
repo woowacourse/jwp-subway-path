@@ -57,7 +57,7 @@ class DijkstraRouteMapTest {
                         new Station(4L, "서초역"),
                         도착역
                 ),
-                () -> assertThat(경로.getShortestDistance()).isEqualTo(37)
+                () -> assertThat(경로.getDistance()).isEqualTo(37)
         );
     }
 
@@ -90,7 +90,7 @@ class DijkstraRouteMapTest {
                         new Station(6L, "총신대입구역"),
                         도착역
                 ),
-                () -> assertThat(경로.getShortestDistance()).isEqualTo(20)
+                () -> assertThat(경로.getDistance()).isEqualTo(20)
         );
     }
 }
