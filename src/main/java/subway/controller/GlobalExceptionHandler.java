@@ -1,8 +1,10 @@
 package subway.controller;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +32,19 @@ public class GlobalExceptionHandler {
         String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
         log.warn(errorMessage);
         ErrorResponse response = new ErrorResponse(errorMessage);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> onHttpMessageNotReadable(HttpMessageNotReadableException e) {
+        if (e.getCause() instanceof MismatchedInputException) {
+            MismatchedInputException mismatchedInputException = (MismatchedInputException) e.getCause();
+            String errorMessage = mismatchedInputException.getPath().get(0).getFieldName() + " 필드의 값이 잘못되었습니다.";
+            log.warn(errorMessage);
+            ErrorResponse response = new ErrorResponse(errorMessage);
+            return ResponseEntity.badRequest().body(response);
+        }
+        ErrorResponse response = new ErrorResponse("요청을 다시 한 번 더 확인해주세요.");
         return ResponseEntity.badRequest().body(response);
     }
 
