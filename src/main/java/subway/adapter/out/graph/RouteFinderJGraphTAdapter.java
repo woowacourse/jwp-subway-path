@@ -1,21 +1,20 @@
 package subway.adapter.out.graph;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.application.port.out.route.RouteFinderPort;
 import subway.common.exception.SubwayIllegalArgumentException;
 import subway.domain.Line;
-import subway.domain.Route;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.route.Route;
+import subway.domain.route.RouteSection;
 
 @Component
 public class RouteFinderJGraphTAdapter implements RouteFinderPort {
@@ -26,37 +25,58 @@ public class RouteFinderJGraphTAdapter implements RouteFinderPort {
             throw new SubwayIllegalArgumentException("출발역과 도착역이 같습니다.");
         }
 
-        List<Section> sections = lines.stream()
-                .sorted(Comparator.comparing(line -> line.getSurcharge().getValue()))
-                .map(Line::getSections)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+        List<Line> fareOrderedLines = getFareOrderedLines(lines);
 
-        Graph<Station, DefaultWeightedEdge> graph = getSubwayGraph(sections);
+        Graph<Station, LineWeightedEdge> graph = getSubwayGraph(fareOrderedLines);
 
         return getRoute(source, target, graph);
     }
 
-    private Graph<Station, DefaultWeightedEdge> getSubwayGraph(final List<Section> sections) {
-        Graph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private List<Line> getFareOrderedLines(final List<Line> lines) {
+        return lines.stream()
+                .sorted(Comparator.comparing(line -> line.getSurcharge().getValue()))
+                .collect(Collectors.toUnmodifiableList());
+    }
 
-        for (final Section section : sections) {
-            Station upStation = section.getUpStation();
-            Station downStation = section.getDownStation();
 
-            graph.addVertex(upStation);
-            graph.addVertex(downStation);
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
+    private Graph<Station, LineWeightedEdge> getSubwayGraph(final List<Line> lines) {
+        Graph<Station, LineWeightedEdge> graph = new WeightedMultigraph<>(LineWeightedEdge.class);
+
+        for (final Line line : lines) {
+            for (final Section section : line.getSections()) {
+                addSectionToGraph(graph, line, section);
+            }
         }
         return graph;
     }
 
+    private void addSectionToGraph(final Graph<Station, LineWeightedEdge> graph, final Line line,
+            final Section section) {
+        addVertex(graph, section);
+        addEdge(graph, line, section);
+    }
+
+    private void addVertex(final Graph<Station, LineWeightedEdge> graph, final Section section) {
+        graph.addVertex(section.getUpStation());
+        graph.addVertex(section.getDownStation());
+    }
+
+    private void addEdge(final Graph<Station, LineWeightedEdge> graph, final Line line, final Section section) {
+        LineWeightedEdge edge = new LineWeightedEdge(line, section);
+        graph.addEdge(section.getUpStation(), section.getDownStation(), edge);
+        graph.setEdgeWeight(edge, section.getDistance());
+    }
+
     private Route getRoute(final Station source, final Station target,
-            final Graph<Station, DefaultWeightedEdge> graph) {
+            final Graph<Station, LineWeightedEdge> graph) {
         try {
-            GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph)
+            GraphPath<Station, LineWeightedEdge> path = new DijkstraShortestPath<>(graph)
                     .getPath(source, target);
-            return new Route(path.getVertexList(), (int) path.getWeight());
+            List<RouteSection> routeSections = path.getEdgeList()
+                    .stream()
+                    .map(edge -> new RouteSection(edge.getLine(), edge.getSection()))
+                    .collect(Collectors.toList());
+            return new Route(routeSections);
         } catch (IllegalArgumentException exception) {
             throw new SubwayIllegalArgumentException("경로상에 역이 존재하지 않습니다.");
         } catch (NullPointerException exception) {

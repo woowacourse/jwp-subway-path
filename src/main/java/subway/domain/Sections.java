@@ -206,6 +206,10 @@ public class Sections {
         return orderedStations;
     }
 
+    public boolean contains(final Section section) {
+        return sections.contains(section);
+    }
+
     public List<Section> getSections() {
         return new ArrayList<>(sections);
     }

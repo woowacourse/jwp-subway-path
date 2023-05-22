@@ -13,10 +13,10 @@ import subway.application.port.out.station.LoadStationPort;
 import subway.common.exception.NoSuchStationException;
 import subway.common.mapper.RouteMapper;
 import subway.domain.Line;
-import subway.domain.Route;
 import subway.domain.Station;
 import subway.domain.fare.Fare;
 import subway.domain.fare.FarePolicy;
+import subway.domain.route.Route;
 
 @Service
 @Transactional(readOnly = true)
@@ -47,6 +47,7 @@ public class RouteQueryService implements FindRouteUseCase {
         }
 
         Route route = routeFinderPort.findRoute(source.get(), target.get(), lines);
+
         Fare fare = farePolicy.calculate(route);
 
         return RouteMapper.toResponse(route, fare);

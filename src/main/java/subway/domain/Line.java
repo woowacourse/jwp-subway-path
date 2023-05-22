@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import subway.domain.fare.Fare;
 
 public class Line {
 
@@ -31,6 +32,10 @@ public class Line {
 
     public List<Station> findOrderedStation() {
         return sections.findOrderedStation();
+    }
+
+    public boolean containsSection(final Section section) {
+        return sections.contains(section);
     }
 
     @Override
@@ -62,6 +67,10 @@ public class Line {
 
     public String getColor() {
         return lineInfo.getColor();
+    }
+
+    public Fare getSurcharge() {
+        return lineInfo.getSurcharge();
     }
 
     public List<Section> getSections() {

@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.common.exception.SubwayIllegalArgumentException;
+import subway.domain.fare.Fare;
 
 public class LineInfo {
 
@@ -10,7 +11,7 @@ public class LineInfo {
 
     private final String name;
     private final String color;
-    private final int surcharge;
+    private final Fare surcharge;
 
     public LineInfo(final String name, final String color, Integer surcharge) {
         validateName(name);
@@ -21,7 +22,7 @@ public class LineInfo {
         validateSurcharge(surcharge);
         this.name = name.strip();
         this.color = color.strip();
-        this.surcharge = surcharge;
+        this.surcharge = new Fare(surcharge);
     }
 
     private void validateName(final String name) {
@@ -56,7 +57,7 @@ public class LineInfo {
         return color;
     }
 
-    public int getSurcharge() {
+    public Fare getSurcharge() {
         return surcharge;
     }
 }

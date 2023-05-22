@@ -12,6 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.common.exception.SubwayIllegalArgumentException;
+import subway.domain.fare.Fare;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -92,7 +93,7 @@ public class LineInfoTest {
             LineInfo lineInfo = new LineInfo("2호선", "GREEN", null);
 
             // then
-            assertThat(lineInfo.getSurcharge()).isEqualTo(0);
+            assertThat(lineInfo.getSurcharge()).isEqualTo(new Fare(0));
         }
 
         @Test
@@ -109,7 +110,7 @@ public class LineInfoTest {
         String name = "2호선";
         String color = "GREEN";
         int surcharge = 0;
-        
+
         assertDoesNotThrow(() -> new LineInfo(name, color, surcharge));
     }
 }

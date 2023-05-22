@@ -262,4 +262,34 @@ class SectionsTest {
                     .isEqualTo(List.of(역삼역.STATION, 삼성역.STATION, 잠실역.STATION, 건대역.STATION));
         }
     }
+
+    @Nested
+    class 구간_포함_여부_검사시_ {
+
+        @Test
+        void 해당_구간을_포함하면_참() {
+            // given
+            Section section = 이호선_역삼_삼성_3.SECTION;
+            Sections sections = new Sections(List.of(section));
+
+            // when
+            boolean contains = sections.contains(section);
+
+            // then
+            assertThat(contains).isTrue();
+        }
+
+        @Test
+        void 해당_구간을_포함하지_않으면_거짓() {
+            // given
+            Section section = 이호선_역삼_삼성_3.SECTION;
+            Sections sections = new Sections();
+
+            // when
+            boolean contains = sections.contains(section);
+
+            // then
+            assertThat(contains).isFalse();
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package subway.domain.fare;
 
 import java.util.List;
-import subway.domain.Route;
+import subway.domain.route.Route;
 
 public class SumFarePolicy implements FarePolicy {
 

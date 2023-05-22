@@ -2,6 +2,7 @@ package subway.adapter.out.graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,9 +12,9 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import subway.common.exception.SubwayIllegalArgumentException;
 import subway.domain.Line;
-import subway.domain.Route;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.route.Route;
 import subway.fixture.SectionFixture.이호선_삼성_잠실_2;
 import subway.fixture.SectionFixture.이호선_역삼_삼성_3;
 import subway.fixture.StationFixture.강남역;
@@ -87,16 +88,31 @@ class RouteJGraphTAdapterTest {
         Station source = 역삼역.STATION;
         Station target = 잠실역.STATION;
         Line line1 = new Line(1L, "2호선", "GREEN", 0, List.of(new Section(source, target, 3)));
-        Line line2 = new Line(1L, "3호선", "ORANGE", 0, List.of(new Section(source, target, 4)));
+        Line line2 = new Line(2L, "3호선", "ORANGE", 0, List.of(new Section(source, target, 4)));
         List<Line> lines = List.of(line1, line2);
 
         // when
         Route route = routeJGraphTAdapter.findRoute(source, target, lines);
 
         // then
-        assertThat(route)
-                .usingRecursiveComparison()
-                .isEqualTo(new Route(List.of(역삼역.STATION, 잠실역.STATION), 3));
+        assertThat(route.findTotalDistance()).isEqualTo(3);
+    }
+
+    @Test
+    void 동일_경로에_거리까지_같으면_노선_추가비용이_더_작은_경로를_선택한다() {
+        // given
+        Station source = 역삼역.STATION;
+        Station target = 잠실역.STATION;
+        Line line1 = new Line(1L, "1호선", "BLUE", 2000, List.of(new Section(source, target, 3)));
+        Line line2 = new Line(2L, "2호선", "GREEN", 1000, List.of(new Section(source, target, 3)));
+        Line line3 = new Line(3L, "3호선", "ORANGE", 3000, List.of(new Section(source, target, 4)));
+        List<Line> lines = List.of(line1, line2, line3);
+
+        // when
+        Route route = routeJGraphTAdapter.findRoute(source, target, lines);
+
+        // then
+        assertThat(route.findLines()).containsExactly(line2);
     }
 
     @Test
@@ -142,11 +158,14 @@ class RouteJGraphTAdapterTest {
         Route route = routeJGraphTAdapter.findRoute(방배역.STATION, 논현역.STATION, List.of(이호선, 삼호선, 신분당선, 칠호선));
 
         // then
-        assertThat(route)
-                .usingRecursiveComparison()
-                .isEqualTo(
-                        new Route(List.of(방배역.STATION, 서초역.STATION, 교대역.STATION, 고터역.STATION, 반포역.STATION, 논현역.STATION),
-                                8));
+        assertAll(
+                () -> assertThat(route.findStationRoute())
+                        .containsExactly(방배역.STATION, 서초역.STATION, 교대역.STATION, 고터역.STATION, 반포역.STATION, 논현역.STATION),
+                () -> assertThat(route.findTotalDistance())
+                        .isEqualTo(8),
+                () -> assertThat(route.findLines())
+                        .containsExactly(이호선, 삼호선, 칠호선)
+        );
     }
 
     @Test

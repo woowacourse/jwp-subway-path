@@ -21,10 +21,10 @@ public class LineMapper {
     }
 
     public static LineEntity toEntity(final LineInfo lineInfo) {
-        return new LineEntity(lineInfo.getName(), lineInfo.getColor(), lineInfo.getSurcharge());
+        return new LineEntity(lineInfo.getName(), lineInfo.getColor(), lineInfo.getSurcharge().getValue());
     }
 
     public static LineEntity toEntity(final long lineId, final LineInfo lineInfo) {
-        return new LineEntity(lineId, lineInfo.getName(), lineInfo.getColor(), lineInfo.getSurcharge());
+        return new LineEntity(lineId, lineInfo.getName(), lineInfo.getColor(), lineInfo.getSurcharge().getValue());
     }
 }

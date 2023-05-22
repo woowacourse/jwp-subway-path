@@ -1,6 +1,6 @@
 package subway.domain.fare;
 
-import subway.domain.Route;
+import subway.domain.route.Route;
 
 public class BaseFarePolicy implements FarePolicy {
 

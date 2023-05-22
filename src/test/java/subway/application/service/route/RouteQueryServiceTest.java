@@ -21,10 +21,12 @@ import subway.application.port.out.route.RouteFinderPort;
 import subway.application.port.out.station.LoadStationPort;
 import subway.common.exception.NoSuchStationException;
 import subway.domain.Line;
-import subway.domain.Route;
+import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.fare.Fare;
 import subway.domain.fare.FarePolicy;
+import subway.domain.route.Route;
+import subway.domain.route.RouteSection;
 import subway.fixture.StationFixture.강남역;
 import subway.fixture.StationFixture.삼성역;
 
@@ -91,8 +93,13 @@ class RouteQueryServiceTest {
         @Test
         void 성공() {
             // given
-            List<Line> lines = List.of(new Line("이호선", "GREEN", 0));
-            Route route = new Route(List.of(source, 강남역.STATION, 삼성역.STATION, target), 10);
+            Line line = new Line("이호선", "GREEN", 0);
+            List<Line> lines = List.of(line);
+            Route route = new Route(List.of(
+                    new RouteSection(line, new Section(source, 강남역.STATION, 2)),
+                    new RouteSection(line, new Section(강남역.STATION, 삼성역.STATION, 2)),
+                    new RouteSection(line, new Section(삼성역.STATION, target, 6))
+            ));
             given(loadLinePort.findAll())
                     .willReturn(lines);
             given(routeFinderPort.findRoute(source, target, lines))
