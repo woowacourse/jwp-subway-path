@@ -89,10 +89,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 역 조회 테스트 1")
+    @DisplayName("역들을 조회하는 경우 그래프를 만들 때 사용되는 구간의 순서는 상관없다.")
     @ParameterizedTest
     @MethodSource("getSections1")
-    void findStations1(final List<Section> sections, final int index) {
+    void findStationsIsIndependentFromOrderOfSections(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findStations(sections.get(index)).getStations()).containsExactly(
                 STATION1,
@@ -105,10 +105,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 구간 조회 테스트 1")
+    @DisplayName("구간들을 조회하는 경우 그래프를 만들 때 사용되는 구간의 순서는 상관없다.")
     @ParameterizedTest
     @MethodSource("getSections1")
-    void findSections1(final List<Section> sections, final int index) {
+    void findSectionsIsIndependentFromOrderOfSections(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS1.get(0),
@@ -121,10 +121,10 @@ class StationGraphTest {
     }
 
 
-    @DisplayName("노선의 역 조회 테스트 2")
+    @DisplayName("역들을 조회하는 경우 환승 구간이 존재할 때도 1호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections2")
-    void findStations2(final List<Section> sections, final int index) {
+    void findStationsOfLine1WhenTransferStationExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findStations(sections.get(index)).getStations()).containsExactly(
                 STATION1,
@@ -137,10 +137,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 구간 조회 테스트 2")
+    @DisplayName("구간들을 조회하는 경우 환승 구간이 존재할 때도 1호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections2")
-    void findSections2(final List<Section> sections, final int index) {
+    void findSectionsOfLine1WhenTransferStationExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS4.get(0),
@@ -152,10 +152,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 역 조회 테스트 3")
+    @DisplayName("역들을 조회하는 경우 환승 구간이 존재할 때도 2호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections3")
-    void findStations3(final List<Section> sections, final int index) {
+    void findStationsOfLine2WhenTransferStationExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findStations(sections.get(index)).getStations()).containsExactly(
                 STATION8,
@@ -167,10 +167,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 구간 조회 테스트 3")
+    @DisplayName("구간들을 조회하는 경우 환승 구간이 존재할 때도 2호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections3")
-    void findSections3(final List<Section> sections, final int index) {
+    void findSectionsOfLine2WhenTransferStationExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS4.get(6),
@@ -181,10 +181,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 역 조회 테스트 4")
+    @DisplayName("역들을 조회하는 경우 환승 구간이 여러개 존재할 때도 1호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections4")
-    void findStations4(final List<Section> sections, final int index) {
+    void findStationsOfLine1WhenTransferStationsExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findStations(sections.get(index)).getStations()).containsExactly(
                 STATION1,
@@ -194,10 +194,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 구간 조회 테스트 4")
+    @DisplayName("구간들을 조회하는 경우 환승 구간이 여러개 존재할 때도 1호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections4")
-    void findSections4(final List<Section> sections, final int index) {
+    void findSectionsOfLine1WhenTransferStationsExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS5.get(0),
@@ -206,10 +206,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 역 조회 테스트 5")
+    @DisplayName("역들을 조회하는 경우 환승 구간이 여러개 존재할 때도 2호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections5")
-    void findStations5(final List<Section> sections, final int index) {
+    void findStationsOfLine2WhenTransferStationsExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findStations(sections.get(index)).getStations()).containsExactly(
                 STATION3,
@@ -219,10 +219,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 구간 조회 테스트 5")
+    @DisplayName("구간들을 조회하는 경우 환승 구간이 여러개 존재할 때도 2호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections5")
-    void findSections5(final List<Section> sections, final int index) {
+    void findSectionsOfLine2WhenTransferStationsExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS5.get(3),
@@ -231,10 +231,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 역 조회 테스트 6")
+    @DisplayName("역들을 조회하는 경우 환승 구간이 여러개 존재할 때도 3호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections6")
-    void findStations6(final List<Section> sections, final int index) {
+    void findStationsOfLine3WhenTransferStationsExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findStations(sections.get(index)).getStations()).containsExactly(
                 STATION8,
@@ -243,10 +243,10 @@ class StationGraphTest {
         );
     }
 
-    @DisplayName("노선의 구간 조회 테스트 6")
+    @DisplayName("구간들을 조회하는 경우 환승 구간이 여러개 존재할 때도 3호선에 대해서만 조회한다.")
     @ParameterizedTest
     @MethodSource("getSections6")
-    void findSections6(final List<Section> sections, final int index) {
+    void findSectionsOfLine3WhenTransferStationsExist(final List<Section> sections, final int index) {
         final StationGraph stationGraph = StationGraph.of(sections);
         assertThat(stationGraph.findSections(sections.get(index)).getSections()).containsExactly(
                 SECTIONS5.get(6),
