@@ -120,13 +120,10 @@ public class SectionDao {
     }
 
     public boolean isStationExistInLine(final long lineId, final long stationId) {
-        return !findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId).isEmpty();
-    }
-
-    private List<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(final long lineId, final long stationId) {
-        final String sql = "SELECT * FROM section " +
+        final String sql = "SELECT COUNT(*) FROM section " +
                 "WHERE line_id = ? AND (previous_station_id = ? OR next_station_id = ?)";
-        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationId, stationId);
+        final int count = jdbcTemplate.queryForObject(sql, Integer.class, lineId, stationId, stationId);
+        return count != 0;
     }
 
     public List<SectionDetailEntity> findSectionDetail() {
