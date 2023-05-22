@@ -23,6 +23,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static subway.common.fixture.DomainFixture.디노;
 import static subway.common.fixture.DomainFixture.디노_조앤;
@@ -154,6 +157,7 @@ class LineServiceTest {
             softly.assertThat(stationResponses.get(1).getName()).isEqualTo("조앤");
             softly.assertThat(stationResponses.get(2).getName()).isEqualTo("디노");
         });
+        verify(sectionRepository, times(1)).saveUpdatedSections(anyList(), any());
     }
 
     @Test
@@ -181,5 +185,6 @@ class LineServiceTest {
             softly.assertThat(stationResponses.get(0).getName()).isEqualTo("후추");
             softly.assertThat(stationResponses.get(1).getName()).isEqualTo("조앤");
         });
+        verify(sectionRepository, times(1)).saveUpdatedSections(anyList(), any());
     }
 }
