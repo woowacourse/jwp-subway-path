@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.service.domain.Direction;
 import subway.service.domain.Distance;
+import subway.service.domain.LineProperty;
 import subway.service.domain.Path;
 import subway.service.domain.Section;
 import subway.service.domain.Sections;
@@ -107,13 +108,14 @@ class SectionsTest {
     @Test
     @DisplayName("Sections 가 Section 을 이용해 움직일 수 있는 Map 을 반환한다.")
     void createMap() {
-        Distance IGNORED = Distance.from(10);
+        Distance IGNORED_DISTANCE = Distance.from(10);
+        LineProperty IGNORED_LINE_PROPERTY = new LineProperty(1L, "1", "1");
         Station previousStation = new Station("previous");
         Station nextStation = new Station("next");
         Sections sections = new Sections(List.of(
-                new Section(previousStation, nextStation, IGNORED)));
+                new Section(previousStation, nextStation, IGNORED_DISTANCE)));
 
-        Map<Station, List<Path>> map = sections.createMap().getMap();
+        Map<Station, List<Path>> map = sections.createMap(IGNORED_LINE_PROPERTY).getMap();
         Path previousToNext = map.get(previousStation).get(0);
         Path nextToPrevious = map.get(nextStation).get(0);
 

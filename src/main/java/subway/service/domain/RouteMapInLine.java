@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-public class RouteMap {
+public class RouteMapInLine {
 
     private final Map<Station, List<Path>> map;
 
-    public RouteMap(Map<Station, List<Path>> map) {
+    public RouteMapInLine(Map<Station, List<Path>> map) {
         this.map = map;
     }
 

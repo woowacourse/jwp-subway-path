@@ -28,7 +28,7 @@ public class Subway {
     }
 
     private SingleLine getSingleLine(Line line) {
-        RouteMap lineMap = line.getLineMap();
+        RouteMapInLine lineMap = line.getLineMap();
         return SingleLine.of(line.getLineProperty(), lineMap.getStationsOnLine());
     }
 

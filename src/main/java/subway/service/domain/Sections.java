@@ -38,7 +38,7 @@ public class Sections {
                 .findFirst();
     }
 
-    public RouteMap createMap(LineProperty lineProperty) {
+    public RouteMapInLine createMap(LineProperty lineProperty) {
         Map<Station, List<Path>> map = new HashMap<>();
 
         for (Section section : sections) {
@@ -47,7 +47,7 @@ public class Sections {
             map.get(section.getNextStation()).add(createPath(Direction.DOWN, lineProperty, section));
         }
 
-        return new RouteMap(map);
+        return new RouteMapInLine(map);
     }
 
     private Path createPath(Direction direction, LineProperty lineProperty, Section section) {

@@ -6,7 +6,7 @@ import subway.service.domain.Direction;
 import subway.service.domain.Distance;
 import subway.service.domain.LineProperty;
 import subway.service.domain.Path;
-import subway.service.domain.RouteMap;
+import subway.service.domain.RouteMapInLine;
 import subway.service.domain.Station;
 
 import java.util.HashMap;
@@ -27,7 +27,7 @@ class RouteMapTest {
         Station nextStation = new Station("next");
         map.put(previousStation, List.of(new Path(Direction.UP, IGNORED_LINE_PROPERTY, nextStation, IGNORED_DISTANCE)));
         map.put(nextStation, List.of(new Path(Direction.DOWN, IGNORED_LINE_PROPERTY, previousStation, IGNORED_DISTANCE)));
-        RouteMap routeMap = new RouteMap(map);
+        RouteMapInLine routeMap = new RouteMapInLine(map);
 
         List<Station> stations = routeMap.getStationsOnLine();
 
@@ -39,7 +39,7 @@ class RouteMapTest {
     @Test
     @DisplayName("현재 가지고 있는 Map 이 비어있는 경우 빈 리스트를 반환한다.")
     void getSingleLine_empty() {
-        RouteMap routeMap = new RouteMap(new HashMap<>());
+        RouteMapInLine routeMap = new RouteMapInLine(new HashMap<>());
 
         List<Station> stations = routeMap.getStationsOnLine();
 
