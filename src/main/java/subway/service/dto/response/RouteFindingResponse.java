@@ -6,14 +6,12 @@ public class RouteFindingResponse {
 
     private final List<String> route;
     private final double distance;
+    private final int fare;
 
-    private final int price;
-
-
-    public RouteFindingResponse(List<String> route, double distance, int price) {
+    public RouteFindingResponse(List<String> route, double distance, int fare) {
         this.route = route;
         this.distance = distance;
-        this.price = price;
+        this.fare = fare;
     }
 
     public List<String> getRoute() {
@@ -24,8 +22,8 @@ public class RouteFindingResponse {
         return distance;
     }
 
-    public int getPrice() {
-        return price;
+    public int getFare() {
+        return fare;
     }
 
 }
