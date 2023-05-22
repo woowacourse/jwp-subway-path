@@ -1,4 +1,4 @@
-/*create table if not exists station
+create table if not exists station
 (
     id   bigint not null auto_increment,
     name varchar(255)          not null unique,
@@ -25,4 +25,4 @@ create table if not exists section
     foreign key (down_station_id) references station(id),
     foreign key (line_id) references line(id)
 );
-*/
+

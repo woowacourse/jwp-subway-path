@@ -67,8 +67,43 @@
 - [x] 중복역이 없는지 확인한다.
 - [x] 중복노선이 없는지 확인한다.
 - [x] 노선을 삭제한다.
-- [ ] 최단 거리를 반환한다.
-  - [ ] 출발역과 도착역을 입력받는다.
+- [x] 최단 거리를 반환한다.
+  - [X] 출발역과 도착역을 입력받는다.
+
+# 테이블 설계
+
+![](https://user-images.githubusercontent.com/79090478/239328510-1691ad2e-e1aa-4cc2-a680-3211bdf4a0c2.png)
+
+```sql
+create table if not exists station
+(
+    id   bigint not null auto_increment,
+    name varchar(255)          not null unique,
+    primary key (id)
+);
+
+create table if not exists line
+(
+    id    bigint not null auto_increment,
+    name  varchar(255)          not null unique ,
+    color varchar(20)           not null,
+    primary key (id)
+);
+
+create table if not exists section
+(
+    id              bigint not null auto_increment,
+    distance        int                   not null,
+    up_station_id   bigint                not null,
+    down_station_id bigint                not null,
+    line_id         bigint                not null,
+    primary key (id),
+    foreign key (up_station_id) references station(id),
+    foreign key (down_station_id) references station(id),
+    foreign key (line_id) references line(id)
+);
+```
+
 # API  설계
 
 ---
@@ -348,4 +383,29 @@ HTTP /1.1 200 OK
     }
   ]
 }
+```
+
+
+# Docker 설정
+
+```yaml
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0.28
+    platform: linux/x86_64
+    restart: always
+    ports:
+      - "13306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: subway
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      TZ: Asia/Seoul
+    volumes:
+      - ./db/mysql/data:/var/lib/mysql
+      - ./db/mysql/config:/etc/mysql/conf.d
+      - ./db/mysql/init:/docker-entrypoint-initdb.d
+
 ```
