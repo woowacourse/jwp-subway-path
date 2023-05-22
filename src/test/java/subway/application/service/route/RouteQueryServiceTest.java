@@ -58,7 +58,7 @@ class RouteQueryServiceTest {
         private long targetId = 2L;
         private Station source = new Station(sourceId, "역삼역");
         private Station target = new Station(sourceId, "잠실역");
-        private FindRouteCommand command = new FindRouteCommand(sourceId, targetId);
+        private FindRouteCommand command = new FindRouteCommand(sourceId, targetId, 20);
 
         @BeforeEach
         void setUp() {
@@ -75,7 +75,7 @@ class RouteQueryServiceTest {
                     .willReturn(Optional.empty());
 
             // when then
-            assertThatThrownBy(() -> routeQueryService.findRoute(new FindRouteCommand(sourceId, targetId)))
+            assertThatThrownBy(() -> routeQueryService.findRoute(new FindRouteCommand(sourceId, targetId, 20)))
                     .isInstanceOf(NoSuchStationException.class);
         }
 
@@ -86,7 +86,7 @@ class RouteQueryServiceTest {
                     .willReturn(Optional.empty());
 
             // when then
-            assertThatThrownBy(() -> routeQueryService.findRoute(new FindRouteCommand(sourceId, targetId)))
+            assertThatThrownBy(() -> routeQueryService.findRoute(new FindRouteCommand(sourceId, targetId, 20)))
                     .isInstanceOf(NoSuchStationException.class);
         }
 
@@ -107,7 +107,7 @@ class RouteQueryServiceTest {
                     .willReturn(lines);
             given(routeFinderPort.findRoute(source, target, lines))
                     .willReturn(route);
-            given(farePolicy.calculate(route))
+            given(farePolicy.calculate(route, 20, new Fare()))
                     .willReturn(new Fare(1250));
 
             // when

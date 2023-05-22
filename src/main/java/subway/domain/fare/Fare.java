@@ -21,8 +21,20 @@ public class Fare implements Comparable<Fare> {
         }
     }
 
-    public Fare plus(Fare additional) {
-        return new Fare(value + additional.value);
+    public Fare plus(final Fare other) {
+        return new Fare(value + other.value);
+    }
+
+    public Fare minus(final Fare other) {
+        int fare = value - other.value;
+        if (fare < 0) {
+            return new Fare(0);
+        }
+        return new Fare(fare);
+    }
+
+    public Fare discountByRate(final int discountRate) {
+        return new Fare(value - value * discountRate / 100);
     }
 
     @Override

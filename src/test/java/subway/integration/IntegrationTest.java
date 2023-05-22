@@ -116,4 +116,17 @@ public class IntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(RouteQueryResponse.class);
     }
+
+    protected RouteQueryResponse findRoute(final long sourceStationId, final long targetStationId, final int age) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("sourceStationId", sourceStationId)
+                .queryParam("targetStationId", targetStationId)
+                .queryParam("age", age)
+                .when().get("/route")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(RouteQueryResponse.class);
+    }
 }

@@ -3,14 +3,11 @@ package subway.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import subway.adapter.out.persistence.LineJdbcRepository;
 import subway.adapter.out.persistence.StationJdbcRepository;
 import subway.application.port.in.route.dto.response.RouteQueryResponse;
@@ -75,15 +72,7 @@ public class RouteIntegrationTest extends IntegrationTest {
         )));
 
         // when
-        RouteQueryResponse response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .queryParam("sourceStationId", 방배역Id)
-                .queryParam("targetStationId", 논현역Id)
-                .when().get("/route")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(RouteQueryResponse.class);
+        RouteQueryResponse response = findRoute(방배역Id, 논현역Id);
 
         // then
         assertAll(
@@ -111,15 +100,7 @@ public class RouteIntegrationTest extends IntegrationTest {
         )));
 
         // when
-        RouteQueryResponse response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .queryParam("sourceStationId", 방배역Id)
-                .queryParam("targetStationId", 서초역Id)
-                .when().get("/route")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(RouteQueryResponse.class);
+        RouteQueryResponse response = findRoute(방배역Id, 서초역Id);
 
         // then
         assertAll(
@@ -141,15 +122,7 @@ public class RouteIntegrationTest extends IntegrationTest {
         )));
 
         // when
-        RouteQueryResponse response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .queryParam("sourceStationId", 방배역Id)
-                .queryParam("targetStationId", 서초역Id)
-                .when().get("/route")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(RouteQueryResponse.class);
+        RouteQueryResponse response = findRoute(방배역Id, 서초역Id);
 
         // then
         assertAll(
@@ -176,17 +149,85 @@ public class RouteIntegrationTest extends IntegrationTest {
         )));
 
         // when
-        RouteQueryResponse response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .queryParam("sourceStationId", 방배역Id)
-                .queryParam("targetStationId", 고터역Id)
-                .when().get("/route")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(RouteQueryResponse.class);
+        RouteQueryResponse response = findRoute(방배역Id, 고터역Id);
 
         // then
         assertThat(response.getFare()).isEqualTo(1550);
+    }
+
+    @Test
+    void 성인_요금_할인() {
+        // given
+        long 방배역Id = stationJdbcRepository.create(방배역.STATION);
+        long 서초역Id = stationJdbcRepository.create(서초역.STATION);
+
+        long 이호선Id = lineJdbcRepository.create(new LineInfo("2호선", "GREEN", 0));
+
+        lineJdbcRepository.updateSections(new Line(이호선Id, "2호선", "GREEN", 0, List.of(
+                new Section(new Station(방배역Id, "방배역"), new Station(서초역Id, "서초역"), 8)
+        )));
+
+        // when
+        RouteQueryResponse response = findRoute(방배역Id, 서초역Id, 19);
+
+        // then
+        assertThat(response.getFare()).isEqualTo(1250);
+    }
+
+    @Test
+    void 청소년_요금_할인() {
+        // given
+        long 방배역Id = stationJdbcRepository.create(방배역.STATION);
+        long 서초역Id = stationJdbcRepository.create(서초역.STATION);
+
+        long 이호선Id = lineJdbcRepository.create(new LineInfo("2호선", "GREEN", 0));
+
+        lineJdbcRepository.updateSections(new Line(이호선Id, "2호선", "GREEN", 0, List.of(
+                new Section(new Station(방배역Id, "방배역"), new Station(서초역Id, "서초역"), 8)
+        )));
+
+        // when
+        RouteQueryResponse response = findRoute(방배역Id, 서초역Id, 13);
+
+        // then
+        assertThat(response.getFare()).isEqualTo(720);
+    }
+
+    @Test
+    void 어린이_요금_할인() {
+        // given
+        long 방배역Id = stationJdbcRepository.create(방배역.STATION);
+        long 서초역Id = stationJdbcRepository.create(서초역.STATION);
+
+        long 이호선Id = lineJdbcRepository.create(new LineInfo("2호선", "GREEN", 0));
+
+        lineJdbcRepository.updateSections(new Line(이호선Id, "2호선", "GREEN", 0, List.of(
+                new Section(new Station(방배역Id, "방배역"), new Station(서초역Id, "서초역"), 8)
+        )));
+
+        // when
+        RouteQueryResponse response = findRoute(방배역Id, 서초역Id, 6);
+
+        // then
+        assertThat(response.getFare()).isEqualTo(450);
+    }
+
+    @Test
+    void 영유아_요금_할인() {
+        // given
+        long 방배역Id = stationJdbcRepository.create(방배역.STATION);
+        long 서초역Id = stationJdbcRepository.create(서초역.STATION);
+
+        long 이호선Id = lineJdbcRepository.create(new LineInfo("2호선", "GREEN", 0));
+
+        lineJdbcRepository.updateSections(new Line(이호선Id, "2호선", "GREEN", 0, List.of(
+                new Section(new Station(방배역Id, "방배역"), new Station(서초역Id, "서초역"), 8)
+        )));
+
+        // when
+        RouteQueryResponse response = findRoute(방배역Id, 서초역Id, 5);
+
+        // then
+        assertThat(response.getFare()).isEqualTo(0);
     }
 }

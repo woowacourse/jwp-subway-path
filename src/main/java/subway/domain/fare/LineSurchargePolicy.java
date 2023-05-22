@@ -8,9 +8,10 @@ import subway.domain.route.Route;
 public class LineSurchargePolicy implements FarePolicy {
 
     @Override
-    public Fare calculate(final Route route) {
+    public Fare calculate(final Route route, final Integer age, final Fare fare) {
         Set<Line> lines = route.findLines();
-        return findMaxLineSurcharge(lines);
+        Fare maxLineSurcharge = findMaxLineSurcharge(lines);
+        return fare.plus(maxLineSurcharge);
     }
 
     private Fare findMaxLineSurcharge(final Set<Line> lines) {

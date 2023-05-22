@@ -5,11 +5,12 @@ import subway.domain.route.Route;
 public class DistanceAdditionalFarePolicy implements FarePolicy {
 
     @Override
-    public Fare calculate(final Route route) {
+    public Fare calculate(final Route route, final Integer age, final Fare fare) {
         int distance = route.findTotalDistance();
         Fare baseAdditionalFare = calculateAdditionalFare(distance, DistanceFareRate.BASE);
         Fare excessAdditionalFare = calculateAdditionalFare(distance, DistanceFareRate.EXCESS);
-        return baseAdditionalFare.plus(excessAdditionalFare);
+        Fare additionalFare = baseAdditionalFare.plus(excessAdditionalFare);
+        return fare.plus(additionalFare);
     }
 
     private Fare calculateAdditionalFare(final int distance, final DistanceFareRate distanceFareRate) {

@@ -1,6 +1,7 @@
 package subway.adapter.in.web.route;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,9 +21,10 @@ public class FindRouteController {
     @GetMapping("/route")
     public ResponseEntity<RouteQueryResponse> findRoute(
             @RequestParam Long sourceStationId,
-            @RequestParam Long targetStationId) {
+            @RequestParam Long targetStationId,
+            @RequestParam @Nullable Integer age) {
         RouteQueryResponse response = findRouteUseCase.findRoute(
-                new FindRouteCommand(sourceStationId, targetStationId));
+                new FindRouteCommand(sourceStationId, targetStationId, age));
 
         return ResponseEntity.ok(response);
     }

@@ -19,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import subway.adapter.in.web.exception.ErrorResponse;
-import subway.adapter.in.web.route.dto.FindRouteRequest;
 import subway.application.port.in.route.FindRouteUseCase;
 import subway.application.port.in.route.dto.command.FindRouteCommand;
 import subway.application.port.in.route.dto.response.RouteQueryResponse;
@@ -54,6 +53,7 @@ class FindRouteControllerTest {
         MvcResult result = mockMvc.perform(get("/route")
                         .param("sourceStationId", Long.toString(1L))
                         .param("targetStationId", Long.toString(2L))
+                        .param("age", Integer.toString(20))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -70,9 +70,6 @@ class FindRouteControllerTest {
 
     @Test
     void 출발역_id가_없을때_예외() throws Exception {
-        // given
-        FindRouteRequest request = new FindRouteRequest(null, 2L);
-
         // when
         MvcResult result = mockMvc.perform(get("/route")
                         .param("targetStationId", Long.toString(2L))

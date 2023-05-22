@@ -35,4 +35,43 @@ class FareTest {
         // then
         assertThat(totalFare).isEqualTo(new Fare(3000));
     }
+
+    @Test
+    void 요금을_뺀다() {
+        // given
+        Fare fare1 = new Fare(1000);
+        Fare fare2 = new Fare(300);
+
+        // when
+        Fare totalFare = fare1.minus(fare2);
+
+        // then
+        assertThat(totalFare).isEqualTo(new Fare(700));
+    }
+
+    @Test
+    void 요금을_뺄_때_0보다_작으면_0이된다() {
+        // given
+        Fare fare1 = new Fare(1000);
+        Fare fare2 = new Fare(1500);
+
+        // when
+        Fare totalFare = fare1.minus(fare2);
+
+        // then
+        assertThat(totalFare).isEqualTo(new Fare(0));
+    }
+
+    @Test
+    void 할인율로_할인한다() {
+        // given
+        Fare fare = new Fare(1000);
+        int rate = 30;
+
+        // when
+        Fare totalFare = fare.discountByRate(rate);
+
+        // then
+        assertThat(totalFare).isEqualTo(new Fare(700));
+    }
 }

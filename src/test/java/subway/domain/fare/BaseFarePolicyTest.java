@@ -22,7 +22,7 @@ class BaseFarePolicyTest {
     @Test
     void 기본요금을_반환한다() {
         // when
-        Fare fare = baseFarePolicy.calculate(역삼_삼성_10.ROUTE);
+        Fare fare = baseFarePolicy.calculate(역삼_삼성_10.ROUTE, null, new Fare());
 
         // then
         assertThat(fare).isEqualTo(new Fare(1250));

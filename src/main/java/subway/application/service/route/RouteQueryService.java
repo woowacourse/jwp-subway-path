@@ -48,8 +48,8 @@ public class RouteQueryService implements FindRouteUseCase {
 
         Route route = routeFinderPort.findRoute(source.get(), target.get(), lines);
 
-        Fare fare = farePolicy.calculate(route);
-
+        Fare fare = farePolicy.calculate(route, command.getAge(), new Fare());
+        
         return RouteMapper.toResponse(route, fare);
     }
 }

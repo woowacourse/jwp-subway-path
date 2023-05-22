@@ -37,7 +37,7 @@ class LineSurchargePolicyTest {
         Route route = new Route(List.of(new RouteSection(line1, section1), new RouteSection(line2, section2)));
 
         // when
-        Fare fare = lineSurchargePolicy.calculate(route);
+        Fare fare = lineSurchargePolicy.calculate(route, null, new Fare());
 
         // then
         assertThat(fare).isEqualTo(new Fare(200));

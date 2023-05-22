@@ -11,24 +11,24 @@ import subway.fixture.RouteFixture.역삼_삼성_10;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class SumFarePolicyTest {
+class AssembleFarePolicyTest {
 
-    private SumFarePolicy sumFarePolicy;
+    private AssembleFarePolicy assembleFarePolicy;
 
     @BeforeEach
     void setUp() {
-        sumFarePolicy = new SumFarePolicy(List.of(
-                route -> new Fare(1000),
-                route -> new Fare(2000)
+        assembleFarePolicy = new AssembleFarePolicy(List.of(
+                (route, age, fare) -> new Fare(1000),
+                (route, age, fare) -> new Fare(2000)
         ));
     }
 
     @Test
-    void 정책의_요금들을_합산한다() {
+    void 최종적으로_반환되는_요금으로_책정한다() {
         // when
-        Fare fare = sumFarePolicy.calculate(역삼_삼성_10.ROUTE);
+        Fare fare = assembleFarePolicy.calculate(역삼_삼성_10.ROUTE, null, new Fare());
 
         // then
-        assertThat(fare).isEqualTo(new Fare(3000));
+        assertThat(fare).isEqualTo(new Fare(2000));
     }
 }
