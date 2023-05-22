@@ -20,10 +20,12 @@ public final class PathService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final CostCalculator costCalculator;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    public PathService(LineRepository lineRepository, StationRepository stationRepository, CostCalculator costCalculator) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.costCalculator = costCalculator;
     }
 
     public PathResponse findPathWithCost(Long startStationId, Long endStationId) {
@@ -39,6 +41,6 @@ public final class PathService {
                 .stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
-        return new PathResponse(stationResponses, shortestPath.getDistance(), CostCalculator.calculateCost(shortestPath.getDistance()));
+        return new PathResponse(stationResponses, shortestPath.getDistance(), costCalculator.calculateCost(shortestPath.getDistance()));
     }
 }

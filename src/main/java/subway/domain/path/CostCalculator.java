@@ -1,5 +1,8 @@
 package subway.domain.path;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public final class CostCalculator {
 
     private static final int DEFAULT_COST = 1250;
@@ -10,7 +13,7 @@ public final class CostCalculator {
     private static final int DISTANCE_THRESHOLD_OVER_50KM = 8;
 
 
-    public static int calculateCost(int distance) {
+    public int calculateCost(int distance) {
         if (distance <= BASE_COST_DISTANCE) {
             return DEFAULT_COST;
         }
@@ -23,7 +26,7 @@ public final class CostCalculator {
         return cost + calculateExtraCostByDistance(distance, DISTANCE_THRESHOLD_OVER_50KM);
     }
 
-    private static int calculateExtraCostByDistance(int distance, int distanceThreshold) {
+    private int calculateExtraCostByDistance(int distance, int distanceThreshold) {
         return (int) Math.ceil((double) distance / distanceThreshold) * ADDITIONAL_COST;
     }
 }
