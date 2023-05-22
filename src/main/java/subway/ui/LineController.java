@@ -50,13 +50,13 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/station")
+    @PostMapping("/{id}/stations")
     public ResponseEntity<Void> registerStation(@PathVariable Long id, @RequestBody StationRegisterRequest request) {
         lineService.registerStation(id, request);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
-    @DeleteMapping("/{id}/station")
+    @DeleteMapping("/{id}/stations")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id, @RequestBody StationDeleteRequest request) {
         lineService.deleteStation(id, request);
         return ResponseEntity.noContent().build();
