@@ -1,89 +1,58 @@
 package subway.domain.line;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
-import subway.domain.station.Stations;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Line {
-
-    private static final int EMPTY = 0;
-    private static final int NOT_EXIST = 0;
 
     private Long id;
     private Name name;
     private Color color;
-    private Stations stations;
     private Sections sections;
 
     public Line() {
     }
 
-    public Line(final String name, final String color) {
-        this(null, name, color, new Stations(List.of()), new Sections(List.of()));
-    }
-
-    public Line(final Long id, final String name, final String color, final Stations stations, final Sections sections) {
-        validate(stations, sections);
+    public Line(final Long id, final Name name, final Color color, final Sections sections) {
         this.id = id;
-        this.name = new Name(name);
-        this.color = new Color(color);
-        this.stations = stations;
+        this.name = name;
+        this.color = color;
         this.sections = sections;
     }
 
-    public Line(final Long id, final String name, final String color, final Stations stations, final Sections sections, final Long upBoundStationId) {
-        this(id, name, color, sortStation(stations, sections, upBoundStationId), sections);
+    public Line(final Long id, final String name, final String color, final List<Section> sections) {
+        this(id, new Name(name), new Color(color), new Sections(sections));
     }
 
-    private static Stations sortStation(final Stations randomStations, final Sections sections, final Long upBoundStationId) {
-        if (upBoundStationId == NOT_EXIST) {
-            return new Stations(List.of());
-        }
-
-        Map<Long, Station> indexedStations = new HashMap<>();
-        randomStations.getStations().forEach(station -> indexedStations.put(station.getId(), station));
-
-        Map<Long, Section> indexedSections = new HashMap<>();
-        sections.getSections().forEach(section -> indexedSections.put(section.getLeftStation().getId(), section));
-
-        List<Station> stations = new ArrayList<>();
-        Long nowStationId = upBoundStationId;
-
-        while (indexedSections.size() != EMPTY) {
-            stations.add(indexedStations.get(nowStationId));
-            Long beforeStationId = nowStationId;
-            nowStationId = indexedSections.get(nowStationId).getRightStation().getId();
-            indexedSections.remove(beforeStationId);
-        }
-        stations.add(indexedStations.get(nowStationId));
-
-        return new Stations(stations);
+    public Line(final Long id, final String name, final String color) {
+        this(id, new Name(name), new Color(color), new Sections(new ArrayList<>()));
     }
 
-    private void validate(final Stations stations, final Sections sections) {
-        if ((stations.isEmpty() && sections.isEmpty()) || stations.isCorrectSectionsSize(sections)) {
-            return;
-        }
-        throw new IllegalArgumentException("역의 수에 따른 간선의 수가 올바르지 않습니다.");
+    public Line(final String name, final String color) {
+        this(null, new Name(name), new Color(color), new Sections(new ArrayList<>()));
     }
 
-    public boolean isStationCount2() {
-        return stations.size() == 2;
+    public Section addInitStations(final Section section) {
+        sections.addInitSection(section);
+        return section;
     }
 
-    public boolean isBoundStation(Station station) {
-        return stations.getFirstStation().getId().equals(station.getId())
-            || stations.getLastStation().getId().equals(station.getId());
+    public Sections addStation(final Station baseStation, final String direction, final Station registerStation, final int distance) {
+        sections.addSection(baseStation, direction, registerStation, distance);
+        return sections;
     }
 
-    public boolean isUpBoundStation(final Station station) {
-        return stations.getFirstStation().getId().equals(station.getId());
+    public Sections deleteStation(final Station station) {
+        sections.deleteSection(station);
+        return sections;
+    }
+
+    public List<Station> sortStation() {
+        return sections.sortStation();
     }
 
     public Long getId() {
@@ -98,36 +67,7 @@ public class Line {
         return color.getColor();
     }
 
-    public Stations getStations() {
-        return stations;
-    }
-
-    public Station getUpBoundStation() {
-        return stations.getFirstStation();
-    }
-
-    public Station getDownBoundStation() {
-        return stations.getLastStation();
-    }
-
     public Sections getSections() {
         return sections;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
     }
 }

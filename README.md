@@ -29,8 +29,29 @@
   - 노선에 포함된 역을 순서대로 보여주도록 응답한다.
 - [x] 노선 목록 조회 API 수정
   - 노선에 포함된 역을 순서대로 보여주도록 응답한다.
+- [x] 경로 조회 API 생성
+  - [x] 출발 역과 도착 역이 주어지면 최단 거리로 경로를 생성한다.
+  - [x] 이동 거리를 통해 요금을 책정한다.
+    - [x] 10km 이내 기본 운임 요금 1,250원
+    - [x] 10km 외 추가 요금
+      - [x] 10km ~ 50km : 5km마다 100원 추가
+      - [x] 50km 초과 : 8km마다 100원원 추가
+- [x] 테이블 분리 (프로덕트에서 이용하는 db와 test에서 이용하는 db 분리)
 - [x] 테이블 설계
   - [x] station
   - [x] line
-  - [x] line_station(line과 station의 연결정보)
-  - [x] edge(station과 station의 연결정보)
+  - [x] section(station과 station의 매핑 테이블)
+
+## 리팩토링 목록
+- [x] repository 책임 분리하기
+  - lineRepository
+    - line 저장
+    - line 조회
+  - sectionRepository
+    - section 저장
+    - section 최신화
+  - stationRepository
+    - station 저장
+    - station 조회
+- [x] 환경설정 파일을 properties에서 yml로 변경하기
+- [x] pathfinder를 빈으로 관리하기

@@ -1,86 +1,114 @@
 package subway.repository;
 
-import java.util.List;
-import java.util.Optional;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import subway.dao.LineSectionDao;
 import subway.dao.SectionDao;
-import subway.entity.LineSectionEntity;
+import subway.dao.StationDao;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 import subway.entity.SectionEntity;
+import subway.entity.SectionStationEntity;
+import subway.entity.StationEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class SectionRepository {
 
+    private static final int UPBOUND_STATION_INDEX = 0;
+    private static final int DOWNBOUND_STATION_INDEX = 1;
+    private static final int LAST_SECTION_INDEX = 0;
+
     private final SectionDao sectionDao;
-    private final LineSectionDao lineSectionDao;
-    private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<SectionEntity> rowMapper = (rs, lowNum) ->
-        new SectionEntity(
-            rs.getLong("ID"),
-            rs.getLong("LEFT_STATION_ID"),
-            rs.getLong("RIGHT_STATION_ID"),
-            rs.getInt("DISTANCE"));
+    private final StationDao stationDao;
 
-    public SectionRepository(final SectionDao sectionDao, final LineSectionDao lineSectionDao, final JdbcTemplate jdbcTemplate) {
+    public SectionRepository(SectionDao sectionDao, StationDao stationDao) {
         this.sectionDao = sectionDao;
-        this.lineSectionDao = lineSectionDao;
-        this.jdbcTemplate = jdbcTemplate;
+        this.stationDao = stationDao;
     }
 
-    public SectionEntity insert(final SectionEntity sectionEntity) {
-        return sectionDao.insert(sectionEntity);
+    public List<Station> saveInitStations(final Section section, final Long lineId) {
+        List<StationEntity> stationEntities = List.of(
+                new StationEntity(section.getLeftStation().getName(), lineId),
+                new StationEntity(section.getRightStation().getName(), lineId));
+        List<StationEntity> insertedStationEntities = stationDao.insertInit(stationEntities);
+
+        sectionDao.insert(new SectionEntity(insertedStationEntities.get(UPBOUND_STATION_INDEX).getId(),
+                insertedStationEntities.get(DOWNBOUND_STATION_INDEX).getId(),
+                lineId,
+                section.getDistance()));
+
+        return List.of(
+                new Station(insertedStationEntities.get(UPBOUND_STATION_INDEX).getId(),
+                        insertedStationEntities.get(UPBOUND_STATION_INDEX).getName()),
+                new Station(insertedStationEntities.get(DOWNBOUND_STATION_INDEX).getId(),
+                        insertedStationEntities.get(DOWNBOUND_STATION_INDEX).getName()));
     }
 
-    public Optional<SectionEntity> findByLineIdAndLeftStationIdAndRightStationId(final Long lineId, final Long leftStationId,
-        final Long rightStationId) {
-        String sql =
-            "SELECT S.ID, S.LEFT_STATION_ID, S.RIGHT_STATION_ID, S.DISTANCE "
-                + "FROM SECTION S, LINE_SECTION LS "
-                + "WHERE S.ID = LS.SECTION_ID "
-                + "AND LS.LINE_ID = ? AND S.LEFT_STATION_ID = ? AND S.RIGHT_STATION_ID = ?";
+    public Sections readAllSection() {
+        List<SectionStationEntity> sectionStationEntities = sectionDao.findAll();
+        return new Sections(getSections(sectionStationEntities));
+    }
 
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper
-                , lineId, leftStationId, rightStationId));
-        } catch (EmptyResultDataAccessException | NullPointerException e) {
-            return Optional.empty();
+    public void updateSectionAndDeleteStation(final Long lineId, final Sections updateSections, final Station station) {
+        List<Section> existSections = getSections(sectionDao.findByLineId(lineId));
+        Sections sections = new Sections(existSections);
+        if (updateSections.isEmpty()) {
+            List<Long> stationIds = List.of(sections.findUpBoundStation().getId(), sections.findDownBoundStation().getId());
+            stationDao.deleteBothById(stationIds);
+            sectionDao.deleteById(existSections.get(LAST_SECTION_INDEX).getId());
+            return;
         }
+        deleteUpdateSection(updateSections, lineId);
+        addUpdateSection(updateSections, lineId);
+        stationDao.deleteById(station.getId());
     }
 
-    public void deleteSectionAndLineSectionBySectionId(final Long sectionId) {
-        sectionDao.deleteById(sectionId);
-        lineSectionDao.deleteBySectionId(sectionId);
+    public void updateSection(final Sections sections, final Long lineId) {
+        deleteUpdateSection(sections, lineId);
+        addUpdateSection(sections, lineId);
     }
 
-    public void insertReCalculateSection(final Long lineId, final SectionEntity leftSection, final SectionEntity rightSection) {
-        SectionEntity insertedLeftSection = sectionDao.insert(leftSection);
-        SectionEntity insertedRightSection = sectionDao.insert(rightSection);
-        lineSectionDao.insert(new LineSectionEntity(lineId, insertedLeftSection.getId()));
-        lineSectionDao.insert(new LineSectionEntity(lineId, insertedRightSection.getId()));
-    }
+    private void deleteUpdateSection(final Sections sections, final Long lineId) {
+        List<Section> updatedSections = sections.getSections();
+        List<Section> existedSections = getSections(sectionDao.findByLineId(lineId));
+        existedSections.removeAll(updatedSections);
 
-    public void deleteById(final Long sectionId) {
-        String sql = "DELETE FROM SECTION WHERE id = ?";
-        jdbcTemplate.update(sql, sectionId);
-    }
+        List<Long> sectiondIds = existedSections.stream()
+                .map(Section::getId).
+                collect(Collectors.toList());
 
-    public Optional<SectionEntity> findByStationId(final Long stationId) {
-        String sql = "SELECT id, left_station_id, right_station_id, distance FROM SECTION "
-            + "WHERE left_station_id = ? OR right_station_id = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, stationId, stationId));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
+        if (sectiondIds.isEmpty()) {
+            return;
         }
+        sectionDao.deleteBothById(sectiondIds);
     }
 
-    public List<SectionEntity> findByLineIdAndStationId(final Long lineId, final Long stationId) {
-        String sql =
-            "SELECT S.id, S.left_station_id, S.right_station_id, S.distance FROM LINE_SECTION LS, SECTION S "
-                + "WHERE LS.section_id = S.ID AND LS.line_id = ? AND (S.left_station_id = ? OR S.right_station_id = ?)";
-        return jdbcTemplate.query(sql, rowMapper, lineId, stationId, stationId);
+    private void addUpdateSection(final Sections sections, final Long lineId) {
+        List<Section> updatedSections = sections.getSections();
+        List<Section> existedSections = getSections(sectionDao.findByLineId(lineId));
+        updatedSections.removeAll(existedSections);
+
+        sectionDao.insertBoth(updatedSections.stream()
+                .map(section -> new SectionEntity(
+                        section.getLeftStation().getId(),
+                        section.getRightStation().getId(),
+                        lineId, section.getDistance())).
+                collect(Collectors.toList()));
+    }
+
+    private List<Section> getSections(List<SectionStationEntity> sectionStationEntities) {
+        List<Section> sections = new ArrayList<>();
+        for (SectionStationEntity sectionStationEntity : sectionStationEntities) {
+            sections.add(new Section(
+                    sectionStationEntity.getId(),
+                    new Station(sectionStationEntity.getLeftStationId(), sectionStationEntity.getLeftStationName()),
+                    new Station(sectionStationEntity.getRightStationId(), sectionStationEntity.getRightStationName()),
+                    sectionStationEntity.getDistance())
+            );
+        }
+        return sections;
     }
 }

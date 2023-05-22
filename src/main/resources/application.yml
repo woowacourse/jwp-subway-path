@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: prod
+    include: prod, test
+---
+spring:
+  profile: prod
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/subway
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+---
+spring:
+  profile: test
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:subway;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver

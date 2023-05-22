@@ -1,21 +1,22 @@
 package subway.domain.section;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.exception.distance.InvalidDistanceException;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class DistanceTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {0, -1, -100, -1000})
-    @DisplayName("음수, 0인 거리는 생성될 수 없다.")
+    @ValueSource(ints = {-1, -100, -1000})
+    @DisplayName("음수 거리는 생성될 수 없다.")
     void validate_distance_positive(int distance) {
         // when + then
         assertThatThrownBy(() -> new Distance(distance))
-            .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidDistanceException.class);
     }
 
     @ParameterizedTest
