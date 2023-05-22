@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import subway.service.domain.Direction;
 import subway.service.domain.Distance;
 import subway.service.domain.Path;
-import subway.service.domain.RouteMap;
 import subway.service.domain.Section;
 import subway.service.domain.Sections;
 import subway.service.domain.Station;
@@ -27,7 +26,7 @@ class SectionsTest {
         Sections sections = new Sections(List.of(
                 new Section(previousStation, nextStation, IGNORED)));
 
-        assertThat(sections.findContainsThisStation(nextStation))
+        assertThat(sections.findContainsStation(nextStation))
                 .hasSize(1)
                 .allMatch(section -> section.getPreviousStation().equals(previousStation)
                         || section.getNextStation().equals(nextStation));
@@ -44,7 +43,7 @@ class SectionsTest {
                 new Section(previousStation, standardStation, IGNORED),
                 new Section(standardStation, nextStation, IGNORED)));
 
-        assertThat(sections.findContainsThisStation(standardStation))
+        assertThat(sections.findContainsStation(standardStation))
                 .hasSize(2)
                 .allMatch(section -> section.getPreviousStation().equals(previousStation)
                         || section.getNextStation().equals(nextStation));
@@ -60,9 +59,9 @@ class SectionsTest {
         Sections sections = new Sections(List.of(
                 new Section(previousStation, standardStation, IGNORED)));
 
-        assertThat(sections.isContainsThisStation(previousStation)).isTrue();
-        assertThat(sections.isContainsThisStation(standardStation)).isTrue();
-        assertThat(sections.isContainsThisStation(notExistsStation)).isFalse();
+        assertThat(sections.isContainsStation(previousStation)).isTrue();
+        assertThat(sections.isContainsStation(standardStation)).isTrue();
+        assertThat(sections.isContainsStation(notExistsStation)).isFalse();
     }
     
     @Test
@@ -76,8 +75,8 @@ class SectionsTest {
                 new Section(previousStation, standardStation, IGNORED),
                 new Section(standardStation, nextStation, IGNORED)));
 
-        Optional<Section> section = sections.findPreviousStationThisStation(standardStation);
-        Optional<Section> emptySection = sections.findPreviousStationThisStation(nextStation);
+        Optional<Section> section = sections.findPreviousStationStation(standardStation);
+        Optional<Section> emptySection = sections.findPreviousStationStation(nextStation);
 
         assertThat(emptySection).isEmpty();
         assertThat(section).isPresent();
@@ -96,8 +95,8 @@ class SectionsTest {
                 new Section(previousStation, standardStation, IGNORED),
                 new Section(standardStation, nextStation, IGNORED)));
 
-        Optional<Section> section = sections.findNextStationThisStation(standardStation);
-        Optional<Section> emptySection = sections.findNextStationThisStation(previousStation);
+        Optional<Section> section = sections.findNextStationStation(standardStation);
+        Optional<Section> emptySection = sections.findNextStationStation(previousStation);
 
         assertThat(emptySection).isEmpty();
         assertThat(section).isPresent();

@@ -15,26 +15,26 @@ public class Sections {
         this.sections = sections;
     }
 
-    public List<Section> findContainsThisStation(Station station) {
+    public List<Section> findContainsStation(Station station) {
         return sections.stream()
                 .filter(section -> section.isContainsStation(station))
                 .collect(Collectors.toList());
     }
 
-    public boolean isContainsThisStation(Station station) {
+    public boolean isContainsStation(Station station) {
         return sections.stream()
                 .anyMatch(section -> section.isContainsStation(station));
     }
 
-    public Optional<Section> findPreviousStationThisStation(Station station) {
+    public Optional<Section> findPreviousStationStation(Station station) {
         return sections.stream()
-                .filter(section -> section.isPreviousStationThisStation(station))
+                .filter(section -> section.isPreviousStationStation(station))
                 .findFirst();
     }
 
-    public Optional<Section> findNextStationThisStation(Station station) {
+    public Optional<Section> findNextStationStation(Station station) {
         return sections.stream()
-                .filter(section -> section.isNextStationThisStation(station))
+                .filter(section -> section.isNextStationStation(station))
                 .findFirst();
     }
 

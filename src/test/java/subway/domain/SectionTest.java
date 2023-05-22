@@ -34,8 +34,8 @@ class SectionTest {
         Station notExistsStation = new Station("hell");
         Section section = new Section(previousStation, nextStation, IGNORED);
 
-        assertThat(section.isPreviousStationThisStation(existsStation)).isTrue();
-        assertThat(section.isPreviousStationThisStation(notExistsStation)).isFalse();
+        assertThat(section.isPreviousStationStation(existsStation)).isTrue();
+        assertThat(section.isPreviousStationStation(notExistsStation)).isFalse();
     }
 
     @Test
@@ -48,8 +48,8 @@ class SectionTest {
         Station notExistsStation = new Station("hello");
         Section section = new Section(previousStation, nextStation, IGNORED);
 
-        assertThat(section.isNextStationThisStation(existsStation)).isTrue();
-        assertThat(section.isNextStationThisStation(notExistsStation)).isFalse();
+        assertThat(section.isNextStationStation(existsStation)).isTrue();
+        assertThat(section.isNextStationStation(notExistsStation)).isFalse();
     }
 
 }

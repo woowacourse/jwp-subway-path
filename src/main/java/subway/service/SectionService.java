@@ -179,11 +179,11 @@ public class SectionService {
     private Section addSection(List<Section> sections, Station standardStation) {
         Section nextSection = getSectionFromStation(
                 sections,
-                section -> section.isPreviousStationThisStation(standardStation)
+                section -> section.isPreviousStationStation(standardStation)
         );
         Section previousSection = getSectionFromStation(
                 sections,
-                section -> section.isNextStationThisStation(standardStation)
+                section -> section.isNextStationStation(standardStation)
         );
 
         return new Section(
