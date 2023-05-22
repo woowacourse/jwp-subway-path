@@ -79,7 +79,7 @@ public class RouteMap {
         return BASIC_FARE + get1stAdditionalFare(distance) + get2ndAdditionalFare(distance);
     }
 
-    private Integer get1stAdditionalFare(double distance) {
+    private int get1stAdditionalFare(double distance) {
         if (distance > FIRST_ADDITIONAL_CHARGE_DISTANCE_STANDARD) {
             double additionalDistance = Math.min((distance - FIRST_ADDITIONAL_CHARGE_DISTANCE_STANDARD), MAX_DISTANCE_FOR_1ST_ADDITIONAL_CHARGE);
             int additionalFare = (int) ((Math.floor((additionalDistance - 1) / EVERY_KILO_FOR_1ST_ADDITIONAL_CHARGE) + 1) * ADDITIONAL_FARE_UNIT);
