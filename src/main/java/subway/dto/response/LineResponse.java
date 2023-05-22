@@ -1,30 +1,26 @@
 package subway.dto.response;
 
-import subway.domain.core.Line;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import subway.entity.LineEntity;
 
 public class LineResponse {
-	private long id;
-	private String name;
 
-	public LineResponse() {
-	}
+	private final Long lineId;
+	private final String name;
 
-	public LineResponse(final long id, final String name) {
-		this.id = id;
+	private LineResponse(final Long lineId, final String name) {
+		this.lineId = lineId;
 		this.name = name;
 	}
 
-	public static List<LineResponse> of(final List<Line> lines) {
-		return lines.stream()
-			.map(line -> new LineResponse(line.getId(), line.getName()))
-			.collect(Collectors.toList());
+	public static LineResponse from(final LineEntity lineEntity) {
+		return new LineResponse(
+			lineEntity.getLineId(),
+			lineEntity.getName()
+		);
 	}
 
-	public long getId() {
-		return id;
+	public Long getLineId() {
+		return lineId;
 	}
 
 	public String getName() {
