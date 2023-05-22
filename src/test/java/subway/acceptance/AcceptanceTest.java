@@ -3,10 +3,7 @@ package subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -171,6 +168,76 @@ class AcceptanceTest {
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(강남, 신논현, 종합운동장));
     }
+    
+    @Nested
+    class 역에서_역으로_경로_및_요금을_구한다 {
+        StationResponse 강남;
+        StationResponse 신논현;
+        StationResponse 종합운동장;
+
+        @BeforeEach
+        void setUpStation() {
+            // 역을 등록한다.
+            강남 = addStation(강남역.REQUEST);
+            신논현 = addStation(신논현역.REQUEST);
+            종합운동장 = addStation(종합운동장역.REQUEST);
+
+            // 노선을 등록한다.
+            LineResponse 이호선 = addLine(LineFixture.이호선.REQUEST);
+            LineResponse 신분당 = addLine(신분당선.REQUEST);
+            LineResponse 구호선 = addLine(LineFixture.구호선.REQUEST);
+
+            // 노선에 역을 등록한다.
+            CreateSectionRequest 강남_신논현_1 = new CreateSectionRequest(강남.getId(), 신논현.getId(), 1);
+            addSection(강남_신논현_1, 신분당.getId());
+
+            CreateSectionRequest 신논현_종합운동장_1 = new CreateSectionRequest(신논현.getId(), 종합운동장.getId(), 1);
+            addSection(신논현_종합운동장_1, 구호선.getId());
+
+            CreateSectionRequest 강남_종합운동장_5 = new CreateSectionRequest(강남.getId(), 종합운동장.getId(), 5);
+            addSection(강남_종합운동장_5, 이호선.getId());
+        }
+
+        @Test
+        void 청소년은_운임에서_350원을_공제한_금액의_20퍼센트_할인() {
+            // 청소년(13세 이상~19세 미만) : 운임에서 350원을 공제한 금액의 20%할인
+            RouteRequest request = new RouteRequest(강남.getId(), 종합운동장.getId(), 15);
+
+            RouteResponse routeResponse = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().get("/stations/shortest-route")
+                    .then().log().all()
+                    .extract().as(RouteResponse.class);
+
+            assertThat(routeResponse.getDistance()).isEqualTo(2);
+            assertThat(routeResponse.getFare()).isEqualTo((int) ((1250 - 350) * 0.8));
+            assertThat(routeResponse.getStations())
+                    .usingRecursiveComparison()
+                    .isEqualTo(List.of(강남, 신논현, 종합운동장));
+        }
+
+        @Test
+        void 어린이는_운임에서_350원을_공제한_금액의_50퍼센트_할인() {
+            // 어린이(6세 이상~13세 미만) : 운임에서 350원을 공제한 금액의 50%할인
+            RouteRequest request = new RouteRequest(강남.getId(), 종합운동장.getId(), 6);
+
+            RouteResponse routeResponse = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().get("/stations/shortest-route")
+                    .then().log().all()
+                    .extract().as(RouteResponse.class);
+
+            assertThat(routeResponse.getDistance()).isEqualTo(2);
+            assertThat(routeResponse.getFare()).isEqualTo((int) ((1250 - 350) * 0.5));
+            assertThat(routeResponse.getStations())
+                    .usingRecursiveComparison()
+                    .isEqualTo(List.of(강남, 신논현, 종합운동장));
+        }
+    }
 
     private StationResponse addStation(final StationRequest request) {
         ExtractableResponse<Response> createResponse = RestAssured
@@ -209,7 +276,6 @@ class AcceptanceTest {
                 .then().log().all()
                 .extract().as(LineResponse.class);
     }
-
 
     private void addSection(final CreateSectionRequest request, final long lineId) {
         RestAssured
