@@ -5,7 +5,7 @@ import subway.domain.graph.Graph;
 import subway.domain.Station;
 import subway.exeption.InvalidDistanceException;
 
-public class AddStationToUpStrategy implements AddStationStrategy {
+public class StationAddUpStrategy implements StationAddStrategy {
     @Override
     public void addToTerminal(
             final Graph graph,
