@@ -2,7 +2,7 @@ package subway.domain.price;
 
 public class Price {
 
-    public static final int DEFAULT_PRICE = 1250;
+    private static final int DEFAULT_PRICE = 1250;
     private final int price;
 
     private Price(final int price) {

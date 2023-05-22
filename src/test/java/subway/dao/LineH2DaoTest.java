@@ -51,7 +51,6 @@ class LineH2DaoTest {
 
     private LineEntity saveLine(Line line) {
         final LineEntity lineEntity = new LineEntity(line.getName(), line.getColor());
-        final LineEntity savedEntity = lineDao.insert(lineEntity);
-        return savedEntity;
+        return lineDao.insert(lineEntity);
     }
 }

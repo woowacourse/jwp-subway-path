@@ -29,7 +29,7 @@ class SectionH2DaoTest {
         final SectionEntity sectionEntity = new SectionEntity(1L, 1L, 2L, 5);
         final SectionEntity savedSection = sectionDao.insert(sectionEntity);
 
-        AssertionsForClassTypes.assertThat(savedSection.getId()).isGreaterThanOrEqualTo(1L);
+        assertThat(savedSection.getId()).isGreaterThanOrEqualTo(1L);
     }
 
     @Test
@@ -50,7 +50,6 @@ class SectionH2DaoTest {
     void deleteTest() {
         final SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 5);
         final SectionEntity sectionEntity2 = new SectionEntity(1L, 2L, 3L, 3);
-        final SectionEntity savedSection1 = sectionDao.insert(sectionEntity1);
         final SectionEntity savedSection2 = sectionDao.insert(sectionEntity2);
 
         sectionDao.delete(sectionEntity1.getLineId(), sectionEntity1.getUpStationId(), sectionEntity1.getDownStationId());

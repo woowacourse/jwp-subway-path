@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleException(Exception exception) {
+    public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
         logger.error(exception.getMessage(), exception);
         return ResponseEntity
                 .internalServerError()
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(final IllegalArgumentException exception) {
+    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(final IllegalArgumentException exception) {
         logger.warn(exception.getMessage(), exception);
         return ResponseEntity
                 .badRequest()
