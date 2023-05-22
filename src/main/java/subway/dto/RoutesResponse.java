@@ -6,13 +6,16 @@ public class RoutesResponse {
 
     private List<StationResponse> stationResponses;
     private Double totalDistance;
+    private Integer fare;
 
     public RoutesResponse() {
     }
 
-    public RoutesResponse(final List<StationResponse> stationResponses, final Double totalDistance) {
+    public RoutesResponse(final List<StationResponse> stationResponses, final Double totalDistance,
+                          final Integer fare) {
         this.stationResponses = stationResponses;
         this.totalDistance = totalDistance;
+        this.fare = fare;
     }
 
     public List<StationResponse> getStationResponses() {
@@ -21,5 +24,9 @@ public class RoutesResponse {
 
     public Double getTotalDistance() {
         return totalDistance;
+    }
+
+    public Integer getFare() {
+        return fare;
     }
 }

@@ -32,15 +32,14 @@ HTTP Status : 200 OK
 [
     {
         "id": 1,
-        "name": "1호선",
-        "color": "red"
+        "name": "신분당선",
+        "color": "bg-red-600"
     },
     {
         "id": 2,
-        "name": "2호선",
-        "color": "blue"
+        "name": "구신분당선",
+        "color": "bg-red-600"
     }
-    ...
 ]
 ```
 
@@ -75,9 +74,41 @@ body:
 DELETE "/lines/{lineId}/stations/{stationId}"
 
 //response
-HTTP Status : 204 NO Contentent
+HTTP Status : 204 NO Content
 ```
 
+
+## 경로 조회
+
+```http request
+GET "/routes?{startStationId}=1&{endStationId}=4"
+
+//response
+HTTP Status : 200 OK
+body:
+{
+    "stationResponses": [
+        {
+            "id": 1,
+            "name": "강남역"
+        },
+        {
+            "id": 2,
+            "name": "삼성역"
+        },
+        {
+            "id": 3,
+            "name": "선릉역"
+        },
+        {
+            "id": 4,
+            "name": "잠실역"
+        }
+    ],
+    "totalDistance": 12.0,
+    "fare": 1350
+}
+```
 ---
 
 # DB TABLE 설계

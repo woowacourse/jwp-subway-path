@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.domain.FareCalculator;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.SubwayMap;
@@ -81,7 +82,8 @@ public class RoutingService {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         Double totalDistance = subwayMap.getTotalDistance(startStationId, endStationId);
-        return new RoutesResponse(stationResponses, totalDistance);
+        int fare = FareCalculator.calculate(totalDistance);
+        return new RoutesResponse(stationResponses, totalDistance, fare);
     }
 
     private List<Station> findShortestPath(final SubwayMap subwayMap, final Long startStationId,

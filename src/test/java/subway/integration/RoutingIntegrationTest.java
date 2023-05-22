@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import subway.domain.FareCalculator;
 import subway.dto.LineRequest;
 import subway.dto.RoutesResponse;
 import subway.dto.StationResponse;
@@ -152,7 +153,8 @@ public class RoutingIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(stationIds).containsExactly(stationId1, stationId2, stationId3, stationId4),
-                () -> assertThat(routesResponse.getTotalDistance()).isEqualTo(12)
+                () -> assertThat(routesResponse.getTotalDistance()).isEqualTo(12),
+                () -> assertThat(routesResponse.getFare()).isEqualTo(FareCalculator.calculate((double) 12))
         );
     }
 }

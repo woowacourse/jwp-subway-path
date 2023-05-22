@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.FareCalculator;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.RoutesResponse;
@@ -77,11 +78,12 @@ class RoutingServiceTest {
         RoutesResponse routes = routingService.findRoutes(station1.getId(), station4.getId());
         //then
         assertAll(
-                () -> assertThat(routes.getTotalDistance()).isEqualTo(expectedDistance),
                 () -> assertThat(routes.getStationResponses().stream()
                         .map(StationResponse::getName)
                         .collect(Collectors.toList())).containsExactly(station1.getName(), station2.getName(),
-                        station3.getName(), station4.getName())
+                        station3.getName(), station4.getName()),
+                () -> assertThat(routes.getTotalDistance()).isEqualTo(expectedDistance),
+                () -> assertThat(routes.getFare()).isEqualTo(FareCalculator.calculate((double) expectedDistance))
         );
     }
 }
