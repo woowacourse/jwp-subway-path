@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+@DisplayName("운임 요금 관련 기능")
 class FareCalculatorTest {
 
     @DisplayName("거리에 따라 운임 요금을 계산한다.")

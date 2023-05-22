@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("지하철 노션 관련 기능")
 class SubwayMapTest {
 
     private final SubwayMap subwayMap = new SubwayMap();

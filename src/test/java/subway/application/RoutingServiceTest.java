@@ -16,6 +16,7 @@ import subway.dto.StationResponse;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
+@DisplayName("경로 찾기 기능")
 class RoutingServiceTest {
 
     private RoutingService routingService;

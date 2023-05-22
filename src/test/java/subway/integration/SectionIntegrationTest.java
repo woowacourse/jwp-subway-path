@@ -18,7 +18,7 @@ import subway.dto.LineRequest;
 import subway.dto.SectionResponse;
 import subway.dto.StationToLineRequest;
 
-@DisplayName("노선에 역 관리 기능")
+@DisplayName("노선에 역 관리 기능 통합 테스트")
 public class SectionIntegrationTest extends IntegrationTest {
 
     private Long lineId;

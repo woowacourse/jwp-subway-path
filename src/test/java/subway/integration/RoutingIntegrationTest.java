@@ -24,7 +24,7 @@ import subway.dto.StationResponse;
 import subway.dto.StationToLineRequest;
 
 
-@DisplayName("역 경로 관련 기능")
+@DisplayName("역 경로 관련 기능 통합 테스트")
 public class RoutingIntegrationTest extends IntegrationTest {
 
     private Long lineId;

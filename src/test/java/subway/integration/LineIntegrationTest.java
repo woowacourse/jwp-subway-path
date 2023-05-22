@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
-@DisplayName("지하철 노선 관련 기능")
+@DisplayName("지하철 노선 관련 기능 통합 테스트")
 public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;

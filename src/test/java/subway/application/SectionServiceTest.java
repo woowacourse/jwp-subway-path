@@ -24,6 +24,7 @@ import subway.dto.StationToLineRequest;
 import subway.repository.SectionRepository;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Section 관련 기능")
 class SectionServiceTest {
 
     @InjectMocks
