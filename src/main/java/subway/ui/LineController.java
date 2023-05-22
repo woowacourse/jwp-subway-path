@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.domain.Section;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionResponse;
@@ -35,9 +36,9 @@ public class LineController {
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines(@RequestParam(defaultValue = "false") final boolean withStation) {
         if (withStation) {
-            return ResponseEntity.ok(lineService.findAllRouteMap());
+            return ResponseEntity.ok(LineResponse.of(lineService.findAllRouteMap()));
         }
-        return ResponseEntity.ok(lineService.findLineResponses());
+        return ResponseEntity.ok(LineResponse.of(lineService.findLines()));
     }
 
     @GetMapping("/{lineId}")
@@ -46,26 +47,27 @@ public class LineController {
             @RequestParam(defaultValue = "false") final boolean withStation
     ) {
         if (withStation) {
-            return ResponseEntity.ok(lineService.findLineWithStationsById(lineId));
+            return ResponseEntity.ok(LineResponse.of(lineService.findLineWithStationsById(lineId)));
         }
-        return ResponseEntity.ok(lineService.findLineResponseById(lineId));
+        return ResponseEntity.ok(LineResponse.of(lineService.findLineById(lineId)));
     }
 
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody final LineRequest lineRequest) {
-        final LineResponse line = lineService.saveLine(lineRequest);
+        final LineResponse line = LineResponse.of(lineService.saveLine(lineRequest));
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
     @PostMapping("{lineId}/stations")
     public ResponseEntity<SectionResponse> enrollStation(@PathVariable final Long lineId,
                                                          @RequestBody final StationEnrollRequest request) {
-        return ResponseEntity.created(URI.create("/lines/" + lineId)).body(lineService.enrollStation(lineId, request));
+        final Section section = lineService.enrollStation(lineId, request);
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).body(new SectionResponse(lineId, section.getLeft(), section.getRight()));
     }
 
     @PutMapping("/{lineId}")
     public ResponseEntity<LineResponse> updateLine(@PathVariable final Long lineId, @RequestBody final LineRequest lineUpdateRequest) {
-        return ResponseEntity.created(URI.create("/lines/" + lineId)).body(lineService.updateLine(lineId, lineUpdateRequest));
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).body(LineResponse.of(lineService.updateLine(lineId, lineUpdateRequest)));
     }
 
     @DeleteMapping("/{lineId}")

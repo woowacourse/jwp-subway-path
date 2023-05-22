@@ -27,7 +27,12 @@ public class LineResponse {
 
     public static LineResponse of(final LineEntity line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), Collections.emptyList());
+    }
 
+    public static List<LineResponse> of(final List<Line> lines) {
+        return lines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
     }
 
     private static List<StationResponse> getStationsOf(final LineRouteMap lineRouteMap) {

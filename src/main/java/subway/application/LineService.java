@@ -9,8 +9,6 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.SectionResponse;
 import subway.dto.StationEnrollRequest;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
@@ -33,17 +31,8 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    public LineResponse saveLine(final LineRequest request) {
-        final LineEntity persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
-    }
-
-    @Transactional(readOnly = true)
-    public List<LineResponse> findLineResponses() {
-        final List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public Line saveLine(final LineRequest request) {
+        return lineDao.insert(new LineEntity(request.getName(), request.getColor())).toLine();
     }
 
     @Transactional(readOnly = true)
@@ -51,11 +40,6 @@ public class LineService {
         return lineDao.findAll().stream()
                 .map(LineEntity::toLine)
                 .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public LineResponse findLineResponseById(final Long lineId) {
-        return LineResponse.of(findLine(lineId));
     }
 
     private LineEntity findLine(final Long lineId) {
@@ -68,11 +52,11 @@ public class LineService {
         return findLine(lineId).toLine();
     }
 
-    public LineResponse updateLine(final Long lineId, final LineRequest lineUpdateRequest) {
+    public Line updateLine(final Long lineId, final LineRequest lineUpdateRequest) {
         final LineEntity line = findLine(lineId);
         final LineEntity newLine = new LineEntity(line.getId(), lineUpdateRequest.getName(), lineUpdateRequest.getColor());
         lineDao.update(newLine);
-        return LineResponse.of(newLine);
+        return newLine.toLine();
     }
 
     public void deleteLineById(final Long lineId) {
@@ -80,17 +64,17 @@ public class LineService {
         lineDao.deleteById(line.getId());
     }
 
-    public SectionResponse enrollStation(final Long lineId, final StationEnrollRequest request) {
-        final Line line = makeLineBy(lineId);
+    public Section enrollStation(final Long lineId, final StationEnrollRequest request) {
+        final Line line = makeLineWithStationsBy(lineId);
         final Station left = stationService.findById(request.getFromStation());
         final Station right = stationService.findById(request.getToStation());
         final Section section = new Section(left, right, new Distance(request.getDistance()));
         line.addSection(section);
         sectionDao.save(SectionEntity.toEntities(line.getId(), line.getSections()));
-        return new SectionResponse(lineId, left, right);
+        return section;
     }
 
-    private Line makeLineBy(final Long lineId) {
+    private Line makeLineWithStationsBy(final Long lineId) {
         final Line line = findLineById(lineId);
         final List<Section> sections = findSections(lineId);
         return new Line(line.getId(), line.getName(), line.getColor(), sections);
@@ -113,26 +97,23 @@ public class LineService {
     }
 
     public void deleteStation(final Long lineId, final Long stationId) {
-        final Line line = makeLineBy(lineId);
+        final Line line = makeLineWithStationsBy(lineId);
         line.deleteStation(stationService.findById(stationId));
         sectionDao.save(SectionEntity.toEntities(lineId, line.getSections()));
     }
 
     @Transactional(readOnly = true)
-    public LineResponse findLineWithStationsById(final Long lineId) {
-        final Line line = makeLineBy(lineId);
-        return LineResponse.of(line);
+    public Line findLineWithStationsById(final Long lineId) {
+        return makeLineWithStationsBy(lineId);
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findAllRouteMap() {
+    public List<Line> findAllRouteMap() {
         final List<Line> linesWithStations = new ArrayList<>();
         for (final Line line : findLines()) {
-            linesWithStations.add(makeLineBy(line.getId()));
+            linesWithStations.add(makeLineWithStationsBy(line.getId()));
         }
-        return linesWithStations.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+        return linesWithStations;
     }
 
 }
