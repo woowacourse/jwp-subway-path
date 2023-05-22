@@ -4,18 +4,18 @@ import java.util.List;
 
 import subway.domain.Station;
 
-public class PathResponse {
+public class FareAndPathResponse {
 
     private final int fare;
     private final List<StationResponse> stations;
 
-    private PathResponse(int fare, List<StationResponse> stations) {
+    private FareAndPathResponse(int fare, List<StationResponse> stations) {
         this.fare = fare;
         this.stations = stations;
     }
 
-    public static PathResponse from(int fare, List<Station> stations) {
-        return new PathResponse(fare, StationResponse.toStationResponses(stations));
+    public static FareAndPathResponse from(int fare, List<Station> stations) {
+        return new FareAndPathResponse(fare, StationResponse.toStationResponses(stations));
     }
 
     public int getFare() {

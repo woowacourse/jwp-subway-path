@@ -19,29 +19,29 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import subway.application.PathService;
-import subway.ui.dto.PathRequest;
-import subway.ui.dto.PathResponse;
+import subway.application.FareAndPathService;
+import subway.ui.dto.FareAndPathResponse;
+import subway.ui.dto.FareAndPathRequest;
 
-@WebMvcTest(PathController.class)
+@WebMvcTest(FareAndPathController.class)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class PathControllerTest {
+class FareAndPathControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private PathService pathService;
+    private FareAndPathService fareAndPathService;
 
     @Test
     void 단일_노선_path_조회_테스트() throws Exception {
         // given
-        PathRequest request = new PathRequest(cheonho.getId(), jangji.getId());
+        FareAndPathRequest request = new FareAndPathRequest(cheonho.getId(), jangji.getId(), 20);
         String jsonRequest = objectMapper.writeValueAsString(request);
-        PathResponse response = PathResponse.from(1250, List.of(cheonho, jamsil, jangji));
+        FareAndPathResponse response = FareAndPathResponse.from(1250, List.of(cheonho, jamsil, jangji));
         String jsonResponse = objectMapper.writeValueAsString(response);
-        given(pathService.findPath(any(PathRequest.class))).willReturn(response);
+        given(fareAndPathService.findFareAndPath(any(FareAndPathRequest.class))).willReturn(response);
 
         // when & then
         mockMvc.perform(post("/path")

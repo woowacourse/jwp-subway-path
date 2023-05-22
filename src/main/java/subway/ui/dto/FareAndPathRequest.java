@@ -2,16 +2,19 @@ package subway.ui.dto;
 
 import javax.validation.constraints.Positive;
 
-public class PathRequest {
+public class FareAndPathRequest {
 
     @Positive
     private final Long sourceStationId;
     @Positive
     private final Long targetStationId;
+    @Positive
+    private final int age;
 
-    public PathRequest(Long sourceStationId, Long targetStationId) {
+    public FareAndPathRequest(Long sourceStationId, Long targetStationId, int age) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
+        this.age = age;
     }
 
     public Long getSourceStationId() {
@@ -20,5 +23,9 @@ public class PathRequest {
 
     public Long getTargetStationId() {
         return targetStationId;
+    }
+
+    public int getAge() {
+        return age;
     }
 }

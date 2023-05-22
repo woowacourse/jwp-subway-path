@@ -28,10 +28,11 @@ import subway.domain.Station;
 class SectionDaoTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    JdbcTemplate jdbcTemplate;
     @Autowired
-    private DataSource dataSource;
-
+    DataSource dataSource;
+    private StationDao stationDao;
+    private LineDao lineDao;
     private SectionDao sectionDao;
     private Station persistCheonho;
     private Station persistJamsil;
@@ -40,8 +41,8 @@ class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
-        LineDao lineDao = new LineDao(jdbcTemplate, dataSource);
+        stationDao = new StationDao(jdbcTemplate, dataSource);
+        lineDao = new LineDao(jdbcTemplate, dataSource);
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
 
         persistCheonho = stationDao.insert(cheonho);
@@ -53,12 +54,13 @@ class SectionDaoTest {
     @Test
     void insertAll_테스트() {
         // when
-        List<Section> sections = sectionDao.insertAll(List.of(
+        sectionDao.insertAll(List.of(
             new Section(persistCheonho, persistJamsil, persistLine8, 10),
             new Section(persistJamsil, persistJangji, persistLine8, 10)
         ));
 
         // then
+        List<Section> sections = sectionDao.findAll();
         assertAll(() -> {
             assertThat(sections.get(0).getId()).isNotNull();
             assertThat(sections.get(1).getId()).isNotNull();

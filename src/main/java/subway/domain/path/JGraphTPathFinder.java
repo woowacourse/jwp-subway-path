@@ -17,9 +17,7 @@ public class JGraphTPathFinder implements PathFinder {
 
     @Override
     public PathInfo findPath(Sections sections, Station source, Station target) {
-        GraphPath<Station, SectionWeightedEdge> shortestPath;
-        shortestPath = makeGraphPath(sections, source, target);
-
+        GraphPath<Station, SectionWeightedEdge> shortestPath = makeGraphPath(sections, source, target);
         List<Station> pathVerticies = setPathVerticies(shortestPath);
         Sections pathEdges = new Sections(shortestPath.getEdgeList().stream()
             .map(SectionWeightedEdge::toSection)
@@ -27,8 +25,7 @@ public class JGraphTPathFinder implements PathFinder {
         return new PathInfo(pathVerticies, pathEdges);
     }
 
-    private GraphPath<Station, SectionWeightedEdge> makeGraphPath(Sections sections,
-        Station source, Station target) {
+    private GraphPath<Station, SectionWeightedEdge> makeGraphPath(Sections sections, Station source, Station target) {
         GraphPath<Station, SectionWeightedEdge> shortestPath;
         try {
             shortestPath = getPath(sections, source, target);
