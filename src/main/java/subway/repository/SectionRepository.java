@@ -18,8 +18,6 @@ public interface SectionRepository {
 
     Long findStationIdAfter(Long lineId, Long stationId);
 
-    List<Long> findAllStationIds(Line line);
-
     void deleteSectionsOf(Line line);
 
     void saveAll(Line line, List<Section> sections);

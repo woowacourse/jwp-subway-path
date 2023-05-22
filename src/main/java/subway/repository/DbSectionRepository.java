@@ -8,7 +8,6 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.entity.SectionEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,12 +63,6 @@ public class DbSectionRepository implements SectionRepository {
     @Override
     public Long findStationIdAfter(final Long lineId, final Long stationId) {
         return sectionDao.findStationIdAfter(lineId, stationId);
-    }
-
-    @Override
-    public List<Long> findAllStationIds(final Line line) {
-        final List<Long> allStationIdsOf = sectionDao.findAllStationIdsOf(line.getId());
-        return new ArrayList<>(allStationIdsOf);
     }
 
     @Override
