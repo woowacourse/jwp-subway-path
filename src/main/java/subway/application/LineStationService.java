@@ -2,6 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -36,7 +37,7 @@ public class LineStationService {
         Distance distance = new Distance(request.getDistance());
         Section section = new Section(upStation, downStation, distance);
         Line updateLine = line.addSection(section);
-        sectionRepository.updateByLine(line, updateLine);
+        updateByLine(line, updateLine);
     }
 
     @Transactional(readOnly = true)
@@ -63,6 +64,16 @@ public class LineStationService {
         Line line = lineRepository.findById(lineId);
         Station station = stationRepository.findById(stationId);
         Line updateLine = line.removeStation(station);
-        sectionRepository.updateByLine(line, updateLine);
+        updateByLine(line, updateLine);
+    }
+
+    private void updateByLine(final Line line, final Line updateLine) {
+        List<Section> beforeSections = line.getSections();
+        beforeSections.removeAll(updateLine.getSections());
+        sectionRepository.deleteAll(beforeSections, line);
+
+        List<Section> updateSections = updateLine.getSections();
+        updateSections.removeAll(line.getSections());
+        sectionRepository.saveAll(updateSections, line);
     }
 }

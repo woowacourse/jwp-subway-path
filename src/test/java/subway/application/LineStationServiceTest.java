@@ -15,6 +15,7 @@ import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -47,8 +48,10 @@ class LineStationServiceTest {
         //when
         lineStationService.saveLinesStations(line.getId(), request);
         //then
-        Line updateLine = new Line(1L, name, color, new Sections(List.of(new Section(station1, station2, new Distance(10)))));
-        verify(sectionRepository, times(1)).updateByLine(line, updateLine);
+        org.junit.jupiter.api.Assertions.assertAll(
+                () -> verify(sectionRepository, times(1)).deleteAll(Collections.emptyList(), line),
+                () -> verify(sectionRepository, times(1)).saveAll(List.of(new Section(station1, station2, new Distance(10))), line)
+        );
     }
 
     @DisplayName("모든 노선의 역을 조회한다")
@@ -93,11 +96,13 @@ class LineStationServiceTest {
         Station station2 = new Station(2L, "테스트역2");
         Line line = new Line(1L, new LineName("테스트노선1"), new LineColor("테스트색1"), new Sections(List.of(new Section(station1, station2, new Distance(10)))));
         when(lineRepository.findById(1L)).thenReturn(line);
-        Line updateLine = new Line(1L, new LineName("테스트노선1"), new LineColor("테스트색1"), Sections.create());
         when(stationRepository.findById(1L)).thenReturn(station1);
         //when
         lineStationService.deleteLinesStations(1L, 1L);
         //then
-        verify(sectionRepository, times(1)).updateByLine(line, updateLine);
+        org.junit.jupiter.api.Assertions.assertAll(
+                () -> verify(sectionRepository, times(1)).deleteAll(List.of(new Section(station1, station2, new Distance(10))), line),
+                () -> verify(sectionRepository, times(1)).saveAll(Collections.emptyList(), line)
+        );
     }
 }
