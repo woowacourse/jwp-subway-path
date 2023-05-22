@@ -1,67 +1,41 @@
 package subway.dao;
 
-import java.util.List;
+import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import subway.domain.core.Station;
+import subway.domain.subway.Station;
+import subway.entity.StationEntity;
 
 @Repository
 public class StationDao {
-	private static final int UPDATED_COUNT = 1;
-	private static final int DELETED_COUNT = 1;
-	private final JdbcTemplate jdbcTemplate;
-	private final SimpleJdbcInsert insert;
 
-	private final RowMapper<Station> stationRowMapper = (rs, rowNum) ->
-		new Station(
-			rs.getLong("id"),
+	private final JdbcTemplate jdbcTemplate;
+	private final SimpleJdbcInsert insertAction;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+	private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+		new StationEntity(
+			rs.getLong("stationId"),
 			rs.getString("name")
 		);
 
-	public StationDao(final JdbcTemplate jdbcTemplate) {
-		this.insert = new SimpleJdbcInsert(jdbcTemplate)
-			.withTableName("station")
-			.usingGeneratedKeyColumns("id");
+	public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource, final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.insertAction = new SimpleJdbcInsert(dataSource)
+			.withTableName("station")
+			.usingGeneratedKeyColumns("stationId");
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
-	public long createStation(final Station station) {
+	public long insert(final Station station) {
 		SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-		return insert.executeAndReturnKey(params).longValue();
-	}
-
-	public List<Station> findAll() {
-		String sql = "SELECT * FROM station";
-		return jdbcTemplate.query(sql, stationRowMapper);
-	}
-
-	public Station findById(final Long stationIdRequest) {
-		String sql = "SELECT * FROM station WHERE id = ?";
-		return jdbcTemplate.queryForObject(sql, stationRowMapper, stationIdRequest);
-	}
-
-	public boolean updateStation(final long stationId, final Station station) {
-		final String sql = "UPDATE station SET name = ? WHERE id = ?";
-		final int updateCount = jdbcTemplate.update(sql, station.getName(), stationId);
-
-		return updateCount == UPDATED_COUNT;
-	}
-
-	public boolean deleteById(final Long stationId) {
-		String sql = "DELETE FROM station WHERE id = ?";
-		final int deleteCount = jdbcTemplate.update(sql, stationId);
-
-		return deleteCount == DELETED_COUNT;
-	}
-
-	public Station findStationWithId(final Station station) {
-		String sql = "SELECT * FROM station WHERE name = ?";
-		return jdbcTemplate.queryForObject(sql,stationRowMapper, station.getName());
+		return insertAction.executeAndReturnKey(params).longValue();
 	}
 }
