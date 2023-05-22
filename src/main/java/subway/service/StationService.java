@@ -20,6 +20,12 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    public StationResponse saveStationInLine(StationRequest stationRequest) {
+        StationEntity stationEntity = createEntityFromRequest(stationRequest);
+        Long id = stationDao.insert(stationEntity);
+        return new StationResponse(id, stationEntity.getName());
+    }
+
     public StationResponse saveStation(StationRequest stationRequest) {
         StationEntity stationEntity = createEntityFromRequest(stationRequest);
         Long id = stationDao.insert(stationEntity);

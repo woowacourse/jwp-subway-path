@@ -27,7 +27,7 @@ public class StationEntity {
 
     public StationEntity(String name) {
         this.id = null;
-        this.name = null;
+        this.name = name;
         this.nextStationId = null;
         this.distance = null;
         this.lineId = null;
