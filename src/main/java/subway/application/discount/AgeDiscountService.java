@@ -15,7 +15,7 @@ public class AgeDiscountService {
 
     public Price discount(Price price, Age age) {
         for (AgeDiscountPolicy ageDiscountPolicy : ageDiscountPolicies) {
-            price = price.minus(ageDiscountPolicy.calculate(price, age));
+            price = price.minus(ageDiscountPolicy.getDiscountPrice(price, age));
         }
         return price;
     }
