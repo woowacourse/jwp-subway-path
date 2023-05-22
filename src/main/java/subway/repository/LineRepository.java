@@ -13,6 +13,7 @@ import subway.dao.entity.SectionEntity;
 import subway.dao.entity.SectionWithStationNameEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.exception.DuplicateException;
@@ -66,7 +67,7 @@ public class LineRepository {
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
-    public List<Line> findAll() {
+    public Lines findAll() {
         List<LineWithSectionEntities> linesWithSections = lineDao.findLinesWithSections();   // section 리스트를 들고 있는 노선들
         List<Line> lines = new ArrayList<>();
         for (LineWithSectionEntities linesWithSection : linesWithSections) {    // 라인 하나 꺼내기
@@ -94,7 +95,7 @@ public class LineRepository {
             );
         }
 
-        return lines;
+        return new Lines(lines);
     }
 
     private LineEntity toEntity(final Line line) {

@@ -11,12 +11,14 @@ import subway.domain.Section;
 import subway.domain.Station;
 
 public class DijkstraRouteMap implements RouteMap {
-    private final Graph<Station, SubwayRouteEdge> graph;
+    private final Graph<Station, SubwayRouteEdge> graph = new WeightedMultigraph<>(SubwayRouteEdge.class);
+
+    public DijkstraRouteMap(final Lines lines) {
+        makeGraph(lines);
+    }
 
     public DijkstraRouteMap(final Line... lines) {
-        this.graph = new WeightedMultigraph<>(SubwayRouteEdge.class);
-        Lines subwayLines = new Lines(lines);
-        makeGraph(subwayLines);
+        this(new Lines(lines));
     }
 
     private void makeGraph(final Lines lines) {

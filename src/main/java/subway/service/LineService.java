@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineRequest;
@@ -48,9 +49,9 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
-        List<Line> lines = lineRepository.findAll();
+        Lines lines = lineRepository.findAll();
 
-        return lines.stream()
+        return lines.getLines().stream()
                 .map(line -> {
                     List<StationResponse> stationResponses = line.getStations().stream()
                             .map(station -> new StationResponse(station.getName()))

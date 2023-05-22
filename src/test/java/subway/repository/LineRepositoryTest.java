@@ -98,7 +98,7 @@ class LineRepositoryTest {
         lineRepository.save(Line.createWithoutId("3호선", List.of()));
 
         // when
-        List<Line> 노선들 = lineRepository.findAll();
+        List<Line> 노선들 = lineRepository.findAll().getLines();
 
         // then
         assertAll(
