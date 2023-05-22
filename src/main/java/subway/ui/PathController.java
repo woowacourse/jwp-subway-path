@@ -1,17 +1,14 @@
 package subway.ui;
 
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import subway.domain.Distance;
 import subway.domain.Fare;
 import subway.domain.Station;
 import subway.dto.api.ShortestPathResponse;
 import subway.dto.service.PathResult;
-import subway.exception.ArrivalSameWithDepartureException;
 import subway.service.FareService;
 import subway.service.PathService;
 import subway.service.StationService;
@@ -34,13 +31,10 @@ public class PathController {
                                                         @RequestParam Long arrivalStationId) {
         Station departure = stationService.findById(departureStationId);
         Station arrival = stationService.findById(arrivalStationId);
-
         PathResult pathResult = pathService.getShortestPath(departure, arrival);
-        Distance distance = pathResult.getPath().calculateTotalDistance();
-        Fare fare = fareService.calculateFareOf(distance);
+        Fare fare = fareService.calculateFareOf(pathResult.getPath());
 
         ShortestPathResponse shortestPathResponse = ShortestPathResponse.of(departure, arrival, pathResult, fare);
-
         return ResponseEntity.ok().body(shortestPathResponse);
     }
 }

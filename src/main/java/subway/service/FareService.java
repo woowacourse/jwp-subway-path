@@ -14,7 +14,8 @@ public class FareService {
         this.fareCalculator = fareCalculator;
     }
 
-    public Fare calculateFareOf(Distance distance) {
+    public Fare calculateFareOf(Path path) {
+        Distance distance = path.calculateTotalDistance();
         return fareCalculator.calculate(distance);
     }
 }

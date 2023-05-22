@@ -35,26 +35,25 @@ public class PathService {
             throw new ArrivalSameWithDepartureException();
         }
         Path shortestPath = pathFinderService.findPath(departure, arrival);
-
-        return getPathResult(departure, arrival, shortestPath);
+        return getPathResult(shortestPath);
     }
 
-    private Line findByPathSegment(PathSegment pathSegment) {
+    private PathResult getPathResult(Path shortestPath) {
+        Map<Line, List<Station>> lineToStations = shortestPath.getPathSegments().stream()
+                .collect(toMap(this::toLine, this::toStations));
+
+        return new PathResult(lineToStations, shortestPath);
+    }
+
+    private Line toLine(PathSegment pathSegment) {
         return lineRepository.findById(pathSegment.getLineId())
                 .orElseThrow(LineNotFoundException::new);
     }
 
-    private List<Station> extractStations(PathSegment pathSegment) {
+    private List<Station> toStations(PathSegment pathSegment) {
         List<Long> stationIds = pathSegment.getStationEdges().stream()
                 .map(StationEdge::getDownStationId)
                 .collect(Collectors.toList());
         return stationRepository.findById(stationIds);
-    }
-
-    private PathResult getPathResult(Station departure, Station arrival, Path shortestPath) {
-        Map<Line, List<Station>> lineToStations = shortestPath.getPathSegments().stream()
-                .collect(toMap(this::findByPathSegment, this::extractStations));
-
-        return new PathResult(departure, arrival, lineToStations, shortestPath);
     }
 }
