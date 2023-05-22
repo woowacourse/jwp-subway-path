@@ -1,6 +1,7 @@
 package subway.application;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.domain.Line;
@@ -19,15 +20,14 @@ public class SectionService {
     }
 
     public void addSection(final Long lineId, final SectionRequest sectionRequest) {
-        Sections sectionsByLineId = sectionDao.findSectionsByLineId(lineId);
+        Optional<Sections> sectionsByLineId = sectionDao.findSectionsByLineId(lineId);
 
-        if (sectionsByLineId.getSize() == 0) {  // 빈 노선에 섹션 추가
+        if (sectionsByLineId.isEmpty()) {  // 빈 노선에 섹션 추가
             sectionDao.insert(sectionRequest.getFromId(), sectionRequest.getToId(), sectionRequest.getDistance(),
                     lineId);
             return;
         }
-        addSectionInMiddle(lineId, sectionRequest, sectionsByLineId);
-
+        addSectionInMiddle(lineId, sectionRequest, sectionsByLineId.get());
     }
 
     private void addSectionInMiddle(Long lineId, SectionRequest sectionRequest, Sections sectionsByLineId) {
@@ -64,7 +64,7 @@ public class SectionService {
     }
 
     public StationsByLineResponse showStations(final Line line) {
-        Sections sectionsByLineId = sectionDao.findSectionsByLineId(line.getId());
+        Sections sectionsByLineId = sectionDao.findSectionsByLineId(line.getId()).get();
         return new StationsByLineResponse(line, sectionsByLineId.showStations());
     }
 

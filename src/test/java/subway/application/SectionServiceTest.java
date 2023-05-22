@@ -46,7 +46,7 @@ class SectionServiceTest {
         Sections emptySections = new Sections();
 
         // when
-        when(sectionDao.findSectionsByLineId(1L)).thenReturn(emptySections);
+        when(sectionDao.findSectionsByLineId(1L).get()).thenReturn(emptySections);
         sectionService.addSection(line.getId(), sectionRequest);
 
         // then
@@ -64,7 +64,7 @@ class SectionServiceTest {
                 new Section(new Station(2L, "디노"), new Station(3L, "조앤"), 7)));
 
         // when
-        when(sectionDao.findSectionsByLineId(1L)).thenReturn(sections);
+        when(sectionDao.findSectionsByLineId(1L).get()).thenReturn(sections);
         sectionService.addSection(line.getId(), sectionRequest);
 
         // then
@@ -88,7 +88,7 @@ class SectionServiceTest {
                 new Section(new Station(2L, "디노"), new Station(3L, "조앤"), 7)));
 
         // when
-        when(sectionDao.findSectionsByLineId(line.getId())).thenReturn(sections);
+        when(sectionDao.findSectionsByLineId(line.getId()).get()).thenReturn(sections);
         sectionService.addSection(line.getId(), sectionRequest);
 
         // then
@@ -161,7 +161,7 @@ class SectionServiceTest {
         ));
 
         // when
-        when(sectionDao.findSectionsByLineId(line.getId())).thenReturn(sections);
+        when(sectionDao.findSectionsByLineId(line.getId()).get()).thenReturn(sections);
         sectionService.showStations(line);
 
         // then

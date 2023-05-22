@@ -3,6 +3,7 @@ package subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -37,9 +38,9 @@ class SectionDaoTest {
 
     @Test
     void 노선_id로_해당_노선의_역_정보를_반환한다() {
-        Sections sectionsByLineId = sectionDao.findSectionsByLineId(2L);
+        Optional<Sections> sectionsByLineId = sectionDao.findSectionsByLineId(2L);
 
-        assertThat(sectionsByLineId).isEqualTo(new Sections(List.of(
+        assertThat(sectionsByLineId.get()).isEqualTo(new Sections(List.of(
                 new Section(new Station(5L, "포비"), new Station(4L, "로운"), 3),
                 new Section(new Station(3L, "조앤"), new Station(5L, "포비"), 3)
         )));
@@ -51,17 +52,17 @@ class SectionDaoTest {
         sectionDao.insert(1L, 2L, 7, 3L);
 
         //then
-        Sections sectionsByLineId = sectionDao.findSectionsByLineId(3L);
-        assertThat(sectionsByLineId).isEqualTo(
+        Optional<Sections> sectionsByLineId = sectionDao.findSectionsByLineId(3L);
+        assertThat(sectionsByLineId.get()).isEqualTo(
                 new Sections(List.of(new Section(new Station(1L, "후추"), new Station(2L, "디노"), 7))));
     }
 
     @Test
     void 노선에서_특정_역을_삭제한다() {
         sectionDao.deleteSectionByStationId(2L, 3L);
-        Sections sectionsByLineId = sectionDao.findSectionsByLineId(2L);
+        Optional<Sections> sectionsByLineId = sectionDao.findSectionsByLineId(2L);
 
-        assertThat(sectionsByLineId).isEqualTo(new Sections(List.of(
+        assertThat(sectionsByLineId.get()).isEqualTo(new Sections(List.of(
                 new Section(new Station(5L, "포비"), new Station(4L, "로운"), 3))));
     }
 
@@ -77,8 +78,8 @@ class SectionDaoTest {
     @Test
     void 노선에서_특정_구간을_삭제한다() {
         sectionDao.deleteSectionBySectionInfo(1L, new Section(new Station(2L, "디노"), new Station(3L, "조앤"), 4));
-        Sections sectionsByLineId = sectionDao.findSectionsByLineId(1L);
-        assertThat(sectionsByLineId).isEqualTo(new Sections(List.of(
+        Optional<Sections> sectionsByLineId = sectionDao.findSectionsByLineId(1L);
+        assertThat(sectionsByLineId.get()).isEqualTo(new Sections(List.of(
                 new Section(new Station(1L, "후추"), new Station(2L, "디노"), 5),
                 new Section(new Station(3L, "조앤"), new Station(4L, "로운"), 6)
         )));

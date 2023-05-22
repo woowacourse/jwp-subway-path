@@ -1,5 +1,7 @@
 package subway.dao;
 
+import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -41,7 +43,7 @@ public class SectionDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public Sections findSectionsByLineId(final Long lineId) {
+    public Optional<Sections> findSectionsByLineId(final Long lineId) {
         final String sql = "SELECT\n" +
                 "    s.id AS section_id,\n" +
                 "    s.from_id,\n" +
@@ -55,7 +57,11 @@ public class SectionDao {
                 "    INNER JOIN STATION t ON s.to_id = t.id\n" +
                 "    INNER JOIN LINE l ON s.line_id = l.id AND line_id=?;";
 
-        return new Sections(jdbcTemplate.query(sql, SECTION_STATION_ROW_MAPPER, lineId));
+        Optional<List<Section>> sectionResource = Optional.ofNullable(
+                jdbcTemplate.query(sql, SECTION_STATION_ROW_MAPPER, lineId));
+
+        Sections sections = new Sections(sectionResource.get());
+        return Optional.of(sections);
     }
 
     public void deleteSectionByStationId(final Long lineId, final Long stationId) {
