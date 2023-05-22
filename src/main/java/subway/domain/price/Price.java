@@ -27,6 +27,9 @@ public class Price {
     }
 
     public Price plus(Price price) {
+        if (price == ZERO) {
+            return this;
+        }
         return new Price(this.amount.add(price.amount));
     }
 

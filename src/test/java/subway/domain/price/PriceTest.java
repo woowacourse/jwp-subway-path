@@ -37,10 +37,10 @@ class PriceTest {
         Price price = Price.from(1000);
 
         // when
-        Price newPrice = price.plus(Price.from(500));
+        Price result = price.plus(Price.from(500));
 
         // then
-        assertThat(newPrice.getAmount())
+        assertThat(result.getAmount())
                 .isEqualTo(1500);
     }
 
@@ -51,10 +51,10 @@ class PriceTest {
         Price price = Price.from(1000);
 
         // when
-        Price newPrice = price.minus(Price.from(500));
+        Price result = price.minus(Price.from(500));
 
         // then
-        assertThat(newPrice.getAmount())
+        assertThat(result.getAmount())
                 .isEqualTo(500);
     }
 
@@ -80,7 +80,7 @@ class PriceTest {
 
         // expect
         assertThat(price.minus(otherPrice))
-                .isEqualTo(Price.ZERO);
+                .isSameAs(Price.ZERO);
     }
 
     @Test
@@ -90,10 +90,10 @@ class PriceTest {
         Price price = Price.from(1000);
 
         // when
-        Price multiplePrice = price.multiple(0.2);
+        Price result = price.multiple(0.2);
 
         // then
-        assertThat(multiplePrice.getAmount())
+        assertThat(result.getAmount())
                 .isEqualTo(200);
     }
 
@@ -104,10 +104,38 @@ class PriceTest {
         Price price = Price.from(1000);
 
         // when
-        Price mulitplePrice = price.multiple(0);
+        Price result = price.multiple(0);
 
         // then
-        assertThat(mulitplePrice)
-                .isEqualTo(Price.ZERO);
+        assertThat(result)
+                .isSameAs(Price.ZERO);
+    }
+    
+    @Test
+    @DisplayName("금액을 뺄 때, 0원을 빼면 값이 그대로 반환되어야 한다.")
+    void minus_minusZero() {
+        // given
+        Price price = Price.from(1000);
+
+        // when
+        Price result = price.minus(Price.ZERO);
+
+        // then
+        assertThat(result)
+                .isSameAs(price);
+    }
+
+    @Test
+    @DisplayName("금액을 더할 때, 0원을 더하면 값이 그대로 반환되어야 한다.")
+    void plus_plusZero() {
+        // given
+        Price price = Price.from(1000);
+
+        // when
+        Price result = price.plus(Price.ZERO);
+
+        // then
+        assertThat(result)
+                .isSameAs(price);
     }
 }
