@@ -248,7 +248,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         StationsByLineResponse stationsByLineResponse = response.as(StationsByLineResponse.class);
         LineResponse lineResponse = stationsByLineResponse.getLineResponse();
-        List<StationResponse> stationResponses = stationsByLineResponse.getStationResponses();
+        List<StationResponse> stationResponses = stationsByLineResponse.getStations();
 
         assertSoftly(softly -> {
             softly.assertThat(lineResponse.getId()).isEqualTo(1L);
@@ -285,7 +285,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             StationsByLineResponse stationsByLineResponse1 = stationsByLineResponses.get(0);
             LineResponse line1 = stationsByLineResponse1.getLineResponse();
-            List<StationResponse> stations1 = stationsByLineResponse1.getStationResponses();
+            List<StationResponse> stations1 = stationsByLineResponse1.getStations();
 
             softly.assertThat(line1.getId()).isEqualTo(1L);
             softly.assertThat(line1.getName()).isEqualTo("2호선");
@@ -302,7 +302,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             StationsByLineResponse stationsByLineResponse2 = stationsByLineResponses.get(1);
             LineResponse line2 = stationsByLineResponse2.getLineResponse();
-            List<StationResponse> stations2 = stationsByLineResponse2.getStationResponses();
+            List<StationResponse> stations2 = stationsByLineResponse2.getStations();
 
             softly.assertThat(line2.getId()).isEqualTo(2L);
             softly.assertThat(line2.getName()).isEqualTo("8호선");
