@@ -15,22 +15,8 @@ public class DistanceCostPolicyChain implements CostPolicyChain {
 
     @Override
     public long calculate(final Path path, final int age, final long cost) {
-        final long distance = path.getDistance().getValue();
-        if (distance <= 10) {
-            return calculateNext(path, age, cost);
-        }
-
-        // 10 ~ 50
-        final long additionalDistanceUnder50 = Math.min(distance, 50) - 10L;
-        long changeCost = cost + (long) ((Math.ceil((double) additionalDistanceUnder50 / 5)) * 100);
-
-        // 50 초과
-        if (distance > 50) {
-            final long additionalDistanceOver50 = distance - 50;
-            changeCost += (long) ((Math.ceil((double) additionalDistanceOver50 / 8)) * 100);
-        }
-
-        return calculateNext(path, age, changeCost);
+        final long calculateAdditionalCost = DistanceCost.calculateAdditionalCost(cost, path.getDistance());
+        return calculateNext(path, age, calculateAdditionalCost);
     }
 
     private long calculateNext(final Path path, final int age, final long cost) {
