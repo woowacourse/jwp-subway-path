@@ -1,18 +1,18 @@
 package subway.route.domain.jgraph;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import subway.line.domain.LineInfo;
+import subway.line.domain.LineMetadata;
 
 public class WeightedEdgeWithLineInfo extends DefaultWeightedEdge {
 
     private final long lindId;
-    private final LineInfo lineInfo;
+    private final LineMetadata lineMetadata;
     private final int distance;
 
 
-    public WeightedEdgeWithLineInfo(long lindId, LineInfo lineInfo, int distance) {
+    public WeightedEdgeWithLineInfo(long lindId, LineMetadata lineMetadata, int distance) {
         this.lindId = lindId;
-        this.lineInfo = lineInfo;
+        this.lineMetadata = lineMetadata;
         this.distance = distance;
     }
 
@@ -20,8 +20,8 @@ public class WeightedEdgeWithLineInfo extends DefaultWeightedEdge {
         return lindId;
     }
 
-    public LineInfo getLineInfo() {
-        return lineInfo;
+    public LineMetadata getLineInfo() {
+        return lineMetadata;
     }
 
     public int getDistance() {
@@ -32,7 +32,7 @@ public class WeightedEdgeWithLineInfo extends DefaultWeightedEdge {
     public String toString() {
         return "WeightedEdgeWithLineInfo{" +
                 "lindId=" + lindId +
-                ", lineInfo=" + lineInfo +
+                ", lineMetadata=" + lineMetadata +
                 ", distance=" + distance +
                 '}';
     }

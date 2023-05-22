@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 public class Line {
 
     private final Long id;
-    private final LineInfo lineInfo;
+    private final LineMetadata lineMetadata;
     private final LinkedList<AbstractSection> sections;
 
     public Line(Long id, String name, int additionalFare, List<MiddleSection> sections) {
         this.id = id;
-        this.lineInfo = new LineInfo(name, additionalFare);
+        this.lineMetadata = new LineMetadata(name, additionalFare);
         this.sections = new LinkedList<>(sections);
         addTerminalSections();
     }
@@ -128,15 +128,15 @@ public class Line {
     }
 
     public String getName() {
-        return lineInfo.getName();
+        return lineMetadata.getName();
     }
 
     public int getAdditionalFare() {
-        return lineInfo.getAdditionalFare();
+        return lineMetadata.getAdditionalFare();
     }
 
-    public LineInfo getLineInfo() {
-        return lineInfo;
+    public LineMetadata getLineInfo() {
+        return lineMetadata;
     }
 
     public List<MiddleSection> getSections() {
@@ -152,7 +152,7 @@ public class Line {
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
         if (Objects.isNull(id) || Objects.isNull(line.id)) {
-            return Objects.equals(lineInfo, line.lineInfo) && Objects.equals(sections, line.sections);
+            return Objects.equals(lineMetadata, line.lineMetadata) && Objects.equals(sections, line.sections);
         }
         return Objects.equals(id, line.id);
     }
@@ -160,7 +160,7 @@ public class Line {
     @Override
     public int hashCode() {
         if (Objects.isNull(id)) {
-            return Objects.hash(lineInfo, sections);
+            return Objects.hash(lineMetadata, sections);
         }
         return Objects.hash(id);
     }
@@ -169,7 +169,7 @@ public class Line {
     public String toString() {
         return "Line{" +
                 "id=" + id +
-                ", lineInfo=" + lineInfo +
+                ", lineMetadata=" + lineMetadata +
                 ", sections=" + sections +
                 '}';
     }

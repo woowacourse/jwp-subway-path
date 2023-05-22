@@ -4,12 +4,12 @@ import subway.line.exception.InvalidAdditionalFareException;
 
 import java.util.Objects;
 
-public class LineInfo {
+public class LineMetadata {
 
     private final LineName name;
     private final int additionalFare;
 
-    public LineInfo(String name, int additionalFare) {
+    public LineMetadata(String name, int additionalFare) {
         validateIsPositive(additionalFare);
         this.name = new LineName(name);
         this.additionalFare = additionalFare;
@@ -33,8 +33,8 @@ public class LineInfo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LineInfo lineInfo = (LineInfo) o;
-        return additionalFare == lineInfo.additionalFare && Objects.equals(name, lineInfo.name);
+        LineMetadata lineMetadata = (LineMetadata) o;
+        return additionalFare == lineMetadata.additionalFare && Objects.equals(name, lineMetadata.name);
     }
 
     @Override
