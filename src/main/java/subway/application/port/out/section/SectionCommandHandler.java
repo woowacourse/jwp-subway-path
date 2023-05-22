@@ -4,6 +4,6 @@ import subway.domain.Section;
 
 import java.util.List;
 
-public interface SectionCommandPort {
+public interface SectionCommandHandler {
     void saveSection(Long lineId, List<Section> sections);
 }

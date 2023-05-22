@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import subway.adapter.out.persistence.entity.LineEntity;
 import subway.adapter.out.persistence.entity.SectionEntity;
 import subway.adapter.out.persistence.entity.StationEntity;
@@ -21,10 +22,12 @@ class SectionJdbcDaoTest {
     private SectionJdbcDao sectionJdbcDao;
     private StationJdbcDao stationJdbcDao;
     private LineJdbcDao lineJdbcDao;
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @BeforeEach
     void setUp() {
-        lineJdbcDao = new LineJdbcDao(jdbcTemplate);
+        lineJdbcDao = new LineJdbcDao(namedParameterJdbcTemplate, jdbcTemplate);
         sectionJdbcDao = new SectionJdbcDao(jdbcTemplate);
         stationJdbcDao = new StationJdbcDao(jdbcTemplate);
     }
@@ -32,7 +35,7 @@ class SectionJdbcDaoTest {
     @Test
     @DisplayName("구간을 추가한다.")
     void saveSection() {
-        Long lineId = lineJdbcDao.createLine(new LineEntity("1호선"));
+        Long lineId = lineJdbcDao.createLine(new LineEntity("1호선", 1000));
         stationJdbcDao.createStation(new StationEntity("비버"));
         stationJdbcDao.createStation(new StationEntity("라빈"));
         stationJdbcDao.createStation(new StationEntity("잠실"));
@@ -50,7 +53,7 @@ class SectionJdbcDaoTest {
     @DisplayName("노선의 따른 구간을 조회한다.")
     void findAllByLineId() {
 
-        Long lineId1 = lineJdbcDao.createLine(new LineEntity("3호선"));
+        Long lineId1 = lineJdbcDao.createLine(new LineEntity("3호선", 10));
         stationJdbcDao.createStation(new StationEntity("비버니"));
         stationJdbcDao.createStation(new StationEntity("비버통"));
         stationJdbcDao.createStation(new StationEntity("잠실역"));

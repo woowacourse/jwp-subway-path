@@ -5,10 +5,12 @@ import subway.domain.Line;
 import java.util.List;
 import java.util.Optional;
 
-public interface LineQueryPort {
+public interface LineQueryHandler {
     List<Line> findAll();
 
-    Optional<Line> findById(Long lineIdRequest);
+    Optional<Line> findLineById(Long lineIdRequest);
+
+    List<Line> findLinesById(List<Long> lineIds);
 
     Optional<Line> findByName(final Line line);
 }

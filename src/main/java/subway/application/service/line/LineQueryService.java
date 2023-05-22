@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.StationResponse;
 import subway.application.port.in.line.FindLineUseCase;
-import subway.application.port.out.line.LineQueryPort;
-import subway.application.port.out.section.SectionQueryPort;
+import subway.application.port.out.line.LineQueryHandler;
+import subway.application.port.out.section.SectionQueryHandler;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -17,11 +17,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class LineQueryService implements FindLineUseCase {
 
-    private final LineQueryPort lineQueryPort;
-    private final SectionQueryPort sectionQueryPort;
+    private final LineQueryHandler lineQueryHandler;
+    private final SectionQueryHandler sectionQueryPort;
 
-    public LineQueryService(final LineQueryPort lineQueryPort, final SectionQueryPort sectionQueryPort) {
-        this.lineQueryPort = lineQueryPort;
+    public LineQueryService(final LineQueryHandler lineQueryHandler, final SectionQueryHandler sectionQueryPort) {
+        this.lineQueryHandler = lineQueryHandler;
         this.sectionQueryPort = sectionQueryPort;
     }
 
@@ -37,7 +37,7 @@ public class LineQueryService implements FindLineUseCase {
     }
 
     public List<List<StationResponse>> findAllLine() {
-        List<Line> lines = lineQueryPort.findAll();
+        List<Line> lines = lineQueryHandler.findAll();
 
         List<List<StationResponse>> allLines = new ArrayList<>();
         for (Line line: lines) {

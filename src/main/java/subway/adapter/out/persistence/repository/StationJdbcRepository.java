@@ -3,8 +3,8 @@ package subway.adapter.out.persistence.repository;
 import org.springframework.stereotype.Repository;
 import subway.adapter.out.persistence.dao.StationDao;
 import subway.adapter.out.persistence.entity.StationEntity;
-import subway.application.port.out.station.StationCommandPort;
-import subway.application.port.out.station.StationQueryPort;
+import subway.application.port.out.station.StationCommandHandler;
+import subway.application.port.out.station.StationQueryHandler;
 import subway.domain.Station;
 
 import java.util.HashSet;
@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public class StationJdbcAdapter implements StationCommandPort, StationQueryPort {
+public class StationJdbcRepository implements StationCommandHandler, StationQueryHandler {
 
     private final StationDao stationDao;
 
-    public StationJdbcAdapter(final StationDao stationDao) {
+    public StationJdbcRepository(final StationDao stationDao) {
         this.stationDao = stationDao;
     }
 

@@ -4,6 +4,8 @@ import subway.domain.Section;
 
 import java.util.List;
 
-public interface SectionQueryPort {
+public interface SectionQueryHandler {
     List<Section> findAllByLineId(Long lineId);
+
+    List<Section> findAll();
 }

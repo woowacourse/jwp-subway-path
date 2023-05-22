@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import subway.application.dto.StationResponse;
-import subway.application.port.out.line.LineQueryPort;
-import subway.application.port.out.section.SectionQueryPort;
+import subway.application.port.out.line.LineQueryHandler;
+import subway.application.port.out.section.SectionQueryHandler;
 import subway.domain.Section;
 import subway.domain.Station;
 
@@ -18,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 class LineQueryServiceTest {
-    private SectionQueryPort sectionQueryPort;
+    private SectionQueryHandler sectionQueryPort;
     private LineQueryService lineCommandService;
 
     @BeforeEach
     void setUp() {
-        LineQueryPort lineQueryPort = Mockito.mock(LineQueryPort.class);
-        sectionQueryPort = Mockito.mock(SectionQueryPort.class);
-        lineCommandService = new LineQueryService(lineQueryPort, sectionQueryPort);
+        LineQueryHandler lineQueryHandler = Mockito.mock(LineQueryHandler.class);
+        sectionQueryPort = Mockito.mock(SectionQueryHandler.class);
+        lineCommandService = new LineQueryService(lineQueryHandler, sectionQueryPort);
     }
 
     @Test

@@ -3,8 +3,8 @@ package subway.application.service.station;
 import org.springframework.stereotype.Service;
 import subway.adapter.in.web.station.dto.StationCreateRequest;
 import subway.application.port.in.station.CreateStationUseCase;
-import subway.application.port.out.station.StationCommandPort;
-import subway.application.port.out.station.StationQueryPort;
+import subway.application.port.out.station.StationCommandHandler;
+import subway.application.port.out.station.StationQueryHandler;
 import subway.domain.Station;
 
 import java.util.Optional;
@@ -12,10 +12,10 @@ import java.util.Optional;
 @Service
 public class StationCommandService implements CreateStationUseCase {
 
-    private final StationCommandPort stationCommandPort;
-    private final StationQueryPort stationQueryPort;
+    private final StationCommandHandler stationCommandPort;
+    private final StationQueryHandler stationQueryPort;
 
-    public StationCommandService(final StationCommandPort stationCommandPort, final StationQueryPort stationQueryPort) {
+    public StationCommandService(final StationCommandHandler stationCommandPort, final StationQueryHandler stationQueryPort) {
         this.stationCommandPort = stationCommandPort;
         this.stationQueryPort = stationQueryPort;
     }
