@@ -1,66 +1,55 @@
 package subway.dao;
 
-import java.util.List;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
-import subway.domain.core.Line;
-import subway.domain.core.Section;
-import subway.domain.core.Station;
 import subway.entity.SectionEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class SectionDao {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insert;
 
-    private final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
-            new Section(
-                    rs.getLong("id"),
-                    new Line(rs.getString("line")),
-                    new Station(rs.getString("up_station")),
-                    new Station(rs.getString("down_station")),
-                    rs.getLong("distance")
-            );
+	private final JdbcTemplate jdbcTemplate;
 
-    public SectionDao(final JdbcTemplate jdbcTemplate) {
-        this.insert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("section")
-                .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = jdbcTemplate;
-    }
+	public SectionDao(final JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
-    public void createSection(final String lineName, final List<Section> sections) {
-        jdbcTemplate.update("DELETE FROM section WHERE line = ?", lineName);
-        List<SectionEntity> sectionEntities = SectionEntity.of(sections);
+	private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+		new SectionEntity(
+			rs.getLong("sectionId"),
+			rs.getLong("lineId"),
+			rs.getLong("upStationId"),
+			rs.getLong("downStationId"),
+			rs.getLong("distance")
+		);
 
-        final BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
-            .map(BeanPropertySqlParameterSource::new)
-            .toArray(BeanPropertySqlParameterSource[]::new);
-        insert.executeBatch(parameterSources);
-    }
+	public List<SectionEntity> findSectionsByLineId(final Long lineId) {
+		String sql = "SELECT sectionId, lineId, upStationId, downStationId, distance FROM section WHERE lineId = ?";
+		return jdbcTemplate.query(sql, rowMapper, lineId);
+	}
 
-    public List<Section> findAll() {
-        String sql = "SELECT * FROM section";
-        return jdbcTemplate.query(sql, sectionRowMapper);
-    }
+	public void deleteByLineId(final long lineId) {
+		String sql = "DELETE FROM section WHERE lineId = ?";
+		jdbcTemplate.update(sql, lineId);
+	}
 
-    public List<Section> findAllByLineName(final String lineName) {
-        String sql = "SELECT * FROM section WHERE line = ?";
-        return jdbcTemplate.query(sql, sectionRowMapper, lineName);
-    }
+	public void insertBatch(final List<SectionEntity> sectionEntities) {
+		String sql = "INSERT INTO section (lineId, upStationId, downStationId, distance) VALUES (?, ?, ?, ?)";
+		List<Object[]> batchValues = new ArrayList<>();
 
-    public void deleteBySection(final String lineName, final String upStation, final String downStation) {
-        String sql = "DELETE FROM section WHERE line = ? AND up_station = ? AND down_station = ?";
-        jdbcTemplate.update(sql, lineName, upStation, downStation);
-    }
+		for (SectionEntity entity : sectionEntities) {
+			Object[] values = new Object[]{
+				entity.getLineId(),
+				entity.getUpStationId(),
+				entity.getDownStationId(),
+				entity.getDistance()
+			};
+			batchValues.add(values);
+		}
 
-    public Section findIdByUpDown(final String upStation, final String downStation) {
-        String sql = "SELECT * FROM section WHERE up_station = ? AND down_station = ?";
-        return jdbcTemplate.queryForObject(sql, sectionRowMapper, upStation, downStation);
-    }
+		jdbcTemplate.batchUpdate(sql, batchValues);
+	}
 }

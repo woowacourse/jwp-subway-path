@@ -54,6 +54,12 @@ public class StationDao {
 			.findAny();
 	}
 
+	public Optional<StationEntity> findByName(final String name) {
+		String sql = "SELECT stationId, name FROM station WHERE name = :name";
+		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("name", name), rowMapper).stream()
+			.findAny();
+	}
+
 	public void update(final long id, final Station station) {
 		String sql = "UPDATE station SET name = ? WHERE stationId = ?";
 		jdbcTemplate.update(sql, station.getName(), id);

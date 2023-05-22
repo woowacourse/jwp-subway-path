@@ -1,55 +1,49 @@
 package subway.entity;
 
-import subway.domain.core.Section;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class SectionEntity {
-	private final long id;
-	private final String line;
-	private final String upStation;
-	private final String downStation;
-	private final Long distance;
 
-	public SectionEntity(final long id, final String line, final String upStation, final String downStation,
-		final Long distance) {
-		this.id = id;
-		this.line = line;
-		this.upStation = upStation;
-		this.downStation = downStation;
+	private final Long sectionId;
+	private final long lineId;
+	private final long upStationId;
+	private final long downStationId;
+	private final long distance;
+
+	public SectionEntity(final Long sectionId, final long lineId, final long upStationId, final long downStationId, final long distance) {
+		this.sectionId = sectionId;
+		this.lineId = lineId;
+		this.upStationId = upStationId;
+		this.downStationId = downStationId;
 		this.distance = distance;
 	}
 
-	public static List<SectionEntity> of(final List<Section> sections) {
-		return sections.stream()
-			.map(section -> new SectionEntity(
-				section.getId(),
-				section.getLine().getName(),
-				section.getUpStation().getName(),
-				section.getDownStation().getName(),
-				section.getDistance()
-			))
-			.collect(Collectors.toList());
+	public long getLineId() {
+		return lineId;
 	}
 
-	public long getId() {
-		return id;
+	public long getUpStationId() {
+		return upStationId;
 	}
 
-	public String getLine() {
-		return line;
+	public long getDownStationId() {
+		return downStationId;
 	}
 
-	public String getUpStation() {
-		return upStation;
-	}
-
-	public String getDownStation() {
-		return downStation;
-	}
-
-	public Long getDistance() {
+	public long getDistance() {
 		return distance;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (!(o instanceof SectionEntity)) return false;
+		SectionEntity that = (SectionEntity) o;
+		return Objects.equals(sectionId, that.sectionId) && Objects.equals(lineId, that.lineId) && Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId, that.downStationId) && Objects.equals(distance, that.distance);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(sectionId, lineId, upStationId, downStationId, distance);
 	}
 }
