@@ -17,7 +17,7 @@
 - 노선에 역 제거 API: DELETE /lines/{id}/stations/{stationId}
 - 노선 조회 API: GET /lines/{id}
 - 모든 노선 조회 API: GET /lines
-- 경로 조회 API: GET /path
+- 경로 조회 API: GET /path?srcStationId={srcStationId}&dstStationId={dstStationId}
 
 
 ## 비즈니스 규칙

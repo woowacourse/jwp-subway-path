@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### 노선에 역 제거 API
-DELETE {{local}}/lines/2/stations/3
+DELETE {{local}}/lines/2/stations/1
 Content-Type: application/json
 
 
@@ -20,4 +20,8 @@ Content-Type: application/json
 
 ### 노선 조회 API
 GET {{local}}/lines/2
+Content-Type: application/json
+
+### 경로 조회 API
+GET {{local}}/path?srcStationId=3&dstStationId=5
 Content-Type: application/json
