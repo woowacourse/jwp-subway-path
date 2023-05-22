@@ -7,12 +7,10 @@ import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 
 import subway.domain.Sections;
 import subway.domain.Station;
 
-@Component
 public class JGraphTPathFinder implements PathFinder {
 
     @Override
