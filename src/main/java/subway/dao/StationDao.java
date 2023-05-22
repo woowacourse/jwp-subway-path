@@ -40,11 +40,6 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
     public void update(Station newStation) {
         String sql = "update STATION set name = ? where id = ?";
         jdbcTemplate.update(sql, newStation.getName(), newStation.getId());

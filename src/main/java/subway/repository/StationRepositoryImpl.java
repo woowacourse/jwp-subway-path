@@ -51,7 +51,11 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     public Station findById(Long id) {
-        return store.get(id);
+        Station station = store.get(id);
+        if (station == null) {
+            throw new IllegalArgumentException("존재하지 않는 역입니다.");
+        }
+        return station;
     }
 
     @Override

@@ -48,7 +48,11 @@ public class LineRepository {
     }
 
     public Line findById(Long id) {
-        return store.get(id);
+        Line line = store.get(id);
+        if (line == null) {
+            throw new IllegalArgumentException("존재하지 않는 호선입니다.");
+        }
+        return line;
     }
 
     public void update(Line newLine) {
