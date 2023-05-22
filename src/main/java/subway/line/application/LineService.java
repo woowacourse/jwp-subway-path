@@ -77,8 +77,8 @@ public class LineService {
         return DtoMapper.toLineDto(findLineOrThrow(id));
     }
 
-    private Line findLineOrThrow(long stationRemovalFromLineDto) {
-        return lineRepository.findLineById(stationRemovalFromLineDto)
+    private Line findLineOrThrow(long id) {
+        return lineRepository.findLineById(id)
                              .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다"));
     }
 
