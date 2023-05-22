@@ -41,10 +41,6 @@ public class LineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        if (lineService.findLineById(id).getSectionResponses() == null) {
-            System.out.println("null");
-        }
-
         return ResponseEntity.ok(lineService.findLineById(id));
     }
 

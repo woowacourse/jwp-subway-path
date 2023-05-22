@@ -14,9 +14,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.entity.SectionEntity;
 import subway.fixture.LineFixture.Line1;
-import subway.fixture.StationFixture.A;
-import subway.fixture.StationFixture.B;
-import subway.fixture.StationFixture.C;
+import subway.fixture.StationFixture.STATION_A;
+import subway.fixture.StationFixture.STATION_B;
+import subway.fixture.StationFixture.STATION_C;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -41,9 +41,9 @@ class SectionDaoTest {
     @Test
     void 여러_구간을_받아_저장한다() {
         // given
-        final Long stationAid = stationDao.insert(A.entity);
-        final Long stationBid = stationDao.insert(B.entity);
-        final Long stationCid = stationDao.insert(C.entity);
+        final Long stationAid = stationDao.insert(STATION_A.entity);
+        final Long stationBid = stationDao.insert(STATION_B.entity);
+        final Long stationCid = stationDao.insert(STATION_C.entity);
 
         final Long lineId = lineDao.insert(Line1.entity);
 
@@ -62,9 +62,9 @@ class SectionDaoTest {
     @Test
     void 저장된_모든_구간을_삭제한다() {
         // given
-        final Long stationAid = stationDao.insert(A.entity);
-        final Long stationBid = stationDao.insert(B.entity);
-        final Long stationCid = stationDao.insert(C.entity);
+        final Long stationAid = stationDao.insert(STATION_A.entity);
+        final Long stationBid = stationDao.insert(STATION_B.entity);
+        final Long stationCid = stationDao.insert(STATION_C.entity);
 
         final Long lineId = lineDao.insert(Line1.entity);
 

@@ -3,23 +3,23 @@ package subway.fixture;
 import subway.domain.section.Distance;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
-import subway.fixture.StationFixture.A;
-import subway.fixture.StationFixture.B;
-import subway.fixture.StationFixture.C;
+import subway.fixture.StationFixture.STATION_A;
+import subway.fixture.StationFixture.STATION_B;
+import subway.fixture.StationFixture.STATION_C;
 
 public class SectionsFixture {
 
-    public static class AB {
+    public static class SECTION_A_B {
         public static final Distance distance = new Distance(6);
-        public static final Section section = new Section(A.stationA, B.stationB, distance);
+        public static final Section section = new Section(1L, STATION_A.stationA, STATION_B.stationB, distance);
 
         public static final Sections sections = Sections.emptySections().addSection(section);
     }
 
-    public static class ABC {
+    public static class SECTION_A_B_C {
         public static final Distance distance = new Distance(6);
-        public static final Section section = new Section(B.stationB, C.stationC, distance);
+        public static final Section section = new Section(2L, STATION_B.stationB, STATION_C.stationC, distance);
 
-        public static final Sections sections = AB.sections.addSection(section);
+        public static final Sections sections = SECTION_A_B.sections.addSection(section);
     }
 }

@@ -4,10 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.section.Sections.emptySections;
-import static subway.fixture.SectionsFixture.AB.sections;
-import static subway.fixture.StationFixture.A;
-import static subway.fixture.StationFixture.B;
-import static subway.fixture.StationFixture.C;
+import static subway.fixture.SectionsFixture.SECTION_A_B.sections;
+import static subway.fixture.StationFixture.STATION_B;
+import static subway.fixture.StationFixture.STATION_C;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -15,8 +14,9 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.station.Station;
 import subway.domain.station.StationName;
-import subway.fixture.SectionsFixture.AB;
-import subway.fixture.SectionsFixture.ABC;
+import subway.fixture.SectionsFixture.SECTION_A_B;
+import subway.fixture.SectionsFixture.SECTION_A_B_C;
+import subway.fixture.StationFixture.STATION_A;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -66,17 +66,17 @@ class SectionsTest {
         // given
         final Station stationC = new Station(new StationName("C"));
         final Distance otherDistance = new Distance(5);
-        final Section other = new Section(stationC, A.stationA, otherDistance);
+        final Section other = new Section(stationC, STATION_A.stationA, otherDistance);
 
         // when
-        final Sections updatedSections = AB.sections.addSection(other);
+        final Sections updatedSections = sections.addSection(other);
 
         // then
         final List<Section> linkedSections = updatedSections.sections();
         assertAll(
-                () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(C.stationC)).isTrue(),
-                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(A.stationA)).isTrue(),
-                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(B.stationB)).isTrue());
+                () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(STATION_C.stationC)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(STATION_A.stationA)).isTrue(),
+                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(STATION_B.stationB)).isTrue());
     }
 
     /*
@@ -87,16 +87,16 @@ class SectionsTest {
     void 새로운_구간을_제일_뒤에_추가한다() {
         // given
         final Distance otherDistance = new Distance(5);
-        final Section other = new Section(B.stationB, C.stationC, otherDistance);
+        final Section other = new Section(STATION_B.stationB, STATION_C.stationC, otherDistance);
 
         // when
-        final Sections updatedSections = AB.sections.addSection(other);
+        final Sections updatedSections = SECTION_A_B.sections.addSection(other);
 
         // then
         final List<Section> linkedSections = updatedSections.sections();
-        assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(A.stationA)).isTrue(),
-                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(B.stationB)).isTrue(),
-                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(C.stationC)).isTrue());
+        assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(STATION_A.stationA)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(STATION_B.stationB)).isTrue(),
+                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(STATION_C.stationC)).isTrue());
     }
 
 
@@ -111,17 +111,17 @@ class SectionsTest {
         final StationName stationNameD = new StationName("D");
         final Station stationD = new Station(stationNameD);
         final Distance otherDistance = new Distance(5);
-        final Section other = new Section(B.stationB, stationD, otherDistance);
+        final Section other = new Section(STATION_B.stationB, stationD, otherDistance);
 
         // when
-        final Sections updatedSections = ABC.sections.addSection(other);
+        final Sections updatedSections = SECTION_A_B_C.sections.addSection(other);
 
         // then
         final List<Section> linkedSections = updatedSections.sections();
-        assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(A.stationA)).isTrue(),
-                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(B.stationB)).isTrue(),
+        assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(STATION_A.stationA)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(STATION_B.stationB)).isTrue(),
                 () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(stationD)).isTrue(),
-                () -> assertThat(linkedSections.get(2).getDownStation().isSameStation(C.stationC)).isTrue(),
+                () -> assertThat(linkedSections.get(2).getDownStation().isSameStation(STATION_C.stationC)).isTrue(),
                 () -> assertThat(linkedSections.get(1).getDistance().distance()).isEqualTo(5),
                 () -> assertThat(linkedSections.get(2).getDistance().distance()).isEqualTo(1));
     }
@@ -137,17 +137,17 @@ class SectionsTest {
         final StationName stationNameD = new StationName("D");
         final Station stationD = new Station(stationNameD);
         final Distance otherDistance = new Distance(5);
-        final Section other = new Section(stationD, B.stationB, otherDistance);
+        final Section other = new Section(stationD, STATION_B.stationB, otherDistance);
 
         // when
-        final Sections updatedSections = ABC.sections.addSection(other);
+        final Sections updatedSections = SECTION_A_B_C.sections.addSection(other);
 
         // then
         final List<Section> linkedSections = updatedSections.sections();
-        assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(A.stationA)).isTrue(),
+        assertAll(() -> assertThat(linkedSections.get(0).getUpStation().isSameStation(STATION_A.stationA)).isTrue(),
                 () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(stationD)).isTrue(),
-                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(B.stationB)).isTrue(),
-                () -> assertThat(linkedSections.get(2).getDownStation().isSameStation(C.stationC)).isTrue(),
+                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(STATION_B.stationB)).isTrue(),
+                () -> assertThat(linkedSections.get(2).getDownStation().isSameStation(STATION_C.stationC)).isTrue(),
                 () -> assertThat(linkedSections.get(0).getDistance().distance()).isEqualTo(1),
                 () -> assertThat(linkedSections.get(1).getDistance().distance()).isEqualTo(5));
     }
@@ -158,10 +158,10 @@ class SectionsTest {
         final StationName stationNameD = new StationName("D");
         final Station stationD = new Station(stationNameD);
         final Distance otherDistance = new Distance(10);
-        final Section other = new Section(stationD, B.stationB, otherDistance);
+        final Section other = new Section(stationD, STATION_B.stationB, otherDistance);
 
         // expect
-        assertThatThrownBy(() -> ABC.sections.addSection(other)).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> SECTION_A_B_C.sections.addSection(other)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("길이는 1 이상이어야합니다.");
     }
 
@@ -172,10 +172,10 @@ class SectionsTest {
     void 새로운_구간의_모든_역이_이미_해당_구간들에_존재하면_새로운_구간을_추가할_수_없다() {
         // given
         final Distance otherDistance = new Distance(5);
-        final Section other = new Section(A.stationA, C.stationC, otherDistance);
+        final Section other = new Section(STATION_A.stationA, STATION_C.stationC, otherDistance);
 
         // when
-        assertThatThrownBy(() -> ABC.sections.addSection(other)).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> SECTION_A_B_C.sections.addSection(other)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("두 역이 이미 존재합니다.");
     }
 
@@ -187,7 +187,8 @@ class SectionsTest {
     @Test
     void 구간들에서_상행종점을_제거한다() {
         // expect
-        assertThat(ABC.sections.removeStation(A.stationA).sections().get(0).getUpStation()).isEqualTo(B.stationB);
+        assertThat(SECTION_A_B_C.sections.removeStation(STATION_A.stationA).sections().get(0).getUpStation()).isEqualTo(
+                STATION_B.stationB);
     }
 
     /*
@@ -197,7 +198,9 @@ class SectionsTest {
     @Test
     void 구간들에서_하행종점을_제거한다() {
         // expect
-        assertThat(ABC.sections.removeStation(C.stationC).sections().get(0).getDownStation()).isEqualTo(B.stationB);
+        assertThat(
+                SECTION_A_B_C.sections.removeStation(STATION_C.stationC).sections().get(0).getDownStation()).isEqualTo(
+                STATION_B.stationB);
     }
 
     /*
@@ -207,12 +210,12 @@ class SectionsTest {
     @Test
     void 구간들에서_중간역을_제거한다() {
         // expect
-        final Sections removedSections = ABC.sections.removeStation(B.stationB);
+        final Sections removedSections = SECTION_A_B_C.sections.removeStation(STATION_B.stationB);
 
         assertAll(
                 () -> assertThat(removedSections.sections()).hasSize(1),
-                () -> assertThat(removedSections.sections().get(0).getDownStation()).isEqualTo(C.stationC),
-                () -> assertThat(removedSections.sections().get(0).getUpStation()).isEqualTo(A.stationA));
+                () -> assertThat(removedSections.sections().get(0).getDownStation()).isEqualTo(STATION_C.stationC),
+                () -> assertThat(removedSections.sections().get(0).getUpStation()).isEqualTo(STATION_A.stationA));
     }
 
     /*
@@ -222,6 +225,6 @@ class SectionsTest {
     @Test
     void 구간들에_역이_한개_남았다면_남은_구간_자체를_삭제한다() {
         // expect
-        assertThat(sections.removeStation(B.stationB).sections()).hasSize(0);
+        assertThat(sections.removeStation(STATION_B.stationB).sections()).hasSize(0);
     }
 }

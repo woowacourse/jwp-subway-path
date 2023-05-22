@@ -30,8 +30,9 @@ import subway.dto.request.LineRequest;
 import subway.dto.request.SectionRequest;
 import subway.dto.response.LineResponse;
 import subway.fixture.LineFixture.Line1;
-import subway.fixture.StationFixture.A;
-import subway.fixture.StationFixture.B;
+import subway.fixture.LineFixture.Line2;
+import subway.fixture.StationFixture.STATION_A;
+import subway.fixture.StationFixture.STATION_B;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -90,8 +91,8 @@ class LineServiceTest {
     @Test
     void 전체_호선을_조회한다() {
         // given
-        final Line line1 = Line1.line;
-        final Line line2 = Line1.line;
+        final Line line1 = new Line(1L, Line1.name, Line1.color);
+        final Line line2 = new Line(2L, Line2.name, Line2.color);
         doReturn(List.of(line1, line2)).when(lineRepository).findAllLine();
 
         // when
@@ -150,9 +151,8 @@ class LineServiceTest {
     void id와_section_request_를_받아_해당_호선에_새로운_구간을_추가한다() {
         //given
         doReturn(new Line(1L, Line1.name, Line1.color)).when(lineRepository).findById(1L);
-        doReturn(new Station(1L, A.stationA.getName())).when(stationRepository).findById(1L);
-        doReturn(new Station(2L, B.stationB.getName())).when(stationRepository).findById(2L);
-        final Distance distance = new Distance(5);
+        doReturn(new Station(1L, STATION_A.stationA.getName())).when(stationRepository).findById(1L);
+        doReturn(new Station(2L, STATION_B.stationB.getName())).when(stationRepository).findById(2L);
 
         // when
         lineService.insertSectionToLine(1L, new SectionRequest(1L, 2L, 5));
@@ -169,8 +169,8 @@ class LineServiceTest {
     @Test
     void id와_station_request_를_받아_해당_호선에서_역을_제거한다() {
         //given
-        final Station stationA = new Station(1L, A.stationA.getName());
-        final Station stationB = new Station(2L, B.stationB.getName());
+        final Station stationA = new Station(1L, STATION_A.stationA.getName());
+        final Station stationB = new Station(2L, STATION_B.stationB.getName());
         final Section section = new Section(stationA, stationB, new Distance(5));
         final Line line = new Line(1L, Line1.name, Line1.color, new Sections(List.of(section)));
 
