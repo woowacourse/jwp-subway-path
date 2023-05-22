@@ -17,6 +17,7 @@ import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
 import subway.dto.LineResponse;
 import subway.dto.ShortestPathResponse;
+import subway.dto.StationResponse;
 import subway.dto.SubwayPathRequest;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
@@ -41,10 +42,10 @@ public class SubwayService {
     }
 
     public long addStation(AddStationRequest addStationRequest) {
-        Line line = getLine(addStationRequest.getLineName());
-        Station stationToAdd = getStation(addStationRequest.getAddStationName()).orElseGet(() -> createNewStation(addStationRequest.getAddStationName()));
-        Station upstream = getStation(addStationRequest.getUpstreamName()).orElseThrow(() -> new StationNotFoundException("추가하려는 역과 연결되는 상행역이 존재하지 않습니다."));
-        Station downstream = getStation(addStationRequest.getDownstreamName()).orElseThrow(() -> new StationNotFoundException("추가하려는 역과 연결되는 하행역이 존재하지 않습니다."));
+        Line line = findLine(addStationRequest.getLineName());
+        Station stationToAdd = findStationByName(addStationRequest.getAddStationName()).orElseGet(() -> createNewStation(addStationRequest.getAddStationName()));
+        Station upstream = findStationByName(addStationRequest.getUpstreamName()).orElseThrow(() -> new StationNotFoundException("추가하려는 역과 연결되는 상행역이 존재하지 않습니다."));
+        Station downstream = findStationByName(addStationRequest.getDownstreamName()).orElseThrow(() -> new StationNotFoundException("추가하려는 역과 연결되는 하행역이 존재하지 않습니다."));
         line.addStation(stationToAdd, upstream, downstream, addStationRequest.getDistanceToUpstream());
 
         subwayRepository.updateLine(line);
@@ -52,12 +53,12 @@ public class SubwayService {
                 .orElseThrow(() -> new NoSuchElementException("디버깅: 역이 추가되어야 하는데 안됐습니다"));
     }
 
-    private Line getLine(String lineNameInput) {
+    private Line findLine(String lineNameInput) {
         LineName lineName = new LineName(lineNameInput);
         return subwayRepository.getLineByName(lineName);
     }
 
-    private Optional<Station> getStation(String stationName) {
+    private Optional<Station> findStationByName(String stationName) {
         Stations stations = subwayRepository.getStations();
         return stations.getStationByName(stationName);
     }
@@ -69,8 +70,8 @@ public class SubwayService {
     }
 
     public void deleteStation(DeleteStationRequest deleteStationRequest) {
-        Line line = getLine(deleteStationRequest.getLineName());
-        Station stationToDelete = getStation(deleteStationRequest.getStationName()).orElseThrow(() -> new StationNotFoundException("삭제하고자 하는 역이 존재하지 않습니다."));
+        Line line = findLine(deleteStationRequest.getLineName());
+        Station stationToDelete = findStationByName(deleteStationRequest.getStationName()).orElseThrow(() -> new StationNotFoundException("삭제하고자 하는 역이 존재하지 않습니다."));
         line.deleteStation(stationToDelete);
 
         subwayRepository.updateLine(line);
@@ -78,8 +79,8 @@ public class SubwayService {
 
     public long addNewLine(AddLineRequest addLineRequest) {
         LineName lineNameToAdd = new LineName(addLineRequest.getLineName());
-        Station upstream = getStation(addLineRequest.getUpstreamName()).orElseGet(() -> createNewStation(addLineRequest.getUpstreamName()));
-        Station downstream = getStation(addLineRequest.getDownstreamName()).orElseGet(() -> createNewStation(addLineRequest.getDownstreamName()));
+        Station upstream = findStationByName(addLineRequest.getUpstreamName()).orElseGet(() -> createNewStation(addLineRequest.getUpstreamName()));
+        Station downstream = findStationByName(addLineRequest.getDownstreamName()).orElseGet(() -> createNewStation(addLineRequest.getDownstreamName()));
         Section section = new Section(upstream, downstream, addLineRequest.getDistance());
         Line newLine = new Line(lineNameToAdd, section);
         Lines lines = subwayRepository.getLines();
@@ -116,6 +117,11 @@ public class SubwayService {
         FareCalculator fareCalculator = new FareCalculator();
         int fare = fareCalculator.calculate(shortestPath.getDistance());
         return toShortestPathResponse(shortestPath, fare);
+    }
+
+    public StationResponse findStationById(long stationId) {
+        Station station = subwayRepository.findStation(stationId);
+        return new StationResponse(station.getName());
     }
 
     private ShortestPathResponse toShortestPathResponse(ShortestPath shortestPath, int fare) {
