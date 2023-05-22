@@ -21,7 +21,7 @@ public class PathServiceImpl implements PathService {
                                                    final Station targetStation,
                                                    final List<Line> lines) {
         return getShortestPath(sourceStation, targetStation, lines).getEdgeList().stream()
-                .map(edge -> Section.of(edge.getSource(), edge.getTarget(), Distance.from(edge.getDistance())))
+                .map(SectionWeightEdge::toSection)
                 .collect(Collectors.toList());
     }
 
@@ -70,7 +70,11 @@ public class PathServiceImpl implements PathService {
         final List<Section> sections = line.getSections().getSections();
 
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getDistance());
+            final Station upStation = section.getUpStation();
+            final Station downStation = section.getDownStation();
+            final Distance distance = section.getDistance();
+
+            graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.getDistance());
         }
     }
 }

@@ -1,6 +1,7 @@
 package subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.domain.section.Section;
 
 public class SectionWeightEdge extends DefaultWeightedEdge {
 
@@ -16,5 +17,9 @@ public class SectionWeightEdge extends DefaultWeightedEdge {
 
     public int getDistance() {
         return (int) super.getWeight();
+    }
+
+    public Section toSection() {
+        return Section.of(getSource(), getTarget(), Distance.from(getDistance()));
     }
 }
