@@ -8,11 +8,14 @@ public class FareCalculator {
     private FareCalculator() {
     }
 
-    public static long calculate(int distance, int surcharge) {
+    public static long calculate(int distance) {
         int result = DEFAULT_FARE;
         result = getDistanceFare(distance, result);
-        result += surcharge;
         return result;
+    }
+
+    public static long calculate(int distance, int surcharge) {
+        return calculate(distance) + surcharge;
     }
 
     private static int getDistanceFare(int distance, int result) {

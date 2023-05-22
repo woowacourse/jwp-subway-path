@@ -61,7 +61,7 @@ class LineRepositoryTest {
                 .usingRecursiveComparison()
                 .ignoringFields("id")
                 .ignoringCollectionOrder()
-                .isEqualTo(new Line(line.getId(), "2호선", "GREEN",
+                .isEqualTo(new Line(line.getId(), "2호선", "GREEN", 0,
                         List.of(
                                 new Section(sectionEntity1.getId(), new Station(station1.getId(), "잠실역"),
                                         new Station(station2.getId(), "삼성역"), 5),
@@ -84,7 +84,7 @@ class LineRepositoryTest {
         sectionDao.insert(
                 new SectionEntity(line.getId(), station2.getId(), station3.getId(), 7));
 
-        lineRepository.updateSections(new Line(line.getId(), line.getName(), line.getColor(),
+        lineRepository.updateSections(new Line(line.getId(), line.getName(), line.getColor(), line.getCost(),
                 List.of(new Section(new Station(station1.getId(), station1.getName()),
                         new Station(station3.getId(), station3.getName()), 12))));
 

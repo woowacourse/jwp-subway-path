@@ -50,7 +50,7 @@ public class JdbcLineRepository implements LineRepository {
 
         List<Section> sections = jdbcTemplate.query(sql, sectionRowMapper, lineId);
 
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getCost(), sections);
     }
 
     @Override
