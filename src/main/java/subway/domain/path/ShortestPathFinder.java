@@ -28,6 +28,6 @@ public class ShortestPathFinder {
 
         return shortestPath.stream()
                 .map(Station::new)
-                .collect(collectingAndThen(toList(), stations1 -> new ShortestPath(stations1, shortestPathDistance)));
+                .collect(collectingAndThen(toList(), stations1 -> new ShortestPath(stations1, (int) shortestPathDistance)));
     }
 }

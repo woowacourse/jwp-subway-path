@@ -91,7 +91,7 @@ public class PathIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("stations", containsInAnyOrder("잠실", "선릉", "잠실나루"))
                 .body("fare", equalTo(1_350))
-                .body("distance", equalTo(5.0F));
+                .body("distance", equalTo(5));
     }
 
     @DisplayName("/line/paths에 get 출발역과 도착역을 잘못 입력하는 경우 예외가 발생한다.")
