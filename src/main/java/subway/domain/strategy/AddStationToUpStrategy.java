@@ -1,7 +1,7 @@
 package subway.domain.strategy;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import subway.domain.Graph;
+import subway.domain.graph.Graph;
 import subway.domain.Station;
 import subway.exeption.InvalidDistanceException;
 

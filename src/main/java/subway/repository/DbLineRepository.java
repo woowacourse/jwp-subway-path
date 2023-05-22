@@ -28,11 +28,11 @@ public class DbLineRepository implements LineRepository {
 
     @Override
     public Line findById(final long id) {
-        final Optional<Object> line = lineDao.findById(id);
+        final Optional<LineEntity> line = lineDao.findById(id);
         if (line.isEmpty()) {
             throw new InvalidLineException("존재하는 노선의 아이디를 입력해 주세요!");
         }
-        return Line.from((LineEntity) line.get());
+        return Line.from(line.get());
     }
 
     @Override

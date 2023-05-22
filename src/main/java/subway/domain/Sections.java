@@ -1,6 +1,7 @@
 package subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.domain.graph.Graph;
 import subway.exeption.InvalidDistanceException;
 import subway.exeption.InvalidStationException;
 

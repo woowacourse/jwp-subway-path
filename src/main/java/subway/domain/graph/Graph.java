@@ -1,7 +1,10 @@
-package subway.domain;
+package subway.domain.graph;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.domain.Direction;
+import subway.domain.Section;
+import subway.domain.Station;
 
 import java.util.List;
 import java.util.Set;

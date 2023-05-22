@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.domain.graph.Graph;
+import subway.dto.PathDto;
 import subway.exeption.LineNotFoundException;
 
 import java.util.ArrayList;

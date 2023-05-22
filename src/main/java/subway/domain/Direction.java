@@ -1,5 +1,6 @@
 package subway.domain;
 
+import subway.domain.graph.Graph;
 import subway.domain.strategy.AddStationStrategy;
 import subway.domain.strategy.AddStationToDownStrategy;
 import subway.domain.strategy.AddStationToUpStrategy;

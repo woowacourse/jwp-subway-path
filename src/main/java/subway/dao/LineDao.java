@@ -11,5 +11,5 @@ public interface LineDao {
 
     List<LineEntity> findAll();
 
-    Optional<Object> findById(Long id);
+    Optional<LineEntity> findById(Long id);
 }

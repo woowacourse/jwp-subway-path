@@ -49,7 +49,7 @@ public class LineH2Dao implements LineDao {
     }
 
     @Override
-    public Optional<Object> findById(final Long id) {
+    public Optional<LineEntity> findById(final Long id) {
         final String sql = "SELECT * FROM line WHERE id = :id";
         final Map<String, Long> parameter = Map.of("id", id);
         try {

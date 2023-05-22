@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.domain.graph.Graph;
+import subway.domain.graph.SubwayGraph;
 import subway.exeption.InvalidDistanceException;
 import subway.exeption.InvalidStationException;
 

@@ -2,6 +2,8 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.domain.*;
+import subway.domain.graph.Graph;
+import subway.domain.graph.SubwayGraph;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;

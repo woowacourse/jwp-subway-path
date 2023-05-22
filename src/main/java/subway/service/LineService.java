@@ -3,6 +3,8 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.*;
+import subway.domain.graph.Graph;
+import subway.domain.graph.SubwayGraph;
 import subway.dto.*;
 import subway.exeption.StationNotFoundException;
 import subway.repository.LineRepository;
