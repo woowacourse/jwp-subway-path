@@ -1,6 +1,7 @@
 package subway.adapter.out.graph;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jgrapht.Graph;
@@ -26,6 +27,7 @@ public class RouteFinderJGraphTAdapter implements RouteFinderPort {
         }
 
         List<Section> sections = lines.stream()
+                .sorted(Comparator.comparing(line -> line.getSurcharge().getValue()))
                 .map(Line::getSections)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -52,7 +54,7 @@ public class RouteFinderJGraphTAdapter implements RouteFinderPort {
     private Route getRoute(final Station source, final Station target,
             final Graph<Station, DefaultWeightedEdge> graph) {
         try {
-            GraphPath path = new DijkstraShortestPath(graph)
+            GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph)
                     .getPath(source, target);
             return new Route(path.getVertexList(), (int) path.getWeight());
         } catch (IllegalArgumentException exception) {
