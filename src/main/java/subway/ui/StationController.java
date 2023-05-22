@@ -39,7 +39,7 @@ public class StationController {
     }
 
     @PutMapping("/{stationId}")
-    public ResponseEntity<Void> udpateStation(@PathVariable Long stationId, @RequestBody StationRequest request) {
+    public ResponseEntity<Void> updateStation(@PathVariable Long stationId, @RequestBody StationRequest request) {
         stationService.editStation(stationId, request);
 
         return ResponseEntity

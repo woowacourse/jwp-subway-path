@@ -7,7 +7,6 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.repository.LineRepository;
 
-@Transactional(readOnly = true)
 @Service
 public class LineService {
 
@@ -26,6 +25,7 @@ public class LineService {
         return savedLine.getId();
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLine(final Long lineId) {
         Line line = lineRepository.findById(lineId);
         return LineResponse.from(line);

@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class LineName {
 
+    public static final int MAX_LENGTH = 10;
+
     private final String value;
 
     public LineName(final String value) {
@@ -15,7 +17,7 @@ public class LineName {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("역 이름은 빈 값일 수 없습니다.");
         }
-        if (value.length() > 10) {
+        if (value.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("역 이름은 10자 이하로 입력해주세요.");
         }
     }

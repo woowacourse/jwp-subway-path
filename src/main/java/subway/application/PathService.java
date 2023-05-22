@@ -1,6 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.*;
 import subway.domain.graph.JGraphTSubwayGraph;
 import subway.dto.PathRequest;
@@ -23,6 +24,7 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse calculatePath(final PathRequest pathRequest) {
         Station from = stationRepository.findById(pathRequest.getFromStationId());
         Station to = stationRepository.findById(pathRequest.getToStationId());

@@ -9,7 +9,6 @@ import subway.dto.StationResponse;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
-@Transactional(readOnly = true)
 @Service
 public class StationService {
 
@@ -30,6 +29,7 @@ public class StationService {
         return savedStation.getId();
     }
 
+    @Transactional(readOnly = true)
     public StationResponse findStation(final Long stationId) {
         Station station = stationRepository.findById(stationId);
         return StationResponse.from(station);

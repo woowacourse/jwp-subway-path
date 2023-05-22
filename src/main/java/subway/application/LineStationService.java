@@ -15,7 +15,6 @@ import subway.repository.StationRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional(readOnly = true)
 @Service
 public class LineStationService {
 
@@ -40,6 +39,7 @@ public class LineStationService {
         sectionRepository.updateByLine(line, updateLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineStationResponse> findAllLinesStations() {
         final List<Line> lines = lineRepository.findAll();
 
@@ -51,6 +51,7 @@ public class LineStationService {
         return lineStationResponses;
     }
 
+    @Transactional(readOnly = true)
     public LineStationResponse findLinesStations(final Long lineId) {
         final Line line = lineRepository.findById(lineId);
         List<Station> stations = line.findAllStation();
