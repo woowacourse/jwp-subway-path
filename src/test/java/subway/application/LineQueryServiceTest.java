@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static subway.fixtures.domain.LineFixture.SECOND_LINE;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -34,39 +35,37 @@ class LineQueryServiceTest {
     @Test
     void 저장된_모든_노선을_가져온다() {
         // given
-        final Line line = Line.of(1L, "2호선", "bg-yellow-500");
-        final List<Line> lines = List.of(line);
+        final List<Line> lines = List.of(SECOND_LINE);
         when(lineRepository.findAll()).thenReturn(lines);
-        when(sectionRepository.findAllSectionByLine(any())).thenReturn(line);
+        when(sectionRepository.findAllSectionByLine(SECOND_LINE)).thenReturn(SECOND_LINE);
 
         // when
-        final List<Line> actual = lineQueryService.findAllLine();
+        final List<Line> actualLines = lineQueryService.findAllLine();
+        final Line actualLine = lineQueryService.findAllLine().get(0);
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(actual).hasSize(1);
-            softAssertions.assertThat(actual.get(0).getId()).isEqualTo(line.getId());
-            softAssertions.assertThat(actual.get(0).getName()).isEqualTo(line.getName());
-            softAssertions.assertThat(actual.get(0).getColor()).isEqualTo(line.getColor());
+            softAssertions.assertThat(actualLines).hasSize(1);
+            softAssertions.assertThat(actualLine.getId()).isEqualTo(SECOND_LINE.getId());
+            softAssertions.assertThat(actualLine.getName()).isEqualTo(SECOND_LINE.getName());
+            softAssertions.assertThat(actualLine.getColor()).isEqualTo(SECOND_LINE.getColor());
         });
     }
 
     @Test
     void 아이디를_통해_저장된_노선을_가져온다() {
         // given
-        final Line line1 = Line.of(1L, "2호선", "bg-yellow-500");
-        final Line line2 = Line.of(1L, "2호선", "bg-yellow-500");
-        when(lineRepository.findById(any())).thenReturn(line1);
-        when(sectionRepository.findAllSectionByLine(any())).thenReturn(line2);
+        when(lineRepository.findById(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
+        when(sectionRepository.findAllSectionByLine(SECOND_LINE)).thenReturn(SECOND_LINE);
 
         // when
-        final Line actual = lineQueryService.findLineById(1L);
+        final Line actual = lineQueryService.findLineById(SECOND_LINE.getId());
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(actual.getId()).isEqualTo(line1.getId());
-            softAssertions.assertThat(actual.getName()).isEqualTo(line1.getName());
-            softAssertions.assertThat(actual.getColor()).isEqualTo(line1.getColor());
+            softAssertions.assertThat(actual.getId()).isEqualTo(SECOND_LINE.getId());
+            softAssertions.assertThat(actual.getName()).isEqualTo(SECOND_LINE.getName());
+            softAssertions.assertThat(actual.getColor()).isEqualTo(SECOND_LINE.getColor());
         });
     }
 

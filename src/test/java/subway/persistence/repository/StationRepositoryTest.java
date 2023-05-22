@@ -8,17 +8,16 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static subway.fixtures.domain.StationFixture.JAMSIL;
 
 @SuppressWarnings("NonAsciiCharacters")
 class StationRepositoryTest extends RepositoryTest {
 
     @Test
     void 역을_저장한다() {
-        // given
-        final Station station = Station.from("잠실역");
 
-        // when
-        final Station actual = stationRepository.insert(station);
+        // given, when
+        final Station actual = stationRepository.insert(JAMSIL);
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
@@ -30,8 +29,7 @@ class StationRepositoryTest extends RepositoryTest {
     @Test
     void 모든_역을_조회한다() {
         // given
-        final Station data = Station.from("잠실역");
-        final Station expected = stationRepository.insert(data);
+        final Station expected = stationRepository.insert(JAMSIL);
 
         // when
         final List<Station> actual = stationRepository.findAll();
@@ -46,8 +44,7 @@ class StationRepositoryTest extends RepositoryTest {
     @Test
     void 역_하나를_조회한다() {
         // given
-        final Station data = Station.from("잠실역");
-        final Station expected = stationRepository.insert(data);
+        final Station expected = stationRepository.insert(JAMSIL);
 
         // when
         final Station actual = stationRepository.findById(expected.getId());
@@ -58,8 +55,7 @@ class StationRepositoryTest extends RepositoryTest {
 
     @Test
     void 역_하나를_삭제한다() {
-        final Station data = Station.from("잠실역");
-        final Station station = stationRepository.insert(data);
+        final Station station = stationRepository.insert(JAMSIL);
 
         assertDoesNotThrow(() -> stationRepository.deleteById(station.getId()));
     }

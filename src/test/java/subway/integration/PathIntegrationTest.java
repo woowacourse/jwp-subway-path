@@ -17,6 +17,15 @@ import subway.ui.dto.response.ReadStationResponse;
 
 import java.util.List;
 
+import static subway.fixtures.request.CreationLineRequestFixture.SHINBUNDANG_LINE_REQUEST;
+import static subway.fixtures.request.CreationLineRequestFixture.SUINBUNDANG_LINE_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.CHEONGGYESAN_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.JEONGJA_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.MIGEUM_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.PANGYO_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.SEOLLEUNG_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.YANGJAE_CITIZEN_FOREST_REQUEST;
+
 @DisplayName("경로 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
 public class PathIntegrationTest extends IntegrationTest {
@@ -38,27 +47,17 @@ public class PathIntegrationTest extends IntegrationTest {
      */
     @BeforeEach
     void 초기_데이터_세팅() {
-        // 노선, 역 요청 데이터 세팅
-        final CreationLineRequest lineRequestOne = CreationLineRequest.of("신분당선", "bg-red-600");
-        final CreationLineRequest lineRequestTwo = CreationLineRequest.of("수인분당선", "bg-yellow-600");
-        final CreationStationRequest stationRequestOne = CreationStationRequest.from("양재시민의숲역");
-        final CreationStationRequest stationRequestTwo = CreationStationRequest.from("청계산입구역");
-        final CreationStationRequest stationRequestThree = CreationStationRequest.from("판교역");
-        final CreationStationRequest stationRequestFour = CreationStationRequest.from("정자역");
-        final CreationStationRequest stationRequestFive = CreationStationRequest.from("미금역");
-        final CreationStationRequest stationRequestSix = CreationStationRequest.from("선릉역");
-
         // 노선 등록
-        final ExtractableResponse<Response> createLineResponseOne = postLine(lineRequestOne);
-        final ExtractableResponse<Response> createLineResponseTwo = postLine(lineRequestTwo);
+        final ExtractableResponse<Response> createLineResponseOne = getLineResponseAfterPost(SHINBUNDANG_LINE_REQUEST);
+        final ExtractableResponse<Response> createLineResponseTwo = getLineResponseAfterPost(SUINBUNDANG_LINE_REQUEST);
 
         // 지하철역 등록
-        final ExtractableResponse<Response> createStationResponseOne = postStation(stationRequestOne);
-        final ExtractableResponse<Response> createStationResponseTwo = postStation(stationRequestTwo);
-        final ExtractableResponse<Response> createStationResponseThree = postStation(stationRequestThree);
-        final ExtractableResponse<Response> createStationResponseFour = postStation(stationRequestFour);
-        final ExtractableResponse<Response> createStationResponseFive = postStation(stationRequestFive);
-        final ExtractableResponse<Response> createStationResponseSix = postStation(stationRequestSix);
+        final ExtractableResponse<Response> createStationResponseOne = getStationResponseAfterPost(YANGJAE_CITIZEN_FOREST_REQUEST);
+        final ExtractableResponse<Response> createStationResponseTwo = getStationResponseAfterPost(CHEONGGYESAN_REQUEST);
+        final ExtractableResponse<Response> createStationResponseThree = getStationResponseAfterPost(PANGYO_REQUEST);
+        final ExtractableResponse<Response> createStationResponseFour = getStationResponseAfterPost(JEONGJA_REQUEST);
+        final ExtractableResponse<Response> createStationResponseFive = getStationResponseAfterPost(MIGEUM_REQUEST);
+        final ExtractableResponse<Response> createStationResponseSix = getStationResponseAfterPost(SEOLLEUNG_REQUEST);
 
         // id값 확인
         lineOneId = getParseId(createLineResponseOne);
@@ -177,7 +176,7 @@ public class PathIntegrationTest extends IntegrationTest {
         });
     }
 
-    private ExtractableResponse<Response> postLine(final CreationLineRequest lineRequest) {
+    private ExtractableResponse<Response> getLineResponseAfterPost(final CreationLineRequest lineRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -187,7 +186,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> postStation(final CreationStationRequest stationRequest) {
+    private ExtractableResponse<Response> getStationResponseAfterPost(final CreationStationRequest stationRequest) {
         return RestAssured.given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

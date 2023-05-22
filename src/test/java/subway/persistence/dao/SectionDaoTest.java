@@ -8,16 +8,15 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static subway.fixtures.entity.SectionEntityFixture.ONE_ONE_TWO_FIVE_SECTION_ENTITY;
+import static subway.fixtures.entity.SectionEntityFixture.ONE_TWO_THREE_FIVE_SECTION_ENTITY;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SectionDaoTest extends DaoTest {
 
-    private final SectionEntity sectionEntityOne = SectionEntity.of(1L, 1L, 2L, 5);
-    private final SectionEntity sectionEntityTwo = SectionEntity.of(1L, 2L, 3L, 5);
-
     @Test
     void 역과_역의_관계를_저장한다() {
-        final SectionEntity actual = sectionDao.insert(sectionEntityOne);
+        final SectionEntity actual = sectionDao.insert(ONE_ONE_TWO_FIVE_SECTION_ENTITY);
 
         SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(actual.getId()).isPositive();
@@ -30,13 +29,13 @@ class SectionDaoTest extends DaoTest {
 
     @Test
     void 모든_역과_역의_관계를_저장한다() {
-        assertDoesNotThrow(() -> sectionDao.insertAll(List.of(sectionEntityOne, sectionEntityTwo)));
+        assertDoesNotThrow(() -> sectionDao.insertAll(List.of(ONE_ONE_TWO_FIVE_SECTION_ENTITY, ONE_TWO_THREE_FIVE_SECTION_ENTITY)));
     }
 
     @Test
     void 모든_라인의_모든_역과_역의_관계를_조회한다() {
         // given
-        sectionDao.insert(sectionEntityOne);
+        sectionDao.insert(ONE_ONE_TWO_FIVE_SECTION_ENTITY);
 
         // when
         final List<SectionEntity> actual = sectionDao.findAll();
@@ -55,7 +54,7 @@ class SectionDaoTest extends DaoTest {
     @Test
     void 특정_라인에_해당하는_모든_역과_역의_관계를_조회한다() {
         // given
-        sectionDao.insert(sectionEntityOne);
+        sectionDao.insert(ONE_ONE_TWO_FIVE_SECTION_ENTITY);
 
         // when
         final List<SectionEntity> actual = sectionDao.findAllByLineId(1L);
@@ -74,7 +73,7 @@ class SectionDaoTest extends DaoTest {
     @Test
     void 역과_역의_관계_하나를_조회한다() {
         // given
-        final SectionEntity insertedSectionEntity = sectionDao.insert(sectionEntityOne);
+        final SectionEntity insertedSectionEntity = sectionDao.insert(ONE_ONE_TWO_FIVE_SECTION_ENTITY);
 
         // when
         final SectionEntity actual = sectionDao.findById(insertedSectionEntity.getId());
@@ -92,7 +91,7 @@ class SectionDaoTest extends DaoTest {
     @Test
     void 특정_지하철_역을_가지는_구간을_모두_조회한다() {
         // given
-        sectionDao.insertAll(List.of(sectionEntityOne, sectionEntityTwo));
+        sectionDao.insertAll(List.of(ONE_ONE_TWO_FIVE_SECTION_ENTITY, ONE_TWO_THREE_FIVE_SECTION_ENTITY));
 
         // when
         final List<SectionEntity> sectionEntities = sectionDao.findAllByStationId(1L);
@@ -109,7 +108,7 @@ class SectionDaoTest extends DaoTest {
     @Test
     void 특정_노선에_해당하는_관계를_모두_삭제한다() {
         // given
-        sectionDao.insertAll(List.of(sectionEntityOne, sectionEntityTwo));
+        sectionDao.insertAll(List.of(ONE_ONE_TWO_FIVE_SECTION_ENTITY, ONE_TWO_THREE_FIVE_SECTION_ENTITY));
 
         // when
         final int actual = sectionDao.deleteByLineId(1L);

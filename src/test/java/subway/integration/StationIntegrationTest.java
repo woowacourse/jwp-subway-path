@@ -8,10 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.ui.dto.request.CreationStationRequest;
 import subway.ui.dto.response.ReadStationResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.fixtures.request.CreationStationRequestFixture.JAMSIL_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.SEOLLEUNG_REQUEST;
 
 @DisplayName("지하철역 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
@@ -19,12 +20,9 @@ public class StationIntegrationTest extends IntegrationTest {
 
     @Test
     void 지하철역을_생성한다() {
-        // given
-        final CreationStationRequest requestDto = CreationStationRequest.from("강남역");
-
-        // when
+        // given, when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(requestDto)
+                .body(JAMSIL_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
@@ -41,10 +39,8 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void 기존에_존재하는_지하철역_이름으로_지하철역을_생성하면_상태코드_400을_반환한다() {
         // given
-        final CreationStationRequest requestDto = CreationStationRequest.from("양재역");
-
         RestAssured.given().log().all()
-                .body(requestDto)
+                .body(JAMSIL_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
@@ -53,7 +49,7 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(requestDto)
+                .body(JAMSIL_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
@@ -68,9 +64,8 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void 지하철역을_조회한다() {
         /// given
-        final CreationStationRequest requestDto = CreationStationRequest.from("선릉역");
         final ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-                .body(requestDto)
+                .body(SEOLLEUNG_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
@@ -84,11 +79,11 @@ public class StationIntegrationTest extends IntegrationTest {
                 .get("/stations/{stationId}", stationId)
                 .then().log().all()
                 .extract();
+        final ReadStationResponse readStationResponse = response.as(ReadStationResponse.class);
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            final ReadStationResponse readStationResponse = response.as(ReadStationResponse.class);
             softAssertions.assertThat(readStationResponse.getId()).isEqualTo(stationId);
         });
     }
@@ -96,9 +91,8 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     void 지하철역을_제거한다() {
         // given
-        final CreationStationRequest requestDto = CreationStationRequest.from("잠실역");
         final ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-                .body(requestDto)
+                .body(JAMSIL_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")

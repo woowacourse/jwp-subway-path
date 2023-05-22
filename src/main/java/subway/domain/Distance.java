@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.Objects;
+
 public class Distance {
 
     private static final int MINIMAL_VALUE = 1;
@@ -37,6 +39,19 @@ public class Distance {
 
     public boolean isLessThanOrEqualTo(final Distance value) {
         return distance <= value.getDistance();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Distance distance1 = (Distance) o;
+        return distance == distance1.distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
     }
 
     public int getDistance() {

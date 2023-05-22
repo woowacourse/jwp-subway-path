@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.fixtures.request.CreationLineRequestFixture.FIVE_LINE_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.JAMSIL_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.SAMSUNG_REQUEST;
+import static subway.fixtures.request.CreationStationRequestFixture.SEOLLEUNG_REQUEST;
 
 @DisplayName("지하철 노선 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
@@ -82,7 +86,6 @@ public class LineIntegrationTest extends IntegrationTest {
         // given
         final CreationLineRequest lineRequest1 = CreationLineRequest.of("2호선", "bg-red-600");
         final CreationLineRequest lineRequest2 = CreationLineRequest.of("3호선", "bg-red-600");
-
 
         final ExtractableResponse<Response> createResponse1 = RestAssured
                 .given().log().all()
@@ -185,41 +188,10 @@ public class LineIntegrationTest extends IntegrationTest {
 
         @BeforeEach
         void 초기_노선_역_데이터_추가() {
-            final CreationLineRequest lineRequest = CreationLineRequest.of("5호선", "bg-red-600");
-            final ExtractableResponse<Response> createLineResponse = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest)
-                    .when().post("/lines")
-                    .then().log().all().
-                    extract();
-
-            final CreationStationRequest requestDtoOne = CreationStationRequest.from("잠실역");
-            final ExtractableResponse<Response> createStationResponseOne = RestAssured.given().log().all()
-                    .body(requestDtoOne)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when()
-                    .post("/stations")
-                    .then().log().all()
-                    .extract();
-
-            final CreationStationRequest requestDtoTwo = CreationStationRequest.from("선릉역");
-            final ExtractableResponse<Response> createStationResponseTwo = RestAssured.given().log().all()
-                    .body(requestDtoTwo)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when()
-                    .post("/stations")
-                    .then().log().all()
-                    .extract();
-
-            final CreationStationRequest requestDtoThree = CreationStationRequest.from("삼성역");
-            final ExtractableResponse<Response> createStationResponseThree = RestAssured.given().log().all()
-                    .body(requestDtoThree)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when()
-                    .post("/stations")
-                    .then().log().all()
-                    .extract();
+            final ExtractableResponse<Response> createLineResponse = getLineResponseAfterPost(FIVE_LINE_REQUEST);
+            final ExtractableResponse<Response> createStationResponseOne = getStationResponseAfterPost(JAMSIL_REQUEST);
+            final ExtractableResponse<Response> createStationResponseTwo = getStationResponseAfterPost(SEOLLEUNG_REQUEST);
+            final ExtractableResponse<Response> createStationResponseThree = getStationResponseAfterPost(SAMSUNG_REQUEST);
 
             lineId = Long.parseLong(createLineResponse.header("Location").split("/")[2]);
             stationOneId = Long.parseLong(createStationResponseOne.header("Location").split("/")[2]);
@@ -332,41 +304,10 @@ public class LineIntegrationTest extends IntegrationTest {
 
         @BeforeEach
         void 초기_노선_역_데이터_추가() {
-            final CreationLineRequest lineRequest = CreationLineRequest.of("5호선", "bg-red-600");
-            final ExtractableResponse<Response> createLineResponse = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest)
-                    .when().post("/lines")
-                    .then().log().all().
-                    extract();
-
-            final CreationStationRequest requestDtoOne = CreationStationRequest.from("잠실역");
-            final ExtractableResponse<Response> createStationResponseOne = RestAssured.given().log().all()
-                    .body(requestDtoOne)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when()
-                    .post("/stations")
-                    .then().log().all()
-                    .extract();
-
-            final CreationStationRequest requestDtoTwo = CreationStationRequest.from("선릉역");
-            final ExtractableResponse<Response> createStationResponseTwo = RestAssured.given().log().all()
-                    .body(requestDtoTwo)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when()
-                    .post("/stations")
-                    .then().log().all()
-                    .extract();
-
-            final CreationStationRequest requestDtoThree = CreationStationRequest.from("삼성역");
-            final ExtractableResponse<Response> createStationResponseThree = RestAssured.given().log().all()
-                    .body(requestDtoThree)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when()
-                    .post("/stations")
-                    .then().log().all()
-                    .extract();
+            final ExtractableResponse<Response> createLineResponse = getLineResponseAfterPost(FIVE_LINE_REQUEST);
+            final ExtractableResponse<Response> createStationResponseOne = getStationResponseAfterPost(JAMSIL_REQUEST);
+            final ExtractableResponse<Response> createStationResponseTwo = getStationResponseAfterPost(SEOLLEUNG_REQUEST);
+            final ExtractableResponse<Response> createStationResponseThree = getStationResponseAfterPost(SAMSUNG_REQUEST);
 
             lineId = Long.parseLong(createLineResponse.header("Location").split("/")[2]);
             stationOneId = Long.parseLong(createStationResponseOne.header("Location").split("/")[2]);
@@ -429,5 +370,25 @@ public class LineIntegrationTest extends IntegrationTest {
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         }
+    }
+
+    private ExtractableResponse<Response> getLineResponseAfterPost(final CreationLineRequest request) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+    }
+
+    private ExtractableResponse<Response> getStationResponseAfterPost(final CreationStationRequest request) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/stations")
+                .then().log().all().
+                extract();
     }
 }
