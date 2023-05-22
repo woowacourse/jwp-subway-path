@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.FarePolicy;
+import subway.domain.fare.FarePolicy;
 import subway.dto.DistanceResponse;
 import subway.dto.FareResponse;
 import subway.dto.LineAndSectionsResponse;

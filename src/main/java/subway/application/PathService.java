@@ -1,12 +1,13 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.domain.FarePolicy;
-import subway.domain.Path;
-import subway.domain.PathFinder;
-import subway.domain.SectionEdge;
-import subway.domain.SubwayMap;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.fare.FarePolicy;
 import subway.domain.line.Line;
+import subway.domain.line.SubwayMap;
+import subway.domain.path.Path;
+import subway.domain.path.PathFinder;
+import subway.domain.path.SectionEdge;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.dto.DistanceResponse;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
 
     private final LineRepository lineRepository;

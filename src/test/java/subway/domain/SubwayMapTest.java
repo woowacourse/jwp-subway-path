@@ -3,6 +3,8 @@ package subway.domain;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.SubwayMap;
+import subway.domain.path.SectionEdge;
 import subway.domain.station.Station;
 
 import java.util.List;

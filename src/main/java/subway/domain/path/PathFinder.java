@@ -1,8 +1,9 @@
-package subway.domain;
+package subway.domain.path;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.line.SubwayMap;
 import subway.domain.section.Distance;
 import subway.domain.station.Station;
 

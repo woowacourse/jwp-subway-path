@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import subway.domain.fare.BasicFarePolicy;
+import subway.domain.fare.FarePolicy;
 import subway.domain.section.Distance;
 
 import static org.assertj.core.api.Assertions.assertThat;

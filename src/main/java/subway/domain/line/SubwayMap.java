@@ -1,6 +1,6 @@
-package subway.domain;
+package subway.domain.line;
 
-import subway.domain.line.Line;
+import subway.domain.path.SectionEdge;
 import subway.domain.station.Station;
 
 import java.util.List;
