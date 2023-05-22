@@ -29,7 +29,6 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
         lineRequest1 = new LineRequest("2호선", "bg-red-600");
         stationRequest1 = new StationRequest("강남역");
         stationRequest2 = new StationRequest("선릉역");
@@ -43,15 +42,11 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @Test
     void createStation() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines");
-
+        노선_생성(lineRequest1);
         역_생성(stationRequest1);
         역_생성(stationRequest2);
         역_생성(stationRequest3);
+        
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(initialStationsRequest)
@@ -64,28 +59,16 @@ public class LineStationIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
-
-    @DisplayName("지하철역을 추가 생성한다.")
+    
+    @DisplayName("지하철 역을 추가 생성한다.")
     @Test
     void createAdditionalStation() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines");
-
+        노선_생성(lineRequest1);
         역_생성(stationRequest1);
         역_생성(stationRequest2);
         역_생성(stationRequest3);
-
-        RestAssured.given().log().all()
-                .body(initialStationsRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/1/stations/init")
-                .then().log().all()
-                .extract();
+        노선에_초기_역_추가(1, initialStationsRequest);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -99,35 +82,17 @@ public class LineStationIntegrationTest extends IntegrationTest {
         // then
          assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
-
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines");
-
+        노선_생성(lineRequest1);
         역_생성(stationRequest1);
         역_생성(stationRequest2);
         역_생성(stationRequest3);
-
-        RestAssured.given().log().all()
-                .body(initialStationsRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("lines/1/stations/init");
-
-        RestAssured.given().log().all()
-                .body(additionalStationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/1/stations")
-                .then().log().all()
-                .extract();
-
+        노선에_초기_역_추가(1, initialStationsRequest);
+        노선에_역_추가(1, additionalStationRequest);
+    
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
@@ -138,7 +103,27 @@ public class LineStationIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
-
+    
+    
+    private void 노선에_역_추가(int lineId, LineStationAddRequest request) {
+        RestAssured.given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/"+lineId+"/stations")
+                .then().log().all()
+                .extract();
+    }
+    
+    
+    private void 노선_생성(LineRequest lineRequest) {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest)
+                .when().post("/lines");
+    }
+    
     private void 역_생성(StationRequest request) {
         RestAssured
                 .given().log().all()
@@ -147,5 +132,15 @@ public class LineStationIntegrationTest extends IntegrationTest {
                 .when().post("/stations")
                 .then().log().all();
 
+    }
+    
+    private void 노선에_초기_역_추가(int lineId, LineStationInitRequest request) {
+        RestAssured.given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/"+lineId+"/stations/init")
+                .then().log().all()
+                .extract();
     }
 }
