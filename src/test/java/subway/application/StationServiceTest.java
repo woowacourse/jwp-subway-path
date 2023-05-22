@@ -3,93 +3,106 @@ package subway.application;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import subway.Fixture;
-import subway.dao.SubwayMapRepository;
-import subway.domain.Line;
-import subway.domain.SubwayMap;
-import subway.dto.StationRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import subway.domain.Station;
+import subway.dto.request.StationRequest;
+import subway.persistance.StationDao;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = StationService.class)
 class StationServiceTest {
 
-    @Mock
-    private SubwayMapRepository subwayMapRepository;
-    @InjectMocks
+    @Autowired
     private StationService stationService;
-
-    @Mock
-    private LineService lineService;
+    @MockBean
+    private StationDao stationDao;
 
     @Test
-    @DisplayName("CreateType이 INIT일 때 두 개의 역을 저장하고 저장한 역의 ID를 반환한다")
-    void saveStationINIT() {
+    @DisplayName("역을 저장한다")
+    void saveStation() {
         // given
-        final StationRequest stationRequestUp = new StationRequest("잠실역", "INIT", "2호선", true, false, null, "선릉역", 1, 1);
-        final StationRequest stationRequestDown = new StationRequest("선릉역", "INIT", "2호선", false, true, "잠실역", null, 1, 1);
-        final Line line = new Line(1L, "2호선", "green");
+        final StationRequest request = new StationRequest("잠실역");
+        final Station station = new Station(request.getName());
+        when(stationDao.insert(refEq(station))).thenReturn(new Station(1L, station.getName()));
 
+        // when
+        stationService.saveStation(request);
 
-        final SubwayMap subwayMap = new SubwayMap(new HashMap<>(Collections.emptyMap()), new HashMap<>(Fixture.tempLineMap));
-        when(subwayMapRepository.find()).thenReturn(subwayMap);
-        when(lineService.findLineByName(line.getName())).thenReturn(line);
-
-        // when & then
-        assertDoesNotThrow(() -> stationService.saveStation(List.of(stationRequestUp, stationRequestDown)));
-        verify(subwayMapRepository, times(1)).save(any());
+        // then
+        verify(stationDao, times(1)).insert(refEq(station));
     }
 
     @Test
-    @DisplayName("CreateType이 UP일 때 두 개의 역을 저장하고 저장한 역의 ID를 반환한다")
-    void saveStationUP() {
+    @DisplayName("id에 해당하는 역을 수정한다")
+    void updateStation() {
         // given
-        final StationRequest stationRequestDown = new StationRequest("잠실역", "UP", "2호선", true, false, null, "A", null, 1);
-        final Line line = new Line(1L, "2호선", "green");
+        final StationRequest request = new StationRequest("선릉역");
+        final Station station = new Station(1L, "잠실역");
+        when(stationDao.findById(1L)).thenReturn(Optional.of(station));
 
-        when(subwayMapRepository.find()).thenReturn(Fixture.subwayMap);
-        when(lineService.findLineByName(line.getName())).thenReturn(line);
+        // when
+        stationService.updateStation(1L, request);
 
-        // when & then
-        assertDoesNotThrow(() -> stationService.saveStation(List.of(stationRequestDown)));
-        verify(subwayMapRepository, times(1)).save(any());
+        // then
+        verify(stationDao, times(1))
+                .update(new Station(station.getId(), request.getName()));
     }
 
     @Test
-    @DisplayName("CreateType이 DOWN일 때 두 개의 역을 저장하고 저장한 역의 ID를 반환한다")
-    void saveStationDown() {
-        // given
-        final StationRequest stationRequestDown = new StationRequest("잠실역", "DOWN", "2호선", false, true, "C", null, 1, null);
-        final Line line = new Line(1L, "2호선", "green");
+    @DisplayName("id에 해당하는 역을 삭제한다")
+    void deleteStationById() {
+        // when
+        stationService.deleteStationById(1L);
 
-        when(subwayMapRepository.find()).thenReturn(Fixture.subwayMap);
-        when(lineService.findLineByName(line.getName())).thenReturn(line);
-
-        // when & then
-        assertDoesNotThrow(() -> stationService.saveStation(List.of(stationRequestDown)));
-        verify(subwayMapRepository, times(1)).save(any());
+        // then
+        verify(stationDao, times(1)).deleteById(1L);
     }
 
     @Test
-    @DisplayName("CreateType이 MID일 때 두 개의 역을 저장하고 저장한 역의 ID를 반환한다")
-    void saveStationMid() {
+    @DisplayName("id에 해당하는 역을 조회한다")
+    void findStationResponseById() {
         // given
-        final StationRequest request = new StationRequest("잠실역", "MID", "2호선", false, false, "A", "B", 1, 1);
-        final Line line = new Line(1L, "2호선", "green");
-        when(subwayMapRepository.find()).thenReturn(Fixture.subwayMap);
-        when(lineService.findLineByName(line.getName())).thenReturn(line);
+        final Station station = new Station(1L, "잠실역");
+        when(stationDao.findById(1L)).thenReturn(Optional.of(station));
 
-        // when & then
-        assertDoesNotThrow(() -> stationService.saveStation(List.of(request)));
-        verify(subwayMapRepository, times(1)).save(any());
+        // when
+        stationService.findStationResponseById(1L);
+
+        // then
+        verify(stationDao, times(1)).findById(1L);
+    }
+
+    @Test
+    @DisplayName("모든 역을 조회한다")
+    void findAllStationResponses() {
+        // when
+        stationService.findAllStationResponses();
+
+        // then
+        verify(stationDao, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("id에 해당하는 역을 조회한다")
+    void findById() {
+        // given
+        final Station station = new Station(1L, "잠실역");
+        when(stationDao.findById(1L)).thenReturn(Optional.of(station));
+
+        // when
+        stationService.findById(1L);
+
+        // then
+        verify(stationDao, times(1)).findById(1L);
     }
 }

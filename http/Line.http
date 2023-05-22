@@ -9,6 +9,15 @@ Content-Type: application/json
   "color": "green"
 }
 
+###
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "3호선",
+  "color": "green"
+}
+
 #########################
 
 ###

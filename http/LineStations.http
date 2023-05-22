@@ -1,0 +1,46 @@
+### 초기 두 역 등록
+PATCH http://localhost:8080/lines/1/stations/1/init
+Content-Type: application/json
+
+{
+  "nextStationId": "2",
+  "distance": "3"
+}
+
+### 상행 종점 등록
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+
+{
+  "endpointType": "up",
+  "distance": "1"
+}
+
+
+### 하행 종점 등록
+PATCH http://localhost:8080/lines/1/stations/4/endpoint
+Content-Type: application/json
+
+{
+  "endpointType": "down",
+  "distance": "1"
+}
+
+### 중간역 등록
+PATCH http://localhost:8080/lines/1/stations/3/mid
+Content-Type: application/json
+
+{
+  "distance": "2",
+  "prevStationId": "1"
+}
+
+
+### 라인에 등록된 역 정보 삭제
+DELETE http://localhost:8080/lines/1/stations/2
+
+### 라인에 해당하는 모든 역 조회
+GET http://localhost:8080/lines/4/stations
+
+### 모든 역 조회
+GET http://localhost:8080/lines/stations

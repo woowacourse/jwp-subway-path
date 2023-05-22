@@ -1,0 +1,695 @@
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 47
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "sadf",
+  "distance": "1"
+}
+
+<> 2023-05-22T001036.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "up",
+  "distance": "1"
+}
+
+<> 2023-05-22T001030.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "up",
+  "distance": "1"
+}
+
+<> 2023-05-21T225659.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 48
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "uasdf",
+  "distance": "1"
+}
+
+<> 2023-05-21T225654.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 55
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "ㅁㄴㅇㄹ",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "up",
+  "distance": "1"
+}
+
+<> 2023-05-21T224825.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 55
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "ㅁㄴㅇㄹ",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "up",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "up",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/1/init
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "nextStationId": "2",
+  "distance": "3"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "up",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 47
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "asdf",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 47
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "endpointType": "qwer",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 49
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "connectionType": "qwer",
+  "distance": "1"
+}
+
+<> 2023-05-21T220905.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 49
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "connectionType": "1234",
+  "distance": "1"
+}
+
+<> 2023-05-21T220801.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 49
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "connectionType": "1234",
+  "distance": "1"
+}
+
+<> 2023-05-21T220736.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/1/init
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "nextStationId": "2",
+  "distance": "3"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/1/init
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "nextStationId": "2",
+  "distance": "3"
+}
+
+<> 2023-05-21T220621.400.txt
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "green"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/4/endpoint
+Content-Type: application/json
+Content-Length: 49
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "connectionType": "down",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 47
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "connectionType": "up",
+  "distance": "1"
+}
+
+<> 2023-05-20T192445.400.txt
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "green"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 47
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "connectionType": "UP",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/endpoint
+Content-Type: application/json
+Content-Length: 47
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "connectionType": "up",
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3/up
+Content-Type: application/json
+Content-Length: 21
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "distance": "1"
+}
+
+<> 2023-05-20T191841.404.json
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/1/init
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "nextStationId": "2",
+  "distance": "3"
+}
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 31
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "건대입구역"
+}
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "선릉역"
+}
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "잠실역"
+}
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "강남역"
+}
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "green"
+}
+
+<> 2023-05-20T191829.201.json
+
+###
+
+PATCH http://localhost:8080/lines/12/stations/5/init
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "nextStationId": "6",
+  "distance": "3"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/5/init
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "nextStationId": "6",
+  "distance": "3"
+}
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "잠실역"
+}
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "강남역"
+}
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "green"
+}
+
+<> 2023-05-20T191711.201.json
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/1/init
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "nextStationId": "2",
+  "distance": "3"
+}
+
+<> 2023-05-20T191601.400.txt
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "잠실역"
+}
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 25
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "강남역"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/1/init
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "nextStationId": "2",
+  "distance": "3"
+}
+
+<> 2023-05-20T191550.400.txt
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/1?type=init
+Content-Type: application/json
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "nextStationId": "2",
+  "distance": "3"
+}
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 43
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "green"
+}
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 16
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": ""
+}
+
+<> 2023-05-18T014819.400.txt
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 0
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 0
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+DELETE http://localhost:8080/lines/1/stations/2
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+DELETE http://localhost:8080/lines/1/stations/3
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/5?type=down
+Content-Type: application/json
+Content-Length: 21
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/4?type=down
+Content-Type: application/json
+Content-Length: 21
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "distance": "1"
+}
+
+###
+
+PATCH http://localhost:8080/lines/1/stations/3?type=down
+Content-Type: application/json
+Content-Length: 21
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "distance": "1"
+}
+
+###
+

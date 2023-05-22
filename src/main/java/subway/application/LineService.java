@@ -1,60 +1,68 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.dao.entity.LineEntity;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.domain.LineRepository;
+import subway.domain.Lines;
+import subway.dto.request.LineRequest;
+import subway.dto.response.LineResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(final LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    public LineResponse createLine(final LineRequest request) {
+        final Line line = request.toLine();
+        final Line savedLine = lineRepository.save(line);
+
+        return LineResponse.of(savedLine);
     }
 
+    public void save(final Line line) {
+        lineRepository.save(line);
+    }
+
+    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
+        final Line line = findById(id);
+
+        line.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+
+        lineRepository.save(line);
+    }
+
+    public void deleteLineById(final Long id) {
+        lineRepository.findById(id).ifPresent(lineRepository::delete);
+    }
+
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
-        final List<Line> persistLines = findLines();
-        return persistLines.stream()
+        return lineRepository.findAll().getLines().stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll().stream()
-                .map(LineEntity::toLine)
-                .collect(Collectors.toList());
-    }
-
     public LineResponse findLineResponseById(final Long id) {
-        final Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.of(findById(id));
     }
 
-    public Line findLineById(final Long id) {
-        return lineDao.findById(id);
+    @Transactional(readOnly = true)
+    public Line findById(final Long id) {
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 라인이 존재하지 않습니다."));
     }
 
-    public Line findLineByName(final String name) {
-        return lineDao.findByName(name);
+    @Transactional(readOnly = true)
+    public Lines findAll() {
+        return lineRepository.findAll();
     }
-
-    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        lineDao.update(id, new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(final Long id) {
-        lineDao.deleteById(id);
-    }
-
 }
