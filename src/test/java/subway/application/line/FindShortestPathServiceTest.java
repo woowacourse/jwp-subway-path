@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.path.service.FindShortestPathService;
 import subway.domain.fare.DistanceProportionFarePolicy;
+import subway.domain.fare.TotalDistanceFareCalculator;
 import subway.domain.line.Line;
 import subway.domain.line.LineColor;
 import subway.domain.line.LineName;
@@ -37,8 +38,12 @@ class FindShortestPathServiceTest {
 
     @BeforeEach
     void setUp() {
+        final TotalDistanceFareCalculator totalDistanceFareCalculator = new TotalDistanceFareCalculator(List.of(
+                new DistanceProportionFarePolicy(10, 50, 5),
+                new DistanceProportionFarePolicy(50, 1_000_000, 8)
+        ));
         findShortestPathService = new FindShortestPathService(
-                new DistanceProportionFarePolicy(),
+                totalDistanceFareCalculator,
                 lineRepository,
                 stationRepository
         );

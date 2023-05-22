@@ -1,38 +1,38 @@
 package subway.domain.fare;
 
 public class DistanceProportionFarePolicy {
-
-    private static final int BASE_DISTANCE_MAX = 10;
-    private static final int EXTRA_DISTANCE_MAX = 50;
-    private static final int BASE_DISTANCE_UNIT = 5;
-    private static final int OVER_EXTRA_DISTANCE_UNIT = 8;
-    private static final Fare BASE_FARE = new Fare(1_250);
-    private static final Fare OVER_EXTRA_FARE = new Fare(2_050);
     private static final int SURCHARGE_FARE = 100;
 
+    private final int lowerBoundDistance;
+    private final int maxBoundDistance;
+    private final int surchargeDistanceUnit;
+
+    public DistanceProportionFarePolicy(
+            final int lowerBoundDistance,
+            final int maxBoundDistance,
+            final int surchargeDistanceUnit) {
+        this.lowerBoundDistance = lowerBoundDistance;
+        this.maxBoundDistance = maxBoundDistance;
+        this.surchargeDistanceUnit = surchargeDistanceUnit;
+    }
+
+
     public Fare calculate(final int distance) {
-        if (distance <= BASE_DISTANCE_MAX) {
-            return BASE_FARE;
+        if (distance <= lowerBoundDistance) {
+            return new Fare(0);
         }
 
-        if (distance <= EXTRA_DISTANCE_MAX) {
-            return calculateExtraFare(distance);
+        if (distance > maxBoundDistance) {
+            return calculateExtraFare(maxBoundDistance);
         }
 
-        return calculateOverExtraFare(distance);
+        return calculateExtraFare(distance);
     }
 
     private Fare calculateExtraFare(final int distance) {
-        final int extraDistance = distance - BASE_DISTANCE_MAX;
-        final int extraFare = (int) (Math.ceil((extraDistance - 1) / BASE_DISTANCE_UNIT) + 1) * SURCHARGE_FARE;
+        final int extraDistance = distance - lowerBoundDistance;
+        final int extraFare = (int) (Math.ceil((extraDistance - 1) / surchargeDistanceUnit) + 1) * SURCHARGE_FARE;
 
-        return BASE_FARE.add(new Fare(extraFare));
-    }
-
-    private Fare calculateOverExtraFare(final int distance) {
-        final int extraDistance = distance - EXTRA_DISTANCE_MAX;
-        final int extraFare = (int) (Math.ceil((extraDistance - 1) / OVER_EXTRA_DISTANCE_UNIT) + 1) * SURCHARGE_FARE;
-
-        return OVER_EXTRA_FARE.add(new Fare(extraFare));
+        return new Fare(extraFare);
     }
 }
