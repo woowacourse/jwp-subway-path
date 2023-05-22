@@ -52,15 +52,6 @@ public class StationDao {
         }
     }
 
-    public Optional<Long> findIdByName(String stationName) {
-        try {
-            String sql = "select id from STATION where name = ?";
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Long.class, stationName));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
-    }
-
     public Optional<StationEntity> findByName(String stationName) {
         try {
             String sql = "select id, name from STATION where name = ?";
