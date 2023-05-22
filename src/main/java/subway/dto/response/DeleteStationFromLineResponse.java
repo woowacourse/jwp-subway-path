@@ -14,7 +14,7 @@ public class DeleteStationFromLineResponse {
         this.stationIds = stationIds;
     }
 
-    public static DeleteStationFromLineResponse fromDomain(Line line) {
+    public static DeleteStationFromLineResponse from(Line line) {
         return new DeleteStationFromLineResponse(line.getId(), line.getName(), line.getStationIds());
     }
 

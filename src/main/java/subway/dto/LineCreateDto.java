@@ -1,7 +1,5 @@
 package subway.dto;
 
-import subway.dto.request.LineCreateRequest;
-
 public class LineCreateDto {
     private String lineName;
     private Integer extraCharge;

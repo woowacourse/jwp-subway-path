@@ -1,7 +1,5 @@
 package subway.dto;
 
-import subway.dto.request.AddStationToExistLineRequest;
-
 public class AddStationToExistLineDto {
     private final Long lineId;
     private final Long upStationId;

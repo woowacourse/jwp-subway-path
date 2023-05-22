@@ -14,7 +14,7 @@ public class AddStationToLineResponse {
         this.stationIds = stationIds;
     }
 
-    public static AddStationToLineResponse fromDomain(Line line) {
+    public static AddStationToLineResponse from(Line line) {
         return new AddStationToLineResponse(line.getId(), line.getName(), line.getStationIds());
     }
 

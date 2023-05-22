@@ -3,7 +3,6 @@ package subway.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.domain.line.Line;
-import subway.domain.line.Station;
 import subway.dto.StationDto;
 
 public class GetAllStationsInLineResponse {
@@ -11,16 +10,17 @@ public class GetAllStationsInLineResponse {
     private final String lineName;
     private final List<StationDto> stations;
 
-    private GetAllStationsInLineResponse(long lineId, String lineName, List<Station> stations) {
+    private GetAllStationsInLineResponse(long lineId, String lineName, List<StationDto> stations) {
         this.lineId = lineId;
         this.lineName = lineName;
-        this.stations = stations.stream()
-                .map(station -> new StationDto(station.getId(), station.getName()))
-                .collect(Collectors.toList());
+        this.stations = stations;
     }
 
-    public static GetAllStationsInLineResponse fromDomain(Line line) {
-        return new GetAllStationsInLineResponse(line.getId(), line.getName(), line.getStations());
+    public static GetAllStationsInLineResponse from(Line line) {
+        List<StationDto> stations = line.getStations().stream()
+                .map(station -> new StationDto(station.getId(), station.getName()))
+                .collect(Collectors.toList());
+        return new GetAllStationsInLineResponse(line.getId(), line.getName(), stations);
     }
 
     public long getLineId() {

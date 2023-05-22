@@ -17,7 +17,7 @@ public class LineCreateResponse {
         this.stationIds = stationIds;
     }
 
-    public static LineCreateResponse fromDomain(Line line) {
+    public static LineCreateResponse from(Line line) {
         return new LineCreateResponse(line.getId(), line.getName(), line.getExtraCharge().getValue(), line.getStationIds());
     }
 
