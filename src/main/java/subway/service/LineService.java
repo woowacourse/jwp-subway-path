@@ -104,7 +104,7 @@ public class LineService {
 
         line.deleteStation(station);
 
-        if (line.isEmpty()) {
+        if (line.isEmptyLine()) {
             sectionRepository.deleteByLineId(lineId);
             return;
         }

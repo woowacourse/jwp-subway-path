@@ -55,7 +55,7 @@ public class Line {
         return id;
     }
 
-    public boolean isEmpty() {
+    public boolean isEmptyLine() {
         return sections.isEmpty();
     }
 }
