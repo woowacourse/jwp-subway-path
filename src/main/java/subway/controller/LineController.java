@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +41,7 @@ public class LineController {
 
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<AddStationToLineResponse> addStationToLine(@PathVariable Long lineId,
-                                                                     @RequestBody AddStationToExistLineRequest request) {
+                                                                     @Valid @RequestBody AddStationToExistLineRequest request) {
         Line updatedLine = lineService.addStationToExistLine(request.toDto(lineId));
 
         AddStationToLineResponse response = AddStationToLineResponse.from(updatedLine);

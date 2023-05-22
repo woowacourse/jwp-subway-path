@@ -1,5 +1,6 @@
 package subway.controller;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +21,10 @@ public class SubwayController {
     }
 
     @PostMapping
-    public ResponseEntity<FindShortestRouteResponse> findShortestRoute(@RequestBody FindShortestRouteRequest request) {
-        Path path = subwayService.findShortestRoute(request.getPassengerAge(), request.getStartStationId(), request.getEndStationId());
+    public ResponseEntity<FindShortestRouteResponse> findShortestRoute(
+            @Valid @RequestBody FindShortestRouteRequest request) {
+        Path path = subwayService.findShortestRoute(request.getPassengerAge(), request.getStartStationId(),
+                request.getEndStationId());
 
         FindShortestRouteResponse response = FindShortestRouteResponse.from(path);
         return ResponseEntity.ok(response);
