@@ -1,26 +1,32 @@
-create table if not exists STATION
+CREATE SCHEMA IF NOT EXISTS subway;
+
+DROP TABLE IF EXISTS section;
+DROP TABLE IF EXISTS station;
+DROP TABLE IF EXISTS line;
+
+CREATE TABLE IF NOT EXISTS station
 (
-    id bigint auto_increment not null,
-    name varchar(255) not null unique,
-    primary key(id)
+    stationId BIGINT AUTO_INCREMENT NOT NULL,
+    name       VARCHAR(255)          NOT NULL UNIQUE,
+    primary key (stationId)
 );
 
-create table if not exists LINE
+CREATE TABLE IF NOT EXISTS line
 (
-    id bigint auto_increment not null,
-    name varchar(255) not null unique,
-    primary key(id)
+    lineId     BIGINT AUTO_INCREMENT NOT NULL,
+    name        VARCHAR(255)          NOT NULL UNIQUE,
+    PRIMARY KEY (lineId)
 );
 
-create table if not exists SECTION
+CREATE TABLE IF NOT EXISTS section
 (
-    id bigint auto_increment not null,
-    line varchar(255) not null,
-    up_station varchar(255) not null,
-    down_station varchar(255) not null,
-    distance int not null,
-    foreign key (line) references line (name) on delete cascade,
-    foreign key (up_station) references station (name) on delete cascade,
-    foreign key (down_station) references station (name) on delete cascade,
-    primary key (id)
+    sectionId      BIGINT AUTO_INCREMENT NOT NULL,
+    lineId         BIGINT                NOT NULL,
+    upStationId   BIGINT                NOT NULL,
+    downStationId BIGINT                NOT NULL,
+    distance        BIGINT                NOT NULL,
+    PRIMARY KEY (sectionId),
+    FOREIGN KEY (lineId) REFERENCES line (lineId),
+    FOREIGN KEY (upStationId) REFERENCES station (stationId),
+    FOREIGN KEY (downStationId) REFERENCES station (stationId)
 );
