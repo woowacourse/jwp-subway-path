@@ -3,10 +3,15 @@ package subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.dao.StubSectionDao;
+import subway.domain.DefaultFareStrategy;
+import subway.domain.InitialAdditionalFareStrategy;
+import subway.domain.SecondaryAdditionalFareStrategy;
 import subway.domain.SubwayFareCalculator;
 import subway.dto.PathSearchRequest;
 import subway.dto.PathSearchResponse;
@@ -18,7 +23,13 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stubSectionDao, new SubwayFareCalculator());
+        pathService = new PathService(stubSectionDao, new SubwayFareCalculator(
+                List.of(
+                        new DefaultFareStrategy(),
+                        new InitialAdditionalFareStrategy(),
+                        new SecondaryAdditionalFareStrategy()
+                )
+        ));
     }
 
     @DisplayName("최단 경로를 조회해 응답을 반환한다.")

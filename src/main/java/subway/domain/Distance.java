@@ -21,6 +21,10 @@ public class Distance {
         throw new IllegalArgumentException("거리는 양의 정수만 가능합니다.");
     }
 
+    public boolean isGreaterThan(final Distance other) {
+        return value > other.value;
+    }
+
     public boolean isNotGreaterThan(final Distance other) {
         return value <= other.value;
     }
