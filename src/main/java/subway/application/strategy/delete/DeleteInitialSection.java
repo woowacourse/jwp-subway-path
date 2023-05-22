@@ -10,6 +10,8 @@ import subway.repository.SectionRepository;
 @Component
 public class DeleteInitialSection extends DeleteStationStrategy {
 
+    private static final int INITIAL_SIZE = 1;
+
     private final LineDao lineDao;
 
     public DeleteInitialSection(SectionRepository sectionRepository, LineDao lineDao) {
@@ -19,7 +21,7 @@ public class DeleteInitialSection extends DeleteStationStrategy {
 
     @Override
     public boolean support(SingleLineSections sections, Station targetStation) {
-        return sections.isInitialState();
+        return sections.getSections().size() == INITIAL_SIZE;
     }
 
     @Override

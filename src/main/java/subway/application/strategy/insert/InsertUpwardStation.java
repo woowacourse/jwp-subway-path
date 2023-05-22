@@ -5,6 +5,8 @@ import subway.domain.section.Section;
 import subway.domain.section.SingleLineSections;
 import subway.repository.SectionRepository;
 
+import java.util.Objects;
+
 @Component
 public class InsertUpwardStation extends InsertBetweenSection {
 
@@ -14,7 +16,8 @@ public class InsertUpwardStation extends InsertBetweenSection {
 
     @Override
     public boolean support(SingleLineSections sections, InsertSection insertSection) {
-        return sections.isUpwardStation(insertSection.getUpStation());
+        return sections.getSections().stream()
+                .anyMatch(section -> Objects.equals(section.getUpStation(), insertSection.getUpStation()));
     }
 
     @Override

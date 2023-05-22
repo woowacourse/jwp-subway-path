@@ -16,7 +16,7 @@ public class DeleteBetweenStation extends DeleteStationStrategy {
 
     @Override
     public boolean support(SingleLineSections sections, Station targetStation) {
-        return sections.isBetweenStation(targetStation);
+        return !sections.isDownTerminal(targetStation) && !sections.isUpTerminal(targetStation);
     }
 
     @Override

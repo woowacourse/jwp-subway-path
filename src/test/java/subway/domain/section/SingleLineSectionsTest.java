@@ -49,15 +49,6 @@ class SingleLineSectionsTest {
     }
 
     @Test
-    void 상행역_기준으로_역의_존재를_확인한다() {
-        // when, then
-        assertAll(
-                () -> assertThat(sections.isUpwardStation(잠실역)).isTrue(),
-                () -> assertThat(sections.isUpwardStation(선릉역)).isFalse()
-        );
-    }
-
-    @Test
     void 상행역_기준으로_구간을_찾아온다() {
         // when
         final Section result = sections.findUpwardStationSection(잠실새내역);

@@ -13,8 +13,6 @@ import static java.util.stream.Collectors.toSet;
 
 public class SingleLineSections {
 
-    private static final int INITIAL_SIZE = 1;
-
     private final List<Section> sections;
 
     SingleLineSections(List<Section> sections) {
@@ -25,26 +23,12 @@ public class SingleLineSections {
         return SectionsFactory.createSortedSections(unsortedSections);
     }
 
-    public boolean isBetweenStation(Station station) {
-        return !isDownTerminal(station) && !isUpTerminal(station);
-    }
-
     public boolean isDownTerminal(Station station) {
         return Objects.equals(sections.get(sections.size() - 1).getDownStation(), station);
     }
 
     public boolean isUpTerminal(Station station) {
         return Objects.equals(sections.get(0).getUpStation(), station);
-    }
-
-    public boolean isUpwardStation(Station station) {
-        return sections.stream()
-                .anyMatch(section -> Objects.equals(section.getUpStation(), station));
-    }
-
-    public boolean isDownwardStation(Station station) {
-        return sections.stream()
-                .anyMatch(section -> Objects.equals(section.getDownStation(), station));
     }
 
     public Section findUpwardStationSection(Station upStation) {
@@ -59,10 +43,6 @@ public class SingleLineSections {
                 .filter(section -> Objects.equals(section.getDownStation(), downStation))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
-    }
-
-    public boolean isInitialState() {
-        return sections.size() == INITIAL_SIZE;
     }
 
     public Long findFirstSectionId() {
