@@ -1,5 +1,7 @@
 package subway.dto.api;
 
+import subway.dto.service.InsertStationServiceCommand;
+
 public class StationInsertRequest {
 
     private final Long stationId;
@@ -15,6 +17,10 @@ public class StationInsertRequest {
         this.adjacentStationId = adjacentStationId;
         this.direction = direction;
         this.distance = distance;
+    }
+
+    public InsertStationServiceCommand toCommand() {
+        return new InsertStationServiceCommand(stationId, lineId, adjacentStationId, direction, distance);
     }
 
     public Long getStationId() {

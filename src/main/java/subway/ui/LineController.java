@@ -39,8 +39,7 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
-        CreateLineServiceCommand command = new CreateLineServiceCommand(lineRequest.getName(), lineRequest.getColor(),
-                lineRequest.getUpStationId(), lineRequest.getDownStationId(), lineRequest.getDistance());
+        CreateLineServiceCommand command = lineRequest.toCommand();
 
         Long id = lineService.create(command);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
@@ -48,9 +47,7 @@ public class LineController {
 
     @PostMapping("/stations")
     public ResponseEntity<Void> insertStation(@RequestBody StationInsertRequest stationInsertRequest) {
-        InsertStationServiceCommand command = new InsertStationServiceCommand(stationInsertRequest.getStationId(),
-                stationInsertRequest.getLineId(), stationInsertRequest.getAdjacentStationId(),
-                stationInsertRequest.getDirection(), stationInsertRequest.getDistance());
+        InsertStationServiceCommand command = stationInsertRequest.toCommand();
 
         lineService.insertStation(command);
         return ResponseEntity.ok().build();
