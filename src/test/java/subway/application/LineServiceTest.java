@@ -58,7 +58,7 @@ class LineServiceTest {
     @Test
     @DisplayName("노선 정보를 저장한다.")
     void save() {
-        when(lineDao.insert(any()))
+        when(lineDao.insert(any())
             .thenReturn(new Line("2호선", "초록", 0));
 
         LineResponse lineResponse = lineService.saveLine(new LineRequest());

@@ -69,6 +69,7 @@ public class PathService {
         Long departureId = pathFindingRequest.getDepartureId();
         Long destinationId = pathFindingRequest.getDestinationId();
 
+
         return pathFindStrategy.findPathInfo(departureId, destinationId, allSections);
     }
 
