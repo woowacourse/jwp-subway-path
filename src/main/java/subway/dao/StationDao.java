@@ -18,4 +18,6 @@ public interface StationDao {
     void deleteById(final long id);
 
     Station findByName(final String name);
+
+    int countByName(final String name);
 }

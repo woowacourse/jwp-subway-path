@@ -1,0 +1,158 @@
+### 노선 조회 요청
+GET http://localhost:8080/lines
+
+### 역 조회 요청
+GET http://localhost:8080/stations
+
+### 노선 등록 요청1 - 1호선
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+ {
+   "name": "1호선",
+   "color": "남색",
+   "extraFare": 200
+ }
+
+### 노선 등록 요청2 - 2호선
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "2호선",
+  "color": "초록색",
+  "extraFare": 0
+}
+
+### 역 등록 요청1 - 서울역
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "서울역"
+}
+
+### 역 등록 요청2 - 용산
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "용산"
+}
+
+### 역 등록 요청3 - 노량진
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "노량진"
+}
+
+### 역 등록 요청4 - 강변
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "강변"
+}
+
+### 역 등록 요청5 - 잠실나루
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "잠실나루"
+}
+
+### 역 등록 요청6 - 잠실
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "잠실"
+}
+
+### 역 등록 요청7 - 잠실새내
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "잠실새내"
+}
+
+### 역 등록 요청8 - 종합운동장
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "종합운동장"
+}
+
+### 노선에 역 등록 요청1 - 1호선에 서울역 <-> 용산 초기 등록
+POST http://localhost:8080/lines/1/stations
+Content-Type: application/json
+
+{
+  "upwardStationId": 1,
+  "downwardStationId": 2,
+  "distance": 4
+}
+
+### 노선에 역 등록 요청2 - 1호선에 용산 <-> 노량진 등록
+POST http://localhost:8080/lines/1/stations
+Content-Type: application/json
+
+{
+  "upwardStationId": 2,
+  "downwardStationId": 3,
+  "distance": 8
+}
+
+### 노선에 역 등록 요청3 - 2호선에 잠실 <-> 종합운동장 등록
+POST http://localhost:8080/lines/2/stations
+Content-Type: application/json
+
+{
+  "upwardStationId": 6,
+  "downwardStationId": 8,
+  "distance": 10
+}
+
+### 노선에 역 등록 요청4 - 2호선에 잠실 <-> 잠실새내 등록
+POST http://localhost:8080/lines/2/stations
+Content-Type: application/json
+
+{
+  "upwardStationId": 6,
+  "downwardStationId": 7,
+  "distance": 3
+}
+
+### 노선에 역 등록 요청5 - 2호선에 강변 <-> 잠실 등록
+POST http://localhost:8080/lines/2/stations
+Content-Type: application/json
+
+{
+  "upwardStationId": 4,
+  "downwardStationId": 6,
+  "distance": 8
+}
+
+### 노선에 역 등록 요청6 - 2호선에 잠실나루 <-> 잠실 등록
+POST http://localhost:8080/lines/2/stations
+Content-Type: application/json
+
+{
+  "upwardStationId": 5,
+  "downwardStationId": 6,
+  "distance": 4
+}
+
+### 경로 찾기 - 노량진 <-> 서울역, 성인
+GET http://localhost:8080/paths?from=3&to=1&age=25
+
+### 경로 찾기 - 노량진 <-> 서울역, 청소년
+GET http://localhost:8080/paths?from=3&to=1&age=18
+
+### 경로 찾기 - 노량진 <-> 서울역, 어린이
+GET http://localhost:8080/paths?from=3&to=1&age=10

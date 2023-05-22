@@ -67,4 +67,12 @@ public class H2StationDao implements StationDao {
         String sql = "SELECT * from STATION where name=?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
+
+    @Override
+    public int countByName(final String name) {
+        String sql = "SELECT COUNT(*) AS count " +
+                "FROM STATION " +
+                "WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, name);
+    }
 }

@@ -43,12 +43,23 @@ public class Section {
     }
 
     public List<Section> splitByStation(final Station middleStation, final Integer upwardDistance, final Integer downwardDistance) {
+        validateDistanceLessThanZero(upwardDistance);
+        validateDistanceLessThanZero(downwardDistance);
         if (!isEmptySection() && !isSameDistance(upwardDistance + downwardDistance)) {
             throw new IllegalArgumentException("[ERROR] 구간 거리가 보존되지 않습니다.");
         }
         Section upwardSection = Section.of(this.upwardStation, middleStation, upwardDistance);
         Section downwardSection = Section.of(middleStation, this.downwardStation, downwardDistance);
         return List.of(upwardSection, downwardSection);
+    }
+
+    private void validateDistanceLessThanZero(final Integer distance) {
+        if (distance == null) {
+            return;
+        }
+        if (distance <= 0) {
+            throw new IllegalArgumentException("[ERROR] 기존 구간에 역을 삽입한 결과로 거리가 0 이하인 구간이 발생하게 됩니다.");
+        }
     }
 
     public boolean isEndOfUpward() {

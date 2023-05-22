@@ -30,7 +30,7 @@ public class LineRepository {
         }
         LineEntity lineEntity = optional.get();
         List<Section> sections = sectionDao.selectSectionsByLineId(id);
-        return Optional.of(Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections));
+        return Optional.of(Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections, lineEntity.getExtraFare()));
     }
 
     public List<Line> findAll() {
@@ -38,7 +38,7 @@ public class LineRepository {
         List<LineEntity> lineEntities = lineDao.findAll();
         for (LineEntity lineEntity : lineEntities) {
             List<Section> lineSections = sectionDao.selectSectionsByLineId(lineEntity.getId());
-            lines.add(Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineSections));
+            lines.add(Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineSections, lineEntity.getExtraFare()));
         }
         return lines;
     }
@@ -49,7 +49,7 @@ public class LineRepository {
         for (Section section : line.getSections()) {
             sectionDao.insert(section, lineId);
         }
-        return Line.of(lineId, line.getName(), line.getColor(), line.getSections());
+        return Line.of(lineId, line.getName(), line.getColor(), line.getSections(), line.getExtraFare());
     }
 
     public void update(final Line line) {
@@ -63,5 +63,13 @@ public class LineRepository {
     public void deleteById(final long id) {
         sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);
+    }
+
+    public int countByName(final String name) {
+        return lineDao.countByName(name);
+    }
+
+    public int countByColor(final String color) {
+        return lineDao.countByColor(color);
     }
 }

@@ -3,7 +3,6 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
-import subway.domain.Lines;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.repository.LineRepository;
@@ -22,11 +21,22 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest request) {
-        Lines lines = Lines.from(lineRepository.findAll());
-        Line newLine = Line.of(request.getName(), request.getColor());
-        lines.add(newLine);
-        Line insertedLine = lineRepository.insert(newLine);
-        return LineResponse.from(insertedLine);
+        Line newLine = Line.of(request.getName(), request.getColor(), request.getExtraFare());
+        validateDuplicatedName(newLine);
+        validateDuplicatedColor(newLine);
+        return LineResponse.from(lineRepository.insert(newLine));
+    }
+
+    private void validateDuplicatedName(final Line oldLine) {
+        if (lineRepository.countByName(oldLine.getName()) != 0) {
+            throw new IllegalArgumentException("[ERROR] 중복된 노선 이름을 등록할 수 없습니다.");
+        }
+    }
+
+    private void validateDuplicatedColor(final Line newLine) {
+        if (lineRepository.countByColor(newLine.getColor()) != 0) {
+            throw new IllegalArgumentException("[ERROR] 중복된 노선 색상을 등록할 수 없습니다.");
+        }
     }
 
     public List<LineResponse> findAllLines() {
@@ -43,12 +53,16 @@ public class LineService {
     }
 
     public void updateLine(final long id, final LineRequest request) {
-        Lines lines = Lines.from(lineRepository.findAll());
-        Line oldLine = lines.findById(id);
-        lines.remove(oldLine);
-        Line updatedLine = Line.of(id, request.getName(), request.getColor(), oldLine.getSections());
-        lines.add(updatedLine);
-        lineRepository.update(Line.of(id, request.getName(), request.getColor(), updatedLine.getSections()));
+        Line oldLine = lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 노선입니다."));
+        Line updatedLine = Line.of(id, request.getName(), request.getColor(), oldLine.getSections(), oldLine.getExtraFare());
+        if (!oldLine.isSameName(updatedLine)) {
+            validateDuplicatedName(updatedLine);
+        }
+        if (!oldLine.isSameColor(updatedLine)) {
+            validateDuplicatedColor(updatedLine);
+        }
+        lineRepository.update(updatedLine);
     }
 
     public void deleteLineById(final long id) {

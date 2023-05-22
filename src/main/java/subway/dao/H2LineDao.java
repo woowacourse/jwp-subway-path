@@ -22,8 +22,8 @@ public class H2LineDao implements LineDao {
             LineEntity.of(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
-
+                    rs.getString("color"),
+                    rs.getInt("extra_fare")
             );
 
     public H2LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
@@ -39,21 +39,22 @@ public class H2LineDao implements LineDao {
         params.put("id", lineEntity.getId());
         params.put("name", lineEntity.getName());
         params.put("color", lineEntity.getColor());
+        params.put("extra_fare", lineEntity.getExtraFare());
 
         long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return LineEntity.of(lineId, lineEntity.getName(), lineEntity.getColor());
+        return LineEntity.of(lineId, lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraFare());
     }
 
     @Override
     public List<LineEntity> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "select * from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
     public Optional<LineEntity> findById(final long id) {
         try {
-            String sql = "select id, name, color from LINE WHERE id = ?";
+            String sql = "select * from LINE WHERE id = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
@@ -62,12 +63,28 @@ public class H2LineDao implements LineDao {
 
     @Override
     public int update(final LineEntity lineEntity) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        return jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
+        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
+        return jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraFare(), lineEntity.getId());
     }
 
     @Override
     public int deleteById(final long id) {
         return jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    @Override
+    public int countByName(final String name) {
+        String sql = "SELECT COUNT(*) AS count " +
+                "FROM LINE " +
+                "WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, name);
+    }
+
+    @Override
+    public int countByColor(final String color) {
+        String sql = "SELECT COUNT(*) AS count " +
+                "FROM LINE " +
+                "WHERE color = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, color);
     }
 }

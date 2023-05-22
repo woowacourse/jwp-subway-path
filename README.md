@@ -1,58 +1,5 @@
 # jwp-subway-path
 
-
-### 더미 데이터
-```sql
-INSERT INTO line(name, color) VALUES ('1호선', '남색');
-INSERT INTO section(upward_id, downward_id, distance, line_id) VALUES (null, null, null, 1);
-
-INSERT INTO station(name) VALUES ('강변');
-INSERT INTO station(name) VALUES ('잠실나루');
-INSERT INTO station(name) VALUES ('잠실');
-INSERT INTO station(name) VALUES ('잠실새내');
-INSERT INTO station(name) VALUES ('종합운동장');
-
-INSERT INTO station(name) VALUES ('노량진');
-INSERT INTO station(name) VALUES ('용산');
-INSERT INTO station(name) VALUES ('서울역');
-```
-
-### 요청과 응답
-#### Request POST /lines
-```json
-{
-    "name": "2호선",
-    "color": "초록색"
-}
-```
-#### Request POST /lines/{lineId}/stations
-```json
-{
-    "lineId": 2,
-    "upwardStationId": 1,
-    "downwardStationId": 3,
-    "distance": 10
-}
-```
-#### Response GET /lines/{lineId}
-```json
-{
-    "id": 2,
-    "name": "2호선",
-    "color": "초록색",
-    "stations": [
-        {
-            "id": 1,
-            "name": "강변"
-        },
-        {
-            "id": 3,
-            "name": "잠실"
-        }
-    ]
-}
-```
-
 ### 기능 목록
 
 1. API 기능 요구사항 명세
@@ -73,16 +20,17 @@ INSERT INTO station(name) VALUES ('서울역');
 - [x] 노선 목록 조회 API 기능 구현
     - [x] GET `/lines`
     - [x] 노선에 포함된 역을 순서대로 보여주도록 응답을 개선한다.
+- [x] 경로 조회 API 기능 구현
+    - [x] GET `/paths?from={stationId}&to={stationId}&age={age}`
+    - [x] 출발역과 도착역 사이의 최단 거리 경로를 구한다.
+    - [x] 최단 거리 경로와 함께 총 거리 정보를 함께 응답한다.
+    - [x] 한 노선에서 경로 찾기 뿐만 아니라 여러 노선의 환승도 고려한다.
+    - [x] 경로 조회 시 요금 정보를 포함하여 응답합니다.
 
 2. 도메인 기능 명세
 
 노선은 기본적으로 `null - 역1 - 역 2 - 역3 - null` 형태로 구성된다.
 편의상 왼쪽 끝의 null을 상행 종점, 오른쪽 끝의 null을 하행 종점이라고 정리한다.
-
-- 노선들(Lines)
-    - [x] 노선들을 갖는다.
-    - [x] 노선 이름은 중복일 수 없다.
-    - [x] 노선 색상은 중복일 수 없다.
 
 - 노선(Line)
     - [x] 노선은 id, 이름, 해당 노선에 있는 구간들의 정보를 갖는다.
@@ -98,17 +46,6 @@ INSERT INTO station(name) VALUES ('서울역');
             - [x] 제거 처리 이후 구간이 두개만 남은 경우, 모든 구간을 삭제한다.
     - [x] 노선을 구성하는 역들을 `상행 종점 -> 하행 종점` 방향으로 정렬해서 반환한다.
 
-- 역들 (Stations)
-    - [x] 여러 역(station)에 대한 정보를 갖는다.
-    - [x] 입력된 역이 존재하는 역인지 확인할 수 있다.
-    - [x] 새로운 역을 추가할 수 있다.
-        - [x] 중복되는 역이 입력되면 예외처리한다.
-    - [x] 역을 삭제할 수 있다.
-        - [x] 존재하지 않는 역을 삭제하려고 하면 예외처리한다.
-    - [x] 등록된 역을 조회할 수 있다.
-        - [x] 존재하지 않는 역을 조회하면 예외처리 한다.
-    - [x] 상행 종점과 하행 종점은 역 이름을 `null`로 갖는다.
-
 - 역(Station)
     - [x] 역은 id, 이름을 갖는다.
     - [x] 상행 종점과 하행 종점을 나타내기 위한 빈 역은 역 이름을 null로 갖는다.
@@ -116,12 +53,38 @@ INSERT INTO station(name) VALUES ('서울역');
 
 - 구간(Section)
     - [x] 구간은 id, 상행 방향 역(Station) 정보, 하행 방향 역(Station) 정보, 역 사이 거리, 노선을 갖는다.
-    - 역 간의 연결정보는 section을 생성하며 만들어진다.
+    - [x] 역 간의 연결정보는 section을 생성하며 만들어진다.
     - [x] 상행 방향 역과 하행 방향 역이 동일하면 예외처리한다.
 
 - 거리(Distance)
     - [x] 거리 정보가 양수가 아닐 경우 예외처리한다.
     - [x] 구간에 상행 종점 또는 상행 종점이 포함될 경우 거리는 null 로 저장된다.
+
+- 지하철가이드(SubwayMap)
+    - [x] 출발역과 도착역이 주어지면 최단 경로의 구간들과 요금을 알려준다.
+
+- 경로(Path)
+    - [x] 출발역과 도착역이 주어지면 최단 경로를 구한다.
+    - [x] 최단 경로의 거리를 계산한다.
+
+- 운임요금(Fare)
+    - [x] 거리가 주어지면 거리에 해당하는 요금을 계산한다.
+    - [x] 기본운임(10㎞ 이내): 기본운임 1,250원
+    - [x] 이용 거리 초과 시 추가운임 부과한다.
+        - [x] 10km~50km: 5km 까지 마다 100원 추가
+        - [x] 50km 초과: 8km 까지 마다 100원 추가
+    - [x] 추가 요금 정책을 반영한다.
+        - [x] 노선별 추가 요금 정책을 반영한다.
+            - 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가한다.
+                - ex) 900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원
+                - ex) 900원 추가 요금이 있는 노선 12km 이용 시 1,350원 -> 2,250원
+            - 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용한다.
+                - ex) 0원, 500원, 900원의 추가 요금이 있는 노선들을 경유하여 8km 이용 시 1,250원 -> 2,150원
+        - [x] 연령별 요금 할인 정책을 반영한다.
+            - 청소년: 운임에서 350원을 공제한 금액에서 20%할인
+                - 13세 이상~19세 미만
+            - 어린이: 운임에서 350원을 공제한 금액에서 50%할인
+                - 6세 이상~13세 미만
 
 ### 숙제 - 예외 상황 검증
 

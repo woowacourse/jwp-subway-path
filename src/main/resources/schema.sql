@@ -1,7 +1,3 @@
-DROP TABLE IF EXISTS SECTION;
-DROP TABLE IF EXISTS LINE;
-DROP TABLE IF EXISTS STATION;
-
 create table if not exists STATION
 (
     id bigint auto_increment not null,
@@ -13,7 +9,8 @@ create table if not exists LINE
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
-    color varchar(20) not null,
+    color varchar(20) not null unique,
+    extra_fare int not null,
     primary key(id)
 );
 

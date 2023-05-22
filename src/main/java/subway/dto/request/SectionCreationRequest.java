@@ -5,8 +5,6 @@ import javax.validation.constraints.Positive;
 
 public class SectionCreationRequest {
 
-    @NotNull(message = "[ERROR] 노선의 id를 입력해야 합니다.")
-    private Long lineId;
     @NotNull(message = "[ERROR] 상행 방향 역의 id를 입력해야 합니다.")
     private Long upwardStationId;
     @NotNull(message = "[ERROR] 하행 방향 역의 id를 입력해야 합니다.")
@@ -17,15 +15,10 @@ public class SectionCreationRequest {
     private SectionCreationRequest() {
     }
 
-    public SectionCreationRequest(final Long lineId, final Long upwardStationId, final Long downwardStationId, final Integer distance) {
-        this.lineId = lineId;
+    public SectionCreationRequest(final Long upwardStationId, final Long downwardStationId, final Integer distance) {
         this.upwardStationId = upwardStationId;
         this.downwardStationId = downwardStationId;
         this.distance = distance;
-    }
-
-    public Long getLineId() {
-        return lineId;
     }
 
     public Long getUpwardStationId() {

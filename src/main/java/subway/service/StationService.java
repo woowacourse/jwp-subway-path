@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.domain.Stations;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
 
@@ -21,11 +20,9 @@ public class StationService {
     }
 
     public StationResponse saveStation(final StationRequest stationRequest) {
-        Stations stations = Stations.from(stationDao.findAll());
         Station newStation = Station.from(stationRequest.getName());
-        stations.addStation(newStation);
-        Station insertedStation = stationDao.insert(Station.from(stationRequest.getName()));
-        return StationResponse.from(insertedStation);
+        validateDuplicatedName(newStation);
+        return StationResponse.from(stationDao.insert(Station.from(stationRequest.getName())));
     }
 
     public StationResponse findStationById(final long id) {
@@ -41,17 +38,24 @@ public class StationService {
     }
 
     public void updateStation(final long id, final StationRequest stationRequest) {
+        Station oldStation = stationDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 역을 수정할 수 없습니다."));
         Station updatedStation = Station.of(id, stationRequest.getName());
-        Stations stations = Stations.from(stationDao.findAll());
-        Station oldStation = stations.findById(updatedStation.getId());
-        stations.remove(oldStation);
-        stations.addStation(updatedStation);
+        if (!oldStation.isSameName(updatedStation)) {
+            validateDuplicatedName(updatedStation);
+        }
         stationDao.update(updatedStation);
+    }
+
+    private void validateDuplicatedName(final Station updatedStation) {
+        if (stationDao.countByName(updatedStation.getName()) != 0) {
+            throw new IllegalArgumentException("[ERROR] 중복된 역 이름을 등록할 수 없습니다.");
+        }
     }
 
     public void deleteStationById(final long id) {
         stationDao.findById(id)
-                .orElseThrow(() -> new IllegalStateException("[ERROR] 존재하지 않는 역을 삭제할 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 역을 삭제할 수 없습니다."));
         stationDao.deleteById(id);
     }
 }

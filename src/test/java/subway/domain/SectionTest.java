@@ -1,10 +1,10 @@
 package subway.domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayName("Section은 ")
 class SectionTest {
@@ -15,7 +15,7 @@ class SectionTest {
         // given
         Station upwardStation = Station.of(2L, "잠실나루");
         Station downwardStation = Station.of(1L, "잠실");
-        Line line = Line.of("2호선", "초록색");
+        Line line = Line.of("2호선", "초록색", 0);
 
         // then
         assertDoesNotThrow(() -> Section.of(upwardStation, downwardStation, 10));
@@ -26,7 +26,7 @@ class SectionTest {
     void sectionHasSameStationExceptionTest() {
         // given
         Station upwardStation = Station.of(1L, "잠실나루");
-        Line line = Line.of("2호선", "초록색");
+        Line line = Line.of("2호선", "초록색", 0);
 
         // then
         assertThatThrownBy(() -> Section.of(upwardStation, upwardStation, 10))

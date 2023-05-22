@@ -14,27 +14,29 @@ public class Line {
     private final String name;
     private final String color;
     private final List<Section> sections;
+    private final int extraFare;
 
-    private Line(final Long id, final String name, final String color, final List<Section> sections) {
+    private Line(final Long id, final String name, final String color, final List<Section> sections, final int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
+        this.extraFare = extraFare;
     }
 
-    public static Line of(final String name, final String color) {
+    public static Line of(final String name, final String color, final int extraFare) {
         Section initialSection = Section.createEmpty();
         List<Section> emptySections = new LinkedList<>();
         emptySections.add(initialSection);
-        return new Line(null, name, color, emptySections);
+        return new Line(null, name, color, emptySections, extraFare);
     }
 
-    public static Line of(final long id, final String name, final String color, final List<Section> sections) {
-        return new Line(id, name, color, sections);
+    public static Line of(final long id, final String name, final String color, final List<Section> sections, final int extraFare) {
+        return new Line(id, name, color, sections, extraFare);
     }
 
     public static LineEntity toEntity(final Line line) {
-        return LineEntity.of(line.id, line.name, line.color);
+        return LineEntity.of(line.id, line.name, line.color, line.extraFare);
     }
 
     public void addSection(final Station upwardStation, final Station downwardStation, final int distance) {
@@ -219,6 +221,16 @@ public class Line {
         return sections;
     }
 
+    public List<Section> getSectionsExceptEmpty() {
+        List<Section> sections = new ArrayList<>(this.sections);
+        sections.removeAll(List.of(getDownwardEndSection(), getUpwardEndSection()));
+        return sections;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -234,5 +246,15 @@ public class Line {
 
     public boolean isSameId(final long id) {
         return this.id == id;
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", sections=" + sections +
+                '}';
     }
 }
