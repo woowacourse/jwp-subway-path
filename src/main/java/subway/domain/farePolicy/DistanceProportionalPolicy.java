@@ -17,6 +17,8 @@ public class DistanceProportionalPolicy implements FarePolicy {
     public static final int ADDITIONAL_FARE = 100;
     public static final int BASIC_FARE = 1250;
     public static final int SECOND_HURDLE_DISTANCE = 50;
+    public static final int FIRST_DISTANCE_UNIT = 5;
+    public static final int SECOND_DISTANCE_UNIT = 8;
 
     @Override
     public Money applyPolicies(Money money, List<Sections> allSections, List<Section> path, PassengerDto passengerDto, FarePolicyChain policyChain) {
@@ -24,15 +26,15 @@ public class DistanceProportionalPolicy implements FarePolicy {
         Money fare = Money.of(BASIC_FARE);
 
         if (distance.isSameOrOver(BASIC_DISTANCE)) {
-            int overCount = calculateOverCount(5, (int) (distance.getDistance() - BASIC_DISTANCE));
-            if (overCount > 8) {
-                overCount = 8;
+            int overCount = calculateOverCount(FIRST_DISTANCE_UNIT, (int) (distance.getDistance() - BASIC_DISTANCE));
+            if (overCount > (SECOND_HURDLE_DISTANCE - BASIC_DISTANCE)/FIRST_DISTANCE_UNIT) {
+                overCount = (SECOND_HURDLE_DISTANCE - BASIC_DISTANCE)/FIRST_DISTANCE_UNIT;
             }
             fare = fare.plus(Money.of(overCount * ADDITIONAL_FARE));
         }
 
         if (distance.isOver(SECOND_HURDLE_DISTANCE)) {
-            int overCount = calculateOverCount(8, (int) (distance.getDistance() - SECOND_HURDLE_DISTANCE));
+            int overCount = calculateOverCount(SECOND_DISTANCE_UNIT, (int) (distance.getDistance() - SECOND_HURDLE_DISTANCE));
             fare = fare.plus(Money.of(overCount * ADDITIONAL_FARE));
         }
         return policyChain.applyPolicy(fare, allSections, path, passengerDto);
