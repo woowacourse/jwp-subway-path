@@ -2,12 +2,10 @@ package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
-import static subway.TestFixture.LINE_A;
-import static subway.TestFixture.LINE_B;
-import static subway.TestFixture.SHORTEST_PATH_IN_LINE_A_AND_B_STATION_A_TO_E;
-import static subway.TestFixture.SHORTEST_PATH_IN_LINE_C_AND_D_STATION_A_TO_E;
-import static subway.TestFixture.SHORTEST_PATH_STATIONS_IN_LINE_A_AND_B_STATION_A_TO_E;
 import static subway.TestFixture.STATION_A;
+import static subway.TestFixture.STATION_B;
+import static subway.TestFixture.STATION_C;
+import static subway.TestFixture.STATION_D;
 import static subway.TestFixture.STATION_E;
 
 import java.util.List;
@@ -20,13 +18,30 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import subway.domain.Path;
+import subway.domain.Line;
+import subway.domain.Section;
 import subway.domain.Station;
 import subway.persistence.LineRepository;
 import subway.persistence.StationDao;
 
 @ExtendWith(MockitoExtension.class)
 class SubwayServiceTest {
+
+    public static final Line LINE_A = new Line(4L, "99호선", "gray");
+    public static final Line LINE_B = new Line(5L, "100호선", "white");
+
+    static {
+        LINE_A.add(new Section(STATION_A, STATION_C, 1));
+        LINE_A.add(new Section(STATION_C, STATION_D, 1));
+        LINE_A.add(new Section(STATION_D, STATION_E, 6));
+        LINE_B.add(new Section(STATION_A, STATION_B, 1));
+        LINE_B.add(new Section(STATION_B, STATION_C, 1));
+        LINE_B.add(new Section(STATION_C, STATION_E, 6));
+    }
+
+    public static final List<Station> SHORTEST_PATH_STATIONS_IN_LINE_A_AND_B_STATION_A_TO_E = List.of(
+            STATION_A, STATION_C, STATION_E
+    );
 
     @InjectMocks
     private SubwayService subwayService;
@@ -50,7 +65,6 @@ class SubwayServiceTest {
                 .collect(Collectors.toList());
 
         var path = subwayService.getShortestPath(STATION_A.getId(), STATION_E.getId());
-
 
         assertThat(path.getStations())
                 .extracting("id")
