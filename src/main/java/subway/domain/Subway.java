@@ -1,6 +1,8 @@
 package subway.domain;
 
 import subway.domain.graph.Graph;
+import subway.domain.path.Path;
+import subway.domain.path.ShortestPath;
 import subway.dto.PathDto;
 import subway.exeption.LineNotFoundException;
 
@@ -68,10 +70,10 @@ public class Subway {
     }
 
     public PathDto findShortestPath(final Station source, final Station target) {
-        final ShortestPath shortestPath = ShortestPath.from(sections);
+        final Path path = new ShortestPath().registerSections(sections);
 
-        final List<Station> stations = shortestPath.path(source, target);
-        double distance = shortestPath.distance(source, target);
+        final List<Station> stations = path.path(source, target);
+        double distance = path.distance(source, target);
 
         return new PathDto(stations, distance);
     }
