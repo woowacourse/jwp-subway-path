@@ -12,8 +12,8 @@ public class StationEntity {
         this.name = name;
     }
 
-    public StationEntity(final String name) {
-        this(null, name);
+    public static StationEntity from(final Station station) {
+        return new StationEntity(station.getId(), station.getName());
     }
 
     public Station toStation() {

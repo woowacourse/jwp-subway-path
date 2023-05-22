@@ -14,7 +14,8 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public Station save(final StationEntity stationEntity) {
+    public Station save(final Station station) {
+        final StationEntity stationEntity = StationEntity.from(station);
         return stationDao.insert(stationEntity).toStation();
     }
 
@@ -22,8 +23,8 @@ public class StationRepository {
         return stationDao.findById(id).toStation();
     }
 
-    public boolean contains(final StationEntity stationEntity) {
+    public boolean contains(final Station station) {
         return stationDao.findAll().stream()
-                .anyMatch(it -> it.getName().equals(stationEntity.getName()));
+                .anyMatch(it -> it.getName().equals(station.getName()));
     }
 }
