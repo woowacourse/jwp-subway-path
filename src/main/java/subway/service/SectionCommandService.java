@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.domain.section.Section;
@@ -11,6 +12,7 @@ import subway.global.exception.section.CanNotDuplicatedSectionException;
 import java.util.List;
 
 @Service
+@Transactional
 public class SectionCommandService {
 
     private final SectionDao sectionDao;

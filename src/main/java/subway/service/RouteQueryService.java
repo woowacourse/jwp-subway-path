@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Money;
 import subway.domain.line.Line;
 import subway.domain.policy.ChargePolicyComposite;
@@ -12,6 +13,7 @@ import subway.service.dto.ShortestRouteRequest;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class RouteQueryService {
 
     private final LineQueryService lineQueryService;
