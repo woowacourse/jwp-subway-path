@@ -24,7 +24,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Optional<Long> findLine = lineRepository.findByName(request.getName());
 
-        if(findLine.isPresent()){
+        if (findLine.isPresent()) {
             throw new InvalidInputException("이미 존재하는 노선입니다.");
         }
 

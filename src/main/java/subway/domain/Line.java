@@ -1,7 +1,6 @@
 package subway.domain;
 
 import subway.domain.strategy.*;
-import subway.dto.SectionResponse;
 import subway.exception.InvalidInputException;
 
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -138,17 +136,6 @@ public class Line {
         sections.remove(upSection);
         sections.remove(downSection);
         return new DeleteMiddleStrategy(this);
-    }
-
-    // TODO: 지우기
-    public List<SectionResponse> getSectionResponse() {
-        return sections.stream().map(section -> new SectionResponse(
-                section.getId(),
-                section.getLineId(),
-                section.getUpStation().getId(),
-                section.getDownStation().getId(),
-                section.getDistance())
-        ).collect(Collectors.toUnmodifiableList());
     }
 
     public List<Station> getAligned() {

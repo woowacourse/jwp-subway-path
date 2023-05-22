@@ -62,9 +62,9 @@ public class StationDao {
 
     public Optional<StationEntity> findByName(String name) {
         String sql = "select id, name STATION WHERE name = ?";
-        try{
+        try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             return Optional.empty();
         }
     }

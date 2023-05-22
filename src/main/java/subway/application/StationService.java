@@ -26,7 +26,7 @@ public class StationService {
     public StationResponse saveStation(StationRequest stationRequest) {
         Optional<Long> findStation = lineRepository.findStationByName(stationRequest.getName());
 
-        if(findStation.isPresent()){
+        if (findStation.isPresent()) {
             throw new InvalidInputException("이미 존재하는 역입니다.");
         }
 
@@ -57,10 +57,10 @@ public class StationService {
         Station deletStation = lineRepository.findStationById(id);
 
         for (Line line : allLines) {
-            try{
+            try {
                 DeleteSectionStrategy deleteSectionStrategy = line.readyToDelete(deletStation);
                 deleteSectionStrategy.execute(lineRepository);
-            } catch (InvalidInputException e){
+            } catch (InvalidInputException e) {
                 continue;
             }
         }

@@ -83,13 +83,12 @@ public class Section {
         return Objects.hash(upStation, downStation, distance);
     }
 
-    // TODO: 지우기
     public long getId() {
         return id;
     }
 
     public Optional<Station> findDownStationFrom(Station station) {
-        if(upStation.equals(station)){
+        if (upStation.equals(station)) {
             return Optional.of(downStation);
         }
         return Optional.empty();

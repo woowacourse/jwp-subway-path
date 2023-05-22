@@ -35,7 +35,6 @@ public class LineDao {
 
     public LineEntity insert(Line line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
 
@@ -64,9 +63,9 @@ public class LineDao {
 
     public Optional<LineEntity> findByName(String name) {
         String sql = "select id, name, color LINE WHERE name = ?";
-        try{
+        try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             return Optional.empty();
         }
     }

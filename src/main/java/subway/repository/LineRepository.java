@@ -78,9 +78,9 @@ public class LineRepository {
         }
     }
 
-    public void saveSection(Section section) {
+    public SectionEntity saveSection(Section section) {
         SectionEntity sectionEntity = lineMapper.toSectionEntity(section);
-        sectiondao.insert(sectionEntity);
+        return sectiondao.insert(sectionEntity);
     }
 
     public void removeSectionsByLineId(long lineId) {

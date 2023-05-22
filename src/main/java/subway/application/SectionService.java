@@ -12,6 +12,7 @@ import subway.dto.SectionResponse;
 import subway.repository.LineRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -45,7 +46,19 @@ public class SectionService {
 
         addSectionStrategy.execute(lineRepository);
         Line line = lineRepository.findById(findLine.getId());
-        return line.getSectionResponse();
+        return toSectionResponse(line);
+    }
+
+    private List<SectionResponse> toSectionResponse(Line line) {
+        return line.getSections()
+                .stream()
+                .map(section -> new SectionResponse(
+                        section.getId(),
+                        section.getLineId(),
+                        section.getUpStation().getId(),
+                        section.getDownStation().getId(),
+                        section.getDistance())
+                ).collect(Collectors.toUnmodifiableList());
     }
 
     public void deleteSection(final DeleteSectionRequest deleteSectionRequest) {
