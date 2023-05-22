@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.vo;
 
 import java.util.Objects;
+import subway.exception.vo.ChargeException;
 
 public class Charge {
     private final double value;
@@ -24,7 +25,7 @@ public class Charge {
 
     private void validate(double charge) {
         if (charge < 0) {
-            throw new IllegalArgumentException("금액은 음수가 될 수 없습니다.");
+            throw new ChargeException();
         }
     }
 

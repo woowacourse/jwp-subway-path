@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import subway.domain.Distance;
+import subway.domain.vo.Distance;
+import subway.exception.line.BothStationsAlreadyExistException;
+import subway.exception.line.BothStationsDoNotExistException;
+import subway.exception.line.ForkedRoadException;
+import subway.exception.line.StationDoesNotExistOnLineException;
 
 public class Sections {
 
@@ -30,10 +34,10 @@ public class Sections {
 
     private void validateStations(Station upStation, Station downStation) {
         if (isAlreadyExistBoth(upStation, downStation)) {
-            throw new IllegalArgumentException("해당 노선에 두 역이 모두 존재합니다.");
+            throw new BothStationsAlreadyExistException();
         }
         if (isNothingExist(upStation, downStation)) {
-            throw new IllegalArgumentException("해당 노선에 두 역이 모두 존재하지 않습니다.");
+            throw new BothStationsDoNotExistException();
         }
     }
 
@@ -75,10 +79,10 @@ public class Sections {
 
     private static void validateTargetSections(List<Section> targetSections) {
         if (targetSections.isEmpty()) {
-            throw new IllegalArgumentException("해당 역이 해당 노선에 존재하지 않습니다.");
+            throw new StationDoesNotExistOnLineException();
         }
         if (targetSections.size() > 2) {
-            throw new IllegalArgumentException("해당 노선에 갈래길이 존재합니다. 확인해주세요.");
+            throw new ForkedRoadException();
         }
     }
 

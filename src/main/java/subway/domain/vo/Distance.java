@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.vo;
 
 import java.util.Objects;
+import subway.exception.vo.DistanceException;
 
 public class Distance {
     private final double value;
@@ -12,7 +13,7 @@ public class Distance {
 
     private void validate(double distance) {
         if (distance < 0) {
-            throw new IllegalArgumentException("거리는 음수가 될 수 없습니다.");
+            throw new DistanceException();
         }
     }
 

@@ -12,6 +12,8 @@ import subway.domain.subway.Path;
 import subway.domain.line.Section;
 import subway.domain.line.Station;
 import subway.domain.subway.Subway;
+import subway.domain.vo.Charge;
+import subway.domain.vo.Distance;
 
 class SubwayTest {
 

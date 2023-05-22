@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.domain.line.Line;
 import subway.domain.line.Station;
+import subway.domain.vo.Charge;
+import subway.domain.vo.Distance;
 
 class LineTest {
 

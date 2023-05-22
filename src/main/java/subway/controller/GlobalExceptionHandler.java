@@ -8,11 +8,21 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.dto.response.ErrorResponse;
+import subway.exception.line.LineException;
+import subway.exception.subway.SubwayException;
+import subway.exception.vo.VoException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    @ExceptionHandler({LineException.class, SubwayException.class, VoException.class})
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(Exception e) {
+        log.warn(e.getMessage());
+        ErrorResponse response = new ErrorResponse(e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e,

@@ -1,13 +1,13 @@
 package subway.domain.line;
 
 import java.util.List;
-import subway.domain.Distance;
+import subway.domain.vo.Distance;
 
 public enum Direction {
     UP(new UpAddStrategy()),
     DOWN(new DownAddStrategy());
 
-    private AddStrategy addStrategy;
+    private final AddStrategy addStrategy;
 
     Direction(AddStrategy addStrategy) {
         this.addStrategy = addStrategy;

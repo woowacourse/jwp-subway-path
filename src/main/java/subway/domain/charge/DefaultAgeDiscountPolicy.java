@@ -1,6 +1,6 @@
 package subway.domain.charge;
 
-import subway.domain.Charge;
+import subway.domain.vo.Charge;
 
 public class DefaultAgeDiscountPolicy implements AgeDiscountPolicy {
 

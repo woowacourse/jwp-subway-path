@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.domain.Distance;
-import subway.domain.Charge;
+import subway.domain.vo.Distance;
+import subway.domain.vo.Charge;
 import subway.domain.charge.ChargeBooth;
 import subway.domain.line.Line;
 import subway.domain.line.Section;
 import subway.domain.line.Station;
+import subway.exception.subway.PathNotFoundException;
+import subway.exception.subway.StationIsNotRegisteredOnLine;
 
 public class Subway {
     private final WeightedMultigraph<Station, WeightedEdgeWithLine> graph;
@@ -23,7 +25,7 @@ public class Subway {
     }
 
     public static Subway create(List<Line> lines) {
-        WeightedMultigraph<Station, WeightedEdgeWithLine> graph = new WeightedMultigraph(WeightedEdgeWithLine.class);
+        WeightedMultigraph<Station, WeightedEdgeWithLine> graph = new WeightedMultigraph<>(WeightedEdgeWithLine.class);
 
         lines.stream()
                 .flatMap(line -> line.getStations().stream())
@@ -42,19 +44,19 @@ public class Subway {
 
     public Path findShortestRoute(int passengerAge, Station startStation, Station endStation) {
         if (!graph.containsVertex(startStation) || !graph.containsVertex(endStation)) {
-            throw new IllegalArgumentException("노선에 등록되지 않은 역입니다.");
+            throw new StationIsNotRegisteredOnLine();
         }
 
         DijkstraShortestPath<Station, WeightedEdgeWithLine> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, WeightedEdgeWithLine> shortestRoute = dijkstraShortestPath.getPath(startStation, endStation);
 
         if (shortestRoute == null) {
-            throw new IllegalArgumentException("경로를 찾을 수 없습니다.");
+            throw new PathNotFoundException();
         }
 
         Distance totalDistance = new Distance(shortestRoute.getWeight());
         List<Line> linesInRoute = shortestRoute.getEdgeList().stream()
-                .map(edge -> edge.getLine())
+                .map(WeightedEdgeWithLine::getLine)
                 .collect(Collectors.toList());
         Charge totalCharge = chargeBooth.calculateCharge(passengerAge, totalDistance, linesInRoute);
         List<Route> routes = getRoutes(shortestRoute.getEdgeList());

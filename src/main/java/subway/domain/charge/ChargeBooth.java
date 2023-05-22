@@ -1,8 +1,8 @@
 package subway.domain.charge;
 
 import java.util.List;
-import subway.domain.Charge;
-import subway.domain.Distance;
+import subway.domain.vo.Charge;
+import subway.domain.vo.Distance;
 import subway.domain.line.Line;
 
 public class ChargeBooth {

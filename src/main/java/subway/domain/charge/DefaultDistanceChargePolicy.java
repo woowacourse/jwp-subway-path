@@ -1,7 +1,7 @@
 package subway.domain.charge;
 
-import subway.domain.Charge;
-import subway.domain.Distance;
+import subway.domain.vo.Charge;
+import subway.domain.vo.Distance;
 
 public class DefaultDistanceChargePolicy implements DistanceChargePolicy {
     private static final Charge BASIC_CHARGE = new Charge(1250);

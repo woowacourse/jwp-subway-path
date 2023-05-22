@@ -2,7 +2,8 @@ package subway.domain.line;
 
 import java.util.List;
 import java.util.Optional;
-import subway.domain.Distance;
+import subway.domain.vo.Distance;
+import subway.exception.line.DistanceIsLongerThanExistingDistanceException;
 
 public class DownAddStrategy implements AddStrategy {
 
@@ -13,7 +14,7 @@ public class DownAddStrategy implements AddStrategy {
         if (section.isPresent()) {
             final Section existingSection = section.get();
             if (existingSection.hasSmallerDistanceThan(distance)) {
-                throw new IllegalArgumentException("추가하려는 거리가 기존의 거리보다 깁니다.");
+                throw new DistanceIsLongerThanExistingDistanceException();
             }
             sections.add(new Section(downStation, existingSection.getDownStation(), existingSection.getDistance().substract(distance)));
             sections.remove(existingSection);

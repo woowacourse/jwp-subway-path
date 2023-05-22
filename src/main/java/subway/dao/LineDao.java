@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
-import subway.domain.Charge;
+import subway.domain.vo.Charge;
 
 @Repository
 public class LineDao {

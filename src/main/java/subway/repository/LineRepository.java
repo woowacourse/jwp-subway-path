@@ -3,10 +3,12 @@ package subway.repository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
-import subway.dao.SectionDao;
 import subway.dao.LineDao;
-import subway.domain.line.Section;
+import subway.dao.SectionDao;
 import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.exception.line.LineAlreadyExistException;
+import subway.exception.line.LineDoesNotExistException;
 
 @Repository
 public class LineRepository {
@@ -47,13 +49,13 @@ public class LineRepository {
     public void checkLineIsExist(String lineName) {
         lineDao.findByName(lineName)
                 .ifPresent(line -> {
-                    throw new IllegalArgumentException("이미 존재하는 노선입니다.");
+                    throw new LineAlreadyExistException();
                 });
     }
 
     public Line assembleLine(Long lineId) {
         Line line = lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new LineDoesNotExistException());
 
         List<Section> sections = sectionDao.findSectionsByLineId(line.getId());
         return new Line(line.getId(), line.getName(), line.getExtraCharge(), sections);
