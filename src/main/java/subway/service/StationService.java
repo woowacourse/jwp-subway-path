@@ -34,8 +34,9 @@ public class StationService {
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<StationEntity> stationEntities = stationDao.findAll();
+
         return stationEntities.stream()
-                .map(this::convertToStationResponse)
+                .map(StationEntity::convertToResponse)
                 .collect(Collectors.toList());
     }
 

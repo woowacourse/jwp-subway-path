@@ -38,7 +38,7 @@ public class LineService {
     }
 
     private LineResponse addLine(LineCreateRequest request, StationEntity stationEntity) {
-        Station station = createStationFromStationEntity(stationEntity);
+        Station station = stationEntity.convertToStation();
         LineRequest lineRequest = request.getLineRequest();
         LineEntity lineEntity = new LineEntity(null, lineRequest.getName(), lineRequest.getColor(), station.getId());
         Long lineId = lineDao.insert(lineEntity);
@@ -51,9 +51,6 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException(stationName + "역은 등록되지 않았습니다"));
     }
 
-    public Station createStationFromStationEntity(StationEntity stationEntity) {
-        return new Station(stationEntity.getName(), new Distance(stationEntity.getDistance()));
-    }
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
@@ -88,7 +85,7 @@ public class LineService {
     private void addStationInLine(Long id, LineCreateRequest updateRequest) {
         StationRequest stationRequest = updateRequest.getStationRequest();
         List<StationEntity> allStations = lineDao.findAllStationsById(id);
-        Stations lineStations = createStationsFromStationEntity(allStations);
+        Stations lineStations = StationEntity.convertToStations(allStations);
 
         if (isUpStationAdd(stationRequest, lineStations)) {
             addUpStation(id, stationRequest, lineStations);
@@ -97,35 +94,6 @@ public class LineService {
         if (isDownStationAdd(stationRequest, lineStations)) {
             addDownStation(id, stationRequest, lineStations);
         }
-    }
-
-    public Stations createStationsFromStationEntity(List<StationEntity> stationEntity) {
-        return new Stations(stationEntity.stream()
-                .map(entity -> new Station(entity.getName(), new Distance(entity.getDistance())))
-                .collect(Collectors.toList()));
-    }
-
-    private void addDownStation(Long lineId, StationRequest stationRequest, Stations lineStations) {
-        //upStation이 line에 존재, 새로운 downStation을 삽입하고자 하는 경우
-        Station upStation = lineStations.findByName(stationRequest.getName());
-        Station downStation = new Station(stationRequest.getNextStationName(), new Distance(0));
-
-        int upStationIndex = lineStations.findIndex(upStation);
-        if (upStationIndex == lineStations.getStationsSize() - 1) {
-            downStation.setDistance(new Distance(upStation.getDistance().getValue() - stationRequest.getDistance()));
-        }
-
-        upStation.setDistance(new Distance(stationRequest.getDistance()));
-        lineStations.addStationByIndex(upStationIndex + 1, downStation);
-
-        StationEntity stationEntity = new StationEntity(downStation.getId(), downStation.getName(), downStation.getId(), downStation.getDistance().getValue(), lineId);
-        stationDao.insert(stationEntity);
-        stationDao.update(upStation.getId(), new StationEntity(
-                upStation.getId(), upStation.getName(), downStation.getId(), upStation.getDistance().getValue(), lineId));
-    }
-
-    private boolean isDownStationAdd(StationRequest stationRequest, Stations lineStations) {
-        return lineStations.isExistStation(stationRequest.getName()) && !lineStations.isExistStation(stationRequest.getNextStationName());
     }
 
     private void addUpStation(Long lineId, StationRequest stationRequest, Stations lineStations) {
@@ -154,6 +122,31 @@ public class LineService {
         stationDao.update(downStation.getId(), new StationEntity(
                 downStation.getId(), downStation.getName(), nextStationId, downStation.getDistance().getValue(), lineId));
     }
+
+
+    private void addDownStation(Long lineId, StationRequest stationRequest, Stations lineStations) {
+        //upStation이 line에 존재, 새로운 downStation을 삽입하고자 하는 경우
+        Station upStation = lineStations.findByName(stationRequest.getName());
+        Station downStation = new Station(stationRequest.getNextStationName(), new Distance(0));
+
+        int upStationIndex = lineStations.findIndex(upStation);
+        if (upStationIndex == lineStations.getStationsSize() - 1) {
+            downStation.setDistance(new Distance(upStation.getDistance().getValue() - stationRequest.getDistance()));
+        }
+
+        upStation.setDistance(new Distance(stationRequest.getDistance()));
+        lineStations.addStationByIndex(upStationIndex + 1, downStation);
+
+        StationEntity stationEntity = new StationEntity(downStation.getId(), downStation.getName(), downStation.getId(), downStation.getDistance().getValue(), lineId);
+        stationDao.insert(stationEntity);
+        stationDao.update(upStation.getId(), new StationEntity(
+                upStation.getId(), upStation.getName(), downStation.getId(), upStation.getDistance().getValue(), lineId));
+    }
+
+    private boolean isDownStationAdd(StationRequest stationRequest, Stations lineStations) {
+        return lineStations.isExistStation(stationRequest.getName()) && !lineStations.isExistStation(stationRequest.getNextStationName());
+    }
+
 
     private boolean isUpStationAdd(StationRequest stationRequest, Stations lineStations) {
         return !lineStations.isExistStation(stationRequest.getName())
