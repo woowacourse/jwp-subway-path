@@ -22,3 +22,5 @@ insert into station(name)
 values ('16키로');
 insert into station(name)
 values ('58키로');
+insert into station(name)
+values ('연결이안된역');
