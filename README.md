@@ -93,6 +93,12 @@
 | POST   | /sections | 노선에 역 추가    |
 | DELETE | /sections | 노선에 역 삭제    |
 
+### 경로 조회 API
+
+| Method | URI                 | Description   |
+|--------|---------------------|---------------|
+| GET    | /paths/shortestPath | 최단 경로 및 요금 조회 |
+
 ---
 
 ### Line API 요청 / 응답 예시
@@ -251,4 +257,38 @@ Host: localhost:8080
 
 ``` http request
 HTTP/1.1 204 No Content
+```
+
+---
+
+### Path API 요청 / 응답 예시
+
+#### GET : 최단 경로 및 요금 조회
+
+`Request`
+
+```http request
+GET /paths/shortestPath HTTP/1.1
+Host: localhost:8080
+
+{
+    "sourceStation":"주노역",
+    "targetStation":"찰리역"
+}
+```
+
+`Response`
+
+``` http request
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "shortestPath": [
+        "주노역",
+        "찰리역"
+    ],
+    "shortestPathDistance": 9,
+    "fare": 1250
+}
 ```
