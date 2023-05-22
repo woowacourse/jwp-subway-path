@@ -1,8 +1,17 @@
 spring:
-  h2:
-    console:
-      enabled: true
-
+  profiles:
+    active: prod
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://localhost:3306/subway?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath*:schema.sql
