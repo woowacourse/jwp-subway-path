@@ -41,6 +41,7 @@ public class TestFixture {
     public static final Line LINE_A = new Line(4L, "99호선", "gray");
     public static final Line LINE_B = new Line(5L, "100호선", "white");
 
+    // 그림 참조: https://github.com/woowacourse/jwp-subway-path/assets/39221443/a2270a47-f63f-4955-bcd4-b85a00ae5999
     static {
         LINE_A.add(new Section(STATION_A, STATION_C, 1));
         LINE_A.add(new Section(STATION_C, STATION_D, 1));
@@ -61,6 +62,7 @@ public class TestFixture {
     public static final Line LINE_C = new Line(1L, "101호선", "blue");
     public static final Line LINE_D = new Line(1L, "102호선", "blue");
 
+    // 그림 참조: https://github.com/woowacourse/jwp-subway-path/assets/39221443/ab649162-2b65-4ace-b69a-d808190272c0
     static {
         LINE_C.add(new Section(STATION_A, STATION_C, 1));
         LINE_C.add(new Section(STATION_C, STATION_D, 3));
