@@ -35,7 +35,8 @@ class LineDaoTest {
             );
     private List<LineEntity> expectLines = List.of(
             new LineEntity(1L, "2호선", "초록색"),
-            new LineEntity(2L, "1호선", "파랑색")
+            new LineEntity(2L, "1호선", "파랑색"),
+            new LineEntity(3L, "7호선", "올리브색")
     );
 
     @Autowired
