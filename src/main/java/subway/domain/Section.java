@@ -4,14 +4,11 @@ import java.util.Objects;
 
 public class Section {
 
-    private Long id;
-    private Long lineId;
-    private Station upStation;
-    private Station downStation;
-    private Distance distance;
-
-    private Section() {
-    }
+    private final Long id;
+    private final Long lineId;
+    private final Station upStation;
+    private final Station downStation;
+    private final Distance distance;
 
     public Section(final Long id, final Section other) {
         this(id, other.lineId, other.upStation, other.downStation, other.distance);

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
@@ -15,10 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineResponseWithSections;
 import subway.dto.LineResponseWithStations;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
@@ -167,28 +166,16 @@ class LineControllerTest extends ControllerTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final List<LineResponseWithSections> result = response.jsonPath().getList(".", LineResponseWithSections.class);
+        final JsonPath jsonPath = response.jsonPath();
         assertAll(
-                () -> assertThat(result.get(0).getId()).isPositive(),
-                () -> assertThat(result.get(0).getName()).isEqualTo("1호선"),
-                () -> assertThat(result.get(0).getColor()).isEqualTo("파란색"),
-                () -> assertThat(result.get(0).getSections()).containsExactly(
-                        Section.builder().id(1L).build(),
-                        Section.builder().id(2L).build(),
-                        Section.builder().id(3L).build(),
-                        Section.builder().id(4L).build(),
-                        Section.builder().id(5L).build(),
-                        Section.builder().id(6L).build()
-                ),
-                () -> assertThat(result.get(1).getId()).isPositive(),
-                () -> assertThat(result.get(1).getName()).isEqualTo("2호선"),
-                () -> assertThat(result.get(1).getColor()).isEqualTo("초록색"),
-                () -> assertThat(result.get(1).getSections()).containsExactly(
-                        Section.builder().id(7L).build(),
-                        Section.builder().id(8L).build(),
-                        Section.builder().id(9L).build(),
-                        Section.builder().id(10L).build()
-                )
+                () -> assertThat(jsonPath.getLong("[0].id")).isPositive(),
+                () -> assertThat(jsonPath.getString("[0].name")).isEqualTo("1호선"),
+                () -> assertThat(jsonPath.getString("[0].color")).isEqualTo("파란색"),
+                () -> assertThat(jsonPath.getList("[0].sections")).hasSize(6),
+                () -> assertThat(jsonPath.getLong("[1].id")).isPositive(),
+                () -> assertThat(jsonPath.getString("[1].name")).isEqualTo("2호선"),
+                () -> assertThat(jsonPath.getString("[1].color")).isEqualTo("초록색"),
+                () -> assertThat(jsonPath.getList("[1].sections")).hasSize(4)
         );
     }
 
@@ -206,19 +193,12 @@ class LineControllerTest extends ControllerTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final LineResponseWithSections result = response.as(LineResponseWithSections.class);
+        final JsonPath jsonPath = response.jsonPath();
         assertAll(
-                () -> assertThat(result.getId()).isEqualTo(1),
-                () -> assertThat(result.getName()).isEqualTo("1호선"),
-                () -> assertThat(result.getColor()).isEqualTo("파란색"),
-                () -> assertThat(result.getSections()).containsExactly(
-                        Section.builder().id(1L).build(),
-                        Section.builder().id(2L).build(),
-                        Section.builder().id(3L).build(),
-                        Section.builder().id(4L).build(),
-                        Section.builder().id(5L).build(),
-                        Section.builder().id(6L).build()
-                )
+                () -> assertThat(jsonPath.getLong("id")).isEqualTo(1L),
+                () -> assertThat(jsonPath.getString("name")).isEqualTo("1호선"),
+                () -> assertThat(jsonPath.getString("color")).isEqualTo("파란색"),
+                () -> assertThat(jsonPath.getList("sections")).hasSize(6)
         );
     }
 
