@@ -10,6 +10,9 @@ public class AddStationRequest {
     private String downstreamName;
     private int distanceToUpstream;
 
+    public AddStationRequest() {
+    }
+
     public AddStationRequest(String addStationName, String lineName, String upstreamName, String downstreamName, int distanceToUpstream) {
         this.addStationName = addStationName;
         this.lineName = lineName;

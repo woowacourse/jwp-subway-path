@@ -7,6 +7,9 @@ public class AddLineRequest {
     private String downstreamName;
     private int distance;
 
+    public AddLineRequest() {
+    }
+
     public AddLineRequest(String lineName, String upstreamName, String downstreamName, int distance) {
         this.lineName = lineName;
         this.upstreamName = upstreamName;
