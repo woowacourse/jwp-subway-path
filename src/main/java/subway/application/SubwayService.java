@@ -31,8 +31,19 @@ public class SubwayService {
         RouteGraph routeGraph = JgraphtRouteGraph.from(lines);
 
         List<Station> routes = routeGraph.findShortestRoute(startStation, endStation);
+        List<Line> linesOnRoutes = routeGraph.findLinesOnRoutes(startStation, endStation);
         Distance distance = routeGraph.findShortestDistance(startStation, endStation);
-        Fare fare = DistanceFarePolicy.calculateFare(distance);
+
+        Fare fare = calculateFare(linesOnRoutes, distance);
         return new RouteSearchResponse(routes, distance.getValue(), fare.getValue());
+    }
+
+    private Fare calculateFare(List<Line> linesOnRoute, Distance distance) {
+        Fare fare = DistanceFarePolicy.calculateFare(distance);
+        int extraFare = linesOnRoute.stream()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElseThrow(() -> new IllegalArgumentException("노선의 추가 요금을 찾을 수 없습니다."));
+        return new Fare(fare.getValue() + extraFare);
     }
 }

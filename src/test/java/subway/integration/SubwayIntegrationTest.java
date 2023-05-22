@@ -123,7 +123,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("distance", equalTo(20))
-                .body("fare", equalTo(1450))
+                .body("fare", equalTo(1550))
                 .rootPath("routes")
                 .body("[0].id", equalTo(강남역.getId().intValue()))
                 .body("[0].name", equalTo(강남역.getName()))
