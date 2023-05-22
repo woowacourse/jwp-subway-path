@@ -25,7 +25,7 @@ public class StationDao {
         String sql = "INSERT INTO STATION (name, next_station, distance, line_id) values(?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        int update = jdbcTemplate.update(connection -> {
+        jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, stationEntity.getName());
             if (stationEntity.getNextStationId() != null) {
@@ -57,7 +57,13 @@ public class StationDao {
     public Optional<StationEntity> findByName(String name) {
         String sql = "SELECT * FROM STATION WHERE name = ?";
 
-        return Optional.of(jdbcTemplate.queryForObject(sql, getStationRowMapper(), name));
+        List<StationEntity> result = jdbcTemplate.query(sql, getStationRowMapper(), name);
+
+        if (result.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(result.get(0));
+        }
     }
 
     public Long remove(Long id) {
@@ -78,8 +84,13 @@ public class StationDao {
 
     public Optional<StationEntity> findStationEntityById(Long id) {
         String sql = "SELECT * FROM STATION WHERE id = ?";
-        StationEntity stationEntity = jdbcTemplate.queryForObject(sql, getStationRowMapper(), id);
-        return Optional.of(stationEntity);
+        List<StationEntity> stationEntities = jdbcTemplate.query(sql, getStationRowMapper(), id);
+
+        if (stationEntities.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(stationEntities.get(0));
+        }
     }
 
     private RowMapper<StationEntity> getStationRowMapper() {

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
+
     private final LineDao lineDao;
     private final StationDao stationDao;
 
@@ -64,10 +65,11 @@ public class LineService {
         return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
-    private Long updateLineNameAndColor(Long id, LineRequest request) {
+    public void updateLine(Long id, LineCreateRequest updateRequest) {
+        //line의 이름, 혹은 color를 수정하고 싶은 경우
         validateLineExistById(id);
-
-        return lineDao.update(id, request);
+        updateLineNameAndColor(id, updateRequest.getLineRequest());
+        addStationInLine(id, updateRequest);
     }
 
     private void validateLineExistById(Long id) {
@@ -75,11 +77,10 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 노선이 존재하지 않습니다"));
     }
 
-    public void updateLine(Long id, LineCreateRequest updateRequest) {
-        //line의 이름, 혹은 color를 수정하고 싶은 경우
+    private Long updateLineNameAndColor(Long id, LineRequest request) {
         validateLineExistById(id);
-        updateLineNameAndColor(id, updateRequest.getLineRequest());
-        addStationInLine(id, updateRequest);
+
+        return lineDao.update(id, request);
     }
 
     private void addStationInLine(Long id, LineCreateRequest updateRequest) {

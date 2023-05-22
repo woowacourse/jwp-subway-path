@@ -1,0 +1,64 @@
+package subway.integration;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import subway.dao.LineDao;
+import subway.dao.StationDao;
+import subway.dto.LineCreateRequest;
+import subway.dto.LineRequest;
+import subway.dto.ShortestPathRequest;
+import subway.dto.ShortestPathResponse;
+import subway.dto.StationRequest;
+import subway.entity.LineEntity;
+import subway.entity.StationEntity;
+import subway.service.PathService;
+
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+class PathIntegrationTest extends IntegrationTest {
+
+    @Autowired
+    private PathService pathService;
+    @Autowired
+    private StationDao stationDao;
+    @Autowired
+    private LineDao lineDao;
+
+    @Test
+    void findShortestPath() {
+        //given
+        StationEntity station = new StationEntity(1L, "역삼역", 2L, 10, 1L);
+        StationEntity nextStation = new StationEntity(2L, "선릉역", 3L, 2, 1L);
+        StationEntity thirdStation = new StationEntity(3L, "강남역", null, 0, 1L);
+        stationDao.insert(station);
+        stationDao.insert(nextStation);
+        stationDao.insert(thirdStation);
+
+        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
+        LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
+        lineDao.insert(new LineEntity(1L, lineRequest1.getName(), lineRequest1.getColor(), 1L));
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new ShortestPathRequest("역삼역", "강남역"))
+                .when().get("/shortestPath/{id}", 1L)
+                .then().log().all()
+                .extract();
+
+        ShortestPathResponse shortestPath = pathService.findShortestPath(1L, new ShortestPathRequest("역삼역", "강남역"));
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(shortestPath.getPath()).isEqualTo(List.of("역삼역", "선릉역", "강남역"));
+        assertThat(shortestPath.getDistance()).isEqualTo(12);
+    }
+}
