@@ -55,7 +55,9 @@ public class LineControllerPort {
     }
 
     public void updateLine(Long lineId, LineRequest lineUpdateRequest) {
-        lineService.updateLine(new LineUpdatingInfo(lineId, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        final var line = lineService.findLineById(lineId);
+        lineService.updateLine(line, new LineUpdatingInfo(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+
     }
 
     public void deleteLineById(Long lineId) {

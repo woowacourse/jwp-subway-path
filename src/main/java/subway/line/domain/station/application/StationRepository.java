@@ -14,8 +14,8 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public Station insert(String name) {
-        return stationDao.insert(name);
+    public Station insert(Station station) {
+        return stationDao.insert(station.getName());
     }
 
     public Station findById(Long id) {

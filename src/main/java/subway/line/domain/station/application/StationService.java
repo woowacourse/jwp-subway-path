@@ -2,7 +2,6 @@ package subway.line.domain.station.application;
 
 import org.springframework.stereotype.Service;
 import subway.line.domain.station.Station;
-import subway.line.domain.station.application.dto.StationSavingInfo;
 import subway.line.domain.station.application.dto.StationUpdatingInfo;
 
 import java.util.List;
@@ -15,8 +14,8 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public Station saveStation(StationSavingInfo stationSavingInfo) {
-        return stationRepository.insert(stationSavingInfo.getName());
+    public Station saveStation(Station station) {
+        return stationRepository.insert(station);
     }
 
     public Station findById(Long id) {

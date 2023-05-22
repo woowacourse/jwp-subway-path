@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.line.UnRegisteredLine;
 import subway.line.application.LineRepository;
 import subway.line.domain.section.application.SectionService;
+import subway.line.domain.station.UnRegisteredStation;
 import subway.line.domain.station.application.StationRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +32,7 @@ class LineDaoTest {
     void head() {
         // given
         final var line = lineRepository.save(new UnRegisteredLine("1호선", "blue"));
-        final var stationS = stationRepository.insert("송탄");
+        final var stationS = stationRepository.insert(new UnRegisteredStation("송탄"));
 
         lineRepository.updateHeadStation(line, stationS);
 
@@ -45,7 +46,7 @@ class LineDaoTest {
     void findHead() {
         // given
         final var line = lineRepository.save(new UnRegisteredLine("1호선", "blue"));
-        final var stationS = stationRepository.insert("송탄");
+        final var stationS = stationRepository.insert(new UnRegisteredStation("송탄"));
         lineRepository.updateHeadStation(line, stationS);
 
         // when

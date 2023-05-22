@@ -14,6 +14,7 @@ import subway.line.application.LineService;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.domain.exception.InvalidDistanceException;
 import subway.line.domain.station.Station;
+import subway.line.domain.station.UnRegisteredStation;
 import subway.line.domain.station.application.StationRepository;
 
 import static org.assertj.core.api.Assertions.*;
@@ -39,9 +40,9 @@ class SectionServiceTest {
     @BeforeEach
     void setUp() {
         lineOne = lineRepository.save(new UnRegisteredLine("1호선", "blue"));
-        stationS = stationRepository.insert("송탄");
-        stationJ = stationRepository.insert("진위");
-        stationO = stationRepository.insert("오산");
+        stationS = stationRepository.insert(new UnRegisteredStation("송탄"));
+        stationJ = stationRepository.insert(new UnRegisteredStation("진위"));
+        stationO = stationRepository.insert(new UnRegisteredStation("오산"));
         lineService.saveSection(lineOne, stationS, stationJ, Distance.of(6));
     }
 

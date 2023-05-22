@@ -1,8 +1,8 @@
 package subway.line.domain.station.port;
 
 import org.springframework.stereotype.Component;
+import subway.line.domain.station.UnRegisteredStation;
 import subway.line.domain.station.application.StationService;
-import subway.line.domain.station.application.dto.StationSavingInfo;
 import subway.line.domain.station.application.dto.StationUpdatingInfo;
 import subway.line.domain.station.presentation.dto.StationRequest;
 import subway.line.domain.station.presentation.dto.StationResponse;
@@ -19,9 +19,9 @@ public class StationServicePort {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        final var stationSavingInfo = new StationSavingInfo(stationRequest.getName());
-        final var station = stationService.saveStation(stationSavingInfo);
-        return new StationResponse(station.getId(), station.getName());
+        final var station = new UnRegisteredStation(stationRequest.getName());
+        final var savedStation = stationService.saveStation(station);
+        return new StationResponse(savedStation.getId(), savedStation.getName());
     }
 
     public List<StationResponse> findAllStationResponses() {

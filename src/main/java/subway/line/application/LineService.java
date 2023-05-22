@@ -44,8 +44,7 @@ public class LineService {
         return lineRepository.findById(id);
     }
 
-    public void updateLine(LineUpdatingInfo updatingInfo) {
-        final var line = lineRepository.findById(updatingInfo.getLineId());
+    public void updateLine(Line line, LineUpdatingInfo updatingInfo) {
         line.changeName(updatingInfo.getName());
         line.changeColor(updatingInfo.getColor());
         lineRepository.update(line);
