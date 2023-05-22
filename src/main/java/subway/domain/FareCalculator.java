@@ -8,8 +8,14 @@ public class FareCalculator {
     private FareCalculator() {
     }
 
-    public static long calculate(int distance) {
+    public static long calculate(int distance, int surcharge) {
         int result = DEFAULT_FARE;
+        result = getDistanceFare(distance, result);
+        result += surcharge;
+        return result;
+    }
+
+    private static int getDistanceFare(int distance, int result) {
         if (distance >= 50) {
             result = DEFAULT_FARE_OVER_50KM;
             result += calculateFareOver50(distance);
