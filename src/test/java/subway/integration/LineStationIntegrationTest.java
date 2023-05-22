@@ -11,25 +11,32 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
-import subway.dto.StationCreateRequest;
-import subway.dto.StationInitialCreateRequest;
+import subway.dto.LineStationAddRequest;
+import subway.dto.LineStationInitRequest;
+import subway.dto.StationRequest;
 
 @DisplayName("지하철역 관련 기능")
-public class StationIntegrationTest extends IntegrationTest {
+public class LineStationIntegrationTest extends IntegrationTest {
 
     private LineRequest lineRequest1;
-    private StationInitialCreateRequest initialStationsRequest;
-    private StationCreateRequest additionalStationRequest;
-    private LineRequest lineRequest2;
+    private LineStationInitRequest initialStationsRequest;
+    private LineStationAddRequest additionalStationRequest;
+    private StationRequest stationRequest1;
+    private StationRequest stationRequest2;
+    private StationRequest stationRequest3;
+
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
         lineRequest1 = new LineRequest("2호선", "bg-red-600");
-        initialStationsRequest = new StationInitialCreateRequest("강남역", "선릉역", 10);
-        additionalStationRequest = new StationCreateRequest("강남역", "역삼역", "UP", 5);
+        stationRequest1 = new StationRequest("강남역");
+        stationRequest2 = new StationRequest("선릉역");
+        stationRequest3 = new StationRequest("역삼역");
 
+        initialStationsRequest = new LineStationInitRequest("강남역", "선릉역", 10);
+        additionalStationRequest = new LineStationAddRequest("강남역", "역삼역", "UP", 5);
     }
 
     @DisplayName("초기 지하철역을 생성한다.")
@@ -42,17 +49,20 @@ public class StationIntegrationTest extends IntegrationTest {
                 .body(lineRequest1)
                 .when().post("/lines");
 
+        역_생성(stationRequest1);
+        역_생성(stationRequest2);
+        역_생성(stationRequest3);
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(initialStationsRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/lines/1")
+                .post("lines/1/stations/init")
                 .then().log().all()
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("지하철역을 추가 생성한다.")
@@ -65,11 +75,15 @@ public class StationIntegrationTest extends IntegrationTest {
                 .body(lineRequest1)
                 .when().post("/lines");
 
+        역_생성(stationRequest1);
+        역_생성(stationRequest2);
+        역_생성(stationRequest3);
+
         RestAssured.given().log().all()
                 .body(initialStationsRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/lines/1")
+                .post("/lines/1/stations/init")
                 .then().log().all()
                 .extract();
 
@@ -83,7 +97,7 @@ public class StationIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -96,11 +110,15 @@ public class StationIntegrationTest extends IntegrationTest {
                 .body(lineRequest1)
                 .when().post("/lines");
 
+        역_생성(stationRequest1);
+        역_생성(stationRequest2);
+        역_생성(stationRequest3);
+
         RestAssured.given().log().all()
                 .body(initialStationsRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/lines/1");
+                .post("lines/1/stations/init");
 
         RestAssured.given().log().all()
                 .body(additionalStationRequest)
@@ -113,11 +131,21 @@ public class StationIntegrationTest extends IntegrationTest {
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
-                .delete("/lines/1/stations/3")
+                .delete("/lines/1/stations/1")
                 .then().log().all()
                 .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 역_생성(StationRequest request) {
+        RestAssured
+                .given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/stations")
+                .then().log().all();
+
     }
 }

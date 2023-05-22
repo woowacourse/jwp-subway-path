@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.routestrategy.DijkstraRouteStrategy;
@@ -15,26 +13,26 @@ import subway.domain.routestrategy.RouteStrategy;
 class SubwayTest {
 
     private static final Sections sectionsOfLine2 = new Sections(List.of(
-            new Section(new Station("낙성대"), new Station("사당"), new Distance(5)),
-            new Section(new Station("사당"), new Station("교대"), new Distance(5)),
-            new Section(new Station("교대"), new Station("방배"), new Distance(5)))
+            new Section(new Station(1L,"낙성대"), new Station(2L,"사당"), new Distance(5)),
+            new Section(new Station(2L,"사당"), new Station(3L,"교대"), new Distance(5)),
+            new Section(new Station(3L,"교대"), new Station(4L,"방배"), new Distance(5)))
     );
     private static final Sections sectionsOfLine3 = new Sections(List.of(
-            new Section(new Station("잠원"), new Station("고속터미널"), new Distance(5)),
-            new Section(new Station("고속터미널"), new Station("교대"), new Distance(500)),
-            new Section(new Station("교대"), new Station("남부터미널"), new Distance(5)))
+            new Section(new Station(5L,"잠원"), new Station(6L,"고속터미널"), new Distance(5)),
+            new Section(new Station(6L,"고속터미널"), new Station(3L,"교대"), new Distance(500)),
+            new Section(new Station(3L,"교대"), new Station(8L,"남부터미널"), new Distance(5)))
     );
     private static final Sections sectionsOfLine4 = new Sections(List.of(
-            new Section(new Station("사당"), new Station("이수"), new Distance(5)),
-            new Section(new Station("이수"), new Station("동작"), new Distance(5)))
+            new Section(new Station(2L,"사당"), new Station(10L,"이수"), new Distance(5)),
+            new Section(new Station(10L, "이수"), new Station(11L,"동작"), new Distance(5)))
     );
     private static final Sections sectionsOfLine5 = new Sections(List.of(
-            new Section(new Station("천호"), new Station("강동"), new Distance(5)))
+            new Section(new Station(12L,"천호"), new Station(13L,"강동"), new Distance(5)))
     );
     private static final Sections sectionsOfLine7 = new Sections(List.of(
-            new Section(new Station("이수"), new Station("내방"), new Distance(5)),
-            new Section(new Station("내방"), new Station("고속터미널"), new Distance(5)),
-            new Section(new Station("고속터미널"), new Station("반포"), new Distance(5)))
+            new Section(new Station(14L,"이수"), new Station(15L,"내방"), new Distance(5)),
+            new Section(new Station(15L,"내방"), new Station(6L,"고속터미널"), new Distance(5)),
+            new Section(new Station(6L,"고속터미널"), new Station(16L,"반포"), new Distance(5)))
     );
 
     private static final Line line1 = new Line(1L, "1호선", "파랑", new Sections());
@@ -43,33 +41,6 @@ class SubwayTest {
     private static final Line line4 = new Line(4L, "4호선", "하늘", sectionsOfLine4);
     private static final Line line5 = new Line(5L, "5호선", "보라", sectionsOfLine5);
     private static final Line line7 = new Line(7L, "7호선", "올리브", sectionsOfLine7);
-
-
-    @Test
-    @DisplayName("노선 목록 중에 이름이 중복 되는 노선이 있으면 에러가 발생한다")
-    void createTest_NameDuplicateError() {
-        List<Line> linesHasDuplicatedName = List.of(
-                new Line("1호선", "파랑", new Sections()),
-                new Line("1호선", "초록", new Sections())
-        );
-
-        assertThatThrownBy(() -> new Subway(linesHasDuplicatedName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("노선의 이름은 중복될 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("노선 목록 중에 색상이 중복 되는 노선이 있으면 에러가 발생한다")
-    void createTest_ColorDuplicateError() {
-        List<Line> linesHasDuplicatedColor = List.of(
-                new Line("1호선", "파랑", new Sections()),
-                new Line("2호선", "파랑", new Sections())
-        );
-
-        assertThatThrownBy(() -> new Subway(linesHasDuplicatedColor))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("노선의 색상은 중복될 수 없습니다.");
-    }
 
     @Test
     @DisplayName("노선들의 이름과 색상이 중복되지 않으면 정상 생성된다")
@@ -177,7 +148,7 @@ class SubwayTest {
 
         assertThatThrownBy(() -> subway.updateLineName(notExistLineId, "3호선"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 역이 존재하지 않습니다.");
+                .hasMessageContaining("해당 노선이 존재하지 않습니다.");
     }
 
     @Test
@@ -217,7 +188,7 @@ class SubwayTest {
 
         assertThatThrownBy(() -> subway.updateLineColor(notExistLineId, "노랑"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 역이 존재하지 않습니다.");
+                .hasMessageContaining("해당 노선이 존재하지 않습니다.");
     }
 
     @Test
@@ -244,7 +215,7 @@ class SubwayTest {
 
         assertThatThrownBy(() -> subway.findLineById(notExistLineId))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 역이 존재하지 않습니다.");
+                .hasMessageContaining("해당 노선이 존재하지 않습니다.");
     }
 
     @Test
@@ -256,33 +227,6 @@ class SubwayTest {
         ));
 
         assertThat(subway.findLineById(1L)).isEqualTo(new Line(1L, "1호선", "파랑", new Sections()));
-    }
-
-    @Test
-    @DisplayName("지하철에 조회하려는 노선의 이름이 없으면 에러가 발생한다")
-    void findLineByName_NotExistError() {
-        Subway subway = new Subway(List.of(
-                new Line(1L, "1호선", "파랑", new Sections()),
-                new Line(2L, "2호선", "초록", new Sections())
-        ));
-        String notExistLineName = "신분당선";
-
-        assertThatThrownBy(() -> subway.findLineByName(notExistLineName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 역이 존재하지 않습니다.");
-    }
-
-    @Test
-    @DisplayName("지하철에 조회하려는 노선의 이름이 있으면 정상 조회된다")
-    void findLineByName() {
-        Subway subway = new Subway(List.of(
-                new Line(1L, "1호선", "파랑", new Sections()),
-                new Line(2L, "2호선", "초록", new Sections())
-        ));
-        String lineName = "1호선";
-
-        assertThat(subway.findLineByName(lineName))
-                .isEqualTo(new Line(1L, "1호선", "파랑", new Sections()));
     }
 
     @Test
@@ -318,8 +262,8 @@ class SubwayTest {
     void findShortestRoute_NotConnected() {
         Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
 
-        Station start = new Station("교대");
-        Station end = new Station("천호");
+        Station start = new Station(7L,"교대");
+        Station end = new Station(12L,"천호");
         RouteStrategy routeStrategy = new DijkstraRouteStrategy();
 
         assertThatThrownBy(() -> subway.findShortestRoute(start, end, routeStrategy))
@@ -330,20 +274,41 @@ class SubwayTest {
     @Test
     @DisplayName("두 역 사이의 최단 경로가 정상 조회된다1")
     void findShortestRoute() {
-        Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
+        Subway subway = new Subway(List.of(line2, line3));
 
-        Station start = new Station("낙성대");
-        Station end = new Station("고속터미널");
+        Station start = new Station(1L,"낙성대");
+        Station end = new Station(6L,"고속터미널");
         RouteStrategy routeStrategy = new DijkstraRouteStrategy();
 
-        List<Station> expected = Stream.of("낙성대", "사당", "이수", "내방", "고속터미널")
-                .map(Station::new)
-                .collect(Collectors.toList());
+        List<Station> expected = List.of(
+                new Station(1L, "낙성대"),
+                new Station(2L, "사당"),
+                new Station(3L, "교대"),
+                new Station(6L, "고속터미널")
+        );
 
         //todo : usingRecursiveComparison 다시 배우기
         assertThat(subway.findShortestRoute(start, end, routeStrategy))
-                .usingRecursiveComparison()
                 .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("두 역 사이의 최단 경로가 정상 조회된다2")
+    void findShortestRoute2() {
+        Subway subway = new Subway(List.of(line2, line3, line4, line5, line7));
+
+        Station start = new Station(1L,"낙성대");
+        Station end = new Station(6L,"고속터미널");
+        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
+
+        List<Station> expected = List.of(
+                new Station(1L, "낙성대"),
+                new Station(2L, "사당"),
+                new Station(14L, "이수"),
+                new Station(15L, "내방"),
+                new Station(6L, "고속터미널")
+        );
+        //todo : usingRecursiveComparison 다시 배우기
 
         assertThat(subway.findShortestRoute(start, end, routeStrategy))
                 .isEqualTo(expected);
@@ -354,8 +319,8 @@ class SubwayTest {
     void findShortestDistance() {
         Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
 
-        Station start = new Station("낙성대");
-        Station end = new Station("고속터미널");
+        Station start = new Station(1L,"낙성대");
+        Station end = new Station(6L,"고속터미널");
         RouteStrategy routeStrategy = new DijkstraRouteStrategy();
 
         Distance expected = new Distance(20);

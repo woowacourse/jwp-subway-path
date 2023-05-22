@@ -13,30 +13,54 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.Subway;
 
 class DijkstraRouteStrategyTest {
+//
+//    private static final Sections sectionsOfLine2 = new Sections(List.of(
+//            new Section(new Station("낙성대"), new Station("사당"), new Distance(5)),
+//            new Section(new Station("사당"), new Station("교대"), new Distance(5)),
+//            new Section(new Station("교대"), new Station("방배"), new Distance(5)))
+//    );
+//    private static final Sections sectionsOfLine3 = new Sections(List.of(
+//            new Section(new Station("잠원"), new Station("고속터미널"), new Distance(5)),
+//            new Section(new Station("고속터미널"), new Station("교대"), new Distance(500)),
+//            new Section(new Station("교대"), new Station("남부터미널"), new Distance(5)))
+//    );
+//    private static final Sections sectionsOfLine4 = new Sections(List.of(
+//            new Section(new Station("사당"), new Station("이수"), new Distance(5)),
+//            new Section(new Station("이수"), new Station("동작"), new Distance(5)))
+//    );
+//    private static final Sections sectionsOfLine5 = new Sections(List.of(
+//            new Section(new Station("천호"), new Station("강동"), new Distance(5)))
+//    );
+//    private static final Sections sectionsOfLine7 = new Sections(List.of(
+//            new Section(new Station("이수"), new Station("내방"), new Distance(5)),
+//            new Section(new Station("내방"), new Station("고속터미널"), new Distance(5)),
+//            new Section(new Station("고속터미널"), new Station("반포"), new Distance(5)))
+//    );
 
     private static final Sections sectionsOfLine2 = new Sections(List.of(
-            new Section(new Station("낙성대"), new Station("사당"), new Distance(5)),
-            new Section(new Station("사당"), new Station("교대"), new Distance(5)),
-            new Section(new Station("교대"), new Station("방배"), new Distance(5)))
+            new Section(new Station(1L, "낙성대"), new Station(2L, "사당"), new Distance(5)),
+            new Section(new Station(2L, "사당"), new Station(3L, "교대"), new Distance(5)),
+            new Section(new Station(3L, "교대"), new Station(4L, "방배"), new Distance(5)))
     );
     private static final Sections sectionsOfLine3 = new Sections(List.of(
-            new Section(new Station("잠원"), new Station("고속터미널"), new Distance(5)),
-            new Section(new Station("고속터미널"), new Station("교대"), new Distance(500)),
-            new Section(new Station("교대"), new Station("남부터미널"), new Distance(5)))
+            new Section(new Station(5L, "잠원"), new Station(6L, "고속터미널"), new Distance(5)),
+            new Section(new Station(6L, "고속터미널"), new Station(3L, "교대"), new Distance(500)),
+            new Section(new Station(3L, "교대"), new Station(8L, "남부터미널"), new Distance(5)))
     );
     private static final Sections sectionsOfLine4 = new Sections(List.of(
-            new Section(new Station("사당"), new Station("이수"), new Distance(5)),
-            new Section(new Station("이수"), new Station("동작"), new Distance(5)))
+            new Section(new Station(2L, "사당"), new Station(10L, "이수"), new Distance(5)),
+            new Section(new Station(10L, "이수"), new Station(11L, "동작"), new Distance(5)))
     );
     private static final Sections sectionsOfLine5 = new Sections(List.of(
-            new Section(new Station("천호"), new Station("강동"), new Distance(5)))
+            new Section(new Station(12L, "천호"), new Station(13L, "강동"), new Distance(5)))
     );
     private static final Sections sectionsOfLine7 = new Sections(List.of(
-            new Section(new Station("이수"), new Station("내방"), new Distance(5)),
-            new Section(new Station("내방"), new Station("고속터미널"), new Distance(5)),
-            new Section(new Station("고속터미널"), new Station("반포"), new Distance(5)))
+            new Section(new Station(10L, "이수"), new Station(15L, "내방"), new Distance(5)),
+            new Section(new Station(15L, "내방"), new Station(6L, "고속터미널"), new Distance(5)),
+            new Section(new Station(6L, "고속터미널"), new Station(16L, "반포"), new Distance(5)))
     );
 
     private static final Line line2 = new Line(2L, "2호선", "초록", sectionsOfLine2);
@@ -49,7 +73,7 @@ class DijkstraRouteStrategyTest {
     @Test
     @DisplayName("노선에 해당 역이 존재하지 않아, 경로를 조회할 수 없는 경우 예외를 발생한다")
     void findShortestRoute_NotExistStationError() {
-        List<Line> lines = List.of(line2, line5);
+        Subway lines = new Subway(List.of(line2, line5));
         Station start = new Station("낙성대");
         Station end = new Station("동인천");
         DijkstraRouteStrategy dijkstraRouteStrategy = new DijkstraRouteStrategy();
@@ -62,7 +86,7 @@ class DijkstraRouteStrategyTest {
     @Test
     @DisplayName("노선의 역들이 연결되어있지 않아, 경로를 조회할 수 없는 경우 예외를 발생한다")
     void findShortestRoute_NotConnectedError() {
-        List<Line> lines = List.of(line2, line5);
+        Subway lines = new Subway(List.of(line2, line5));
         Station start = new Station("낙성대");
         Station end = new Station("천호");
         DijkstraRouteStrategy dijkstraRouteStrategy = new DijkstraRouteStrategy();
@@ -75,7 +99,7 @@ class DijkstraRouteStrategyTest {
     @Test
     @DisplayName("환승이 필요 없는 경우, 경로를 찾아 반환한다")
     void findShortestRoute_No_Transfer() {
-        List<Line> lines = List.of(line2, line3);
+        Subway lines = new Subway(List.of(line2, line3));
         Station start = new Station("낙성대");
         Station end = new Station("방배");
         DijkstraRouteStrategy dijkstraRouteStrategy = new DijkstraRouteStrategy();
@@ -91,7 +115,7 @@ class DijkstraRouteStrategyTest {
     @Test
     @DisplayName("1번 환승해야 하는 경우 경로를 찾아 반환한다")
     void findShortestRoute_Transfer_Once() {
-        List<Line> lines = List.of(line2, line3);
+        Subway lines = new Subway(List.of(line2, line3));
         Station start = new Station("낙성대");
         Station end = new Station("고속터미널");
         DijkstraRouteStrategy dijkstraRouteStrategy = new DijkstraRouteStrategy();
@@ -108,7 +132,7 @@ class DijkstraRouteStrategyTest {
     @Test
     @DisplayName("2번 환승해야 하는 경우 경로를 찾아 반환한다")
     void findShortestRoute_Transfer_Twice() {
-        List<Line> lines = List.of(line2, line3, line4, line7);
+        Subway lines = new Subway(List.of(line2, line3, line4, line7));
         Station start = new Station("낙성대");
         Station end = new Station("고속터미널");
         DijkstraRouteStrategy dijkstraRouteStrategy = new DijkstraRouteStrategy();
@@ -125,7 +149,7 @@ class DijkstraRouteStrategyTest {
     @Test
     @DisplayName("노선에 해당 역이 존재하지 않아, 최단 거리를 조회할 수 없는 경우 예외를 발생한다")
     void findShortestDistance_NotExistStationError() {
-        List<Line> lines = List.of(line2, line5);
+        Subway lines = new Subway(List.of(line2, line5));
         Station start = new Station("낙성대");
         Station end = new Station("동인천");
         DijkstraRouteStrategy dijkstraRouteStrategy = new DijkstraRouteStrategy();
@@ -138,7 +162,7 @@ class DijkstraRouteStrategyTest {
     @Test
     @DisplayName("노선의 역들이 연결되어있지 않아, 최단 거리를 조회할 수 없는 경우 예외를 발생한다")
     void findShortestDistance_NotConnectedError() {
-        List<Line> lines = List.of(line2, line5);
+        Subway lines = new Subway(List.of(line2, line3, line4, line5, line7));
         Station start = new Station("낙성대");
         Station end = new Station("천호");
         DijkstraRouteStrategy dijkstraRouteStrategy = new DijkstraRouteStrategy();
@@ -151,9 +175,9 @@ class DijkstraRouteStrategyTest {
     @Test
     @DisplayName("1번, 2번 환승해야 하는 경우 둘다 존재할 때, 최단 거리 경로를 찾아 반환한다")
     void findShortestDistance() {
-        List<Line> lines = List.of(line2, line3, line4, line7);
-        Station start = new Station("낙성대");
-        Station end = new Station("고속터미널");
+            Subway lines = new Subway(List.of(line2, line3, line4, line7));
+        Station start = new Station(1L,"낙성대");
+        Station end = new Station(6l, "고속터미널");
         DijkstraRouteStrategy dijkstraRouteStrategy = new DijkstraRouteStrategy();
 
         Distance expected = new Distance(20);

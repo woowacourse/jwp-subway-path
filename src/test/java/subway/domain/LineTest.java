@@ -68,26 +68,5 @@ class LineTest {
 
     }
 
-    @Test
-    @DisplayName("노선에 있는 역을 조회한다")
-    void findStationByName() {
-        line = new Line(null, "2호선", "초록색", new Sections(new ArrayList<>()));
-        line.addInitialStations(new Station("강남역"), new Station("선릉역"), new Distance(10));
-        line.addStation(new Station("선릉역"), new Station("역삼역"), Direction.DOWN, new Distance(5));
-
-        assertThat(line.findStationByName("강남역")).isEqualTo(new Station("강남역"));
-    }
-
-    @Test
-    @DisplayName("노선에 존재하지 않은 역을 조회하면 예외가 발생한다")
-    void findStationByNameError() {
-        line = new Line(null, "2호선", "초록색", new Sections(new ArrayList<>()));
-        line.addInitialStations(new Station("강남역"), new Station("선릉역"), new Distance(10));
-        line.addStation(new Station("선릉역"), new Station("역삼역"), Direction.DOWN, new Distance(5));
-
-        assertThatThrownBy(() -> line.findStationByName("사당역"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 역이 노선에 존재하지 않습니다");
-    }
 
 }

@@ -102,34 +102,6 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("해당 역을 가지고 있는 구간을 조회한다.")
-    void findSectionsByStation() {
-        //given
-        sections.addInitialSection(new Station("강남역"), new Station("선릉역"), new Distance(10));
-        sections.addAdditionalSection(new Station("강남역"), new Station("역삼역"), Direction.UP,
-                new Distance(5));
-        Station station = new Station("역삼역");
-        List<Section> sectionWithStation= List.of(new Section(new Station("강남역"), new Station("역삼역"), new Distance(5)),
-                new Section(new Station("역삼역"),new Station("선릉역"), new Distance(5)));
-
-        assertThat(sections.findSectionsByStation(station)).containsAll(sectionWithStation);
-    }
-
-    @Test
-    @DisplayName("해당 역을 가지고 있는 구간이 없으면 예외가 발생한다.")
-    void findSectionsByStationError() {
-        //given
-        sections.addInitialSection(new Station("강남역"), new Station("선릉역"), new Distance(10));
-        sections.addAdditionalSection(new Station("강남역"), new Station("역삼역"), Direction.UP,
-                new Distance(5));
-        //when, then
-        Station station = new Station("서초역");
-        assertThatThrownBy(() ->sections.findSectionsByStation(station))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 역이 존재하지 않습니다.");
-    }
-
-    @Test
     @DisplayName("해당 역을 삭제한다.")
     void removeStation() {
         //given
