@@ -34,20 +34,24 @@ public class JgraphtShortestPathFinder implements ShortestPathFinder{
   }
 
   @Override
-  public void addGraph(final List<Line> lines) {
+  public void makeGraph(final List<Line> lines) {
       for (Line line : lines) {
-        for (Section section : line.getSections()) {
-          final Station upStation = section.getUpStation();
-          final Station downStation = section.getDownStation();
-
-          lineNames.put(new LineNameKey(section.getUpStation().getId(), section.getDownStation().getId()),
-              line.getLineName());
-          graph.addVertex(upStation);
-          graph.addVertex(downStation);
-          graph.addEdge(upStation, downStation);
-          graph.setEdgeWeight(upStation, downStation, section.getDistance());
-        }
+        makeGraphBySection(line);
       }
+  }
+
+  private void makeGraphBySection(Line line) {
+    for (Section section : line.getSections()) {
+      final Station upStation = section.getUpStation();
+      final Station downStation = section.getDownStation();
+
+      lineNames.put(new LineNameKey(section.getUpStation().getId(), section.getDownStation().getId()),
+          line.getLineName());
+      graph.addVertex(upStation);
+      graph.addVertex(downStation);
+      graph.addEdge(upStation, downStation);
+      graph.setEdgeWeight(upStation, downStation, section.getDistance());
+    }
   }
 
   @Override

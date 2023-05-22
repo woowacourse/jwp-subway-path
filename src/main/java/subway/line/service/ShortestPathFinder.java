@@ -7,7 +7,7 @@ import subway.station.domain.Station;
 
 public interface ShortestPathFinder {
 
-  void addGraph(final List<Line> lines);
+  void makeGraph(final List<Line> lines);
 
   ShortestPathResponse getShortestPathResponse(final Station fromstation, final Station toStation);
 }

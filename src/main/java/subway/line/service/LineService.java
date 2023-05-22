@@ -90,7 +90,7 @@ public class LineService {
         final List<Line> lines = lineRepository.findAll();
 
         final ShortestPathFinder shortestPathFinder = new JgraphtShortestPathFinder();
-        shortestPathFinder.addGraph(lines);
+        shortestPathFinder.makeGraph(lines);
 
         return shortestPathFinder.getShortestPathResponse(fromStation, toStation);
     }
