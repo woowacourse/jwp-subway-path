@@ -41,23 +41,18 @@ public class SectionService {
 
     @Transactional
     public void createSection(SectionCreateRequest request) {
-        Long lineId = request.getLineId();
-        Line line = findLine(lineId);
-        
         Station leftStation = findStation(request.getLeftStationName());
         Station rightStation = findStation(request.getRightStationName());
         Section section = new Section(leftStation, rightStation, request.getDistance());
-        line.addSection(section);
+        Line line = findLine(request.getLineId());
 
-        sectionRepository.deleteAllByLineId(lineId);
-        sectionRepository.saveAllByLineId(lineId, line.getSections());
+        line.addSection(section);
+        sectionRepository.save(line);
     }
 
     public PathResponse findPath(PathRequest request) {
-        String fromStationName = request.getFromStationName();
-        String toStationName = request.getToStationName();
-        Station fromStation = findStation(fromStationName);
-        Station toStation = findStation(toStationName);
+        Station fromStation = findStation(request.getFromStationName());
+        Station toStation = findStation(request.getToStationName());
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeGraph();
 
@@ -107,13 +102,11 @@ public class SectionService {
 
     @Transactional
     public void deleteSection(SectionDeleteRequest request) {
-        Long lineId = request.getLineId();
-        Line line = findLine(lineId);
         Station station = findStation(request.getStationName());
+        Line line = findLine(request.getLineId());
 
         line.deleteSection(station);
-        sectionRepository.deleteAllByLineId(lineId);
-        sectionRepository.saveAllByLineId(lineId, line.getSections());
+        sectionRepository.save(line);
     }
 
     private Line findLine(Long lineId) {
