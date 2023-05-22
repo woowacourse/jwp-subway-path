@@ -62,7 +62,7 @@ create table if not exists SECTION
 
 ### 경로조회
 
-- URL: localhost:8080/lines?startStation=?&endStation=?
+- URL: localhost:8080/lines?startStation=?&endStation=?&?age=?
 - method: GET
 - Response body
 
@@ -232,10 +232,10 @@ create table if not exists SECTION
         - [x] 10km 이하: 1250원
         - [x] 10~50km: 5km 마다 100원 추가
         - [x] 50km 초과: 8km 마다 100원 추가
-    - [ ] 이동 간 노선 별 추가 금액은, 가장 높은 금액을 기준으로 계산한다.
-    - [ ] 연령별 요 할인 정책을 반영한다.
-      - [ ] 청소년은 운임에서 350원을 공제한 금액의 20%할인
-      - [ ] 어린이는 운임에서 350원을 공제한 금액의 50%할인
+    - [x] 이동 간 노선 별 추가 금액은, 가장 높은 금액을 기준으로 계산한다.
+    - [x] 연령별 요 할인 정책을 반영한다.
+      - [x] 청소년은 운임에서 350원을 공제한 금액의 20%할인
+      - [x] 어린이는 운임에서 350원을 공제한 금액의 50%할인
     - [x] 갈 수 있는 경로가 없는 경우, `xx역 -> xx역은 갈 수 없는 경로입니다.` 를 반환한다.
 
 ## 도메인 기능 목록
