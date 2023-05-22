@@ -14,21 +14,22 @@ import subway.dao.entity.LineEntity;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private static final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
-            new LineEntity(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
-            );
+    private static final RowMapper<LineEntity> ROW_MAPPER = (rs, rowNum) ->
+        new LineEntity(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color")
+        );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("LINE")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("LINE")
+            .usingGeneratedKeyColumns("id");
     }
 
     public long insert(LineEntity line) {
@@ -38,13 +39,13 @@ public class LineDao {
 
     public List<LineEntity> findAll() {
         String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 
-    public Optional<LineEntity> findById(Long id) {
+    public Optional<LineEntity> findById(long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, ROW_MAPPER, id));
         } catch (DataAccessException exception) {
             return Optional.empty();
         }
@@ -60,7 +61,7 @@ public class LineDao {
         jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 }

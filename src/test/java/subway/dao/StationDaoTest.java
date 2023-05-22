@@ -9,9 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import subway.dao.entity.StationEntity;
 
 @JdbcTest
+@ActiveProfiles("test")
 class StationDaoTest {
 
     @Autowired
@@ -36,9 +38,9 @@ class StationDaoTest {
         // then
         Optional<StationEntity> foundStation = stationDao.findById(savedId);
         assertThat(foundStation).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(new StationEntity(savedId, "정자역"));
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(new StationEntity(savedId, "정자역"));
     }
 
     @Test
@@ -63,9 +65,9 @@ class StationDaoTest {
 
         // then
         assertThat(foundStation).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(new StationEntity(savedId, "정자역"));
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(new StationEntity(savedId, "정자역"));
     }
 
     @Test
@@ -80,9 +82,9 @@ class StationDaoTest {
 
         // then
         assertThat(stationDao.findById(savedId)).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(changedEntity);
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(changedEntity);
 
     }
 

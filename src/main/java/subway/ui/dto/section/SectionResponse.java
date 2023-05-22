@@ -1,13 +1,17 @@
-package subway.dto.section;
+package subway.ui.dto.section;
 
 import subway.domain.Section;
 
 public class SectionResponse {
+
+    private long id;
     private String startStationName;
     private String endStationName;
-    private int distance;
+    private double distance;
 
-    public SectionResponse(String startStationName, String endStationName, int distance) {
+    public SectionResponse(long id, String startStationName, String endStationName,
+        double distance) {
+        this.id = id;
         this.startStationName = startStationName;
         this.endStationName = endStationName;
         this.distance = distance;
@@ -15,9 +19,10 @@ public class SectionResponse {
 
     public static SectionResponse from(Section section) {
         return new SectionResponse(
-                section.getStartStation().getName(),
-                section.getEndStation().getName(),
-                section.getDistance());
+            section.getId(),
+            section.getStartStation().getName(),
+            section.getEndStation().getName(),
+            section.getDistanceByValue());
     }
 
     public String getStartStationName() {
@@ -28,7 +33,11 @@ public class SectionResponse {
         return endStationName;
     }
 
-    public int getDistance() {
+    public double getDistance() {
         return distance;
+    }
+
+    public long getId() {
+        return id;
     }
 }

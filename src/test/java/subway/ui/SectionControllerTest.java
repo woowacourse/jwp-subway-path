@@ -2,9 +2,10 @@ package subway.ui;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,8 +17,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.SectionService;
-import subway.dto.section.SectionCreateRequest;
-import subway.dto.section.SectionDeleteRequest;
+import subway.domain.Distance;
+import subway.domain.Section;
+import subway.domain.Station;
+import subway.ui.dto.section.SectionCreateRequest;
+import subway.ui.dto.section.SectionDeleteRequest;
 
 @WebMvcTest(SectionController.class)
 class SectionControllerTest {
@@ -32,22 +36,27 @@ class SectionControllerTest {
     SectionService sectionService;
 
     @Test
-    @DisplayName("/sections/{lineId}로 POST 요청과 함께 station의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
+    @DisplayName("/lines/{lineId}/sections 로 POST 요청과 함께 station의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void addSection_success() throws Exception {
         // given
         Long lineId = 1L;
         SectionCreateRequest request = new SectionCreateRequest("잠실역", "잠실나루역", 10);
-        willDoNothing().given(sectionService).saveSection(anyLong(), any(SectionCreateRequest.class));
+        given(sectionService.saveSection(any(SectionCreateRequest.class), anyLong())).willReturn(
+            new Section(1L, new Station("잠실역"), new Station("잠실나루역"), Distance.from(10)));
 
         // expect
         mockMvc.perform(post("/lines/{lineId}/sections", lineId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(1L))
+            .andExpect(jsonPath("$.startStationName").value("잠실역"))
+            .andExpect(jsonPath("$.endStationName").value("잠실나루역"))
+            .andExpect(jsonPath("$.distance").value(10));
     }
 
     @Test
-    @DisplayName("/sections/{lineId}로 DELETE 요청과 함께 station의 정보를 보내면, HTTP 204 코드와 응답이 반환 되어야 한다.")
+    @DisplayName("/lines/{lineId}/sections 로 DELETE 요청과 함께 station의 정보를 보내면, HTTP 204 코드와 응답이 반환 되어야 한다.")
     void deleteSection_success() throws Exception {
         // given
         Long lineId = 1L;
@@ -55,8 +64,8 @@ class SectionControllerTest {
 
         // expect
         mockMvc.perform(delete("/lines/{lineId}/sections", lineId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNoContent());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isNoContent());
     }
 }

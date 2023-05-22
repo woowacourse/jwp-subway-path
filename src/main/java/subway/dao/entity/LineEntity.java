@@ -1,6 +1,7 @@
 package subway.dao.entity;
 
 public class LineEntity {
+
     private Long id;
     private String name;
     private String color;

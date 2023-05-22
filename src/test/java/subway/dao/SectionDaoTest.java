@@ -11,20 +11,22 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.dto.SectionDto;
 import subway.dao.entity.SectionEntity;
 
 @JdbcTest
 @Sql("/section_initialize.sql")
+@ActiveProfiles("test")
 class SectionDaoTest {
 
+    private static final long lineId = 1L;
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     SectionDao sectionDao;
 
-    private long lineId = 1L;
 
     @BeforeEach
     void setUp() {
@@ -43,7 +45,7 @@ class SectionDaoTest {
 
         // then
         assertThat(count)
-                .isEqualTo(2L);
+            .isEqualTo(2L);
     }
 
     @Test
@@ -54,7 +56,7 @@ class SectionDaoTest {
 
         // then
         assertThat(count)
-                .isZero();
+            .isZero();
     }
 
     @Test
@@ -62,8 +64,8 @@ class SectionDaoTest {
     void update_success() {
         // given
         SectionEntity sectionEntity = new SectionEntity(lineId, 1L, 2L, 1);
-        sectionDao.insert(sectionEntity);
-        sectionEntity = sectionDao.findAllByLineId(lineId).get(0);
+        long savedId = sectionDao.insert(sectionEntity);
+        sectionEntity = new SectionEntity(savedId, lineId, 1L, 2L, 1);
         sectionEntity.updateDistance(3);
         sectionEntity.updateEndStationId(3L);
         sectionEntity.updateStartStationId(2L);
@@ -71,11 +73,12 @@ class SectionDaoTest {
         // when
         sectionDao.update(sectionEntity);
 
-        List<SectionEntity> sections = sectionDao.findAllByLineId(lineId);
+        List<SectionDto> sections = sectionDao.findAllSectionsWithStationNameByLineId(lineId);
 
         List<SectionEntity> sectionEntities = List.of(sectionEntity);
         assertThat(sections).usingRecursiveComparison()
-                .isEqualTo(sectionEntities);
+            .ignoringFields("startStationName", "endStationName")
+            .isEqualTo(sectionEntities);
     }
 
     @ParameterizedTest
@@ -89,7 +92,7 @@ class SectionDaoTest {
 
         // then
         assertThat(expect)
-                .isEqualTo(exists);
+            .isEqualTo(exists);
     }
 
     @Test
@@ -97,7 +100,7 @@ class SectionDaoTest {
     void isEmptyByLineId_true() {
         // expect
         assertThat(sectionDao.isEmptyByLineId(lineId))
-                .isTrue();
+            .isTrue();
     }
 
     @Test
@@ -108,7 +111,7 @@ class SectionDaoTest {
 
         // expect
         assertThat(sectionDao.isEmptyByLineId(lineId))
-                .isFalse();
+            .isFalse();
     }
 
     @Test
@@ -119,14 +122,14 @@ class SectionDaoTest {
         long savedId2 = sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
 
         // when
-        List<SectionDto> sections = sectionDao.findAllSectionsByLineId(lineId);
+        List<SectionDto> sections = sectionDao.findAllSectionsWithStationNameByLineId(lineId);
 
         // then
         assertThat(sections).usingRecursiveComparison()
-                .isEqualTo(List.of(
-                        new SectionDto(savedId1, 1L, 2L, "삼성역", "선릉역", 1),
-                        new SectionDto(savedId2, 2L, 3L, "선릉역", "역삼역", 1)
-                ));
+            .isEqualTo(List.of(
+                new SectionDto(savedId1, 1L, 2L, "삼성역", "선릉역", 1),
+                new SectionDto(savedId2, 2L, 3L, "선릉역", "역삼역", 1)
+            ));
     }
 
     @Test
@@ -140,9 +143,33 @@ class SectionDaoTest {
         sectionDao.deleteById(savedId1);
 
         // then
-        assertThat(sectionDao.findAllByLineId(lineId))
-                .usingRecursiveComparison()
-                .isEqualTo(List.of(new SectionEntity(savedId2, lineId, 2L, 3L, 1)));
+        assertThat(sectionDao.findAllSectionsWithStationNameByLineId(lineId))
+            .usingRecursiveComparison()
+            .ignoringFields("startStationName", "endStationName")
+            .isEqualTo(List.of(new SectionEntity(savedId2, lineId, 2L, 3L, 1)));
+    }
+
+    @Test
+    @DisplayName("모든 노선에 존재하는 전체 구간을 조회한다.")
+    void findAllSections_inEveryLine() {
+        // given
+        Long savedId1 = sectionDao.insert(new SectionEntity(lineId, 1L, 2L, 1));
+        Long savedId2 = sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
+        Long savedId3 = sectionDao.insert(new SectionEntity(2L, 3L, 4L, 1));
+        Long savedId4 = sectionDao.insert(new SectionEntity(2L, 4L, 5L, 1));
+
+        // when
+        List<SectionDto> sectionsWithStationName = sectionDao.findAllSectionsWithStationName();
+
+        // then
+        assertThat(sectionsWithStationName)
+            .usingRecursiveComparison()
+            .isEqualTo(List.of(
+                new SectionDto(savedId1, 1L, 2L, "삼성역", "선릉역", 1),
+                new SectionDto(savedId2, 2L, 3L, "선릉역", "역삼역", 1),
+                new SectionDto(savedId3, 3L, 4L, "역삼역", "강남역", 1),
+                new SectionDto(savedId4, 4L, 5L, "강남역", "교대역", 1)
+            ));
     }
 
 }

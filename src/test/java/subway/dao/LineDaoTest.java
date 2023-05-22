@@ -11,13 +11,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.entity.LineEntity;
 
 @JdbcTest
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 @Sql("/line_initialize.sql")
+@ActiveProfiles("test")
 class LineDaoTest {
 
     @Autowired
@@ -45,9 +50,9 @@ class LineDaoTest {
         // then
         Optional<LineEntity> foundLine = lineDao.findById(savedId);
         assertThat(foundLine).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(new LineEntity(savedId, "5호선", "보라색"));
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(new LineEntity(savedId, "5호선", "보라색"));
     }
 
     @Test
@@ -82,9 +87,9 @@ class LineDaoTest {
 
         // then
         assertThat(lineDao.findById(1L)).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(changeEntity);
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(changeEntity);
     }
 
     @Test

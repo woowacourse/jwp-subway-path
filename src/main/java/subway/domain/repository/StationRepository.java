@@ -11,6 +11,7 @@ import subway.exception.StationNotFoundException;
 
 @Repository
 public class StationRepository {
+
     private final StationDao stationDao;
 
     public StationRepository(StationDao stationDao) {
@@ -20,7 +21,7 @@ public class StationRepository {
     public Station findByName(String name) {
         Optional<StationEntity> foundStationEntity = stationDao.findByName(name);
         if (foundStationEntity.isEmpty()) {
-            throw new StationNotFoundException();
+            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
         }
         return foundStationEntity.get().toDomain();
     }
@@ -29,21 +30,21 @@ public class StationRepository {
         return stationDao.existsByName(station.getName());
     }
 
-    public Long save(Station station) {
+    public long save(Station station) {
         return stationDao.insert(new StationEntity(station.getName()));
     }
 
     public List<Station> findAll() {
         return stationDao.findAll()
-                .stream()
-                .map(StationEntity::toDomain)
-                .collect(Collectors.toList());
+            .stream()
+            .map(StationEntity::toDomain)
+            .collect(Collectors.toList());
     }
 
     public Station update(Station station) {
         Optional<StationEntity> optionalStationEntity = stationDao.findById(station.getId());
         if (optionalStationEntity.isEmpty()) {
-            throw new StationNotFoundException();
+            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
         }
         StationEntity stationEntity = optionalStationEntity.get();
         stationEntity.updateName(station.getName());
@@ -51,10 +52,10 @@ public class StationRepository {
         return findById(station.getId());
     }
 
-    public Station findById(Long id) {
+    public Station findById(long id) {
         Optional<StationEntity> optionalStationEntity = stationDao.findById(id);
         if (optionalStationEntity.isEmpty()) {
-            throw new StationNotFoundException();
+            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
         }
         return optionalStationEntity.get().toDomain();
     }

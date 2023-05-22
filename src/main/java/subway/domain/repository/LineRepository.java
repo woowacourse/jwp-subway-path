@@ -14,6 +14,7 @@ import subway.exception.LineNotFoundException;
 
 @Repository
 public class LineRepository {
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
 
@@ -22,10 +23,10 @@ public class LineRepository {
         this.sectionDao = sectionDao;
     }
 
-    public Line findById(Long id) {
+    public Line findById(long id) {
         Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
         if (optionalLineEntity.isEmpty()) {
-            throw new LineNotFoundException();
+            throw new LineNotFoundException("존재하지 않는 노선입니다.");
         }
         LineEntity lineEntity = optionalLineEntity.get();
         return new Line(id, lineEntity.getName(), lineEntity.getColor(), findSectionsInLine(id));
@@ -34,15 +35,15 @@ public class LineRepository {
     public List<Line> findAll() {
         List<LineEntity> lineEntities = lineDao.findAll();
         return lineEntities.stream()
-                .map(entity -> findById(entity.getId()))
-                .collect(Collectors.toList());
+            .map(entity -> findById(entity.getId()))
+            .collect(Collectors.toList());
     }
 
-    private Sections findSectionsInLine(Long lineId) {
-        List<SectionDto> foundSections = sectionDao.findAllSectionsByLineId(lineId);
+    private Sections findSectionsInLine(long lineId) {
+        List<SectionDto> foundSections = sectionDao.findAllSectionsWithStationNameByLineId(lineId);
         return new Sections(foundSections.stream()
-                .map(SectionDto::toDomain)
-                .collect(Collectors.toList()));
+            .map(SectionDto::toDomain)
+            .collect(Collectors.toList()));
     }
 
     public long save(Line line) {
@@ -53,17 +54,10 @@ public class LineRepository {
         return lineDao.existsByNameAndColor(line.getColor(), line.getName());
     }
 
-    public List<Line> findAllWithNoSections() {
-        return lineDao.findAll()
-                .stream()
-                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor()))
-                .collect(Collectors.toList());
-    }
-
-    public Line findByIdWithNoSections(Long id) {
+    public Line findByIdWithNoSections(long id) {
         Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
         if (optionalLineEntity.isEmpty()) {
-            throw new LineNotFoundException();
+            throw new LineNotFoundException("존재하지 않는 노선입니다.");
         }
         LineEntity lineEntity = optionalLineEntity.get();
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
@@ -72,12 +66,12 @@ public class LineRepository {
     public Line update(Line line) {
         Optional<LineEntity> optionalLineEntity = lineDao.findById(line.getId());
         if (optionalLineEntity.isEmpty()) {
-            throw new LineNotFoundException();
+            throw new LineNotFoundException("존재하지 않는 노선입니다.");
         }
         LineEntity lineEntity = optionalLineEntity.get();
         lineEntity.updateNameAndColor(line.getName(), line.getColor());
         lineDao.update(lineEntity);
-        return findByIdWithNoSections(line.getId());
+        return line;
     }
 
     public void delete(Line line) {

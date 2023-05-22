@@ -1,47 +1,43 @@
 package subway.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
 import subway.domain.repository.StationRepository;
-import subway.dto.station.StationCreateRequest;
-import subway.dto.station.StationResponse;
-import subway.dto.station.StationUpdateRequest;
 import subway.exception.IllegalStationException;
+import subway.ui.dto.station.StationCreateRequest;
+import subway.ui.dto.station.StationUpdateRequest;
 
 @Service
 @Transactional
 public class StationService {
+
     private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationCreateRequest stationCreateRequest) {
-        Station station = new Station(stationCreateRequest.getStationName());
+    public Station saveStation(StationCreateRequest stationCreateRequest) {
+        Station station = new Station(stationCreateRequest.getName());
         if (stationRepository.isDuplicateStation(station)) {
             throw new IllegalStationException("이미 존재하는 역입니다.");
         }
-        Long savedId = stationRepository.save(station);
-        return StationResponse.from(stationRepository.findById(savedId));
+        long savedId = stationRepository.save(station);
+        return new Station(savedId, station.getName());
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStationResponses() {
-        return stationRepository.findAll()
-                .stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
+    public List<Station> findAllStations() {
+        return stationRepository.findAll();
     }
 
-    public StationResponse updateStation(Long id, StationUpdateRequest stationUpdateRequest) {
-        return StationResponse.from(stationRepository.update(new Station(id, stationUpdateRequest.getStationName())));
+    public Station updateStation(StationUpdateRequest stationUpdateRequest, long id) {
+        return stationRepository.update(new Station(id, stationUpdateRequest.getName()));
     }
 
-    public void deleteStationById(Long id) {
+    public void deleteStationById(long id) {
         Station station = stationRepository.findById(id);
         stationRepository.delete(station);
     }

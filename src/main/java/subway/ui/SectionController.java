@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
-import subway.dto.section.SectionCreateRequest;
-import subway.dto.section.SectionDeleteRequest;
-import subway.dto.section.SectionResponse;
+import subway.domain.Section;
+import subway.ui.dto.section.SectionCreateRequest;
+import subway.ui.dto.section.SectionDeleteRequest;
+import subway.ui.dto.section.SectionResponse;
 
 @RestController
 @RequestMapping("/lines/{lineId}/sections")
@@ -26,21 +27,22 @@ public class SectionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SectionResponse>> findAllSectionsByLineId(@PathVariable Long lineId) {
+    public ResponseEntity<List<SectionResponse>> findAllSectionsByLineId(
+        @PathVariable Long lineId) {
         return ResponseEntity.ok(sectionService.findSectionsByLineId(lineId));
     }
 
     @PostMapping
-    public ResponseEntity<Void> createSection(@PathVariable Long lineId,
-                                              @RequestBody @Valid SectionCreateRequest sectionCreateRequest) {
-        sectionService.saveSection(lineId, sectionCreateRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SectionResponse> createSection(@PathVariable Long lineId,
+        @RequestBody @Valid SectionCreateRequest sectionCreateRequest) {
+        Section section = sectionService.saveSection(sectionCreateRequest, lineId);
+        return ResponseEntity.ok().body(SectionResponse.from(section));
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId,
-                                              @RequestBody @Valid SectionDeleteRequest sectionDeleteRequest) {
-        sectionService.deleteSection(lineId, sectionDeleteRequest);
+        @RequestBody @Valid SectionDeleteRequest sectionDeleteRequest) {
+        sectionService.deleteSection(sectionDeleteRequest, lineId);
         return ResponseEntity.noContent().build();
     }
 }

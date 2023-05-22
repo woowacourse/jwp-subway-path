@@ -6,9 +6,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
+
+    private final Long id;
+    private final String name;
+    private final String color;
     private final Sections sections;
 
     public Line(String name, String color) {
@@ -16,7 +17,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, null);
+        this(id, name, color, new Sections(Collections.emptyList()));
     }
 
     public Line(Long id, String name, String color, Sections sections) {
@@ -42,22 +43,6 @@ public class Line {
         return sections.findSectionWithStartStation(station);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public List<Section> getSections() {
-        return Collections.unmodifiableList(sections.getSections());
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -81,4 +66,21 @@ public class Line {
         result = 31 * result + (color != null ? color.hashCode() : 0);
         return result;
     }
+
+    public List<Section> getSortedSections() {
+        return Collections.unmodifiableList(sections.getSortedSections());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
 }
