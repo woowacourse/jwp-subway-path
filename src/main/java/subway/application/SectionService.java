@@ -52,7 +52,10 @@ public class SectionService {
     }
 
     private StationDto addFirstSection(final long lineId, final SectionRequest request) {
-        Section section = Section.of(request.getUpStationName(), request.getDownStationName(), request.getDistance());
+        Section section = Section.of(
+                getStation(new Station(request.getUpStationName())),
+                getStation(new Station(request.getDownStationName())),
+                request.getDistance());
         Station station = sectionRepository.addSection(section, lineId);
         return StationDto.from(station);
     }
