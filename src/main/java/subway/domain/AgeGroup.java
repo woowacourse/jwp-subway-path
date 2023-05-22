@@ -6,7 +6,7 @@ public enum AgeGroup {
 
     OLD(65, Integer.MAX_VALUE, 0, 1),
     ADULT(19, 64, 0, 0.0),
-    TEENAGER(13,18, 350, 0.2),
+    TEENAGER(13, 18, 350, 0.2),
     CHILDREN(6, 12, 350, 0.5),
     INFANT(0, 5, 0, 1);
 
@@ -23,10 +23,10 @@ public enum AgeGroup {
     }
 
     public static AgeGroup matchAgeGroup(final int age) {
-        if(age < 0){
+        if (age < 0) {
             throw new IllegalArgumentException("[ERROR] 유효하지 않은 숫자입니다.");
         }
-        return Arrays.stream(values()).filter(each -> each.minAge<= age && age <= each.maxAge)
+        return Arrays.stream(values()).filter(each -> each.minAge <= age && age <= each.maxAge)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("[ERROR] 연령대 매칭에 실패하였습니다."));
     }
