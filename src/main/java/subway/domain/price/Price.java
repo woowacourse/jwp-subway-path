@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.price;
 
 public class Price {
 
@@ -26,29 +26,8 @@ public class Price {
     }
 
     public Price applyAge(final int age) {
-        if (isAdult(age)) {
-            return this;
-        }
-        final int basePrice = getPrice() - 350;
-        if (isTeenager(age)) {
-            return new Price((int) (basePrice * 0.8));
-        }
-        if (isChildren(age)) {
-            return new Price((int) (basePrice * 0.5));
-        }
-        return new Price(0);
-    }
-
-    private static boolean isAdult(final int age) {
-        return age >= 19;
-    }
-
-    private static boolean isTeenager(final int age) {
-        return age >= 13;
-    }
-
-    private static boolean isChildren(final int age) {
-        return age >= 6;
+        final Age ageGroup = Age.of(age);
+        return new Price(ageGroup.calculatePrice(price));
     }
 
     public int getPrice() {

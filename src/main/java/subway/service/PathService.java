@@ -1,7 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.domain.Price;
+import subway.domain.price.Price;
 import subway.domain.Station;
 import subway.domain.Subway;
 import subway.domain.path.DijkstraShortestPathFinder;
