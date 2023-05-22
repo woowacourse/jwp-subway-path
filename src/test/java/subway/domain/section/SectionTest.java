@@ -26,7 +26,8 @@ class SectionTest {
 
         // when + then
         assertThatThrownBy(() -> new Section(id, leftStation, rightStation, distance))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("비어 있는 역이 존재하면 안됩니다.");
     }
 
     private static Stream<Arguments> createStation() {

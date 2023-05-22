@@ -9,7 +9,6 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SectionsTest {
 
@@ -27,7 +26,8 @@ class SectionsTest {
 
         //then
         assertThatThrownBy(() -> new Sections(List.of(section1, section2)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("갈림길이 존재할 수 없습니다.");
     }
 
     @DisplayName("추가할 때 갈림길은 생성될 수 없다.")
@@ -45,7 +45,8 @@ class SectionsTest {
 
         //then
         assertThatThrownBy(() -> sections.addSection(section2))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("갈림길이 존재할 수 없습니다.");
     }
 
     @DisplayName("영역을 분할하면 하나가 늘어난다.")
@@ -78,8 +79,9 @@ class SectionsTest {
         Sections sections = new Sections(List.of(section1));
 
         //when + then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> sections.split(innerStation, leftStation, Direction.RIGHT, 20));
-        assertEquals("사이에 들어갈 역의 거리는 기존 거리보다 작아야 합니다.", exception.getMessage());
+        assertThatThrownBy(() -> sections.split(innerStation, leftStation, Direction.RIGHT, 20))
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("사이에 들어갈 역의 거리는 기존 거리보다 작아야 합니다.");
     }
 
     @DisplayName("왼쪽 역을 기준으로 영역을 가져온다.")
@@ -106,7 +108,9 @@ class SectionsTest {
         Sections sections = new Sections(List.of());
 
         //when + then
-        assertThrows(IllegalArgumentException.class, () -> sections.getSectionByLeftStation(leftStation));
+        assertThatThrownBy(() -> sections.getSectionByLeftStation(leftStation))
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("지정한 역이 좌측에 존재하는 영역이 없습니다.");
     }
 
     @DisplayName("오른쪽 역을 기준으로 영역을 가져온다.")
@@ -133,7 +137,9 @@ class SectionsTest {
         Sections sections = new Sections(List.of());
 
         //when + then
-        assertThrows(IllegalArgumentException.class, () -> sections.getSectionByLeftStation(rightStation));
+        assertThatThrownBy(() -> sections.getSectionByLeftStation(rightStation))
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("지정한 역이 우측에 존재하는 영역이 없습니다.");
     }
 
     @DisplayName("가장자리 역을 제거해 영역을 제거한다.")

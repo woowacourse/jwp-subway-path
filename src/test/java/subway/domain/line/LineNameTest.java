@@ -18,8 +18,8 @@ class LineNameTest {
     void validate_line_name_is_blank_and_null(String name) {
         // when + then
         assertThatThrownBy(() -> new StationName(name))
-                .isInstanceOf(IllegalArgumentException.class);
-
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("역 이름은 공백일 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -31,5 +31,4 @@ class LineNameTest {
 
         assertEquals(name, lineName.getName());
     }
-
 }

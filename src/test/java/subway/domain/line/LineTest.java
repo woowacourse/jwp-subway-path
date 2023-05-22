@@ -141,7 +141,8 @@ class LineTest {
         Station rightStation = new Station(2L, "right");
 
         // when + then
-        assertThrows(NotInitializedLineException.class, () -> line.addStation(leftStation, rightStation, Direction.RIGHT, 10));
+        NotInitializedLineException notInitializedLineException = assertThrows(NotInitializedLineException.class, () -> line.addStation(leftStation, rightStation, Direction.RIGHT, 10));
+        assertEquals("초기화되지 않은 노선입니다.", notInitializedLineException.getMessage());
     }
 
     @Test
@@ -176,6 +177,7 @@ class LineTest {
         Station centerStation = new Station(3L, "last");
 
         // when + then
-        assertThrows(NotInitializedLineException.class, () -> line.deleteStation(centerStation));
+        NotInitializedLineException notInitializedLineException = assertThrows(NotInitializedLineException.class, () -> line.deleteStation(centerStation));
+        assertEquals("초기화되지 않은 노선입니다.",notInitializedLineException.getMessage());
     }
 }

@@ -90,7 +90,8 @@ class PathTest {
         ShortestStationGraph path = new ShortestStationGraph(List.of(line1, line2), List.of(station1, station2, station3, station4, station5, station6));
 
         //then
-        assertThrows(NoSuchShortestPathException.class, () -> path.getShortestPath(station1, station5));
+        NoSuchShortestPathException noSuchShortestPathException = assertThrows(NoSuchShortestPathException.class, () -> path.getShortestPath(station1, station5));
+        assertEquals("최단경로를 찾지 못했습니다.",noSuchShortestPathException.getMessage());
     }
 
     @DisplayName("환승하는 최단경로가 있는 경우 해당 경로를 반환한다.")
