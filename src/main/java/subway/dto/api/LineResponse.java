@@ -37,6 +37,12 @@ public class LineResponse {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
     }
 
+    public static List<LineResponse> of(List<Line> lines, Map<Long, Station> stationIdToStation) {
+        return lines.stream()
+                .map(line -> LineResponse.of(line, stationIdToStation))
+                .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }

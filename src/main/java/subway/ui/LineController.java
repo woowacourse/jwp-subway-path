@@ -59,20 +59,13 @@ public class LineController {
         List<Station> stations = stationService.findAll();
         Map<Long, Station> stationIdToStation = getIdToStation(stations);
 
-        List<LineResponse> lineResponses = buildLineResponses(lines, stationIdToStation);
+        List<LineResponse> lineResponses = LineResponse.of(lines, stationIdToStation);
         return ResponseEntity.ok(lineResponses);
     }
 
     private Map<Long, Station> getIdToStation(List<Station> stations) {
         return stations.stream()
                 .collect(toMap(station -> station.getId(), Function.identity()));
-    }
-
-    private List<LineResponse> buildLineResponses(List<Line> lines, Map<Long, Station> stationIdToStation) {
-        List<LineResponse> lineResponses = lines.stream()
-                .map(line -> LineResponse.of(line, stationIdToStation))
-                .collect(Collectors.toList());
-        return lineResponses;
     }
 
     @GetMapping("/{id}")
