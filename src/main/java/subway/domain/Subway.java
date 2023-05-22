@@ -32,7 +32,7 @@ public class Subway {
     }
 
     public List<Line> getLines() {
-        return lines;
+        return List.copyOf(lines);
     }
 
     public void removeStation(String lineName, String station) {

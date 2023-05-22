@@ -164,7 +164,7 @@ public class Line {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return List.copyOf(sections);
     }
 
     public Long getId() {
