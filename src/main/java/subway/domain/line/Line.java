@@ -1,5 +1,7 @@
 package subway.domain.line;
 
+import subway.domain.Path.Fare;
+
 import java.util.Objects;
 
 public class Line {
@@ -7,9 +9,9 @@ public class Line {
     private final Long id;
     private final LineName name;
     private final LineColor color;
-    private final int extraFare;
+    private final Fare extraFare;
 
-    public Line(Long id, LineName name, LineColor color, int extraFare) {
+    private Line(Long id, LineName name, LineColor color, Fare extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -17,11 +19,11 @@ public class Line {
     }
 
     public static Line of(Long id, String name, String color, int extraFare) {
-        return new Line(id, LineName.from(name), LineColor.from(color), extraFare);
+        return new Line(id, LineName.from(name), LineColor.from(color), Fare.from(extraFare));
     }
 
     public static Line of(String name, String color, int extraFare) {
-        return new Line(null, LineName.from(name), LineColor.from(color), extraFare);
+        return new Line(null, LineName.from(name), LineColor.from(color), Fare.from(extraFare));
     }
 
     public boolean isSameName(Line line) {
@@ -45,7 +47,7 @@ public class Line {
     }
 
     public int getExtraFare() {
-        return extraFare;
+        return extraFare.getFare();
     }
 
     @Override
