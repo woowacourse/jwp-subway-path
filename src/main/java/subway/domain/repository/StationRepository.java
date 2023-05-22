@@ -20,7 +20,7 @@ public class StationRepository {
     public Station findByName(String name) {
         Optional<StationEntity> foundStationEntity = stationDao.findByName(name);
         if (foundStationEntity.isEmpty()) {
-            throw new StationNotFoundException();
+            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
         }
         return foundStationEntity.get().toDomain();
     }
@@ -43,7 +43,7 @@ public class StationRepository {
     public Station update(Station station) {
         Optional<StationEntity> optionalStationEntity = stationDao.findById(station.getId());
         if (optionalStationEntity.isEmpty()) {
-            throw new StationNotFoundException();
+            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
         }
         StationEntity stationEntity = optionalStationEntity.get();
         stationEntity.updateName(station.getName());
@@ -54,7 +54,7 @@ public class StationRepository {
     public Station findById(long id) {
         Optional<StationEntity> optionalStationEntity = stationDao.findById(id);
         if (optionalStationEntity.isEmpty()) {
-            throw new StationNotFoundException();
+            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
         }
         return optionalStationEntity.get().toDomain();
     }

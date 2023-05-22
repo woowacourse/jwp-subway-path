@@ -125,7 +125,7 @@ public class SectionService {
         if (line.hasStationInLine(station)) {
             return;
         }
-        throw new StationNotFoundException();
+        throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
     }
 
     private void mergeSection(long lineId, Section frontSection, Section backSection) {

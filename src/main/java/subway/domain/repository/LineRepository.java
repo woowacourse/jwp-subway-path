@@ -25,7 +25,7 @@ public class LineRepository {
     public Line findById(long id) {
         Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
         if (optionalLineEntity.isEmpty()) {
-            throw new LineNotFoundException();
+            throw new LineNotFoundException("존재하지 않는 노선입니다.");
         }
         LineEntity lineEntity = optionalLineEntity.get();
         return new Line(id, lineEntity.getName(), lineEntity.getColor(), findSectionsInLine(id));
@@ -56,7 +56,7 @@ public class LineRepository {
     public Line findByIdWithNoSections(long id) {
         Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
         if (optionalLineEntity.isEmpty()) {
-            throw new LineNotFoundException();
+            throw new LineNotFoundException("존재하지 않는 노선입니다.");
         }
         LineEntity lineEntity = optionalLineEntity.get();
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
@@ -65,7 +65,7 @@ public class LineRepository {
     public Line update(Line line) {
         Optional<LineEntity> optionalLineEntity = lineDao.findById(line.getId());
         if (optionalLineEntity.isEmpty()) {
-            throw new LineNotFoundException();
+            throw new LineNotFoundException("존재하지 않는 노선입니다.");
         }
         LineEntity lineEntity = optionalLineEntity.get();
         lineEntity.updateNameAndColor(line.getName(), line.getColor());

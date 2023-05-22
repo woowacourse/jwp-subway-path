@@ -42,7 +42,7 @@ public class PathFinder {
         if (graph.containsVertex(source) && graph.containsVertex(dest)) {
             return;
         }
-        throw new StationNotFoundException();
+        throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
     }
 
     private List<Station> getShortestPathStations(DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath,
