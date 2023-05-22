@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.routestrategy.RouteStrategy;
 
 public class Subway {
 
@@ -102,17 +101,6 @@ public class Subway {
                 .filter(station -> station.hasSameName(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다"));
-    }
-
-    public List<Station> findShortestRoute(Station start, Station end, RouteStrategy strategy) {
-        if (start.equals(end)) {
-            throw new IllegalArgumentException("출발지와 도착지가 같은 역입니다.");
-        }
-        return strategy.findShortestRoute(this, start, end);
-    }
-
-    public Distance findShortestDistance(Station start, Station end, RouteStrategy strategy) {
-        return strategy.findShortestDistance(this, start, end);
     }
 
     public List<Line> getLines() {

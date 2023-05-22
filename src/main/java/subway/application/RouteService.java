@@ -22,19 +22,17 @@ public class RouteService {
 
     public List<Station> findShortestRoute(RouteRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
-        return subway.findShortestRoute(
+        return routeStrategy.findShortestRoute(subway,
                 subway.findStationByName(request.getStartStation()),
-                subway.findStationByName(request.getEndStation()),
-                routeStrategy
-        );
+                subway.findStationByName(request.getEndStation())
+                );
     }
 
     public Distance findShortestDistance(RouteRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
-        return subway.findShortestDistance(
-                new Station(request.getStartStation()),
-                new Station(request.getEndStation()),
-                routeStrategy
+        return routeStrategy.findShortestDistance(subway,
+                subway.findStationByName(request.getStartStation()),
+                subway.findStationByName(request.getEndStation())
         );
     }
 
