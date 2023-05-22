@@ -18,11 +18,6 @@ public class TransferableRoute {
         return new Distance((int) path.getWeight());
     }
 
-    // TODO 요금정책 전달받도록 변경
-    public int totalFare() {
-        return FareCalculator.calculate(totalDistance());
-    }
-
     public List<Station> stations() {
         return new ArrayList<>(path.getVertexList());
     }

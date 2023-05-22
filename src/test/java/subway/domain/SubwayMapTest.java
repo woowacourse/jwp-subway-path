@@ -6,8 +6,10 @@ import static subway.fixture.LineFixture.FIXTURE_LINE_1;
 import static subway.fixture.LineFixture.FIXTURE_LINE_2;
 import static subway.fixture.LineFixture.FIXTURE_LINE_3;
 import static subway.fixture.SectionFixture.LINE1_SECTIONS;
+import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
 import static subway.fixture.SectionFixture.LINE2_SECTIONS;
 import static subway.fixture.SectionFixture.LINE3_SECTIONS;
+import static subway.fixture.SectionFixture.LINE3_SECTION_ST2_ST9;
 import static subway.fixture.StationFixture.FIXTURE_STATION_1;
 import static subway.fixture.StationFixture.FIXTURE_STATION_2;
 import static subway.fixture.StationFixture.FIXTURE_STATION_7;
@@ -23,8 +25,7 @@ import subway.domain.exception.IllegalSubwayMapArgumentException;
 @DisplayName("지하철 노선도 단위 테스트")
 class SubwayMapTest {
 
-    // TODO 어떻게 하면 다양한 테스트 케이스를 확인할 수 있을까?
-    @DisplayName("출발 역과 도착 역을 전달받아 환승 포함 최단 거리 경로를 나타내는 역 연결 그래프를 반환한다")
+    @DisplayName("출발 역과 도착 역을 전달받아 환승 포함 최단 거리 경로 정보를 반환한다")
     @Test
     void findShortestRoutedStations() {
         // given
@@ -41,6 +42,8 @@ class SubwayMapTest {
         // then
         assertThat(shortestRoute.stations())
                 .contains(FIXTURE_STATION_1, FIXTURE_STATION_2, FIXTURE_STATION_9);
+        assertThat(shortestRoute.totalDistance())
+                .isEqualTo(LINE1_SECTION_ST1_ST2.getDistance().plus(LINE3_SECTION_ST2_ST9.getDistance()));
     }
 
     @DisplayName("출발 역이 존재하지 않으면 예외를 발생한다")

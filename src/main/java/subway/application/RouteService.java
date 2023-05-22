@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.BasicFareCalculator;
 import subway.domain.MultiRoutedStations;
+import subway.domain.RouteInfo;
 import subway.domain.RoutedStations;
 import subway.domain.SubwayMap;
 import subway.domain.TransferableRoute;
@@ -37,8 +39,9 @@ public class RouteService {
 
         Map<Line, RoutedStations> sectionsByLine = findSectionsByLine();
         SubwayMap subwayMap = new SubwayMap(MultiRoutedStations.from(sectionsByLine));
-        TransferableRoute shortestRoute = subwayMap.findShortestRoute(sourceStation, targetStation);
-        return RouteResponse.from(shortestRoute);
+        TransferableRoute transferableRoute = subwayMap.findShortestRoute(sourceStation, targetStation);
+        RouteInfo routeInfo = RouteInfo.from(transferableRoute, new BasicFareCalculator());
+        return RouteResponse.from(routeInfo);
     }
 
     private Map<Line, RoutedStations> findSectionsByLine() {

@@ -219,8 +219,9 @@ GET /routes?sourceStationId={sourceStationId}&target={targetStationId} HTTP/1.1
     - [x] 메서드 접근제한자 수정
     - [x] 변환 로직 정적 팩터리 메서드로 변경
     - [x] [외부 라이브러리에 대한 예측 못한 예외 처리 코드로 명시](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616300)
-    - [ ] [요금 계산 클래스 분리 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616938)
-        - TransferableRoute 에서 요금 정책을 전달받아 계산하도록 변경하기
+    - [x] [요금 계산 클래스 분리 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616938)
+        - SubwayMap 에서 요금 정책과 TransferableRoute 를 전달받아 계산하도록 변경
+        - 요금 정책 변경을 쉽게 하기 위하여 인터페이스 적용
     - [ ] [테스트 픽스쳐 네이밍에서 무엇을 위한 객체인지 표현하도록 수정](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199617411)
     - [ ] [중복 제거를 위해 서비스 간 의존 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199615185)
     - [x] [3단계 반영을 위한 Section - Line 관계 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616042)

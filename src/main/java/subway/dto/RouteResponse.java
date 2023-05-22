@@ -1,7 +1,7 @@
 package subway.dto;
 
 import java.util.List;
-import subway.domain.TransferableRoute;
+import subway.domain.RouteInfo;
 
 public class RouteResponse {
 
@@ -15,11 +15,11 @@ public class RouteResponse {
         this.totalFare = totalFare;
     }
 
-    public static RouteResponse from(final TransferableRoute route) {
+    public static RouteResponse from(final RouteInfo routeInfo) {
         return new RouteResponse(
-                StationResponse.from(route.stations()),
-                route.totalDistance().getValue(),
-                route.totalFare()
+                StationResponse.from(routeInfo.getStations()),
+                routeInfo.getTotalDistance().getValue(),
+                routeInfo.getTotalFare().getValue()
         );
     }
 
