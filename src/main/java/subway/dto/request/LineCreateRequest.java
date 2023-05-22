@@ -7,21 +7,21 @@ import javax.validation.constraints.PositiveOrZero;
 import subway.dto.LineCreateDto;
 
 public class LineCreateRequest {
-    @NotBlank(message = "노선의 이름은 비어있을 수 없습니다.")
+    @NotBlank(message = "노선의 이름은 비어있을 수 없습니다. 입력값 : ${validatedValue}")
     private String lineName;
 
-    @NotNull(message = "노선의 추가 금액은 비어있을 수 없습니다.")
-    @PositiveOrZero(message = "노선의 추가 금액은 0이거나 양수여야 합니다.")
+    @NotNull(message = "노선의 추가 금액은 비어있을 수 없습니다. 입력값 : ${validatedValue}")
+    @PositiveOrZero(message = "노선의 추가 금액은 0이거나 양수여야 합니다. 입력값 : ${validatedValue}")
     private Integer extraCharge;
 
-    @NotNull(message = "상행역은 비어있을 수 없습니다.")
+    @NotNull(message = "상행역은 비어있을 수 없습니다. 입력값 : ${validatedValue}")
     private Long upStationId;
 
-    @NotNull(message = "하행역은 비어있을 수 없습니다.")
+    @NotNull(message = "하행역은 비어있을 수 없습니다. 입력값 : ${validatedValue}")
     private Long downStationId;
 
-    @NotNull(message = "역 간 거리는 비어있을 수 없습니다.")
-    @Positive(message = "역 간 거리는 양수여야 합니다.")
+    @NotNull(message = "역 간 거리는 비어있을 수 없습니다. 입력값 : ${validatedValue}}")
+    @Positive(message = "역 간 거리는 양수여야 합니다. 입력값 : ${validatedValue}")
     private Integer distance;
 
     public LineCreateRequest(String lineName, Integer extraCharge, Long upStationId, Long downStationId,

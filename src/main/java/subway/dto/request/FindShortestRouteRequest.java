@@ -4,14 +4,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class FindShortestRouteRequest {
-    @NotNull(message = "승객의 나이는 비어있을 수 없습니다.")
-    @Positive(message = "승객의 나이는 양수여야 합니다.")
+    @NotNull(message = "승객의 나이는 비어있을 수 없습니다. 입력값 : 입력값 : ${validatedValue}")
+    @Positive(message = "승객의 나이는 양수여야 합니다. 입력값 : 입력값 : ${validatedValue}")
     private final Integer passengerAge;
 
-    @NotNull(message = "출발역은 비어있을 수 없습니다.")
+    @NotNull(message = "출발역은 비어있을 수 없습니다. 입력값 : 입력값 : ${validatedValue}")
     private final Long startStationId;
 
-    @NotNull(message = "도착역은 비어있을 수 없습니다.")
+    @NotNull(message = "도착역은 비어있을 수 없습니다. 입력값 : 입력값 : ${validatedValue}")
     private final Long endStationId;
 
     public FindShortestRouteRequest(Integer passengerAge, Long startStationId, Long endStationId) {

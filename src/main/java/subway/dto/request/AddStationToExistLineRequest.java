@@ -6,14 +6,14 @@ import subway.dto.AddStationToExistLineDto;
 
 public class AddStationToExistLineRequest {
 
-    @NotNull(message = "상행역은 비어있을 수 없습니다.")
+    @NotNull(message = "상행역은 비어있을 수 없습니다. 입력값 : ${validatedValue}")
     private final Long upStationId;
 
-    @NotNull(message = "하행역은 비어있을 수 없습니다.")
+    @NotNull(message = "하행역은 비어있을 수 없습니다. 입력값 : ${validatedValue}")
     private final Long downStationId;
 
-    @NotNull(message = "역 간 거리는 비어있을 수 없습니다.")
-    @Positive(message = "역 간 거리는 양수여야 합니다.")
+    @NotNull(message = "역 간 거리는 비어있을 수 없습니다. 입력값 : ${validatedValue}")
+    @Positive(message = "역 간 거리는 양수여야 합니다. 입력값 : ${validatedValue}")
     private final Integer distance;
 
     public AddStationToExistLineRequest(Long upStationId, Long downStationId, Integer distance) {
