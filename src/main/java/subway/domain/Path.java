@@ -9,6 +9,10 @@ public class Path {
         this.pathSegments = pathSegments;
     }
 
+    public Fare calculateTotalFare(FareCalculator calculator) {
+        return calculator.calculate(calculateTotalDistance());
+    }
+
     public List<PathSegment> getPathSegments() {
         return pathSegments;
     }

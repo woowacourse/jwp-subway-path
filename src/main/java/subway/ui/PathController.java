@@ -9,7 +9,6 @@ import subway.domain.Fare;
 import subway.domain.Station;
 import subway.dto.api.ShortestPathResponse;
 import subway.dto.service.PathResult;
-import subway.service.FareService;
 import subway.service.PathService;
 import subway.service.StationService;
 
@@ -18,12 +17,10 @@ import subway.service.StationService;
 public class PathController {
     private final StationService stationService;
     private final PathService pathService;
-    private final FareService fareService;
 
-    public PathController(StationService stationService, PathService pathService, FareService fareService) {
+    public PathController(StationService stationService, PathService pathService) {
         this.stationService = stationService;
         this.pathService = pathService;
-        this.fareService = fareService;
     }
 
     @GetMapping
@@ -32,7 +29,7 @@ public class PathController {
         Station departure = stationService.findById(departureStationId);
         Station arrival = stationService.findById(arrivalStationId);
         PathResult pathResult = pathService.getShortestPath(departure, arrival);
-        Fare fare = fareService.calculateFareOf(pathResult.getPath());
+        Fare fare = pathService.calculateFare(pathResult.getPath());
 
         ShortestPathResponse shortestPathResponse = ShortestPathResponse.of(departure, arrival, pathResult, fare);
         return ResponseEntity.ok().body(shortestPathResponse);

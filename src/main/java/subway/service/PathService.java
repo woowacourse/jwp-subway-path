@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import subway.domain.Fare;
+import subway.domain.FareCalculator;
 import subway.domain.Line;
 import subway.domain.Path;
 import subway.domain.PathSegment;
@@ -22,12 +24,14 @@ public class PathService {
     private final PathFinderService pathFinderService;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final FareCalculator fareCalculator;
 
     public PathService(PathFinderService pathFinderService, LineRepository lineRepository,
-                       StationRepository stationRepository) {
+                       StationRepository stationRepository, FareCalculator fareCalculator) {
         this.pathFinderService = pathFinderService;
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.fareCalculator = fareCalculator;
     }
 
     public PathResult getShortestPath(Station departure, Station arrival) {
@@ -55,5 +59,9 @@ public class PathService {
                 .map(StationEdge::getDownStationId)
                 .collect(Collectors.toList());
         return stationRepository.findById(stationIds);
+    }
+
+    public Fare calculateFare(Path path) {
+        return path.calculateTotalFare(fareCalculator);
     }
 }

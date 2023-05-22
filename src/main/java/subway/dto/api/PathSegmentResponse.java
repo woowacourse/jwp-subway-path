@@ -3,7 +3,6 @@ package subway.dto.api;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.domain.Line;
-import subway.domain.PathSegment;
 import subway.domain.Station;
 import subway.dto.domain.LineDto;
 import subway.dto.domain.StationDto;
