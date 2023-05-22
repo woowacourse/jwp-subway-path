@@ -47,8 +47,8 @@ public class SectionService {
 
     private boolean isEmptyLine(Long lineId) {
         Optional<List<SectionEntity>> byLineId = sectionDao.findByLineId(lineId);
-        return byLineId.get()
-                       .isEmpty();
+        return byLineId.map(List::isEmpty)
+                       .orElse(true);
     }
 
     private void saveSectionWhenLineIsNotEmpty(Long lineId, SectionEntity sectionToAdd) {
