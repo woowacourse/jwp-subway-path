@@ -6,7 +6,7 @@ import subway.domain.Distance;
 import subway.domain.Fare;
 import subway.domain.Station;
 import subway.domain.Subway;
-import subway.domain.SubwayFareStrategy;
+import subway.domain.fare.FareCalculator;
 import subway.domain.routestrategy.RouteStrategy;
 import subway.dto.RouteRequest;
 import subway.repository.LineRepository;
@@ -15,16 +15,15 @@ import subway.repository.LineRepository;
 public class RouteService {
 
     private final RouteStrategy routeStrategy;
-    private final SubwayFareStrategy subwayFareStrategy;
+    private final FareCalculator fareCalculator;
     private final LineRepository lineRepository;
-
-    public RouteService(RouteStrategy routeStrategy, SubwayFareStrategy subwayFareStrategy,
-            LineRepository lineRepository) {
+    
+    public RouteService(RouteStrategy routeStrategy, FareCalculator fareCalculator, LineRepository lineRepository) {
         this.routeStrategy = routeStrategy;
-        this.subwayFareStrategy = subwayFareStrategy;
+        this.fareCalculator = fareCalculator;
         this.lineRepository = lineRepository;
     }
-
+    
     public List<Station> findShortestRoute(RouteRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
         return routeStrategy.findShortestRoute(subway,
@@ -43,6 +42,6 @@ public class RouteService {
 
     public Fare findShortestRouteFare(RouteRequest request) {
         Distance totalDistance = findShortestDistance(request);
-        return subwayFareStrategy.calculteFare(totalDistance);
+        return fareCalculator.calculateFare(totalDistance);
     }
 }
