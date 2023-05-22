@@ -8,6 +8,7 @@ import subway.domain.subway.Section;
 import subway.domain.subway.Sections;
 import subway.domain.subway.Station;
 import subway.dto.request.SectionCreateRequest;
+import subway.dto.request.SectionDeleteRequest;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 
@@ -33,5 +34,15 @@ public class SectionService {
 		line.addSection(section);
 
 		lineRepository.insertSectionInLine(sections, request.getLineName());
+	}
+
+	@Transactional
+	public void deleteSection(final SectionDeleteRequest request) {
+		String lineName = request.getLineName();
+		Station station = new Station(request.getStation());
+		Sections sections = sectionRepository.findSectionsByLineName(lineName);
+		sections.deleteSectionByStation(station);
+
+		lineRepository.insertSectionInLine(sections, lineName);
 	}
 }
