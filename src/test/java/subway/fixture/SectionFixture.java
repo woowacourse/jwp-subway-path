@@ -10,7 +10,7 @@ public class SectionFixture {
 	}
 
 	public static Section createSection2() {
-		return new Section(new Station("잠실새내역"), new Station("종합운동장역"), 5);
+		return new Section(new Station("잠실새내역"), new Station("선릉역"), 5);
 	}
 
 	public static Section createSection(final long distance) {

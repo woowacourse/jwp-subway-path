@@ -107,7 +107,7 @@ public class StationServiceIntegrationTest {
 		StationCreateRequest createRequest = new StationCreateRequest("잠실역");
 		long id = stationService.saveStation(createRequest);
 
-		StationUpdateRequest updateRequest = new StationUpdateRequest("판교역");
+		StationUpdateRequest updateRequest = new StationUpdateRequest("신사역");
 
 		// when
 		stationService.updateStation(id, updateRequest);
@@ -125,7 +125,7 @@ public class StationServiceIntegrationTest {
 	@DisplayName("존재하지 않은 역을 조회 시 예외가 발생한다")
 	void exception_whenStationNotFound() {
 		// given
-		StationUpdateRequest updateRequest = new StationUpdateRequest("판교역");
+		StationUpdateRequest updateRequest = new StationUpdateRequest("신사역");
 		Long id = 1L;
 
 		// then

@@ -92,7 +92,7 @@ public class StationServiceTest {
 	void updateStation() {
 		// given
 		Long id = 1L;
-		StationUpdateRequest stationUpdateRequest = new StationUpdateRequest("판교역");
+		StationUpdateRequest stationUpdateRequest = new StationUpdateRequest("신사역");
 
 		Station station = new Station(1, "잠실역");
 		given(stationRepository.findByStationId(id)).willReturn(station);

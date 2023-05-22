@@ -20,7 +20,7 @@ class SectionsTest {
 	void sectionCreate() {
 		// given
 		Sections sections = createSections();
-		Section section = createSection(new Station("종합운동장역"), new Station("삼성역"));
+		Section section = createSection(new Station("선릉역"), new Station("강남역"));
 
 		// when
 		sections.addSection(section);

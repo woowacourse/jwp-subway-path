@@ -17,7 +17,7 @@ class SectionTest {
 		Section section = createSection();
 
 		// when
-		boolean result = section.hasStation(new Station("삼성역"));
+		boolean result = section.hasStation(new Station("강남역"));
 
 		// then
 		assertThat(result).isFalse();

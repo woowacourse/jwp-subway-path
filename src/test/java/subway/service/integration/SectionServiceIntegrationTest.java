@@ -44,12 +44,12 @@ public class SectionServiceIntegrationTest {
 	@DisplayName("구간 생성 서비스 인수테스트")
 	void createSection() {
 		// given
-		SectionCreateRequest request = new SectionCreateRequest("2호선", "종합운동장역", "삼성역", 3);
+		SectionCreateRequest request = new SectionCreateRequest("2호선", "선릉역", "강남역", 3);
 
 		stationRepository.insertStation(new Station("잠실역"));
 		stationRepository.insertStation(new Station("잠실새내역"));
-		stationRepository.insertStation(new Station("종합운동장역"));
-		stationRepository.insertStation(new Station("삼성역"));
+		stationRepository.insertStation(new Station("선릉역"));
+		stationRepository.insertStation(new Station("강남역"));
 
 		lineRepository.insertLine(new LineEntity(1L, "2호선"));
 		lineRepository.insertSectionInLine(createSections(), "2호선");
@@ -73,8 +73,8 @@ public class SectionServiceIntegrationTest {
 
 		stationRepository.insertStation(new Station("잠실역"));
 		stationRepository.insertStation(new Station("잠실새내역"));
-		stationRepository.insertStation(new Station("종합운동장역"));
-		stationRepository.insertStation(new Station("삼성역"));
+		stationRepository.insertStation(new Station("선릉역"));
+		stationRepository.insertStation(new Station("강남역"));
 
 		lineRepository.insertLine(new LineEntity(1L, "2호선"));
 		lineRepository.insertSectionInLine(createSections(), "2호선");
@@ -88,12 +88,12 @@ public class SectionServiceIntegrationTest {
 	@DisplayName("구간 생성 시 겹치는 역이 없으면 예외가 발생한다")
 	void exception_whenCreateInvalidSection() {
 		// given
-		SectionCreateRequest request = new SectionCreateRequest("2호선", "판교역", "정자역", 3);
+		SectionCreateRequest request = new SectionCreateRequest("2호선", "신사역", "고속터미널역", 3);
 
 		stationRepository.insertStation(new Station("잠실역"));
 		stationRepository.insertStation(new Station("잠실새내역"));
-		stationRepository.insertStation(new Station("종합운동장역"));
-		stationRepository.insertStation(new Station("삼성역"));
+		stationRepository.insertStation(new Station("선릉역"));
+		stationRepository.insertStation(new Station("강남역"));
 
 		lineRepository.insertLine(new LineEntity(1L, "2호선"));
 		lineRepository.insertSectionInLine(createSections(), "2호선");
@@ -107,12 +107,12 @@ public class SectionServiceIntegrationTest {
 	@DisplayName("요청 구간이 기존 구간 거리보다 길면 예외가 발생한다")
 	void exception_whenInvalidDistance() {
 		// given
-		SectionCreateRequest request = new SectionCreateRequest("2호선", "잠실역", "선릉역", 10);
+		SectionCreateRequest request = new SectionCreateRequest("2호선", "잠실역", "교대역", 10);
 
 		stationRepository.insertStation(new Station("잠실역"));
 		stationRepository.insertStation(new Station("잠실새내역"));
-		stationRepository.insertStation(new Station("종합운동장역"));
-		stationRepository.insertStation(new Station("삼성역"));
+		stationRepository.insertStation(new Station("선릉역"));
+		stationRepository.insertStation(new Station("강남역"));
 
 		lineRepository.insertLine(new LineEntity(1L, "2호선"));
 		lineRepository.insertSectionInLine(createSections(), "2호선");
@@ -126,11 +126,11 @@ public class SectionServiceIntegrationTest {
 	@DisplayName("구간 삭제 서비스 인수테스트")
 	void deleteSection() {
 		// given
-		SectionDeleteRequest request = new SectionDeleteRequest("2호선", "종합운동장역");
+		SectionDeleteRequest request = new SectionDeleteRequest("2호선", "선릉역");
 
 		stationRepository.insertStation(new Station("잠실역"));
 		stationRepository.insertStation(new Station("잠실새내역"));
-		stationRepository.insertStation(new Station("종합운동장역"));
+		stationRepository.insertStation(new Station("선릉역"));
 
 		lineRepository.insertLine(new LineEntity(1L, "2호선"));
 		lineRepository.insertSectionInLine(createSections(), "2호선");

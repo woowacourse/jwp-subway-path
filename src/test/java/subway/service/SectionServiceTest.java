@@ -37,7 +37,7 @@ public class SectionServiceTest {
 	@DisplayName("구간 생성 서비스 테스트")
 	void createSection() {
 		// given
-		SectionCreateRequest request = new SectionCreateRequest("2호선", "종합운동장역", "삼성역", 3);
+		SectionCreateRequest request = new SectionCreateRequest("2호선", "선릉역", "강남역", 3);
 		Sections sections = createSections();
 		Line line = new Line(sections, "2호선");
 
@@ -72,7 +72,7 @@ public class SectionServiceTest {
 	void exception_whenNoConnectedStation
 		() {
 		// given
-		SectionCreateRequest request = new SectionCreateRequest("2호선", "판교역", "정자역", 3);
+		SectionCreateRequest request = new SectionCreateRequest("2호선", "신사역", "고속터미널역", 3);
 		Sections sections = createSections();
 		Line line = new Line(sections, "2호선");
 
@@ -88,7 +88,7 @@ public class SectionServiceTest {
 	@DisplayName("요청 구간이 기존 구간의 거리보다 길면 예외가 발생한다")
 	void exception_whenInvalidDistance() {
 		// given
-		SectionCreateRequest request = new SectionCreateRequest("2호선", "잠실역", "선릉역", 10);
+		SectionCreateRequest request = new SectionCreateRequest("2호선", "잠실역", "교대역", 10);
 		Sections sections = createSections();
 		Line line = new Line(sections, "2호선");
 
@@ -104,7 +104,7 @@ public class SectionServiceTest {
 	@DisplayName("구간 삭제 서비스 테스트")
 	void delete_section_success() {
 		// given
-		SectionDeleteRequest request = new SectionDeleteRequest("2호선", "종합운동장역");
+		SectionDeleteRequest request = new SectionDeleteRequest("2호선", "선릉역");
 		Sections sections = createSections();
 		given(sectionRepository.findSectionsByLineName(request.getLineName())).willReturn(sections);
 

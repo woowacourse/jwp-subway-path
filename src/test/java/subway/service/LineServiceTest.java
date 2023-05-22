@@ -63,7 +63,7 @@ class LineServiceTest {
 		assertAll(
 			() -> assertThat(result.getLines().size()).isEqualTo(2),
 			() -> assertThat(result.getLines().get(0).getName()).isEqualTo("2호선"),
-			() -> assertThat(result.getLines().get(1).getName()).isEqualTo("8호선")
+			() -> assertThat(result.getLines().get(1).getName()).isEqualTo("신분당선")
 		);
 	}
 
