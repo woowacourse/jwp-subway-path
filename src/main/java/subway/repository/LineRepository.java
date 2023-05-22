@@ -3,6 +3,7 @@ package subway.repository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.domain.Line;
@@ -10,7 +11,7 @@ import subway.domain.Line;
 @Repository
 public class LineRepository {
 
-    private static final HashMap<Long, Line> store = new HashMap<>();
+    private static final Map<Long, Line> store = new HashMap<>();
 
     private final LineDao lineDao;
 

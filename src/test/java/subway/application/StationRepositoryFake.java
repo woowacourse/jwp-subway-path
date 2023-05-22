@@ -3,12 +3,13 @@ package subway.application;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import subway.domain.Station;
 import subway.repository.StationRepository;
 
 public class StationRepositoryFake implements StationRepository {
 
-    private static final HashMap<Long, Station> store = new HashMap<>();
+    private static final Map<Long, Station> store = new HashMap<>();
 
     @Override
     public Station insert(final Station station) {

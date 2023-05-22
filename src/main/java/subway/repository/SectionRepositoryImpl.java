@@ -3,6 +3,7 @@ package subway.repository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,7 @@ import subway.domain.Section;
 @Repository
 public class SectionRepositoryImpl implements SectionRepository {
 
-    private static final HashMap<Long, Section> store = new HashMap<>();
+    private static final Map<Long, Section> store = new HashMap<>();
 
     private final SectionDao sectionDao;
 

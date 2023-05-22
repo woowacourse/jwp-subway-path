@@ -3,6 +3,7 @@ package subway.application;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import subway.domain.Section;
@@ -10,7 +11,7 @@ import subway.repository.SectionRepository;
 
 public class SectionRepositoryFake implements SectionRepository {
 
-    private static final HashMap<Long, Section> store = new HashMap<>();
+    private static final Map<Long, Section> store = new HashMap<>();
 
     @Override
     public Section insert(final Section section) {
