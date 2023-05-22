@@ -48,16 +48,6 @@ public class Sections {
         throw new InvalidStationException("부적절한 입력입니다.");
     }
 
-    private void validateTwoNewStations(final Station upStation, final Station downStation) {
-        if (isNewStation(upStation) && isNewStation(downStation)) {
-            throw new InvalidStationException("둘 중 하나는 기존에 입력된 역이어야 합니다!");
-        }
-    }
-
-    private boolean isNewStation(final Station station) {
-        return !graph.containsStation(station);
-    }
-
     private Station addStationToDirection(final Direction direction, final Station newStation, final Station existingStation, final int distance) {
         if (graph.isTerminal(direction, existingStation)) {
             direction.addStationToTerminal(graph, existingStation, newStation, distance);
@@ -68,6 +58,16 @@ public class Sections {
         final Station adjacentStation = findAdjacentStation(direction, adjacentSections);
         direction.addStationToMiddle(graph, existingStation, newStation, adjacentStation, distance);
         return newStation;
+    }
+
+    private void validateTwoNewStations(final Station upStation, final Station downStation) {
+        if (isNewStation(upStation) && isNewStation(downStation)) {
+            throw new InvalidStationException("둘 중 하나는 기존에 입력된 역이어야 합니다!");
+        }
+    }
+
+    private boolean isNewStation(final Station station) {
+        return !graph.containsStation(station);
     }
 
     public boolean isSameLine(Line line) {
