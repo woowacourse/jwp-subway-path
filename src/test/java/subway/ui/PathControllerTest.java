@@ -57,7 +57,8 @@ class PathControllerTest extends IntegrationTest {
             assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                     () -> assertThat(response.body().jsonPath().getList("path")).containsExactly("A", "B", "D"),
-                    () -> assertThat(response.body().jsonPath().getInt("fare")).isEqualTo(1250)
+                    () -> assertThat(response.body().jsonPath().getInt("fare")).isEqualTo(1250),
+                    () -> assertThat(response.body().jsonPath().getInt("distance")).isEqualTo(4)
             );
         }
     }
