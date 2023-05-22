@@ -18,8 +18,8 @@ public class PathController {
     }
 
     @GetMapping("/path")
-    public ResponseEntity<PathResponse> findPath(@RequestBody PathRequest pathRequest) {
-        PathResponse pathResponse = sectionService.findPath(pathRequest);
+    public ResponseEntity<PathResponse> findPath(@RequestBody final PathRequest request) {
+        PathResponse pathResponse = sectionService.findPath(request);
         return ResponseEntity.ok(pathResponse);
     }
 }

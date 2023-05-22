@@ -22,14 +22,14 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createSection(@RequestBody SectionCreateRequest sectionCreateRequest) {
-        sectionService.createSection(sectionCreateRequest);
+    public ResponseEntity<Void> createSection(@RequestBody final SectionCreateRequest request) {
+        sectionService.createSection(request);
         return ResponseEntity.created(URI.create("/sections")).build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteSection(@RequestBody SectionDeleteRequest deleteRequest) {
-        sectionService.deleteSection(deleteRequest);
+    public ResponseEntity<Void> deleteSection(@RequestBody final SectionDeleteRequest request) {
+        sectionService.deleteSection(request);
         return ResponseEntity.noContent().build();
     }
 }

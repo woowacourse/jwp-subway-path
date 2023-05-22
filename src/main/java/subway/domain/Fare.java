@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.Objects;
+
 public class Fare {
 
     private static final int ADDITIONAL_MINIMUM_FARE = 2_050;
@@ -15,7 +17,7 @@ public class Fare {
         return new Fare(calculateFare(distance));
     }
 
-    private static int calculateFare(int distance) {
+    private static int calculateFare(final int distance) {
         if (distance <= 10) {
             return MINIMUM_FARE;
         }
@@ -37,5 +39,22 @@ public class Fare {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Fare fare = (Fare) o;
+        return getValue() == fare.getValue();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue());
     }
 }

@@ -21,14 +21,14 @@ public class StationDao {
                     rs.getString("name")
             );
 
-    public StationDao(JdbcTemplate jdbcTemplate) {
+    public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public StationEntity save(StationEntity stationEntity) {
+    public StationEntity save(final StationEntity stationEntity) {
         System.out.println("save  " + Thread.currentThread().getName());
 
         SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
@@ -41,21 +41,21 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<StationEntity> findById(Long id) {
+    public Optional<StationEntity> findById(final Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
                 .findAny();
     }
 
-    public Optional<StationEntity> findByName(String name) {
+    public Optional<StationEntity> findByName(final String name) {
         String sql = "select * from STATION where name = ?";
         return jdbcTemplate.query(sql, rowMapper, name)
                 .stream()
                 .findAny();
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
     }

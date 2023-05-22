@@ -9,30 +9,30 @@ public class Station {
     private final Long id;
     private final String name;
 
-    public Station(String name) {
+    public Station(final String name) {
         validateName(name);
         this.id = null;
         this.name = name;
     }
 
-    public Station(Long id, String name) {
+    public Station(final Long id, final String name) {
         validateName(name);
         this.id = id;
         this.name = name;
     }
 
-    private void validateName(String name) {
+    private void validateName(final String name) {
         validateBlank(name);
         validateLength(name);
     }
 
-    private void validateBlank(String name) {
+    private void validateBlank(final String name) {
         if (name.isBlank() || name.contains(BLANK)) {
             throw new IllegalArgumentException("역 이름에는 공백이 허용되지 않습니다.");
         }
     }
 
-    private void validateLength(String name) {
+    private void validateLength(final String name) {
         if (name.length() < 2 || name.length() > 10) {
             throw new IllegalArgumentException("역 이름은 2~10자까지 가능합니다.");
         }

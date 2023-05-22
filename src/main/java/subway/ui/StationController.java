@@ -21,13 +21,13 @@ import subway.ui.dto.response.StationResponse;
 public class StationController {
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationController(final StationService stationService) {
         this.stationService = stationService;
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        StationResponse station = stationService.saveStation(stationRequest);
+    public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest request) {
+        StationResponse station = stationService.saveStation(request);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
@@ -37,12 +37,12 @@ public class StationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
+    public ResponseEntity<StationResponse> showStation(@PathVariable final Long id) {
         return ResponseEntity.ok().body(stationService.findStationById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }

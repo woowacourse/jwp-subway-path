@@ -24,32 +24,32 @@ public class SectionDao {
                     rs.getInt("distance")
             );
 
-    public SectionDao(JdbcTemplate jdbcTemplate) {
+    public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public SectionEntity save(SectionEntity sectionEntity) {
+    public SectionEntity save(final SectionEntity sectionEntity) {
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(sectionEntity);
         Long savedId = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
         return SectionEntity.of(savedId, sectionEntity);
     }
 
-    public void saveAll(List<SectionEntity> sectionEntities) {
+    public void saveAll(final List<SectionEntity> sectionEntities) {
         BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
                 .map(BeanPropertySqlParameterSource::new)
                 .toArray(BeanPropertySqlParameterSource[]::new);
         simpleJdbcInsert.executeBatch(parameterSources);
     }
 
-    public List<SectionEntity> findAllByLineId(Long lineId) {
+    public List<SectionEntity> findAllByLineId(final Long lineId) {
         String sql = "select * from SECTION where line_id = ?";
         return jdbcTemplate.query(sql, sectionMapper, lineId);
     }
 
-    public void deleteAllByLineId(Long lineId) {
+    public void deleteAllByLineId(final Long lineId) {
         String sql = "delete from SECTION where line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }

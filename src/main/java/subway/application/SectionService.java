@@ -40,7 +40,7 @@ public class SectionService {
     }
 
     @Transactional
-    public void createSection(SectionCreateRequest request) {
+    public void createSection(final SectionCreateRequest request) {
         Station leftStation = findStation(request.getLeftStationName());
         Station rightStation = findStation(request.getRightStationName());
         Section section = new Section(leftStation, rightStation, request.getDistance());
@@ -50,7 +50,7 @@ public class SectionService {
         sectionRepository.save(line);
     }
 
-    public PathResponse findPath(PathRequest request) {
+    public PathResponse findPath(final PathRequest request) {
         Station fromStation = findStation(request.getFromStationName());
         Station toStation = findStation(request.getToStationName());
 
@@ -65,9 +65,9 @@ public class SectionService {
     }
 
     private List<StationInfo> getStationInfos(
-            Station fromStation,
-            Station toStation,
-            DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
+            final Station fromStation,
+            final Station toStation,
+            final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
     ) {
         return dijkstraShortestPath.getPath(fromStation, toStation)
                 .getVertexList()
@@ -101,7 +101,7 @@ public class SectionService {
     }
 
     @Transactional
-    public void deleteSection(SectionDeleteRequest request) {
+    public void deleteSection(final SectionDeleteRequest request) {
         Station station = findStation(request.getStationName());
         Line line = findLine(request.getLineId());
 
@@ -109,12 +109,12 @@ public class SectionService {
         sectionRepository.save(line);
     }
 
-    private Line findLine(Long lineId) {
+    private Line findLine(final Long lineId) {
         return lineRepository.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
     }
 
-    private Station findStation(String name) {
+    private Station findStation(final String name) {
         return stationRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 없습니다."));
     }

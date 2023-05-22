@@ -20,12 +20,12 @@ public class StationService {
     }
 
     @Transactional
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.save(new Station(stationRequest.getName()));
+    public StationResponse saveStation(final StationRequest request) {
+        Station station = stationRepository.save(new Station(request.getName()));
         return StationResponse.from(station);
     }
 
-    public StationResponse findStationById(Long id) {
+    public StationResponse findStationById(final Long id) {
         Station station = stationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 존재하지 않습니다."));
         return StationResponse.from(station);
@@ -39,7 +39,7 @@ public class StationService {
     }
 
     @Transactional
-    public void deleteStationById(Long id) {
+    public void deleteStationById(final Long id) {
         stationRepository.deleteById(id);
     }
 }

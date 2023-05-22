@@ -19,13 +19,13 @@ public class Line {
         this.sections = new LinkedList<>();
     }
 
-    public Line(Long id, String name, LinkedList<Section> sections) {
+    public Line(final Long id, final String name, final LinkedList<Section> sections) {
         this.id = id;
         this.name = name;
         this.sections = sections;
     }
 
-    public void addSection(Section newSection) {
+    public void addSection(final Section newSection) {
         Station leftStation = newSection.getLeft();
         Station rightStation = newSection.getRight();
         newSection.validateSameStation(leftStation, rightStation);
@@ -45,7 +45,11 @@ public class Line {
         addSectionAtEnd(newSection, leftStation, rightStation);
     }
 
-    private void addStationAtRight(Section newSection, Station leftStation, Station rightStation) {
+    private void addStationAtRight(
+            final Section newSection,
+            final Station leftStation,
+            final Station rightStation
+    ) {
         Section foundSection = findSectionByLeftStation(leftStation);
         int indexOfFoundSection = sections.indexOf(foundSection);
         int foundSectionDistance = foundSection.getDistance();
@@ -73,7 +77,11 @@ public class Line {
         sections.add(indexOfFoundSection, dividedSection);
     }
 
-    private void addSectionAtEnd(Section newSection, Station leftStation, Station rightStation) {
+    private void addSectionAtEnd(
+            final Section newSection,
+            final Station leftStation,
+            final Station rightStation
+    ) {
         if (hasLeftStationInSections(rightStation) && !hasRightStationInSections(rightStation)) {
             sections.addFirst(newSection);
         }
@@ -82,13 +90,13 @@ public class Line {
         }
     }
 
-    private void validateDistance(int foundSectionDistance, int newSectionDistance) {
+    private void validateDistance(final int foundSectionDistance, final int newSectionDistance) {
         if (foundSectionDistance <= newSectionDistance) {
             throw new IllegalArgumentException("삽입되는 구간의 길이는 원래 구간의 길이를 넘을 수 없습니다.");
         }
     }
 
-    public void deleteSection(Station station) {
+    public void deleteSection(final Station station) {
         validateStationInLine(station);
 
         if (sections.size() == 1) {
@@ -102,13 +110,13 @@ public class Line {
         deleteSectionAtEnd(station);
     }
 
-    private void validateStationInLine(Station station) {
+    private void validateStationInLine(final Station station) {
         if (!hasStationInSections(station)) {
             throw new IllegalArgumentException("노선에 해당 역이 존재하지 않습니다.");
         }
     }
 
-    private void deleteSectionAtMiddle(Station station) {
+    private void deleteSectionAtMiddle(final Station station) {
         Section leftSection = findSectionByRightStation(station);
         Section rightSection = findSectionByLeftStation(station);
         int indexToAdd = sections.indexOf(leftSection);
@@ -120,7 +128,7 @@ public class Line {
         sections.add(indexToAdd, newSection);
     }
 
-    private void deleteSectionAtEnd(Station station) {
+    private void deleteSectionAtEnd(final Station station) {
         if (isLastStationAtLeft(station)) {
             sections.removeFirst();
         }
@@ -129,36 +137,36 @@ public class Line {
         }
     }
 
-    public boolean hasStationInSections(Station station) {
+    public boolean hasStationInSections(final Station station) {
         return sections.stream()
                 .anyMatch(section -> section.hasStation(station));
     }
 
-    public boolean hasLeftStationInSections(Station station) {
+    public boolean hasLeftStationInSections(final Station station) {
         return sections.stream()
                 .anyMatch(section -> section.getLeft().equals(station));
     }
 
-    public boolean hasRightStationInSections(Station station) {
+    public boolean hasRightStationInSections(final Station station) {
         return sections.stream()
                 .anyMatch(section -> section.getRight().equals(station));
     }
 
-    public Section findSectionByLeftStation(Station station) {
+    public Section findSectionByLeftStation(final Station station) {
         return sections.stream()
                 .filter(section -> section.getLeft().equals(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 없습니다."));
     }
 
-    public Section findSectionByRightStation(Station station) {
+    public Section findSectionByRightStation(final Station station) {
         return sections.stream()
                 .filter(section -> section.getRight().equals(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 없습니다."));
     }
 
-    public boolean isLastStationAtLeft(Station station) {
+    public boolean isLastStationAtLeft(final Station station) {
         List<Station> leftStations = findLeftStations();
         List<Station> rightStations = findRightStations();
         leftStations.removeAll(rightStations);
@@ -166,7 +174,7 @@ public class Line {
                 .anyMatch(leftStation -> leftStation.equals(station));
     }
 
-    public boolean isLastStationAtRight(Station station) {
+    public boolean isLastStationAtRight(final Station station) {
         List<Station> leftStations = findLeftStations();
         List<Station> rightStations = findRightStations();
         rightStations.removeAll(leftStations);

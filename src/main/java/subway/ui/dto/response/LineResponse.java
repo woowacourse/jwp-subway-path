@@ -10,12 +10,12 @@ public class LineResponse {
     private LineResponse() {
     }
 
-    private LineResponse(Long id, String name) {
+    private LineResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static LineResponse from(Line line) {
+    public static LineResponse from(final Line line) {
         return new LineResponse(line.getId(), line.getName());
     }
 

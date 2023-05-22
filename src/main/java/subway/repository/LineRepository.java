@@ -29,7 +29,7 @@ public class LineRepository {
         this.stationDao = stationDao;
     }
 
-    public Line save(Line line) {
+    public Line save(final Line line) {
         LineEntity lineEntity = lineDao.save(new LineEntity(line.getId(), line.getName()));
         return new Line(lineEntity.getId(), line.getName(), line.getSections());
     }
@@ -45,7 +45,7 @@ public class LineRepository {
         return lines;
     }
 
-    private LinkedList<Section> getSections(Long lineId) {
+    private LinkedList<Section> getSections(final Long lineId) {
         List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
 
         LinkedList<Section> sections = new LinkedList<>();
@@ -56,20 +56,20 @@ public class LineRepository {
         return sections;
     }
 
-    private Section getSection(SectionEntity sectionEntity) {
+    private Section getSection(final SectionEntity sectionEntity) {
         Station leftStation = findStationById(sectionEntity.getLeftStationId());
         Station rightStation = findStationById(sectionEntity.getRightStationId());
         Distance distance = new Distance(sectionEntity.getDistance());
         return new Section(leftStation, rightStation, distance);
     }
 
-    private Station findStationById(Long stationId) {
+    private Station findStationById(final Long stationId) {
         StationEntity stationEntity = stationDao.findById(stationId)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역을 찾을 수 없습니다."));
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
-    public Optional<Line> findById(Long id) {
+    public Optional<Line> findById(final Long id) {
         return lineDao.findById(id)
                 .map(lineEntity -> new Line(
                         lineEntity.getId(),
@@ -78,7 +78,7 @@ public class LineRepository {
                 ));
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         lineDao.deleteById(id);
     }
 }

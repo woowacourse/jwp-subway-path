@@ -10,7 +10,12 @@ public class SectionCreateRequest {
     private SectionCreateRequest() {
     }
 
-    public SectionCreateRequest(Long lineId, String leftStationName, String rightStationName, Integer distance) {
+    public SectionCreateRequest(
+            final Long lineId,
+            final String leftStationName,
+            final String rightStationName,
+            final Integer distance
+    ) {
         this.lineId = lineId;
         this.leftStationName = leftStationName;
         this.rightStationName = rightStationName;

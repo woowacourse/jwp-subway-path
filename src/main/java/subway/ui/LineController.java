@@ -23,13 +23,13 @@ public class LineController {
 
     private final LineService lineService;
 
-    public LineController(LineService lineService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
+    public ResponseEntity<LineResponse> createLine(@RequestBody final LineRequest request) {
+        LineResponse line = lineService.saveLine(request);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
@@ -39,7 +39,7 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+    public ResponseEntity<LineResponse> findLineById(@PathVariable final Long id) {
         return ResponseEntity.ok(lineService.findLineById(id));
     }
 
@@ -49,12 +49,12 @@ public class LineController {
     }
 
     @GetMapping("/{id}/stations")
-    public ResponseEntity<LineStationResponse> findStationsById(@PathVariable Long id) {
+    public ResponseEntity<LineStationResponse> findStationsById(@PathVariable final Long id) {
         return ResponseEntity.ok(lineService.findStationsById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(@PathVariable final Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }

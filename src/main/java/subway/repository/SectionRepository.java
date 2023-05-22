@@ -17,19 +17,19 @@ public class SectionRepository {
         this.sectionDao = sectionDao;
     }
 
-    public void save(Line line) {
+    public void save(final Line line) {
         deleteAllByLineId(line.getId());
         saveAllByLineId(line.getId(), line.getSections());
     }
 
-    private void saveAllByLineId(Long lineId, List<Section> sections) {
+    private void saveAllByLineId(final Long lineId, final List<Section> sections) {
         List<SectionEntity> sectionEntities = sections.stream()
                 .map(section -> SectionEntity.of(lineId, section))
                 .collect(Collectors.toList());
         sectionDao.saveAll(sectionEntities);
     }
 
-    private void deleteAllByLineId(Long lineId) {
+    private void deleteAllByLineId(final Long lineId) {
         sectionDao.deleteAllByLineId(lineId);
     }
 }

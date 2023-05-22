@@ -8,25 +8,33 @@ public class Section {
     private final Station right;
     private final Distance distance;
 
-    public Section(Station left, Station right, Distance distance) {
+    public Section(
+            final Station left,
+            final Station right,
+            final Distance distance
+    ) {
         this.left = left;
         this.right = right;
         this.distance = distance;
     }
 
-    public Section(Station left, Station right, int distance) {
+    public Section(
+            final Station left,
+            final Station right,
+            final int distance
+    ) {
         this.left = left;
         this.right = right;
         this.distance = new Distance(distance);
     }
 
-    public void validateSameStation(Station leftStation, Station rightStation) {
+    public void validateSameStation(final Station leftStation, final Station rightStation) {
         if (leftStation.getName().equals(rightStation.getName())) {
             throw new IllegalArgumentException("구간의 역 이름은 같을 수 없습니다.");
         }
     }
 
-    public boolean hasStation(Station station) {
+    public boolean hasStation(final Station station) {
         return left.equals(station) || right.equals(station);
     }
 
