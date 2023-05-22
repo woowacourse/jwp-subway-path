@@ -16,15 +16,15 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity registerStation(@RequestBody StationRegisterRequest stationRegisterRequest) {
+    public ResponseEntity<Void> registerStation(@RequestBody StationRegisterRequest stationRegisterRequest) {
         stationService.registerStation(stationRegisterRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/{stationName}")
-    public ResponseEntity deleteStationInLine(@PathVariable long lineId, @PathVariable String stationName) {
+    public ResponseEntity<Void> deleteStationInLine(@PathVariable long lineId, @PathVariable String stationName) {
         stationService.deleteTargetStationInLine(lineId, stationName);
         return ResponseEntity.noContent().build();
-
     }
+
 }
