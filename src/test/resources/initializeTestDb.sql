@@ -35,6 +35,9 @@ values ('2호선', '초록색');
 INSERT INTO line (name, color)
 values ('1호선', '파랑색');
 --2
+INSERT INTO line (name, color)
+values ('7호선', '올리브색');
+--3
 
 
 INSERT INTO station (name)

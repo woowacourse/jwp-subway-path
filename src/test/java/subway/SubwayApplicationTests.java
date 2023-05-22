@@ -40,12 +40,12 @@ class SubwayApplicationTests {
                    .when()
                    .log()
                    .all()
-                   .post("/sections/2")
+                   .post("/sections/3")
                    .then()
                    .log()
                    .all()
                    .statusCode(HttpStatus.CREATED.value())
-                   .header("Location", "/lines/2");
+                   .header("Location", "/lines/3");
     }
 
     @DisplayName("특정 비지 않은 노선에 역 추가하기")
