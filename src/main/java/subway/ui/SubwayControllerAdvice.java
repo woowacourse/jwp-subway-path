@@ -18,26 +18,8 @@ public class SubwayControllerAdvice {
         return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<ErrorResponseDto> handleSQLException(final SQLException exception) {
-        final String message = exception.getMessage();
-        return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(final IllegalArgumentException exception) {
-        final String message = exception.getMessage();
-        return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
-    }
-
-    @ExceptionHandler(AddSectionException.class)
-    public ResponseEntity<ErrorResponseDto> handleAddSectionException(final AddSectionException exception) {
-        final String message = exception.getMessage();
-        return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
-    }
-
-    @ExceptionHandler(NoSuchStationException.class)
-    public ResponseEntity<ErrorResponseDto> handleNoSuchStationException(final NoSuchStationException exception) {
+    @ExceptionHandler({SQLException.class,IllegalArgumentException.class,AddSectionException.class,NoSuchStationException.class})
+    public ResponseEntity<ErrorResponseDto> handleSQLException(final Exception exception) {
         final String message = exception.getMessage();
         return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
     }
