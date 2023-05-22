@@ -1,17 +1,25 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import subway.controller.dto.request.FarePolicyRequest;
 import subway.controller.dto.request.LineRequest;
+import subway.controller.dto.request.PathRequest;
+import subway.controller.dto.response.FarePolicyResponse;
 import subway.controller.dto.response.LineResponse;
+import subway.controller.dto.response.ShortestPathResponse;
 import subway.controller.dto.response.SingleLineResponse;
 import subway.exception.LineDuplicateException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
+import subway.service.domain.Age;
 import subway.service.domain.Distance;
+import subway.service.domain.FarePolicies;
+import subway.service.domain.FarePolicy;
 import subway.service.domain.Line;
 import subway.service.domain.LineProperty;
 import subway.service.domain.Section;
 import subway.service.domain.Sections;
+import subway.service.domain.ShortestPath;
 import subway.service.domain.Station;
 import subway.service.domain.Subway;
 import subway.service.dto.LineDto;
@@ -25,6 +33,7 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+
 
     public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
@@ -67,6 +76,16 @@ public class LineService {
         return SingleLineResponse.from(subway.getSingleLine(id));
     }
 
+    public ShortestPathResponse findShortestPath(PathRequest pathRequest) {
+        Subway subway = new Subway(lineRepository.findAll());
+        FarePolicies farePolicies = new FarePolicies(lineRepository.findAllFarePolicy());
+        Station source = stationRepository.findByName(pathRequest.getSourceStationName());
+        Station destination = stationRepository.findByName(pathRequest.getDestinationStationName());
+        Age age = Age.from(pathRequest.getPassengerAge());
+        ShortestPath shortestPath = subway.findShortestPath(source, destination, farePolicies, age);
+        return ShortestPathResponse.of(source, destination, shortestPath);
+    }
+
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineRepository.updateLineProperty(new LineProperty(
                 id,
@@ -76,6 +95,13 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
+    }
+
+    public FarePolicyResponse saveFarePolicy(FarePolicyRequest farePolicyRequest) {
+        Line line = lineRepository.findById(farePolicyRequest.getLineId());
+        FarePolicy farePolicy = new FarePolicy(line.getLineProperty(), farePolicyRequest.getAdditionalFare());
+        FarePolicy responseFarePolicy = lineRepository.saveFarePolicy(farePolicy);
+        return FarePolicyResponse.from(responseFarePolicy);
     }
 
 }
