@@ -38,7 +38,7 @@ public class JourneyService {
         List<RouteMap> routeMaps = getAllRouteMaps();
         PathFindResult result = findShortestPath(journeyCommand, routeMaps);
         return new JourneyResult(mapToStationResults(result), result.getDistance(),
-                new Fare(result.getDistance()).value());
+                Fare.of(result.getDistance()));
     }
 
     private List<StationResult> mapToStationResults(PathFindResult result) {

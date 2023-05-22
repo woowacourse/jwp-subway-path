@@ -1,53 +1,60 @@
 package subway.application.core.domain;
 
-import subway.application.core.exception.DistanceNotPositiveException;
+import subway.application.core.exception.FareCantCalculatedException;
 
-public class Fare {
+import java.util.Arrays;
+
+public enum Fare {
+
+    UNDER_TEN_KM(0.0, 10.0) {
+        @Override
+        int calculateFare(double distance) {
+            return BASE_FARE;
+        }
+    },
+    BETWEEN_TEN_AND_FIFTY(10.0, 50.0) {
+        @Override
+        int calculateFare(double distance) {
+            distance -= 10;
+            return BASE_FARE + calculateOverFareForEveryDistance(distance, REFERENCE_DISTANCE_UNDER_FIFTY);
+        }
+    },
+    OVER_FIFTY(50.0, Integer.MAX_VALUE) {
+        @Override
+        int calculateFare(double distance) {
+            distance -= 50;
+            return BASE_FARE + calculateOverFareForEveryDistance(40, REFERENCE_DISTANCE_UNDER_FIFTY) +
+                    calculateOverFareForEveryDistance(distance, REFERENCE_DISTANCE_OVER_FIFTY);
+        }
+    };
 
     private static final int BASE_FARE = 1_250;
-    private static final double BASE_DISTANCE = 10.0;
     private static final double REFERENCE_DISTANCE_UNDER_FIFTY = 5.0;
     private static final double REFERENCE_DISTANCE_OVER_FIFTY = 8.0;
 
-    private final int value;
+    protected final double startPoint;
+    protected final double endPoint;
 
-    public Fare(double distance) {
-        validate(distance);
-        this.value = chargeOf((int) distance);
+    Fare(double startPoint, double endPoint) {
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
     }
 
-    private void validate(double distance) {
-        if (distance < 0.0) {
-            throw new DistanceNotPositiveException();
-        }
+    public static int of(double distance) {
+        return Arrays.stream(values())
+                .filter(fareEnum -> fareEnum.matches(distance))
+                .findAny()
+                .orElseThrow(FareCantCalculatedException::new)
+                .calculateFare(distance);
     }
 
-    private int chargeOf(double distance) {
-        if (Double.compare(distance, BASE_DISTANCE) < 0) {
-            return BASE_FARE;
-        }
-        return BASE_FARE + calculateOverFare(distance);
-    }
-
-    private int calculateOverFare(double distance) {
-        if (isDistanceBetweenTenAndFifty(distance)) {
-            distance -= 10.0;
-            return calculateOverFareForEveryDistance(distance, REFERENCE_DISTANCE_UNDER_FIFTY);
-        }
-        distance -= 50.0;
-        return calculateOverFareForEveryDistance(40, REFERENCE_DISTANCE_UNDER_FIFTY) +
-                calculateOverFareForEveryDistance(distance, REFERENCE_DISTANCE_OVER_FIFTY);
-    }
-
-    private static boolean isDistanceBetweenTenAndFifty(double distance) {
-        return Double.compare(distance, 10.0) >= 0 && Double.compare(distance, 50.0) <= 0;
-    }
-
-    private int calculateOverFareForEveryDistance(double distance, double referenceDistance) {
+    abstract int calculateFare(double distance);
+    
+    protected int calculateOverFareForEveryDistance(double distance, double referenceDistance) {
         return (int) ((Math.ceil(((int) distance - 1) / (int) referenceDistance) + 1) * 100);
     }
 
-    public int value() {
-        return value;
+    protected boolean matches(double distance) {
+        return Double.compare(startPoint, distance) <= 0 && Double.compare(distance, endPoint) <= 0;
     }
 }
