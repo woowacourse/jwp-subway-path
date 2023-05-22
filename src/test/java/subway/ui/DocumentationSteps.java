@@ -10,8 +10,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
+import subway.application.PathService;
 import subway.application.SectionService;
-import subway.application.path.PathService;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;

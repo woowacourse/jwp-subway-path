@@ -6,6 +6,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import subway.domain.Distance;
 import subway.domain.Fare;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -15,7 +17,8 @@ class DistanceRateFareCalculatorTest {
 
     @BeforeEach
     void init() {
-        distanceRateFareCalculator = new DistanceRateFareCalculator();
+        final List<DistanceRateFare> distanceRateFares = List.of(new DistanceOver10Under50(), new DistanceUnder10(), new DistanceOver50());
+        distanceRateFareCalculator = new DistanceRateFareCalculator(distanceRateFares);
     }
 
     @ParameterizedTest(name = "길이 : {0}")
@@ -23,9 +26,10 @@ class DistanceRateFareCalculatorTest {
     void 거리에_따른_요금을_구한다(final int distance, final int expectedFare) {
         // given
         final Distance target = Distance.from(distance);
+        final FareCondition fareCondition = FareCondition.from(target);
 
         // when
-        final Fare result = distanceRateFareCalculator.calculateFare(target);
+        final Fare result = distanceRateFareCalculator.calculateFare(fareCondition);
 
         // then
         assertThat(result).isEqualTo(Fare.from(expectedFare));

@@ -1,9 +1,9 @@
 package subway.application.fare;
 
-import subway.domain.Distance;
 import subway.domain.Fare;
 
+@FunctionalInterface
 public interface FareCalculator {
 
-    Fare calculateFare(Distance distance);
+    Fare calculateFare(FareCondition fareCondition);
 }

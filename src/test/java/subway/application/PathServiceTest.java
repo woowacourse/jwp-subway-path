@@ -1,13 +1,14 @@
 package subway.application;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.application.fare.DistanceOver10Under50;
+import subway.application.fare.DistanceRateFareCalculator;
 import subway.application.fare.FareCalculator;
 import subway.application.path.PathFinder;
-import subway.application.path.PathService;
 import subway.domain.Distance;
 import subway.domain.Fare;
 import subway.domain.ShortestPath;
@@ -33,7 +34,6 @@ import static org.mockito.Mockito.times;
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
 
-    @InjectMocks
     private PathService pathService;
     @Mock
     private StationRepository stationRepository;
@@ -41,8 +41,15 @@ class PathServiceTest {
     private SectionRepository sectionRepository;
     @Mock
     private PathFinder pathFinder;
-    @Mock
-    private FareCalculator fareCalculator;
+    private List<FareCalculator> fareCalculators;
+    private DistanceOver10Under50 distanceOver10Under50;
+
+    @BeforeEach
+    void init() {
+        distanceOver10Under50 = mock(DistanceOver10Under50.class);
+        final DistanceRateFareCalculator distanceRateFareCalculator = new DistanceRateFareCalculator(List.of(distanceOver10Under50));
+        pathService = new PathService(stationRepository, sectionRepository, pathFinder, List.of(distanceRateFareCalculator));
+    }
 
     @Test
     void 경로_조회를_테스트한다() {
@@ -54,7 +61,7 @@ class PathServiceTest {
 
         given(sectionRepository.findAll()).willReturn(mock(MultiLineSections.class));
         given(stationRepository.findById(anyLong())).willReturn(mock(Station.class));
-        given(fareCalculator.calculateFare(any(Distance.class))).willReturn(Fare.from(1550));
+        given(distanceOver10Under50.calculateFare(any(Distance.class))).willReturn(Fare.from(300));
         given(pathFinder.findShortestPath(any(MultiLineSections.class), any(Station.class), any(Station.class))).willReturn(shortestPath);
 
         // when

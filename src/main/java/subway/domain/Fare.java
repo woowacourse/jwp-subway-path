@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class Fare {
 
+    private static final Fare ZERO = new Fare(0);
     private final int fare;
 
     private Fare(int fare) {
@@ -19,6 +20,10 @@ public class Fare {
 
     public static Fare from(int fare) {
         return new Fare(fare);
+    }
+
+    public static Fare zero() {
+        return ZERO;
     }
 
     public Fare plus(int fare) {
