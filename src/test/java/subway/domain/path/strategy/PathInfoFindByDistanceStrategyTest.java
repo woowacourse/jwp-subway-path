@@ -1,19 +1,17 @@
-package subway.domain.path;
+package subway.domain.path.strategy;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import subway.domain.path.strategy.PathFindByDistanceStrategy;
 import subway.domain.subway.Section;
-import subway.domain.subway.Station;
-import subway.dto.StationResponse;
 
-class PathFindByDistanceStrategyTest {
+class PathInfoFindByDistanceStrategyTest {
     private final List<Section> sections = List.of(
         new Section(1L, 1L, 2L, 1L, 5),
         new Section(1L, 2L, 3L, 1L, 5),
@@ -31,17 +29,17 @@ class PathFindByDistanceStrategyTest {
 
         assertAll(
             () -> assertThat(
-                pathFindByDistanceStrategy.findPathAndTotalDistance(1L, 4L, sections)
-                    .getKey()).asList().containsExactly(1L, 3L, 4L),
+                pathFindByDistanceStrategy.findPathInfo(1L, 4L, sections)
+                    .getPath()).asList().containsExactly(1L, 3L, 4L),
             () -> assertThat(
-                pathFindByDistanceStrategy.findPathAndTotalDistance(1L, 4L, sections)
-                    .getValue()).isEqualTo(7),
+                pathFindByDistanceStrategy.findPathInfo(1L, 4L, sections)
+                    .getDistance()).isEqualTo(7),
             () -> assertThat(
-                pathFindByDistanceStrategy.findPathAndTotalDistance(1L, 7L, sections)
-                    .getKey()).asList().containsExactly(1L, 3L, 4L, 5L, 6L, 7L),
+                pathFindByDistanceStrategy.findPathInfo(1L, 7L, sections)
+                    .getPath()).asList().containsExactly(1L, 3L, 4L, 5L, 6L, 7L),
             () -> assertThat(
-                pathFindByDistanceStrategy.findPathAndTotalDistance(1L, 7L, sections)
-                    .getValue()).isEqualTo(67)
+                pathFindByDistanceStrategy.findPathInfo(1L, 7L, sections)
+                    .getDistance()).isEqualTo(67)
         );
     }
 }

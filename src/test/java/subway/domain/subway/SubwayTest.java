@@ -12,8 +12,8 @@ class SubwayTest {
 
     @Test
     void getLineMap() {
-        Line line1 = new Line(1L, "1호선", "파랑");
-        Line line2 = new Line(2L, "2호선", "초록");
+        Line line1 = new Line(1L, "1호선", "파랑", 0);
+        Line line2 = new Line(2L, "2호선", "초록", 0);
 
         List<Line> lines = List.of(
             line1,

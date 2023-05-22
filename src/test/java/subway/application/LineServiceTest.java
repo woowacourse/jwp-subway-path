@@ -59,7 +59,7 @@ class LineServiceTest {
     @DisplayName("노선 정보를 저장한다.")
     void save() {
         when(lineDao.insert(any()))
-            .thenReturn(new Line("2호선", "초록"));
+            .thenReturn(new Line("2호선", "초록", 0));
 
         LineResponse lineResponse = lineService.saveLine(new LineRequest());
 
@@ -70,13 +70,13 @@ class LineServiceTest {
     @DisplayName("이미 존재하는 노선을 저장하는 경우 예외를 반환한다.")
     void saveFail() {
         when(lineDao.checkExistenceByNameAndColor("1호선", "파랑")).thenReturn(true);
-        assertThatThrownBy(() -> lineService.saveLine(new LineRequest("1호선", "파랑")));
+        assertThatThrownBy(() -> lineService.saveLine(new LineRequest("1호선", "파랑", 0)));
     }
 
     @Test
     @DisplayName("전체 노선들의 역들을 순차적으로 반환한다.")
     void findLineStationsResponses() {
-        when(lineDao.findAll()).thenReturn(List.of(new Line(1L, "1호선", "파랑"), new Line(2L, "2호선", "초록")));
+        when(lineDao.findAll()).thenReturn(List.of(new Line(1L, "1호선", "파랑", 0), new Line(2L, "2호선", "초록", 0)));
         when(sectionDao.findAll()).thenReturn(sections);
         when(stationDao.findAll()).thenReturn(stations);
 
@@ -115,7 +115,7 @@ class LineServiceTest {
             new Section(1L, 5L, 6L, 1L, 5),
             new Section(1L, 6L, 7L, 1L, 50)
         );
-        when(lineDao.findById(1L)).thenReturn(new Line(1L, "1호선", "파랑"));
+        when(lineDao.findById(1L)).thenReturn(new Line(1L, "1호선", "파랑", 0));
         when(sectionDao.findAllSectionByLineId(1L)).thenReturn(sections1);
         when(stationDao.findAll()).thenReturn(stations);
 
