@@ -1,9 +1,9 @@
-package subway.controller;
+package subway.exception.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.controller.dto.exception.ExceptionDto;
+import subway.exception.dto.ExceptionDto;
 
 import java.sql.SQLException;
 

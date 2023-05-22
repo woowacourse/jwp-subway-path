@@ -1,4 +1,4 @@
-package subway.controller.dto.exception;
+package subway.exception.dto;
 
 public class ExceptionDto {
 

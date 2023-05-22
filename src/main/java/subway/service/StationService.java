@@ -21,7 +21,6 @@ public class StationService {
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = new Station(stationRequest.getName());
         Station stationResponse = stationRepository.save(station);
-
         return StationResponse.from(stationResponse);
     }
 
