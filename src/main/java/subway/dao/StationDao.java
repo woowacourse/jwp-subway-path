@@ -1,12 +1,14 @@
 package subway.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -45,5 +47,12 @@ public class StationDao {
 		String sql = "SELECT stationId, name FROM station";
 		return jdbcTemplate.query(sql, rowMapper);
 	}
+
+	public Optional<StationEntity> findById(final Long id) {
+		String sql = "SELECT stationId, name FROM station WHERE stationId = :stationId";
+		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("stationId", id), rowMapper).stream()
+			.findAny();
+	}
+
 
 }

@@ -32,4 +32,9 @@ public class StationService {
 			.collect(Collectors.collectingAndThen(Collectors.toList(), StationsResponse::from));
 	}
 
+	@Transactional(readOnly = true)
+	public StationResponse findStationEntityById(final Long id) {
+		Station station = stationRepository.findByStationId(id);
+		return StationResponse.from(station);
+	}
 }
