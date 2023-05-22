@@ -70,6 +70,9 @@ public class Sections {
             leftDistance = section.getDistance().getDistance() - rightDistance;
         }
 
+        if (leftDistance <= 0 || rightDistance <= 0) {
+            throw new IllegalArgumentException("사이에 들어갈 역의 거리는 기존 거리보다 작아야 합니다.");
+        }
         Queue<Section> splitSections = section.split(newStation, leftDistance, rightDistance);
         sections.remove(section.getLeftStation().getId());
         addSplitSections(splitSections);

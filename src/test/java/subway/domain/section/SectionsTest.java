@@ -67,6 +67,21 @@ class SectionsTest {
         assertEquals(beforeSize + 1, afterSize);
     }
 
+    @DisplayName("분할하는 영역이 더 크면 실패한다.")
+    @Test
+    void fail_split_section_over_inner_distance() {
+        //given
+        Station leftStation = new Station(1L, "left");
+        Station innerStation = new Station(2L, "inner");
+        Station rightStation = new Station(3L, "right");
+        Section section1 = new Section(leftStation, rightStation, 10);
+        Sections sections = new Sections(List.of(section1));
+
+        //when + then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> sections.split(innerStation, leftStation, Direction.RIGHT, 20));
+        assertEquals("사이에 들어갈 역의 거리는 기존 거리보다 작아야 합니다.", exception.getMessage());
+    }
+
     @DisplayName("왼쪽 역을 기준으로 영역을 가져온다.")
     @Test
     void get_section_by_left() {
