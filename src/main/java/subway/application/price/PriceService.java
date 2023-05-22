@@ -1,19 +1,23 @@
 package subway.application.price;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import subway.domain.path.Path;
 import subway.domain.price.Price;
 
 @Service
 public class PriceService {
-    private final PricePolicy pricePolicy;
+    private final List<PricePolicy> pricePolicies;
 
-    public PriceService(PricePolicy pricePolicy) {
-        this.pricePolicy = pricePolicy;
+    public PriceService(List<PricePolicy> pricePolicies) {
+        this.pricePolicies = pricePolicies;
     }
 
     public Price calculate(Path path) {
         Price price = Price.ZERO;
-        return price.plus(pricePolicy.calculate(path));
+        for (PricePolicy pricePolicy : pricePolicies) {
+            price = price.plus(pricePolicy.calculate(path));
+        }
+        return price;
     }
 }

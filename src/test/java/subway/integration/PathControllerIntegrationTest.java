@@ -50,7 +50,7 @@ class PathControllerIntegrationTest {
                 .andExpect(jsonPath("$.result.stations[3]").value("G역"))
                 .andExpect(jsonPath("$.result.stations[4]").value("I역"))
                 .andExpect(jsonPath("$.result.totalDistance").value(11))
-                .andExpect(jsonPath("$.result.price").value(1350));
+                .andExpect(jsonPath("$.result.price").value(1550));
     }
 
     @ParameterizedTest(name = "{0}하면 경로 조회에 실패해야 한다.")
