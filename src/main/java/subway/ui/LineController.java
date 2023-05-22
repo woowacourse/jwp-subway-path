@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.LineService;
+import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
@@ -32,18 +33,22 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+        LineResponse response = LineResponse.of(lineService.saveLine(lineRequest));
+        return ResponseEntity
+                .created(URI.create("/lines/" + response.getId()))
+                .body(response);
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+        List<Line> lines = lineService.findAll();
+        return ResponseEntity.ok(LineResponse.of(lines));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+        Line line = lineService.findBy(id);
+        return ResponseEntity.ok(LineResponse.of(line));
     }
 
     @PutMapping("/{id}")

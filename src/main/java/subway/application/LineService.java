@@ -1,79 +1,62 @@
 package subway.application;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
-import subway.persistence.LineRepository;
+import subway.persistence.LineDao;
+import subway.persistence.SectionDao;
 import subway.persistence.StationDao;
+import subway.persistence.dto.LineDto;
+import subway.persistence.dto.SectionDto;
+import subway.persistence.exception.NoSuchLineException;
 
 @Service
 public class LineService {
 
+    private static final int ZERO = 0;
+
+    private final LineDao lineDao;
     private final StationDao stationDao;
-    private final LineRepository lineRepository;
+    private final SectionDao sectionDao;
 
-    public LineService(StationDao stationDao, LineRepository lineRepository) {
+    public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
+        this.lineDao = lineDao;
         this.stationDao = stationDao;
-        this.lineRepository = lineRepository;
+        this.sectionDao = sectionDao;
     }
 
-    public LineResponse saveLine(LineRequest request) {
+    public Line saveLine(LineRequest request) {
         Line line = new Line(request.getName(), request.getColor());
-        Line saved = lineRepository.save(line);
-        return LineResponse.of(saved);
+        return save(line);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> lines = lineRepository.findAll();
-        return lines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public LineResponse findLineResponseById(Long id) {
-        Line found = lineRepository.findBy(id);
-        return LineResponse.of(found);
-    }
-
-    /* 학습용 주석입니다 :)
-    DAO를 직접 사용해 DB에 업데이트하기 vs 도메인에 setter 넣기
-    후자를 선택했다.
-    DAO를 사용한다면 캡슐화를 지킬 순 있지만 서비스 레이어에서 저장 방법을 신경써야 한다.
-    관심사가 섞여서 복잡도가 올라가고, 유지보수성과 유연성이 떨어진다. 이는 Repository를 만든 이유와 정반대된다.
-    더불어 사용자가 정말 이름을 바꾸길 원한다면, 못 바꿀 이유는 또 뭔가?
-
-    이름은 서비스 영역에서 마음대로 바꿔도 되는가?
-    이름이 중복되면 안된다고 가정해보자.
-    겹치는 이름이 있다면, 그건 이미 저장된 이름들이다.
-    따라서 저장 영역에서 그런 이름이 가능한지 검증이 있으면 되지 않을까?
-    그럼 관심사가 분리된 구조를 지키면서도 안전하게 요청을 처리할 수 있다.
-    */
     public void updateLine(Long id, LineRequest lineRequest) {
-        Line line = lineRepository.findBy(id);
+        Line line = findBy(id);
 
         Line changed = line
                 .changeName(lineRequest.getName())
                 .changeColor(lineRequest.getColor());
 
-        lineRepository.save(changed);
+        save(changed);
     }
 
     public void deleteLineById(Long id) {
-        Line line = lineRepository.findBy(id);
-        lineRepository.delete(line);
+        Line line = findBy(id);
+        delete(line);
     }
 
     public void addSection(Long lineId, SectionRequest sectionRequest) {
-        Line line = lineRepository.findBy(lineId);
+        Line line = findBy(lineId);
         Station upper = stationDao.findById(sectionRequest.getUpperStationId());
         Station lower = stationDao.findById(sectionRequest.getLowerStationId());
 
@@ -81,15 +64,97 @@ public class LineService {
         Section section = new Section(upper, lower, distance);
         line.add(section);
 
-        lineRepository.save(line);
+        save(line);
     }
 
     public void deleteStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findBy(lineId);
+        Line line = findBy(lineId);
         Station station = stationDao.findById(stationId);
 
         line.remove(station);
 
-        lineRepository.save(line);
+        save(line);
+    }
+
+    private Line save(Line line) {
+        if (Objects.isNull(line.getId())) {
+            return create(line);
+        }
+        return update(line);
+    }
+
+    @Transactional(readOnly = true)
+    public Line findBy(Long id) {
+        LineDto lineDto = lineDao.findById(id);
+        return toLine(lineDto);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Line> findAll() {
+        return lineDao.findAll().stream()
+                .map(this::toLine)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void delete(Line line) {
+        sectionDao.deleteAllByLineId(line.getId());
+        int deletedCount = lineDao.deleteById(line.getId());
+        validateChangedBy(deletedCount);
+    }
+
+    private void validateChangedBy(int affectedCount) {
+        if (affectedCount == ZERO) {
+            throw new NoSuchLineException();
+        }
+    }
+
+    private Line create(Line line) {
+        LineDto inserted = lineDao.insert(LineDto.of(line));
+        saveSectionsOf(line);
+        return putIdOn(line, inserted.getId());
+    }
+
+    private Line update(Line line) {
+        saveSectionsOf(line);
+        return line;
+    }
+
+    private void saveSectionsOf(Line line) {
+        sectionDao.deleteAllByLineId(line.getId());
+        sectionDao.insertAll(SectionDto.of(line.getId(), line.getSections()));
+    }
+
+    private List<Section> findSectionsOf(Long lineId) {
+        return sectionDao.findAllByLineId(lineId)
+                .stream()
+                .map(this::toSection)
+                .collect(Collectors.toList());
+    }
+
+    private Line putIdOn(Line line, Long id) {
+        return new Line(
+                id,
+                line.getName(),
+                line.getColor(),
+                line.getSections()
+        );
+    }
+
+    private Section toSection(SectionDto sectionDto) {
+        return new Section(
+                stationDao.findById(sectionDto.getStationId()),
+                stationDao.findById(sectionDto.getNextStationId()),
+                sectionDto.getDistance()
+        );
+    }
+
+    private Line toLine(LineDto lineDto) {
+        return new Line(
+                lineDto.getId(),
+                lineDto.getName(),
+                lineDto.getColor(),
+                findSectionsOf(lineDto.getId())
+        );
     }
 }

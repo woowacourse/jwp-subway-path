@@ -1,5 +1,7 @@
 package subway.persistence.dto;
 
+import subway.domain.Line;
+
 public class LineDto {
     private Long id;
     private String name;
@@ -13,6 +15,14 @@ public class LineDto {
         this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public static LineDto of(Line line) {
+        return new LineDto(
+                line.getId(),
+                line.getName(),
+                line.getColor()
+        );
     }
 
     public Long getId() {

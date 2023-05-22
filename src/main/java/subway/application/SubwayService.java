@@ -9,17 +9,16 @@ import subway.domain.Path;
 import subway.domain.Station;
 import subway.domain.Subway;
 import subway.dto.PathResponse;
-import subway.persistence.LineRepository;
 import subway.persistence.StationDao;
 
 @Service
 public class SubwayService {
 
-    private final LineRepository lineRepository;
+    private final LineService lineService;
     private final StationDao stationDao;
 
-    public SubwayService(LineRepository lineRepository, StationDao stationDao) {
-        this.lineRepository = lineRepository;
+    public SubwayService(LineService lineService, StationDao stationDao) {
+        this.lineService = lineService;
         this.stationDao = stationDao;
     }
 
@@ -33,7 +32,7 @@ public class SubwayService {
     }
 
     private Subway getSubway() {
-        List<Line> allLines = lineRepository.findAll();
+        List<Line> allLines = lineService.findAll();
         return new Subway(allLines);
     }
 }
