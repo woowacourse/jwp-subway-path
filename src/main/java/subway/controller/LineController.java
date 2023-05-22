@@ -30,7 +30,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<String> registerLine(@RequestBody RegisterLineRequest registerLineRequest) {
+    public ResponseEntity<Void> registerLine(@RequestBody RegisterLineRequest registerLineRequest) {
         long lineId = lineService.registerLine(registerLineRequest);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
