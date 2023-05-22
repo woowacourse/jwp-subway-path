@@ -2,10 +2,10 @@ package subway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import subway.application.costPolicy.AgeCostPolicyChain;
-import subway.application.costPolicy.CostPolicyChain;
-import subway.application.costPolicy.DistanceCostPolicyChain;
-import subway.application.costPolicy.LineCostPolicyChain;
+import subway.application.costpolicy.AgeCostPolicyChain;
+import subway.application.costpolicy.CostPolicyChain;
+import subway.application.costpolicy.DistanceCostPolicyChain;
+import subway.application.costpolicy.LineCostPolicyChain;
 
 @Configuration
 public class CostConfig {

@@ -1,8 +1,8 @@
-package subway.application.costPolicy;
+package subway.application.costpolicy;
 
 import subway.domain.Path;
 
-public class LineCostPolicyChain implements CostPolicyChain {
+public class AgeCostPolicyChain implements CostPolicyChain {
 
     private CostPolicyChain next;
 
@@ -13,10 +13,10 @@ public class LineCostPolicyChain implements CostPolicyChain {
 
     @Override
     public long calculate(final Path path, final int age, final long cost) {
-        final long highestLineCharge = path.findHighestLineCharge();
-        return calculateNext(path, age, cost + highestLineCharge);
+        final AgeCost ageCost = AgeCost.findByAge(age);
+        return calculateNext(path, age, ageCost.calculateCost(cost));
     }
-    
+
     private long calculateNext(final Path path, final int age, final long cost) {
         if (next == null) {
             return cost;

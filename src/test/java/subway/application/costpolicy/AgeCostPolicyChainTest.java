@@ -1,4 +1,4 @@
-package subway.application.costPolicy;
+package subway.application.costpolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

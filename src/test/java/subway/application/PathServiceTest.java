@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.application.costPolicy.CostPolicyChain;
+import subway.application.costpolicy.CostPolicyChain;
 import subway.controller.dto.response.FindShortestPathResponse;
 import subway.controller.dto.response.StationInformationResponse;
 import subway.domain.Line;

@@ -2,7 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.costPolicy.CostPolicyChain;
+import subway.application.costpolicy.CostPolicyChain;
 import subway.controller.dto.response.FindShortestPathResponse;
 import subway.domain.Lines;
 import subway.domain.Navigation;
