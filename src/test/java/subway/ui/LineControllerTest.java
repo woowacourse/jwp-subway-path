@@ -55,8 +55,8 @@ class LineControllerTest {
     @Test
     void findAllLines() throws Exception {
         List<LineSectionResponse> lines = List.of(
-                new LineSectionResponse(1L, "2호선", "green", Collections.emptyList()),
-                new LineSectionResponse(2L, "1호선", "blue", List.of("동인천역", "주안역")));
+                LineSectionResponse.from(1L, "2호선", "green", Collections.emptyList()),
+                LineSectionResponse.from(2L, "1호선", "blue", List.of("동인천역", "주안역")));
         given(lineService.findLineResponses())
                 .willReturn(lines);
 
@@ -80,7 +80,7 @@ class LineControllerTest {
     void findLineById() throws Exception {
         Long lineId = 1L;
         given(lineService.findLineResponseById(anyLong()))
-                .willReturn(new LineSectionResponse(lineId, "1호선", "blue", List.of("동인천역", "주안역")));
+                .willReturn(LineSectionResponse.from(lineId, "1호선", "blue", List.of("동인천역", "주안역")));
         mockMvc.perform(get("/lines/" + lineId))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.id").value(1L))
