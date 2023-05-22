@@ -1,6 +1,6 @@
 package subway.domain.fare;
 
-public class DistanceProportionFarePolicy implements FarePolicy {
+public class DistanceProportionFarePolicy {
 
     private static final int BASE_DISTANCE_MAX = 10;
     private static final int EXTRA_DISTANCE_MAX = 50;

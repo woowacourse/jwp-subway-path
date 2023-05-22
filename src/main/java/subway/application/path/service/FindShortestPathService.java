@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.path.usecase.FindShortestPathUseCase;
 import subway.domain.fare.DistanceProportionFarePolicy;
 import subway.domain.fare.Fare;
-import subway.domain.fare.FarePolicy;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.path.SubwayMap;
@@ -21,11 +20,16 @@ import subway.ui.dto.response.StationResponse;
 @Transactional(readOnly = true)
 @Service
 public class FindShortestPathService implements FindShortestPathUseCase {
-    private final FarePolicy farePolicy = new DistanceProportionFarePolicy();
+    private final DistanceProportionFarePolicy distanceProportionFarePolicy;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public FindShortestPathService(final LineRepository lineRepository, final StationRepository stationRepository) {
+    public FindShortestPathService(
+            final DistanceProportionFarePolicy distanceProportionFarePolicy,
+            final LineRepository lineRepository,
+            final StationRepository stationRepository
+    ) {
+        this.distanceProportionFarePolicy = distanceProportionFarePolicy;
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -41,7 +45,7 @@ public class FindShortestPathService implements FindShortestPathUseCase {
         final SubwayPath shortestPath = subwayMap.findShortestPath(startStation, endStation);
         final int pathDistance = shortestPath.getDistance();
 
-        return toPathResponse(shortestPath, farePolicy.calculate(pathDistance));
+        return toPathResponse(shortestPath, distanceProportionFarePolicy.calculate(pathDistance));
     }
 
     private PathResponse toPathResponse(final SubwayPath subwayPath, final Fare fare) {
