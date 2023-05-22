@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.exception.DistanceValueValidateException;
 
 public class Distance {
 
@@ -15,7 +16,7 @@ public class Distance {
 
     private void validateDistance(final int value) {
         if (value < MIN_VALUE) {
-            throw new IllegalArgumentException("거리는 1이상의 정수여야합니다.");
+            throw new DistanceValueValidateException();
         }
     }
 
@@ -29,6 +30,10 @@ public class Distance {
 
     public Distance plusValue(final Distance distance) {
         return new Distance(this.value + distance.value);
+    }
+
+    public boolean isBigger(final Distance distance) {
+        return this.value > distance.value;
     }
 
     @Override

@@ -2,14 +2,11 @@ package subway.persistence.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static subway.integration.IntegrationFixture.GANGNAM;
-import static subway.integration.IntegrationFixture.JAMSIL;
-import static subway.integration.IntegrationFixture.LINE_2;
-import static subway.integration.IntegrationFixture.LINE_3;
-import static subway.integration.IntegrationFixture.SAMSUNG;
-import static subway.integration.IntegrationFixture.SECTION_1;
-import static subway.integration.IntegrationFixture.SECTION_2;
-import static subway.integration.IntegrationFixture.SEONGLENUG;
+import static subway.TestFixture.GANGNAM;
+import static subway.TestFixture.JAMSIL;
+import static subway.TestFixture.LINE_3;
+import static subway.TestFixture.SECTION_1;
+import static subway.TestFixture.SECTION_2;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import subway.domain.Distance;
-import subway.domain.Section;
+import subway.domain.section.Section;
 
 @JdbcTest
 @Import(SectionDao.class)
@@ -32,7 +29,7 @@ class SectionDaoTest {
     void delete() {
         sectionDao.delete(List.of(SECTION_1, SECTION_2));
 
-        final List<Section> emptySections = sectionDao.findByLineId(LINE_2.getId());
+        final List<Section> emptySections = sectionDao.findByLineId(LINE_3.getId());
         assertThat(emptySections)
                 .isEmpty();
     }
@@ -50,15 +47,16 @@ class SectionDaoTest {
                 .contains(tuple(JAMSIL, GANGNAM, new Distance(1)));
     }
 
-    @DisplayName("lineId로 List<Section>을 반환하는 기능 테스트")
-    void findByLineId() {
-        final List<Section> foundSections = sectionDao.findByLineId(LINE_3.getId());
+    @DisplayName("저장된 모든 Section을 조회하는 기능 테스트")
+    @Test
+    void findAll() {
+        final List<Section> all = sectionDao.findAll();
 
-        assertThat(foundSections)
+        assertThat(all)
                 .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
                 .contains(
-                        tuple(GANGNAM, SEONGLENUG, new Distance(5)),
-                        tuple(SEONGLENUG, SAMSUNG, new Distance(5))
+                        tuple(SECTION_1.getPrevStation(), SECTION_1.getNextStation(), SECTION_1.getDistance()),
+                        tuple(SECTION_2.getPrevStation(), SECTION_2.getNextStation(), SECTION_2.getDistance())
                 );
     }
 }

@@ -1,18 +1,16 @@
 package subway.persistence.dao;
 
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Distance;
-import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.section.Section;
 
 @Repository
 public class SectionDao {
@@ -35,18 +33,10 @@ public class SectionDao {
 
     public void delete(final List<Section> sections) {
         final String sql = "delete from SECTION where id = ?";
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                final Section section = sections.get(i);
-                ps.setLong(1, section.getId());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return sections.size();
-            }
-        });
+        final List<Long> ids = sections.stream()
+                .map(Section::getId)
+                .collect(Collectors.toUnmodifiableList());
+        jdbcTemplate.batchUpdate(sql, ids, ids.size(), (ps, argument) -> ps.setLong(1, argument));
     }
 
     public void insert(final Long lineId, final List<Section> sections) {
@@ -70,5 +60,15 @@ public class SectionDao {
                         "JOIN STATION next_station ON s.NEXT_STATION = next_station.ID " +
                         "WHERE s.LINE_ID = ?";
         return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
+    }
+
+    public List<Section> findAll() {
+        final String sql =
+                "SELECT s.id, before_station.NAME AS before_station_name, before_station.id AS before_station_id, " +
+                        "next_station.NAME AS next_station_name, next_station.id AS next_station_id, s.distance " +
+                        "FROM SECTION s " +
+                        "JOIN STATION before_station ON s.BEFORE_STATION = before_station.ID " +
+                        "JOIN STATION next_station ON s.NEXT_STATION = next_station.ID ";
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
     }
 }

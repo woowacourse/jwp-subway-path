@@ -1,7 +1,6 @@
 package subway.persistence.dao;
 
 import java.util.List;
-import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -56,8 +55,8 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Optional<Station> findByName(final String name) {
+    public Station findByName(final String name) {
         final String sql = "select id, name from STATION where name = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 }

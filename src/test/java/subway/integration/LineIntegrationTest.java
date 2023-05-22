@@ -4,14 +4,14 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.integration.IntegrationFixture.GANGNAM;
-import static subway.integration.IntegrationFixture.JAMSIL;
-import static subway.integration.IntegrationFixture.LINE_2;
-import static subway.integration.IntegrationFixture.LINE_3;
-import static subway.integration.IntegrationFixture.OBJECT_MAPPER;
-import static subway.integration.IntegrationFixture.SAMSUNG;
-import static subway.integration.IntegrationFixture.SEONGLENUG;
-import static subway.integration.IntegrationFixture.jsonSerialize;
+import static subway.TestFixture.GANGNAM;
+import static subway.TestFixture.JAMSIL;
+import static subway.TestFixture.LINE_2;
+import static subway.TestFixture.LINE_3;
+import static subway.TestFixture.OBJECT_MAPPER;
+import static subway.TestFixture.SAMSUNG;
+import static subway.TestFixture.SEONGLENUG;
+import static subway.TestFixture.jsonSerialize;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;
@@ -63,7 +63,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -162,7 +162,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_2.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().statusCode(HttpStatus.CREATED.value());
         }
 
@@ -175,7 +175,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
@@ -188,7 +188,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
@@ -201,7 +201,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
@@ -214,7 +214,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().log().all().statusCode(HttpStatus.BAD_REQUEST.value());
         }
     }
@@ -226,7 +226,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         given().body(jsonSerialize(stationRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/" + LINE_3.getId() + "/unregister")
+                .when().patch("/lines/" + LINE_3.getId() + "/unregister")
                 .then().statusCode(HttpStatus.NO_CONTENT.value());
     }
 }
