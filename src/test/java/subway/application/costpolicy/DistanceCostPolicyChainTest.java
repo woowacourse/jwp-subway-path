@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.Path;
+import subway.domain.vo.Age;
 import subway.domain.vo.Distance;
 
 class DistanceCostPolicyChainTest {
@@ -22,7 +23,7 @@ class DistanceCostPolicyChainTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(DEFAULT_COST);
@@ -37,7 +38,7 @@ class DistanceCostPolicyChainTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1350L);
@@ -52,7 +53,7 @@ class DistanceCostPolicyChainTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1450L);
@@ -67,7 +68,7 @@ class DistanceCostPolicyChainTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1550L);
@@ -82,7 +83,7 @@ class DistanceCostPolicyChainTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(2050L);
@@ -97,7 +98,7 @@ class DistanceCostPolicyChainTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(2150L);
@@ -112,7 +113,7 @@ class DistanceCostPolicyChainTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(2250L);

@@ -2,7 +2,6 @@ package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -23,12 +22,14 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.vo.Age;
 import subway.domain.vo.Distance;
 import subway.persistence.LineRepository;
 import subway.persistence.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
-class PathServiceTest {
+class
+PathServiceTest {
 
     private final Station firstStation = new Station("firstStation");
     private final Station secondStation = new Station("secondStation");
@@ -64,7 +65,7 @@ class PathServiceTest {
             .willReturn(Optional.of(firstStation), Optional.of(fourthStation));
         given(lineRepository.findAll())
             .willReturn(List.of(line1, line2));
-        given(costPolicyChain.calculate(any(), anyInt(), anyLong()))
+        given(costPolicyChain.calculate(any(), any(Age.class), anyLong()))
             .willReturn(1250L);
 
         //when

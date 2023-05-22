@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.Path;
+import subway.domain.vo.Age;
 
 class AgeCostPolicyChainTest {
 
@@ -20,7 +21,7 @@ class AgeCostPolicyChainTest {
         final Path path = new Path(null, null);
 
         //when
-        final long result = costPolicyChain.calculate(path, value, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(value), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(720L);
@@ -34,7 +35,7 @@ class AgeCostPolicyChainTest {
         final Path path = new Path(null, null);
 
         //when
-        final long result = costPolicyChain.calculate(path, value, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(value), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(450L);
@@ -48,7 +49,7 @@ class AgeCostPolicyChainTest {
         final Path path = new Path(null, null);
 
         //when
-        final long result = costPolicyChain.calculate(path, value, DEFAULT_COST);
+        final long result = costPolicyChain.calculate(path, Age.from(value), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1250L);

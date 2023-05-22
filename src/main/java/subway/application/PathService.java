@@ -8,6 +8,7 @@ import subway.domain.Lines;
 import subway.domain.Navigation;
 import subway.domain.Path;
 import subway.domain.Station;
+import subway.domain.vo.Age;
 import subway.exception.BusinessException;
 import subway.persistence.LineRepository;
 import subway.persistence.StationRepository;
@@ -36,7 +37,7 @@ public class PathService {
         final Lines lines = new Lines(lineRepository.findAll());
         final Navigation navigation = new Navigation(lines);
         final Path shortestPath = navigation.findShortestPath(startStation, endStation);
-        final long totalCost = costPolicyChain.calculate(shortestPath, age, DEFAULT_COST);
+        final long totalCost = costPolicyChain.calculate(shortestPath, Age.from(age), DEFAULT_COST);
         return FindShortestPathResponse.of(shortestPath, totalCost);
     }
 

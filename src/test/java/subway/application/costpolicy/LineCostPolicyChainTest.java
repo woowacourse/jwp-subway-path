@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test;
 import subway.domain.Line;
 import subway.domain.Path;
 import subway.domain.StationInformation;
+import subway.domain.vo.Age;
 
 class LineCostPolicyChainTest {
 
     private static final long DEFAULT_COST = 1250L;
-    private static final int AGE = 10;
+    private static final Age AGE = Age.from(10);
     final CostPolicyChain costPolicyChain = new LineCostPolicyChain();
 
     @Test
