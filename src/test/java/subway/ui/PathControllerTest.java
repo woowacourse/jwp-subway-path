@@ -8,6 +8,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static subway.helper.RestDocsHelper.constraint;
 import static subway.helper.RestDocsHelper.prettyDocument;
@@ -15,8 +16,12 @@ import static subway.helper.RestDocsHelper.prettyDocument;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -93,5 +98,30 @@ class PathControllerTest {
                                 fieldWithPath("result.price").description("요금")
                         )
                 ));
+    }
+
+    @ParameterizedTest(name = "/path로 GET 요청을 보낼 때, 나이가 {0}이면 HTTP 400 코드와 예외가 반환되어야 한다.")
+    @MethodSource("illegalAge")
+    void findPath_illegalAge(String condition, String age) throws Exception {
+        // given
+        String originStationName = "서울역";
+        String destinationStationName = "용산역";
+
+        // expect
+        mockMvc.perform(
+                        get("/path?originStation={originStationName}&destinationStation={destinationStationName}&age={age}",
+                                originStationName, destinationStationName, age)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.validation.age").exists());
+    }
+
+    static Stream<Arguments> illegalAge() {
+        return Stream.of(
+                Arguments.of("음수", "-1"),
+                Arguments.of("null", null),
+                Arguments.of("151살", "151"),
+                Arguments.of("숫자가 아닌 문자열", "글렌")
+        );
     }
 }

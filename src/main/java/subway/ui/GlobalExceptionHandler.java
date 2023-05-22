@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import subway.dto.response.Response;
 import subway.exception.line.DuplicateLineException;
 import subway.exception.station.DuplicateStationException;
@@ -89,6 +90,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Response> handleIllegalPathException(IllegalPathException e) {
         return Response.badRequest()
                 .message(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Response> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        return Response.badRequest()
+                .message(BAD_REQUEST_MESSAGE)
+                .validation(e.getName(), e.getMostSpecificCause().getMessage())
                 .build();
     }
 }
