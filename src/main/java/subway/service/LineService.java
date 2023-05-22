@@ -41,7 +41,7 @@ public class LineService {
     public LineResponse findById(final Long id) {
         Line line = lineRepository.findById(id);
         List<StationResponse> stationsResponse = line.getStations().stream()
-                .map(station -> new StationResponse(station.getName()))
+                .map(station -> new StationResponse(id, station.getName()))
                 .collect(Collectors.toList());
 
         return new LineResponse(id, line.getName(), stationsResponse);
@@ -54,7 +54,7 @@ public class LineService {
         return lines.getLines().stream()
                 .map(line -> {
                     List<StationResponse> stationResponses = line.getStations().stream()
-                            .map(station -> new StationResponse(station.getName()))
+                            .map(station -> new StationResponse(station.getId(), station.getName()))
                             .collect(Collectors.toList());
                     return new LineResponse(line.getId(), line.getName(), stationResponses);
                 })

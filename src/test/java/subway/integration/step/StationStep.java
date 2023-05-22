@@ -20,4 +20,11 @@ public class StationStep {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 역_조회_요청(final Long 역_ID) {
+        return RestAssured.given().log().all()
+                .when().get("/stations/" + 역_ID)
+                .then().log().all()
+                .extract();
+    }
 }
