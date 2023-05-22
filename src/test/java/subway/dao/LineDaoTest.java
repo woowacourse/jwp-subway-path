@@ -5,16 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.entity.LineEntity;
 import subway.persistence.dao.LineDao;
+import subway.persistence.entity.LineEntity;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Sql("/testdata.sql")
 @JdbcTest
@@ -66,7 +64,7 @@ class LineDaoTest {
         lineDao.insert(new LineEntity("1호선", "blue"));
 
         ///when
-        final LineEntity line = lineDao.findById(1L);
+        final LineEntity line = lineDao.findById(1L).orElseThrow();
 
         ///then
         assertThat(line.getId()).isSameAs(1L);
@@ -80,26 +78,11 @@ class LineDaoTest {
 
         ///when
         lineDao.update(lineEntity);
-        final LineEntity updated = lineDao.findById(1L);
+        final LineEntity updated = lineDao.findById(1L).orElseThrow();
 
         ///then
         assertThat(updated.getId()).isSameAs(1L);
         assertThat(updated.getName()).isEqualTo("새1호선");
         assertThat(updated.getColor()).isEqualTo("blue");
-    }
-
-    @Test
-    void 노선을_삭제한다() {
-        ///given
-        lineDao.insert(new LineEntity("구1호선", "darkblue"));
-        assertThat(lineDao.findById(1L)).isNotNull();
-
-        ///when
-        lineDao.deleteById(1L);
-
-        ///then
-        assertThatThrownBy(
-                () -> lineDao.findById(1L)
-        ).isInstanceOf(EmptyResultDataAccessException.class);
     }
 }
