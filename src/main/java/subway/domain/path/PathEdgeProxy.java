@@ -1,20 +1,15 @@
 package subway.domain.path;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import subway.domain.Line;
 import subway.domain.Station;
 
 public final class PathEdgeProxy extends DefaultWeightedEdge {
-    private final Line line;
     private final Path path;
+    private final int additionalFare;
 
-    public PathEdgeProxy(final Line line, final Path path) {
-        this.line = line;
+    public PathEdgeProxy(final Path path, final int additionalFare) {
+        this.additionalFare = additionalFare;
         this.path = path;
-    }
-
-    public static PathEdgeProxy of(final Path path, final Line line) {
-        return new PathEdgeProxy(line, path);
     }
 
     public Long getId() {
@@ -40,8 +35,8 @@ public final class PathEdgeProxy extends DefaultWeightedEdge {
         return path.getDown();
     }
 
-    public Line getLine() {
-        return line;
+    public int getAdditionalFare() {
+        return additionalFare;
     }
 
     public Path toPath() {

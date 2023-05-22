@@ -22,7 +22,10 @@ public final class Shortest {
             final Paths paths = line.getPaths();
             paths.getStations().forEach(graph::addVertex);
             paths.toList()
-                    .forEach(path -> graph.addEdge(path.getUp(), path.getDown(), PathEdgeProxy.of(path, line)));
+                    .forEach(path -> {
+                        final PathEdgeProxy edge = new PathEdgeProxy(path, line.getAdditionalFare());
+                        graph.addEdge(path.getUp(), path.getDown(), edge);
+                    });
         }
 
         return new Shortest(new DijkstraShortestPath<>(graph));

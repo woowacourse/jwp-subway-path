@@ -2,7 +2,6 @@ package subway.domain.fare;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.Line;
 import subway.domain.path.PathEdgeProxy;
 
 import java.util.List;
@@ -17,13 +16,9 @@ class LineAdditionalFareStrategyImplTest {
     @Test
     void calculate() {
         //given
-        final Line line1 = new Line("1호선", "blue", 500);
-        final Line line2 = new Line("1호선", "blue", 300);
-        final Line line3 = new Line("1호선", "blue", 1000);
-
-        final PathEdgeProxy path1 = new PathEdgeProxy(line1, null);
-        final PathEdgeProxy path2 = new PathEdgeProxy(line2, null);
-        final PathEdgeProxy path3 = new PathEdgeProxy(line3, null);
+        final PathEdgeProxy path1 = new PathEdgeProxy(null, 500);
+        final PathEdgeProxy path2 = new PathEdgeProxy(null, 300);
+        final PathEdgeProxy path3 = new PathEdgeProxy(null, 1000);
 
         //when
         final int fare = lineAdditionalFareStrategy.calculate(List.of(path1, path2, path3));

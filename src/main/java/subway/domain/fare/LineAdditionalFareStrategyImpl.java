@@ -1,7 +1,6 @@
 package subway.domain.fare;
 
 import org.springframework.stereotype.Component;
-import subway.domain.Line;
 import subway.domain.path.PathEdgeProxy;
 
 import java.util.List;
@@ -12,8 +11,7 @@ public final class LineAdditionalFareStrategyImpl implements LineAdditionalFareS
     @Override
     public int calculate(final List<PathEdgeProxy> lines) {
         return lines.stream()
-                .map(PathEdgeProxy::getLine)
-                .mapToInt(Line::getAdditionalFare)
+                .mapToInt(PathEdgeProxy::getAdditionalFare)
                 .max()
                 .orElse(0);
     }
