@@ -10,6 +10,7 @@ import subway.domain.vo.Distance;
 
 class DistanceCostPolicyTest {
 
+    private static final long DEFUALT_COST = 1250L;
     private final CostPolicy costPolicy = new DistanceCostPolicy();
 
     @ParameterizedTest
@@ -18,13 +19,13 @@ class DistanceCostPolicyTest {
     void testCalculateLessThan10(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance);
+        final Path path = new Path(null, distance, 0);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicy.calculate(path, DEFUALT_COST);
 
         //then
-        assertThat(result).isEqualTo(1250L);
+        assertThat(result).isEqualTo(DEFUALT_COST);
     }
 
     @ParameterizedTest
@@ -33,10 +34,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan11LessThan15(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance);
+        final Path path = new Path(null, distance, 0);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicy.calculate(path, DEFUALT_COST);
 
         //then
         assertThat(result).isEqualTo(1350L);
@@ -48,10 +49,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan16LessThan19(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance);
+        final Path path = new Path(null, distance, 0);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicy.calculate(path, DEFUALT_COST);
 
         //then
         assertThat(result).isEqualTo(1450L);
@@ -63,10 +64,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan21LessThan25(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance);
+        final Path path = new Path(null, distance, 0);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicy.calculate(path, DEFUALT_COST);
 
         //then
         assertThat(result).isEqualTo(1550L);
@@ -78,10 +79,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan46LessThan50(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance);
+        final Path path = new Path(null, distance, 0);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicy.calculate(path, DEFUALT_COST);
 
         //then
         assertThat(result).isEqualTo(2050L);
@@ -93,10 +94,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan51LessThan55(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance);
+        final Path path = new Path(null, distance, 0);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicy.calculate(path, DEFUALT_COST);
 
         //then
         assertThat(result).isEqualTo(2150L);
@@ -108,10 +109,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan59LessThan66(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance);
+        final Path path = new Path(null, distance, 0);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicy.calculate(path, DEFUALT_COST);
 
         //then
         assertThat(result).isEqualTo(2250L);
