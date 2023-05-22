@@ -18,11 +18,13 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public void registerStation(final Station station) {
-        final Optional<StationEntity> stationEntity = stationDao.findByName(station.getName());
-        if (stationEntity.isEmpty()) {
-            stationDao.insert(station.getName());
+    public Station registerStation(final Station station) {
+        final Optional<StationEntity> foundedStationEntity = stationDao.findByName(station.getName());
+        if (foundedStationEntity.isPresent()) {
+            return new Station(foundedStationEntity.get().getName());
         }
+        final StationEntity insertedStationEntity = stationDao.insert(station.getName());
+        return new Station(insertedStationEntity.getName());
     }
 
     public List<Station> findStations() {

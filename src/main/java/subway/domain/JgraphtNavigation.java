@@ -5,22 +5,20 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.controller.exception.PathNotFoundException;
-import subway.controller.exception.StationNotFoundException;
 
-public class SubwayNavigation implements Navigation {
+public class JgraphtNavigation implements Navigation {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    private SubwayNavigation(final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private JgraphtNavigation(final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         this.graph = graph;
     }
 
-    public static SubwayNavigation from(final List<Sections> sections) {
+    public static JgraphtNavigation from(final List<Sections> sections) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         initialize(sections, graph);
-        return new SubwayNavigation(graph);
+        return new JgraphtNavigation(graph);
     }
 
     private static void initialize(
@@ -56,16 +54,16 @@ public class SubwayNavigation implements Navigation {
 
     private void validateStations(final Station source, final Station target) {
         if (!graph.containsVertex(source)) {
-            throw new StationNotFoundException("출발역이 존재하지 않습니다.");
+            throw new IllegalArgumentException("출발역이 존재하지 않습니다.");
         }
         if (!graph.containsVertex(target)) {
-            throw new StationNotFoundException("도착역이 존재하지 않습니다.");
+            throw new IllegalArgumentException("도착역이 존재하지 않습니다.");
         }
     }
 
     private void validatePath(final GraphPath path) {
         if (path == null) {
-            throw new PathNotFoundException();
+            throw new IllegalArgumentException();
         }
     }
 

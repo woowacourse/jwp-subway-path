@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.controller.exception.StationNotFoundException;
-import subway.controller.exception.BusinessException;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.service.dto.SectionDto;
@@ -59,7 +57,7 @@ class StationServiceTest {
 
         // expect
         assertThatThrownBy(() -> stationService.register(sectionDto))
-                .isInstanceOf(BusinessException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("노선 정보가 잘못되었습니다.");
     }
 
@@ -86,7 +84,7 @@ class StationServiceTest {
 
         // expect
         assertThatThrownBy(() -> stationService.delete(new StationDto(id, "터틀역")))
-                .isInstanceOf(StationNotFoundException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("존재하지 않는 역을 삭제할 수 없습니다.");
     }
 }

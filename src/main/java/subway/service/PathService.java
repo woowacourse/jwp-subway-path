@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.FareCalculator;
 import subway.domain.Line;
 import subway.domain.Navigation;
-import subway.domain.SubwayNavigation;
+import subway.domain.JgraphtNavigation;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.SubwayFareCalculator;
@@ -34,7 +34,7 @@ public class PathService {
                 .map(Line::getSections)
                 .collect(Collectors.toList());
 
-        final Navigation subwayNavigation = SubwayNavigation.from(sections);
+        final Navigation subwayNavigation = JgraphtNavigation.from(sections);
         final List<Station> stations = subwayNavigation.getShortestPath(source, target);
 
         final int distance = subwayNavigation.getDistance(source, target);

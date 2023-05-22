@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -13,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.controller.exception.BusinessException;
 import subway.domain.Line;
-import subway.domain.Station;
 import subway.domain.Subway;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -53,6 +50,4 @@ class SubwayRepositoryTest {
                 new Line("2호선", "초록색")
         );
     }
-
-
 }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.jayway.jsonpath.PathNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -12,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.controller.exception.PathNotFoundException;
-import subway.controller.exception.StationNotFoundException;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -81,7 +80,7 @@ class PathServiceTest {
     void 출발역이_노선에_없을_경우_예외가_발생한다() {
         // expect
         assertThatThrownBy(() -> pathService.findPath(new PathDto("터틀역", "수서역")))
-                .isInstanceOf(StationNotFoundException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역이 존재하지 않습니다.");
     }
 
@@ -89,7 +88,7 @@ class PathServiceTest {
     void 도착역이_노선에_없을_경우_예외가_발생한다() {
         // expect
         assertThatThrownBy(() -> pathService.findPath(new PathDto("수서역", "터틀역")))
-                .isInstanceOf(StationNotFoundException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("도착역이 존재하지 않습니다.");
     }
 
@@ -97,7 +96,7 @@ class PathServiceTest {
     void 두_역_사이_경로가_존재하지_않는_경우_예외가_발생한다() {
         // expect
         assertThatThrownBy(() -> pathService.findPath(new PathDto("경기광주역", "수서역")))
-                .isInstanceOf(PathNotFoundException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("두 역 사이의 경로가 존재하지 않습니다");
     }
 

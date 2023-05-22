@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.controller.exception.InvalidStationException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -29,7 +28,7 @@ class LineTest {
     void 세글자_미만_열글자_초과의_이름은_예외가_발생한다(final String name) {
         // expect
         assertThatThrownBy(() -> new Line(name, "분홍색", new ArrayList<>()))
-                .isInstanceOf(InvalidStationException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("노선 이름은 3~10자 사이여야 합니다");
     }
 

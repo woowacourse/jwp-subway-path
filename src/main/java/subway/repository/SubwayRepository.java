@@ -2,9 +2,7 @@ package subway.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import subway.controller.exception.BusinessException;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -50,7 +48,7 @@ public class SubwayRepository {
 
     private Station toStation(final Long stationId) {
         final StationEntity stationEntity = stationDao.findById(stationId)
-                .orElseThrow(() -> new BusinessException("역 정보가 잘못되었습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("역 정보가 잘못되었습니다."));
         return new Station(stationEntity.getName());
     }
 }

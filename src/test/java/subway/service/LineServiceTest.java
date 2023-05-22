@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.controller.exception.BusinessException;
 import subway.domain.Line;
 import subway.domain.Subway;
 import subway.service.dto.LineDto;
@@ -67,7 +66,7 @@ class LineServiceTest {
 
         // expect
         assertThatThrownBy(() -> lineService.register(new LineDto("8호선", "분홍색")))
-                .isInstanceOf(BusinessException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("해당 이름의 노선이 이미 존재합니다.");
     }
 
@@ -96,7 +95,7 @@ class LineServiceTest {
 
         // expect
         assertThatThrownBy(() -> lineService.read(100000L))
-                .isInstanceOf(BusinessException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("노선 정보가 잘못되었습니다.");
     }
 

@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.controller.exception.StationNotFoundException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -21,7 +20,7 @@ class NavigationTest {
         final Section firstSection = new Section("잠실역", "석촌역", 2);
         final Section secondSection = new Section("석촌역", "송파역", 2);
         final Section thirdSection = new Section("송파역", "가락시장역", 10);
-        final SubwayNavigation navigation = SubwayNavigation.from(List.of(
+        final JgraphtNavigation navigation = JgraphtNavigation.from(List.of(
                 new Sections(List.of(firstSection, secondSection, thirdSection)))
         );
 
@@ -35,11 +34,11 @@ class NavigationTest {
     @Test
     void 출발역이_노선에_존재하지_않을_경우_예외가_발생한다() {
         // given
-        final SubwayNavigation navigation = SubwayNavigation.from(Collections.emptyList());
+        final JgraphtNavigation navigation = JgraphtNavigation.from(Collections.emptyList());
 
         // expect
         assertThatThrownBy(() -> navigation.getShortestPath(new Station("잠실역"), new Station("석촌역")))
-                .isInstanceOf(StationNotFoundException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역이 존재하지 않습니다.");
     }
 
@@ -47,13 +46,13 @@ class NavigationTest {
     void 도착역이_노선에서_존재하지_않는_경우_예외가_발생한다() {
         // given
         final Section sections = new Section("잠실역", "석촌역", 2);
-        final SubwayNavigation navigation = SubwayNavigation.from(List.of(
+        final JgraphtNavigation navigation = JgraphtNavigation.from(List.of(
                 new Sections(List.of(sections)))
         );
 
         // expect
         assertThatThrownBy(() -> navigation.getShortestPath(new Station("잠실역"), new Station("터틀역")))
-                .isInstanceOf(StationNotFoundException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("도착역이 존재하지 않습니다.");
     }
 
@@ -63,7 +62,7 @@ class NavigationTest {
         final Section firstSection = new Section("잠실역", "석촌역", 2);
         final Section secondSection = new Section("석촌역", "송파역", 2);
         final Section thirdSection = new Section("송파역", "가락시장역", 10);
-        final SubwayNavigation navigation = SubwayNavigation.from(List.of(
+        final JgraphtNavigation navigation = JgraphtNavigation.from(List.of(
                 new Sections(List.of(firstSection, secondSection, thirdSection)))
         );
 
