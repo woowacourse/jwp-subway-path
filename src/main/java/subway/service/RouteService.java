@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import subway.domain.Line;
 import subway.domain.RouteMap;
 import subway.service.dto.response.LineResponse;
-import subway.service.dto.request.RouteFindingRequest;
 import subway.service.dto.response.RouteFindingResponse;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class RouteService {
         this.lineMakerService = lineMakerService;
     }
 
-    public RouteFindingResponse findShortestPath(RouteFindingRequest routeFindingRequest) {
+    public RouteFindingResponse findShortestPath(String startStation, String endStation) {
         List<LineResponse> lineEntities = lineService.searchAllLines();
         List<Line> lines = lineEntities.stream()
                 .map(lineEntity -> lineMakerService.mapToLineFrom(lineEntity.getLineName()))
@@ -30,8 +29,8 @@ public class RouteService {
 
         RouteMap routeMap = RouteMap.generateRouteMap(lines);
 
-        List<String> shortestPath = routeMap.findShortestPath(routeFindingRequest.getStartStation(), routeFindingRequest.getEndStation());
-        double shortestDistance = routeMap.findShortestDistance(routeFindingRequest.getStartStation(), routeFindingRequest.getEndStation());
+        List<String> shortestPath = routeMap.findShortestPath(startStation, endStation);
+        double shortestDistance = routeMap.findShortestDistance(startStation, endStation);
         int fare = routeMap.calculateFare(shortestDistance);
 
         return new RouteFindingResponse(shortestPath, shortestDistance, fare);

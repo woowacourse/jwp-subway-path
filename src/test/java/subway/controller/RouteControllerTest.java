@@ -16,7 +16,6 @@ import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
-import subway.service.dto.request.RouteFindingRequest;
 
 import java.util.List;
 
@@ -48,12 +47,14 @@ class RouteControllerTest {
         lineDao.save(new LineEntity(1L, "1호선"));
         sectionDao.batchSave(List.of(new SectionEntity("A역", "B역", 2, 1L)));
 
-        RouteFindingRequest routeFindingRequest = new RouteFindingRequest("A역", "B역");
+        String startStation = "A역";
+        String endStation = "B역";
 
         //when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(routeFindingRequest)
+                .param("startStation", startStation)
+                .param("endStation", endStation)
                 .when().get("/routes")
                 .then().log().all()
                 .extract();
