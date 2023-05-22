@@ -98,19 +98,21 @@ public class Sections {
     }
 
     private void addSectionBasedOnUpStation(Section sectionToAdd, Station upStation) {
-        sections.stream()
+        Optional<Section> findSection = sections.stream()
                 .filter(section -> section.isUpStation(upStation))
-                .findFirst()
-                .ifPresent(originalSection -> {
-                            Station downStationIdOfOrigin = originalSection.getDownStation();
-                            Station downStationIdOfToAdd = sectionToAdd.getDownStation();
-                            Integer revisedDistance = findRevisedDistance(sectionToAdd, originalSection);
-                            Section revisedSection = Section.of(originalSection.getId(), downStationIdOfToAdd, downStationIdOfOrigin, revisedDistance);
-                            sections.remove(originalSection);
-                            sections.add(sectionToAdd);
-                            sections.add(revisedSection);
-                        }
-                );
+                .findFirst();
+        if (findSection.isPresent()) {
+            Section originalSection = findSection.get();
+            Station downStationIdOfOrigin = originalSection.getDownStation();
+            Station downStationIdOfToAdd = sectionToAdd.getDownStation();
+            Integer revisedDistance = findRevisedDistance(sectionToAdd, originalSection);
+            Section revisedSection = Section.of(originalSection.getId(), downStationIdOfToAdd, downStationIdOfOrigin, revisedDistance);
+            sections.remove(originalSection);
+            sections.add(sectionToAdd);
+            sections.add(revisedSection);
+            return;
+        }
+
 
         sections.stream()
                 .filter(section -> section.isDownStation(upStation))
@@ -119,23 +121,25 @@ public class Sections {
     }
 
     private void addSectionBasedOnDownStation(Section sectionToAdd, Station downStation) {
+        Optional<Section> findSection = sections.stream()
+                                                .filter(section -> section.isDownStation(downStation))
+                                                .findFirst();
+        if (findSection.isPresent()) {
+            Section originalSection = findSection.get();
+            Station upStationIdOfOrigin = originalSection.getUpStation();
+            Station upStationIdOfToAdd = sectionToAdd.getUpStation();
+            Integer revisedDistance = findRevisedDistance(sectionToAdd, originalSection);
+            Section revisedSection = Section.of(originalSection.getId(), upStationIdOfOrigin, upStationIdOfToAdd, revisedDistance);
+            sections.remove(originalSection);
+            sections.add(sectionToAdd);
+            sections.add(revisedSection);
+            return;
+        }
+
         sections.stream()
                 .filter(section -> section.isUpStation(downStation))
                 .findFirst()
                 .ifPresent(section -> sections.add(sectionToAdd));
-
-        sections.stream()
-                .filter(section -> section.isDownStation(downStation))
-                .findFirst()
-                .ifPresent(originalSection -> {
-                    Station upStationIdOfOrigin = originalSection.getUpStation();
-                    Station upStationIdOfToAdd = sectionToAdd.getUpStation();
-                    Integer revisedDistance = findRevisedDistance(sectionToAdd, originalSection);
-                    Section revisedSection = Section.of(originalSection.getId(), upStationIdOfOrigin, upStationIdOfToAdd, revisedDistance);
-                    sections.remove(originalSection);
-                    sections.add(sectionToAdd);
-                    sections.add(revisedSection);
-                });
     }
 
     private int findRevisedDistance(Section sectionToAdd, Section originalSection) {
