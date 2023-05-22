@@ -15,13 +15,17 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(final String... args) throws Exception {
-        jdbcTemplate.update("INSERT INTO lines(name, color) VALUES('1', '파랑')");
-        jdbcTemplate.update("INSERT INTO lines(name, color) VALUES('2', '초록')");
-        jdbcTemplate.update("INSERT INTO stations(name) VALUES('루카')");
-        jdbcTemplate.update("INSERT INTO stations(name) VALUES('헤나')");
-        jdbcTemplate.update("INSERT INTO stations(name) VALUES('루카_헤나')");
+        jdbcTemplate.update("INSERT INTO lines(name, color) VALUES('2호선', '초록')");
+        jdbcTemplate.update("INSERT INTO lines(name, color) VALUES('8호선', '파랑')");
+        jdbcTemplate.update("INSERT INTO stations(name) VALUES('잠실새내')");
+        jdbcTemplate.update("INSERT INTO stations(name) VALUES('잠실')");
+        jdbcTemplate.update("INSERT INTO stations(name) VALUES('잠실나루')");
+        jdbcTemplate.update("INSERT INTO stations(name) VALUES('몽촌토성')");
+        jdbcTemplate.update("INSERT INTO stations(name) VALUES('석촌')");
         jdbcTemplate.update("INSERT INTO stations(name) VALUES('더미')");
         jdbcTemplate.update("INSERT INTO sections(distance, up_station_id, down_station_id, line_id)VALUES (10, 1, 2, 1)");
-        jdbcTemplate.update("INSERT INTO sections(distance, up_station_id, down_station_id, line_id) VALUES (10, 3, 1, 2)");
+        jdbcTemplate.update("INSERT INTO sections(distance, up_station_id, down_station_id, line_id) VALUES (15, 2, 3, 1)");
+        jdbcTemplate.update("INSERT INTO sections(distance, up_station_id, down_station_id, line_id)VALUES (10, 4, 3, 2)");
+        jdbcTemplate.update("INSERT INTO sections(distance, up_station_id, down_station_id, line_id) VALUES (15, 3, 5, 2)");
     }
 }

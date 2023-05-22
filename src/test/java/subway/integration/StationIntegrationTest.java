@@ -29,7 +29,7 @@ class StationIntegrationTest extends IntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body("id", equalTo(1))
-                .body("name", equalTo("루카"))
+                .body("name", equalTo("잠실새내"))
                 .log().all();
     }
 
@@ -74,7 +74,7 @@ class StationIntegrationTest extends IntegrationTest {
                 .log().all()
 
         .when()
-                .delete("/stations/4")
+                .delete("/stations/6")
 
         .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
