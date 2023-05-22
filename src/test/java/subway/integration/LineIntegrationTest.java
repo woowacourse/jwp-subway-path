@@ -1,190 +1,268 @@
 package subway.integration;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.presentation.dto.LineRequest;
-import subway.presentation.dto.LineResponse;
+import subway.presentation.dto.StationEnrollRequest;
+import subway.presentation.dto.StationRequest;
+import subway.presentation.dto.StationResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("지하철 노선 관련 기능")
+@DisplayName("지하설 노선에 역 추가/삭제/조회 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
 
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
+    @Test
+    @DisplayName("지하철 노선에 역을 추가할 수 있다")
+    void test_addStationToLine() {
+        //given
+        LineRequest lineRequest = new LineRequest("2호선", "초록");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        long lineId = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest)
+
+                .when().post("/lines")
+
+                .then()
+                .extract()
+                .jsonPath()
+                .getLong("id");
+
+        StationRequest jamsilRequest = new StationRequest("잠실역");
+        StationRequest bangbaeRequest = new StationRequest("방배역");
+
+        long jamsilStationId = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(jamsilRequest)
+
+                .when().post("/stations")
+
+                .then()
+                .extract()
+                .jsonPath()
+                .getLong("id");
+
+        long bangbaeStationId = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(bangbaeRequest)
+
+                .when().post("/stations")
+
+                .then()
+                .extract()
+                .jsonPath().getLong("id");
+
+        StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
+                jamsilStationId, bangbaeStationId, 3);
+
+        //when, then
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationEnrollRequest)
+
+                .when().post("/subway/{lineId}", lineId)
+
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
     @Test
-    void createLine() {
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+    @DisplayName("지하철 노선에서 역을 삭제할 수 있다")
+    void test_deleteStationFromLine() {
+        //given
+        LineRequest lineRequest = new LineRequest("2호선", "초록");
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        long lineId = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest)
+
+                .when().post("/lines")
+
+                .then()
+                .extract()
+                .jsonPath()
+                .getLong("id");
+
+        StationRequest jamsilRequest = new StationRequest("잠실역");
+        StationRequest bangbaeRequest = new StationRequest("방배역");
+
+        long jamsilStationId = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(jamsilRequest)
+
+                .when().post("/stations")
+
+                .then()
+                .extract()
+                .jsonPath()
+                .getLong("id");
+
+        long bangbaeStationId = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(bangbaeRequest)
+
+                .when().post("/stations")
+
+                .then()
+                .extract()
+                .jsonPath().getLong("id");
+
+        StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
+                jamsilStationId, bangbaeStationId, 3);
+
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationEnrollRequest)
+
+                .when().post("/subway/{lineId}", lineId);
+
+        // when, then
+        RestAssured.given()
+                .when().delete("/subway/{lineId}/stations/{stationId}", lineId, jamsilStationId)
+
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
-    void createLineWithDuplicateName() {
-        // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+    @DisplayName("지하철 노선의 역들을 조회할 수 있다.")
+    void test_findStationFromLine() {
+        //given
+        LineRequest lineRequest = new LineRequest("2호선", "초록");
 
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+        long lineId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+                .body(lineRequest)
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                .when().post("/lines")
+
+                .then()
+                .extract()
+                .jsonPath()
+                .getLong("id");
+
+        StationRequest jamsilRequest = new StationRequest("잠실역");
+        StationRequest bangbaeRequest = new StationRequest("방배역");
+
+        long jamsilStationId = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(jamsilRequest)
+
+                .when().post("/stations")
+
+                .then()
+                .extract()
+                .jsonPath()
+                .getLong("id");
+
+        long bangbaeStationId = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(bangbaeRequest)
+
+                .when().post("/stations")
+
+                .then()
+                .extract()
+                .jsonPath().getLong("id");
+
+        StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
+                jamsilStationId, bangbaeStationId, 3);
+
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationEnrollRequest)
+
+                .when().post("/subway/{lineId}", lineId);
+
+        // when, then
+        List<StationResponse> routeMap = RestAssured.given()
+                .when().get("/subway/{lineId}", lineId)
+
+                .then()
+                .extract()
+                .body()
+                .jsonPath()
+                .getList(".", StationResponse.class);
+
+        assertAll(
+                () -> assertThat(routeMap).hasSize(2),
+                () -> assertThat(routeMap.get(0).getId()).isEqualTo(jamsilStationId),
+                () -> assertThat(routeMap.get(0).getName()).isEqualTo("잠실역"),
+                () -> assertThat(routeMap.get(1).getId()).isEqualTo(bangbaeStationId),
+                () -> assertThat(routeMap.get(1).getName()).isEqualTo("방배역")
+        );
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
-    void getLines() {
-        // given
-        ExtractableResponse<Response> createResponse1 = RestAssured
-                .given().log().all()
+    @DisplayName("모든 지하철 노선의 역들을 조회할 수 있다.")
+    void test_findAllStationFromLine() {
+        //given
+        LineRequest lineOneRequest = new LineRequest("1호선", "파랑");
+        RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineOneRequest)
+
+                .when().post("/lines");
+
+        LineRequest lineTwoRequest = new LineRequest("2호선", "초록");
+
+        long lineTwoId = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineTwoRequest)
+
                 .when().post("/lines")
-                .then().log().all().
-                extract();
 
-        ExtractableResponse<Response> createResponse2 = RestAssured
-                .given().log().all()
+                .then()
+                .extract()
+                .jsonPath()
+                .getLong("id");
+
+        StationRequest jamsilRequest = new StationRequest("잠실역");
+        StationRequest bangbaeRequest = new StationRequest("방배역");
+
+        long jamsilStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+                .body(jamsilRequest)
 
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
-                .then().log().all()
-                .extract();
+                .when().post("/stations")
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-        assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
+                .then()
+                .extract()
+                .jsonPath()
+                .getLong("id");
 
-    @DisplayName("지하철 노선을 조회한다.")
-    @Test
-    void getLine() {
-        // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
+        long bangbaeStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+                .body(bangbaeRequest)
 
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
+                .when().post("/stations")
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
-        assertThat(resultResponse.getId()).isEqualTo(lineId);
-    }
+                .then()
+                .extract()
+                .jsonPath().getLong("id");
 
-    @DisplayName("지하철 노선을 수정한다.")
-    @Test
-    void updateLine() {
-        // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
+        StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
+                jamsilStationId, bangbaeStationId, 3);
+
+        RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+                .body(stationEnrollRequest)
 
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().put("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
+                .when().post("/subway/{lineId}", lineTwoId);
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
+        // when, then
+        RestAssured.given()
+                .when().get("/subway")
 
-    @DisplayName("지하철 노선을 제거한다.")
-    @Test
-    void deleteLine() {
-        // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .when().delete("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+                .then()
+                .body("size()", is(2));
     }
 }

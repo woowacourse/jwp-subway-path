@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS STATION
     PRIMARY KEY(ID)
 );
 
-CREATE TABLE IF NOT EXISTS LINE_PROPERTY
+CREATE TABLE IF NOT EXISTS LINE
 (
     id       BIGINT          AUTO_INCREMENT NOT NULL,
     name     VARCHAR(255)    NOT NULL UNIQUE,
@@ -15,10 +15,12 @@ CREATE TABLE IF NOT EXISTS LINE_PROPERTY
 
 CREATE TABLE IF NOT EXISTS SECTION
 (
-    id         BIGINT          AUTO_INCREMENT NOT NULL,
-    line_id    BIGINT          NOT NULL,
-    up_bound   VARCHAR(255)    NOT NULL,
-    down_bound VARCHAR(255)    NOT NULL,
-    distance   INT             NOT NULL,
-    PRIMARY KEY(ID)
+    id         BIGINT        AUTO_INCREMENT NOT NULL,
+    line_id    BIGINT        NOT NULL,
+    up_bound   BIGINT        NOT NULL,
+    down_bound BIGINT        NOT NULL,
+    distance   INT           NOT NULL,
+    PRIMARY KEY(ID),
+    FOREIGN KEY(up_bound)   REFERENCES STATION(id) ON DELETE RESTRICT,
+    FOREIGN KEY(down_bound) REFERENCES STATION(id) ON DELETE RESTRICT
 );
