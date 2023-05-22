@@ -19,19 +19,20 @@ class DistanceTest {
                 .hasMessage("거리는 양의 정수만 가능합니다.");
     }
 
-    @DisplayName("거리가 더 작으면 true를 반환한다.")
-    @Test
-    void isLessThanTrue() {
+    @DisplayName("거리가 작거나 같으면 true를 반환한다.")
+    @ParameterizedTest
+    @CsvSource({"10", "11"})
+    void isNotGreaterThanTrue(final int value) {
         final Distance distance = new Distance(10);
-        final boolean result = distance.isLessThan(new Distance(11));
+        final boolean result = distance.isNotGreaterThan(new Distance(value));
         assertThat(result).isTrue();
     }
 
-    @DisplayName("거리가 작지 않으면 false를 반환한다.")
+    @DisplayName("거리가 크면 false를 반환한다.")
     @Test
-    void isLessThanFalse() {
+    void isNotGreaterThanFalse() {
         final Distance distance = new Distance(10);
-        final boolean result = distance.isLessThan(new Distance(10));
+        final boolean result = distance.isNotGreaterThan(new Distance(9));
         assertThat(result).isFalse();
     }
 
@@ -39,7 +40,7 @@ class DistanceTest {
     @Test
     void subtract() {
         final Distance distance = new Distance(10);
-        final int result = distance.subtract(new Distance(9));
-        assertThat(result).isEqualTo(1);
+        final Distance result = distance.subtract(new Distance(9));
+        assertThat(result).isEqualTo(new Distance(1));
     }
 }

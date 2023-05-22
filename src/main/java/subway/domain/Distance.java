@@ -21,12 +21,12 @@ public class Distance {
         throw new IllegalArgumentException("거리는 양의 정수만 가능합니다.");
     }
 
-    public boolean isLessThan(final Distance other) {
-        return value < other.value;
+    public boolean isNotGreaterThan(final Distance other) {
+        return value <= other.value;
     }
 
-    public int subtract(final Distance other) {
-        return value - other.value;
+    public Distance subtract(final Distance other) {
+        return new Distance(value - other.value);
     }
 
     public int getValue() {
