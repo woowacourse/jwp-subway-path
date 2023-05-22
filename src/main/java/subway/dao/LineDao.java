@@ -19,7 +19,8 @@ public class LineDao {
     private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
-                    rs.getString("name")
+                    rs.getString("name"),
+                    rs.getInt("extraFare")
             );
 
 
@@ -33,25 +34,26 @@ public class LineDao {
     public LineEntity insert(LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getName());
+        params.put("extraFare", lineEntity.getExtraFare());
 
         Long savedId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineEntity(savedId, lineEntity.getName());
+        return new LineEntity(savedId, lineEntity.getName(), lineEntity.getExtraFare());
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select id, name from LINE";
+        String sql = "select id, name, extraFare from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<LineEntity> findById(Long id) {
-        String sql = "select id, name from LINE WHERE id = ?";
+        String sql = "select id, name, extraFare from LINE WHERE id = ?";
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
                 .findAny();
     }
 
     public Optional<LineEntity> findByName(String name) {
-        String sql = "select id, name from LINE WHERE name = ?";
+        String sql = "select id, name, extraFare from LINE WHERE name = ?";
         return jdbcTemplate.query(sql, rowMapper, name)
                 .stream()
                 .findAny();

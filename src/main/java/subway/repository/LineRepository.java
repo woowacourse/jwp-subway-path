@@ -10,6 +10,7 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
+import subway.domain.fare.Fare;
 import subway.domain.line.Distance;
 import subway.domain.line.Line;
 import subway.domain.line.Section;
@@ -30,8 +31,9 @@ public class LineRepository {
     }
 
     public Line save(Line line) {
-        LineEntity lineEntity = lineDao.insert(new LineEntity(null, line.getName()));
-        return new Line(lineEntity.getId(), lineEntity.getName(), new Sections(new LinkedList<>()));
+        LineEntity lineEntity = lineDao.insert(new LineEntity(null, line.getName(), line.getExtraFare()));
+        return new Line(lineEntity.getId(), lineEntity.getName(), new Fare(lineEntity.getExtraFare()),
+                new Sections(new LinkedList<>()));
     }
 
     public Line findById(Long id) {
@@ -41,7 +43,8 @@ public class LineRepository {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
         LinkedList<Section> sections = convertToSections(sectionEntities);
 
-        return new Line(lineEntity.getId(), lineEntity.getName(), new Sections(sections));
+        return new Line(lineEntity.getId(), lineEntity.getName(), new Fare(lineEntity.getExtraFare()),
+                new Sections(sections));
     }
 
     public boolean existsByName(String name) {
@@ -55,7 +58,8 @@ public class LineRepository {
         for (LineEntity lineEntity : lineEntities) {
             List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
             LinkedList<Section> sections = convertToSections(sectionEntities);
-            lines.add(new Line(lineEntity.getId(), lineEntity.getName(), new Sections(sections)));
+            lines.add(new Line(lineEntity.getId(), lineEntity.getName(), new Fare(lineEntity.getExtraFare()),
+                    new Sections(sections)));
         }
         return lines;
     }

@@ -26,6 +26,7 @@ import subway.application.LineService;
 import subway.controller.dto.LineRequest;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
+import subway.domain.fare.Fare;
 import subway.domain.line.Distance;
 import subway.domain.line.Line;
 import subway.domain.line.Section;
@@ -50,7 +51,7 @@ class LineControllerTest {
 
         mockMvc.perform(post("/lines")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LineRequest("1호선")))
+                        .content(objectMapper.writeValueAsString(new LineRequest("1호선", 500)))
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isCreated())
                 .andDo(print());
@@ -61,10 +62,22 @@ class LineControllerTest {
     void createLineFail() throws Exception {
         mockMvc.perform(post("/lines")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LineRequest("")))
+                        .content(objectMapper.writeValueAsString(new LineRequest("", 500)))
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(containsString("노선 이름은 빈 값이 될 수 없습니다.")))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("노선 추가 요금이 음수로 요청되는 경우 400 BAD REQUEST가 반환된다.")
+    void createLineFailWithWrongFare() throws Exception {
+        mockMvc.perform(post("/lines")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new LineRequest("1호선", -500)))
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(containsString("추가 금액은 0원 이상부터 가능합니다.")))
                 .andDo(print());
     }
 
@@ -73,7 +86,7 @@ class LineControllerTest {
     void findLineById() throws Exception {
         Long id = 1L;
         given(lineService.findLineById(any())).willReturn(
-                new Line(id, "1호선", new Sections(new LinkedList<>())));
+                new Line(id, "1호선", new Fare(500), new Sections(new LinkedList<>())));
 
         mockMvc.perform(get("/lines/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -174,6 +187,6 @@ class LineControllerTest {
         Section section1 = new Section(null, station1, station2, new Distance(5));
         Section section2 = new Section(null, station2, station3, new Distance(7));
 
-        return new Line(null, name, new Sections(new LinkedList<>(List.of(section1, section2))));
+        return new Line(null, name, new Fare(500), new Sections(new LinkedList<>(List.of(section1, section2))));
     }
 }

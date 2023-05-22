@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
+import subway.domain.fare.Fare;
 import subway.domain.line.Line;
 import subway.domain.line.Station;
 import subway.repository.LineRepository;
@@ -35,7 +36,7 @@ public class SectionIntegrationTest extends IntegrationTest {
     void setUpLineAndStation() {
         super.setUp();
 
-        line = lineRepository.save(new Line(1L, "1호선", null));
+        line = lineRepository.save(new Line(1L, "1호선", new Fare(500), null));
         stationRepository.save(new Station(1L, "강남역"));
         stationRepository.save(new Station(2L, "잠실역"));
         stationRepository.save(new Station(3L, "역삼역"));

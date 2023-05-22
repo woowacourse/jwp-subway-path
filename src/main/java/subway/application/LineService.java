@@ -7,6 +7,7 @@ import subway.controller.dto.LineRequest;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
 import subway.dao.entity.SectionEntity;
+import subway.domain.fare.Fare;
 import subway.domain.line.Line;
 import subway.domain.line.Section;
 import subway.domain.line.Station;
@@ -33,8 +34,9 @@ public class LineService {
         if (lineRepository.existsByName(request.getName())) {
             throw new LineNameException("동일한 이름을 가진 노선이 존재합니다.");
         }
+        Fare fare = new Fare(request.getExtraFare());
 
-        return lineRepository.save(new Line(null, request.getName(), null));
+        return lineRepository.save(new Line(null, request.getName(), fare, null));
     }
 
     public Line findLineById(Long id) {

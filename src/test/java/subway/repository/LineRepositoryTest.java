@@ -17,6 +17,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
+import subway.domain.fare.Fare;
 import subway.domain.line.Distance;
 import subway.domain.line.Line;
 import subway.domain.line.Section;
@@ -48,7 +49,7 @@ class LineRepositoryTest {
     @Test
     @DisplayName("노선 도메인을 저장한다.")
     void save() {
-        Line line = new Line(null, "1호선", null);
+        Line line = new Line(null, "1호선", new Fare(100), null);
 
         Line savedLine = lineRepository.save(line);
 
@@ -68,7 +69,7 @@ class LineRepositoryTest {
         Section section = new Section(null, station1, station2, new Distance(5));
         LinkedList<Section> sections = new LinkedList<>(List.of(section));
 
-        Line line = new Line(null, "1호선", new Sections(sections));
+        Line line = new Line(null, "1호선", new Fare(100), new Sections(sections));
         Line savedLine = lineRepository.save(line);
 
         Line foundLine = lineRepository.findById(savedLine.getId());
@@ -97,8 +98,8 @@ class LineRepositoryTest {
         Section section2 = new Section(null, station3, station2, new Distance(10));
         LinkedList<Section> sections1 = new LinkedList<>(List.of(section1));
         LinkedList<Section> sections2 = new LinkedList<>(List.of(section2));
-        Line line1 = new Line(null, "1호선", new Sections(sections1));
-        Line line2 = new Line(null, "2호선", new Sections(sections2));
+        Line line1 = new Line(null, "1호선", new Fare(100), new Sections(sections1));
+        Line line2 = new Line(null, "2호선", new Fare(500), new Sections(sections2));
         Line savedLine1 = lineRepository.save(line1);
         Line savedLine2 = lineRepository.save(line2);
 
@@ -110,7 +111,7 @@ class LineRepositoryTest {
     @Test
     @DisplayName("이름에 해당하는 노선이 있으면 true를 반환한다.")
     void existsNameTrue() {
-        Line line = new Line(null, "1호선", null);
+        Line line = new Line(null, "1호선", new Fare(100), null);
         lineRepository.save(line);
 
         assertThat(lineRepository.existsByName("1호선")).isTrue();
@@ -119,7 +120,7 @@ class LineRepositoryTest {
     @Test
     @DisplayName("이름에 해당하는 노선이 없으면 false를 반환한다.")
     void existsNameFalse() {
-        Line line = new Line(null, "1호선", null);
+        Line line = new Line(null, "1호선", new Fare(100), null);
         lineRepository.save(line);
 
         assertThat(lineRepository.existsByName("2호선")).isFalse();
@@ -128,7 +129,7 @@ class LineRepositoryTest {
     @Test
     @DisplayName("ID에 해당하는 노선을 삭제한다.")
     void deleteById() {
-        Line line = new Line(null, "1호선", null);
+        Line line = new Line(null, "1호선", new Fare(100), null);
         Line savedLine = lineRepository.save(line);
 
         lineRepository.deleteById(savedLine.getId());
@@ -139,7 +140,7 @@ class LineRepositoryTest {
     @Test
     @DisplayName("ID에 해당하는 노선에 구간을 추가한다.")
     void saveSection() {
-        Line line = new Line(null, "1호선", null);
+        Line line = new Line(null, "1호선", new Fare(100), null);
         Line savedLine = lineRepository.save(line);
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "잠실역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "강남역"));
@@ -153,7 +154,7 @@ class LineRepositoryTest {
     @Test
     @DisplayName("ID에 해당하는 노선에 구간을 삭제한다.")
     void deleteSection() {
-        Line line = new Line(null, "1호선", null);
+        Line line = new Line(null, "1호선", new Fare(100), null);
         Line savedLine = lineRepository.save(line);
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "잠실역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "강남역"));

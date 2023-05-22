@@ -28,7 +28,7 @@ class LineDaoTest {
     @Test
     @DisplayName("역이 없는 초기 노선을 생성한다.")
     void insert() {
-        LineEntity lineEntity = new LineEntity(null, "1호선");
+        LineEntity lineEntity = new LineEntity(null, "1호선", 500);
 
         LineEntity savedLineEntity = lineDao.insert(lineEntity);
 
@@ -41,7 +41,7 @@ class LineDaoTest {
     @Test
     @DisplayName("ID에 해당하는 노선을 찾아온다.")
     void findById() {
-        LineEntity lineEntity = new LineEntity(null, "1호선");
+        LineEntity lineEntity = new LineEntity(null, "1호선", 500);
         LineEntity savedLineEntity = lineDao.insert(lineEntity);
 
         LineEntity findLineEntity = lineDao.findById(savedLineEntity.getId()).get();
@@ -51,7 +51,7 @@ class LineDaoTest {
     @Test
     @DisplayName("이름에 해당하는 노선을 가져온다.")
     void findByName() {
-        LineEntity lineEntity = new LineEntity(null, "1호선");
+        LineEntity lineEntity = new LineEntity(null, "1호선", 500);
         LineEntity savedLineEntity = lineDao.insert(lineEntity);
 
         LineEntity findLineEntity = lineDao.findByName(lineEntity.getName()).get();
@@ -61,8 +61,8 @@ class LineDaoTest {
     @Test
     @DisplayName("모든 노선을 가져온다.")
     void findAll() {
-        LineEntity lineEntity1 = new LineEntity(null, "1호선");
-        LineEntity lineEntity2 = new LineEntity(null, "2호선");
+        LineEntity lineEntity1 = new LineEntity(null, "1호선", 500);
+        LineEntity lineEntity2 = new LineEntity(null, "2호선", 300);
         LineEntity savedLineEntity1 = lineDao.insert(lineEntity1);
         LineEntity savedLineEntity2 = lineDao.insert(lineEntity2);
 
@@ -74,7 +74,7 @@ class LineDaoTest {
     @Test
     @DisplayName("ID에 해당하는 노선을 삭제한다.")
     void deleteById() {
-        LineEntity lineEntity = new LineEntity(null, "1호선");
+        LineEntity lineEntity = new LineEntity(null, "1호선", 300);
         LineEntity savedLineEntity = lineDao.insert(lineEntity);
 
         lineDao.deleteById(savedLineEntity.getId());

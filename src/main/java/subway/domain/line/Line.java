@@ -2,16 +2,19 @@ package subway.domain.line;
 
 import java.util.List;
 import java.util.Objects;
+import subway.domain.fare.Fare;
 
 public class Line {
 
     private final Long id;
     private final String name;
+    private final Fare extraFare;
     private final Sections sections;
 
-    public Line(Long id, String name, Sections sections) {
+    public Line(Long id, String name, Fare extraFare, Sections sections) {
         this.id = id;
         this.name = name;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -57,6 +60,10 @@ public class Line {
 
     public String getName() {
         return name;
+    }
+
+    public int getExtraFare() {
+        return extraFare.getValue();
     }
 
     public List<Section> getSections() {

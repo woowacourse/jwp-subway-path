@@ -20,7 +20,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.SubwayService;
 import subway.controller.dto.RouteSearchResponse;
-import subway.controller.dto.StationResponse;
 
 @WebMvcTest(controllers = SubwayController.class)
 class SubwayControllerTest {
@@ -76,11 +75,8 @@ class SubwayControllerTest {
     }
 
     private RouteSearchResponse createRouteResponse() {
-        StationResponse stationResponse1 = StationResponse.of(강남역);
-        StationResponse stationResponse2 = StationResponse.of(선릉역);
-        StationResponse stationResponse3 = StationResponse.of(서울역);
         return new RouteSearchResponse(
-                List.of(stationResponse1, stationResponse2, stationResponse3),
+                List.of(강남역, 서울역, 선릉역),
                 20,
                 1500);
     }

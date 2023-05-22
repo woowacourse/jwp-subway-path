@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.LineRequest;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
+import subway.domain.fare.Fare;
 import subway.domain.line.Distance;
 import subway.domain.line.Line;
 import subway.domain.line.Section;
@@ -45,16 +46,17 @@ class LineServiceTest {
     @Test
     @DisplayName("새로운 노선을 저장한다.")
     void saveLine() {
-        LineRequest lineRequest = new LineRequest("1호선");
+        LineRequest lineRequest = new LineRequest("1호선", 500);
         given(lineRepository.existsByName(any()))
                 .willReturn(false);
-        given(lineRepository.save(new Line(null, lineRequest.getName(), null)))
-                .willReturn(new Line(1L, "1호선", new Sections(new LinkedList<>())));
+        given(lineRepository.save(new Line(null, lineRequest.getName(), new Fare(500), null)))
+                .willReturn(new Line(1L, "1호선", new Fare(500), new Sections(new LinkedList<>())));
 
         Line line = lineService.saveLine(lineRequest);
 
         assertAll(
                 () -> assertThat(line.getId()).isNotNull(),
+                () -> assertThat((line.getExtraFare())).isEqualTo(500),
                 () -> assertThat(line.getName()).isEqualTo(lineRequest.getName())
         );
     }
@@ -62,7 +64,7 @@ class LineServiceTest {
     @Test
     @DisplayName("새로운 노선을 저장할 때 노선 이름이 중복된 경우 예외가 발생한다.")
     void saveLineFail() {
-        LineRequest lineRequest = new LineRequest("1호선");
+        LineRequest lineRequest = new LineRequest("1호선", 500);
         given(lineRepository.existsByName(any()))
                 .willReturn(true);
 
@@ -74,7 +76,7 @@ class LineServiceTest {
     @Test
     @DisplayName("ID에 해당하는 노선 정보를 가져온다.")
     void findLineResponseById() {
-        Line line = new Line(1L, "1호선", new Sections(new LinkedList<>()));
+        Line line = new Line(1L, "1호선", new Fare(0), new Sections(new LinkedList<>()));
         given(lineRepository.findById(any()))
                 .willReturn(line);
 
@@ -82,6 +84,7 @@ class LineServiceTest {
 
         assertAll(
                 () -> assertThat(findLine.getId()).isEqualTo(findLine.getId()),
+                () -> assertThat(findLine.getExtraFare()).isEqualTo(findLine.getExtraFare()),
                 () -> assertThat(findLine.getName()).isEqualTo(findLine.getName())
         );
     }
@@ -89,8 +92,8 @@ class LineServiceTest {
     @Test
     @DisplayName("모든 노선 정보를 가져온다.")
     void findLineResponses() {
-        Line line1 = new Line(1L, "1호선", new Sections(new LinkedList<>()));
-        Line line2 = new Line(2L, "2호선", new Sections(new LinkedList<>()));
+        Line line1 = new Line(1L, "1호선", new Fare(0), new Sections(new LinkedList<>()));
+        Line line2 = new Line(2L, "2호선", new Fare(0), new Sections(new LinkedList<>()));
         given(lineRepository.findAll())
                 .willReturn(List.of(line1, line2));
 
@@ -110,7 +113,8 @@ class LineServiceTest {
     @Test
     @DisplayName("노선에 역을 최초로 생성한다.")
     void createSection() {
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Sections(new LinkedList<>())));
+        given(lineRepository.findById(any())).willReturn(
+                new Line(1L, "1호선", new Fare(0), new Sections(new LinkedList<>())));
         given(stationService.findByName("잠실역")).willReturn(new Station(1L, "잠실역"));
         given(stationService.findByName("강남역")).willReturn(new Station(2L, "강남역"));
 
@@ -125,7 +129,7 @@ class LineServiceTest {
         Sections sections = new Sections(
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
+        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Fare(0), sections));
         given(stationService.findByName("잠실역")).willReturn(new Station(3L, "잠실역"));
         given(stationService.findByName("강남역")).willReturn(new Station(4L, "강남역"));
 
@@ -142,7 +146,7 @@ class LineServiceTest {
         Sections sections = new Sections(
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
+        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Fare(0), sections));
         given(stationService.findByName("부산역")).willReturn(new Station(1L, "부산역"));
         given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
 
@@ -161,7 +165,7 @@ class LineServiceTest {
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)),
                         new Section(null, station2, station3, new Distance(5)))));
 
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
+        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Fare(0), sections));
         given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
         given(stationService.findByName("해운대역")).willReturn(new Station(4L, "해운대역"));
 
@@ -178,7 +182,7 @@ class LineServiceTest {
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)),
                         new Section(null, station2, station3, new Distance(5)))));
 
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
+        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Fare(0), sections));
         given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
         given(stationService.findByName("해운대역")).willReturn(new Station(4L, "해운대역"));
 
@@ -195,7 +199,7 @@ class LineServiceTest {
         Sections sections = new Sections(
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
+        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Fare(0), sections));
         given(stationService.findByName("부산역")).willReturn(new Station(1L, "부산역"));
         given(stationService.findByName("해운대역")).willReturn(new Station(3L, "해운대역"));
 
@@ -210,7 +214,7 @@ class LineServiceTest {
         Sections sections = new Sections(
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
+        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Fare(0), sections));
         given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
         given(stationService.findByName("해운대역")).willReturn(new Station(3L, "해운대역"));
 
@@ -225,7 +229,7 @@ class LineServiceTest {
         Sections sections = new Sections(
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
+        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Fare(0), sections));
         given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
 
         assertDoesNotThrow(() -> lineService.deleteSection(1L, new SectionDeleteRequest("서면역")));
@@ -239,7 +243,7 @@ class LineServiceTest {
         Sections sections = new Sections(
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
+        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Fare(0), sections));
         given(stationService.findByName("강남역")).willReturn(new Station(3L, "서면역"));
 
         assertThatThrownBy(() -> lineService.deleteSection(1L, new SectionDeleteRequest("강남역")))
@@ -257,7 +261,7 @@ class LineServiceTest {
                 new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)),
                         new Section(null, station2, station3, new Distance(5)))));
 
-        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
+        given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", new Fare(0), sections));
         given(stationService.findByName("서면역")).willReturn(new Station(2L, "서면역"));
 
         assertDoesNotThrow(() -> lineService.deleteSection(1L, new SectionDeleteRequest("서면역")));
