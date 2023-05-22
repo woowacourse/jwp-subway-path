@@ -1,6 +1,7 @@
 package subway.domain.path;
 
 import java.util.List;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -44,10 +45,13 @@ public class SubwayMap {
 
     public SubwayPath findShortestPath(final Station from, final Station to) {
         validateIsExistStations(from, to);
-
         final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraPath
                 = new DijkstraShortestPath<>(stationsGraph);
-        final List<Station> shortestPath = dijkstraPath.getPath(from, to).getVertexList();
+
+        final GraphPath<Station, DefaultWeightedEdge> dijkstraPathPath = dijkstraPath.getPath(from, to);
+
+        validateIsExistPath(from, to, dijkstraPathPath);
+        final List<Station> shortestPath = dijkstraPathPath.getVertexList();
         final int distance = (int) dijkstraPath.getPathWeight(from, to);
 
         return new SubwayPath(shortestPath, distance);
@@ -59,6 +63,18 @@ public class SubwayMap {
         }
         if (!stationsGraph.containsVertex(to)) {
             throw new IllegalStateException("존재하지 않는 역 입니다: " + to.getStationName());
+        }
+    }
+
+    private void validateIsExistPath(
+            final Station from,
+            final Station to,
+            final GraphPath<Station, DefaultWeightedEdge> dijkstraPathPath
+    ) {
+        if (dijkstraPathPath == null) {
+            throw new IllegalStateException(
+                    "연결 되지 않는 역 정보입니다: " + from.getStationName() + ", " + to.getStationName()
+            );
         }
     }
 

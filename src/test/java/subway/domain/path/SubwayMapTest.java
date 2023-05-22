@@ -47,6 +47,8 @@ class SubwayMapTest {
     void 출발점과_도착점을_기준으로_최단_경로_조회_테스트() {
         // 1호선: 강남    --(3)-- 역삼  --(2)-- 선릉
         // 2호선: 강남구청 --(5)-- 선정릉 --(8)-- 선릉
+        //
+        // 3호선: 사당    --(2)-- 이수  --(6)-- 동작
         final SubwayMap subwayMap = subwayMapFixture();
         final Station fromStation = new Station("역삼");
         final Station toStation = new Station("강남구청");
@@ -62,12 +64,29 @@ class SubwayMapTest {
     void 최단_경로_조회시_역이_존재하지_않으면_예외_발생() {
         // 1호선: 강남    --(3)-- 역삼  --(2)-- 선릉
         // 2호선: 강남구청 --(5)-- 선정릉 --(8)-- 선릉
+        //
+        // 3호선: 사당    --(2)-- 이수  --(6)-- 동작
         final SubwayMap subwayMap = subwayMapFixture();
         final Station fromStation = new Station("역삼");
         final Station toStation = new Station("존재하지않는역");
 
         assertThatThrownBy(() -> subwayMap.findShortestPath(fromStation, toStation))
                 .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void 최단_경로_조회시_역이_연결되어_있지_않으면_예외_발생() {
+        // 1호선: 강남    --(3)-- 역삼  --(2)-- 선릉
+        // 2호선: 강남구청 --(5)-- 선정릉 --(8)-- 선릉
+        //
+        // 3호선: 사당    --(2)-- 이수  --(6)-- 동작
+        final SubwayMap subwayMap = subwayMapFixture();
+        final Station fromStation = new Station("역삼");
+        final Station toStation = new Station("이수");
+
+        assertThatThrownBy(() -> subwayMap.findShortestPath(fromStation, toStation))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("연결 되지 않는 역 정보입니다");
     }
 
 
@@ -84,6 +103,12 @@ class SubwayMapTest {
         ));
         final Line lineB = new Line(sectionsB, new LineName("2호선"), new LineColor("청록색"));
 
-        return SubwayMap.from(List.of(lineA, lineB));
+        final Sections sectionsC = new Sections(List.of(
+                new Section(new Station("사당"), new Station("이수"), new StationDistance(2)),
+                new Section(new Station("이수"), new Station("동작"), new StationDistance(6))
+        ));
+        final Line lineC = new Line(sectionsC, new LineName("3호선"), new LineColor("하늘색"));
+
+        return SubwayMap.from(List.of(lineA, lineB, lineC));
     }
 }

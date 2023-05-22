@@ -10,7 +10,8 @@ public class DistanceProportionFarePolicy {
     public DistanceProportionFarePolicy(
             final int lowerBoundDistance,
             final int maxBoundDistance,
-            final int surchargeDistanceUnit) {
+            final int surchargeDistanceUnit
+    ) {
         this.lowerBoundDistance = lowerBoundDistance;
         this.maxBoundDistance = maxBoundDistance;
         this.surchargeDistanceUnit = surchargeDistanceUnit;
