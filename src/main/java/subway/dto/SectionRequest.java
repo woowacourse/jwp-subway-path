@@ -20,14 +20,14 @@ public class SectionRequest {
         this.distance = distance;
     }
 
-    public SectionRequest(final long lineId, final long downStation, final long upStation,
-                          final int distance) {
-        this.lineId = lineId;
-        this.newStationId = downStation;
-        this.baseStationId = upStation;
-        this.direction = null;
-        this.distance = distance;
-    }
+//    public SectionRequest(final long lineId, final long downStation, final long upStation,
+//                          final int distance) {
+//        this.lineId = lineId;
+//        this.newStationId = downStation;
+//        this.baseStationId = upStation;
+//        this.direction = null;
+//        this.distance = distance;
+//    }
 
     public long getLineId() {
         return this.lineId;

@@ -105,22 +105,22 @@ public class Line {
 
     public DeleteSectionStrategy readyToDelete(Station deletStation) {
         Optional<Section> downSection = sections.stream()
-                .filter(section ->section.hasUpStation(deletStation))
+                .filter(section -> section.hasUpStation(deletStation))
                 .findFirst();
 
         Optional<Section> upSection = sections.stream()
-                .filter(section ->section.hasDownStation(deletStation))
+                .filter(section -> section.hasDownStation(deletStation))
                 .findFirst();
 
         if (downSection.isEmpty() && upSection.isEmpty()) {
             throw new InvalidInputException(deletStation.getId() + "는 라인 아이디 " + id + "에 존재하지 않는 역 아이디입니다.");
         }
 
-        if(downSection.isEmpty()){
+        if (downSection.isEmpty()) {
             return new DeleteTerminalStrategy(upSection.get());
         }
 
-        if(upSection.isEmpty()){
+        if (upSection.isEmpty()) {
             return new DeleteTerminalStrategy(downSection.get());
         }
 
@@ -198,5 +198,13 @@ public class Line {
             }
         }
         return firstStation;
+    }
+
+    public Optional<Station> findStationById(long stationId) {
+        return sections.stream()
+                .map(section -> section.getUpOrDownStation(stationId))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 }
