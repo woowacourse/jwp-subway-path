@@ -1,11 +1,15 @@
 package subway.domain.fare;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class DistanceFareStrategy implements FareStrategy {
 
     private static final int BASE_FARE = 1250;
 
     @Override
     public int calculateFare(final int distance) {
+        System.out.println("asdf");
         int surcharge = 0;
         if (distance > 10) { // 10km 초과인 경우
             surcharge += Math.min((int) ((Math.floor((distance - 10 - 1) / 5.0) + 1) * 100), 800);

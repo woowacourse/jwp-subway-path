@@ -10,6 +10,7 @@ import subway.dao.StationDao;
 import subway.domain.LineRepository;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.fare.DistanceFareStrategy;
 import subway.domain.fare.FareCalculator;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
@@ -30,13 +31,11 @@ class PathServiceTest {
     @Mock
     private LineRepository lineRepository;
 
-    private FareCalculator fareCalculator;
-
     private PathService pathService;
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stationDao, lineRepository);
+        pathService = new PathService(stationDao, lineRepository, new FareCalculator(new DistanceFareStrategy()));
     }
 
     @DisplayName("요청된 역의 source와 destination에 맞는 최단 경로와 거리, 요금을 반환한다.")

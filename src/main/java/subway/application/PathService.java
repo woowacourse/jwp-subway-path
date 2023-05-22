@@ -6,7 +6,6 @@ import subway.domain.LineRepository;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.SubwayGraph;
-import subway.domain.fare.DistanceFareStrategy;
 import subway.domain.fare.FareCalculator;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
@@ -24,10 +23,10 @@ public class PathService {
     private final LineRepository lineRepository;
     private final FareCalculator fareCalculator;
 
-    public PathService(final StationDao stationDao, final LineRepository lineRepository) {
+    public PathService(final StationDao stationDao, final LineRepository lineRepository, final FareCalculator fareCalculator) {
         this.stationDao = stationDao;
         this.lineRepository = lineRepository;
-        this.fareCalculator = new FareCalculator(new DistanceFareStrategy());
+        this.fareCalculator = fareCalculator;
     }
 
     public ShortestPathResponse findShortestPath(final ShortestPathRequest shortestPathRequest) {
