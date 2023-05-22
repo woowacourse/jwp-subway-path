@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -33,8 +35,8 @@ public class PathFinder {
         return result.orElseThrow(() -> new IllegalArgumentException("노선에 등록되지 않은 역입니다.: " + station.getId()));
     }
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath() {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private ShortestPathAlgorithm<Station, DefaultWeightedEdge> getDijkstraShortestPath() {
+        final Graph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         sections.forEach(section -> {
             final Station upStation = section.getUpStation();
             final Station downStation = section.getDownStation();
