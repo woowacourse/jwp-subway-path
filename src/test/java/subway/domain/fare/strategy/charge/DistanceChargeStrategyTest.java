@@ -17,10 +17,10 @@ class DistanceChargeStrategyTest {
     void calculateTest() {
         DistanceChargeStrategy distanceFeeStrategy = new DistanceChargeStrategy();
         assertAll(
-            () -> assertThat(distanceFeeStrategy.calculate(new FareInfo(7, Set.of(new Line()), 25))).isEqualTo(1250),
-            () -> assertThat(distanceFeeStrategy.calculate(new FareInfo(12, Set.of(new Line()), 25))).isEqualTo(1350),
-            () -> assertThat(distanceFeeStrategy.calculate(new FareInfo(17, Set.of(new Line()), 25))).isEqualTo(1450),
-            () -> assertThat(distanceFeeStrategy.calculate(new FareInfo(67, Set.of(new Line()), 25))).isEqualTo(2350));
+            () -> assertThat(distanceFeeStrategy.calculate(new FareInfo(7, Set.of(new Line()), 25))).isEqualTo(0),
+            () -> assertThat(distanceFeeStrategy.calculate(new FareInfo(12, Set.of(new Line()), 25))).isEqualTo(100),
+            () -> assertThat(distanceFeeStrategy.calculate(new FareInfo(17, Set.of(new Line()), 25))).isEqualTo(200),
+            () -> assertThat(distanceFeeStrategy.calculate(new FareInfo(67, Set.of(new Line()), 25))).isEqualTo(1100));
     }
 
 }
