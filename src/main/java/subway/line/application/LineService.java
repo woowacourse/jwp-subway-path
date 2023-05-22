@@ -1,15 +1,17 @@
 package subway.line.application;
 
 import org.springframework.stereotype.Service;
-import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
 import subway.line.application.dto.LineUpdatingInfo;
+import subway.line.application.exception.SectionDeletingNotPossibleException;
+import subway.line.application.exception.SectionSavingNotPossibleException;
 import subway.line.application.strategy.sectionsaving.SectionSavingStrategy;
 import subway.line.application.strategy.stationdeleting.StationDeletingStrategy;
 import subway.line.domain.fare.Fare;
 import subway.line.domain.fare.application.SubwayFareMeter;
 import subway.line.domain.fare.application.faremeterpolicy.CustomerCondition;
 import subway.line.domain.navigation.application.NavigationService;
+import subway.line.domain.navigation.application.exception.NavigationNotFoundException;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
 
@@ -60,7 +62,7 @@ public class LineService {
                 return strategy.insert(line, previousStation, nextStation, distance);
             }
         }
-        throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
+        throw new SectionSavingNotPossibleException();
     }
 
     public void deleteStation(Line line, Station station) {
@@ -70,13 +72,13 @@ public class LineService {
                 return;
             }
         }
-        throw new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED);
+        throw new SectionDeletingNotPossibleException();
     }
 
     public List<Station> findShortestPath(Station stationA, Station stationB) {
         try {
             return navigationService.findShortestPath(stationA, stationB);
-        } catch (IllegalArgumentException e) {
+        } catch (NavigationNotFoundException e) {
             updateNavigation();
             return navigationService.findShortestPath(stationA, stationB);
         }
@@ -85,7 +87,7 @@ public class LineService {
     public Distance findShortestDistance(Station stationA, Station stationB) {
         try {
             return navigationService.findShortestDistance(stationA, stationB);
-        } catch (IllegalArgumentException e) {
+        } catch (NavigationNotFoundException e) {
             updateNavigation();
             return navigationService.findShortestDistance(stationA, stationB);
         }

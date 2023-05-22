@@ -1,5 +1,8 @@
 package subway.line;
 
+import subway.line.application.exception.InvalidSectionColorException;
+import subway.line.application.exception.InvalidLineNameException;
+import subway.line.application.exception.LineNotHavingSectionException;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.EmptyStation;
@@ -106,14 +109,14 @@ public class Line {
                         (sec.getPreviousStation().equals(stationA) && sec.getNextStation().equals(stationB))
                                 || (sec.getPreviousStation().equals(stationB) && sec.getNextStation().equals(stationA))
                 ).findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 노선 위에 존재하지 않는 구간입니다."));
+                .orElseThrow(LineNotHavingSectionException::new);
         return section.getDistance();
     }
 
     public void updateSection(Section section) {
         final var sectionToUpdate = sections.stream().filter(sec -> sec.getId().equals(section.getId()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("업데이트할 구간의 식별자가 잘못되었습니다."));
+                .orElseThrow(LineNotHavingSectionException::new);
         final var sectionIndex = this.sections.indexOf(sectionToUpdate);
         sections.set(sectionIndex, section);
     }
@@ -128,14 +131,14 @@ public class Line {
 
     public void changeName(String name) {
         if (name == null) {
-            throw new IllegalArgumentException();
+            throw new InvalidLineNameException();
         }
         this.name = name;
     }
 
     public void changeColor(String color) {
         if (color == null) {
-            throw new IllegalArgumentException();
+            throw new InvalidSectionColorException();
         }
         this.color = color;
     }

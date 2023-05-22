@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.common.exception.DataException;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.domain.EmptyDistance;
@@ -21,7 +22,6 @@ public class SectionDao {
     public static final String CURRENT_STATION_ID = "current_station_id";
     public static final String NEXT_STATION_ID = "next_station_id";
     public static final String DISTANCE = "distance";
-    public static final String ID = "id";
     private final SimpleJdbcInsert simpleJdbcInsert;
     private final JdbcTemplate jdbcTemplate;
 
@@ -93,7 +93,7 @@ public class SectionDao {
                     nextStation,
                     distance);
         } catch (SQLException e) {
-            throw new IllegalStateException(e);
+            throw new DataException();
         }
     }
 

@@ -1,6 +1,6 @@
 package subway.line;
 
-import subway.common.exception.ExceptionMessages;
+import subway.line.application.exception.NotRegisteredLineException;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
@@ -15,7 +15,7 @@ public class UnRegisteredLine extends Line {
 
     @Override
     public Long getId() {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
@@ -30,82 +30,82 @@ public class UnRegisteredLine extends Line {
 
     @Override
     public Station getHead() {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public List<Section> getSections() {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public Optional<Section> findSectionByPreviousStation(Station station) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public void addSections(List<Section> sections) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public void addSection(Section section) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public boolean hasSection() {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public Optional<Section> findSectionByNextStation(Station station) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public List<Station> findAllStationsOrderByUp() {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public Distance findDistanceBetween(Station stationA, Station stationB) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public void updateSection(Section section) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public void changeHead(Station station) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public void changeName(String name) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public void changeColor(String color) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public void clearSection() {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public int getStationsSize() {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override
     public void removeSection(Section section) {
-        throw new IllegalArgumentException(ExceptionMessages.NOT_REGISTERED_LINE);
+        throw new NotRegisteredLineException();
     }
 
     @Override

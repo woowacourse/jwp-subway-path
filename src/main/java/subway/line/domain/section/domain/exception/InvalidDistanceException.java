@@ -1,8 +1,6 @@
 package subway.line.domain.section.domain.exception;
 
-import subway.common.exception.InvalidUserInputException;
-
-public class InvalidDistanceException extends InvalidUserInputException {
+public class InvalidDistanceException extends RuntimeException {
     public InvalidDistanceException() {
         super();
     }

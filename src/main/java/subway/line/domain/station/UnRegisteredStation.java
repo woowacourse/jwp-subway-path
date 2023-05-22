@@ -1,9 +1,9 @@
 package subway.line.domain.station;
 
+import subway.line.application.exception.NotRegisteredLineException;
+import subway.line.domain.station.application.exception.NotRegisteredStationException;
+
 public class UnRegisteredStation extends Station {
-
-    public static final String NOT_REGISTERED_STATION = "식별자가 등록되지 않은 역입니다.";
-
     public UnRegisteredStation(String name) {
         super(null, name);
     }
@@ -15,7 +15,7 @@ public class UnRegisteredStation extends Station {
 
     @Override
     public Long getId() {
-        throw new IllegalArgumentException(NOT_REGISTERED_STATION);
+        throw new NotRegisteredStationException();
     }
 
     @Override

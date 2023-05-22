@@ -3,6 +3,7 @@ package subway.line.domain.navigation.application;
 import org.springframework.stereotype.Service;
 import subway.line.domain.navigation.Navigation;
 import subway.line.domain.navigation.SubwayGraph;
+import subway.line.domain.navigation.application.exception.NavigationNotFoundException;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
@@ -35,7 +36,7 @@ public class NavigationService {
 
     private static Navigation getNavigation() {
         if (navigationThreadLocal.get() == null) {
-            throw new IllegalArgumentException("네비게이션 정보가 업데이트되지 않았습니다.");
+            throw new NavigationNotFoundException();
         }
         return navigationThreadLocal.get();
     }

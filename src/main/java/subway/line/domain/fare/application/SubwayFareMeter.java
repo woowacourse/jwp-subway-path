@@ -2,6 +2,7 @@ package subway.line.domain.fare.application;
 
 import org.springframework.stereotype.Component;
 import subway.line.domain.fare.Fare;
+import subway.line.domain.fare.application.exception.CalculatingFareNotPossibleException;
 import subway.line.domain.fare.application.faremeterpolicy.CustomerCondition;
 import subway.line.domain.fare.application.faremeterpolicy.FareMeterPolicy;
 
@@ -21,6 +22,6 @@ public class SubwayFareMeter {
                 return fareMeterPolicy.calculateFare(customerCondition);
             }
         }
-        throw new IllegalArgumentException("요금을 계산할 수 없는 조건입니다.");
+        throw new CalculatingFareNotPossibleException();
     }
 }

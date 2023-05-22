@@ -1,8 +1,6 @@
 package subway.line.domain.section.application.exception;
 
-import subway.common.exception.InvalidUserInputException;
-
-public class StationNotRegisteredException extends InvalidUserInputException {
+public class StationNotRegisteredException extends RuntimeException {
     public StationNotRegisteredException() {
         super();
     }

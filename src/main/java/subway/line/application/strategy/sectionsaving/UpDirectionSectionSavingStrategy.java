@@ -4,6 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
+import subway.line.application.exception.WrongStrategyMappedException;
 import subway.line.domain.section.application.SectionService;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
@@ -27,7 +28,7 @@ public class UpDirectionSectionSavingStrategy implements SectionSavingStrategy {
         final var savedSection = sectionService.insert(line.getId(), previousStation, nextStation, distance);
 
         final var sectionToUpdate = line.findSectionByNextStation(nextStation)
-                .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
+                .orElseThrow(WrongStrategyMappedException::new);
 
         final var updatedSection = sectionToUpdate.change()
                 .nextStation(previousStation)

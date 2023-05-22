@@ -3,6 +3,7 @@ package subway.line.application.strategy.stationdeleting;
 import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
+import subway.line.application.exception.WrongStrategyMappedException;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.application.SectionService;
 import subway.line.domain.section.domain.EmptyDistance;
@@ -27,10 +28,10 @@ public class LowestStationDeletingStrategy implements StationDeletingStrategy {
     @Override
     public void deleteStation(Line line, Station station) {
         final var section = line.findSectionByPreviousStation(station)
-                .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
+                .orElseThrow(WrongStrategyMappedException::new);
 
         final var newLowestSection = line.findSectionByNextStation(station)
-                .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED))
+                .orElseThrow(WrongStrategyMappedException::new)
                 .change()
                 .nextStation(new EmptyStation())
                 .distance(new EmptyDistance())
