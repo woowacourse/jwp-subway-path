@@ -63,7 +63,7 @@ class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value()),
                 () -> assertThat(response.body().asString()).isEqualTo("해당 이름의 노선이 이미 존재합니다.")
         );
     }

@@ -96,7 +96,7 @@ class PathServiceTest {
     void 두_역_사이_경로가_존재하지_않는_경우_예외가_발생한다() {
         // expect
         assertThatThrownBy(() -> pathService.findPath(new PathDto("경기광주역", "수서역")))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("두 역 사이의 경로가 존재하지 않습니다");
     }
 

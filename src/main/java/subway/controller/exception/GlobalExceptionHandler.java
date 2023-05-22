@@ -1,7 +1,9 @@
 package subway.controller.exception;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -15,6 +17,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(final IllegalArgumentException error) {
         return ResponseEntity.badRequest().body(error.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(final IllegalStateException error) {
+        return ResponseEntity.badRequest().body(error.getMessage());
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(final NoSuchElementException error) {
+        return ResponseEntity.internalServerError().body(error.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<String> handleDuplicatedKeyException(final DuplicateKeyException error) {
+        return ResponseEntity.internalServerError().body(error.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

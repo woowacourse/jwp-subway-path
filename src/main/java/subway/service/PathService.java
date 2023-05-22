@@ -34,10 +34,10 @@ public class PathService {
                 .map(Line::getSections)
                 .collect(Collectors.toList());
 
-        final Navigation subwayNavigation = JgraphtNavigation.from(sections);
-        final List<Station> stations = subwayNavigation.getShortestPath(source, target);
+        final Navigation navigation = JgraphtNavigation.from(sections);
+        final List<Station> stations = navigation.getShortestPath(source, target);
 
-        final int distance = subwayNavigation.getDistance(source, target);
+        final int distance = navigation.getDistance(source, target);
         final FareCalculator fareCalculator = new SubwayFareCalculator();
 
         return PathResponse.from(fareCalculator.calculate(distance), distance, stations);

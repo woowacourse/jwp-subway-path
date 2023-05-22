@@ -63,7 +63,7 @@ public class JgraphtNavigation implements Navigation {
 
     private void validatePath(final GraphPath path) {
         if (path == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalStateException("두 역 사이의 경로가 존재하지 않습니다.");
         }
     }
 

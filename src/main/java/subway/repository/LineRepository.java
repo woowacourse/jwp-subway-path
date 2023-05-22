@@ -1,8 +1,10 @@
 package subway.repository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -35,13 +37,13 @@ public class LineRepository {
 
     private LineEntity findLineEntityByName(final String name) {
         return lineDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("해당 이름을 가진 노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("해당 이름을 가진 노선이 존재하지 않습니다."));
     }
 
     public Long registerLine(final Line line) {
         final Optional<LineEntity> lineEntity = lineDao.findByName(line.getName());
         if (lineEntity.isPresent()) {
-            throw new IllegalArgumentException("해당 이름의 노선이 이미 존재합니다.");
+            throw new DuplicateKeyException("해당 이름의 노선이 이미 존재합니다.");
         }
         return lineDao.insert(line.getName(), line.getColor());
     }
@@ -69,14 +71,14 @@ public class LineRepository {
 
     private Long findStationIdByName(final String name) {
         final StationEntity stationEntity = stationDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("해당 이름을 가진 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("해당 이름을 가진 역이 존재하지 않습니다."));
         return stationEntity.getId();
     }
 
     public Line findLineById(final Long id) {
         final List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
         final LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("노선 정보가 잘못되었습니다."));
+                .orElseThrow(() -> new NoSuchElementException("노선 정보가 잘못되었습니다."));
         return toLine(lineEntity, sectionEntities);
     }
 
@@ -94,7 +96,7 @@ public class LineRepository {
 
     private Station toStation(final Long stationId) {
         final StationEntity stationEntity = stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("역 정보가 잘못되었습니다."));
+                .orElseThrow(() -> new NoSuchElementException("역 정보가 잘못되었습니다."));
         return new Station(stationEntity.getName());
     }
 }

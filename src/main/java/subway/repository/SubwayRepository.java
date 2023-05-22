@@ -1,6 +1,7 @@
 package subway.repository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
@@ -48,7 +49,7 @@ public class SubwayRepository {
 
     private Station toStation(final Long stationId) {
         final StationEntity stationEntity = stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("역 정보가 잘못되었습니다."));
+                .orElseThrow(() -> new NoSuchElementException("역 정보가 잘못되었습니다."));
         return new Station(stationEntity.getName());
     }
 }

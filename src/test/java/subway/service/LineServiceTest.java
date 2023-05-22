@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Line;
 import subway.domain.Subway;
@@ -66,7 +68,7 @@ class LineServiceTest {
 
         // expect
         assertThatThrownBy(() -> lineService.register(new LineDto("8호선", "분홍색")))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(DuplicateKeyException.class)
                 .hasMessageContaining("해당 이름의 노선이 이미 존재합니다.");
     }
 
@@ -95,7 +97,7 @@ class LineServiceTest {
 
         // expect
         assertThatThrownBy(() -> lineService.read(100000L))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("노선 정보가 잘못되었습니다.");
     }
 
