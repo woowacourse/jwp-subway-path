@@ -1,5 +1,7 @@
 package subway.service.domain;
 
+import java.util.Objects;
+
 public class LineProperty {
 
     private Long id;
@@ -27,6 +29,19 @@ public class LineProperty {
 
     public String getColor() {
         return color;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LineProperty that = (LineProperty) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(color, that.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color);
     }
 
     @Override

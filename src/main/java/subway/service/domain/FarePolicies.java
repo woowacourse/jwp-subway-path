@@ -22,4 +22,11 @@ public class FarePolicies {
         return additionalFarePolicy;
     }
 
+    @Override
+    public String toString() {
+        return "FarePolicies{" +
+                "additionalFarePolicy=" + additionalFarePolicy +
+                '}';
+    }
+
 }

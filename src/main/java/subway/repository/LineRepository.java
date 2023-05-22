@@ -180,4 +180,8 @@ public class LineRepository {
         }
     }
 
+    public boolean existsFarePolicyByLineId(Long lineId) {
+        return !farePolicyDao.findById(lineId).isEmpty();
+    }
+
 }

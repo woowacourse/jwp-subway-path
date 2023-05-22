@@ -79,6 +79,7 @@ public class LineService {
     public ShortestPathResponse findShortestPath(PathRequest pathRequest) {
         Subway subway = new Subway(lineRepository.findAll());
         FarePolicies farePolicies = new FarePolicies(lineRepository.findAllFarePolicy());
+        System.out.println(farePolicies);
         Station source = stationRepository.findByName(pathRequest.getSourceStationName());
         Station destination = stationRepository.findByName(pathRequest.getDestinationStationName());
         Age age = Age.from(pathRequest.getPassengerAge());
@@ -99,6 +100,11 @@ public class LineService {
 
     public FarePolicyResponse saveFarePolicy(FarePolicyRequest farePolicyRequest) {
         Line line = lineRepository.findById(farePolicyRequest.getLineId());
+
+        if (lineRepository.existsFarePolicyByLineId(farePolicyRequest.getLineId())) {
+            throw new IllegalArgumentException("해당 노선에는 이미 요금 정책이 존재합니다.");
+        }
+
         FarePolicy farePolicy = new FarePolicy(line.getLineProperty(), farePolicyRequest.getAdditionalFare());
         FarePolicy responseFarePolicy = lineRepository.saveFarePolicy(farePolicy);
         return FarePolicyResponse.from(responseFarePolicy);

@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.FarePolicyEntity;
+import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -40,6 +41,11 @@ public class FarePolicyDao {
     public List<FarePolicyEntity> findAll() {
         String sql = "SELECT * FROM fare_policy";
         return jdbcTemplate.query(sql, farePolicyRowMapper);
+    }
+
+    public List<FarePolicyEntity> findById(Long id) {
+        String sql = "SELECT * FROM fare_policy WHERE line_id = ?";
+        return jdbcTemplate.query(sql, farePolicyRowMapper, id);
     }
 
 }

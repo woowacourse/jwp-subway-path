@@ -29,4 +29,13 @@ public class FarePolicy {
         return additionalFare;
     }
 
+    @Override
+    public String toString() {
+        return "FarePolicy{" +
+                "id=" + id +
+                ", lineProperty=" + lineProperty +
+                ", additionalFare=" + additionalFare +
+                '}';
+    }
+
 }
