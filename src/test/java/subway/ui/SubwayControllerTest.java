@@ -5,11 +5,9 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static subway.TestFixture.SHORTEST_PATH_IN_LINE_A_AND_B_STATION_A_TO_E;
 import static subway.TestFixture.STATION_A;
-import static subway.TestFixture.STATION_C;
 import static subway.TestFixture.STATION_E;
-
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,16 +21,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import subway.application.SubwayService;
 import subway.domain.Path;
-import subway.domain.Section;
 import subway.dto.PathResponse;
 
 @WebMvcTest(SubwayController.class)
 class SubwayControllerTest {
-
-    public static final List<Section> SHORTEST_PATH_IN_LINE_A_AND_B_STATION_A_TO_E = List.of(
-            new Section(STATION_A, STATION_C, 1),
-            new Section(STATION_C, STATION_E, 6)
-    );
 
     @Autowired
     private MockMvc mockMvc;

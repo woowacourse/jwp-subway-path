@@ -1,11 +1,13 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static subway.TestFixture.JAMSILNARU_ID;
+import static subway.TestFixture.JAMSILSAENAE_ID;
+import static subway.TestFixture.SHORTEST_PATH_STATIONS_IN_LINE_A_AND_B_STATION_A_TO_E;
 import static subway.TestFixture.STATION_A;
-import static subway.TestFixture.STATION_C;
 import static subway.TestFixture.STATION_E;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
@@ -20,10 +22,6 @@ import subway.domain.Station;
 import subway.dto.PathResponse;
 
 public class SubwayIntegrationTest extends IntegrationTest {
-
-    public static final List<Station> SHORTEST_PATH_STATIONS_IN_LINE_A_AND_B_STATION_A_TO_E = List.of(
-            STATION_A, STATION_C, STATION_E
-    );
 
     @DisplayName("최단거리를 조회한다")
     @Test
