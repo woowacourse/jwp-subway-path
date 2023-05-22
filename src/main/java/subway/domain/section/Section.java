@@ -4,6 +4,9 @@ import subway.domain.station.Station;
 
 import java.util.Objects;
 
+import static subway.domain.section.Direction.LEFT;
+import static subway.domain.section.Direction.RIGHT;
+
 public class Section {
 
     private final Long id;
@@ -30,14 +33,13 @@ public class Section {
     }
 
     public boolean contains(final Station station) {
-        return containsOnLeft(station) || containsOnRight(station);
+        return containsOn(station, LEFT) || containsOn(station, RIGHT);
     }
 
-    public boolean containsOnLeft(final Station station) {
-        return station.equals(from);
-    }
-
-    public boolean containsOnRight(final Station station) {
+    public boolean containsOn(final Station station, final Direction direction) {
+        if (direction == LEFT) {
+            return station.equals(from);
+        }
         return station.equals(to);
     }
 
@@ -45,12 +47,18 @@ public class Section {
         return this.distance.isLongerThan(distance);
     }
 
-    public Section changeLeft(Station station, int distance) {
-        return new Section(station, to, this.distance.subtract(distance));
+    public Section change(final Station station, final int distance, final Direction direction) {
+        if (direction == LEFT) {
+            return new Section(station, to, this.distance.subtract(distance));
+        }
+        return new Section(from, station, this.distance.subtract(distance));
     }
 
-    public Section changeRight(final Station station, final int distance) {
-        return new Section(from, station, this.distance.subtract(distance));
+    public Station getStationOn(final Direction direction) {
+        if (direction == LEFT) {
+            return from;
+        }
+        return to;
     }
 
     public Long getId() {

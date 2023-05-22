@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static subway.domain.section.Direction.LEFT;
+import static subway.domain.section.Direction.RIGHT;
 
 public class Sections {
 
@@ -56,17 +60,12 @@ public class Sections {
     }
 
     private boolean canInsertAtEnds(final Station from, final Station to) {
-        return canInsertAtRightEnd(from) || canInsertAtLeftEnd(to);
+        return canInsertAtEnd(from, RIGHT) || canInsertAtEnd(to, LEFT);
     }
 
-    private boolean canInsertAtRightEnd(final Station station) {
+    private boolean canInsertAtEnd(final Station station, final Direction direction) {
         return hasUniquely(station) && sections.stream()
-                .anyMatch(section -> section.containsOnRight(station));
-    }
-
-    private boolean canInsertAtLeftEnd(final Station station) {
-        return hasUniquely(station) && sections.stream()
-                .anyMatch(section -> section.containsOnLeft(station));
+                .anyMatch(section -> section.containsOn(station, direction));
     }
 
     private boolean hasUniquely(final Station station) {
@@ -76,23 +75,21 @@ public class Sections {
     }
 
     private void changeSection(final Station from, final Station to, final int distance) {
-        final Section changedSection = sections.stream()
-                .filter(section -> section.containsOnRight(to) && section.isInsertable(distance))
-                .findFirst()
-                .map(section -> {
-                    sections.remove(section);
-                    return section.changeRight(from, distance);
-                })
-                .orElseGet(() -> sections.stream()
-                        .filter(section -> section.containsOnLeft(from) && section.isInsertable(distance))
-                        .findFirst()
-                        .map(section -> {
-                            sections.remove(section);
-                            return section.changeLeft(to, distance);
-                        })
+        final Section changedSection = getChangedSection(from, to, distance, RIGHT)
+                .orElseGet(() -> getChangedSection(to, from, distance, LEFT)
                         .orElseThrow(() -> new IllegalArgumentException("기존 두 역 사이의 거리가 부족합니다.")));
 
         sections.add(changedSection);
+    }
+
+    private Optional<Section> getChangedSection(final Station from, final Station to, final int distance, final Direction direction) {
+        return sections.stream()
+                .filter(section -> section.containsOn(to, direction) && section.isInsertable(distance))
+                .findFirst()
+                .map(section -> {
+                    sections.remove(section);
+                    return section.change(from, distance, direction);
+                });
     }
 
     public Sections delete(final Station station) {
@@ -104,8 +101,8 @@ public class Sections {
 
         if (targetSections.size() == NEED_TO_ADJUST) {
             sections.add(new Section(
-                    getLeftStation(station, targetSections),
-                    getRightStation(station, targetSections),
+                    getAdjacentStation(station, targetSections, LEFT),
+                    getAdjacentStation(station, targetSections, RIGHT),
                     sumDistance(targetSections)
             ));
         }
@@ -119,19 +116,11 @@ public class Sections {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private Station getLeftStation(final Station station, final List<Section> sections) {
+    private Station getAdjacentStation(final Station station, final List<Section> sections, final Direction direction) {
         return sections.stream()
-                .filter(section -> section.containsOnRight(station))
+                .filter(section -> section.containsOn(station, direction.reverse()))
                 .findFirst()
-                .map(Section::getFrom)
-                .orElse(null);
-    }
-
-    private Station getRightStation(final Station station, final List<Section> sections) {
-        return sections.stream()
-                .filter(section -> section.containsOnLeft(station))
-                .findFirst()
-                .map(Section::getTo)
+                .map(section -> section.getStationOn(direction))
                 .orElse(null);
     }
 
@@ -167,7 +156,7 @@ public class Sections {
 
         Station station = start;
         while (orderedStations.size() <= sections.size()) {
-            final Station nextStation = getRightStation(station, sections);
+            final Station nextStation = getAdjacentStation(station, sections, RIGHT);
             if (nextStation == null) {
                 break;
             }
