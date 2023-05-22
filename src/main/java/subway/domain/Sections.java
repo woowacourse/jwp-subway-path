@@ -26,17 +26,11 @@ public class Sections {
         }
 
         List<Station> stations = new LinkedList<>(List.of(startStation.get()));
-        while (stations.size() <= sections.size()) {
-            sections.addAll(sort(stations));
+        while (stations.size() <= upStations.size()) {
+            stations.add(sort(stations));
         }
 
         return stations;
-    }
-
-    private static Optional<Station> findStartStation(List<Station> upStations, List<Station> downStations) {
-        return upStations.stream()
-                         .filter(station -> !downStations.contains(station))
-                         .findFirst();
     }
 
     private List<Station> getUpStations() {
@@ -51,11 +45,19 @@ public class Sections {
                        .collect(Collectors.toList());
     }
 
-    private List<Section> sort(List<Station> stations) {
+    private static Optional<Station> findStartStation(List<Station> upStations, List<Station> downStations) {
+        return upStations.stream()
+                         .filter(station -> !downStations.contains(station))
+                         .findFirst();
+    }
+
+    private Station sort(List<Station> stations) {
         return sections.stream()
                        .filter(section -> stations.get(stations.size() - 1)
                                                   .equals(section.getUpStation()))
-                       .collect(Collectors.toList());
+                       .map(Section::getDownStation)
+                       .findFirst()
+                       .orElseThrow(() -> new NotFoundException("다음 역을 찾을 수 없습니다."));
     }
 
     public void addSection(Section sectionToAdd) {
