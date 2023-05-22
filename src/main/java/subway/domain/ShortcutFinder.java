@@ -25,11 +25,11 @@ public class ShortcutFinder {
 
         final Station departureStation = graph.vertexSet().stream()
                 .filter(station -> station.getId().equals(departure))
-                .findFirst().orElseThrow(() -> new NoSuchStationException("해당 출발역이 없습니다."));
+                .findAny().orElseThrow(() -> new NoSuchStationException("해당 출발역이 없습니다."));
 
         final Station arrivalStation = graph.vertexSet().stream()
                 .filter(station -> station.getId().equals(arrival))
-                .findFirst().orElseThrow(() -> new NoSuchStationException("해당 도착역이 없습니다."));
+                .findAny().orElseThrow(() -> new NoSuchStationException("해당 도착역이 없습니다."));
 
         final List<Station> path = shortcut.getPath(departureStation, arrivalStation).getVertexList();
         double distance = shortcut.getPathWeight(departureStation, arrivalStation);
