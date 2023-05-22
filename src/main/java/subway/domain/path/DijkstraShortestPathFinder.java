@@ -10,6 +10,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.domain.Station;
 import subway.domain.section.Section;
+import subway.exception.CanNotFindPathException;
 
 @Component
 public class DijkstraShortestPathFinder implements ShortestPathFinder {
@@ -24,6 +25,9 @@ public class DijkstraShortestPathFinder implements ShortestPathFinder {
                 = new DijkstraShortestPath<>(graph);
 
         final GraphPath<Station, Section> graphPath = shortestPath.getPath(startStation, endStation);
+        if (graphPath == null) {
+            throw new CanNotFindPathException();
+        }
         final List<Section> sectionList = graphPath.getEdgeList();
         return new Path(graphPath.getVertexList(), sectionList);
     }
