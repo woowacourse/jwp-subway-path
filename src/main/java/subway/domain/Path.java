@@ -9,6 +9,11 @@ import subway.exception.ErrorCode;
 import subway.exception.NoSuchPath;
 
 public class Path {
+    public static final int DEFAULT_FARE = 1250;
+    public static final int UNIT_OVER_TEN = 5;
+    public static final int UNIT_OVER_FIFTY = 8;
+    public static final int ADD_FARE = 100;
+
     private final WeightedMultigraph<String, DefaultWeightedEdge> graph;
 
     private Path(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
@@ -44,9 +49,24 @@ public class Path {
     public int getDijkstraShortestPathDistance(String sourceStation, String targetStation) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<String, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        if(path == null) {
+        if (path == null) {
             throw new NoSuchPath(ErrorCode.NO_SUCH_PATH);
         }
         return (int) path.getWeight();
+    }
+
+    public int calculateFare(int distance) {
+        int fare = DEFAULT_FARE;
+        fare += (calculateOverFare(distance - 10, UNIT_OVER_TEN) - calculateOverFare(distance - 50, UNIT_OVER_TEN));
+        fare += calculateOverFare(distance - 50, UNIT_OVER_FIFTY);
+
+        return fare;
+    }
+
+    private int calculateOverFare(int distance, int unit) {
+        if (distance <= 0) {
+            return 0;
+        }
+        return (int) ((Math.ceil((distance - 1) / unit) + 1) * ADD_FARE);
     }
 }

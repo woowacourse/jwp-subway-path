@@ -54,6 +54,8 @@ public class PathService {
         int shortestPathDistance = path.getDijkstraShortestPathDistance(pathRequest.getSourceStation(),
                 pathRequest.getTargetStation());
 
-        return new PathResponse(shortestPath, shortestPathDistance);
+        int fare = path.calculateFare(shortestPathDistance);
+
+        return new PathResponse(shortestPath, shortestPathDistance, fare);
     }
 }
