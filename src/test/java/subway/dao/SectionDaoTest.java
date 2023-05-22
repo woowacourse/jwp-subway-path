@@ -85,6 +85,14 @@ class SectionDaoTest {
     @Test
     void LineId로_구간을_조회한다() {
         // when
+        List<SectionStationResultMap> resultMaps = sectionDao.findAll();
+        // then
+        assertThat(resultMaps).hasSize(3);
+    }
+
+    @Test
+    void 구간을_모두_조회한다() {
+        // when
         List<SectionStationResultMap> resultMaps = sectionDao.findAllByLineId(1L);
         // then
         assertThat(resultMaps).hasSize(2);
