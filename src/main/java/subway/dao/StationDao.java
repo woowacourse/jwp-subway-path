@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
@@ -13,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
-@Component
+@Repository
 public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
