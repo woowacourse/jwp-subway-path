@@ -20,7 +20,7 @@ class NavigationTest {
         final Section firstSection = new Section("잠실역", "석촌역", 2);
         final Section secondSection = new Section("석촌역", "송파역", 2);
         final Section thirdSection = new Section("송파역", "가락시장역", 10);
-        final JgraphtNavigation navigation = JgraphtNavigation.from(List.of(
+        final Navigation navigation = JgraphtNavigation.from(List.of(
                 new Sections(List.of(firstSection, secondSection, thirdSection)))
         );
 
@@ -34,7 +34,7 @@ class NavigationTest {
     @Test
     void 출발역이_노선에_존재하지_않을_경우_예외가_발생한다() {
         // given
-        final JgraphtNavigation navigation = JgraphtNavigation.from(Collections.emptyList());
+        final Navigation navigation = JgraphtNavigation.from(Collections.emptyList());
 
         // expect
         assertThatThrownBy(() -> navigation.getShortestPath(new Station("잠실역"), new Station("석촌역")))
@@ -46,7 +46,7 @@ class NavigationTest {
     void 도착역이_노선에서_존재하지_않는_경우_예외가_발생한다() {
         // given
         final Section sections = new Section("잠실역", "석촌역", 2);
-        final JgraphtNavigation navigation = JgraphtNavigation.from(List.of(
+        final Navigation navigation = JgraphtNavigation.from(List.of(
                 new Sections(List.of(sections)))
         );
 
@@ -62,7 +62,7 @@ class NavigationTest {
         final Section firstSection = new Section("잠실역", "석촌역", 2);
         final Section secondSection = new Section("석촌역", "송파역", 2);
         final Section thirdSection = new Section("송파역", "가락시장역", 10);
-        final JgraphtNavigation navigation = JgraphtNavigation.from(List.of(
+        final Navigation navigation = JgraphtNavigation.from(List.of(
                 new Sections(List.of(firstSection, secondSection, thirdSection)))
         );
 
