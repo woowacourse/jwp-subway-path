@@ -54,7 +54,7 @@ class RouteControllerTest {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(routeFindingRequest)
-                .when().get("/path")
+                .when().get("/routes")
                 .then().log().all()
                 .extract();
 

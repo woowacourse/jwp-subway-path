@@ -10,7 +10,7 @@ import subway.service.dto.request.RouteFindingRequest;
 import subway.service.dto.response.RouteFindingResponse;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/routes")
 public class RouteController {
 
     private final RouteService routeService;
