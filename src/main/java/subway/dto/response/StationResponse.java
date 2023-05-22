@@ -1,23 +1,19 @@
 package subway.dto.response;
 
-import subway.domain.core.Station;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import subway.domain.subway.Station;
 
 public class StationResponse {
+
 	private final long id;
 	private final String name;
 
-	public StationResponse(final long id, final String name) {
+	private StationResponse(final long id, final String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public static List<StationResponse> of(List<Station> stations) {
-		return stations.stream()
-			.map(station -> new StationResponse(station.getId(), station.getName()))
-			.collect(Collectors.toList());
+	public static StationResponse from(final Station station) {
+		return new StationResponse(station.getId(), station.getName());
 	}
 
 	public long getId() {

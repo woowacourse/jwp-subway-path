@@ -1,5 +1,7 @@
 package subway.dao;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,4 +40,10 @@ public class StationDao {
 		SqlParameterSource params = new BeanPropertySqlParameterSource(station);
 		return insertAction.executeAndReturnKey(params).longValue();
 	}
+
+	public List<StationEntity> findAll() {
+		String sql = "SELECT stationId, name FROM station";
+		return jdbcTemplate.query(sql, rowMapper);
+	}
+
 }
