@@ -30,6 +30,18 @@ public class PathIntegrationTest extends IntegrationTest {
 
     @Test
     void 최단경로를_조회한다() {
+        /*
+         *         신사 ------------- 논현
+         *          |                 |
+         *         잠원                |
+         *          |                 |
+         *       고속터미널 --- 사평 --- 신논현
+         *          |               /
+         *          |             /
+         *          |           /
+         *          |         /
+         * 서초 --- 교대 --- 강남 --- 역삼 --- 선릉
+         */
         // given
         final ExtractableResponse<Response> createResponse1 = 노선_생성_요청(new LineCreateRequest("2호선", "서초역", "교대역", 7));
         Long lineId1 = Long.parseLong(createResponse1.header("Location").split("/")[2]);
