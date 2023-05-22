@@ -1,11 +1,20 @@
 package subway.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import subway.dto.request.LineCreateRequest;
 import subway.dto.request.LineUpdateRequest;
 import subway.dto.response.LinesResponse;
@@ -13,22 +22,11 @@ import subway.entity.LineEntity;
 import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static subway.fixture.LineEntityFixture.createLineEntity;
-import static subway.fixture.LineEntityFixture.createLineEntity2;
-
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
 
+	private static final LineEntity LINE_TWO = new LineEntity(1L, "2호선");
+	private static final LineEntity LINE_SINBUNDANG = new LineEntity(2L, "신분당선");
 	@InjectMocks
 	private LineService lineService;
 
@@ -53,7 +51,7 @@ class LineServiceTest {
 	@DisplayName("전체 노선 조회 서비스 테스트")
 	void findAllLines() {
 		// given
-		List<LineEntity> lineEntities = List.of(createLineEntity(), createLineEntity2());
+		List<LineEntity> lineEntities = List.of(LINE_TWO, LINE_SINBUNDANG);
 		when(lineRepository.findAll()).thenReturn(lineEntities);
 
 		// when
@@ -74,7 +72,7 @@ class LineServiceTest {
 		Long id = 1L;
 		LineUpdateRequest updateRequest = new LineUpdateRequest("2호선");
 
-		LineEntity lineEntity = createLineEntity();
+		LineEntity lineEntity = LINE_TWO;
 		given(lineRepository.findById(id)).willReturn(Optional.of(lineEntity));
 
 		// when
