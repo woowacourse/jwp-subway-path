@@ -93,12 +93,15 @@ class RouteQueryServiceTest {
         @Test
         void 성공() {
             // given
-            Line line = new Line("이호선", "GREEN", 0);
+            Section section1 = new Section(source, 강남역.STATION, 2);
+            Section section2 = new Section(강남역.STATION, 삼성역.STATION, 2);
+            Section section3 = new Section(삼성역.STATION, target, 6);
+            Line line = new Line(1L, "이호선", "GREEN", 0, List.of(section1, section2, section3));
             List<Line> lines = List.of(line);
             Route route = new Route(List.of(
-                    new RouteSection(line, new Section(source, 강남역.STATION, 2)),
-                    new RouteSection(line, new Section(강남역.STATION, 삼성역.STATION, 2)),
-                    new RouteSection(line, new Section(삼성역.STATION, target, 6))
+                    new RouteSection(line, section1),
+                    new RouteSection(line, section2),
+                    new RouteSection(line, section3)
             ));
             given(loadLinePort.findAll())
                     .willReturn(lines);

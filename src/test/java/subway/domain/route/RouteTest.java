@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import subway.common.exception.SubwayIllegalArgumentException;
 import subway.domain.Line;
+import subway.domain.Section;
 import subway.domain.Station;
 import subway.fixture.LineFixture.삼호선;
 import subway.fixture.LineFixture.이호선;
@@ -50,9 +51,13 @@ public class RouteTest {
     @Test
     void 경로가_연속되지_않으면_예외() {
         // given
+        Section section1 = 이호선_역삼_삼성_3.SECTION;
+        Section section2 = 이호선_잠실_건대_1.SECTION;
+        Line line = new Line(1L, "2호선", "GREEN", 0, List.of(section1, section2));
+
         List<RouteSection> routeSections = List.of(
-                new RouteSection(이호선.LINE, 이호선_역삼_삼성_3.SECTION),
-                new RouteSection(이호선.LINE, 이호선_잠실_건대_1.SECTION)
+                new RouteSection(line, section1),
+                new RouteSection(line, section2)
         );
 
         // when then
@@ -63,7 +68,12 @@ public class RouteTest {
 
     @Test
     void 경로_생성() {
-        List<RouteSection> routeSections = List.of(new RouteSection(이호선.LINE, 이호선_역삼_삼성_3.SECTION));
+        Section section1 = 이호선_역삼_삼성_3.SECTION;
+        Line line1 = new Line(1L, "2호선", "GREEN", 0, List.of(section1));
+
+        List<RouteSection> routeSections = List.of(
+                new RouteSection(line1, section1)
+        );
 
         // when then
         assertThatNoException().isThrownBy(() -> new Route(routeSections));
@@ -72,10 +82,15 @@ public class RouteTest {
     @Test
     void 역_경로_조회() {
         // given
+        Section section1 = 이호선_역삼_삼성_3.SECTION;
+        Section section2 = 이호선_삼성_잠실_2.SECTION;
+        Section section3 = 이호선_잠실_건대_1.SECTION;
+        Line line = new Line(1L, "2호선", "GREEN", 0, List.of(section1, section2, section3));
+
         List<RouteSection> routeSections = List.of(
-                new RouteSection(이호선.LINE, 이호선_역삼_삼성_3.SECTION),
-                new RouteSection(이호선.LINE, 이호선_삼성_잠실_2.SECTION),
-                new RouteSection(이호선.LINE, 이호선_잠실_건대_1.SECTION)
+                new RouteSection(line, section1),
+                new RouteSection(line, section2),
+                new RouteSection(line, section3)
         );
         Route route = new Route(routeSections);
 
@@ -89,10 +104,16 @@ public class RouteTest {
     @Test
     void 지나온_노선_조회() {
         // given
+        Section section1 = 이호선_역삼_삼성_3.SECTION;
+        Section section2 = 이호선_삼성_잠실_2.SECTION;
+        Section section3 = 삼호선_잠실_고터_2.SECTION;
+        Line line1 = new Line(1L, "2호선", "GREEN", 0, List.of(section1, section2));
+        Line line2 = new Line(2L, "3호선", "ORANGE", 0, List.of(section3));
+
         List<RouteSection> routeSections = List.of(
-                new RouteSection(이호선.LINE, 이호선_역삼_삼성_3.SECTION),
-                new RouteSection(이호선.LINE, 이호선_삼성_잠실_2.SECTION),
-                new RouteSection(삼호선.LINE, 삼호선_잠실_고터_2.SECTION)
+                new RouteSection(line1, section1),
+                new RouteSection(line1, section2),
+                new RouteSection(line2, section3)
         );
         Route route = new Route(routeSections);
 
@@ -106,10 +127,16 @@ public class RouteTest {
     @Test
     void 총_비용_조회() {
         // given
+        Section section1 = 이호선_역삼_삼성_3.SECTION;
+        Section section2 = 이호선_삼성_잠실_2.SECTION;
+        Section section3 = 삼호선_잠실_고터_2.SECTION;
+        Line line1 = new Line(1L, "2호선", "GREEN", 0, List.of(section1, section2));
+        Line line2 = new Line(2L, "3호선", "ORANGE", 0, List.of(section3));
+
         List<RouteSection> routeSections = List.of(
-                new RouteSection(이호선.LINE, 이호선_역삼_삼성_3.SECTION),
-                new RouteSection(이호선.LINE, 이호선_삼성_잠실_2.SECTION),
-                new RouteSection(삼호선.LINE, 삼호선_잠실_고터_2.SECTION)
+                new RouteSection(line1, section1),
+                new RouteSection(line1, section2),
+                new RouteSection(line2, section3)
         );
         Route route = new Route(routeSections);
 

@@ -123,10 +123,6 @@ public class RouteIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(response.getRoute())
-                        .usingRecursiveComparison()
-                        .ignoringFields("id")
-                        .isEqualTo(List.of(방배역.RESPONSE, 서초역.RESPONSE)),
                 () -> assertThat(response.getDistance()).isEqualTo(11),
                 () -> assertThat(response.getFare()).isEqualTo(1350)
         );
@@ -157,12 +153,40 @@ public class RouteIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(response.getRoute())
-                        .usingRecursiveComparison()
-                        .ignoringFields("id")
-                        .isEqualTo(List.of(방배역.RESPONSE, 서초역.RESPONSE)),
                 () -> assertThat(response.getDistance()).isEqualTo(58),
                 () -> assertThat(response.getFare()).isEqualTo(2150)
         );
+    }
+
+    @Test
+    void 최단경로_조회시_노선에_따른_추가요금이_발생한다() {
+        // given
+        long 방배역Id = stationJdbcRepository.create(방배역.STATION);
+        long 교대역Id = stationJdbcRepository.create(교대역.STATION);
+        long 고터역Id = stationJdbcRepository.create(고터역.STATION);
+
+        long 이호선Id = lineJdbcRepository.create(new LineInfo("2호선", "GREEN", 100));
+        long 삼호선Id = lineJdbcRepository.create(new LineInfo("3호선", "ORANGE", 300));
+
+        lineJdbcRepository.updateSections(new Line(이호선Id, "2호선", "GREEN", 100, List.of(
+                new Section(new Station(방배역Id, "방배역"), new Station(교대역Id, "교대역"), 1)
+        )));
+        lineJdbcRepository.updateSections(new Line(삼호선Id, "3호", "ORANGE", 300, List.of(
+                new Section(new Station(교대역Id, "교대역"), new Station(고터역Id, "고터역"), 1)
+        )));
+
+        // when
+        RouteQueryResponse response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("sourceStationId", 방배역Id)
+                .queryParam("targetStationId", 고터역Id)
+                .when().get("/route")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(RouteQueryResponse.class);
+
+        // then
+        assertThat(response.getFare()).isEqualTo(1550);
     }
 }

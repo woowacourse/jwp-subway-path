@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import subway.domain.fare.BaseFarePolicy;
 import subway.domain.fare.DistanceAdditionalFarePolicy;
 import subway.domain.fare.FarePolicy;
+import subway.domain.fare.LineSurchargePolicy;
 import subway.domain.fare.SumFarePolicy;
 
 @Configuration
@@ -15,6 +16,7 @@ public class FarePolicyConfiguration {
     public FarePolicy farePolicy() {
         return new SumFarePolicy(List.of(
                 new BaseFarePolicy(),
+                new LineSurchargePolicy(),
                 new DistanceAdditionalFarePolicy()
         ));
     }

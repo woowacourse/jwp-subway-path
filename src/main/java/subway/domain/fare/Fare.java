@@ -2,7 +2,7 @@ package subway.domain.fare;
 
 import subway.common.exception.SubwayIllegalArgumentException;
 
-public class Fare {
+public class Fare implements Comparable<Fare> {
 
     private final int value;
 
@@ -42,6 +42,11 @@ public class Fare {
     @Override
     public int hashCode() {
         return value;
+    }
+
+    @Override
+    public int compareTo(final Fare o) {
+        return Integer.compare(value, o.value);
     }
 
     public int getValue() {
