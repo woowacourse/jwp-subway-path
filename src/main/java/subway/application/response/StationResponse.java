@@ -1,4 +1,4 @@
-package subway.ui.response;
+package subway.application.response;
 
 import subway.domain.station.Station;
 

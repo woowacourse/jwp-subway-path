@@ -5,11 +5,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import subway.application.request.SectionRequest;
+import subway.application.request.StationRequest;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.integration.IntegrationTest;
-import subway.ui.request.SectionRequest;
-import subway.ui.request.StationRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;

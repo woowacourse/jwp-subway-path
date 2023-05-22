@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.application.LineService;
-import subway.ui.request.PathRequest;
-import subway.ui.request.SectionRequest;
+import subway.application.request.PathRequest;
+import subway.application.request.SectionRequest;
 
 import static subway.integration.IntegrationFixture.*;
 

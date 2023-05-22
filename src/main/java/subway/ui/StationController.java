@@ -3,8 +3,8 @@ package subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.StationService;
-import subway.ui.request.StationRequest;
-import subway.ui.response.StationResponse;
+import subway.application.request.StationRequest;
+import subway.application.response.StationResponse;
 
 import javax.validation.Valid;
 import java.net.URI;

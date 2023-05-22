@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.ui.response.StationResponse;
+import subway.application.response.StationResponse;
 
 import java.util.HashMap;
 import java.util.List;

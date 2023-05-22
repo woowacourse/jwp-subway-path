@@ -1,6 +1,7 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
+import subway.application.request.LineRequest;
 import subway.domain.line.Line;
 import subway.domain.line.LineName;
 import subway.domain.section.Section;
@@ -12,7 +13,6 @@ import subway.persistence.dao.StationDao;
 import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
-import subway.ui.request.LineRequest;
 
 import java.util.LinkedList;
 import java.util.List;

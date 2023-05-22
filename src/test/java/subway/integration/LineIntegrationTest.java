@@ -9,11 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.ui.request.LineRequest;
-import subway.ui.request.SectionRequest;
-import subway.ui.request.StationRequest;
-import subway.ui.response.LineResponse;
-import subway.ui.response.StationResponse;
+import subway.application.request.LineRequest;
+import subway.application.request.SectionRequest;
+import subway.application.request.StationRequest;
+import subway.application.response.LineResponse;
+import subway.application.response.StationResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;

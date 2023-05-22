@@ -1,4 +1,4 @@
-package subway.ui.request;
+package subway.application.request;
 
 
 import javax.validation.constraints.NotBlank;

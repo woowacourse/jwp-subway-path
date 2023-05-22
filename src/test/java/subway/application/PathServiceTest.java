@@ -4,11 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import subway.application.request.PathRequest;
+import subway.application.request.SectionRequest;
+import subway.application.response.PathResponse;
+import subway.application.response.StationResponse;
 import subway.integration.IntegrationTest;
-import subway.ui.request.PathRequest;
-import subway.ui.request.SectionRequest;
-import subway.ui.response.PathResponse;
-import subway.ui.response.StationResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

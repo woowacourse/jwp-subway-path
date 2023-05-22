@@ -1,10 +1,10 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.application.request.StationRequest;
+import subway.application.response.StationResponse;
 import subway.domain.station.Station;
 import subway.persistence.repository.StationRepository;
-import subway.ui.request.StationRequest;
-import subway.ui.response.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

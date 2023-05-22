@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import subway.application.PathService;
-import subway.ui.request.PathRequest;
-import subway.ui.response.PathResponse;
+import subway.application.request.PathRequest;
+import subway.application.response.PathResponse;
 
 import javax.validation.Valid;
 
