@@ -4,10 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.dto.LineStationRequest;
 import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionEntity;
@@ -36,7 +33,7 @@ public class SectionRepository {
         Station preStation = findStationById(lineStationRequest.getPreStationId());
         Station station = findStationById(lineStationRequest.getStationId());
 
-        return new Section(line, preStation, station, lineStationRequest.getDistance());
+        return new Section(line, preStation, station, new Distance(lineStationRequest.getDistance()));
     }
 
     public Sections getCurrentLineSections(Long lineId) {
@@ -49,7 +46,7 @@ public class SectionRepository {
         List<Section> sections = new ArrayList<>();
         for (SectionWithStationNameEntity entity : sectionEntities) {
             sections.add(new Section(line, new Station(entity.getPreStationName()),
-                    new Station(entity.getStationName()), entity.getDistance()));
+                    new Station(entity.getStationName()), new Distance(entity.getDistance())));
         }
         return new Sections(sections);
     }
@@ -63,7 +60,7 @@ public class SectionRepository {
     public void updateSectionAfterAddition(Long lineId, Section section, LineStationRequest lineStationRequest) {
         Long preStationId = findStationIdByStationName(section.getPreStation().getName());
         Long postStationId = findStationIdByStationName(section.getStation().getName());
-        SectionEntity sectionEntity = new SectionEntity(lineId, preStationId, postStationId, section.getDistance());
+        SectionEntity sectionEntity = new SectionEntity(lineId, preStationId, postStationId, (long) section.getDistance().getDistance());
         if (preStationId.equals(lineStationRequest.getStationId())) {
             sectionDao.updatePreStation(sectionEntity);
         }
@@ -88,7 +85,7 @@ public class SectionRepository {
         Long preStationId = findStationIdByStationName(section.getPreStation().getName());
         Long postStationId = findStationIdByStationName(section.getStation().getName());
         sectionDao.save(new SectionEntity(lineId,
-                preStationId, postStationId, section.getDistance()));
+                preStationId, postStationId, (long) section.getDistance().getDistance()));
     }
 
     private Line findLineById(Long lineId) {

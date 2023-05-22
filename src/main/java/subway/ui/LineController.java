@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.service.LineService;
+import subway.service.line.LineService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/lines")
 public class LineController {
-
     private final LineService lineService;
 
     public LineController(LineService lineService) {

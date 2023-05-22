@@ -10,14 +10,13 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static subway.fixture.LineFixture.LINE;
+import static subway.fixture.LineFixture.LINE_1;
 import static subway.fixture.SectionFixture.SECTION_1;
 import static subway.fixture.SectionFixture.SECTION_2;
 import static subway.fixture.StationFixture.*;
 
 class SectionsAddTest {
     Sections sections;
-
 
     @BeforeEach
     void beforeEach() {
@@ -29,7 +28,7 @@ class SectionsAddTest {
     void addFirst() {
         //given
         Sections sections = new Sections(new ArrayList<>());
-        Section newSection = new Section(LINE, STATION_1, STATION_2, 10L);
+        Section newSection = new Section(LINE_1, STATION_1, STATION_2, new Distance(10));
 
         //when
         sections.add(newSection);
@@ -43,7 +42,7 @@ class SectionsAddTest {
     void addUpEnd() {
         //given
         Station station = new Station("효창공원앞");
-        Section newSection = new Section(LINE, station, STATION_1, 10L);
+        Section newSection = new Section(LINE_1, station, STATION_1, new Distance(10));
 
         //when
         sections.add(newSection);
@@ -58,7 +57,7 @@ class SectionsAddTest {
     void addDownEnd() {
         //given
         Station station = new Station("한남");
-        Section newSection = new Section(LINE, STATION_3, station, 10L);
+        Section newSection = new Section(LINE_1, STATION_3, station, new Distance(10));
 
         //when
         sections.add(newSection);
@@ -73,10 +72,10 @@ class SectionsAddTest {
     void addInside_PreStationExists() {
         //given
         Station station = new Station("옥수");
-        Section newSection = new Section(LINE, STATION_1, station, 5L);
+        Section newSection = new Section(LINE_1, STATION_1, station, new Distance(3));
 
         //when, then
-        assertThat(sections.add(newSection)).isEqualTo(new Section(LINE, station, STATION_2, 5L));
+        assertThat(sections.add(newSection)).isEqualTo(new Section(LINE_1, station, STATION_2, new Distance(2)));
         assertThat(sections.getSections().contains(newSection)).isTrue();
     }
 
@@ -85,10 +84,10 @@ class SectionsAddTest {
     void addInside_StationExists() {
         //given
         Station station = new Station("공덕");
-        Section newSection = new Section(LINE, station, STATION_3, 5L);
+        Section newSection = new Section(LINE_1, station, STATION_3, new Distance(5));
 
         //when, then
-        assertThat(sections.add(newSection)).isEqualTo(new Section(LINE, STATION_2, station, 5L));
+        assertThat(sections.add(newSection)).isEqualTo(new Section(LINE_1, STATION_2, station, new Distance(3)));
         assertThat(sections.getSections().contains(newSection)).isTrue();
     }
 
@@ -98,7 +97,7 @@ class SectionsAddTest {
     void addInsideWithInvalidDistance() {
         //given
         Station station = new Station("옥수");
-        Section newSection = new Section(LINE, STATION_1, station, 10L);
+        Section newSection = new Section(LINE_1, STATION_1, station, new Distance(10));
 
         //when, then
         assertThatThrownBy(() -> sections.add(newSection))

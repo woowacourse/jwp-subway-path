@@ -41,6 +41,14 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, id);
     }
 
+    public List<SectionWithStationNameEntity> findAll() {
+        String sql = "SELECT line_id, s1.name AS pre_station_name, s2.name AS station_name, se.distance\n" +
+                "FROM section se\n" +
+                "JOIN station s1 ON se.pre_station_id = s1.id\n" +
+                "JOIN station s2 ON se.station_id = s2.id\n";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public Long save(SectionEntity section) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(section);
         return insertAction.executeAndReturnKey(params).longValue();

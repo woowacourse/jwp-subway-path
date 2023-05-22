@@ -7,16 +7,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Station;
 import subway.dto.LineResponse;
+import subway.dto.PathResponse;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@Sql(scripts = {"classpath:truncate.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class IntegrationTest {
     @LocalServerPort
     int port;
@@ -117,5 +120,15 @@ class IntegrationTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    protected PathResponse getShortestPath(Long departureStationId, Long arrivalStationId) {
+        return given().
+                when().
+                get("/path?departure={departure}&arrival={arrival}", departureStationId, arrivalStationId).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(PathResponse.class);
     }
 }

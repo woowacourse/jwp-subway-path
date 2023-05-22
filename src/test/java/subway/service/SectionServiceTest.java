@@ -6,11 +6,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.dto.LineStationRequest;
 import subway.dto.LineStationResponse;
 import subway.persistence.repository.SectionRepository;
+import subway.service.section.SectionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static subway.fixture.LineFixture.LINE;
+import static subway.fixture.LineFixture.LINE_1;
 import static subway.fixture.SectionFixture.*;
 import static subway.fixture.StationFixture.*;
 
@@ -35,7 +37,7 @@ class SectionServiceTest {
         //given
         Long lineId = 1L;
         LineStationRequest lineStationRequest = new LineStationRequest(2L, 3L, 10L);
-        when(sectionRepository.toSection(lineId, lineStationRequest)).thenReturn(new Section(LINE, STATION_2, STATION_3, 10L));
+        when(sectionRepository.toSection(lineId, lineStationRequest)).thenReturn(new Section(LINE_1, STATION_2, STATION_3, new Distance(10)));
         when(sectionRepository.getCurrentLineSections(lineId)).thenReturn(new Sections(new ArrayList<>(List.of(SECTION_1))));
 
         //when
@@ -72,6 +74,6 @@ class SectionServiceTest {
         LineStationResponse response = sectionService.findByLineId(lineId);
 
         //then
-        assertThat(response.getStations()).isEqualTo(List.of(STATION_4, STATION_1, STATION_2, STATION_3));
+        assertThat(response.getStations()).isEqualTo(List.of(STATION_1, STATION_2, STATION_3, STATION_4));
     }
 }

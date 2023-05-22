@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Station;
 import subway.dto.LineResponse;
 
@@ -15,8 +14,8 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("구간 추가 관련 기능")
-@Sql("/truncate.sql")
 public class SectionInsertionIntegrationTest extends IntegrationTest {
+
     @DisplayName("지하철 노선에 지하철 역이 없을 때 둘 다 추가")
     @Test
     void addStationFirst() {

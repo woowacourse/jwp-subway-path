@@ -1,4 +1,4 @@
-package subway.service;
+package subway.service.line;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +11,6 @@ import java.util.List;
 @Transactional
 @Service
 public class LineService {
-
     private final LineRepository lineRepository;
 
     public LineService(LineRepository lineRepository) {
