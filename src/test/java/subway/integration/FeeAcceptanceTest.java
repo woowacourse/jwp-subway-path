@@ -16,7 +16,7 @@ import static subway.fixture.StationFixture.잠실나루;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class FeeIntegrationTest extends IntegrationTest {
+class FeeAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 최단_거리를_조회한다() {

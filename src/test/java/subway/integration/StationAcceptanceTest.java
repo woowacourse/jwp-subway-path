@@ -16,7 +16,7 @@ import static subway.fixture.StationFixture.수원;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("지하철역 관련 기능")
-public class StationIntegrationTest extends IntegrationTest {
+public class StationAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 지하철_역을_삭제한다() {

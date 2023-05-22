@@ -23,7 +23,7 @@ import static subway.fixture.StationFixture.잠실나루;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-public class PathIntegrationTest extends IntegrationTest {
+public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 역이_두개만_있다면_동시에_삭제된다() {

@@ -19,7 +19,7 @@ import static subway.fixture.StationFixture.의왕;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-public class SubwayIntegrationTest extends IntegrationTest {
+public class SubwayAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 역을_제거하면_경로에서도_제거된다() {

@@ -26,7 +26,7 @@ import static subway.fixture.LineFixture.일호선;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("지하철 노선 관련 기능")
-public class LineIntegrationTest extends IntegrationTest {
+public class LineAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 노선을_추가한다() throws JsonProcessingException {
