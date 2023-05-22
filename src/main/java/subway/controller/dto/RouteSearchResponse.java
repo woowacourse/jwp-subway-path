@@ -1,6 +1,8 @@
 package subway.controller.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import subway.domain.line.Station;
 
 public class RouteSearchResponse {
 
@@ -11,8 +13,11 @@ public class RouteSearchResponse {
     private RouteSearchResponse() {
     }
 
-    public RouteSearchResponse(List<StationResponse> routes, Integer distance, Integer fare) {
-        this.routes = routes;
+    public RouteSearchResponse(List<Station> routes, Integer distance, Integer fare) {
+        this.routes = routes
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
         this.distance = distance;
         this.fare = fare;
     }

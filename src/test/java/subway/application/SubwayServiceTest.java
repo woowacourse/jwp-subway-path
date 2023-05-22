@@ -22,8 +22,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.RouteSearchResponse;
 import subway.controller.dto.StationResponse;
+import subway.domain.fare.DistanceFarePolicy;
 import subway.domain.fare.Fare;
-import subway.domain.fare.FarePolicy;
+import subway.domain.line.Distance;
 import subway.domain.line.Line;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -37,9 +38,6 @@ class SubwayServiceTest {
     @Mock
     private StationRepository stationRepository;
 
-    @Mock
-    private FarePolicy farePolicy;
-
     @InjectMocks
     private SubwayService subwayService;
 
@@ -52,7 +50,7 @@ class SubwayServiceTest {
         given(lineRepository.findAll()).willReturn(lines);
         given(stationRepository.findByName(startStationName)).willReturn(강남역);
         given(stationRepository.findByName(endStationName)).willReturn(선릉역);
-        given(farePolicy.calculate(any())).willReturn(new Fare(1550));
+        given(DistanceFarePolicy.calculateFare(any(Distance.class))).willReturn(new Fare(1550));
         StationResponse response1 = StationResponse.of(강남역);
         StationResponse response2 = StationResponse.of(용산역);
         StationResponse response3 = StationResponse.of(시청역);
