@@ -1,6 +1,6 @@
 package subway.application.core.domain;
 
-import subway.application.core.exception.DistanceExceedException;
+import subway.application.core.exception.DistanceNotPositiveException;
 
 import java.util.Objects;
 
@@ -15,7 +15,7 @@ public class Distance {
 
     private void validate(int distance) {
         if (distance <= 0) {
-            throw new DistanceExceedException();
+            throw new DistanceNotPositiveException();
         }
     }
 
