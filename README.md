@@ -143,5 +143,12 @@
   - [x] 아니면 Fake 객체를 만들 것인가?
 - [x] swagger 사용, API 명세 자동화했음.
   - [x] 정말 기본적인 기능만 사용했는데, 추후 프로젝트 시 적절하게 사용한다면 협업이 용이해질 듯 함.
+- [x] `@Validated` 를 통한 검증 수행
+  - [x] `@Valid` 단독적으로는 핸들러 메소드에서만 사용 가능. ArgumentResolver에 의해 사용되기 때문.
+  - [x] `@Validated`는 Spring 지원 기술(표준이 아님), AOP를 사용.
+  - [x] 사용하는 경우 클래스 레벨에 `@Validated`까지 붙여줘야 함.
+  - [x] 소스: https://mangkyu.tistory.com/174
+- [x] 요금 계산을 enum을 사용하도록 변경
+  - [x] 가시성, 유지보수성 극대화
 </div> 
 </details>
