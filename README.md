@@ -3,6 +3,12 @@
 ## 기능 요구 사항
 
 ### Domain
+- [x] Graph
+  - [x] 경로 탐색
+  - [x] 거리 탐색
+
+- [x] Cost
+  - [x] 비용 계산
 
 - [x] Line (1호선, 2호선, ...)
     - LineInfo
@@ -48,18 +54,21 @@ POST /subway/lines
 
 Request {
     lineName : "1호선"
+    startStation : "회기",
+    endStation : "청량리",
+    distance : 5
 }
 
 Response Headers {
     Status : 201
-    Location : /subway/lines/{line_id}
+    Location : /subway/lines/{lineId}
 }
 ```
 
 노선에 역 구간 등록
 
 ```text
-POST /subway/lines/{line_id}/sections
+POST /subway/lines/{lineId}/sections
 
 Request {
     startStation : "회기",
@@ -75,7 +84,7 @@ Response Headers {
 노선에 역 제거
 
 ```text
-DELETE /subway/lines/{lineId}/stations/{station_id}
+DELETE /subway/lines/{lineId}/stations/{stationId}
 
 Response Headers {
     Status : 204
@@ -85,7 +94,7 @@ Response Headers {
 노선 상세 조회
 
 ```text
-GET /subway/lines/{line_id}
+GET /subway/lines/{lineId}
 
 Response Headers {
     Status : 200
@@ -142,4 +151,30 @@ Response Body {[
         }
    ]}
 ]}
+```
+
+경로 조회 
+```text
+GET subway/path?startStationId=?&endStationId=?
+
+Response Headers {
+    Status : 200
+}
+
+Response Body {
+    {
+    "stations": [
+        {
+            "id": 8,
+            "name": "방배"
+        },
+        {
+            "id": 9,
+            "name": "교대"
+        }
+    ],
+    "distance": 6,
+    "cost": 1250
+    }
+}
 ```

@@ -1,13 +1,13 @@
 package subway.domain;
 
+import subway.exception.*;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import subway.exception.GlobalException;
 
 public class Sections {
+    private static final int HAVE_ONLY_ONE_SECTION = 1;
     private final List<Section> sections;
 
     public Sections(List<Section> sections) {
@@ -15,34 +15,61 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
+    private void validateDuplication(List<Section> sections) {
+        if (sections.isEmpty()) {
+            return;
+        }
+
+        long distinctSize = sections.stream()
+                .distinct()
+                .count();
+
+        if (sections.size() != distinctSize) {
+            throw new DuplicateSectionException();
+        }
+    }
+
     public void remove(Station station) {
+
         List<Section> sectionsContainStation = sections.stream()
                 .filter(it -> it.hasStation(station))
                 .collect(Collectors.toList());
 
         if (sectionsContainStation.isEmpty()) {
-            throw new GlobalException("존재하지 않는 구간입니다.");
+            throw new InvalidSectionException();
         }
 
-        if (sections.size() == 1) {
+        if (sections.size() == HAVE_ONLY_ONE_SECTION) {
             sections.clear();
             return;
         }
 
-        if (sectionsContainStation.size() == 1) {
-            Section findSection = sectionsContainStation.get(0);
-            sections.remove(findSection);
+        // 종점이 삭제될 때
+        if (removeOutsideStation(sectionsContainStation)) {
             return;
         }
 
-        int totalDistance = sectionsContainStation.stream()
-                .map(Section::getDistance)
-                .mapToInt(Distance::getDistance)
-                .sum();
-
+        //중간 지점이 삭제될 때
         Section firstSection = sectionsContainStation.get(0);
         Section secondSection = sectionsContainStation.get(1);
 
+        Section newSection = makeNewSection(station, firstSection, secondSection);
+
+        sections.add(newSection);
+        sections.remove(firstSection);
+        sections.remove(secondSection);
+    }
+
+    private boolean removeOutsideStation(List<Section> sectionsContainStation) {
+        if (sectionsContainStation.size() == HAVE_ONLY_ONE_SECTION) {
+            Section findSection = sectionsContainStation.get(0);
+            sections.remove(findSection);
+            return true;
+        }
+        return false;
+    }
+
+    private Section makeNewSection(Station station, Section firstSection, Section secondSection) {
         Station startStation = firstSection.getStartStation();
         Station endStation = secondSection.getEndStation();
 
@@ -51,12 +78,7 @@ public class Sections {
             endStation = firstSection.getEndStation();
         }
 
-        Section newSection = new Section(startStation, endStation, new Distance(totalDistance));
-
-        sections.add(newSection);
-        sections.remove(firstSection);
-        sections.remove(secondSection);
-
+        return new Section(startStation, endStation, firstSection.sumDistance(secondSection));
     }
 
     public void add(Section newSection) {
@@ -64,104 +86,70 @@ public class Sections {
             sections.add(newSection);
             return;
         }
-
         if (sections.contains(newSection)) {
-            throw new GlobalException("이미 존재하는 구간입니다.");
+            throw new DuplicateSectionAddException();
         }
-
         validateConnection(newSection);
-        Station upStation = getUpStation();
-        Station downStation = getDownStation();
-        if (newSection.isSameEndStation(upStation)) {
-            sections.add(newSection);
+
+        if (addOutsideStation(newSection)) {
             return;
         }
+        addBetweenStation(newSection);
+    }
 
-        if (newSection.isSameStartStation(downStation)) {
-            sections.add(newSection);
-            return;
-        }
-
+    private void addBetweenStation(Section newSection) {
         Section findSection = findForAddByDistance(newSection);
-
-        if (findSection.isSameStartStation(newSection)) {
-            Distance subtractedDistance = findSection.subtractDistance(newSection);
-            Section devidedSection = new Section(newSection.getEndStation(), findSection.getEndStation(),
-                    subtractedDistance);
-
-            sections.remove(findSection);
-            sections.add(newSection);
-            sections.add(devidedSection);
-            return;
-        }
-
         Distance subtractedDistance = findSection.subtractDistance(newSection);
-        Section devidedSection = new Section(findSection.getStartStation(), newSection.getStartStation(),
-                subtractedDistance);
-
         sections.remove(findSection);
         sections.add(newSection);
-        sections.add(devidedSection);
+
+        if (findSection.isSameStartStation(newSection.getStartStation())) {
+            Section devidedSection = new Section(newSection.getEndStation(), findSection.getEndStation(),
+                    subtractedDistance);
+            sections.add(devidedSection);
+        } else if (findSection.isSameEndStation(newSection.getEndStation())) {
+            Section devidedSection = new Section(findSection.getStartStation(), newSection.getStartStation(),
+                    subtractedDistance);
+            sections.add(devidedSection);
+        }
     }
 
-    private Section findForAddByDistance(Section newSection) {
-        Optional<Section> findSameStartStationSection = sections.stream()
-                .filter(newSection::isSameStartStation)
-                .findFirst();
-
-        if (findSameStartStationSection.isPresent()) {
-            Section findSection = findSameStartStationSection.get();
-            if (findSection.isGreaterThanOtherDistance(newSection)) {
-                return findSection;
-            }
+    private boolean addOutsideStation(Section newSection) {
+        if (newSection.isSameEndStation(getUpStation()) || newSection.isSameStartStation(getDownStation())) {
+            sections.add(newSection);
+            return true;
         }
-
-        Optional<Section> findSameEndStationSection = sections.stream()
-                .filter(newSection::isSameEndStation)
-                .findFirst();
-
-        if (findSameEndStationSection.isPresent()) {
-            Section findSection = findSameEndStationSection.get();
-            if (findSection.isGreaterThanOtherDistance(newSection)) {
-                return findSection;
-            }
-        }
-        throw new GlobalException("구간 길이로 인해 연결할 수 없습니다.");
-    }
-
-    private void validateDuplication(List<Section> sections) {
-        long distinctSize = sections.stream()
-                .distinct()
-                .count();
-
-        if (sections.isEmpty()) {
-            return;
-        }
-
-        if (sections.size() != distinctSize) {
-            throw new GlobalException("구간은 중복될 수 없습니다.");
-        }
+        return false;
     }
 
     private void validateConnection(Section section) {
         boolean isPresentSameStartStation = sections.stream()
-                .anyMatch(it -> it.isSameStartStation(section.getStartStation()) ||
-                        it.isSameStartStation(section.getEndStation()));
+                .anyMatch(it -> it.isSameStartStation(section.getStartStation()) || it.isSameStartStation(section.getEndStation()));
 
         boolean isPresentSameEndStation = sections.stream()
-                .anyMatch(it -> it.isSameEndStation(section.getStartStation()) ||
-                        it.isSameEndStation(section.getEndStation()));
+                .anyMatch(it -> it.isSameEndStation(section.getStartStation()) || it.isSameEndStation(section.getEndStation()));
 
         if (isPresentSameStartStation && isPresentSameEndStation) {
-            throw new GlobalException("이미 연결되어 있는 구간입니다.");
+            throw new NotConnectSectionException("이미 연결되어 있는 구간입니다.");
         }
 
         if (!isPresentSameStartStation && !isPresentSameEndStation) {
-            throw new GlobalException("연결되어 있지 않은 구간입니다.");
+            throw new NotConnectSectionException("연결되어 있지 않은 구간입니다.");
         }
     }
 
+    private Section findForAddByDistance(Section newSection) {
+        return sections.stream()
+                .filter(it -> it.isSameStartStation(newSection.getStartStation()) || it.isSameEndStation(newSection.getEndStation()))
+                .filter(it -> it.isGreaterThanOtherDistance(newSection))
+                .findAny()
+                .orElseThrow(() -> new NotConnectSectionException("구간 길이로 인해 연결할 수 없습니다."));
+    }
+
     public List<Station> getSortedStations() {
+        if (sections.isEmpty()) {
+            return new ArrayList<>();
+        }
         List<Station> sortedStations = new ArrayList<>();
 
         Station startStation = getUpStation();
@@ -178,49 +166,28 @@ public class Sections {
         return sections.stream()
                 .filter(it -> it.isSameStartStation(startStation))
                 .findFirst()
-                .orElseThrow(() -> new GlobalException("해당 역을 출발 역으로 갖는 구간이 없습니다."));
-    }
-
-    public Station getDownStation() {
-        for (Section savedSection : sections) {
-            int count = 0;
-            for (Section section : sections) {
-                if (section.equals(savedSection)) {
-                    continue;
-                }
-                if (section.getStartStation().equals(savedSection.getEndStation())) {
-                    count++;
-                    break;
-                }
-            }
-            if (count == 0) {
-                return savedSection.getEndStation();
-            }
-        }
-        throw new GlobalException("하행 종점이 존재하지 않습니다.");
+                .orElseThrow(() -> new NotExistSectionException("해당 역을 출발 역으로 갖는 구간이 없습니다."));
     }
 
     public Station getUpStation() {
-        for (Section savedSection : sections) {
-            int count = 0;
-            for (Section section : sections) {
-                if (section.equals(savedSection)) {
-                    continue;
-                }
-                if (section.getEndStation().equals(savedSection.getStartStation())) {
-                    count++;
-                    break;
-                }
-            }
-            if (count == 0) {
-                return savedSection.getStartStation();
-            }
-        }
-        throw new GlobalException("상행 종점이 존재하지 않습니다.");
+        return sections.stream()
+                .map(Section::getStartStation)
+                .filter(it -> sections.stream()
+                        .noneMatch(section -> !section.getStartStation().equals(it) && section.getEndStation().equals(it)))
+                .findFirst()
+                .orElseThrow(() -> new NotExistSectionException("상행 종점이 존재하지 않습니다."));
+    }
+
+    public Station getDownStation() {
+        return sections.stream()
+                .map(Section::getEndStation)
+                .filter(it -> sections.stream()
+                        .noneMatch(section -> !section.getEndStation().equals(it) && section.getStartStation().equals(it)))
+                .findFirst()
+                .orElseThrow(() -> new NotExistSectionException("하행 종점이 존재하지 않습니다."));
     }
 
     public List<Section> getSections() {
-        return Collections.unmodifiableList(sections);
+        return sections;
     }
-
 }

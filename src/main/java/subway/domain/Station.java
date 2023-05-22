@@ -1,21 +1,31 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.exception.GlobalException;
+
+import subway.exception.InValidStationNameException;
 
 public class Station {
     private static final int NAME_MAX_LENGTH = 10;
+    private final Long id;
     private final String name;
 
-    public Station(String name) {
+    public Station(String name){
+        this(null,name);
+    }
+    public Station(Long id, String name) {
         validate(name);
+        this.id = id;
         this.name = name;
     }
 
     private void validate(String name) {
         if (name.isBlank() || name.length() > NAME_MAX_LENGTH) {
-            throw new GlobalException("역 이름은 1글자 이상, 10글자 이하여야 합니다.");
+            throw new InValidStationNameException();
         }
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

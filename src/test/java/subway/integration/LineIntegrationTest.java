@@ -1,13 +1,8 @@
 package subway.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -25,8 +26,8 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선");
-        lineRequest2 = new LineRequest("구신분당선");
+        lineRequest1 = new LineRequest("신분당선", "강남역", "논현역", 5);
+        lineRequest2 = new LineRequest("구신분당선", "구강남역", "구논현역", 5);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -133,5 +134,26 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         LineResponse resultResponse = response.as(LineResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineId);
+    }
+
+    @Test
+    @DisplayName("하나의 역에 여러 지하철 노선을 추가한다.")
+    void createSectionStationForLines() {
+        ExtractableResponse<Response> lineResponse1 = RestAssured.given().log().uri()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when().post("/subway/lines")
+                .then().log().all()
+                .extract();
+
+        ExtractableResponse<Response> lineResponse2 = RestAssured.given().log().uri()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest2)
+                .when().post("/subway/lines")
+                .then().log().all()
+                .extract();
+
+        assertThat(lineResponse1.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(lineResponse2.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }

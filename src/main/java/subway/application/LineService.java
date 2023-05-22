@@ -1,23 +1,20 @@
 package subway.application;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
-import subway.dao.LineEntity;
 import subway.dao.SectionDao;
-import subway.dao.SectionEntity;
 import subway.dao.StationDao;
-import subway.dao.StationEntity;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
+import subway.exception.DuplicateLineNameException;
+import subway.exception.InvalidLineException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -34,68 +31,60 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Long savedId = lineDao.insert(new LineEntity(request.getLineName()));
-
-        return new LineResponse(savedId, request.getLineName(), null);
-    }
-
-    public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
-        return persistLines.stream()
-                .map(entities -> {
-                    Long lineId = entities.getId();
-                    return getLineResponse(entities, lineId);
-                })
-                .collect(Collectors.toList());
-    }
-
-    private LineResponse getLineResponse(LineEntity entities, Long lineId) {
-        List<SectionEntity> findSections = sectionDao.findByLineId(lineId);
-        List<Section> collect = findSections.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
-
-        if (collect.isEmpty()) {
-            return new LineResponse(entities.getId(), entities.getName(), new ArrayList<StationResponse>());
+        if(lineDao.findByName(request.getLineName())){
+            throw new DuplicateLineNameException();
         }
 
-        Sections sections = new Sections(collect);
+        addStationOfSection(request.getStartStation(), request.getEndStation());
 
-        List<Station> sortedStations = sections.getSortedStations();
+        Line line = new Line(request.getLineName(), new Sections(
+                List.of(new Section(stationDao.findByName(request.getStartStation()),
+                        stationDao.findByName(request.getEndStation()),
+                        new Distance(request.getDistance())))
+        ));
 
-        List<StationResponse> stationsResponses = sortedStations.stream()
-                .map(it -> {
-                    Long findStationId = stationDao.findIdByName(it.getName());
-                    return new StationResponse(findStationId, it.getName());
-                })
+        Long savedId = lineDao.insert(line);
+        sectionDao.insertAll(savedId, line.getSections().getSections());
+        return new LineResponse(savedId, request.getLineName(), makeStationResponses(line.getSections().getSortedStations()));
+    }
+
+    public List<LineResponse> findAllLines() {
+        List<Line> lines = lineDao.findAll().stream()
+                .map(it -> new Line(it.getId(), it.getName(), new Sections(sectionDao.findByLineId(it.getId()))))
                 .collect(Collectors.toList());
 
-        return new LineResponse(entities.getId(), entities.getName(), stationsResponses);
+        return lines.stream()
+                .map(it -> new LineResponse(it.getId(), it.getName(), makeStationResponses(it.getSections().getSortedStations())))
+                .collect(Collectors.toList());
     }
 
-    private Section toSection(SectionEntity sectionEntity) {
-        Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
-        Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
-        Distance distance = new Distance(sectionEntity.getDistance());
+    public LineResponse findLineResponseById(Long lineId) {
+        Line line = lineDao.findById(lineId).map(it -> new Line(it.getId(),it.getName(), new Sections(sectionDao.findByLineId(it.getId()))))
+                .orElseThrow(InvalidLineException::new);
 
-        return new Section(startStation, endStation, distance);
+        return new LineResponse(line.getId(), line.getName(), makeStationResponses(line.getSections().getSortedStations()));
     }
 
-    private Station toStation(StationEntity stationEntity) {
-        return new Station(stationEntity.getName());
+    private List<StationResponse> makeStationResponses(List<Station> sortedStations) {
+        Map<String, Long> stations = stationDao.findAll().stream()
+                .collect(Collectors.toMap(Station::getName, Station::getId));
+
+        return sortedStations.stream()
+                .map(it -> new StationResponse(stations.get(it.getName()), it.getName()))
+                .collect(Collectors.toList());
     }
 
-    private List<LineEntity> findLines() {
-        return lineDao.findAll();
-    }
+    private void addStationOfSection(String startStation, String endStation) {
+        Map<String, Long> stations = stationDao.findAll()
+                .stream()
+                .collect(Collectors.toMap(Station::getName, Station::getId));
 
-    public LineResponse findLineResponseById(Long id) {
-        LineEntity findEntity = findLineById(id);
-        return getLineResponse(findEntity, id);
-    }
+        if (!stations.containsKey(startStation)) {
+            stationDao.insert(new Station(startStation));
+        }
 
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
+        if (!stations.containsKey(endStation)) {
+            stationDao.insert(new Station(endStation));
+        }
     }
-
 }
