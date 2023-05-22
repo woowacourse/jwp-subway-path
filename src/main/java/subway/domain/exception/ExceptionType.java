@@ -16,5 +16,5 @@ public enum ExceptionType {
     NOT_UP_LINE_LAST_STOP,
     NOT_DOWN_LINE_LAST_STOP,
     NO_PATH,
-    PATH_HAS_LOOP,
+    PATH_HAS_LOOP, NO_LINE,
 }
