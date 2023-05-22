@@ -21,17 +21,14 @@ public class DeleteBetweenStation extends DeleteStationStrategy {
 
     @Override
     public void delete(SingleLineSections sections, Station targetStation) {
-        final SingleLineSections includeTargetSection = sections.findIncludeTargetSection(targetStation);
-        final Distance newDistance = includeTargetSection.calculateTotalDistance();
+        final Section backwardSection = sections.findIncludeSectionByForwardStation(targetStation);
+        final Section forwardSection = sections.findIncludeSectionByBackwardStation(targetStation);
 
-        final Section forwardSection = includeTargetSection.getSections().get(0);
-        final Section backwardSection = includeTargetSection.getSections().get(1);
-
+        final Distance newDistance = forwardSection.getDistance().plus(backwardSection.getDistance());
         final Section newSection = new Section(newDistance, forwardSection.getUpStation(), backwardSection.getDownStation(), forwardSection.getLineId());
         sectionRepository.insert(newSection);
 
-        for (Section section : includeTargetSection.getSections()) {
-            sectionRepository.delete(section.getId());
-        }
+        sectionRepository.delete(forwardSection.getId());
+        sectionRepository.delete(backwardSection.getId());
     }
 }

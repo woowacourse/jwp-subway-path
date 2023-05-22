@@ -84,14 +84,13 @@ class SingleLineSectionsTest {
     @Test
     void 역을_포함한_구간들을_찾아온다() {
         // when
-        final SingleLineSections sections = this.sections.findIncludeTargetSection(잠실새내역);
+        final Section forwardSection = this.sections.findIncludeSectionByBackwardStation(잠실새내역);
+        final Section backwardSection = this.sections.findIncludeSectionByForwardStation(잠실새내역);
 
         // then
-        final List<Section> result = sections.getSections();
         assertAll(
-                () -> assertThat(result).hasSize(2),
-                () -> assertThat(result.get(0).getUpStation()).isEqualTo(잠실역),
-                () -> assertThat(result.get(1).getDownStation()).isEqualTo(삼성역)
+                () -> assertThat(forwardSection.getUpStation()).isEqualTo(잠실역),
+                () -> assertThat(backwardSection.getDownStation()).isEqualTo(삼성역)
         );
     }
 

@@ -1,6 +1,5 @@
 package subway.domain.section;
 
-import subway.domain.Distance;
 import subway.domain.Station;
 
 import java.util.ArrayList;
@@ -62,14 +61,6 @@ public class SingleLineSections {
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
-    public SingleLineSections findIncludeTargetSection(Station betweenStation) {
-        final List<Section> sections = this.sections.stream()
-                .filter(section -> Objects.equals(section.getUpStation(), betweenStation) || Objects.equals(section.getDownStation(), betweenStation))
-                .collect(toList());
-
-        return new SingleLineSections(sections);
-    }
-
     public boolean isInitialState() {
         return sections.size() == INITIAL_SIZE;
     }
@@ -80,12 +71,6 @@ public class SingleLineSections {
 
     public Long findLastSectionId() {
         return sections.get(sections.size() - 1).getId();
-    }
-
-    public Distance calculateTotalDistance() {
-        return sections.stream()
-                .map(Section::getDistance)
-                .reduce(Distance.zero(), Distance::plus);
     }
 
     public List<Station> findAllStationsByOrder() {
@@ -115,5 +100,19 @@ public class SingleLineSections {
 
     public List<Section> getSections() {
         return new ArrayList<>(sections);
+    }
+
+    public Section findIncludeSectionByForwardStation(Station targetStation) {
+        return sections.stream()
+                .filter(section -> Objects.equals(section.getUpStation(), targetStation))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("해당하는 구간을 찾을 수 없습니다."));
+    }
+
+    public Section findIncludeSectionByBackwardStation(Station targetStation) {
+        return sections.stream()
+                .filter(section -> Objects.equals(section.getDownStation(), targetStation))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("해당하는 구간을 찾을 수 없습니다."));
     }
 }
