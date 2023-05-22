@@ -1,67 +1,69 @@
 package subway.dao;
 
-import java.util.List;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.entity.LineEntity;
 
-import subway.domain.core.Line;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class LineDao {
 
-	private static final int DELETED_COUNT = 1;
-	private static final int UPDATED_COUNT = 1;
 	private final JdbcTemplate jdbcTemplate;
-	private final SimpleJdbcInsert insert;
+	private final SimpleJdbcInsert insertAction;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	private final RowMapper<Line> lineRowMapper = (rs, rowNum) ->
-		new Line(
-			rs.getLong("id"),
+	private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+		new LineEntity(
+			rs.getLong("lineId"),
 			rs.getString("name")
 		);
 
-	public LineDao(final JdbcTemplate jdbcTemplate) {
-		this.insert = new SimpleJdbcInsert(jdbcTemplate)
-			.withTableName("line")
-			.usingGeneratedKeyColumns("id");
+	public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource, final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.insertAction = new SimpleJdbcInsert(dataSource)
+			.withTableName("line")
+			.usingGeneratedKeyColumns("lineId");
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
-	public long createLine(final Line line) {
-		SqlParameterSource params = new BeanPropertySqlParameterSource(line);
-		return insert.executeAndReturnKey(params).longValue();
+	public long insert(final LineEntity lineEntity) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("name", lineEntity.getName());
+
+		return insertAction.executeAndReturnKey(params).longValue();
 	}
 
-	public List<Line> findAll() {
-		String sql = "SELECT * FROM line";
-		return jdbcTemplate.query(sql, lineRowMapper);
+	public List<LineEntity> findAll() {
+		String sql = "SELECT lineId,  name FROM line";
+		return jdbcTemplate.query(sql, rowMapper);
 	}
 
-	public Line findById(final long lineId) {
-		String sql = "SELECT * FROM line WHERE id = ?";
-		final Line line = jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
-		if (line == null) {
-			throw new NullPointerException("존재하지 않는 노선입니다");
-		}
-		return line;
+	public LineEntity findByName(final String name) {
+		String sql = "SELECT lineId,  name FROM line WHERE name = ?";
+		return jdbcTemplate.queryForObject(sql, rowMapper, name);
 	}
 
-	public boolean updateLine(final long lineId, final Line line) {
-		final String sql = "UPDATE line SET name = ? WHERE id = ?";
-		final int updateCount = jdbcTemplate.update(sql, line.getName(), lineId);
-
-		return updateCount == UPDATED_COUNT;
+	public void deleteById(final Long id) {
+		jdbcTemplate.update("DELETE FROM line WHERE lineId = ?", id);
 	}
 
-	public boolean deleteById(final long lineId) {
-		String sql = "DELETE FROM line WHERE id = ?";
-		final int deleteCount = jdbcTemplate.update(sql, lineId);
+	public LineEntity findByLineName(final String lineName) {
+		String sql = "SELECT lineId, name FROM line WHERE name = ?";
+		return jdbcTemplate.queryForObject(sql, rowMapper, lineName);
+	}
 
-		return deleteCount == DELETED_COUNT;
+	public Optional<LineEntity> findById(final Long id) {
+		String sql = "SELECT lineId, name FROM line WHERE lineId = :lineId";
+		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("lineId", id), rowMapper).stream()
+			.findAny();
 	}
 }
