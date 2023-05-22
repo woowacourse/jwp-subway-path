@@ -54,6 +54,21 @@ public class SectionDao {
         return keyHolder.getKey().longValue();
     }
 
+    public List<SectionStationResultMap> findAll() {
+        final String sql = "SELECT se.id sectionId, " +
+                "se.distance distance, " +
+                "se.up_station_id upStationId, " +
+                "st1.name upStationName, " +
+                "se.down_station_id downStationId, " +
+                "st2.name downStationName, " +
+                "se.line_id lineId " +
+                "FROM section se " +
+                "JOIN station st1 ON st1.id = se.up_station_id " +
+                "JOIN station st2 ON st2.id = se.down_station_id ";
+
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public List<SectionStationResultMap> findAllByLineId(Long lineId) {
         final String sql = "SELECT se.id sectionId, " +
                 "se.distance distance, " +
