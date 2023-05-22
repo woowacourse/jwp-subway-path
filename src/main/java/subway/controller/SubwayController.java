@@ -1,6 +1,7 @@
 package subway.controller;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +24,11 @@ public class SubwayController {
 
     @GetMapping("/shortest-route")
     public ResponseEntity<RouteSearchResponse> findShortestRoute(
-            @NotBlank(message = "출발역은 반드시 입력해야 합니다.") @RequestParam String startStation,
-            @NotBlank(message = "도착역은 반드시 입력해야 합니다.") @RequestParam String endStation) {
-        RouteSearchResponse routeResponse = subwayService.findRoute(startStation, endStation);
+            @RequestParam @NotBlank(message = "출발역은 반드시 입력해야 합니다.") String startStation,
+            @RequestParam @NotBlank(message = "도착역은 반드시 입력해야 합니다.") String endStation,
+            @RequestParam @Positive(message = "나이는 1살 이상부터 가능합니다.") Integer age
+    ) {
+        RouteSearchResponse routeResponse = subwayService.findRoute(startStation, endStation, age);
         return ResponseEntity.ok(routeResponse);
     }
 }
