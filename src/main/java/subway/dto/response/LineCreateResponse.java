@@ -5,12 +5,12 @@ import subway.domain.line.Line;
 
 public class LineCreateResponse {
 
-    private final Long lineId;
+    private final long lineId;
     private final String lineName;
-    private final Double extraCharge;
+    private final double extraCharge;
     private final List<Long> stationIds;
 
-    public LineCreateResponse(Long lineId, String lineName, Double extraCharge, List<Long> stationIds) {
+    public LineCreateResponse(long lineId, String lineName, double extraCharge, List<Long> stationIds) {
         this.lineId = lineId;
         this.lineName = lineName;
         this.extraCharge = extraCharge;
@@ -21,7 +21,7 @@ public class LineCreateResponse {
         return new LineCreateResponse(line.getId(), line.getName(), line.getExtraCharge().getValue(), line.getStationIds());
     }
 
-    public Long getLineId() {
+    public long getLineId() {
         return lineId;
     }
 
@@ -29,7 +29,7 @@ public class LineCreateResponse {
         return lineName;
     }
 
-    public Double getExtraCharge() {
+    public double getExtraCharge() {
         return extraCharge;
     }
 

@@ -7,10 +7,10 @@ import subway.dto.RouteDto;
 
 public class FindShortestRouteResponse {
     private final List<RouteDto> path;
-    private final Double totalDistance;
-    private final Double totalCharge;
+    private final double totalDistance;
+    private final double totalCharge;
 
-    public FindShortestRouteResponse(List<RouteDto> path, Double totalDistance, Double totalCharge) {
+    public FindShortestRouteResponse(List<RouteDto> path, double totalDistance, double totalCharge) {
         this.path = path;
         this.totalDistance = totalDistance;
         this.totalCharge = totalCharge;
@@ -27,11 +27,11 @@ public class FindShortestRouteResponse {
         return path;
     }
 
-    public Double getTotalDistance() {
+    public double getTotalDistance() {
         return totalDistance;
     }
 
-    public Double getTotalCharge() {
+    public double getTotalCharge() {
         return totalCharge;
     }
 }

@@ -5,11 +5,11 @@ import java.util.stream.Collectors;
 import subway.domain.subway.Route;
 
 public class RouteDto {
-    private final Long lineId;
+    private final long lineId;
     private final String lineName;
     private final List<StationDto> stations;
 
-    public RouteDto(Long lineId, String lineName, List<StationDto> stations) {
+    public RouteDto(long lineId, String lineName, List<StationDto> stations) {
         this.lineId = lineId;
         this.lineName = lineName;
         this.stations = stations;
@@ -22,7 +22,7 @@ public class RouteDto {
         return new RouteDto(route.getLineId(), route.getLineName(), stations);
     }
 
-    public Long getLineId() {
+    public long getLineId() {
         return lineId;
     }
 
