@@ -34,14 +34,14 @@ public class SectionController {
     @PostMapping
     public ResponseEntity<SectionResponse> createSection(@PathVariable Long lineId,
                                               @RequestBody @Valid SectionCreateRequest sectionCreateRequest) {
-        Section section = sectionService.saveSection(sectionCreateRequest.toSectionCreateDto(lineId));
+        Section section = sectionService.saveSection(sectionCreateRequest, lineId);
         return ResponseEntity.ok().body(SectionResponse.from(section));
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId,
                                               @RequestBody @Valid SectionDeleteRequest sectionDeleteRequest) {
-        sectionService.deleteSection(sectionDeleteRequest.toSectionDeleteDto(lineId));
+        sectionService.deleteSection(sectionDeleteRequest, lineId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -2,7 +2,6 @@ package subway.ui.dto.line;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotBlank;
-import subway.application.dto.line.LineCreateDto;
 
 public class LineCreateRequest {
     @NotBlank(message = "노선의 이름은 비어있을 수 없습니다.")
@@ -17,10 +16,6 @@ public class LineCreateRequest {
     public LineCreateRequest(String name, String color) {
         this.name = name;
         this.color = color;
-    }
-
-    public LineCreateDto toLineCreateDto() {
-        return new LineCreateDto(name, color);
     }
 
     public String getName() {

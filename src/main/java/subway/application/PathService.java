@@ -2,7 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.dto.path.PathFindDto;
 import subway.application.dto.path.ShortestPathDto;
 import subway.domain.Fare;
 import subway.domain.FareCalculator;
@@ -23,10 +22,10 @@ public class PathService {
         this.sectionRepository = sectionRepository;
     }
 
-    public ShortestPathDto findPath(PathFindDto pathFindDto) {
+    public ShortestPathDto findPath(long sourceStationId, long destStationId) {
         PathFinder pathFinder = PathFinder.from(sectionRepository.findAll());
-        Station source = stationRepository.findById(pathFindDto.getSourceStationId());
-        Station dest = stationRepository.findById(pathFindDto.getDestStationId());
+        Station source = stationRepository.findById(sourceStationId);
+        Station dest = stationRepository.findById(destStationId);
 
         Path path = pathFinder.findShortestPath(source, dest);
         Fare fare = FareCalculator.calculate(path);

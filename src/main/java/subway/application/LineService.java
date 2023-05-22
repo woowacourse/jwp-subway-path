@@ -3,11 +3,11 @@ package subway.application;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.dto.line.LineCreateDto;
-import subway.application.dto.line.LineUpdateDto;
 import subway.domain.Line;
 import subway.domain.repository.LineRepository;
 import subway.exception.IllegalLineException;
+import subway.ui.dto.line.LineCreateRequest;
+import subway.ui.dto.line.LineUpdateRequest;
 
 @Service
 @Transactional
@@ -18,8 +18,8 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    public Line saveLine(LineCreateDto requestedLine) {
-        Line line = new Line(requestedLine.getName(), requestedLine.getColor());
+    public Line saveLine(LineCreateRequest lineCreateRequest) {
+        Line line = new Line(lineCreateRequest.getName(), lineCreateRequest.getColor());
         if (lineRepository.isDuplicateLine(line)) {
             throw new IllegalLineException("해당 노선의 색, 또는 이름이 중복됩니다.");
         }
@@ -37,11 +37,11 @@ public class LineService {
         return lineRepository.findById(id);
     }
 
-    public Line updateLine(LineUpdateDto requestedLine) {
-        return lineRepository.update(new Line(requestedLine.getId(), requestedLine.getName(), requestedLine.getColor()));
+    public Line updateLine(LineUpdateRequest lineUpdateRequest, long id) {
+        return lineRepository.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    public void deleteLineById(Long id) {
+    public void deleteLineById(long id) {
         Line line = lineRepository.findByIdWithNoSections(id);
         lineRepository.delete(line);
     }

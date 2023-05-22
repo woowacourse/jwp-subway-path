@@ -14,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
-import subway.application.dto.line.LineCreateDto;
 import subway.domain.Line;
 import subway.ui.dto.line.LineCreateRequest;
 
@@ -35,7 +34,7 @@ class LineControllerTest {
     void createLine_success() throws Exception {
         // given
         LineCreateRequest request = new LineCreateRequest("2호선", "bg-red-600");
-        given(lineService.saveLine(any(LineCreateDto.class))).willReturn(new Line(1L, "2호선", "green"));
+        given(lineService.saveLine(any(LineCreateRequest.class))).willReturn(new Line(1L, "2호선", "green"));
 
         // expect
         mockMvc.perform(post("/lines")

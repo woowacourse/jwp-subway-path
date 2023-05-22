@@ -29,7 +29,7 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
-        StationResponse stationResponse = StationResponse.from(stationService.saveStation(stationCreateRequest.toStationCreateDto()));
+        StationResponse stationResponse = StationResponse.from(stationService.saveStation(stationCreateRequest));
         return ResponseEntity.ok().body(stationResponse);
     }
 
@@ -48,7 +48,7 @@ public class StationController {
     @PutMapping("/{id}")
     public ResponseEntity<StationResponse> updateStation(@PathVariable Long id,
                                               @RequestBody @Valid StationUpdateRequest stationUpdateRequest) {
-        StationResponse stationResponse = StationResponse.from(stationService.updateStation(stationUpdateRequest.toStationUpdateDto(id)));
+        StationResponse stationResponse = StationResponse.from(stationService.updateStation(stationUpdateRequest, id));
         return ResponseEntity.ok().body(stationResponse);
     }
 

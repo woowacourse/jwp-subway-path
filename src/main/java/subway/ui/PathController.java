@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.PathService;
-import subway.application.dto.path.PathFindDto;
 import subway.application.dto.path.ShortestPathDto;
 import subway.ui.dto.path.ShortestPathResponse;
 
@@ -22,7 +21,7 @@ public class PathController {
     @GetMapping
     public ResponseEntity<ShortestPathResponse> findPath(@RequestParam Long sourceStationId,
                                                          @RequestParam Long destStationId) {
-        ShortestPathDto shortestPath = pathService.findPath(new PathFindDto(sourceStationId, destStationId));
+        ShortestPathDto shortestPath = pathService.findPath(sourceStationId, destStationId);
         return ResponseEntity.ok(ShortestPathResponse.from(shortestPath));
     }
 }
