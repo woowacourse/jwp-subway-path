@@ -56,7 +56,7 @@ class PathControllerIntegrationTest {
 
     @ParameterizedTest(name = "경로를 조회할 때, 나이가 {0} 할인 조건에 들어가면 할인된 금액이 반환되어야 한다.")
     @MethodSource("discountedAges")
-    void findPath_applyKidsDiscount(String displayName, String age, long price) throws Exception{
+    void findPath_applyKidsDiscount(String condition, String age, long price) throws Exception{
         // given
         String originStationName = "A역";
         String destinationStationName = "I역";
@@ -94,7 +94,7 @@ class PathControllerIntegrationTest {
 
     @ParameterizedTest(name = "{0}하면 경로 조회에 실패해야 한다.")
     @MethodSource("illegalPathRequest")
-    void findPath_IllegalPathRequest(String displayName, String originStationName,
+    void findPath_IllegalPathRequest(String condition, String originStationName,
                                      String destinationStationName, String expectMessage) throws Exception {
         // given
         String age = "20";
