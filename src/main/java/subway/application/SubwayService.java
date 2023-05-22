@@ -4,6 +4,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.dto.RouteSearchResponse;
+import subway.domain.fare.Age;
+import subway.domain.fare.AgeFarePolicy;
 import subway.domain.fare.DistanceFarePolicy;
 import subway.domain.fare.Fare;
 import subway.domain.line.Distance;
@@ -24,7 +26,7 @@ public class SubwayService {
         this.stationService = stationService;
     }
 
-    public RouteSearchResponse findRoute(String startStationName, String endStationName) {
+    public RouteSearchResponse findRoute(String startStationName, String endStationName, int age) {
         Station startStation = stationService.findByName(startStationName);
         Station endStation = stationService.findByName(endStationName);
         List<Line> lines = lineService.findAllLines();
@@ -34,16 +36,26 @@ public class SubwayService {
         List<Line> linesOnRoutes = routeGraph.findLinesOnRoutes(startStation, endStation);
         Distance distance = routeGraph.findShortestDistance(startStation, endStation);
 
-        Fare fare = calculateFare(linesOnRoutes, distance);
+        Fare fare = calculateFare(linesOnRoutes, distance, new Age(age));
         return new RouteSearchResponse(routes, distance.getValue(), fare.getValue());
     }
 
-    private Fare calculateFare(List<Line> linesOnRoute, Distance distance) {
+    private Fare calculateFare(List<Line> linesOnRoute, Distance distance, Age age) {
+        Fare fare = calculateDistacneFare(linesOnRoute, distance);
+        Fare discountFare = calculateDiscountFare(age, fare);
+        return new Fare(fare.getValue() - discountFare.getValue());
+    }
+
+    private static Fare calculateDistacneFare(List<Line> linesOnRoute, Distance distance) {
         Fare fare = DistanceFarePolicy.calculateFare(distance);
         int extraFare = linesOnRoute.stream()
                 .mapToInt(Line::getExtraFare)
                 .max()
                 .orElseThrow(() -> new IllegalArgumentException("노선의 추가 요금을 찾을 수 없습니다."));
         return new Fare(fare.getValue() + extraFare);
+    }
+
+    private Fare calculateDiscountFare(Age age, Fare fare) {
+        return AgeFarePolicy.calculateDiscountFare(age, fare);
     }
 }

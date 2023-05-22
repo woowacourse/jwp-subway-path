@@ -1,20 +1,20 @@
 package subway.domain.fare;
 
 import java.util.Objects;
-import subway.exception.InvalidFeeException;
+import subway.exception.InvalidAgeException;
 
-public class Fare {
+public class Age {
 
     private final int value;
 
-    public Fare(int value) {
+    public Age(int value) {
         validate(value);
         this.value = value;
     }
 
     private void validate(int value) {
-        if (value < 0) {
-            throw new InvalidFeeException("요금은 음수가 될 수 없습니다.");
+        if (value < 1) {
+            throw new InvalidAgeException("나이는 1살 이상 부터 가능합니다.");
         }
     }
 
@@ -30,8 +30,8 @@ public class Fare {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Fare fare = (Fare) o;
-        return getValue() == fare.getValue();
+        Age age = (Age) o;
+        return getValue() == age.getValue();
     }
 
     @Override
