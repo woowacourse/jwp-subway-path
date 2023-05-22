@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import subway.domain.Distance;
 import subway.domain.section.Section;
 import subway.exception.CanNotFindPathException;
+import subway.exception.StationNotFoundException;
 
 class ShortestPathFinderTest {
 
@@ -39,5 +40,16 @@ class ShortestPathFinderTest {
 
         assertThatThrownBy(() -> finder.findShortestPath(sections, GANGNAM, JAMSIL))
                 .isInstanceOf(CanNotFindPathException.class);
+    }
+
+    @DisplayName("출발지나 도착지가 Sections에 없는 경우 예외를 반환한다.")
+    @Test
+    void canNotFindStation() {
+        final Section section1 = new Section(GANGNAM, SEONGLENUG, new Distance(2));
+        final Section section2 = new Section(SEONGLENUG, JAMSIL, new Distance(2));
+        final List<Section> sections = List.of(section1, section2);
+
+        assertThatThrownBy(() -> finder.findShortestPath(sections, GANGNAM, SAMSUNG))
+                .isInstanceOf(StationNotFoundException.class);
     }
 }
