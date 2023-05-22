@@ -1,58 +1,67 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
+import subway.entity.StationEntity;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
+                    rs.getLong("station_id"),
                     rs.getString("name")
             );
 
-
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+                .usingGeneratedKeyColumns("station_id");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public boolean isStationIdExist(final Long stationId) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE station_id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId));
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
+    public boolean isStationNameExist(final String name) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE name = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, name));
+    }
+
+    public Long save(final StationEntity stationEntity) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", stationEntity.getName());
+        return insertAction.executeAndReturnKey(params).longValue();
+    }
+
+    public List<StationEntity> findAll() {
+        String sql = "SELECT station_id, name FROM station";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public StationEntity findByStationId(final Long stationId) {
+        String sql = "SELECT station_id, name FROM station WHERE station_id = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, stationId);
     }
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+    public StationEntity findByName(final String name) {
+        String sql = "SELECT station_id, name FROM station WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+    public void deleteByStationId(final Long stationId) {
+        String sql = "DELETE FROM station WHERE station_id = ?";
+        jdbcTemplate.update(sql, stationId);
     }
 }

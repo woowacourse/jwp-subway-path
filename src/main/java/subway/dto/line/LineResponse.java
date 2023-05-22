@@ -1,15 +1,21 @@
-package subway.domain;
+package subway.dto.line;
 
-public class Line {
+public class LineResponse {
 
+    private final Long id;
     private final Long lineNumber;
     private final String name;
     private final String color;
 
-    public Line(final Long lineNumber, final String name, final String color) {
+    public LineResponse(final Long id, final Long lineNumber, final String name, final String color) {
+        this.id = id;
         this.lineNumber = lineNumber;
         this.name = name;
         this.color = color;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getLineNumber() {

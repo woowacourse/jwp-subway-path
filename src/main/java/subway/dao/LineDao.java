@@ -1,61 +1,66 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import subway.entity.LineEntity;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
-                    rs.getLong("id"),
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+            new LineEntity(
+                    rs.getLong("line_id"),
+                    rs.getLong("line_number"),
                     rs.getString("name"),
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
-                .usingGeneratedKeyColumns("id");
+                .usingGeneratedKeyColumns("line_id");
     }
 
-    public Line insert(Line line) {
+    public boolean isLineNumberExist(final Long lineNumber) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM line WHERE line_number = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, lineNumber));
+    }
+
+    public boolean isLineIdExist(final Long lineId) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM line WHERE line_id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, lineId));
+    }
+
+    public Long save(final LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
+        params.put("name", lineEntity.getName());
+        params.put("line_number", lineEntity.getLineNumber());
+        params.put("color", lineEntity.getColor());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+    public LineEntity findByLineNumber(final Long lineNumber) {
+        String sql = "SELECT line_id, line_number, name, color FROM line WHERE line_number = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, lineNumber);
+    }
+
+    public List<LineEntity> findAll() {
+        String sql = "SELECT line_id, line_number, name, color FROM line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
-    }
-
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public void deleteByLineId(final Long lineId) {
+        jdbcTemplate.update("DELETE FROM line WHERE line_id = ?", lineId);
     }
 }
