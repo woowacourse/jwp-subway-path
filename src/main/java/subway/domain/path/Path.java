@@ -1,8 +1,9 @@
-package subway.domain.section;
+package subway.domain.path;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.domain.station.StationName;
 
@@ -12,12 +13,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SectionGraph {
+public class Path {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private final Map<StationName, Station> stationMap;
 
-    public SectionGraph(final List<Section> sections) {
+    public Path(final List<Section> sections) {
         this.stationMap = extractStationAsMap(sections);
         this.graph = createGraph(sections);
     }
@@ -27,19 +28,6 @@ public class SectionGraph {
                 .flatMap(section -> Stream.of(section.getBeforeStation(), section.getNextStation()))
                 .distinct()
                 .collect(Collectors.toMap(Station::getName, Function.identity()));
-    }
-
-    public static int calculateFare(final double distance) {
-        int fare = 1250;
-        if (10 < distance && distance <= 50) {
-            final double additionalWeight = (distance - 10) / 5;
-            fare += Math.ceil(additionalWeight) * 100;
-        }
-        if (50 < distance) {
-            final double additionalWeight = (distance - 50) / 8;
-            fare += 800 + Math.ceil(additionalWeight) * 100;
-        }
-        return fare;
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph(final List<Section> sections) {

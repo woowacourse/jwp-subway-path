@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import subway.application.SectionService;
+import subway.application.PathService;
 import subway.ui.request.PathRequest;
 import subway.ui.response.PathResponse;
 
@@ -15,15 +15,15 @@ import javax.validation.Valid;
 @RequestMapping("/lines/sections")
 public class SectionController {
 
-    private final SectionService sectionService;
+    private final PathService pathService;
 
-    public SectionController(final SectionService sectionService) {
-        this.sectionService = sectionService;
+    public SectionController(final PathService pathService) {
+        this.pathService = pathService;
     }
 
     @PostMapping("/path")
     public ResponseEntity<PathResponse> findPath(@Valid @RequestBody final PathRequest pathRequest) {
-        final PathResponse response = sectionService.findPath(pathRequest);
+        final PathResponse response = pathService.findPath(pathRequest);
         return ResponseEntity.ok(response);
     }
 }

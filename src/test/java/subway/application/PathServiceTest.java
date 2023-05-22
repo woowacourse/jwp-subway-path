@@ -15,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static subway.integration.IntegrationFixture.*;
 
-class SectionServiceTest extends IntegrationTest {
+class PathServiceTest extends IntegrationTest {
 
     @Autowired
-    private SectionService sectionService;
+    private PathService pathService;
     @Autowired
     private LineService lineService;
 
@@ -38,7 +38,7 @@ class SectionServiceTest extends IntegrationTest {
     void findPathTest() {
         final PathRequest request = new PathRequest(STATION_A.getName().getValue(), STATION_D.getName().getValue());
 
-        final PathResponse response = sectionService.findPath(request);
+        final PathResponse response = pathService.findPath(request);
 
         assertAll(
                 () -> assertThat(response.getFare()).isEqualTo(1350),
@@ -61,7 +61,7 @@ class SectionServiceTest extends IntegrationTest {
 
         final IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> sectionService.findPath(request)
+                () -> pathService.findPath(request)
         );
 
         assertThat(exception.getMessage()).isEqualTo("경로를 찾을 수 없습니다.");

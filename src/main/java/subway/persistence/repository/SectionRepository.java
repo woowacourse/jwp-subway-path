@@ -1,9 +1,9 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
+import subway.domain.path.Path;
 import subway.domain.section.Distance;
 import subway.domain.section.Section;
-import subway.domain.section.SectionGraph;
 import subway.domain.station.Station;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
@@ -26,10 +26,10 @@ public class SectionRepository {
         this.stationDao = stationDao;
     }
 
-    public SectionGraph findAll() {
+    public Path findAll() {
         final List<SectionEntity> sectionEntities = sectionDao.findAll();
         final Map<Long, Station> stationMap = getStationMap(sectionEntities);
-        return new SectionGraph(
+        return new Path(
                 sectionEntities.stream()
                         .map(sectionEntity -> new Section(
                                         sectionEntity.getId(),
