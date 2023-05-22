@@ -24,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
+import subway.application.discount.AgeDiscountService;
 import subway.application.path.PathService;
 import subway.application.price.PriceService;
 import subway.domain.path.Path;
@@ -46,12 +47,16 @@ class PathControllerTest {
     @MockBean
     PriceService priceService;
 
+    @MockBean
+    AgeDiscountService ageDiscountService;
+
     @Test
     @DisplayName("/path로 GET 요청과 함께 path의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void findPath_success() throws Exception {
         // given
         String originStationName = "서울역";
         String destinationStationName = "용산역";
+        String age = "20";
         given(pathService.findPath(anyString(), anyString()))
                 .willReturn(new Path(
                         List.of(
@@ -63,13 +68,13 @@ class PathControllerTest {
                         28,
                         Set.of(1L,2L,3L)
                 ));
-        given(priceService.calculate(any(Path.class)))
+        given(ageDiscountService.discount(any(),any()))
                 .willReturn(Price.from(1650));
 
 
         // expect
-        mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}",
-                                originStationName, destinationStationName)
+        mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}&age={age}",
+                                originStationName, destinationStationName, age)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(prettyDocument("path/find",
@@ -78,7 +83,9 @@ class PathControllerTest {
                                 parameterWithName("originStation").description("출발역")
                                         .attributes(constraint("10글자 이내")),
                                 parameterWithName("destinationStation").description("도착역")
-                                        .attributes(constraint("10글자 이내"))
+                                        .attributes(constraint("10글자 이내")),
+                                parameterWithName("age").description("나이")
+                                        .attributes(constraint("0~150살 이내"))
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("result.stations").description("역 목록"),

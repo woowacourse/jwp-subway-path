@@ -37,10 +37,11 @@ class PathControllerIntegrationTest {
         // given
         String originStationName = "A역";
         String destinationStationName = "I역";
+        String age = "20";
 
         // expect
-        mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}",
-                        originStationName, destinationStationName)
+        mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}&age={age}",
+                        originStationName, destinationStationName, age)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("A역에서 I역까지의 경로가 조회되었습니다."))
@@ -53,13 +54,54 @@ class PathControllerIntegrationTest {
                 .andExpect(jsonPath("$.result.price").value(1550));
     }
 
+    @ParameterizedTest(name = "경로를 조회할 때, 나이가 {0} 할인 조건에 들어가면 할인된 금액이 반환되어야 한다.")
+    @MethodSource("discountedAges")
+    void findPath_applyKidsDiscount(String displayName, String age, long price) throws Exception{
+        // given
+        String originStationName = "A역";
+        String destinationStationName = "I역";
+
+        // expect
+        mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}&age={age}",
+                        originStationName, destinationStationName, age)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.price").value(price));
+    }
+
+    static Stream<Arguments> discountedAges() {
+        return Stream.of(
+                Arguments.of("어린이", "6", 950),
+                Arguments.of("청소년", "13", 1310)
+        );
+    }
+
+    @Test
+    @DisplayName("경로를 조회할 때, 추가 요금이 없는 노선으로 가면 기본 요금이 계산되어야 한다.")
+    void findPath_shouldHighestFeeAdded() throws Exception {
+        // given
+        String originStationName = "A역";
+        String destinationStationName = "D역";
+        String age = "20";
+
+        // expect
+        mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}&age={age}",
+                        originStationName, destinationStationName, age)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.price").value(1250));
+    }
+
     @ParameterizedTest(name = "{0}하면 경로 조회에 실패해야 한다.")
     @MethodSource("illegalPathRequest")
     void findPath_IllegalPathRequest(String displayName, String originStationName,
                                      String destinationStationName, String expectMessage) throws Exception {
+        // given
+        String age = "20";
+
         // expect
-        mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}",
-                        originStationName, destinationStationName)
+        mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}&age={age}",
+                        originStationName, destinationStationName, age)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(expectMessage));

@@ -32,6 +32,9 @@ public class Price {
 
     public Price minus(Price price) {
         validateOverPrice(price);
+        if (price == ZERO) {
+            return this;
+        }
         if (Objects.equals(this, price)) {
             return ZERO;
         }
