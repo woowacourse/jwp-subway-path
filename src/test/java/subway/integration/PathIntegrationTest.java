@@ -78,7 +78,7 @@ class PathIntegrationTest extends IntegrationTest{
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getSectionResponses().size()).isEqualTo(2);
+        assertThat(pathResponse.getStationResponses().size()).isEqualTo(3);
         assertThat(pathResponse.getDistance()).isEqualTo(distance1 + distance2);
     }
 
@@ -135,7 +135,7 @@ class PathIntegrationTest extends IntegrationTest{
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getSectionResponses().size()).isEqualTo(2);
+        assertThat(pathResponse.getStationResponses().size()).isEqualTo(3);
         assertThat(pathResponse.getDistance()).isEqualTo(distance1 + distance2);
     }
 

@@ -4,18 +4,18 @@ import java.util.List;
 
 public final class PathResponse {
 
-    private List<SectionResponse> sectionResponses;
+    private List<StationResponse> stationResponses;
     private int distance;
     private int cost;
 
-    public PathResponse(List<SectionResponse> sectionResponses, int distance, int cost) {
-        this.sectionResponses = sectionResponses;
+    public PathResponse(List<StationResponse> stationResponses, int distance, int cost) {
+        this.stationResponses = stationResponses;
         this.distance = distance;
         this.cost = cost;
     }
 
-    public List<SectionResponse> getSectionResponses() {
-        return sectionResponses;
+    public List<StationResponse> getStationResponses() {
+        return stationResponses;
     }
 
     public int getDistance() {

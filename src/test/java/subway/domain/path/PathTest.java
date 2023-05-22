@@ -1,6 +1,5 @@
 package subway.domain.path;
 
-import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.line.Direction;
@@ -30,13 +29,13 @@ class PathTest {
         line.addStation(station3, station2, Direction.RIGHT, distance2);
 
         //when
-        Path path = new Path(List.of(line), List.of(station1, station2, station3));
-        GraphPath<Station, LineRecordedDefaultWeightedEdge> dijkstraShortestPath = path.getDijkstraShortestPath(station1, station3);
+        StationGraph path = new ShortestStationGraph(List.of(line), List.of(station1, station2, station3));
+        ShortestPath shortestPath = path.getShortestPath(station1, station3);
 
         //then
-        assertEquals(expectDistance, dijkstraShortestPath.getWeight());
-        assertEquals(station1, dijkstraShortestPath.getStartVertex());
-        assertEquals(station3, dijkstraShortestPath.getEndVertex());
+        assertEquals(expectDistance, shortestPath.getDistance());
+        assertEquals(station1, shortestPath.getPath().get(0));
+        assertEquals(station3, shortestPath.getPath().get(shortestPath.getPath().size() - 1));
     }
 
     @DisplayName("환승하는 경로가 있는 경우 해당 경로를 반환한다.")
@@ -60,13 +59,13 @@ class PathTest {
         line2.addStation(station5, station2, Direction.RIGHT, distance2);
 
         //when
-        Path path = new Path(List.of(line1, line2), List.of(station1, station2, station3, station4, station5));
-        GraphPath<Station, LineRecordedDefaultWeightedEdge> dijkstraShortestPath = path.getDijkstraShortestPath(station1, station5);
+        StationGraph path = new ShortestStationGraph(List.of(line1, line2), List.of(station1, station2, station3, station4, station5));
+        ShortestPath shortestPath = path.getShortestPath(station1, station5);
 
         //then
-        assertEquals(expectDistance, dijkstraShortestPath.getWeight());
-        assertEquals(station1, dijkstraShortestPath.getStartVertex());
-        assertEquals(station5, dijkstraShortestPath.getEndVertex());
+        assertEquals(expectDistance, shortestPath.getDistance());
+        assertEquals(station1, shortestPath.getPath().get(0));
+        assertEquals(station5, shortestPath.getPath().get(shortestPath.getPath().size() - 1));
     }
 
     @DisplayName("최단경로가 없는 경우 예외를 던진다.")
@@ -88,10 +87,10 @@ class PathTest {
         line2.addStation(station6, station5, Direction.RIGHT, extraDistance);
 
         //when
-        Path path = new Path(List.of(line1, line2), List.of(station1, station2, station3, station4, station5, station6));
+        ShortestStationGraph path = new ShortestStationGraph(List.of(line1, line2), List.of(station1, station2, station3, station4, station5, station6));
 
         //then
-        assertThrows(NoSuchShortestPathException.class, () -> path.getDijkstraShortestPath(station1, station5));
+        assertThrows(NoSuchShortestPathException.class, () -> path.getShortestPath(station1, station5));
     }
 
     @DisplayName("환승하는 최단경로가 있는 경우 해당 경로를 반환한다.")
@@ -114,12 +113,12 @@ class PathTest {
         line2.initStations(station2, station3, distance2);
 
         //when
-        Path path = new Path(List.of(line1, line2), List.of(station1, station2, station3));
-        GraphPath<Station, LineRecordedDefaultWeightedEdge> dijkstraShortestPath = path.getDijkstraShortestPath(station1, station3);
+        StationGraph path = new ShortestStationGraph(List.of(line1, line2), List.of(station1, station2, station3));
+        ShortestPath shortestPath = path.getShortestPath(station1, station3);
 
         //then
-        assertEquals(expectDistance, dijkstraShortestPath.getWeight());
-        assertEquals(station1, dijkstraShortestPath.getStartVertex());
-        assertEquals(station3, dijkstraShortestPath.getEndVertex());
+        assertEquals(expectDistance, shortestPath.getDistance());
+        assertEquals(station1, shortestPath.getPath().get(0));
+        assertEquals(station3, shortestPath.getPath().get(shortestPath.getPath().size() - 1));
     }
 }

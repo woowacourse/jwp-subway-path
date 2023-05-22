@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class Path {
+public final class ShortestStationGraph implements StationGraph {
 
     private WeightedMultigraph<Station, LineRecordedDefaultWeightedEdge> graph;
 
-    public Path(List<Line> lines, List<Station> stations) {
+    public ShortestStationGraph(List<Line> lines, List<Station> stations) {
         graph = new WeightedMultigraph<>(LineRecordedDefaultWeightedEdge.class);
         for (Station station : stations) {
             graph.addVertex(station);
@@ -31,7 +31,8 @@ public final class Path {
         }
     }
 
-    public GraphPath<Station, LineRecordedDefaultWeightedEdge> getDijkstraShortestPath(Station startStation, Station endStation) {
+    @Override
+    public ShortestPath getShortestPath(Station startStation, Station endStation) {
         DijkstraShortestPath<Station, LineRecordedDefaultWeightedEdge> dijkstraShortestPath
                 = new DijkstraShortestPath<>(graph);
         GraphPath<Station, LineRecordedDefaultWeightedEdge> path = dijkstraShortestPath.getPath(startStation, endStation);
@@ -39,18 +40,6 @@ public final class Path {
         if (Objects.isNull(path)) {
             throw new NoSuchShortestPathException();
         }
-        return path;
-    }
-
-    public Station getEdgeSource(LineRecordedDefaultWeightedEdge lineRecordedDefaultWeightedEdge) {
-        return graph.getEdgeSource(lineRecordedDefaultWeightedEdge);
-    }
-
-    public Station getEdgeTarget(LineRecordedDefaultWeightedEdge lineRecordedDefaultWeightedEdge) {
-        return graph.getEdgeTarget(lineRecordedDefaultWeightedEdge);
-    }
-
-    public int getEdgeWeight(LineRecordedDefaultWeightedEdge lineRecordedDefaultWeightedEdge) {
-        return (int) graph.getEdgeWeight(lineRecordedDefaultWeightedEdge);
+        return new subway.domain.path.DijkstraShortestPath(path.getVertexList(), (int)path.getWeight());
     }
 }

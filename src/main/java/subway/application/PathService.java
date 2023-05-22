@@ -1,14 +1,14 @@
 package subway.application;
 
-import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 import subway.domain.line.Line;
 import subway.domain.path.CostCalculator;
-import subway.domain.path.LineRecordedDefaultWeightedEdge;
-import subway.domain.path.Path;
+import subway.domain.path.ShortestPath;
+import subway.domain.path.ShortestStationGraph;
+import subway.domain.path.StationGraph;
 import subway.domain.station.Station;
 import subway.dto.PathResponse;
-import subway.dto.SectionResponse;
+import subway.dto.StationResponse;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -31,17 +31,14 @@ public final class PathService {
         Station endStation = stationRepository.findById(endStationId);
         List<Station> stations = stationRepository.findAll();
         List<Line> lines = lineRepository.findAll();
-        Path path = new Path(lines, stations);
+        StationGraph stationGraph = new ShortestStationGraph(lines, stations);
+        ShortestPath shortestPath = stationGraph.getShortestPath(startStation, endStation);
 
-        GraphPath<Station, LineRecordedDefaultWeightedEdge> dijkstraShortestPath = path.getDijkstraShortestPath(startStation, endStation);
-        List<SectionResponse> sectionResponses = dijkstraShortestPath.getEdgeList()
+        List<StationResponse> stationResponses = shortestPath
+                .getPath()
                 .stream()
-                .map(lineRecordedDefaultWeightedEdge -> new SectionResponse(
-                        lineRecordedDefaultWeightedEdge.getLineId(),
-                        path.getEdgeSource(lineRecordedDefaultWeightedEdge).getId(),
-                        path.getEdgeTarget(lineRecordedDefaultWeightedEdge).getId(),
-                        path.getEdgeWeight(lineRecordedDefaultWeightedEdge)))
+                .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
-        return new PathResponse(sectionResponses, (int) dijkstraShortestPath.getWeight(), CostCalculator.calculateCost((int) dijkstraShortestPath.getWeight()));
+        return new PathResponse(stationResponses, shortestPath.getDistance(), CostCalculator.calculateCost(shortestPath.getDistance()));
     }
 }
