@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.application.core.exception.ExpectedException;
 import subway.presentation.dto.ExceptionResponse;
 
+import javax.validation.ConstraintDeclarationException;
+import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 
 @RestControllerAdvice
@@ -24,7 +26,7 @@ public class ExceptionAdvice {
                 .body(new ExceptionResponse("유효하지 않은 입력입니다."));
     }
 
-    @ExceptionHandler(ExpectedException.class)
+    @ExceptionHandler({ExpectedException.class, ConstraintViolationException.class})
     public ResponseEntity<ExceptionResponse> expectedException(ExpectedException e) {
         logger.warn(e.getMessage(), e);
 
