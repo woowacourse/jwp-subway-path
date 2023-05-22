@@ -65,6 +65,10 @@ public class Line {
         }
     }
 
+    public boolean isExistSection(final Section section) {
+        return sections.isExistSection(section);
+    }
+
     public Long getId() {
         return id;
     }

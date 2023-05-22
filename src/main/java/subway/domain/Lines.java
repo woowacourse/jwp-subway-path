@@ -44,6 +44,33 @@ public class Lines {
         }
     }
 
+    public Line getLineOfSection(final Section section) {
+        return lines.stream()
+                .filter(line -> line.isExistSection(section))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당 구간이 없습니다."));
+    }
+
+    public List<Station> getAllStations() {
+        List<Section> allSections = getAllSections();
+        List<Station> stations = new ArrayList<>();
+        for (Section section : allSections) {
+            stations.add(section.getUpStation());
+            stations.add(section.getDownStation());
+        }
+        return stations.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<Section> getAllSections() {
+        List<Section> sections = new ArrayList<>();
+        for (Line line : lines) {
+            sections.addAll(line.getSections());
+        }
+        return sections;
+    }
+
     public List<Line> getLines() {
         return new ArrayList<>(lines);
     }

@@ -152,6 +152,10 @@ public class Sections {
                 .getDownStation();
     }
 
+    public boolean isExistSection(final Section section) {
+        return sections.contains(section);
+    }
+
     private Map<Station, Section> getUpToDown() {
         Map<Station, Section> upStationToDownStation = new HashMap<>();
         for (Section section : sections) {
