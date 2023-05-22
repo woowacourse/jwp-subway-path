@@ -2,14 +2,15 @@ package subway.domain;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Distance {
 
-    private int value;
-
-    private Distance() {
-    }
-
-    public Distance(final int value) {
+    private final int value;
+    
+    @JsonCreator
+    public Distance(@JsonProperty("value") final int value) {
         validate(value);
         this.value = value;
     }
