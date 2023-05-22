@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.dto.ExceptionResponse;
-import subway.exeption.*;
-
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import subway.exeption.SubwayException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,48 +33,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleSubwayException(final SubwayException exception) {
         logger.warn(exception.getMessage(), exception);
         return ResponseEntity.badRequest()
-                .body(new ExceptionResponse(exception.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidDistanceException.class)
-    public ResponseEntity<ExceptionResponse> handleInvalidDistanceException(final InvalidDistanceException exception) {
-        logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.badRequest()
-                .body(new ExceptionResponse(exception.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidLineException.class)
-    public ResponseEntity<ExceptionResponse> handleInvalidLineException(final InvalidLineException exception) {
-        logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.status(BAD_REQUEST)
-                .body(new ExceptionResponse(exception.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidPathException.class)
-    public ResponseEntity<ExceptionResponse> handleInvalidPathException(final InvalidPathException exception) {
-        logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.badRequest()
-                .body(new ExceptionResponse(exception.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidStationException.class)
-    public ResponseEntity<ExceptionResponse> handleInvalidStationException(final InvalidStationException exception) {
-        logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.badRequest()
-                .body(new ExceptionResponse(exception.getMessage()));
-    }
-
-    @ExceptionHandler(LineNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleLineNotFoundException(final LineNotFoundException exception) {
-        logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.status(NOT_FOUND)
-                .body(new ExceptionResponse(exception.getMessage()));
-    }
-
-    @ExceptionHandler(StationNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleStationNotFoundException(final StationNotFoundException exception) {
-        logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.status(NOT_FOUND)
                 .body(new ExceptionResponse(exception.getMessage()));
     }
 }
