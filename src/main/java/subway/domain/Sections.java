@@ -47,21 +47,6 @@ public class Sections {
         return upStations.get(0);
     }
 
-    public List<Station> getStations() {
-        if (isEmpty()) {
-            return List.of();
-        }
-
-        List<Station> sortedStations = new ArrayList<>();
-        sortedStations.add(findFirstStation(sections));
-        sortedStations.addAll(
-                sections.stream()
-                        .map(Section::getDownStation)
-                        .collect(Collectors.toList())
-        );
-        return sortedStations;
-    }
-
 
     public void addSection(Section newSection) {
         if (isEmpty()) {
@@ -200,6 +185,21 @@ public class Sections {
 
     public boolean isEmpty() {
         return sections.isEmpty();
+    }
+
+    public List<Station> getStations() {
+        if (isEmpty()) {
+            return List.of();
+        }
+
+        List<Station> sortedStations = new ArrayList<>();
+        sortedStations.add(findFirstStation(sections));
+        sortedStations.addAll(
+                sections.stream()
+                        .map(Section::getDownStation)
+                        .collect(Collectors.toList())
+        );
+        return sortedStations;
     }
 
     public List<Section> getSections() {

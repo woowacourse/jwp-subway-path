@@ -34,7 +34,7 @@ public class SectionService {
 
     public Long save(SectionCreateRequest sectionCreateRequest) {
         Long lineId = sectionCreateRequest.getLineId();
-        Line line = convertToLineByEntity(lineId);
+        Line line = findLine(lineId);
         StationEntity upStationEntity = findStationByName(sectionCreateRequest.getUpStation());
         StationEntity downStationEntity = findStationByName(sectionCreateRequest.getDownStation());
         line.addSection(
@@ -51,7 +51,7 @@ public class SectionService {
 
     public void delete(SectionDeleteRequest sectionDeleteRequest) {
         Long lineId = sectionDeleteRequest.getLineId();
-        Line line = convertToLineByEntity(lineId);
+        Line line = findLine(lineId);
         StationEntity stationEntity = findStationByName(sectionDeleteRequest.getName());
         line.deleteSection(new Station(stationEntity.getId(), stationEntity.getName()));
 
@@ -78,14 +78,14 @@ public class SectionService {
         }
     }
 
-    private Line convertToLineByEntity(Long lineId) {
+    private Line findLine(Long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId);
-        List<Section> sections = convertToSectionByEntity(lineId);
+        List<Section> sections = findSections(lineId);
 
         return Line.of(lineEntity.getName(), sections);
     }
 
-    private List<Section> convertToSectionByEntity(Long id) {
+    private List<Section> findSections(Long id) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
         Map<Long, String> stationEntities = stationDao.findAll().stream()
                 .collect(Collectors.toMap(
