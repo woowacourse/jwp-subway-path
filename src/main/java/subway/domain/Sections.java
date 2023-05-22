@@ -40,8 +40,8 @@ public class Sections implements Iterable<Section> {
         return sections.size() == 1;
     }
 
-    private boolean isEqualEndStation() {
-        return sections.get(0).getLeft().equals(sections.get(1).getRight());
+    private boolean isEqualMiddleStation() {
+        return sections.get(0).getRight().equals(sections.get(1).getLeft());
     }
 
     public Long getRightStationId() {
@@ -52,10 +52,6 @@ public class Sections implements Iterable<Section> {
             return sections.get(1).getRightId();
         }
         return sections.get(0).getRightId();
-    }
-
-    private boolean isEqualMiddleStation() {
-        return sections.get(0).getRight().equals(sections.get(1).getLeft());
     }
 
     public boolean isPresent() {
