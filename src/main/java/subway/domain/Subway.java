@@ -2,9 +2,12 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+
+import subway.domain.exception.ShortestPathSearchFailedException;
 
 public class Subway {
 
@@ -15,6 +18,10 @@ public class Subway {
     }
 
     public Path getShortestPath(Station from, Station to) {
+        return handleExceptionOf(() -> findShortestPath(from, to));
+    }
+
+    private Path findShortestPath(Station from, Station to) {
         WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
         for (Line line : lines) {
             addVertexTo(graph, line.getStations());
@@ -34,6 +41,15 @@ public class Subway {
         for (Section section : sections) {
             graph.addEdge(section.getUpperStation(), section.getLowerStation(), section);
             graph.setEdgeWeight(section, section.getDistance().getValue());
+        }
+    }
+
+    private Path handleExceptionOf(Supplier<Path> shortestPathSupplier) {
+        try {
+            return shortestPathSupplier.get();
+        } catch (RuntimeException exception) {
+            exception.printStackTrace();
+            throw new ShortestPathSearchFailedException();
         }
     }
 }
