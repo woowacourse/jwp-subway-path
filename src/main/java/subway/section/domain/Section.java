@@ -1,29 +1,27 @@
 package subway.section.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import org.jgrapht.graph.WeightedMultigraph;
 import subway.station.domain.Station;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@ToString
-@EqualsAndHashCode
 public class Section {
     private final Station left;
     private final Station right;
     private final Distance distance;
+    private final String lineName;
     
-    public Section(final String left, final String right, final long distance) {
-        this(new Station(left), new Station(right), new Distance(distance));
+    public Section(final String left, final String right, final long distance, final String lineName) {
+        this(new Station(left), new Station(right), new Distance(distance), lineName);
     }
     
-    public Section(final Station left, final Station right, final Distance distance) {
+    private Section(final Station left, final Station right, final Distance distance, final String lineName) {
         this.left = left;
         this.right = right;
         this.distance = distance;
+        this.lineName = lineName;
     }
     
     public boolean hasStation(final String station) {
@@ -59,20 +57,21 @@ public class Section {
     }
     
     private Set<Section> createLeftSection(final String leftAdditional, final long additionalDistance) {
-        final Section additionalRightSection = new Section(leftAdditional, left.getName(), additionalDistance);
+        final Section additionalRightSection = new Section(leftAdditional, left.getName(), additionalDistance, lineName);
         return Set.of(additionalRightSection);
     }
     
     private Set<Section> createRightSection(final String rightAdditional, final long additionalDistance) {
-        final Section additionalLeftSection = new Section(right.getName(), rightAdditional, additionalDistance);
+        final Section additionalLeftSection = new Section(right.getName(), rightAdditional, additionalDistance, lineName);
         return Set.of(additionalLeftSection);
     }
     
     private Set<Section> createDividedSections(final String betweenAdditional, final long additionalDistance) {
         validateLength(additionalDistance);
         
-        final Section additionalLeftSection = new Section(left.getName(), betweenAdditional, additionalDistance);
-        final Section additionalRightSection = new Section(betweenAdditional, right.getName(), this.distance.subtract(additionalDistance));
+        final Section additionalLeftSection = new Section(left.getName(), betweenAdditional, additionalDistance, lineName);
+        final Section additionalRightSection =
+                new Section(betweenAdditional, right.getName(), this.distance.subtract(additionalDistance), lineName);
         return Set.of(additionalLeftSection, additionalRightSection);
     }
     
@@ -85,10 +84,10 @@ public class Section {
     public Section combine(final Section otherSection) {
         final Distance combineDistance = new Distance(this.distance.add(otherSection.distance));
         if (this.right.equals(otherSection.left)) {
-            return new Section(this.left, otherSection.right, combineDistance);
+            return new Section(this.left, otherSection.right, combineDistance, lineName);
         }
         
-        return new Section(otherSection.left, this.right, combineDistance);
+        return new Section(otherSection.left, this.right, combineDistance, lineName);
     }
     
     public void putStationIfNotExist(final Set<Station> stations) {
@@ -109,5 +108,51 @@ public class Section {
     
     public boolean isRightStation(final Station station) {
         return this.right.equals(station);
+    }
+    
+    public void addStationsAndDistanceToGraph(final WeightedMultigraph<Station, Section> graph) {
+        graph.addVertex(left);
+        graph.addVertex(right);
+        graph.addEdge(left, right, this);
+        graph.setEdgeWeight(left, right, distance.getDistance());
+    }
+    
+    public Station getLeft() {
+        return left;
+    }
+    
+    public Station getRight() {
+        return right;
+    }
+    
+    public Distance getDistance() {
+        return distance;
+    }
+    
+    public String getLineName() {
+        return lineName;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Section section = (Section) o;
+        return Objects.equals(left, section.left) && Objects.equals(right, section.right) && Objects.equals(distance, section.distance) && Objects.equals(lineName, section.lineName);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, right, distance, lineName);
+    }
+    
+    @Override
+    public String toString() {
+        return "Section{" +
+                "left=" + left +
+                ", right=" + right +
+                ", distance=" + distance +
+                ", lineName='" + lineName + '\'' +
+                '}';
     }
 }

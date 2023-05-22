@@ -1,43 +1,80 @@
 package subway.advice;
 
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import subway.dto.ExceptionResponse;
 
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @RestControllerAdvice
-public class GlobalExceptionHandler {
-    private final Logger logger;
-    
-    private ResponseEntity<ExceptionResponse> logAndRespond(final String message, final HttpStatus status) {
-        logger.error(message);
-        return ResponseEntity.status(status).body(new ExceptionResponse("[ERROR] " + message));
-    }
-    
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
-        return logAndRespond("서버가 응답할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Object> handleInternalServerException(final Exception exception, final WebRequest request) {
+        final String message = "[ERROR] 서버가 응답할 수 없습니다.";
+        logger.error(message);
+        return this.handleExceptionInternal(exception, null, HttpHeaders.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
     
-    @ExceptionHandler
-    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException (final IllegalArgumentException exception) {
-        return logAndRespond(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(
+            final TypeMismatchException ex,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
+    ) {
+        final String message = "[ERROR] 파라미터 타입과 일치하지 않습니다.";
+        logger.error(message);
+        return ResponseEntity.badRequest().body(new ExceptionResponse(message));
     }
     
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
-        final String exceptionMessage = exception.getBindingResult().getAllErrors().stream()
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            final HttpMessageNotReadableException ex,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request) {
+        final String message = "[ERROR] 해당 파라미터로 변환할 수 없습니다.";
+        logger.error(message);
+        return ResponseEntity.badRequest().body(new ExceptionResponse(message));
+    }
+    
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            final MethodArgumentNotValidException ex,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
+    ) {
+        final String exceptionMessage = ex.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining(System.lineSeparator()));
+                .collect(Collectors.joining(System.lineSeparator() + "[ERROR] ", "[ERROR] ", ""));
         
-        return logAndRespond(exceptionMessage, HttpStatus.BAD_REQUEST);
+        logger.error(exceptionMessage);
+        return ResponseEntity.badRequest().body(new ExceptionResponse(exceptionMessage));
+    }
+    
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(
+            final Exception ex,
+            final Object body,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
+    ) {
+        String message = "[ERROR] 서버가 응답할 수 없습니다.";
+        if (ex instanceof IllegalArgumentException) {
+            message = "[ERROR] " + ex.getMessage();
+        }
+        logger.error(message);
+        return ResponseEntity.badRequest().body(new ExceptionResponse(message));
     }
 }

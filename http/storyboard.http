@@ -6,7 +6,8 @@ Content-Type: application/json
 
 {
   "name": "1호선",
-  "color": "파랑"
+  "color": "파랑",
+  "extraCharge": 1000
 }
 
 > Expected response:
@@ -61,6 +62,9 @@ Accept: application/json
 > Status: 200 OK
 > Body:
 > {
+>   "lineName": "1호선",
+>   "lineColor": "파랑",
+>   "extraCharge": 1000,
 >   "sortedStations": [
 >     "잠실역",
 >     "청라역",
@@ -89,6 +93,93 @@ Content-Type: application/json
 
 
 ###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+# 성인 요금
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "가정역",
+  "ageGroupFeeCalculator": "ADULT"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "선릉역",
+>     "가정역"
+>   ],
+>   "shortestDistance": 8,
+>   "fee": 2250
+> }
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+# 청소년 요금
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "가정역",
+  "ageGroupFeeCalculator": "TEENAGER"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "선릉역",
+>     "가정역"
+>   ],
+>   "shortestDistance": 8,
+>   "fee": 1520
+> }
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+# 어린이 요금
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "가정역",
+  "ageGroupFeeCalculator": "CHILD"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "선릉역",
+>     "가정역"
+>   ],
+>   "shortestDistance": 8,
+>   "fee": 950
+> }
+
+
+###
 # @name addLine
 # @description Create a new line
 POST http://localhost:8080/lines
@@ -96,7 +187,8 @@ Content-Type: application/json
 
 {
   "name": "2호선",
-  "color": "초록"
+  "color": "초록",
+  "extraCharge": 0
 }
 
 > Expected response:
@@ -153,6 +245,9 @@ Accept: application/json
 > {
 >   "allSortedLines": [
 >     {
+>       "lineName": "1호선",
+>       "lineColor": "파랑",
+>       "extraCharge": 1000,
 >       "sortedStations": [
 >         "잠실역",
 >         "청라역",
@@ -161,6 +256,9 @@ Accept: application/json
 >       ]
 >     },
 >     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
+>       "extraCharge": 0,
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
@@ -175,7 +273,8 @@ Accept: application/json
 ###
 # @name deleteStation
 # @description Delete a specific station
-DELETE http://localhost:8080/stations
+# 1호선 선릉역 삭제
+DELETE http://localhost:8080/stations/one
 Content-Type: application/json
 
 {
@@ -186,7 +285,6 @@ Content-Type: application/json
 
 > Expected response:
 > Status: 204 No Content
-> 1호선 선릉역 삭제
 
 
 ###
@@ -201,6 +299,9 @@ Accept: application/json
 > {
 >   "allSortedLines": [
 >     {
+>       "lineName": "1호선",
+>       "lineColor": "파랑",
+>       "extraCharge": 1000,
 >       "sortedStations": [
 >         "잠실역",
 >         "청라역",
@@ -208,10 +309,195 @@ Accept: application/json
 >       ]
 >     },
 >     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
+>       "extraCharge": 0,
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",
 >         "신길역"
+>       ]
+>     }
+>   ]
+> }
+
+
+###
+# @name addStation
+# @description Create a new station
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineId": 2,
+  "baseStation": "신도림역",
+  "direction": "RIGHT",
+  "additionalStation": "청라역",
+  "distance": 2
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/stations/{stationId}
+
+
+###
+# @name getAllSortedLine
+# @description Retrieve all sorted lines
+GET http://localhost:8080/lines
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "allSortedLines": [
+>     {
+>       "lineName": "1호선",
+>       "lineColor": "파랑",
+>       "extraCharge": 1000,
+>       "sortedStations": [
+>         "잠실역",
+>         "청라역",
+>         "가정역"
+>       ]
+>     },
+>     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
+>       "extraCharge": 0,
+>       "sortedStations": [
+>         "화정역",
+>         "신도림역",
+>         "청라역",
+>         "신길역"
+>       ]
+>     }
+>   ]
+> }
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "화정역",
+  "ageGroupFeeCalculator": "ADULT"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "신도림역",
+>     "화정역"
+>   ],
+>   "shortestDistance": 11,
+>   "fee": 2350
+> }
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "화정역",
+  "ageGroupFeeCalculator": "TEENAGER"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "신도림역",
+>     "화정역"
+>   ],
+>   "shortestDistance": 11,
+>   "fee": 1600
+> }
+
+
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "화정역",
+  "ageGroupFeeCalculator": "CHILD"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "신도림역",
+>     "화정역"
+>   ],
+>   "shortestDistance": 11,
+>   "fee": 1000
+> }
+
+
+###
+# @name deleteStationOnAllLines
+# @description Deletes a station from all lines.
+# @method DELETE
+# @shortestPathFinder /stations/{stationId}
+# 청라역 삭제
+DELETE http://localhost:8080/stations/3
+
+
+###
+# @name getAllSortedLine
+# @description Retrieve all sorted lines
+GET http://localhost:8080/lines
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "allSortedLines": [
+>     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
+>       "extraCharge": 0,
+>       "sortedStations": [
+>         "화정역",
+>         "신도림역",
+>         "신길역"
+>       ]
+>     },
+>     {
+>       "lineName": "1호선",
+>       "lineColor": "파랑",
+>       "extraCharge": 1000,
+>       "sortedStations": [
+>         "잠실역",
+>         "가정역"
 >       ]
 >     }
 >   ]
@@ -240,6 +526,9 @@ Accept: application/json
 > {
 >   "allSortedLines": [
 >     {
+>       "lineName": "2호선",
+>       "lineColor": "초록",
+>       "extraCharge": 0,
 >       "sortedStations": [
 >         "화정역",
 >         "신도림역",

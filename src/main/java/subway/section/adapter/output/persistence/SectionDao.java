@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import subway.section.domain.Section;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +50,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
     
-    public void deleteByLineId(final Long lineId) { // TODO
+    public void deleteByLineId(final Long lineId) {
         final String sql = "DELETE FROM section WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }

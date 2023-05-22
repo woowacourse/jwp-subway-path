@@ -36,7 +36,7 @@ class InitAddStationServiceTest {
     @Test
     void 최초_역_등록하기() {
         // given
-        final Line line = new Line("1호선", "파랑");
+        final Line line = new Line("1호선", "파랑", 0L);
         given(getAllLinePort.getAll()).willReturn(Set.of(line));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line);
         
@@ -48,7 +48,7 @@ class InitAddStationServiceTest {
     @Test
     void 최초_역_등록시_구간이_존재하면_예외_발생() {
         // given
-        final Line line = new Line("1호선", "파랑");
+        final Line line = new Line("1호선", "파랑", 0L);
         line.initAddStation("잠실역", "선릉역", 3L);
         given(getAllLinePort.getAll()).willReturn(Set.of(line));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line);

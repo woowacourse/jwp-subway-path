@@ -1,14 +1,7 @@
 package subway.section.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
-
 import java.util.Objects;
 
-@Getter
-@ToString
-@EqualsAndHashCode
 public class Distance {
     private static final int MIN_DISTANCE = 1;
     
@@ -46,5 +39,29 @@ public class Distance {
     
     public boolean lessThanOrEqualTo(final long additionalDistance) {
         return this.distance <= additionalDistance;
+    }
+    
+    public Long getDistance() {
+        return distance;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Distance distance1 = (Distance) o;
+        return Objects.equals(distance, distance1.distance);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
+    }
+    
+    @Override
+    public String toString() {
+        return "Distance{" +
+                "distance=" + distance +
+                '}';
     }
 }

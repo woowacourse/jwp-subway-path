@@ -38,7 +38,7 @@ Content-Type: application/json
 ###
 # @name deleteStation
 # @description Delete a specific station
-DELETE http://localhost:8080/stations
+DELETE http://localhost:8080/stations/one
 Content-Type: application/json
 
 {
@@ -48,3 +48,14 @@ Content-Type: application/json
 
 > Expected response:
 > Status: 204 No Content
+
+
+###
+# @name deleteStationOnAllLines
+# @description Deletes a station from all lines.
+# This request will not return any content upon success.
+# @method DELETE
+# @shortestPathFinder /stations/{stationId}
+###
+
+DELETE http://localhost:8080/stations/3

@@ -1,0 +1,27 @@
+###
+# @name getShortestPath
+# @description Retrieve shortest shortestPathFinder
+# 성인 요금
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startStationName": "잠실역",
+  "endStationName": "가정역",
+  "ageGroupFeeCalculator": "ADULT"
+}
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "shortestPath": [
+>     "잠실역",
+>     "청라역",
+>     "선릉역",
+>     "가정역"
+>   ],
+>   "shortestDistance": 8,
+>   "fee": 2250
+> }

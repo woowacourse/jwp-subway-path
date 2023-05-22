@@ -6,6 +6,9 @@ build/
 !**/src/test/**
 /frontend/node_modules/
 
+InitCon.java
+init.http
+
 ### STS ###
 .apt_generated
 .classpath

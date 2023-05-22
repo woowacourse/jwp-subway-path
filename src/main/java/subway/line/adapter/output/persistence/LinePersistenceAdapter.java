@@ -1,6 +1,5 @@
 package subway.line.adapter.output.persistence;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import subway.line.application.port.output.DeleteLinePort;
 import subway.line.application.port.output.GetAllLinePort;
@@ -16,12 +15,17 @@ import subway.station.adapter.output.persistence.StationEntity;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Repository
 public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, GetLineByIdPort, DeleteLinePort {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    
+    public LinePersistenceAdapter(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
+        this.lineDao = lineDao;
+        this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
+    }
     
     @Override
     public Set<Line> getAll() {
@@ -41,16 +45,21 @@ public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, Get
                 .map(sectionEntity -> {
                     final StationEntity firstStationEntity = stationDao.findById(sectionEntity.getFirstStationId());
                     final StationEntity secondStationEntity = stationDao.findById(sectionEntity.getSecondStationId());
-                    return new Section(firstStationEntity.getName(), secondStationEntity.getName(), sectionEntity.getDistance());
+                    return new Section(
+                            firstStationEntity.getName(),
+                            secondStationEntity.getName(),
+                            sectionEntity.getDistance(),
+                            lineEntity.getName()
+                    );
                 })
                 .collect(Collectors.toSet());
         
-        return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
+        return new Line(lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraCharge(), sections);
     }
     
     @Override
     public Long save(final Line line) {
-        return lineDao.insert(new LineEntity(line.getName(), line.getColor()));
+        return lineDao.insert(new LineEntity(line.getName(), line.getColor(), line.getExtraCharge()));
     }
     
     @Override
@@ -62,11 +71,16 @@ public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, Get
                 .map(sectionEntity -> {
                     final StationEntity first = stationDao.findById(sectionEntity.getFirstStationId());
                     final StationEntity second = stationDao.findById(sectionEntity.getSecondStationId());
-                    return new Section(first.getName(), second.getName(), sectionEntity.getDistance());
+                    return new Section(
+                            first.getName(),
+                            second.getName(),
+                            sectionEntity.getDistance(),
+                            lineEntity.getName()
+                    );
                 })
                 .collect(Collectors.toSet());
         
-        return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
+        return new Line(lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraCharge(), sections);
     }
     
     private void validateNotExistLine(final Long id) {

@@ -1,43 +1,46 @@
 package subway.line.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import org.jgrapht.graph.WeightedMultigraph;
 import subway.section.domain.Direction;
 import subway.section.domain.Section;
 import subway.section.domain.Sections;
+import subway.station.domain.Station;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@ToString
-@EqualsAndHashCode
 public class Line {
     private final String name;
     private final String color;
+    private final Long extraCharge;
     private final Sections sections;
     
-    public Line(final String name, final String color) {
-        this(name, color, new HashSet<>());
-    }
-    
     public Line(final String name, final String color, final Set<Section> sections) {
-        this(name, color, new Sections(sections));
+        this(name, color, 0L, new Sections(sections));
     }
     
-    public Line(final String name, final String color, final Sections sections) {
-        validateNameAndColor(name, color);
+    public Line(final String name, final String color, final Long extraCharge) {
+        this(name, color, extraCharge, new Sections(new HashSet<>()));
+    }
+    
+    public Line(final String name, final String color, final Long extraCharge, final Set<Section> sections) {
+        this(name, color, extraCharge, new Sections(sections));
+    }
+    
+    private Line(final String name, final String color, final Long extraCharge, final Sections sections) {
+        validate(name, color, extraCharge);
         this.name = name;
         this.color = color;
+        this.extraCharge = extraCharge;
         this.sections = sections;
     }
     
-    private void validateNameAndColor(final String name, final String color) {
+    private void validate(final String name, final String color, final Long extraCharge) {
         validateNullOrEmpty(name);
         validateNullOrEmpty(color);
+        validateExtraCharge(extraCharge);
     }
     
     private void validateNullOrEmpty(final String value) {
@@ -46,8 +49,25 @@ public class Line {
         }
     }
     
+    private void validateExtraCharge(final Long extraCharge) {
+        validateNull(extraCharge);
+        validateNegative(extraCharge);
+    }
+    
+    private void validateNull(final Long extraCharge) {
+        if (Objects.isNull(extraCharge)) {
+            throw new IllegalArgumentException("추가 요금은 null일 수 없습니다.");
+        }
+    }
+    
+    private void validateNegative(final Long extraCharge) {
+        if (extraCharge < 0) {
+            throw new IllegalArgumentException("노선의 추가 요금은 음수일 수 없습니다.");
+        }
+    }
+    
     public void initAddStation(final String leftAdditional, final String rightAdditional, final long distance) {
-        sections.initAddStation(leftAdditional, rightAdditional, distance);
+        sections.initAddStation(leftAdditional, rightAdditional, distance, name);
     }
     
     public void addStation(
@@ -73,5 +93,52 @@ public class Line {
     
     public List<String> getSortedStations() {
         return sections.getSortedStations();
+    }
+    
+    public void addLineToGraph(final WeightedMultigraph<Station, Section> graph) {
+        sections.addSectionsToGraph(graph);
+    }
+    
+    public boolean isContainsStation(final String stationName) {
+        return sections.isContainsStation(stationName);
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getColor() {
+        return color;
+    }
+    
+    public Long getExtraCharge() {
+        return extraCharge;
+    }
+    
+    public Sections getSections() {
+        return sections;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Line line = (Line) o;
+        return Objects.equals(name, line.name) && Objects.equals(color, line.color) && Objects.equals(extraCharge, line.extraCharge) && Objects.equals(sections, line.sections);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, color, extraCharge, sections);
+    }
+    
+    @Override
+    public String toString() {
+        return "Line{" +
+                "name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", extraCharge=" + extraCharge +
+                ", sections=" + sections +
+                '}';
     }
 }

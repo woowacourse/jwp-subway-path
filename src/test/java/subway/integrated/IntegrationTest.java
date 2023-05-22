@@ -25,8 +25,8 @@ public class IntegrationTest {
     
     @AfterEach
     void tearDown() {
-        jdbcTemplate.execute(LINE_DELETE_ALL_SQL);
-        jdbcTemplate.execute(STATION_DELETE_ALL_SQL);
         jdbcTemplate.execute(SECTION_DELETE_ALL_SQL);
+        jdbcTemplate.execute(STATION_DELETE_ALL_SQL);
+        jdbcTemplate.execute(LINE_DELETE_ALL_SQL);
     }
 }
