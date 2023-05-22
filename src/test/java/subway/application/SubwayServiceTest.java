@@ -6,24 +6,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.SectionDao;
+import subway.domain.Distance;
+import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.PathResponse;
 import subway.dto.StationResponse;
-import subway.entity.SectionEntity;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class SubwayServiceTest {
     @Mock
-    private SectionDao sectionDao;
+    private SectionService sectionService;
 
     @Mock
     private StationService stationService;
@@ -40,16 +39,14 @@ class SubwayServiceTest {
         final Station 지구 = new Station(3L, "지구");
         final Station 화성 = new Station(4L, "화성");
         final Station 잠실 = new Station(5L, "잠실");
-        given(sectionDao.findAll())
+        given(sectionService.findAll())
                 .willReturn(List.of(
-                                new SectionEntity(1L, "수성", "금성", 10),
-                                new SectionEntity(1L, "금성", "지구", 20),
-                                new SectionEntity(1L, "지구", "화성", 30),
-                                new SectionEntity(2L, "지구", "잠실", 40)
+                                new Section(수성, 금성, new Distance(10)),
+                                new Section(금성, 지구, new Distance(20)),
+                                new Section(지구, 화성, new Distance(30)),
+                                new Section(지구, 잠실, new Distance(40))
                         )
                 );
-        given(stationService.findStationsOf(anyList()))
-                .willReturn(List.of(수성, 금성, 지구, 화성, 잠실));
         given(stationService.findById(anyLong()))
                 .willReturn(수성, 잠실);
 

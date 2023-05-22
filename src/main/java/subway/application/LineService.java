@@ -3,7 +3,6 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
-import subway.dao.SectionDao;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -11,7 +10,6 @@ import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.StationEnrollRequest;
 import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
 import subway.exception.NoLineException;
 
 import java.util.ArrayList;
@@ -22,12 +20,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class LineService {
     private final LineDao lineDao;
-    private final SectionDao sectionDao;
+    private final SectionService sectionService;
     private final StationService stationService;
 
-    public LineService(final LineDao lineDao, final SectionDao sectionDao, final StationService stationService) {
+    public LineService(final LineDao lineDao, final SectionService sectionService, final StationService stationService) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+        this.sectionService = sectionService;
         this.stationService = stationService;
     }
 
@@ -70,36 +68,20 @@ public class LineService {
         final Station right = stationService.findById(request.getToStation());
         final Section section = new Section(left, right, new Distance(request.getDistance()));
         line.addSection(section);
-        sectionDao.save(SectionEntity.toEntities(line.getId(), line.getSections()));
+        sectionService.save(line);
         return section;
     }
 
     private Line makeLineWithStationsBy(final Long lineId) {
         final Line line = findLineById(lineId);
-        final List<Section> sections = findSections(lineId);
+        final List<Section> sections = sectionService.findSectionsById(lineId);
         return new Line(line.getId(), line.getName(), line.getColor(), sections);
-    }
-
-    private List<Section> findSections(final Long lineId) {
-        final List<SectionEntity> sectionEntities = sectionDao.findById(lineId);
-        final List<Station> stations = stationService.findStationsOf(sectionEntities);
-        return sectionEntities.stream()
-                .map(sectionEntity -> toSection(sectionEntity, stations))
-                .collect(Collectors.toList());
-    }
-
-    private Section toSection(final SectionEntity sectionEntity, final List<Station> stations) {
-        final Station leftStation = stations.stream().filter(station -> station.getName().equals(sectionEntity.getLeft())).findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Section 에 등록된 역이 존재하지 않습니다."));
-        final Station rightStation = stations.stream().filter(station -> station.getName().equals(sectionEntity.getRight())).findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Section 에 등록된 역이 존재하지 않습니다."));
-        return new Section(leftStation, rightStation, new Distance(sectionEntity.getDistance()));
     }
 
     public void deleteStation(final Long lineId, final Long stationId) {
         final Line line = makeLineWithStationsBy(lineId);
         line.deleteStation(stationService.findById(stationId));
-        sectionDao.save(SectionEntity.toEntities(lineId, line.getSections()));
+        sectionService.save(line);
     }
 
     @Transactional(readOnly = true)

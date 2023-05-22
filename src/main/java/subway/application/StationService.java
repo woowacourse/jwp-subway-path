@@ -63,7 +63,7 @@ public class StationService {
         return findStationsOf(stationNames);
     }
 
-    private List<Station> findStationsOf(final Set<String> stationNames) {
+    public List<Station> findStationsOf(final Set<String> stationNames) {
         return stationDao.findByName(stationNames)
                 .stream().map(StationEntity::toStation)
                 .collect(Collectors.toList());
