@@ -1,21 +1,28 @@
 package subway.domain.path;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.Stations;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class DijkstraShortestPathFinder implements ShortestPathFinder {
 
     @Override
-    public Path find(final List<Section> allSections, final Station startStation, final Station endStation) {
-        final WeightedMultigraph<Station, Section> graph = initGraph(allSections);
-        List<Section> shortestPath = findShortest(graph, startStation, endStation);
-        return new Path(shortestPath);
+    public Path find(final Sections allSections, final Station startStation, final Station endStation) {
+        final WeightedMultigraph<Station, Section> graph = initGraph(allSections.getAllSections());
+        final GraphPath<Station, Section> shortestPath = findShortest(graph, startStation, endStation);
+        final Sections edgeOrder = new Sections(shortestPath.getEdgeList());
+        final Stations visitOrder = new Stations(shortestPath.getVertexList());
+        return new Path(edgeOrder, visitOrder);
     }
 
     private WeightedMultigraph<Station, Section> initGraph(final List<Section> allSections) {
@@ -45,9 +52,9 @@ public class DijkstraShortestPathFinder implements ShortestPathFinder {
         }
     }
 
-    private List<Section> findShortest(final WeightedMultigraph<Station, Section> graph,
-                                       final Station startStation, final Station endStation) {
+    private GraphPath<Station, Section> findShortest(final WeightedMultigraph<Station, Section> graph,
+                                            final Station startStation, final Station endStation) {
         final DijkstraShortestPath<Station, Section> shortestPath = new DijkstraShortestPath<>(graph);
-        return shortestPath.getPath(startStation, endStation).getEdgeList();
+        return shortestPath.getPath(startStation, endStation);
     }
 }

@@ -1,7 +1,9 @@
 package subway.domain.fee;
 
+import org.springframework.stereotype.Component;
 import subway.domain.Distance;
 
+@Component
 public class NormalFeeCalculator implements FeeCalculator {
 
     private static final Fee BASIC_FEE = new Fee(1250);

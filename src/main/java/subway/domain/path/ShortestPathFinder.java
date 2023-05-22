@@ -1,11 +1,9 @@
 package subway.domain.path;
 
-import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
-
-import java.util.List;
 
 public interface ShortestPathFinder {
 
-    Path find(final List<Section> allSections, final Station startStation, final Station endStation);
+    Path find(final Sections allSections, final Station startStation, final Station endStation);
 }

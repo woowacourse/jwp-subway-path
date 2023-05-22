@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
 
 import java.util.List;
@@ -25,7 +26,7 @@ class DijkstraShortestPathFinderTest {
     void case1() {
         // given
         final ShortestPathFinder shortestPathFinder = new DijkstraShortestPathFinder();
-        final List<Section> sections = dummyData.getSections();
+        final Sections sections = new Sections(dummyData.getSections());
         final Station start = dummyData.getStationByName("노량진");
         final Station end = dummyData.getStationByName("신촌");
 
@@ -37,8 +38,13 @@ class DijkstraShortestPathFinderTest {
                 .map(Section::getId)
                 .collect(Collectors.toUnmodifiableList());
         final List<Long> expectedSectionIds = List.of(5L, 4L, 3L, 2L, 12L, 13L, 14L, 15L);
-
         assertThat(sectionIds).isEqualTo(expectedSectionIds);
+
+        final List<String> stations = path.getStations().stream()
+                .map(Station::getName)
+                .collect(Collectors.toUnmodifiableList());
+        final List<String> expectedStationNames = List.of("노량진", "용산", "남영", "서울역", "시청", "충정로", "아현", "이대", "신촌");
+        assertThat(stations).isEqualTo(expectedStationNames);
     }
 
     @Test
@@ -46,7 +52,7 @@ class DijkstraShortestPathFinderTest {
     void case2() {
         // given
         final ShortestPathFinder shortestPathFinder = new DijkstraShortestPathFinder();
-        final List<Section> sections = dummyData.getSections();
+        final Sections sections = new Sections(dummyData.getSections());
         final Station start = dummyData.getStationByName("홍대입구");
         final Station end = dummyData.getStationByName("신길");
 
@@ -58,7 +64,12 @@ class DijkstraShortestPathFinderTest {
                 .map(Section::getId)
                 .collect(Collectors.toUnmodifiableList());
         final List<Long> expectedSectionIds = List.of(17L, 18L, 19L, 20L, 21L, 9L, 8L);
-
         assertThat(sectionIds).isEqualTo(expectedSectionIds);
+
+        final List<String> stations = path.getStations().stream()
+                .map(Station::getName)
+                .collect(Collectors.toUnmodifiableList());
+        final List<String> expectedStationNames = List.of("홍대입구", "합정", "당산", "영등포구청", "문래", "신도림", "영등포", "신길");
+        assertThat(stations).isEqualTo(expectedStationNames);
     }
 }

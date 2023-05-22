@@ -40,5 +40,4 @@ public class Station {
                 ", name='" + name + '\'' +
                 '}';
     }
-
 }
