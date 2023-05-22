@@ -10,22 +10,16 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import subway.domain.entity.Section;
 import subway.domain.entity.Station;
 import subway.domain.exception.AbnormalRoutedStationsException;
 import subway.domain.exception.EmptyRoutedStationsSearchResultException;
 import subway.domain.exception.JgraphtException;
-import subway.domain.vo.Distance;
 
-// TODO 노선 별 요금 적용을 위해 StationEdge로 변경, 생성할 때 Line 전달받아 Edge에 저장하기 or Section이 Line을 가지면 해결되는 문제 아닌가?
-// Section이 Line을 가지면, Line이 사실상 비즈니스 로직에 필요 없을 때에도 Line을 저장해야 한다 (노선 역 등록/삭제)
-// 그래프에서 필요에 따라 edge에 Line을 저장하게 만들자. => 필요에 따라 Line을 가지고 있는 edge, Line을 가지고 있지 않은 edge를 사용하도록 함
-// StationEdge -> LinedClassifiableWeightedEdge
-public class RoutedStations extends SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> {
+public class RoutedStations extends SimpleDirectedWeightedGraph<Station, SectionEdge> {
 
-    private RoutedStations(final Class<DefaultWeightedEdge> edgeClass) {
+    private RoutedStations(final Class<SectionEdge> edgeClass) {
         super(edgeClass);
     }
 
@@ -33,7 +27,7 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
         validateSectionsDuplication(sections);
         validateMultiRoutes(sections);
 
-        RoutedStations stations = new RoutedStations(DefaultWeightedEdge.class);
+        RoutedStations stations = new RoutedStations(SectionEdge.class);
         Set<Station> addingStations = getAllStations(sections);
         try {
             addVertexes(addingStations, stations);
@@ -98,14 +92,14 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
     }
 
     private static void addVertexes(final Set<Station> addingStations,
-                                    final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
+                                    final SimpleDirectedWeightedGraph<Station, SectionEdge> stations) {
         for (Station station : addingStations) {
             stations.addVertex(station);
         }
     }
 
     private static void addEdges(final List<Section> sections,
-                                 final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
+                                 final SimpleDirectedWeightedGraph<Station, SectionEdge> stations) {
         for (Section section : sections) {
             stations.setEdgeWeight(
                     stations.addEdge(section.getLeft(), section.getRight()), section.getDistance().getValue());
@@ -114,10 +108,8 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
 
     public Optional<Section> findRightSection(Station station) {
         try {
-            DefaultWeightedEdge edge = outgoingEdgesOf(station).iterator().next();
-            return Optional.of(
-                    new Section(station, getEdgeTarget(edge), new Distance((int) getEdgeWeight(edge)))
-            );
+            SectionEdge edge = outgoingEdgesOf(station).iterator().next();
+            return Optional.of(Section.from(edge));
         } catch (NoSuchElementException exception) {
             return Optional.empty();
         }
@@ -125,10 +117,8 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
 
     public Optional<Section> findLeftSection(Station station) {
         try {
-            DefaultWeightedEdge edge = incomingEdgesOf(station).iterator().next();
-            return Optional.of(
-                    new Section(getEdgeSource(edge), station, new Distance((int) getEdgeWeight(edge)))
-            );
+            SectionEdge edge = incomingEdgesOf(station).iterator().next();
+            return Optional.of(Section.from(edge));
         } catch (NoSuchElementException exception) {
             return Optional.empty();
         }
@@ -136,8 +126,7 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
 
     public List<Section> extractSections() {
         return edgeSet().stream()
-                .map(edge -> new Section(getEdgeSource(edge), getEdgeTarget(edge),
-                        new Distance((int) getEdgeWeight(edge))))
+                .map(Section::from)
                 .collect(Collectors.toList());
     }
 
@@ -167,12 +156,5 @@ public class RoutedStations extends SimpleDirectedWeightedGraph<Station, Default
 
     public boolean isEmpty() {
         return edgeSet().isEmpty();
-    }
-
-    public Distance totalDistance() {
-        int sum = edgeSet().stream()
-                .mapToInt(edge -> (int) getEdgeWeight(edge))
-                .sum();
-        return new Distance(sum);
     }
 }

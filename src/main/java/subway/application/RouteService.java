@@ -9,6 +9,7 @@ import subway.dao.StationDao;
 import subway.domain.MultiRoutedStations;
 import subway.domain.RoutedStations;
 import subway.domain.SubwayMap;
+import subway.domain.TransferableRoute;
 import subway.domain.entity.Line;
 import subway.domain.entity.Station;
 import subway.domain.exception.RequestDataNotFoundException;
@@ -36,8 +37,8 @@ public class RouteService {
 
         Map<Line, RoutedStations> sectionsByLine = findSectionsByLine();
         SubwayMap subwayMap = new SubwayMap(MultiRoutedStations.from(sectionsByLine));
-        RoutedStations shortestRoutedStations = subwayMap.findShortestRoutedStations(sourceStation, targetStation);
-        return RouteResponse.from(shortestRoutedStations);
+        TransferableRoute shortestRoute = subwayMap.findShortestRoute(sourceStation, targetStation);
+        return RouteResponse.from(shortestRoute);
     }
 
     private Map<Line, RoutedStations> findSectionsByLine() {

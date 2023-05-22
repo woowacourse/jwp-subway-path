@@ -5,6 +5,7 @@ import static subway.domain.vo.Direction.DOWN;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import subway.domain.SectionEdge;
 import subway.domain.exception.IllegalSectionArgumentException;
 import subway.domain.vo.Direction;
 import subway.domain.vo.Distance;
@@ -20,6 +21,14 @@ public class Section {
         this.left = left;
         this.right = right;
         this.distance = distance;
+    }
+
+    public static Section from(SectionEdge sectionEdge) {
+        return new Section(
+                sectionEdge.getSource(),
+                sectionEdge.getTarget(),
+                new Distance((int) sectionEdge.getWeight())
+        );
     }
 
     public static Section createByDirection(final Station base,

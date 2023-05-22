@@ -220,7 +220,9 @@ GET /routes?sourceStationId={sourceStationId}&target={targetStationId} HTTP/1.1
     - [x] 변환 로직 정적 팩터리 메서드로 변경
     - [x] [외부 라이브러리에 대한 예측 못한 예외 처리 코드로 명시](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616300)
     - [ ] [요금 계산 클래스 분리 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616938)
-        - RoutedStations 에서 요금 정책을 전달받아 계산하도록 변경하기
+        - TransferableRoute 에서 요금 정책을 전달받아 계산하도록 변경하기
     - [ ] [테스트 픽스쳐 네이밍에서 무엇을 위한 객체인지 표현하도록 수정](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199617411)
     - [ ] [중복 제거를 위해 서비스 간 의존 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199615185)
-    - [ ] [3단계 반영을 위한 Section - Line 관계 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616042)
+    - [x] [3단계 반영을 위한 Section - Line 관계 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616042)
+        - Section - Line 관계가 문제가 아니고 서로 다른 목적에 대해 같은 자료구조를 쓰는 것이 문제라고 생각된다.
+        - 따라서 경로 조회를 하는 자료구조를 별도로 정의하였다.

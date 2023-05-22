@@ -6,11 +6,10 @@ import static subway.fixture.LineFixture.FIXTURE_LINE_1;
 import static subway.fixture.LineFixture.FIXTURE_LINE_2;
 import static subway.fixture.LineFixture.FIXTURE_LINE_3;
 import static subway.fixture.SectionFixture.LINE1_SECTIONS;
-import static subway.fixture.SectionFixture.LINE1_SECTION_ST1_ST2;
 import static subway.fixture.SectionFixture.LINE2_SECTIONS;
 import static subway.fixture.SectionFixture.LINE3_SECTIONS;
-import static subway.fixture.SectionFixture.LINE3_SECTION_ST2_ST9;
 import static subway.fixture.StationFixture.FIXTURE_STATION_1;
+import static subway.fixture.StationFixture.FIXTURE_STATION_2;
 import static subway.fixture.StationFixture.FIXTURE_STATION_7;
 import static subway.fixture.StationFixture.FIXTURE_STATION_9;
 
@@ -37,12 +36,11 @@ class SubwayMapTest {
         SubwayMap subwayMap = new SubwayMap(MultiRoutedStations.from(sectionsByLine));
 
         // when
-        RoutedStations shortestRoutedStations = subwayMap.findShortestRoutedStations(FIXTURE_STATION_1,
-                FIXTURE_STATION_9);
+        TransferableRoute shortestRoute = subwayMap.findShortestRoute(FIXTURE_STATION_1, FIXTURE_STATION_9);
 
         // then
-        assertThat(shortestRoutedStations.extractSections())
-                .contains(LINE1_SECTION_ST1_ST2, LINE3_SECTION_ST2_ST9);
+        assertThat(shortestRoute.stations())
+                .contains(FIXTURE_STATION_1, FIXTURE_STATION_2, FIXTURE_STATION_9);
     }
 
     @DisplayName("출발 역이 존재하지 않으면 예외를 발생한다")
@@ -54,7 +52,7 @@ class SubwayMapTest {
 
         // when, then
         assertThatThrownBy(
-                () -> subwayMap.findShortestRoutedStations(FIXTURE_STATION_7, FIXTURE_STATION_1))
+                () -> subwayMap.findShortestRoute(FIXTURE_STATION_7, FIXTURE_STATION_1))
                 .isInstanceOf(EmptyRoutedStationsSearchResultException.class)
                 .hasMessageContaining("지하철 노선도에 출발 역이 존재하지 않습니다.");
     }
@@ -68,7 +66,7 @@ class SubwayMapTest {
 
         // when, then
         assertThatThrownBy(
-                () -> subwayMap.findShortestRoutedStations(FIXTURE_STATION_1, FIXTURE_STATION_7))
+                () -> subwayMap.findShortestRoute(FIXTURE_STATION_1, FIXTURE_STATION_7))
                 .isInstanceOf(EmptyRoutedStationsSearchResultException.class)
                 .hasMessageContaining("지하철 노선도에 도착 역이 존재하지 않습니다.");
     }
@@ -82,7 +80,7 @@ class SubwayMapTest {
 
         // when, then
         assertThatThrownBy(
-                () -> subwayMap.findShortestRoutedStations(FIXTURE_STATION_1, FIXTURE_STATION_1))
+                () -> subwayMap.findShortestRoute(FIXTURE_STATION_1, FIXTURE_STATION_1))
                 .isInstanceOf(IllegalSubwayMapArgumentException.class)
                 .hasMessageContaining("출발 역과 도착 역이 동일한 경로를 찾을 수 없습니다.");
     }

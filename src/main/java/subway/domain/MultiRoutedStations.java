@@ -14,17 +14,16 @@ import subway.domain.entity.Section;
 import subway.domain.entity.Station;
 import subway.domain.exception.JgraphtException;
 
-public class MultiRoutedStations extends WeightedMultigraph<Station, LineClassifiableEdge> {
+public class MultiRoutedStations extends WeightedMultigraph<Station, LineClassifiableSectionEdge> {
 
-    private MultiRoutedStations(final Class<LineClassifiableEdge> edgeClass) {
+    private MultiRoutedStations(final Class<LineClassifiableSectionEdge> edgeClass) {
         super(edgeClass);
     }
 
-    // TODO Section이 Line을 가지면 Map으로 조회해 전달할 필요가 없는데 뭐가 더 좋을까?
     public static MultiRoutedStations from(Map<Line, RoutedStations> sectionsByLine) {
-        MultiRoutedStations stations = new MultiRoutedStations(LineClassifiableEdge.class);
+        MultiRoutedStations stations = new MultiRoutedStations(LineClassifiableSectionEdge.class);
         Set<Station> addingStations = getAllStations(new ArrayList<>(sectionsByLine.values()));
-        
+
         try {
             addVertex(addingStations, stations);
             addEdges(sectionsByLine, stations);
@@ -58,9 +57,9 @@ public class MultiRoutedStations extends WeightedMultigraph<Station, LineClassif
                                 final RoutedStations routedStations,
                                 final MultiRoutedStations stations) {
         for (Section section : routedStations.extractSections()) {
-            LineClassifiableEdge lineClassifiableEdge = new LineClassifiableEdge(line);
-            stations.addEdge(section.getLeft(), section.getRight(), lineClassifiableEdge);
-            stations.setEdgeWeight(lineClassifiableEdge, section.getDistance().getValue());
+            LineClassifiableSectionEdge lineClassifiableSectionEdge = new LineClassifiableSectionEdge(line);
+            stations.addEdge(section.getLeft(), section.getRight(), lineClassifiableSectionEdge);
+            stations.setEdgeWeight(lineClassifiableSectionEdge, section.getDistance().getValue());
         }
     }
 }
