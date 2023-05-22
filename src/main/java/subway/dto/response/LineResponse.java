@@ -40,6 +40,16 @@ public class LineResponse {
         );
     }
 
+    public static LineResponse of(
+            final Long id,
+            final String name,
+            final String color,
+            final int extraFare,
+            final List<StationResponse> stations
+    ) {
+        return new LineResponse(id, name, color, extraFare, stations);
+    }
+
     public Long getId() {
         return id;
     }
