@@ -54,4 +54,4 @@
     - station 저장
     - station 조회
 - [x] 환경설정 파일을 properties에서 yml로 변경하기
-- [ ] pathfinder를 빈으로 관리하기
+- [x] pathfinder를 빈으로 관리하기

@@ -16,10 +16,12 @@ public class PathService {
 
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
+    private final PathFinder pathFinder;
 
-    public PathService(SectionRepository sectionRepository, StationRepository stationRepository) {
+    public PathService(SectionRepository sectionRepository, StationRepository stationRepository, PathFinder pathFinder) {
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findShortPath(final PathRequest pathRequest) {
@@ -27,7 +29,6 @@ public class PathService {
         Station arrivalStation = stationRepository.findByName(pathRequest.getArrivalStation(), pathRequest.getArrivalLine());
         Sections sections = sectionRepository.readAllSection();
 
-        PathFinder pathFinder = new PathFinder();
         Path shortestPath = pathFinder.findShortestPath(sections, departurestation, arrivalStation);
         Fee fee = shortestPath.calculateFee();
 
