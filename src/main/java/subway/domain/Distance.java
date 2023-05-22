@@ -3,7 +3,7 @@ package subway.domain;
 import java.util.Objects;
 
 public class Distance {
-    final int value;
+    private final int value;
 
     public Distance(int value) {
         validate(value);

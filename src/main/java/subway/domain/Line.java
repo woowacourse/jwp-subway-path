@@ -8,12 +8,13 @@ public class Line {
 
     public static final int UP_END_EDGE_DISTANCE = 0;
 
-    private Long id;
+    private final Long id;
     private final String name;
     private final String color;
     private final StationEdges stationEdges;
 
     public Line(String name, String color, StationEdges stationEdges) {
+        this.id = null;
         this.name = name;
         this.color = color;
         this.stationEdges = stationEdges;
