@@ -37,6 +37,7 @@ create table if not exists LINE
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
+    extraFare bigint not null,
     primary key(id)
 );
 
@@ -146,6 +147,7 @@ create table if not exists SECTION
 {
   "id": 1,
   "name": "2호선",
+  "extraFare": 100,
   "stations": [
     {
       "id": 1,
@@ -170,6 +172,7 @@ create table if not exists SECTION
   {
     "id": 1,
     "name": "2호선",
+    "extraFare": 100,
     "stations": [
       {
         "id": 1,
@@ -184,6 +187,7 @@ create table if not exists SECTION
   {
     "id": 2,
     "name": "3호선",
+    "extraFare": 500,
     "stations": [
       {
         "id": 3,
@@ -228,6 +232,10 @@ create table if not exists SECTION
         - [x] 10km 이하: 1250원
         - [x] 10~50km: 5km 마다 100원 추가
         - [x] 50km 초과: 8km 마다 100원 추가
+    - [ ] 이동 간 노선 별 추가 금액은, 가장 높은 금액을 기준으로 계산한다.
+    - [ ] 연령별 요 할인 정책을 반영한다.
+      - [ ] 청소년은 운임에서 350원을 공제한 금액의 20%할인
+      - [ ] 어린이는 운임에서 350원을 공제한 금액의 50%할인
     - [x] 갈 수 있는 경로가 없는 경우, `xx역 -> xx역은 갈 수 없는 경로입니다.` 를 반환한다.
 
 ## 도메인 기능 목록
@@ -248,3 +256,4 @@ create table if not exists SECTION
 - [x] 구간이 하나만 있는지 확인한다.
 - [x] 해당 역이 종점인지 확인한다.
 - [x] 전체 역을 상행 -> 하행 순서대로 반환한다.
+- [x] 노선간 추가 요금을 가질 수 있다.
