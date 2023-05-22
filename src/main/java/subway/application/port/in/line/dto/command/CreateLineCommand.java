@@ -6,9 +6,12 @@ public class CreateLineCommand {
 
     private final String color;
 
-    public CreateLineCommand(final String name, final String color) {
+    private final Integer surcharge;
+
+    public CreateLineCommand(final String name, final String color, final Integer surcharge) {
         this.name = name;
         this.color = color;
+        this.surcharge = surcharge;
     }
 
     public String getName() {
@@ -17,5 +20,9 @@ public class CreateLineCommand {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getSurcharge() {
+        return surcharge;
     }
 }

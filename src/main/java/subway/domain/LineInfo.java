@@ -6,15 +6,22 @@ public class LineInfo {
 
     private static final int MAX_NAME_LENGTH = 50;
     private static final int MAX_COLOR_LENGTH = 20;
+    private static final int DEFAULT_SURCHARGE = 0;
 
     private final String name;
     private final String color;
+    private final int surcharge;
 
-    public LineInfo(final String name, final String color) {
+    public LineInfo(final String name, final String color, Integer surcharge) {
         validateName(name);
         validateColor(color);
+        if (surcharge == null) {
+            surcharge = DEFAULT_SURCHARGE;
+        }
+        validateSurcharge(surcharge);
         this.name = name.strip();
         this.color = color.strip();
+        this.surcharge = surcharge;
     }
 
     private void validateName(final String name) {
@@ -35,11 +42,21 @@ public class LineInfo {
         }
     }
 
+    private void validateSurcharge(final int surcharge) {
+        if (surcharge < DEFAULT_SURCHARGE) {
+            throw new SubwayIllegalArgumentException("노선 추가 요금은 " + DEFAULT_SURCHARGE + "원 이상이어야합니다.");
+        }
+    }
+
     public String getName() {
         return name;
     }
 
     public String getColor() {
         return color;
+    }
+
+    public int getSurcharge() {
+        return surcharge;
     }
 }

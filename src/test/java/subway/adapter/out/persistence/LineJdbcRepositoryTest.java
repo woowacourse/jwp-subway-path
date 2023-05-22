@@ -44,7 +44,7 @@ class LineJdbcRepositoryTest {
     @Test
     void 아이디로_조회_테스트() {
         // given
-        LineEntity line = lineDao.insert(new LineEntity("2호선", "GREEN"));
+        LineEntity line = lineDao.insert(new LineEntity("2호선", "GREEN", 0));
 
         StationEntity station1 = stationDao.insert(잠실역.ENTITY);
         StationEntity station2 = stationDao.insert(삼성역.ENTITY);
@@ -63,7 +63,7 @@ class LineJdbcRepositoryTest {
                 .usingRecursiveComparison()
                 .ignoringFields("id")
                 .ignoringCollectionOrder()
-                .isEqualTo(new Line(line.getId(), "2호선", "GREEN",
+                .isEqualTo(new Line(line.getId(), "2호선", "GREEN", 0,
                         List.of(
                                 new Section(sectionEntity1.getId(), new Station(station1.getId(), "잠실역"),
                                         new Station(station2.getId(), "삼성역"), 5),
@@ -101,7 +101,7 @@ class LineJdbcRepositoryTest {
     @Test
     void 구간_갱신_테스트() {
         // given
-        LineEntity line = lineDao.insert(new LineEntity("2호선", "GREEN"));
+        LineEntity line = lineDao.insert(new LineEntity("2호선", "GREEN", 0));
 
         StationEntity station1 = stationDao.insert(잠실역.ENTITY);
         StationEntity station2 = stationDao.insert(삼성역.ENTITY);
@@ -113,7 +113,7 @@ class LineJdbcRepositoryTest {
                 new SectionEntity(line.getId(), station2.getId(), station3.getId(), 7));
 
         // when
-        lineJdbcRepository.updateSections(new Line(line.getId(), line.getName(), line.getColor(),
+        lineJdbcRepository.updateSections(new Line(line.getId(), line.getName(), line.getColor(), line.getSurcharge(),
                 List.of(new Section(new Station(station1.getId(), station1.getName()),
                         new Station(station3.getId(), station3.getName()), 12))));
 
@@ -132,7 +132,7 @@ class LineJdbcRepositoryTest {
         @Test
         void 있으면_참() {
             // given
-            lineDao.insert(new LineEntity("2호선", "GREEN"));
+            lineDao.insert(new LineEntity("2호선", "GREEN", 0));
 
             // when
             boolean result = lineJdbcRepository.checkExistByName("2호선");

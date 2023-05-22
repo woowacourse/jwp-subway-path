@@ -59,16 +59,16 @@ public class StationCommandService implements CreateStationUseCase, UpdateStatio
         Station station = loadStationPort.findById(stationId)
                 .orElseThrow(NoSuchStationException::new);
 
-        removeStationFromLine(stationId, station);
+        removeStationFromLine(station);
 
         persistStationPort.deleteById(stationId);
     }
 
-    private void removeStationFromLine(final long stationId, final Station station) {
+    private void removeStationFromLine(final Station station) {
         List<Long> containingLineIds = loadLinePort.findContainingLineIdsByStation(station);
 
         for (final Long lineId : containingLineIds) {
-            RemoveStationFromLineCommand command = new RemoveStationFromLineCommand(lineId, stationId);
+            RemoveStationFromLineCommand command = new RemoveStationFromLineCommand(lineId, station.getId());
             removeStationFromLineUseCase.removeStation(command);
         }
     }

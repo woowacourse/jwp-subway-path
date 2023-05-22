@@ -1,6 +1,7 @@
 package subway.adapter.in.web.line.dto;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import subway.application.port.in.line.dto.command.UpdateLineInfoCommand;
 
 public class UpdateLineRequest {
@@ -11,16 +12,20 @@ public class UpdateLineRequest {
     @NotNull(message = "색상 정보가 없습니다.")
     private String color;
 
+    @PositiveOrZero(message = "추가 요금은 0원 이상이어야합니다.")
+    private Integer surcharge;
+
     private UpdateLineRequest() {
     }
 
-    public UpdateLineRequest(final String name, final String color) {
+    public UpdateLineRequest(final String name, final String color, final Integer surcharge) {
         this.name = name;
         this.color = color;
+        this.surcharge = surcharge;
     }
 
     public UpdateLineInfoCommand toCommand(final long lineId) {
-        return new UpdateLineInfoCommand(lineId, getName(), getColor());
+        return new UpdateLineInfoCommand(lineId, name, color, surcharge);
     }
 
     public String getName() {
@@ -29,5 +34,9 @@ public class UpdateLineRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getSurcharge() {
+        return surcharge;
     }
 }

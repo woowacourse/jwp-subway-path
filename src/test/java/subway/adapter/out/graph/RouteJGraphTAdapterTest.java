@@ -44,7 +44,7 @@ class RouteJGraphTAdapterTest {
         // given
         Station source = 역삼역.STATION;
         Station target = 역삼역.STATION;
-        Line line = new Line(1L, "2호선", "GREEN", List.of(이호선_역삼_삼성_3.SECTION));
+        Line line = new Line(1L, "2호선", "GREEN", 0, List.of(이호선_역삼_삼성_3.SECTION));
         List<Line> lines = List.of(line);
 
         // when then
@@ -58,7 +58,7 @@ class RouteJGraphTAdapterTest {
         // given
         Station source = 역삼역.STATION;
         Station target = 잠실역.STATION;
-        Line line = new Line(1L, "2호선", "GREEN", List.of(이호선_삼성_잠실_2.SECTION));
+        Line line = new Line(1L, "2호선", "GREEN", 0, List.of(이호선_삼성_잠실_2.SECTION));
         List<Line> lines = List.of(line);
 
         // when then
@@ -72,7 +72,7 @@ class RouteJGraphTAdapterTest {
         // given
         Station source = 역삼역.STATION;
         Station target = 잠실역.STATION;
-        Line line = new Line(1L, "2호선", "GREEN", List.of(이호선_역삼_삼성_3.SECTION));
+        Line line = new Line(1L, "2호선", "GREEN", 0, List.of(이호선_역삼_삼성_3.SECTION));
         List<Line> lines = List.of(line);
 
         // when then
@@ -86,8 +86,8 @@ class RouteJGraphTAdapterTest {
         // given
         Station source = 역삼역.STATION;
         Station target = 잠실역.STATION;
-        Line line1 = new Line(1L, "2호선", "GREEN", List.of(new Section(source, target, 3)));
-        Line line2 = new Line(1L, "3호선", "ORANGE", List.of(new Section(source, target, 4)));
+        Line line1 = new Line(1L, "2호선", "GREEN", 0, List.of(new Section(source, target, 3)));
+        Line line2 = new Line(1L, "3호선", "ORANGE", 0, List.of(new Section(source, target, 4)));
         List<Line> lines = List.of(line1, line2);
 
         // when
@@ -104,8 +104,8 @@ class RouteJGraphTAdapterTest {
         // given
         Station source = 역삼역.STATION;
         Station target = 잠실역.STATION;
-        List<Line> upLine = List.of(new Line(1L, "2호선", "GREEN", List.of(new Section(source, target, 3))));
-        List<Line> downLine = List.of(new Line(1L, "2호선", "GREEN", List.of(new Section(source, target, 3))));
+        List<Line> upLine = List.of(new Line(1L, "2호선", "GREEN", 0, List.of(new Section(source, target, 3))));
+        List<Line> downLine = List.of(new Line(1L, "2호선", "GREEN", 0, List.of(new Section(source, target, 3))));
 
         // when
         Route upRoute = routeJGraphTAdapter.findRoute(source, target, upLine);
@@ -120,20 +120,20 @@ class RouteJGraphTAdapterTest {
     @Test
     void 최단거리_경로를_조회한다() {
         // given
-        Line 이호선 = new Line(1L, "2호선", "GREEN", List.of(
+        Line 이호선 = new Line(1L, "2호선", "GREEN", 0, List.of(
                 new Section(방배역.STATION, 서초역.STATION, 1),
                 new Section(서초역.STATION, 교대역.STATION, 1),
                 new Section(교대역.STATION, 강남역.STATION, 2)
         ));
 
-        Line 삼호선 = new Line(2L, "3호선", "ORANGE", List.of(
+        Line 삼호선 = new Line(2L, "3호선", "ORANGE", 0, List.of(
                 new Section(교대역.STATION, 고터역.STATION, 2)
         ));
-        Line 신분당선 = new Line(3L, "신분당선", "RED", List.of(
+        Line 신분당선 = new Line(3L, "신분당선", "RED", 0, List.of(
                 new Section(강남역.STATION, 신논현역.STATION, 3),
                 new Section(신논현역.STATION, 논현역.STATION, 4)
         ));
-        Line 칠호선 = new Line(4L, "7호선", "DARK_GREEN", List.of(
+        Line 칠호선 = new Line(4L, "7호선", "DARK_GREEN", 0, List.of(
                 new Section(고터역.STATION, 반포역.STATION, 2),
                 new Section(반포역.STATION, 논현역.STATION, 2)
         ));
@@ -152,12 +152,12 @@ class RouteJGraphTAdapterTest {
     @Test
     void 도달할_수_없을_경우_예외() {
         // given
-        Line 이호선 = new Line(1L, "2호선", "GREEN", List.of(
+        Line 이호선 = new Line(1L, "2호선", "GREEN", 0, List.of(
                 new Section(방배역.STATION, 서초역.STATION, 1),
                 new Section(서초역.STATION, 교대역.STATION, 1),
                 new Section(교대역.STATION, 강남역.STATION, 2)
         ));
-        Line 칠호선 = new Line(4L, "7호선", "DARK_GREEN", List.of(
+        Line 칠호선 = new Line(4L, "7호선", "DARK_GREEN", 0, List.of(
                 new Section(고터역.STATION, 반포역.STATION, 2),
                 new Section(반포역.STATION, 논현역.STATION, 2)
         ));

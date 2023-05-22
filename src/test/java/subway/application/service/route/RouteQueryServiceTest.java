@@ -91,7 +91,7 @@ class RouteQueryServiceTest {
         @Test
         void 성공() {
             // given
-            List<Line> lines = List.of(new Line("이호선", "GREEN"));
+            List<Line> lines = List.of(new Line("이호선", "GREEN", 0));
             Route route = new Route(List.of(source, 강남역.STATION, 삼성역.STATION, target), 10);
             given(loadLinePort.findAll())
                     .willReturn(lines);

@@ -38,7 +38,8 @@ class LineCommandServiceTest {
 
         private final String name = "2호선";
         private final String color = "GREEN";
-        private final CreateLineCommand command = new CreateLineCommand(name, color);
+        private final int surcharge = 500;
+        private final CreateLineCommand command = new CreateLineCommand(name, color, surcharge);
 
         @Test
         void 기존_노선과_이름이_중복되면_예외() {
@@ -68,7 +69,7 @@ class LineCommandServiceTest {
     class 노선_정보_갱신시_ {
 
         private final long lineId = 1L;
-        private final UpdateLineInfoCommand command = new UpdateLineInfoCommand(lineId, "2호선", "GREEN");
+        private final UpdateLineInfoCommand command = new UpdateLineInfoCommand(lineId, "2호선", "GREEN", 500);
 
         @Test
         void 아이디에_해당하는_노선이_존재하지_않으면_예외() {

@@ -10,13 +10,14 @@ public class Line {
     private final LineInfo lineInfo;
     private final Sections sections;
 
-    public Line(final String name, final String color) {
-        this(null, name, color, Collections.emptyList());
+    public Line(final String name, final String color, final Integer surcharge) {
+        this(null, name, color, surcharge, Collections.emptyList());
     }
 
-    public Line(final Long id, final String name, final String color, final List<Section> sections) {
+    public Line(final Long id, final String name, final String color, final Integer surcharge,
+            final List<Section> sections) {
         this.id = id;
-        this.lineInfo = new LineInfo(name, color);
+        this.lineInfo = new LineInfo(name, color, surcharge);
         this.sections = new Sections(new ArrayList<>(sections));
     }
 

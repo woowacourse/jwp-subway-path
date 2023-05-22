@@ -34,7 +34,8 @@ class LineDaoTest {
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("surcharge")
             );
 
     @BeforeEach
@@ -48,7 +49,7 @@ class LineDaoTest {
     @Test
     void 삽입_테스트() {
         // given
-        LineEntity entity = new LineEntity("2호선", "GREEN");
+        LineEntity entity = new LineEntity("2호선", "GREEN", 0);
 
         // when
         LineEntity response = lineDao.insert(entity);
@@ -65,8 +66,8 @@ class LineDaoTest {
     @Test
     void 전체_조회_테스트() {
         // given
-        jdbcTemplate.update("INSERT INTO line(name, color) VALUES (?,?)", "2호선", "GREEN");
-        jdbcTemplate.update("INSERT INTO line(name, color) VALUES (?,?)", "3호선", "ORANGE");
+        jdbcTemplate.update("INSERT INTO line(name, color, surcharge) VALUES (?,?,?)", "2호선", "GREEN", 100);
+        jdbcTemplate.update("INSERT INTO line(name, color, surcharge) VALUES (?,?,?)", "3호선", "ORANGE", 200);
 
         // when
         List<LineEntity> lineEntities = lineDao.findAll();
@@ -80,18 +81,15 @@ class LineDaoTest {
                         .ignoringFields("id")
                         .ignoringCollectionOrder()
                         .isEqualTo(List.of(
-                                new LineEntity("2호선", "GREEN"),
-                                new LineEntity("3호선", "ORANGE")))
+                                new LineEntity("2호선", "GREEN", 100),
+                                new LineEntity("3호선", "ORANGE", 200)))
         );
     }
 
     @Test
     void 아이디로_조회_테스트() {
         // given
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "2호선");
-        params.put("color", "GREEN");
-        Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        Long lineId = insertLine();
 
         // when
         Optional<LineEntity> line = lineDao.findById(lineId);
@@ -101,7 +99,7 @@ class LineDaoTest {
                 () -> assertThat(line).isPresent(),
                 () -> assertThat(line.get())
                         .usingRecursiveComparison()
-                        .isEqualTo(new LineEntity(lineId, "2호선", "GREEN"))
+                        .isEqualTo(new LineEntity(lineId, "2호선", "GREEN", 0))
         );
     }
 
@@ -117,10 +115,7 @@ class LineDaoTest {
     @Test
     void 이름으로_조회_테스트() {
         // given
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "2호선");
-        params.put("color", "GREEN");
-        Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        Long lineId = insertLine();
 
         // when
         Optional<LineEntity> line = lineDao.findByName("2호선");
@@ -130,7 +125,7 @@ class LineDaoTest {
                 () -> assertThat(line).isPresent(),
                 () -> assertThat(line.get())
                         .usingRecursiveComparison()
-                        .isEqualTo(new LineEntity(lineId, "2호선", "GREEN"))
+                        .isEqualTo(new LineEntity(lineId, "2호선", "GREEN", 0))
         );
     }
 
@@ -146,13 +141,10 @@ class LineDaoTest {
     @Test
     void 갱신_테스트() {
         // given
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "2호선");
-        params.put("color", "GREEN");
-        Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        Long lineId = insertLine();
 
         // when
-        lineDao.update(new LineEntity(lineId, "3호선", "ORANGE"));
+        lineDao.update(new LineEntity(lineId, "3호선", "ORANGE", 1000));
 
         // then
         String sql = "SELECT * FROM line WHERE id = ?";
@@ -160,16 +152,13 @@ class LineDaoTest {
         assertThat(result)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(new LineEntity("3호선", "ORANGE"));
+                .isEqualTo(new LineEntity("3호선", "ORANGE", 1000));
     }
 
     @Test
     void 삭제_테스트() {
         // given
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "2호선");
-        params.put("color", "GREEN");
-        Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        Long lineId = insertLine();
 
         // when
         lineDao.deleteById(lineId);
@@ -178,5 +167,14 @@ class LineDaoTest {
         String sql = "SELECT * FROM line WHERE id = ?";
         List<LineEntity> result = jdbcTemplate.query(sql, lineRowMapper, lineId);
         assertThat(result).isEmpty();
+    }
+
+    private Long insertLine() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "2호선");
+        params.put("color", "GREEN");
+        params.put("surcharge", 0);
+        Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        return lineId;
     }
 }

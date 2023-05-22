@@ -30,14 +30,15 @@ public class LineCommandService implements CreateLineUseCase, UpdateLineInfoUseC
         if (loadLinePort.checkExistByName(command.getName())) {
             throw new SubwayIllegalArgumentException("기존 노선과 중복된 이름입니다.");
         }
-        return persistLinePort.create(new LineInfo(command.getName(), command.getColor()));
+        return persistLinePort.create(new LineInfo(command.getName(), command.getColor(), command.getSurcharge()));
     }
 
     @Override
     public void updateLineInfo(final UpdateLineInfoCommand command) {
         validateLineId(command.getLineId());
 
-        persistLinePort.updateInfo(command.getLineId(), new LineInfo(command.getName(), command.getColor()));
+        persistLinePort.updateInfo(command.getLineId(),
+                new LineInfo(command.getName(), command.getColor(), command.getSurcharge()));
     }
 
     @Override

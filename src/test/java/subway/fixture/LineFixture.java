@@ -13,10 +13,11 @@ public class LineFixture {
         private static final Long ID = 1L;
         private static final String NAME = "2호선";
         private static final String COLOR = "GREEN";
+        private static final int SURCHARGE = 500;
 
-        public static final Line LINE = new Line(ID, NAME, COLOR, new ArrayList<>());
-        public static final LineEntity ENTITY = new LineEntity(ID, NAME, COLOR);
-        public static final CreateLineRequest REQUEST = new CreateLineRequest(NAME, COLOR);
+        public static final Line LINE = new Line(ID, NAME, COLOR, SURCHARGE, new ArrayList<>());
+        public static final LineEntity ENTITY = new LineEntity(ID, NAME, COLOR, SURCHARGE);
+        public static final CreateLineRequest REQUEST = new CreateLineRequest(NAME, COLOR, SURCHARGE);
     }
 
 }

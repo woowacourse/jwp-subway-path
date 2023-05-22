@@ -15,6 +15,6 @@ class LineTest {
         String name = "2호선";
         String color = "GREEN";
 
-        assertDoesNotThrow(() -> new Line(name, color));
+        assertDoesNotThrow(() -> new Line(name, color, 0));
     }
 }

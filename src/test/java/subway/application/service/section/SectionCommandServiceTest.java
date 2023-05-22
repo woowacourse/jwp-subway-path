@@ -113,7 +113,7 @@ class SectionCommandServiceTest {
         @BeforeEach
         void setUp() {
             given(loadLinePort.findById(lineId))
-                    .willReturn(Optional.of(new Line(lineId, "2호선", "GREEN", List.of(이호선_역삼_삼성_3.SECTION))));
+                    .willReturn(Optional.of(new Line(lineId, "2호선", "GREEN", 0, List.of(이호선_역삼_삼성_3.SECTION))));
             given(loadStationPort.findById(stationId))
                     .willReturn(Optional.of(역삼역.STATION));
         }

@@ -67,7 +67,8 @@ public class LineJdbcRepository implements LoadLinePort, PersistLinePort {
 
         List<Section> sections = jdbcTemplate.query(sql, sectionRowMapper, lineId);
 
-        Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+        Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getSurcharge(),
+                sections);
         return Optional.of(line);
     }
 

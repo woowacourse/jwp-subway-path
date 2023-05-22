@@ -57,7 +57,7 @@ class LineQueryServiceTest {
         @Test
         void 성공() {
             // given
-            Line line = new Line(lineId, "2호선", "GREEN",
+            Line line = new Line(lineId, "2호선", "GREEN", 0,
                     List.of(이호선_역삼_삼성_3.SECTION, 이호선_삼성_잠실_2.SECTION));
             given(loadLinePort.findById(lineId))
                     .willReturn(Optional.of(line));
@@ -73,15 +73,14 @@ class LineQueryServiceTest {
         }
     }
 
-
     @Test
     void 라인_전체_조회_테스트() {
         // given
         long lineId1 = 1L;
         long lineId2 = 2L;
-        Line line1 = new Line(lineId1, "2호선", "GREEN",
+        Line line1 = new Line(lineId1, "2호선", "GREEN", 0,
                 List.of(이호선_역삼_삼성_3.SECTION, 이호선_삼성_잠실_2.SECTION));
-        Line line2 = new Line(lineId2, "3호선", "ORANGE",
+        Line line2 = new Line(lineId2, "3호선", "ORANGE", 0,
                 List.of(new Section(역삼역.STATION, 건대역.STATION, 1)));
 
         given(loadLinePort.findAll())
