@@ -5,3 +5,6 @@ spring:
   h2:
     console:
       enabled: true
+  sql:
+    init:
+      mode: never
