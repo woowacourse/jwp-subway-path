@@ -44,7 +44,7 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
+        return upStation.equals(section.upStation) && downStation.equals(
                 section.downStation);
     }
 

@@ -108,11 +108,11 @@ public class Subway {
         if (start.equals(end)) {
             throw new IllegalArgumentException("출발지와 도착지가 같은 역입니다.");
         }
-        return strategy.findShortestRoute(lines, start, end);
+        return strategy.findShortestRoute(this, start, end);
     }
 
     public Distance findShortestDistance(Station start, Station end, RouteStrategy strategy) {
-        return strategy.findShortestDistance(lines, start, end);
+        return strategy.findShortestDistance(this, start, end);
     }
 
     public List<Line> getLines() {

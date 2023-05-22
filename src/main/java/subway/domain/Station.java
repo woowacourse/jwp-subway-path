@@ -39,7 +39,7 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return (id!=null && station.id !=null && Objects.equals(id, station.id)) || Objects.equals(name, station.name);
+        return name.equals(station.name);
     }
 
     @Override
