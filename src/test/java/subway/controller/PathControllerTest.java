@@ -37,7 +37,7 @@ class PathControllerTest {
                 1250
         ));
 
-        mockMvc.perform(get("/paths/1/2"))
+        mockMvc.perform(get("/paths?departureId=1&arrivalId=2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.path", hasSize(2)))
                 .andExpect(jsonPath("$.path[0].id", is(1)))

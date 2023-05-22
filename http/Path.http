@@ -1,2 +1,2 @@
 ### GET /paths/{from}/{to} : 최단 경로 조회
-GET http://localhost:8080/paths/1/5
+GET http://localhost:8080//paths?departureId=1&arrivalId=5

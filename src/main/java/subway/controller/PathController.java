@@ -2,8 +2,8 @@ package subway.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.dto.PathSearchRequest;
 import subway.dto.PathSearchResponse;
@@ -19,8 +19,8 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping("/{departureId}/{arrivalId}")
-    public ResponseEntity<PathSearchResponse> findPath(@PathVariable final Long departureId, @PathVariable final Long arrivalId) {
+    @GetMapping
+    public ResponseEntity<PathSearchResponse> findPath(@RequestParam final Long departureId, @RequestParam final Long arrivalId) {
         return ResponseEntity.ok(pathService.getShortestPath(new PathSearchRequest(departureId, arrivalId)));
     }
 }
