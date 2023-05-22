@@ -11,10 +11,10 @@ INSERT INTO STATION (name) VALUES ('X역');
 INSERT INTO STATION (name) VALUES ('Z역');
 INSERT INTO STATION (name) VALUES ('?역');
 
-INSERT INTO LINE (id, name, color) VALUES (1, '1호선', 'bg-blue-300');
-INSERT INTO LINE (id, name, color) VALUES (2, '2호선', 'bg-green-300');
-INSERT INTO LINE (id, name, color) VALUES (3, '3호선', 'bg-orange-300');
-INSERT INTO LINE (id, name, color) VALUES (4, '4호선', 'bg-skyblue-300');
+INSERT INTO LINE (id, name, color, extra_fee) VALUES (1, '1호선', 'bg-blue-300', 0);
+INSERT INTO LINE (id, name, color, extra_fee) VALUES (2, '2호선', 'bg-green-300', 100);
+INSERT INTO LINE (id, name, color, extra_fee) VALUES (3, '3호선', 'bg-orange-300', 200);
+INSERT INTO LINE (id, name, color, extra_fee) VALUES (4, '4호선', 'bg-skyblue-300', 300);
 
 INSERT INTO SECTION(line_id, start_station_name, end_station_name, distance) VALUES(1, 'A역', 'D역', 5);
 INSERT INTO SECTION(line_id, start_station_name, end_station_name, distance) VALUES(1, 'D역', 'E역', 8);

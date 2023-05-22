@@ -9,25 +9,25 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class PriceTest {
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(longs = {0, 100, 10000})
     @DisplayName("금액이 정상적으로 생성되어야 한다.")
-    void create_success() {
+    void create_success(long input) {
         // given
-        Price price = Price.from(1000);
+        Price price = Price.from(input);
 
         // expect
         assertThat(price.getAmount())
-                .isEqualTo(1000);
+                .isEqualTo(input);
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {-1, 0})
-    @DisplayName("금액이 1원 미만이면 예외가 발생해야 한다.")
-    void create_lessThan1(long price) {
+    @Test
+    @DisplayName("금액이 0원 미만이면 예외가 발생해야 한다.")
+    void create_lessThan0() {
         // expect
-        assertThatThrownBy(() -> Price.from(price))
+        assertThatThrownBy(() -> Price.from(-1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("금액은 1 이상이어야 합니다.");
+                .hasMessage("금액은 0 이상이어야 합니다.");
     }
 
     @Test
@@ -95,5 +95,19 @@ class PriceTest {
         // then
         assertThat(multiplePrice.getAmount())
                 .isEqualTo(200);
+    }
+
+    @Test
+    @DisplayName("금액을 곱할 때, 0을 곱하면 0원이 되어야 한다.")
+    void multiple_multipleZero() {
+        // given
+        Price price = Price.from(1000);
+
+        // when
+        Price mulitplePrice = price.multiple(0);
+
+        // then
+        assertThat(mulitplePrice)
+                .isEqualTo(Price.ZERO);
     }
 }

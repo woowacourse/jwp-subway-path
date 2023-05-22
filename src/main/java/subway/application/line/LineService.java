@@ -10,6 +10,7 @@ import subway.dao.entity.LineEntity;
 import subway.domain.line.Line;
 import subway.domain.line.LineColor;
 import subway.domain.line.LineName;
+import subway.domain.price.Price;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
@@ -28,10 +29,11 @@ public class LineService {
     public long saveLine(LineCreateRequest request) {
         LineName lineName = new LineName(request.getLineName());
         LineColor lineColor = new LineColor(request.getColor());
+        Price extraFee = Price.from(request.getExtraFee());
         if (lineDao.existsByName(request.getLineName())) {
             throw new DuplicateLineException();
         }
-        return lineDao.insert(new Line(lineName, lineColor));
+        return lineDao.insert(new Line(lineName, lineColor, extraFee));
     }
 
     @Transactional(readOnly = true)
@@ -46,16 +48,17 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         LineEntity lineEntity = lineDao.findById(id)
                 .orElseThrow(LineNotFoundException::new);
-        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraFee());
     }
 
     public void updateLine(Long id, LineUpdateRequest request) {
         LineName lineName = new LineName(request.getLineName());
         LineColor lineColor = new LineColor(request.getColor());
+        Price extraFee = Price.from(request.getExtraFee());
         if (lineDao.doesNotExistById(id)) {
             throw new LineNotFoundException();
         }
-        lineDao.update(id, new Line(lineName, lineColor));
+        lineDao.update(id, new Line(lineName, lineColor, extraFee));
     }
 
     public void deleteLineById(Long id) {

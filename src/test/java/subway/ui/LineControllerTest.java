@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -57,7 +58,7 @@ class LineControllerTest {
     @DisplayName("/lines로 POST 요청과 함께 line의 정보를 보내면, HTTP 201 코드와 응답이 반환되어야 한다.")
     void createLine_success() throws Exception {
         // given
-        LineCreateRequest request = new LineCreateRequest("2호선", "bg-red-600");
+        LineCreateRequest request = new LineCreateRequest("2호선", "bg-red-600", 1000);
         given(lineService.saveLine(any(LineCreateRequest.class)))
                 .willReturn(1L);
 
@@ -72,7 +73,9 @@ class LineControllerTest {
                         requestFields(
                                 fieldWithPath("lineName").description("노선 이름"),
                                 fieldWithPath("color").description("노선 색깔")
-                                        .attributes(constraint(" bg-(소문자로 된 색 단어)-(1~9로 시작하는 100 단위의 수)"))
+                                        .attributes(constraint("bg-(소문자로 된 색 단어)-(1~9로 시작하는 100 단위의 수)")),
+                                fieldWithPath("extraFee").description("노선 요금")
+                                        .attributes(constraint("0~10000 사이"))
                         )));
     }
 
@@ -80,7 +83,7 @@ class LineControllerTest {
     @DisplayName("Line을 생성할 때, Line의 색이 형식에 맞지 않으면 HTTP 400 코드와 응답이 반환되어야 한다.")
     void createLine_invalidColorFormat() throws Exception {
         // given
-        LineCreateRequest request = new LineCreateRequest("2호선", "red");
+        LineCreateRequest request = new LineCreateRequest("2호선", "red", 1000);
 
         // expect
         mockMvc.perform(post("/lines")
@@ -97,7 +100,7 @@ class LineControllerTest {
     @DisplayName("Line을 생성할 때, Line의 이름과 색이 비어있으면 HTTP 400 코드와 응답이 반환되어야 한다.")
     void createLine_notBlank(String input) throws Exception {
         // given
-        LineCreateRequest request = new LineCreateRequest(input, input);
+        LineCreateRequest request = new LineCreateRequest(input, input, 0);
 
         // expect
         mockMvc.perform(post("/lines")
@@ -112,7 +115,7 @@ class LineControllerTest {
     @DisplayName("Line을 생성할 때, LineName이 15글자를 넘으면 HTTP 400 코드와 응답이 반환되어야 한다.")
     void createLine_lineNameOverThan15Characters() throws Exception {
         // given
-        LineCreateRequest request = new LineCreateRequest("1234567890123456", "bg-green-300");
+        LineCreateRequest request = new LineCreateRequest("1234567890123456", "bg-green-300", 0);
 
         // expect
         mockMvc.perform(post("/lines")
@@ -126,7 +129,7 @@ class LineControllerTest {
     @DisplayName("Line을 생성할 때, Color가 15글자를 넘으면 HTTP 400 코드와 응답이 반환되어야 한다.")
     void createLine_ColorOverThan15Characters() throws Exception {
         // given
-        LineCreateRequest request = new LineCreateRequest("1호선", "bg-redgreenblue-300");
+        LineCreateRequest request = new LineCreateRequest("1호선", "bg-redgreenblue-300", 0);
 
         // expect
         mockMvc.perform(post("/lines")
@@ -136,14 +139,29 @@ class LineControllerTest {
                 .andExpect(jsonPath("$.validation.color").value("노선의 색은 15글자를 초과할 수 없습니다."));
     }
 
+    @ParameterizedTest
+    @ValueSource(longs = {-1, 10001})
+    @DisplayName("Line을 생성할 때, extraFee가 음수거나 10000원을 초과하면 HTTP 400 코드와 응답이 반환되어야 한다.")
+    void createLine_extraFeeLessThen1OrOverThan10000(long extraFee) throws Exception {
+        // given
+        LineCreateRequest request = new LineCreateRequest("1호선", "bg-blue-300", extraFee);
+
+        // expect
+        mockMvc.perform(post("/lines")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.validation.extraFee").value("노선의 추가 요금은 0~10000원 사이여야 합니다."));
+    }
+
     @Test
     @DisplayName("/lines로 GET 요청을 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void findAllLines_success() throws Exception {
         // given
         List<LineResponse> response = List.of(
-                new LineResponse(1L, "1호선", "bg-blue-300"),
-                new LineResponse(2L, "2호선", "bg-green-300"),
-                new LineResponse(3L, "3호선", "bg-yellow-300")
+                new LineResponse(1L, "1호선", "bg-blue-300", 0),
+                new LineResponse(2L, "2호선", "bg-green-300", 100),
+                new LineResponse(3L, "3호선", "bg-yellow-300", 200)
         );
         given(lineService.findLineResponses())
                 .willReturn(response);
@@ -161,7 +179,7 @@ class LineControllerTest {
     void findAllDetailLines() throws Exception {
         // given
         List<LineResponse> response = List.of(
-                new LineResponse(1L, "1호선", "bg-blue-300")
+                new LineResponse(1L, "1호선", "bg-blue-300", 0)
         );
         given(lineService.findLineResponses())
                 .willReturn(response);
@@ -180,7 +198,7 @@ class LineControllerTest {
     void findLineDetailById_success() throws Exception {
         // given
         given(lineService.findLineResponseById(anyLong()))
-                .willReturn(new LineResponse(1L, "1호선", "bg-blue-300"));
+                .willReturn(new LineResponse(1L, "1호선", "bg-blue-300", 0));
         given(sectionService.findSectionsByLineId(anyLong()))
                 .willReturn(sectionResponsesFixture());
 
@@ -198,7 +216,7 @@ class LineControllerTest {
     @DisplayName("/lines/:lineId로 PUT 요청과 line의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void updateLine_success() throws Exception {
         // given
-        LineUpdateRequest request = new LineUpdateRequest("2호선", "bg-green-300");
+        LineUpdateRequest request = new LineUpdateRequest("2호선", "bg-green-300", 0);
 
         // expect
         mockMvc.perform(put("/lines/{lineId}", 1L)
@@ -212,7 +230,10 @@ class LineControllerTest {
                         requestFields(
                                 fieldWithPath("lineName").description("노선 이름"),
                                 fieldWithPath("color").description("노선 색깔")
-                                        .attributes(constraint(" bg-(소문자로 된 색 단어)-(1~9로 시작하는 100 단위의 수)"))
+                                        .attributes(constraint(
+                                                "bg-(소문자로 된 색 단어)-(1~9로 시작하는 100 단위의 수)")),
+                                fieldWithPath("extraFee").description("노선 요금")
+                                        .attributes(constraint("0~10000 사이"))
                         )));
     }
 

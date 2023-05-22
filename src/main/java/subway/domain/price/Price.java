@@ -13,13 +13,17 @@ public class Price {
     }
 
     public static Price from(long amount) {
-        if (amount < 0) {
-            throw new IllegalArgumentException("금액은 0 이상이어야 합니다.");
-        }
+        validateNegative(amount);
         if (amount == 0) {
             return ZERO;
         }
         return new Price(BigDecimal.valueOf(amount));
+    }
+
+    private static void validateNegative(long amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("금액은 0 이상이어야 합니다.");
+        }
     }
 
     public Price plus(Price price) {
@@ -27,13 +31,17 @@ public class Price {
     }
 
     public Price minus(Price price) {
-        if (this.amount.compareTo(price.amount) < 0) {
-            throw new IllegalArgumentException("현재 금액보다 더 큰 금액은 뺄 수 없습니다.");
-        }
+        validateOverPrice(price);
         if (Objects.equals(this, price)) {
             return ZERO;
         }
         return new Price(this.amount.subtract(price.amount));
+    }
+
+    private void validateOverPrice(Price price) {
+        if (this.amount.compareTo(price.amount) < 0) {
+            throw new IllegalArgumentException("현재 금액보다 더 큰 금액은 뺄 수 없습니다.");
+        }
     }
 
     public Price multiple(double factor) {

@@ -21,7 +21,8 @@ public class LineDao {
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getLong("extra_fee")
             );
 
     public LineDao(JdbcTemplate jdbcTemplate) {
@@ -37,12 +38,12 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "select id, name, color, extra_fee from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<LineEntity> findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
+        String sql = "select id, name, color, extra_fee from LINE WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (DataAccessException e) {
@@ -51,8 +52,8 @@ public class LineDao {
     }
 
     public void update(Long id, Line line) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
+        String sql = "update LINE set name = ?, color = ?, extra_fee = ? where id = ?";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFee(), id);
     }
 
     public void deleteById(Long id) {

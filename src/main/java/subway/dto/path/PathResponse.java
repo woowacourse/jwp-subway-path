@@ -5,9 +5,9 @@ import java.util.List;
 public class PathResponse {
     private List<String> stations;
     private int totalDistance;
-    private int price;
+    private long price;
 
-    public PathResponse(List<String> stations, int totalDistance, int price) {
+    public PathResponse(List<String> stations, int totalDistance, long price) {
         this.stations = stations;
         this.totalDistance = totalDistance;
         this.price = price;
@@ -21,7 +21,7 @@ public class PathResponse {
         return totalDistance;
     }
 
-    public int getPrice() {
+    public long getPrice() {
         return price;
     }
 }
