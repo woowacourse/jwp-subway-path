@@ -15,6 +15,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.common.fixture.DomainFixture.디노;
+import static subway.common.fixture.DomainFixture.후추;
 import static subway.common.fixture.EntityFixture.디노_Entity;
 import static subway.common.fixture.EntityFixture.후추_Entity;
 
@@ -57,10 +59,8 @@ class StationDaoTest {
         // then
         assertSoftly(softly -> {
             softly.assertThat(stationEntities).hasSize(2);
-            final StationEntity firstStation = stationEntities.get(0);
-            final StationEntity secondStation = stationEntities.get(1);
-            softly.assertThat(firstStation.getName()).isEqualTo("후추");
-            softly.assertThat(secondStation.getName()).isEqualTo("디노");
+            softly.assertThat(stationEntities).extracting(StationEntity::toStation)
+                    .contains(후추, 디노);
         });
     }
 
