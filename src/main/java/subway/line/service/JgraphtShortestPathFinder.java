@@ -40,7 +40,7 @@ public class JgraphtShortestPathFinder implements ShortestPathFinder{
       }
   }
 
-  private void makeGraphBySection(Line line) {
+  private void makeGraphBySection(final Line line) {
     for (Section section : line.getSections()) {
       final Station upStation = section.getUpStation();
       final Station downStation = section.getDownStation();
@@ -79,11 +79,11 @@ public class JgraphtShortestPathFinder implements ShortestPathFinder{
     return fare + calculateFareByCriteria(distance, SECOND_SECTION);
   }
 
-  private int calculateFareByCriteria(int distance, FareCriteria fareCriteria) {
-    return (int) ((Math.ceil((distance - 1) / fareCriteria.getDistancePer()) + 1) * ADDITIONAL_FARE);
+  private int calculateFareByCriteria(final int distance, final FareCriteria fareCriteria) {
+    return (int) ((Math.ceil((double) (distance - 1) / fareCriteria.getDistancePer()) + 1) * ADDITIONAL_FARE);
   }
 
-  private List<TraverseStationDto> getTraverseStationDtos(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+  private List<TraverseStationDto> getTraverseStationDtos(final GraphPath<Station, DefaultWeightedEdge> shortestPath) {
     final List<Station> vertexList = shortestPath.getVertexList();
     final List<TraverseStationDto> traverseStationDtos = new ArrayList<>();
     final int size = vertexList.size();
