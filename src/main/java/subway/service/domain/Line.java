@@ -54,7 +54,7 @@ public class Line {
     }
 
     public RouteMap getLineMap() {
-        return sections.createMap();
+        return sections.createMap(lineProperty);
     }
 
     public LineProperty getLineProperty() {

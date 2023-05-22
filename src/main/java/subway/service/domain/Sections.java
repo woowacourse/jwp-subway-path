@@ -38,22 +38,23 @@ public class Sections {
                 .findFirst();
     }
 
-    public RouteMap createMap() {
+    public RouteMap createMap(LineProperty lineProperty) {
         Map<Station, List<Path>> map = new HashMap<>();
 
         for (Section section : sections) {
             putIfNotContains(map, section);
-            map.get(section.getPreviousStation()).add(createPath(Direction.UP, section));
-            map.get(section.getNextStation()).add(createPath(Direction.DOWN, section));
+            map.get(section.getPreviousStation()).add(createPath(Direction.UP, lineProperty, section));
+            map.get(section.getNextStation()).add(createPath(Direction.DOWN, lineProperty, section));
         }
 
         return new RouteMap(map);
     }
 
-    private Path createPath(Direction direction, Section section) {
+    private Path createPath(Direction direction, LineProperty lineProperty, Section section) {
         if (Direction.UP == direction) {
             return new Path(
                     direction,
+                    lineProperty,
                     section.getNextStation(),
                     Distance.from(section.getDistance())
             );
@@ -61,6 +62,7 @@ public class Sections {
 
         return new Path(
                 direction,
+                lineProperty,
                 section.getPreviousStation(),
                 Distance.from(section.getDistance())
         );
