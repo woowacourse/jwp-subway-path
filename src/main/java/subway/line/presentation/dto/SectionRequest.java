@@ -1,4 +1,4 @@
-package subway.line.domain.section.dto;
+package subway.line.presentation.dto;
 
 public class SectionRequest {
     private final Long startingStationId;

@@ -10,7 +10,7 @@
 //import org.springframework.http.MediaType;
 //import subway.line.presentation.dto.LineRequest;
 //import subway.line.presentation.dto.LineResponse;
-//import subway.line.domain.section.dto.SectionSavingRequest;
+//import subway.line.presentation.dto.SectionSavingRequest;
 //
 //import java.util.List;
 //import java.util.Map;

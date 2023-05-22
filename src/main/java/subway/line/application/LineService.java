@@ -10,22 +10,15 @@ import subway.line.application.strategy.stationdeleting.StationDeletingStrategy;
 import subway.line.domain.fare.Fare;
 import subway.line.domain.fare.application.SubwayFareMeter;
 import subway.line.domain.fare.application.faremeterpolicy.CustomerCondition;
-import subway.line.domain.fare.application.faremeterpolicy.FareMeterPolicy;
 import subway.line.domain.navigation.application.NavigationService;
-import subway.line.domain.section.application.SectionRepository;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    public static final int DEFAULT_FARE = 1250;
-    public static final int MAX_5KM_FARE_DISTANCE = 50;
-    public static final int MIN_8KM_FARE_DISTANCE = 51;
-    public static final int SURCHARGE = 100;
     private final LineRepository lineRepository;
     private final NavigationService navigationService;
     private final SubwayFareMeter subwayFareMeter;

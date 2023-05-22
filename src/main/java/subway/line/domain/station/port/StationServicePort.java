@@ -1,4 +1,4 @@
-package subway.line.domain.station.presentation;
+package subway.line.domain.station.port;
 
 import org.springframework.stereotype.Component;
 import subway.line.domain.station.application.StationService;

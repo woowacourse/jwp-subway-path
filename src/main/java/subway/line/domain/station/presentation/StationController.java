@@ -2,6 +2,7 @@ package subway.line.domain.station.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import subway.line.domain.station.port.StationServicePort;
 import subway.line.domain.station.presentation.dto.StationRequest;
 import subway.line.domain.station.presentation.dto.StationResponse;
 

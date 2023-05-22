@@ -1,4 +1,4 @@
-package subway.line.presentation;
+package subway.line.port;
 
 import org.springframework.stereotype.Component;
 import subway.line.Line;
@@ -8,7 +8,7 @@ import subway.line.application.dto.LineUpdatingInfo;
 import subway.line.domain.fare.application.faremeterpolicy.CustomerCondition;
 import subway.line.domain.section.application.ShortestPathResponse;
 import subway.line.domain.section.domain.Distance;
-import subway.line.domain.section.dto.SectionSavingRequest;
+import subway.line.presentation.dto.SectionSavingRequest;
 import subway.line.domain.station.application.StationService;
 import subway.line.presentation.dto.LineRequest;
 import subway.line.presentation.dto.LineResponse;
@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class LineServicePort {
+public class LineControllerPort {
     private final LineService lineService;
     private final StationService stationService;
 
-    public LineServicePort(LineService lineService, StationService stationService) {
+    public LineControllerPort(LineService lineService, StationService stationService) {
         this.lineService = lineService;
         this.stationService = stationService;
     }
@@ -36,7 +36,7 @@ public class LineServicePort {
     public List<LineResponse> findLineResponses() {
         final var lines = lineService.findLines();
         return lines.stream()
-                .map(LineServicePort::convertLineToLineResponse)
+                .map(LineControllerPort::convertLineToLineResponse)
                 .collect(Collectors.toList());
     }
 

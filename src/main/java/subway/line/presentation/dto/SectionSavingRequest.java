@@ -1,4 +1,4 @@
-package subway.line.domain.section.dto;
+package subway.line.presentation.dto;
 
 import subway.line.domain.section.domain.Distance;
 

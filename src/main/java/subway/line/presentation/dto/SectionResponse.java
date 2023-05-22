@@ -1,4 +1,4 @@
-package subway.line.domain.section.dto;
+package subway.line.presentation.dto;
 
 import subway.line.domain.section.application.ShortestPathResponse;
 import subway.line.domain.station.presentation.dto.StationResponse;
