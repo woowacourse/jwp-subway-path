@@ -16,23 +16,23 @@ public class Fare {
     }
 
     private static int calculateFare(int distance) {
-        int additionalDistance = 0;
         if (distance <= 10) {
             return MINIMUM_FARE;
         }
+
+        int additionalDistance = distance - 10;
         if (distance <= 50) {
-            additionalDistance = distance - 10;
             return MINIMUM_FARE + calculateOverFare(additionalDistance);
         }
-        additionalDistance = distance - 50;
         return ADDITIONAL_MINIMUM_FARE + calculateOverFare(additionalDistance);
     }
 
-    private static int calculateOverFare(int addtionalDistance) {
-        if (addtionalDistance <= 40) {
-            return (int) ((Math.ceil((addtionalDistance - 1) / 5) + 1) * 100);
+    private static int calculateOverFare(int additionalDistance) {
+        if (additionalDistance <= 40) {
+            return (int) ((Math.ceil((additionalDistance - 1) / 5) + 1) * 100);
         }
-        return (int) ((Math.ceil((addtionalDistance - 1) / 8) + 1) * 100);
+        additionalDistance -= 40;
+        return (int) ((Math.ceil((additionalDistance - 1) / 8) + 1) * 100);
     }
 
     public int getValue() {
