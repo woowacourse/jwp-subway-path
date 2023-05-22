@@ -13,18 +13,16 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
-import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
-class H2LinePropertyRepositoryTest {
+class LinePropertyPersistenceAdapterTest {
 
-    private H2LinePropertyRepository linePropertyRepository;
+    private LinePropertyPersistenceAdapter linePropertyRepository;
 
     @Autowired
-    public H2LinePropertyRepositoryTest(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LinePropertyPersistenceAdapterTest(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         LineDao lineDao = new LineDao(jdbcTemplate, dataSource);
-        this.linePropertyRepository = new H2LinePropertyRepository(lineDao);
+        this.linePropertyRepository = new LinePropertyPersistenceAdapter(lineDao);
     }
 
     @Test

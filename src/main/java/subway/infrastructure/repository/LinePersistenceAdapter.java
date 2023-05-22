@@ -22,13 +22,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
-public class H2LineRepository implements LineRepository {
+public class LinePersistenceAdapter implements LineRepository {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
     private final LineDao lineDao;
 
-    public H2LineRepository(SectionDao sectionDao, LineDao lineDao, StationDao stationDao) {
+    public LinePersistenceAdapter(SectionDao sectionDao, LineDao lineDao, StationDao stationDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.lineDao = lineDao;

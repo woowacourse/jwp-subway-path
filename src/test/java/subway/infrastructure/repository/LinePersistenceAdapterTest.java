@@ -21,10 +21,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class H2LineRepositoryTest {
+class LinePersistenceAdapterTest {
 
     @InjectMocks
-    private H2LineRepository lineRepository;
+    private LinePersistenceAdapter lineRepository;
     @Mock
     private SectionDao sectionDao;
     @Mock

@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class H2LinePropertyRepository implements LinePropertyRepository {
+public class LinePropertyPersistenceAdapter implements LinePropertyRepository {
 
    private final LineDao lineDao;
 
-    public H2LinePropertyRepository(LineDao lineDao) {
+    public LinePropertyPersistenceAdapter(LineDao lineDao) {
         this.lineDao = lineDao;
     }
 

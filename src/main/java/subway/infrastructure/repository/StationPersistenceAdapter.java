@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class H2StationRepository implements StationRepository {
+public class StationPersistenceAdapter implements StationRepository {
 
     private final StationDao stationDao;
 
-    public H2StationRepository(StationDao stationDao) {
+    public StationPersistenceAdapter(StationDao stationDao) {
         this.stationDao = stationDao;
     }
 

@@ -15,14 +15,14 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
-class H2StationRepositoryTest {
+class StationPersistenceAdapterTest {
 
-    private H2StationRepository stationRepository;
+    private StationPersistenceAdapter stationRepository;
 
     @Autowired
-    public H2StationRepositoryTest(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationPersistenceAdapterTest(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
-        stationRepository = new H2StationRepository(stationDao);
+        stationRepository = new StationPersistenceAdapter(stationDao);
     }
 
     @Test
