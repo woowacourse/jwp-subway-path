@@ -1,5 +1,6 @@
 package subway.ui;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -13,6 +14,7 @@ import static subway.helper.RestDocsHelper.prettyDocument;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,10 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.path.PathService;
-import subway.dto.path.PathResponse;
+import subway.application.price.PriceService;
+import subway.domain.path.Path;
+import subway.domain.price.Price;
+import subway.domain.station.Station;
 
 @WebMvcTest(PathController.class)
 @AutoConfigureRestDocs
@@ -38,6 +43,9 @@ class PathControllerTest {
     @MockBean
     PathService pathService;
 
+    @MockBean
+    PriceService priceService;
+
     @Test
     @DisplayName("/path로 GET 요청과 함께 path의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void findPath_success() throws Exception {
@@ -45,16 +53,19 @@ class PathControllerTest {
         String originStationName = "서울역";
         String destinationStationName = "용산역";
         given(pathService.findPath(anyString(), anyString()))
-                .willReturn(new PathResponse(
+                .willReturn(new Path(
                         List.of(
-                                "서울역",
-                                "잠실역",
-                                "이수역",
-                                "용산역"
+                                new Station("서울역"),
+                                new Station("잠실역"),
+                                new Station("이수역"),
+                                new Station("용산역")
                         ),
                         28,
-                        1650
+                        Set.of(1L,2L,3L)
                 ));
+        given(priceService.calculate(any(Path.class)))
+                .willReturn(Price.from(1650));
+
 
         // expect
         mockMvc.perform(get("/path?originStation={originStationName}&destinationStation={destinationStationName}",

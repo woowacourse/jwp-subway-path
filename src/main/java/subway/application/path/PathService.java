@@ -4,16 +4,15 @@ import java.util.List;
 import java.util.Objects;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
+import subway.domain.path.LineEdge;
 import subway.domain.path.Path;
 import subway.domain.station.Station;
-import subway.dto.path.PathResponse;
 import subway.exception.path.IllegalPathException;
 
 @Service
@@ -21,22 +20,17 @@ import subway.exception.path.IllegalPathException;
 public class PathService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
-    private final DistancePricePolicy distancePricePolicy;
 
-    public PathService(StationDao stationDao, SectionDao sectionDao, DistancePricePolicy distancePricePolicy) {
+    public PathService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
-        this.distancePricePolicy = distancePricePolicy;
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(String originStationName, String destinationStationName) {
+    public Path findPath(String originStationName, String destinationStationName) {
         validateSameStation(originStationName, destinationStationName);
         validateStationInSection(originStationName, destinationStationName);
-        Path path = getPath(new Station(originStationName), new Station(destinationStationName));
-        List<String> stations = path.getStations();
-        int distance = path.getTotalDistance();
-        return new PathResponse(stations, distance, distancePricePolicy.calculate(distance));
+        return getPath(new Station(originStationName), new Station(destinationStationName));
     }
 
     private void validateSameStation(String originStationName, String destinationStationName) {
@@ -53,25 +47,26 @@ public class PathService {
     }
 
     private Path getPath(Station originStation, Station destinationStation) {
-        Graph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        Graph<Station, LineEdge> graph = new WeightedMultigraph<>(LineEdge.class);
         initialVertex(graph);
         initialEdge(graph);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
-        return new Path(shortestPath.getPath(originStation, destinationStation));
+        DijkstraShortestPath<Station, LineEdge> shortestPath = new DijkstraShortestPath<>(graph);
+        return Path.from(shortestPath.getPath(originStation, destinationStation));
     }
 
-    private void initialVertex(Graph<Station, DefaultWeightedEdge> graph) {
+    private void initialVertex(Graph<Station, LineEdge> graph) {
         List<Station> stations = stationDao.findAll();
         for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
-    private void initialEdge(Graph<Station, DefaultWeightedEdge> graph) {
+    private void initialEdge(Graph<Station, LineEdge> graph) {
         List<SectionEntity> sections = sectionDao.findAll();
         for (SectionEntity section : sections) {
-            DefaultWeightedEdge edge = graph.addEdge(section.getUpBoundStation(), section.getDownBoundStation());
-            graph.setEdgeWeight(edge, section.getDistance());
+            LineEdge lineEdge = new LineEdge(section.getLineId());
+            graph.addEdge(section.getUpBoundStation(), section.getDownBoundStation(), lineEdge);
+            graph.setEdgeWeight(lineEdge, section.getDistance());
         }
     }
 }
