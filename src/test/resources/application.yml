@@ -1,0 +1,7 @@
+spring:
+    datasource:
+        url: jdbc:h2:mem:subway
+        driver-class-name: org.h2.Driver
+    config:
+        activate:
+            on-profile: "site-test"
