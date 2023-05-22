@@ -39,7 +39,7 @@ class SectionDistanceTest {
         final SectionDistance sectionDistance = SectionDistance.zero();
 
         // then
-        assertThat(sectionDistance.getDistance())
+        assertThat(sectionDistance.distance())
             .isEqualTo(0);
     }
 
@@ -53,7 +53,7 @@ class SectionDistanceTest {
         final SectionDistance result = zero.add(SectionDistance.create(10));
 
         // then
-        assertThat(result.getDistance())
+        assertThat(result.distance())
             .isEqualTo(10);
     }
 
@@ -67,7 +67,7 @@ class SectionDistanceTest {
         final SectionDistance result = ten.subtract(SectionDistance.create(3));
 
         // then
-        assertThat(result.getDistance())
+        assertThat(result.distance())
             .isEqualTo(7);
     }
 

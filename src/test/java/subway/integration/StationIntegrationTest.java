@@ -13,22 +13,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
+import subway.application.dto.StationRequest;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역을 생성한다.")
     void createStation() {
-        // given
-        final Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
-
-        // expected
         RestAssured.given().log().all()
-            .body(params)
+            .body(new StationRequest("강남역"))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/stations")
@@ -38,16 +32,10 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("빈 이름으로 지하철 역을 생성한다")
     void createStation_empty_name() {
-        // given
-        final Map<String, String> params = new HashMap<>();
-        params.put("name", "");
-
-        // when
         RestAssured.given().log().all()
-            .body(params)
+            .body(new StationRequest(""))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/stations")
@@ -58,12 +46,10 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
     void createStation_duplicate_name() {
         // given
-        final Map<String, String> stationRequest = new HashMap<>();
-        stationRequest.put("name", "강남역");
+        final StationRequest stationRequest = new StationRequest("강남역");
         saveStation(stationRequest);
 
         // expected
@@ -79,17 +65,11 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역 목록을 조회한다.")
     void getStations() {
         /// given
-        final Map<String, String> stationRequest1 = new HashMap<>();
-        stationRequest1.put("name", "강남역");
-        saveStation(stationRequest1);
-
-        final Map<String, String> stationRequest2 = new HashMap<>();
-        stationRequest2.put("name", "역삼역");
-        saveStation(stationRequest2);
+        saveStation(new StationRequest("강남역"));
+        saveStation(new StationRequest("역삼역"));
 
         // expected
         RestAssured.given().log().all()
@@ -102,13 +82,10 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역을 조회한다.")
     void getStationById() {
         /// given
-        final Map<String, String> stationRequest = new HashMap<>();
-        stationRequest.put("name", "강남역");
-        saveStation(stationRequest);
+        saveStation(new StationRequest("강남역"));
 
         // expected
         RestAssured.given().log().all()
@@ -120,13 +97,10 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역을 수정한다.")
     void updateStation() {
         // given
-        final Map<String, String> stationRequest = new HashMap<>();
-        stationRequest.put("name", "강남역");
-        saveStation(stationRequest);
+        saveStation(new StationRequest("강남역"));
 
         // expected
         Map<String, String> otherParams = new HashMap<>();
@@ -142,13 +116,10 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역을 제거한다.")
     void deleteStation() {
         // given
-        final Map<String, String> stationRequest = new HashMap<>();
-        stationRequest.put("name", "강남역");
-        saveStation(stationRequest);
+        saveStation(new StationRequest("강남역"));
 
         // expected
         RestAssured.given().log().all()
@@ -159,7 +130,7 @@ public class StationIntegrationTest extends IntegrationTest {
             .extract();
     }
 
-    private void saveStation(final Map<String, String> stationRequest) {
+    private void saveStation(final StationRequest stationRequest) {
         RestAssured.given().log().all()
             .body(stationRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)

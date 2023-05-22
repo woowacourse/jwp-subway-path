@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 import subway.domain.station.Station;
 import subway.exception.BadRequestException;
 
-public class Sections {
+public class SubwayLine {
 
     private final List<Section> sections;
     private final List<Station> sortedStations;
 
-    public Sections(final List<Section> sections) {
+    public SubwayLine(final List<Section> sections) {
         this.sections = sections;
         this.sortedStations = sort(sections);
     }
@@ -27,8 +27,8 @@ public class Sections {
         if (sortedStations.isEmpty()) {
             return;
         }
-        final Station sourceStation = section.getSource();
-        final Station targetStation = section.getTarget();
+        final Station sourceStation = section.source();
+        final Station targetStation = section.target();
         if (!sortedStations.contains(sourceStation) && !sortedStations.contains(targetStation)) {
             throw new BadRequestException(SECTION_ADD_STATION_NOT_EXISTS);
         }
@@ -38,19 +38,19 @@ public class Sections {
     }
 
     public boolean isNewSection(final Section section) {
-        return sortedStations.isEmpty() || isTargetUpward(section.getTarget()) || isSourceDownward(section.getSource());
+        return sortedStations.isEmpty() || isTargetUpward(section.target()) || isSourceDownward(section.source());
     }
 
     public Optional<Section> getExistsSectionOfSource(final Section requestSection) {
         return sections.stream()
-            .filter(section -> section.getSource().equals(requestSection.getSource()))
+            .filter(section -> section.source().equals(requestSection.source()))
             .findFirst()
             .map(section -> validateDistance(requestSection, section));
     }
 
     public Optional<Section> getExistsSectionOfTarget(final Section requestSection) {
         return sections.stream()
-            .filter(section -> section.getTarget().equals(requestSection.getTarget()))
+            .filter(section -> section.target().equals(requestSection.target()))
             .findFirst()
             .map(section -> validateDistance(requestSection, section));
     }
@@ -63,12 +63,12 @@ public class Sections {
         SectionDistance newDistance = SectionDistance.zero();
         for (Section section : sections) {
             if (section.equalToSource(newStation)) {
-                newDistance = newDistance.add(section.getDistance());
-                newTargetStation = section.getTarget();
+                newDistance = newDistance.add(section.distance());
+                newTargetStation = section.target();
             }
             if (section.equalToTarget(newStation)) {
-                newDistance = newDistance.add(section.getDistance());
-                newSourceStation = section.getSource();
+                newDistance = newDistance.add(section.distance());
+                newSourceStation = section.source();
             }
         }
         return Optional.of(new Section(newSourceStation, newTargetStation, newDistance));
@@ -83,8 +83,8 @@ public class Sections {
     }
 
     private Section validateDistance(final Section requestSection, final Section targetSection) {
-        final SectionDistance requestDistance = requestSection.getDistance();
-        final SectionDistance targetDistance = targetSection.getDistance();
+        final SectionDistance requestDistance = requestSection.distance();
+        final SectionDistance targetDistance = targetSection.distance();
         if (requestDistance.isGreaterAndEqualsThan(targetDistance)) {
             throw new BadRequestException(SECTION_TOO_FAR_DISTANCE);
         }
@@ -111,13 +111,17 @@ public class Sections {
 
     private Map<Station, Station> getStationRelationShip(final List<Section> sections) {
         return sections.stream()
-            .collect(Collectors.toMap(Section::getSource, Section::getTarget));
+            .collect(Collectors.toMap(Section::source, Section::target));
     }
 
     private Optional<Station> getStartStation(final Map<Station, Station> stationRelationShip) {
         return stationRelationShip.keySet().stream()
             .filter(station -> !stationRelationShip.containsValue(station))
             .findFirst();
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public List<Station> getSortedStations() {

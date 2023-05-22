@@ -1,7 +1,10 @@
 spring:
-  h2:
-    console:
-      enabled: true
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;MODE=MySQL
+    url: jdbc:mysql://localhost:13306/subway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      schema-locations: classpath:/schema.sql
+      mode: always

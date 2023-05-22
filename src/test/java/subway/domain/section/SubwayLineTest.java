@@ -23,17 +23,17 @@ import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.station.Station;
 import subway.exception.BadRequestException;
 
-class SectionsTest {
+class SubwayLineTest {
 
     @Test
     @DisplayName("노선에 아무 역도 존재하지 않으면 검증하지 않는다.")
     void validateSections_empty() {
         // given
-        final Sections sections = new Sections(new ArrayList<>());
+        final SubwayLine subwayLine = new SubwayLine(new ArrayList<>());
         final Section requestSection = new Section(신림역, 강남역, 10);
 
         // expected
-        assertDoesNotThrow(() -> sections.validateSections(requestSection));
+        assertDoesNotThrow(() -> subwayLine.validateSections(requestSection));
     }
 
     @Test
@@ -43,11 +43,11 @@ class SectionsTest {
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
         final Section requestSection = new Section(신림역, 강남역, 10);
 
         // expected
-        assertThatThrownBy(() -> sections.validateSections(requestSection))
+        assertThatThrownBy(() -> subwayLine.validateSections(requestSection))
             .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(SECTION_ADD_STATION_NOT_EXISTS);
@@ -60,14 +60,14 @@ class SectionsTest {
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
-        final Station sourceStation = new Station(sourceStationName);
-        final Station targetStation = new Station(targetStationName);
+        final Station sourceStation = Station.create(sourceStationName);
+        final Station targetStation = Station.create(targetStationName);
         final Section requestSection = new Section(sourceStation, targetStation, 10);
 
         // expected
-        assertThatThrownBy(() -> sections.validateSections(requestSection))
+        assertThatThrownBy(() -> subwayLine.validateSections(requestSection))
             .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(SECTION_ALREADY_ADD);
@@ -77,11 +77,11 @@ class SectionsTest {
     @DisplayName("노선에 존재하는 역이 없다면, 요청받은 구간은 새로운 구간으로 판단한다.")
     void isNewSection_empty() {
         // given
-        final Sections sections = new Sections(new ArrayList<>());
+        final SubwayLine subwayLine = new SubwayLine(new ArrayList<>());
         final Section requestSection = new Section(잠실역, 선릉역, 10);
 
         // expected
-        assertThat(sections.isNewSection(requestSection))
+        assertThat(subwayLine.isNewSection(requestSection))
             .isTrue();
     }
 
@@ -92,14 +92,14 @@ class SectionsTest {
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
-        final Station sourceStation = new Station(sourceStationName);
-        final Station targetStation = new Station(targetStationName);
+        final Station sourceStation = Station.create(sourceStationName);
+        final Station targetStation = Station.create(targetStationName);
         final Section requestSection = new Section(sourceStation, targetStation, 10);
 
         // expected
-        assertThat(sections.isNewSection(requestSection))
+        assertThat(subwayLine.isNewSection(requestSection))
             .isSameAs(expected);
     }
 
@@ -110,12 +110,12 @@ class SectionsTest {
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
         final Section requestSection = new Section(신림역, 잠실역, 10);
 
         // expected
-        assertThat(sections.getExistsSectionOfSource(requestSection)).isEmpty();
+        assertThat(subwayLine.getExistsSectionOfSource(requestSection)).isEmpty();
     }
 
     @ParameterizedTest(name = "요청받은 시작역이 노선 구간의 시작역에 있지만, 요청받은 거리가 노선 구간 사이의 거리보다 더 크거나 같다면 예외가 발생한다.")
@@ -125,12 +125,12 @@ class SectionsTest {
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
         final Section requestSection = new Section(잠실역, 신림역, distance);
 
         // expected
-        assertThatThrownBy(() -> sections.getExistsSectionOfSource(requestSection))
+        assertThatThrownBy(() -> subwayLine.getExistsSectionOfSource(requestSection))
             .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(SECTION_TOO_FAR_DISTANCE);
@@ -143,12 +143,12 @@ class SectionsTest {
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
         final Section requestSection = new Section(잠실역, 신림역, 8);
 
         // expected
-        assertThat(sections.getExistsSectionOfSource(requestSection))
+        assertThat(subwayLine.getExistsSectionOfSource(requestSection))
             .isEqualTo(Optional.ofNullable(section));
     }
 
@@ -159,12 +159,12 @@ class SectionsTest {
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
         final Section requestSection = new Section(신림역, 잠실역, 10);
 
         // expected
-        assertThat(sections.getExistsSectionOfTarget(requestSection))
+        assertThat(subwayLine.getExistsSectionOfTarget(requestSection))
             .isEmpty();
     }
 
@@ -175,12 +175,12 @@ class SectionsTest {
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
         final Section requestSection = new Section(신림역, 선릉역, distance);
 
         // expected
-        assertThatThrownBy(() -> sections.getExistsSectionOfTarget(requestSection))
+        assertThatThrownBy(() -> subwayLine.getExistsSectionOfTarget(requestSection))
             .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(SECTION_TOO_FAR_DISTANCE);
@@ -193,12 +193,12 @@ class SectionsTest {
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
         final Section requestSection = new Section(신림역, 선릉역, 8);
 
         // expected
-        assertThat(sections.getExistsSectionOfTarget(requestSection))
+        assertThat(subwayLine.getExistsSectionOfTarget(requestSection))
             .isEqualTo(Optional.ofNullable(section));
     }
 
@@ -211,10 +211,10 @@ class SectionsTest {
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(잠실_선릉);
         savedSections.add(선릉_강남);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
         // when
-        final Optional<Section> newSection = sections.combineSection(잠실역);
+        final Optional<Section> newSection = subwayLine.combineSection(잠실역);
 
         // then
         assertThat(newSection)
@@ -230,10 +230,10 @@ class SectionsTest {
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(잠실_선릉);
         savedSections.add(선릉_강남);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
         // when
-        final Optional<Section> newSection = sections.combineSection(강남역);
+        final Optional<Section> newSection = subwayLine.combineSection(강남역);
 
         // then
         assertThat(newSection)
@@ -249,16 +249,16 @@ class SectionsTest {
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(잠실_선릉);
         savedSections.add(선릉_강남);
-        final Sections sections = new Sections(savedSections);
+        final SubwayLine subwayLine = new SubwayLine(savedSections);
 
         // when
-        final Optional<Section> newSection = sections.combineSection(선릉역);
+        final Optional<Section> newSection = subwayLine.combineSection(선릉역);
 
         // then
         assertAll(
-            () -> assertThat(newSection.get().getSource().equals(잠실역)),
-            () -> assertThat(newSection.get().getTarget().equals(강남역)),
-            () -> assertThat(newSection.get().getDistance().getDistance() == 20)
+            () -> assertThat(newSection.get().source().equals(잠실역)),
+            () -> assertThat(newSection.get().target().equals(강남역)),
+            () -> assertThat(newSection.get().distance().distance() == 20)
         );
     }
 }

@@ -1,0 +1,51 @@
+### 노선 생성 (추가 요금 제외)
+POST {{host}}/lines
+Content-Type: application/json
+
+{
+  "name": "이호선",
+  "color": "green",
+}
+
+### 노선 생성 (추가 요금 포함)
+POST {{host}}/lines
+Content-Type: application/json
+
+{
+  "name": "사호선",
+  "color": "blue",
+  "extraFare": 1000
+}
+
+
+### 구간 생성
+POST {{host}}/lines/sections
+Content-Type: application/json
+
+{
+  "lineId": 1,
+  "sourceStationId": 1,
+  "targetStationId": 2,
+  "distance": 10
+}
+
+### 모든 구간 정보 조회
+GET {{host}}/lines
+
+### 단일 노선 조회
+GET {{host}}/lines/1
+
+### 노선 업데이트
+PUT {{host}}/lines/1
+Content-Type: application/json
+
+{
+  "name": "사호선",
+  "color": "blue"
+}
+
+### 노선 제거
+DELETE {{host}}/lines/1
+
+### 노선의 역 제거
+DELETE {{host}}/lines/2/stations/3

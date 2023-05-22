@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static subway.exception.ErrorCode.STATION_NOT_FOUND;
 import static subway.fixture.StationFixture.역_엔티티들;
 import static subway.fixture.StationFixture.잠실역;
 import static subway.fixture.StationFixture.잠실역_엔티티;
@@ -79,8 +80,8 @@ class StationRepositoryImplTest {
 
         // then
         assertThat(station)
-            .extracting(Station::getName)
-            .isEqualTo(new StationName("잠실역"));
+            .extracting(Station::name)
+            .isEqualTo(StationName.create("잠실역"));
     }
 
     @Test
@@ -93,7 +94,8 @@ class StationRepositoryImplTest {
         // expected
         assertThatThrownBy(() -> stationRepository.findById(1L))
             .isInstanceOf(NotFoundException.class)
-            .hasMessage("역 정보가 존재하지 않습니다. id = 1");
+            .extracting("errorCode", "errorMessage")
+            .containsExactly(STATION_NOT_FOUND, "역 정보가 존재하지 않습니다. id = 1");
     }
 
     @Test

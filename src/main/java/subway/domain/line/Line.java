@@ -1,37 +1,43 @@
 package subway.domain.line;
 
 import java.util.Collections;
-import subway.domain.section.Sections;
+import subway.domain.section.SubwayLine;
 
 public class Line {
 
     private final LineName name;
     private final String color;
-    private Sections sections;
+    private final LineExtraFare extraFare;
+    private SubwayLine subwayLine;
 
-    public Line(final String name, final String color) {
-        this(name, color, new Sections(Collections.emptyList()));
+    public Line(final String name, final String color, final int extraFare) {
+        this(name, color, extraFare, new SubwayLine(Collections.emptyList()));
     }
 
-    public Line(final String name, final String color, final Sections sections) {
+    public Line(final String name, final String color, final int extraFare, final SubwayLine subwayLine) {
         this.name = new LineName(name);
         this.color = color;
-        this.sections = sections;
+        this.extraFare = new LineExtraFare(extraFare);
+        this.subwayLine = subwayLine;
     }
 
-    public void updateSections(final Sections sections) {
-        this.sections = sections;
+    public void updateSubwayLine(final SubwayLine subwayLine) {
+        this.subwayLine = subwayLine;
     }
 
-    public LineName getName() {
+    public LineName name() {
         return name;
     }
 
-    public String getColor() {
+    public String color() {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
+    public SubwayLine subwayLine() {
+        return subwayLine;
+    }
+
+    public LineExtraFare extraFare() {
+        return extraFare;
     }
 }

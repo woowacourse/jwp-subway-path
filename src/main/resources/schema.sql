@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS line
     id bigint auto_increment NOT NULL,
     name VARCHAR(255) NOT NULL UNIQUE,
     color VARCHAR(20) NOT NULL,
+    extra_fare int NOT NULL,
     PRIMARY KEY(id)
 );
 
@@ -25,6 +26,3 @@ CREATE TABLE IF NOT EXISTS section
     FOREIGN KEY(source_station_id) REFERENCES station(id) ON DELETE CASCADE,
     FOREIGN KEY(target_station_id) REFERENCES station(id) ON DELETE CASCADE
 );
-
-CREATE INDEX IF NOT EXISTS idx_station_name ON STATION (name);
-CREATE INDEX IF NOT EXISTS idx_line_name ON LINE (name);

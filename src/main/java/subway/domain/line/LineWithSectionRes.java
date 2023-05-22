@@ -7,6 +7,7 @@ public class LineWithSectionRes {
     private final Long lineId;
     private final String lineName;
     private final String lineColor;
+    private final Integer extraFare;
     private final Long sourceStationId;
     private final String sourceStationName;
     private final Long targetStationId;
@@ -14,11 +15,12 @@ public class LineWithSectionRes {
     private final Integer distance;
 
     public LineWithSectionRes(final Long lineId, final String lineName, final String lineColor,
-                              final Long sourceStationId, final String sourceStationName,
+                              final Integer extraFare, final Long sourceStationId, final String sourceStationName,
                               final Long targetStationId, final String targetStationName, final Integer distance) {
         this.lineId = lineId;
         this.lineName = lineName;
         this.lineColor = lineColor;
+        this.extraFare = extraFare;
         this.sourceStationId = sourceStationId;
         this.sourceStationName = sourceStationName;
         this.targetStationId = targetStationId;
@@ -27,8 +29,8 @@ public class LineWithSectionRes {
     }
 
     public boolean isSourceOrTargetStation(final StationName stationName) {
-        final StationName sourceName = new StationName(sourceStationName);
-        final StationName targetName = new StationName(targetStationName);
+        final StationName sourceName = StationName.create(sourceStationName);
+        final StationName targetName = StationName.create(targetStationName);
         return sourceName.equals(stationName) || targetName.equals(stationName);
     }
 
@@ -37,7 +39,7 @@ public class LineWithSectionRes {
     }
 
     public Long getStationIdByStationName(final StationName stationName) {
-        final StationName sourceName = new StationName(sourceStationName);
+        final StationName sourceName = StationName.create(sourceStationName);
         if (sourceName.equals(stationName)) {
             return sourceStationId;
         }
@@ -61,6 +63,10 @@ public class LineWithSectionRes {
 
     public String getLineColor() {
         return lineColor;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
     }
 
     public Long getSourceStationId() {

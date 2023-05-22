@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static subway.exception.ErrorCode.LINE_NOT_FOUND;
 import static subway.fixture.LineFixture.이호선;
 import static subway.fixture.LineFixture.이호선_구간;
 import static subway.fixture.LineFixture.이호선_엔티티;
@@ -24,6 +25,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.line.Line;
+import subway.domain.line.LineExtraFare;
 import subway.domain.line.LineName;
 import subway.domain.line.LineWithSectionRes;
 import subway.exception.DBException;
@@ -66,13 +68,13 @@ class LineRepositoryImplTest {
         // then
         assertThat(lineWithSections)
             .extracting(LineWithSectionRes::getLineId, LineWithSectionRes::getLineName,
-                LineWithSectionRes::getLineColor,
+                LineWithSectionRes::getLineColor, LineWithSectionRes::getExtraFare,
                 LineWithSectionRes::getSourceStationId, LineWithSectionRes::getSourceStationName,
                 LineWithSectionRes::getTargetStationId, LineWithSectionRes::getTargetStationName,
                 LineWithSectionRes::getDistance)
             .contains(
-                tuple(1L, "이호선", "bg-green-600", 1L, "잠실역", 2L, "선릉역", 10),
-                tuple(1L, "이호선", "bg-green-600", 2L, "선릉역", 3L, "강남역", 10)
+                tuple(1L, "이호선", "bg-green-600", 0, 1L, "잠실역", 2L, "선릉역", 10),
+                tuple(1L, "이호선", "bg-green-600", 0, 2L, "선릉역", 3L, "강남역", 10)
             );
     }
 
@@ -89,15 +91,15 @@ class LineRepositoryImplTest {
         // then
         assertThat(lineWithSections)
             .extracting(LineWithSectionRes::getLineId, LineWithSectionRes::getLineName,
-                LineWithSectionRes::getLineColor,
+                LineWithSectionRes::getLineColor, LineWithSectionRes::getExtraFare,
                 LineWithSectionRes::getSourceStationId, LineWithSectionRes::getSourceStationName,
                 LineWithSectionRes::getTargetStationId, LineWithSectionRes::getTargetStationName,
                 LineWithSectionRes::getDistance)
             .contains(
-                tuple(1L, "이호선", "bg-green-600", 1L, "잠실역", 2L, "선릉역", 10),
-                tuple(1L, "이호선", "bg-green-600", 2L, "선릉역", 3L, "강남역", 10),
-                tuple(2L, "팔호선", "bg-pink-600", 5L, "복정역", 6L, "남위례역", 10),
-                tuple(2L, "팔호선", "bg-pink-600", 6L, "남위례역", 7L, "산성역", 10)
+                tuple(1L, "이호선", "bg-green-600", 0, 1L, "잠실역", 2L, "선릉역", 10),
+                tuple(1L, "이호선", "bg-green-600", 0, 2L, "선릉역", 3L, "강남역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 0, 5L, "복정역", 6L, "남위례역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 0, 6L, "남위례역", 7L, "산성역", 10)
             );
     }
 
@@ -113,8 +115,8 @@ class LineRepositoryImplTest {
 
         // then
         assertThat(line)
-            .extracting(Line::getName, Line::getColor)
-            .containsExactly(new LineName("이호선"), "bg-green-600");
+            .extracting(Line::name, Line::color, Line::extraFare)
+            .containsExactly(new LineName("이호선"), "bg-green-600", new LineExtraFare(0));
     }
 
     @Test
@@ -127,7 +129,8 @@ class LineRepositoryImplTest {
         // expected
         assertThatThrownBy(() -> lineRepository.findById(1L))
             .isInstanceOf(NotFoundException.class)
-            .hasMessage("노선 정보가 존재하지 않습니다. id = 1");
+            .extracting("errorCode", "errorMessage")
+            .containsExactly(LINE_NOT_FOUND, "노선 정보가 존재하지 않습니다. id = 1");
     }
 
     @Test
@@ -188,5 +191,30 @@ class LineRepositoryImplTest {
         // expected
         assertThat(lineRepository.existByName(name))
             .isSameAs(expected);
+    }
+
+    @Test
+    @DisplayName("출발역에서 도착역으로 갈 수 있는 노선들이 가진 모든 구간 정보를 구한다.")
+    void getPossibleSections() {
+        // given
+        when(lineDao.getAllLineSectionsSourceAndTargetStationId(anyLong(), anyLong()))
+            .thenReturn(이호선_팔호선_구간());
+
+        // when
+        final List<LineWithSectionRes> lineWithSections = lineRepository.getPossibleSections(1L, 7L);
+
+        // then
+        assertThat(lineWithSections)
+            .extracting(LineWithSectionRes::getLineId, LineWithSectionRes::getLineName,
+                LineWithSectionRes::getLineColor, LineWithSectionRes::getExtraFare,
+                LineWithSectionRes::getSourceStationId, LineWithSectionRes::getSourceStationName,
+                LineWithSectionRes::getTargetStationId, LineWithSectionRes::getTargetStationName,
+                LineWithSectionRes::getDistance)
+            .contains(
+                tuple(1L, "이호선", "bg-green-600", 0, 1L, "잠실역", 2L, "선릉역", 10),
+                tuple(1L, "이호선", "bg-green-600", 0, 2L, "선릉역", 3L, "강남역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 0, 5L, "복정역", 6L, "남위례역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 0, 6L, "남위례역", 7L, "산성역", 10)
+            );
     }
 }

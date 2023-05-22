@@ -25,7 +25,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     public Long insert(final Station station) {
-        final StationEntity stationEntity = new StationEntity(station.getName().name());
+        final StationEntity stationEntity = new StationEntity(station.name().name());
         return stationDao.insert(stationEntity);
     }
 
@@ -40,13 +40,15 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     public Station findById(final Long id) {
         final StationEntity stationEntity = stationDao.findById(id)
-            .orElseThrow(() -> new NotFoundException(STATION_NOT_FOUND.getMessage() + " id = " + id));
-        return new Station(stationEntity.getName());
+            .orElseThrow(() -> new NotFoundException(
+                STATION_NOT_FOUND,
+                STATION_NOT_FOUND.getMessage() + " id = " + id));
+        return Station.create(stationEntity.getName());
     }
 
     @Override
     public void updateById(final Long id, final Station station) {
-        final StationEntity stationEntity = new StationEntity(id, station.getName().name());
+        final StationEntity stationEntity = new StationEntity(id, station.name().name());
         final int updatedCount = stationDao.update(stationEntity);
         if (updatedCount != 1) {
             throw new DBException(DB_UPDATE_ERROR);

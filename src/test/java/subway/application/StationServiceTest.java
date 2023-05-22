@@ -21,8 +21,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.station.StationRepository;
 import subway.application.dto.StationResponse;
+import subway.domain.station.StationRepository;
 import subway.exception.BadRequestException;
 
 @ExtendWith(MockitoExtension.class)
