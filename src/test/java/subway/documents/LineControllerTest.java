@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.documents;
 
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.Test;

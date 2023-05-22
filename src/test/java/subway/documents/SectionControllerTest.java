@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.documents;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;

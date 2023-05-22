@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.documents;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
 import subway.application.PathService;
 import subway.application.SectionService;
+import subway.ui.LineController;
+import subway.ui.PathController;
+import subway.ui.SectionController;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;

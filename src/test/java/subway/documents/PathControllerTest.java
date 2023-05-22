@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.documents;
 
 import org.junit.jupiter.api.Test;
 import subway.domain.Distance;
