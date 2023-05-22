@@ -51,4 +51,9 @@ public class SectionDAO {
         final String sql = "select * from section where line_id = ?";
         return this.jdbcTemplate.query(sql, this.rowMapper, lineId);
     }
+    
+    public List<Section> findAll() {
+        final String sql = "select * from section";
+        return this.jdbcTemplate.query(sql, this.rowMapper);
+    }
 }

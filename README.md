@@ -50,3 +50,41 @@
     - [x] 해당 라인의 역이 존재하는지 확인한다.
     - [x] 해당 라인의 기준역이 종점인지 확인한다.
     - [x] 해당 라인의 종점들을 반환한다.
+
+# Data.sql
+
+insert into STATION (name) values ('왕십리역'); 1
+insert into STATION (name) values ('한양대역'); 2
+insert into STATION (name) values ('뚝섬역'); 3
+insert into STATION (name) values ('성수역'); 4
+insert into STATION (name) values ('건대입구역'); 5
+insert into STATION (name) values ('구의역'); 6
+insert into STATION (name) values ('강변역'); 7
+insert into STATION (name) values ('잠실나루역'); 8
+insert into STATION (name) values ('잠실역'); 9
+insert into STATION (name) values ('잠실새내역'); 10
+insert into STATION (name) values ('종합운동장역'); 11
+insert into STATION (name) values ('삼성역'); 12
+insert into STATION (name) values ('선릉역'); 13
+insert into STATION (name) values ('역삼역'); 14
+insert into STATION (name) values ('강남역'); 15
+
+insert into STATION (name) values ('서울숲'); 16
+insert into STATION (name) values ('압구정로데오'); 17
+insert into STATION (name) values ('강남구청'); 18
+insert into STATION (name) values ('선정릉'); 19
+
+insert into STATION (name) values ('마장'); 20
+insert into STATION (name) values ('답십리'); 21
+insert into STATION (name) values ('장한평'); 22
+insert into STATION (name) values ('군자'); 23
+insert into STATION (name) values ('아차산'); 24
+insert into STATION (name) values ('광나루'); 25
+insert into STATION (name) values ('천호'); 26
+
+insert into STATION (name) values ('청담'); 27
+insert into STATION (name) values ('뚝섬유원지'); 28
+insert into STATION (name) values ('어린이대공원'); 29
+
+insert into STATION (name) values ('몽촌토성'); 30
+insert into STATION (name) values ('강동구청'); 31

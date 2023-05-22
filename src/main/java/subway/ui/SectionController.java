@@ -1,21 +1,20 @@
 package subway.ui;
 
+import java.net.URI;
 import java.util.List;
-import org.springframework.http.HttpStatus;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
 import subway.dto.DeleteSectionRequest;
 import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
 
-@RequestMapping("/sections")
 @RestController
 public class SectionController {
     
@@ -25,25 +24,22 @@ public class SectionController {
         this.sectionService = sectionService;
     }
     
-    @GetMapping("/{lineId}")
+    @GetMapping("/lines/{lineId}/sections")
     public ResponseEntity<List<SectionResponse>> getSections(@PathVariable final long lineId) {
-        final List<SectionResponse> sectionResponses = this.sectionService.getSections(lineId);
+        final List<SectionResponse> sectionResponses = this.sectionService.findSectionsByLineId(lineId);
         return ResponseEntity.ok(sectionResponses);
     }
     
-    @PostMapping
-    public ResponseEntity<List<SectionResponse>> addSection(@RequestBody final SectionRequest sectionRequest) {
-        this.sectionService.validate(sectionRequest);
-        
-        final java.util.List<SectionResponse> sectionResponses = this.sectionService.saveSection(sectionRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(sectionResponses);
+    @PostMapping("/sections")
+    public ResponseEntity<List<SectionResponse>> addSection(@RequestBody @Valid final SectionRequest sectionRequest) {
+        final List<SectionResponse> sectionResponses = this.sectionService.insertSection(sectionRequest);
+        return ResponseEntity.created(URI.create("/sections/" + sectionRequest.getLineId())).body(sectionResponses);
     }
     
-    @DeleteMapping
+    @DeleteMapping("/sections")
     public ResponseEntity<Void> deleteSection(
-            @RequestBody final DeleteSectionRequest deleteSectionRequest) {
-        this.sectionService.validate(deleteSectionRequest);
+            @RequestBody @Valid final DeleteSectionRequest deleteSectionRequest) {
         this.sectionService.deleteSection(deleteSectionRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

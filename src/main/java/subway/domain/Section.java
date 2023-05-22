@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.dto.SectionRequest;
+import subway.dto.SectionResponse;
 
 public class Section {
     
@@ -35,6 +36,11 @@ public class Section {
         return new Section(sectionRequest.getLineId(), sectionRequest.getNewStationId(),
                 sectionRequest.getBaseStationId(),
                 sectionRequest.getDistance());
+    }
+    
+    public static Section from(final SectionResponse sectionResponse) {
+        return new Section(sectionResponse.getId(), sectionResponse.getLineId(), sectionResponse.getUpStationId(),
+                sectionResponse.getDownStationId(), sectionResponse.getDistance());
     }
     
     public long getId() {

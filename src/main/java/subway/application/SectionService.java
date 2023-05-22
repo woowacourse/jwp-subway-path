@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDAO;
 import subway.dao.StationDao;
@@ -29,14 +30,23 @@ public class SectionService {
         this.stationDao = stationDao;
     }
     
-    public List<SectionResponse> getSections(final long lineId) {
+    @Transactional(readOnly = true)
+    public List<SectionResponse> findAll() {
+        return this.sectionDAO.findAll()
+                .stream()
+                .map(SectionResponse::of)
+                .collect(Collectors.toUnmodifiableList());
+    }
+    
+    @Transactional(readOnly = true)
+    public List<SectionResponse> findSectionsByLineId(final long lineId) {
         return this.sectionDAO.findSectionsBy(lineId)
                 .stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toUnmodifiableList());
     }
     
-    public void validate(final SectionRequest sectionRequest) {
+    private void validate(final SectionRequest sectionRequest) {
         this.validateLine(sectionRequest.getLineId());
         this.validateStation(sectionRequest.getBaseStationId());
         this.validateStation(sectionRequest.getNewStationId());
@@ -58,22 +68,24 @@ public class SectionService {
         }
     }
     
-    public List<SectionResponse> saveSection(final SectionRequest sectionRequest) {
+    @Transactional
+    public List<SectionResponse> insertSection(final SectionRequest sectionRequest) {
+        this.validate(sectionRequest);
         final List<Section> sections = this.sectionDAO.findSectionsBy(sectionRequest.getLineId());
         final LineSections lineSections = LineSections.from(sections);
         if (lineSections.isEmpty()) {
-            return this.creatNewSection(sectionRequest);
+            return this.insertNewSection(sectionRequest);
         }
-        return this.addNewStationInSection(sectionRequest, lineSections);
+        return this.insertStationInLine(sectionRequest, lineSections);
     }
     
-    private List<SectionResponse> creatNewSection(final SectionRequest sectionRequest) {
+    private List<SectionResponse> insertNewSection(final SectionRequest sectionRequest) {
         final Section section = Section.from(sectionRequest);
         final SectionResponse sectionResponse = SectionResponse.of(this.sectionDAO.insert(section));
         return List.of(sectionResponse);
     }
     
-    private List<SectionResponse> addNewStationInSection(final SectionRequest sectionRequest,
+    private List<SectionResponse> insertStationInLine(final SectionRequest sectionRequest,
             final LineSections lineSections) {
         
         if (lineSections.hasStation(sectionRequest.getNewStationId())) {
@@ -90,7 +102,7 @@ public class SectionService {
         // 종점인 경우
         if ((lineSections.isUpTerminalStation(baseStationId) && direction.isUp()) || (
                 lineSections.isDownTerminalStation(baseStationId) && direction.isDown())) {
-            return this.creatNewSection(sectionRequest);
+            return this.insertNewSection(sectionRequest);
         }
         
         // 중간에 넣는 경우
@@ -107,7 +119,7 @@ public class SectionService {
                 .collect(Collectors.toUnmodifiableList());
     }
     
-    public void validate(final DeleteSectionRequest deleteSectionRequest) {
+    private void validate(final DeleteSectionRequest deleteSectionRequest) {
         this.validateLine(deleteSectionRequest.getLineId());
         this.validateStation(deleteSectionRequest.getStationId());
     }
@@ -120,7 +132,9 @@ public class SectionService {
         return sections;
     }
     
+    @Transactional
     public void deleteSection(final DeleteSectionRequest deleteSectionRequest) {
+        this.validate(deleteSectionRequest);
         final List<Section> sections = this.findSections(deleteSectionRequest.getStationId(),
                 deleteSectionRequest.getLineId());
         if (sections.size() == 1) {
