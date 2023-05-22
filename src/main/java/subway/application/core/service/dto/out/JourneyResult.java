@@ -6,17 +6,17 @@ import java.util.List;
 
 public class JourneyResult {
 
-    private final List<Station> path;
+    private final List<StationResult> path;
     private final Double distance;
     private final Integer fare;
 
-    public JourneyResult(List<Station> path, Double distance, Integer fare) {
+    public JourneyResult(List<StationResult> path, Double distance, Integer fare) {
         this.path = path;
         this.distance = distance;
         this.fare = fare;
     }
 
-    public List<Station> getPath() {
+    public List<StationResult> getPath() {
         return path;
     }
 

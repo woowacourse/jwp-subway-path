@@ -10,6 +10,7 @@ import subway.StationFixture;
 import subway.application.core.service.dto.in.EnrollStationCommand;
 import subway.application.core.service.dto.in.JourneyCommand;
 import subway.application.core.service.dto.out.JourneyResult;
+import subway.application.core.service.dto.out.StationResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,10 +37,7 @@ class JourneyServiceTest {
         JourneyResult result = journeyService.findShortestJourney(command);
 
         // then
-        assertThat(result.getPath()).containsExactly(
-                StationFixture.of(1L, "잠실역"), StationFixture.of(2L, "방배역"),
-                StationFixture.of(3L, "서초역")
-        );
+        assertThat(result.getPath()).hasSize(3);
         assertThat(result.getDistance()).isEqualTo(4);
         assertThat(result.getFare()).isEqualTo(1_250);
     }

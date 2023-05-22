@@ -10,6 +10,7 @@ import subway.application.core.domain.Station;
 import subway.application.core.service.JourneyService;
 import subway.application.core.service.dto.in.JourneyCommand;
 import subway.application.core.service.dto.out.JourneyResult;
+import subway.application.core.service.dto.out.StationResult;
 import subway.presentation.dto.JourneyRequest;
 import subway.presentation.dto.JourneyResponse;
 
@@ -46,7 +47,7 @@ public class JourneyController {
 
     private List<String> collectStationNames(JourneyResult result) {
         return result.getPath().stream()
-                .map(Station::getName)
+                .map(StationResult::getName)
                 .collect(Collectors.toList());
     }
 }

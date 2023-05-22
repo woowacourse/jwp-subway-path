@@ -10,6 +10,7 @@ import subway.application.core.domain.Station;
 import subway.application.core.service.dto.in.JourneyCommand;
 import subway.application.core.service.dto.out.JourneyResult;
 import subway.application.core.service.dto.out.PathFindResult;
+import subway.application.core.service.dto.out.StationResult;
 import subway.application.port.LineRepository;
 import subway.application.port.PathFinder;
 import subway.application.port.StationRepository;
@@ -36,8 +37,14 @@ public class JourneyService {
     public JourneyResult findShortestJourney(@Valid JourneyCommand journeyCommand) {
         List<RouteMap> routeMaps = getAllRouteMaps();
         PathFindResult result = findShortestPath(journeyCommand, routeMaps);
-        return new JourneyResult(result.getShortestPath(), result.getDistance(),
+        return new JourneyResult(mapToStationResults(result), result.getDistance(),
                 new Fare(result.getDistance()).value());
+    }
+
+    private List<StationResult> mapToStationResults(PathFindResult result) {
+        return result.getShortestPath().stream()
+                .map(StationResult::new)
+                .collect(Collectors.toList());
     }
 
     private PathFindResult findShortestPath(JourneyCommand journeyCommand, List<RouteMap> routeMaps) {
