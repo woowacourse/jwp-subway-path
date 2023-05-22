@@ -22,8 +22,8 @@ class LineTest {
         station2 = new Station(2L, "강남역");
         station3 = new Station(3L, "선릉역");
 
-        Section section1 = new Section(station1, station2, new Distance(5));
-        Section section2 = new Section(station2, station3, new Distance(7));
+        Section section1 = new Section(station1, station2, 5);
+        Section section2 = new Section(station2, station3, 7);
 
         line = new Line(1L, "1호선", new LinkedList<>(List.of(section1, section2)));
     }

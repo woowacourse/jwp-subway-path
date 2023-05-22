@@ -14,12 +14,20 @@ public class Section {
         this.distance = distance;
     }
 
-    public boolean hasStation(Station station) {
-        return left.equals(station) || right.equals(station);
+    public Section(Station left, Station right, int distance) {
+        this.left = left;
+        this.right = right;
+        this.distance = new Distance(distance);
     }
 
-    public boolean hasSameStationName(Station leftStation, Station rightStation) {
-        return leftStation.getName().equals(rightStation.getName());
+    public void validateSameStation(Station leftStation, Station rightStation) {
+        if (leftStation.getName().equals(rightStation.getName())) {
+            throw new IllegalArgumentException("구간의 역 이름은 같을 수 없습니다.");
+        }
+    }
+
+    public boolean hasStation(Station station) {
+        return left.equals(station) || right.equals(station);
     }
 
     public Station getLeft() {

@@ -28,7 +28,7 @@ public class Line {
     public void addSection(Section newSection) {
         Station leftStation = newSection.getLeft();
         Station rightStation = newSection.getRight();
-        validateSameStationInSection(newSection, leftStation, rightStation);
+        newSection.validateSameStation(leftStation, rightStation);
 
         if (sections.isEmpty()) {
             sections.add(newSection);
@@ -45,12 +45,6 @@ public class Line {
         addSectionAtEnd(newSection, leftStation, rightStation);
     }
 
-    private void validateSameStationInSection(Section newSection, Station leftStation, Station rightStation) {
-        if (newSection.hasSameStationName(leftStation, rightStation)) {
-            throw new IllegalArgumentException("구간의 역 이름은 같을 수 없습니다.");
-        }
-    }
-
     private void addStationAtRight(Section newSection, Station leftStation, Station rightStation) {
         Section foundSection = findSectionByLeftStation(leftStation);
         int indexOfFoundSection = sections.indexOf(foundSection);
@@ -59,7 +53,7 @@ public class Line {
 
         validateDistance(foundSectionDistance, newSectionDistance);
         Section dividedSection = new Section(rightStation, foundSection.getRight(),
-                new Distance(foundSectionDistance - newSectionDistance));
+                foundSectionDistance - newSectionDistance);
         sections.remove(foundSection);
         sections.add(indexOfFoundSection, newSection);
         sections.add(indexOfFoundSection + 1, dividedSection);
@@ -73,7 +67,7 @@ public class Line {
 
         validateDistance(foundSectionDistance, newSectionDistance);
         Section dividedSection = new Section(foundSection.getLeft(), leftStation,
-                new Distance(foundSectionDistance - newSectionDistance));
+                foundSectionDistance - newSectionDistance);
         sections.remove(foundSection);
         sections.add(indexOfFoundSection, newSection);
         sections.add(indexOfFoundSection, dividedSection);
@@ -122,7 +116,7 @@ public class Line {
         sections.remove(leftSection);
         sections.remove(rightSection);
         Section newSection = new Section(leftSection.getLeft(), rightSection.getRight(),
-                new Distance(leftSection.getDistance() + rightSection.getDistance()));
+                leftSection.getDistance() + rightSection.getDistance());
         sections.add(indexToAdd, newSection);
     }
 

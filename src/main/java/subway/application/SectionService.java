@@ -8,7 +8,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Distance;
 import subway.domain.Fare;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -44,20 +43,19 @@ public class SectionService {
     public void createSection(SectionCreateRequest request) {
         Long lineId = request.getLineId();
         Line line = findLine(lineId);
-
+        
         Station leftStation = findStation(request.getLeftStationName());
         Station rightStation = findStation(request.getRightStationName());
-        Distance distance = new Distance(request.getDistance());
-        Section section = new Section(leftStation, rightStation, distance);
-
+        Section section = new Section(leftStation, rightStation, request.getDistance());
         line.addSection(section);
+
         sectionRepository.deleteAllByLineId(lineId);
         sectionRepository.saveAllByLineId(lineId, line.getSections());
     }
 
-    public PathResponse findPath(PathRequest pathRequest) {
-        String fromStationName = pathRequest.getFromStationName();
-        String toStationName = pathRequest.getToStationName();
+    public PathResponse findPath(PathRequest request) {
+        String fromStationName = request.getFromStationName();
+        String toStationName = request.getToStationName();
         Station fromStation = findStation(fromStationName);
         Station toStation = findStation(toStationName);
 
