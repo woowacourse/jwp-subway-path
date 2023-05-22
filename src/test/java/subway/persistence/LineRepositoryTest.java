@@ -26,7 +26,7 @@ class LineRepositoryTest {
     private final Station midDownStation = new Station(3L, "midDownStation");
     private final Station bottomStation = new Station(4L, "bottomStation");
     private final Distance distance = new Distance(10L);
-    private final Line line = new Line("lineName", "lineColor");
+    private final Line line = new Line("lineName", "lineColor", 0L);
     @Autowired
     private LineRepository lineRepository;
     @Autowired

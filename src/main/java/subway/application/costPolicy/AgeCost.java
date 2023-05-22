@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.costPolicy;
 
 import java.util.Arrays;
 

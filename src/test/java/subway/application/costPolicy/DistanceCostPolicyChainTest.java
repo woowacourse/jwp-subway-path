@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.costPolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,10 +8,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.Path;
 import subway.domain.vo.Distance;
 
-class DistanceCostPolicyTest {
+class DistanceCostPolicyChainTest {
 
-    private static final long DEFUALT_COST = 1250L;
-    private final CostPolicy costPolicy = new DistanceCostPolicy();
+    private static final long DEFAULT_COST = 1250L;
+    private final CostPolicyChain costPolicyChain = new DistanceCostPolicyChain();
 
     @ParameterizedTest
     @ValueSource(longs = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L})
@@ -19,13 +19,13 @@ class DistanceCostPolicyTest {
     void testCalculateLessThan10(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance, 0);
+        final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path, DEFUALT_COST);
+        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
 
         //then
-        assertThat(result).isEqualTo(DEFUALT_COST);
+        assertThat(result).isEqualTo(DEFAULT_COST);
     }
 
     @ParameterizedTest
@@ -34,10 +34,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan11LessThan15(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance, 0);
+        final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path, DEFUALT_COST);
+        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1350L);
@@ -49,10 +49,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan16LessThan19(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance, 0);
+        final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path, DEFUALT_COST);
+        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1450L);
@@ -64,10 +64,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan21LessThan25(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance, 0);
+        final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path, DEFUALT_COST);
+        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1550L);
@@ -79,10 +79,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan46LessThan50(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance, 0);
+        final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path, DEFUALT_COST);
+        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(2050L);
@@ -94,10 +94,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan51LessThan55(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance, 0);
+        final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path, DEFUALT_COST);
+        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(2150L);
@@ -109,10 +109,10 @@ class DistanceCostPolicyTest {
     void testCalculateExceedThan59LessThan66(final long value) {
         //given
         final Distance distance = new Distance(value);
-        final Path path = new Path(null, distance, 0);
+        final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path, DEFUALT_COST);
+        final long result = costPolicyChain.calculate(path, 0, DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(2250L);

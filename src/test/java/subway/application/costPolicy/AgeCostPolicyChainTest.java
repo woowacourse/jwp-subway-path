@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.costPolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,19 +7,20 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.Path;
 
-class AgeCostPolicyTest {
+class AgeCostPolicyChainTest {
 
-    final CostPolicy costPolicy = new AgeCostPolicy();
+    private static final long DEFAULT_COST = 1250L;
+    final CostPolicyChain costPolicyChain = new AgeCostPolicyChain();
 
     @DisplayName("어린이일 경우 연령별 요금을 계산한다.")
     @ParameterizedTest
     @ValueSource(ints = {6, 7, 8, 9, 10, 11, 12})
     void testCalculateWhenChild(final int value) {
         //given
-        final Path path = new Path(null, null, value);
+        final Path path = new Path(null, null);
 
         //when
-        final long result = costPolicy.calculate(path, 1250L);
+        final long result = costPolicyChain.calculate(path, value, DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(720L);
@@ -30,10 +31,10 @@ class AgeCostPolicyTest {
     @ValueSource(ints = {13, 14, 15, 16, 17, 18})
     void testCalculateWhenTeenager(final int value) {
         //given
-        final Path path = new Path(null, null, value);
+        final Path path = new Path(null, null);
 
         //when
-        final long result = costPolicy.calculate(path, 1250L);
+        final long result = costPolicyChain.calculate(path, value, DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(450L);
@@ -44,10 +45,10 @@ class AgeCostPolicyTest {
     @ValueSource(ints = {1, 2, 3, 4, 5, 19, 20, 21})
     void testCalculateWhenNothing(final int value) {
         //given
-        final Path path = new Path(null, null, value);
+        final Path path = new Path(null, null);
 
         //when
-        final long result = costPolicy.calculate(path, 1250L);
+        final long result = costPolicyChain.calculate(path, value, DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1250L);

@@ -2,6 +2,8 @@ package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.application.costPolicy.CostPolicyChain;
 import subway.controller.dto.response.FindShortestPathResponse;
 import subway.controller.dto.response.StationInformationResponse;
 import subway.domain.Line;
@@ -37,13 +40,14 @@ class PathServiceTest {
     private final Section section4 = new Section(secondStation, firstStation, new Distance(10L));
     private final Section section5 = new Section(firstStation, thirdStation, new Distance(11L));
     private final Section section6 = new Section(thirdStation, fourthStation, new Distance(12L));
+    private final int age = 10;
 
     @Mock
     private LineRepository lineRepository;
     @Mock
     private StationRepository stationRepository;
     @Mock
-    private CostPolicy costPolicy;
+    private CostPolicyChain costPolicyChain;
     @InjectMocks
     private PathService pathService;
 
@@ -52,20 +56,20 @@ class PathServiceTest {
     void testFindShortestPath() {
         //given
         final Sections sections1 = new Sections(new ArrayList<>(List.of(section1, section2, section3)));
-        final Line line1 = new Line("lineName", "lineColor", sections1);
+        final Line line1 = new Line("lineName", "lineColor", 0L, sections1);
         final Sections sections2 = new Sections(new ArrayList<>(List.of(section4, section5, section6)));
-        final Line line2 = new Line("lineName", "lineColor", sections2);
+        final Line line2 = new Line("lineName", "lineColor", 0L, sections2);
 
         given(stationRepository.findByName(anyString()))
             .willReturn(Optional.of(firstStation), Optional.of(fourthStation));
         given(lineRepository.findAll())
             .willReturn(List.of(line1, line2));
-        given(costPolicy.calculate(any()))
+        given(costPolicyChain.calculate(any(), anyInt(), anyLong()))
             .willReturn(1250L);
 
         //when
         final FindShortestPathResponse response = pathService.findShortestPath(firstStation.getName(),
-            fourthStation.getName());
+            fourthStation.getName(), age);
 
         //then
         final List<StationInformationResponse> stationResponses = response.getStationInformations();

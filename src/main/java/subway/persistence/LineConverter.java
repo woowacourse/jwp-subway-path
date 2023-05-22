@@ -42,7 +42,7 @@ public class LineConverter {
         }
         final Sections sections = new Sections(new ArrayList<>(sectionSet));
         final LineSectionStationJoinDto firstDto = sameLineKeyDtos.get(0);
-        return new Line(firstDto.getLineId(), firstDto.getLineName(), firstDto.getLineColor(), sections);
+        return new Line(firstDto.getLineId(), firstDto.getLineName(), firstDto.getLineColor(), 0L, sections);
     }
 
     private Map<Long, List<LineSectionStationJoinDto>> collectDtosByLineId(

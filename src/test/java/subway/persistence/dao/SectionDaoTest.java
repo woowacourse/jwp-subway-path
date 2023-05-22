@@ -22,7 +22,7 @@ import subway.persistence.entity.StationEntity;
 })
 class SectionDaoTest {
 
-    private final Line line = new Line("name", "color");
+    private final Line line = new Line("name", "color", 0L);
     private final Station upStation = new Station("upStation");
     private final Station downStation = new Station("downStation");
     private final Distance distance = new Distance(10L);

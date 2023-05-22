@@ -29,7 +29,7 @@ class LineDaoTest {
     private final StationEntity midDownStationEntity = StationEntity.from(new Station(3L, "midDownStation"));
     private final StationEntity bottomStationEntity = StationEntity.from(new Station(4L, "bottomStation"));
     private final Distance distance = new Distance(10L);
-    private final LineEntity lineEntity = LineEntity.from(new Line("lineName", "lineColor"));
+    private final LineEntity lineEntity = LineEntity.from(new Line("lineName", "lineColor", 0L));
     @Autowired
     private LineDao lineDao;
     @Autowired
@@ -58,10 +58,12 @@ class LineDaoTest {
         final StationEntity insertedMidDownStationEntity = stationDao.insert(midDownStationEntity);
         final StationEntity insertedBottomStationEntity = stationDao.insert(bottomStationEntity);
         final Station topStation = new Station(insertedTopStationEntity.getId(), insertedTopStationEntity.getName());
-        final Station midUpStation = new Station(insertedMidUpStationEntity.getId(), insertedMidUpStationEntity.getName());
+        final Station midUpStation = new Station(insertedMidUpStationEntity.getId(),
+            insertedMidUpStationEntity.getName());
         final Station midDownStation = new Station(insertedMidDownStationEntity.getId(),
             insertedMidDownStationEntity.getName());
-        final Station bottomStation = new Station(insertedBottomStationEntity.getId(), insertedBottomStationEntity.getName());
+        final Station bottomStation = new Station(insertedBottomStationEntity.getId(),
+            insertedBottomStationEntity.getName());
         final Section topSection = new Section(topStation, midUpStation, distance);
         final Section midSection = new Section(midUpStation, midDownStation, distance);
         final Section bottomSection = new Section(midDownStation, bottomStation, distance);

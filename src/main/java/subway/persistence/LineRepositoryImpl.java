@@ -31,7 +31,7 @@ public class LineRepositoryImpl implements LineRepository {
     public Line save(final Line line) {
         final LineEntity lineEntity = LineEntity.from(line);
         final LineEntity savedLineEntity = lineDao.insert(lineEntity);
-        return new Line(savedLineEntity.getId(), line.getName(), line.getColor(), line.getSections());
+        return new Line(savedLineEntity.getId(), line.getName(), line.getColor(), 0L, line.getSections());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class LineRepositoryImpl implements LineRepository {
     }
 
     private Line makeLine(final LineEntity lineEntity) {
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), 0L,
             new Sections(new ArrayList<>()));
     }
 

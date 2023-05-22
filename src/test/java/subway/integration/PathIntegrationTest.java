@@ -31,6 +31,8 @@ class PathIntegrationTest extends IntegrationTest {
         final StationResponse stationResponse2 = saveStation2().as(StationResponse.class);
         final StationResponse stationResponse3 = saveStation3().as(StationResponse.class);
 
+        final int age = 10;
+
         saveInitStationToLine(new AddInitStationToLineRequest(lineResponse1.getName(), stationResponse1.getName(),
             stationResponse2.getName(), 10L));
         saveAdditionalStationToLine(
@@ -47,8 +49,8 @@ class PathIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .get("/shortest-path?startStationName=" + stationResponse1.getName() + "&endStationName="
-                + stationResponse3.getName())
+            .get("/path/shortest?startStationName=" + stationResponse1.getName() + "&endStationName="
+                + stationResponse3.getName() + "&age=" + age)
             .then().log().all()
             .extract();
 
@@ -71,7 +73,7 @@ class PathIntegrationTest extends IntegrationTest {
             stationInformationResponse3
         );
         final FindShortestPathResponse expectedResponse = new FindShortestPathResponse(
-            expectedStationInformationResponses, 2L, 1250L);
+            expectedStationInformationResponses, 2L, 720L);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(findShortestPathResponse.getTotalCost()).isEqualTo(expectedResponse.getTotalCost());
