@@ -35,4 +35,8 @@ public class StationRepository {
 			.orElseThrow(StationNotFoundException::new);
 		return new Station(stationEntity.getStationId(), stationEntity.getName());
 	}
+
+	public void update(final long id, final Station station) {
+		stationDao.update(id, station);
+	}
 }

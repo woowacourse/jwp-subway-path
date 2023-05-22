@@ -54,5 +54,8 @@ public class StationDao {
 			.findAny();
 	}
 
-
+	public void update(final long id, final Station station) {
+		String sql = "UPDATE station SET name = ? WHERE stationId = ?";
+		jdbcTemplate.update(sql, station.getName(), id);
+	}
 }
