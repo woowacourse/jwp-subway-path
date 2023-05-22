@@ -21,7 +21,7 @@ public class SectionDao {
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("sections")
+                .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -45,7 +45,7 @@ public class SectionDao {
     }
 
     public void save(final List<SectionEntity> sections) {
-        final String sql = "INSERT INTO sections (up_station_id, down_station_id, line_id, distance) VALUES (?, ?, ?, ?)";
+        final String sql = "INSERT INTO section (up_station_id, down_station_id, line_id, distance) VALUES (?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(final PreparedStatement ps, final int i) throws SQLException {
@@ -65,17 +65,17 @@ public class SectionDao {
 
     public List<SectionEntity> findAll() {
         final String sql = "SELECT id, distance, up_station_id, down_station_id, line_id" +
-                " FROM sections ";
+                " FROM section ";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public void deleteByLineId(final Long lineId) {
-        final String sql = "DELETE FROM sections WHERE line_id = ?";
+        final String sql = "DELETE FROM section WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }
 
     public void delete(final List<SectionEntity> sections) {
-        final String sql = "DELETE FROM sections WHERE id = ?";
+        final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(final PreparedStatement ps, final int i) throws SQLException {

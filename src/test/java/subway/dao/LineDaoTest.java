@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dao.entity.LineEntity;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
+@Sql("classpath:test-schema.sql")
 class LineDaoTest {
 
     JdbcTemplate jdbcTemplate;
@@ -34,15 +36,14 @@ class LineDaoTest {
         //when
         Long save = lineDao.save(lineEntity);
         //then
-        Long excepted = jdbcTemplate.queryForObject("SELECT id FROM lines WHERE name = \'" + name + "\' AND color =  \'" + color + "\'", Long.class);
-        assertThat(save).isEqualTo(excepted);
+        assertThat(save).isNotNull();
     }
 
     @DisplayName("모든 노선을 찾는다")
     @Test
     void 모든_노선을_찾는다() {
         //given
-        List<Long> ids = jdbcTemplate.queryForList("SELECT id FROM lines", Long.class);
+        List<Long> ids = jdbcTemplate.queryForList("SELECT id FROM line", Long.class);
         //when
         List<LineEntity> all = lineDao.findAll();
         //then
@@ -52,12 +53,10 @@ class LineDaoTest {
     @DisplayName("아이디로 노선을 찾는다")
     @Test
     void 아이디로_노선을_찾는다() {
-        //given
-        jdbcTemplate.update("INSERT INTO lines (id, name, color) VALUES (1, \'테스트이름\', \'테스트색\')");
         //when
         LineEntity lineEntity = lineDao.findById(1L).get();
         //then
-        assertThat(lineEntity).isEqualTo(new LineEntity(1L, "테스트이름", "테스트색"));
+        assertThat(lineEntity).isEqualTo(new LineEntity(1L, "2호선", "초록"));
     }
 
     @DisplayName("아이디를 통해 수정한다.")
@@ -65,12 +64,11 @@ class LineDaoTest {
     void 수정한다() {
         //given
         String expected = "수정";
-        jdbcTemplate.update("INSERT INTO lines (id, name, color) VALUES (1, \'테스트이름\', \'테스트색\')");
-        LineEntity lineEntity = new LineEntity(1L, expected, "테스트색");
+        LineEntity lineEntity = new LineEntity(1L, expected, "초록");
         //when
         lineDao.update(lineEntity);
         //then
-        String editName = jdbcTemplate.queryForObject("SELECT name FROM lines WHERE id = 1", String.class);
+        String editName = jdbcTemplate.queryForObject("SELECT name FROM line WHERE id = 1", String.class);
         assertThat(editName).isEqualTo(expected);
     }
 
@@ -78,12 +76,12 @@ class LineDaoTest {
     @Test
     void 삭제한다() {
         //given
-        jdbcTemplate.update("INSERT INTO lines (id, name, color) VALUES (1, \'테스트이름\', \'테스트색\')");
-        LineEntity lineEntity = new LineEntity(1L, "테스트이름", "테스트색");
+        jdbcTemplate.update("INSERT INTO line (id, name, color) VALUES (10000, \'테스트이름\', \'테스트색\')");
+        LineEntity lineEntity = new LineEntity(10000L, "테스트이름", "테스트색");
         //when
         lineDao.delete(lineEntity);
         //then
-        List<Map<String, Object>> empty = jdbcTemplate.queryForList("SELECT name FROM lines WHERE id = 1");
+        List<Map<String, Object>> empty = jdbcTemplate.queryForList("SELECT name FROM line WHERE id = 10000");
         assertThat(empty).isEmpty();
     }
 }

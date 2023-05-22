@@ -20,7 +20,7 @@ public class StationDao {
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("STATIONS")
+                .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -37,12 +37,12 @@ public class StationDao {
     }
 
     public List<StationEntity> findAll() {
-        String sql = "select * from STATIONS";
+        String sql = "select * from station";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<StationEntity> findById(Long id) {
-        String sql = "select * from STATIONS where id = ?";
+        String sql = "select * from station where id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (EmptyResultDataAccessException exception) {
@@ -51,12 +51,12 @@ public class StationDao {
     }
 
     public void update(final StationEntity stationEntity) {
-        final String sql = "UPDATE stations SET name = ? WHERE id = ? ";
+        final String sql = "UPDATE station SET name = ? WHERE id = ? ";
         jdbcTemplate.update(sql, stationEntity.getName(), stationEntity.getId());
     }
 
     public void deleteById(Long id) {
-        final String sql = "DELETE FROM stations WHERE id = ?";
+        final String sql = "DELETE FROM station WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 }

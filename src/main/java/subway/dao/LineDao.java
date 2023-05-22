@@ -20,7 +20,7 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("lines")
+                .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -38,12 +38,12 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select id, name, color from lines";
+        String sql = "select id, name, color from line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<LineEntity> findById(Long id) {
-        String sql = "select id, name, color from lines WHERE id = ?";
+        String sql = "select id, name, color from line WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (EmptyResultDataAccessException exception) {
@@ -52,12 +52,12 @@ public class LineDao {
     }
 
     public void update(final LineEntity lineEntity) {
-        final String sql = "UPDATE lines SET name = ?, color = ? WHERE id = ?";
+        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
         jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
     }
 
     public void delete(LineEntity lineEntity) {
-        final String sql = "DELETE FROM lines WHERE id = ?";
+        final String sql = "DELETE FROM line WHERE id = ?";
         jdbcTemplate.update(sql, lineEntity.getId());
     }
 
