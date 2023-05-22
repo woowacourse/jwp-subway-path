@@ -123,9 +123,9 @@
   - [x] 최단 경로 조회 기능 구현
   - [x] 요금 계산 단위 테스트
   - [x] 요금 계산 기능 구현
-  - [ ] Dao 단위 테스트 작성
-  - [ ] Dao 프로덕션 코드 작성
-  - [ ] Service 단위 테스트
-  - [ ] Service 프로덕션 코드 작성
-  - [ ] Controller 단위 테스트
-  - [ ] Controller 프로덕션 코드 작성
+  - [x] Dao 단위 테스트 작성
+  - [x] Dao 프로덕션 코드 작성
+  - [x] Service 단위 테스트
+  - [x] Service 프로덕션 코드 작성
+  - [x] Controller 단위 테스트
+  - [x] Controller 프로덕션 코드 작성
