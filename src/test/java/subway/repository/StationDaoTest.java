@@ -131,32 +131,6 @@ class StationDaoTest {
     }
 
     @Test
-    @DisplayName("이름 존재 여부 확인 - true")
-    void isNameExist_true() {
-        // given
-        final String name = "잠실";
-
-        // when
-        final boolean nameExist = stationDao.isNameExist(name);
-
-        // then
-        assertThat(nameExist).isTrue();
-    }
-
-    @Test
-    @DisplayName("이름 존재 여부 확인 - false")
-    void isNameExist_false() {
-        // given
-        final String name = "포비";
-
-        // when
-        final boolean nameExist = stationDao.isNameExist(name);
-
-        // then
-        assertThat(nameExist).isFalse();
-    }
-
-    @Test
     @DisplayName("수정 성공")
     void update_success() {
         // given
