@@ -37,4 +37,9 @@ public class LineService {
 		lineEntity.update(lineUpdateRequest.getName());
 		lineRepository.updateLine(lineId, lineEntity);
 	}
+
+	@Transactional
+	public void deleteLineById(final Long id) {
+		lineRepository.deleteLineById(id);
+	}
 }
