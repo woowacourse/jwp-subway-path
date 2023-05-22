@@ -32,7 +32,6 @@ public class PathService {
         final Station source = stationRepository.findById(sourceId);
         final Station target = stationRepository.findById(targetId);
 
-        // TODO: Service에서 new ShortestPath()를 생성해서 주입하고 있는데, 이 작업은 어디에서 하는 것이 좋을까요?
         final PathDto path = subway.findShortestPath(
                 source,
                 target,

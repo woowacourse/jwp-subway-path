@@ -42,8 +42,6 @@ public class SubwayService {
                 stations.add(section.getDownStation());
             }
 
-            System.out.println("stations = " + stations);
-
             final List<Long> allStationIds = stations.stream()
                     .map(Station::getId)
                     .collect(Collectors.toList());
