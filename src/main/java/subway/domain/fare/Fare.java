@@ -13,7 +13,7 @@ public class Fare {
     }
 
     private void validate(final int value) {
-        if(value < 0) {
+        if (value < 0) {
             throw new InvalidException(ErrorMessage.INVALID_NEGATIVE_FARE);
         }
     }
