@@ -79,4 +79,9 @@ public class SectionRepositoryFake implements SectionRepository {
             store.remove(id);
         }
     }
+
+    @Override
+    public void deleteAll() {
+        store.clear();
+    }
 }

@@ -22,4 +22,6 @@ public interface SectionRepository {
     void deleteAllByLineId(final Long lineId);
 
     void deleteByLineIdAndStationId(final Long lineId, final Long stationId);
+
+    void deleteAll();
 }

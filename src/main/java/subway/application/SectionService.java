@@ -153,4 +153,9 @@ public class SectionService {
     public void deleteAllByLineId(Long lineId) {
         sectionRepositoryImpl.deleteAllByLineId(lineId);
     }
+
+    @Transactional
+    public void deleteAll() {
+        sectionRepositoryImpl.deleteAll();
+    }
 }

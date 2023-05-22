@@ -102,4 +102,10 @@ public class SectionRepositoryImpl implements SectionRepository {
             store.remove(id);
         }
     }
+
+    @Override
+    public void deleteAll() {
+        sectionDao.deleteAll();
+        store.clear();
+    }
 }

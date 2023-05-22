@@ -49,4 +49,9 @@ public class StationDao {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    public void deleteAll() {
+        String sql = "delete STATION";
+        jdbcTemplate.update(sql);
+    }
 }

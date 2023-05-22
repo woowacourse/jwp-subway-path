@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,17 @@ import subway.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능 통합 테스트")
 public class StationIntegrationTest extends IntegrationTest {
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        super.cleanUp();
+    }
+
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {

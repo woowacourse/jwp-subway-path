@@ -69,4 +69,10 @@ public class StationRepositoryImpl implements StationRepository {
         stationDao.deleteById(id);
         store.remove(id);
     }
+
+    @Override
+    public void deleteAll() {
+        stationDao.deleteAll();
+        store.clear();
+    }
 }

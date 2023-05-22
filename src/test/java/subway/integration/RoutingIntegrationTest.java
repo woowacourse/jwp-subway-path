@@ -17,6 +17,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import subway.domain.FareCalculator;
 import subway.dto.LineRequest;
 import subway.dto.RoutesResponse;
@@ -25,6 +27,7 @@ import subway.dto.StationToLineRequest;
 
 
 @DisplayName("역 경로 관련 기능 통합 테스트")
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class RoutingIntegrationTest extends IntegrationTest {
 
     private Long lineId;
@@ -115,10 +118,8 @@ public class RoutingIntegrationTest extends IntegrationTest {
     }
 
     @AfterEach
-    void cleanup() {
-        RestAssured
-                .given()
-                .when().delete("lines/{id}/stations", lineId);
+    public void cleanUp() {
+        super.cleanUp();
     }
 
     @DisplayName("호선에 해당하는 역들을 순서대로 반환한다.")

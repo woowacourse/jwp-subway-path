@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.Section;
 import subway.dto.StationToLineRequest;
 import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Section 관련 기능")
@@ -32,6 +33,9 @@ class SectionServiceTest {
 
     @Mock
     private SectionRepository sectionRepository;
+
+    @Mock
+    private StationRepository stationRepository = new StationRepositoryFake();
 
     private Long lineId;
     private StationToLineRequest request;

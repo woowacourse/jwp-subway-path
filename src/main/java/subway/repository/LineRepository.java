@@ -64,4 +64,9 @@ public class LineRepository {
         lineDao.deleteById(id);
         store.remove(id);
     }
+
+    public void deleteAll() {
+        lineDao.deleteAll();
+        store.clear();
+    }
 }

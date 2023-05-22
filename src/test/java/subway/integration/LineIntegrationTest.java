@@ -8,6 +8,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,11 @@ public class LineIntegrationTest extends IntegrationTest {
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        super.cleanUp();
     }
 
     @DisplayName("지하철 노선을 생성한다.")
