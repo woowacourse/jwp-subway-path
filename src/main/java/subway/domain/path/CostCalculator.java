@@ -16,10 +16,14 @@ public final class CostCalculator {
         }
         if (distance <= SECOND_EXTRA_COST_DISTANCE) {
             distance -= BASE_COST_DISTANCE;
-            return DEFAULT_COST + ((int)Math.ceil((double) distance/DISTANCE_THRESHOLD_10KM_TO_50KM) * ADDITIONAL_COST);
+            return DEFAULT_COST + calculateExtraCostByDistance(distance, DISTANCE_THRESHOLD_10KM_TO_50KM);
         }
-        int cost = DEFAULT_COST + ((int)Math.ceil(((double) SECOND_EXTRA_COST_DISTANCE - BASE_COST_DISTANCE)/DISTANCE_THRESHOLD_10KM_TO_50KM) * ADDITIONAL_COST);
+        int cost = DEFAULT_COST + calculateExtraCostByDistance((SECOND_EXTRA_COST_DISTANCE - BASE_COST_DISTANCE), DISTANCE_THRESHOLD_10KM_TO_50KM);
         distance -= SECOND_EXTRA_COST_DISTANCE;
-        return cost + ((int)Math.ceil((double) distance/DISTANCE_THRESHOLD_OVER_50KM) * ADDITIONAL_COST);
+        return cost + calculateExtraCostByDistance(distance, DISTANCE_THRESHOLD_OVER_50KM);
+    }
+
+    private static int calculateExtraCostByDistance(int distance, int distanceThreshold) {
+        return (int) Math.ceil((double) distance / distanceThreshold) * ADDITIONAL_COST;
     }
 }
