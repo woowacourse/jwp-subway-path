@@ -57,4 +57,8 @@ public class Distance {
     public boolean isShorterThan(Distance otherDistance) {
         return value < otherDistance.value;
     }
+
+    public boolean isSameOrShorterThan(Distance otherDistance) {
+        return value <= otherDistance.value;
+    }
 }

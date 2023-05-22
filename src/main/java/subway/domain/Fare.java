@@ -37,6 +37,12 @@ public class Fare {
         return new Fare(value + fare.value);
     }
 
+    public Fare addFareFor(Distance distance, Distance unit, Fare additionalFare) {
+        int fareValue = (int) ((Math.ceil((distance.getValue() - 1) / unit.getValue()) + 1)
+                * additionalFare.getValue());
+        return plus(new Fare(fareValue));
+    }
+
     public int getValue() {
         return value;
     }
