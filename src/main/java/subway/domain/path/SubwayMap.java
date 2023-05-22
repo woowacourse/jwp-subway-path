@@ -17,8 +17,8 @@ public class SubwayMap {
     }
 
     public static SubwayMap from(final List<Line> allLines) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> stationsGraph =
-                new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        final WeightedMultigraph<Station, DefaultWeightedEdge> stationsGraph
+                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (final Line allLine : allLines) {
             final Sections sections = allLine.getSections();
@@ -45,8 +45,8 @@ public class SubwayMap {
     public SubwayPath findShortestPath(final Station from, final Station to) {
         validateIsExistStations(from, to);
 
-        final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraPath =
-                new DijkstraShortestPath<>(stationsGraph);
+        final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraPath
+                = new DijkstraShortestPath<>(stationsGraph);
         final List<Station> shortestPath = dijkstraPath.getPath(from, to).getVertexList();
         final int distance = (int) dijkstraPath.getPathWeight(from, to);
 
@@ -54,8 +54,11 @@ public class SubwayMap {
     }
 
     private void validateIsExistStations(final Station from, final Station to) {
-        if (!stationsGraph.containsVertex(from) || !stationsGraph.containsVertex(to)) {
-            throw new IllegalStateException();
+        if (!stationsGraph.containsVertex(from)) {
+            throw new IllegalStateException("존재하지 않는 역 입니다: " + from.getStationName());
+        }
+        if (!stationsGraph.containsVertex(to)) {
+            throw new IllegalStateException("존재하지 않는 역 입니다: " + to.getStationName());
         }
     }
 

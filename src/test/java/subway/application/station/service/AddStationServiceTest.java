@@ -94,7 +94,7 @@ class AddStationServiceTest {
         //when & then
         assertThatThrownBy(() -> addStationService.addStation(1L, request))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("기준역이 상행 종점이 아닙니다.");
+                .hasMessage("기준역이 상행 종점이 아닙니다: 선릉");
     }
 
     @Test
@@ -129,7 +129,7 @@ class AddStationServiceTest {
         //when & then
         assertThatThrownBy(() -> addStationService.addStation(1L, request))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("기준역이 하행 종점이 아닙니다.");
+                .hasMessage("기준역이 하행 종점이 아닙니다: 강남");
     }
 
     @Test
@@ -166,6 +166,6 @@ class AddStationServiceTest {
         //when & then
         assertThatThrownBy(() -> addStationService.addStation(1L, request))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("두 역은 구간으로 연결되어 있지 않습니다.");
+                .hasMessage("두 역은 구간으로 연결되어 있지 않습니다: 강남, 선릉");
     }
 }
