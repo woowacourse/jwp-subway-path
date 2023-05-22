@@ -1,11 +1,13 @@
 package subway.application;
 
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
 import subway.dto.StationAddRequest;
-import subway.dto.StationAddResponse;
 import subway.repository.StationRepository;
 
+@Transactional
 @Service
 public class StationService {
 
@@ -15,13 +17,18 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public StationAddResponse createStation(StationAddRequest request) {
+    public Station createStation(StationAddRequest request) {
         Station station = new Station(request.getStationName());
-        Station savedStation = stationRepository.save(station);
-        return StationAddResponse.from(savedStation);
+        return stationRepository.save(station);
     }
 
     public void deleteStation(Long stationId) {
         stationRepository.deleteById(stationId);
+    }
+
+    @Transactional(readOnly = true)
+    public Station findByName(String stationName) {
+        return stationRepository.findByName(stationName)
+                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
     }
 }

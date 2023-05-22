@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
+import subway.domain.Station;
 import subway.dto.StationAddRequest;
 import subway.dto.StationAddResponse;
 
@@ -25,7 +26,8 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationAddResponse> createStation(@RequestBody @Valid StationAddRequest request) {
-        StationAddResponse response = stationService.createStation(request);
+        Station station = stationService.createStation(request);
+        StationAddResponse response = StationAddResponse.from(station);
         return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);
     }
 

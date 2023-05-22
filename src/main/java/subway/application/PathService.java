@@ -1,6 +1,5 @@
 package subway.application;
 
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import subway.application.charge.ChargePolicy;
 import subway.domain.Station;
@@ -9,29 +8,27 @@ import subway.domain.path.ShortestPath;
 import subway.domain.path.SubwayGraph;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
-import subway.repository.LineRepository;
-import subway.repository.StationRepository;
 
 @Service
 public class PathService {
 
-    private final StationRepository stationRepository;
-    private final LineRepository lineRepository;
+    private final StationService stationService;
+    private final LineService lineService;
     private final ChargePolicy chargePolicy;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository, ChargePolicy chargePolicy) {
-        this.stationRepository = stationRepository;
-        this.lineRepository = lineRepository;
+    public PathService(LineService lineService,
+                       StationService stationService,
+                       ChargePolicy chargePolicy) {
+        this.stationService = stationService;
+        this.lineService = lineService;
         this.chargePolicy = chargePolicy;
     }
 
     public PathResponse findShortestPath(PathRequest request) {
-        Station source = stationRepository.findByName(request.getSource())
-                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
-        Station target = stationRepository.findByName(request.getTarget())
-                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
+        Station source = stationService.findByName(request.getSource());
+        Station target = stationService.findByName(request.getTarget());
         validatePath(source, target);
-        SubwayGraph graph = SubwayGraph.from(new Subway(lineRepository.findAll()));
+        SubwayGraph graph = SubwayGraph.from(new Subway(lineService.findAllLines()));
         ShortestPath path = graph.findPath(source, target);
         int charge = chargePolicy.calculateFee(path.getDistance());
         return PathResponse.of(path, charge);

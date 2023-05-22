@@ -2,6 +2,7 @@ package subway.ui;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.PathService;
+import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineSaveResponse;
@@ -35,19 +37,24 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineSaveResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
-        LineSaveResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+        Line line = lineService.saveLine(lineRequest);
+        LineSaveResponse response = new LineSaveResponse(line.getId());
+        return ResponseEntity.created(URI.create("/lines/" + response.getId())).body(response);
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        List<LineResponse> lines = lineService.findAllLines();
-        return ResponseEntity.ok(lines);
+        List<Line> lines = lineService.findAllLines();
+        List<LineResponse> response = lines.stream()
+                .map(LineResponse::from)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{lineId}")
     public ResponseEntity<LineResponse> findLine(@PathVariable Long lineId) {
-        LineResponse response = lineService.findLineById(lineId);
+        Line line = lineService.findLineById(lineId);
+        LineResponse response = LineResponse.from(line);
         return ResponseEntity.ok(response);
     }
 

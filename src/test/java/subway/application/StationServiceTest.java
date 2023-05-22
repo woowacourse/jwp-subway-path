@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Station;
 import subway.dto.StationAddRequest;
-import subway.dto.StationAddResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -27,12 +27,12 @@ class StationServiceTest {
         StationAddRequest request = new StationAddRequest("강남역");
 
         // when
-        StationAddResponse response = stationService.createStation(request);
+        Station station = stationService.createStation(request);
 
         //then
         assertAll(
-                () -> assertThat(response.getName()).isEqualTo("강남역"),
-                () -> assertThat(response.getId()).isPositive()
+                () -> assertThat(station.getName()).isEqualTo("강남역"),
+                () -> assertThat(station.getId()).isPositive()
         );
     }
 }

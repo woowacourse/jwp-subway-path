@@ -15,11 +15,8 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.LineSaveResponse;
 import subway.dto.SectionAddRequest;
 import subway.dto.StationDeleteRequest;
-import subway.dto.StationResponse;
 import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -43,12 +40,12 @@ class LineServiceTest {
         LineRequest request = new LineRequest("2호선", "A", "B", 10);
 
         //when
-        LineSaveResponse saveResponse = lineService.saveLine(request);
+        Line line = lineService.saveLine(request);
 
         //then
         assertAll(
                 () -> assertThat(lineRepository.findAll()).hasSize(1),
-                () -> assertThat(saveResponse.getId()).isPositive()
+                () -> assertThat(line.getId()).isPositive()
         );
     }
 
@@ -145,13 +142,13 @@ class LineServiceTest {
         )));
 
         //when
-        List<LineResponse> lines = lineService.findAllLines();
+        List<Line> lines = lineService.findAllLines();
 
         //then
         assertAll(
                 () -> assertThat(lines).hasSize(2),
-                () -> assertThat(lines).flatExtracting(LineResponse::getStations)
-                        .map(StationResponse::getName)
+                () -> assertThat(lines).flatExtracting(Line::getStations)
+                        .map(Station::getName)
                         .contains("A", "B", "X", "Y")
         );
     }
@@ -168,11 +165,11 @@ class LineServiceTest {
         )));
 
         //when
-        LineResponse line = lineService.findLineById(savedLine.getId());
+        Line line = lineService.findLineById(savedLine.getId());
 
         //then
         assertThat(line.getStations())
-                .map(StationResponse::getName)
+                .map(Station::getName)
                 .contains("B", "X", "Y");
     }
 }
