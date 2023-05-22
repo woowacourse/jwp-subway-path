@@ -8,7 +8,6 @@ import subway.domain.Station;
 import subway.domain.Subway;
 import subway.dto.LineStationAddRequest;
 import subway.dto.LineStationInitRequest;
-import subway.dto.StationRequest;
 import subway.repository.LineRepository;
 
 @Service
@@ -43,9 +42,9 @@ public class LineStationService {
         lineRepository.updateLineStation(subway.findLineById(lineId));
     }
 
-    public void removeStation(Long lineId, StationRequest request) {
+    public void removeStation(Long lineId, Long stationId) {
         Line line = lineRepository.findLineById(lineId);
-        line.removeStation(line.findStationByName(request.getName()));
+        line.removeStation(line.findStationById(stationId));
         lineRepository.updateLineStation(line);
     }
 

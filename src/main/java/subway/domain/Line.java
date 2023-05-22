@@ -47,9 +47,9 @@ public class Line {
         return sections.findAllStations();
     }
 
-    public Station findStationByName(String stationName) {
+    public Station findStationById(Long stationId) {
         return findStations().stream()
-                .filter(station -> station.getName().equals(stationName))
+                .filter(station -> station.getId().equals(stationId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 역이 노선에 존재하지 않습니다"));
     }

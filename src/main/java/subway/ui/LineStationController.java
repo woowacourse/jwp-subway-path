@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineStationService;
 import subway.dto.LineStationAddRequest;
 import subway.dto.LineStationInitRequest;
-import subway.dto.StationRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -35,9 +34,9 @@ public class LineStationController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{lineId}/stations/")
-    public ResponseEntity<Void> deleteStationInLine (@PathVariable Long lineId, @RequestBody @Valid StationRequest request) {
-        lineStationService.removeStation(lineId, request);
+    @DeleteMapping("/{lineId}/stations/{stationId}")
+    public ResponseEntity<Void> deleteStationInLine (@PathVariable Long lineId, @PathVariable Long stationId) {
+        lineStationService.removeStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 
