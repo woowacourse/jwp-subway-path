@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.Arrays;
+
 public enum Fare {
 
     BASIC(1, 10, 10, 1250),
@@ -18,13 +20,10 @@ public enum Fare {
         this.additionalCost = additionalCost;
     }
 
-
     public static int getFare(int distance) {
-        int totalFare = 0;
-        for (Fare fare : values()) {
-            totalFare += fare.calculateFare(distance);
-        }
-        return totalFare;
+        return Arrays.stream(values())
+                .mapToInt(fare -> fare.calculateFare(distance))
+                .sum();
     }
 
     private int calculateFare(int distance) {
