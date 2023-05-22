@@ -12,7 +12,7 @@ public class SectionSorter {
         return assignMatchingNext(upStationToSection, sections);
     }
 
-    private static Map<Long, Section> prepareUpToSectionMappings(List<Section> sections) {
+    private Map<Long, Section> prepareUpToSectionMappings(List<Section> sections) {
         Map<Long, Section> upStationToSection = new HashMap<>();
         for (Section section : sections) {
             upStationToSection.put(section.getUpStation().getId(), section);
@@ -34,7 +34,7 @@ public class SectionSorter {
     }
 
     private void validateConnection(List<Section> sections) {
-        Set<UUID> nextIds = sections.stream().map(section -> section.getNextSectionId()).collect(Collectors.toSet());
+        Set<UUID> nextIds = sections.stream().map(Section::getNextSectionId).collect(Collectors.toSet());
         if (sections.size() != nextIds.size()) {
             throw new InvalidSectionConnectException();
         }
