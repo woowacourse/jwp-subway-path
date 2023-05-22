@@ -1,9 +1,10 @@
 package subway.dto;
 
 import subway.domain.Station;
-import subway.entity.StationEntity;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class StationResponse {
     private final Long id;
@@ -18,8 +19,10 @@ public class StationResponse {
         return new StationResponse(station.getId(), station.getName());
     }
 
-    public static StationResponse of(final StationEntity stationEntity) {
-        return new StationResponse(stationEntity.getId(), stationEntity.getName());
+    public static List<StationResponse> of(final List<Station> stations) {
+        return stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

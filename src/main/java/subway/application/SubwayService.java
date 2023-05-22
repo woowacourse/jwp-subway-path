@@ -30,7 +30,7 @@ public class SubwayService {
         final Station from = stationService.findById(fromId);
         final Station to = stationService.findById(toId);
         return new PathResponse(
-                makeStationToResponse(subwayRouteMap.shortestPathBetween(from, to)),
+                StationResponse.of(subwayRouteMap.shortestPathBetween(from, to)),
                 subwayRouteMap.fareBetween(from, to),
                 subwayRouteMap.shortestDistanceBetween(from, to)
         );
@@ -55,11 +55,4 @@ public class SubwayService {
         }
         throw new IllegalStateException("섹션에 등록되어 있는 station 이 실제로 저장되어 있지 않습니다.");
     }
-
-    private List<StationResponse> makeStationToResponse(final List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
 }

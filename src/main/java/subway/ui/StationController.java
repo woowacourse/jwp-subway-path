@@ -29,23 +29,23 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest stationRequest) {
-        final StationResponse station = stationService.saveStation(stationRequest);
+        final StationResponse station = StationResponse.of(stationService.saveStation(stationRequest));
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
+        return ResponseEntity.ok().body(StationResponse.of(stationService.findAllStationResponses()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StationResponse> showStation(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
+        return ResponseEntity.ok().body(StationResponse.of(stationService.findById(id)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<StationResponse> updateStation(@PathVariable final Long id, @RequestBody final StationRequest stationRequest) {
-        return ResponseEntity.ok().body(stationService.updateStation(id, stationRequest));
+        return ResponseEntity.ok().body(StationResponse.of(stationService.updateStation(id, stationRequest)));
     }
 
     @DeleteMapping("/{id}")

@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
-import subway.dto.StationResponse;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 import subway.exception.StationDuplicationNameException;
@@ -25,17 +24,11 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(final StationRequest stationRequest) {
+    public Station saveStation(final StationRequest stationRequest) {
         stationDao.findByName(stationRequest.getName())
                 .ifPresent(ignore -> new StationDuplicationNameException(stationRequest.getName() + "역은 이미 존재합니다."));
-        final StationEntity station = stationDao.insert(new StationEntity(stationRequest.getName()));
-        return StationResponse.of(station);
-    }
-
-    @Transactional(readOnly = true)
-    public StationResponse findStationResponseById(final Long id) {
-        final StationEntity stationEntity = findStation(id);
-        return StationResponse.of(stationEntity);
+        return stationDao.insert(new StationEntity(stationRequest.getName()))
+                .toStation();
     }
 
     private StationEntity findStation(final Long id) {
@@ -44,18 +37,16 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStationResponses() {
-        final List<StationEntity> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
+    public List<Station> findAllStationResponses() {
+        return stationDao.findAll().stream()
+                .map(StationEntity::toStation)
                 .collect(Collectors.toList());
     }
 
-    public StationResponse updateStation(final Long id, final StationRequest stationRequest) {
+    public Station updateStation(final Long id, final StationRequest stationRequest) {
         findStation(id);
         final long stationId = stationDao.update(new StationEntity(id, stationRequest.getName()));
-        return new StationResponse(stationId, stationRequest.getName());
+        return new Station(stationId, stationRequest.getName());
     }
 
     public void deleteStationById(final Long id) {
