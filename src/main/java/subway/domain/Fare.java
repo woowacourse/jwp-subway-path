@@ -30,11 +30,11 @@ public class Fare {
         if (MINIMUM_DISTANCE <= distance && distance < DEFAULT_DISTANCE) {
             return DEFAULT_FARE;
         }
-        if (DEFAULT_DISTANCE <= distance && distance < ADDITIONAL_DISTANCE) {
+        if (DEFAULT_DISTANCE <= distance && distance <= ADDITIONAL_DISTANCE) {
             int additionalDistance = distance - DEFAULT_DISTANCE;
             return DEFAULT_FARE + getAdditionalFareByUnity(additionalDistance, DISTANCE_UNIT_BETWEEN_10_TO_50);
         }
-        if (ADDITIONAL_DISTANCE <= distance) {
+        if (ADDITIONAL_DISTANCE < distance) {
             int additionalDistance = distance - ADDITIONAL_DISTANCE;
             return DEFAULT_FARE_OVER_50 + getAdditionalFareByUnity(additionalDistance, DISTANCE_UNIT_OVER_50);
         }
