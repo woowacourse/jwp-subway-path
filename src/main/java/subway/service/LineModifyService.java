@@ -27,7 +27,6 @@ public class LineModifyService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
 
-
     public LineModifyService(final LineDao lineDao, final StationDao stationDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
