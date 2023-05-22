@@ -11,11 +11,11 @@ public class Path {
     public static final int OVER_UNIT = 5;
     public static final int MOST_OVER_UNIT = 8;
     public static final int OVER_DISTANCE_FEE = 800;
-    private final List<String> pathStations;
+    private final List<Station> pathStations;
     private final int distance;
     private final int fee;
 
-    public Path(final List<String> pathStations, final int distance) {
+    public Path(final List<Station> pathStations, final int distance) {
         this.pathStations = pathStations;
         this.distance = distance;
         this.fee = calculateFee(distance);
@@ -40,7 +40,7 @@ public class Path {
     }
 
 
-    public List<String> getPathStations() {
+    public List<Station> getPathStations() {
         return pathStations;
     }
 

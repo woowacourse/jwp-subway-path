@@ -25,7 +25,7 @@ class PathFinderTest {
         final Path path = pathFinder.findPath(Fixture.stationA, Fixture.stationE);
 
         assertAll(
-                () -> assertThat(path.getPathStations()).containsExactly("A", "B", "D", "E"),
+                () -> assertThat(path.getPathStations()).containsExactly(Fixture.stationA, Fixture.stationB, Fixture.stationD, Fixture.stationE),
                 () -> assertThat(path.getPathStations().size()).isEqualTo(4),
                 () -> assertThat(path.getDistance()).isEqualTo(30)
         );
