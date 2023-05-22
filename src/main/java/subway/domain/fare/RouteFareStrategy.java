@@ -5,7 +5,7 @@ import subway.domain.section.PathSection;
 import subway.domain.subway.Passenger;
 import subway.domain.subway.Subway;
 
-public class RouteFareStrategy implements FareStrategy {
+class RouteFareStrategy implements FareStrategy {
 
     @Override
     public double calculateFare(final double fare, final Passenger passenger, final Subway subway) {

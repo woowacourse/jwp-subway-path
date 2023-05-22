@@ -17,13 +17,7 @@ class FareStrategyCompositeTest {
     @Test
     @DisplayName("지정된 요금 정책을 수행 후 요금을 확인한다.")
     void calculateFare() {
-        final FareStrategyComposite fareStrategyComposite = new FareStrategyComposite(
-                List.of(
-                        new DistanceFareStrategy(),
-                        new RouteFareStrategy(),
-                        new AgeFareStrategy()
-                )
-        );
+        final FareStrategyComposite fareStrategyComposite = new FareStrategyComposite();
         final Line lineOfTwo = new Line(2L, "2호선", "초록색", 1000);
         lineOfTwo.addSection(GANGNAM, YANGJAE, 12);
         final Subway subway = new Subway(new SubwayJgraphtGraph(List.of(lineOfTwo)));

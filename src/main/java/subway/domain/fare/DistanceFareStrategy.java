@@ -3,7 +3,7 @@ package subway.domain.fare;
 import subway.domain.subway.Passenger;
 import subway.domain.subway.Subway;
 
-public class DistanceFareStrategy implements FareStrategy {
+class DistanceFareStrategy implements FareStrategy {
 
     private static final int DEFAULT_FARE = 1250;
 
