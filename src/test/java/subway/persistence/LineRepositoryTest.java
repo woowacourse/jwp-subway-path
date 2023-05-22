@@ -26,7 +26,7 @@ class LineRepositoryTest {
     private final Station midDownStation = new Station(3L, "midDownStation");
     private final Station bottomStation = new Station(4L, "bottomStation");
     private final Distance distance = new Distance(10L);
-    private final Line line = new Line("lineName", "lineColor", 0L);
+    private final Line line = new Line("lineName", "lineColor", 100L);
     @Autowired
     private LineRepository lineRepository;
     @Autowired
@@ -70,6 +70,7 @@ class LineRepositoryTest {
         assertThat(line.getId()).isEqualTo(savedLine.getId());
         assertThat(line.getColor()).isEqualTo(savedLine.getColor());
         assertThat(line.getName()).isEqualTo(savedLine.getName());
+        assertThat(line.getCharge()).isEqualTo(savedLine.getCharge());
         final Sections sections = line.getSections();
         assertThat(sections.size()).isEqualTo(3);
         assertThat(sections.findStation(0)).isEqualTo(savedTopStation);

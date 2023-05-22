@@ -5,6 +5,7 @@ public class LineSectionStationJoinDto {
     private final Long lineId;
     private final String lineName;
     private final String lineColor;
+    private final Long lineCharge;
     private final Long upStationId;
     private final String upStationName;
     private final Long downStationId;
@@ -13,11 +14,13 @@ public class LineSectionStationJoinDto {
     private final Long sectionDistance;
 
     public LineSectionStationJoinDto(final Long lineId, final String lineName, final String lineColor,
-        final Long upStationId, final String upStationName, final Long downStationId, final String downStationName,
-        final Long sectionId, final Long sectionDistance) {
+        final Long lineCharge, final Long upStationId,
+        final String upStationName, final Long downStationId, final String downStationName, final Long sectionId,
+        final Long sectionDistance) {
         this.lineId = lineId;
         this.lineName = lineName;
         this.lineColor = lineColor;
+        this.lineCharge = lineCharge;
         this.upStationId = upStationId;
         this.upStationName = upStationName;
         this.downStationId = downStationId;
@@ -36,6 +39,10 @@ public class LineSectionStationJoinDto {
 
     public String getLineColor() {
         return lineColor;
+    }
+
+    public Long getLineCharge() {
+        return lineCharge;
     }
 
     public Long getStartStationId() {

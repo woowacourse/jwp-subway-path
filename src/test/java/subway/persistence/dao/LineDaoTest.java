@@ -29,7 +29,7 @@ class LineDaoTest {
     private final StationEntity midDownStationEntity = StationEntity.from(new Station(3L, "midDownStation"));
     private final StationEntity bottomStationEntity = StationEntity.from(new Station(4L, "bottomStation"));
     private final Distance distance = new Distance(10L);
-    private final LineEntity lineEntity = LineEntity.from(new Line("lineName", "lineColor", 0L));
+    private final LineEntity lineEntity = LineEntity.from(new Line("lineName", "lineColor", 100L));
     @Autowired
     private LineDao lineDao;
     @Autowired
