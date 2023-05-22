@@ -1,7 +1,13 @@
 package subway.line.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,17 +49,29 @@ class PathControllerTest {
     final Long 잠실역_id = stationService.create(new StationCreateDto("잠실역"));
     final Long 잠실나루역_id = stationService.create(new StationCreateDto("잠실나루역"));
     lineService.addSection(new SectionCreateDto(lineId1, 잠실새내역_id, 잠실나루역_id, 5));
-    lineService.addSection(new SectionCreateDto(lineId2, 잠실새내역_id, 잠실역_id, 4));
-    lineService.addSection(new SectionCreateDto(lineId3, 잠실나루역_id, 잠실역_id, 100));
+    lineService.addSection(new SectionCreateDto(lineId2, 잠실새내역_id, 잠실역_id, 100));
+    lineService.addSection(new SectionCreateDto(lineId3, 잠실나루역_id, 잠실역_id, 4));
     final ShortestPathRequest shortestPathRequest = new ShortestPathRequest(잠실새내역_id, 잠실역_id);
 
-    RestAssured
+    final ExtractableResponse<Response> extract = RestAssured
         .given()
         .body(shortestPathRequest)
         .contentType(ContentType.JSON)
         .when()
         .get("/path")
         .then()
-        .statusCode(HttpStatus.OK.value());
+        .statusCode(HttpStatus.OK.value())
+        .extract();
+
+    assertAll(
+        () -> assertThat(extract.jsonPath().getDouble("distance")).isEqualTo(9),
+        () -> assertThat(extract.jsonPath().getInt("fare")).isEqualTo(1250),
+        () -> assertThat(extract.jsonPath().getString("traverseStationDtos[0].lineName")).isEqualTo("1호선"),
+        () -> assertThat(extract.jsonPath().getString("traverseStationDtos[0].stationName")).isEqualTo("잠실새내역"),
+        () -> assertThat(extract.jsonPath().getString("traverseStationDtos[1].lineName")).isEqualTo("3호선"),
+        () -> assertThat(extract.jsonPath().getString("traverseStationDtos[1].stationName")).isEqualTo("잠실나루역"),
+        () -> assertThat(extract.jsonPath().getString("traverseStationDtos[2].lineName")).isEqualTo("3호선"),
+        () -> assertThat(extract.jsonPath().getString("traverseStationDtos[2].stationName")).isEqualTo("잠실역")
+    );
   }
 }

@@ -1,7 +1,12 @@
 package subway.line.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +40,28 @@ class LineControllerTest {
 
   @Test
   void getLines() {
-    final Long lineId = lineService.createLine(new LineCreateDto("2호선"));
+    final Long line1 = lineService.createLine(new LineCreateDto("1호선"));
+    final Long line2 = lineService.createLine(new LineCreateDto("2호선"));
+    final Long 잠실새내역_id = stationService.create(new StationCreateDto("잠실새내역"));
     final Long 잠실역_id = stationService.create(new StationCreateDto("잠실역"));
     final Long 잠실나루역_id = stationService.create(new StationCreateDto("잠실나루역"));
-    lineService.addSection(new SectionCreateDto(lineId, 잠실역_id, 잠실나루역_id, 5));
+    lineService.addSection(new SectionCreateDto(line1, 잠실역_id, 잠실나루역_id, 5));
+    lineService.addSection(new SectionCreateDto(line2, 잠실새내역_id, 잠실역_id, 4));
 
-    RestAssured
+    final ExtractableResponse<Response> extract = RestAssured
         .given()
         .when()
-          .get("/lines")
+        .get("/lines")
         .then()
-          .statusCode(HttpStatus.OK.value());
+        .statusCode(HttpStatus.OK.value()).log().all()
+        .extract();
+
+    assertAll(
+        () -> assertThat(extract.jsonPath().getString("name[0]")).isEqualTo("1호선"),
+        () -> assertThat(extract.jsonPath().getList("stationResponseDtos[0]").size()).isEqualTo(2),
+        () -> assertThat(extract.jsonPath().getString("name[1]")).isEqualTo("2호선"),
+        () -> assertThat(extract.jsonPath().getList("stationResponseDtos[1]").size()).isEqualTo(2)
+    );
   }
 
   @Test
@@ -55,12 +71,16 @@ class LineControllerTest {
     final Long 잠실나루역_id = stationService.create(new StationCreateDto("잠실나루역"));
     lineService.addSection(new SectionCreateDto(lineId, 잠실역_id, 잠실나루역_id, 5));
 
-    RestAssured
+    final ExtractableResponse<Response> extract = RestAssured
         .given()
         .when()
-          .get("/lines/" + 1L)
+        .get("/lines/" + 1L)
         .then()
-          .statusCode(HttpStatus.OK.value());
+        .statusCode(HttpStatus.OK.value())
+        .extract();
+
+    assertThat(extract.jsonPath().getString("name[0]")).isEqualTo("잠실역");
+    assertThat(extract.jsonPath().getString("name[1]")).isEqualTo("잠실나루역");
   }
 
   @Test
