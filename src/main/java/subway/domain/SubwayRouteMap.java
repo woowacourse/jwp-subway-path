@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -21,13 +22,13 @@ public class SubwayRouteMap {
     private static final int PER_EIGHT_KILOMETER = 8;
 
     private final WeightedMultigraph<String, DefaultWeightedEdge> graph;
-    private final DijkstraShortestPath shortestPath;
+    private final ShortestPathAlgorithm<String, DefaultWeightedEdge> shortestPath;
     private final Map<String, Station> stations;
 
     public SubwayRouteMap(final List<Section> sections) {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         insertStation(sections);
-        shortestPath = new DijkstraShortestPath(graph);
+        shortestPath = new DijkstraShortestPath<>(graph);
         stations = stationByName(sections);
     }
 
