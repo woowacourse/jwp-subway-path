@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-@DisplayName("지하철역 관련 기능")
+@DisplayName("지하철역 관련 기능 테스트")
 public class StationIntegrationTest extends IntegrationTest {
     @Test
     void 지하철_역을_생성한다() {

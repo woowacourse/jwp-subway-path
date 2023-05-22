@@ -30,7 +30,7 @@ import subway.exception.ErrorMessage;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-@DisplayName("지하철 노선 관련 기능")
+@DisplayName("지하철 노선 관련 기능 테스트")
 public class LineIntegrationTest extends IntegrationTest {
     @Test
     void 지하철_노선을_생성한다() {
