@@ -14,10 +14,6 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public Station findByName(String name) {
-        return stationDao.findByName(name);
-    }
-
     public Station insert(String name) {
         return stationDao.insert(name);
     }

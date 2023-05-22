@@ -3,15 +3,15 @@ package subway.line.application.strategy.stationdeleting;
 import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
-import subway.line.domain.section.application.SectionRepository;
+import subway.line.domain.section.application.SectionService;
 import subway.line.domain.station.Station;
 
 @Component
 public class MiddleStationDeletingStrategy implements StationDeletingStrategy {
-    private final SectionRepository sectionRepository;
+    private final SectionService sectionService;
 
-    public MiddleStationDeletingStrategy(SectionRepository sectionRepository) {
-        this.sectionRepository = sectionRepository;
+    public MiddleStationDeletingStrategy(SectionService sectionService) {
+        this.sectionService = sectionService;
     }
 
     @Override
@@ -33,8 +33,8 @@ public class MiddleStationDeletingStrategy implements StationDeletingStrategy {
                 .addDistance(section.getDistance())
                 .done();
 
-        sectionRepository.delete(section);
-        sectionRepository.update(previousSection);
+        sectionService.delete(section);
+        sectionService.update(previousSection);
 
         line.removeSection(section);
         line.updateSection(previousSection);

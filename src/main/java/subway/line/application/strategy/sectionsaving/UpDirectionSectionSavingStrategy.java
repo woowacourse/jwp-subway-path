@@ -4,17 +4,17 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
-import subway.line.domain.section.application.SectionRepository;
+import subway.line.domain.section.application.SectionService;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.Station;
 
 @Component
 @Order(1)
 public class UpDirectionSectionSavingStrategy implements SectionSavingStrategy {
-    private final SectionRepository sectionRepository;
+    private final SectionService sectionService;
 
-    public UpDirectionSectionSavingStrategy(SectionRepository sectionRepository) {
-        this.sectionRepository = sectionRepository;
+    public UpDirectionSectionSavingStrategy(SectionService sectionService) {
+        this.sectionService = sectionService;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class UpDirectionSectionSavingStrategy implements SectionSavingStrategy {
 
     @Override
     public long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
-        final var savedSection = sectionRepository.insert(line.getId(), previousStation, nextStation, distance);
+        final var savedSection = sectionService.insert(line.getId(), previousStation, nextStation, distance);
 
         final var sectionToUpdate = line.findSectionByNextStation(nextStation)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
@@ -34,7 +34,7 @@ public class UpDirectionSectionSavingStrategy implements SectionSavingStrategy {
                 .subtractDistance(distance)
                 .done();
 
-        sectionRepository.update(updatedSection);
+        sectionService.update(updatedSection);
 
         line.addSection(savedSection);
         line.updateSection(updatedSection);

@@ -4,7 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
-import subway.line.domain.section.application.SectionRepository;
+import subway.line.domain.section.application.SectionService;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.domain.EmptyDistance;
 import subway.line.domain.station.EmptyStation;
@@ -13,10 +13,10 @@ import subway.line.domain.station.Station;
 @Component
 @Order(2)
 public class LowestSectionSavingStrategy implements SectionSavingStrategy {
-    private final SectionRepository sectionRepository;
+    private final SectionService sectionService;
 
-    public LowestSectionSavingStrategy(SectionRepository sectionRepository) {
-        this.sectionRepository = sectionRepository;
+    public LowestSectionSavingStrategy(SectionService sectionService) {
+        this.sectionService = sectionService;
     }
 
     @Override
@@ -30,14 +30,14 @@ public class LowestSectionSavingStrategy implements SectionSavingStrategy {
         final var sectionToUpdate = line.findSectionByPreviousStation(previousStation)
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
 
-        final var savedSection = sectionRepository.insert(line.getId(), nextStation, new EmptyStation(), new EmptyDistance());
+        final var savedSection = sectionService.insert(line.getId(), nextStation, new EmptyStation(), new EmptyDistance());
 
         final var updatedSection = sectionToUpdate.change()
                 .previousStation(previousStation)
                 .nextStation(nextStation)
                 .distance(distance)
                 .done();
-        sectionRepository.update(updatedSection);
+        sectionService.update(updatedSection);
 
         line.addSection(savedSection);
         line.updateSection(updatedSection);

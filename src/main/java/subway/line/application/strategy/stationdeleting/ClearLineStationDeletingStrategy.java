@@ -2,16 +2,16 @@ package subway.line.application.strategy.stationdeleting;
 
 import org.springframework.stereotype.Component;
 import subway.line.Line;
-import subway.line.domain.section.application.SectionRepository;
+import subway.line.domain.section.application.SectionService;
 import subway.line.domain.station.EmptyStation;
 import subway.line.domain.station.Station;
 
 @Component
 public class ClearLineStationDeletingStrategy implements StationDeletingStrategy {
-    private final SectionRepository sectionRepository;
+    private final SectionService sectionService;
 
-    public ClearLineStationDeletingStrategy(SectionRepository sectionRepository) {
-        this.sectionRepository = sectionRepository;
+    public ClearLineStationDeletingStrategy(SectionService sectionService) {
+        this.sectionService = sectionService;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class ClearLineStationDeletingStrategy implements StationDeletingStrategy
 
     @Override
     public void deleteStation(Line line, Station station) {
-        sectionRepository.clearStations(line.getId());
+        sectionService.clearStations(line.getId());
 
         line.clearSection();
         line.changeHead(new EmptyStation());

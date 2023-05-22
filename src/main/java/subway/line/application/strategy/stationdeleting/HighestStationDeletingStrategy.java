@@ -4,16 +4,16 @@ import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
 import subway.line.application.LineRepository;
-import subway.line.domain.section.application.SectionRepository;
+import subway.line.domain.section.application.SectionService;
 import subway.line.domain.station.Station;
 
 @Component
 public class HighestStationDeletingStrategy implements StationDeletingStrategy {
-    private SectionRepository sectionRepository;
+    private SectionService sectionService;
     private LineRepository lineRepository;
 
-    public HighestStationDeletingStrategy(SectionRepository sectionRepository, LineRepository lineRepository) {
-        this.sectionRepository = sectionRepository;
+    public HighestStationDeletingStrategy(SectionService sectionService, LineRepository lineRepository) {
+        this.sectionService = sectionService;
         this.lineRepository = lineRepository;
     }
 
@@ -29,7 +29,7 @@ public class HighestStationDeletingStrategy implements StationDeletingStrategy {
                 .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
 
         lineRepository.updateHeadStation(line, section.getNextStation());
-        sectionRepository.delete(section);
+        sectionService.delete(section);
 
         line.changeHead(section.getNextStation());
         line.removeSection(section);

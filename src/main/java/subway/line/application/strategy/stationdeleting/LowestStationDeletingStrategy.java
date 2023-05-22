@@ -4,17 +4,17 @@ import org.springframework.stereotype.Component;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
 import subway.line.domain.section.Section;
-import subway.line.domain.section.application.SectionRepository;
+import subway.line.domain.section.application.SectionService;
 import subway.line.domain.section.domain.EmptyDistance;
 import subway.line.domain.station.EmptyStation;
 import subway.line.domain.station.Station;
 
 @Component
 public class LowestStationDeletingStrategy implements StationDeletingStrategy {
-    private final SectionRepository sectionRepository;
+    private final SectionService sectionService;
 
-    public LowestStationDeletingStrategy(SectionRepository sectionRepository) {
-        this.sectionRepository = sectionRepository;
+    public LowestStationDeletingStrategy(SectionService sectionService) {
+        this.sectionService = sectionService;
     }
 
     @Override
@@ -36,8 +36,8 @@ public class LowestStationDeletingStrategy implements StationDeletingStrategy {
                 .distance(new EmptyDistance())
                 .done();
 
-        sectionRepository.delete(section);
-        sectionRepository.update(newLowestSection);
+        sectionService.delete(section);
+        sectionService.update(newLowestSection);
 
         line.removeSection(section);
         line.updateSection(newLowestSection);

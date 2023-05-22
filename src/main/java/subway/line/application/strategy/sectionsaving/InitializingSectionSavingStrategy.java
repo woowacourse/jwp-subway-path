@@ -4,7 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.line.Line;
 import subway.line.application.LineRepository;
-import subway.line.domain.section.application.SectionRepository;
+import subway.line.domain.section.application.SectionService;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.domain.EmptyDistance;
 import subway.line.domain.station.EmptyStation;
@@ -13,11 +13,11 @@ import subway.line.domain.station.Station;
 @Component
 @Order(0)
 public class InitializingSectionSavingStrategy implements SectionSavingStrategy {
-    private final SectionRepository sectionRepository;
+    private final SectionService sectionService;
     private final LineRepository lineRepository;
 
-    public InitializingSectionSavingStrategy(SectionRepository sectionRepository, LineRepository lineRepository) {
-        this.sectionRepository = sectionRepository;
+    public InitializingSectionSavingStrategy(SectionService sectionService, LineRepository lineRepository) {
+        this.sectionService = sectionService;
         this.lineRepository = lineRepository;
     }
 
@@ -28,8 +28,8 @@ public class InitializingSectionSavingStrategy implements SectionSavingStrategy 
 
     @Override
     public long insert(Line line, Station previousStation, Station nextStation, Distance distance) {
-        final var previousSection = sectionRepository.insert(line.getId(), previousStation, nextStation, distance);
-        final var nextSection = sectionRepository.insert(line.getId(), nextStation, new EmptyStation(), new EmptyDistance());
+        final var previousSection = sectionService.insert(line.getId(), previousStation, nextStation, distance);
+        final var nextSection = sectionService.insert(line.getId(), nextStation, new EmptyStation(), new EmptyDistance());
         lineRepository.updateHeadStation(line, previousStation);
 
         line.addSection(previousSection);
