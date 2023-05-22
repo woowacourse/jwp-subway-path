@@ -1,17 +1,17 @@
 package subway.application.dto;
 
+import subway.domain.Line;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import subway.domain.Line;
-
 public class LineResponse {
 
-    private Long id;
-    private String name;
-    private String color;
-    private List<StationResponse> stationResponses;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final List<StationResponse> stationResponses;
 
     public LineResponse(final Long id, final String name, final String color, final List<StationResponse> stationResponses) {
         this.id = id;

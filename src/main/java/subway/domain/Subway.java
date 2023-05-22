@@ -138,7 +138,7 @@ public class Subway {
         return subwayStructure.outgoingEdgesOf(station);
     }
 
-    public Station getRightStationByEdge(DefaultWeightedEdge edge) {
+    private Station getRightStationByEdge(DefaultWeightedEdge edge) {
         return subwayStructure.getEdgeTarget(edge);
     }
 

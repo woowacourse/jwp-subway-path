@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class PathsResponse {
 
-    private List<StationResponse> paths;
-    private Integer distance;
-    private Integer cost;
+    private final List<StationResponse> paths;
+    private final Integer distance;
+    private final Integer cost;
 
     private PathsResponse(List<StationResponse> paths, Integer distance, Integer cost) {
         this.paths = paths;

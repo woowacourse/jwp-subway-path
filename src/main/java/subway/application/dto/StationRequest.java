@@ -3,7 +3,6 @@ package subway.application.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 public class StationRequest {
 

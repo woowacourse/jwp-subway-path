@@ -18,29 +18,27 @@ public class Subways {
     }
 
     public static Subways from(final List<Section> sections) {
-        WeightedMultigraph<Station, SubwaysEdge> subwayStructure = generateSubwayStructure(sections);
-        return new Subways(subwayStructure);
+        return new Subways(generateSubwayStructure(sections));
     }
 
     private static WeightedMultigraph<Station, SubwaysEdge> generateSubwayStructure(List<Section> sections) {
-        WeightedMultigraph<Station, SubwaysEdge> subwayStructure = new WeightedMultigraph<>(SubwaysEdge.class);
+        WeightedMultigraph<Station, SubwaysEdge> subways = new WeightedMultigraph<>(SubwaysEdge.class);
         for (Section section : sections) {
             Station left = section.getLeft();
             Station right = section.getRight();
             SubwaysEdge subwaysEdge = new SubwaysEdge(section.getLine(), section.getDistance());
 
-            subwayStructure.addVertex(left);
-            subwayStructure.addVertex(right);
-            subwayStructure.addEdge(left, right, subwaysEdge);
+            subways.addVertex(left);
+            subways.addVertex(right);
+            subways.addEdge(left, right, subwaysEdge);
         }
-        return subwayStructure;
+        return subways;
     }
 
     public GraphPath<Station, SubwaysEdge> getShortestPaths(final Station start, final Station end) {
         validateGetPath(start, end);
         DijkstraShortestPath<Station, SubwaysEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subways);
-        GraphPath<Station, SubwaysEdge> paths = dijkstraShortestPath.getPath(start, end);
-        return paths;
+        return dijkstraShortestPath.getPath(start, end);
     }
 
     private void validateGetPath(Station start, Station end) {

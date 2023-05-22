@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
+
     private final StationDao stationDao;
 
     public StationService(final StationDao stationDao) {

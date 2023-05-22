@@ -1,6 +1,5 @@
 package subway.dao;
 
-import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -9,12 +8,14 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 
+import java.util.List;
+
 @Repository
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private RowMapper<Section> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Section> rowMapper = (rs, rowNum) ->
             new Section(
                     new Line(rs.getLong("line_id"), rs.getString("line_name"), rs.getString("line_color")),
                     new Station(rs.getLong("left_station_id"), rs.getString("left_station_name")),
@@ -39,8 +40,8 @@ public class SectionDao {
                         + " ON se.left_station_id = left_st.id"
                         + " LEFT JOIN STATION as right_st"
                         + " ON se.right_station_id = right_st.id"
-                        + " LEFT JOIN LINE as line" +
-                          " ON se.line_id = line.id";
+                        + " LEFT JOIN LINE as line"
+                        + " ON se.line_id = line.id";
         return jdbcTemplate.query(sql, rowMapper);
     }
 

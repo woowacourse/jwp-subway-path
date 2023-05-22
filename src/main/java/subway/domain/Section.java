@@ -2,7 +2,6 @@ package subway.domain;
 
 import subway.application.exception.SubwayServiceException;
 
-import java.util.Iterator;
 import java.util.Objects;
 
 public class Section {

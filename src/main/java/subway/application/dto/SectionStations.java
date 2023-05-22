@@ -1,6 +1,5 @@
 package subway.application.dto;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class SectionStations {
