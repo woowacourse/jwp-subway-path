@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Lines;
 import subway.domain.Section;
@@ -62,20 +61,13 @@ public class LineService {
     }
 
     public Long createSectionInLine(final Long lineId, final SectionCreateRequest sectionCreateRequest) {
-        SectionEntity sectionEntity = new SectionEntity(
-                sectionCreateRequest.getUpStationId(),
-                sectionCreateRequest.getDownStationId(),
-                lineId,
-                sectionCreateRequest.getDistance()
-        );
-
         Station upStation = stationRepository.findById(sectionCreateRequest.getUpStationId());
         Station downStation = stationRepository.findById(sectionCreateRequest.getDownStationId());
 
         Line line = lineRepository.findById(lineId);
         List<Section> originalSections = line.getSectionsByList();
 
-        line.addSection(upStation, downStation, sectionEntity.getDistance());
+        line.addSection(upStation, downStation, sectionCreateRequest.getDistance());
 
         Long newSectionId = saveNewSections(lineId, originalSections, line);
         deleteOriginalSection(lineId, originalSections, line);
