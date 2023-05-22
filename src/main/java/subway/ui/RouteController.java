@@ -24,7 +24,8 @@ public class RouteController {
     public ResponseEntity<RouteResponse> findRoute(@RequestBody @Valid RouteRequest routeRequest) {
         RouteResponse routeResponse = RouteResponse.of(
                 routeService.findShortestRoute(routeRequest),
-                routeService.findShortestDistance(routeRequest)
+                routeService.findShortestDistance(routeRequest),
+                routeService.findShortestRouteFare(routeRequest)
         );
         return ResponseEntity.ok(routeResponse);
     }

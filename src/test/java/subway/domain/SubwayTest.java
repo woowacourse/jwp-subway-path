@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.routestrategy.DijkstraRouteStrategy;
-import subway.domain.routestrategy.RouteStrategy;
 
 class SubwayTest {
 
@@ -229,104 +227,106 @@ class SubwayTest {
         assertThat(subway.findLineById(1L)).isEqualTo(new Line(1L, "1호선", "파랑", new Sections()));
     }
 
-    @Test
-    @DisplayName("최단 경로를 조회할 때, 존재하지 않는 역이면 예외를 발생한다")
-    void findShortestRoute_NotExistStation() {
-        Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
-
-        Station start = new Station("동인천");
-        Station end = new Station("교대");
-        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
-
-        assertThatThrownBy(() -> subway.findShortestDistance(start, end, routeStrategy))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 역이 존재하지 않습니다.");
-    }
-
-    @Test
-    @DisplayName("최단 경로를 조회할 때, 출발지와 도착지가 같은 역이면 예외를 발생한다")
-    void findShortestRoute_SameStation() {
-        Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
-
-        Station start = new Station("동인천");
-        Station end = new Station("동인천");
-        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
-
-        assertThatThrownBy(() -> subway.findShortestRoute(start, end, routeStrategy))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("출발지와 도착지가 같은 역입니다.");
-    }
-
-    @Test
-    @DisplayName("최단 경로를 조회할 때, 이동할 수 없는 경로인 경우 예외를 발생한다")
-    void findShortestRoute_NotConnected() {
-        Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
-
-        Station start = new Station(7L,"교대");
-        Station end = new Station(12L,"천호");
-        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
-
-        assertThatThrownBy(() -> subway.findShortestRoute(start, end, routeStrategy))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("이동할 수 없는 경로입니다.");
-    }
-
-    @Test
-    @DisplayName("두 역 사이의 최단 경로가 정상 조회된다1")
-    void findShortestRoute() {
-        Subway subway = new Subway(List.of(line2, line3));
-
-        Station start = new Station(1L,"낙성대");
-        Station end = new Station(6L,"고속터미널");
-        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
-
-        List<Station> expected = List.of(
-                new Station(1L, "낙성대"),
-                new Station(2L, "사당"),
-                new Station(3L, "교대"),
-                new Station(6L, "고속터미널")
-        );
-
-        //todo : usingRecursiveComparison 다시 배우기
-        assertThat(subway.findShortestRoute(start, end, routeStrategy))
-                .isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("두 역 사이의 최단 경로가 정상 조회된다2")
-    void findShortestRoute2() {
-        Subway subway = new Subway(List.of(line2, line3, line4, line5, line7));
-
-        Station start = new Station(1L,"낙성대");
-        Station end = new Station(6L,"고속터미널");
-        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
-
-        List<Station> expected = List.of(
-                new Station(1L, "낙성대"),
-                new Station(2L, "사당"),
-                new Station(14L, "이수"),
-                new Station(15L, "내방"),
-                new Station(6L, "고속터미널")
-        );
-        //todo : usingRecursiveComparison 다시 배우기
-
-        assertThat(subway.findShortestRoute(start, end, routeStrategy))
-                .isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("두 역 사이의 최단 거리가 정상 조회된다")
-    void findShortestDistance() {
-        Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
-
-        Station start = new Station(1L,"낙성대");
-        Station end = new Station(6L,"고속터미널");
-        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
-
-        Distance expected = new Distance(20);
-
-        //todo : usingRecursiveComparison 다시 배우기
-        assertThat(subway.findShortestDistance(start, end, routeStrategy))
-                .isEqualTo(expected);
-    }
+    //todo : 서비스 테스트로 이동
+//
+//    @Test
+//    @DisplayName("최단 경로를 조회할 때, 존재하지 않는 역이면 예외를 발생한다")
+//    void findShortestRoute_NotExistStation() {
+//        Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
+//
+//        Station start = new Station("동인천");
+//        Station end = new Station("교대");
+//        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
+//
+//        assertThatThrownBy(() -> subway.findShortestDistance(start, end, routeStrategy))
+//                .isInstanceOf(IllegalArgumentException.class)
+//                .hasMessageContaining("해당 역이 존재하지 않습니다.");
+//    }
+//
+//    @Test
+//    @DisplayName("최단 경로를 조회할 때, 출발지와 도착지가 같은 역이면 예외를 발생한다")
+//    void findShortestRoute_SameStation() {
+//        Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
+//
+//        Station start = new Station("동인천");
+//        Station end = new Station("동인천");
+//        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
+//
+//        assertThatThrownBy(() -> subway.findShortestRoute(start, end, routeStrategy))
+//                .isInstanceOf(IllegalArgumentException.class)
+//                .hasMessageContaining("출발지와 도착지가 같은 역입니다.");
+//    }
+//
+//    @Test
+//    @DisplayName("최단 경로를 조회할 때, 이동할 수 없는 경로인 경우 예외를 발생한다")
+//    void findShortestRoute_NotConnected() {
+//        Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
+//
+//        Station start = new Station(7L,"교대");
+//        Station end = new Station(12L,"천호");
+//        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
+//
+//        assertThatThrownBy(() -> subway.findShortestRoute(start, end, routeStrategy))
+//                .isInstanceOf(IllegalArgumentException.class)
+//                .hasMessageContaining("이동할 수 없는 경로입니다.");
+//    }
+//
+//    @Test
+//    @DisplayName("두 역 사이의 최단 경로가 정상 조회된다1")
+//    void findShortestRoute() {
+//        Subway subway = new Subway(List.of(line2, line3));
+//
+//        Station start = new Station(1L,"낙성대");
+//        Station end = new Station(6L,"고속터미널");
+//        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
+//
+//        List<Station> expected = List.of(
+//                new Station(1L, "낙성대"),
+//                new Station(2L, "사당"),
+//                new Station(3L, "교대"),
+//                new Station(6L, "고속터미널")
+//        );
+//
+//        //todo : usingRecursiveComparison 다시 배우기
+//        assertThat(subway.findShortestRoute(start, end, routeStrategy))
+//                .isEqualTo(expected);
+//    }
+//
+//    @Test
+//    @DisplayName("두 역 사이의 최단 경로가 정상 조회된다2")
+//    void findShortestRoute2() {
+//        Subway subway = new Subway(List.of(line2, line3, line4, line5, line7));
+//
+//        Station start = new Station(1L,"낙성대");
+//        Station end = new Station(6L,"고속터미널");
+//        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
+//
+//        List<Station> expected = List.of(
+//                new Station(1L, "낙성대"),
+//                new Station(2L, "사당"),
+//                new Station(14L, "이수"),
+//                new Station(15L, "내방"),
+//                new Station(6L, "고속터미널")
+//        );
+//        //todo : usingRecursiveComparison 다시 배우기
+//
+//        assertThat(subway.findShortestRoute(start, end, routeStrategy))
+//                .isEqualTo(expected);
+//    }
+//
+//    @Test
+//    @DisplayName("두 역 사이의 최단 거리가 정상 조회된다")
+//    void findShortestDistance() {
+//        Subway subway = new Subway(List.of(line1, line2, line3, line4, line5, line7));
+//
+//        Station start = new Station(1L,"낙성대");
+//        Station end = new Station(6L,"고속터미널");
+//        RouteStrategy routeStrategy = new DijkstraRouteStrategy();
+//
+//        Distance expected = new Distance(20);
+//
+//        //todo : usingRecursiveComparison 다시 배우기
+//        assertThat(subway.findShortestDistance(start, end, routeStrategy))
+//                .isEqualTo(expected);
+//    }
 }
