@@ -5,7 +5,7 @@ import subway.domain.path.Fare;
 import subway.domain.path.Path;
 import subway.domain.station.Station;
 import subway.domain.station.StationName;
-import subway.persistence.repository.SectionRepository;
+import subway.persistence.repository.PathRepository;
 import subway.ui.request.PathRequest;
 import subway.ui.response.PathResponse;
 
@@ -14,9 +14,9 @@ import java.util.List;
 @Service
 public class PathService {
 
-    private final SectionRepository serviceRepository;
+    private final PathRepository serviceRepository;
 
-    public PathService(final SectionRepository serviceRepository) {
+    public PathService(final PathRepository serviceRepository) {
         this.serviceRepository = serviceRepository;
     }
 

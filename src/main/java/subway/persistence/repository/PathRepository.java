@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Repository
-public class SectionRepository {
+public class PathRepository {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
 
-    public SectionRepository(final SectionDao sectionDao, final StationDao stationDao) {
+    public PathRepository(final SectionDao sectionDao, final StationDao stationDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
     }
