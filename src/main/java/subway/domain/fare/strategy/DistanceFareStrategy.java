@@ -1,11 +1,12 @@
-package subway.domain.fare;
+package subway.domain.fare.strategy;
 
 import org.springframework.stereotype.Component;
+import subway.domain.fare.FareInfo;
 
 import static java.lang.Math.floor;
 
 @Component
-public final class DistanceFareStrategyImpl implements DistanceFareStrategy {
+public final class DistanceFareStrategy implements FareStrategy {
 
     private static final int BASE_DISTANCE = 10;
     private static final int BASE_FARE = 1250;
@@ -16,7 +17,8 @@ public final class DistanceFareStrategyImpl implements DistanceFareStrategy {
     private static final int UNIT_OF_SECOND_EXCESS_DISTANCE = 8;
 
     @Override
-    public int calculate(final long distance) {
+    public FareInfo calculate(final FareInfo fareInfo) {
+        final int distance = fareInfo.getDistance();
         int fare = BASE_FARE;
 
         if (distance > BASE_DISTANCE) {
@@ -26,17 +28,17 @@ public final class DistanceFareStrategyImpl implements DistanceFareStrategy {
             fare += calculateSecondAdditionalFare(distance);
         }
 
-        return fare;
+        return fareInfo.updateFare(fare);
     }
 
-    private int calculateFirstAdditionalFare(long distance) {
+    private int calculateFirstAdditionalFare(int distance) {
         distance -= BASE_DISTANCE;
 
         final double quotient = floor((double) distance / UNIT_OF_FIRST_EXCESS_DISTANCE);
         return (int) Math.min(10, quotient) * UNIT_OF_ADDITIONAL_FARE;
     }
 
-    private int calculateSecondAdditionalFare(long distance) {
+    private int calculateSecondAdditionalFare(int distance) {
         distance -= BASE_DISTANCE + EXCESSIVE_DISTANCE;
 
         final double quotient = floor((double) distance / UNIT_OF_SECOND_EXCESS_DISTANCE);

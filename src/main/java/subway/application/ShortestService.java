@@ -7,6 +7,7 @@ import subway.domain.Line;
 import subway.domain.Shortest;
 import subway.domain.Station;
 import subway.domain.fare.FareCalculator;
+import subway.domain.fare.FareInfo;
 import subway.domain.path.PathEdgeProxy;
 import subway.dto.ShortestResponse;
 
@@ -32,8 +33,9 @@ public class ShortestService {
 
         final List<Line> lines = lineService.findAllLines();
         final Shortest shortest = Shortest.from(lines);
-
         final List<PathEdgeProxy> result = shortest.findShortest(start, end);
-        return ShortestResponse.of(result, fareCalculator.of(result, age));
+
+        final FareInfo fareInfo = new FareInfo(0, result, age);
+        return ShortestResponse.of(fareCalculator.of(fareInfo));
     }
 }
