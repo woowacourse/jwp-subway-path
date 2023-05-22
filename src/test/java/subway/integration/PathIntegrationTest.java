@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import subway.dto.LineRequest;
 import subway.dto.PathResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationRequest;
+import subway.dto.StationResponse;
 
 @DisplayName("경로 관련 기능")
 public class PathIntegrationTest extends IntegrationTest {
@@ -46,9 +48,12 @@ public class PathIntegrationTest extends IntegrationTest {
         final PathResponse pathResponse = result.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(16);
         assertThat(pathResponse.getFare()).isEqualTo(1450);
-        assertThat(pathResponse.getStations())
+        final List<String> stationNames = pathResponse.getStations().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+        assertThat(stationNames)
                 .usingRecursiveComparison()
-                .isEqualTo(List.of(stationResponse3, stationResponse1, stationResponse2));
+                .isEqualTo(List.of("청라언덕역", "반월당역", "경대병원역"));
     }
 
     private long extractId(final ExtractableResponse<Response> response) {
