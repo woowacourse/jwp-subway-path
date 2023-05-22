@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({SectionService.class, LineRepository.class, StationRepository.class, SectionRepository.class,
+@Import({SectionService.class, LineRepository.class, StationRepository.class, SectionRepository.class, SubwayReadService.class,
         SectionInserter.class, InsertUpwardStation.class, InsertDownwardStation.class, InsertTerminal.class,
         SectionDeleter.class, DeleteInitialSection.class, DeleteBetweenStation.class, DeleteUpTerminal.class, DeleteDownTerminal.class})
 public @interface ImportSectionService {

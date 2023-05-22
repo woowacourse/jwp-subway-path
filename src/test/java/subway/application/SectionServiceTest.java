@@ -15,9 +15,7 @@ import subway.dao.entity.StationEntity;
 import subway.domain.Distance;
 import subway.domain.section.Section;
 import subway.dto.SectionRequest;
-import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
-import subway.repository.StationRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,11 +31,9 @@ class SectionServiceTest extends SubwayJdbcFixture {
     @Autowired
     private SectionService sectionService;
     @Autowired
-    private LineRepository lineRepository;
+    private SubwayReadService subwayReadService;
     @Autowired
     private SectionRepository sectionRepository;
-    @Autowired
-    private StationRepository stationRepository;
     @Autowired
     private SectionInserter sectionInserter;
     @Autowired
@@ -45,7 +41,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
 
     @BeforeEach
     void init() {
-        sectionService = new SectionService(lineRepository, stationRepository, sectionRepository, sectionInserter, sectionDeleter);
+        sectionService = new SectionService(subwayReadService, sectionInserter, sectionDeleter);
     }
 
     @Nested

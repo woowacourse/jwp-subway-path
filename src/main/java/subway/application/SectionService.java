@@ -8,9 +8,6 @@ import subway.application.strategy.insert.SectionInserter;
 import subway.domain.Station;
 import subway.domain.section.SingleLineSections;
 import subway.dto.SectionRequest;
-import subway.repository.LineRepository;
-import subway.repository.SectionRepository;
-import subway.repository.StationRepository;
 
 import java.util.Objects;
 
@@ -18,22 +15,12 @@ import java.util.Objects;
 @Transactional
 public class SectionService {
 
-    private final LineRepository lineRepository;
-    private final StationRepository stationRepository;
-    private final SectionRepository sectionRepository;
+    private final SubwayReadService subwayReadService;
     private final SectionInserter sectionInserter;
     private final SectionDeleter sectionDeleter;
 
-    public SectionService(
-            LineRepository lineRepository,
-            StationRepository stationRepository,
-            SectionRepository sectionRepository,
-            SectionInserter sectionInserter,
-            SectionDeleter sectionDeleter
-    ) {
-        this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
-        this.sectionRepository = sectionRepository;
+    public SectionService(SubwayReadService subwayReadService, SectionInserter sectionInserter, SectionDeleter sectionDeleter) {
+        this.subwayReadService = subwayReadService;
         this.sectionInserter = sectionInserter;
         this.sectionDeleter = sectionDeleter;
     }
@@ -41,9 +28,9 @@ public class SectionService {
     public Long insertSection(Long lineId, SectionRequest request) {
         validateInput(request, lineId);
 
-        final Station upStation = findById(request.getUpStationId());
-        final Station downStation = findById(request.getDownStationId());
-        final SingleLineSections sections = sectionRepository.findAllByLineId(lineId);
+        final Station upStation = subwayReadService.findStationById(request.getUpStationId());
+        final Station downStation = subwayReadService.findStationById(request.getDownStationId());
+        final SingleLineSections sections = subwayReadService.findSingLineSectionsByLineId(lineId);
 
         validateInsert(upStation, downStation, sections);
 
@@ -56,13 +43,9 @@ public class SectionService {
             throw new IllegalArgumentException("같은 역을 구간으로 등록할 수 없습니다.");
         }
 
-        if (!lineRepository.exists(lineId)) {
+        if (!subwayReadService.exists(lineId)) {
             throw new IllegalArgumentException("존재 하지 않는 노선에는 구간을 추가 할 수 없습니다.");
         }
-    }
-
-    private Station findById(Long stationId) {
-        return stationRepository.findById(stationId);
     }
 
     private void validateInsert(Station upStation, Station downStation, SingleLineSections sortedSections) {
@@ -76,8 +59,8 @@ public class SectionService {
     }
 
     public void deleteStation(Long lineId, Long targetId) {
-        final Station targetStation = stationRepository.findById(targetId);
-        final SingleLineSections sections = sectionRepository.findAllByLineId(lineId);
+        final Station targetStation = subwayReadService.findStationById(targetId);
+        final SingleLineSections sections = subwayReadService.findSingLineSectionsByLineId(lineId);
 
         sectionDeleter.delete(sections, targetStation);
     }
