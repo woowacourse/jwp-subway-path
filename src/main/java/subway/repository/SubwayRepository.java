@@ -3,13 +3,13 @@ package subway.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
-import subway.dao.PathDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.LineName;
 import subway.domain.Lines;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.Stations;
 import subway.entity.LineEntity;
@@ -18,6 +18,7 @@ import subway.entity.StationEntity;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -30,14 +31,12 @@ public class SubwayRepository {
     private final StationDao stationDao;
     private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private final PathDao pathDao;
 
     @Autowired
-    public SubwayRepository(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, PathDao pathDao) {
+    public SubwayRepository(StationDao stationDao, LineDao lineDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        this.pathDao = pathDao;
     }
 
     public Stations getStations() {
@@ -135,5 +134,14 @@ public class SubwayRepository {
                         .name(lineName.getName())
                         .build()
         );
+    }
+
+    public Sections getSections() {
+        List<Section> sections = new ArrayList<>();
+        getLines().getLines()
+                .stream()
+                .map(Line::getSectionsWithoutEndPoints)
+                .forEach(sections::addAll);
+        return new Sections(sections);
     }
 }

@@ -6,14 +6,16 @@ import subway.domain.Line;
 import subway.domain.LineName;
 import subway.domain.Lines;
 import subway.domain.Section;
-import subway.domain.ShortestPath;
+import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.Stations;
+import subway.domain.path.ShortestPath;
+import subway.domain.path.ShortestPathFinder;
 import subway.dto.AddLineRequest;
 import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
 import subway.dto.LineResponse;
-import subway.dto.PathResponse;
+import subway.dto.ShortestPathResponse;
 import subway.dto.SubwayPathRequest;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
@@ -101,18 +103,28 @@ public class SubwayService {
         return new LineResponse(line.getStationNamesInOrder(), line.getName().getName());
     }
 
-    public PathResponse findShortestPath(SubwayPathRequest subwayPathRequest) {
-        Lines lines = subwayRepository.getLines();
+    public ShortestPathResponse findShortestPath(SubwayPathRequest subwayPathRequest) {
+        Stations stations = subwayRepository.getStations();
+        Sections sections = subwayRepository.getSections();
         Station departure = subwayRepository.findStation(subwayPathRequest.getDepartureId());
         Station destination = subwayRepository.findStation(subwayPathRequest.getDestinationId());
-        ShortestPath shortestPath = lines.findShortestPath();
-        return toPathResponse(shortestPath);
+
+        ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
+        ShortestPath shortestPath = shortestPathFinder.findShortestPath(sections, stations, departure, destination);
+        return toShortestPathResponse(shortestPath);
     }
 
-    private PathResponse toPathResponse(ShortestPath shortestPath) {
+    private ShortestPathResponse toShortestPathResponse(ShortestPath shortestPath) {
         return shortestPath.getStations()
                 .stream()
-                .map(station -> station.getName())
-                .collect(collectingAndThen(toList(), PathResponse::new));
+                .map(Station::getName)
+                .collect(collectingAndThen(toList(), stations -> new ShortestPathResponse(stations, shortestPath.getDistance())));
+    }
+
+    @Override
+    public String toString() {
+        return "SubwayService{" +
+                "subwayRepository=" + subwayRepository +
+                '}';
     }
 }

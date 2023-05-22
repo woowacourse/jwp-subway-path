@@ -12,8 +12,6 @@ import subway.application.SubwayService;
 import subway.dto.AddLineRequest;
 import subway.dto.DeleteStationRequest;
 import subway.dto.LineResponse;
-import subway.dto.PathResponse;
-import subway.dto.SubwayPathRequest;
 
 import java.net.URI;
 import java.util.List;
@@ -48,10 +46,5 @@ public class LineController {
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(subwayService.findAllLines());
-    }
-
-    @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findShortestPath(@RequestBody SubwayPathRequest subwayPathRequest) {
-        return ResponseEntity.ok(subwayService.findShortestPath(subwayPathRequest));
     }
 }

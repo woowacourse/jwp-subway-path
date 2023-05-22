@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
@@ -21,16 +20,12 @@ import subway.domain.Line;
 import subway.domain.LineName;
 import subway.domain.Station;
 import subway.dto.AddStationRequest;
-import subway.dto.SubwayPathRequest;
 import subway.entity.LineEntity;
 import subway.repository.SubwayRepository;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
 import static subway.domain.Line.EMPTY_ENDPOINT_STATION;
@@ -231,35 +226,5 @@ public class StationIntegrationTest {
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    /**
-     * 2호선 (LINE_NUMBER_TWO)
-     * 잠실 --(3)--> 선릉 --(2)--> 잠실나루
-     * JAMSIL : Station id = 1
-     * JAMSIL_NARU : Station id = 2
-     * SULLENG : Station id = 3
-     */
-    @DisplayName("/line/paths에 get 출발역과 도착역을 전달 받아 최단 경로를 전달한다.")
-    @Test
-    void findShortestPath() {
-        Map<String, Long> params = new LinkedHashMap<>();
-        params.put("departure", upstreamId);
-        params.put("destination", downstreamId);
-
-        ExtractableResponse<Response> response = given().log().all()
-                .contentType(ContentType.JSON)
-                .body(new SubwayPathRequest(1L, 1L, 2L))
-                .when()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .get("/lines/paths")
-                .then().log().all()
-                .extract();
-
-        assertSoftly(softly -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(response.jsonPath()).toString()
-                    .contains("선릉");
-        });
     }
 }

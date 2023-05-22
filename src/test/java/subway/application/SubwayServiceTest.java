@@ -9,11 +9,13 @@ import subway.domain.Line;
 import subway.domain.LineName;
 import subway.domain.Lines;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.Stations;
 import subway.dto.AddLineRequest;
 import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
+import subway.dto.SubwayPathRequest;
 import subway.exception.LineNotFoundException;
 import subway.exception.NameLengthException;
 import subway.exception.StationNotFoundException;
@@ -28,6 +30,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
 import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
 import static subway.utils.StationFixture.JAMSIL_STATION;
@@ -173,5 +176,29 @@ class SubwayServiceTest {
         assertThatThrownBy(() -> subwayService.findLineById(0L))
                 .isInstanceOf(LineNotFoundException.class)
                 .hasMessageContaining("조회하고자 하는 노선이 없습니다");
+    }
+
+    @Nested
+    class findShortestPath메서드는 {
+
+        @Test
+        void 출발역_또는_도착역이_존재하지_않으면_예외를_던진다() {
+            SubwayPathRequest 도착역이_존재하지_않는_경우 = new SubwayPathRequest(1L, 0L);
+            SubwayPathRequest 출발역이_존재하지_않는_경우 = new SubwayPathRequest(1L, 0L);
+
+            SubwayService subwayService = new SubwayService(subwayRepository);
+
+            doReturn(new Stations(new HashSet<>())).when(subwayRepository).getStations();
+            doReturn(new Sections(new ArrayList<>())).when(subwayRepository).getSections();
+            doReturn(new Station("잠실역")).when(subwayRepository).findStation(1L);
+            doThrow(new StationNotFoundException("찾는 역이 존재하지 않습니다.")).when(subwayRepository).findStation(0L);
+
+            assertSoftly(softly -> {
+                softly.assertThatThrownBy(() -> subwayService.findShortestPath(도착역이_존재하지_않는_경우))
+                        .isInstanceOf(StationNotFoundException.class);
+                softly.assertThatThrownBy(() -> subwayService.findShortestPath(출발역이_존재하지_않는_경우))
+                        .isInstanceOf(StationNotFoundException.class);
+            });
+        }
     }
 }
