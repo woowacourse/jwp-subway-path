@@ -6,9 +6,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
 import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,8 @@ public class LineDao {
 			rs.getString("name")
 		);
 
-	public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource, final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+	public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource,
+		final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.insertAction = new SimpleJdbcInsert(dataSource)
 			.withTableName("line")
@@ -65,5 +68,10 @@ public class LineDao {
 		String sql = "SELECT lineId, name FROM line WHERE lineId = :lineId";
 		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("lineId", id), rowMapper).stream()
 			.findAny();
+	}
+
+	public void updateLine(final long lineId, final LineEntity lineEntity) {
+		String sql = "UPDATE line SET name = ? WHERE lineId = ?";
+		jdbcTemplate.update(sql, lineEntity.getName(), lineId);
 	}
 }

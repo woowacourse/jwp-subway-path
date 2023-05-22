@@ -71,4 +71,8 @@ public class LineRepository {
 		sectionDao.deleteByLineId(lineEntity.getLineId());
 		sectionDao.insertBatch(sectionEntities);
 	}
+
+	public void updateLine(final long lineId, final LineEntity lineEntity) {
+		lineDao.updateLine(lineId, lineEntity);
+	}
 }
