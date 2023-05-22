@@ -3,7 +3,6 @@ package subway.line.application;
 import org.springframework.stereotype.Service;
 import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
-import subway.line.application.dto.LineSavingInfo;
 import subway.line.application.dto.LineUpdatingInfo;
 import subway.line.application.strategy.sectionsaving.SectionSavingStrategy;
 import subway.line.application.strategy.stationdeleting.StationDeletingStrategy;
@@ -33,8 +32,8 @@ public class LineService {
         this.stationDeletingStrategies = stationDeletingStrategies;
     }
 
-    public Line saveLine(LineSavingInfo savingInfo) {
-        return lineRepository.makeLine(savingInfo.getName(), savingInfo.getColor());
+    public Line saveLine(Line line) {
+        return lineRepository.save(line);
     }
 
     public List<Line> findLines() {

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.Line;
+import subway.line.UnRegisteredLine;
 import subway.line.application.LineService;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.section.domain.EmptyDistance;
@@ -15,7 +16,6 @@ import subway.line.domain.station.EmptyStation;
 import subway.line.domain.station.Station;
 import subway.line.domain.station.application.StationService;
 import subway.line.domain.station.application.dto.StationSavingInfo;
-import subway.line.application.dto.LineSavingInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -38,7 +38,7 @@ public class DeletingStationFromLineTest {
 
     @BeforeEach
     void setup() {
-        line = lineService.saveLine(new LineSavingInfo("1호선", "blue"));
+        line = lineService.saveLine(new UnRegisteredLine("1호선", "blue"));
         stationB = stationService.saveStation(new StationSavingInfo("봉천역"));
         stationS = stationService.saveStation(new StationSavingInfo("신림역"));
         stationSD = stationService.saveStation(new StationSavingInfo("신도림역"));

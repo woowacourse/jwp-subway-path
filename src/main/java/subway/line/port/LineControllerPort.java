@@ -2,16 +2,16 @@ package subway.line.port;
 
 import org.springframework.stereotype.Component;
 import subway.line.Line;
+import subway.line.UnRegisteredLine;
 import subway.line.application.LineService;
-import subway.line.application.dto.LineSavingInfo;
 import subway.line.application.dto.LineUpdatingInfo;
 import subway.line.domain.fare.application.faremeterpolicy.CustomerCondition;
 import subway.line.domain.section.application.ShortestPathResponse;
 import subway.line.domain.section.domain.Distance;
-import subway.line.presentation.dto.SectionSavingRequest;
 import subway.line.domain.station.application.StationService;
 import subway.line.presentation.dto.LineRequest;
 import subway.line.presentation.dto.LineResponse;
+import subway.line.presentation.dto.SectionSavingRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,8 +28,8 @@ public class LineControllerPort {
     }
 
     public LineResponse saveLine(LineRequest lineRequest) {
-        final var lineSavingInfo = new LineSavingInfo(lineRequest.getName(), lineRequest.getColor());
-        final var savedLine = lineService.saveLine(lineSavingInfo);
+        final var unRegisteredLine = new UnRegisteredLine(lineRequest.getName(), lineRequest.getColor());
+        final var savedLine = lineService.saveLine(unRegisteredLine);
         return convertLineToLineResponse(savedLine);
     }
 

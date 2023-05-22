@@ -18,8 +18,8 @@ public class LineRepository {
         this.sectionService = sectionService;
     }
 
-    public Line makeLine(String name, String color) {
-        return lineDao.insert(name, color);
+    public Line save(Line line) {
+        return lineDao.insert(line.getName(), line.getColor());
     }
 
     public List<Line> findAll() {

@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.Line;
+import subway.line.UnRegisteredLine;
 import subway.line.application.LineRepository;
 import subway.line.application.LineService;
 import subway.line.domain.section.domain.Distance;
@@ -37,7 +38,7 @@ class SectionServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineOne = lineRepository.makeLine("1호선", "blue");
+        lineOne = lineRepository.save(new UnRegisteredLine("1호선", "blue"));
         stationS = stationRepository.insert("송탄");
         stationJ = stationRepository.insert("진위");
         stationO = stationRepository.insert("오산");
@@ -128,7 +129,7 @@ class SectionServiceTest {
     @DisplayName("하나의 역은 여러 노선에 등록될 수 있습니다.")
     void multipleSubwayMap() {
         // given
-        Line lineTwo = lineRepository.makeLine("2호선", "yellow");
+        Line lineTwo = lineRepository.save(new UnRegisteredLine("2호선", "yellow"));
 
         // when
         assertThatCode(() -> lineService.saveSection(lineTwo, stationO, stationS, Distance.of(6)))

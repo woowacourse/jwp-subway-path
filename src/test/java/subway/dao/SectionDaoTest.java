@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.Line;
+import subway.line.UnRegisteredLine;
 import subway.line.application.LineRepository;
 import subway.line.application.LineService;
 import subway.line.domain.section.domain.Distance;
@@ -41,7 +42,7 @@ class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        line = lineRepository.makeLine("1호선", "blue");
+        line = lineRepository.save(new UnRegisteredLine("1호선", "blue"));
         stationS = stationDao.insert("송탄");
         stationJ = stationDao.insert("진위");
         stationO = stationDao.insert("오산");
