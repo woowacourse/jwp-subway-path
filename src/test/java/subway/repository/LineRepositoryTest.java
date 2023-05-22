@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import subway.dao.LineEntity;
 import subway.domain.line.Line;
 import subway.integration.IntegrationTest;
 
@@ -14,7 +13,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static subway.common.fixture.EntityFixture.일호선_남색_Entity;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -26,7 +24,7 @@ class LineRepositoryTest extends IntegrationTest {
     @Test
     void 호선을_저장한다() {
         //when
-        final Line line = lineRepository.save(일호선_남색_Entity);
+        final Line line = lineRepository.save(new Line("일호선", "남색"));
 
         //then
         assertSoftly(softly -> {
@@ -40,7 +38,7 @@ class LineRepositoryTest extends IntegrationTest {
     @Test
     void 전체_호선을_조회한다() {
         //given
-        lineRepository.save(일호선_남색_Entity);
+        lineRepository.save(new Line("일호선", "남색"));
 
         //when
         final List<Line> lines = lineRepository.findLines();
@@ -60,7 +58,7 @@ class LineRepositoryTest extends IntegrationTest {
     @Test
     void id로_호선을_조회한다() {
         //given
-        final Long id = lineRepository.save(일호선_남색_Entity).getId();
+        final Long id = lineRepository.save(new Line("일호선", "남색")).getId();
 
         //when
         final Line line = lineRepository.findLineById(id);
@@ -78,10 +76,10 @@ class LineRepositoryTest extends IntegrationTest {
     @CsvSource({"일호선, true", "이호선, false"})
     void 포함_여부를_반환한다(final String name, final boolean expected) {
         //given
-        lineRepository.save(일호선_남색_Entity);
+        lineRepository.save(new Line("일호선", "남색"));
 
         //when
-        final boolean actual = lineRepository.contains(new LineEntity(name, "남색"));
+        final boolean actual = lineRepository.contains(new Line(name, "남색"));
 
         //then
         assertThat(actual).isEqualTo(expected);

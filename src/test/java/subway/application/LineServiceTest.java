@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.LineEntity;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.dto.LineAndStationsResponse;
@@ -50,7 +49,7 @@ class LineServiceTest {
     @Test
     void 호선을_저장한다() {
         //given
-        when(lineRepository.save(any(LineEntity.class)))
+        when(lineRepository.save(any(Line.class)))
                 .thenReturn(new Line(1L, "일호선", "남색", new ArrayList<>()));
 
         //when
@@ -67,7 +66,7 @@ class LineServiceTest {
     @Test
     void 동일한_호선을_저장하면_예외를_던진다() {
         //given
-        when(lineRepository.contains(any(LineEntity.class)))
+        when(lineRepository.contains(any(Line.class)))
                 .thenReturn(true);
 
         //expect

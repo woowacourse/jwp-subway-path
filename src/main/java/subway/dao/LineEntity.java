@@ -3,7 +3,6 @@ package subway.dao;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LineEntity {
@@ -18,12 +17,8 @@ public class LineEntity {
         this.color = color;
     }
 
-    public LineEntity(final String name, final String color) {
-        this(null, name, color);
-    }
-
-    public Line toLine() {
-        return new Line(id, name, color, new ArrayList<>());
+    public static LineEntity from(final Line line) {
+        return new LineEntity(line.getId(), line.getNameValue(), line.getColorValue());
     }
 
     public Line toLine(final List<Section> sections) {

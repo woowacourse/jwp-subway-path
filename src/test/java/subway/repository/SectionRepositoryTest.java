@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import subway.dao.SectionEntity;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.integration.IntegrationTest;
@@ -57,8 +56,8 @@ class SectionRepositoryTest extends IntegrationTest {
         insertSection(1L, 디노_조앤);
 
         //when
-        final List<Section> sections = sectionRepository.saveUpdatedSections(List.of(new SectionEntity(후추.getId(), 조앤.getId(), 후추_디노.getDistanceValue() + 디노_조앤.getDistanceValue(), 1L)), 1L);
-
+        final List<Section> sections = sectionRepository.saveUpdatedSections(List.of(new Section(후추, 조앤, 후추_디노.getDistanceValue() + 디노_조앤.getDistanceValue())), 1L);
+        
         //then
         assertSoftly(softly -> {
             softly.assertThat(sections).hasSize(1);
