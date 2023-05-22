@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import subway.domain.subway.Station;
 import subway.dto.request.StationCreateRequest;
-import subway.dto.request.StationEditRequest;
+import subway.dto.request.StationUpdateRequest;
 import subway.dto.response.StationResponse;
 import subway.dto.response.StationsResponse;
 import subway.repository.StationRepository;
@@ -39,9 +39,9 @@ public class StationService {
 	}
 
 	@Transactional
-	public void updateStation(final Long id, final StationEditRequest stationEditRequest) {
+	public void updateStation(final Long id, final StationUpdateRequest stationUpdateRequest) {
 		Station station = stationRepository.findByStationId(id);
-		station.update(stationEditRequest.getName());
+		station.update(stationUpdateRequest.getName());
 		stationRepository.update(id, station);
 	}
 

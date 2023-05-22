@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import subway.dto.request.StationCreateRequest;
-import subway.dto.request.StationEditRequest;
+import subway.dto.request.StationUpdateRequest;
 import subway.dto.response.StationResponse;
 import subway.dto.response.StationsResponse;
 import subway.service.StationService;
@@ -47,8 +47,8 @@ public class StationController {
 	}
 
 	@PatchMapping("/{id}")
-	public ResponseEntity<Void> updateStation(@PathVariable final Long id, @Valid @RequestBody StationEditRequest stationEditRequest) {
-		stationService.updateStation(id, stationEditRequest);
+	public ResponseEntity<Void> updateStation(@PathVariable final Long id, @Valid @RequestBody StationUpdateRequest stationUpdateRequest) {
+		stationService.updateStation(id, stationUpdateRequest);
 		return ResponseEntity.noContent().build();
 	}
 
