@@ -79,8 +79,8 @@ public class JgraphtShortestPathFinder implements ShortestPathFinder{
     return fare + calculateFareByCriteria(distance, THIRD);
   }
 
-  private static int calculateFareByCriteria(int distance, FareCriteria second) {
-    return (int) ((Math.ceil((distance - 1) / second.getDistancePer()) + 1) * ADDITIONAL_FARE);
+  private int calculateFareByCriteria(int distance, FareCriteria fareCriteria) {
+    return (int) ((Math.ceil((distance - 1) / fareCriteria.getDistancePer()) + 1) * ADDITIONAL_FARE);
   }
 
   private List<TraverseStationDto> getTraverseStationDtos(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
