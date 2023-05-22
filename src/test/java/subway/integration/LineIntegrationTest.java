@@ -88,7 +88,7 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = given().log().all()
                 .pathParam("lineId", lineId)
                 .when()
-                .get("/lines/{lineId}/stations")
+                .get("/lines/{lineId}")
                 .then().log().all()
                 .extract();
 
@@ -117,7 +117,7 @@ public class LineIntegrationTest extends IntegrationTest {
         //when
         final ExtractableResponse<Response> response = given().log().all()
                 .when()
-                .get("/lines/stations")
+                .get("/lines")
                 .then().log().all()
                 .extract();
 
@@ -159,7 +159,7 @@ public class LineIntegrationTest extends IntegrationTest {
         //then
         final LineAndStationsResponse lineAndStationsResponse = findStationsByLineId(lineId).as(LineAndStationsResponse.class);
         assertSoftly(softly -> {
-            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
             softly.assertThat(lineAndStationsResponse.getStationResponses()).hasSize(2);
             softly.assertThat(doesNotContain(lineAndStationsResponse, "디노")).isTrue();
         });
@@ -190,7 +190,7 @@ public class LineIntegrationTest extends IntegrationTest {
         //then
         final LineAndStationsResponse lineAndStationsResponse = findStationsByLineId(lineId).as(LineAndStationsResponse.class);
         assertSoftly(softly -> {
-            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
             softly.assertThat(lineAndStationsResponse.getLineResponse().getId()).isEqualTo(1L);
             softly.assertThat(lineAndStationsResponse.getLineResponse().getName()).isEqualTo("일호선");
             softly.assertThat(lineAndStationsResponse.getLineResponse().getColor()).isEqualTo("남색");

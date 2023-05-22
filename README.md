@@ -18,19 +18,34 @@
 
 - 노선
     - 등록 : Post /lines
+        - 요청 body : LineRequest (name, color)
+        - 응답 body : LineResponse (id, name, color)
+
     - 조회 : Get
-        - 전체 조회 /lines/stations
-        - 특정 노선 조회 : /lines/{lineId}/stations
+        - 전체 조회 /lines
+            - 응답 body : List<LineAndStationsResponse>
+
+        - 특정 노선 조회 : /lines/{lineId}
+            - 요청 path param : lineId
+            - 응답 body : LineAndStationsResponse
 
 - 역
     - 등록 : Post /stations
+        - 요청 body : StationRequest (name)
+        - 응답 body : StationResponse (id, name)
 
 - 노선과 역
     - 등록 : Post /lines/{lineId}/stations
+        - 요청 path param : lineId
+        - 요청 body : StationAddRequest (fromId, toId, distance)
+
     - 삭제 : Delete /lines/{lineId}/stations/{stationId}
+        - 요청 path param : lineId, stationId
 
 - 경로 조회
     - 최단 경로 조회 : Get /routes/shortest
+        - 요청 body : PathRequest (fromId, toId)
+        - 응답 body : PathResponse
 
 ### 비즈니스 규칙
 
@@ -98,12 +113,12 @@
     - Delete `/lines/{lineId}/stations/{stationId}`
 
 - [x] 노선의 역 조회
-    - Get `/lines/{lineId}/stations`
+    - Get `/lines/{lineId}`
 
 - [x] 모든 노선의 역 조회
-    - Get `/lines/stations`
+    - Get `/lines`
 
-- [ ] 최단 경로 조회
+- [x] 최단 경로 조회
     - Get `/routes/shortest`
 
 ## 📀 데이터베이스
