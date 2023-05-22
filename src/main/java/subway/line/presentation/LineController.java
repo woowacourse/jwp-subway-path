@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.line.dto.LineCreateDto;
 import subway.line.dto.LineResponseDto;
-import subway.line.dto.ShortestPathRequest;
-import subway.line.dto.ShortestPathResponse;
 import subway.line.service.LineService;
 import subway.section.dto.SectionCreateDto;
 import subway.station.dto.StationResponseDto;
@@ -54,10 +52,5 @@ public class LineController {
     public ResponseEntity<Void> disEnrollStation(@PathVariable final Long lineId, @PathVariable final Long stationId) {
         lineService.removeStationBy(lineId, stationId);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/shortest-path")
-    public ResponseEntity<ShortestPathResponse> getShortestPath(@RequestBody final ShortestPathRequest shortestPathRequest) {
-        return ResponseEntity.ok(lineService.findShortestPath(shortestPathRequest));
     }
 }

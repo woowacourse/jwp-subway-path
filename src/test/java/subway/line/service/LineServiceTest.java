@@ -17,9 +17,6 @@ import subway.line.domain.Line;
 import subway.line.domain.LineRepository;
 import subway.line.dto.LineCreateDto;
 import subway.line.dto.LineResponseDto;
-import subway.line.dto.ShortestPathRequest;
-import subway.line.dto.ShortestPathResponse;
-import subway.line.dto.TraverseStationDto;
 import subway.section.domain.Section;
 import subway.section.domain.Sections;
 import subway.section.dto.SectionCreateDto;
@@ -132,44 +129,5 @@ class LineServiceTest {
 
     assertThat(line.getSections()).isEmpty();
     verify(lineRepository, times(1)).updateLine(line);
-  }
-
-  @Test
-  void findShortestPath() {
-    given(stationRepository.findById(잠실새내역.getId())).willReturn(잠실새내역);
-    given(stationRepository.findById(잠실역.getId())).willReturn(잠실역);
-
-    given(lineRepository.findAll()).willReturn(List.of(
-        new Line(1L, "1호선", Sections.values(
-            List.of(
-                Section.of(잠실새내역, 잠실나루역, 50)
-            )
-        )),
-        new Line(2L, "2호선", Sections.values(
-            List.of(
-                Section.of(잠실새내역, 잠실역, 100)
-            )
-        )),
-        new Line(3L, "3호선", Sections.values(
-            List.of(
-                Section.of(잠실나루역, 잠실역, 8)
-            )
-        ))
-    ));
-
-    final ShortestPathResponse shortestPath = lineService.findShortestPath(
-        new ShortestPathRequest(잠실새내역.getId(), 잠실역.getId()));
-
-    final List<TraverseStationDto> traverseStationDtos = shortestPath.getTraverseStationDtos();
-    assertAll(
-        () -> assertThat(shortestPath.getDistance()).isEqualTo(58),
-        () -> assertThat(shortestPath.getFare()).isEqualTo(2150),
-        () -> assertThat(traverseStationDtos.get(0).getLineName()).isEqualTo("1호선"),
-        () -> assertThat(traverseStationDtos.get(0).getStationName()).isEqualTo("잠실새내역"),
-        () -> assertThat(traverseStationDtos.get(1).getLineName()).isEqualTo("3호선"),
-        () -> assertThat(traverseStationDtos.get(1).getStationName()).isEqualTo("잠실나루역"),
-        () -> assertThat(traverseStationDtos.get(2).getLineName()).isEqualTo("3호선"),
-        () -> assertThat(traverseStationDtos.get(2).getStationName()).isEqualTo("잠실역")
-    );
   }
 }

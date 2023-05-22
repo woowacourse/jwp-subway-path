@@ -83,15 +83,4 @@ public class LineService {
         line.removeStation(station);
         lineRepository.updateLine(line);
     }
-
-    public ShortestPathResponse findShortestPath(final ShortestPathRequest shortestPathRequest) {
-        final Station fromStation = stationRepository.findById(shortestPathRequest.getFromStationId());
-        final Station toStation = stationRepository.findById(shortestPathRequest.getToStationId());
-        final List<Line> lines = lineRepository.findAll();
-
-        final ShortestPathFinder shortestPathFinder = new JgraphtShortestPathFinder();
-        shortestPathFinder.makeGraph(lines);
-
-        return shortestPathFinder.getShortestPathResponse(fromStation, toStation);
-    }
 }
