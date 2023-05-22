@@ -17,15 +17,6 @@ class FareTest {
     }
 
     @Test
-    void 요금_곱_적용_테스트() {
-        final Fare fare = new Fare(300);
-
-        final Fare multiply = fare.multiply(3);
-
-        assertThat(multiply).isEqualTo(new Fare(900));
-    }
-
-    @Test
     void 요금_덧셈_적용_테스트() {
         final Fare fare = new Fare(300);
 

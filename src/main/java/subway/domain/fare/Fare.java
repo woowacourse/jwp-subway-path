@@ -17,10 +17,6 @@ public class Fare {
         }
     }
 
-    public Fare multiply(final int times) {
-        return new Fare(this.fare * times);
-    }
-
     public Fare add(final Fare other) {
         return new Fare(this.fare + other.fare);
     }
