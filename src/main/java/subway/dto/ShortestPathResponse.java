@@ -5,9 +5,12 @@ import subway.domain.Path;
 
 public class ShortestPathResponse {
 
-    private final List<String> path;
-    private final int distance;
-    private final int fare;
+    private List<String> path;
+    private int distance;
+    private int fare;
+
+    private ShortestPathResponse() {
+    }
 
     public ShortestPathResponse(final List<String> path, final int distance, final int fare) {
         this.path = path;

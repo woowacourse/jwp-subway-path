@@ -10,6 +10,9 @@ public class LineSaveRequest {
     @NotBlank(message = "노선 색을 입력해주세요.")
     private String color;
 
+    private LineSaveRequest() {
+    }
+
     public LineSaveRequest(String name, String color) {
         this.name = name;
         this.color = color;

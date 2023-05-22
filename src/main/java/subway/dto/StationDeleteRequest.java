@@ -5,10 +5,13 @@ import javax.validation.constraints.NotBlank;
 public class StationDeleteRequest {
 
     @NotBlank(message = "노선명을 입력해주세요.")
-    private final String lineName;
+    private String lineName;
 
     @NotBlank(message = "역명을 입력해주세요.")
-    private final String stationName;
+    private String stationName;
+
+    private StationDeleteRequest() {
+    }
 
     public StationDeleteRequest(final String lineName, final String stationName) {
         this.lineName = lineName;

@@ -8,9 +8,12 @@ import subway.domain.Station;
 
 public class LineResponse {
 
-    private final String name;
-    private final String color;
-    private final List<String> stations;
+    private String name;
+    private String color;
+    private List<String> stations;
+
+    private LineResponse() {
+    }
 
     public LineResponse(final String name, final String color, final List<String> stations) {
         this.name = name;

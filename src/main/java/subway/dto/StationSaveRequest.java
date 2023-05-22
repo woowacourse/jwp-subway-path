@@ -8,19 +8,22 @@ import subway.domain.Direction;
 public class StationSaveRequest {
 
     @NotBlank(message = "노선명을 입력해주세요.")
-    private final String lineName;
+    private String lineName;
 
     @NotBlank(message = "기준역명을 입력해주세요.")
-    private final String baseStationName;
+    private String baseStationName;
 
     @NotBlank(message = "등록할 역명을 입력해주세요.")
-    private final String additionalStationName;
+    private String additionalStationName;
 
     @NotNull(message = "왼쪽으로 등록할 경우 LEFT, 오른쪽으로 등록할 경우 RIGHT로 입력해주세요.")
-    private final Direction direction;
+    private Direction direction;
 
     @Positive(message = "등록할 거리는 양수여야 합니다.")
-    private final Integer distance;
+    private Integer distance;
+
+    private StationSaveRequest() {
+    }
 
     public StationSaveRequest(
             final String lineName,
