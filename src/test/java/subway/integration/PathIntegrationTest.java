@@ -90,6 +90,7 @@ public class PathIntegrationTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("stations", containsInAnyOrder("잠실", "선릉", "잠실나루"))
+                .body("fare", equalTo(1_350))
                 .body("distance", equalTo(5.0F));
     }
 

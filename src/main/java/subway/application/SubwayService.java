@@ -9,6 +9,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.Stations;
+import subway.domain.fare.FareCalculator;
 import subway.domain.path.ShortestPath;
 import subway.domain.path.ShortestPathFinder;
 import subway.dto.AddLineRequest;
@@ -111,14 +112,20 @@ public class SubwayService {
 
         ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
         ShortestPath shortestPath = shortestPathFinder.findShortestPath(sections, stations, departure, destination);
-        return toShortestPathResponse(shortestPath);
+
+        FareCalculator fareCalculator = new FareCalculator();
+        int fare = fareCalculator.calculate(shortestPath.getDistance());
+        return toShortestPathResponse(shortestPath, fare);
     }
 
-    private ShortestPathResponse toShortestPathResponse(ShortestPath shortestPath) {
+    private ShortestPathResponse toShortestPathResponse(ShortestPath shortestPath, int fare) {
         return shortestPath.getStations()
                 .stream()
                 .map(Station::getName)
-                .collect(collectingAndThen(toList(), stations -> new ShortestPathResponse(stations, shortestPath.getDistance())));
+                .collect(collectingAndThen(
+                        toList(),
+                        stations -> new ShortestPathResponse(stations, shortestPath.getDistance(), fare))
+                );
     }
 
     @Override

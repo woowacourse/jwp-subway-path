@@ -6,10 +6,12 @@ public class ShortestPathResponse {
 
     private final List<String> stations;
     private final double distance;
+    private final int fare;
 
-    public ShortestPathResponse(List<String> stations, double distance) {
+    public ShortestPathResponse(List<String> stations, double distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
     @Override
@@ -25,5 +27,9 @@ public class ShortestPathResponse {
 
     public double getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
