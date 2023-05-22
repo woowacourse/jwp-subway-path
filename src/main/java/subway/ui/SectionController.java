@@ -27,20 +27,21 @@ public class SectionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SectionResponse>> findAllSectionsByLineId(@PathVariable Long lineId) {
+    public ResponseEntity<List<SectionResponse>> findAllSectionsByLineId(
+        @PathVariable Long lineId) {
         return ResponseEntity.ok(sectionService.findSectionsByLineId(lineId));
     }
 
     @PostMapping
     public ResponseEntity<SectionResponse> createSection(@PathVariable Long lineId,
-                                              @RequestBody @Valid SectionCreateRequest sectionCreateRequest) {
+        @RequestBody @Valid SectionCreateRequest sectionCreateRequest) {
         Section section = sectionService.saveSection(sectionCreateRequest, lineId);
         return ResponseEntity.ok().body(SectionResponse.from(section));
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId,
-                                              @RequestBody @Valid SectionDeleteRequest sectionDeleteRequest) {
+        @RequestBody @Valid SectionDeleteRequest sectionDeleteRequest) {
         sectionService.deleteSection(sectionDeleteRequest, lineId);
         return ResponseEntity.noContent().build();
     }

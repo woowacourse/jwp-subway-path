@@ -31,16 +31,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(
+        MethodArgumentNotValidException e) {
         String exceptionMessage = e.getFieldErrors()
-                .stream()
-                .map(FieldError::getDefaultMessage)
-                .collect(Collectors.joining("\n"));
+            .stream()
+            .map(FieldError::getDefaultMessage)
+            .collect(Collectors.joining("\n"));
         return ResponseEntity.badRequest().body(new ExceptionResponse(exceptionMessage));
     }
 
-    @ExceptionHandler({IllegalSectionException.class, IllegalDistanceException.class, IllegalStationException.class,
-            IllegalLineException.class, IllegalFareException.class})
+    @ExceptionHandler({IllegalSectionException.class,
+        IllegalDistanceException.class,
+        IllegalStationException.class,
+        IllegalLineException.class,
+        IllegalFareException.class})
     public ResponseEntity<ExceptionResponse> handleIllegalException(RuntimeException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
@@ -51,14 +55,16 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ExceptionResponse> handleRequiredParamException(MissingServletRequestParameterException e) {
+    public ResponseEntity<ExceptionResponse> handleRequiredParamException(
+        MissingServletRequestParameterException e) {
         String parameterName = e.getParameterName();
         String message = parameterName + "는 비어있을 수 없습니다.";
         return ResponseEntity.badRequest().body(new ExceptionResponse(message));
     }
 
     @ExceptionHandler(MissingPathVariableException.class)
-    public ResponseEntity<ExceptionResponse> handleRequiredPathVariableException(MissingPathVariableException e) {
+    public ResponseEntity<ExceptionResponse> handleRequiredPathVariableException(
+        MissingPathVariableException e) {
         String pathVariableName = e.getVariableName();
         String message = pathVariableName + "는 비어있을 수 없습니다.";
         return ResponseEntity.badRequest().body(new ExceptionResponse(message));

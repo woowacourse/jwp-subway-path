@@ -11,36 +11,37 @@ import subway.dao.entity.SectionEntity;
 
 @Repository
 public class SectionDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
     private static final RowMapper<SectionDto> SECTION_WITH_NAME_ROW_MAPPER = (rs, rowNum) -> new SectionDto(
-            rs.getLong("id"),
-            rs.getLong("start_station_id"),
-            rs.getLong("end_station_id"),
-            rs.getString("start_station_name"),
-            rs.getString("end_station_name"),
-            rs.getDouble("distance"));
+        rs.getLong("id"),
+        rs.getLong("start_station_id"),
+        rs.getLong("end_station_id"),
+        rs.getString("start_station_name"),
+        rs.getString("end_station_name"),
+        rs.getDouble("distance"));
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("section")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("section")
+            .usingGeneratedKeyColumns("id");
     }
 
     public long insert(SectionEntity sectionEntity) {
         return insertAction.executeAndReturnKey(Map.of(
-                "line_id", sectionEntity.getLineId(),
-                "start_station_id", sectionEntity.getStartStationId(),
-                "end_station_id", sectionEntity.getEndStationId(),
-                "distance", sectionEntity.getDistance()
+            "line_id", sectionEntity.getLineId(),
+            "start_station_id", sectionEntity.getStartStationId(),
+            "end_station_id", sectionEntity.getEndStationId(),
+            "distance", sectionEntity.getDistance()
         )).longValue();
     }
 
     public void update(SectionEntity section) {
         String sql = "UPDATE SECTION SET start_station_id = ?, end_station_id = ?, distance = ? WHERE id = ?";
         jdbcTemplate.update(sql, section.getStartStationId(), section.getEndStationId(),
-                section.getDistance(), section.getId());
+            section.getDistance(), section.getId());
     }
 
     public Long countByLineId(long lineId) {
@@ -49,7 +50,8 @@ public class SectionDao {
     }
 
     public List<SectionDto> findAllSectionsWithStationNameByLineId(long lineId) {
-        String sql = "SELECT section.id AS id, start_station.id AS start_station_id, end_station.id AS end_station_id, "
+        String sql =
+            "SELECT section.id AS id, start_station.id AS start_station_id, end_station.id AS end_station_id, "
                 + "start_station.name AS start_station_name, end_station.name AS end_station_name, section.distance FROM section "
                 + "JOIN station AS start_station ON section.start_station_id = start_station.id "
                 + "JOIN station AS end_station ON section.end_station_id = end_station.id WHERE section.line_id = ?";
@@ -58,7 +60,8 @@ public class SectionDao {
     }
 
     public List<SectionDto> findAllSectionsWithStationName() {
-        String sql = "SELECT section.id AS id, start_station.id AS start_station_id, end_station.id AS end_station_id, "
+        String sql =
+            "SELECT section.id AS id, start_station.id AS start_station_id, end_station.id AS end_station_id, "
                 + "start_station.name AS start_station_name, end_station.name AS end_station_name, section.distance FROM section "
                 + "JOIN station AS start_station ON section.start_station_id = start_station.id "
                 + "JOIN station AS end_station ON section.end_station_id = end_station.id";

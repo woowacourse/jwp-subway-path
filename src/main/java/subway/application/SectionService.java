@@ -23,29 +23,33 @@ import subway.ui.dto.section.SectionResponse;
 @Service
 @Transactional
 public class SectionService {
+
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
     public SectionService(LineRepository lineRepository, StationRepository stationRepository,
-                          SectionRepository sectionRepository) {
+        SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
     }
 
     public Section saveSection(SectionCreateRequest sectionCreateRequest, long lineId) {
-        Station startStation = stationRepository.findByName(sectionCreateRequest.getStartStationName());
+        Station startStation = stationRepository.findByName(
+            sectionCreateRequest.getStartStationName());
         Station endStation = stationRepository.findByName(sectionCreateRequest.getEndStationName());
         Line line = lineRepository.findById(lineId);
-        return addSection(line, new Section(startStation, endStation, Distance.from(sectionCreateRequest.getDistance())));
+        return addSection(line, new Section(startStation, endStation,
+            Distance.from(sectionCreateRequest.getDistance())));
     }
 
     private Section addSection(Line line, Section sectionToAdd) {
         if (line.isEmpty()) {
             long savedId = sectionRepository.save(line.getId(), sectionToAdd);
-            return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
-                    sectionToAdd.getDistance());
+            return new Section(savedId, sectionToAdd.getStartStation(),
+                sectionToAdd.getEndStation(),
+                sectionToAdd.getDistance());
         }
         return addSectionByExistence(line, sectionToAdd);
     }
@@ -70,15 +74,16 @@ public class SectionService {
     }
 
     private Section addStartStation(Line line, Section sectionToAdd) {
-        Optional<Section> prevExistingSection = line.findSectionWithEndStation(sectionToAdd.getEndStation());
+        Optional<Section> prevExistingSection = line.findSectionWithEndStation(
+            sectionToAdd.getEndStation());
         prevExistingSection.ifPresent(prevSection -> {
             changePrevSectionToNewSection(prevSection, sectionToAdd);
             saveStation(line.getId(), prevSection.getStartStation(), sectionToAdd.getStartStation(),
-                    prevSection.getDistance().subtract(sectionToAdd.getDistance()));
+                prevSection.getDistance().subtract(sectionToAdd.getDistance()));
         });
         long savedId = sectionRepository.save(line.getId(), sectionToAdd);
         return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
-                sectionToAdd.getDistance());
+            sectionToAdd.getDistance());
     }
 
     private void changePrevSectionToNewSection(Section prevSection, Section newSection) {
@@ -86,20 +91,22 @@ public class SectionService {
         sectionRepository.delete(prevSection);
     }
 
-    private void saveStation(long lineId, Station startStation, Station endStation, Distance distance) {
+    private void saveStation(long lineId, Station startStation, Station endStation,
+        Distance distance) {
         sectionRepository.save(lineId, new Section(startStation, endStation, distance));
     }
 
     private Section addEndStation(Line line, Section sectionToAdd) {
-        Optional<Section> prevExistingSection = line.findSectionWithStartStation(sectionToAdd.getStartStation());
+        Optional<Section> prevExistingSection = line.findSectionWithStartStation(
+            sectionToAdd.getStartStation());
         prevExistingSection.ifPresent(prevSection -> {
             changePrevSectionToNewSection(prevSection, sectionToAdd);
             saveStation(line.getId(), sectionToAdd.getEndStation(), prevSection.getEndStation(),
-                    prevSection.getDistance().subtract(sectionToAdd.getDistance()));
+                prevSection.getDistance().subtract(sectionToAdd.getDistance()));
         });
         long savedId = sectionRepository.save(line.getId(), sectionToAdd);
         return new Section(savedId, sectionToAdd.getStartStation(), sectionToAdd.getEndStation(),
-                sectionToAdd.getDistance());
+            sectionToAdd.getDistance());
     }
 
     private void validateDistance(Distance distance, Distance newDistance) {
@@ -129,8 +136,9 @@ public class SectionService {
     }
 
     private void mergeSection(long lineId, Section frontSection, Section backSection) {
-        Section mergedSection = new Section(frontSection.getStartStation(), backSection.getEndStation(),
-                frontSection.getDistance().add(backSection.getDistance()));
+        Section mergedSection = new Section(frontSection.getStartStation(),
+            backSection.getEndStation(),
+            frontSection.getDistance().add(backSection.getDistance()));
         sectionRepository.save(lineId, mergedSection);
     }
 
@@ -138,8 +146,8 @@ public class SectionService {
     public List<SectionResponse> findSectionsByLineId(long lineId) {
         Line line = lineRepository.findById(lineId);
         return line.getSortedSections()
-                .stream()
-                .map(SectionResponse::from)
-                .collect(toList());
+            .stream()
+            .map(SectionResponse::from)
+            .collect(toList());
     }
 }

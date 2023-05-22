@@ -12,6 +12,7 @@ import subway.ui.dto.line.LineUpdateRequest;
 @Service
 @Transactional
 public class LineService {
+
     private final LineRepository lineRepository;
 
     public LineService(LineRepository lineRepository) {
@@ -38,7 +39,8 @@ public class LineService {
     }
 
     public Line updateLine(LineUpdateRequest lineUpdateRequest, long id) {
-        return lineRepository.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        return lineRepository.update(
+            new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(long id) {

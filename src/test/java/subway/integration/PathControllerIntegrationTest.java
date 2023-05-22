@@ -31,6 +31,7 @@ import subway.ui.dto.station.StationCreateRequest;
 @Sql("/line_initialize.sql")
 @ActiveProfiles("test")
 class PathControllerIntegrationTest {
+
     private static final String BASE_URL = "/paths";
     @Autowired
     MockMvc mockMvc;
@@ -52,11 +53,11 @@ class PathControllerIntegrationTest {
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .params(params))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.pathStations.size()").value(4))
-                .andExpect(jsonPath("$.distance").value(30))
-                .andExpect(jsonPath("$.fare").value(1250 + 400));
+                .params(params))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.pathStations.size()").value(4))
+            .andExpect(jsonPath("$.distance").value(30))
+            .andExpect(jsonPath("$.fare").value(1250 + 400));
     }
 
     @ParameterizedTest
@@ -69,8 +70,8 @@ class PathControllerIntegrationTest {
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .params(params))
-                .andExpect(status().isBadRequest());
+                .params(params))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -82,8 +83,8 @@ class PathControllerIntegrationTest {
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .params(params))
-                .andExpect(status().isBadRequest());
+                .params(params))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -96,8 +97,8 @@ class PathControllerIntegrationTest {
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .params(params))
-                .andExpect(status().isBadRequest());
+                .params(params))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -110,31 +111,33 @@ class PathControllerIntegrationTest {
 
         // expect
         mockMvc.perform(get(BASE_URL)
-                        .params(params))
-                .andExpect(status().isBadRequest());
+                .params(params))
+            .andExpect(status().isBadRequest());
     }
 
     private void addNewStationNotInLine(String name) throws Exception {
         StationCreateRequest request = new StationCreateRequest(name);
 
         mockMvc.perform(post("/stations")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(request)));
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(objectMapper.writeValueAsString(request)));
     }
 
-    private void addNewStationInNewLineNotConnected(String stationName1, String stationName2) throws Exception {
+    private void addNewStationInNewLineNotConnected(String stationName1, String stationName2)
+        throws Exception {
         addNewStationNotInLine(stationName1);
         addNewStationNotInLine(stationName2);
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest("분당선", "yellow");
         mockMvc.perform(post("/lines")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(lineCreateRequest)));
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(objectMapper.writeValueAsString(lineCreateRequest)));
 
-        SectionCreateRequest sectionCreateInNewLineRequest = new SectionCreateRequest(stationName1, stationName2, 3);
+        SectionCreateRequest sectionCreateInNewLineRequest = new SectionCreateRequest(stationName1,
+            stationName2, 3);
         mockMvc.perform(post("/lines/4/sections")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(sectionCreateInNewLineRequest)));
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(objectMapper.writeValueAsString(sectionCreateInNewLineRequest)));
     }
 
 }

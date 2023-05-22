@@ -14,17 +14,17 @@ class SectionsTest {
     void getSortedSections() {
         // given
         Sections sections = new Sections(new ArrayList<>(List.of(
-                new Section(new Station("강남역"), new Station("역삼역"), Distance.from(1)),
-                new Section(new Station("선릉역"), new Station("삼성역"), Distance.from(1)),
-                new Section(new Station("역삼역"), new Station("선릉역"), Distance.from(1)),
-                new Section(new Station("교대역"), new Station("강남역"), Distance.from(1)))));
+            new Section(new Station("강남역"), new Station("역삼역"), Distance.from(1)),
+            new Section(new Station("선릉역"), new Station("삼성역"), Distance.from(1)),
+            new Section(new Station("역삼역"), new Station("선릉역"), Distance.from(1)),
+            new Section(new Station("교대역"), new Station("강남역"), Distance.from(1)))));
 
         // expect
         assertThat(sections.getSortedSections()).usingRecursiveComparison()
-                .isEqualTo(List.of(
-                        new Section(new Station("교대역"), new Station("강남역"), Distance.from(1)),
-                        new Section(new Station("강남역"), new Station("역삼역"), Distance.from(1)),
-                        new Section(new Station("역삼역"), new Station("선릉역"), Distance.from(1)),
-                        new Section(new Station("선릉역"), new Station("삼성역"), Distance.from(1))));
+            .isEqualTo(List.of(
+                new Section(new Station("교대역"), new Station("강남역"), Distance.from(1)),
+                new Section(new Station("강남역"), new Station("역삼역"), Distance.from(1)),
+                new Section(new Station("역삼역"), new Station("선릉역"), Distance.from(1)),
+                new Section(new Station("선릉역"), new Station("삼성역"), Distance.from(1))));
     }
 }

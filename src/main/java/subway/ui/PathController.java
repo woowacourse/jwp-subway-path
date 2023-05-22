@@ -12,6 +12,7 @@ import subway.ui.dto.path.ShortestPathResponse;
 @RestController
 @RequestMapping("/paths")
 public class PathController {
+
     private final PathService pathService;
 
     public PathController(PathService pathService) {
@@ -20,7 +21,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<ShortestPathResponse> findPath(@RequestParam Long sourceStationId,
-                                                         @RequestParam Long destStationId) {
+        @RequestParam Long destStationId) {
         ShortestPathDto shortestPath = pathService.findPath(sourceStationId, destStationId);
         return ResponseEntity.ok(ShortestPathResponse.from(shortestPath));
     }

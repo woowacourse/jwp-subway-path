@@ -17,12 +17,14 @@ public class PathFinder {
     }
 
     public static PathFinder from(Sections sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+            DefaultWeightedEdge.class);
         addSectionsToGraph(sections.getSections(), graph);
         return new PathFinder(graph);
     }
 
-    private static void addSectionsToGraph(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private static void addSectionsToGraph(List<Section> sections,
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Section section : sections) {
             Station source = section.getStartStation();
             Station dest = section.getEndStation();
@@ -33,9 +35,11 @@ public class PathFinder {
     }
 
     public Path findShortestPath(Station source, Station dest) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath =
+            new DijkstraShortestPath<>(graph);
         validateTargetInPath(source, dest);
-        return Path.of(getShortestPathStations(shortestPath, source, dest), Distance.from(shortestPath.getPathWeight(source, dest)));
+        return Path.of(getShortestPathStations(shortestPath, source, dest),
+            Distance.from(shortestPath.getPathWeight(source, dest)));
     }
 
     private void validateTargetInPath(Station source, Station dest) {
@@ -45,9 +49,10 @@ public class PathFinder {
         throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
     }
 
-    private List<Station> getShortestPathStations(DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath,
-                                                  Station source,
-                                                  Station dest) {
+    private List<Station> getShortestPathStations(
+        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath,
+        Station source,
+        Station dest) {
         GraphPath<Station, DefaultWeightedEdge> foundPath = shortestPath.getPath(source, dest);
         if (foundPath == null) {
             throw new IllegalStationException("요청한 출발역과 도착역 사이의 경로가 없습니다.");

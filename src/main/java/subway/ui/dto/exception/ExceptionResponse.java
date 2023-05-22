@@ -1,6 +1,7 @@
 package subway.ui.dto.exception;
 
 public class ExceptionResponse {
+
     private String message;
 
     public ExceptionResponse(String message) {

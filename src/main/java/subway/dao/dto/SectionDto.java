@@ -5,6 +5,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 
 public class SectionDto {
+
     private final long id;
     private final long startStationId;
     private final long endStationId;
@@ -12,7 +13,8 @@ public class SectionDto {
     private final String endStationName;
     private final double distance;
 
-    public SectionDto(long id, long startStationId, long endStationId, String startStationName, String endStationName, double distance) {
+    public SectionDto(long id, long startStationId, long endStationId, String startStationName,
+        String endStationName, double distance) {
         this.id = id;
         this.startStationId = startStationId;
         this.endStationId = endStationId;
@@ -22,7 +24,8 @@ public class SectionDto {
     }
 
     public Section toDomain() {
-        return new Section(id, new Station(startStationId, startStationName), new Station(endStationId, endStationName),
-                Distance.from(distance));
+        return new Section(id, new Station(startStationId, startStationName),
+            new Station(endStationId, endStationName),
+            Distance.from(distance));
     }
 }

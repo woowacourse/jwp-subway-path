@@ -5,6 +5,7 @@ import java.util.Objects;
 import subway.exception.IllegalFareException;
 
 public class Fare {
+
     private static final BigDecimal MIN_PRICE = BigDecimal.ZERO;
     private final BigDecimal price;
 

@@ -3,6 +3,7 @@ package subway.ui.dto.station;
 import subway.domain.Station;
 
 public class StationResponse {
+
     private long id;
     private String name;
 

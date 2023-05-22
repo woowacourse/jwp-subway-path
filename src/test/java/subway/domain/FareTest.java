@@ -14,7 +14,7 @@ class FareTest {
     @DisplayName("금액이 0원 미만이라면 생성에 실패한다.")
     void createFare_fail() {
         assertThatThrownBy(() -> Fare.from(BigDecimal.valueOf(-1)))
-                .isInstanceOf(IllegalFareException.class);
+            .isInstanceOf(IllegalFareException.class);
     }
 
     @Test
@@ -35,7 +35,8 @@ class FareTest {
         Fare fare = Fare.from(BigDecimal.valueOf(100));
 
         // when, then
-        assertThat(fare.multiply(BigDecimal.valueOf(2))).isEqualTo(Fare.from(BigDecimal.valueOf(200)));
+        assertThat(fare.multiply(BigDecimal.valueOf(2)))
+            .isEqualTo(Fare.from(BigDecimal.valueOf(200)));
     }
 
     @Test

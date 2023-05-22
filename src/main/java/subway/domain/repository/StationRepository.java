@@ -11,6 +11,7 @@ import subway.exception.StationNotFoundException;
 
 @Repository
 public class StationRepository {
+
     private final StationDao stationDao;
 
     public StationRepository(StationDao stationDao) {
@@ -35,9 +36,9 @@ public class StationRepository {
 
     public List<Station> findAll() {
         return stationDao.findAll()
-                .stream()
-                .map(StationEntity::toDomain)
-                .collect(Collectors.toList());
+            .stream()
+            .map(StationEntity::toDomain)
+            .collect(Collectors.toList());
     }
 
     public Station update(Station station) {

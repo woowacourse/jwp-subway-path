@@ -42,17 +42,17 @@ class SectionControllerTest {
         Long lineId = 1L;
         SectionCreateRequest request = new SectionCreateRequest("잠실역", "잠실나루역", 10);
         given(sectionService.saveSection(any(SectionCreateRequest.class), anyLong())).willReturn(
-                new Section(1L, new Station("잠실역"), new Station("잠실나루역"), Distance.from(10)));
+            new Section(1L, new Station("잠실역"), new Station("잠실나루역"), Distance.from(10)));
 
         // expect
         mockMvc.perform(post("/lines/{lineId}/sections", lineId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.startStationName").value("잠실역"))
-                .andExpect(jsonPath("$.endStationName").value("잠실나루역"))
-                .andExpect(jsonPath("$.distance").value(10));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(1L))
+            .andExpect(jsonPath("$.startStationName").value("잠실역"))
+            .andExpect(jsonPath("$.endStationName").value("잠실나루역"))
+            .andExpect(jsonPath("$.distance").value(10));
     }
 
     @Test
@@ -64,8 +64,8 @@ class SectionControllerTest {
 
         // expect
         mockMvc.perform(delete("/lines/{lineId}/sections", lineId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNoContent());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isNoContent());
     }
 }

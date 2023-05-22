@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
 public class SectionCreateRequest {
+
     @NotBlank(message = "상행역은 비어있을 수 없습니다.")
     private String startStationName;
 

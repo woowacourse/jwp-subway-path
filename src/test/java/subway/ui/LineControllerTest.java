@@ -34,12 +34,13 @@ class LineControllerTest {
     void createLine_success() throws Exception {
         // given
         LineCreateRequest request = new LineCreateRequest("2호선", "bg-red-600");
-        given(lineService.saveLine(any(LineCreateRequest.class))).willReturn(new Line(1L, "2호선", "green"));
+        given(lineService.saveLine(any(LineCreateRequest.class)))
+            .willReturn(new Line(1L, "2호선", "green"));
 
         // expect
         mockMvc.perform(post("/lines")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isCreated());
     }
 }

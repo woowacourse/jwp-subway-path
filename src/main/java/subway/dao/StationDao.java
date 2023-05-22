@@ -12,26 +12,27 @@ import subway.dao.entity.StationEntity;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private static final RowMapper<StationEntity> ROW_MAPPER = (rs, rowNum) ->
-            new StationEntity(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
+        new StationEntity(
+            rs.getLong("id"),
+            rs.getString("name")
+        );
 
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .usingGeneratedKeyColumns("id")
-                .withTableName("STATION");
+            .usingGeneratedKeyColumns("id")
+            .withTableName("STATION");
     }
 
     public Long insert(StationEntity station) {
         return insertAction.executeAndReturnKey(Map.of("name", station.getName()))
-                .longValue();
+            .longValue();
     }
 
     public List<StationEntity> findAll() {

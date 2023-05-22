@@ -50,9 +50,9 @@ class LineDaoTest {
         // then
         Optional<LineEntity> foundLine = lineDao.findById(savedId);
         assertThat(foundLine).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(new LineEntity(savedId, "5호선", "보라색"));
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(new LineEntity(savedId, "5호선", "보라색"));
     }
 
     @Test
@@ -87,9 +87,9 @@ class LineDaoTest {
 
         // then
         assertThat(lineDao.findById(1L)).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(changeEntity);
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(changeEntity);
     }
 
     @Test

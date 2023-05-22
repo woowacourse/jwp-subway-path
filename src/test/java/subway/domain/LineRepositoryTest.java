@@ -34,20 +34,23 @@ class LineRepositoryTest {
     @DisplayName("완성된 Line 도메인을 조회한다.")
     void findById_success() {
         // given
-        given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(2L, "3호선", "orange")));
+        given(lineDao.findById(anyLong()))
+            .willReturn(Optional.of(new LineEntity(2L, "3호선", "orange")));
         given(sectionDao.findAllSectionsWithStationNameByLineId(anyLong())).willReturn(List.of(
-                new SectionDto(1L, 1L, 2L, "양재역", "남부터미널역", 10),
-                new SectionDto(2L, 2L, 3L, "남부터미널역", "교대역", 10)));
+            new SectionDto(1L, 1L, 2L, "양재역", "남부터미널역", 10),
+            new SectionDto(2L, 2L, 3L, "남부터미널역", "교대역", 10)));
         // when
         Line line = lineRepository.findById(2L);
 
         // then
         assertThat(line).usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(new Line(2L, "3호선", "orange", new Sections(List.of(
-                        new Section(1L, new Station(1L, "양재역"), new Station(2L, "남부터미널역"), Distance.from(10)),
-                        new Section(2L, new Station(2L, "남부터미널역"), new Station(3L, "교대역"), Distance.from(10))
-                ))));
+            .ignoringFields("id")
+            .isEqualTo(new Line(2L, "3호선", "orange", new Sections(List.of(
+                new Section(1L, new Station(1L, "양재역"), new Station(2L, "남부터미널역"),
+                    Distance.from(10)),
+                new Section(2L, new Station(2L, "남부터미널역"), new Station(3L, "교대역"),
+                    Distance.from(10))
+            ))));
     }
 
     @Test
@@ -58,20 +61,21 @@ class LineRepositoryTest {
 
         // when, then
         assertThatThrownBy(() -> lineRepository.findById(2L))
-                .isInstanceOf(LineNotFoundException.class);
+            .isInstanceOf(LineNotFoundException.class);
     }
 
     @Test
     @DisplayName("구간 정보가 없는 노선을 조회할 수 있다.")
     void findByIdWithNoSections_success() {
         // given
-        given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(2L, "3호선", "orange")));
+        given(lineDao.findById(anyLong())).willReturn(
+            Optional.of(new LineEntity(2L, "3호선", "orange")));
 
         // when
         Line line = lineRepository.findByIdWithNoSections(2L);
 
         // then
         assertThat(line).usingRecursiveComparison()
-                .isEqualTo(new Line(2L, "3호선", "orange"));
+            .isEqualTo(new Line(2L, "3호선", "orange"));
     }
 }

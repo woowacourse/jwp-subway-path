@@ -4,6 +4,7 @@ import java.util.Objects;
 import subway.exception.IllegalDistanceException;
 
 public class Distance {
+
     private static final double MIN_VALUE = 0;
     public static final Distance MIN_DISTANCE = new Distance(MIN_VALUE);
     private final double value;
@@ -22,6 +23,7 @@ public class Distance {
             throw new IllegalDistanceException("구간의 길이는 0보다 커야합니다.");
         }
     }
+
     public Distance add(Distance other) {
         return new Distance(this.value + other.value());
     }

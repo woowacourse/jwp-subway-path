@@ -8,6 +8,7 @@ import subway.domain.Path;
 import subway.domain.Station;
 
 public class ShortestPathDto {
+
     private List<Station> stations;
     private Distance distance;
     private Fare fare;

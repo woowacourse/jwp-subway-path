@@ -38,9 +38,9 @@ class StationDaoTest {
         // then
         Optional<StationEntity> foundStation = stationDao.findById(savedId);
         assertThat(foundStation).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(new StationEntity(savedId, "정자역"));
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(new StationEntity(savedId, "정자역"));
     }
 
     @Test
@@ -65,9 +65,9 @@ class StationDaoTest {
 
         // then
         assertThat(foundStation).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(new StationEntity(savedId, "정자역"));
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(new StationEntity(savedId, "정자역"));
     }
 
     @Test
@@ -82,9 +82,9 @@ class StationDaoTest {
 
         // then
         assertThat(stationDao.findById(savedId)).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(changedEntity);
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(changedEntity);
 
     }
 

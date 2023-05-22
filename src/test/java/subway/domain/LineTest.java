@@ -8,9 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class LineTest {
+
     private Sections sections = new Sections(List.of(
-            new Section(new Station("강남역"), new Station("교대역"), Distance.from(10)),
-            new Section(new Station("교대역"), new Station("잠실역"), Distance.from(5))));
+        new Section(new Station("강남역"), new Station("교대역"), Distance.from(10)),
+        new Section(new Station("교대역"), new Station("잠실역"), Distance.from(5))));
 
     @Test
     @DisplayName("노선이 비어있음다면 true가 반환된다.")
@@ -38,10 +39,10 @@ class LineTest {
     void findSectionWithEndStation() {
         Line line = new Line(1L, "2호선", "green", sections);
         assertThat(line.findSectionWithEndStation(new Station("교대역")))
-                .isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(new Section(new Station("강남역"), new Station("교대역"), Distance.from(10)));
+            .isPresent()
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(new Section(new Station("강남역"), new Station("교대역"), Distance.from(10)));
     }
 
     @Test
@@ -49,9 +50,9 @@ class LineTest {
     void findSectionWithStartStation() {
         Line line = new Line(1L, "2호선", "green", sections);
         assertThat(line.findSectionWithStartStation(new Station("교대역")))
-                .isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(new Section(new Station("교대역"), new Station("잠실역"), Distance.from(5)));
+            .isPresent()
+            .get()
+            .usingRecursiveComparison()
+            .isEqualTo(new Section(new Station("교대역"), new Station("잠실역"), Distance.from(5)));
     }
 }

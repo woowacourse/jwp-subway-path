@@ -15,7 +15,7 @@ class DistanceTest {
     @DisplayName("0km 이하의 거리는 생성할 수 없다.")
     void create_distance_fail() {
         assertThatThrownBy(() -> Distance.from(0))
-                .isInstanceOf(IllegalDistanceException.class);
+            .isInstanceOf(IllegalDistanceException.class);
     }
 
     @Test

@@ -42,14 +42,14 @@ class LineControllerIntegrationTest {
 
         // expect
         mockMvc.perform(post("/lines")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/lines/4"))
-                .andExpect(jsonPath("$.id").value(4))
-                .andExpect(jsonPath("$.name").value("5호선"))
-                .andExpect(jsonPath("$.color").value("보라색"))
-                .andExpect(jsonPath("$.sections").isEmpty());
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isCreated())
+            .andExpect(header().string("Location", "/lines/4"))
+            .andExpect(jsonPath("$.id").value(4))
+            .andExpect(jsonPath("$.name").value("5호선"))
+            .andExpect(jsonPath("$.color").value("보라색"))
+            .andExpect(jsonPath("$.sections").isEmpty());
     }
 
     @Test
@@ -60,9 +60,9 @@ class LineControllerIntegrationTest {
 
         // expect
         mockMvc.perform(post("/lines")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -70,14 +70,14 @@ class LineControllerIntegrationTest {
     void findLineById_success() throws Exception {
         // expect
         mockMvc.perform(get("/lines/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("2호선"))
-                .andExpect(jsonPath("$.color").value("green"))
-                .andExpect(jsonPath("$.sections[0].startStationName").value("사당역"))
-                .andExpect(jsonPath("$.sections[0].endStationName").value("방배역"))
-                .andExpect(jsonPath("$.sections[0].distance").value(10))
-                .andExpect(jsonPath("$.sections.size()").value(3));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(1))
+            .andExpect(jsonPath("$.name").value("2호선"))
+            .andExpect(jsonPath("$.color").value("green"))
+            .andExpect(jsonPath("$.sections[0].startStationName").value("사당역"))
+            .andExpect(jsonPath("$.sections[0].endStationName").value("방배역"))
+            .andExpect(jsonPath("$.sections[0].distance").value(10))
+            .andExpect(jsonPath("$.sections.size()").value(3));
     }
 
     @Test
@@ -85,7 +85,7 @@ class LineControllerIntegrationTest {
     void findLineById_fail() throws Exception {
         // expect
         mockMvc.perform(get("/lines/6"))
-                .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -96,12 +96,12 @@ class LineControllerIntegrationTest {
 
         // expect
         mockMvc.perform(put("/lines/1")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("5호선"))
-                .andExpect(jsonPath("$.color").value("보라색"));
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(1))
+            .andExpect(jsonPath("$.name").value("5호선"))
+            .andExpect(jsonPath("$.color").value("보라색"));
     }
 
     @Test
@@ -109,29 +109,29 @@ class LineControllerIntegrationTest {
     void findAllLines_success() throws Exception {
         // expect
         mockMvc.perform(get("/lines"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].name").value("2호선"))
-                .andExpect(jsonPath("$[0].color").value("green"))
-                .andExpect(jsonPath("$[0].sections[0].startStationName").value("사당역"))
-                .andExpect(jsonPath("$[0].sections[0].endStationName").value("방배역"))
-                .andExpect(jsonPath("$[0].sections[0].distance").value(10))
-                .andExpect(jsonPath("$[0].sections.size()").value(3))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].id").value(1))
+            .andExpect(jsonPath("$[0].name").value("2호선"))
+            .andExpect(jsonPath("$[0].color").value("green"))
+            .andExpect(jsonPath("$[0].sections[0].startStationName").value("사당역"))
+            .andExpect(jsonPath("$[0].sections[0].endStationName").value("방배역"))
+            .andExpect(jsonPath("$[0].sections[0].distance").value(10))
+            .andExpect(jsonPath("$[0].sections.size()").value(3))
 
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].name").value("3호선"))
-                .andExpect(jsonPath("$[1].color").value("orange"))
-                .andExpect(jsonPath("$[1].sections[0].startStationName").value("양재역"))
-                .andExpect(jsonPath("$[1].sections[0].endStationName").value("남부터미널역"))
-                .andExpect(jsonPath("$[1].sections[0].distance").value(10))
-                .andExpect(jsonPath("$[1].sections.size()").value(2))
+            .andExpect(jsonPath("$[1].id").value(2))
+            .andExpect(jsonPath("$[1].name").value("3호선"))
+            .andExpect(jsonPath("$[1].color").value("orange"))
+            .andExpect(jsonPath("$[1].sections[0].startStationName").value("양재역"))
+            .andExpect(jsonPath("$[1].sections[0].endStationName").value("남부터미널역"))
+            .andExpect(jsonPath("$[1].sections[0].distance").value(10))
+            .andExpect(jsonPath("$[1].sections.size()").value(2))
 
-                .andExpect(jsonPath("$[2].id").value(3))
-                .andExpect(jsonPath("$[2].name").value("4호선"))
-                .andExpect(jsonPath("$[2].color").value("blue"))
-                .andExpect(jsonPath("$[2].sections[0].startStationName").value("사당역"))
-                .andExpect(jsonPath("$[2].sections[0].endStationName").value("이수역"))
-                .andExpect(jsonPath("$[2].sections[0].distance").value(10))
-                .andExpect(jsonPath("$[2].sections.size()").value(2));
+            .andExpect(jsonPath("$[2].id").value(3))
+            .andExpect(jsonPath("$[2].name").value("4호선"))
+            .andExpect(jsonPath("$[2].color").value("blue"))
+            .andExpect(jsonPath("$[2].sections[0].startStationName").value("사당역"))
+            .andExpect(jsonPath("$[2].sections[0].endStationName").value("이수역"))
+            .andExpect(jsonPath("$[2].sections[0].distance").value(10))
+            .andExpect(jsonPath("$[2].sections.size()").value(2));
     }
 }

@@ -33,10 +33,10 @@ class StationControllerIntegrationTest {
     @DisplayName("새로운 역을 저장할 수 있다.")
     void createStation_success() throws Exception {
         mockMvc.perform(post("/stations")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new StationCreateRequest("정자역"))))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("정자역"));
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(new StationCreateRequest("정자역"))))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("정자역"));
     }
 
     @Test
@@ -48,9 +48,9 @@ class StationControllerIntegrationTest {
 
         // expect
         mockMvc.perform(post("/stations")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -59,16 +59,16 @@ class StationControllerIntegrationTest {
         createNewStation("정자역");
 
         mockMvc.perform(get("/stations"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(1));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.size()").value(1));
     }
 
     private void createNewStation(String name) throws Exception {
         StationCreateRequest createRequest = new StationCreateRequest(name);
 
         mockMvc.perform(post("/stations")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(createRequest)));
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(objectMapper.writeValueAsString(createRequest)));
     }
 
 }

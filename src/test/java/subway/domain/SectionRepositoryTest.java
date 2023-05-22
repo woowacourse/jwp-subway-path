@@ -30,21 +30,23 @@ class SectionRepositoryTest {
     void save_success() {
         // given
         given(sectionDao.findAllSectionsWithStationNameByLineId(anyLong())).willReturn(List.of(
-                new SectionDto(1L, 1L, 2L, "교대역", "강남역", 10),
-                new SectionDto(2L, 2L, 3L, "강남역", "역삼역", 20)));
+            new SectionDto(1L, 1L, 2L, "교대역", "강남역", 10),
+            new SectionDto(2L, 2L, 3L, "강남역", "역삼역", 20)));
         given(sectionDao.insert(any(SectionEntity.class))).willReturn(1L);
 
         // when
-        sectionRepository.save(1L, new Section(new Station(1L, "교대역"), new Station(2L, "강남역"), Distance.from(10)));
-        sectionRepository.save(1L, new Section(new Station(2L, "강남역"), new Station(3L, "역삼역"), Distance.from(20)));
+        sectionRepository.save(1L,
+            new Section(new Station(1L, "교대역"), new Station(2L, "강남역"), Distance.from(10)));
+        sectionRepository.save(1L,
+            new Section(new Station(2L, "강남역"), new Station(3L, "역삼역"), Distance.from(20)));
 
         // then
         assertThat(sectionRepository.findSectionsByLineId(1L))
-                .usingRecursiveComparison()
-                .isEqualTo(new Sections(List.of(
-                        new Section(1L, new Station(1L, "교대역"), new Station(2L, "강남역"), Distance.from(10)),
-                        new Section(2L, new Station(2L, "강남역"), new Station(3L, "역삼역"), Distance.from(20)))
-                ));
+            .usingRecursiveComparison()
+            .isEqualTo(new Sections(List.of(
+                new Section(1L, new Station(1L, "교대역"), new Station(2L, "강남역"), Distance.from(10)),
+                new Section(2L, new Station(2L, "강남역"), new Station(3L, "역삼역"), Distance.from(20)))
+            ));
     }
 
 }

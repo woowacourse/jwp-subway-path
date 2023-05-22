@@ -30,7 +30,8 @@ class StationRepositoryTest {
     @DisplayName("이름으로 역을 조회할 수 있다.")
     void findByName_success() {
         // given
-        given(stationDao.findByName(anyString())).willReturn(Optional.of(new StationEntity(1L, "정자역")));
+        given(stationDao.findByName(anyString()))
+            .willReturn(Optional.of(new StationEntity(1L, "정자역")));
 
         // when
         Station station = stationRepository.findByName("정자역");
@@ -47,7 +48,7 @@ class StationRepositoryTest {
 
         // when
         assertThatThrownBy(() -> stationRepository.findByName("정자역"))
-                .isInstanceOf(StationNotFoundException.class);
+            .isInstanceOf(StationNotFoundException.class);
     }
 
     @Test
@@ -71,6 +72,6 @@ class StationRepositoryTest {
 
         // then
         assertThatThrownBy(() -> stationRepository.findById(1L))
-                .isInstanceOf(StationNotFoundException.class);
+            .isInstanceOf(StationNotFoundException.class);
     }
 }

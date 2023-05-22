@@ -31,9 +31,11 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineCreateRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(
+        @RequestBody @Valid LineCreateRequest lineRequest) {
         LineResponse lineResponse = LineResponse.from(lineService.saveLine(lineRequest));
-        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).body(lineResponse);
+        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId()))
+            .body(lineResponse);
     }
 
     @GetMapping
@@ -44,8 +46,8 @@ public class LineController {
 
     private List<LineResponse> mapToLineResponse(List<Line> lines) {
         return lines.stream()
-                .map(LineResponse::from)
-                .collect(toList());
+            .map(LineResponse::from)
+            .collect(toList());
     }
 
     @GetMapping("/{lineId}")
@@ -56,8 +58,9 @@ public class LineController {
 
     @PutMapping("/{lineId}")
     public ResponseEntity<LineResponse> updateLine(@PathVariable Long lineId,
-                                           @RequestBody @Valid LineUpdateRequest lineUpdateRequest) {
-        LineResponse lineResponse = LineResponse.from(lineService.updateLine(lineUpdateRequest, lineId));
+        @RequestBody @Valid LineUpdateRequest lineUpdateRequest) {
+        LineResponse lineResponse = LineResponse.from(
+            lineService.updateLine(lineUpdateRequest, lineId));
         return ResponseEntity.ok().body(lineResponse);
     }
 

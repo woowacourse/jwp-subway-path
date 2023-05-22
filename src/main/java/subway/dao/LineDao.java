@@ -14,21 +14,22 @@ import subway.dao.entity.LineEntity;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private static final RowMapper<LineEntity> ROW_MAPPER = (rs, rowNum) ->
-            new LineEntity(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
-            );
+        new LineEntity(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color")
+        );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("LINE")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("LINE")
+            .usingGeneratedKeyColumns("id");
     }
 
     public long insert(LineEntity line) {

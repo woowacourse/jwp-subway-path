@@ -1,6 +1,7 @@
 package subway.domain;
 
 public class Section {
+
     private final Long id;
     private final Station startStation;
     private final Station endStation;

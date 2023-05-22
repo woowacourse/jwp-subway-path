@@ -14,6 +14,7 @@ import subway.exception.LineNotFoundException;
 
 @Repository
 public class LineRepository {
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
 
@@ -34,15 +35,15 @@ public class LineRepository {
     public List<Line> findAll() {
         List<LineEntity> lineEntities = lineDao.findAll();
         return lineEntities.stream()
-                .map(entity -> findById(entity.getId()))
-                .collect(Collectors.toList());
+            .map(entity -> findById(entity.getId()))
+            .collect(Collectors.toList());
     }
 
     private Sections findSectionsInLine(long lineId) {
         List<SectionDto> foundSections = sectionDao.findAllSectionsWithStationNameByLineId(lineId);
         return new Sections(foundSections.stream()
-                .map(SectionDto::toDomain)
-                .collect(Collectors.toList()));
+            .map(SectionDto::toDomain)
+            .collect(Collectors.toList()));
     }
 
     public long save(Line line) {

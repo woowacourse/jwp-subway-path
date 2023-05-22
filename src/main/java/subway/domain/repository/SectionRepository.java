@@ -19,10 +19,10 @@ public class SectionRepository {
 
     public long save(long lineId, Section section) {
         return sectionDao.insert(new SectionEntity(
-                lineId,
-                section.getStartStationId(),
-                section.getEndStationId(),
-                section.getDistance().value()
+            lineId,
+            section.getStartStationId(),
+            section.getEndStationId(),
+            section.getDistance().value()
         ));
     }
 
@@ -32,15 +32,15 @@ public class SectionRepository {
 
     public Sections findSectionsByLineId(long lineId) {
         return new Sections(sectionDao.findAllSectionsWithStationNameByLineId(lineId)
-                .stream()
-                .map(SectionDto::toDomain)
-                .collect(Collectors.toList()));
+            .stream()
+            .map(SectionDto::toDomain)
+            .collect(Collectors.toList()));
     }
 
     public Sections findAll() {
         return new Sections(sectionDao.findAllSectionsWithStationName()
-                .stream()
-                .map(SectionDto::toDomain)
-                .collect(Collectors.toList()));
+            .stream()
+            .map(SectionDto::toDomain)
+            .collect(Collectors.toList()));
     }
 }
