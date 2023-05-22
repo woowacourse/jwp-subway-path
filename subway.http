@@ -22,7 +22,8 @@ Content-Type: application/json
   "color": "green",
   "upStationId": 1,
   "downStationId": 2,
-  "distance": 10
+  "distance": 10,
+  "additionalCharge": 200
 }
 
 ### 노선 전체 조회
