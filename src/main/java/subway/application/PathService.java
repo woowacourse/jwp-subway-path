@@ -15,14 +15,10 @@ import subway.domain.repository.StationRepository;
 @Service
 @Transactional(readOnly = true)
 public class PathService {
-    private final FareCalculator fareCalculator;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
-    public PathService(FareCalculator fareCalculator,
-                       StationRepository stationRepository,
-                       SectionRepository sectionRepository) {
-        this.fareCalculator = fareCalculator;
+    public PathService(StationRepository stationRepository, SectionRepository sectionRepository) {
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
     }
@@ -33,7 +29,7 @@ public class PathService {
         Station dest = stationRepository.findById(pathFindDto.getDestStationId());
 
         Path path = pathFinder.findShortestPath(source, dest);
-        Fare fare = fareCalculator.calculate(path);
+        Fare fare = FareCalculator.calculate(path);
         return new ShortestPathDto(path, fare);
     }
 
