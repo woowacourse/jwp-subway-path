@@ -89,8 +89,7 @@ public class LineControllerTest {
     @Test
     void addStation() throws Exception {
         StationRegisterRequest section = new StationRegisterRequest(2L, 1L, 5);
-
-        when(sectionService.createSection(any(), any())).thenReturn(List.of(new SectionEntity(1L, 1L, 1L, 2L, 5)));
+        when(lineService.addStation(any(), any())).thenReturn(List.of(new SectionEntity(1L, 1L, 1L, 2L, 5)));
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/line/{lineId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
