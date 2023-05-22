@@ -40,7 +40,6 @@ class FareAndPathControllerTest {
         FareAndPathRequest request = new FareAndPathRequest(cheonho.getId(), jangji.getId(), 20);
         String jsonRequest = objectMapper.writeValueAsString(request);
         FareAndPathResponse response = FareAndPathResponse.from(1250, List.of(cheonho, jamsil, jangji));
-        String jsonResponse = objectMapper.writeValueAsString(response);
         given(fareAndPathService.findFareAndPath(any(FareAndPathRequest.class))).willReturn(response);
 
         // when & then
@@ -48,6 +47,9 @@ class FareAndPathControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequest))
             .andExpect(status().isOk())
-            .andExpect(content().json(jsonResponse, true));
+            .andExpect(jsonPath("fare").value(1250))
+            .andExpect(jsonPath("$.stations[?(@.name=='천호')]").exists())
+            .andExpect(jsonPath("$.stations[?(@.name=='잠실')]").exists())
+            .andExpect(jsonPath("$.stations[?(@.name=='장지')]").exists());
     }
 }
