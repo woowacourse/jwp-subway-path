@@ -13,6 +13,7 @@ import subway.domain.Station;
 import subway.domain.fare.FareCalculator;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
+import subway.dto.StationResponse;
 import subway.entity.StationEntity;
 
 import java.util.List;
@@ -74,11 +75,11 @@ class PathServiceTest {
         ShortestPathResponse shortestPathResponse = pathService.findShortestPath(shortestPathRequest);
 
         // then
-        List<String> path = shortestPathResponse.getPath();
+        List<StationResponse> path = shortestPathResponse.getPath();
         int distance = shortestPathResponse.getDistance();
         int fare = shortestPathResponse.getFare();
 
-        assertThat(path).containsExactly("판교역", "양재역", "강남역", "선릉역");
+        assertThat(path).extracting(StationResponse::getName).containsExactly("판교역", "양재역", "강남역", "선릉역");
         assertThat(distance).isEqualTo(20);
         assertThat(fare).isEqualTo(1450);
     }

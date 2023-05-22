@@ -56,12 +56,15 @@ public class PathIntegrationTest extends IntegrationTest{
     @DisplayName("역 간의 최단 거리와 요금, 거리 정보를 조회한다.")
     @Test
     void findShortestPath() {
-        // when
+        // given
         ShortestPathRequest shortestPathRequest = new ShortestPathRequest(판교역ID, 선릉역ID);
+
+        // when
         ExtractableResponse<Response> pathResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(shortestPathRequest)
+                .param("srcStationId", shortestPathRequest.getSrcStationId())
+                .param("dstStationId", shortestPathRequest.getDstStationId())
                 .when().get("/path")
                 .then().log().all()
                 .extract();
@@ -69,7 +72,9 @@ public class PathIntegrationTest extends IntegrationTest{
         // then
         ShortestPathResponse shortestPathResponse = pathResponse.as(ShortestPathResponse.class);
         assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(shortestPathResponse.getPath()).containsExactly("판교역", "양재역", "강남역", "선릉역");
+        assertThat(shortestPathResponse.getPath())
+                .extracting(StationResponse::getName)
+                .containsExactly("판교역", "양재역", "강남역", "선릉역");
         assertThat(shortestPathResponse.getDistance()).isEqualTo(20);
         assertThat(shortestPathResponse.getFare()).isEqualTo(1450);
     }

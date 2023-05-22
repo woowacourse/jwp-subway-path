@@ -10,6 +10,7 @@ import subway.domain.fare.DistanceFareStrategy;
 import subway.domain.fare.FareCalculator;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
+import subway.dto.StationResponse;
 import subway.entity.StationEntity;
 
 import java.util.List;
@@ -37,10 +38,14 @@ public class PathService {
         Station upStation = stationMap.get(shortestPathRequest.getSrcStationId());
         Station downStation = stationMap.get(shortestPathRequest.getDstStationId());
 
-        List<String> dijkstraShortestPath = subwayGraph.getDijkstraShortestPath(upStation, downStation);
+        List<Station> dijkstraShortestPath = subwayGraph.getDijkstraShortestPath(upStation, downStation);
         int shortestPathWeight = subwayGraph.getShortestPathWeight(upStation, downStation);
         int fare = fareCalculator.calculateFare(shortestPathWeight);
-        return new ShortestPathResponse(dijkstraShortestPath, shortestPathWeight, fare);
+
+        List<StationResponse> dijkstraShortestPathStations = dijkstraShortestPath.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        return new ShortestPathResponse(dijkstraShortestPathStations, shortestPathWeight, fare);
     }
 
     private Map<Long, Station> makeStationMap(final List<StationEntity> stationDao) {

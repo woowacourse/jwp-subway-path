@@ -4,17 +4,17 @@ import java.util.List;
 
 public class ShortestPathResponse {
 
-    private List<String> path;
+    private List<StationResponse> path;
     private int distance;
     private int fare;
 
-    public ShortestPathResponse(final List<String> path, final int distance, final int fare) {
+    public ShortestPathResponse(final List<StationResponse> path, final int distance, final int fare) {
         this.path = path;
         this.distance = distance;
         this.fare = fare;
     }
 
-    public List<String> getPath() {
+    public List<StationResponse> getPath() {
         return path;
     }
 
