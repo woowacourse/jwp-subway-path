@@ -2,7 +2,7 @@ package subway.domain.fare;
 
 import java.util.Set;
 import subway.common.exception.SubwayIllegalArgumentException;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.domain.route.Route;
 
 public class LineSurchargePolicy implements FarePolicy {

@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.line;
 
 import subway.common.exception.SubwayIllegalArgumentException;
 import subway.domain.fare.Fare;

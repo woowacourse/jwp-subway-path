@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.common.exception.SubwayIllegalArgumentException;
+import subway.domain.section.Section;
 import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.잠실역;
 

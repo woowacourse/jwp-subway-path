@@ -10,7 +10,7 @@ import subway.application.port.in.line.dto.response.LineQueryResponse;
 import subway.application.port.out.line.LoadLinePort;
 import subway.common.exception.NoSuchLineException;
 import subway.common.mapper.LineMapper;
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 @Service
 @Transactional(readOnly = true)

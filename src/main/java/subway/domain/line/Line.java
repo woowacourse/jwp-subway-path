@@ -1,8 +1,11 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 import subway.domain.fare.Fare;
 
 public class Line {

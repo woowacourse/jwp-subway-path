@@ -12,8 +12,8 @@ import subway.application.port.out.route.RouteFinderPort;
 import subway.application.port.out.station.LoadStationPort;
 import subway.common.exception.NoSuchStationException;
 import subway.common.mapper.RouteMapper;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 import subway.domain.fare.Fare;
 import subway.domain.fare.FarePolicy;
 import subway.domain.route.Route;
@@ -49,7 +49,7 @@ public class RouteQueryService implements FindRouteUseCase {
         Route route = routeFinderPort.findRoute(source.get(), target.get(), lines);
 
         Fare fare = farePolicy.calculate(route, command.getAge(), new Fare());
-        
+
         return RouteMapper.toResponse(route, fare);
     }
 }

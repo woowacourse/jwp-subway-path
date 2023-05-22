@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 import subway.adapter.out.persistence.entity.LineEntity;
 import subway.application.port.in.line.dto.response.LineQueryResponse;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
-import subway.domain.Line;
-import subway.domain.LineInfo;
+import subway.domain.line.Line;
+import subway.domain.line.LineInfo;
 
 public class LineMapper {
 

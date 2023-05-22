@@ -20,7 +20,7 @@ import subway.application.port.out.line.PersistLinePort;
 import subway.application.port.out.station.LoadStationPort;
 import subway.common.exception.NoSuchLineException;
 import subway.common.exception.NoSuchStationException;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.fixture.LineFixture.이호선;
 import subway.fixture.SectionFixture.이호선_역삼_삼성_3;
 import subway.fixture.StationFixture.삼성역;

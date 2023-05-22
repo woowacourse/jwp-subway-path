@@ -3,7 +3,7 @@ package subway.fixture;
 import java.util.ArrayList;
 import subway.adapter.in.web.line.dto.CreateLineRequest;
 import subway.adapter.out.persistence.entity.LineEntity;
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineFixture {

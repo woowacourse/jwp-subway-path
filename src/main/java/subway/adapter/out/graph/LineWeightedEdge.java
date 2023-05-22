@@ -1,8 +1,8 @@
 package subway.adapter.out.graph;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
 
 public class LineWeightedEdge extends DefaultWeightedEdge {
 

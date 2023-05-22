@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.section;
 
 import subway.common.exception.SubwayIllegalArgumentException;
+import subway.domain.station.Station;
 
 public class Section {
 

@@ -9,7 +9,7 @@ import subway.adapter.out.persistence.entity.StationEntity;
 import subway.application.port.out.station.LoadStationPort;
 import subway.application.port.out.station.PersistStationPort;
 import subway.common.mapper.StationMapper;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 @Repository
 public class StationJdbcRepository implements LoadStationPort, PersistStationPort {

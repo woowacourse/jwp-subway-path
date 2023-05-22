@@ -1,9 +1,9 @@
 package subway.domain.route;
 
 import subway.common.exception.SubwayIllegalArgumentException;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 public class RouteSection {
 

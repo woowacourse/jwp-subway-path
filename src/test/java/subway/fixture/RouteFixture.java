@@ -1,8 +1,8 @@
 package subway.fixture;
 
 import java.util.List;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
 import subway.domain.route.Route;
 import subway.domain.route.RouteSection;
 import subway.fixture.StationFixture.삼성역;

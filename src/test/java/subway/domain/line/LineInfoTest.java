@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.common.exception.SubwayIllegalArgumentException;
 import subway.domain.fare.Fare;
+import subway.domain.line.LineInfo;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

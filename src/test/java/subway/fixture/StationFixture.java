@@ -3,7 +3,7 @@ package subway.fixture;
 import subway.adapter.in.web.station.dto.CreateStationRequest;
 import subway.adapter.out.persistence.entity.StationEntity;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StationFixture {

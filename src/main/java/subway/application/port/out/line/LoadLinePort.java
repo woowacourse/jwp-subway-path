@@ -2,8 +2,8 @@ package subway.application.port.out.line;
 
 import java.util.List;
 import java.util.Optional;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 
 public interface LoadLinePort {
 

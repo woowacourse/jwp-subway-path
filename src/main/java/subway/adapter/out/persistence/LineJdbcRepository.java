@@ -14,10 +14,10 @@ import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
 import subway.common.mapper.LineMapper;
 import subway.common.mapper.SectionMapper;
-import subway.domain.Line;
-import subway.domain.LineInfo;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.line.LineInfo;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 @Repository
 public class LineJdbcRepository implements LoadLinePort, PersistLinePort {

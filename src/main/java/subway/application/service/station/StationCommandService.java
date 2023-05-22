@@ -15,7 +15,7 @@ import subway.application.port.out.station.LoadStationPort;
 import subway.application.port.out.station.PersistStationPort;
 import subway.common.exception.NoSuchStationException;
 import subway.common.exception.SubwayIllegalArgumentException;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 @Service
 @Transactional

@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import subway.common.exception.SubwayIllegalArgumentException;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
 import subway.fixture.LineFixture.이호선;
 import subway.fixture.SectionFixture.삼호선_잠실_고터_2;
 

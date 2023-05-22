@@ -9,7 +9,7 @@ import subway.application.port.in.station.FindAllStationsUseCase;
 import subway.application.port.in.station.FindStationByIdUseCase;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
 import subway.application.port.out.station.LoadStationPort;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.common.mapper.StationMapper;
 
 @Service

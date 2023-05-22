@@ -2,7 +2,7 @@ package subway.common.mapper;
 
 import subway.adapter.out.persistence.entity.StationEntity;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationMapper {
 

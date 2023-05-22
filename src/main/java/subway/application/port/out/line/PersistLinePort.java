@@ -1,7 +1,7 @@
 package subway.application.port.out.line;
 
-import subway.domain.Line;
-import subway.domain.LineInfo;
+import subway.domain.line.Line;
+import subway.domain.line.LineInfo;
 
 public interface PersistLinePort {
 
