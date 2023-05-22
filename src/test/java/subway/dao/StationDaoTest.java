@@ -1,7 +1,6 @@
 package subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,10 +36,7 @@ class StationDaoTest {
 
             final Optional<StationEntity> station = stationDao.findById(stationEntity.getId());
 
-            assertAll(
-                    () -> assertThat(station.get().getId()).isEqualTo(stationEntity.getId()),
-                    () -> assertThat(station.get().getName()).isEqualTo(stationEntity.getName())
-            );
+            assertThat(station).usingRecursiveComparison().isEqualTo(Optional.of(stationEntity));
         }
 
         @Test

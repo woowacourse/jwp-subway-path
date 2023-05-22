@@ -1,0 +1,37 @@
+version: "3"
+services:
+  app:
+    container_name: app
+    image: arm64v8/amazoncorretto:11-alpine-jdk
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ../src:/app/src
+      - ../gradle:/app/gradle
+      - ../build.gradle:/app/build.gradle
+      - ../gradlew:/app/gradlew
+      - ../gradlew.bat:/app/gradlew.bat
+    working_dir: /app
+    command: [ "./gradlew", "bootrun" ]
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    container_name: db
+    image: mysql:8.0.33
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ../src/main/resources/data.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+    restart: always

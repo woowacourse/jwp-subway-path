@@ -2,7 +2,6 @@ package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
@@ -69,10 +68,7 @@ class StationServiceTest {
 
             final StationResponse result = stationService.findStationById(1L);
 
-            assertAll(
-                    () -> assertThat(result.getId()).isEqualTo(station.getId()),
-                    () -> assertThat(result.getName()).isEqualTo(station.getName())
-            );
+            assertThat(result).usingRecursiveComparison().isEqualTo(StationResponse.from(station));
         }
 
         @Test

@@ -3,6 +3,10 @@ package subway.controller.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotBlank;
 
+@Schema(
+        description = "역 생성 요청 정보",
+        example = "{\"name\": \"잠실역\"}"
+)
 public class StationCreateRequest {
 
     @Schema(description = "역 이름")

@@ -1,11 +1,9 @@
 spring:
-  h2:
-    console:
-      enabled: true
-
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL
-    driver-class-name: org.h2.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   sql:
     init:

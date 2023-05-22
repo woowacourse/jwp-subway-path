@@ -16,7 +16,6 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.line.Line;
-import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.exception.InvalidLineException;
 
@@ -41,14 +40,15 @@ class LineRepositoryTest {
     @Test
     @DisplayName("노선을 저장한다.")
     void save() {
-        final Line line = new Line("2호선", "초록색");
+        final Line line = new Line("2호선", "초록색", 500);
 
         final Line result = lineRepository.save(line);
 
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
-                () -> assertThat(result.getName()).isEqualTo("2호선"),
-                () -> assertThat(result.getColor()).isEqualTo("초록색")
+                () -> assertThat(result.getName()).isEqualTo(line.getName()),
+                () -> assertThat(result.getColor()).isEqualTo(line.getColor()),
+                () -> assertThat(result.getFare()).isEqualTo(line.getFare())
         );
     }
 
@@ -60,7 +60,7 @@ class LineRepositoryTest {
 
         @BeforeEach
         void setUp() {
-            line = lineRepository.save(new Line("2호선", "초록색"));
+            line = lineRepository.save(new Line("2호선", "초록색", 500));
             final Station upward = stationRepository.save(new Station("잠실역"));
             final Station downward = stationRepository.save(new Station("잠실새내역"));
             line.addSection(upward, downward, 10);
@@ -72,19 +72,7 @@ class LineRepositoryTest {
         void findById() {
             final Line result = lineRepository.findById(line.getId());
 
-            final List<Section> sections = result.getSections();
-            assertAll(
-                    () -> assertThat(result.getId()).isEqualTo(line.getId()),
-                    () -> assertThat(result.getName()).isEqualTo(line.getName()),
-                    () -> assertThat(result.getColor()).isEqualTo(line.getColor()),
-                    () -> assertThat(sections).hasSize(2),
-                    () -> assertThat(sections.get(0).getUpward().getName()).isEqualTo("잠실역"),
-                    () -> assertThat(sections.get(0).getDownward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10),
-                    () -> assertThat(sections.get(1).getUpward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(1).getDownward().getName()).isEqualTo(Station.TERMINAL.getName()),
-                    () -> assertThat(sections.get(1).getDistance()).isEqualTo(0)
-            );
+            assertThat(line).usingRecursiveComparison().isEqualTo(result);
         }
 
         @Test
@@ -100,19 +88,7 @@ class LineRepositoryTest {
         void findAll() {
             final List<Line> lines = lineRepository.findAll();
 
-            final List<Section> sections = lines.get(0).getSections();
-            assertAll(
-                    () -> assertThat(lines).hasSize(1),
-                    () -> assertThat(lines.get(0).getName()).isEqualTo("2호선"),
-                    () -> assertThat(lines.get(0).getColor()).isEqualTo("초록색"),
-                    () -> assertThat(sections).hasSize(2),
-                    () -> assertThat(sections.get(0).getUpward().getName()).isEqualTo("잠실역"),
-                    () -> assertThat(sections.get(0).getDownward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10),
-                    () -> assertThat(sections.get(1).getUpward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(1).getDownward().getName()).isEqualTo(Station.TERMINAL.getName()),
-                    () -> assertThat(sections.get(1).getDistance()).isEqualTo(0)
-            );
+            assertThat(lines).usingRecursiveComparison().isEqualTo(List.of(line));
         }
     }
 
@@ -123,7 +99,7 @@ class LineRepositoryTest {
         @Test
         @DisplayName("섹션이 추가 됐을 때 노선 정보를 업데이트한다.")
         void updateWhenStationAdded() {
-            final Line line = lineRepository.save(new Line("2호선", "초록색"));
+            final Line line = lineRepository.save(new Line("2호선", "초록색", 500));
             final Station upward = stationRepository.save(new Station("잠실역"));
             final Station middle = stationRepository.save(new Station("종합운동장역"));
             final Station downward = stationRepository.save(new Station("잠실새내역"));
@@ -134,22 +110,14 @@ class LineRepositoryTest {
             lineRepository.update(line);
 
             final Line result = lineRepository.findById(line.getId());
-            final List<Station> stations = result.getStations();
-            assertAll(
-                    () -> assertThat(stations).hasSize(3),
-                    () -> assertThat(stations).extracting(Station::getName).containsExactly(
-                            "잠실역",
-                            "종합운동장역",
-                            "잠실새내역"
-                    )
-            );
+            assertThat(result).usingRecursiveComparison().isEqualTo(line);
         }
 
 
         @Test
         @DisplayName("섹션이 삭제 됐을 때 노선 정보를 업데이트한다.")
         void updateWhenStationDeleted() {
-            final Line line = lineRepository.save(new Line("2호선", "초록색"));
+            final Line line = lineRepository.save(new Line("2호선", "초록색", 500));
             final Station upward = stationRepository.save(new Station("잠실역"));
             final Station downward = stationRepository.save(new Station("잠실새내역"));
             line.addSection(upward, downward, 10);

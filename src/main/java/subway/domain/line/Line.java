@@ -16,26 +16,29 @@ public final class Line {
     private final Long id;
     private final Name name;
     private final Color color;
+    private final Fare fare;
     private final Sections sections;
 
-    public Line(final String name, final String color) {
-        this(null, name, color);
+    public Line(final String name, final String color, final int fare) {
+        this(null, name, color, fare);
     }
 
-    public Line(final Long id, final String name, final String color) {
-        this(id, name, color, new LinkedList<>());
+    public Line(final Long id, final String name, final String color, final int fare) {
+        this(id, name, color, fare, new LinkedList<>());
     }
 
-    public Line(final Long id, final String name, final String color, final List<Section> sections) {
+    public Line(final Long id, final String name, final String color, final int fare, final List<Section> sections) {
         this.id = id;
         this.name = new Name(name);
         this.color = new Color(color);
+        this.fare = new Fare(fare);
         this.sections = new Sections(sections);
     }
 
     public void addSection(final Station upward, final Station downward, final int distance) {
         if (sections.isEmpty()) {
-            addInitialSection(upward, downward, distance);
+            sections.add(new Section(upward, downward, distance));
+            sections.add(new Section(downward, Station.TERMINAL, 0));
             return;
         }
 
@@ -43,25 +46,21 @@ public final class Line {
         final int downwardPosition = sections.findPosition(downward);
         validateForAddSection(upwardPosition, downwardPosition);
 
-        if (shouldAdd(upwardPosition)) {
-            if (isFirstSection(downwardPosition)) {
-                sections.add(0, new Section(upward, downward, distance));
+        if (upwardPosition == ADDITIONAL_INDEX) {
+            if (isAddAtFront(downwardPosition)) {
+                addSectionEndPoints(true, upward, downward, distance);
                 return;
             }
             addUpwardSectionBetweenStations(upward, downward, distance, downwardPosition);
-            return;
         }
 
-        if (isLastSection(upwardPosition)) {
-            addDownwardSectionInLast(upward, downward, distance);
-            return;
+        if (downwardPosition == ADDITIONAL_INDEX) {
+            if (isAddAtEnd(upwardPosition)) {
+                addSectionEndPoints(false, upward, downward, distance);
+                return;
+            }
+            addDownwardSectionBetweenStations(upward, downward, distance, upwardPosition);
         }
-        addDownwardSectionBetweenStations(upward, downward, distance, upwardPosition);
-    }
-
-    private void addInitialSection(final Station upward, final Station downward, final int distance) {
-        sections.add(new Section(upward, downward, distance));
-        sections.add(new Section(downward, Station.TERMINAL, 0));
     }
 
     private void validateForAddSection(final int upwardPosition, final int downwardPosition) {
@@ -73,36 +72,45 @@ public final class Line {
         }
     }
 
-    private boolean shouldAdd(final int position) {
-        return position == ADDITIONAL_INDEX;
+    private boolean isAddAtFront(final int downwardPosition) {
+        return downwardPosition == 0;
     }
 
-    private boolean isFirstSection(final int position) {
-        return position == 0;
+    private boolean isAddAtEnd(final int upwardPosition) {
+        return upwardPosition == sections.size() - 1;
+    }
+
+    private void addSectionEndPoints(
+            final boolean isFirst,
+            final Station upward,
+            final Station downward,
+            final int distance
+    ) {
+        sections.deleteByPosition(sections.size() - 1);
+        sections.add(getEndPosition(isFirst), new Section(upward, downward, distance));
+        final Section lastSection = sections.findSectionByPosition(sections.size() - 1);
+        sections.add(sections.size(), new Section(lastSection.getDownward(), Station.TERMINAL, 0));
+    }
+
+    public int getEndPosition(final boolean isFirst) {
+        if (isFirst) {
+            return 0;
+        }
+        return sections.size();
     }
 
     private void addUpwardSectionBetweenStations(
             final Station upward,
             final Station downward,
             final int distance,
-            final int downwardPosition
+            final int position
     ) {
-        final int targetPosition = downwardPosition - 1;
+        final int targetPosition = position - 1;
         final Section section = sections.findSectionByPosition(targetPosition);
         sections.deleteByPosition(targetPosition);
         validateDistance(section.getDistance(), distance);
         sections.add(targetPosition, new Section(upward, downward, distance));
         sections.add(targetPosition, new Section(section.getUpward(), upward, section.getDistance() - distance));
-    }
-
-    private boolean isLastSection(final int position) {
-        return sections.size() - 1 == position;
-    }
-
-    private void addDownwardSectionInLast(final Station upward, final Station downward, final int distance) {
-        sections.deleteByPosition(sections.size() - 1);
-        sections.add(sections.size(), new Section(upward, downward, distance));
-        sections.add(sections.size(), new Section(downward, Station.TERMINAL, 0));
     }
 
     private void addDownwardSectionBetweenStations(
@@ -168,11 +176,17 @@ public final class Line {
         return color.getValue();
     }
 
+    public int getFare() {
+        return fare.getValue();
+    }
+
     public List<Station> getStations() {
         return sections.getUpwards();
     }
 
     public List<Section> getSections() {
-        return sections.getValue();
+        final List<Section> sections = this.sections.getValue();
+        sections.removeIf(section -> section.getDownward() == Station.TERMINAL);
+        return sections;
     }
 }

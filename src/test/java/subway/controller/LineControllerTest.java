@@ -1,7 +1,7 @@
 package subway.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -12,10 +12,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.Charset;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,6 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import subway.controller.dto.request.LineCreateRequest;
 import subway.controller.dto.request.SectionCreateRequest;
 import subway.controller.dto.response.LineResponse;
@@ -57,32 +58,20 @@ class LineControllerTest {
                 new StationResponse(4L, "서울역")
         );
         final List<LineResponse> lines = List.of(
-                new LineResponse(1L, "2호선", "초록색", stationsOfLineTwo),
-                new LineResponse(2L, "4호선", "하늘색", stationsOfLineFour));
+                new LineResponse(1L, "2호선", "초록색", 500, stationsOfLineTwo),
+                new LineResponse(2L, "4호선", "하늘색", 1000, stationsOfLineFour));
         final LinesResponse response = new LinesResponse(lines);
 
         given(lineService.findLines()).willReturn(response);
 
-        mockMvc.perform(get("/lines"))
+        final MvcResult mvcResult = mockMvc.perform(get("/lines"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lines", hasSize(2)))
-                .andExpect(jsonPath("$.lines[0].id").value(1))
-                .andExpect(jsonPath("$.lines[0].name").value("2호선"))
-                .andExpect(jsonPath("$.lines[0].color").value("초록색"))
-                .andExpect(jsonPath("$.lines[0].stations", hasSize(2)))
-                .andExpect(jsonPath("$.lines[0].stations[0].id").value(1))
-                .andExpect(jsonPath("$.lines[0].stations[0].name").value("잠실역"))
-                .andExpect(jsonPath("$.lines[0].stations[1].id").value(2))
-                .andExpect(jsonPath("$.lines[0].stations[1].name").value("잠실새내역"))
-                .andExpect(jsonPath("$.lines[1].id").value(2))
-                .andExpect(jsonPath("$.lines[1].name").value("4호선"))
-                .andExpect(jsonPath("$.lines[1].color").value("하늘색"))
-                .andExpect(jsonPath("$.lines[1].stations", hasSize(2)))
-                .andExpect(jsonPath("$.lines[1].stations[0].id").value(3))
-                .andExpect(jsonPath("$.lines[1].stations[0].name").value("이수역"))
-                .andExpect(jsonPath("$.lines[1].stations[1].id").value(4))
-                .andExpect(jsonPath("$.lines[1].stations[1].name").value("서울역"));
+                .andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString(Charset.forName("UTF-8"));
+        final LinesResponse result = objectMapper.readValue(jsonResponse, LinesResponse.class);
+        assertThat(result).usingRecursiveComparison().isEqualTo(response);
     }
 
     @Nested
@@ -92,7 +81,7 @@ class LineControllerTest {
         @Test
         @DisplayName("유효한 노선 정보라면 새로운 노선을 추가한다.")
         void createLine() throws Exception {
-            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색");
+            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색", 500);
 
             given(lineService.createLine(any(LineCreateRequest.class))).willReturn(1L);
 
@@ -105,9 +94,9 @@ class LineControllerTest {
         }
 
         @Test
-        @DisplayName("이름이 공백이라면 400 상태를 반환한다.")
+        @DisplayName("이름이 존재하지 않으면 400 상태를 반환한다.")
         void createLineWithInvalidName() throws Exception {
-            final LineCreateRequest request = new LineCreateRequest(" ", "초록색");
+            final LineCreateRequest request = new LineCreateRequest(" ", "초록색", 500);
 
             mockMvc.perform(post("/lines")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -118,9 +107,9 @@ class LineControllerTest {
         }
 
         @Test
-        @DisplayName("색이 공백이라면 400 상태를 반환한다.")
+        @DisplayName("색이 존재하지 않으면 400 상태를 반환한다.")
         void createLineWithInvalidColor() throws Exception {
-            final LineCreateRequest request = new LineCreateRequest("2호선", " ");
+            final LineCreateRequest request = new LineCreateRequest("2호선", " ", 500);
 
             mockMvc.perform(post("/lines")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -128,6 +117,32 @@ class LineControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().string("노선 색깔은 공백일 수 없습니다."));
+        }
+
+        @Test
+        @DisplayName("추가 요금이 존재하지 않으면 400 상태를 반환한다.")
+        void createLineWithNotExistFare() throws Exception {
+            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색", null);
+
+            mockMvc.perform(post("/lines")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("노선 추가 요금은 존재해야 합니다."));
+        }
+
+        @Test
+        @DisplayName("추가 요금이 0보다 작으면 400 상태를 반환한다.")
+        void createLineWithNegativeFare() throws Exception {
+            final LineCreateRequest request = new LineCreateRequest("2호선", "초록색", -500);
+
+            mockMvc.perform(post("/lines")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("노선 추가 요금은 0원 이상 가능합니다."));
         }
     }
 
@@ -142,21 +157,18 @@ class LineControllerTest {
                     new StationResponse(1L, "잠실역"),
                     new StationResponse(2L, "잠실새내역")
             );
-            final LineResponse response = new LineResponse(1L, "2호선", "초록색", stations);
+            final LineResponse response = new LineResponse(1L, "2호선", "초록색", 500, stations);
 
             given(lineService.findLineById(1L)).willReturn(response);
 
-            mockMvc.perform(get("/lines/{id}", 1L))
+            final MvcResult mvcResult = mockMvc.perform(get("/lines/{id}", 1L))
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(1))
-                    .andExpect(jsonPath("$.name").value("2호선"))
-                    .andExpect(jsonPath("$.color").value("초록색"))
-                    .andExpect(jsonPath("$.stations", hasSize(2)))
-                    .andExpect(jsonPath("$.stations[0].id").value(1))
-                    .andExpect(jsonPath("$.stations[0].name").value("잠실역"))
-                    .andExpect(jsonPath("$.stations[1].id").value("2"))
-                    .andExpect(jsonPath("$.stations[1].name").value("잠실새내역"));
+                    .andReturn();
+
+            final String jsonResponse = mvcResult.getResponse().getContentAsString(Charset.forName("UTF-8"));
+            final LineResponse result = objectMapper.readValue(jsonResponse, LineResponse.class);
+            assertThat(result).usingRecursiveComparison().isEqualTo(response);
         }
 
         @Test

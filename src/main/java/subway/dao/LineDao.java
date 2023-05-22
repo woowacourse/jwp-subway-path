@@ -17,7 +17,8 @@ public class LineDao {
     private static final RowMapper<LineEntity> ROW_MAPPER = (rs, rowNum) -> new LineEntity(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("fare")
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -27,18 +28,18 @@ public class LineDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
-                .usingColumns("name", "color")
+                .usingColumns("name", "color", "fare")
                 .usingGeneratedKeyColumns("id");
     }
 
     public LineEntity save(final LineEntity lineEntity) {
         final SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(lineEntity);
         final Long lineId = jdbcInsert.executeAndReturnKey(parameterSource).longValue();
-        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor(), lineEntity.getFare());
     }
 
     public Optional<LineEntity> findById(final Long lineId) {
-        final String sql = "SELECT id, name, color FROM line WHERE id = ?";
+        final String sql = "SELECT id, name, color, fare FROM line WHERE id = ?";
         try {
             final LineEntity result = jdbcTemplate.queryForObject(
                     sql,
@@ -52,12 +53,15 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        final String sql = "SELECT id, name, color FROM line";
+        final String sql = "SELECT id, name, color, fare FROM line";
         return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 
     public int update(final LineEntity lineEntity) {
-        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
+        final String sql = "UPDATE line SET name = ?, color = ?, fare = ? WHERE id = ?";
+        return jdbcTemplate.update(
+                sql,
+                lineEntity.getName(), lineEntity.getColor(), lineEntity.getFare(), lineEntity.getId()
+        );
     }
 }

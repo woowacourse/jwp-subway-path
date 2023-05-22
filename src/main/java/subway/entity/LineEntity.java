@@ -8,19 +8,21 @@ public class LineEntity {
     private final Long id;
     private final String name;
     private final String color;
+    private final Integer fare;
 
-    public LineEntity(final String name, final String color) {
-        this(null, name, color);
+    public LineEntity(final String name, final String color, final Integer fare) {
+        this(null, name, color, fare);
     }
 
-    public LineEntity(final Long id, final String name, final String color) {
+    public LineEntity(final Long id, final String name, final String color, final Integer fare) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.fare = fare;
     }
 
     public static LineEntity from(final Line line) {
-        return new LineEntity(line.getId(), line.getName(), line.getColor());
+        return new LineEntity(line.getId(), line.getName(), line.getColor(), line.getFare());
     }
 
     public Long getId() {
@@ -33,6 +35,10 @@ public class LineEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getFare() {
+        return fare;
     }
 
     @Override

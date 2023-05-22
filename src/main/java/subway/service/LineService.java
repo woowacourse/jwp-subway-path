@@ -27,7 +27,7 @@ public class LineService {
 
     @Transactional
     public Long createLine(final LineCreateRequest request) {
-        final Line line = new Line(request.getName(), request.getColor());
+        final Line line = new Line(request.getName(), request.getColor(), request.getFare());
         return lineRepository.save(line).getId();
     }
 
