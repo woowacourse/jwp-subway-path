@@ -15,45 +15,46 @@ public class Sections {
         this.sections = sections;
     }
 
-    public List<Section> findContainsThisStation(Station station) {
+    public List<Section> findContainsStation(Station station) {
         return sections.stream()
                 .filter(section -> section.isContainsStation(station))
                 .collect(Collectors.toList());
     }
 
-    public boolean isContainsThisStation(Station station) {
+    public boolean isContainsStation(Station station) {
         return sections.stream()
                 .anyMatch(section -> section.isContainsStation(station));
     }
 
-    public Optional<Section> findPreviousStationThisStation(Station station) {
+    public Optional<Section> findPreviousStationStation(Station station) {
         return sections.stream()
-                .filter(section -> section.isPreviousStationThisStation(station))
+                .filter(section -> section.isPreviousStationStation(station))
                 .findFirst();
     }
 
-    public Optional<Section> findNextStationThisStation(Station station) {
+    public Optional<Section> findNextStationStation(Station station) {
         return sections.stream()
-                .filter(section -> section.isNextStationThisStation(station))
+                .filter(section -> section.isNextStationStation(station))
                 .findFirst();
     }
 
-    public RouteMap createMap() {
+    public RouteMapInLine createMap(LineProperty lineProperty) {
         Map<Station, List<Path>> map = new HashMap<>();
 
         for (Section section : sections) {
             putIfNotContains(map, section);
-            map.get(section.getPreviousStation()).add(createPath(Direction.UP, section));
-            map.get(section.getNextStation()).add(createPath(Direction.DOWN, section));
+            map.get(section.getPreviousStation()).add(createPath(Direction.UP, lineProperty, section));
+            map.get(section.getNextStation()).add(createPath(Direction.DOWN, lineProperty, section));
         }
 
-        return new RouteMap(map);
+        return new RouteMapInLine(map);
     }
 
-    private Path createPath(Direction direction, Section section) {
+    private Path createPath(Direction direction, LineProperty lineProperty, Section section) {
         if (Direction.UP == direction) {
             return new Path(
                     direction,
+                    lineProperty,
                     section.getNextStation(),
                     Distance.from(section.getDistance())
             );
@@ -61,6 +62,7 @@ public class Sections {
 
         return new Path(
                 direction,
+                lineProperty,
                 section.getPreviousStation(),
                 Distance.from(section.getDistance())
         );

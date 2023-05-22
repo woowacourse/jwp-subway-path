@@ -13,12 +13,14 @@ import subway.controller.dto.request.StationRequest;
 import subway.controller.dto.response.StationResponse;
 import subway.service.StationService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/stations")
 public class StationController {
+
     private final StationService stationService;
 
     public StationController(StationService stationService) {
@@ -26,7 +28,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }

@@ -9,13 +9,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import subway.controller.dto.request.FarePolicyRequest;
 import subway.controller.dto.request.LineRequest;
+import subway.controller.dto.request.PathRequest;
+import subway.controller.dto.response.FarePolicyResponse;
 import subway.controller.dto.response.LineResponse;
+import subway.controller.dto.response.ShortestPathResponse;
 import subway.controller.dto.response.SingleLineResponse;
 import subway.service.LineService;
 import subway.service.dto.LineDto;
 import subway.service.dto.SectionCreateDto;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -46,6 +51,13 @@ public class LineController {
                 .body(lineResponse);
     }
 
+    @PostMapping("/fare-policy")
+    public ResponseEntity<FarePolicyResponse> createFarePolicyInLine(@RequestBody @Valid FarePolicyRequest farePolicyRequest) {
+        FarePolicyResponse farePolicyResponse = lineService.saveFarePolicy(farePolicyRequest);
+        return ResponseEntity.created(URI.create("/lines/" + farePolicyResponse.getId()))
+                .body(farePolicyResponse);
+    }
+
     @GetMapping
     public ResponseEntity<List<SingleLineResponse>> readAllLine() {
         return ResponseEntity.ok(lineService.getAllLine());
@@ -54,6 +66,11 @@ public class LineController {
     @GetMapping("/{id}")
     public ResponseEntity<SingleLineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.getLineById(id));
+    }
+
+    @GetMapping("/path")
+    public ResponseEntity<ShortestPathResponse> findShortestPath(@RequestBody @Valid PathRequest pathRequest) {
+        return ResponseEntity.ok().body(lineService.findShortestPath(pathRequest));
     }
 
 

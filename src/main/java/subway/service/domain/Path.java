@@ -3,13 +3,19 @@ package subway.service.domain;
 public class Path {
 
     private final Direction direction;
+    private final LineProperty lineProperty;
     private final Station nextStation;
     private final Distance distance;
 
-    public Path(Direction direction, Station nextStation, Distance distance) {
+    public Path(Direction direction, LineProperty lineProperty, Station nextStation, Distance distance) {
         this.direction = direction;
+        this.lineProperty = lineProperty;
         this.nextStation = nextStation;
         this.distance = distance;
+    }
+
+    public LineProperty getLineProperty() {
+        return lineProperty;
     }
 
     public Direction getDirection() {
@@ -28,6 +34,7 @@ public class Path {
     public String toString() {
         return "Path{" +
                 "direction=" + direction +
+                ", lineProperty=" + lineProperty +
                 ", nextStation=" + nextStation +
                 ", distance=" + distance +
                 '}';

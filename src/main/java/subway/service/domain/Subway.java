@@ -3,6 +3,7 @@ package subway.service.domain;
 import subway.exception.LineNotFoundException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Subway {
@@ -19,6 +20,14 @@ public class Subway {
                 .collect(Collectors.toList());
     }
 
+    public ShortestPath findShortestPath(Station start, Station end, FarePolicies farePolicies, Age age) {
+        List<Map<Station, List<Path>>> routeMapInLines = lines.stream()
+                .map(line -> line.getLineMap().getMap())
+                .collect(Collectors.toList());
+        RouteMapInSubway routeMapInSubway = RouteMapInSubway.from(routeMapInLines);
+        return routeMapInSubway.getShortestPath(start, end, farePolicies, age);
+    }
+
     public SingleLine getSingleLine(Long lineId) {
         return lines.stream()
                 .filter(line -> line.getLineProperty().getId().equals(lineId))
@@ -28,7 +37,7 @@ public class Subway {
     }
 
     private SingleLine getSingleLine(Line line) {
-        RouteMap lineMap = line.getLineMap();
+        RouteMapInLine lineMap = line.getLineMap();
         return SingleLine.of(line.getLineProperty(), lineMap.getStationsOnLine());
     }
 
