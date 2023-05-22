@@ -1,6 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.dto.LineAndStationsResponse;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class LineService {
 
     private final LineRepository lineRepository;
@@ -39,6 +41,7 @@ public class LineService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<LineAndStationsResponse> findLines() {
         final List<Line> lines = lineRepository.findLines();
         return lines.stream()
@@ -46,6 +49,7 @@ public class LineService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    @Transactional(readOnly = true)
     public LineAndStationsResponse findLineById(final Long id) {
         return LineAndStationsResponse.of(lineRepository.findLineById(id));
     }
@@ -70,3 +74,4 @@ public class LineService {
         sectionRepository.saveUpdatedSections(deletedLine.getSections(), lineId);
     }
 }
+
