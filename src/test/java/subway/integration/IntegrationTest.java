@@ -21,8 +21,8 @@ import subway.controller.dto.request.LineRequest;
 @Sql("/data-test.sql")
 public class IntegrationTest {
 
-    protected final LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-    protected final LineRequest lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+    protected final LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", 1000L);
+    protected final LineRequest lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 900L);
     protected final Map<String, String> stationParam1 = Map.of("name", "강남역");
     protected final Map<String, String> stationParam2 = Map.of("name", "역삼역");
     protected final Map<String, String> stationParam3 = Map.of("name", "삼성역");

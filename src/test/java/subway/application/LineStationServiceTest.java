@@ -63,7 +63,7 @@ class LineStationServiceTest {
         //given
         final Sections sections = new Sections(
             new ArrayList<>(List.of(bottomSection, topSection, midSection)));
-        final Line line = new Line(1L, "name", "color", 0L, sections);
+        final Line line = new Line(1L, "name", "color", 1000L, sections);
         given(lineRepository.findByName(anyString()))
             .willReturn(Optional.of(line));
         given(stationRepository.findByName(anyString()))
@@ -97,7 +97,7 @@ class LineStationServiceTest {
         //given
         final Sections sections = new Sections(
             new ArrayList<>(List.of(bottomSection, topSection, midSection)));
-        final Line line = new Line(1L, "name", "color", 0L, sections);
+        final Line line = new Line(1L, "name", "color", 1000L, sections);
         given(lineRepository.findByName(anyString()))
             .willReturn(Optional.of(line));
         given(stationRepository.findByName(anyString()))
@@ -132,7 +132,7 @@ class LineStationServiceTest {
         //given
         final Sections sections = new Sections(
             new ArrayList<>(List.of(bottomSection, topSection, midSection)));
-        final Line line = new Line(1L, "name", "color", 0L, sections);
+        final Line line = new Line(1L, "name", "color", 1000L, sections);
         given(lineRepository.findByName(anyString()))
             .willReturn(Optional.of(line));
         given(stationRepository.findByName(anyString()))

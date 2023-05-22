@@ -22,7 +22,8 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), 0L));
+        final Line persistLine = lineRepository.save(
+            new Line(request.getName(), request.getColor(), request.getCharge()));
         return LineResponse.of(persistLine);
     }
 
@@ -48,8 +49,9 @@ public class LineService {
     }
 
     @Transactional
-    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        lineRepository.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), 0L));
+    public void updateLine(final Long id, final LineRequest request) {
+        lineRepository.update(new Line(id, request.getName(), request.getColor(),
+            request.getCharge()));
     }
 
     @Transactional
