@@ -1,7 +1,6 @@
 package subway.dto;
 
 import subway.domain.Line;
-import subway.entity.LineEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +9,7 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
-    private List<StationResponse> stationResponses;
+    private List<String> stationResponses;
 
     public LineResponse() {
     }
@@ -21,25 +20,22 @@ public class LineResponse {
         this.color = color;
     }
 
-    public LineResponse(final Long id, final String name, final String color, final List<StationResponse> stationResponses) {
+    public LineResponse(final Long id, final String name, final String color, final List<String> stationResponses) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stationResponses = stationResponses;
     }
 
-    public static LineResponse of(LineEntity line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
-    }
-
     public static LineResponse of(Line line) {
-        if (line.getSections().getSections().size() > 0) {
+        try {
             return new LineResponse(line.getId(), line.getName(), line.getColor(),
                     line.getRoute().stream()
-                            .map(station -> StationResponse.of(station))
+                            .map(station -> station.getName())
                             .collect(Collectors.toList()));
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            return new LineResponse(line.getId(), line.getName(), line.getColor());
         }
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 
     public Long getId() {
@@ -54,17 +50,7 @@ public class LineResponse {
         return color;
     }
 
-    public List<StationResponse> getStationResponses() {
+    public List<String> getStationResponses() {
         return stationResponses;
-    }
-
-    @Override
-    public String toString() {
-        return "LineResponse{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", stationResponses=" + stationResponses +
-                '}';
     }
 }

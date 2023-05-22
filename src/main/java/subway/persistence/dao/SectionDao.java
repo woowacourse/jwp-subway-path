@@ -5,13 +5,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.entity.SectionEntity;
+import subway.persistence.entity.SectionEntity;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class SectionDao {
@@ -22,8 +20,8 @@ public class SectionDao {
     private RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("id"),
-                    rs.getLong("upstation_id"),
-                    rs.getLong("downstation_id"),
+                    rs.getString("upstation"),
+                    rs.getString("downstation"),
                     rs.getLong("line_id"),
                     rs.getLong("distance")
             );
@@ -35,26 +33,15 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public SectionEntity insert(SectionEntity section) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("distance", section.getDistance());
-        params.put("upstation_id", section.getUpStationId());
-        params.put("downstation_id", section.getDownStationId());
-        params.put("line_id", section.getLineId());
-
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new SectionEntity(id, section.getUpStationId(), section.getDownStationId(), section.getLineId(), section.getDistance());
-    }
-
     public void insertAll(List<SectionEntity> sections) {
-        final String sql = "INSERT INTO section (distance, upstation_id, downstation_id, line_id) VALUES (?,?,?,?)";
+        final String sql = "INSERT INTO section (distance, upstation, downstation, line_id) VALUES (?,?,?,?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(final PreparedStatement ps, final int i) throws SQLException {
                 final SectionEntity section = sections.get(i);
                 ps.setLong(1, section.getDistance());
-                ps.setLong(2, section.getUpStationId());
-                ps.setLong(3, section.getDownStationId());
+                ps.setString(2, section.getUpStation());
+                ps.setString(3, section.getDownStation());
                 ps.setLong(4, section.getLineId());
             }
 
@@ -65,18 +52,20 @@ public class SectionDao {
         });
     }
 
-    public List<SectionEntity> findAllByLineId(Long lineId) {
+    public List<SectionEntity> findByLineId(Long lineId) {
         String sql = "SELECT * FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public SectionEntity findById(Long id) {
-        String sql = "SELECT * FROM section WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public List<SectionEntity> findAll() {
+        String sql = "SELECT * FROM section";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void deleteAllByLineId(Long lineId) {
-        String sql = "DELETE FROM section WHERE line_id = ?";
-        jdbcTemplate.update(sql, lineId);
+    public void deleteSections(final List<SectionEntity> sectionEntities) {
+        String sql = "DELETE FROM section WHERE upstation = ? and downstation = ? and distance = ? and line_id = ?";
+        for (SectionEntity section : sectionEntities) {
+            jdbcTemplate.update(sql, section.getUpStation(), section.getDownStation(), section.getDistance(), section.getLineId());
+        }
     }
 }

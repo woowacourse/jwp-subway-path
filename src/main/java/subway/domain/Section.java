@@ -15,10 +15,11 @@ public class Section {
         this.distance = distance;
     }
 
-    public boolean isHavingSameStationWithDirection(final Station targetStation, Direction direction) {
-        if (Direction.UP.equals(direction)){
-            return this.upStation.equals(targetStation);
-        }
+    public boolean isSameUpStation(Station targetStation) {
+        return this.upStation.equals(targetStation);
+    }
+
+    public boolean isSameDownStation(Station targetStation) {
         return this.downStation.equals(targetStation);
     }
 
@@ -45,12 +46,12 @@ public class Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Section section = (Section) o;
-        return Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation);
+        return Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance, section.distance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(upStation, downStation);
+        return Objects.hash(upStation, downStation, distance);
     }
 
     @Override

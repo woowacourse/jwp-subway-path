@@ -7,13 +7,24 @@ public class Line {
     private Long id;
     private final String name;
     private final String color;
-    private final Sections sections;
+    private Sections sections;
 
     public Line(final Long id, final String name, final String color, final Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
+    }
+
+    public Line(final Long id, final String name, final String color) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+    }
+
+    public Line(final String name, final String color) {
+        this.name = name;
+        this.color = color;
     }
 
     public Line(final String name, final String color, final Sections sections) {
