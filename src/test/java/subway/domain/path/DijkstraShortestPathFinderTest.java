@@ -3,7 +3,6 @@ package subway.domain.path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 
@@ -34,12 +33,6 @@ class DijkstraShortestPathFinderTest {
         final Path path = shortestPathFinder.find(sections, start, end);
 
         // then
-        final List<Long> sectionIds = path.getSections().stream()
-                .map(Section::getId)
-                .collect(Collectors.toUnmodifiableList());
-        final List<Long> expectedSectionIds = List.of(5L, 4L, 3L, 2L, 12L, 13L, 14L, 15L);
-        assertThat(sectionIds).isEqualTo(expectedSectionIds);
-
         final List<String> stations = path.getStations().stream()
                 .map(Station::getName)
                 .collect(Collectors.toUnmodifiableList());
@@ -60,12 +53,6 @@ class DijkstraShortestPathFinderTest {
         final Path path = shortestPathFinder.find(sections, start, end);
 
         // then
-        final List<Long> sectionIds = path.getSections().stream()
-                .map(Section::getId)
-                .collect(Collectors.toUnmodifiableList());
-        final List<Long> expectedSectionIds = List.of(17L, 18L, 19L, 20L, 21L, 9L, 8L);
-        assertThat(sectionIds).isEqualTo(expectedSectionIds);
-
         final List<String> stations = path.getStations().stream()
                 .map(Station::getName)
                 .collect(Collectors.toUnmodifiableList());

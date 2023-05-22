@@ -42,11 +42,10 @@ public class TestDomainData {
         final Distance distance = new Distance(1);
 
         final List<Section> sections = new ArrayList<>();
-        long sectionIndex = 1L;
         for (int i = 0; i < 10; i++) {
             final Station previous = stations.get(i);
             final Station next = stations.get(i + 1);
-            sections.add(new Section(sectionIndex++, line1, previous, next, distance));
+            sections.add(new Section(line1, previous, next, distance));
         }
         final List<Station> stationsOfLine2 = new ArrayList<>(stations.subList(12, 21));
         stationsOfLine2.addAll(0, List.of(stations.get(11),stations.get(1)));
@@ -54,7 +53,7 @@ public class TestDomainData {
         for (int i = 0; i < stationsOfLine2.size() - 1; i++) {
             final Station previous = stationsOfLine2.get(i);
             final Station next = stationsOfLine2.get(i + 1);
-            sections.add(new Section(sectionIndex++, line2, previous, next, distance));
+            sections.add(new Section(line2, previous, next, distance));
         }
         return sections;
     }
