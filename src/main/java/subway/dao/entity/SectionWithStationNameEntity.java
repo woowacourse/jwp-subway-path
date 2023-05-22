@@ -4,14 +4,14 @@ public class SectionWithStationNameEntity {
     private final Long sectionId;
     private final StationEntity upStationEntity;
     private final StationEntity downStationEntity;
-    private final int sectionDistance;
+    private final int distance;
 
     public SectionWithStationNameEntity(final Long sectionId, final StationEntity upStationEntity,
-                                        final StationEntity downStationEntity, final int sectionDistance) {
+                                        final StationEntity downStationEntity, final int distance) {
         this.sectionId = sectionId;
         this.upStationEntity = upStationEntity;
         this.downStationEntity = downStationEntity;
-        this.sectionDistance = sectionDistance;
+        this.distance = distance;
     }
 
     public Long getSectionId() {
@@ -26,7 +26,7 @@ public class SectionWithStationNameEntity {
         return downStationEntity;
     }
 
-    public int getSectionDistance() {
-        return sectionDistance;
+    public int getDistance() {
+        return distance;
     }
 }

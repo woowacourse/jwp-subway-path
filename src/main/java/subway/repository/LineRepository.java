@@ -68,12 +68,11 @@ public class LineRepository {
     }
 
     public Lines findAll() {
-        List<LineWithSectionEntities> linesWithSections = lineDao.findLinesWithSections();   // section 리스트를 들고 있는 노선들
+        List<LineWithSectionEntities> linesWithSections = lineDao.findLinesWithSections();
         List<Line> lines = new ArrayList<>();
-        for (LineWithSectionEntities linesWithSection : linesWithSections) {    // 라인 하나 꺼내기
+        for (LineWithSectionEntities linesWithSection : linesWithSections) {
             List<SectionWithStationNameEntity> sectionEntities = linesWithSection.getSectionEntities().stream()
-                    .filter(entity ->
-                            entity.getUpStationId() != 0 && entity.getDownStationId() != 0)
+                    .filter(entity -> entity.getUpStationId() != 0 && entity.getDownStationId() != 0)
                     .map(sectionEntity -> sectionDao.findBySectionIdWithStationName(sectionEntity.getId())
                             .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_SECTION)))
                     .collect(Collectors.toList());
@@ -83,15 +82,16 @@ public class LineRepository {
                             new Station(section.getUpStationEntity().getId(), section.getUpStationEntity().getName()),
                             new Station(section.getDownStationEntity().getId(),
                                     section.getDownStationEntity().getName()),
-                            section.getSectionDistance()
+                            section.getDistance()
                     ))
                     .collect(Collectors.toList());
 
-            // 라인 리스트에 추가
-            lines.add(Line.of(
-                    linesWithSection.getLineEntity().getId(),
-                    linesWithSection.getLineEntity().getName(),
-                    sections)
+            lines.add(
+                    Line.of(
+                            linesWithSection.getLineEntity().getId(),
+                            linesWithSection.getLineEntity().getName(),
+                            sections
+                    )
             );
         }
 

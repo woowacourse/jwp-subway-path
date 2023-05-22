@@ -79,14 +79,27 @@ public class SectionDao {
         }
     }
 
-    public Optional<SectionEntity> findByLineIdAndUpStationIdAndDownStationId(final Long upStationId,
-                                                                              final Long downStationId,
-                                                                              final Long lineId) {
-        final String sql = "SELECT * FROM section "
-                + "WHERE up_station_id = ? AND down_station_id = ? AND line_id = ?";
+    public Optional<SectionWithStationNameEntity> findByLineIdAndUpStationEntityAndDownStationEntity(
+            final Long upStationId,
+            final Long downStationId,
+            final Long lineId
+    ) {
+        final String sql = "SELECT s.id AS id, "
+                + "s.up_station_id AS up_station_id, "
+                + "us.name AS up_station_name, "
+                + "s.down_station_id AS down_station_id, "
+                + "ds.name AS down_station_name, "
+                + "s.line_id AS line_id, "
+                + "s.distance AS distance "
+                + "FROM section s "
+                + "JOIN station us ON s.up_station_id = us.id "
+                + "JOIN station ds ON s.down_station_id = ds.id "
+                + "WHERE s.up_station_id = ? AND s.down_station_id = ? AND s.line_id = ?";
 
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, upStationId, downStationId, lineId));
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(sql, sectionWithStationNameEntityRowMapper, upStationId, downStationId,
+                            lineId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -105,7 +118,8 @@ public class SectionDao {
                 + "WHERE s.id = ?";
         try {
             return Optional.ofNullable(
-                    jdbcTemplate.queryForObject(sql, sectionWithStationNameEntityRowMapper, sectionId));
+                    jdbcTemplate.queryForObject(sql, sectionWithStationNameEntityRowMapper, sectionId)
+            );
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

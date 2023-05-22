@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
+import subway.dao.entity.SectionWithStationNameEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -34,15 +35,15 @@ public class SectionRepository {
     public Section findByLineIdAndUpStationAndDownStation(final Station upStation,
                                                           final Station downStation,
                                                           final Long lineId) {
-        SectionEntity sectionEntity = sectionDao.findByLineIdAndUpStationIdAndDownStationId(upStation.getId(),
-                        downStation.getId(), lineId)
+        SectionWithStationNameEntity sectionEntity = sectionDao.findByLineIdAndUpStationEntityAndDownStationEntity(
+                        upStation.getId(),
+                        downStation.getId(),
+                        lineId
+                )
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_SECTION));
 
-        StationEntity upStationEntity = stationDao.findById(sectionEntity.getUpStationId())
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_STATION));
-
-        StationEntity downStationEntity = stationDao.findById(sectionEntity.getDownStationId())
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_STATION));
+        StationEntity upStationEntity = sectionEntity.getUpStationEntity();
+        StationEntity downStationEntity = sectionEntity.getDownStationEntity();
 
         return Section.of(
                 new Station(upStationEntity.getId(), upStationEntity.getName()),
