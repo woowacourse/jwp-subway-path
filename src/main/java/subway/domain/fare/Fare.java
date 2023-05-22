@@ -1,7 +1,7 @@
 package subway.domain.fare;
 
 import java.util.Objects;
-import subway.exception.InvalidFeeException;
+import subway.exception.InvalidFareException;
 
 public class Fare {
 
@@ -14,7 +14,7 @@ public class Fare {
 
     private void validate(int value) {
         if (value < 0) {
-            throw new InvalidFeeException("요금은 음수가 될 수 없습니다.");
+            throw new InvalidFareException("요금은 음수가 될 수 없습니다.");
         }
     }
 
