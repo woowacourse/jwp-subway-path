@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.domain.fare.FarePolicy;
 import subway.domain.line.Line;
 import subway.domain.line.Station;
 import subway.dto.path.ShortestPathSelectResponse;
@@ -24,8 +23,7 @@ class PathServiceTest {
 
     LineRepository lineRepository = mock(LineRepository.class);
     StationRepository stationRepository = mock(StationRepository.class);
-    FarePolicy farePolicy = new FarePolicy();
-    PathService pathService = new PathService(lineRepository, stationRepository, farePolicy);
+    PathService pathService = new PathService(lineRepository, stationRepository);
 
     private final List<Line> lines = List.of(
             new Line("2호선",

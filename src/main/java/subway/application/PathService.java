@@ -18,14 +18,11 @@ public class PathService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
-    private final FarePolicy farePolicy;
 
     public PathService(final LineRepository lineRepository,
-                       final StationRepository stationRepository,
-                       final FarePolicy farePolicy) {
+                       final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.farePolicy = farePolicy;
     }
 
     public ShortestPathSelectResponse findShortestPath(final Long sourceStationId, final Long targetStationId) {
@@ -39,7 +36,8 @@ public class PathService {
 
         final List<Station> shortestPath = subwayGraph.findShortestPath(sourceStation, targetStation);
         final int shortestDistance = subwayGraph.calculateShortestDistance(sourceStation, targetStation);
-        final Fare fare = new Fare(farePolicy, shortestDistance);
+        final FarePolicy farePolicy = FarePolicy.of(shortestDistance);
+        final Fare fare = farePolicy.calculateFare(shortestDistance);
 
         return new ShortestPathSelectResponse(
                 StationSelectResponse.from(shortestPath),

@@ -1,20 +1,21 @@
 package subway.domain.fare;
 
 import java.util.Objects;
-import subway.exception.section.DistanceNotPositiveException;
+import subway.exception.InvalidFareValueException;
 
 public class Fare {
+    private static final int MIN_VALUE = 1_250;
 
     private final int value;
 
-    public Fare(final FarePolicy farePolicy, final int distance) {
-        validateDistance(distance);
-        this.value = farePolicy.calculateFare(distance);
+    public Fare(final int value) {
+        validateLowerThanMinimumValue(value);
+        this.value = value;
     }
 
-    private void validateDistance(final int distance) {
-        if (distance <= 0) {
-            throw new DistanceNotPositiveException("거리는 0 이하일 수 없습니다.");
+    private void validateLowerThanMinimumValue(final int value) {
+        if (value < MIN_VALUE) {
+            throw new InvalidFareValueException("최소 운임보다 적은 금액입니다.");
         }
     }
 

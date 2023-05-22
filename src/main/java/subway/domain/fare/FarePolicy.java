@@ -1,30 +1,48 @@
 package subway.domain.fare;
 
-import org.springframework.stereotype.Component;
+import java.util.Arrays;
+import java.util.function.Function;
 
-@Component
-public class FarePolicy {
-    private static final int FARE_INCREASE_UNIT = 100;
+public enum FarePolicy {
 
-    private static final int DEFAULT_FARE = 1_250;
-    private static final int DEFAULT_DISTANCE = 10;
+    DEFAULT(0, 10, 1_250, (distance) -> 0),
+    MIDDLE_DISTANCE(10, 50, DEFAULT.defaultFare, (extraDistance) -> calculateExtraFare(extraDistance, 5)),
+    LONG_DISTANCE(50, Integer.MAX_VALUE, 2_050, (extraDistance) -> calculateExtraFare(extraDistance, 8)),;
 
-    private static final double MID_DISTANCE_UNIT = 5;
-    private static final int MID_DISTANCE = 50;
-    private static final int MID_DISTANCE_MAXIMUM_EXTRA_FARE = 800;
+    private final int minDistance;
 
-    private static final int LONG_DISTANCE_UNIT = 8;
+    private final int maxDistance;
+    private final int defaultFare;
+    private final Function<Integer, Integer> extraFareByDistance;
 
-
-    public int calculateFare(int distance) {
-        if (distance < DEFAULT_DISTANCE) {
-            return DEFAULT_FARE;
-        }
-        int midDistanceExtraFare = (int) Math.ceil((double) (distance - DEFAULT_DISTANCE) / MID_DISTANCE_UNIT) * FARE_INCREASE_UNIT;
-        if (distance < MID_DISTANCE) {
-            return DEFAULT_FARE + midDistanceExtraFare;
-        }
-        int longDistanceExtraFare = (int) Math.ceil((double) (distance - MID_DISTANCE) / LONG_DISTANCE_UNIT) * FARE_INCREASE_UNIT;
-        return DEFAULT_FARE + MID_DISTANCE_MAXIMUM_EXTRA_FARE + longDistanceExtraFare;
+    FarePolicy(final int minDistance,
+               final int maxDistance,
+               final int defaultFare,
+               final Function<Integer, Integer> extraFareByDistance) {
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
+        this.defaultFare = defaultFare;
+        this.extraFareByDistance = extraFareByDistance;
     }
+
+    public static FarePolicy of(int distance) {
+        return Arrays.stream(values())
+                .filter(farePolicy -> farePolicy.coversRangeOf(distance))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 거리에는 운임이 부과될 수 없습니다."));
+    }
+
+    public Fare calculateFare(int distance) {
+        final Integer extraFare = extraFareByDistance.apply(distance - minDistance);
+        return new Fare(defaultFare + extraFare);
+    }
+
+    private boolean coversRangeOf(int distance) {
+        return distance > minDistance && distance <= maxDistance;
+    }
+
+    private static Integer calculateExtraFare(final int extraDistance, final int extraFareDistanceUnit) {
+        return (int) Math.ceil((double) extraDistance / extraFareDistanceUnit) * 100;
+    }
+
 }
