@@ -2,6 +2,7 @@ package subway.domain.section;
 
 import subway.domain.station.Station;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -155,7 +156,7 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
     public boolean isEmpty() {
