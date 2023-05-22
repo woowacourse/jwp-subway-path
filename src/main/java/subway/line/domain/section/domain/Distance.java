@@ -34,6 +34,14 @@ public class Distance {
         return value;
     }
 
+    public boolean isMoreThanOrEquals(Distance distance) {
+        return distance.value <= this.value;
+    }
+
+    public boolean isLessThanOrEquals(Distance distance) {
+        return this.value <= distance.value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -52,13 +60,5 @@ public class Distance {
         return "Distance{" +
                 "value=" + value +
                 '}';
-    }
-
-    public boolean isMoreThanOrEquals(Distance distance) {
-        return distance.value <= this.value;
-    }
-
-    public boolean isLessThanOrEquals(Distance distance) {
-        return this.value <= distance.value;
     }
 }
