@@ -38,7 +38,7 @@ public class LineService {
         lineRepository.insert(line);
     }
 
-    private Section generateSection(@Valid EnrollStationCommand command) {
+    private Section generateSection(EnrollStationCommand command) {
         return new Section(
                 stationRepository.findById(command.getUpBound()),
                 stationRepository.findById(command.getDownBound()),
