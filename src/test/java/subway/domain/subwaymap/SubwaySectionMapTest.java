@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import subway.domain.section.Section;
 
-class SectionMapTest {
+class SubwaySectionMapTest {
 
     static Stream<Arguments> getSections() {
         return Stream.of(
@@ -31,8 +31,8 @@ class SectionMapTest {
     @ParameterizedTest
     @MethodSource("getSections")
     void getSections(final List<Section> sections) {
-        final SectionMap sectionMap = SectionMap.of(List.of(LINE1), sections);
-        assertThat(sectionMap.getSections(1L).getSections()).containsExactly(
+        final SubwaySectionMap subwaySectionMap = SubwaySectionMap.of(List.of(LINE1), sections);
+        assertThat(subwaySectionMap.getSections(1L).getSections()).containsExactly(
                 SECTIONS1.get(0),
                 SECTIONS1.get(1),
                 SECTIONS1.get(2),
@@ -45,9 +45,9 @@ class SectionMapTest {
     @DisplayName("모든 id에 대해 노선의 모든 구간 조회")
     @Test
     void getAllSections() {
-        final SectionMap sectionMap = SectionMap.of(List.of(LINE1, LINE2), SECTIONS4);
+        final SubwaySectionMap subwaySectionMap = SubwaySectionMap.of(List.of(LINE1, LINE2), SECTIONS4);
         assertAll(
-                () -> assertThat(sectionMap.getSections(LINE1.getId()).getSections()).containsExactly(
+                () -> assertThat(subwaySectionMap.getSections(LINE1.getId()).getSections()).containsExactly(
                         SECTIONS4.get(0),
                         SECTIONS4.get(1),
                         SECTIONS4.get(2),
@@ -55,7 +55,7 @@ class SectionMapTest {
                         SECTIONS4.get(4),
                         SECTIONS4.get(5)
                 ),
-                () -> assertThat(sectionMap.getSections(LINE2.getId()).getSections()).containsExactly(
+                () -> assertThat(subwaySectionMap.getSections(LINE2.getId()).getSections()).containsExactly(
                         SECTIONS4.get(6),
                         SECTIONS4.get(7),
                         SECTIONS4.get(8),

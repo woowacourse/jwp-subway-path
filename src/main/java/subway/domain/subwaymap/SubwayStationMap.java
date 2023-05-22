@@ -10,27 +10,27 @@ import subway.domain.graph.StationGraph;
 import subway.domain.line.Line;
 import subway.domain.line.Lines;
 import subway.domain.section.Section;
-import subway.domain.section.Sections;
+import subway.domain.station.Stations;
 
-public class SectionMap {
+public class SubwayStationMap {
 
     private final Lines lines;
-    private final Map<Line, Sections> sectionsByLine;
+    private final Map<Line, Stations> stationsByLine;
 
-    private SectionMap(final Lines lines, final Map<Line, Sections> sectionsByLine) {
+    private SubwayStationMap(final Lines lines, final Map<Line, Stations> stationsByLine) {
         this.lines = lines;
-        this.sectionsByLine = sectionsByLine;
+        this.stationsByLine = stationsByLine;
     }
 
-    public static SectionMap of(final List<Line> lines, final List<Section> sections) {
-        final SectionMap sectionMap = new SectionMap(Lines.of(lines), new HashMap<>());
+    public static SubwayStationMap of(final List<Line> lines, final List<Section> sections) {
+        final SubwayStationMap subwayStationMap = new SubwayStationMap(Lines.of(lines), new HashMap<>());
         final StationGraph stationGraph = StationGraph.of(sections);
 
-        sectionMap.createAllSections(stationGraph, sections);
-        return sectionMap;
+        subwayStationMap.createAllStations(stationGraph, sections);
+        return subwayStationMap;
     }
 
-    private void createAllSections(final StationGraph stationGraph, final List<Section> sections) {
+    private void createAllStations(final StationGraph stationGraph, final List<Section> sections) {
         final Set<Long> lineIds = new HashSet<>();
 
         for (final Section section : sections) {
@@ -39,7 +39,7 @@ public class SectionMap {
                 continue;
             }
             lineIds.add(lineId);
-            sectionsByLine.put(lines.getLine(lineId), stationGraph.findSections(section));
+            stationsByLine.put(lines.getLine(lineId), stationGraph.findStations(section));
         }
     }
 
@@ -51,10 +51,10 @@ public class SectionMap {
         return lines.getAllIds();
     }
 
-    public Sections getSections(final Long lineId) {
+    public Stations getStations(final Long lineId) {
         final Line line = lines.getLine(lineId);
-        if (sectionsByLine.containsKey(line)) {
-            return sectionsByLine.get(line);
+        if (stationsByLine.containsKey(line)) {
+            return stationsByLine.get(line);
         }
         throw new IllegalArgumentException("존재하지 않는 노선입니다.");
     }

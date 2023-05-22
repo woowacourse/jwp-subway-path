@@ -10,8 +10,8 @@ import subway.dao.SectionDao;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
-import subway.domain.subwaymap.SectionMap;
-import subway.domain.subwaymap.StationMap;
+import subway.domain.subwaymap.SubwaySectionMap;
+import subway.domain.subwaymap.SubwayStationMap;
 import subway.dto.LineResponseWithSections;
 import subway.dto.LineResponseWithStations;
 
@@ -27,52 +27,52 @@ public class SubwayMapService {
     }
 
     public List<LineResponseWithStations> getLineResponsesWithStations() {
-        final StationMap stationMap = getSubwayMap();
-        final Set<Long> lineIds = stationMap.getAllLineIds();
+        final SubwayStationMap subwayStationMap = getSubwayMap();
+        final Set<Long> lineIds = subwayStationMap.getAllLineIds();
         return lineIds.stream()
-                .map(lineId -> getLineResponseWithStations(lineId, stationMap))
+                .map(lineId -> getLineResponseWithStations(lineId, subwayStationMap))
                 .collect(Collectors.toList());
     }
 
     public LineResponseWithStations getLineResponseWithStations(final Long lineId) {
-        final StationMap stationMap = getSubwayMap();
-        return getLineResponseWithStations(lineId, stationMap);
+        final SubwayStationMap subwayStationMap = getSubwayMap();
+        return getLineResponseWithStations(lineId, subwayStationMap);
     }
 
-    private LineResponseWithStations getLineResponseWithStations(final Long lineId, final StationMap stationMap) {
-        final Line line = stationMap.getLine(lineId);
-        final List<Station> stations = stationMap.getStations(lineId).getStations();
+    private LineResponseWithStations getLineResponseWithStations(final Long lineId, final SubwayStationMap subwayStationMap) {
+        final Line line = subwayStationMap.getLine(lineId);
+        final List<Station> stations = subwayStationMap.getStations(lineId).getStations();
         return new LineResponseWithStations(line.getId(), line.getName(), line.getColor(), stations);
     }
 
     public List<LineResponseWithSections> getLineResponsesWithSections() {
-        final SectionMap sectionMap = getSectionMap();
-        final Set<Long> lineIds = sectionMap.getAllLineIds();
+        final SubwaySectionMap subwaySectionMap = getSectionMap();
+        final Set<Long> lineIds = subwaySectionMap.getAllLineIds();
         return lineIds.stream()
-                .map(lineId -> getLineResponseWithSections(lineId, sectionMap))
+                .map(lineId -> getLineResponseWithSections(lineId, subwaySectionMap))
                 .collect(Collectors.toList());
     }
 
     public LineResponseWithSections getLineResponseWithSections(final Long lineId) {
-        final SectionMap sectionMap = getSectionMap();
-        return getLineResponseWithSections(lineId, sectionMap);
+        final SubwaySectionMap subwaySectionMap = getSectionMap();
+        return getLineResponseWithSections(lineId, subwaySectionMap);
     }
 
-    private LineResponseWithSections getLineResponseWithSections(final Long lineId, final SectionMap sectionMap) {
-        final Line line = sectionMap.getLine(lineId);
-        final List<Section> sections = sectionMap.getSections(lineId).getSections();
+    private LineResponseWithSections getLineResponseWithSections(final Long lineId, final SubwaySectionMap subwaySectionMap) {
+        final Line line = subwaySectionMap.getLine(lineId);
+        final List<Section> sections = subwaySectionMap.getSections(lineId).getSections();
         return new LineResponseWithSections(line.getId(), line.getName(), line.getColor(), sections);
     }
 
-    private StationMap getSubwayMap() {
+    private SubwayStationMap getSubwayMap() {
         final List<Line> lines = lineDao.findAll();
         final List<Section> sections = sectionDao.findAll();
-        return StationMap.of(lines, sections);
+        return SubwayStationMap.of(lines, sections);
     }
 
-    private SectionMap getSectionMap() {
+    private SubwaySectionMap getSectionMap() {
         final List<Line> lines = lineDao.findAll();
         final List<Section> sections = sectionDao.findAll();
-        return SectionMap.of(lines, sections);
+        return SubwaySectionMap.of(lines, sections);
     }
 }
