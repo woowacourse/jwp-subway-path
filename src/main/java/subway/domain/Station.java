@@ -12,6 +12,10 @@ public class Station {
         this.name = name;
     }
 
+    public Station(String name) {
+        this(null, name);
+    }
+
     public boolean isEqualsTo(long otherId) {
         return this.id.equals(otherId);
     }

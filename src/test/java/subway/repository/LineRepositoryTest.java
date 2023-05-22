@@ -11,6 +11,11 @@ import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 
+import java.util.Collections;
+
+import static subway.fixture.StationFixture.강남1;
+import static subway.fixture.StationFixture.잠실2;
+
 @SpringBootTest
 class LineRepositoryTest {
 
@@ -29,15 +34,15 @@ class LineRepositoryTest {
 
     @Test
     void findById() {
-        LineEntity lineEntity = new LineEntity("신림선", "노랑");
+        Line lineEntity = new Line("신림선", "노랑", Collections.emptyList());
         LineEntity line1 = lineDao.insert(lineEntity);
 
         System.out.println("라인" + line1.getId() + line1.getColor() + line1.getName());
 
         StationEntity stationEntity = new StationEntity("신림");
         StationEntity stationEntity1 = new StationEntity("당곡");
-        stationDao.insert(stationEntity);
-        stationDao.insert(stationEntity1);
+        lineRepository.saveStation(강남1);
+        lineRepository.saveStation(잠실2);
 
         SectionEntity section = new SectionEntity(line1.getId(), 1, 2, 4);
         SectionEntity section1 = sectionDao.insert(section);

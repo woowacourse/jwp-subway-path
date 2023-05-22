@@ -17,7 +17,7 @@ class LineTest {
         Section section = new Section(station, station2, new Distance(3), 2);
         Line line = new Line(1L, "2호선", "초록", new ArrayList<>(List.of(section)));
 
-        AddSectionStrategy addSectionStrategy = line.preprocess(new Station(1L, "신림"), new Station(3L, "서울대"), new UpStrategy(), 2);
+        AddSectionStrategy addSectionStrategy = line.readyToSave(new Station(1L, "신림"), new Station(3L, "서울대"), new UpStrategy(), 2);
         System.out.println(addSectionStrategy.getClass());
     }
 }

@@ -1,15 +1,18 @@
 package subway.dao;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import subway.domain.Line;
 import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class LineDao {
@@ -30,14 +33,14 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public LineEntity insert(LineEntity lineEntity) {
+    public LineEntity insert(Line line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", lineEntity.getId());
-        params.put("name", lineEntity.getName());
-        params.put("color", lineEntity.getColor());
+        params.put("id", line.getId());
+        params.put("name", line.getName());
+        params.put("color", line.getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(lineId, line.getName(), line.getColor());
     }
 
     public List<LineEntity> findAll() {
@@ -50,12 +53,21 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(LineEntity newLineEntity) {
+    public void update(Line line) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId());
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
     }
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public Optional<LineEntity> findByName(String name) {
+        String sql = "select id, name, color LINE WHERE name = ?";
+        try{
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        } catch (DataAccessException e){
+            return Optional.empty();
+        }
     }
 }

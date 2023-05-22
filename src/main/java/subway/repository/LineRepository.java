@@ -16,9 +16,10 @@ import subway.exception.InvalidInputException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Repository
 public class LineRepository {
@@ -47,7 +48,7 @@ public class LineRepository {
                         sectionInLine.get(lineEntity.getId()),
                         stationEntities)
                 )
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public Station findStationById(long stationId) {
@@ -97,5 +98,55 @@ public class LineRepository {
 
     public void removeSectionById(long id) {
         sectiondao.deleteById(id);
+    }
+
+    public Station saveStation(Station station) {
+        StationEntity stationEntity = stationDao.insert(station);
+        return new Station(stationEntity.getId(), stationEntity.getName());
+    }
+
+    public List<Station> findAllStations() {
+        List<StationEntity> allStationEntities = stationDao.findAll();
+        return allStationEntities.stream()
+                .map(entity -> new Station(entity.getId(), entity.getName()))
+                .collect(toList());
+    }
+
+    public void updateStation(Station station) {
+        stationDao.update(station.getName(), station.getId());
+    }
+
+    public void removeStationById(Long id) {
+        sectiondao.deleteById(id);
+    }
+
+    public LineEntity saveLine(Line line) {
+        return lineDao.insert(line);
+    }
+
+    public Optional<Long> findByName(String name) {
+        return lineDao.findByName(name)
+                .map(LineEntity::getId);
+    }
+
+    public Optional<Long> findStationByName(String name) {
+        return stationDao.findByName(name)
+                .map(StationEntity::getId);
+    }
+
+    public void removeLineById(Long id) {
+        lineDao.deleteById(id);
+    }
+
+    public LineEntity findOnlyLineBy(Long id) {
+        return lineDao.findById(id);
+    }
+
+    public List<LineEntity> findOnlyLines() {
+        return lineDao.findAll();
+    }
+
+    public void updateLine(Line line) {
+        lineDao.update(line);
     }
 }

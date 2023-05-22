@@ -29,6 +29,10 @@ public class Line {
         this.sections = sections;
     }
 
+    public Line(String name, String color, List<Section> sections) {
+        this(null, name, color, sections);
+    }
+
 
     public long getId() {
         return id;
