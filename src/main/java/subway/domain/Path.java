@@ -6,6 +6,11 @@ public class Path {
 
     public static final int BASIC_FEE = 1250;
     public static final int OVER_FEE = 100;
+    public static final int BASE_DISTANCE = 10;
+    public static final int OVER_DISTANCE = 50;
+    public static final int OVER_UNIT = 5;
+    public static final int MOST_OVER_UNIT = 8;
+    public static final int OVER_DISTANCE_FEE = 800;
     private final List<String> pathStations;
     private final int distance;
     private final int fee;
@@ -17,21 +22,21 @@ public class Path {
     }
 
     private int calculateFee(final int distance) {
-        if (distance <= 10) {
+        if (distance <= BASE_DISTANCE) {
             return BASIC_FEE;
         }
-        if (distance <= 50) {
-            return BASIC_FEE + calculateOverFee(distance - 10);
+        if (distance <= OVER_DISTANCE) {
+            return BASIC_FEE + calculateOverFee(distance - BASE_DISTANCE);
         }
-        return BASIC_FEE + calculateMostOverFee(distance - 50);
+        return BASIC_FEE + calculateMostOverFee(distance - OVER_DISTANCE);
     }
 
     private int calculateOverFee(final int overDistance) {
-        return (int) ((Math.ceil((overDistance - 1) / 5) + 1) * OVER_FEE);
+        return (int) ((Math.ceil((overDistance - 1) / OVER_UNIT) + 1) * OVER_FEE);
     }
 
     private int calculateMostOverFee(final int overDistance) {
-        return 800 + (int) ((Math.ceil((overDistance - 1) / 8) + 1) * OVER_FEE);
+        return OVER_DISTANCE_FEE + (int) ((Math.ceil((overDistance - 1) / MOST_OVER_UNIT) + 1) * OVER_FEE);
     }
 
 
