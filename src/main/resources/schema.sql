@@ -2,14 +2,14 @@ DROP TABLE if exists STATION;
 DROP TABLE if exists LINE;
 DROP TABLE if exists SECTIONS;
 
-create table if not exists STATION
+create table STATION
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
     primary key(id)
 );
 
-create table if not exists LINE
+create table LINE
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
@@ -17,7 +17,7 @@ create table if not exists LINE
     primary key(id)
 );
 
-create table if not exists SECTIONS
+create table SECTIONS
 (
     up_id bigint not null,
     down_id bigint not null,
