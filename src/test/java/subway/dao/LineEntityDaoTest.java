@@ -13,7 +13,6 @@ import subway.entity.LineEntity;
 import subway.exception.NoSuchLineException;
 import subway.fixture.LineFixture.이호선;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +28,16 @@ class LineEntityDaoTest {
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("cost")
             );
+
+    private final Map<String, Object> params = Map.of(
+            "name", "2호선",
+            "color", "GREEN",
+            "cost", 0
+    );
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
@@ -54,8 +61,8 @@ class LineEntityDaoTest {
 
     @Test
     void 전체_조회_테스트() {
-        jdbcTemplate.update("INSERT INTO line(name, color) VALUES (?,?)", "2호선", "GREEN");
-        jdbcTemplate.update("INSERT INTO line(name, color) VALUES (?,?)", "3호선", "ORANGE");
+        jdbcTemplate.update("INSERT INTO line(name, color, cost) VALUES (?,?,?)", "2호선", "GREEN", 0);
+        jdbcTemplate.update("INSERT INTO line(name, color, cost) VALUES (?,?,?)", "3호선", "ORANGE", 0);
         List<LineEntity> lineEntities = lineDao.findAll();
         assertAll(
                 () -> assertThat(lineEntities)
@@ -68,10 +75,6 @@ class LineEntityDaoTest {
 
     @Test
     void 아이디로_조회_테스트() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "2호선");
-        params.put("color", "GREEN");
-
         Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         LineEntity lineEntity = lineDao.findById(lineId)
@@ -85,10 +88,6 @@ class LineEntityDaoTest {
 
     @Test
     void 갱신_테스트() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "2호선");
-        params.put("color", "GREEN");
-
         Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         lineDao.update(new LineEntity(lineId, "3호선", "ORANGE"));
@@ -102,10 +101,6 @@ class LineEntityDaoTest {
 
     @Test
     void 삭제_테스트() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "2호선");
-        params.put("color", "GREEN");
-
         Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         lineDao.deleteById(lineId);

@@ -10,12 +10,15 @@ public class LineRequest {
     @NotNull(message = "라인 이름은 비어있을 수 없습니다. 입력값 : ${validatedValue}")
     private String color;
 
+    private int cost;
+
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color) {
+    public LineRequest(String name, String color, int cost) {
         this.name = name;
         this.color = color;
+        this.cost = cost;
     }
 
     public String getName() {
@@ -26,4 +29,7 @@ public class LineRequest {
         return color;
     }
 
+    public int getCost() {
+        return cost;
+    }
 }

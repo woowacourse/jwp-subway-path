@@ -18,14 +18,14 @@ public class LineMapper {
         List<StationResponse> stations = line.findOrderedStation().stream()
                 .map(StationMapper::toResponse)
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getCost(), stations);
     }
 
     public static Line toLine(LineRequest request) {
-        return new Line(request.getName(), request.getColor());
+        return new Line(request.getName(), request.getColor(), request.getCost());
     }
 
     public static LineEntity toEntity(Line line) {
-        return new LineEntity(line.getId(), line.getName(), line.getColor());
+        return new LineEntity(line.getId(), line.getName(), line.getColor(), line.getCost());
     }
 }
