@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.domain.Line;
 import subway.line.domain.LineRepository;
+import subway.line.domain.ShortestPathFinder;
 import subway.line.dto.ShortestPathRequest;
 import subway.line.dto.ShortestPathResponse;
 import subway.station.domain.Station;

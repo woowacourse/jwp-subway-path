@@ -1,4 +1,4 @@
-package subway.line.service;
+package subway.line.persistence;
 
 import static subway.line.domain.FareCriteria.FIRST_SECTION;
 import static subway.line.domain.FareCriteria.SECOND_SECTION;
@@ -15,13 +15,14 @@ import org.springframework.stereotype.Component;
 import subway.line.domain.FareCriteria;
 import subway.line.domain.Line;
 import subway.line.domain.LineNameKey;
+import subway.line.domain.ShortestPathFinder;
 import subway.line.dto.ShortestPathResponse;
 import subway.line.dto.TraverseStationDto;
 import subway.section.domain.Section;
 import subway.station.domain.Station;
 
 @Component
-public class JgraphtShortestPathFinder implements ShortestPathFinder{
+public class JgraphtShortestPathFinder implements ShortestPathFinder {
 
   private static final int DEFAULT_FARE = 1250;
   private static final int ADDITIONAL_FARE = 100;

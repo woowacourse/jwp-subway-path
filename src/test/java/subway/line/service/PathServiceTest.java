@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.line.domain.Line;
 import subway.line.domain.LineRepository;
+import subway.line.domain.ShortestPathFinder;
 import subway.line.dto.ShortestPathRequest;
 import subway.line.dto.ShortestPathResponse;
 import subway.line.dto.TraverseStationDto;

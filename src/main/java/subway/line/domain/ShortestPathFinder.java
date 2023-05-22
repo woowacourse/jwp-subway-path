@@ -1,4 +1,4 @@
-package subway.line.service;
+package subway.line.domain;
 
 import java.util.List;
 import subway.line.domain.Line;
