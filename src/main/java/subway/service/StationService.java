@@ -102,7 +102,7 @@ public class StationService {
                          .filter(origin -> updatedSection.stream().noneMatch(origin::isSame))
                          .filter(origin -> !origin.equals(section))
                          .findFirst()
-                         .ifPresent(origin -> sectionCommandService.deleteSection(origin.getId()));
+                         .ifPresent(origin -> sectionCommandService.deleteSectionById(origin.getId()));
         };
     }
 
@@ -113,6 +113,6 @@ public class StationService {
         return () -> originSection.stream()
                                   .filter(section -> updatedSection.stream().noneMatch(section::isSame))
                                   .findFirst()
-                                  .ifPresent(section -> sectionCommandService.deleteSection(section.getId()));
+                                  .ifPresent(section -> sectionCommandService.deleteSectionById(section.getId()));
     }
 }

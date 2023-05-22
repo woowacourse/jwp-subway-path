@@ -61,7 +61,7 @@ public class SectionCommandService {
         sectionDao.deleteAll(lineId);
     }
 
-    public void deleteSection(final Long sectionId) {
+    public void deleteSectionById(final Long sectionId) {
         sectionDao.deleteById(sectionId);
     }
 
