@@ -1,10 +1,11 @@
 package subway.domain;
 
 import java.util.Objects;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.exception.ErrorCode;
 import subway.exception.InvalidException;
 
-public class Section {
+public class Section extends DefaultWeightedEdge {
     public static final int MIN_DISTANCE = 0;
 
     private final Station upStation;
