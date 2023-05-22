@@ -1,5 +1,6 @@
 package subway.domain.line;
 
+import java.util.Objects;
 import org.springframework.util.Assert;
 
 public class LineName {
@@ -24,5 +25,24 @@ public class LineName {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LineName)) {
+            return false;
+        }
+
+        LineName lineName = (LineName) o;
+
+        return Objects.equals(name, lineName.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 }
