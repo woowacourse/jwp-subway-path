@@ -28,7 +28,7 @@ GET http://localhost:8080/lines/1
 ### GET /lines/sections : 모든 노선 구간으로 조회
 GET http://localhost:8080/lines/sections
 
-### GET /lines/sections/{id} : 노선 구간으로 조회
+### GET /lines/sections/{lineId} : 노선 구간으로 조회
 GET http://localhost:8080/lines/sections/1
 
 ### PUT /lines/{id} : 노선 수정

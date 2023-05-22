@@ -78,9 +78,9 @@ public class LineController {
         return ResponseEntity.ok(subwayMapService.getLineResponsesWithSections());
     }
 
-    @GetMapping("/sections/{id}")
-    public ResponseEntity<LineResponseWithSections> findLineWithSections(@PathVariable final Long id) {
-        return ResponseEntity.ok(subwayMapService.getLineResponseWithSections(id));
+    @GetMapping("/sections/{lineId}")
+    public ResponseEntity<LineResponseWithSections> findLineWithSections(@PathVariable final Long lineId) {
+        return ResponseEntity.ok(subwayMapService.getLineResponseWithSections(lineId));
     }
 
     @PutMapping("/{id}")
