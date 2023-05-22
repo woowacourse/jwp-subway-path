@@ -2,11 +2,9 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.domain.LineRepository;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.domain.SubwayGraph;
+import subway.domain.*;
 import subway.domain.fare.FareCalculator;
+import subway.domain.graph.JgraphtGraph;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
 import subway.dto.StationResponse;
@@ -32,13 +30,13 @@ public class PathService {
     public ShortestPathResponse findShortestPath(final ShortestPathRequest shortestPathRequest) {
         List<Section> sections = lineRepository.findSectionsWithSort();
         Map<Long, Station> stationMap = makeStationMap(stationDao.findAll());
-        SubwayGraph subwayGraph = new SubwayGraph(sections);
+        JgraphtGraph jgraphtGraph = new JgraphtGraph(sections);
 
         Station upStation = stationMap.get(shortestPathRequest.getSrcStationId());
         Station downStation = stationMap.get(shortestPathRequest.getDstStationId());
 
-        List<Station> dijkstraShortestPath = subwayGraph.getDijkstraShortestPath(upStation, downStation);
-        int shortestPathWeight = subwayGraph.getShortestPathWeight(upStation, downStation);
+        List<Station> dijkstraShortestPath = jgraphtGraph.findShortestPath(upStation, downStation);
+        int shortestPathWeight = jgraphtGraph.findShortestPathWeight(upStation, downStation);
         int fare = fareCalculator.calculateFare(shortestPathWeight);
 
         List<StationResponse> dijkstraShortestPathStations = dijkstraShortestPath.stream()
