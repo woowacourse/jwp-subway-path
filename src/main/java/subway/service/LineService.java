@@ -9,7 +9,6 @@ import subway.domain.Line;
 import subway.domain.LineName;
 import subway.domain.Station;
 import subway.domain.section.Section;
-import subway.domain.section.Sections;
 import subway.persistence.repository.LineRepository;
 import subway.service.dto.LineRequest;
 import subway.service.dto.LineResponse;
@@ -52,10 +51,7 @@ public class LineService {
         final Section section = createSections(request);
         final Line addedLine = line.addSection(section);
 
-        final Sections deleteSections = line.getSections().getDifferenceOfSet(addedLine.getSections());
-        final Sections insertSections = addedLine.getSections().getDifferenceOfSet(line.getSections());
-
-        lineRepository.updateSections(deleteSections.getSections(), insertSections.getSections(), lineId);
+        lineRepository.updateLine(line, addedLine);
     }
 
     @Transactional
@@ -65,10 +61,7 @@ public class LineService {
         final Station station = stationService.findStationByName(request.getName());
         final Line deletedLine = line.removeStation(station);
 
-        final Sections deleteSections = line.getSections().getDifferenceOfSet(deletedLine.getSections());
-        final Sections insertSections = deletedLine.getSections().getDifferenceOfSet(line.getSections());
-
-        lineRepository.updateSections(deleteSections.getSections(), insertSections.getSections(), lineId);
+        lineRepository.updateLine(line, deletedLine);
     }
 
     private Section createSections(final SectionRequest request) {

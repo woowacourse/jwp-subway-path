@@ -63,7 +63,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")

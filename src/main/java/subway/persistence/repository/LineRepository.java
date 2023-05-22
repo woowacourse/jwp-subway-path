@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.LineName;
-import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
@@ -46,9 +45,11 @@ public class LineRepository {
         lineDao.deleteById(id);
     }
 
-    public void updateSections(final List<Section> deleteSections, final List<Section> insertSections,
-                               final Long lineId) {
-        sectionDao.delete(deleteSections);
-        sectionDao.insert(lineId, insertSections);
+    public void updateLine(final Line originLine, final Line updatedLine) {
+        final Sections deleteSections = originLine.getSections().getDifferenceOfSet(updatedLine.getSections());
+        final Sections insertSections = updatedLine.getSections().getDifferenceOfSet(originLine.getSections());
+
+        sectionDao.delete(deleteSections.getSections());
+        sectionDao.insert(originLine.getId(), insertSections.getSections());
     }
 }
