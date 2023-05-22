@@ -29,8 +29,8 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> lines = lineDao.findAll();
-        return lines.stream()
+        return lineDao.findAll()
+                .stream()
                 .map(line -> LineResponse.of(line, createStationResponse(line)))
                 .collect(Collectors.toList());
     }
@@ -57,5 +57,4 @@ public class LineService {
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }
-
 }

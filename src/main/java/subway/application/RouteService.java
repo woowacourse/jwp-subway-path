@@ -31,7 +31,6 @@ public class RouteService {
     }
 
     public RouteResponse findShortestRoute(final Long sourceStationId, final Long targetStationId) {
-        // TODO LineService와 중복 로직
         Station sourceStation = stationDao.findById(sourceStationId)
                 .orElseThrow(() -> new RequestDataNotFoundException("출발 역이 존재하지 않습니다."));
         Station targetStation = stationDao.findById(targetStationId)

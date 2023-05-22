@@ -223,7 +223,7 @@ GET /routes?sourceStationId={sourceStationId}&target={targetStationId} HTTP/1.1
         - SubwayMap 에서 요금 정책과 TransferableRoute 를 전달받아 계산하도록 변경
         - 요금 정책 변경을 쉽게 하기 위하여 인터페이스 적용
     - [ ] [테스트 픽스쳐 네이밍에서 무엇을 위한 객체인지 표현하도록 수정](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199617411)
-    - [ ] [중복 제거를 위해 서비스 간 의존 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199615185)
+    - [x] [중복 제거를 위해 서비스 간 의존 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199615185)
     - [x] [3단계 반영을 위한 Section - Line 관계 검토](https://github.com/woowacourse/jwp-subway-path/pull/138#discussion_r1199616042)
         - Section - Line 관계가 문제가 아니고 서로 다른 목적에 대해 같은 자료구조를 쓰는 것이 문제라고 생각된다.
         - 따라서 경로 조회를 하는 자료구조를 별도로 정의하였다.
