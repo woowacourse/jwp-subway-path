@@ -61,14 +61,14 @@ public class LineRepository {
         final Sections sections = new Sections(sectionList);
 
         final Map<Long, Station> stations = findStationsBySections(sections);
-        return joinStationsToSections(sections.getValues(), stations);
+        return joinStationsToSections(sections.getSections(), stations);
     }
 
     private Map<Long, Station> findStationsBySections(final Sections sections) {
-        final List<Long> stationIds = sections.getValues().stream()
+        final List<Long> stationIds = sections.getSections().stream()
                 .map(section -> section.getBeforeStation().getId())
                 .collect(Collectors.toList());
-        stationIds.add(sections.getValues().get(sections.getValues().size() - 1).getNextStation().getId());
+        stationIds.add(sections.getSections().get(sections.getSections().size() - 1).getNextStation().getId());
         return stationDao.findAllById(stationIds).stream()
                 .map(StationEntity::mapToStation)
                 .collect(Collectors.toMap(Station::getId, Function.identity()));
@@ -87,7 +87,7 @@ public class LineRepository {
     }
 
     public void deleteSections(final Sections sections) {
-        final List<Long> ids = sections.getValues().stream()
+        final List<Long> ids = sections.getSections().stream()
                 .mapToLong(Section::getId)
                 .boxed()
                 .collect(Collectors.toList());
@@ -95,7 +95,7 @@ public class LineRepository {
     }
 
     public void insertSections(final Long lineId, final Sections sections) {
-        final List<SectionEntity> sectionEntities = sections.getValues().stream()
+        final List<SectionEntity> sectionEntities = sections.getSections().stream()
                 .map(section -> SectionEntity.from(lineId, section))
                 .collect(Collectors.toList());
         sectionDao.insert(sectionEntities);

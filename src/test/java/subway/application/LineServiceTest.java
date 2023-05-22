@@ -33,9 +33,9 @@ class LineServiceTest extends IntegrationTest {
 
         final Line line = lineService.findById(lineId);
         assertAll(
-                () -> assertThat(line.getSections().getValues().get(0).getBeforeStation().getName()).isEqualTo(STATION_A.getName()),
-                () -> assertThat(line.getSections().getValues().get(0).getNextStation().getName()).isEqualTo(STATION_B.getName()),
-                () -> assertThat(line.getSections().getValues().get(0).getDistance().getValue()).isEqualTo(DISTANCE9.getValue())
+                () -> assertThat(line.getSections().getSections().get(0).getBeforeStation().getName()).isEqualTo(STATION_A.getName()),
+                () -> assertThat(line.getSections().getSections().get(0).getNextStation().getName()).isEqualTo(STATION_B.getName()),
+                () -> assertThat(line.getSections().getSections().get(0).getDistance().getValue()).isEqualTo(DISTANCE9.getValue())
         );
     }
 
@@ -51,7 +51,7 @@ class LineServiceTest extends IntegrationTest {
         lineService.unregisterStation(lineId, stationRequest);
 
         final Line line = lineService.findById(lineId);
-        assertThat(line.getSections().getValues())
+        assertThat(line.getSections().getSections())
                 .isEmpty();
     }
 
@@ -128,7 +128,7 @@ class LineServiceTest extends IntegrationTest {
             lineService.registerStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getValues())
+            assertThat(line.getSections().getSections())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_E, STATION_A, DISTANCE5),
@@ -146,7 +146,7 @@ class LineServiceTest extends IntegrationTest {
             lineService.registerStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getValues())
+            assertThat(line.getSections().getSections())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),
@@ -164,7 +164,7 @@ class LineServiceTest extends IntegrationTest {
             lineService.registerStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getValues())
+            assertThat(line.getSections().getSections())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),
@@ -182,7 +182,7 @@ class LineServiceTest extends IntegrationTest {
             lineService.unregisterStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getValues())
+            assertThat(line.getSections().getSections())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_B, STATION_C, DISTANCE5),
@@ -198,7 +198,7 @@ class LineServiceTest extends IntegrationTest {
             lineService.unregisterStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getValues())
+            assertThat(line.getSections().getSections())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),
@@ -214,7 +214,7 @@ class LineServiceTest extends IntegrationTest {
             lineService.unregisterStation(lineId, request);
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getValues())
+            assertThat(line.getSections().getSections())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),
@@ -233,7 +233,7 @@ class LineServiceTest extends IntegrationTest {
 
 
             final Line line = lineService.findById(lineId);
-            assertThat(line.getSections().getValues())
+            assertThat(line.getSections().getSections())
                     .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
                     .containsExactly(
                             tuple(STATION_A, STATION_B, DISTANCE5),

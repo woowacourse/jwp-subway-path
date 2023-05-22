@@ -8,10 +8,10 @@ import java.util.Objects;
 
 public class Sections {
 
-    private final List<Section> values;
+    private final List<Section> sections;
 
     public Sections(final List<Section> sections) {
-        this.values = sort(sections);
+        this.sections = sort(sections);
     }
 
     // TODO: 정렬 로직 리팩터링
@@ -40,30 +40,30 @@ public class Sections {
     }
 
     public boolean isHeadStation(final Station station) {
-        return values.isEmpty() || values.get(0).getBeforeStation().equals(station);
+        return sections.isEmpty() || sections.get(0).getBeforeStation().equals(station);
     }
 
     public boolean isTailStation(final Station station) {
-        return !values.isEmpty() && values.get(values.size() - 1).getNextStation().equals(station);
+        return !sections.isEmpty() && sections.get(sections.size() - 1).getNextStation().equals(station);
     }
 
     public Sections addHead(final Section newSection) {
         validateDuplicate(newSection);
-        final List<Section> newSections = new LinkedList<>(values);
+        final List<Section> newSections = new LinkedList<>(sections);
         newSections.add(0, newSection);
         return new Sections(newSections);
     }
 
     public Sections addTail(final Section newSection) {
         validateDuplicate(newSection);
-        final List<Section> newSections = new LinkedList<>(values);
-        newSections.add(values.size(), newSection);
+        final List<Section> newSections = new LinkedList<>(sections);
+        newSections.add(sections.size(), newSection);
         return new Sections(newSections);
     }
 
     public Sections addCentral(final Section newSection) {
         validateDuplicate(newSection);
-        final List<Section> copiedSections = new LinkedList<>(values);
+        final List<Section> copiedSections = new LinkedList<>(sections);
         final Section originSection = findOriginSection(newSection, copiedSections);
         final int originIndex = copiedSections.indexOf(originSection);
 
@@ -90,9 +90,9 @@ public class Sections {
     }
 
     private boolean isExist(final Station station) {
-        return !values.isEmpty() && (
-                values.get(0).getBeforeStation().equals(station) ||
-                        values.stream().anyMatch(section -> section.getNextStation().equals(station))
+        return !sections.isEmpty() && (
+                sections.get(0).getBeforeStation().equals(station) ||
+                        sections.stream().anyMatch(section -> section.getNextStation().equals(station))
         );
     }
 
@@ -104,19 +104,19 @@ public class Sections {
     }
 
     public Sections removeHead() {
-        final List<Section> newSections = new LinkedList<>(values);
+        final List<Section> newSections = new LinkedList<>(sections);
         newSections.remove(0);
         return new Sections(newSections);
     }
 
     public Sections removeTail() {
-        final List<Section> newSections = new LinkedList<>(values);
-        newSections.remove(values.size() - 1);
+        final List<Section> newSections = new LinkedList<>(sections);
+        newSections.remove(sections.size() - 1);
         return new Sections(newSections);
     }
 
     public Sections removeCentral(final Station station) {
-        final List<Section> copiedSections = new LinkedList<>(values);
+        final List<Section> copiedSections = new LinkedList<>(sections);
         final Section beforeSection = findBeforeSection(station, copiedSections);
         final Section nextSection = findNextSection(station, copiedSections);
         final int originBeforeSectionIndex = copiedSections.indexOf(beforeSection);
@@ -149,13 +149,17 @@ public class Sections {
     }
 
     public Sections getDifferenceOfSet(final Sections otherSections) {
-        final List<Section> result = new LinkedList<>(values);
-        result.removeAll(otherSections.getValues());
+        final List<Section> result = new LinkedList<>(sections);
+        result.removeAll(otherSections.getSections());
         return new Sections(result);
     }
 
-    public List<Section> getValues() {
-        return values;
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 
     @Override
@@ -163,11 +167,11 @@ public class Sections {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Sections sections1 = (Sections) o;
-        return Objects.equals(values, sections1.values);
+        return Objects.equals(sections, sections1.sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(values);
+        return Objects.hash(sections);
     }
 }

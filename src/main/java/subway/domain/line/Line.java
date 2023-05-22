@@ -60,6 +60,10 @@ public class Line {
         return sections;
     }
 
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;

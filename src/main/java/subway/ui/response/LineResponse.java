@@ -23,12 +23,12 @@ public class LineResponse {
     }
 
     public static LineResponse from(final Line line) {
-        if (line.getSections().getValues().isEmpty()) {
+        if (line.isEmpty()) {
             return new LineResponse(line.getId(), line.getName().getValue(), new LinkedList<>());
         }
 
         final List<StationResponse> stationResponses = new LinkedList<>();
-        final List<Section> sections = line.getSections().getValues();
+        final List<Section> sections = line.getSections().getSections();
         for (final Section section : sections) {
             stationResponses.add(StationResponse.of(section.getBeforeStation()));
         }

@@ -25,7 +25,7 @@ class LineTest {
         final Line newLine = line.addSection(section1);
 
         final Line removedLine = newLine.removeStation(STATION_B);
-        final List<Section> sections = removedLine.getSections().getValues();
+        final List<Section> sections = removedLine.getSections().getSections();
 
         assertThat(sections.isEmpty()).isTrue();
     }

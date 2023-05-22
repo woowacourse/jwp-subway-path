@@ -27,7 +27,7 @@ class SectionsTest {
 
         final Sections difference = originSections.getDifferenceOfSet(newSections);
 
-        assertThat(difference.getValues())
+        assertThat(difference.getSections())
                 .containsExactly(sections1
                 );
     }
