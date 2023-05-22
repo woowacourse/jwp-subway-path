@@ -2,8 +2,16 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.common.Cost;
-import subway.dao.*;
-import subway.domain.*;
+import subway.dao.LineDao;
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
+import subway.domain.path.Graph;
+import subway.domain.path.GraphGenerator;
+import subway.domain.path.Path;
 import subway.dto.PathResponse;
 import subway.dto.StationResponse;
 import subway.exception.InvalidStationException;
@@ -18,14 +26,14 @@ public class PathService {
     private final StationDao stationDao;
     private final LineDao lineDao;
     private final Cost cost;
-    private final Graph graph;
+    private final GraphGenerator generatedGraph;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao, Cost cost, Graph graph) {
+    public PathService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao, Cost cost, GraphGenerator generatedGraph) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.cost = cost;
-        this.graph = graph;
+        this.generatedGraph = generatedGraph;
     }
 
     public PathResponse findPath(Long startStationId, Long endStationId) {
@@ -41,11 +49,10 @@ public class PathService {
                 .flatMap(it -> it.getSections().getSections().stream())
                 .collect(Collectors.toList());
 
-        graph.set(stations,sections);
-        List<String> pathStations = graph.findPath(startStation.getName(), endStation.getName());
-        double pathDistance = graph.findPathDistance(startStation.getName(), endStation.getName());
+        Graph graph = generatedGraph.generate();
+        Path path = graph.findPath(stations, sections, startStation.getName(), endStation.getName());
 
-        return new PathResponse(makeStationResponses(pathStations), (int) pathDistance, cost.calculate((int)pathDistance));
+        return new PathResponse(makeStationResponses(path.getStations()), (int) path.getTotalDistance(), cost.calculate(path.getTotalDistance()));
     }
 
     private List<StationResponse> makeStationResponses(List<String> stationNames) {
