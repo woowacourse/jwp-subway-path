@@ -1,13 +1,13 @@
 package subway.application;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -39,12 +39,13 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        if (!lineDao.hasId(id)) {
+        Optional<Line> lineOptional = lineDao.findById(id);
+        if (lineOptional.isEmpty()) {
             throw new IllegalArgumentException("해당 호선이 존재하지 않습니다.");
         }
-        return lineDao.findById(id);
+        return lineOptional.get();
     }
-
+    
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }

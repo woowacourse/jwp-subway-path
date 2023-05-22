@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -73,11 +74,11 @@ class LineDaoTest {
         final Line lineNumber2 = new Line("2호선", "green");
         final Long id = lineDao.insert(lineNumber2).getId();
         // when
-        final Line actualLine = lineDao.findById(id);
+        final Optional<Line> actualLine = lineDao.findById(id);
         // then
         assertSoftly(softly -> {
-            softly.assertThat(actualLine.getName()).isEqualTo("2호선");
-            softly.assertThat(actualLine.getColor()).isEqualTo("green");
+            softly.assertThat(actualLine.get().getName()).isEqualTo("2호선");
+            softly.assertThat(actualLine.get().getColor()).isEqualTo("green");
         });
     }
 
@@ -90,9 +91,9 @@ class LineDaoTest {
         lineDao.update(new Line(id, "8호선", "pink"));
         // then
         assertSoftly(softly -> {
-            final Line line = lineDao.findById(id);
-            softly.assertThat(line.getName()).isEqualTo("8호선");
-            softly.assertThat(line.getColor()).isEqualTo("pink");
+            final Optional<Line> line = lineDao.findById(id);
+            softly.assertThat(line.get().getName()).isEqualTo("8호선");
+            softly.assertThat(line.get().getColor()).isEqualTo("pink");
         });
     }
 
