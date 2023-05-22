@@ -71,7 +71,7 @@ public class SectionDao {
     }
 
     public void deleteSections(List<Section> sections, long lineId) {
-        String sql = "DELETE sections WHERE up_id = ? AND down_id = ? AND line_id =?";
+        String sql = "DELETE FROM sections WHERE up_id = ? AND down_id = ? AND line_id = ?";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(final PreparedStatement ps, final int i) throws SQLException {

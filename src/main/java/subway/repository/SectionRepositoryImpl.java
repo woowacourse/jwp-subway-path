@@ -39,15 +39,8 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     public Station addSection(final Section section, final long lineId) {
         validateLineId(lineId);
-        StationEntity upStationEntity = stationDao.insert(section.getUpStation());
-        StationEntity downStationEntity = stationDao.insert(section.getDownStation());
-        Station upStation = new Station(upStationEntity.getId(), upStationEntity.getName());
-        Station downStation = new Station(downStationEntity.getId(), downStationEntity.getName());
-        Section newSection = Section.of(upStation,
-                downStation,
-                section.getDistance());
-        sectionDao.insertSection(newSection, lineId);
-        return downStation;
+        sectionDao.insertSection(section, lineId);
+        return section.getDownStation();
     }
 
     public void addSections(final Sections addedSections, final long lineId) {

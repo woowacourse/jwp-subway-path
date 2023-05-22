@@ -1,5 +1,6 @@
 package subway.entity.vo;
 
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,5 +17,23 @@ public class SectionVo {
         return new SectionVo(StationEntity.of(upStationId, upStationName),
                 StationEntity.of(downStationId, downStationName),
                 distance);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SectionVo sectionVo = (SectionVo) o;
+        return Objects.equals(upStationEntity, sectionVo.upStationEntity) && Objects.equals(
+                downStationEntity, sectionVo.downStationEntity) && Objects.equals(distance, sectionVo.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(upStationEntity, downStationEntity, distance);
     }
 }
