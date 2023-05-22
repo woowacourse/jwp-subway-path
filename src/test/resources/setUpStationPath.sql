@@ -18,6 +18,8 @@ insert into station (id, name) values (9, 'st9');
 insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 1, 2, 1, 1);
 insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 2, 3, 1, 2);
 insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 3, 7, 1, 3);
+insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 7, 9, 1, 10);
+
 
 insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 2, 4, 2, 5);
 insert into sections (uuid, up_id, down_id, line_id, distance) values (UUID(), 4, 5, 2, 5);

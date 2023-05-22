@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -53,5 +54,9 @@ public class SectionService {
 
         sectionDao.save(updated.getAddedCompareTo(sections), lineId);
         sectionDao.delete(updated.getRemovedCompareTo(sections));
+    }
+
+    public List<Sections> getAllSections() {
+        return sectionDao.findAll();
     }
 }

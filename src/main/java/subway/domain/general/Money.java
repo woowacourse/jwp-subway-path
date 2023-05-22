@@ -24,6 +24,13 @@ public class Money {
         return new Money(this.money + other.money);
     }
 
+    public Money minus(Money other) {
+        return new Money(this.money - other.money);
+    }
+
+    public Money discount(int percentage) {
+        return new Money((long)(this.money * (1 - (double)percentage/100)));
+    }
     public long getMoney() {
         return money;
     }

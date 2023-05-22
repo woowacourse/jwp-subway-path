@@ -175,7 +175,15 @@ public class Sections {
         return new ArrayList<>(temp.sections);
     }
 
+    public boolean contains(Section section) {
+        return sections.contains(section);
+    }
+
     public List<Section> getSections() {
         return sections;
+    }
+
+    public long getLineId() {
+        return lineId;
     }
 }

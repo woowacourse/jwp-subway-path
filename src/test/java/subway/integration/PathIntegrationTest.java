@@ -37,6 +37,7 @@ public class PathIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> findResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("age", 30)
                 .when().get("/paths/{startId}/{endId}", queryParam.get(0), queryParam.get(1))
                 .then().log().all().
                 extract();
@@ -56,8 +57,8 @@ public class PathIntegrationTest extends IntegrationTest {
 
     private static Stream<Arguments> paramProvider() {
         return Stream.of(
-                arguments(Arrays.asList(1L, 3L), Arrays.asList(1L, 2L, 3L), 1250L),
-                arguments(Arrays.asList(1L, 9L), Arrays.asList(1L, 2L, 3L, 7L, 9L), 1450L)
+                arguments(Arrays.asList(1L, 3L), Arrays.asList(1L, 2L, 3L), 1350L),
+                arguments(Arrays.asList(1L, 9L), Arrays.asList(1L, 2L, 3L, 7L, 9L), 1550L)
         );
     }
 }

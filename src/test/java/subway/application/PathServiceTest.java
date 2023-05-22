@@ -1,10 +1,15 @@
 package subway.application;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.PathDto;
+import subway.domain.Section;
+import subway.domain.Station;
 import subway.integration.IntegrationTest;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -21,15 +26,20 @@ class PathServiceTest extends IntegrationTest {
     //       4-5-6 -8 -9
     @Test
     void findShortestPath_when_no_transfer_success() {
-        PathDto shortest = pathService.findShortest(1L, 3L);
-        assertThat(shortest.getPath().size()).isEqualTo(3);
-        assertThat(shortest.getDistance()).isEqualTo(3D);
+        List<Section> shortestPath = pathService.findShortestPath(1L, 3L);
+        List<Long> pathUpStations = shortestPath.stream().map(Section::getUpStation).map(Station::getId).collect(Collectors.toList());
+
+        assertThat(shortestPath.size()).isEqualTo(2);
+        Assertions.assertThat(pathUpStations).containsExactly(1L, 2L);
     }
 
     @Test
     void findShortestPath_when_transfer_line_success() {
-        PathDto shortest = pathService.findShortest(1L, 9L);
-        assertThat(shortest.getPath().size()).isEqualTo(5);
-        assertThat(shortest.getDistance()).isEqualTo(16D);
+        List<Section> shortestPath = pathService.findShortestPath(1L, 9L);
+
+        assertThat(shortestPath.size()).isEqualTo(4);
+        List<Long> pathUpStations = shortestPath.stream().map(Section::getUpStation).map(Station::getId).collect(Collectors.toList());
+
+        Assertions.assertThat(pathUpStations).containsExactly(1L, 2L, 3L, 7L);
     }
 }
