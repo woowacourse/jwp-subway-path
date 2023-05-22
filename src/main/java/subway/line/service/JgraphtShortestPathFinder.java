@@ -1,7 +1,7 @@
 package subway.line.service;
 
-import static subway.line.domain.FareCriteria.SECOND;
-import static subway.line.domain.FareCriteria.THIRD;
+import static subway.line.domain.FareCriteria.FIRST_SECTION;
+import static subway.line.domain.FareCriteria.SECOND_SECTION;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class JgraphtShortestPathFinder implements ShortestPathFinder{
 
   private static final int DEFAULT_FARE = 1250;
   private static final int ADDITIONAL_FARE = 100;
-  private final int DISTANCE_FROM_GAP_FROM_SECOND_TO_THIRD = THIRD.getDistanceFrom() - SECOND.getDistanceFrom();
+  private final int DISTANCE_FROM_GAP_FROM_SECOND_TO_THIRD = SECOND_SECTION.getDistanceFrom() - FIRST_SECTION.getDistanceFrom();
 
   private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
   private final Map<LineNameKey, String> lineNames;
@@ -65,18 +65,18 @@ public class JgraphtShortestPathFinder implements ShortestPathFinder{
   private int calculateFare(int distance) {
     int fare = DEFAULT_FARE;
 
-    distance -= SECOND.getDistanceFrom();
+    distance -= FIRST_SECTION.getDistanceFrom();
     if (distance < 0) {
       return fare;
     }
 
     if (distance <= DISTANCE_FROM_GAP_FROM_SECOND_TO_THIRD) {
-      return fare + calculateFareByCriteria(distance, SECOND);
+      return fare + calculateFareByCriteria(distance, FIRST_SECTION);
     }
 
-    fare += calculateFareByCriteria(DISTANCE_FROM_GAP_FROM_SECOND_TO_THIRD, SECOND);
+    fare += calculateFareByCriteria(DISTANCE_FROM_GAP_FROM_SECOND_TO_THIRD, FIRST_SECTION);
     distance -= DISTANCE_FROM_GAP_FROM_SECOND_TO_THIRD;
-    return fare + calculateFareByCriteria(distance, THIRD);
+    return fare + calculateFareByCriteria(distance, SECOND_SECTION);
   }
 
   private int calculateFareByCriteria(int distance, FareCriteria fareCriteria) {

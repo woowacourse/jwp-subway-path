@@ -1,9 +1,8 @@
 package subway.line.domain;
 
 public enum FareCriteria {
-  FIRST(0, 0),
-  SECOND(10, 5),
-  THIRD(50, 8);
+  FIRST_SECTION(10, 5),
+  SECOND_SECTION(50, 8);
 
 
   private final int distanceFrom;
