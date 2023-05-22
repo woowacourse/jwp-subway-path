@@ -1,8 +1,9 @@
 package subway.exception;
 
-public class IllegalMoneyException extends IllegalArgumentException {
+import subway.exception.business.SubwayException;
+
+public class IllegalMoneyException extends SubwayException {
 
     public IllegalMoneyException(String s) {
-        super(s);
     }
 }

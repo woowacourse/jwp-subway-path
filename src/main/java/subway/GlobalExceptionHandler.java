@@ -57,4 +57,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
     }
+
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<ErrorResponse> handleSubwayException(SubwayException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
+
 }

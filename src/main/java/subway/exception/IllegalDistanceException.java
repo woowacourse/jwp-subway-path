@@ -1,7 +1,8 @@
 package subway.exception;
 
-public class IllegalDistanceException extends IllegalArgumentException {
+import subway.exception.business.SubwayException;
+
+public class IllegalDistanceException extends SubwayException {
     public IllegalDistanceException(String s) {
-        super(s);
     }
 }
