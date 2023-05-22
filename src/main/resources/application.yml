@@ -1,7 +1,10 @@
-spring:
-  h2:
-    console:
-      enabled: true
+my:
   datasource:
-    url: jdbc:h2:mem:subwaydb
-    driver-class-name: org.h2.Driver
+    url: ${DB_URL:jdbc:h2:mem:prod}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+
+spring:
+  profiles:
+    active: prod
