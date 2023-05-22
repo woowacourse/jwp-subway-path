@@ -1,7 +1,7 @@
-package subway.global.exception.line;
+package subway.exception.line;
 
 import org.springframework.http.HttpStatus;
-import subway.global.exception.common.BusinessException;
+import subway.exception.common.BusinessException;
 
 public class CanNotFoundLineException extends BusinessException {
 

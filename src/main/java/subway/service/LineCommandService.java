@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
-import subway.global.exception.line.CanNotDuplicatedLineNameException;
+import subway.exception.line.CanNotDuplicatedLineNameException;
 import subway.service.dto.RegisterLineRequest;
 
 @Service

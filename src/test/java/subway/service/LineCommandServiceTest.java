@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
-import subway.global.exception.line.CanNotDuplicatedLineNameException;
+import subway.exception.line.CanNotDuplicatedLineNameException;
 import subway.service.dto.RegisterLineRequest;
 
 import java.util.Optional;

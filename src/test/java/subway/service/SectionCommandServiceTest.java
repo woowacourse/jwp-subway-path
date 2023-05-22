@@ -9,7 +9,7 @@ import subway.dao.SectionEntity;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
-import subway.global.exception.section.CanNotDuplicatedSectionException;
+import subway.exception.section.CanNotDuplicatedSectionException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

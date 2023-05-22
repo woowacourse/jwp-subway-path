@@ -1,7 +1,7 @@
-package subway.global.exception.pricepolicy;
+package subway.exception.pricepolicy;
 
 import org.springframework.http.HttpStatus;
-import subway.global.exception.common.BusinessException;
+import subway.exception.common.BusinessException;
 
 public class CanNotDistanceEqualZeroException extends BusinessException {
 

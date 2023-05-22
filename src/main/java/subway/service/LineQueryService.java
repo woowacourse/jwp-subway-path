@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.domain.line.Line;
-import subway.global.exception.line.CanNotFoundLineException;
+import subway.exception.line.CanNotFoundLineException;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,7 +1,7 @@
-package subway.global.exception.section;
+package subway.exception.section;
 
 import org.springframework.http.HttpStatus;
-import subway.global.exception.common.BusinessException;
+import subway.exception.common.BusinessException;
 
 public class CanNotDuplicatedSectionException extends BusinessException {
 

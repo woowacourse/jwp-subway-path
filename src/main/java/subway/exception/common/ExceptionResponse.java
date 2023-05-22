@@ -1,4 +1,4 @@
-package subway.global.exception.common;
+package subway.exception.common;
 
 public class ExceptionResponse {
 
