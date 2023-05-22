@@ -36,12 +36,11 @@ public class PathFareService {
     public PathAndFareResponse calculateRouteFare(Long startId, Long endId, PassengerDto passengerDto) {
         FarePolicyChain farePolicyChain = new FarePolicyChain(new FarePolicy[]{distanceProportionalPolicy, ageDiscountPolicy, lineAdditionalPolicy});
 
-        List<Section> path = pathService.findShortestPath(startId, endId);
         List<Sections> allSections = sectionService.getAllSections();
-
+        List<Section> path = pathService.findShortestPath(startId, endId);
         Money fare = farePolicyChain.applyPolicy(Money.of(0), allSections, path, passengerDto);
-        List<Station> pathStations = new Sections(0, path).getStationsInOrder();
 
+        List<Station> pathStations = new Sections(0, path).getStationsInOrder();
         return new PathAndFareResponse(pathStations, fare.getMoney());
     }
 }

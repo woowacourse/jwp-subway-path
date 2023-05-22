@@ -6,6 +6,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SectionSorter {
+    private static SectionSorter sectionSorter;
+
+    private SectionSorter() {
+    }
+
+    public static SectionSorter getInstance() {
+        if (sectionSorter == null) {
+            sectionSorter = new SectionSorter();
+        }
+        return sectionSorter;
+    }
 
     public List<Section> assignSectionConnection(List<Section> sections) {
         Map<Long, Section> upStationToSection = prepareUpToSectionMappings(sections);

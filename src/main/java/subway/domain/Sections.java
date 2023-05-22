@@ -4,7 +4,10 @@ import subway.exception.business.InvalidSectionLengthException;
 import subway.exception.business.SectionNotFoundException;
 import subway.exception.business.StationNotFoundException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -12,9 +15,9 @@ public class Sections {
     public static final int ONE_REMAINED = 1;
     public static final UUID DOWN_END_NEXT = null;
 
+    private final SectionSorter sectionSorter = SectionSorter.getInstance();
     private final long lineId;
     private final List<Section> sections;
-    private final SectionSorter sectionSorter = new SectionSorter();
 
     public Sections(final long lineId, final List<Section> sections) {
         this.lineId = lineId;
@@ -166,7 +169,7 @@ public class Sections {
         if (temp.isEmpty()) {
             return Collections.emptyList();
         }
-       return temp;
+        return temp;
     }
 
     public List<Section> getRemovedCompareTo(Sections other) {
@@ -185,5 +188,9 @@ public class Sections {
 
     public long getLineId() {
         return lineId;
+    }
+
+    public SectionSorter getSectionSorter() {
+        return sectionSorter;
     }
 }
