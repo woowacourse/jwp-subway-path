@@ -17,7 +17,7 @@ public class LineMetadata {
 
     private void validateIsPositive(int additionalFare) {
         if (additionalFare < 0) {
-            throw new InvalidAdditionalFareException(additionalFare);
+            throw new InvalidAdditionalFareException("추가 요금은 음수가 될 수 없습니다. additionalFare: " + additionalFare);
         }
     }
 

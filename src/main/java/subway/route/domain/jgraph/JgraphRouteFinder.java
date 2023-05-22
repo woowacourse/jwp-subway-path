@@ -38,7 +38,7 @@ public class JgraphRouteFinder implements RouteFinder<RouteSegment> {
 
     private void validateNotIdenticalStations(Station source, Station destination) {
         if (source.equals(destination)) {
-            throw new IdenticalStationsException(source.getId(), destination.getId());
+            throw new IdenticalStationsException("시작역과 도착역이 동일합니다 source id: " + source.getId() + " destination id: " + destination.getId());
         }
     }
 

@@ -42,8 +42,8 @@ public class AgeDiscountFarePolicy implements FarePolicy {
         if (Objects.isNull(age)) {
             throw new IllegalArgumentException("buildFareFactors를 먼저 호출해야 합니다.");
         }
-        if (age <= 0) {
-            throw new InvalidAgeException(age);
+        if (age < 0) {
+            throw new InvalidAgeException("나이는 0 이상의 값입니다. age: " +age);
         }
     }
 }

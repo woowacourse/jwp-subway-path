@@ -110,7 +110,7 @@ public class RouteIntegrationTest {
             assertThat(routeResponse.getFare()).isEqualTo(fare);
         }
 
-        @ParameterizedTest(name = "6~12세면 성인 요금의 350원을 공제하고 반값이 할인된다")
+        @ParameterizedTest(name = "0~5 공짜로 이용할 수 있다")
         @CsvSource({"0,0", "5,0"})
         void routeAgeTest3(int age, int fare) {
             final ExtractableResponse<Response> response = 경로를_요청한다(1, 3, age);
