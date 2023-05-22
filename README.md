@@ -1,6 +1,7 @@
 # jwp-subway-path
 
 ## 요구사항
+
 - [ ] 데이터베이스 설정을 프로덕션과 테스트로 분리한다.
     - [ ] 프로덕션 데이터베이스는 로컬에 저장하도록 설정한다.
     - [ ] 테스트용 데이터베이스는 인메모리로 동작하도록 설정한다.
@@ -63,6 +64,12 @@
 | Method | URI       | Description |
 |--------|-----------|-------------|
 | POST   | /stations | 역 추가        |
+
+### 경로 조회 API
+
+| Method | URI   | Description |
+|--------|-------|-------------|
+| GET    | /path | 경로 조회       |
 
 ## Line API 요청 / 응답 예시
 
@@ -214,4 +221,62 @@ Host: localhost:8080
 HTTP/1.1 201 Created
 Content-Type: application/json
 Location: /stations/1
+```
+
+---
+## Path API 요청 / 응답 예시
+
+### GET : 경로 조회
+
+#### Request
+### GET : 모든 노선 목록 조회
+
+#### Request
+
+```http request
+GET /path HTTP/1.1
+Host: localhost:8080
+
+{
+    "startStationId": 7,
+    "endStationId": 9
+}
+```
+
+#### Response
+
+``` http request
+HTTP/1.1 200
+Content-Type: application/json
+
+{
+    "path": [
+        {
+            "stationId": 7,
+            "stationName": "총신대입구역"
+        },
+        {
+            "stationId": 2,
+            "stationName": "사당역"
+        },
+        {
+            "stationId": 3,
+            "stationName": "방배역"
+        },
+        {
+            "stationId": 4,
+            "stationName": "서초역"
+        },
+        {
+            "stationId": 5,
+            "stationName": "교대역"
+        },
+        {
+            "stationId": 9,
+            "stationName": "고속터미널역"
+        }
+    ],
+    "totalDistance": 52,
+    "fare": 2150
+}
 ```
