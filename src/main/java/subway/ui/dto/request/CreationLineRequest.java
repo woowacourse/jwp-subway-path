@@ -16,9 +16,8 @@ public class CreationLineRequest {
     @NotBlank
     private final String color;
 
-    @JsonCreator
-    private CreationLineRequest(@JsonProperty("name") final String name,
-                                @JsonProperty("color") final String color) {
+    private CreationLineRequest(final String name,
+                                final String color) {
         this.name = name;
         this.color = color;
     }
