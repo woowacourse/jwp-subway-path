@@ -6,7 +6,9 @@ public class LineStationResponse {
 
     private LineResponse lineResponse;
     private List<SectionResponse> sectionResponses;
+    private LineStationResponse(){
 
+    }
     public LineStationResponse(final LineResponse lineResponse, final List<SectionResponse> sectionResponses) {
         this.lineResponse = lineResponse;
         this.sectionResponses = sectionResponses;

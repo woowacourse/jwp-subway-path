@@ -6,7 +6,7 @@ public class RouteResponse {
     private List<String> station;
     private int fee;
 
-    public RouteResponse() {
+    private RouteResponse() {
     }
 
     public RouteResponse(List<String> station, int fee) {

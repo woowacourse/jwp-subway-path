@@ -7,6 +7,8 @@ public class AddStationResponse {
     private String arrivalStation;
     private int distance;
 
+    private AddStationResponse(){
+    }
     public AddStationResponse(final Long sectionId, final AddStationRequest addStationRequest) {
         this(sectionId, addStationRequest.getDepartureStation(), addStationRequest.getArrivalStation(),
                 addStationRequest.getDistance());

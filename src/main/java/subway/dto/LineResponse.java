@@ -6,6 +6,8 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private LineResponse(){
+    }
 
     public LineResponse(Line line) {
         this(line.getId(), line.getName(), line.getColor());
