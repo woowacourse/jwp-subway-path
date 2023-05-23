@@ -4,13 +4,11 @@ import subway.entity.SectionDetailEntity;
 
 public class LineSection {
 
-    private final Long id;
     private final Station previousStation;
     private final Station nextStation;
     private final Distance distance;
 
-    public LineSection(final Long id, final Station previousStation, final Station nextStation, final Distance distance) {
-        this.id = id;
+    public LineSection(final Station previousStation, final Station nextStation, final Distance distance) {
         this.previousStation = previousStation;
         this.nextStation = nextStation;
         this.distance = distance;
@@ -18,15 +16,10 @@ public class LineSection {
 
     public static LineSection createByEntity(final SectionDetailEntity entity) {
         return new LineSection(
-                entity.getId(),
                 new Station(entity.getPreviousStationId(), entity.getPreviousStationName()),
                 new Station(entity.getNextStationId(), entity.getNextStationName()),
                 new Distance(entity.getDistance())
         );
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public Station getPreviousStation() {

@@ -29,13 +29,13 @@ class LineSectionsSortFactoryTest {
         final Station station7 = new Station(7L, "강남");
         final Station station8 = new Station(8L, "교대");
 
-        final LineSection section1 = new LineSection(1L, station3, station4, distance);
-        final LineSection section2 = new LineSection(2L, station6, station7, distance);
-        final LineSection section3 = new LineSection(3L, station1, station2, distance);
-        final LineSection section4 = new LineSection(4L, station7, station8, distance);
-        final LineSection section5 = new LineSection(5L, station4, station5, distance);
-        final LineSection section6 = new LineSection(6L, station2, station3, distance);
-        final LineSection section7 = new LineSection(7L, station5, station6, distance);
+        final LineSection section1 = new LineSection(station3, station4, distance);
+        final LineSection section2 = new LineSection(station6, station7, distance);
+        final LineSection section3 = new LineSection(station1, station2, distance);
+        final LineSection section4 = new LineSection(station7, station8, distance);
+        final LineSection section5 = new LineSection(station4, station5, distance);
+        final LineSection section6 = new LineSection(station2, station3, distance);
+        final LineSection section7 = new LineSection(station5, station6, distance);
 
         final List<LineSection> unsortedSections = List.of(section1, section2, section3, section4, section5, section6, section7);
 
@@ -44,13 +44,14 @@ class LineSectionsSortFactoryTest {
 
         // then
         assertAll(
-                () -> assertThat(sortedSections.get(0).getId()).isEqualTo(3L),
-                () -> assertThat(sortedSections.get(1).getId()).isEqualTo(6L),
-                () -> assertThat(sortedSections.get(2).getId()).isEqualTo(1L),
-                () -> assertThat(sortedSections.get(3).getId()).isEqualTo(5L),
-                () -> assertThat(sortedSections.get(4).getId()).isEqualTo(7L),
-                () -> assertThat(sortedSections.get(5).getId()).isEqualTo(2L),
-                () -> assertThat(sortedSections.get(6).getId()).isEqualTo(4L)
+                () -> assertThat(sortedSections.get(0).getPreviousStation().getName()).isEqualTo("잠실"),
+                () -> assertThat(sortedSections.get(0).getNextStation().getName()).isEqualTo("잠실새내"),
+                () -> assertThat(sortedSections.get(1).getNextStation().getName()).isEqualTo("종합운동장"),
+                () -> assertThat(sortedSections.get(2).getNextStation().getName()).isEqualTo("삼성"),
+                () -> assertThat(sortedSections.get(3).getNextStation().getName()).isEqualTo("선릉"),
+                () -> assertThat(sortedSections.get(4).getNextStation().getName()).isEqualTo("역삼"),
+                () -> assertThat(sortedSections.get(5).getNextStation().getName()).isEqualTo("강남"),
+                () -> assertThat(sortedSections.get(6).getNextStation().getName()).isEqualTo("교대")
         );
 
     }
