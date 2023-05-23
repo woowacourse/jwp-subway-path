@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.service.RouteQueryService;
+import subway.service.dto.ShortestRouteResponse;
 
 @WebMvcTest(RouteController.class)
 class RouteControllerTest {
@@ -34,14 +35,11 @@ class RouteControllerTest {
     final double leastCost = 100d;
     final int shortestDistance = 10;
 
+    ShortestRouteResponse shortestRouteResponse = new ShortestRouteResponse(shortestRoute,
+        leastCost, shortestDistance);
+
     when(routeQueryService.searchShortestRoute(any()))
-        .thenReturn(shortestRoute);
-
-    when(routeQueryService.searchCost(any()))
-        .thenReturn(leastCost);
-
-    when(routeQueryService.searchShortestDistance(any()))
-        .thenReturn(shortestDistance);
+        .thenReturn(shortestRouteResponse);
 
     //then
     mockMvc.perform(get("/route?startStation={startStation}&endStation={endStation}",
@@ -61,14 +59,11 @@ class RouteControllerTest {
     final double leastCost = 100d;
     final int shortestDistance = 10;
 
+    ShortestRouteResponse shortestRouteResponse = new ShortestRouteResponse(shortestRoute,
+        leastCost, shortestDistance);
+
     when(routeQueryService.searchShortestRoute(any()))
-        .thenReturn(shortestRoute);
-
-    when(routeQueryService.searchCost(any()))
-        .thenReturn(leastCost);
-
-    when(routeQueryService.searchShortestDistance(any()))
-        .thenReturn(shortestDistance);
+        .thenReturn(shortestRouteResponse);
 
     //then
     mockMvc.perform(get("/route?startStation={startStation}&endStation={endStation}&age={age}",

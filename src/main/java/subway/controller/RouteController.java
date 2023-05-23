@@ -18,11 +18,8 @@ public class RouteController {
 
   @GetMapping("/route")
   public ShortestRouteResponse showShortestRoute(
-      @ModelAttribute ShortestRouteRequest shortestRouteRequest) {
-    return new ShortestRouteResponse(
-        routeQueryService.searchShortestRoute(shortestRouteRequest),
-        routeQueryService.searchCost(shortestRouteRequest),
-        routeQueryService.searchShortestDistance(shortestRouteRequest)
-    );
+      @ModelAttribute ShortestRouteRequest shortestRouteRequest
+  ) {
+    return routeQueryService.searchShortestRoute(shortestRouteRequest);
   }
 }
