@@ -25,7 +25,7 @@ public class SubwayMapService {
         this.lineRepository = lineRepository;
         this.transferRepository = transferRepository;
     }
-    
+
     @Transactional(readOnly = true)
     public SubwayPathResponse findPath(SubwayPathRequest subwayPathRequest) {
         Station sourceStation = lineRepository.findStationById(subwayPathRequest.getSourceStationId());

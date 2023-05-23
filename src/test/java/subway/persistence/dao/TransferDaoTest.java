@@ -8,10 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.StationEntity;
 import subway.persistence.entity.TransferEntity;
 
+@ActiveProfiles({"test"})
 @JdbcTest
 class TransferDaoTest {
 

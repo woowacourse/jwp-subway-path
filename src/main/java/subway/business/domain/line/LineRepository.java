@@ -14,5 +14,5 @@ public interface LineRepository {
 
     Station findStationById(long stationId);
 
-    Line findLineByStationId(Long firstStationsId);
+    Line findLineByStationId(Long stationsId);
 }

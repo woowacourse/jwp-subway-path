@@ -94,10 +94,10 @@ public class DbLineRepository implements LineRepository {
     }
 
     @Override
-    public Line findLineByStationId(Long stationId) {
-        StationEntity stationEntity = stationDao.findById(stationId)
+    public Line findLineByStationId(Long stationsId) {
+        StationEntity stationEntity = stationDao.findById(stationsId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("입력한 ID와 일치하는 Station이 존재하지 않습니다. "
-                        + "(입력한 ID : %s)", stationId)));
+                        + "(입력한 ID : %s)", stationsId)));
         return findById(stationEntity.getLineId());
     }
 
