@@ -19,4 +19,8 @@ public abstract class LineFixture {
     public static Line 노선(final String 노선명, final String 노선_색상, final Sections 구간_목록) {
         return new Line(노선명, 노선_색상, 구간_목록);
     }
+
+    public static Line 노선(final Long 노선_식별자값, final String 노선명, final String 노선_색상, final List<Section> 구간_목록) {
+        return new Line(노선_식별자값, 노선명, 노선_색상, Sections.from(구간_목록));
+    }
 }

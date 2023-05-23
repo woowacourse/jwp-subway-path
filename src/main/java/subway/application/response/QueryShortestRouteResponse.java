@@ -1,20 +1,23 @@
 package subway.application.response;
 
+import subway.domain.route.Route;
 import subway.domain.vo.Distance;
 import subway.domain.vo.Money;
-import subway.domain.route.Route;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class QueryShortestRouteResponse {
 
-    private final String startStation;
-    private final String endStation;
-    private final List<String> transferStations;
-    private final List<RouteEdgeResponse> sections;
-    private final Integer totalDistance;
-    private final String totalPrice;
+    private String startStation;
+    private String endStation;
+    private List<String> transferStations;
+    private List<RouteEdgeResponse> sections;
+    private Integer totalDistance;
+    private String totalPrice;
+
+    public QueryShortestRouteResponse() {
+    }
 
     public QueryShortestRouteResponse(
             final String startStation,
@@ -32,34 +35,12 @@ public class QueryShortestRouteResponse {
         this.totalPrice = totalPrice;
     }
 
-    public static QueryShortestRouteResponse from(
-            final StationResponse startStation,
-            final StationResponse endStation,
-            final List<StationResponse> transferStations,
-            final List<RouteEdgeResponse> sectionEdges,
-            final Distance distance,
-            final Money totalPrice
-    ) {
-
-        return new QueryShortestRouteResponse(
-                startStation.getName(),
-                endStation.getName(),
-                transferStations.stream()
-                        .map(StationResponse::getName)
-                        .collect(Collectors.toList()),
-                sectionEdges,
-                distance.getValue(),
-                totalPrice.getValue()
-        );
-    }
-
-    public static QueryShortestRouteResponse from(final Route route) {
+    public static QueryShortestRouteResponse from(final Route route, final Money totalFare) {
         final StationResponse startStationResponse = StationResponse.from(route.getStart());
         final StationResponse endStationResponse = StationResponse.from(route.getEnd());
         final List<String> transferStationResponse = collectTransferStationResponses(route);
         final List<RouteEdgeResponse> routeEdgeResponse = collectRouteEdgeResponses(route);
         final Distance distance = route.getTotalDistance();
-        final Money totalPrice = route.getTotalPrice();
 
         return new QueryShortestRouteResponse(
                 startStationResponse.getName(),
@@ -67,12 +48,12 @@ public class QueryShortestRouteResponse {
                 transferStationResponse,
                 routeEdgeResponse,
                 distance.getValue(),
-                totalPrice.getValue()
+                totalFare.getValue()
         );
     }
 
     private static List<RouteEdgeResponse> collectRouteEdgeResponses(final Route route) {
-        return route.getSections()
+        return route.getRouteEdges()
                 .stream()
                 .map(RouteEdgeResponse::from)
                 .collect(Collectors.toList());
