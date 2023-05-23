@@ -39,7 +39,7 @@ public class RouteQueryService {
     return route.findShortestRoute();
   }
 
-  public double searchLeastCost(final ShortestRouteRequest shortestRouteRequest) {
+  public double searchCost(final ShortestRouteRequest shortestRouteRequest) {
     final List<Line> lines = lineQueryService.searchAllLine();
 
     final Route route = new Route(
@@ -50,8 +50,8 @@ public class RouteQueryService {
 
     final Money totalPrice = chargePolicyComposite.calculate(route);
 
-    return chargePolicyComposite.discount(new DiscountCondition(shortestRouteRequest.getAge()),
-            totalPrice)
+    return chargePolicyComposite
+        .discount(new DiscountCondition(shortestRouteRequest.getAge()), totalPrice)
         .getValue();
   }
 

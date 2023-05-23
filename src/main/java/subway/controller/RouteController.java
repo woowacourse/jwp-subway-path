@@ -21,7 +21,7 @@ public class RouteController {
       @ModelAttribute ShortestRouteRequest shortestRouteRequest) {
     return new ShortestRouteResponse(
         routeQueryService.searchShortestRoute(shortestRouteRequest),
-        routeQueryService.searchLeastCost(shortestRouteRequest),
+        routeQueryService.searchCost(shortestRouteRequest),
         routeQueryService.searchShortestDistance(shortestRouteRequest)
     );
   }
