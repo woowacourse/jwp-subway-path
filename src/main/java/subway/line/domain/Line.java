@@ -2,7 +2,6 @@ package subway.line.domain;
 
 import subway.section.domain.Section;
 import subway.section.domain.Sections;
-import subway.station.domain.Station;
 import subway.vo.Color;
 import subway.vo.Name;
 
@@ -28,10 +27,6 @@ public class Line {
 
     public static Line of(final String name, final String color) {
         return new Line(null, null, Name.from(name), Color.from(color));
-    }
-
-    public List<Station> getSortedStations(final Station finalUpStation) {
-        return sections.getStationsAsc(finalUpStation);
     }
 
     public void updateInfo(final String name, final String color) {

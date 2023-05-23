@@ -47,10 +47,10 @@ public class StationController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{lineId}/{stationId}")
+    @DeleteMapping
     public ResponseEntity<Void> deleteStation(
-            @PathVariable Long lineId,
-            @PathVariable Long stationId
+            @RequestParam Long lineId,
+            @RequestParam Long stationId
     ) {
         stationFacade.deleteById(lineId, stationId);
         return ResponseEntity.noContent().build();

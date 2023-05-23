@@ -12,12 +12,12 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.fixture.StationFixture.GangnamStation;
 import subway.fixture.StationFixture.JamsilStation;
 import subway.line.domain.entity.LineEntity;
-import subway.line.domain.repository.LineDao;
+import subway.line.presist.LineDao;
 import subway.section.domain.entity.SectionEntity;
-import subway.section.domain.repository.SectionDao;
 import subway.section.exception.SectionNotFoundException;
+import subway.section.persist.SectionDao;
 import subway.station.domain.entity.StationEntity;
-import subway.station.domain.repository.StationDao;
+import subway.station.persist.StationDao;
 import subway.vo.Name;
 
 import java.util.List;

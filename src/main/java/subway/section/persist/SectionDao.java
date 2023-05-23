@@ -1,4 +1,4 @@
-package subway.section.domain.repository;
+package subway.section.persist;
 
 
 import org.springframework.dao.DataAccessException;
@@ -92,7 +92,7 @@ public class SectionDao {
         }
     }
 
-    public List<SectionEntity> findAllById(final Long lineId) {
+    public List<SectionEntity> findAllByLineId(final Long lineId) {
         String sql = "select * from SECTIONS where line_id=?";
         return jdbcTemplate.query(sql, sectionRowMapper, lineId);
     }

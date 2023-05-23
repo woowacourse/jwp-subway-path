@@ -10,8 +10,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.line.domain.entity.LineEntity;
-import subway.line.domain.repository.LineDao;
 import subway.line.exception.LineNotFoundException;
+import subway.line.presist.LineDao;
 
 import java.util.List;
 

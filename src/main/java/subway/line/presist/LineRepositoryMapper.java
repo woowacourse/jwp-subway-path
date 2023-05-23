@@ -1,16 +1,17 @@
-package subway.line.domain.repository;
+package subway.line.presist;
 
 import org.springframework.stereotype.Repository;
 import subway.line.domain.Line;
 import subway.line.domain.entity.LineEntity;
+import subway.line.domain.repository.LineRepository;
 import subway.line.exception.LineNotFoundException;
 import subway.section.domain.Section;
 import subway.section.domain.Sections;
 import subway.section.domain.entity.SectionEntity;
-import subway.section.domain.repository.SectionDao;
+import subway.section.persist.SectionDao;
 import subway.station.domain.Station;
-import subway.station.domain.repository.StationDao;
 import subway.station.exception.StationNotFoundException;
+import subway.station.persist.StationDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class LineRepositoryMapper implements LineRepository {
 
     @Override
     public Line findAllStationsByLineId(final Long lineId) {
-        List<SectionEntity> sectionEntities = sectionDao.findAllById(lineId);
+        List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
 
         List<Section> sectionList = new ArrayList<>();
         for (SectionEntity sectionEntity : sectionEntities) {

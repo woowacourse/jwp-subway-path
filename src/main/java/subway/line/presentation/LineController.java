@@ -27,21 +27,21 @@ public class LineController {
         this.lineFacade = lineFacade;
     }
 
-    @PostMapping("/{finalUpStationId}/{finalDownStationId}")
+    @PostMapping
     public ResponseEntity<Void> createLine(
             @RequestBody @Valid LineRequest lineRequest,
-            @PathVariable Long finalUpStationId,
-            @PathVariable Long finalDownStationId
+            @RequestParam Long finalUpStationId,
+            @RequestParam Long finalDownStationId
     ) {
         final Long lineId = lineFacade.createLine(lineRequest, finalUpStationId, finalDownStationId);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
-    @PostMapping("/{lineId}/{upStationId}/{downStationId}")
+    @PostMapping("/{lineId}")
     public ResponseEntity<Void> registerStation(
             @PathVariable Long lineId,
-            @PathVariable Long upStationId,
-            @PathVariable Long downStationId,
+            @RequestParam Long upStationId,
+            @RequestParam Long downStationId,
             @RequestParam int distance
     ) {
         lineFacade.registerStation(lineId, upStationId, downStationId, distance);
@@ -54,18 +54,18 @@ public class LineController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{lineId}")
     public ResponseEntity<Void> updateLine(
-            @PathVariable Long id,
+            @PathVariable Long lineId,
             @RequestBody LineRequest lineUpdateRequest
     ) {
-        lineFacade.updateLine(id, lineUpdateRequest);
+        lineFacade.updateLine(lineId, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineFacade.deleteLineById(id);
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
+        lineFacade.deleteLineById(lineId);
         return ResponseEntity.noContent().build();
     }
 

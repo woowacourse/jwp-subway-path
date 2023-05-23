@@ -1,4 +1,4 @@
-package subway.station.domain.repository;
+package subway.station.persist;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
