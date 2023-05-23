@@ -1,6 +1,5 @@
 package subway.ui;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -51,9 +50,9 @@ class PathControllerTest {
                 LinePathDto.of(이호선, stationsOfLine2),
                 LinePathDto.of(사호선, stationsOfLine4)
         ));
-        given(subwayMapService.findPath(any())).willReturn(subwayPathResponse);
+        given(subwayMapService.findPath(2L, 15L)).willReturn(subwayPathResponse);
 
-        mockMvc.perform(get("/paths?firstStationId=2&lastStationId=15"))
+        mockMvc.perform(get("/paths?sourceStationId=2&targetStationId=15"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fare").value(1_550))
                 .andExpect(jsonPath("$.linePathDtos[0].lineId").value("1"))

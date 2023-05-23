@@ -12,7 +12,6 @@ import subway.business.domain.subwaymap.JgraphtSubwayMap;
 import subway.business.domain.subwaymap.SubwayMap;
 import subway.business.domain.transfer.TransferRepository;
 import subway.business.service.dto.LinePathDto;
-import subway.business.service.dto.SubwayPathRequest;
 import subway.business.service.dto.SubwayPathResponse;
 
 
@@ -27,9 +26,9 @@ public class SubwayMapService {
     }
 
     @Transactional(readOnly = true)
-    public SubwayPathResponse findPath(SubwayPathRequest subwayPathRequest) {
-        Station sourceStation = lineRepository.findStationById(subwayPathRequest.getSourceStationId());
-        Station targetStation = lineRepository.findStationById(subwayPathRequest.getTargetStationId());
+    public SubwayPathResponse findPath(long sourceStationId, long targetStationId) {
+        Station sourceStation = lineRepository.findStationById(sourceStationId);
+        Station targetStation = lineRepository.findStationById(targetStationId);
         SubwayMap subwayMap = JgraphtSubwayMap.of(lineRepository.findAll(), transferRepository.findAll());
         int fare = subwayMap.calculateFareOfPath(sourceStation, targetStation);
         List<Stations> stationsList = subwayMap.calculateShortestPath(sourceStation, targetStation);

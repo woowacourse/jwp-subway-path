@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.business.service.SubwayMapService;
-import subway.business.service.dto.SubwayPathRequest;
 import subway.business.service.dto.SubwayPathResponse;
 
 @Tag(name = "Path", description = "경로 조회 API Document")
@@ -27,7 +26,6 @@ public class PathController {
             @RequestParam("sourceStationId") long sourceStationId,
             @RequestParam("targetStationId") long targetStationId
     ) {
-        SubwayPathRequest subwayPathRequest = new SubwayPathRequest(sourceStationId, targetStationId);
-        return ResponseEntity.ok().body(subwayMapService.findPath(subwayPathRequest));
+        return ResponseEntity.ok().body(subwayMapService.findPath(sourceStationId, targetStationId));
     }
 }
