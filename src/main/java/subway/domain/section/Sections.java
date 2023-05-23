@@ -178,9 +178,9 @@ public class Sections {
 
     public Distance totalDistance() {
         return sections.stream().
-                reduce(Section::addSection)
-                .orElseThrow(() -> new IllegalArgumentException("구간이 없습니다."))
-                .getDistance();
+                map(Section::getDistance).
+                reduce(Distance::add)
+                .orElseThrow(() -> new IllegalArgumentException("구간이 없습니다."));
     }
 
     public boolean isEmpty() {
