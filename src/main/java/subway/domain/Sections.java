@@ -28,20 +28,7 @@ public class Sections {
     public ChangeSections remove(Station station) {
         List<Section> sectionsContainStation = findSectionsContainingStation(station);
 
-        if (sectionsContainStation.isEmpty()) {
-            throw new NotFoundSectionException("존재하지 않는 구간입니다.");
-        }
-
-        if (sections.size() == 1) {
-            ChangeSections changeSections = makeChangeSectionsForUpdateEdgeSectionsByStatus(
-                    FOR_EDGE_SECTION,
-                    sections.get(0)
-            );
-            sections.clear();
-            return changeSections;
-        }
-
-        if (sectionsContainStation.size() == 1) {
+        if (isOnlyOneSection(sectionsContainStation)) {
             Section findSection = sectionsContainStation.get(0);
             sections.remove(findSection);
             return makeChangeSectionsForUpdateEdgeSectionsByStatus(
@@ -96,10 +83,20 @@ public class Sections {
         );
     }
 
+    private boolean isOnlyOneSection(final List<Section> sectionsContainStation) {
+        return sectionsContainStation.size() == 1;
+    }
+
     private List<Section> findSectionsContainingStation(Station station) {
-        return sections.stream()
+        List<Section> sectionsContainStation = sections.stream()
                 .filter(it -> it.hasStation(station))
                 .collect(Collectors.toList());
+
+        if (sectionsContainStation.isEmpty()) {
+            throw new NotFoundSectionException("존재하지 않는 구간입니다.");
+        }
+
+        return sectionsContainStation;
     }
 
     private int calculateTotalDistance(List<Section> sections) {
