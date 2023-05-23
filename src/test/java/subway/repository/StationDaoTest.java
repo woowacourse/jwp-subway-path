@@ -107,6 +107,26 @@ class StationDaoTest {
     }
 
     @Test
+    @DisplayName("역 존재 여부 확인 - 존재 안함")
+    void IsNotExist_true() {
+        // given
+        final long id = 7L;
+
+        // when, then
+        assertThat(stationDao.isNotExist(id)).isTrue();
+    }
+
+    @Test
+    @DisplayName("역 존재 여부 확인 - 존재")
+    void IsNotExist_false() {
+        // given
+        final long id = 1L;
+
+        // when, then
+        assertThat(stationDao.isNotExist(id)).isFalse();
+    }
+
+    @Test
     @DisplayName("이름으로 id 조회 성공")
     void findIdByName_success() {
         // given
