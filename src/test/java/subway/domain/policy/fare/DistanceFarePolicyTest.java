@@ -1,68 +1,69 @@
-package subway.domain.policy;
+package subway.domain.policy.fare;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import subway.domain.Money;
 import subway.domain.line.Line;
-import subway.domain.policy.discount.AgeDiscountPolicy;
-import subway.domain.policy.discount.DiscountCondition;
-import subway.domain.policy.fare.DistanceFarePolicy;
-import subway.domain.policy.fare.LineFarePolicy;
 import subway.domain.route.Route;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
 
-class ChargePolicyCompositeTest {
+class DistanceFarePolicyTest {
 
-  private ChargePolicyComposite pricePolicyComposite;
+  private SubwayFarePolicy subwayFarePolicy;
 
   @BeforeEach
   void setUp() {
-    pricePolicyComposite = new ChargePolicyComposite(
-        List.of(new DistanceFarePolicy(),
-            new LineFarePolicy()),
-        List.of(new AgeDiscountPolicy())
-    );
+    subwayFarePolicy = new DistanceFarePolicy();
   }
 
-  /**
-   * 11   5 F -- G -- H 4 |         | 4 |         | A -- B -- C -- D 1   2    3
-   */
-  @Test
-  @DisplayName("calculate() : 모든 추가 요금 정책을 계산할 수 있다.")
-  void test_calculate() throws Exception {
+  @ParameterizedTest
+  @MethodSource("calculatePriceFromDistance")
+  @DisplayName("calculate() : 거리에 따라 요금을 계산할 수 있다.")
+  void test_calculate(final Station from, final Station to, final Money price) throws Exception {
     //given
     final List<Line> lines = createDefaultLines();
-    final Route route = new Route(
-        lines,
-        new Station("A"),
-        new Station("G")
-    );
+    final Route route = new Route(lines, from, to);
 
     //when
-    final Money totalMoney = pricePolicyComposite.calculate(route);
+    final Money result = subwayFarePolicy.calculate(route);
 
     //then
-    assertEquals(new Money(2350), totalMoney);
+    assertEquals(result, price);
   }
 
-  @Test
-  @DisplayName("discount() : 모든 할인 요금 정책을 계산할 수 있다.")
-  void test_discount() throws Exception {
-    //given
-    final DiscountCondition discountCondition = new DiscountCondition(14);
-    final Money money = new Money(10350);
+  static Stream<Arguments> calculatePriceFromDistance() {
 
-    //when
-    final Money discountedMoney = pricePolicyComposite.discount(discountCondition, money);
+    final Station start1 = new Station("A");
+    final Station end1 = new Station("G");
+    final Money money1 = new Money(1350);
 
-    //then
-    assertEquals(new Money(8000), discountedMoney);
+    final Station start2 = new Station("A");
+    final Station end2 = new Station("H");
+    final Money money2 = new Money(1250);
+
+    final Station start3 = new Station("G");
+    final Station end3 = new Station("C");
+    final Money money3 = new Money(1350);
+
+    final Station start4 = new Station("F");
+    final Station end4 = new Station("H");
+    final Money money4 = new Money(1350);
+
+    return Stream.of(
+        Arguments.of(start1, end1, money1),
+        Arguments.of(start2, end2, money2),
+        Arguments.of(start3, end3, money3),
+        Arguments.of(start4, end4, money4)
+    );
   }
 
   private List<Line> createDefaultLines() {

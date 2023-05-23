@@ -10,7 +10,7 @@ import subway.domain.Money;
 import subway.domain.route.Route;
 
 @Component
-public class DefaultFarePolicy implements SubwayFarePolicy {
+public class DistanceFarePolicy implements SubwayFarePolicy {
 
   private static final Money DEFAULT_PRICE = new Money(1250);
   private static final BigDecimal ADDITIONAL_FEE = BigDecimal.valueOf(100);
