@@ -15,11 +15,8 @@ import subway.dto.LineEntity;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class LineRepositoryTest {
@@ -32,17 +29,6 @@ class LineRepositoryTest {
     private SectionDao sectionDao;
     @Mock
     private StationDao stationDao;
-
-    @Test
-    @DisplayName("Section 삽입 기능")
-    void saveSection() {
-        // given
-        given(sectionDao.insert(anyLong(), any())).willReturn(1L);
-
-        // when & then
-        assertThat(lineRepository.saveInitialSection(Fixture.line, Fixture.sectionAB)).isEqualTo(1L);
-        verify(sectionDao, times(1)).insert(anyLong(), any());
-    }
 
     @Test
     @DisplayName("Line id를 기준으로 조회 기능")

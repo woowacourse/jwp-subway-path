@@ -41,7 +41,7 @@ Content-Type: application/json
 }
 
 ### POST /lines/{id}/station/init : 첫 두 역(1,2) 삽입
-POST http://localhost:8080/lines/1/station/init
+POST http://localhost:8080/lines/1/stations/init
 Content-Type: application/json
 
 {
@@ -51,7 +51,7 @@ Content-Type: application/json
 }
 
 ### POST /lines/{id}/station : 중간 역(3) 삽입
-POST http://localhost:8080/lines/1/station
+POST http://localhost:8080/lines/1/stations
 Content-Type: application/json
 
 {
@@ -71,7 +71,7 @@ Content-Type: application/json
 }
 
 ### POST /lines/{id}/station/init : 첫 두 역(1,2) 삽입
-POST http://localhost:8080/lines/2/station/init
+POST http://localhost:8080/lines/2/stations/init
 Content-Type: application/json
 
 {
@@ -82,3 +82,6 @@ Content-Type: application/json
 
 ### GET /lines
 GET http://localhost:8080/lines
+
+### GET /path
+GET http://localhost:8080/path?departure=4&arrival=2

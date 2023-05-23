@@ -56,27 +56,7 @@ public class LineRepository {
         return convertToLine(lineEntity, sections);
     }
 
-    public Long saveInitialSection(final Line line, final Section section) {
-        final Long sectionId = saveSection(line, section);
-        updateUpEndpoint(line);
-
-        return sectionId;
-    }
-
-    private Long saveSection(final Line line, final Section section) {
-        return sectionDao.insert(line.getId(), section);
-    }
-
-    public void updateUpEndpoint(final Line line) {
-        final Optional<Station> upEndpoint = line.getUpEndpoint();
-        if (upEndpoint.isPresent()) {
-            lineDao.updateUpEndpointById(line.getId(), upEndpoint.get().getId());
-            return;
-        }
-        lineDao.updateUpEndpointById(line.getId(), null);
-    }
-
-    public List<Long> updateSectionsInLine(final Line line) {
+    public List<Long> saveSectionsByLine(final Line line) {
         deleteSectionsByLine(line);
 
         final List<Long> sectionIds = new ArrayList<>();
@@ -91,6 +71,19 @@ public class LineRepository {
 
     private void deleteSectionsByLine(final Line line) {
         sectionDao.deleteByLineId(line.getId());
+    }
+
+    private Long saveSection(final Line line, final Section section) {
+        return sectionDao.insert(line.getId(), section);
+    }
+
+    private void updateUpEndpoint(final Line line) {
+        final Optional<Station> upEndpoint = line.getUpEndpoint();
+        if (upEndpoint.isPresent()) {
+            lineDao.updateUpEndpointById(line.getId(), upEndpoint.get().getId());
+            return;
+        }
+        lineDao.updateUpEndpointById(line.getId(), null);
     }
 
     public void updateLine(final Long id, final String name, final String color) {

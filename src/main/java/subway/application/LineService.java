@@ -3,12 +3,10 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.domain.Line;
 import subway.domain.LineRepository;
-import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
-import subway.dto.SectionResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,30 +26,28 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public SectionResponse saveInitialSection(final Long lineId, final SectionRequest sectionRequest) {
+    public LineResponse saveInitialSection(final Long lineId, final SectionRequest sectionRequest) {
         final Line line = lineRepository.findLineById(lineId);
         final Station upStation = stationService.findStationById(sectionRequest.getUpStationId());
         final Station downStation = stationService.findStationById(sectionRequest.getDownStationId());
         final int distance = sectionRequest.getDistance();
 
-        final Section section = line.addInitialSection(upStation, downStation, distance);
-        final Long sectionId = lineRepository.saveInitialSection(line, section);
+        line.addInitialSection(upStation, downStation, distance);
+        lineRepository.saveSectionsByLine(line);
 
-        return SectionResponse.of(sectionId, section);
+        return LineResponse.of(line);
     }
 
-    public SectionResponse saveSection(final Long lineId, final SectionRequest sectionRequest) {
+    public LineResponse saveSection(final Long lineId, final SectionRequest sectionRequest) {
         final Line line = lineRepository.findLineById(lineId);
         final Station upStation = stationService.findStationById(sectionRequest.getUpStationId());
         final Station downStation = stationService.findStationById(sectionRequest.getDownStationId());
         final int distance = sectionRequest.getDistance();
 
-        final Section section = line.addSection(upStation, downStation, distance);
+        line.addSection(upStation, downStation, distance);
+        lineRepository.saveSectionsByLine(line);
 
-        final List<Long> sectionIds = lineRepository.updateSectionsInLine(line);
-
-        final Long lastSectionId = sectionIds.get(sectionIds.size() - 1);
-        return SectionResponse.of(lastSectionId, section);
+        return LineResponse.of(line);
     }
 
     public List<LineResponse> findLineResponses() {
@@ -75,7 +71,7 @@ public class LineService {
         final Station station = stationService.findStationById(stationId);
 
         line.deleteStation(station);
-        lineRepository.updateSectionsInLine(line);
+        lineRepository.saveSectionsByLine(line);
     }
 
     public void deleteLineById(final Long id) {

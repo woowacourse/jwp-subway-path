@@ -49,7 +49,7 @@ Content-Type: application/json
 }
 
 ### POST /lines/{id}/station/init : 첫 두 역(1,2) 삽입
-POST http://localhost:8080/lines/1/station/init
+POST http://localhost:8080/lines/1/stations/init
 Content-Type: application/json
 
 {
@@ -63,7 +63,7 @@ GET http://localhost:8080/lines/1
 
 
 ### POST /lines/{id}/station : 중간 역(3) 삽입
-POST http://localhost:8080/lines/1/station
+POST http://localhost:8080/lines/1/stations
 Content-Type: application/json
 
 {
@@ -73,7 +73,7 @@ Content-Type: application/json
 }
 
 ### POST /lines/{id}/station : 상행종점 역(4) 삽입
-POST http://localhost:8080/lines/1/station
+POST http://localhost:8080/lines/1/stations
 Content-Type: application/json
 
 {
@@ -83,7 +83,7 @@ Content-Type: application/json
 }
 
 ### POST /lines/{id}/station : 하행종점 역(5) 삽입
-POST http://localhost:8080/lines/1/station
+POST http://localhost:8080/lines/1/stations
 Content-Type: application/json
 
 {
@@ -96,19 +96,19 @@ Content-Type: application/json
 GET http://localhost:8080/lines/1
 
 ### DELETE /lines/{id}/station/{stationId}
-DELETE http://localhost:8080/lines/1/station/3
+DELETE http://localhost:8080/lines/1/stations/3
 
 ### DELETE /lines/{id}/station/{stationId}
-DELETE http://localhost:8080/lines/1/station/4
+DELETE http://localhost:8080/lines/1/stations/4
 
 ### GET /lines/{id}
 GET http://localhost:8080/lines/1
 
 ### DELETE /lines/{id}/station/{stationId}
-DELETE http://localhost:8080/lines/1/station/5
+DELETE http://localhost:8080/lines/1/stations/5
 
 ### DELETE /lines/{id}/station/{stationId}
-DELETE http://localhost:8080/lines/1/station/2
+DELETE http://localhost:8080/lines/1/stations/2
 
 ### GET /lines/{id}
 GET http://localhost:8080/lines/
