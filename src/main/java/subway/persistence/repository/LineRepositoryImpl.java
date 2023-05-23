@@ -1,7 +1,7 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.domain.LineRepository;
+import subway.domain.repository.LineRepository;
 import subway.persistence.dao.LineDao;
 import subway.persistence.entity.LineEntity;
 import subway.domain.Line;

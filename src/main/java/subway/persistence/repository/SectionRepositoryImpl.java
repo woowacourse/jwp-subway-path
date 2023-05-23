@@ -2,6 +2,7 @@ package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.domain.*;
+import subway.domain.repository.SectionRepository;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.SectionEntity;
@@ -46,13 +47,10 @@ public class SectionRepositoryImpl implements SectionRepository {
     }
 
     @Override
-    public Sections findAllByLineId(Long lineId) {
-        List<Section> sections = sectionDao.findByLineId(lineId)
-                .stream()
+    public List<Section> findAll() {
+        return sectionDao.findAll().stream()
                 .map(this::toSection)
                 .collect(Collectors.toList());
-
-        return new Sections(sections);
     }
 
     private Section toSection(SectionEntity sectionEntity) {
@@ -64,6 +62,16 @@ public class SectionRepositoryImpl implements SectionRepository {
         Distance distance = new Distance(sectionEntity.getDistance());
 
         return new Section(startStation, endStation, distance);
+    }
+
+    @Override
+    public Sections findAllByLineId(Long lineId) {
+        List<Section> sections = sectionDao.findByLineId(lineId)
+                .stream()
+                .map(this::toSection)
+                .collect(Collectors.toList());
+
+        return new Sections(sections);
     }
 
     private Station toStation(StationEntity stationEntity) {

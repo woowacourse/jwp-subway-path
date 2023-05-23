@@ -15,7 +15,7 @@ public class SectionRequest {
     private String endStation;
 
     @NotNull
-    @Range(min = 1, max = 10, message = "거리는 10 이하의 양의 정수여야 합니다.")
+    @Range(min = 1, message = "거리는 양의 정수여야 합니다.")
     private Integer distance;
 
     public SectionRequest() {

@@ -1,10 +1,13 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.domain.StationRepository;
+import subway.domain.Station;
+import subway.domain.repository.StationRepository;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.StationEntity;
-import subway.domain.Station;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class StationRepositoryImpl implements StationRepository {
@@ -19,6 +22,15 @@ public class StationRepositoryImpl implements StationRepository {
         StationEntity stationEntity = new StationEntity(station.getName());
 
         return stationDao.insert(stationEntity);
+    }
+
+    @Override
+    public List<Station> findAll() {
+        List<StationEntity> stationEntities = stationDao.findAll();
+
+        return stationEntities.stream()
+                .map(entity -> new Station(entity.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -5,38 +5,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Line;
-import subway.domain.LineRepository;
-import subway.domain.StationRepository;
+import subway.domain.repository.LineRepository;
+import subway.domain.repository.StationRepository;
 import subway.presentation.dto.request.SectionRequest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SectionIntegrationTest {
+public class SectionIntegrationTest extends IntegrationTest {
     @Autowired
     private LineRepository lineRepository;
 
     @Autowired
     private StationRepository stationRepository;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @LocalServerPort
-    private int port;
-
     @BeforeEach
     public void setUp() {
-        RestAssured.port = port;
-        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
-        jdbcTemplate.execute("truncate table LINE");
-        jdbcTemplate.execute("truncate table STATION");
-        jdbcTemplate.execute("truncate table SECTION");
-        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
+        RestAssured.port = super.port;
     }
 
     @DisplayName("특정 구간을 생성할 수 있다.")

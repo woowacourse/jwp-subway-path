@@ -6,12 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import subway.presentation.dto.request.LineRequest;
 import subway.presentation.dto.response.LineResponse;
 
@@ -21,24 +17,14 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("지하철 노선 관련 기능")
-public class LineIntegrationTest {
+public class LineIntegrationTest extends IntegrationTest {
     private static final LineRequest lineRequest1 = new LineRequest("신분당선");
     private static final LineRequest lineRequest2 = new LineRequest("구신분당선");
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @LocalServerPort
-    private int port;
-
     @BeforeEach
     public void setUp() {
-        RestAssured.port = port;
-        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
-        jdbcTemplate.execute("truncate table LINE");
-        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
+        RestAssured.port = super.port;
     }
 
     @DisplayName("지하철 노선을 생성한다.")

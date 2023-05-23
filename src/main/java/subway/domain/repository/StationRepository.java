@@ -1,7 +1,13 @@
-package subway.domain;
+package subway.domain.repository;
+
+import subway.domain.Station;
+
+import java.util.List;
 
 public interface StationRepository {
     Long save(Station station);
+
+    List<Station> findAll();
 
     Station findById(Long id);
 

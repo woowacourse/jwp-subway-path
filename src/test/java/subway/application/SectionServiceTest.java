@@ -3,16 +3,15 @@ package subway.application;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.SectionDto;
 import subway.domain.*;
+import subway.domain.repository.LineRepository;
+import subway.domain.repository.SectionRepository;
+import subway.domain.repository.StationRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
-@SpringBootTest
-class SectionServiceTest {
+class SectionServiceTest extends ServiceTest{
     @Autowired
     private SectionService sectionService;
 

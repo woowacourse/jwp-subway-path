@@ -1,4 +1,6 @@
-package subway.domain;
+package subway.domain.repository;
+
+import subway.domain.Line;
 
 import java.util.List;
 

@@ -37,11 +37,14 @@
 - [x] Distance 역간거리
     - 거리
         - 양의 정수만 가능하다.
-        - 두 역 사이의 거리는 10Km 이하여야 한다.
+- [X] Cost 요금
+  - 기본 운임(10km 이내)는 1250원이다.
+  - 이동거리가 10km ~ 50km인 경우, 5km마다 100원이 추가된다.
+  - 이동거리가 50km를 초과하는 경우, 8km마다 100원이 추가된다.
 
 ### API 명세
 
-노선에 호선 등록
+- [X] 노선에 호선 등록
 
 ```text
 POST /subway/lines
@@ -56,7 +59,7 @@ Response Headers {
 }
 ```
 
-노선에 역 구간 등록
+- [X] 노선에 역 구간 등록
 
 ```text
 POST /subway/lines/{line_id}/sections
@@ -72,7 +75,7 @@ Response Headers {
 }
 ```
 
-노선에 역 제거
+- [X] 노선에 역 제거
 
 ```text
 DELETE /subway/lines/{lineId}/stations/{station_id}
@@ -82,7 +85,7 @@ Response Headers {
 }
 ```
 
-노선 상세 조회
+- [X] 노선 상세 조회
 
 ```text
 GET /subway/lines/{line_id}
@@ -107,7 +110,7 @@ Response Body {
 }
 ```
 
-노선 목록 조회
+- [X] 노선 목록 조회
 
 ```text
 GET /subway/lines
@@ -116,11 +119,51 @@ Response Headers {
     Status : 200
 }
 
-Response Body {[
-    {id : 1L,
-    lineName : "1호선",
+Response Body {
+    [
+        {
+            id : 1L,
+            lineName : "1호선",
+            stations : [
+                 {
+                    id : 1L,
+                    name : "회기"
+                },
+                {
+                    id : 2L,
+                    name : "청량리"
+                }
+            ]
+        },
+       {
+            id : 2L,
+            lineName : "2호선",
+            stations : [
+                 {
+                    id : 3L,
+                    name : "잠실"
+                },
+                {
+                    id : 4L,
+                    name : "잠실새내"
+                }
+            ] 
+       }
+    ]
+}
+```
+
+- [X] 경로 조회 
+```text
+GET /subway/path/{start_station}/{arrival_station}
+
+Response Headers {
+    Status : 200
+}
+
+Response Body {
     stations : [
-         {
+        {
             id : 1L,
             name : "회기"
         },
@@ -128,18 +171,8 @@ Response Body {[
             id : 2L,
             name : "청량리"
         }
-   ]},
-   {id : 2L,
-    lineName : "2호선",
-    stations : [
-         {
-            id : 3L,
-            name : "잠실"
-        },
-        {
-            id : 4L,
-            name : "잠실새내"
-        }
-   ]}
-]}
+    ],
+    cost : 1250
+}
+
 ```
