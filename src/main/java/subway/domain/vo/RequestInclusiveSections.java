@@ -1,4 +1,6 @@
-package subway.domain;
+package subway.domain.vo;
+
+import subway.domain.SectionSorter;
 
 import java.util.List;
 

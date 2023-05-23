@@ -5,6 +5,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import subway.application.exception.AddSectionException;
+import subway.application.exception.NoSuchStationException;
 import subway.dto.ErrorResponseDto;
 
 import java.sql.SQLException;
@@ -17,20 +18,8 @@ public class SubwayControllerAdvice {
         return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<ErrorResponseDto> handleSQLException(final SQLException exception) {
-        final String message = exception.getMessage();
-        return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(final IllegalArgumentException exception) {
-        final String message = exception.getMessage();
-        return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
-    }
-
-    @ExceptionHandler(AddSectionException.class)
-    public ResponseEntity<ErrorResponseDto> handleAddSectionException(final AddSectionException exception) {
+    @ExceptionHandler({SQLException.class,IllegalArgumentException.class,AddSectionException.class,NoSuchStationException.class})
+    public ResponseEntity<ErrorResponseDto> handleSQLException(final Exception exception) {
         final String message = exception.getMessage();
         return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
     }

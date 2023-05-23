@@ -2,7 +2,7 @@ package subway.application.reader;
 
 import subway.application.exception.AddSectionException;
 import subway.dao.SectionDao;
-import subway.domain.Section;
+import subway.domain.vo.Section;
 
 import java.util.List;
 

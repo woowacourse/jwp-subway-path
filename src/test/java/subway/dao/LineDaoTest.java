@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.Line;
+import subway.domain.vo.Line;
 
 import javax.sql.DataSource;
 
 @JdbcTest
-@Sql(scripts = {"classpath:truncate.sql", "classpath:lineTest.sql"})
+@Sql(scripts = {"classpath:truncate.sql", "classpath:data/lineTest.sql"})
 class LineDaoTest {
     private final LineDao lineDao;
 
@@ -30,18 +30,18 @@ class LineDaoTest {
         Line actual = lineDao.insert(input);
 
         //then
-        Assertions.assertThat(actual.getId()).isEqualTo(3l);
+        Assertions.assertThat(actual.getId()).isEqualTo(4l);
     }
 
     @Test
     void findAll() {
 
-        Assertions.assertThat(lineDao.findAll()).hasSize(2);
+        Assertions.assertThat(lineDao.findAll()).hasSize(3);
     }
 
     @Test
     void findById() {
-        Assertions.assertThat(lineDao.findById(1l).getName()).isEqualTo("testName1");
+        Assertions.assertThat(lineDao.findById(1l).getName()).isEqualTo("1호선");
     }
 
     @Test

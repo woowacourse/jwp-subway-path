@@ -1,14 +1,14 @@
 package subway.application.reader;
 
-import subway.domain.Section;
+import subway.domain.vo.Section;
 
 public class CaseDto {
     private final Long lineId;
     private final String departure;
     private final String arrival;
     private final int distance;
-    private CaseType caseType;
-    private Section deleteSection;
+    private final CaseType caseType;
+    private final Section deleteSection;
 
     private CaseDto(Builder builder) {
         this.lineId = builder.lineId;

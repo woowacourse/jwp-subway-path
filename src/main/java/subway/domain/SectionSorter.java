@@ -1,5 +1,8 @@
 package subway.domain;
 
+import subway.domain.vo.Section;
+import subway.domain.vo.Station;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,9 +56,7 @@ public class SectionSorter {
         if (trg == null) {
             return src;
         }
-        for (Section section : trg) {
-            src.add(section);
-        }
+        src.addAll(trg);
         return src;
     }
 

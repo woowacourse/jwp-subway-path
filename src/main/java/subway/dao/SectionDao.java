@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.*;
+import subway.domain.vo.*;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -63,7 +63,7 @@ public class SectionDao {
 
     public Map<Line, List<Section>> findSections() {
         String sql =
-                "SELECT sections.id, sections.line_id, line.name, line.color, " +
+                "SELECT sections.id, sections.line_id, line.name,line.color, " +
                         "departure_station.id AS departure_id, departure_station.name AS departure_name, " +
                         "arrival_station.id AS arrival_id, arrival_station.name AS arrival_name, sections.distance AS distance "
                         + "FROM sections "
@@ -75,6 +75,18 @@ public class SectionDao {
 
         return lineSections.stream()
                 .collect(groupingBy(LineSection::getLineInfo, mapping(LineSection::getSection, toList())));
+    }
+
+    public List<Section> findAllSections() {
+        String sql =
+                "SELECT sections.id, sections.line_id, " +
+                        "departure_station.id AS departure_id, departure_station.name AS departure_name, " +
+                        "arrival_station.id AS arrival_id, arrival_station.name AS arrival_name, " +
+                        "sections.distance AS distance "
+                        + "FROM sections "
+                        + "LEFT JOIN station AS departure_station ON departure_station.id = sections.departure_id "
+                        + "LEFT JOIN station AS arrival_station ON arrival_station.id = sections.arrival_id ";
+        return jdbcTemplate.query(sql, sectionRowMapper);
     }
 
     public List<Section> findSectionsByLineId(Long id) {

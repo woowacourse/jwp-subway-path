@@ -1,6 +1,6 @@
 package subway.application.reader;
 
-import subway.domain.Section;
+import subway.domain.vo.Section;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class CaseTypeSetter {
                 .collect(toList());
 
         if (crossMatch.size() > 1 || (!departureMatch.isEmpty() & !arrivalMatch.isEmpty())) {
-            return setExceptionCase(caseDto);
+            return setExceptionCase();
         }
         if (crossMatch.size() == 1 & departureMatch.isEmpty() & arrivalMatch.isEmpty()) {
             return setNonDeleteSaveCase(caseDto);
@@ -31,10 +31,10 @@ public class CaseTypeSetter {
         if (!departureMatch.isEmpty() & arrivalMatch.isEmpty()) {
             return setUpperCase(caseDto, departureMatch);
         }
-        if (departureMatch.isEmpty() & !arrivalMatch.isEmpty()) {
+        if (!arrivalMatch.isEmpty()) {
             return setLowerCase(caseDto, arrivalMatch);
         }
-        return setExceptionCase(caseDto);
+        return setExceptionCase();
     }
 
     private static CaseDto setLowerCase(CaseDto caseDto, List<Section> arrivalMatch) {
@@ -59,7 +59,7 @@ public class CaseTypeSetter {
                 .build();
     }
 
-    private static CaseDto setExceptionCase(CaseDto caseDto) {
+    private static CaseDto setExceptionCase() {
         return new CaseDto.Builder()
                 .caseType(CaseType.EXCEPTION_CASE)
                 .build();

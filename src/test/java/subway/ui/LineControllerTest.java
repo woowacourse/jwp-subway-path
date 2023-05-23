@@ -15,7 +15,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.domain.*;
+import subway.domain.vo.*;
 import subway.dto.AddStationRequest;
 
 import java.util.HashMap;

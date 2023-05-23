@@ -14,9 +14,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import subway.application.exception.AddSectionException;
 import subway.dao.SectionDao;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.vo.Distance;
+import subway.domain.vo.Section;
+import subway.domain.vo.Station;
 
 import java.util.ArrayList;
 import java.util.List;

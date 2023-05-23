@@ -14,7 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import subway.application.SectionService;
-import subway.domain.Section;
+import subway.domain.vo.Section;
 
 import java.util.ArrayList;
 import java.util.List;
