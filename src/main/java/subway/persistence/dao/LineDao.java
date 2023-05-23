@@ -19,7 +19,8 @@ public class LineDao {
         new LineEntity(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getLong("charge")
         );
 
     private final RowMapper<LineSectionStationJoinDto> lineSectionStationJoinRowMapper = (rs, rowNum) ->
@@ -27,6 +28,7 @@ public class LineDao {
             rs.getLong("line_id"),
             rs.getString("line_name"),
             rs.getString("line_color"),
+            rs.getLong("line_charge"),
             rs.getLong("start_station_id"),
             rs.getString("start_station_name"),
             rs.getLong("end_station_id"),
@@ -46,14 +48,16 @@ public class LineDao {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getName());
         params.put("color", lineEntity.getColor());
+        params.put("charge", lineEntity.getCharge());
         final Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor(), lineEntity.getCharge());
     }
 
     public List<LineSectionStationJoinDto> findAll() {
         final String sql = "SELECT line.id                 AS line_id, "
             + "       line.name               AS line_name, "
             + "       line.color              AS line_color, "
+            + "       line.charge             AS line_charge, "
             + "       start_station.id        AS start_station_id, "
             + "       start_station.name      AS start_station_name, "
             + "       end_station.id          AS end_station_id, "
@@ -74,6 +78,7 @@ public class LineDao {
         final String sql = "SELECT line.id                 AS line_id, "
             + "       line.name               AS line_name, "
             + "       line.color              AS line_color, "
+            + "       line.charge             AS line_charge, "
             + "       start_station.id        AS start_station_id, "
             + "       start_station.name      AS start_station_name, "
             + "       end_station.id          AS end_station_id, "
@@ -92,8 +97,9 @@ public class LineDao {
     }
 
     public void update(final LineEntity lineEntity) {
-        final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
+        final String sql = "update LINE set name = ?, color = ?, charge = ? where id = ?";
+        jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getCharge(),
+            lineEntity.getId());
     }
 
     public void deleteById(final Long id) {
@@ -104,6 +110,7 @@ public class LineDao {
         final String sql = "SELECT line.id                 AS line_id, "
             + "       line.name               AS line_name, "
             + "       line.color              AS line_color, "
+            + "       line.charge             AS line_charge, "
             + "       start_station.id        AS start_station_id, "
             + "       start_station.name      AS start_station_name, "
             + "       end_station.id          AS end_station_id, "
@@ -129,21 +136,21 @@ public class LineDao {
     }
 
     public LineEntity findOnlyLineById(final Long id) {
-        final String sql = "SELECT id, name, color "
+        final String sql = "SELECT id, name, color, charge "
             + "FROM LINE "
             + "WHERE id = ?;";
         return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
     }
 
     public LineEntity findOnlyLineByName(final String name) {
-        final String sql = "SELECT id, name, color "
+        final String sql = "SELECT id, name, color, charge "
             + "FROM LINE "
             + "WHERE name = ?;";
         return jdbcTemplate.queryForObject(sql, lineRowMapper, name);
     }
 
     public List<LineEntity> findOnlyLines() {
-        final String sql = "SELECT id, name, color "
+        final String sql = "SELECT id, name, color, charge "
             + "FROM LINE;";
         return jdbcTemplate.query(sql, lineRowMapper);
     }

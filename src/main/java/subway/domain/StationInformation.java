@@ -33,6 +33,10 @@ public class StationInformation {
         return Objects.hash(station, line);
     }
 
+    public long getLineCharge() {
+        return line.getCharge();
+    }
+
     public Station getStation() {
         return station;
     }

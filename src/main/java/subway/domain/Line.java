@@ -11,32 +11,34 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final Long charge;
     private final Sections sections;
 
-    public Line(final Long id, final String name, final String color, final Sections sections) {
+    public Line(final Long id, final String name, final String color, final Long charge, final Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.charge = charge;
         this.sections = sections;
     }
 
-    public Line(final String name, final String color) {
-        this(null, name, color, new Sections(new ArrayList<>()));
+    public Line(final String name, final String color, final Long charge) {
+        this(null, name, color, charge, new Sections(new ArrayList<>()));
     }
 
-    public Line(final Long id, final String name, final String color) {
-        this(id, name, color, new Sections(new ArrayList<>()));
+    public Line(final Long id, final String name, final String color, final Long charge) {
+        this(id, name, color, charge, new Sections(new ArrayList<>()));
     }
 
-    public Line(final String name, final String color, final Sections sections) {
-        this(null, name, color, sections);
+    public Line(final String name, final String color, final Long charge, final Sections sections) {
+        this(null, name, color, charge, sections);
     }
 
     public Line addInitStations(final Station upStation, final Station downStation, final Distance distance) {
         checkSectionsNotEmpty();
         final Section section = new Section(upStation, downStation, distance);
         final Sections addedSections = sections.addAll(section);
-        return new Line(id, name, color, addedSections);
+        return new Line(id, name, color, charge, addedSections);
     }
 
     public Line addTopStation(final Station station, final Distance distance) {
@@ -44,7 +46,7 @@ public class Line {
         final Station currentTopStation = sections.findTopStation();
         final Section section = new Section(station, currentTopStation, distance);
         final Sections addedSections = sections.addTop(section);
-        return new Line(id, name, color, addedSections);
+        return new Line(id, name, color, charge, addedSections);
     }
 
     public Line addBottomStation(final Station station, final Distance distance) {
@@ -52,7 +54,7 @@ public class Line {
         final Station currentBottomStation = sections.findBottomStation();
         final Section section = new Section(currentBottomStation, station, distance);
         final Sections addedSections = sections.addBottom(section);
-        return new Line(id, name, color, addedSections);
+        return new Line(id, name, color, charge, addedSections);
     }
 
     public Line addBetweenStation(final Station addStation, final Station upStation, final Station downStation,
@@ -64,7 +66,7 @@ public class Line {
         final Section downSection = new Section(addStation, existedSection.getDownStation(),
             existedSection.getDistance().minus(distance));
         final Sections addedSections = removedSections.addAll(upSection, downSection);
-        return new Line(id, name, color, addedSections);
+        return new Line(id, name, color, charge, addedSections);
     }
 
     private void checkSectionsEmpty() {
@@ -81,7 +83,7 @@ public class Line {
 
     public Line removeStation(final Station station) {
         final Sections removedSections = sections.remove(station);
-        return new Line(id, name, color, removedSections);
+        return new Line(id, name, color, charge, removedSections);
     }
 
     @Override
@@ -126,5 +128,9 @@ public class Line {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public Long getCharge() {
+        return charge;
     }
 }

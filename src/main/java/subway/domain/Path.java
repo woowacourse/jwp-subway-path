@@ -13,6 +13,13 @@ public class Path {
         this.distance = distance;
     }
 
+    public long findHighestLineCharge() {
+        return stationInformations.stream()
+            .mapToLong(StationInformation::getLineCharge)
+            .max()
+            .orElse(0L);
+    }
+
     public List<StationInformation> getStationInformations() {
         return stationInformations;
     }

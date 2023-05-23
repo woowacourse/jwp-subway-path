@@ -2,6 +2,7 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,11 +26,11 @@ class NavigationTest {
     @DisplayName("경로들 중 최단 경로를 찾는다.")
     void testFindShortest() {
         //given
-        final Sections sections1 = new Sections(List.of(section1, section2, section3));
-        final Line line1 = new Line("lineName", "lineColor", sections1);
-        final Sections sections2 = new Sections(List.of(section4, section5, section6));
-        final Line line2 = new Line("lineName", "lineColor", sections2);
-        final Lines lines = new Lines(List.of(line1, line2));
+        final Sections sections1 = new Sections(new ArrayList<>(List.of(section1, section2, section3)));
+        final Line line1 = new Line("lineName", "lineColor", 0L, sections1);
+        final Sections sections2 = new Sections(new ArrayList<>(List.of(section4, section5, section6)));
+        final Line line2 = new Line("lineName", "lineColor", 0L, sections2);
+        final Lines lines = new Lines(new ArrayList<>(List.of(line1, line2)));
         final Navigation navigation = new Navigation(lines);
 
         //when

@@ -25,7 +25,7 @@ class LineTest {
     void testAddTopStationWhenEmpty() {
         //given
         final Sections sections = new Sections(Collections.emptyList());
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
 
         //when
         //then
@@ -38,7 +38,7 @@ class LineTest {
     void testAddTopStationWhenNotEmpty() {
         //given
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
         final Station newStation = new Station("newStation");
 
         //when
@@ -54,7 +54,7 @@ class LineTest {
     void testAddBottomStationWhenEmpty() {
         //given
         final Sections sections = new Sections(Collections.emptyList());
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
         final Distance distance = new Distance(10L);
 
         //when
@@ -68,7 +68,7 @@ class LineTest {
     void testAddBottomStationWhenNotEmpty() {
         //given
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
         final Station newStation = new Station("newStation");
 
         //when
@@ -84,7 +84,7 @@ class LineTest {
     void testAddBetweenStationWhenEmpty() {
         //given
         final Sections sections = new Sections(Collections.emptyList());
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
 
         //when
         //then
@@ -97,7 +97,7 @@ class LineTest {
     void testAddBetweenStationWhenNotEmpty() {
         //given
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
         final Station newStation = new Station("station");
         final Distance distance = new Distance(5L);
 
@@ -114,7 +114,7 @@ class LineTest {
     void testAddInitStations() {
         //given
         final Sections sections = new Sections(new ArrayList<>());
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
 
         //when
         final Line result = line.addInitStations(firstStation, secondStation, distance);
@@ -130,7 +130,7 @@ class LineTest {
         //given
         final Section section = new Section(firstStation, secondStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(section)));
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
 
         //when
         //then
@@ -143,7 +143,7 @@ class LineTest {
     void testRemoveStationTop() {
         //given
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
 
         //when
         final Line result = line.removeStation(firstStation);
@@ -160,7 +160,7 @@ class LineTest {
     void testRemoveStationBottom() {
         //given
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
 
         //when
         final Line result = line.removeStation(thirdStation);
@@ -177,7 +177,7 @@ class LineTest {
     void testRemoveStationBetween() {
         //given
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
-        final Line line = new Line("name", "color", sections);
+        final Line line = new Line("name", "color", 0L, sections);
 
         //when
         final Line result = line.removeStation(secondStation);

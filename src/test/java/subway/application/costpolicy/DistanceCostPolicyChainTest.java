@@ -1,4 +1,4 @@
-package subway.application;
+package subway.application.costpolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,11 +6,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.Path;
+import subway.domain.vo.Age;
 import subway.domain.vo.Distance;
 
-class DistanceCostPolicyTest {
+class DistanceCostPolicyChainTest {
 
-    private final CostPolicy costPolicy = new DistanceCostPolicy();
+    private static final long DEFAULT_COST = 1250L;
+    private final CostPolicyChain costPolicyChain = new DistanceCostPolicyChain();
 
     @ParameterizedTest
     @ValueSource(longs = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L})
@@ -21,10 +23,10 @@ class DistanceCostPolicyTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
-        assertThat(result).isEqualTo(1250L);
+        assertThat(result).isEqualTo(DEFAULT_COST);
     }
 
     @ParameterizedTest
@@ -36,7 +38,7 @@ class DistanceCostPolicyTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1350L);
@@ -51,7 +53,7 @@ class DistanceCostPolicyTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1450L);
@@ -66,7 +68,7 @@ class DistanceCostPolicyTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(1550L);
@@ -81,7 +83,7 @@ class DistanceCostPolicyTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(2050L);
@@ -96,7 +98,7 @@ class DistanceCostPolicyTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(2150L);
@@ -111,7 +113,7 @@ class DistanceCostPolicyTest {
         final Path path = new Path(null, distance);
 
         //when
-        final long result = costPolicy.calculate(path);
+        final long result = costPolicyChain.calculate(path, Age.from(0), DEFAULT_COST);
 
         //then
         assertThat(result).isEqualTo(2250L);

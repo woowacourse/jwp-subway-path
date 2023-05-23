@@ -20,6 +20,27 @@ import subway.controller.dto.response.StationResponse;
 
 class PathIntegrationTest extends IntegrationTest {
 
+    private static List<StationInformationResponse> getStationInformationResponses(final LineResponse lineResponse2,
+        final StationResponse stationResponse1, final StationResponse stationResponse2,
+        final StationResponse stationResponse3) {
+        final StationInformationResponse stationInformationResponse1 = new StationInformationResponse(
+            stationResponse1.getId(), stationResponse1.getName(), 6L, lineResponse2.getName(),
+            lineResponse2.getColor());
+        final StationInformationResponse stationInformationResponse2 = new StationInformationResponse(
+            stationResponse2.getId(), stationResponse2.getName(), 6L, lineResponse2.getName(),
+            lineResponse2.getColor());
+        final StationInformationResponse stationInformationResponse3 = new StationInformationResponse(
+            stationResponse3.getId(), stationResponse3.getName(), 6L, lineResponse2.getName(),
+            lineResponse2.getColor());
+
+        final List<StationInformationResponse> expectedStationInformationResponses = List.of(
+            stationInformationResponse1,
+            stationInformationResponse2,
+            stationInformationResponse3
+        );
+        return expectedStationInformationResponses;
+    }
+
     @Test
     @DisplayName("같은 경로를 공유하는 두 호선에서 도착점과 끝점이 그 경로 위에 있을 때, 최단 경로를 찾는다.")
     void testFindShortestPath() {
@@ -30,6 +51,8 @@ class PathIntegrationTest extends IntegrationTest {
         final StationResponse stationResponse1 = saveStation1().as(StationResponse.class);
         final StationResponse stationResponse2 = saveStation2().as(StationResponse.class);
         final StationResponse stationResponse3 = saveStation3().as(StationResponse.class);
+
+        final int age = 10;
 
         saveInitStationToLine(new AddInitStationToLineRequest(lineResponse1.getName(), stationResponse1.getName(),
             stationResponse2.getName(), 10L));
@@ -47,31 +70,18 @@ class PathIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .get("/shortest-path?startStationName=" + stationResponse1.getName() + "&endStationName="
-                + stationResponse3.getName())
+            .get("/path/shortest?startStationName=" + stationResponse1.getName() + "&endStationName="
+                + stationResponse3.getName() + "&age=" + age)
             .then().log().all()
             .extract();
 
         //then
         final FindShortestPathResponse findShortestPathResponse = response.as(FindShortestPathResponse.class);
 
-        final StationInformationResponse stationInformationResponse1 = new StationInformationResponse(
-            stationResponse1.getId(), stationResponse1.getName(), 6L, lineResponse2.getName(),
-            lineResponse2.getColor());
-        final StationInformationResponse stationInformationResponse2 = new StationInformationResponse(
-            stationResponse2.getId(), stationResponse2.getName(), 6L, lineResponse2.getName(),
-            lineResponse2.getColor());
-        final StationInformationResponse stationInformationResponse3 = new StationInformationResponse(
-            stationResponse3.getId(), stationResponse3.getName(), 6L, lineResponse2.getName(),
-            lineResponse2.getColor());
-
-        final List<StationInformationResponse> expectedStationInformationResponses = List.of(
-            stationInformationResponse1,
-            stationInformationResponse2,
-            stationInformationResponse3
-        );
+        final List<StationInformationResponse> expectedStationInformationResponses = getStationInformationResponses(
+            lineResponse2, stationResponse1, stationResponse2, stationResponse3);
         final FindShortestPathResponse expectedResponse = new FindShortestPathResponse(
-            expectedStationInformationResponses, 2L, 1250L);
+            expectedStationInformationResponses, 2L, 1620L);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(findShortestPathResponse.getTotalCost()).isEqualTo(expectedResponse.getTotalCost());

@@ -33,14 +33,15 @@ class LineConverterTest {
         final long lineId = 1L;
         final String lineName = "lineName";
         final String lineColor = "lineColor";
-        final LineSectionStationJoinDto dto1 = new LineSectionStationJoinDto(lineId, lineName, lineColor,
+        final Long lineCharge = 1000L;
+        final LineSectionStationJoinDto dto1 = new LineSectionStationJoinDto(lineId, lineName, lineColor, lineCharge,
             topStation.getId(),
             topStation.getName(), midUpStation.getId(), midUpStation.getName(),
             topSection.getId(), topSection.getDistance().getValue());
-        final LineSectionStationJoinDto dto2 = new LineSectionStationJoinDto(lineId, lineName, lineColor,
+        final LineSectionStationJoinDto dto2 = new LineSectionStationJoinDto(lineId, lineName, lineColor, lineCharge,
             midUpStation.getId(), midUpStation.getName(), midDownStation.getId(), midDownStation.getName(),
             midSection.getId(), midSection.getDistance().getValue());
-        final LineSectionStationJoinDto dto3 = new LineSectionStationJoinDto(lineId, lineName, lineColor,
+        final LineSectionStationJoinDto dto3 = new LineSectionStationJoinDto(lineId, lineName, lineColor, lineCharge,
             midDownStation.getId(), midDownStation.getName(), bottomStation.getId(), bottomStation.getName(),
             bottomSection.getId(), bottomSection.getDistance().getValue());
         final List<LineSectionStationJoinDto> lineSectionStationJoinDtos = new ArrayList<>(List.of(dto1, dto2, dto3));

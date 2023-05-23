@@ -29,20 +29,15 @@ public class LineConverter {
         return removeDuplicate(joinDtos);
     }
 
-    private Line makeLine(final List<LineSectionStationJoinDto> sameLineKeyDtos) {
-        final Set<Section> sectionSet = new HashSet<>();
-        for (final LineSectionStationJoinDto sameLineKeyDto : sameLineKeyDtos) {
-            final Station startStation = new Station(sameLineKeyDto.getStartStationId(),
-                sameLineKeyDto.getStartStationName());
-            final Station endStation = new Station(sameLineKeyDto.getEndStationId(),
-                sameLineKeyDto.getEndStationName());
-            final Section section = new Section(sameLineKeyDto.getSectionId(), startStation, endStation,
-                new Distance(sameLineKeyDto.getSectionDistance()));
-            sectionSet.add(section);
+    private List<Line> removeDuplicate(final List<LineSectionStationJoinDto> dtos) {
+        final Map<Long, List<LineSectionStationJoinDto>> lineBoard = collectDtosByLineId(dtos);
+        final List<Line> lines = new ArrayList<>();
+        for (final Long id : lineBoard.keySet()) {
+            final List<LineSectionStationJoinDto> sameLineKeyDtos = lineBoard.get(id);
+            final Line line = makeLine(sameLineKeyDtos);
+            lines.add(line);
         }
-        final Sections sections = new Sections(new ArrayList<>(sectionSet));
-        final LineSectionStationJoinDto firstDto = sameLineKeyDtos.get(0);
-        return new Line(firstDto.getLineId(), firstDto.getLineName(), firstDto.getLineColor(), sections);
+        return lines;
     }
 
     private Map<Long, List<LineSectionStationJoinDto>> collectDtosByLineId(
@@ -58,15 +53,20 @@ public class LineConverter {
         return lineBoard;
     }
 
-    private List<Line> removeDuplicate(final List<LineSectionStationJoinDto> dtos) {
-        final Map<Long, List<LineSectionStationJoinDto>> lineBoard = collectDtosByLineId(dtos);
-        final List<Line> lines = new ArrayList<>();
-        for (final Long id : lineBoard.keySet()) {
-            final List<LineSectionStationJoinDto> sameLineKeyDtos = lineBoard.get(id);
-            final Line line = makeLine(sameLineKeyDtos);
-            lines.add(line);
+    private Line makeLine(final List<LineSectionStationJoinDto> sameLineKeyDtos) {
+        final Set<Section> sectionSet = new HashSet<>();
+        for (final LineSectionStationJoinDto sameLineKeyDto : sameLineKeyDtos) {
+            final Station startStation = new Station(sameLineKeyDto.getStartStationId(),
+                sameLineKeyDto.getStartStationName());
+            final Station endStation = new Station(sameLineKeyDto.getEndStationId(),
+                sameLineKeyDto.getEndStationName());
+            final Section section = new Section(sameLineKeyDto.getSectionId(), startStation, endStation,
+                new Distance(sameLineKeyDto.getSectionDistance()));
+            sectionSet.add(section);
         }
-        return lines;
+        final Sections sections = new Sections(new ArrayList<>(sectionSet));
+        final LineSectionStationJoinDto firstDto = sameLineKeyDtos.get(0);
+        return new Line(firstDto.getLineId(), firstDto.getLineName(), firstDto.getLineColor(), firstDto.getLineCharge(),
+            sections);
     }
-
 }
