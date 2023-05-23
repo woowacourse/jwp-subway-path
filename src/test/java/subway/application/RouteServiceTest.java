@@ -16,10 +16,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.dao.StationEntity;
-import subway.domain.DijkstraStrategy;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.ShortestPathAlgorithmStrategy;
 import subway.domain.Station;
 import subway.dto.RouteDto;
 
@@ -33,7 +33,7 @@ class RouteServiceTest {
     SectionsMapper sectionsMapper;
 
     @Mock
-    DijkstraStrategy dijkstraStrategy;
+    ShortestPathAlgorithmStrategy shortestPathAlgorithmStrategy;
 
     private static MockedStatic<StationFactory> stationFactory;
 
@@ -75,10 +75,10 @@ class RouteServiceTest {
         stationFactory.when(() -> StationFactory.toStation(stationEntity2))
                 .thenReturn(new Station("이역"));
 
-        when(dijkstraStrategy.getShortestPath(sections, station1, station2))
+        when(shortestPathAlgorithmStrategy.getShortestPath(sections, station1, station2))
                 .thenReturn(List.of(station1, station2));
 
-        when(dijkstraStrategy.getShortestPathWeight(sections, station1, station2))
+        when(shortestPathAlgorithmStrategy.getShortestPathWeight(sections, station1, station2))
                 .thenReturn(distance);
 
         RouteDto routeDto = routeService.getFeeByStations("일역", "이역");

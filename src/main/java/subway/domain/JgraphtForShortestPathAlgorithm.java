@@ -11,7 +11,7 @@ import subway.exception.station.DuplicateStationNameException;
 import subway.exception.station.NotFoundStationException;
 
 @Component
-public class JgraphtForDijkstra implements DijkstraStrategy {
+public class JgraphtForShortestPathAlgorithm implements ShortestPathAlgorithmStrategy {
 
     private void validate(final List<Section> sections) {
         if (sections.isEmpty()) {

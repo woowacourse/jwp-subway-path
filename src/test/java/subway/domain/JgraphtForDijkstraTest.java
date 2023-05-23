@@ -14,11 +14,11 @@ import subway.exception.station.NotFoundStationException;
 
 class JgraphtForDijkstraTest {
 
-    JgraphtForDijkstra jgraphtForDijkstra;
+    JgraphtForShortestPathAlgorithm jgraphtForDijkstra;
 
     @BeforeEach
     void init() {
-        jgraphtForDijkstra = new JgraphtForDijkstra();
+        jgraphtForDijkstra = new JgraphtForShortestPathAlgorithm();
     }
 
     @DisplayName("최단 경로의 역 조회 테스트")

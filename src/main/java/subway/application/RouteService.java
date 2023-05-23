@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
-import subway.domain.DijkstraStrategy;
 import subway.domain.Distance;
 import subway.domain.Fee;
 import subway.domain.Sections;
+import subway.domain.ShortestPathAlgorithmStrategy;
 import subway.domain.Station;
 import subway.dto.DistanceDto;
 import subway.dto.FeeDto;
@@ -20,13 +20,13 @@ public class RouteService {
 
     private final SectionDao sectionDao;
     private final SectionsMapper sectionsMapper;
-    private final DijkstraStrategy dijkstraStrategy;
+    private final ShortestPathAlgorithmStrategy shortestPathAlgorithmStrategy;
 
     public RouteService(final SectionDao sectionDao, final SectionsMapper sectionsMapper,
-                        final DijkstraStrategy dijkstraStrategy) {
+                        final ShortestPathAlgorithmStrategy shortestPathAlgorithmStrategy) {
         this.sectionDao = sectionDao;
         this.sectionsMapper = sectionsMapper;
-        this.dijkstraStrategy = dijkstraStrategy;
+        this.shortestPathAlgorithmStrategy = shortestPathAlgorithmStrategy;
     }
 
     public RouteDto getFeeByStations(final String startStationName, final String endStationName) {
@@ -36,8 +36,8 @@ public class RouteService {
         Station startStation = new Station(startStationName);
         Station endStation = new Station(endStationName);
 
-        List<Station> shortestPath = dijkstraStrategy.getShortestPath(sections, startStation, endStation);
-        Distance distance = dijkstraStrategy.getShortestPathWeight(sections, startStation, endStation);
+        List<Station> shortestPath = shortestPathAlgorithmStrategy.getShortestPath(sections, startStation, endStation);
+        Distance distance = shortestPathAlgorithmStrategy.getShortestPathWeight(sections, startStation, endStation);
 
         Fee fee = Fee.toDistance(distance.getDistance());
 
