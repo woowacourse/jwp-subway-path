@@ -18,7 +18,6 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.SectionRequest;
-import subway.dto.StationResponse;
 import subway.dto.StationsByLineResponse;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -246,23 +245,15 @@ public class LineIntegrationTest extends IntegrationTest {
                 .extract();
 
         StationsByLineResponse stationsByLineResponse = response.as(StationsByLineResponse.class);
-        List<StationResponse> stationResponses = stationsByLineResponse.getStations();
 
-        assertSoftly(softly -> {
-            softly.assertThat(stationsByLineResponse.getLineId()).isEqualTo(1L);
-            softly.assertThat(stationsByLineResponse.getName()).isEqualTo("2호선");
-            softly.assertThat(stationsByLineResponse.getColor()).isEqualTo("Green");
+        StationsByLineResponse expect = new StationsByLineResponse(new Line(1L, "2호선", "Green"),
+                List.of(new Station(1L, "후추"),
+                        new Station(2L, "디노"),
+                        new Station(3L, "조앤"),
+                        new Station(4L, "로운")
+                ));
 
-            softly.assertThat(stationResponses.size()).isEqualTo(4);
-            softly.assertThat(stationResponses.get(0).getId()).isEqualTo(1L);
-            softly.assertThat(stationResponses.get(0).getName()).isEqualTo("후추");
-            softly.assertThat(stationResponses.get(1).getId()).isEqualTo(2L);
-            softly.assertThat(stationResponses.get(1).getName()).isEqualTo("디노");
-            softly.assertThat(stationResponses.get(2).getId()).isEqualTo(3L);
-            softly.assertThat(stationResponses.get(2).getName()).isEqualTo("조앤");
-            softly.assertThat(stationResponses.get(3).getId()).isEqualTo(4L);
-            softly.assertThat(stationResponses.get(3).getName()).isEqualTo("로운");
-        });
+        assertThat(stationsByLineResponse).usingRecursiveComparison().isEqualTo(expect);
     }
 
     @Test
@@ -278,38 +269,27 @@ public class LineIntegrationTest extends IntegrationTest {
         List<StationsByLineResponse> stationsByLineResponses = response.jsonPath()
                 .getList(".", StationsByLineResponse.class);
 
+        StationsByLineResponse expect1 = new StationsByLineResponse(new Line(1L, "2호선", "Green"),
+                List.of(new Station(1L, "후추"),
+                        new Station(2L, "디노"),
+                        new Station(3L, "조앤"),
+                        new Station(4L, "로운")
+                ));
+
+        StationsByLineResponse expect2 = new StationsByLineResponse(new Line(2L, "8호선", "pink"),
+                List.of(new Station(3L, "조앤"),
+                        new Station(5L, "포비"),
+                        new Station(4L, "로운")
+                ));
+
         assertSoftly(softly -> {
             softly.assertThat(stationsByLineResponses.size()).isEqualTo(2);
 
             StationsByLineResponse stationsByLineResponse1 = stationsByLineResponses.get(0);
-            List<StationResponse> stations1 = stationsByLineResponse1.getStations();
-
-            softly.assertThat(stationsByLineResponse1.getLineId()).isEqualTo(1L);
-            softly.assertThat(stationsByLineResponse1.getName()).isEqualTo("2호선");
-            softly.assertThat(stationsByLineResponse1.getColor()).isEqualTo("Green");
-            softly.assertThat(stations1.size()).isEqualTo(4);
-            softly.assertThat(stations1.get(0).getId()).isEqualTo(1L);
-            softly.assertThat(stations1.get(0).getName()).isEqualTo("후추");
-            softly.assertThat(stations1.get(1).getId()).isEqualTo(2L);
-            softly.assertThat(stations1.get(1).getName()).isEqualTo("디노");
-            softly.assertThat(stations1.get(2).getId()).isEqualTo(3L);
-            softly.assertThat(stations1.get(2).getName()).isEqualTo("조앤");
-            softly.assertThat(stations1.get(3).getId()).isEqualTo(4L);
-            softly.assertThat(stations1.get(3).getName()).isEqualTo("로운");
+            softly.assertThat(stationsByLineResponse1).usingRecursiveComparison().isEqualTo(expect1);
 
             StationsByLineResponse stationsByLineResponse2 = stationsByLineResponses.get(1);
-            List<StationResponse> stations2 = stationsByLineResponse2.getStations();
-
-            softly.assertThat(stationsByLineResponse2.getLineId()).isEqualTo(2L);
-            softly.assertThat(stationsByLineResponse2.getName()).isEqualTo("8호선");
-            softly.assertThat(stationsByLineResponse2.getColor()).isEqualTo("pink");
-            softly.assertThat(stations2.size()).isEqualTo(3);
-            softly.assertThat(stations2.get(0).getId()).isEqualTo(3L);
-            softly.assertThat(stations2.get(0).getName()).isEqualTo("조앤");
-            softly.assertThat(stations2.get(1).getId()).isEqualTo(5L);
-            softly.assertThat(stations2.get(1).getName()).isEqualTo("포비");
-            softly.assertThat(stations2.get(2).getId()).isEqualTo(4L);
-            softly.assertThat(stations2.get(2).getName()).isEqualTo("로운");
+            softly.assertThat(stationsByLineResponse2).usingRecursiveComparison().isEqualTo(expect2);
         });
     }
 

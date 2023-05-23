@@ -19,6 +19,7 @@ import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
+import subway.dto.StationsByLineDto;
 import subway.dto.StationsByLineResponse;
 
 @RestController
@@ -44,7 +45,13 @@ public class LineController {
         List<Line> lines = lineService.findLines();
         List<StationsByLineResponse> stationsByLineResponses = new ArrayList<>();
         for (Line targetLine : lines) {
-            stationsByLineResponses.add(sectionService.showStations(targetLine));
+            StationsByLineDto stationsByLineDto = sectionService.showStations(targetLine);
+            stationsByLineResponses.add(new StationsByLineResponse(
+                    stationsByLineDto.getLineResponse().getId(),
+                    stationsByLineDto.getLineResponse().getName(),
+                    stationsByLineDto.getLineResponse().getColor(),
+                    stationsByLineDto.getStations())
+            );
         }
         return ResponseEntity.ok(stationsByLineResponses);
     }
@@ -52,7 +59,13 @@ public class LineController {
     @GetMapping("/{lineId}")
     public ResponseEntity<StationsByLineResponse> findLineById(@PathVariable Long lineId) {
         Line targetLine = lineService.findLineById(lineId);
-        return ResponseEntity.ok(sectionService.showStations(targetLine));
+        StationsByLineDto stationsByLineDto = sectionService.showStations(targetLine);
+        return ResponseEntity.ok(new StationsByLineResponse(
+                stationsByLineDto.getLineResponse().getId(),
+                stationsByLineDto.getLineResponse().getName(),
+                stationsByLineDto.getLineResponse().getColor(),
+                stationsByLineDto.getStations()
+        ));
     }
 
     @PostMapping("/{lineId}")

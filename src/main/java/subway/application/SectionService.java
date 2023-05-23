@@ -8,7 +8,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.dto.SectionRequest;
-import subway.dto.StationsByLineResponse;
+import subway.dto.StationsByLineDto;
 
 @Service
 public class SectionService {
@@ -62,9 +62,9 @@ public class SectionService {
         sectionDao.deleteSectionByStationId(lineId, stationId);
     }
 
-    public StationsByLineResponse showStations(final Line line) {
+    public StationsByLineDto showStations(final Line line) {
         Sections sectionsByLineId = sectionDao.findSectionsByLineId(line.getId()).get();
-        return new StationsByLineResponse(line, sectionsByLineId.showStations());
+        return new StationsByLineDto(line, sectionsByLineId.showStations());
     }
 
 }

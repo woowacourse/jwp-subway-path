@@ -15,6 +15,13 @@ public class StationsByLineResponse {
     public StationsByLineResponse() {
     }
 
+    public StationsByLineResponse(Long lineId, String name, String color, List<StationResponse> stations) {
+        this.lineId = lineId;
+        this.name = name;
+        this.color = color;
+        this.stations = stations;
+    }
+
     public StationsByLineResponse(final Line line, final List<Station> stations) {
         this.lineId = line.getId();
         this.name = line.getName();
