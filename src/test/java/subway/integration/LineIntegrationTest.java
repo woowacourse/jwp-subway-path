@@ -438,7 +438,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void end() {
             // given
             final long lineId = 1L;
-            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실");
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest(1L);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
@@ -467,7 +467,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void mid() {
             // given
             final long lineId = 1L;
-            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실새내");
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest(2L);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
@@ -496,7 +496,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void delete_line() {
             // given
             final long lineId = 1L;
-            final StationUnregisterInLineRequest request1 = new StationUnregisterInLineRequest("잠실");
+            final StationUnregisterInLineRequest request1 = new StationUnregisterInLineRequest(1L);
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -506,7 +506,7 @@ public class LineIntegrationTest extends IntegrationTest {
                     .statusCode(HttpStatus.OK.value());
 
             // when, then
-            final StationUnregisterInLineRequest request2 = new StationUnregisterInLineRequest("잠실새내");
+            final StationUnregisterInLineRequest request2 = new StationUnregisterInLineRequest(2L);
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -521,7 +521,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void invalid_line_id() {
             // given
             final long lineId = 119L;
-            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실새내");
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest(2L);
 
             // when, then
             RestAssured
@@ -538,7 +538,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void station_not_found() {
             // given
             final long lineId = 1L;
-            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("송파");
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest(5L);
 
             // when, then
             RestAssured
@@ -555,7 +555,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void request_body_station_name_is_blank() {
             // given
             final long lineId = 1L;
-            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("");
+            final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest(null);
 
             // when, then
             RestAssured

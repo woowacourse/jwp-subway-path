@@ -95,7 +95,7 @@ public class LineModifyService {
 
     @Transactional
     public Optional<LineResponse> unregisterStation(final Long lineId, final StationUnregisterInLineRequest request) {
-        final List<SectionEntity> relatedSectionEntities = sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, request.getStationName());
+        final List<SectionEntity> relatedSectionEntities = sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(lineId, request.getStationId());
         if (relatedSectionEntities.size() == END_POINT_STATION_SIZE) {
             final List<SectionDetailEntity> sectionDetailEntities = unregisterEndStation(relatedSectionEntities.get(0));
             if (sectionDetailEntities.isEmpty()) {

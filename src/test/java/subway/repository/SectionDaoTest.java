@@ -206,15 +206,15 @@ class SectionDaoTest {
     }
 
     @Test
-    @DisplayName("노선 id와 역 이름으로 구간 목록 조회 성공 - 중간역인 경우")
-    void findByLineIdAndPreviousStationNameOrNextStationName_success_mid_station() {
+    @DisplayName("노선 id와 역 id로 구간 조회 성공 - 중간역인 경우")
+    void findByLineIdAndPreviousStationIdOrNextStationId_success_mid_station() {
         // given
         final long lineId = 1L;
-        final String stationName = "잠실새내";
+        final long stationId = 2L;
 
         // when
         final List<SectionEntity> sectionEntities =
-                sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, stationName);
+                sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId);
 
         // then
         assertAll(
@@ -233,15 +233,15 @@ class SectionDaoTest {
     }
 
     @Test
-    @DisplayName("노선 id와 역 이름으로 구간 목록 조회 성공 - 종점인 경우")
+    @DisplayName("노선 id와 역 id로 구간 목록 조회 성공 - 종점인 경우")
     void findByLineIdAndPreviousStationNameOrNextStationName_success_end_station() {
         // given
         final long lineId = 1L;
-        final String stationName = "잠실";
+        final long stationId = 1L;
 
         // when
         final List<SectionEntity> sectionEntities =
-                sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, stationName);
+                sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId);
 
         // then
         assertAll(
@@ -252,14 +252,14 @@ class SectionDaoTest {
     }
 
     @Test
-    @DisplayName("노선 id와 역 이름으로 구간 목록 조회 실패 - 노선에 없는 역인 경우")
+    @DisplayName("노선 id와 역 id로 구간 목록 조회 실패 - 노선에 없는 역인 경우")
     void findByLineIdAndPreviousStationNameOrNextStationName_fail_result_not_found() {
         // given
         final long lineId = 1L;
-        final String stationName = "석촌";
+        final long stationId = 4L;
 
         // when, then
-        assertThatThrownBy(() -> sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, stationName))
+        assertThatThrownBy(() -> sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId))
                 .isInstanceOf(LineOrStationNotFoundException.class);
     }
 

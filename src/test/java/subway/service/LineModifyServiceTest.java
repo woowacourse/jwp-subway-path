@@ -169,8 +169,8 @@ class LineModifyServiceTest {
     void unregisterStation_success() {
         // given
         final long lineId = 1L;
-        final String stationName = "잠실새내";
-        final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실새내");
+        final long stationId = 2L;
+        final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest(stationId);
         final SectionEntity frontSection = new SectionEntity(1L, lineId, 3, 1L, 2L);
         final SectionEntity backSection = new SectionEntity(2L, lineId, 3, 2L, 3L);
         final List<SectionEntity> entities = List.of(frontSection, backSection);
@@ -178,7 +178,7 @@ class LineModifyServiceTest {
                 new SectionDetailEntity(1L, 6, lineId, "2호선", "bg-green-600", 1L, "잠실", 3L, "종합운동장")
         );
 
-        given(sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(1L, stationName)).willReturn(entities);
+        given(sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(1L, stationId)).willReturn(entities);
         lenient().doNothing().when(sectionDao).delete(frontSection);
         lenient().doNothing().when(sectionDao).delete(backSection);
         given(sectionDao.insert(any())).willReturn(any());
