@@ -36,4 +36,8 @@ public class SectionRepository {
     public void delete(Section section) {
         sectionDao.delete(section);
     }
+
+    public long findLineIdBySectionHavingStations(Station stationA, Station stationB) {
+        return sectionDao.findLineIdByCurrentStationIdAndNextStationId(stationA.getId(), stationB.getId());
+    }
 }

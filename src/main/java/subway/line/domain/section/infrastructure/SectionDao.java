@@ -101,4 +101,9 @@ public class SectionDao {
         final var sql = "delete from SECTION where id = ?";
         jdbcTemplate.update(sql, section.getId());
     }
+
+    public Long findLineIdByCurrentStationIdAndNextStationId(Long stationA, Long stationB) {
+        final var sql = "select line_id from SECTION where current_station_id = ? and next_station_id = ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, stationA, stationB);
+    }
 }

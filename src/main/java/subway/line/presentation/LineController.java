@@ -2,13 +2,8 @@ package subway.line.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.line.presentation.dto.SectionRequest;
-import subway.line.presentation.dto.SectionResponse;
-import subway.line.presentation.dto.SectionSavingRequest;
+import subway.line.presentation.dto.*;
 import subway.line.port.LineControllerPort;
-import subway.line.presentation.dto.LineRequest;
-import subway.line.presentation.dto.LineResponse;
-import subway.line.presentation.dto.StationDeletingRequest;
 
 import java.net.URI;
 import java.util.List;
@@ -66,7 +61,13 @@ public class LineController {
     @GetMapping("/section")
     public ResponseEntity<SectionResponse> findShortestPath(@RequestBody SectionRequest sectionRequest) {
         final var shortestPath = lineControllerPort.findShortestPath(sectionRequest.getStartingStationId(), sectionRequest.getDestinationStationId());
-        final var fare = lineControllerPort.calculateFare(shortestPath.getShortestDistance());
+        final var fare = lineControllerPort.calculateFare(sectionRequest);
         return ResponseEntity.ok().body(SectionResponse.of(shortestPath, fare));
+    }
+
+    @PostMapping("/{lineId}/surcharge")
+    public ResponseEntity<Void> saveSurcharge(@PathVariable long lineId, @RequestBody SurchargeRequest surchargeRequest) {
+        final var surchargeId = lineControllerPort.saveSurcharge(lineId, surchargeRequest);
+        return ResponseEntity.created(URI.create(String.valueOf(surchargeId))).build();
     }
 }

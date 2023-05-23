@@ -35,4 +35,8 @@ public class SectionService {
     public void delete(Section section) {
         sectionRepository.delete(section);
     }
+
+    public long findLineIdBySectionHavingStations(Station stationA, Station stationB) {
+        return sectionRepository.findLineIdBySectionHavingStations(stationA, stationB);
+    }
 }

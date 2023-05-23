@@ -1,10 +1,13 @@
 package subway.line.domain.fare.application.faremeterpolicy;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.line.domain.fare.Fare;
+import subway.line.domain.fare.dto.CustomerCondition;
 import subway.line.domain.section.domain.Distance;
 
 @Component
+@Order(2)
 public class PerEightFareMeterPolicy implements FareMeterPolicy {
 
     public static final int MIN_DISTANCE = 51;
@@ -18,8 +21,7 @@ public class PerEightFareMeterPolicy implements FareMeterPolicy {
     }
 
     @Override
-    public Fare calculateFare(CustomerCondition customerCondition) {
-        final var fare = new Fare();
+    public Fare calculateFare(Fare fare, CustomerCondition customerCondition) {
         return fare.addSurchargeMultipliedBy(calculateMultiplyingCount(customerCondition.getDistance()));
     }
 

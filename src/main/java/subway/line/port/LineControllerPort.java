@@ -4,14 +4,13 @@ import org.springframework.stereotype.Component;
 import subway.line.Line;
 import subway.line.UnRegisteredLine;
 import subway.line.application.LineService;
+import subway.line.application.dto.CustomerConditionInfo;
 import subway.line.application.dto.LineUpdatingInfo;
-import subway.line.domain.fare.application.faremeterpolicy.CustomerCondition;
+import subway.line.domain.fare.Fare;
+import subway.line.domain.fare.application.domain.Age;
 import subway.line.domain.section.application.ShortestPathResponse;
-import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.application.StationService;
-import subway.line.presentation.dto.LineRequest;
-import subway.line.presentation.dto.LineResponse;
-import subway.line.presentation.dto.SectionSavingRequest;
+import subway.line.presentation.dto.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -90,9 +89,17 @@ public class LineControllerPort {
         return new ShortestPathResponse(startingStation, destinationStation, shortestPath, shortestDistance.getValue());
     }
 
-    public BigDecimal calculateFare(double distance) {
-        final var customerCondition = new CustomerCondition(Distance.of(distance));
-        final var fare = lineService.calculateFare(customerCondition);
+    public BigDecimal calculateFare(SectionRequest sectionRequest) {
+        final var startingStation = stationService.findById(sectionRequest.getStartingStationId());
+        final var destinationStation = stationService.findById(sectionRequest.getDestinationStationId());
+        final var customerConditionInfo = new CustomerConditionInfo(Age.of(sectionRequest.getAge()));
+
+        final var fare = lineService.calculateFare(startingStation, destinationStation, customerConditionInfo);
         return fare.getMoney();
+    }
+
+    public long saveSurcharge(long lineId, SurchargeRequest surchargeRequest) {
+        lineService.saveSurcharge(lineId, new Fare(surchargeRequest.getSurcharge()));
+        return lineId;
     }
 }

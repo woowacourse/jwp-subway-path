@@ -3,9 +3,10 @@ package subway.line.domain.fare.application;
 import org.springframework.stereotype.Component;
 import subway.line.domain.fare.Fare;
 import subway.line.domain.fare.application.exception.CalculatingFareNotPossibleException;
-import subway.line.domain.fare.application.faremeterpolicy.CustomerCondition;
+import subway.line.domain.fare.dto.CustomerCondition;
 import subway.line.domain.fare.application.faremeterpolicy.FareMeterPolicy;
 
+import java.util.ArrayDeque;
 import java.util.List;
 
 @Component
@@ -17,11 +18,19 @@ public class SubwayFareMeter {
     }
 
     public Fare calculateFare(CustomerCondition customerCondition) {
-        for (FareMeterPolicy fareMeterPolicy : fareMeterPolicies) {
-            if (fareMeterPolicy.support(customerCondition)) {
-                return fareMeterPolicy.calculateFare(customerCondition);
+        final var policyDeque = new ArrayDeque<>(fareMeterPolicies);
+        Fare fare = new Fare();
+
+        while (!policyDeque.isEmpty()) {
+            final var policy = policyDeque.poll();
+            if (policy.support(customerCondition)) {
+                fare = policy.calculateFare(fare, customerCondition);
             }
         }
-        throw new CalculatingFareNotPossibleException();
+
+        if (fare == null) {
+            throw new CalculatingFareNotPossibleException();
+        }
+        return fare;
     }
 }

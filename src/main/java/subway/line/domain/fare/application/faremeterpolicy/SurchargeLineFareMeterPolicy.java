@@ -4,20 +4,21 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.line.domain.fare.Fare;
 import subway.line.domain.fare.dto.CustomerCondition;
-import subway.line.domain.section.domain.Distance;
+
+import java.util.Collections;
 
 @Component
-@Order(0)
-public class DefaultFareMeterPolicy implements FareMeterPolicy {
-    private static final Distance MAX_DISTANCE = Distance.of(9);
-
+@Order(3)
+public class SurchargeLineFareMeterPolicy implements FareMeterPolicy {
     @Override
     public boolean support(CustomerCondition customerCondition) {
-        return customerCondition.getDistance().isLessThanOrEquals(MAX_DISTANCE);
+        return !customerCondition.getSurcharges().isEmpty();
     }
 
     @Override
     public Fare calculateFare(Fare fare, CustomerCondition customerCondition) {
-        return new Fare();
+        final var surcharges = customerCondition.getSurcharges();
+        final var maxSurcharge = Collections.max(surcharges);
+        return fare.add(maxSurcharge);
     }
 }

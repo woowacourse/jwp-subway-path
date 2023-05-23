@@ -1,3 +1,4 @@
+DROP TABLE if exists SURCHARGE;
 DROP TABLE if exists SECTION;
 DROP TABLE if exists LINE;
 DROP TABLE if exists STATION;
@@ -30,4 +31,12 @@ create table if not exists SECTION
     foreign key (current_station_id) references STATION (id),
     foreign key (next_station_id) references STATION (id),
     primary key (id)
+);
+
+create table if not exists SURCHARGE
+(
+    line_id   bigint auto_increment not null,
+    surcharge varchar(255)          not null,
+    primary key (line_id),
+    foreign key (line_id) references LINE (id)
 );
