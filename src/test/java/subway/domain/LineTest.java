@@ -8,6 +8,12 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.fare.Fare;
+import subway.domain.line.Distance;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Sections;
+import subway.domain.line.Station;
 
 class LineTest {
 
@@ -25,7 +31,7 @@ class LineTest {
         Section section1 = new Section(null, station1, station2, new Distance(5));
         Section section2 = new Section(null, station2, station3, new Distance(7));
 
-        line = new Line(1L, "1호선", new Sections(new LinkedList<>(List.of(section1, section2))));
+        line = new Line(1L, "1호선", new Fare(0), new Sections(new LinkedList<>(List.of(section1, section2))));
     }
 
     @DisplayName("노선이 역을 가지고 있으면 true를 반환한다.")
@@ -102,7 +108,7 @@ class LineTest {
         Station newStation1 = new Station(1L, "잠실역");
         Station newStation2 = new Station(2L, "강남역");
         Section section = new Section(null, newStation1, newStation2, new Distance(3));
-        Line newLine = new Line(2L, "2호선", new Sections(new LinkedList<>(List.of(section))));
+        Line newLine = new Line(2L, "2호선", new Fare(100), new Sections(new LinkedList<>(List.of(section))));
 
         // when, then
         assertThat(newLine.hasOneSection()).isTrue();

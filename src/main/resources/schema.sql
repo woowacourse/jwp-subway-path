@@ -9,6 +9,7 @@ create table if not exists LINE
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
+    extraFare bigint not null,
     primary key(id)
 );
 

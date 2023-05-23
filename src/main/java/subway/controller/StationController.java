@@ -2,6 +2,7 @@ package subway.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
 import subway.controller.dto.StationRequest;
 import subway.controller.dto.StationResponse;
+import subway.domain.line.Station;
 
 @RestController
 @RequestMapping("/stations")
@@ -26,18 +28,25 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
-        StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+        Station station = stationService.saveStation(stationRequest);
+        StationResponse stationResponse = StationResponse.of(station);
+        return ResponseEntity.created(URI.create("/stations/" + stationResponse.getId())).body(stationResponse);
     }
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> findAllStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
+        List<Station> stations = stationService.findAllStations();
+        List<StationResponse> stationResponses = stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(stationResponses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StationResponse> findStation(@PathVariable Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
+        Station station = stationService.findStationById(id);
+        StationResponse stationResponse = StationResponse.of(station);
+        return ResponseEntity.ok().body(stationResponse);
     }
 
     @DeleteMapping("/{id}")

@@ -1,13 +1,13 @@
 package subway.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.controller.dto.StationRequest;
-import subway.controller.dto.StationResponse;
-import subway.domain.Station;
+import subway.domain.line.Station;
 import subway.repository.StationRepository;
 
+@Transactional(readOnly = true)
 @Service
 public class StationService {
 
@@ -17,21 +17,21 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.save(new Station(null, stationRequest.getName()));
-        return StationResponse.of(station);
+    @Transactional
+    public Station saveStation(StationRequest stationRequest) {
+        return stationRepository.save(new Station(null, stationRequest.getName()));
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationRepository.findById(id));
+    public Station findStationById(Long id) {
+        return stationRepository.findById(id);
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationRepository.findAll();
+    public List<Station> findAllStations() {
+        return stationRepository.findAll();
+    }
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public Station findByName(String name) {
+        return stationRepository.findByName(name);
     }
 
     public void deleteStationById(Long id) {

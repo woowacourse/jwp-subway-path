@@ -17,11 +17,11 @@ import subway.dao.entity.StationEntity;
 class SectionDaoTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    LineDao lineDao;
-    StationDao stationDao;
-    SectionDao sectionDao;
+    private LineDao lineDao;
+    private StationDao stationDao;
+    private SectionDao sectionDao;
 
 
     @BeforeEach
@@ -34,7 +34,7 @@ class SectionDaoTest {
     @Test
     @DisplayName("노선에 구간을 추가한다.")
     void insertToLine() {
-        LineEntity lineEntity = lineDao.insert(new LineEntity(null, "1호선"));
+        LineEntity lineEntity = lineDao.insert(new LineEntity(null, "1호선", 500));
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "서울대입구역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "신림역"));
         SectionEntity sectionEntity = new SectionEntity(null, lineEntity.getId(), stationEntity1.getId(),
@@ -54,7 +54,7 @@ class SectionDaoTest {
     @Test
     @DisplayName("노선에 해당하는 모든 역을 가져온다.")
     void findByLineId() {
-        LineEntity lineEntity = lineDao.insert(new LineEntity(null, "1호선"));
+        LineEntity lineEntity = lineDao.insert(new LineEntity(null, "1호선", 500));
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "서울대입구역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "신림역"));
         StationEntity stationEntity3 = stationDao.insert(new StationEntity(null, "강남역"));
@@ -73,7 +73,7 @@ class SectionDaoTest {
     @Test
     @DisplayName("노선에서 역을 삭제한다.")
     void deleteByStationId() {
-        LineEntity lineEntity = lineDao.insert(new LineEntity(null, "1호선"));
+        LineEntity lineEntity = lineDao.insert(new LineEntity(null, "1호선", 500));
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "서울대입구역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "신림역"));
         SectionEntity sectionEntity = new SectionEntity(null, lineEntity.getId(), stationEntity1.getId(),

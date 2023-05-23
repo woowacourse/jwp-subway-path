@@ -6,10 +6,12 @@ public class LineEntity {
 
     private final Long id;
     private final String name;
+    private final Integer extraFare;
 
-    public LineEntity(Long id, String name) {
+    public LineEntity(Long id, String name, Integer extraFare) {
         this.id = id;
         this.name = name;
+        this.extraFare = extraFare;
     }
 
     public Long getId() {
@@ -18,6 +20,10 @@ public class LineEntity {
 
     public String getName() {
         return name;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
     }
 
     @Override

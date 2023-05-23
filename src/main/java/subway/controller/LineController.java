@@ -2,6 +2,7 @@ package subway.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import subway.controller.dto.LineRequest;
 import subway.controller.dto.LineResponse;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
+import subway.domain.line.Line;
 
 @RestController
 @RequestMapping("/lines")
@@ -29,18 +31,25 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+        Line line = lineService.saveLine(lineRequest);
+        LineResponse lineResponse = LineResponse.of(line);
+        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).body(lineResponse);
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+        List<Line> lines = lineService.findAllLines();
+        List<LineResponse> lineResponses = lines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lineResponses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+        Line line = lineService.findLineById(id);
+        LineResponse lineResponse = LineResponse.of(line);
+        return ResponseEntity.ok(lineResponse);
     }
 
     @DeleteMapping("/{id}")

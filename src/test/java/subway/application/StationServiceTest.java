@@ -17,17 +17,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.StationRequest;
 import subway.controller.dto.StationResponse;
-import subway.domain.Station;
+import subway.domain.line.Station;
 import subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class StationServiceTest {
 
     @Mock
-    StationRepository stationRepository;
+    private StationRepository stationRepository;
 
     @InjectMocks
-    StationService stationService;
+    private StationService stationService;
 
     @Test
     @DisplayName("역을 추가한다.")
@@ -37,11 +37,11 @@ class StationServiceTest {
         given(stationRepository.save(any()))
                 .willReturn(new Station(1L, "잠실역"));
 
-        StationResponse response = stationService.saveStation(stationRequest);
+        Station savedStation = stationService.saveStation(stationRequest);
 
         assertAll(
-                () -> assertThat(response.getId()).isEqualTo(expectedResponse.getId()),
-                () -> assertThat(response.getName()).isEqualTo(expectedResponse.getName())
+                () -> assertThat(savedStation.getId()).isEqualTo(expectedResponse.getId()),
+                () -> assertThat(savedStation.getName()).isEqualTo(expectedResponse.getName())
         );
     }
 
@@ -53,11 +53,11 @@ class StationServiceTest {
         given(stationRepository.findById(any()))
                 .willReturn(new Station(1L, "잠실역"));
 
-        StationResponse response = stationService.findStationResponseById(id);
+        Station findStation = stationService.findStationById(id);
 
         assertAll(
-                () -> assertThat(response.getId()).isEqualTo(expectedResponse.getId()),
-                () -> assertThat(response.getName()).isEqualTo(expectedResponse.getName())
+                () -> assertThat(findStation.getId()).isEqualTo(expectedResponse.getId()),
+                () -> assertThat(findStation.getName()).isEqualTo(expectedResponse.getName())
         );
     }
 
@@ -68,9 +68,9 @@ class StationServiceTest {
         given(stationRepository.findAll())
                 .willReturn(stations);
 
-        List<StationResponse> responses = stationService.findAllStationResponses();
+        List<Station> allStations = stationService.findAllStations();
 
-        assertThat(responses).hasSize(2);
+        assertThat(allStations).hasSize(2);
     }
 
     @Test

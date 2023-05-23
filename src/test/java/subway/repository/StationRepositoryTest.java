@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.line.Station;
 import subway.exception.StationNameException;
 import subway.exception.StationNotFoundException;
 
@@ -19,9 +19,9 @@ import subway.exception.StationNotFoundException;
 class StationRepositoryTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    StationRepository stationRepository;
+    private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {

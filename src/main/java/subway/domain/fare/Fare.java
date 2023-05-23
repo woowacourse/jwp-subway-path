@@ -1,20 +1,20 @@
-package subway.domain;
+package subway.domain.fare;
 
 import java.util.Objects;
-import subway.exception.InvalidDistanceException;
+import subway.exception.InvalidFareException;
 
-public class Distance {
+public class Fare {
 
     private final int value;
 
-    public Distance(int value) {
+    public Fare(int value) {
         validate(value);
         this.value = value;
     }
 
     private void validate(int value) {
-        if (value <= 0 || value >= 100) {
-            throw new InvalidDistanceException("역 간의 거리는 0~100 사이만 가능합니다.");
+        if (value < 0) {
+            throw new InvalidFareException("요금은 음수가 될 수 없습니다.");
         }
     }
 
@@ -30,8 +30,8 @@ public class Distance {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Distance distance = (Distance) o;
-        return getValue() == distance.getValue();
+        Fare fare = (Fare) o;
+        return getValue() == fare.getValue();
     }
 
     @Override

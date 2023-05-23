@@ -1,55 +1,50 @@
 package subway.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.dto.LineRequest;
-import subway.controller.dto.LineResponse;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.SectionDeleteRequest;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.fare.Fare;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 import subway.exception.InvalidDistanceException;
 import subway.exception.LineNameException;
 import subway.exception.LineStationAdditionException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
-import subway.repository.StationRepository;
 
 @Transactional(readOnly = true)
 @Service
 public class LineService {
 
+    private final StationService stationService;
     private final LineRepository lineRepository;
-    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
     @Transactional
-    public LineResponse saveLine(LineRequest request) {
+    public Line saveLine(LineRequest request) {
         if (lineRepository.existsByName(request.getName())) {
             throw new LineNameException("동일한 이름을 가진 노선이 존재합니다.");
         }
+        Fare fare = new Fare(request.getExtraFare());
 
-        Line line = lineRepository.save(new Line(null, request.getName(), null));
-        return LineResponse.of(line);
+        return lineRepository.save(new Line(null, request.getName(), fare, null));
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line line = lineRepository.findById(id);
-        return LineResponse.of(line);
+    public Line findLineById(Long id) {
+        return lineRepository.findById(id);
     }
 
-    public List<LineResponse> findLineResponses() {
-        return lineRepository.findAll().stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
     }
 
     @Transactional
@@ -60,8 +55,8 @@ public class LineService {
     @Transactional
     public void createSection(Long lineId, SectionCreateRequest sectionRequest) {
         Line line = lineRepository.findById(lineId);
-        Station leftStation = stationRepository.findByName(sectionRequest.getLeftStationName());
-        Station rightStation = stationRepository.findByName(sectionRequest.getRightStationName());
+        Station leftStation = stationService.findByName(sectionRequest.getLeftStationName());
+        Station rightStation = stationService.findByName(sectionRequest.getRightStationName());
 
         int distance = sectionRequest.getDistance();
         if (line.getSections().isEmpty()) {
@@ -142,7 +137,7 @@ public class LineService {
     @Transactional
     public void deleteSection(Long lineId, SectionDeleteRequest deleteRequest) {
         Line line = lineRepository.findById(lineId);
-        Station station = stationRepository.findByName(deleteRequest.getStationName());
+        Station station = stationService.findByName(deleteRequest.getStationName());
 
         if (!line.hasStation(station)) {
             throw new StationNotFoundException("노선에 해당 역이 존재하지 않습니다.");

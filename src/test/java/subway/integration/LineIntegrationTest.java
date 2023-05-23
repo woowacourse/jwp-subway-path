@@ -21,8 +21,9 @@ import subway.controller.dto.LineRequest;
 import subway.controller.dto.LineResponse;
 import subway.dao.SectionDao;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.fare.Fare;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -56,14 +57,14 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선");
-        lineRequest2 = new LineRequest("구신분당선");
+        lineRequest1 = new LineRequest("신분당선", 100);
+        lineRequest2 = new LineRequest("구신분당선", 500);
 
         station1 = stationRepository.save(new Station(1L, "강남역"));
         station2 = stationRepository.save(new Station(2L, "서초역"));
         station3 = stationRepository.save(new Station(3L, "선릉역"));
 
-        line1 = lineRepository.save(new Line(null, lineName1, null));
+        line1 = lineRepository.save(new Line(null, lineName1, new Fare(100), null));
 
         sectionDao.insert(new SectionEntity(null, line1.getId(), station1.getId(), station2.getId(), 5));
         sectionDao.insert(new SectionEntity(null, line1.getId(), station2.getId(), station3.getId(), 3));
@@ -188,6 +189,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("id", equalTo(line1.getId().intValue()))
                 .body("name", equalTo(lineName1))
+                .body("extraFare", equalTo(line1.getExtraFare()))
                 .rootPath("stations")
                 .body("[0].id", equalTo(station1.getId().intValue()))
                 .body("[0].name", equalTo(station1.getName()))
@@ -202,7 +204,7 @@ public class LineIntegrationTest extends IntegrationTest {
     void findAllLinesAndStations() {
         // given
         station4 = stationRepository.save(new Station(4L, "잠실역"));
-        line2 = lineRepository.save(new Line(null, lineName2, null));
+        line2 = lineRepository.save(new Line(null, lineName2, new Fare(500), null));
         sectionDao.insert(new SectionEntity(null, line2.getId(), station3.getId(), station4.getId(), 6));
 
         // when
@@ -216,6 +218,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .body("$", hasSize(2))
                 .body("[0].id", equalTo(line1.getId().intValue()))
                 .body("[0].name", equalTo(lineName1))
+                .body("[0].extraFare", equalTo(line1.getExtraFare()))
                 .body("[0].stations", hasSize(3))
                 .body("[0].stations[0].id", equalTo(station1.getId().intValue()))
                 .body("[0].stations[0].name", equalTo(station1.getName()))
@@ -225,6 +228,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .body("[0].stations[2].name", equalTo(station3.getName()))
                 .body("[1].id", equalTo(line2.getId().intValue()))
                 .body("[1].name", equalTo(lineName2))
+                .body("[1].extraFare", equalTo(line2.getExtraFare()))
                 .body("[1].stations", hasSize(2))
                 .body("[1].stations[0].id", equalTo(station3.getId().intValue()))
                 .body("[1].stations[0].name", equalTo(station3.getName()))
