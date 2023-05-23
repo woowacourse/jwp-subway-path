@@ -1,12 +1,12 @@
 package subway.controller.section.dto;
 
 public class SectionInsertWebRequest {
-    private long upStationId;
-    private long downStationId;
+    private Long upStationId;
+    private Long downStationId;
     private int distance;
-    private long lineId;
+    private Long lineId;
 
-    public SectionInsertWebRequest(long upStationId, long downStationId, int distance, long lineId) {
+    public SectionInsertWebRequest(Long upStationId, Long downStationId, int distance, Long lineId) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
@@ -17,11 +17,11 @@ public class SectionInsertWebRequest {
 
     }
 
-    public long getUpStationId() {
+    public Long getUpStationId() {
         return upStationId;
     }
 
-    public long getDownStationId() {
+    public Long getDownStationId() {
         return downStationId;
     }
 
@@ -29,7 +29,7 @@ public class SectionInsertWebRequest {
         return distance;
     }
 
-    public long getLineId() {
+    public Long getLineId() {
         return lineId;
     }
 }

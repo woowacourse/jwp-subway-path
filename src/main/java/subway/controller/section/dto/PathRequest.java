@@ -1,8 +1,8 @@
 package subway.controller.section.dto;
 
 public class PathRequest {
-    private long sourceStationId;
-    private long targetStationId;
+    private Long sourceStationId;
+    private Long targetStationId;
 
     public PathRequest(long sourceStationId, long targetStationId) {
         this.sourceStationId = sourceStationId;
@@ -12,11 +12,11 @@ public class PathRequest {
     public PathRequest() {
     }
 
-    public long getSourceStationId() {
+    public Long getSourceStationId() {
         return sourceStationId;
     }
 
-    public long getTargetStationId() {
+    public Long getTargetStationId() {
         return targetStationId;
     }
 }

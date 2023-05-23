@@ -1,23 +1,23 @@
 package subway.service.section.dto;
 
 public class SectionCreateRequest {
-    private final long upStationId;
-    private final long downStationId;
+    private final Long upStationId;
+    private final Long downStationId;
     private final int distance;
-    private final long lineId;
+    private final Long lineId;
 
-    public SectionCreateRequest(long upStationId, long downStationName, int distance, long lineId) {
+    public SectionCreateRequest(Long upStationId, Long downStationName, int distance, Long lineId) {
         this.upStationId = upStationId;
         this.downStationId = downStationName;
         this.distance = distance;
         this.lineId = lineId;
     }
 
-    public long getUpStationId() {
+    public Long getUpStationId() {
         return upStationId;
     }
 
-    public long getDownStationId() {
+    public Long getDownStationId() {
         return downStationId;
     }
 
@@ -25,7 +25,7 @@ public class SectionCreateRequest {
         return distance;
     }
 
-    public long getLineId() {
+    public Long getLineId() {
         return lineId;
     }
 }

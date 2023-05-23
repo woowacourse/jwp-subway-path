@@ -1,7 +1,7 @@
 package subway.controller.section.dto;
 
 public class LineStationDeleteRequest {
-    private long stationId;
+    private Long stationId;
 
     public LineStationDeleteRequest(long stationId) {
         this.stationId = stationId;
@@ -10,7 +10,7 @@ public class LineStationDeleteRequest {
     public LineStationDeleteRequest() {
     }
 
-    public long getStationId() {
+    public Long getStationId() {
         return stationId;
     }
 }
