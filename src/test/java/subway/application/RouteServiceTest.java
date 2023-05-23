@@ -17,11 +17,11 @@ import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.dao.StationEntity;
 import subway.domain.Distance;
+import subway.domain.Route;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.ShortestPathAlgorithmStrategy;
 import subway.domain.Station;
-import subway.dto.RouteDto;
 
 @ExtendWith(SpringExtension.class)
 class RouteServiceTest {
@@ -81,10 +81,10 @@ class RouteServiceTest {
         when(shortestPathAlgorithmStrategy.getShortestPathWeight(sections, station1, station2))
                 .thenReturn(distance);
 
-        RouteDto routeDto = routeService.getFeeByStations("일역", "이역");
+        Route route = routeService.getFeeByStations("일역", "이역");
 
-        assertThat(routeDto.getDistance().getDistance()).isEqualTo(3);
-        assertThat(routeDto.getFee().getFee()).isEqualTo(1250);
+        assertThat(route.getDistance().getDistance()).isEqualTo(3);
+        assertThat(route.getFee().getFee()).isEqualTo(1250);
     }
 
 }
