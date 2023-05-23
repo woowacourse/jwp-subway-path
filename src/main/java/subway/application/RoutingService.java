@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.domain.FareCalculator;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.SubwayMap;
+import subway.dto.RoutesResponse;
 import subway.dto.StationResponse;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
@@ -43,20 +46,25 @@ public class RoutingService {
     }
 
     private Section findFirstSection(List<Section> sections) {
-        List<Long> endStationIds = new LinkedList<>();
-        for (Section section : sections) {
-            findOnlyOneId(endStationIds, section.getUpStationId());
-            findOnlyOneId(endStationIds, section.getDownStationId());
-        }
+        List<Long> endStationIds = findEndStationIds(sections);
 
         return sections.stream()
                 .filter(section ->
-                        section.getUpStationId() == endStationIds.get(0)
-                                || section.getUpStationId() == endStationIds.get(1))
+                        section.getUpStationId().equals(endStationIds.get(0)) ||
+                                section.getUpStationId().equals(endStationIds.get(1)))
                 .findAny().orElseThrow(() -> new IllegalStateException("호선에 역이 존재하지 않습니다."));
     }
 
-    private void findOnlyOneId(final List<Long> result, final Long stationId) {
+    private List<Long> findEndStationIds(final List<Section> sections) {
+        List<Long> endStationIds = new LinkedList<>();
+        for (Section section : sections) {
+            toggleAddRemove(endStationIds, section.getUpStationId());
+            toggleAddRemove(endStationIds, section.getDownStationId());
+        }
+        return endStationIds;
+    }
+
+    private void toggleAddRemove(final List<Long> result, final Long stationId) {
         if (result.contains(stationId)) {
             result.remove(stationId);
             return;
@@ -66,8 +74,31 @@ public class RoutingService {
 
     private Section findNextStation(List<Section> sections, Long stationId) {
         return sections.stream()
-                .filter(section -> section.getUpStationId() == stationId)
+                .filter(section -> section.getUpStationId().equals(stationId))
                 .findAny()
                 .orElse(null);
+    }
+
+    public RoutesResponse findRoutes(final Long startStationId, final Long endStationId) {
+        List<Section> sections = sectionRepository.findAll();
+        SubwayMap subwayMap = new SubwayMap(sections);
+        List<StationResponse> stationResponses = findShortestPath(subwayMap, startStationId, endStationId)
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        Double totalDistance = subwayMap.getTotalDistance(startStationId, endStationId);
+        int fare = FareCalculator.calculate(totalDistance);
+        return new RoutesResponse(stationResponses, totalDistance, fare);
+    }
+
+    private List<Station> findShortestPath(final SubwayMap subwayMap, final Long startStationId,
+                                           final Long endStationId) {
+        List<Long> stationIds = subwayMap.findShortestPathIds(startStationId, endStationId);
+        List<Station> stations = new ArrayList<>(stationIds.size());
+        for (Long stationId : stationIds) {
+            Station station = stationRepository.findById(stationId);
+            stations.add(station);
+        }
+        return stations;
     }
 }

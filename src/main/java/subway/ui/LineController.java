@@ -1,11 +1,9 @@
 package subway.ui;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +20,8 @@ import subway.dto.SectionResponse;
 import subway.dto.StationResponse;
 import subway.dto.StationToLineRequest;
 
-@RestController
 @RequestMapping("/lines")
+@RestController
 public class LineController {
 
     private final LineService lineService;
@@ -65,6 +63,11 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping
+    public void deleteAll() {
+        lineService.deleteAll();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
@@ -86,10 +89,5 @@ public class LineController {
     public ResponseEntity<Void> deleteSection(@PathVariable Long id, @PathVariable Long stationId) {
         sectionService.disconnectStation(id, stationId);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

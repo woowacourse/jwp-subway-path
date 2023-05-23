@@ -1,20 +1,24 @@
+# jwp-subway-path
+
 # API 설계
 
 ## 노선 조회
 
 ```http request
-GET "/lines/{lineId}"
+GET "/lines/{lineId}/stations"
 
-// List<StationResponse>
+응답
 HTTP Status : 200 OK
 [
     {
-        "id": ?,
-        "name": ?
+        "id": 1,
+        "name": "강남"
     },
     {
-        ...
+        "id": 2,
+        "name": "선릉"
     }
+    ...
 ]
 ```
 
@@ -23,62 +27,44 @@ HTTP Status : 200 OK
 ```http request
 GET "/lines"
 
-// List<LineResponse>
+응답
 HTTP Status : 200 OK
 [
     {
-        "id": ?,
-        "name": ?,
-        "color": ?
+        "id": 1,
+        "name": "신분당선",
+        "color": "bg-red-600"
     },
     {
-        ...
+        "id": 2,
+        "name": "구신분당선",
+        "color": "bg-red-600"
     }
 ]
 ```
 
-## 노선에 초기 역 추가
+## 노선에 역 추가
 
 ```http request
 POST "/lines/{lineId}"
 
-// StationAddRequest (A - B)
+요청
 {
-    "previousStationId" : A,
-    "nextStationId" : B,
+    "upStationId" : 1,
+    "downStationId" : 2,
     "distance" : 11
 }
-```
 
-## 노선에 역 1개 추가
-
-- 기존 노선에 추가
-  - 중간
-    lineId, 추가할 stationId, 이전 stationId, 다음 stationId, 이전 station 간의 거리, 다음 station 간의 거리
-  - 끝
-    lineId, 추가할 stationId, 이전 stationId, 이전 station 간의 거리
-
-```http request
-POST "/lines/{lineId}/stations"
-
-// List<StationAddRequest> (A - C - B)
-[
-   {
-        "previousStationId" : A,
-        "nextStationId" : C,
-        "distance" : 4
-    },
-    {
-        "previousStationId" : C,
-        "nextStationId" : B,
-        "distance" : 7
-    }
-]
-
-// response
+응답
+HTTP Status: 201 
+location: "/lines/{lineId}"
+body:
 {
-HTTP Status : 201 CREATED
-Location: "/lines/{lineId}"
+    "id" : 1,
+    "lineId" : 1,
+    "upStationId" : 1,
+    "downStationId" : 2,
+    "distance" : 11
 }
 ```
 
@@ -88,39 +74,71 @@ Location: "/lines/{lineId}"
 DELETE "/lines/{lineId}/stations/{stationId}"
 
 //response
-HTTP Status : 204 NO Contentent
+HTTP Status : 204 NO Content
 ```
 
+
+## 경로 조회
+
+```http request
+GET "/routes?{startStationId}=1&{endStationId}=4"
+
+//response
+HTTP Status : 200 OK
+body:
+{
+    "stationResponses": [
+        {
+            "id": 1,
+            "name": "강남역"
+        },
+        {
+            "id": 2,
+            "name": "삼성역"
+        },
+        {
+            "id": 3,
+            "name": "선릉역"
+        },
+        {
+            "id": 4,
+            "name": "잠실역"
+        }
+    ],
+    "totalDistance": 12.0,
+    "fare": 1350
+}
+```
 ---
 
 # DB TABLE 설계
 
 ```mysql
-CREATE TABLE STATION
+CREATE TABLE IF NOT EXISTS STATION
 (
-    id   BIGINT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    PRIMARY KEY (id)
+  id   BIGINT AUTO_INCREMENT NOT NULL,
+  name VARCHAR(255) NOT NULL UNIQUE,
+  PRIMARY KEY (id)
 );
 
-CREATE TABLE LINE
+CREATE TABLE IF NOT EXISTS LINE
 (
-    id    BIGINT AUTO_INCREMENT NOT NULL,
-    name  VARCHAR(255)          NOT NULL UNIQUE,
-    color VARCHAR(255)          NOT NULL UNIQUE,
-    PRIMARY KEY (id)
+  id    BIGINT AUTO_INCREMENT NOT NULL,
+  name  VARCHAR(255)          NOT NULL UNIQUE,
+  color VARCHAR(255)          NOT NULL,
+  PRIMARY KEY (id)
 );
 
-CREATE TABLE SECTION
+CREATE TABLE IF NOT EXISTS SECTION
 (
-    id         BIGINT AUTO_INCREMENT NOT NULL,
-    line_id    BIGINT,
-    previous_station_id BIGINT,
-    next_station_id BIGINT,
-    distance INT NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE,
-    FOREIGN KEY (previous_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
-    FOREIGN KEY (next_station_id) REFERENCES STATION (id) ON DELETE CASCADE
+  id         BIGINT AUTO_INCREMENT NOT NULL,
+  line_id    BIGINT,
+  up_station_id BIGINT,
+  down_station_id BIGINT,
+  distance INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE,
+  FOREIGN KEY (up_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
+  FOREIGN KEY (down_station_id) REFERENCES STATION (id) ON DELETE CASCADE
 );
 ```

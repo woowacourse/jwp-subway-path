@@ -18,12 +18,13 @@ import subway.dto.LineRequest;
 import subway.dto.SectionResponse;
 import subway.dto.StationToLineRequest;
 
-@DisplayName("노선에 역 관리 기능")
+@DisplayName("노선에 역 관리 기능 통합 테스트")
 public class SectionIntegrationTest extends IntegrationTest {
 
     private Long lineId;
     private Long stationId1;
     private Long stationId2;
+    private Long stationId3;
 
     @BeforeEach
     public void setUp() {
@@ -58,13 +59,22 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .post("/stations")
                 .then().extract();
         stationId2 = Long.parseLong(createStationResponse2.header("Location").split("/")[2]);
+
+        params.put("name", "선릉역");
+
+        ExtractableResponse<Response> createStationResponse3 = RestAssured.given()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then()
+                .extract();
+        stationId3 = Long.parseLong(createStationResponse3.header("Location").split("/")[2]);
     }
 
     @AfterEach
-    void cleanup() {
-        RestAssured
-                .given()
-                .when().delete("lines/{id}/stations", lineId);
+    public void cleanUp() {
+        super.cleanUp();
     }
 
     @DisplayName("새로운 지하철 노선에 2개의 역을 등록한다.")
@@ -105,19 +115,7 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .body(initRequest)
                 .when().post("lines/{lineId}", lineId);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "선릉역");
-
-        ExtractableResponse<Response> createStationResponse1 = RestAssured.given()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then()
-                .extract();
-        Long newStationId = Long.parseLong(createStationResponse1.header("Location").split("/")[2]);
-
-        StationToLineRequest request = new StationToLineRequest(stationId1, newStationId, 4);
+        StationToLineRequest request = new StationToLineRequest(stationId1, stationId3, 4);
         //when
         ExtractableResponse<Response> response = RestAssured
                 .given()
@@ -133,7 +131,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(section.getUpStationId()).isEqualTo(stationId1),
-                () -> assertThat(section.getDownStationId()).isEqualTo(newStationId),
+                () -> assertThat(section.getDownStationId()).isEqualTo(stationId3),
                 () -> assertThat(section.getDistance()).isEqualTo(4)
         );
     }
@@ -150,19 +148,7 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .body(initRequest)
                 .when().post("lines/{lineId}", lineId);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "선릉역");
-
-        ExtractableResponse<Response> createStationResponse1 = RestAssured.given()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then()
-                .extract();
-        Long newStationId = Long.parseLong(createStationResponse1.header("Location").split("/")[2]);
-
-        StationToLineRequest request = new StationToLineRequest(stationId2, newStationId, 4);
+        StationToLineRequest request = new StationToLineRequest(stationId2, stationId3, 4);
 
         //when
         ExtractableResponse<Response> response = RestAssured
@@ -179,7 +165,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(section.getUpStationId()).isEqualTo(stationId2),
-                () -> assertThat(section.getDownStationId()).isEqualTo(newStationId),
+                () -> assertThat(section.getDownStationId()).isEqualTo(stationId3),
                 () -> assertThat(section.getDistance()).isEqualTo(4)
         );
     }

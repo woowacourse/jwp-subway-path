@@ -7,20 +7,24 @@ import subway.domain.Section;
 import subway.dto.SectionResponse;
 import subway.dto.StationToLineRequest;
 import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 @Transactional(readOnly = true)
 @Service
 public class SectionService {
 
     private final SectionRepository sectionRepositoryImpl;
+    private final StationRepository stationRepositoryImpl;
 
-    public SectionService(final SectionRepository sectionRepository) {
+    public SectionService(final SectionRepository sectionRepository, final StationRepository stationRepositoryImpl) {
         this.sectionRepositoryImpl = sectionRepository;
+        this.stationRepositoryImpl = stationRepositoryImpl;
     }
 
     @Transactional
     public SectionResponse connectStation(final Long lineId, final StationToLineRequest request) {
         validateRequestDistance(request);
+        validateStationExist(request);
         List<Section> sectionsByUpStation = sectionRepositoryImpl.findSectionByLineIdAndStationId(lineId,
                 request.getUpStationId());
         List<Section> sectionsByDownStation = sectionRepositoryImpl.findSectionByLineIdAndStationId(lineId,
@@ -44,6 +48,13 @@ public class SectionService {
         if (request.getDistance() <= 0) {
             throw new IllegalArgumentException("거리는 양수여야합니다.");
         }
+    }
+
+    private void validateStationExist(final StationToLineRequest request) {
+        Long upStationId = request.getUpStationId();
+        Long downStationId = request.getDownStationId();
+        stationRepositoryImpl.findById(upStationId);
+        stationRepositoryImpl.findById(downStationId);
     }
 
     private void validateExist(final List<Section> sectionsByUpStation, final List<Section> sectionsByDownStation) {
@@ -141,5 +152,10 @@ public class SectionService {
     @Transactional
     public void deleteAllByLineId(Long lineId) {
         sectionRepositoryImpl.deleteAllByLineId(lineId);
+    }
+
+    @Transactional
+    public void deleteAll() {
+        sectionRepositoryImpl.deleteAll();
     }
 }

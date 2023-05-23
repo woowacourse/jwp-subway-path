@@ -7,6 +7,8 @@ public interface SectionRepository {
 
     Section insert(final Section section);
 
+    List<Section> findAll();
+
     List<Section> findAllByLineId(final Long lineId);
 
     List<Section> findSectionByLineIdAndStationId(final Long lineId, final Long stationId);
@@ -20,4 +22,6 @@ public interface SectionRepository {
     void deleteAllByLineId(final Long lineId);
 
     void deleteByLineIdAndStationId(final Long lineId, final Long stationId);
+
+    void deleteAll();
 }

@@ -3,12 +3,13 @@ package subway.application;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import subway.domain.Station;
 import subway.repository.StationRepository;
 
 public class StationRepositoryFake implements StationRepository {
 
-    private static final HashMap<Long, Station> store = new HashMap<>();
+    private static final Map<Long, Station> store = new HashMap<>();
 
     @Override
     public Station insert(final Station station) {
@@ -23,7 +24,11 @@ public class StationRepositoryFake implements StationRepository {
 
     @Override
     public Station findById(final Long id) {
-        return store.get(id);
+        Station station = store.get(id);
+        if (station == null) {
+            throw new IllegalArgumentException("존재하지 않는 역입니다.");
+        }
+        return station;
     }
 
     @Override
@@ -34,5 +39,10 @@ public class StationRepositoryFake implements StationRepository {
     @Override
     public void deleteById(final Long id) {
         store.remove(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        store.clear();
     }
 }
