@@ -5,6 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.RouteService;
+import subway.application.StationNamesConvertor;
+import subway.domain.Route;
+import subway.dto.DistanceDto;
+import subway.dto.FeeDto;
 import subway.dto.RouteDto;
 
 @RestController
@@ -19,9 +23,15 @@ public class RouteController {
     @GetMapping("/routes")
     public ResponseEntity<RouteDto> selectSectionFee(@RequestParam String startStationName,
                                                      @RequestParam String endStationName) {
-        RouteDto feeBySection = routeService.getFeeByStations(startStationName, endStationName);
+        Route route = routeService.getFeeByStations(startStationName, endStationName);
 
-        return ResponseEntity.ok().body(feeBySection);
+        RouteDto routeDto = new RouteDto(
+                new DistanceDto(route.getDistance().getDistance()),
+                new FeeDto(route.getFee().getFee()),
+                StationNamesConvertor.convertToStationNamesByStations(route.getStations())
+        );
+
+        return ResponseEntity.ok().body(routeDto);
     }
 
 }
