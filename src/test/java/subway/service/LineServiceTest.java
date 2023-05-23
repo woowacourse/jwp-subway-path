@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -12,13 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.controller.exception.SubwayException;
 import subway.domain.Line;
 import subway.domain.Subway;
-import subway.dto.LineDto;
-import subway.dto.SectionDto;
+import subway.service.dto.LineDto;
+import subway.service.dto.SectionDto;
 import subway.dto.response.LineResponse;
+import subway.repository.LineRepository;
 import subway.repository.SubwayRepository;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -37,6 +39,9 @@ class LineServiceTest {
 
     @Autowired
     private SubwayRepository subwayRepository;
+
+    @Autowired
+    private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {
@@ -59,12 +64,12 @@ class LineServiceTest {
     @Test
     void 존재하는_노선_이름으로_등록시_예외가_발생한다() {
         // given
-        subwayRepository.registerLine("8호선", "분홍색");
+        lineRepository.registerLine(new Line("8호선", "분홍색"));
 
         // expect
         assertThatThrownBy(() -> lineService.register(new LineDto("8호선", "분홍색")))
-                .isInstanceOf(SubwayException.class)
-                .hasMessageContaining("중복된 이름의 노선이 존재합니다.");
+                .isInstanceOf(DuplicateKeyException.class)
+                .hasMessageContaining("해당 이름의 노선이 이미 존재합니다.");
     }
 
     @Test
@@ -92,7 +97,7 @@ class LineServiceTest {
 
         // expect
         assertThatThrownBy(() -> lineService.read(100000L))
-                .isInstanceOf(SubwayException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("노선 정보가 잘못되었습니다.");
     }
 

@@ -1,17 +1,18 @@
-package subway.dto;
+package subway.service.dto;
 
 public class SectionDto {
 
     private final Long lineId;
     private final String sourceStation;
     private final String targetStation;
-    private final Integer distance;
+    private final int distance;
 
-    public SectionDto() {
-        this(null, null, null, null);
-    }
-
-    public SectionDto(final Long lineId, final String sourceStation, final String targetStation, final Integer distance) {
+    public SectionDto(
+            final Long lineId,
+            final String sourceStation,
+            final String targetStation,
+            final int distance
+    ) {
         this.lineId = lineId;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
@@ -30,7 +31,7 @@ public class SectionDto {
         return targetStation;
     }
 
-    public Integer getDistance() {
+    public int getDistance() {
         return distance;
     }
 }

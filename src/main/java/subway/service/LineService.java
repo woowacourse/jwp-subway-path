@@ -5,39 +5,34 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.controller.exception.SubwayException;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.Subway;
-import subway.dto.LineDto;
+import subway.service.dto.LineDto;
 import subway.dto.response.LineResponse;
+import subway.repository.LineRepository;
 import subway.repository.SubwayRepository;
 
 @Service
 public class LineService {
 
     private final SubwayRepository subwayRepository;
+    private final LineRepository lineRepository;
 
-    @Autowired
-    public LineService(final SubwayRepository subwayRepository) {
+    public LineService(final SubwayRepository subwayRepository, final LineRepository lineRepository) {
         this.subwayRepository = subwayRepository;
+        this.lineRepository = lineRepository;
     }
 
     @Transactional
     public Long register(final LineDto lineDto) {
-        validateDuplicatedName(lineDto.getName());
-        return subwayRepository.registerLine(lineDto.getName(), lineDto.getColor());
-    }
-
-    private void validateDuplicatedName(final String name) {
-        if (subwayRepository.isDuplicatedName(name)) {
-            throw new SubwayException("중복된 이름의 노선이 존재합니다.");
-        }
+        final Line line = new Line(lineDto.getName(), lineDto.getColor());
+        return lineRepository.registerLine(line);
     }
 
     @Transactional(readOnly = true)
     public LineResponse read(final Long id) {
-        final Line line = subwayRepository.findLineById(id);
+        final Line line = lineRepository.findLineById(id);
         final List<Station> stations = line.stations();
         final List<String> stationResponses = stations.stream()
                 .map(Station::getName)

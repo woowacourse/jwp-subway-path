@@ -55,15 +55,4 @@ class StationDaoTest {
         assertThat(stationEntity).isPresent();
     }
 
-    @Test
-    void 이름으로_삭제할_수_있다() {
-        // given
-        stationDao.insert("잠실역");
-
-        // when
-        final int affectedRows = stationDao.deleteByName("잠실역");
-
-        // then
-        assertThat(affectedRows).isOne();
-    }
 }

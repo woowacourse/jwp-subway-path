@@ -1,0 +1,30 @@
+### Request (최단 경로 조회 API)
+
+GET http://localhost:8080/paths
+Content-Type: application/json
+Accept: application/json
+
+{
+  "sourceStation" : "수서역",
+  "targetStation" : "장지역"
+}
+
+### Response (최단 경로 조회 API)
+
+HTTP/1.1 201
+Location: /lines/{id}
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 21 May 2023 23:35:40 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+  "distance" : 14,
+  "fare" : 1350,
+  "stations": [
+    "수서역",
+    "복정역",
+    "장지역"
+  ]
+}

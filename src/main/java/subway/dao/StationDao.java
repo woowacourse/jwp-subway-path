@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.StationEntity;
-import subway.domain.Station;
 
 @Repository
 public class StationDao {
@@ -23,10 +22,11 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    @Autowired
     public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(jdbcTemplate).withTableName("station").usingGeneratedKeyColumns("id");
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
     }
 
     public StationEntity insert(final String name) {
@@ -57,10 +57,5 @@ public class StationDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-    }
-
-    public int deleteByName(final String name) {
-        final String sql = "DELETE FROM station where name = ?";
-        return jdbcTemplate.update(sql, name);
     }
 }

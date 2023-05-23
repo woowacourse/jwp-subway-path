@@ -1,13 +1,9 @@
-package subway.dto;
+package subway.service.dto;
 
 public class StationDto {
 
     private final Long lineId;
     private final String name;
-
-    public StationDto() {
-        this(null, null);
-    }
 
     public StationDto(final Long lineId, final String name) {
         this.lineId = lineId;
