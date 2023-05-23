@@ -20,7 +20,7 @@ public class FareCalculator {
 
     public static long calculate(int distance, int surcharge, int age) {
         long cost = calculate(distance, surcharge);
-        AgePolicy policy = AgePolicy.of(age);
+        AgePolicy policy = AgePolicy.from(age);
         return policy.applyPolicy(cost);
     }
 
