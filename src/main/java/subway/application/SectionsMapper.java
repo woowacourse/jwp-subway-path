@@ -36,7 +36,11 @@ public class SectionsMapper {
         Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
         Distance distance = new Distance(sectionEntity.getDistance());
 
-        return new Section(startStation, endStation, distance);
+        return Section.builder()
+                .startStation(startStation)
+                .endStation(endStation)
+                .distance(distance)
+                .build();
     }
 
 }

@@ -24,10 +24,25 @@ class RouteTest {
 
         Distance 거리3 = new Distance(3);
 
-        Section section1 = new Section(station1, station2, 거리3);
-        Section section2 = new Section(station2, station3, 거리3);
-        Section section3 = new Section(station3, station4, 거리3);
-        Section section4 = new Section(station4, station5, 거리3);
+        Section section1 = Section.builder()
+                .startStation(station1)
+                .endStation(station2)
+                .distance(거리3).build();
+
+        Section section2 = Section.builder()
+                .startStation(station2)
+                .endStation(station3)
+                .distance(거리3).build();
+
+        Section section3 = Section.builder()
+                .startStation(station3)
+                .endStation(station4)
+                .distance(거리3).build();
+
+        Section section4 = Section.builder()
+                .startStation(station4)
+                .endStation(station5)
+                .distance(거리3).build();
 
         Route route = new Route(List.of(section1, section2, section3, section4));
 

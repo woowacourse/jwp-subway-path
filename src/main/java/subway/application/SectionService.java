@@ -55,7 +55,12 @@ public class SectionService {
         Station requestStartStation = new Station(request.getStartStation());
         Station requestEndStation = new Station(request.getEndStation());
         Distance requestDistance = new Distance(request.getDistance());
-        return new Section(requestStartStation, requestEndStation, requestDistance);
+
+        return Section.builder()
+                .startStation(requestStartStation)
+                .endStation(requestEndStation)
+                .distance(requestDistance)
+                .build();
     }
 
     private void saveNewStationIfNotExists(Station station) {

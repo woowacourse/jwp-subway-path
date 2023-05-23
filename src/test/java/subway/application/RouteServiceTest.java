@@ -58,7 +58,10 @@ class RouteServiceTest {
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
         Station station1 = new Station("일역");
         Station station2 = new Station("이역");
-        Section section = new Section(station1, station2, distance);
+        Section section = Section.builder()
+                .startStation(station1)
+                .endStation(station2)
+                .distance(distance).build();
         Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findAll())
@@ -93,7 +96,10 @@ class RouteServiceTest {
             List<SectionEntity> sectionEntities = List.of(sectionEntity1);
             Station station1 = new Station("일역");
             Station station2 = new Station("이역");
-            Section section = new Section(station1, station2, distance);
+            Section section = Section.builder()
+                    .startStation(station1)
+                    .endStation(station2)
+                    .distance(distance).build();
             Sections sections = new Sections(List.of(section));
 
             when(sectionDao.findAll())
@@ -117,7 +123,10 @@ class RouteServiceTest {
             List<SectionEntity> sectionEntities = List.of(sectionEntity1);
             Station station1 = new Station("일역");
             Station station2 = new Station("이역");
-            Section section = new Section(station1, station2, distance);
+            Section section = Section.builder()
+                    .startStation(station1)
+                    .endStation(station2)
+                    .distance(distance).build();
             Sections sections = new Sections(List.of(section));
 
             when(sectionDao.findAll())
@@ -141,7 +150,10 @@ class RouteServiceTest {
             List<SectionEntity> sectionEntities = List.of(sectionEntity1);
             Station station1 = new Station("일역");
             Station station2 = new Station("이역");
-            Section section = new Section(station1, station2, distance);
+            Section section = Section.builder()
+                    .startStation(station1)
+                    .endStation(station2)
+                    .distance(distance).build();
             Sections sections = new Sections(List.of(section));
 
             when(sectionDao.findAll())
@@ -169,8 +181,16 @@ class RouteServiceTest {
             Station station3 = new Station("삼역");
             Station station4 = new Station("사역");
 
-            Section section1 = new Section(station1, station2, distance);
-            Section section2 = new Section(station3, station4, distance);
+            Section section1 = Section.builder()
+                    .startStation(station1)
+                    .endStation(station2)
+                    .distance(distance).build();
+
+            Section section2 = Section.builder()
+                    .startStation(station3)
+                    .endStation(station4)
+                    .distance(distance).build();
+
             Sections sections = new Sections(List.of(section1, section2));
 
             when(sectionDao.findAll())

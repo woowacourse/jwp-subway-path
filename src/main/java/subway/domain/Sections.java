@@ -64,8 +64,14 @@ public class Sections {
         }
 
         if (firstSection.isSameStartStation(startStation)) {
-            firstSection.updateEndStation(endStation);
-            firstSection.updateDistance(new Distance(totalDistance));
+            Section changedSection = Section.builder()
+                    .startStation(startStation)
+                    .endStation(endStation)
+                    .distance(new Distance(totalDistance))
+                    .build();
+
+            sections.add(changedSection);
+            sections.remove(firstSection);
             sections.remove(secondSection);
             return ChangeSections.makeChangeSectionsForUpdateSectionsByStatus(
                     FOR_MIDDLE_SECTION,
@@ -74,9 +80,15 @@ public class Sections {
             );
         }
 
-        secondSection.updateEndStation(endStation);
-        secondSection.updateDistance(new Distance(totalDistance));
+        Section changedSection = Section.builder()
+                .startStation(startStation)
+                .endStation(endStation)
+                .distance(new Distance(totalDistance))
+                .build();
+
+        sections.add(changedSection);
         sections.remove(firstSection);
+        sections.remove(secondSection);
         return ChangeSections.makeChangeSectionsForUpdateSectionsByStatus(
                 FOR_MIDDLE_SECTION,
                 secondSection,
@@ -125,11 +137,15 @@ public class Sections {
 
         if (findSection.isSameStartStation(newSection)) {
             Distance subtractedDistance = findSection.subtractDistance(newSection);
-            Section devidedSection = new Section(newSection.getEndStation(), findSection.getEndStation(),
-                    subtractedDistance);
+            Section devidedSection = Section.builder(findSection)
+                    .startStation(newSection.getEndStation())
+                    .distance(subtractedDistance)
+                    .build();
 
-            findSection.updateEndStation(newSection.getEndStation());
-            findSection.updateDistance(newSection.getDistance());
+            findSection = Section.builder(findSection)
+                    .endStation(newSection.getEndStation())
+                    .distance(newSection.getDistance())
+                    .build();
 
             sections.add(devidedSection);
             return makeChangeSectionsForUpdateSectionsByStatus(
@@ -140,11 +156,15 @@ public class Sections {
         }
 
         Distance subtractedDistance = findSection.subtractDistance(newSection);
-        Section devidedSection = new Section(findSection.getStartStation(), newSection.getStartStation(),
-                subtractedDistance);
+        Section devidedSection = Section.builder(findSection)
+                .endStation(newSection.getStartStation())
+                .distance(subtractedDistance)
+                .build();
 
-        findSection.updateStartStation(newSection.getStartStation());
-        findSection.updateDistance(newSection.getDistance());
+        findSection = Section.builder(findSection)
+                .startStation(newSection.getStartStation())
+                .distance(newSection.getDistance())
+                .build();
 
         sections.add(devidedSection);
         return makeChangeSectionsForUpdateSectionsByStatus(

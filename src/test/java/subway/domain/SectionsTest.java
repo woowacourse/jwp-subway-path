@@ -20,8 +20,17 @@ class SectionsTest {
     void createSectionsFailTestByDuplication() {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
-        Section section1 = new Section(잠실, 잠실새내, new Distance(10));
-        Section section2 = new Section(잠실, 잠실새내, new Distance(10));
+        Distance distance = new Distance(10);
+        Section section1 = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
+        Section section2 = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
         List<Section> sections = List.of(section1, section2);
 
         assertThatThrownBy(() -> new Sections(sections))
@@ -35,8 +44,18 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section1 = new Section(잠실, 잠실새내, new Distance(10));
-        Section section2 = new Section(잠실새내, 잠실나루, new Distance(10));
+        Distance distance = new Distance(10);
+
+        Section section1 = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
+        Section section2 = Section.builder()
+                .startStation(잠실새내)
+                .endStation(잠실나루)
+                .distance(distance)
+                .build();
         List<Section> sections = List.of(section1, section2);
 
         assertDoesNotThrow(() -> new Sections(sections));
@@ -47,7 +66,12 @@ class SectionsTest {
     void addSectionFailTestByDuplication() {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
-        Section section = new Section(잠실, 잠실새내, new Distance(10));
+        Distance distance = new Distance(10);
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section));
 
@@ -62,11 +86,24 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section1 = new Section(잠실, 잠실새내, new Distance(10));
-        Section section2 = new Section(잠실새내, 잠실나루, new Distance(10));
+        Distance distance = new Distance(10);
+        Section section1 = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
+        Section section2 = Section.builder()
+                .startStation(잠실새내)
+                .endStation(잠실나루)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section1, section2));
-        Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(10));
+        Section sectionForAdd = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실나루)
+                .distance(distance)
+                .build();
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
                 .isInstanceOf(AlreadyConnectedSectionException.class)
@@ -80,10 +117,19 @@ class SectionsTest {
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
         Station 건대 = new Station("건대");
-        Section section = new Section(잠실, 잠실새내, new Distance(10));
+        Distance distance = new Distance(10);
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section));
-        Section sectionForAdd = new Section(잠실나루, 건대, new Distance(10));
+        Section sectionForAdd = Section.builder()
+                .startStation(잠실나루)
+                .endStation(건대)
+                .distance(distance)
+                .build();
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
                 .isInstanceOf(DisconnectedSectionException.class)
@@ -96,10 +142,20 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section = new Section(잠실, 잠실새내, new Distance(10));
+        Distance distance = new Distance(10);
+
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section));
-        Section sectionForAdd = new Section(잠실나루, 잠실, new Distance(5));
+        Section sectionForAdd = Section.builder()
+                .startStation(잠실나루)
+                .endStation(잠실)
+                .distance(distance)
+                .build();
 
         assertDoesNotThrow(() -> sections.add(sectionForAdd));
     }
@@ -110,10 +166,20 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section = new Section(잠실, 잠실새내, new Distance(10));
+        Distance distance = new Distance(10);
+
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section));
-        Section sectionForAdd = new Section(잠실새내, 잠실나루, new Distance(5));
+        Section sectionForAdd = Section.builder()
+                .startStation(잠실새내)
+                .endStation(잠실나루)
+                .distance(distance)
+                .build();
 
         assertDoesNotThrow(() -> sections.add(sectionForAdd));
     }
@@ -124,10 +190,21 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section = new Section(잠실, 잠실새내, new Distance(10));
+        Distance distance1 = new Distance(10);
+        Distance distance2 = new Distance(3);
+
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance1)
+                .build();
 
         Sections sections = new Sections(List.of(section));
-        Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(5));
+        Section sectionForAdd = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실나루)
+                .distance(distance2)
+                .build();
 
         assertDoesNotThrow(() -> sections.add(sectionForAdd));
     }
@@ -138,10 +215,21 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section = new Section(잠실, 잠실새내, new Distance(10));
+        Distance distance1 = new Distance(10);
+        Distance distance2 = new Distance(5);
+
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance1)
+                .build();
 
         Sections sections = new Sections(List.of(section));
-        Section sectionForAdd = new Section(잠실나루, 잠실새내, new Distance(5));
+        Section sectionForAdd = Section.builder()
+                .startStation(잠실나루)
+                .endStation(잠실새내)
+                .distance(distance2)
+                .build();
 
         assertDoesNotThrow(() -> sections.add(sectionForAdd));
     }
@@ -152,10 +240,22 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section = new Section(잠실, 잠실새내, new Distance(5));
+        Distance distance1 = new Distance(5);
+        Distance distance2 = new Distance(6);
+
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance1)
+                .build();
 
         Sections sections = new Sections(List.of(section));
-        Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(6));
+
+        Section sectionForAdd = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실나루)
+                .distance(distance2)
+                .build();
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
                 .isInstanceOf(InvalidAddSectionLengthException.class)
@@ -168,10 +268,20 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section = new Section(잠실, 잠실새내, new Distance(5));
+        Distance distance1 = new Distance(5);
+        Distance distance2 = new Distance(6);
+
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance1)
+                .build();
 
         Sections sections = new Sections(List.of(section));
-        Section sectionForAdd = new Section(잠실나루, 잠실새내, new Distance(6));
+        Section sectionForAdd = Section.builder(section)
+                .startStation(잠실나루)
+                .distance(distance2)
+                .build();
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
                 .isInstanceOf(InvalidAddSectionLengthException.class)
@@ -184,7 +294,13 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section = new Section(잠실, 잠실새내, new Distance(5));
+        Distance distance = new Distance(5);
+
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section));
 
@@ -198,7 +314,13 @@ class SectionsTest {
     void removeStationSuccessTestByOnlyTwoStation() {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
-        Section section = new Section(잠실, 잠실새내, new Distance(5));
+        Distance distance = new Distance(5);
+
+        Section section = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section));
 
@@ -212,8 +334,18 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section1 = new Section(잠실, 잠실새내, new Distance(5));
-        Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
+        Distance distance = new Distance(5);
+
+        Section section1 = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
+        Section section2 = Section.builder()
+                .startStation(잠실새내)
+                .endStation(잠실나루)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section1, section2));
 
@@ -228,8 +360,18 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section1 = new Section(잠실, 잠실새내, new Distance(5));
-        Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
+        Distance distance = new Distance(5);
+
+        Section section1 = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
+        Section section2 = Section.builder()
+                .startStation(잠실새내)
+                .endStation(잠실나루)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section1, section2));
 
@@ -244,8 +386,17 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section1 = new Section(잠실, 잠실새내, new Distance(5));
-        Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
+        Distance distance = new Distance(5);
+        Section section1 = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
+        Section section2 = Section.builder()
+                .startStation(잠실새내)
+                .endStation(잠실나루)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section1, section2));
 
@@ -261,8 +412,17 @@ class SectionsTest {
         Station 잠실 = new Station("잠실");
         Station 잠실새내 = new Station("잠실새내");
         Station 잠실나루 = new Station("잠실나루");
-        Section section1 = new Section(잠실, 잠실새내, new Distance(5));
-        Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
+        Distance distance = new Distance(10);
+        Section section1 = Section.builder()
+                .startStation(잠실)
+                .endStation(잠실새내)
+                .distance(distance)
+                .build();
+        Section section2 = Section.builder()
+                .startStation(잠실새내)
+                .endStation(잠실나루)
+                .distance(distance)
+                .build();
 
         Sections sections = new Sections(List.of(section2, section1));
 

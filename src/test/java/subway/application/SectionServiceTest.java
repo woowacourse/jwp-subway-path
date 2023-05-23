@@ -70,7 +70,11 @@ class SectionServiceTest {
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
         Station station1 = new Station("일역");
         Station station2 = new Station("이역");
-        Section section = new Section(station1, station2, distance);
+        Section section = Section.builder()
+                .startStation(station1)
+                .endStation(station2)
+                .distance(distance)
+                .build();
         Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
@@ -111,7 +115,11 @@ class SectionServiceTest {
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
         Station station1 = new Station("일역");
         Station station2 = new Station("이역");
-        Section section = new Section(station1, station2, distance);
+        Section section = Section.builder()
+                .startStation(station1)
+                .endStation(station2)
+                .distance(distance)
+                .build();
         Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
@@ -155,7 +163,11 @@ class SectionServiceTest {
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
         Station station1 = new Station("일역");
         Station station2 = new Station("이역");
-        Section section = new Section(station1, station2, distance);
+        Section section = Section.builder()
+                .startStation(station1)
+                .endStation(station2)
+                .distance(distance)
+                .build();
         Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
@@ -199,7 +211,11 @@ class SectionServiceTest {
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
         Station station1 = new Station("일역");
         Station station2 = new Station("이역");
-        Section section = new Section(station1, station2, distance);
+        Section section = Section.builder()
+                .startStation(station1)
+                .endStation(station2)
+                .distance(distance)
+                .build();
         Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
@@ -244,7 +260,11 @@ class SectionServiceTest {
         StationEntity stationEntity2 = new StationEntity(2L, "이역");
         Station station1 = new Station("일역");
         Station station2 = new Station("이역");
-        Section section = new Section(station1, station2, distance);
+        Section section = Section.builder()
+                .startStation(station1)
+                .endStation(station2)
+                .distance(distance)
+                .build();
         Sections sections = new Sections(List.of(section));
 
         when(sectionDao.findByLineId(1L))
@@ -294,7 +314,11 @@ class SectionServiceTest {
             StationEntity stationEntity2 = new StationEntity(2L, "이역");
             Station station1 = new Station("일역");
             Station station2 = new Station("이역");
-            Section section = new Section(station1, station2, distance);
+            Section section = Section.builder()
+                    .startStation(station1)
+                    .endStation(station2)
+                    .distance(distance)
+                    .build();
             Sections sections = new Sections(List.of(section));
 
             when(sectionDao.findByLineId(1L))
@@ -373,7 +397,11 @@ class SectionServiceTest {
             StationEntity stationEntity2 = new StationEntity(2L, "이역");
             Station station1 = new Station("일역");
             Station station2 = new Station("이역");
-            Section section = new Section(station1, station2, distance);
+            Section section = Section.builder()
+                    .startStation(station1)
+                    .endStation(station2)
+                    .distance(distance)
+                    .build();
             Sections sections = new Sections(List.of(section));
 
             when(sectionDao.findByLineId(1L))
