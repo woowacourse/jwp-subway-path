@@ -4,14 +4,17 @@ import subway.domain.route.RouteEdge;
 
 public class RouteEdgeResponse {
 
-    private final String startStationName;
-    private final String endStationName;
-    private final String lineName;
-    private final Integer distance;
+    private String startStation;
+    private String endStation;
+    private String lineName;
+    private Integer distance;
 
-    public RouteEdgeResponse(final String startStationName, final String endStationName, final String lineName, final Integer distance) {
-        this.startStationName = startStationName;
-        this.endStationName = endStationName;
+    public RouteEdgeResponse() {
+    }
+
+    public RouteEdgeResponse(final String startStation, final String endStation, final String lineName, final Integer distance) {
+        this.startStation = startStation;
+        this.endStation = endStation;
         this.lineName = lineName;
         this.distance = distance;
     }
@@ -20,17 +23,17 @@ public class RouteEdgeResponse {
         return new RouteEdgeResponse(
                 routeEdge.getUpStation().getNameValue(),
                 routeEdge.getDownStation().getNameValue(),
-                routeEdge.getLineName().getValue(),
+                routeEdge.getLine().getNameValue(),
                 routeEdge.getDistance().getValue()
         );
     }
 
-    public String getStartStationName() {
-        return startStationName;
+    public String getStartStation() {
+        return startStation;
     }
 
-    public String getEndStationName() {
-        return endStationName;
+    public String getEndStation() {
+        return endStation;
     }
 
     public String getLineName() {
