@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StubStationDao implements StationDao {
 

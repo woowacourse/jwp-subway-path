@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 public class StubLineDao implements LineDao {
 

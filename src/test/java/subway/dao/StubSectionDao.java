@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 public class StubSectionDao implements SectionDao {
 

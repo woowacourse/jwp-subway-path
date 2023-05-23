@@ -2,7 +2,7 @@ package subway.dao;
 
 import java.util.List;
 
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 public interface LineDao {
 

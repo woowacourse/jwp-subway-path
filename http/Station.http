@@ -1,0 +1,25 @@
+### POST /stations : 역 추가
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "서울대입구역"
+}
+
+
+### GET /stations : 모든 역 조회
+GET http://localhost:8080/stations
+
+### GET /stations/{id} : 역 조회
+GET http://localhost:8080/stations/1
+
+### PUT /stations/{id} : 역 수정
+PUT http://localhost:8080/stations/1
+Content-Type: application/json
+
+{
+  "name": "낙성대역"
+}
+
+### DELETE /stations/{id} : 역 삭제
+DELETE http://localhost:8080/stations/1

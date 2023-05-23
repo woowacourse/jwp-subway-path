@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.domain.Section;
+import subway.domain.section.Section;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineSearchResponse;
@@ -60,12 +60,12 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineSearchResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+        return ResponseEntity.ok(lineService.getLineSearchResponses());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineSearchResponse> findLineById(@PathVariable final Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+        return ResponseEntity.ok(lineService.getLineSearchResponse(id));
     }
 
     @PutMapping("/{id}")

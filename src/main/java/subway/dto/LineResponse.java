@@ -1,6 +1,6 @@
 package subway.dto;
 
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 public class LineResponse {
 

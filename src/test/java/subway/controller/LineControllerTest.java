@@ -6,29 +6,23 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineSearchResponse;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionResponse;
-import subway.service.SubwayMapService;
 
 @DisplayName("지하철 노선 관련 기능")
 class LineControllerTest extends ControllerTest {
-
-    @Autowired
-    private SubwayMapService subwayMapService;
 
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
@@ -84,13 +78,10 @@ class LineControllerTest extends ControllerTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
+    @DisplayName("모든 노선의 구간들을 조회한다.")
     @Test
     @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
-    void getLines() {
-        // given
-        subwayMapService.update();
-
+    void findAllLinesWithSections() {
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -101,40 +92,23 @@ class LineControllerTest extends ControllerTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final List<LineSearchResponse> result = response.jsonPath().getList(".", LineSearchResponse.class);
+        final JsonPath jsonPath = response.jsonPath();
         assertAll(
-                () -> assertThat(result.get(0).getId()).isPositive(),
-                () -> assertThat(result.get(0).getName()).isEqualTo("1호선"),
-                () -> assertThat(result.get(0).getColor()).isEqualTo("파란색"),
-                () -> assertThat(result.get(0).getStations()).containsExactly(
-                        new Station(1L, "1L"),
-                        new Station(2L, "2L"),
-                        new Station(3L, "3L"),
-                        new Station(4L, "4L"),
-                        new Station(5L, "5L"),
-                        new Station(6L, "6L"),
-                        new Station(7L, "7L")
-                ),
-                () -> assertThat(result.get(1).getId()).isPositive(),
-                () -> assertThat(result.get(1).getName()).isEqualTo("2호선"),
-                () -> assertThat(result.get(1).getColor()).isEqualTo("초록색"),
-                () -> assertThat(result.get(1).getStations()).containsExactly(
-                        new Station(8L, "8L"),
-                        new Station(9L, "9L"),
-                        new Station(4L, "4L"),
-                        new Station(10L, "10L"),
-                        new Station(11L, "11L")
-                )
+                () -> assertThat(jsonPath.getLong("[0].id")).isPositive(),
+                () -> assertThat(jsonPath.getString("[0].name")).isEqualTo("1호선"),
+                () -> assertThat(jsonPath.getString("[0].color")).isEqualTo("파란색"),
+                () -> assertThat(jsonPath.getList("[0].sections")).hasSize(6),
+                () -> assertThat(jsonPath.getLong("[1].id")).isPositive(),
+                () -> assertThat(jsonPath.getString("[1].name")).isEqualTo("2호선"),
+                () -> assertThat(jsonPath.getString("[1].color")).isEqualTo("초록색"),
+                () -> assertThat(jsonPath.getList("[1].sections")).hasSize(4)
         );
     }
 
-    @DisplayName("지하철 노선을 조회한다.")
+    @DisplayName("특정 노선의 구간들을 조회한다.")
     @Test
     @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
-    void getLine() {
-        // given
-        subwayMapService.update();
-
+    void findLineWithSections() {
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -145,20 +119,12 @@ class LineControllerTest extends ControllerTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final LineSearchResponse result = response.as(LineSearchResponse.class);
+        final JsonPath jsonPath = response.jsonPath();
         assertAll(
-                () -> assertThat(result.getId()).isEqualTo(1),
-                () -> assertThat(result.getName()).isEqualTo("1호선"),
-                () -> assertThat(result.getColor()).isEqualTo("파란색"),
-                () -> assertThat(result.getStations()).containsExactly(
-                        new Station(1L, "1L"),
-                        new Station(2L, "2L"),
-                        new Station(3L, "3L"),
-                        new Station(4L, "4L"),
-                        new Station(5L, "5L"),
-                        new Station(6L, "6L"),
-                        new Station(7L, "7L")
-                )
+                () -> assertThat(jsonPath.getLong("id")).isEqualTo(1L),
+                () -> assertThat(jsonPath.getString("name")).isEqualTo("1호선"),
+                () -> assertThat(jsonPath.getString("color")).isEqualTo("파란색"),
+                () -> assertThat(jsonPath.getList("sections")).hasSize(6)
         );
     }
 

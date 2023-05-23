@@ -3,7 +3,7 @@ package subway.dao;
 import java.util.List;
 import java.util.Optional;
 
-import subway.domain.Section;
+import subway.domain.section.Section;
 
 public interface SectionDao {
 

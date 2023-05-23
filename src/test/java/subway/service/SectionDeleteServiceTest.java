@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.dao.StubSectionDao;
-import subway.domain.Section;
+import subway.domain.section.Section;
 
 class SectionDeleteServiceTest {
 
