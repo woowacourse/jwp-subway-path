@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import subway.persistence.repository.H2SectionRepository;
+import subway.persistence.repository.H2StationsInLineRepository;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
@@ -33,10 +33,10 @@ import static subway.fixture.StationFixture.YUKSAM_NO_ID;
 @SpringBootTest
 @Transactional
 @Sql("/schema-test.sql")
-class H2SectionRepositoryTest {
+class H2StationsInLineRepositoryTest {
 
     @Autowired
-    H2SectionRepository sectionRepository;
+    H2StationsInLineRepository sectionRepository;
     @Autowired
     StationRepository stationRepository;
 
