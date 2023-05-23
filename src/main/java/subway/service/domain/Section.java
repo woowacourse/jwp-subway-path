@@ -30,11 +30,11 @@ public class Section {
                 || nextStation.equals(station);
     }
 
-    public boolean isPreviousStationThisStation(Station station) {
+    public boolean isPreviousStationStation(Station station) {
         return previousStation.equals(station);
     }
 
-    public boolean isNextStationThisStation(Station station) {
+    public boolean isNextStationStation(Station station) {
         return nextStation.equals(station);
     }
 

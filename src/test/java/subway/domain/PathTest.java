@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.service.domain.Direction;
 import subway.service.domain.Distance;
+import subway.service.domain.LineProperty;
 import subway.service.domain.Path;
 import subway.service.domain.Station;
 
@@ -15,8 +16,9 @@ class PathTest {
     @DisplayName("Path 를 생성한다.")
     void createPath() {
         Station station = new Station("pathTest");
+        LineProperty IGNORED = new LineProperty(1L, "1", "1");
 
-        Path path = new Path(Direction.UP, station, Distance.from(10));
+        Path path = new Path(Direction.UP, IGNORED, station, Distance.from(10));
 
         assertThat(path.getDirection()).isEqualTo(Direction.UP);
         assertThat(path.getNextStation()).isEqualTo(station);

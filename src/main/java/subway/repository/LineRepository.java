@@ -1,18 +1,23 @@
 package subway.repository;
 
 import org.springframework.stereotype.Repository;
+import subway.dao.FarePolicyDao;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.entity.FarePolicyEntity;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
+import subway.repository.converter.FarePolicyConverter;
 import subway.repository.converter.LinePropertyConverter;
 import subway.repository.converter.SectionConverter;
 import subway.repository.converter.StationConverter;
 import subway.service.domain.Distance;
+import subway.service.domain.FarePolicies;
+import subway.service.domain.FarePolicy;
 import subway.service.domain.Line;
 import subway.service.domain.LineProperty;
 import subway.service.domain.Section;
@@ -28,11 +33,16 @@ public class LineRepository {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final FarePolicyDao farePolicyDao;
 
-    public LineRepository(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
+    public LineRepository(LineDao lineDao,
+                          SectionDao sectionDao,
+                          StationDao stationDao,
+                          FarePolicyDao farePolicyDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.farePolicyDao = farePolicyDao;
     }
 
     public Line saveLine(Line line) {
@@ -45,6 +55,16 @@ public class LineRepository {
         LineEntity lineEntity = LinePropertyConverter.domainToEntity(lineProperty);
         Long id = lineDao.insert(lineEntity);
         return LinePropertyConverter.entityToDomain(id, lineEntity);
+    }
+
+    public FarePolicy saveFarePolicy(FarePolicy farePolicy) {
+        FarePolicyEntity farePolicyEntity = FarePolicyConverter.domainToEntity(farePolicy);
+        Long insert = farePolicyDao.insert(farePolicyEntity);
+        return FarePolicyConverter.entityToDomain(
+                insert,
+                farePolicy.getLineProperty(),
+                farePolicyEntity
+        );
     }
 
     private List<Section> saveSections(LineProperty lineProperty, List<Section> sections) {
@@ -126,6 +146,23 @@ public class LineRepository {
         return StationConverter.entityToDomain(stationEntity);
     }
 
+    public List<FarePolicy> findAllFarePolicy() {
+        return farePolicyDao.findAll()
+                .stream()
+                .map(farePolicy -> new FarePolicy(farePolicy.getId(), findLinePropertyById(farePolicy.getLineId()), farePolicy.getAdditionalFare()))
+                .collect(Collectors.toList());
+    }
+
+    private LineProperty findLinePropertyById(Long id) {
+        List<LineEntity> lineEntity = lineDao.findById(id);
+
+        if (lineEntity.isEmpty()) {
+            throw new LineNotFoundException("해당 요금 정책에 해당하는 노선을 찾을 수 없습니다.");
+        }
+
+        return LinePropertyConverter.entityToDomain(lineEntity.get(0));
+    }
+
     public void updateLineProperty(LineProperty lineProperty) {
         LineEntity lineEntity = LinePropertyConverter.domainToEntity(lineProperty);
         int updateCount = lineDao.update(lineEntity);
@@ -141,6 +178,10 @@ public class LineRepository {
         if (removeCount == 0) {
             throw new IllegalArgumentException("노선이 삭제되지 않았습니다.");
         }
+    }
+
+    public boolean existsFarePolicyByLineId(Long lineId) {
+        return !farePolicyDao.findById(lineId).isEmpty();
     }
 
 }

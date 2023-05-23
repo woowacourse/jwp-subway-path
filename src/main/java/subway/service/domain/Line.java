@@ -17,7 +17,7 @@ public class Line {
     }
 
     public List<Section> findSectionByStation(Station station) {
-        return sections.findContainsThisStation(station);
+        return sections.findContainsStation(station);
     }
 
     public Optional<Section> findSectionByDirectionAndStation(Direction direction,
@@ -26,10 +26,10 @@ public class Line {
         validateSection(standardStation, additionalStation);
 
         if (Direction.UP == direction) {
-            return sections.findPreviousStationThisStation(standardStation);
+            return sections.findPreviousStationStation(standardStation);
         }
 
-        return sections.findNextStationThisStation(standardStation);
+        return sections.findNextStationStation(standardStation);
     }
 
     private void validateSection(Station firstStation, Station secondStation) {
@@ -43,18 +43,18 @@ public class Line {
     }
 
     private boolean allContainsTwoStation(Station firstStation, Station secondStation) {
-        return sections.isContainsThisStation(firstStation)
-                && sections.isContainsThisStation(secondStation);
+        return sections.isContainsStation(firstStation)
+                && sections.isContainsStation(secondStation);
     }
 
 
     private boolean noContainsTwoStation(Station firstStation, Station secondStation) {
-        return !sections.isContainsThisStation(firstStation)
-                && !sections.isContainsThisStation(secondStation);
+        return !sections.isContainsStation(firstStation)
+                && !sections.isContainsStation(secondStation);
     }
 
-    public RouteMap getLineMap() {
-        return sections.createMap();
+    public RouteMapInLine getLineMap() {
+        return sections.createMap(lineProperty);
     }
 
     public LineProperty getLineProperty() {
