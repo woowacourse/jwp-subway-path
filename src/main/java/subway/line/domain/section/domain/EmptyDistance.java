@@ -1,6 +1,5 @@
 package subway.line.domain.section.domain;
 
-import subway.common.exception.ExceptionMessages;
 import subway.line.domain.section.domain.exception.InvalidDistanceException;
 
 public class EmptyDistance extends Distance {
@@ -10,7 +9,7 @@ public class EmptyDistance extends Distance {
 
     @Override
     public Distance subtract(Distance distance) {
-        throw new InvalidDistanceException(ExceptionMessages.INVALID_DISTANCE);
+        throw new InvalidDistanceException();
     }
 
     @Override

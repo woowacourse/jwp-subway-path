@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public class NavigationService {
-    private static ThreadLocal<Navigation> navigationThreadLocal = null;
+    private static ThreadLocal<Navigation> navigationThreadLocal = new ThreadLocal<>();
     private final SubwayGraph subwayGraph;
 
     public NavigationService(SubwayGraph subwayGraph) {

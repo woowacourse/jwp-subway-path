@@ -1,7 +1,10 @@
 package subway.line.presentation.dto;
 
 public class StationDeletingRequest {
-    private final Long stationId;
+    private Long stationId;
+
+    public StationDeletingRequest() {
+    }
 
     public StationDeletingRequest(Long stationId) {
         this.stationId = stationId;

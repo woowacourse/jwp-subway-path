@@ -1,5 +1,6 @@
 package subway.line.domain.section.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import subway.line.domain.section.Section;
 import subway.line.domain.section.domain.Distance;
@@ -38,6 +39,10 @@ public class SectionRepository {
     }
 
     public long findLineIdBySectionHavingStations(Station stationA, Station stationB) {
-        return sectionDao.findLineIdByCurrentStationIdAndNextStationId(stationA.getId(), stationB.getId());
+        try {
+            return sectionDao.findLineIdByCurrentStationIdAndNextStationId(stationA.getId(), stationB.getId());
+        } catch (EmptyResultDataAccessException e) {
+            return sectionDao.findLineIdByCurrentStationIdAndNextStationId(stationB.getId(), stationA.getId());
+        }
     }
 }

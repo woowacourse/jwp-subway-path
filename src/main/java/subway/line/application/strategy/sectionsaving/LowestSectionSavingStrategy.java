@@ -2,7 +2,6 @@ package subway.line.application.strategy.sectionsaving;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import subway.common.exception.ExceptionMessages;
 import subway.line.Line;
 import subway.line.application.exception.WrongStrategyMappedException;
 import subway.line.domain.section.application.SectionService;

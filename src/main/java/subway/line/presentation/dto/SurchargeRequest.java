@@ -1,15 +1,16 @@
 package subway.line.presentation.dto;
 
-import java.math.BigDecimal;
-
 public class SurchargeRequest {
-    private final BigDecimal surcharge;
+    private String surcharge;
 
-    public SurchargeRequest(BigDecimal surcharge) {
+    public SurchargeRequest() {
+    }
+
+    public SurchargeRequest(String surcharge) {
         this.surcharge = surcharge;
     }
 
-    public BigDecimal getSurcharge() {
+    public String getSurcharge() {
         return surcharge;
     }
 }

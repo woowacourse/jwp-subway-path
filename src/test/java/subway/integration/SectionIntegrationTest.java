@@ -9,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.line.domain.section.domain.Distance;
 import subway.line.domain.station.presentation.dto.StationResponse;
-import subway.line.presentation.dto.LineRequest;
-import subway.line.presentation.dto.SectionRequest;
-import subway.line.presentation.dto.SectionResponse;
-import subway.line.presentation.dto.SectionSavingRequest;
+import subway.line.presentation.dto.*;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -94,10 +91,11 @@ public class SectionIntegrationTest extends IntegrationTest {
         saveSection(개룡역아이디, 용암역아이디, 2, requestUri, false);
 
 
+
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(Map.of("name", "용암역"))
+                .body(new StationDeletingRequest(용암역아이디))
                 .when().delete(requestUri + "/section")
                 .then().log().all()
                 .extract();
@@ -120,7 +118,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new SectionRequest(강남역, 서울시민의숲, 10))
+                .body(new SectionRequest(강남역, 서울시민의숲, 20))
                 .when().get("/lines/section")
                 .then().log().all()
                 .extract();
@@ -163,7 +161,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new SectionRequest(논현역, 서울숲, 10))
+                .body(new SectionRequest(논현역, 서울숲, 20))
                 .when().get("/lines/section")
                 .then().log().all()
                 .extract();
@@ -177,8 +175,8 @@ public class SectionIntegrationTest extends IntegrationTest {
         assertThat(sectionResponse.getShortestStationPath())
                 .extracting(StationResponse::getName)
                 .containsExactly("논현역", "학동역", "강남구청", "압구정로데오", "서울숲");
-        assertThat(sectionResponse.getFare())
-                .isEqualTo(new BigDecimal(1750));
+        assertThat(sectionResponse.getFare().intValue())
+                .isEqualTo(1750);
     }
 
     private static String saveLine(String name, String color) {

@@ -170,8 +170,8 @@ public class LineIntegrationTest extends IntegrationTest {
         final var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new SurchargeRequest(new BigDecimal("900")))
-                .when().post("/lines/" + 일호선 + "/fare")
+                .body(new SurchargeRequest("900"))
+                .when().post("/lines/" + 일호선 + "/surcharge")
                 .then().log().all()
                 .extract();
 

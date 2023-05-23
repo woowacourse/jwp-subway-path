@@ -84,8 +84,10 @@ public class LineControllerPort {
     public ShortestPathResponse findShortestPath(Long startingStationId, Long destinationStationId) {
         final var startingStation = stationService.findById(startingStationId);
         final var destinationStation = stationService.findById(destinationStationId);
+
         final var shortestPath = lineService.findShortestPath(startingStation, destinationStation);
         final var shortestDistance = lineService.findShortestDistance(startingStation, destinationStation);
+
         return new ShortestPathResponse(startingStation, destinationStation, shortestPath, shortestDistance.getValue());
     }
 
@@ -99,7 +101,7 @@ public class LineControllerPort {
     }
 
     public long saveSurcharge(long lineId, SurchargeRequest surchargeRequest) {
-        lineService.saveSurcharge(lineId, new Fare(surchargeRequest.getSurcharge()));
+        lineService.saveSurcharge(lineId, new Fare(new BigDecimal(surchargeRequest.getSurcharge())));
         return lineId;
     }
 }

@@ -1,23 +1,20 @@
 package subway.line.domain.section.domain.exception;
 
-public class InvalidDistanceException extends RuntimeException {
+import subway.common.exception.BadRequestException;
+
+public class InvalidDistanceException extends BadRequestException {
+
+    public static final String MESSAGE = "거리 정보는 양의 정수로 제한합니다.";
+
     public InvalidDistanceException() {
-        super();
-    }
-
-    public InvalidDistanceException(String message) {
-        super(message);
-    }
-
-    public InvalidDistanceException(String message, Throwable cause) {
-        super(message, cause);
+        super(MESSAGE);
     }
 
     public InvalidDistanceException(Throwable cause) {
-        super(cause);
+        super(MESSAGE, cause);
     }
 
-    protected InvalidDistanceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    protected InvalidDistanceException(Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(MESSAGE, cause, enableSuppression, writableStackTrace);
     }
 }

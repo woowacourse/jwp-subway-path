@@ -1,7 +1,6 @@
 package subway.line.domain.section.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import subway.common.exception.ExceptionMessages;
 import subway.line.domain.section.domain.exception.InvalidDistanceException;
 
 import java.util.Objects;
@@ -16,7 +15,7 @@ public class Distance {
 
     public static Distance of(double value) {
         if (value <= MIN_DISTANCE_VALUE) {
-            throw new InvalidDistanceException(ExceptionMessages.INVALID_DISTANCE);
+            throw new InvalidDistanceException();
         }
         return new Distance(value);
     }
