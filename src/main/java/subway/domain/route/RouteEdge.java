@@ -1,24 +1,24 @@
 package subway.domain.route;
 
-import subway.domain.vo.Distance;
-import subway.domain.vo.Name;
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.vo.Distance;
 
 import java.util.Objects;
 
 public class RouteEdge {
 
     private final Section section;
-    private final Name lineName;
+    private final Line line;
 
-    public RouteEdge(final Section section, final Name lineName) {
+    public RouteEdge(final Section section, final Line line) {
         this.section = section;
-        this.lineName = lineName;
+        this.line = line;
     }
 
-    public static RouteEdge from(final Section section, final String lineName) {
-        return new RouteEdge(section, new Name(lineName));
+    public static RouteEdge from(final Section section, final Line line) {
+        return new RouteEdge(section, line);
     }
 
     public Section getSection() {
@@ -37,20 +37,24 @@ public class RouteEdge {
         return section.getDistance();
     }
 
-    public Name getLineName() {
-        return lineName;
+    public Line getLine() {
+        return line;
+    }
+
+    public boolean isNotSameLine(final RouteEdge otherRouteEdge) {
+        return !line.equals(otherRouteEdge.line);
     }
 
     @Override
     public boolean equals(final Object o) {
-          if (this == o) return true;
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final RouteEdge that = (RouteEdge) o;
-        return Objects.equals(section, that.section) && Objects.equals(lineName, that.lineName);
+        final RouteEdge routeEdge = (RouteEdge) o;
+        return Objects.equals(section, routeEdge.section) && Objects.equals(line, routeEdge.line);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(section, lineName);
+        return Objects.hash(section, line);
     }
 }

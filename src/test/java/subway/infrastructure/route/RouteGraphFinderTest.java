@@ -11,7 +11,6 @@ import subway.domain.route.Route;
 import subway.domain.route.RouteEdge;
 import subway.domain.route.RouteFinder;
 import subway.domain.vo.Distance;
-import subway.domain.vo.Money;
 import subway.fixture.SectionsFixture;
 
 import java.util.List;
@@ -21,13 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import static subway.fixture.DistanceFixture.거리;
 import static subway.fixture.LineFixture.노선;
-import static subway.fixture.MoneyFixture.비용;
 import static subway.fixture.SectionFixture.구간;
 import static subway.fixture.SectionFixture.상행_종점_구간;
 import static subway.fixture.StationFixture.역;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
-class RouteGraphServiceTest {
+class RouteGraphFinderTest {
 
     RouteFinder routeFinder;
 
@@ -47,14 +45,14 @@ class RouteGraphServiceTest {
         final Route 경로 = routeFinder.findRouteBy(List.of(노선1), 역("A"), 역("B"));
 
         final Distance 최단_거리 = 경로.getTotalDistance();
-        final List<RouteEdge> 최단_구간_목록 = 경로.getSections();
+        final List<RouteEdge> 최단_구간_목록 = 경로.getRouteEdges();
         final Station 출발역 = 경로.getStart();
         final Station 도착역 = 경로.getEnd();
 
         // then
         assertAll(
                 () -> assertThat(최단_거리).isEqualTo(거리(10)),
-                () -> assertThat(최단_구간_목록).containsExactly(RouteEdge.from(상행_종점_구간(거리(10), 역("A"), 역("B")), "1")),
+                () -> assertThat(최단_구간_목록).containsExactly(RouteEdge.from(상행_종점_구간(거리(10), 역("A"), 역("B")), 노선1)),
                 () -> assertThat(출발역).isEqualTo(역("A")),
                 () -> assertThat(도착역).isEqualTo(역("B"))
         );
@@ -77,14 +75,14 @@ class RouteGraphServiceTest {
         final Route 경로 = routeFinder.findRouteBy(List.of(노선1, 노선2), 역("A"), 역("F"));
 
         final Distance 최단_거리 = 경로.getTotalDistance();
-        final List<RouteEdge> 최단_구간_목록 = 경로.getSections();
+        final List<RouteEdge> 최단_구간_목록 = 경로.getRouteEdges();
         final Station 출발역 = 경로.getStart();
         final Station 도착역 = 경로.getEnd();
 
         // then
         assertAll(
                 () -> assertThat(최단_거리).isEqualTo(거리(10)),
-                () -> assertThat(최단_구간_목록).containsExactly(RouteEdge.from(상행_종점_구간(거리(10), 역("A"), 역("F")), "2")),
+                () -> assertThat(최단_구간_목록).containsExactly(RouteEdge.from(상행_종점_구간(거리(10), 역("A"), 역("F")), 노선2)),
                 () -> assertThat(출발역).isEqualTo(역("A")),
                 () -> assertThat(도착역).isEqualTo(역("F"))
         );
@@ -107,7 +105,7 @@ class RouteGraphServiceTest {
         final Route 경로 = routeFinder.findRouteBy(List.of(노선1, 노선2), 역("A"), 역("F"));
 
         final Distance 최단_거리 = 경로.getTotalDistance();
-        final List<RouteEdge> 최단_구간_목록 = 경로.getSections();
+        final List<RouteEdge> 최단_구간_목록 = 경로.getRouteEdges();
         final Station 출발역 = 경로.getStart();
         final Station 도착역 = 경로.getEnd();
 
@@ -115,8 +113,8 @@ class RouteGraphServiceTest {
         assertAll(
                 () -> assertThat(최단_거리).isEqualTo(거리(11)),
                 () -> assertThat(최단_구간_목록).containsExactly(
-                        RouteEdge.from(상행_종점_구간(거리(10), 역("A"), 역("B")), "1"),
-                        RouteEdge.from(상행_종점_구간(거리(1), 역("B"), 역("F")), "2")
+                        RouteEdge.from(상행_종점_구간(거리(10), 역("A"), 역("B")), 노선1),
+                        RouteEdge.from(상행_종점_구간(거리(1), 역("B"), 역("F")), 노선2)
                 ),
                 () -> assertThat(출발역).isEqualTo(역("A")),
                 () -> assertThat(도착역).isEqualTo(역("F"))
@@ -143,7 +141,7 @@ class RouteGraphServiceTest {
         final Route 경로 = routeFinder.findRouteBy(List.of(노선1, 노선2, 노선3), 역("A"), 역("F"));
 
         final Distance 최단_거리 = 경로.getTotalDistance();
-        final List<RouteEdge> 최단_구간_목록 = 경로.getSections();
+        final List<RouteEdge> 최단_구간_목록 = 경로.getRouteEdges();
         final Station 출발역 = 경로.getStart();
         final Station 도착역 = 경로.getEnd();
 
@@ -151,10 +149,10 @@ class RouteGraphServiceTest {
         assertAll(
                 () -> assertThat(최단_거리).isEqualTo(거리(10)),
                 () -> assertThat(최단_구간_목록).containsExactly(
-                        RouteEdge.from(구간(거리(1), 역("A"), 역("B")), "1"),
-                        RouteEdge.from(구간(거리(2), 역("B"), 역("D")), "2"),
-                        RouteEdge.from(구간(거리(3), 역("D"), 역("E")), "2"),
-                        RouteEdge.from(구간(거리(4), 역("E"), 역("F")), "3")
+                        RouteEdge.from(구간(거리(1), 역("A"), 역("B")), 노선1),
+                        RouteEdge.from(구간(거리(2), 역("B"), 역("D")), 노선2),
+                        RouteEdge.from(구간(거리(3), 역("D"), 역("E")), 노선2),
+                        RouteEdge.from(구간(거리(4), 역("E"), 역("F")), 노선3)
                 ),
                 () -> assertThat(출발역).isEqualTo(역("A")),
                 () -> assertThat(도착역).isEqualTo(역("F"))
@@ -182,8 +180,7 @@ class RouteGraphServiceTest {
         final Station 출발역 = 경로.getStart();
         final Station 도착역 = 경로.getEnd();
         final List<Station> 환승역_목록 = 경로.getTransfers();
-        final List<RouteEdge> 최단_구간_목록 = 경로.getSections();
-        final Money 비용 = 경로.getTotalPrice();
+        final List<RouteEdge> 최단_구간_목록 = 경로.getRouteEdges();
         final Distance 최단_거리 = 경로.getTotalDistance();
 
         // then
@@ -195,12 +192,11 @@ class RouteGraphServiceTest {
                 ),
                 () -> assertThat(최단_구간_목록).containsExactly(
                         // EF -> DE -> BD -> AB
-                        RouteEdge.from(구간(거리(4), 역("F"), 역("E")), "3"),
-                        RouteEdge.from(구간(거리(3), 역("E"), 역("D")), "2"),
-                        RouteEdge.from(구간(거리(2), 역("D"), 역("B")), "2"),
-                        RouteEdge.from(구간(거리(1), 역("B"), 역("A")), "1")
+                        RouteEdge.from(구간(거리(4), 역("F"), 역("E")), 노선3),
+                        RouteEdge.from(구간(거리(3), 역("E"), 역("D")), 노선2),
+                        RouteEdge.from(구간(거리(2), 역("D"), 역("B")), 노선2),
+                        RouteEdge.from(구간(거리(1), 역("B"), 역("A")), 노선1)
                 ),
-                () -> assertThat(비용).isEqualTo(비용("1250")),
                 () -> assertThat(최단_거리).isEqualTo(거리(10))
         );
     }
