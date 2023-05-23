@@ -17,5 +17,4 @@ public class LineDto {
     public String getColor() {
         return color;
     }
-
 }

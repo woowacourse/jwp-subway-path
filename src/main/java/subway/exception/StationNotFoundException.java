@@ -7,5 +7,4 @@ public class StationNotFoundException extends IllegalArgumentException {
     public StationNotFoundException() {
         super(MESSAGE);
     }
-
 }

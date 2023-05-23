@@ -46,5 +46,4 @@ public class LineRequest {
     public String getSecondStation() {
         return secondStation;
     }
-
 }

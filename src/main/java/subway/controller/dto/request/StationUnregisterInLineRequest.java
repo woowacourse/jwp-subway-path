@@ -17,5 +17,4 @@ public class StationUnregisterInLineRequest {
     public String getStationName() {
         return stationName;
     }
-
 }

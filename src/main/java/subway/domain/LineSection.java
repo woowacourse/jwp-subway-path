@@ -40,5 +40,4 @@ public class LineSection {
     public Distance getDistance() {
         return distance;
     }
-
 }

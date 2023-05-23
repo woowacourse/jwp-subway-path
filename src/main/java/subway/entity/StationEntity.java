@@ -28,5 +28,4 @@ public class StationEntity {
                 ", name='" + name + '\'' +
                 '}';
     }
-
 }

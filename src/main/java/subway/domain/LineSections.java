@@ -33,5 +33,4 @@ public class LineSections {
     public List<LineSection> getSections() {
         return List.copyOf(sections);
     }
-
 }

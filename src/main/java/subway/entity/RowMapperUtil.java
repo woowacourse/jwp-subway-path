@@ -34,5 +34,4 @@ public class RowMapperUtil {
             rs.getLong("next_station_id"),
             rs.getString("next_station_name")
     );
-
 }

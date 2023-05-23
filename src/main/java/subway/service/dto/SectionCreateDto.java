@@ -23,5 +23,4 @@ public class SectionCreateDto {
     public String getLastStation() {
         return lastStation;
     }
-
 }

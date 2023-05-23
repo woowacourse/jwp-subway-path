@@ -39,5 +39,4 @@ public class StationRegisterInLineRequest {
     public Integer getDistance() {
         return distance;
     }
-
 }

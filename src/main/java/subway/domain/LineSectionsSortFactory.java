@@ -59,5 +59,4 @@ public class LineSectionsSortFactory {
             throw new RuntimeException("같은 노선에 순환 구간이나 갈림길이 있습니다.");
         }
     }
-
 }
