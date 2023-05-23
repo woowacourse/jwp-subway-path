@@ -22,7 +22,7 @@ public class SectionDao {
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("sections")
+                .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -63,7 +63,7 @@ public class SectionDao {
 
     public void insertBatch(final List<SectionEntity> sectionEntities) {
         final String sql = sqlHelper()
-                .insert().table("SECTIONS(up_station_id, down_station_id, line_id, is_start, distance)")
+                .insert().table("section(up_station_id, down_station_id, line_id, is_start, distance)")
                 .values("?, ?, ?, ?, ?")
                 .toString();
 
@@ -80,7 +80,7 @@ public class SectionDao {
     public Optional<SectionEntity> findBySectionId(final Long sectionId) {
         final String sql = sqlHelper()
                 .select().columns("id, distance, is_start, up_station_id, down_station_id, line_id")
-                .from().table("SECTIONS")
+                .from().table("section")
                 .where().condition("id = ?")
                 .toString();
 
@@ -94,7 +94,7 @@ public class SectionDao {
     public List<SectionEntity> findAllByLineId(final Long lineId) {
         final String sql = sqlHelper()
                 .select().columns("id, distance, is_start, up_station_id, down_station_id, line_id")
-                .from().table("SECTIONS")
+                .from().table("section")
                 .where().condition("line_id = ?")
                 .toString();
 
@@ -104,7 +104,7 @@ public class SectionDao {
     public void deleteBySectionId(final Long sectionId) {
         final String sql = sqlHelper()
                 .delete()
-                .from().table("SECTIONS")
+                .from().table("section")
                 .where().condition("id = ?")
                 .toString();
 
@@ -114,7 +114,7 @@ public class SectionDao {
     public void deleteByLineId(final Long lineId) {
         final String sql = sqlHelper()
                 .delete()
-                .from().table("SECTIONS")
+                .from().table("section")
                 .where().condition("line_id = ?")
                 .toString();
 

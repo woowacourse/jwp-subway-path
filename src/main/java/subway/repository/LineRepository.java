@@ -7,7 +7,6 @@ import subway.dao.StationDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -91,29 +90,22 @@ public class LineRepository {
         final Map<Long, StationEntity> downStations = collectStationsToMap(downStationEntities);
 
         return sectionEntities.stream()
-                .map(sectionEntity -> new Section(
-                        sectionEntity.getId(),
-                        new Distance(sectionEntity.getDistance()),
-                        sectionEntity.getStart(),
+                .map(sectionEntity -> sectionEntity.toDomain(
                         upStations.get(sectionEntity.getUpStationId()).toDomain(),
                         downStations.get(sectionEntity.getDownStationId()).toDomain()
                 )).collect(Collectors.toList());
     }
 
-    private Map<Long, StationEntity> collectStationsToMap(final List<StationEntity> upStationEntities) {
-        return upStationEntities.stream()
+    private Map<Long, StationEntity> collectStationsToMap(final List<StationEntity> stationEntities) {
+        return stationEntities.stream()
                 .collect(Collectors.toMap(StationEntity::getId, Function.identity()));
     }
 
     public List<Line> findAll() {
         return lineDao.findAll()
                 .stream()
-                .map(lineEntity -> new Line(
-                        lineEntity.getId(),
-                        lineEntity.getName(),
-                        lineEntity.getColor(),
-                        collectSectionsByLineId(lineEntity.getId())
-                )).collect(Collectors.toList());
+                .map(lineEntity -> lineEntity.toDomain(collectSectionsByLineId(lineEntity.getId())))
+                .collect(Collectors.toList());
     }
 
     public Line findByLineName(final String lineName) {

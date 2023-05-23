@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import subway.domain.vo.Distance;
 
 import java.util.List;
 
@@ -14,9 +15,9 @@ import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class SectionsTest {
-    private static final Distance 거리1 = new Distance(1);
-    private static final Distance 거리10 = new Distance(10);
-    private static final Distance 거리20 = new Distance(20);
+    private static final Distance 거리1 = Distance.from(1);
+    private static final Distance 거리10 = Distance.from(10);
+    private static final Distance 거리20 = Distance.from(20);
 
 
     @Test
@@ -200,7 +201,7 @@ class SectionsTest {
             @Test
             void 새로운_구간의_길이가_기존_구간의_길이가_같을_경우_예외가_발생한다() {
                 // given
-                final Distance 거리10 = new Distance(10);
+                final Distance 거리10 = Distance.from(10);
 
                 final Station 기존_상행역 = new Station("기존_상행역");
                 final Station 기존_하행역 = new Station("기존_하행역");
@@ -235,7 +236,7 @@ class SectionsTest {
         // when
         구간_목록.removeStation(잠실역);
 
-        final List<Section> 구간_목록들 = 구간_목록.getSections();
+        final List<Section> 구간_목록들 = 구간_목록.getOldSections();
 
         // then
         assertThat(구간_목록들)
@@ -262,7 +263,7 @@ class SectionsTest {
         // when
         구간_목록.removeStation(잠실새내역);
 
-        final List<Section> 구간_목록들 = 구간_목록.getSections();
+        final List<Section> 구간_목록들 = 구간_목록.getOldSections();
 
         // then
         assertThat(구간_목록들)

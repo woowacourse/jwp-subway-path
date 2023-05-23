@@ -5,7 +5,7 @@ import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Distance;
+import subway.domain.vo.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
 
@@ -20,16 +20,6 @@ public class SectionRepository {
     public SectionRepository(final SectionDao sectionDao, final StationDao stationDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
-    }
-
-    public Long save(final SectionEntity sectionEntity) {
-        return sectionDao.insert(
-                sectionEntity.getUpStationId(),
-                sectionEntity.getDownStationId(),
-                sectionEntity.getLineId(),
-                sectionEntity.getStart(),
-                sectionEntity.getDistance()
-        );
     }
 
     public void saveAll(final List<SectionEntity> sectionEntities) {

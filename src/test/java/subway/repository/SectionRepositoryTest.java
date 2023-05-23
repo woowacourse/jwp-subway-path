@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import subway.config.RepositoryTestConfig;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.domain.Distance;
+import subway.domain.vo.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
 
@@ -39,7 +39,7 @@ class SectionRepositoryTest extends RepositoryTestConfig {
                 .usingRecursiveComparison()
                 .isEqualTo(new Section(
                         saveSectionId,
-                        new Distance(10),
+                        Distance.from(10),
                         true,
                         new Station(upStationId, "루카"),
                         new Station(downStationId, "헤나")

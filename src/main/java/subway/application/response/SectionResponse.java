@@ -1,13 +1,10 @@
 package subway.application.response;
 
 public class SectionResponse {
-    private Long id;
-    private Integer distance;
-    private StationResponse upStation;
-    private StationResponse downStation;
-
-    public SectionResponse() {
-    }
+    private final Long id;
+    private final Integer distance;
+    private final StationResponse upStation;
+    private final StationResponse downStation;
 
     public SectionResponse(final Long id, final Integer distance, final StationResponse upStation, final StationResponse downStation) {
         this.id = id;

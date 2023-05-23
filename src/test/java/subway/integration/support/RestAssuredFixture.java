@@ -4,7 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
-import static org.springframework.http.MediaType.*;
+import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class RestAssuredFixture {
 
@@ -31,6 +33,21 @@ public class RestAssuredFixture {
 
                 .when()
                         .get(url)
+
+                .then()
+                        .log().all()
+                        .extract();
+    }
+
+    public static ExtractableResponse<Response> get(final String url, final Map<String, Object> params) {
+        return RestAssured
+                .given()
+                        .log().all()
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .params(params)
+
+                .when()
+                       .get(url)
 
                 .then()
                         .log().all()

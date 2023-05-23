@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public abstract class ControllerTestConfig {
 
     @Autowired
@@ -30,8 +30,8 @@ public abstract class ControllerTestConfig {
 
     @AfterEach
     void tearDown() {
-        jdbcTemplate.update("TRUNCATE TABLE STATIONS");
-        jdbcTemplate.update("TRUNCATE TABLE SECTIONS");
-        jdbcTemplate.update("TRUNCATE TABLE LINES");
+        jdbcTemplate.update("TRUNCATE TABLE station");
+        jdbcTemplate.update("TRUNCATE TABLE section");
+        jdbcTemplate.update("TRUNCATE TABLE line");
     }
 }

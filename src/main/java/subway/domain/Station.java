@@ -1,11 +1,13 @@
 package subway.domain;
 
+import subway.domain.vo.Name;
+
 import java.util.Objects;
 
 public class Station {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final Name name;
 
     public Station(final String name) {
         this(null, name);
@@ -14,7 +16,7 @@ public class Station {
     public Station(final Long id, final String name) {
         validate(name);
         this.id = id;
-        this.name = name;
+        this.name = new Name(name);
     }
 
     private void validate(final String name) {
@@ -30,8 +32,8 @@ public class Station {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getNameValue() {
+        return name.getValue();
     }
 
     @Override

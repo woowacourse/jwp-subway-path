@@ -1,5 +1,8 @@
 package subway.domain;
 
+import subway.domain.vo.Color;
+import subway.domain.vo.Name;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -8,8 +11,8 @@ public class Line {
     private static final int NAME_LENGTH = 20;
 
     private final Long id;
-    private final String name;
-    private final String color;
+    private final Name name;
+    private final Color color;
     private final Sections sections;
 
     public Line(final String name, final String color, final Sections sections) {
@@ -19,8 +22,8 @@ public class Line {
     public Line(final Long id, final String name, final String color, final Sections sections) {
         validate(name, color, sections);
         this.id = id;
-        this.name = name;
-        this.color = color;
+        this.name = new Name(name);
+        this.color = new Color(color);
         this.sections = sections;
     }
 
@@ -55,16 +58,16 @@ public class Line {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getNameValue() {
+        return name.getValue();
     }
 
-    public String getColor() {
-        return color;
+    public String getColorValue() {
+        return color.getValue();
     }
 
     public List<Section> getSections() {
-        return sections.getSections();
+        return sections.getOldSections();
     }
 
     @Override

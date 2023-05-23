@@ -6,13 +6,10 @@ import java.util.List;
 
 public class LineResponse {
 
-    private Long id;
-    private String name;
-    private String color;
-    private List<StationResponse> stations;
-
-    public LineResponse() {
-    }
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final List<StationResponse> stations;
 
     public LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations) {
         this.id = id;
@@ -22,7 +19,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(final Line line, final List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+        return new LineResponse(line.getId(), line.getNameValue(), line.getColorValue(), stations);
     }
 
     public Long getId() {

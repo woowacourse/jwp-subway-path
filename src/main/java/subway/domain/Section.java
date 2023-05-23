@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.domain.vo.Distance;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -47,12 +49,16 @@ public class Section {
         }
     }
 
-    public List<Section> separateBy(final Section newSection) {
+    public Section merge(final Section newSection) {
+        return new Section(distance.plus(newSection.distance), isStart, upStation, newSection.downStation);
+    }
+
+    public List<Section> divide(final Section newSection) {
         if (isSameUpStationBy(newSection.upStation)) {
-            return createInnerSectionBaseIsUpStation(newSection);
+            return divideInnerSectionBaseIsUpStation(newSection);
         }
         if (isSameDownStationBy(newSection.downStation)) {
-            return createInnerSectionBaseIsDownStation(newSection);
+            return divideInnerSectionBaseIsDownStation(newSection);
         }
         if (isSameUpStationBy(newSection.downStation)) {
             return createOuterSectionBaseIsUpStation(newSection);
@@ -60,7 +66,8 @@ public class Section {
         return createOuterSectionBaseIsDownStation(newSection);
     }
 
-    private List<Section> createInnerSectionBaseIsUpStation(final Section newSection) {
+    private List<Section> divideInnerSectionBaseIsUpStation(final Section newSection) {
+        validateInnerDistance(newSection);
         final Distance oldUpToNewDownDistance = newSection.distance;
         final Distance oldDownToNewUpDistance = this.distance.minus(oldUpToNewDownDistance);
 
@@ -72,7 +79,14 @@ public class Section {
         return List.of(oldUpToNewDownSection, oldDownToNewUpSection);
     }
 
-    private List<Section> createInnerSectionBaseIsDownStation(final Section newSection) {
+    private void validateInnerDistance(final Section newSection) {
+        if (newSection.distance.isEqualsOrGreaterThan(distance)) {
+            throw new IllegalArgumentException("기존 구간 내부에 들어올 새로운 구간이 더 길 수 없습니다.");
+        }
+    }
+
+    private List<Section> divideInnerSectionBaseIsDownStation(final Section newSection) {
+        validateInnerDistance(newSection);
         final Distance oldDownToNewUpDistance = newSection.distance;
         final Distance oldUpToNewDownDistance = this.distance.minus(oldDownToNewUpDistance);
 
