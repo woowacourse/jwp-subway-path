@@ -1,57 +1,43 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.application.request.StationRequest;
+import subway.application.response.StationResponse;
+import subway.domain.station.Station;
+import subway.persistence.repository.StationRepository;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private final StationDao stationDao;
 
-    public StationService(final StationDao stationDao) {
-        this.stationDao = stationDao;
+    private final StationRepository stationRepository;
+
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(final StationRequest stationRequest) {
-        final Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public long saveStation(final StationRequest stationRequest) {
+        return stationRepository.saveSection(stationRequest);
     }
 
     public StationResponse findStationResponseById(final Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        final Station station = stationRepository.findStationById(id);
+        return new StationResponse(station.getId(), station.getName().getValue());
     }
 
     public List<StationResponse> findAllStationResponses() {
-        final List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
+        return stationRepository.findAllStations().stream()
+                .map(station -> new StationResponse(station.getId(), station.getName().getValue()))
                 .collect(Collectors.toList());
     }
 
     public void updateStation(final Long id, final StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        stationRepository.updateStation(id, stationRequest);
     }
 
     public void deleteStationById(final Long id) {
-        stationDao.deleteById(id);
-    }
-
-    public Station findStationByName(final String name) {
-        return stationDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
-    }
-
-    public List<Station> findStationsById(final List<Long> stationIds) {
-        if (stationIds.isEmpty()) {
-            return new LinkedList<>();
-        }
-        return stationDao.findAllById(stationIds);
+        stationRepository.deleteStationById(id);
     }
 }

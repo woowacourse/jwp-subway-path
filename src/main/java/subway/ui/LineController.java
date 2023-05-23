@@ -4,14 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.SectionRequest;
-import subway.dto.StationRequest;
+import subway.application.request.LineRequest;
+import subway.application.request.SectionRequest;
+import subway.application.request.StationRequest;
+import subway.application.response.LineResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -25,9 +24,9 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody final LineRequest lineRequest) {
-        final LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    public ResponseEntity<Void> createLine(@RequestBody final LineRequest lineRequest) {
+        final long createdId = lineService.saveLine(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + createdId)).build();
     }
 
     @GetMapping
@@ -63,10 +62,5 @@ public class LineController {
     public ResponseEntity<Void> unregisterStation(@PathVariable final Long lineId, @Valid @RequestBody final StationRequest request) {
         lineService.unregisterStation(lineId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

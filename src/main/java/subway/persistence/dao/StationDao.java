@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -7,51 +7,50 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import org.springframework.stereotype.Component;
+import subway.persistence.entity.StationEntity;
 
-import javax.sql.DataSource;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Component
 public class StationDao {
-    private final JdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private static final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
-        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
-    public Station insert(final Station station) {
+    public long insert(final StationEntity station) {
         final SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        final Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Station> findAll() {
+    public List<StationEntity> findAll() {
         final String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(final Long id) {
+    public StationEntity findById(final Long id) {
         final String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(final Station newStation) {
+    public void update(final StationEntity newStation) {
         final String sql = "update STATION set name = ? where id = ?";
         jdbcTemplate.update(sql, newStation.getName(), newStation.getId());
     }
@@ -61,12 +60,16 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Optional<Station> findByName(final String name) {
+    public Optional<StationEntity> findByName(final String name) {
         final String sql = "select id, name from STATION where name = ?";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
     }
 
-    public List<Station> findAllById(final List<Long> stationIds) {
+    public List<StationEntity> findAllById(final List<Long> stationIds) {
+        if (stationIds.isEmpty()) {
+            return new LinkedList<>();
+        }
+
         final String sql = "select id, name from STATION where id IN (:id)";
         final MapSqlParameterSource source = new MapSqlParameterSource("id", stationIds);
         return namedParameterJdbcTemplate.query(sql, source, rowMapper);

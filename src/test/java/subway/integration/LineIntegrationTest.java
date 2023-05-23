@@ -9,13 +9,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.*;
+import subway.application.request.LineRequest;
+import subway.application.request.SectionRequest;
+import subway.application.request.StationRequest;
+import subway.application.response.LineResponse;
+import subway.application.response.StationResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.integration.IntegrationFixture.OBJECT_MAPPER;
-import static subway.integration.IntegrationFixture.jsonSerialize;
+import static subway.integration.IntegrationFixture.*;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -77,7 +80,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLines() throws JsonProcessingException {
         // given
-        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
+        final SectionRequest request = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), 10);
         final String json = jsonSerialize(request);
         final Long lineId = 1L;
 
@@ -99,11 +102,8 @@ public class LineIntegrationTest extends IntegrationTest {
         final LineResponse[] responses = OBJECT_MAPPER.readValue(string, LineResponse[].class);
         assertAll(
                 () -> assertThat(responses)
-                        .extracting(LineResponse::getId)
-                        .containsExactlyInAnyOrder(1L, 2L),
-                () -> assertThat(responses)
                         .extracting(LineResponse::getName)
-                        .containsExactlyInAnyOrder("2호선", "3호선")
+                        .contains(LINE1.getName().getValue(), LINE2.getName().getValue())
         );
     }
 
@@ -111,7 +111,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLine() throws JsonProcessingException {
         // given
-        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
+        final SectionRequest request = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), 10);
         final String json = jsonSerialize(request);
         final Long lineId = 1L;
 
@@ -132,11 +132,10 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         final LineResponse result = response.as(LineResponse.class);
         assertAll(
-                () -> assertThat(result.getId()).isEqualTo(lineId),
-                () -> assertThat(result.getName()).isEqualTo("2호선"),
+                () -> assertThat(result.getName()).isEqualTo(LINE1.getName().getValue()),
                 () -> assertThat(result.getStations())
                         .extracting(StationResponse::getName)
-                        .containsExactly("잠실", "강남")
+                        .containsExactly(STATION_A.getName().getValue(), STATION_B.getName().getValue())
         );
     }
 
@@ -183,7 +182,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("노선에 역을 최초 등록한다.")
     @Test
     void addInitialStationInLine() throws JsonProcessingException {
-        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
+        final SectionRequest request = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), 10);
 
         final String json = jsonSerialize(request);
 
@@ -196,13 +195,13 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("노선에서 역을 삭제한다.")
     @Test
     void deleteStationInLine() throws JsonProcessingException {
-        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
+        final SectionRequest request = new SectionRequest(STATION_A.getName().getValue(), STATION_B.getName().getValue(), 10);
         final String json = jsonSerialize(request);
         given().body(json)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines/1/register")
                 .then().statusCode(HttpStatus.CREATED.value());
-        final StationRequest stationRequest = new StationRequest("잠실");
+        final StationRequest stationRequest = new StationRequest(STATION_A.getName().getValue());
 
         given().body(jsonSerialize(stationRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

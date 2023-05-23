@@ -3,8 +3,8 @@ package subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.StationService;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.application.request.StationRequest;
+import subway.application.response.StationResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -21,9 +21,9 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@Valid @RequestBody final StationRequest stationRequest) {
-        final StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/lines/stations/" + station.getId())).body(station);
+    public ResponseEntity<Void> createStation(@Valid @RequestBody final StationRequest stationRequest) {
+        final long createdId = stationService.saveStation(stationRequest);
+        return ResponseEntity.created(URI.create("/lines/stations/" + createdId)).build();
     }
 
     @GetMapping

@@ -1,12 +1,12 @@
-package subway.domain;
+package subway.domain.station;
 
 import java.util.Objects;
 
 public class Station {
     private final Long id;
-    private final String name;
+    private final StationName name;
 
-    public Station(final Long id, final String name) {
+    public Station(final Long id, final StationName name) {
         this.id = id;
         this.name = name;
     }
@@ -15,7 +15,7 @@ public class Station {
         this(id, null);
     }
 
-    public Station(final String name) {
+    public Station(final StationName name) {
         this(null, name);
     }
 
@@ -23,7 +23,7 @@ public class Station {
         return id;
     }
 
-    public String getName() {
+    public StationName getName() {
         return name;
     }
 

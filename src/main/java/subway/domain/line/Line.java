@@ -1,6 +1,9 @@
-package subway.domain;
+package subway.domain.line;
 
-import java.util.LinkedList;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
+
 import java.util.Objects;
 
 public class Line {
@@ -15,24 +18,8 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line(final Long id, final LineName name) {
-        this(id, name, new Sections(new LinkedList<>()));
-    }
-
     public Line(final LineName name, final Sections sections) {
         this(null, name, sections);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LineName getName() {
-        return name;
-    }
-
-    public Sections getSections() {
-        return sections;
     }
 
     public Line addSection(final Section newSection) {
@@ -59,6 +46,22 @@ public class Line {
         }
         final Sections removedSections = sections.removeCentral(station);
         return new Line(name, removedSections);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LineName getName() {
+        return name;
+    }
+
+    public Sections getSections() {
+        return sections;
+    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 
     @Override

@@ -1,0 +1,11 @@
+version: "3"
+services:
+  db:
+    image: oscarfonts/h2:latest
+    restart: always
+    ports:
+      - "1522:1521"
+    environment:
+      H2_OPTIONS: -ifNotExists
+    volumes:
+      - ./db/:/opt/h2-data
