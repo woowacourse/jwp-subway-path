@@ -9,7 +9,6 @@ import subway.service.LineService;
 import subway.service.SectionService;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -63,10 +62,5 @@ public class LineController {
     public ResponseEntity<Void> deleteSection(@PathVariable Long id, @PathVariable Long stationId) {
         sectionService.deleteSection(id, stationId);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }
