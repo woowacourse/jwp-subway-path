@@ -53,6 +53,12 @@ public class Route {
         }
     }
 
+    private void validateStations(final Station startStation, final Station endStation) {
+        if (startStation.equals(endStation)) {
+            throw new DuplicateStationNameException("같은 역으로 경로를 조회할 수 없습니다.");
+        }
+    }
+
     public List<Station> getPath(final Station startStation, final Station endStation) {
         validateStations(startStation, endStation);
 
@@ -60,12 +66,6 @@ public class Route {
             return route.getPath(startStation, endStation).getVertexList();
         } catch (IllegalArgumentException exception) {
             throw new NotFoundStationException("출발역 또는 도착역이 존재하지 않습니다.");
-        }
-    }
-
-    private void validateStations(final Station startStation, final Station endStation) {
-        if (startStation.equals(endStation)) {
-            throw new DuplicateStationNameException("같은 역으로 경로를 조회할 수 없습니다.");
         }
     }
 

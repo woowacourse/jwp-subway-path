@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
+import subway.domain.DijkstraStrategy;
 import subway.domain.Distance;
 import subway.domain.Fee;
-import subway.domain.Route;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.DistanceDto;
@@ -20,10 +20,13 @@ public class RouteService {
 
     private final SectionDao sectionDao;
     private final SectionsMapper sectionsMapper;
+    private final DijkstraStrategy dijkstraStrategy;
 
-    public RouteService(final SectionDao sectionDao, final SectionsMapper sectionsMapper) {
+    public RouteService(final SectionDao sectionDao, final SectionsMapper sectionsMapper,
+                        final DijkstraStrategy dijkstraStrategy) {
         this.sectionDao = sectionDao;
         this.sectionsMapper = sectionsMapper;
+        this.dijkstraStrategy = dijkstraStrategy;
     }
 
     public RouteDto getFeeByStations(final String startStationName, final String endStationName) {
@@ -33,10 +36,8 @@ public class RouteService {
         Station startStation = new Station(startStationName);
         Station endStation = new Station(endStationName);
 
-        Route route = new Route(sections.getSections());
-
-        List<Station> shortestPath = route.getPath(startStation, endStation);
-        Distance distance = new Distance(route.getPathWeight(startStation, endStation));
+        List<Station> shortestPath = dijkstraStrategy.getShortestPath(sections, startStation, endStation);
+        Distance distance = dijkstraStrategy.getShortestPathWeight(sections, startStation, endStation);
 
         Fee fee = Fee.toDistance(distance.getDistance());
 
