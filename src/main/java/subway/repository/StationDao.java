@@ -53,6 +53,11 @@ public class StationDao {
         }
     }
 
+    public boolean isNotExist(final long id) {
+        final String sql = "SELECT COUNT(*) FROM station WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id) == 0;
+    }
+
     public Long findIdByName(final String name) {
         final String sql = "SELECT id FROM station WHERE name = ?";
         try {

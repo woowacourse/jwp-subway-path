@@ -172,7 +172,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void upper_mid() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "석촌", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 1);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
@@ -191,10 +191,10 @@ public class LineIntegrationTest extends IntegrationTest {
                     () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                     () -> assertThat(documentContext.read("$.id", Long.class)).isEqualTo(lineId),
                     () -> assertThat(documentContext.read("$.stations.size()", Integer.class)).isEqualTo(4),
-                    () -> assertThat(documentContext.read("$.stations[0].name", String.class))
-                            .isEqualTo(request.getStandardStationName()),
-                    () -> assertThat(documentContext.read("$.stations[1].name", String.class))
-                            .isEqualTo(request.getNewStationName())
+                    () -> assertThat(documentContext.read("$.stations[0].id", Long.class))
+                            .isEqualTo(request.getStandardStationId()),
+                    () -> assertThat(documentContext.read("$.stations[1].id", Long.class))
+                            .isEqualTo(request.getNewStationId())
             );
         }
 
@@ -203,7 +203,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void upper_end() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "종합운동장", "석촌", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 3L, 4L, 1);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
@@ -222,10 +222,10 @@ public class LineIntegrationTest extends IntegrationTest {
                     () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                     () -> assertThat(documentContext.read("$.id", Long.class)).isEqualTo(lineId),
                     () -> assertThat(documentContext.read("$.stations.size()", Integer.class)).isEqualTo(4),
-                    () -> assertThat(documentContext.read("$.stations[2].name", String.class))
-                            .isEqualTo(request.getStandardStationName()),
-                    () -> assertThat(documentContext.read("$.stations[3].name", String.class))
-                            .isEqualTo(request.getNewStationName())
+                    () -> assertThat(documentContext.read("$.stations[2].id", Long.class))
+                            .isEqualTo(request.getStandardStationId()),
+                    () -> assertThat(documentContext.read("$.stations[3].id", Long.class))
+                            .isEqualTo(request.getNewStationId())
             );
         }
 
@@ -234,7 +234,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void down_mid() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, "종합운동장", "석촌", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, 3L, 4L, 1);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
@@ -253,10 +253,10 @@ public class LineIntegrationTest extends IntegrationTest {
                     () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                     () -> assertThat(documentContext.read("$.id", Long.class)).isEqualTo(lineId),
                     () -> assertThat(documentContext.read("$.stations.size()", Integer.class)).isEqualTo(4),
-                    () -> assertThat(documentContext.read("$.stations[2].name", String.class))
-                            .isEqualTo(request.getNewStationName()),
-                    () -> assertThat(documentContext.read("$.stations[3].name", String.class))
-                            .isEqualTo(request.getStandardStationName())
+                    () -> assertThat(documentContext.read("$.stations[2].id", Long.class))
+                            .isEqualTo(request.getNewStationId()),
+                    () -> assertThat(documentContext.read("$.stations[3].id", Long.class))
+                            .isEqualTo(request.getStandardStationId())
             );
         }
 
@@ -265,7 +265,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void down_end() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실", "석촌", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, 1L, 4L, 1);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
@@ -284,10 +284,10 @@ public class LineIntegrationTest extends IntegrationTest {
                     () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                     () -> assertThat(documentContext.read("$.id", Long.class)).isEqualTo(lineId),
                     () -> assertThat(documentContext.read("$.stations.size()", Integer.class)).isEqualTo(4),
-                    () -> assertThat(documentContext.read("$.stations[0].name", String.class))
-                            .isEqualTo(request.getNewStationName()),
-                    () -> assertThat(documentContext.read("$.stations[1].name", String.class))
-                            .isEqualTo(request.getStandardStationName())
+                    () -> assertThat(documentContext.read("$.stations[0].id", Long.class))
+                            .isEqualTo(request.getNewStationId()),
+                    () -> assertThat(documentContext.read("$.stations[1].id", Long.class))
+                            .isEqualTo(request.getStandardStationId())
             );
         }
 
@@ -296,7 +296,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void invalid_line_id() {
             // given
             final long lineId = 4321L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "석촌", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 1);
 
             // when, then
             RestAssured
@@ -313,7 +313,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void station_not_found() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "디투", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 11L, 1);
 
             // when, then
             RestAssured
@@ -330,7 +330,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void station_already_exist() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "종합운동장", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 3L, 1);
 
             // when, then
             RestAssured
@@ -347,7 +347,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void over_distance() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "석촌", 111);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 111);
 
             // when, then
             RestAssured
@@ -364,7 +364,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void subway_direction_is_null() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(null, "잠실", "석촌", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(null, 1L, 4L, 1);
 
             // when, then
             RestAssured
@@ -377,11 +377,11 @@ public class LineIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        @DisplayName("기준 지하철 역이 blank 인 경우")
-        void standard_station_is_blank() {
+        @DisplayName("기준 지하철 역이 null 인 경우")
+        void standard_station_is_null() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, " ", "석촌", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, null, 4L, 1);
 
             // when, then
             RestAssured
@@ -394,11 +394,11 @@ public class LineIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        @DisplayName("추가되는 지하철 역이 blank 인 경우")
-        void new_station_is_blank() {
+        @DisplayName("추가되는 지하철 역이 null 인 경우")
+        void new_station_is_null() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", " ", 1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, null, 1);
 
             // when, then
             RestAssured
@@ -415,7 +415,7 @@ public class LineIntegrationTest extends IntegrationTest {
         void distance_is_negative() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "석촌", -1);
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, -1);
 
             // when, then
             RestAssured

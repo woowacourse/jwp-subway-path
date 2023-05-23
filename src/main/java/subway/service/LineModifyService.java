@@ -10,6 +10,7 @@ import subway.domain.LineSections;
 import subway.entity.SectionDetailEntity;
 import subway.entity.SectionEntity;
 import subway.exception.DuplicatedStationNameException;
+import subway.exception.StationNotFoundException;
 import subway.repository.LineDao;
 import subway.repository.SectionDao;
 import subway.repository.StationDao;
@@ -35,9 +36,9 @@ public class LineModifyService {
 
     @Transactional
     public LineResponse registerStation(final Long lineId, final StationRegisterInLineRequest request) {
-        final long standardStationId = stationDao.findIdByName(request.getStandardStationName());
-        final long newStationId = stationDao.findIdByName(request.getNewStationName());
-        validateNewStationNotExistInLine(lineId, newStationId);
+        final long standardStationId = request.getStandardStationId();
+        final long newStationId = request.getNewStationId();
+        validateNewStation(lineId, newStationId);
         final int distance = request.getDistance();
         if (request.getDirection() == SubwayDirection.UP) {
             final List<SectionDetailEntity> registeredUpperEntity = registerUpperStation(new SectionEntity(lineId, distance, standardStationId, newStationId));
@@ -47,9 +48,12 @@ public class LineModifyService {
         return convertToResponse(registeredDownEntity);
     }
 
-    private void validateNewStationNotExistInLine(final long lineId, final long stationId) {
+    private void validateNewStation(final long lineId, final long stationId) {
         if (sectionDao.isStationExistInLine(lineId, stationId)) {
             throw new DuplicatedStationNameException();
+        }
+        if (stationDao.isNotExist(stationId)) {
+            throw new StationNotFoundException();
         }
     }
 
