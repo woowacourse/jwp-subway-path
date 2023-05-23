@@ -19,8 +19,7 @@ public class PathService {
 
     public PathResponse findShortestPath(final Long departureId, final Long arrivalId) {
         final List<Line> lines = lineRepository.findLines();
-        final List<Station> stations = stationService.findAllStation();
-        final PathFinder pathFinder = PathFinder.generate(stations, lines);
+        final PathFinder pathFinder = PathFinder.generate(lines);
 
         final Station departure = stationService.findStationById(departureId);
         final Station arrival = stationService.findStationById(arrivalId);

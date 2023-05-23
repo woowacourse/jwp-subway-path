@@ -82,3 +82,6 @@ Content-Type: application/json
 
 ### GET /lines
 GET http://localhost:8080/lines
+
+### GET /path
+GET http://localhost:8080/path?departure=4&arrival=2

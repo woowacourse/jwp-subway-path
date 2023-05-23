@@ -14,10 +14,11 @@ public class PathFinder {
         this.subwayMap = subwayGraph;
     }
 
-    public static PathFinder generate(final List<Station> stations, final List<Line> lines) {
+    public static PathFinder generate(final List<Line> lines) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        stations.forEach(graph::addVertex);
+        lines.forEach(line -> line.getSectionMap().getAllStations()
+                .forEach(graph::addVertex));
 
         for (final Line line : lines) {
             line.getSections().

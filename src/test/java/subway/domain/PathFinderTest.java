@@ -11,17 +11,17 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class PathFinderTest {
 
-    private final List<Station> stations = List.of(Fixture.stationA, Fixture.stationB, Fixture.stationC, Fixture.stationD, Fixture.stationE);
+    //private final List<Station> stations = List.of(Fixture.stationA, Fixture.stationB, Fixture.stationC, Fixture.stationD, Fixture.stationE);
     private final List<Line> lines = List.of(Fixture.lineABC, Fixture.lineBDE);
 
     @Test
     void generateSubwayMap() {
-        assertDoesNotThrow(() -> PathFinder.generate(stations, lines));
+        assertDoesNotThrow(() -> PathFinder.generate(lines));
     }
 
     @Test
     void findPath() {
-        final PathFinder pathFinder = PathFinder.generate(stations, lines);
+        final PathFinder pathFinder = PathFinder.generate(lines);
         final Path path = pathFinder.findPath(Fixture.stationA, Fixture.stationE);
 
         assertAll(

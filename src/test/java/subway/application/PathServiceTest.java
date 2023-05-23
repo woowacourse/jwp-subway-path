@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.Fixture;
 import subway.domain.Line;
 import subway.domain.LineRepository;
-import subway.domain.Station;
 import subway.dto.PathResponse;
 
 import java.util.List;
@@ -32,10 +31,8 @@ class PathServiceTest {
     @DisplayName("최단 경로 및 거리, 요금 반환 기능")
     void findShortestPath() {
         // given
-        final List<Station> stations = List.of(Fixture.stationA, Fixture.stationB, Fixture.stationC, Fixture.stationD, Fixture.stationE);
         final List<Line> lines = List.of(Fixture.lineABC, Fixture.lineBDE);
         given(lineRepository.findLines()).willReturn(lines);
-        given(stationService.findAllStation()).willReturn(stations);
         given(stationService.findStationById(1L)).willReturn(Fixture.stationA);
         given(stationService.findStationById(5L)).willReturn(Fixture.stationE);
 
