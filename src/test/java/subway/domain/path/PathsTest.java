@@ -166,20 +166,4 @@ class PathsTest {
         //then
         assertThat(stations).hasSize(4);
     }
-
-    @DisplayName("총 거리를 계산할 수 있다")
-    @Test
-    void getTotalDistance() {
-        //given
-        final Path path1 = new Path(station, station2, 3);
-        final Path path2 = new Path(station2, station3, 3);
-        final Path path3 = new Path(station3, station4, 3);
-        final Paths paths = new Paths(List.of(path2, path3, path1));
-
-        //when
-        final long totalDistance = paths.getTotalDistance();
-
-        //then
-        assertThat(totalDistance).isEqualTo(9);
-    }
 }

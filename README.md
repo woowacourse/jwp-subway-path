@@ -17,6 +17,13 @@
     - 거리가 10km 이내: 1250원
     - 10km 초과 50km 이하: 100원/5km
     - 50km 초과: 100원/8km
+- [x] 노선별 추가 요금 정책 반영
+    - [x] 노선별 추가 요금을 최종 요금에 더한다
+    - [x] 여러 노선의 추가 요금 중 가장 높은 요금만 더한다
+- [x] 연령별 요금 할인 정책 반영
+    - [x] 청소년: 운임에서 350원을 공제한 금액의 20% 할인
+    - [x] 어린이: 운임에서 350원을 공제한 금액의 50% 할인
+- [x] 경로 조회 API 변경
 
 ## API
 
@@ -28,7 +35,8 @@
     - DELETE /lines/{id}/stations/{station-id}
     - Response: 204
 - [x] 최단 경로 조회
-    - GET /paths/start/{start-station-id}/end/{end-station-id}
+    - GET /paths/start/{start-station-id}/end/{end-station-id}?age={int age}
+    - Request: Query Param {int age}
     - Response: 200, {총 거리 정보, 총 요금 정보, {{시작역, 다음역, 거리}, ...}}
 
 ## 도메인
@@ -43,6 +51,7 @@
     - [x] 역을 제거할 수 있다
         - 남은 역이 1개일 경우 같이 제거한다
         - 역이 제거되면 재배치 되어야 한다
+    - [x] 요금 정보를 가진다
 - [x] 최단거리
     - [x] 모든 노선의 경로들을 가진다
     - [x] 출발역과 도착역의 최단 경로를 구할 수 있다

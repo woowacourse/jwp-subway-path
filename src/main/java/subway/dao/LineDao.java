@@ -21,7 +21,8 @@ public class LineDao {
             new Line(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("additionalFare")
             );
 
     public LineDao(final JdbcTemplate jdbcTemplate) {
@@ -36,25 +37,26 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("additionalFare", line.getAdditionalFare());
 
         try {
             final Long lineId = insertAction.executeAndReturnKey(params).longValue();
 
-            return new Line(lineId, line.getName(), line.getColor());
+            return new Line(lineId, line.getName(), line.getColor(), line.getAdditionalFare());
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException("노선 이름은 중복될 수 없습니다.");
         }
     }
 
     public List<Line> findAll() {
-        final String sql = "SELECT id, name, color FROM line";
+        final String sql = "SELECT id, name, color, additionalFare FROM line";
 
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Line findById(final Long id) {
         try {
-            final String sql = "SELECT id, name, color FROM line WHERE id = ?";
+            final String sql = "SELECT id, name, color, additionalFare FROM line WHERE id = ?";
 
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
@@ -63,9 +65,9 @@ public class LineDao {
     }
 
     public void update(final Line line) {
-        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
+        final String sql = "UPDATE line SET name = ?, color = ?, additionalFare = ? WHERE id = ?";
 
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getAdditionalFare(), line.getId());
     }
 
     public void deleteById(final Long id) {

@@ -43,7 +43,7 @@ public final class Path {
     }
 
     public boolean isContinuous(final Path next) {
-        if (this.equals(next)) {
+        if (equals(next)) {
             return false;
         }
 

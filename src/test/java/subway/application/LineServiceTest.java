@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
+import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
@@ -48,5 +49,18 @@ class LineServiceTest {
         assertAll(
                 () -> assertThat(lineResponse.getPaths()).hasSize(1),
                 () -> assertThat(lineResponse.getPaths().get(0).getDistance()).isEqualTo(6));
+    }
+
+    @DisplayName("추가 요금의 노선을 저장할 수 있다")
+    @Test
+    void saveLine() {
+        //given
+        lineService.saveLine(new LineRequest("1호선", "blue", 500));
+
+        //when
+        final Line line = lineService.findAllLines().get(0);
+
+        //then
+        assertThat(line.getAdditionalFare()).isEqualTo(500);
     }
 }

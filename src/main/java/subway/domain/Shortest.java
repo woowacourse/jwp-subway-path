@@ -2,12 +2,11 @@ package subway.domain;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.domain.path.Path;
 import subway.domain.path.PathEdgeProxy;
 import subway.domain.path.Paths;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class Shortest {
 
@@ -17,27 +16,26 @@ public final class Shortest {
         this.graph = graph;
     }
 
-    public static Shortest from(final List<Paths> allPaths) {
+    public static Shortest from(final List<Line> allLines) {
         final WeightedMultigraph<Station, PathEdgeProxy> graph = new WeightedMultigraph<>(PathEdgeProxy.class);
-        for (final Paths paths : allPaths) {
+        for (final Line line : allLines) {
+            final Paths paths = line.getPaths();
             paths.getStations().forEach(graph::addVertex);
             paths.toList()
-                    .forEach(path -> graph.addEdge(path.getUp(), path.getDown(), PathEdgeProxy.from(path)));
+                    .forEach(path -> {
+                        final PathEdgeProxy edge = new PathEdgeProxy(path, line.getAdditionalFare());
+                        graph.addEdge(path.getUp(), path.getDown(), edge);
+                    });
         }
 
         return new Shortest(new DijkstraShortestPath<>(graph));
     }
 
-    public Paths findShortest(final Station start, final Station end) {
+    public List<PathEdgeProxy> findShortest(final Station start, final Station end) {
         try {
-            final List<PathEdgeProxy> result = graph.getPath(start, end).getEdgeList();
-
-            final List<Path> paths = result.stream()
-                    .map(PathEdgeProxy::toPath)
-                    .collect(Collectors.toList());
-            return new Paths(paths);
-        } catch (final Exception e) {
-            return new Paths();
+            return graph.getPath(start, end).getEdgeList();
+        } catch (final NullPointerException | IllegalArgumentException e) {
+            return Collections.emptyList();
         }
     }
 }

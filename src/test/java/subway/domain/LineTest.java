@@ -40,4 +40,20 @@ class LineTest {
         //then
         assertThat(line.getPathsSize()).isOne();
     }
+
+    @DisplayName("노선은 추가 요금을 가질 수 있다")
+    @Test
+    void createLine2() {
+        assertDoesNotThrow(() -> new Line(1L, "1호선", "red", 400));
+    }
+
+    @DisplayName("추가 요금을 책정하지 않으면 0원으로 된다")
+    @Test
+    void createLine3() {
+        //given
+        final Line line = new Line("1호선", "blue");
+
+        //when, then
+        assertThat(line.getAdditionalFare()).isZero();
+    }
 }

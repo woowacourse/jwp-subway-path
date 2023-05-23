@@ -31,27 +31,27 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getAdditionalFare()));
 
         return LineResponse.from(persistLine);
     }
 
-    public List<LineResponse> findAllLines() {
-        final List<Line> lines = lineDao.findAll();
-
-        return lines.stream()
+    public List<Line> findAllLines() {
+        return lineDao.findAll().stream()
                 .map(line -> {
                     final Paths paths = pathDao.findByLineId(line.getId());
-                    return LineResponse.of(line, paths);
+
+                    return new Line(line.getId(), line.getName(), line.getColor(), line.getAdditionalFare(), paths);
                 })
                 .collect(Collectors.toList());
     }
 
     public LineResponse findLineById(final Long id) {
-        final Line line = lineDao.findById(id);
+        Line line = lineDao.findById(id);
         final Paths paths = pathDao.findByLineId(id);
 
-        return LineResponse.of(line, paths);
+        line = new Line(line.getId(), line.getName(), line.getColor(), line.getAdditionalFare(), paths);
+        return LineResponse.from(line);
     }
 
     @Transactional

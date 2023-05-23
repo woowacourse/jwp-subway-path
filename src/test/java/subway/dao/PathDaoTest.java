@@ -13,7 +13,6 @@ import subway.domain.path.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 @JdbcTest
@@ -63,34 +62,5 @@ class PathDaoTest {
 
         //then
         assertThat(persisted.getOrdered()).hasSize(1);
-    }
-
-    @DisplayName("모든 노선의 경로들을 가져올 수 있다")
-    @Test
-    void findAll() {
-        //given
-        final Station station1 = stationDao.insert(new Station("서면역"));
-        final Station station2 = stationDao.insert(new Station("부산역"));
-        final Station commonStation = stationDao.insert(new Station("해운대역"));
-
-        final Path path1 = new Path(station1, commonStation, 4);
-        final Path path2 = new Path(commonStation, station2, 4);
-
-        final Paths paths1 = new Paths(List.of(path1));
-        final Paths paths2 = new Paths(List.of(path2));
-
-        pathDao.save(paths1, 1L);
-        pathDao.save(paths2, 2L);
-
-        //when
-        final List<Paths> allPaths = pathDao.findAll();
-
-        //then
-        assertSoftly(soft -> {
-            soft.assertThat(allPaths).hasSize(2);
-            soft.assertThat(allPaths)
-                    .map(Paths::toList)
-                    .allSatisfy(paths -> assertThat(paths).hasSize(1));
-        });
     }
 }

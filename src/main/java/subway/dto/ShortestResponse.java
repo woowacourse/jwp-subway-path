@@ -1,41 +1,38 @@
 package subway.dto;
 
-import subway.domain.FareStrategy;
-import subway.domain.path.Paths;
+import subway.domain.fare.FareInfo;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public final class ShortestResponse {
-    private final Long totalDistance;
+    private final int totalDistance;
     private final int totalCost;
     private final List<PathResponse> paths;
 
-    public ShortestResponse(final Long totalDistance, final int totalCost, final List<PathResponse> paths) {
+    public ShortestResponse(final int totalDistance, final int totalCost, final List<PathResponse> paths) {
         this.totalDistance = totalDistance;
         this.totalCost = totalCost;
         this.paths = paths;
     }
 
-    public static ShortestResponse of(final Paths paths, final FareStrategy fareStrategy) {
-        final long distance = paths.getTotalDistance();
-        final int fare = fareStrategy.calculate(distance);
-        final List<PathResponse> pathResponses = paths.toList().stream()
+    public static ShortestResponse of(final FareInfo fareInfo) {
+        final List<PathResponse> pathResponses = fareInfo.getShortest().stream()
                 .map(PathResponse::from)
                 .collect(Collectors.toUnmodifiableList());
 
-        return new ShortestResponse(distance, fare, pathResponses);
+        return new ShortestResponse(fareInfo.getDistance(), fareInfo.getFare(), pathResponses);
     }
 
-    public Long getTotalDistance() {
+    public int getTotalDistance() {
         return totalDistance;
-    }
-
-    public List<PathResponse> getPaths() {
-        return paths;
     }
 
     public int getTotalCost() {
         return totalCost;
+    }
+
+    public List<PathResponse> getPaths() {
+        return paths;
     }
 }

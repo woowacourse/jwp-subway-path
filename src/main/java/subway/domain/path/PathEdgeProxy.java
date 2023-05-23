@@ -5,13 +5,11 @@ import subway.domain.Station;
 
 public final class PathEdgeProxy extends DefaultWeightedEdge {
     private final Path path;
+    private final int additionalFare;
 
-    public PathEdgeProxy(final Path path) {
+    public PathEdgeProxy(final Path path, final int additionalFare) {
+        this.additionalFare = additionalFare;
         this.path = path;
-    }
-
-    public static PathEdgeProxy from(final Path path) {
-        return new PathEdgeProxy(path);
     }
 
     public Long getId() {
@@ -35,6 +33,10 @@ public final class PathEdgeProxy extends DefaultWeightedEdge {
     @Override
     public Station getTarget() {
         return path.getDown();
+    }
+
+    public int getAdditionalFare() {
+        return additionalFare;
     }
 
     public Path toPath() {
