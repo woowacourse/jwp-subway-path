@@ -6,7 +6,6 @@ import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
-import subway.dto.SectionResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -29,19 +28,19 @@ public class LineController {
     }
 
     @PostMapping("/{id}/stations/init")
-    public ResponseEntity<SectionResponse> createInitialSection(@PathVariable final Long id,
-                                                                @RequestBody final SectionRequest sectionRequest) {
-        final SectionResponse section = lineService.saveInitialSection(id, sectionRequest);
-        final URI uri = URI.create("/lines/" + id + "/stations/init/" + section.getId());
-        return ResponseEntity.created(uri).body(section);
+    public ResponseEntity<LineResponse> createInitialSection(@PathVariable final Long id,
+                                                             @RequestBody final SectionRequest sectionRequest) {
+        final LineResponse response = lineService.saveInitialSection(id, sectionRequest);
+        final URI uri = URI.create("/lines/" + id + "/stations/init/" + response.getId());
+        return ResponseEntity.created(uri).body(response);
     }
 
     @PostMapping("/{id}/stations")
-    public ResponseEntity<SectionResponse> createSection(@PathVariable final Long id,
-                                                         @RequestBody final SectionRequest sectionRequest) {
-        final SectionResponse section = lineService.saveSection(id, sectionRequest);
-        final URI uri = URI.create("/lines/" + id + "/stations/" + section.getId());
-        return ResponseEntity.created(uri).body(section);
+    public ResponseEntity<LineResponse> createSection(@PathVariable final Long id,
+                                                      @RequestBody final SectionRequest sectionRequest) {
+        final LineResponse response = lineService.saveSection(id, sectionRequest);
+        final URI uri = URI.create("/lines/" + id + "/stations/" + response.getId());
+        return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping

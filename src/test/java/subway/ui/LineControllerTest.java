@@ -10,8 +10,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
+import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
-import subway.dto.SectionResponse;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -37,8 +39,8 @@ class LineControllerTest {
         // given
         final SectionRequest sectionRequest = new SectionRequest(1L, 2L, 10);
         final String request = objectMapper.writeValueAsString(sectionRequest);
-        final SectionResponse sectionResponse = new SectionResponse(1L, 1L, 2L, 10);
-        given(lineService.saveInitialSection(anyLong(), any())).willReturn(sectionResponse);
+        final LineResponse lineResponse = new LineResponse(1L, "2호선", "green", List.of("A", "B", "C"));
+        given(lineService.saveInitialSection(anyLong(), any())).willReturn(lineResponse);
 
         // when & then
         mockMvc.perform(post("/lines/1/stations/init")
@@ -56,8 +58,8 @@ class LineControllerTest {
         // given
         final SectionRequest sectionRequest = new SectionRequest(1L, 2L, 10);
         final String request = objectMapper.writeValueAsString(sectionRequest);
-        final SectionResponse sectionResponse = new SectionResponse(1L, 1L, 2L, 10);
-        given(lineService.saveSection(anyLong(), any())).willReturn(sectionResponse);
+        final LineResponse lineResponse = new LineResponse(1L, "2호선", "green", List.of("A", "B", "C"));
+        given(lineService.saveSection(anyLong(), any())).willReturn(lineResponse);
 
         // when & then
         mockMvc.perform(post("/lines/1/stations")
