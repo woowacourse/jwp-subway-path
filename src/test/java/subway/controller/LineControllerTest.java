@@ -16,9 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.station.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineResponseWithStations;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionResponse;
@@ -80,78 +78,6 @@ class LineControllerTest extends ControllerTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
-    @Test
-    @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
-    void getLines() {
-        // when
-        final ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final List<LineResponseWithStations> result = response.jsonPath().getList(".", LineResponseWithStations.class);
-        assertAll(
-                () -> assertThat(result.get(0).getId()).isPositive(),
-                () -> assertThat(result.get(0).getName()).isEqualTo("1호선"),
-                () -> assertThat(result.get(0).getColor()).isEqualTo("파란색"),
-                () -> assertThat(result.get(0).getStations()).containsExactly(
-                        new Station(1L, "1L"),
-                        new Station(2L, "2L"),
-                        new Station(3L, "3L"),
-                        new Station(4L, "4L"),
-                        new Station(5L, "5L"),
-                        new Station(6L, "6L"),
-                        new Station(7L, "7L")
-                ),
-                () -> assertThat(result.get(1).getId()).isPositive(),
-                () -> assertThat(result.get(1).getName()).isEqualTo("2호선"),
-                () -> assertThat(result.get(1).getColor()).isEqualTo("초록색"),
-                () -> assertThat(result.get(1).getStations()).containsExactly(
-                        new Station(8L, "8L"),
-                        new Station(9L, "9L"),
-                        new Station(4L, "4L"),
-                        new Station(10L, "10L"),
-                        new Station(11L, "11L")
-                )
-        );
-    }
-
-    @DisplayName("지하철 노선을 조회한다.")
-    @Test
-    @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
-    void getLine() {
-        // when
-        final ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", 1)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final LineResponseWithStations result = response.as(LineResponseWithStations.class);
-        assertAll(
-                () -> assertThat(result.getId()).isEqualTo(1),
-                () -> assertThat(result.getName()).isEqualTo("1호선"),
-                () -> assertThat(result.getColor()).isEqualTo("파란색"),
-                () -> assertThat(result.getStations()).containsExactly(
-                        new Station(1L, "1L"),
-                        new Station(2L, "2L"),
-                        new Station(3L, "3L"),
-                        new Station(4L, "4L"),
-                        new Station(5L, "5L"),
-                        new Station(6L, "6L"),
-                        new Station(7L, "7L")
-                )
-        );
-    }
-
     @DisplayName("모든 노선의 구간들을 조회한다.")
     @Test
     @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
@@ -160,7 +86,7 @@ class LineControllerTest extends ControllerTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/sections")
+                .when().get("/lines")
                 .then().log().all()
                 .extract();
 
@@ -187,7 +113,7 @@ class LineControllerTest extends ControllerTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/sections/{lineId}", 1)
+                .when().get("/lines/{lineId}", 1)
                 .then().log().all()
                 .extract();
 

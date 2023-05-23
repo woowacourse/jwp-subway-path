@@ -2,8 +2,6 @@ package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 
@@ -11,27 +9,28 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.StubLineDao;
+import subway.dao.StubSectionDao;
 import subway.domain.line.Line;
-import subway.domain.station.Station;
+import subway.domain.section.Section;
 import subway.dto.LineRequest;
-import subway.dto.LineResponseWithStations;
+import subway.dto.LineSearchResponse;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
 
-    @Mock
-    private SubwayMapService subwayMapService;
-
     private StubLineDao stubLineDao;
+    private StubSectionDao stubSectionDao;
     private LineService lineService;
 
     @BeforeEach
     void setUp() {
         stubLineDao = new StubLineDao();
-        lineService = new LineService(stubLineDao, subwayMapService);
+        stubLineDao.insert(new Line(1L, "1호선", "파란색"));
+        stubLineDao.insert(new Line(2L, "2호선", "초록색"));
+        stubSectionDao = new StubSectionDao();
+        lineService = new LineService(stubLineDao, stubSectionDao);
     }
 
     @DisplayName("노선을 저장한다.")
@@ -44,30 +43,6 @@ class LineServiceTest {
                 () -> assertThat(result.getName()).isEqualTo("2호선"),
                 () -> assertThat(result.getColor()).isEqualTo("초록색")
         );
-    }
-
-    @DisplayName("모든 노선들의 역들을 조회한다.")
-    @Test
-    void findLineResponses() {
-        final List<LineResponseWithStations> given = List.of(
-                new LineResponseWithStations(1L, "2호선", "초록색", List.of(
-                        new Station(1L, "강남역")
-                ))
-        );
-        given(subwayMapService.getLineResponsesWithStations()).willReturn(given);
-        final List<LineResponseWithStations> result = lineService.findLineResponses();
-        assertThat(result).isEqualTo(given);
-    }
-
-    @DisplayName("노선의 아이디로 노선의 역들을 조회한다.")
-    @Test
-    void findLineResponseById() {
-        final LineResponseWithStations given = new LineResponseWithStations(1L, "1호선", "파란색", List.of(
-                new Station(1L, "사당역")
-        ));
-        given(subwayMapService.getLineResponseWithStations(anyLong())).willReturn(given);
-        final LineResponseWithStations result = lineService.findLineResponseById(1L);
-        assertThat(result).isEqualTo(given);
     }
 
     @DisplayName("노선을 업데이트한다.")
@@ -90,5 +65,46 @@ class LineServiceTest {
         lineService.deleteLineById(lineId);
         final Line result = stubLineDao.findById(lineId);
         assertThat(result).isNull();
+    }
+
+    @DisplayName("lineId로 해당 노선의 모든 구간을 순서대로 가져온다.")
+    @Test
+    void getLineResponseWithSections() {
+        final LineSearchResponse lineSearchResponse = lineService.getLineSearchResponse(1L);
+        assertAll(
+                () -> assertThat(lineSearchResponse.getId()).isEqualTo(1L),
+                () -> assertThat(lineSearchResponse.getName()).isEqualTo("1호선"),
+                () -> assertThat(lineSearchResponse.getColor()).isEqualTo("파란색"),
+                () -> assertThat(lineSearchResponse.getSections()).containsExactly(
+                        Section.builder().id(1L).build(),
+                        Section.builder().id(2L).build(),
+                        Section.builder().id(3L).build()
+                )
+        );
+    }
+
+    @DisplayName("모든 노선의 모든 구간을 순서대로 가져온다.")
+    @Test
+    void getLineResponsesWithSections() {
+        final List<LineSearchResponse> lineResponsesWithSections = lineService.getLineSearchResponses();
+        final LineSearchResponse line1 = lineResponsesWithSections.get(0);
+        final LineSearchResponse line2 = lineResponsesWithSections.get(1);
+        assertAll(
+                () -> assertThat(line1.getId()).isEqualTo(1L),
+                () -> assertThat(line1.getName()).isEqualTo("1호선"),
+                () -> assertThat(line1.getColor()).isEqualTo("파란색"),
+                () -> assertThat(line1.getSections()).containsExactly(
+                        Section.builder().id(1L).build(),
+                        Section.builder().id(2L).build(),
+                        Section.builder().id(3L).build()
+                ),
+                () -> assertThat(line2.getId()).isEqualTo(2L),
+                () -> assertThat(line2.getName()).isEqualTo("2호선"),
+                () -> assertThat(line2.getColor()).isEqualTo("초록색"),
+                () -> assertThat(line2.getSections()).containsExactly(
+                        Section.builder().id(4L).build(),
+                        Section.builder().id(5L).build()
+                )
+        );
     }
 }

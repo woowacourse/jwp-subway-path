@@ -17,33 +17,28 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.domain.section.Section;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.LineResponseWithSections;
-import subway.dto.LineResponseWithStations;
+import subway.dto.LineSearchResponse;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionResponse;
 import subway.service.LineService;
 import subway.service.SectionCreateService;
 import subway.service.SectionDeleteService;
-import subway.service.SubwayMapService;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
-    private final SubwayMapService subwayMapService;
     private final SectionCreateService sectionCreateService;
     private final SectionDeleteService sectionDeleteService;
 
     public LineController(
             final LineService lineService,
-            final SubwayMapService subwayMapService,
             final SectionCreateService sectionCreateService,
             final SectionDeleteService sectionDeleteService
     ) {
         this.lineService = lineService;
-        this.subwayMapService = subwayMapService;
         this.sectionCreateService = sectionCreateService;
         this.sectionDeleteService = sectionDeleteService;
     }
@@ -64,23 +59,13 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponseWithStations>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<LineSearchResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.getLineSearchResponses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponseWithStations> findLineById(@PathVariable final Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
-    }
-
-    @GetMapping("/sections")
-    public ResponseEntity<List<LineResponseWithSections>> findAllLinesWithSections() {
-        return ResponseEntity.ok(subwayMapService.getLineResponsesWithSections());
-    }
-
-    @GetMapping("/sections/{lineId}")
-    public ResponseEntity<LineResponseWithSections> findLineWithSections(@PathVariable final Long lineId) {
-        return ResponseEntity.ok(subwayMapService.getLineResponseWithSections(lineId));
+    public ResponseEntity<LineSearchResponse> findLineById(@PathVariable final Long id) {
+        return ResponseEntity.ok(lineService.getLineSearchResponse(id));
     }
 
     @PutMapping("/{id}")

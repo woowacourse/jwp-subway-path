@@ -12,22 +12,22 @@ import subway.domain.line.Lines;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 
-public class SubwaySectionMap {
+public class SubwayMap {
 
     private final Lines lines;
     private final Map<Line, Sections> sectionsByLine;
 
-    private SubwaySectionMap(final Lines lines, final Map<Line, Sections> sectionsByLine) {
+    private SubwayMap(final Lines lines, final Map<Line, Sections> sectionsByLine) {
         this.lines = lines;
         this.sectionsByLine = sectionsByLine;
     }
 
-    public static SubwaySectionMap of(final List<Line> lines, final List<Section> sections) {
-        final SubwaySectionMap subwaySectionMap = new SubwaySectionMap(Lines.of(lines), new HashMap<>());
+    public static SubwayMap of(final List<Line> lines, final List<Section> sections) {
+        final SubwayMap subwayMap = new SubwayMap(Lines.of(lines), new HashMap<>());
         final StationGraph stationGraph = StationGraph.of(sections);
 
-        subwaySectionMap.createAllSections(stationGraph, sections);
-        return subwaySectionMap;
+        subwayMap.createAllSections(stationGraph, sections);
+        return subwayMap;
     }
 
     private void createAllSections(final StationGraph stationGraph, final List<Section> sections) {
