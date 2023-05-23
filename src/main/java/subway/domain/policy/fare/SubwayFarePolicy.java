@@ -5,5 +5,5 @@ import subway.domain.route.Route;
 
 public interface SubwayFarePolicy {
 
-    Money calculate(final Route route);
+  Money calculate(final Route route);
 }

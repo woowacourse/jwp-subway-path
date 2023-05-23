@@ -10,18 +10,19 @@ import subway.service.dto.ShortestRouteResponse;
 @RestController
 public class RouteController {
 
-    private final RouteQueryService routeQueryService;
+  private final RouteQueryService routeQueryService;
 
-    public RouteController(final RouteQueryService routeQueryService) {
-        this.routeQueryService = routeQueryService;
-    }
+  public RouteController(final RouteQueryService routeQueryService) {
+    this.routeQueryService = routeQueryService;
+  }
 
-    @GetMapping("/route")
-    public ShortestRouteResponse showShortestRoute(@ModelAttribute ShortestRouteRequest shortestRouteRequest) {
-        return new ShortestRouteResponse(
-                routeQueryService.searchShortestRoute(shortestRouteRequest),
-                routeQueryService.searchLeastCost(shortestRouteRequest),
-                routeQueryService.searchShortestDistance(shortestRouteRequest)
-        );
-    }
+  @GetMapping("/route")
+  public ShortestRouteResponse showShortestRoute(
+      @ModelAttribute ShortestRouteRequest shortestRouteRequest) {
+    return new ShortestRouteResponse(
+        routeQueryService.searchShortestRoute(shortestRouteRequest),
+        routeQueryService.searchLeastCost(shortestRouteRequest),
+        routeQueryService.searchShortestDistance(shortestRouteRequest)
+    );
+  }
 }

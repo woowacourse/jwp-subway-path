@@ -2,13 +2,13 @@ package subway.exception.common;
 
 public class ExceptionResponse {
 
-    private final String message;
+  private final String message;
 
-    public ExceptionResponse(final String message) {
-        this.message = message;
-    }
+  public ExceptionResponse(final String message) {
+    this.message = message;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 }

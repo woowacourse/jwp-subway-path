@@ -14,26 +14,27 @@ import subway.service.dto.StationRegisterResponse;
 @RestController
 public class StationController {
 
-    private final StationService stationService;
+  private final StationService stationService;
 
-    public StationController(final StationService stationService) {
-        this.stationService = stationService;
-    }
+  public StationController(final StationService stationService) {
+    this.stationService = stationService;
+  }
 
-    @PostMapping("/stations")
-    @ResponseStatus(HttpStatus.CREATED)
-    public StationRegisterResponse registerStation(@RequestBody StationRegisterRequest stationRegisterRequest) {
-        stationService.registerStation(stationRegisterRequest);
+  @PostMapping("/stations")
+  @ResponseStatus(HttpStatus.CREATED)
+  public StationRegisterResponse registerStation(
+      @RequestBody StationRegisterRequest stationRegisterRequest) {
+    stationService.registerStation(stationRegisterRequest);
 
-        return new StationRegisterResponse(
-                stationRegisterRequest.getLineName(),
-                stationRegisterRequest.getNextStationName()
-        );
-    }
+    return new StationRegisterResponse(
+        stationRegisterRequest.getLineName(),
+        stationRegisterRequest.getNextStationName()
+    );
+  }
 
-    @DeleteMapping("/stations")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteStation(@RequestBody StationDeleteRequest stationDeleteRequest) {
-        stationService.deleteStation(stationDeleteRequest);
-    }
+  @DeleteMapping("/stations")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteStation(@RequestBody StationDeleteRequest stationDeleteRequest) {
+    stationService.deleteStation(stationDeleteRequest);
+  }
 }

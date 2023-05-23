@@ -1,5 +1,6 @@
 package subway.service;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
@@ -9,73 +10,72 @@ import subway.domain.station.Station;
 import subway.domain.station.Stations;
 import subway.exception.section.CanNotDuplicatedSectionException;
 
-import java.util.List;
-
 @Service
 @Transactional
 public class SectionCommandService {
 
-    private final SectionDao sectionDao;
-    private final SectionQueryService sectionQueryService;
+  private final SectionDao sectionDao;
+  private final SectionQueryService sectionQueryService;
 
-    public SectionCommandService(final SectionDao sectionDao, final SectionQueryService sectionQueryService) {
-        this.sectionDao = sectionDao;
-        this.sectionQueryService = sectionQueryService;
+  public SectionCommandService(final SectionDao sectionDao,
+      final SectionQueryService sectionQueryService) {
+    this.sectionDao = sectionDao;
+    this.sectionQueryService = sectionQueryService;
+  }
+
+  public void registerSection(
+      final String currentStationName,
+      final String nextStationName,
+      final int distance,
+      final Long lineId
+  ) {
+
+    final List<Section> originSections = sectionQueryService.searchSectionsByLineId(lineId);
+
+    final Section targetSection = new Section(
+        new Stations(
+            new Station(currentStationName),
+            new Station(nextStationName),
+            distance
+        )
+    );
+
+    if (hasSameSection(targetSection, originSections)) {
+      throw new CanNotDuplicatedSectionException("해당 호선에 이미 출발지와 도착지가 같은 구간이 존재합니다.");
     }
 
-    public void registerSection(
-            final String currentStationName,
-            final String nextStationName,
-            final int distance,
-            final Long lineId
-    ) {
+    final SectionEntity sectionEntity = new SectionEntity(
+        currentStationName,
+        nextStationName,
+        distance,
+        lineId
+    );
 
-        final List<Section> originSections = sectionQueryService.searchSectionsByLineId(lineId);
+    sectionDao.save(sectionEntity);
+  }
 
-        final Section targetSection = new Section(
-                new Stations(
-                        new Station(currentStationName),
-                        new Station(nextStationName),
-                        distance
-                )
-        );
+  private boolean hasSameSection(final Section target, final List<Section> originSections) {
+    return originSections.stream()
+        .anyMatch(section -> section.isSame(target));
+  }
 
-        if (hasSameSection(targetSection, originSections)) {
-            throw new CanNotDuplicatedSectionException("해당 호선에 이미 출발지와 도착지가 같은 구간이 존재합니다.");
-        }
+  public void deleteAll(final Long lineId) {
+    sectionDao.deleteAll(lineId);
+  }
 
-        final SectionEntity sectionEntity = new SectionEntity(
-                currentStationName,
-                nextStationName,
-                distance,
-                lineId
-        );
+  public void deleteSectionById(final Long sectionId) {
+    sectionDao.deleteById(sectionId);
+  }
 
-        sectionDao.save(sectionEntity);
-    }
+  public void updateSection(final Section section) {
 
-    private boolean hasSameSection(final Section target, final List<Section> originSections) {
-        return originSections.stream()
-                             .anyMatch(section -> section.isSame(target));
-    }
+    final SectionEntity sectionEntity = new SectionEntity(
+        section.getId(),
+        section.getStations().getCurrent().getName(),
+        section.getStations().getNext().getName(),
+        section.getStations().getDistance()
+    );
 
-    public void deleteAll(final Long lineId) {
-        sectionDao.deleteAll(lineId);
-    }
-
-    public void deleteSectionById(final Long sectionId) {
-        sectionDao.deleteById(sectionId);
-    }
-
-    public void updateSection(final Section section) {
-
-        final SectionEntity sectionEntity = new SectionEntity(
-                section.getId(),
-                section.getStations().getCurrent().getName(),
-                section.getStations().getNext().getName(),
-                section.getStations().getDistance()
-        );
-
-        sectionDao.update(sectionEntity);
-    }
+    sectionDao.update(sectionEntity);
+  }
 }
