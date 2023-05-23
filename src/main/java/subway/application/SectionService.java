@@ -1,6 +1,7 @@
 package subway.application;
 
 import static subway.application.StationFactory.toStation;
+import static subway.domain.ChangeSectionStatus.FOR_MIDDLE_SECTION;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -97,7 +98,7 @@ public class SectionService {
     }
 
     private void updateSectionIfChangedMiddleSection(final Long lineId, final ChangeSections sectionsForRemove) {
-        if (sectionsForRemove.isChangeMiddle()) {
+        if (sectionsForRemove.is(FOR_MIDDLE_SECTION)) {
             SectionEntity updateSectionEntity = makeSectionEntity(lineId, sectionsForRemove.getUpdateSection());
             sectionDao.update(updateSectionEntity);
         }

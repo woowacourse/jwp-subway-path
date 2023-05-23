@@ -29,16 +29,16 @@ public class ChangeSections {
         return new ChangeSections(status, newSection);
     }
 
-    public boolean isChangeMiddle() {
-        return this.status.equals(ChangeSectionStatus.FOR_MIDDLE_SECTION);
-    }
-
     public Section getUpdateSection() {
         return updateSection;
     }
 
     public Section getInsertOrRemoveSection() {
         return insertOrRemoveSection;
+    }
+
+    public boolean is(final ChangeSectionStatus changeSectionStatus) {
+        return this.status == changeSectionStatus;
     }
 
 }
