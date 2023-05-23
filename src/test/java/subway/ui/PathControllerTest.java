@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.business.domain.line.Stations;
+import subway.business.domain.subwaymap.Money;
 import subway.business.service.SubwayMapService;
 import subway.business.service.dto.LinePathDto;
 import subway.business.service.dto.SubwayPathResponse;
@@ -46,7 +47,7 @@ class PathControllerTest {
         Stations stationsOfLine4 = new Stations(List.of(
                 사당_4호선, 총신대입구, 동작
         ));
-        SubwayPathResponse subwayPathResponse = new SubwayPathResponse(1_550, List.of(
+        SubwayPathResponse subwayPathResponse = new SubwayPathResponse(Money.from("1550"), List.of(
                 LinePathDto.of(이호선, stationsOfLine2),
                 LinePathDto.of(사호선, stationsOfLine4)
         ));
@@ -63,3 +64,4 @@ class PathControllerTest {
                 .andExpect(jsonPath("$.linePathDtos[1].linePath[2].name").value("동작"));
     }
 }
+
