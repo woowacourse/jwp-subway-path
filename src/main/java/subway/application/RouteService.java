@@ -1,7 +1,8 @@
 package subway.application;
 
+import static subway.application.StationNamesConvertor.convertToStationNamesByStations;
+
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
@@ -41,12 +42,6 @@ public class RouteService {
 
         return new RouteDto(new DistanceDto(distance.getDistance()), new FeeDto(fee.getFee()),
                 convertToStationNamesByStations(shortestPath));
-    }
-
-    private List<String> convertToStationNamesByStations(final List<Station> shortestPath) {
-        return shortestPath.stream()
-                .map(Station::getName)
-                .collect(Collectors.toList());
     }
 
 }
