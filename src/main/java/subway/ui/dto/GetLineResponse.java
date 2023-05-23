@@ -10,17 +10,20 @@ public class GetLineResponse {
     private final Long lineId;
     private final String lineName;
     private final String lineColor;
+    private final Integer additionalCharge;
     private final List<StationResponse> stations;
 
-    public GetLineResponse(Long lineId, String lineName, String lineColor, List<StationResponse> stations) {
+    public GetLineResponse(Long lineId, String lineName, String lineColor, Integer additionalCharge,
+        List<StationResponse> stations) {
         this.lineId = lineId;
         this.lineName = lineName;
         this.lineColor = lineColor;
+        this.additionalCharge = additionalCharge;
         this.stations = stations;
     }
 
     public static GetLineResponse from(Line line, List<Station> stations) {
-        return new GetLineResponse(line.getId(), line.getName(), line.getColor(),
+        return new GetLineResponse(line.getId(), line.getName(), line.getColor(), line.getAdditionalCharge(),
             StationResponse.toStationResponses(stations));
     }
 
@@ -34,6 +37,10 @@ public class GetLineResponse {
 
     public String getLineColor() {
         return lineColor;
+    }
+
+    public Integer getAdditionalCharge() {
+        return additionalCharge;
     }
 
     public List<StationResponse> getStations() {

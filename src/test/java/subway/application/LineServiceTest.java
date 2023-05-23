@@ -43,21 +43,22 @@ class LineServiceTest {
     void 존재하는_두_역을_통해_노선을_생성한다() {
         given(stationDao.findById(cheonho.getId())).willReturn(Optional.of(cheonho));
         given(stationDao.findById(jamsil.getId())).willReturn(Optional.of(jamsil));
-        given(lineDao.insert(new Line(null, "8호선", "pink"))).willReturn(pink);
-        LineRequest lineRequest = new LineRequest("8호선", "pink", cheonho.getId(), jamsil.getId(), 10);
+        given(lineDao.insert(new Line(null, "8호선", "pink", 0))).willReturn(pink);
+        LineRequest lineRequest = new LineRequest("8호선", "pink", cheonho.getId(), jamsil.getId(), 10, 0);
 
         PostLineResponse postLineResponse = lineService.saveLine(lineRequest);
 
         assertThat(postLineResponse.getLineId()).isEqualTo(pink.getId());
         assertThat(postLineResponse.getLineName()).isEqualTo("8호선");
         assertThat(postLineResponse.getLineColor()).isEqualTo("pink");
+        assertThat(postLineResponse.getAdditionalCharge()).isEqualTo(0);
     }
 
     @Test
     void 등록되지_않은_역으로_노선을_생성하면_예외가_발생한다() {
         given(stationDao.findById(cheonho.getId())).willReturn(Optional.of(cheonho));
         given(stationDao.findById(2L)).willReturn(Optional.empty());
-        LineRequest lineRequest = new LineRequest("8호선", "pink", cheonho.getId(), 2L, 10);
+        LineRequest lineRequest = new LineRequest("8호선", "pink", cheonho.getId(), 2L, 10, 0);
 
         assertThatThrownBy(() -> lineService.saveLine(lineRequest))
             .isInstanceOf(IllegalArgumentException.class)
@@ -84,6 +85,7 @@ class LineServiceTest {
             assertThat(response.getLineId()).isEqualTo(pink.getId());
             assertThat(response.getLineName()).isEqualTo("8호선");
             assertThat(response.getLineColor()).isEqualTo("pink");
+            assertThat(response.getAdditionalCharge()).isEqualTo(0);
             assertThat(stations.get(0).getName()).isEqualTo("천호");
             assertThat(stations.get(1).getName()).isEqualTo("잠실");
             assertThat(stations.get(2).getName()).isEqualTo("장지");
@@ -109,6 +111,7 @@ class LineServiceTest {
             assertThat(line8.getLineId()).isEqualTo(pink.getId());
             assertThat(line8.getLineName()).isEqualTo("8호선");
             assertThat(line8.getLineColor()).isEqualTo("pink");
+            assertThat(line8.getAdditionalCharge()).isEqualTo(0);
             assertThat(line8Stations.get(0).getName()).isEqualTo("천호");
             assertThat(line8Stations.get(1).getName()).isEqualTo("잠실");
             assertThat(line8Stations.get(2).getName()).isEqualTo("장지");
@@ -116,6 +119,7 @@ class LineServiceTest {
             assertThat(line2.getLineId()).isEqualTo(green.getId());
             assertThat(line2.getLineName()).isEqualTo("2호선");
             assertThat(line2.getLineColor()).isEqualTo("green");
+            assertThat(line2.getAdditionalCharge()).isEqualTo(0);
             assertThat(line2Stations.get(0).getName()).isEqualTo("건대입구");
             assertThat(line2Stations.get(1).getName()).isEqualTo("잠실");
             assertThat(line2Stations.get(2).getName()).isEqualTo("강남");

@@ -63,7 +63,7 @@ public class LineIntegrationTest extends IntegrationTest {
     void 지하철_노선을_생성한다() {
         // when
         // 건대 - 10 - 장지
-        LineRequest lineRequest = new LineRequest("new", "new", 5L, 2L, 10);
+        LineRequest lineRequest = new LineRequest("new", "new", 5L, 2L, 10, 0);
         ExtractableResponse<Response> response = RestAssured
             .given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)

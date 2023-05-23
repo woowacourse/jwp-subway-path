@@ -4,9 +4,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static subway.TestSource.*;
-
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -19,35 +16,37 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import subway.application.PathService;
-import subway.ui.dto.PathRequest;
-import subway.ui.dto.PathResponse;
+import subway.application.LineService;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.PostLineResponse;
 
-@WebMvcTest(PathController.class)
+@WebMvcTest(LineController.class)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class PathControllerTest {
+public class LineControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private PathService pathService;
+    LineService lineService;
 
     @Test
-    void 단일_노선_path_조회_테스트() throws Exception {
+    void 추가금_포함_노선_등록_테스트() throws Exception {
         // given
-        PathRequest request = new PathRequest(cheonho.getId(), jangji.getId());
+        LineRequest request = new LineRequest("8호선", "pink", 1L, 2L, 10, 900);
         String jsonRequest = objectMapper.writeValueAsString(request);
-        PathResponse response = PathResponse.from(1250, List.of(cheonho, jamsil, jangji));
-        String jsonResponse = objectMapper.writeValueAsString(response);
-        given(pathService.findPath(any(PathRequest.class))).willReturn(response);
+        PostLineResponse response = new PostLineResponse(1L, "8호선", "pink", 900);
+        given(lineService.saveLine(any(LineRequest.class))).willReturn(response);
 
         // when & then
-        mockMvc.perform(post("/path")
+        mockMvc.perform(post("/lines")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequest))
-            .andExpect(status().isOk())
-            .andExpect(content().json(jsonResponse, true));
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("lineId").value(1L))
+            .andExpect(jsonPath("lineName").value("8호선"))
+            .andExpect(jsonPath("lineColor").value("pink"))
+            .andExpect(jsonPath("additionalCharge").value(900));
     }
 }

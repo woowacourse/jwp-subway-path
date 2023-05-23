@@ -17,7 +17,7 @@ class SectionTest {
     void 주어진_id의_역이_있는지_판별한다() {
         Station cheonho = new Station(1L, "천호");
         Station jamsil = new Station(2L, "잠실");
-        Section cheonhoJamsil10 = new Section(cheonho, jamsil, new Line("8호선", "pink"), 10);
+        Section cheonhoJamsil10 = new Section(cheonho, jamsil, new Line("8호선", "pink", 0), 10);
 
         assertThat(cheonhoJamsil10.getStationWithGivenId(1L)).isPresent();
         assertThat(cheonhoJamsil10.getStationWithGivenId(3L)).isEmpty();

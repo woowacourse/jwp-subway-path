@@ -16,9 +16,9 @@ public class TestSource {
     public static Station kundae = new Station(6L, "건대입구");
     public static Station wangsimni = new Station(7L, "왕십리");
 
-    public static Line pink = new Line(1L, "8호선", "pink");
-    public static Line green = new Line(2L, "2호선", "green");
-    public static Line purple = new Line(3L, "5호선", "purple");
+    public static Line pink = new Line(1L, "8호선", "pink", 0);
+    public static Line green = new Line(2L, "2호선", "green", 0);
+    public static Line purple = new Line(3L, "5호선", "purple", 0);
 
     public static Section cheonhoJamsil10 = new Section(1L, cheonho, jamsil, pink, 10);
     public static Section jamsilJangji10 = new Section(2L, jamsil, jangji, pink, 10);

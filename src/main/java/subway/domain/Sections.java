@@ -28,6 +28,13 @@ public class Sections {
             .sum();
     }
 
+    public int getMostExpensiveAdditionalCharge() {
+         return sections.stream()
+            .mapToInt(section -> section.getLine().getAdditionalCharge())
+            .max()
+            .orElseThrow(IllegalStateException::new);
+    }
+
     public List<Section> getSections() {
         return sections;
     }

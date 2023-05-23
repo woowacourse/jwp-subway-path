@@ -7,19 +7,15 @@ import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 
 import subway.domain.Sections;
 import subway.domain.Station;
 
-@Component
 public class JGraphTPathFinder implements PathFinder {
 
     @Override
     public PathInfo findPath(Sections sections, Station source, Station target) {
-        GraphPath<Station, SectionWeightedEdge> shortestPath;
-        shortestPath = makeGraphPath(sections, source, target);
-
+        GraphPath<Station, SectionWeightedEdge> shortestPath = makeGraphPath(sections, source, target);
         List<Station> pathVerticies = setPathVerticies(shortestPath);
         Sections pathEdges = new Sections(shortestPath.getEdgeList().stream()
             .map(SectionWeightedEdge::toSection)
@@ -27,8 +23,7 @@ public class JGraphTPathFinder implements PathFinder {
         return new PathInfo(pathVerticies, pathEdges);
     }
 
-    private GraphPath<Station, SectionWeightedEdge> makeGraphPath(Sections sections,
-        Station source, Station target) {
+    private GraphPath<Station, SectionWeightedEdge> makeGraphPath(Sections sections, Station source, Station target) {
         GraphPath<Station, SectionWeightedEdge> shortestPath;
         try {
             shortestPath = getPath(sections, source, target);

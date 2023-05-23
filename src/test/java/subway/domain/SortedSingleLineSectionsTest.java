@@ -24,7 +24,7 @@ public class SortedSingleLineSectionsTest {
         // given
         Station cheonho = new Station(1L, "천호");
         Station jamsil = new Station(2L, "잠실");
-        Section cheonhoJamsil10 = new Section(cheonho, jamsil, new Line("8호선", "pink"), 10);
+        Section cheonhoJamsil10 = new Section(cheonho, jamsil, new Line("8호선", "pink", 0), 10);
 
         SortedSingleLineSections sortedSingleLineSections = new SortedSingleLineSections(List.of(cheonhoJamsil10));
 

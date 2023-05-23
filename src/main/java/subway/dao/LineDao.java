@@ -24,7 +24,8 @@ public class LineDao {
         new Line(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("additional_charge")
         );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -39,18 +40,19 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("additional_charge", line.getAdditionalCharge());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), line.getAdditionalCharge());
     }
 
     public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "SELECT id, name, color, additional_charge FROM LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<Line> findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
+        String sql = "SELECT id, name, color, additional_charge FROM LINE WHERE id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (EmptyResultDataAccessException exception) {
@@ -59,7 +61,7 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from Line where id = ?";
+        String sql = "DELETE FROM Line WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 }
