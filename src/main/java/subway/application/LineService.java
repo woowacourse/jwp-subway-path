@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
 
@@ -50,10 +51,9 @@ public class LineService {
     private List<StationResponse> extractStationResponses(final Line persistLine, final List<Section> sections) {
         Subway subway = Subway.of(persistLine, sections);
         List<Station> orderedStations = subway.getOrderedStations();
-        List<StationResponse> stationResponses = orderedStations.stream()
+        return orderedStations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return stationResponses;
     }
 
     public Line findLineById(final Long id) {

@@ -2,9 +2,12 @@ package subway.domain;
 
 import subway.application.exception.SubwayInternalServerException;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
-public class Sections {
+public class Sections implements Iterable<Section> {
 
     private static final String INVALID_SECTIONS_SIZE_MESSAGE = "구간의 크기가 2를 초과합니다.";
     private static final String INVALID_ACCESS_SECTIONS_MESSAGE = "구간이 존재하지 않습니다.";
@@ -24,20 +27,28 @@ public class Sections {
     }
 
     public Long getLeftStationId() {
-        if (sections.size() == 1) {
+        if (hasOnlyOneStation()) {
             return sections.get(0).getLeftId();
         }
-        if (sections.get(0).getLeft().equals(sections.get(1).getRight())) {
-            return sections.get(1).getLeftId();
+        if (isEqualMiddleStation()) {
+            return sections.get(0).getLeftId();
         }
-        return sections.get(0).getLeftId();
+        return sections.get(1).getLeftId();
+    }
+
+    private boolean hasOnlyOneStation() {
+        return sections.size() == 1;
+    }
+
+    private boolean isEqualMiddleStation() {
+        return sections.get(0).getRight().equals(sections.get(1).getLeft());
     }
 
     public Long getRightStationId() {
-        if (sections.size() == 1) {
+        if (hasOnlyOneStation()) {
             return sections.get(0).getRightId();
         }
-        if (sections.get(0).getRight().equals(sections.get(1).getLeft())) {
+        if (isEqualMiddleStation()) {
             return sections.get(1).getRightId();
         }
         return sections.get(0).getRightId();
@@ -52,5 +63,20 @@ public class Sections {
             return sections.get(0);
         }
         throw new SubwayInternalServerException(INVALID_ACCESS_SECTIONS_MESSAGE);
+    }
+
+    @Override
+    public Iterator<Section> iterator() {
+        return null;
+    }
+
+    @Override
+    public void forEach(Consumer<? super Section> action) {
+        Iterable.super.forEach(action);
+    }
+
+    @Override
+    public Spliterator<Section> spliterator() {
+        return Iterable.super.spliterator();
     }
 }

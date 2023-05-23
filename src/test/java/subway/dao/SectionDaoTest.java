@@ -1,11 +1,5 @@
 package subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.LineFixture.FIXTURE_LINE_1;
-import static subway.domain.SectionFixture.SECTION_START;
-import static subway.domain.StationFixture.FIXTURE_STATION_1;
-import static subway.domain.StationFixture.FIXTURE_STATION_2;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,17 +8,28 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static subway.domain.LineFixture.FIXTURE_LINE_1;
+import static subway.domain.SectionFixture.SECTION_START;
+import static subway.domain.StationFixture.FIXTURE_STATION_1;
+import static subway.domain.StationFixture.FIXTURE_STATION_2;
+
 @JdbcTest
 @Sql({"classpath:/schema.sql"})
 class SectionDaoTest {
 
     private final SectionDao sectionDao;
     private final JdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
 
     @Autowired
-    public SectionDaoTest(final JdbcTemplate jdbcTemplate) {
+    public SectionDaoTest(final JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.sectionDao = new SectionDao(jdbcTemplate);
         this.jdbcTemplate = jdbcTemplate;
+        this.dataSource = dataSource;
     }
 
     @BeforeEach

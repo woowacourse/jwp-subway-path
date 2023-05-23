@@ -29,22 +29,22 @@ public class SectionService {
 
     public void addSection(final SectionRequest sectionRequest) {
         Long lineId = sectionRequest.getLineId();
+        Line line = getLineById(lineId);
         List<Section> sections = sectionDao.findByLineId(lineId);
 
-        saveSection(sectionRequest, lineId, sections);
+        saveSection(sectionRequest, line, sections);
     }
 
-    private void saveSection(final SectionRequest sectionRequest, final Long lineId, final List<Section> sections) {
-        Line line = getLineById(lineId);
+    private void saveSection(final SectionRequest sectionRequest, final Line line, final List<Section> sections) {
         Subway subway = Subway.of(line, sections);
         Station baseStation = getStationById(sectionRequest.leftStationId());
         Station nextStation = getStationById(sectionRequest.rightStationId());
         Integer distance = sectionRequest.distance();
-        Sections addedSections = subway.findAddSections(new Section(baseStation, nextStation, new Distance(distance)));
+        Sections updateSections = subway.findUpdateSectionsByAddingSection(new Section(baseStation, nextStation, new Distance(distance)));
 
-        sectionDao.deleteByLeftStationIdAndRightStationId(lineId, addedSections.getLeftStationId(), addedSections.getRightStationId());
-        for (Section section : addedSections.getSections()) {
-            sectionDao.insert(lineId, section);
+        sectionDao.deleteByStationIds(line.getId(), updateSections.getLeftStationId(), updateSections.getRightStationId());
+        for (Section section : updateSections.getSections()) {
+            sectionDao.insert(line.getId(), section);
         }
     }
 
@@ -69,10 +69,10 @@ public class SectionService {
         Station station = getStationById(stationId);
         List<Section> sections = sectionDao.findByLineId(lineId);
         Subway subway = Subway.of(line, sections);
-        Sections deleteSections = subway.findDeleteSections(station);
+        Sections updateSections = subway.findUpdateSectionsByDeletingSection(station);
 
-        if (deleteSections.isPresent()) {
-            Section section = deleteSections.getFirstSection();
+        if (updateSections.isPresent()) {
+            Section section = updateSections.getFirstSection();
             sectionDao.insert(lineId, section);
         }
         sectionDao.deleteByStationId(lineId, stationId);

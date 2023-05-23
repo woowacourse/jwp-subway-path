@@ -1,11 +1,5 @@
 package subway.ui;
 
-import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.validation.Valid;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,6 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.dto.LineRequest;
 import subway.application.dto.LineResponse;
+
+import javax.annotation.PostConstruct;
+import javax.validation.Valid;
+import java.net.URI;
+import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/lines")

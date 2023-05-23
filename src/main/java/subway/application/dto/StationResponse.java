@@ -1,12 +1,13 @@
 package subway.application.dto;
 
-import java.util.Objects;
 import subway.domain.Station;
+
+import java.util.Objects;
 
 public class StationResponse {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public StationResponse(final Long id, final String name) {
         this.id = id;
