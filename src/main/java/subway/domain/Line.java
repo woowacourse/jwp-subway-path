@@ -15,18 +15,24 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final Integer cost;
     private final Sections sections;
 
     public Line(final String name, final String color) {
-        this(null, name, color, Collections.emptyList());
+        this(null, name, color, 0, Collections.emptyList());
     }
 
-    public Line(final Long id, final String name, final String color, final List<Section> sections) {
+    public Line(final String name, final String color, final Integer cost) {
+        this(null, name, color, cost, Collections.emptyList());
+    }
+
+    public Line(final Long id, final String name, final String color, final Integer cost, final List<Section> sections) {
         validateName(name);
         validateColor(color);
         this.id = id;
         this.name = name.strip();
         this.color = color.strip();
+        this.cost = cost;
         this.sections = new Sections(new ArrayList<>(sections));
     }
 
@@ -70,6 +76,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getCost() {
+        return cost;
     }
 
     public List<Section> getSections() {

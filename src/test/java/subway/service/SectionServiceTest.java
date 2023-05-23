@@ -56,4 +56,6 @@ class SectionServiceTest {
                         .isEqualTo(List.of(삼성역.RESPONSE, 역삼역.RESPONSE))
         );
     }
+
+
 }

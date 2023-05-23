@@ -33,6 +33,40 @@ class ShortestRouteFinderTest {
                 .willReturn(List.of(line));
     }
 
+    @Test
+    void 노선_추가요금을_반환한다() {
+        Line 이호선 = new Line("2호선", "GREEN", 100);
+        이호선.addSection(new Section(강남역.STATION, 종합운동장역.STATION, 5));
+
+        BDDMockito.given(lineRepository.findAll())
+                .willReturn(List.of(이호선));
+
+        int surcharge = routeFinder.getSurcharge(강남역.STATION, 종합운동장역.STATION);
+
+        Assertions.assertThat(surcharge)
+                .isEqualTo(100);
+    }
+
+    @Test
+    void 노선_추가요금을_반환할_때_가장_높은_금액을_적용한다() {
+        Line 이호선 = new Line("2호선", "GREEN");
+        이호선.addSection(new Section(강남역.STATION, 종합운동장역.STATION, 5));
+
+        Line 신분당선 = new Line("신분당선", "RED", 100);
+        신분당선.addSection(new Section(강남역.STATION, 신논현역.STATION, 1));
+
+        Line 구호선 = new Line("9호선", "BROWN", 200);
+        구호선.addSection(new Section(신논현역.STATION, 종합운동장역.STATION, 1));
+
+        BDDMockito.given(lineRepository.findAll())
+                .willReturn(List.of(이호선, 신분당선, 구호선));
+
+        int surcharge = routeFinder.getSurcharge(강남역.STATION, 종합운동장역.STATION);
+
+        Assertions.assertThat(surcharge)
+                .isEqualTo(200);
+    }
+
     @Nested
     class 경로_탐색_시_ {
 

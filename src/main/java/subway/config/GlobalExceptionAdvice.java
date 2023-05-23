@@ -9,11 +9,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import subway.exception.ApiException;
 import subway.exception.ErrorResponse;
 
+import java.sql.SQLException;
+
 
 @ControllerAdvice
 public class GlobalExceptionAdvice {
 
     private final Logger log = LoggerFactory.getLogger(GlobalExceptionAdvice.class);
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<Void> handleSQLException() {
+        return ResponseEntity.badRequest().build();
+    }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(final Exception e) {

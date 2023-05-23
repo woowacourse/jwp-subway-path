@@ -11,7 +11,6 @@ import subway.service.StationService;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -58,10 +57,5 @@ public class StationController {
     public ResponseEntity<RouteResponse> createRoute(@Valid @RequestBody RouteRequest routeRequest) {
         RouteResponse routeResponse = sectionService.getShortestRoute(routeRequest);
         return ResponseEntity.ok().body(routeResponse);
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

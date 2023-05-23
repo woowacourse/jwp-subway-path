@@ -23,7 +23,8 @@ public class H2LineDao implements LineDao {
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("cost")
             );
 
     public H2LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
@@ -39,21 +40,22 @@ public class H2LineDao implements LineDao {
         params.put("id", lineEntity.getId());
         params.put("name", lineEntity.getName());
         params.put("color", lineEntity.getColor());
+        params.put("cost", lineEntity.getCost());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
 
-        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor(), lineEntity.getCost());
     }
 
     @Override
     public List<LineEntity> findAll() {
-        String sql = "SELECT id, name, color FROM line";
+        String sql = "SELECT id, name, color, cost FROM line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
     public Optional<LineEntity> findById(final Long id) {
-        String sql = "SELECT id, name, color FROM line WHERE id = ?";
+        String sql = "SELECT id, name, color, cost FROM line WHERE id = ?";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
@@ -62,8 +64,8 @@ public class H2LineDao implements LineDao {
         if (!existsById(newLineEntity.getId())) {
             throw new NoSuchLineException(newLineEntity.getId());
         }
-        String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
-        jdbcTemplate.update(sql, newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId());
+        String sql = "UPDATE line SET name = ?, color = ?, cost = ? WHERE id = ?";
+        jdbcTemplate.update(sql, newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getCost(), newLineEntity.getId());
     }
 
     @Override
