@@ -2,96 +2,70 @@ package subway.application;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.Subway;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationResponse;
-import subway.dto.StationSaveRequest;
-import subway.dto.StationsResponse;
-import subway.entity.LineEntity;
-import subway.entity.StationEntity;
+import subway.dto.SectionAddRequest;
+import subway.dto.StationDeleteRequest;
+import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
-import subway.repository.StationRepository;
-import subway.repository.dao.LineDao;
 
+@Transactional
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
     private final LineRepository lineRepository;
-    private final StationRepository stationRepository;
+    private final StationService stationService;
 
-    public LineService(LineDao lineDao, LineRepository lineRepository,
-                       StationRepository stationRepository) {
-        this.lineDao = lineDao;
+    public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line line = request.toDomain();
-        Long saveId = lineRepository.save(line);
-        return new LineResponse(saveId);
+    public Line saveLine(LineRequest request) {
+        if (lineRepository.existsByName(request.getLineName())) {
+            throw new DuplicatedNameException(request.getLineName());
+        }
+        return lineRepository.save(request.toDomain());
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public List<LineEntity> findLines() {
-        return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(Long id) {
-        return null;
-    }
-
-    public StationsResponse getStationByLineId(Long id) {
-        Line line = lineRepository.findById(id);
-        return StationsResponse.from(line.getStations());
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new LineEntity(id, lineUpdateRequest.getLineName()));
-    }
-
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
-    }
-
-    public StationResponse addStation(Long lineId, StationSaveRequest stationRequest) {
+    public void addSection(Long lineId, SectionAddRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
-        LineEntity byId = lineDao.findById(lineId);
-        Line lineByName = subway.findLineByName(byId.getName());
-        Optional<Station> newStation = lineByName.getStations()
-                .stream()
-                .filter(station ->
-                        !station.isSameName(new Station(stationRequest.getSourceStation())) &&
-                                !station.isSameName(new Station(stationRequest.getTargetStation())))
-                .findFirst();
-
-        String newStationName = newStation.get().getName();
-        stationRepository.save(new StationEntity(newStationName));
-
-        subway.addStation(byId.getName(), stationRequest.getSourceStation(), stationRequest.getTargetStation(),
-                stationRequest.getDistance());
-        saveUpdatedLine(subway, byId.getName(), lineId);
-        return StationResponse.of(new StationEntity(newStationName));
+        Line line = findLineById(lineId);
+        Station source = stationService.findByName(request.getSourceStation());
+        Station target = stationService.findByName(request.getTargetStation());
+        subway.addStation(
+                line.getName(),
+                source,
+                target,
+                request.getDistance()
+        );
+        lineRepository.save(subway.findLineByName(line.getName()));
     }
 
-    private void saveUpdatedLine(Subway subway, String lineName, Long lineId) {
-        Line updatedLine = subway.getLines().stream()
-                .filter(line -> line.isSameName(lineName))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException());
-        lineRepository.updateLine(lineId, updatedLine);
+    public void deleteStation(Long lineId, StationDeleteRequest request) {
+        Subway subway = new Subway(lineRepository.findAll());
+        Line line = findLineById(lineId);
+        subway.removeStation(line.getName(), request.getStationName());
+        lineRepository.save(subway.findLineByName(line.getName()));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Line> findAllLines() {
+        Subway subway = new Subway(lineRepository.findAll());
+        return subway.getLines();
+    }
+
+    @Transactional(readOnly = true)
+    public Line findLineById(Long lineId) {
+        return lineRepository.findById(lineId)
+                .orElseThrow(() -> new NoSuchElementException("노선이 없습니다"));
+    }
+
+    public void deleteLineById(Long lineId) {
+        lineRepository.deleteById(lineId);
     }
 }

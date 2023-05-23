@@ -1,4 +1,6 @@
-package subway.entity;
+package subway.repository.entity;
+
+import java.util.Objects;
 
 public class SectionEntity {
 
@@ -20,13 +22,6 @@ public class SectionEntity {
         this.distance = distance;
     }
 
-//    public static List<SectionEntity> of(Line line, Long id) {
-//        return line.getSections().stream()
-//                .map((section -> new SectionEntity(section.getSource().getName(), section.getTarget().getName(), id,
-//                        section.getDistance())))
-//                .collect(Collectors.toList());
-//    }
-
     public Long getId() {
         return id;
     }
@@ -45,5 +40,22 @@ public class SectionEntity {
 
     public Integer getDistance() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SectionEntity that = (SectionEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

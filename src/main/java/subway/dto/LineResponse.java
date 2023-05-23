@@ -1,22 +1,32 @@
 package subway.dto;
 
-import subway.entity.LineEntity;
+import java.util.List;
+import java.util.stream.Collectors;
+import subway.domain.Line;
+import subway.domain.Station;
 
 public class LineResponse {
-    private Long id;
+    private final String name;
+    private final List<StationResponse> stations;
 
-    public LineResponse(Long id) {
-        this.id = id;
+    public LineResponse(String name, List<StationResponse> stations) {
+        this.name = name;
+        this.stations = stations;
     }
 
-    public LineResponse() {
+    public static LineResponse from(Line line) {
+        List<StationResponse> stations = line.getStations().stream()
+                .map(Station::getName)
+                .map(StationResponse::new)
+                .collect(Collectors.toList());
+        return new LineResponse(line.getName(), stations);
     }
 
-    public static LineResponse of(LineEntity line) {
-        return new LineResponse(line.getId());
+    public String getName() {
+        return name;
     }
 
-    public Long getId() {
-        return id;
+    public List<StationResponse> getStations() {
+        return stations;
     }
 }

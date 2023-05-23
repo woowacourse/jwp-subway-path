@@ -14,6 +14,6 @@ class DistanceTest {
     void 거리는_음수가_될_수_없다() {
         assertThatThrownBy(() -> new Distance(-1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("거리는 음수가 될 수 없습니다.");
+                .hasMessage("거리는 양수만 가능합니다.");
     }
 }

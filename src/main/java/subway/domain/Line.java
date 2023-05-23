@@ -1,26 +1,37 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Line {
+
+    private final Long id;
     private final String name;
     private final List<Section> sections;
 
     public Line(String name, List<Section> sections) {
+        this(null, name, sections);
+    }
+
+    public Line(Long id, String name, List<Section> sections) {
         validateName(name);
+        this.id = id;
         this.name = name;
         this.sections = new ArrayList<>(sections);
         validateIsLinked(sections);
     }
 
     private void validateIsLinked(List<Section> sections) {
-        if (sections.size() + 1 != getStations().size()) {
+        if (getStations().size() != 0 && sections.size() + 1 != getStations().size()) {
             throw new IllegalArgumentException("연결되지 않은 역이 있습니다");
         }
     }
@@ -33,14 +44,6 @@ public class Line {
 
     public boolean isSame(Line other) {
         return name.equals(other.getName());
-    }
-
-    public boolean isSameName(String otherName) {
-        return name.equals(otherName);
-    }
-
-    public void addSections(List<Section> saveSections) {
-        sections.addAll(saveSections);
     }
 
     public void addSection(Section newSection) {
@@ -100,7 +103,7 @@ public class Line {
 
     public void removeStation(Station station) {
         if (!isDuplicatedName(station)) {
-            throw new IllegalArgumentException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
+            throw new NoSuchElementException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
         }
         Optional<Section> findSource = findBySource(station);
         Optional<Section> findTarget = findByTarget(station);
@@ -119,34 +122,41 @@ public class Line {
         findTarget.ifPresent(sections::remove);
     }
 
-    public boolean isEmpty() {
-        return sections.isEmpty();
-    }
-
     public List<Station> getStations() {
-        Map<Station, Station> sourceToTarget = sections.stream()
-                .collect(Collectors.toMap(Section::getSource, Section::getTarget));
-        Station firstStation = findFirstStation(sourceToTarget);
-        return getSortedStations(sourceToTarget, firstStation);
+        Map<String, String> sourceToTarget = sections.stream()
+                .collect(Collectors.toMap(Section::getSourceName, Section::getTargetName));
+        return findFirstStationName(sourceToTarget)
+                .map(station -> getSortedStations(sourceToTarget, station))
+                .orElse(Collections.emptyList());
     }
 
-    private List<Station> getSortedStations(Map<Station, Station> sourceToTarget, Station firstStation) {
-        List<Station> stations = new ArrayList<>();
-        Station station = firstStation;
+    private List<Station> getSortedStations(Map<String, String> sourceToTarget, String firstStation) {
+        List<String> stations = new ArrayList<>();
+        String station = firstStation;
         stations.add(station);
         while (sourceToTarget.containsKey(station)) {
-            Station nextStation = sourceToTarget.get(station);
+            String nextStation = sourceToTarget.get(station);
             stations.add(nextStation);
             station = nextStation;
         }
-        return stations;
+        return stations.stream()
+                .map(this::findStationByName)
+                .collect(Collectors.toList());
     }
 
-    private Station findFirstStation(Map<Station, Station> sourceToTarget) {
-        Set<Station> sources = new HashSet<>(sourceToTarget.keySet());
+    private Optional<String> findFirstStationName(Map<String, String> sourceToTarget) {
+        Set<String> sources = new HashSet<>(sourceToTarget.keySet());
         sources.removeAll(sourceToTarget.values());
         return sources.stream()
-                .findAny().orElseThrow(() -> new IllegalArgumentException("종점역을 찾지 못했습니다"));
+                .findAny();
+    }
+
+    public Station findStationByName(String name) {
+        return sections.stream()
+                .flatMap(section -> Stream.of(section.getSource(), section.getTarget()))
+                .filter(station -> station.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("해당하는 역이 없습니다."));
     }
 
     public String getName() {
@@ -154,7 +164,27 @@ public class Line {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return List.copyOf(sections);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return id.equals(line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -1,33 +1,42 @@
 package subway.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
-import subway.entity.StationEntity;
+import subway.domain.Station;
+import subway.repository.dao.SectionDao;
 import subway.repository.dao.StationDao;
+import subway.repository.entity.StationEntity;
 
 @Repository
 public class StationRepository {
 
+    private final SectionDao sectionDao;
     private final StationDao stationDao;
 
-    public StationRepository(StationDao stationDao) {
+    public StationRepository(SectionDao sectionDao, StationDao stationDao) {
+        this.sectionDao = sectionDao;
         this.stationDao = stationDao;
     }
 
-    public StationEntity save(StationEntity station) {
-        return stationDao.insert(station);
+    public Station save(Station station) {
+        StationEntity stationEntity = new StationEntity(station.getName());
+        StationEntity savedEntity = stationDao.insert(stationEntity);
+        return toStation(savedEntity);
     }
 
-    public Optional<StationEntity> findById(Long id) {
-        return stationDao.findById(id);
+    private Station toStation(StationEntity savedEntity) {
+        return new Station(savedEntity.getId(), savedEntity.getName());
     }
 
-    public StationEntity findOrSaveStation(String stationName) {
-        return stationDao.findByName(stationName)
-                .orElseGet(() -> stationDao.insert(new StationEntity(stationName)));
+    public Optional<Station> findByName(String name) {
+        return stationDao.findByName(name).map(this::toStation);
     }
 
-    public Optional<StationEntity> findByName(String name) {
-        return stationDao.findByName(name);
+    public void deleteById(Long id) {
+        if (sectionDao.existsByStationId(id)) {
+            throw new IllegalArgumentException("구간에 저장된 역은 삭제할 수 없습니다");
+        }
+        stationDao.deleteByIds(List.of(id));
     }
 }

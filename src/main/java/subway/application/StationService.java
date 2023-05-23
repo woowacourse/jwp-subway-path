@@ -1,43 +1,34 @@
 package subway.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-import subway.entity.StationEntity;
-import subway.repository.dao.StationDao;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Station;
+import subway.dto.StationAddRequest;
+import subway.repository.StationRepository;
 
+@Transactional
 @Service
 public class StationService {
-    private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    private final StationRepository stationRepository;
+
+    public StationService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        StationEntity station = stationDao.insert(new StationEntity(stationRequest.getName()));
-        return StationResponse.of(station);
+    public Station createStation(StationAddRequest request) {
+        Station station = new Station(request.getStationName());
+        return stationRepository.save(station);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id).get());
+    public void deleteStation(Long stationId) {
+        stationRepository.deleteById(stationId);
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<StationEntity> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new StationEntity(id, stationRequest.getName()));
-    }
-
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    @Transactional(readOnly = true)
+    public Station findByName(String stationName) {
+        return stationRepository.findByName(stationName)
+                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
     }
 }

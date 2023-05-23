@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: local
+  h2:
+    console:
+      enabled: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    jdbc-url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}

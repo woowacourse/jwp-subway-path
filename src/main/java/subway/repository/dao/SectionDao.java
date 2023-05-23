@@ -7,14 +7,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.entity.SectionEntity;
+import subway.repository.entity.SectionEntity;
 
 @Repository
 public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+    private static final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("id"),
                     rs.getLong("source_station_id"),
@@ -40,11 +40,6 @@ public class SectionDao {
         return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
-    public void deleteAll(final Long lineId) {
-        String sql = "DELETE FROM section WHERE line_id = ?";
-        jdbcTemplate.update(sql, lineId);
-    }
-
     public List<SectionEntity> findByLineId(final Long lineId) {
         String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
@@ -53,5 +48,15 @@ public class SectionDao {
     public List<SectionEntity> findAll() {
         String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public void deleteByLineId(Long lineId) {
+        String sql = "DELETE FROM section WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public boolean existsByStationId(Long stationId) {
+        String sql = "select exists(select * from section where source_station_id = ? or target_station_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId, stationId);
     }
 }

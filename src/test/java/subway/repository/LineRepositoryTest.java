@@ -3,6 +3,7 @@ package subway.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -24,14 +25,15 @@ class LineRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private StationDao stationDao;
     private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate);
-        lineRepository = new LineRepository(new SectionDao(jdbcTemplate), new LineDao(jdbcTemplate),
-                stationDao);
+        lineRepository = new LineRepository(
+                new SectionDao(jdbcTemplate),
+                new LineDao(jdbcTemplate),
+                new StationDao(jdbcTemplate)
+        );
     }
 
     @Test
@@ -41,10 +43,10 @@ class LineRepositoryTest {
         Line line = new Line("2호선", sections);
 
         // when
-        Long saveId = lineRepository.save(line);
+        Line savedLine = lineRepository.save(line);
 
         // then
-        assertThat(saveId).isPositive();
+        assertThat(savedLine.getId()).isPositive();
     }
 
     @Test
@@ -65,15 +67,119 @@ class LineRepositoryTest {
         // then
         assertThat(lines).hasSize(2);
         assertThat(lines).flatExtracting(Line::getStations)
-                .contains(
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Station("민트역"),
                         new Station("서울역"),
                         new Station("명동역"),
                         new Station("광화문역"),
-                        new Station("민트역"),
+                        new Station("박스터역"),
                         new Station("교대역"),
                         new Station("강남역"),
-                        new Station("역삼역"),
-                        new Station("박스터역")
-                );
+                        new Station("역삼역")
+                ));
+    }
+
+    @Test
+    void 노선을_삭제한다() {
+        // given
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        List<Section> secondSections = List.of(new Section("X", "A", 10), new Section("A", "Y", 5));
+        Line secondLine = new Line("2호선", secondSections);
+        Line savedLine = lineRepository.save(firstLine);
+        lineRepository.save(secondLine);
+
+        // when
+        lineRepository.deleteById(savedLine.getId());
+
+        // then
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getStations)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Station("X"),
+                        new Station("A"),
+                        new Station("Y")
+                ));
+    }
+
+    @Test
+    void 노선에_역을_추가한다() {
+        // given
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        lineRepository.save(firstLine);
+        firstLine.addSection(new Section(new Station("B"), new Station("D"), 5));
+
+        // when
+        lineRepository.save(firstLine);
+
+        // then
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("A", "B", 10),
+                        new Section("B", "D", 5),
+                        new Section("D", "C", 2)
+                ));
+    }
+
+    @Test
+    void 노선에_역을_삭제한다() {
+        // given
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        Line savedLine = lineRepository.save(firstLine);
+        savedLine.removeStation(new Station("B"));
+
+        // when
+        lineRepository.save(savedLine);
+
+        // then
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("A", "C", 17)
+                ));
+    }
+
+    @Test
+    void 노선_ID로_조회한다() {
+        // given
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        Line savedLine = lineRepository.save(firstLine);
+
+        // when
+        Optional<Line> findLine = lineRepository.findById(savedLine.getId());
+
+        // then
+        assertThat(findLine).isPresent();
+    }
+
+    @Test
+    void 노선_이름이_이미_존재하면_true를_반환한다() {
+        // given
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        lineRepository.save(firstLine);
+
+        // when, then
+        assertThat(lineRepository.existsByName("1호선")).isTrue();
+    }
+
+    @Test
+    void 노선_이름이_이미_존재하지않으면_false를_반환한다() {
+        // given
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        lineRepository.save(firstLine);
+
+        // when, then
+        assertThat(lineRepository.existsByName("2호선")).isFalse();
     }
 }

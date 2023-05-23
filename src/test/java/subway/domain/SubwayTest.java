@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,11 @@ class SubwayTest {
 
         //then
         assertThat(subway.getLines()).flatExtracting(Line::getSections)
-                .containsExactly(new Section("강남역", "역삼역", 10));
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("강남역", "역삼역", 10)
+                ));
     }
 
     @Test
@@ -51,27 +56,30 @@ class SubwayTest {
         subway.addLine(line);
 
         // when
-        subway.removeStation("2호선", new Station("역삼역"));
+        subway.removeStation("2호선", "역삼역");
         Line findLine = subway.findLineByName("2호선");
 
         // then
-        assertThat(findLine.getSections()).contains(new Section("교대역", "강남역", 10));
+        assertThat(findLine.getSections()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("교대역", "강남역", 10)
+                ));
     }
 
     @Test
-    void 노선에_역이_2개만_존재할_때_하나의_역을_삭제하면_노선_전체가_삭제되고_조회되지_않는다() {
+    void 노선에_역이_2개만_존재할_때_하나의_역을_삭제하면_역_전체가_삭제된다() {
         // given
         Subway subway = new Subway();
         Line line = new Line("2호선", List.of(new Section("교대역", "강남역", 10)));
         subway.addLine(line);
 
         // when
-        subway.removeStation("2호선", new Station("강남역"));
+        subway.removeStation("2호선", "강남역");
 
         // then
-        assertThatThrownBy(() -> subway.findLineByName("2호선"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 노선입니다.");
+        assertThat(subway.getLines()).flatExtracting(Line::getStations)
+                .isEmpty();
     }
 
     @Test
@@ -82,8 +90,8 @@ class SubwayTest {
         subway.addLine(line);
 
         // when, then
-        assertThatThrownBy(() -> subway.removeStation("1호선", new Station("강남역")))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> subway.removeStation("1호선", "강남역"))
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 노선입니다.");
     }
 
@@ -95,8 +103,8 @@ class SubwayTest {
         subway.addLine(line);
 
         // when, then
-        assertThatThrownBy(() -> subway.removeStation("2호선", new Station("역삼역")))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> subway.removeStation("2호선", "역삼역"))
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
     }
 
@@ -113,7 +121,12 @@ class SubwayTest {
         Line findLine = subway.findLineByName("1호선");
 
         // then
-        assertThat(findLine.getSections()).containsExactly(new Section("서울역", "명동역", 10));
+        assertThat(findLine.getSections())
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("서울역", "명동역", 10)
+                ));
     }
 
     @Test
@@ -125,7 +138,7 @@ class SubwayTest {
 
         // when, then
         assertThatThrownBy(() -> subway.findLineByName("2호선"))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 노선입니다.");
     }
 
@@ -145,16 +158,22 @@ class SubwayTest {
         subway.addLine(secondLine);
 
         // when
-        subway.removeStation("1호선", new Station("강남역"));
+        subway.removeStation("1호선", "강남역");
         Line findFirstLine = subway.findLineByName("1호선");
         Line findSecondLine = subway.findLineByName("2호선");
 
         // then
-        assertThat(findFirstLine.getSections()).containsExactly(new Section("서울역", "명동역", 15));
-        assertThat(findSecondLine.getSections()).containsExactly(
-                new Section("교대역", "강남역", 7),
-                new Section("강남역", "역삼역", 9)
-        );
+        assertThat(findFirstLine.getSections()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("서울역", "명동역", 15)
+                ));
+        assertThat(findSecondLine.getSections()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("교대역", "강남역", 7),
+                        new Section("강남역", "역삼역", 9)
+                ));
     }
 
 }

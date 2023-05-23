@@ -4,10 +4,16 @@ import java.util.Objects;
 
 public class Station {
 
+    private final Long id;
     private final String name;
 
     public Station(String name) {
+        this(null, name);
+    }
+
+    public Station(Long id, String name) {
         validateName(name);
+        this.id = id;
         this.name = name;
     }
 
@@ -25,6 +31,10 @@ public class Station {
         return name;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -34,12 +44,12 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return Objects.equals(name, station.name);
+        return id.equals(station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 
     @Override

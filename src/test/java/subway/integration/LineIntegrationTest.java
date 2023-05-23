@@ -1,221 +1,248 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.integration.IntegrationTestFixture.구간_추가_요청;
+import static subway.integration.IntegrationTestFixture.노선_삭제_요청;
+import static subway.integration.IntegrationTestFixture.노선_생성_요청;
+import static subway.integration.IntegrationTestFixture.노선_전체_조회_결과를_확인한다;
+import static subway.integration.IntegrationTestFixture.노선_정보;
+import static subway.integration.IntegrationTestFixture.노선_조회_결과;
+import static subway.integration.IntegrationTestFixture.단일_노선_조회_요청;
+import static subway.integration.IntegrationTestFixture.리소스를_찾을_수_없다는_응답인지_검증한다;
+import static subway.integration.IntegrationTestFixture.반환값이_없는지_검증한다;
+import static subway.integration.IntegrationTestFixture.비정상_요청이라는_응답인지_검증한다;
+import static subway.integration.IntegrationTestFixture.역_삭제_요청;
+import static subway.integration.IntegrationTestFixture.역_생성_요청;
+import static subway.integration.IntegrationTestFixture.전체_노선_조회_요청;
+import static subway.integration.IntegrationTestFixture.정상_응답인지_검증한다;
+import static subway.integration.IntegrationTestFixture.최단_거리_정보를_확인한다;
+import static subway.integration.IntegrationTestFixture.최단_거리_조회_요청;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import subway.dto.ErrorResponse;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationsResponse;
+import subway.dto.LineSaveResponse;
 
-@DisplayName("지하철 노선 관련 기능")
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        lineRequest1 = new LineRequest("신분당선", "강남역", "역삼역", 10);
-        lineRequest2 = new LineRequest("구신분당선", "강남역", "구역삼역", 10);
-    }
 
     @Nested
-    @DisplayName("지하철 노선 생성")
-    class create extends IntegrationTest {
+    public class 노선을_추가할_때 {
 
-        @DisplayName("정상 생성한다")
         @Test
-        void createLine() {
-            // when
-            ExtractableResponse<Response> response = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest1)
-                    .when().post("/lines")
-                    .then().log().all().
-                    extract();
+        void 정상적으로_추가된다() {
+            ExtractableResponse<Response> response = 노선_생성_요청("2호선", "강남역", "역삼역", 10);
 
-            // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-            assertThat(response.header("Location")).isNotBlank();
+            assertThat(response.header("Location")).isNotEmpty();
         }
 
-        @DisplayName("기존에 존재하는 이름으로 생성하면 400에러를 반환한다")
         @Test
-        void createLineWithDuplicateName() {
-            // given
-            RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest1)
-                    .when().post("/lines")
-                    .then().log().all().
-                    extract();
+        void 이미_존재하는_노선의_이름을_추가하면_오류가_발생한다() {
+            노선_생성_요청("2호선", "강남역", "역삼역", 10);
 
-            // when
-            ExtractableResponse<Response> response = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest1)
-                    .when().post("/lines")
-                    .then().log().all().
-                    extract();
+            ExtractableResponse<Response> response = 노선_생성_요청("2호선", "역삼역", "잠실역", 10);
 
-            // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-            ErrorResponse errorResponse = response.body().as(ErrorResponse.class);
-            assertThat(errorResponse.getMessage()).isEqualTo("이미 존재하는 이름입니다 입력값 : " + lineRequest1.getLineName());
-        }
-
-    }
-
-    @DisplayName("지하철 노선 조회")
-    @Nested
-    class find extends IntegrationTest {
-
-        @DisplayName("목록 전체를 조회한다.")
-        @Test
-        void getLines() {
-            lineRequest1 = new LineRequest("2호선", "강남역", "역삼역", 5);
-            lineRequest2 = new LineRequest("1호선", "서울역", "명동역", 7);
-
-            // given
-            ExtractableResponse<Response> createResponse1 = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest1)
-                    .when().post("/lines")
-                    .then().log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract();
-
-            ExtractableResponse<Response> createResponse2 = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest2)
-                    .when().post("/lines")
-                    .then().log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract();
-
-            // when
-            ExtractableResponse<Response> response = RestAssured
-                    .given().log().all()
-                    .accept(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/lines")
-                    .then().log().all()
-                    .extract();
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-                    .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                    .collect(Collectors.toList());
-            List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                    .map(LineResponse::getId)
-                    .collect(Collectors.toList());
-            assertThat(resultLineIds).containsAll(expectedLineIds);
-        }
-
-        @DisplayName("하나를 조회한다.")
-        @Test
-        void getLine() {
-            lineRequest1 = new LineRequest("2호선", "강남역", "역삼역", 5);
-
-            // given
-            ExtractableResponse<Response> createResponse = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest1)
-                    .when().post("/lines")
-                    .then().log().all().
-                    extract();
-
-            // when
-            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-            ExtractableResponse<Response> response = RestAssured
-                    .given().log().all()
-                    .accept(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/lines/{lineId}", lineId)
-                    .then().log().all()
-                    .extract();
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            StationsResponse resultResponse = response.as(StationsResponse.class);
+            비정상_요청이라는_응답인지_검증한다(response);
         }
     }
 
-    @DisplayName("지하철 노선 수정")
     @Nested
-    class update extends IntegrationTest {
+    public class 단일_노선을_조회할_때 {
 
-        @DisplayName("하나를 수정한다.")
         @Test
-        void updateLine() {
-            // given
-            ExtractableResponse<Response> createResponse = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest1)
-                    .when().post("/lines")
-                    .then().log().all().
-                    extract();
+        void 노선_ID를_받아_상행부터_하행까지의_역을_정렬하여_반환한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 4).as(LineSaveResponse.class).getId();
 
-            // when
-            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-            ExtractableResponse<Response> response = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest2)
-                    .when().put("/lines/{lineId}", lineId)
-                    .then().log().all()
-                    .extract();
+            ExtractableResponse<Response> response = 단일_노선_조회_요청(저장된_노선_ID);
 
-            // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            노선_조회_결과(response, 노선_정보("2호선", "강남역", "역삼역"));
         }
     }
 
-    @DisplayName("지하철 노선 삭제")
     @Nested
-    class delete extends IntegrationTest {
+    public class 전체_노선을_조회할_떄 {
 
-        @DisplayName("하나를 제거한다.")
         @Test
-        void deleteLine() {
-            // given
-            ExtractableResponse<Response> createResponse = RestAssured
-                    .given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(lineRequest1)
-                    .when().post("/lines")
-                    .then().log().all().
-                    extract();
+        void 노선별로_상행부터_하행까지의_역을_정렬하여_반환한다() {
+            노선_생성_요청("1호선", "서울역", "시청역", 10);
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
 
-            // when
-            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-            ExtractableResponse<Response> response = RestAssured
-                    .given().log().all()
-                    .when().delete("/lines/{lineId}", lineId)
-                    .then().log().all()
-                    .extract();
+            ExtractableResponse<Response> response = 전체_노선_조회_요청();
 
-            // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+            노선_전체_조회_결과를_확인한다(response, 노선_정보("1호선", "서울역", "시청역"), 노선_정보("2호선", "강남역", "역삼역"));
+        }
+    }
+
+    @Nested
+    public class 노선을_삭제할_때 {
+
+        @Test
+        void 정상_제거된다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 노선_삭제_요청(저장된_노선_ID);
+
+            반환값이_없는지_검증한다(response);
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청());
+        }
+
+        @Test
+        void 사용되지_않는_역만_제거한다() {
+            노선_생성_요청("1호선", "서울역", "강남역", 10);
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 노선_삭제_요청(저장된_노선_ID);
+
+            반환값이_없는지_검증한다(response);
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("1호선", "서울역", "강남역"));
+        }
+    }
+
+    @Nested
+    public class 노선에_구간을_등록할_때 {
+
+        @Test
+        void 정상_추가_한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+            역_생성_요청("잠실역");
+
+            ExtractableResponse<Response> response = 구간_추가_요청(저장된_노선_ID, "강남역", "잠실역", 2);
+
+            정상_응답인지_검증한다(response);
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("2호선", "강남역", "잠실역", "역삼역"));
+        }
+
+        @Test
+        void 구간이_연결되지_않으면_예외가_발생한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+            역_생성_요청("서울역");
+            역_생성_요청("시청역");
+
+            ExtractableResponse<Response> response = 구간_추가_요청(저장된_노선_ID, "서울역", "시청역", 3);
+
+            비정상_요청이라는_응답인지_검증한다(response);
+        }
+
+        @Test
+        void 구간_사이에_추가하는_경우_구간_사이의_길이보다_추가할_구간의_거리가_같거나_긴경우_예외가_발생한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+            역_생성_요청("잠실역");
+
+            ExtractableResponse<Response> response = 구간_추가_요청(저장된_노선_ID, "강남역", "잠실역", 5);
+
+            비정상_요청이라는_응답인지_검증한다(response);
+        }
+
+        @Test
+        void 이미_존재하는_구간을_등록하면_예외가_발생한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 구간_추가_요청(저장된_노선_ID, "강남역", "역삼역", 3);
+
+            비정상_요청이라는_응답인지_검증한다(response);
+        }
+
+        @Test
+        void 없는_노선에_구간을_등록하면_예외가_발생한다() {
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
+
+            ExtractableResponse<Response> response = 구간_추가_요청(Long.MAX_VALUE, "강남역", "잠실역", 2);
+
+            리소스를_찾을_수_없다는_응답인지_검증한다(response);
+        }
+    }
+
+    @Nested
+    public class 노선에서_역을_삭제할_떄 {
+
+        @Test
+        void 정상적으로_삭제된다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+            역_생성_요청("잠실역");
+            구간_추가_요청(저장된_노선_ID, "역삼역", "잠실역", 10);
+
+            역_삭제_요청(저장된_노선_ID, "역삼역");
+
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("2호선", "강남역", "잠실역"));
+        }
+
+        @Test
+        void 노선에_역이_2개만_존재할_때_역은_전체가_삭제된다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+
+            역_삭제_요청(저장된_노선_ID, "역삼역");
+
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("2호선"));
+        }
+
+        @Test
+        void 존재하지_않는_노선의_역을_삭제하면_예외가_발생한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 역_삭제_요청(저장된_노선_ID, "서면역");
+
+            리소스를_찾을_수_없다는_응답인지_검증한다(response);
+        }
+
+        @Test
+        void 환승역을_삭제하면_한_노선에서만_삭제되고_다른_노선에는_존재한다() {
+            노선_생성_요청("1호선", "강남역", "시청역", 10);
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 역_삭제_요청(저장된_노선_ID, "강남역");
+
+            반환값이_없는지_검증한다(response);
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("1호선", "강남역", "시청역"), 노선_정보("2호선"));
+        }
+
+        @Test
+        void 노선에_존재하지_않는_역을_삭제하면_예외가_발생한다() {
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
+
+            ExtractableResponse<Response> response = 역_삭제_요청(Long.MAX_VALUE, "강남역");
+
+            리소스를_찾을_수_없다는_응답인지_검증한다(response);
+        }
+    }
+
+    @Nested
+    public class 최단_거리를_조회할_때 {
+
+        @Test
+        void 요금과_지나가는_역을_반환한다() {
+            노선_생성_요청("1호선", "강남역", "시청역", 10);
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(LineSaveResponse.class).getId();
+            구간_추가_요청(저장된_노선_ID, "역삼역", "시청역", 3);
+
+            ExtractableResponse<Response> response = 최단_거리_조회_요청("강남역", "시청역");
+
+            최단_거리_정보를_확인한다(response, 1250, 8, "강남역", "역삼역", "시청역");
+        }
+
+        @Test
+        void 출발지와_도착지가_같으면_예외가_발생한다() {
+            노선_생성_요청("1호선", "강남역", "시청역", 10);
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
+
+            ExtractableResponse<Response> response = 최단_거리_조회_요청("강남역", "강남역");
+
+            비정상_요청이라는_응답인지_검증한다(response);
+        }
+
+        @Test
+        void 출발지나_도착지가_존재하지_않는_역이면_예외가_발생한다() {
+            노선_생성_요청("1호선", "강남역", "시청역", 10);
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
+
+            ExtractableResponse<Response> response = 최단_거리_조회_요청("서면역", "강남역");
+
+            리소스를_찾을_수_없다는_응답인지_검증한다(response);
         }
     }
 }

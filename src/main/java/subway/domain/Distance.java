@@ -12,8 +12,8 @@ public class Distance {
     }
 
     private void validateMinValue(int value) {
-        if (value < 0) {
-            throw new IllegalArgumentException("거리는 음수가 될 수 없습니다.");
+        if (value <= 0) {
+            throw new IllegalArgumentException("거리는 양수만 가능합니다.");
         }
     }
 
