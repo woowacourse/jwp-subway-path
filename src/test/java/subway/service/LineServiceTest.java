@@ -33,7 +33,6 @@ class LineServiceTest {
 	@Mock
 	private LineRepository lineRepository;
 
-
 	@Test
 	@DisplayName("노선 생성 서비스 테스트")
 	void createLine() {
@@ -66,7 +65,7 @@ class LineServiceTest {
 	}
 
 	@Test
-	@DisplayName("노선 생신 서비스 테스트")
+	@DisplayName("노선 갱신 서비스 테스트")
 	void updateLine() {
 		// given
 		Long id = 1L;
