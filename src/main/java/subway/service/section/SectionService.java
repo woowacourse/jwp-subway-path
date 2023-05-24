@@ -29,16 +29,19 @@ public class SectionService {
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
+    private final SectionCaching sectionCaching;
 
-    public SectionService(LineRepository lineRepository, H2StationsInLineRepository sectionRepository, StationRepository stationDao) {
+    public SectionService(LineRepository lineRepository, H2StationsInLineRepository sectionRepository, StationRepository stationDao, SectionCaching sectionCaching) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationDao;
+        this.sectionCaching = sectionCaching;
     }
 
     public SectionCreateResponse insert(SectionCreateRequest sectionCreateRequest) {
         Line line = lineRepository.findById(sectionCreateRequest.getLineId());
-        Sections sections = sectionRepository.findSectionsByLine(line);
+//        Sections sections = sectionRepository.findSectionsByLine(line);
+        Sections sections = sectionCaching.getSections(line);
         Station upStation = stationRepository.findById(sectionCreateRequest.getUpStationId());
         Station downStation = stationRepository.findById(sectionCreateRequest.getDownStationId());
         Distance distance = new Distance(sectionCreateRequest.getDistance());
@@ -47,6 +50,7 @@ public class SectionService {
         List<SectionResponse> addedSectionResponses = new ArrayList<>();
         insertNewSection(line, addResult, addedSectionResponses);
         deleteExistSection(addResult);
+        sectionCaching.clearSectionsCache();
 
         return new SectionCreateResponse(sectionCreateRequest.getLineId(), addedSectionResponses, List.of());
 
@@ -62,7 +66,7 @@ public class SectionService {
             deleteSection(station, perLine, sections);
         }
         stationRepository.deleteById(station.getId());
-
+        sectionCaching.clearSectionsCache();
     }
 
     private void deleteSection(Station station, Line perLine, Sections sections) {

@@ -20,4 +20,6 @@ public interface SectionRepository {
     boolean isLastSectionInLine(Line line);
 
     List<Section> findAll();
+
+    Map<Line, Sections> findAllSectionsPerLine();
 }

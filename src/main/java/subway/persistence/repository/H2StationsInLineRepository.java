@@ -77,22 +77,7 @@ public class H2StationsInLineRepository implements SectionRepository {
         Map<Long, List<SectionEntity>> sectionEntitiesPerLineId = sectionEntities.stream()
                 .collect(Collectors.groupingBy(SectionEntity::getLindId));
 
-        Map<Line, Sections> sectionsPerLine = new HashMap<>();
-        for (Long lineId : sectionEntitiesPerLineId.keySet()) {
-            LineEntity lineEntity = lineDao.findLineById(lineId).orElseThrow(
-                    () -> new NotExistException("존재하지 않는 노선입니다.")
-            );
-            Line line = Line.from(lineEntity);
-            List<SectionEntity> entities = sectionEntitiesPerLineId.get(lineId);
-            Set<Long> uniqueStationIds = makeUniqueStationIds(entities);
-
-            Map<Long, StationEntity> stationEntities = stationDao.findStationsById(uniqueStationIds).stream()
-                    .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
-            Sections sections = new Sections(makeSections(entities, stationEntities));
-            sectionsPerLine.put(line, sections);
-        }
-
-        return sectionsPerLine;
+        return makeSectionsPerLine(sectionEntitiesPerLineId);
     }
 
     @Override
@@ -115,6 +100,38 @@ public class H2StationsInLineRepository implements SectionRepository {
                 .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
 
         return makeSections(sectionEntities, stationEntities);
+    }
+
+    @Override
+    public Map<Line, Sections> findAllSectionsPerLine() {
+        List<SectionEntity> sectionEntities = sectionDao.findAll();
+        if (sectionEntities.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<Long, List<SectionEntity>> sectionEntitiesPerLineId = sectionEntities.stream()
+                .collect(Collectors.groupingBy(SectionEntity::getLindId));
+
+        return makeSectionsPerLine(sectionEntitiesPerLineId);
+    }
+
+
+    private Map<Line, Sections> makeSectionsPerLine(Map<Long, List<SectionEntity>> sectionEntitiesPerLineId) {
+        Map<Line, Sections> sectionsPerLine = new HashMap<>();
+        for (Long lineId : sectionEntitiesPerLineId.keySet()) {
+            LineEntity lineEntity = lineDao.findLineById(lineId).orElseThrow(
+                    () -> new NotExistException("존재하지 않는 노선입니다.")
+            );
+            Line line = Line.from(lineEntity);
+            List<SectionEntity> entities = sectionEntitiesPerLineId.get(lineId);
+            Set<Long> uniqueStationIds = makeUniqueStationIds(entities);
+
+            Map<Long, StationEntity> stationEntities = stationDao.findStationsById(uniqueStationIds).stream()
+                    .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
+            Sections sections = new Sections(makeSections(entities, stationEntities));
+            sectionsPerLine.put(line, sections);
+        }
+        return sectionsPerLine;
     }
 
     private List<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {

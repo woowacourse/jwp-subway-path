@@ -13,6 +13,7 @@ import subway.controller.line.dto.LineStationsResponse;
 import subway.controller.station.dto.StationWebResponse;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
+import subway.service.section.SectionCaching;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
 import subway.service.section.repository.SectionRepository;
@@ -41,6 +42,9 @@ public class LineIntegrationTest extends IntegrationTest {
     @Autowired
     SectionRepository sectionRepository;
 
+    @Autowired
+    SectionCaching sectionCaching;
+
     Line secondLine;
     Line eightLine;
 
@@ -64,6 +68,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+        sectionCaching.clearSectionsCache();
         secondLine = lineRepository.insert(SECOND_LINE_NO_ID);
         eightLine = lineRepository.insert(EIGHT_LINE_NO_ID);
 

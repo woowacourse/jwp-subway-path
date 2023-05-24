@@ -47,12 +47,16 @@ class SectionServiceTest {
     @Autowired
     StationRepository stationRepository;
 
+    @Autowired
+    SectionCaching sectionCaching;
+
     Line savedLine;
     Station savedJamsil;
     Station savedGangnam;
 
     @BeforeEach
     void setUp() {
+        sectionCaching.clearSectionsCache();
         savedLine = lineRepository.insert(EIGHT_LINE_NO_ID);
         savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
         savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
