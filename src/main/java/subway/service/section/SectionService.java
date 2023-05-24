@@ -40,8 +40,8 @@ public class SectionService {
 
     public SectionCreateResponse insert(SectionCreateRequest sectionCreateRequest) {
         Line line = lineRepository.findById(sectionCreateRequest.getLineId());
-//        Sections sections = sectionRepository.findSectionsByLine(line);
         Sections sections = sectionCaching.getSections(line);
+
         Station upStation = stationRepository.findById(sectionCreateRequest.getUpStationId());
         Station downStation = stationRepository.findById(sectionCreateRequest.getDownStationId());
         Distance distance = new Distance(sectionCreateRequest.getDistance());
