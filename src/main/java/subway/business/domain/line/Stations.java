@@ -24,12 +24,8 @@ public class Stations {
     }
 
     public boolean hasStationNameOf(Station targetStation) {
-        for (Station station : stations) {
-            if (station.hasNameOf(targetStation.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return stations.stream()
+                .anyMatch(station -> station.hasNameOf(targetStation.getName()));
     }
 
     public Station findStationByName(String stationName) {

@@ -111,7 +111,7 @@ public class JgraphtSubwayMap implements SubwayMap {
     private static void addUpwardTransferEdge(Graph<Station, StationEdge> graph, Transfer transfer) {
         graph.setEdgeWeight(
                 graph.addEdge(transfer.getFirstStation(), transfer.getLastStation()),
-                0
+                0 // TODO 0 매직넘버 지우기
         );
     }
 
