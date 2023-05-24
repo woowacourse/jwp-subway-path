@@ -59,7 +59,7 @@ Response Headers {
 노선에 역 구간 등록
 
 ```text
-POST /subway/lines/{line_id}/sections
+POST /sections/{line_id}
 
 Request {
     startStation : "회기",
@@ -93,17 +93,7 @@ Response Headers {
 
 Response Body {
     id : 1L,
-    lineName : "1호선",
-    stations : [
-         {
-            id : 1L,
-            name : "회기"
-        },
-        {
-            id : 2L,
-            name : "청량리"
-        }
-   ]
+    lineName : "1호선"
 }
 ```
 
@@ -117,29 +107,36 @@ Response Headers {
 }
 
 Response Body {[
-    {id : 1L,
-    lineName : "1호선",
+    {
+        id : 1L,
+        lineName : "1호선"
+    },
+   {
+        id : 2L,
+        lineName : "2호선"
+   }
+]}
+```
+
+구간 요금 조회
+
+```text
+GET /routes?startStationName=회기&endStationName=청량리
+
+Response Headers {
+    Status : 200
+}
+
+Response Body {
+    distance : 5,
+    fee: 1250,
     stations : [
          {
-            id : 1L,
             name : "회기"
         },
         {
-            id : 2L,
             name : "청량리"
         }
-   ]},
-   {id : 2L,
-    lineName : "2호선",
-    stations : [
-         {
-            id : 3L,
-            name : "잠실"
-        },
-        {
-            id : 4L,
-            name : "잠실새내"
-        }
-   ]}
-]}
+   ]
+}
 ```

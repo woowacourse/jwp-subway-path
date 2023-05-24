@@ -1,12 +1,12 @@
 package subway.dto;
 
-public class LineRequest {
+public class LineSaveDto {
     private String lineName;
 
-    public LineRequest() {
+    private LineSaveDto() {
     }
 
-    public LineRequest(String lineName) {
+    public LineSaveDto(String lineName) {
         this.lineName = lineName;
     }
 

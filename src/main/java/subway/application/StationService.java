@@ -1,11 +1,10 @@
 package subway.application;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
-import subway.dao.SectionEntity;
 import subway.dao.StationDao;
+import subway.exception.station.InvalidDeleteStationException;
 
 @Transactional(readOnly = true)
 @Service
@@ -21,17 +20,11 @@ public class StationService {
 
     @Transactional
     public void deleteStation(Long stationId) {
-        List<SectionEntity> sectionEntities = sectionDao.findAll();
-        long startStationCount = sectionEntities.stream()
-                .filter(it -> it.getStartStationId() == stationId)
-                .count();
+        boolean isExistStartStationInSections = sectionDao.existStationByStationId(stationId);
 
-        long endStationCount = sectionEntities.stream()
-                .filter(it -> it.getStartStationId() == stationId)
-                .count();
-
-        if (startStationCount == 0 || endStationCount == 0) {
-            stationDao.deleteById(stationId);
+        if (isExistStartStationInSections) {
+            throw new InvalidDeleteStationException("구간에 등록되어 있는 역은 삭제할 수 없습니다.");
         }
+        stationDao.deleteById(stationId);
     }
 }

@@ -1,14 +1,14 @@
 package subway.dto;
 
-public class SectionRequest {
+public class SectionSaveDto {
     private String startStation;
     private String endStation;
     private Integer distance;
 
-    public SectionRequest() {
+    private SectionSaveDto() {
     }
 
-    public SectionRequest(String startStation, String endStation, Integer distance) {
+    public SectionSaveDto(String startStation, String endStation, Integer distance) {
         this.startStation = startStation;
         this.endStation = endStation;
         this.distance = distance;

@@ -1,18 +1,21 @@
 package subway.application;
 
+import static subway.application.StationFactory.toStation;
+import static subway.domain.ChangeSectionStatus.FOR_MIDDLE_SECTION;
+
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.dao.StationDao;
 import subway.dao.StationEntity;
+import subway.domain.ChangeSections;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.SectionRequest;
+import subway.dto.SectionSaveDto;
 
 @Transactional(readOnly = true)
 @Service
@@ -20,86 +23,85 @@ public class SectionService {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final SectionsMapper sectionsMapper;
 
-    public SectionService(SectionDao sectionDao, StationDao stationDao) {
+    public SectionService(SectionDao sectionDao, StationDao stationDao, final SectionsMapper sectionsMapper) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.sectionsMapper = sectionsMapper;
     }
 
     @Transactional
-    public void saveSection(Long lineId, SectionRequest request) {
+    public void saveSection(Long lineId, SectionSaveDto request) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
-        List<Section> savedSections = sectionEntities.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
+        Sections sections = sectionsMapper.mapFrom(sectionEntities);
 
-        Sections sections = new Sections(savedSections);
+        Section newSection = getNewSection(request);
 
+        ChangeSections sectionsForUpdate = sections.add(newSection);
+
+        saveNewStationIfNotExists(newSection.getStartStation());
+        saveNewStationIfNotExists(newSection.getEndStation());
+
+        updateSections(lineId, sectionsForUpdate);
+    }
+
+    private void updateSections(final Long lineId, final ChangeSections sectionsForUpdate) {
+        updateSectionIfChangedMiddleSection(lineId, sectionsForUpdate);
+        SectionEntity newSectionEntity = makeSectionEntity(lineId, sectionsForUpdate.getInsertOrRemoveSection());
+        sectionDao.insert(newSectionEntity);
+    }
+
+    private Section getNewSection(final SectionSaveDto request) {
         Station requestStartStation = new Station(request.getStartStation());
         Station requestEndStation = new Station(request.getEndStation());
-        if (!stationDao.isExistStationByName(requestStartStation.getName())) {
-            stationDao.insert(new StationEntity(requestStartStation.getName()));
-        }
-
-        if (!stationDao.isExistStationByName(requestEndStation.getName())) {
-            stationDao.insert(new StationEntity(requestEndStation.getName()));
-        }
         Distance requestDistance = new Distance(request.getDistance());
-        Section requestSection = new Section(requestStartStation, requestEndStation, requestDistance);
 
-        sections.add(requestSection);
-
-        sectionDao.deleteAll();
-
-        List<SectionEntity> makeSectionEntitiesByAddedSections = makeSectionEntities(lineId, sections.getSections());
-
-        sectionDao.insertAll(makeSectionEntitiesByAddedSections);
+        return Section.builder()
+                .startStation(requestStartStation)
+                .endStation(requestEndStation)
+                .distance(requestDistance)
+                .build();
     }
 
-    private List<SectionEntity> makeSectionEntities(Long lineId, List<Section> sections) {
-        return sections.stream()
-                .map(it -> {
-                    Station startStation = it.getStartStation();
-                    Station endStation = it.getEndStation();
-
-                    Long startStationId = stationDao.findIdByName(startStation.getName());
-                    Long endStationId = stationDao.findIdByName(endStation.getName());
-
-                    return new SectionEntity(lineId, startStationId, endStationId, it.getDistance().getDistance());
-                })
-                .collect(Collectors.toList());
+    private void saveNewStationIfNotExists(Station station) {
+        if (!stationDao.isExistStationByName(station.getName())) {
+            stationDao.insert(new StationEntity(station.getName()));
+        }
     }
 
+    private SectionEntity makeSectionEntity(Long lineId, Section section) {
+        Station startStation = section.getStartStation();
+        Station endStation = section.getEndStation();
 
-    private Section toSection(SectionEntity sectionEntity) {
-        Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
-        Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
-        Distance distance = new Distance(sectionEntity.getDistance());
+        Long startStationId = stationDao.findIdByName(startStation.getName());
+        Long endStationId = stationDao.findIdByName(endStation.getName());
 
-        return new Section(startStation, endStation, distance);
+        return new SectionEntity(lineId, startStationId, endStationId, section.getDistance().getDistance());
     }
 
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         List<SectionEntity> sectionEntitiesOfLine = sectionDao.findByLineId(lineId);
-
-        List<Section> sectionsOfLine = sectionEntitiesOfLine.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
-
-        Sections sections = new Sections(sectionsOfLine);
+        Sections sections = sectionsMapper.mapFrom(sectionEntitiesOfLine);
 
         Station removedStation = toStation(stationDao.findById(stationId));
-        sections.remove(removedStation);
+        ChangeSections sectionsForRemove = sections.remove(removedStation);
 
-        sectionDao.deleteAll();
-
-        List<SectionEntity> makeSectionEntitiesByAddedSections = makeSectionEntities(lineId, sections.getSections());
-
-        sectionDao.insertAll(makeSectionEntitiesByAddedSections);
+        removeSections(lineId, sectionsForRemove);
     }
 
-    private Station toStation(StationEntity stationEntity) {
-        return new Station(stationEntity.getName());
+    private void removeSections(final Long lineId, final ChangeSections sectionsForRemove) {
+        updateSectionIfChangedMiddleSection(lineId, sectionsForRemove);
+        SectionEntity removeSectionEntity = makeSectionEntity(lineId, sectionsForRemove.getInsertOrRemoveSection());
+        sectionDao.delete(removeSectionEntity);
     }
+
+    private void updateSectionIfChangedMiddleSection(final Long lineId, final ChangeSections sectionsForRemove) {
+        if (sectionsForRemove.is(FOR_MIDDLE_SECTION)) {
+            SectionEntity updateSectionEntity = makeSectionEntity(lineId, sectionsForRemove.getUpdateSection());
+            sectionDao.update(updateSectionEntity);
+        }
+    }
+
 }

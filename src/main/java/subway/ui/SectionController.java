@@ -1,10 +1,9 @@
 package subway.ui;
 
 
-import java.sql.SQLException;
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
 import subway.application.StationService;
-import subway.dto.SectionRequest;
+import subway.dto.SectionSaveDto;
 
 @RestController
-@RequestMapping("/subway/lines")
+@RequestMapping("/sections")
 public class SectionController {
 
     private final SectionService sectionService;
@@ -26,13 +25,12 @@ public class SectionController {
         this.stationService = stationService;
     }
 
-
-    @PostMapping("/{lineId}/sections")
+    @PostMapping("/{lineId}")
     public ResponseEntity<Void> createSection(@PathVariable Long lineId,
-                                              @RequestBody SectionRequest sectionRequest) {
-        sectionService.saveSection(lineId, sectionRequest);
+                                              @RequestBody SectionSaveDto sectionSaveDto) {
+        sectionService.saveSection(lineId, sectionSaveDto);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create("/subway/lines/" + lineId)).build();
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
@@ -43,8 +41,4 @@ public class SectionController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
 }

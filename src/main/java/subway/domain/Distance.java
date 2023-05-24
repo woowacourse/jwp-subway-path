@@ -1,10 +1,10 @@
 package subway.domain;
 
-import subway.exception.GlobalException;
+import java.util.Objects;
+import subway.exception.distance.InvalidDistanceLengthException;
 
 public class Distance {
     private static final int MIN_DISTANCE = 1;
-    private static final int MAX_DISTANCE = 10;
 
     private final int distance;
 
@@ -14,8 +14,8 @@ public class Distance {
     }
 
     private void validate(int distance) {
-        if (distance < MIN_DISTANCE || distance > MAX_DISTANCE) {
-            throw new GlobalException("역간 거리는 10km이하 양의 정수만 가능합니다.");
+        if (distance < MIN_DISTANCE) {
+            throw new InvalidDistanceLengthException("역간 최소 거리는 1km 입니다.");
         }
     }
 
@@ -30,4 +30,22 @@ public class Distance {
     public Distance subtract(Distance otherDistance) {
         return new Distance(this.distance - otherDistance.distance);
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Distance distance1 = (Distance) o;
+        return distance == distance1.distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
+    }
+
 }

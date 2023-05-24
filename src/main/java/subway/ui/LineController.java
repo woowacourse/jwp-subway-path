@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.dto.LineDto;
+import subway.dto.LineSaveDto;
 
 @RestController
 @RequestMapping("/subway/lines")
@@ -26,23 +26,23 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
+    public ResponseEntity<Void> createLine(@RequestBody LineSaveDto lineSaveDto) {
+        LineDto line = lineService.saveLine(lineSaveDto);
         return ResponseEntity.created(URI.create("/subway/lines/" + line.getId())).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
+    public ResponseEntity<List<LineDto>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+    public ResponseEntity<LineDto> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleSQLException(SQLException exception) {
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 }

@@ -53,4 +53,5 @@ public class StationDao {
 
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
+
 }

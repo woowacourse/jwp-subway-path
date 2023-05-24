@@ -1,24 +1,74 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.exception.GlobalException;
+import subway.exception.station.DuplicateStationNameException;
 
 public class Section {
     private final Station startStation;
     private final Station endStation;
     private final Distance distance;
 
-    public Section(Station startStation, Station endStation, Distance distance) {
-        validate(startStation, endStation);
+    public Section(final Builder builder) {
+        this(builder.startStation, builder.endStation, builder.distance);
+    }
 
+    public Section(final Station startStation, final Station endStation, final Distance distance) {
         this.startStation = startStation;
         this.endStation = endStation;
         this.distance = distance;
     }
 
-    private void validate(Station startStation, Station endStation) {
-        if (startStation.equals(endStation)) {
-            throw new GlobalException("시작 역과 도착 역은 같을 수 없습니다.");
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(Section section) {
+        return new Builder(section);
+    }
+
+    public static class Builder {
+        private Station startStation;
+        private Station endStation;
+        private Distance distance;
+
+        private Builder() {
+        }
+
+        private Builder(Section section) {
+            this.startStation = section.startStation;
+            this.endStation = section.endStation;
+            this.distance = section.distance;
+        }
+
+        public Builder startStation(Station startStation) {
+            this.startStation = startStation;
+            return this;
+        }
+
+        public Builder endStation(Station endStation) {
+            this.endStation = endStation;
+            return this;
+        }
+
+        public Builder distance(Distance distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Section build() {
+            validate();
+
+            return new Section(this);
+        }
+
+        private void validate() {
+            if (startStation == null || endStation == null || distance == null) {
+                throw new IllegalStateException("필수 필드가 설정되지 않았습니다.");
+            }
+
+            if (startStation.equals(endStation)) {
+                throw new DuplicateStationNameException("시작 역과 도착 역은 같을 수 없습니다.");
+            }
         }
     }
 
@@ -54,6 +104,14 @@ public class Section {
         return distance;
     }
 
+    public boolean isGreaterThanOtherDistance(Section otherSection) {
+        return this.distance.isBiggerThanOtherDistance(otherSection.distance);
+    }
+
+    public boolean hasStation(Station otherStation) {
+        return isSameStartStation(otherStation) || isSameEndStation(otherStation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -72,11 +130,4 @@ public class Section {
         return Objects.hash(startStation, endStation);
     }
 
-    public boolean isGreaterThanOtherDistance(Section otherSection) {
-        return this.distance.isBiggerThanOtherDistance(otherSection.distance);
-    }
-
-    public boolean hasStation(Station otherStation) {
-        return isSameStartStation(otherStation) || isSameEndStation(otherStation);
-    }
 }

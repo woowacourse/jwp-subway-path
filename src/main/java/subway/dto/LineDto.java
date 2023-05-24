@@ -1,10 +1,10 @@
 package subway.dto;
 
-public class StationResponse {
-    private final Long id;
+public class LineDto {
+    private Long id;
     private final String name;
 
-    public StationResponse(Long id, String name) {
+    public LineDto(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -16,4 +16,5 @@ public class StationResponse {
     public String getName() {
         return name;
     }
+
 }

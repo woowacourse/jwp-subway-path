@@ -1,7 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.exception.GlobalException;
+import subway.exception.line.InvalidLineNameLengthException;
 
 public class LineInfo {
     private static final int NAME_MIN_LENGTH = 1;
@@ -16,7 +16,7 @@ public class LineInfo {
 
     private void validateName(String name) {
         if (name == null || name.length() < NAME_MIN_LENGTH || NAME_MAX_LENGTH < name.length()) {
-            throw new GlobalException("호선은 이름은 1글자 이상, 10글자 이하여야 한다.");
+            throw new InvalidLineNameLengthException("호선은 이름은 1글자 이상, 10글자 이하여야 한다.");
         }
     }
 
