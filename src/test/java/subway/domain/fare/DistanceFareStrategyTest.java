@@ -6,7 +6,10 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import subway.domain.fare.strategy.DistanceBasicFareStrategy;
+import subway.domain.fare.strategy.DistanceFiftyStrategy;
 import subway.domain.fare.strategy.DistanceTenFareStrategy;
 import subway.domain.section.Distance;
 
@@ -18,7 +21,7 @@ class DistanceFareStrategyTest {
             List.of(
                     new DistanceBasicFareStrategy(),
                     new DistanceTenFareStrategy(),
-                    new DistanceBasicFareStrategy())
+                    new DistanceFiftyStrategy())
     );
 
 
@@ -34,28 +37,30 @@ class DistanceFareStrategyTest {
         assertThat(fare.getFare()).isEqualTo(1250);
     }
 
-    @Test
-    void 거리가_10에서_50_이내이면_5km_마다_100원_추가된다() {
+    @ParameterizedTest
+    @CsvSource(value = {"10:1350", "15:1350", "50:2050"}, delimiter = ':')
+    void 거리가_10에서_50_이내이면_5km_마다_100원_추가된다(final int distance, final int fare) {
         // given
-        final Distance distance = new Distance(16);
+        final Distance totalDistance = new Distance(distance);
 
         // when
-        final Fare fare = strategies.getTotalFare(distance);
+        final Fare totalfare = strategies.getTotalFare(totalDistance);
 
         // then
-        assertThat(fare.getFare()).isEqualTo(1450);
+        assertThat(totalfare.getFare()).isEqualTo(fare);
     }
 
-    @Test
-    void 거리가_50초과면_8km_마다_100원_추가된다() {
+    @ParameterizedTest
+    @CsvSource(value = {"58:2150", "66:2250"}, delimiter = ':')
+    void 거리가_50초과면_8km_마다_100원_추가된다(final int distance, final int fare) {
         // given
-        final Distance distance = new Distance(58);
+        final Distance totalDistance = new Distance(distance);
 
         // when
-        final Fare fare = strategies.getTotalFare(distance);
+        final Fare totalfare = strategies.getTotalFare(totalDistance);
 
         // then
-        assertThat(fare.getFare()).isEqualTo(2250);
+        assertThat(totalfare.getFare()).isEqualTo(fare);
     }
 
 }

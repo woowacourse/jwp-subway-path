@@ -18,6 +18,6 @@ public class DistanceBasicFareStrategy implements FareStrategy {
 
     @Override
     public boolean isSatisfied(final Distance distance) {
-        return TEN.distance().lessThan(distance);
+        return distance.lessThan(TEN.distance());
     }
 }

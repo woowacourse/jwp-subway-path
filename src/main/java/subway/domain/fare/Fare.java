@@ -20,6 +20,10 @@ public class Fare {
         return new Fare(this.fare + other.fare);
     }
 
+    public Fare multiply(final Fare other) {
+        return new Fare(this.fare * other.fare);
+    }
+
     public boolean isMoreThan(final Fare other) {
         return this.fare > other.fare;
     }
