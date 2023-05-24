@@ -1,8 +1,9 @@
 package subway.domain.subway;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static subway.fixture.LinesFixture.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.fixture.LinesFixture.createLines;
 
 import java.util.List;
 

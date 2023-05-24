@@ -1,9 +1,10 @@
 package subway.domain.subway;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static subway.fixture.SectionFixture.*;
-import static subway.fixture.SectionsFixture.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.fixture.SectionFixture.createSection;
+import static subway.fixture.SectionsFixture.createSections;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
