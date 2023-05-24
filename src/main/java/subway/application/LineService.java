@@ -13,8 +13,10 @@ import subway.dto.LineResponse;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationRegisterRequest;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,19 +55,20 @@ public class LineService {
             return new Line(persistLine.getId(), persistLine.getName(), persistLine.getColor());
         }
 
-        Sections sections = new Sections(sectionEntities.stream()
-                .collect(Collectors.toMap(
-                        section -> stationDao.findById(section.getUpperStation()),
-                        section -> new Section(
-                                persistLine.getId(),
-                                stationDao.findById(section.getUpperStation()),
-                                stationDao.findById(section.getLowerStation()),
-                                new Distance(section.getDistance()))
-                )));
-
+        Sections sections = new Sections(makeSectionMap(persistLine, sectionEntities));
         List<Station> stations = sections.getSortedStations();
-
         return new Line(persistLine.getId(), persistLine.getName(), persistLine.getColor(), new LinkedList<>(stations), sections);
+    }
+
+    private Map<Station, Section> makeSectionMap(final LineEntity persistLine, final List<SectionEntity> sectionEntities) {
+        Map<Station, Section> sectionMap = new HashMap<>();
+        for(SectionEntity sectionEntity : sectionEntities) {
+            Station upperStation = stationDao.findById(sectionEntity.getUpperStation());
+            Station lowerStation = stationDao.findById(sectionEntity.getLowerStation());
+            sectionMap.put(upperStation, new Section(persistLine.getId(), upperStation, lowerStation, new Distance(sectionEntity.getDistance())));
+        }
+
+        return sectionMap;
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
