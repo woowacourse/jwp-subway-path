@@ -1,17 +1,18 @@
-package subway.domain;
+package subway.dao.entity;
 
-public class Section {
+public class SectionEntity {
+
     private final Long id;
-    private final int distance;
+    private final Integer distance;
     private final Long upStationId;
     private final Long downStationId;
     private final Long lineId;
 
-    public Section(int distance, Long upStationId, Long downStationId, Long lineId) {
+    public SectionEntity(int distance, Long upStationId, Long downStationId, Long lineId) {
         this(null, distance, upStationId, downStationId, lineId);
     }
 
-    public Section(Long id, int distance, Long upStationId, Long downStationId, Long lineId) {
+    public SectionEntity(Long id, Integer distance, Long upStationId, Long downStationId, Long lineId) {
         this.id = id;
         this.distance = distance;
         this.upStationId = upStationId;
@@ -23,7 +24,7 @@ public class Section {
         return id;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 

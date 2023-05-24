@@ -1,38 +1,42 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.section.Section;
+import subway.domain.section.SingleLineSections;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
+
+    public LineService(LineRepository lineRepository, StationRepository stationRepository, SectionRepository sectionRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     public Long saveLine(LineRequest request) {
         final Line line = new Line(request.getName(), request.getColor());
-        final Long lineId = lineDao.insert(line);
 
-        final Section section = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), lineId);
-        sectionDao.insert(section);
+        final Long lineId = lineRepository.insert(line);
+        final Station upStation = stationRepository.findById(request.getUpStationId());
+        final Station downStation = stationRepository.findById(request.getDownStationId());
+
+        final Section section = new Section(request.getDistance(), upStation, downStation, lineId);
+        sectionRepository.insert(section);
 
         return lineId;
     }
@@ -42,37 +46,23 @@ public class LineService {
 
         return persistLines.stream()
                 .map(line -> findLineResponseById(line.getId()))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public List<Line> findLines() {
-        return lineDao.findAll();
+        return lineRepository.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
-        final List<Section> sections = sectionDao.findAllByLineId(id);
-        List<Section> sortedSections = Sections.from(sections).getSections();
+        final SingleLineSections sections = sectionRepository.findAllByLineId(id);
 
-        final List<Long> stationsIds = sortedSections.stream()
-                .map(Section::getUpStationId)
-                .collect(Collectors.toList());
-        stationsIds.add(sortedSections.get(sortedSections.size() - 1).getDownStationId());
+        final List<Station> stations = sections.findAllStationsByOrder();
 
-        final List<Station> stations = stationsIds.stream()
-                .map(stationDao::findById)
-                .collect(Collectors.toList());
-
-        Line persistLine = findLineById(id);
+        Line persistLine = lineRepository.findById(id);
         return LineResponse.of(persistLine, stations);
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 노선을 찾을 수 없습니다."));
-    }
-
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
     }
-
 }

@@ -41,28 +41,54 @@
 ]
 ```
 - [x] 노선을 최초 등록 할 때는 두 개의 역을 등록해야 한다.
-
+- [x] Jgrapht 라이브러리 의존성을 추가한다.
+- [x] production과 test DB환경을 분리한다.
+- [x] 경로 조회 API를 구현한다.
+  - [x] 경로 정보를 반환한다.
+  - [x] 총 거리를 반환한다.
+  - [x] 요금을 반환한다.
+    - [x] 요금 계산 방법
+      - 기본운임(10㎞ 이내): 기본운임 1,250원
+      - 이용 거리 초과 시 추가운임 부과
+      - 10km~50km: 5km 까지 마다 100원 추가
+      - 50km 초과: 8km 까지 마다 100원 추가
+```json
+{
+  "route": [ {"id": 1L, "name": "잠실역"}, {"id": 2L, "name": "잠실새내역"}],
+  "totalDistance": 20,
+  "fare": 1550
+}
+```
 
 ## 도메인 설계
 
 - Line(노선)
   - id
-  - String name
-  - String color
+  - Name name
+  - Color color
 
-- Sections
+- SingleLineSections
   - List<Section> sections 
 
+- MultiLineSections
+  - List<Section> sections 
+ 
 - Section(구간)
-  - Long downStationId
-  - Long upStationId
+  - Station downStation
+  - Station upStation
   - Long lineId
-  - int distance
+  - Distance distance
 
 - Station(역)
   - id ID
-  - String 이름
+  - Name 이름
 
+- Fare(요금)
+  - int fare
+
+- ShortestPath(최단거리)
+  - List<Station> stations
+  - Distance distance
 
 ## API 문서
-- [API 구현 목록](https://documenter.getpostman.com/view/22400395/2s93ebTAmd#85e97606-4a86-4627-8ee1-e7feaf8d80b5)
+- [API 구현 목록](src/main/resources/static/docs)

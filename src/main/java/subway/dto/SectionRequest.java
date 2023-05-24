@@ -11,17 +11,14 @@ public class SectionRequest {
     private Long upStationId;
     @NotNull(message = "하행역은 필수로 입력해야 합니다.")
     private Long downStationId;
-    @NotNull(message = "노선은 필수로 입력해야 합니다.")
-    private Long lineId;
 
     private SectionRequest() {
     }
 
-    public SectionRequest(Integer distance, Long upStationId, Long downStationId, Long lineId) {
+    public SectionRequest(Integer distance, Long upStationId, Long downStationId) {
+        this.distance = distance;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
-        this.distance = distance;
-        this.lineId = lineId;
     }
 
     public Long getUpStationId() {
@@ -34,9 +31,5 @@ public class SectionRequest {
 
     public Integer getDistance() {
         return distance;
-    }
-
-    public Long getLineId() {
-        return lineId;
     }
 }

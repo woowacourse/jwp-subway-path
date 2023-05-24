@@ -9,16 +9,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.dao.entity.StationEntity;
 import subway.dto.LineRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@SuppressWarnings("NonAsciiCharacters")
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
+
     private LineRequest lineRequest;
     private LineRequest lineRequest2;
 
@@ -27,12 +28,10 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        super.setUp();
-
-        final Long 잠실역 = stationDao.insert(new Station("잠실역")).getId();
-        final Long 선릉역 = stationDao.insert(new Station("선릉역")).getId();
-        final Long 강남역 = stationDao.insert(new Station("강남역")).getId();
-        final Long 역삼역 = stationDao.insert(new Station("역삼역")).getId();
+        final Long 잠실역 = stationDao.insert(new StationEntity("잠실역")).getId();
+        final Long 선릉역 = stationDao.insert(new StationEntity("선릉역")).getId();
+        final Long 강남역 = stationDao.insert(new StationEntity("강남역")).getId();
+        final Long 역삼역 = stationDao.insert(new StationEntity("역삼역")).getId();
 
         lineRequest = new LineRequest("신분당선", "bg-red-600", 잠실역, 선릉역, 10);
         lineRequest2 = new LineRequest("2호선", "초록색", 역삼역, 강남역, 10);
@@ -42,9 +41,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> response = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all()
@@ -59,18 +56,14 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> response = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
@@ -84,26 +77,20 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLines() {
         // given
-        ExtractableResponse<Response> createResponse1 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> createResponse1 = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
 
-        ExtractableResponse<Response> createResponse2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> createResponse2 = given()
                 .body(lineRequest2)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> response = given()
                 .when().get("/lines")
                 .then().log().all()
                 .extract();
@@ -120,9 +107,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> createResponse = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
@@ -130,9 +115,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // when
         Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> response = given()
                 .when().get("/lines/{lineId}", lineId)
                 .then().log().all()
                 .extract();
@@ -152,9 +135,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> createResponse = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
