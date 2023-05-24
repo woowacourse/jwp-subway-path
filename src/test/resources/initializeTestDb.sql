@@ -65,6 +65,7 @@ INSERT INTO station (name)
 values ('동인천역');
 --8
 
+-- 7 - 5 - 2 - 1 - 4 - 8
 INSERT INTO section (line_id, up_station_id, down_station_id, distance)
 values (1, 2, 1, 5);
 INSERT INTO section (line_id, up_station_id, down_station_id, distance)
