@@ -13,8 +13,9 @@ import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dto.request.SectionSaveRequest;
 import subway.dto.response.StationResponse;
-import subway.exception.InvalidSectionLengthException;
-import subway.exception.StationNotFoundException;
+import subway.exception.business.InvalidSectionLengthException;
+import subway.exception.business.SectionNotFoundException;
+import subway.exception.business.StationNotFoundException;
 import subway.integration.IntegrationTest;
 
 import java.util.List;
@@ -25,7 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @Sql("/setUpStation.sql")
-class SectionServiceTest extends IntegrationTest {
+public class SectionServiceTest extends IntegrationTest {
 
     @Autowired
     SectionService sectionService;
@@ -42,10 +43,11 @@ class SectionServiceTest extends IntegrationTest {
     void addInitialSection_success() {
         //when
         SectionSaveRequest request1_2 = new SectionSaveRequest(1L, 2L, 10);
-        long id = sectionService.addSection(1L, request1_2);
+        sectionService.addSection(1L, request1_2);
 
         //then
-        assertThat(id).isEqualTo(1L);
+        List<StationResponse> stations = sectionService.findByLineId(1L);
+        assertThat(stations.size()).isEqualTo(2);
     }
 
     @Test
@@ -58,7 +60,8 @@ class SectionServiceTest extends IntegrationTest {
         //when 현재상태: 1-2
         sectionService.removeStation(2L, 1L);
 
-        assertThat(sectionService.findStationsInOrder(1L).size()).isEqualTo(0);
+        assertThatThrownBy(() -> sectionService.findByLineId(1L))
+                .isInstanceOf(SectionNotFoundException.class);
     }
 
     @Test
@@ -68,11 +71,11 @@ class SectionServiceTest extends IntegrationTest {
         initializeSections();
 
         //when
-        List<StationResponse> sortedStations = sectionService.findStationsInOrder(1L);
+        List<StationResponse> sortedStations = sectionService.findByLineId(1L);
 
         // then
         List<String> sortedNames = sortedStations.stream()
-                .map(stationResponse -> stationResponse.getName())
+                .map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertThat(sortedNames).isEqualTo(List.of("st1", "st2", "st3"));
     }
@@ -88,9 +91,9 @@ class SectionServiceTest extends IntegrationTest {
         sectionService.addSection(1L, request);
 
         //then
-        List<StationResponse> sortedStations = sectionService.findStationsInOrder(1L);
+        List<StationResponse> sortedStations = sectionService.findByLineId(1L);
         List<String> sortedNames = sortedStations.stream()
-                .map(stationResponse -> stationResponse.getName())
+                .map(StationResponse::getName)
                 .collect(Collectors.toList());
 
         assertThat(sortedNames).isEqualTo(expected);
@@ -129,10 +132,11 @@ class SectionServiceTest extends IntegrationTest {
         sectionService.removeStation(argumentsAccessor.getLong(0), 1L);
 
         //then
-        List<StationResponse> sortedStations = sectionService.findStationsInOrder(1L);
+        List<StationResponse> sortedStations = sectionService.findByLineId(1L);
         List<String> sortedNames = sortedStations.stream()
-                .map(stationResponse -> stationResponse.getName())
+                .map(StationResponse::getName)
                 .collect(Collectors.toList());
+
         assertThat(sortedNames).isEqualTo(List.of(argumentsAccessor.getString(1), argumentsAccessor.getString(2)));
     }
 

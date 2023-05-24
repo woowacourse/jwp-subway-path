@@ -1,20 +1,20 @@
 package subway.domain;
 
-import subway.exception.InvalidSectionLengthException;
-import subway.exception.SectionNotFoundException;
+import subway.exception.business.InvalidSectionConnectException;
+import subway.exception.business.InvalidSectionLengthException;
 
-import static subway.domain.SectionDirection.INNER_LEFT;
-import static subway.domain.SectionDirection.INNER_RIGHT;
+import java.util.Objects;
+import java.util.UUID;
 
 public class Section {
-    private final Long id;
-    private final Station upStation;
-    private final Station downStation;
+    private final UUID id;
+    private Station upStation;
+    private Station downStation;
     private final int distance;
-    private final Long nextSectionId;
+    private UUID nextSectionId;
 
-    public Section(final Long id, final Station upStation, final Station downStation, final int distance,
-                   final Long nextSectionId) {
+    public Section(final UUID id, final Station upStation, final Station downStation, final int distance,
+                   final UUID nextSectionId) {
         validateDistance(distance);
         this.id = id;
         this.upStation = upStation;
@@ -29,16 +29,39 @@ public class Section {
         }
     }
 
-    public Section(final long id, final Station upStation, final Station downStation, final int distance) {
+    public Section(final UUID id, final Station upStation, final Station downStation, final int distance) {
         this(id, upStation, downStation, distance, null);
     }
 
     public Section(final Station upStation, final Station downStation, final int distance) {
-        this(null, upStation, downStation, distance, null);
+        this(UUID.randomUUID(), upStation, downStation, distance, null);
     }
 
-    public Section(final Station upStation, final Station downStation, final int distance, final long nextSectionId) {
-        this(null, upStation, downStation, distance, nextSectionId);
+    public Section(final Station upStation, final Station downStation, final int distance, final UUID nextSectionId) {
+        this(UUID.randomUUID(), upStation, downStation, distance, nextSectionId);
+    }
+
+    public Section updateDuplicateStation(Section requestedSection) {
+        if (this.isNextContinuable(requestedSection)) {
+            this.downStation = requestedSection.upStation;
+            return new Section(this.upStation, this.downStation, this.distance);
+        }
+
+        if (this.isPreviousContinuable(requestedSection)) {
+            this.upStation = requestedSection.downStation;
+            return new Section(this.upStation, this.downStation, this.distance);
+        }
+
+        if (this.isSameDownStationId(requestedSection)) {
+            this.downStation = requestedSection.upStation;
+            return new Section(this.upStation, this.downStation, this.distance);
+        }
+
+        if (this.isSameUpStationId(requestedSection)) {
+            this.upStation = requestedSection.downStation;
+            return new Section(this.upStation, this.downStation, this.distance);
+        }
+        throw new InvalidSectionConnectException();
     }
 
     public boolean isNextContinuable(Section newSection) {
@@ -49,23 +72,20 @@ public class Section {
         return this.upStation.equals(newSection.downStation);
     }
 
-    public boolean isSameUpStationId(long stationId) {
-        return this.getUpStationId() == stationId;
+    public boolean isSameUpStation(Station station) {
+        return this.upStation.equals(station);
     }
 
-    public boolean isSameDownStationId(long stationId) {
-        return this.getDownStationId() == stationId;
+    public boolean isSameDownStation(Station station) {
+        return this.downStation.equals(station);
     }
 
-    public SectionDirection checkNewSectionDirection(Section newSection) throws SectionNotFoundException {
-        if (this.upStation.equals(newSection.upStation)) {
-            return INNER_LEFT;
-        }
+    public boolean isSameDownStationId(Section other) {
+        return this.downStation.equals(other.downStation);
+    }
 
-        if (this.downStation.equals(newSection.downStation)) {
-            return INNER_RIGHT;
-        }
-        throw new SectionNotFoundException();
+    public boolean isSameUpStationId(Section other) {
+        return this.upStation.equals(other.upStation);
     }
 
     public boolean hasIntersection(Section section) {
@@ -74,24 +94,16 @@ public class Section {
         return isUpSame != isDownSame;
     }
 
-    public int getDistance() {
-        return distance;
+    public boolean isDistanceSmallOrSame(final Section section) {
+        return this.distance <= section.distance;
     }
 
-    public Long getNextSectionId() {
-        return nextSectionId;
+    public boolean containsStation(Station station) {
+        return this.upStation.equals(station) || this.downStation.equals(station);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public long getUpStationId() {
-        return upStation.getId();
-    }
-
-    public long getDownStationId() {
-        return downStation.getId();
+    public void setNextSectionId(UUID id) {
+        this.nextSectionId = id;
     }
 
     public Station getUpStation() {
@@ -102,22 +114,29 @@ public class Section {
         return downStation;
     }
 
-    public boolean isDistanceSmallOrSame(final Section section) {
-        return this.distance <= section.distance;
+    public int getDistance() {
+        return distance;
     }
 
-    public boolean containsStation(long stationId) {
-        return this.getUpStationId() == stationId || this.getDownStationId() == stationId;
+    public UUID getNextSectionId() {
+        return nextSectionId;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     @Override
-    public String toString() {
-        return "Section{" +
-                "id=" + id +
-                ", upStation=" + upStation +
-                ", downStation=" + downStation +
-                ", distance=" + distance +
-                ", nextSectionId=" + nextSectionId +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, upStation, downStation, distance);
     }
 }
+

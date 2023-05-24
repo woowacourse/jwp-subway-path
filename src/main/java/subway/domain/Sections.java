@@ -1,25 +1,127 @@
 package subway.domain;
 
-import subway.exception.EndStationNotExistException;
-import subway.exception.InvalidSectionLengthException;
-import subway.exception.SectionNotFoundException;
+import subway.exception.business.InvalidSectionLengthException;
+import subway.exception.business.SectionNotFoundException;
+import subway.exception.business.StationNotFoundException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Sections {
-    public static final int DOWN_END_ID = 0;
     public static final int ONE_REMAINED = 1;
+    public static final UUID DOWN_END_NEXT = null;
+
+    private final SectionSorter sectionSorter = SectionSorter.getInstance();
     private final long lineId;
     private final List<Section> sections;
 
     public Sections(final long lineId, final List<Section> sections) {
         this.lineId = lineId;
-        this.sections = new ArrayList<>(sections);
+        this.sections = sectionSorter.assignSectionConnection(sections);
     }
 
-    public Section getIncludeSection(Section newSection) {
+    public Sections add(Section requestedSection) {
+        List<Section> sections = new ArrayList<>(this.sections);
+
+        if (this.isInitialSave()) {
+            sections.add(requestedSection);
+            return new Sections(this.lineId, sections);
+        }
+
+        if (this.getDownEndSection().isNextContinuable(requestedSection)) {
+            return updateSection(requestedSection, this.getDownEndSection(), sections);
+        }
+
+        if (this.getUpEndSection().isPreviousContinuable(requestedSection)) {
+            return updateSection(requestedSection, this.getUpEndSection(), sections);
+        }
+
+        //saveInMiddle
+        return updateSection(requestedSection, this.getIncludeSection(requestedSection), sections);
+    }
+
+    private Sections updateSection(Section requestedSection, Section updateTarget, List<Section> sections) {
+        sections.remove(updateTarget);
+        Section updated = updateTarget.updateDuplicateStation(requestedSection);
+        sections.add(updated);
+        sections.add(requestedSection);
+
+        return new Sections(this.lineId, sections);
+    }
+
+    public Sections delete(Station station) {
+        if (this.isNotExistStation(station)) {
+            throw new SectionNotFoundException();
+        }
+
+        if (this.isLastRemained()) {
+            List<Section> temp = new ArrayList<>(this.sections);
+            temp.clear();
+            return new Sections(this.lineId, temp);
+        }
+
+        if (this.isUpEnd(station)) {
+            List<Section> temp = new ArrayList<>(this.sections);
+            temp.remove(this.getUpEndSection());
+            return new Sections(this.lineId, temp);
+        }
+
+        if (this.isDownEnd(station)) {
+            List<Section> temp = new ArrayList<>(this.sections);
+            temp.remove(this.getDownEndSection());
+            return new Sections(this.lineId, temp);
+        }
+
+        return deleteMiddle(station);
+    }
+
+    private boolean isInitialSave() {
+        return sections.isEmpty();
+    }
+
+    private boolean isLastRemained() {
+        return sections.size() == ONE_REMAINED;
+    }
+
+    private boolean isUpEnd(Station station) {
+        return this.getUpEndSection().isSameUpStation(station);
+    }
+
+    private boolean isDownEnd(Station station) {
+        return this.getDownEndSection().isSameDownStation(station);
+    }
+
+    private Sections deleteMiddle(Station station) {
+        List<Section> temp = new ArrayList<>(this.sections);
+
+        Section innerRight = this.findSectionByUpStation(station);
+        Section innerLeft = this.findSectionByDownStation(station);
+        temp.remove(innerLeft);
+        temp.remove(innerRight);
+
+        Section mergedSection = new Section(innerLeft.getUpStation(), innerRight.getDownStation(),
+                innerLeft.getDistance() + innerRight.getDistance(), innerRight.getNextSectionId());
+        temp.add(mergedSection);
+        return new Sections(this.lineId, temp);
+    }
+
+    private Section findSectionByUpStation(Station station) {
+        return sections.stream().filter(section -> section.isSameUpStation(station))
+                .findFirst()
+                .orElseThrow(SectionNotFoundException::new);
+    }
+
+    private Section findSectionByDownStation(final Station station) {
+        return sections.stream().filter(section -> section.isSameDownStation(station))
+                .findFirst()
+                .orElseThrow(SectionNotFoundException::new);
+    }
+
+    private Section getIncludeSection(Section newSection) {
         Section includeSection = sections.stream()
                 .filter(existingSection -> existingSection.hasIntersection(newSection))
                 .findFirst()
@@ -31,129 +133,64 @@ public class Sections {
         return includeSection;
     }
 
-    public boolean isDownEndAppend(Section section) {
-        Section downEndSection = getDownEndSection();
-
-        return downEndSection.isNextContinuable(section);
-    }
-
-
-    public boolean isUpEndAppend(final Section section) {
-        Section upEndSection = getUpEndSection();
-
-        return upEndSection.isPreviousContinuable(section);
-    }
-
     public Section getDownEndSection() {
         return sections.stream()
-                .filter(existingSection -> existingSection.getNextSectionId() == 0)
-                .findFirst().orElseThrow(EndStationNotExistException::new);
+                .filter(existingSection -> existingSection.getNextSectionId() == DOWN_END_NEXT)
+                .findFirst().orElseThrow(StationNotFoundException::new);
     }
 
     public Section getUpEndSection() {
-        List<Long> downSectionIds = sections.stream()
+        List<UUID> nextSectionIds = sections.stream()
                 .map(Section::getNextSectionId)
                 .collect(Collectors.toList());
 
         return sections.stream()
-                .filter(isNotContainedId(downSectionIds))
+                .filter(isNotContainedId(nextSectionIds))
                 .findFirst()
-                .orElseThrow(EndStationNotExistException::new);
+                .orElseThrow(SectionNotFoundException::new);
     }
 
-    private static Predicate<Section> isNotContainedId(List<Long> sectionIds) {
+    private static Predicate<Section> isNotContainedId(List<UUID> sectionIds) {
         return existingSection -> !sectionIds.contains(existingSection.getId());
     }
 
-    public boolean isInitialSave() {
-        return sections.isEmpty();
+    private boolean isNotExistStation(final Station station) {
+        return sections.stream()
+                .noneMatch(section -> section.containsStation(station));
     }
 
-    public int size() {
-        return this.sections.size();
+    public List<Station> getStationsInOrder() {
+        return sectionSorter.getStationsInOrder(this.sections, this.getUpEndSection());
+    }
+
+    public List<Section> getAddedCompareTo(Sections other) {
+        List<Section> temp = new ArrayList<>(this.sections);
+        temp.removeAll(other.sections);
+        if (temp.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return temp;
+    }
+
+    public List<Section> getRemovedCompareTo(Sections other) {
+        Sections temp = new Sections(other.lineId, other.sections);
+        temp.sections.removeAll(this.sections);
+        return new ArrayList<>(temp.sections);
+    }
+
+    public boolean contains(Section section) {
+        return sections.contains(section);
     }
 
     public List<Section> getSections() {
         return sections;
     }
 
-    public Section findPreviousSection(Section section) {
-        return sections.stream()
-                .filter(existingSection -> existingSection.getNextSectionId().equals(section.getId()))
-                .findFirst().orElseThrow(SectionNotFoundException::new);
+    public long getLineId() {
+        return lineId;
     }
 
-    public Section findSectionByUpStation(final long stationId) {
-        return sections.stream().filter(section -> section.isSameUpStationId(stationId))
-                .findFirst()
-                .orElseThrow(SectionNotFoundException::new);
-    }
-
-    public Section findSectionByDownStation(final long stationId) {
-        return sections.stream().filter(section -> section.isSameDownStationId(stationId))
-                .findFirst()
-                .orElseThrow(SectionNotFoundException::new);
-    }
-
-    public boolean isNotExistStation(final long stationId) {
-        return sections.stream()
-                .noneMatch(section -> section.containsStation(stationId));
-    }
-
-
-    public boolean isUpEnd(long stationId) {
-        return this.getUpEndSection().isSameUpStationId(stationId);
-    }
-
-    public boolean isDownEnd(long stationId) {
-        return this.getDownEndSection().isSameDownStationId(stationId);
-    }
-
-    public List<Station> getStationsInOrder() {
-        if (sections.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Section> sortedSections = this.getSorted();
-
-        List<Station> sortedStations = new ArrayList<>();
-        sortedStations.add(sortedSections.get(0).getUpStation());
-        for (Section section : sortedSections) {
-            sortedStations.add(section.getDownStation());
-        }
-        return sortedStations;
-    }
-
-    private List<Section> getSorted() {
-        Map<Long, Section> sectionIdMappings = new HashMap<>();
-        sections.forEach(section -> sectionIdMappings.put(section.getId(), section));
-
-        return sortSections(sectionIdMappings);
-    }
-
-    private List<Section> sortSections(Map<Long, Section> sectionIdMapping) {
-        Section upEndSection = getUpEndSection();
-        List<Section> result = new ArrayList<>();
-        result.add(upEndSection);
-        Section currentSection = upEndSection;
-        while (currentSection != null && currentSection.getNextSectionId() != DOWN_END_ID) {
-            Section nextSection = sectionIdMapping.getOrDefault(currentSection.getNextSectionId(), null);
-            result.add(nextSection);
-            currentSection = nextSection;
-        }
-        return result;
-    }
-
-
-    public boolean isLastRemained() {
-        return sections.size() == ONE_REMAINED;
-    }
-
-    @Override
-    public String toString() {
-        return "Sections{" +
-                "lineId=" + lineId +
-                ", sections=" + sections +
-                '}';
+    public SectionSorter getSectionSorter() {
+        return sectionSorter;
     }
 }

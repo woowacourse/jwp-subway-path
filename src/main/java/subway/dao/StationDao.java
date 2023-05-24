@@ -1,6 +1,5 @@
 package subway.dao;
 
-import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,6 +7,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
+import subway.exception.business.AlreadyExistStationException;
+import subway.exception.business.StationNotFoundException;
+
+import java.util.List;
 
 @Repository
 public class StationDao {
@@ -28,10 +31,14 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
+    public Station insert(Station station) throws AlreadyExistStationException {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        try {
+            Long id = insertAction.executeAndReturnKey(params).longValue();
+            return new Station(id, station.getName());
+        } catch (Exception e) {
+            throw new AlreadyExistStationException();
+        }
     }
 
     public List<Station> findAll() {
@@ -39,9 +46,13 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
+    public Station findById(Long id) throws StationNotFoundException {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (Exception e) {
+            throw new StationNotFoundException();
+        }
     }
 
     public void update(Station newStation) {
