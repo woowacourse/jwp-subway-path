@@ -1,13 +1,17 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.*;
-import subway.dto.*;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
+import subway.dto.StationDeleteRequest;
+import subway.dto.StationRegisterRequest;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,20 +36,19 @@ public class LineService {
     }
 
     public LineResponse findLineById(final Long id) {
-        Line line = configureLine(id);
-        return LineResponse.from(line);
+        LineEntity persistLine = lineDao.findById(id);
+        return LineResponse.from(configureLine(persistLine));
     }
 
     public List<LineResponse> findLines() {
         return lineDao.findAll()
                 .stream()
-                .map(line -> LineResponse.from(configureLine(line.getId())))
+                .map(line -> LineResponse.from(configureLine(line)))
                 .collect(Collectors.toList());
     }
 
-    private Line configureLine(final Long id) {
-        LineEntity persistLine = lineDao.findById(id);
-        List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(id);
+    private Line configureLine(final LineEntity persistLine) {
+        List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(persistLine.getId());
         if (sectionEntities.isEmpty()) {
             return new Line(persistLine.getId(), persistLine.getName(), persistLine.getColor());
         }
@@ -54,7 +57,7 @@ public class LineService {
                 .collect(Collectors.toMap(
                         section -> stationDao.findById(section.getUpperStation()),
                         section -> new Section(
-                                id,
+                                persistLine.getId(),
                                 stationDao.findById(section.getUpperStation()),
                                 stationDao.findById(section.getLowerStation()),
                                 new Distance(section.getDistance()))
@@ -75,7 +78,7 @@ public class LineService {
     }
 
     public void registerStation(final Long id, final StationRegisterRequest request) {
-        Line line = configureLine(id);
+        Line line = configureLine(lineDao.findById(id));
         Station station = stationDao.findById(request.getUpperStation());
         Station base = stationDao.findById(request.getLowerStation());
 
@@ -85,8 +88,8 @@ public class LineService {
         sectionDao.insertAll(SectionDto.makeList(line.getId(), line.getSections()));
     }
 
-    public void deleteStation(final Long lineId, final StationDeleteRequest request) {
-        Line line = configureLine(lineId);
+    public void deleteStation(final Long id, final StationDeleteRequest request) {
+        Line line = configureLine(lineDao.findById(id));
         Station station = stationDao.findById(request.getStationId());
         line.delete(station);
 
