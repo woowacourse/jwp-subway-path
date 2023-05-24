@@ -77,7 +77,7 @@ public class StationServiceIntegrationTest {
 		Long id = stationRepository.insertStation(station);
 
 		// when
-		StationResponse response = stationService.findStationEntityById(id);
+		StationResponse response = stationService.findStationResponseById(id);
 
 		// then
 		assertThat(response.getName()).isEqualTo(station.getName());

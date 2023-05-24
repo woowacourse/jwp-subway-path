@@ -20,7 +20,6 @@ import subway.dto.response.StationResponse;
 import subway.dto.response.StationsResponse;
 import subway.exception.BlankNameException;
 import subway.repository.StationRepository;
-import subway.service.StationService;
 
 @ExtendWith(MockitoExtension.class)
 public class StationServiceTest {
@@ -64,7 +63,7 @@ public class StationServiceTest {
 		when(stationRepository.findByStationId(id)).thenReturn(station);
 
 		// when
-		StationResponse result = stationService.findStationEntityById(id);
+		StationResponse result = stationService.findStationResponseById(id);
 
 		// then
 		assertThat(result.getName()).isEqualTo(station.getName());

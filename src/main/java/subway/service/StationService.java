@@ -33,7 +33,7 @@ public class StationService {
 	}
 
 	@Transactional(readOnly = true)
-	public StationResponse findStationEntityById(final Long id) {
+	public StationResponse findStationResponseById(final Long id) {
 		Station station = stationRepository.findByStationId(id);
 		return StationResponse.from(station);
 	}

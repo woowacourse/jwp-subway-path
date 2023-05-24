@@ -1,6 +1,15 @@
 package subway.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.List;
+import java.util.Objects;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,40 +19,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import subway.domain.subway.Station;
 import subway.dto.request.StationCreateRequest;
 import subway.dto.request.StationUpdateRequest;
 import subway.dto.response.StationResponse;
 import subway.dto.response.StationsResponse;
 import subway.exception.StationNotFoundException;
-import subway.repository.StationRepository;
 import subway.service.StationService;
-import subway.service.SubwayService;
-
-import java.util.List;
-import java.util.Objects;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StationController.class)
 public class StationControllerTest {
 
 	@MockBean
 	private StationService stationService;
-
-	@MockBean
-	private StationRepository stationRepository;
-
-	@MockBean
-	private SubwayService subwayService;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -93,14 +83,14 @@ public class StationControllerTest {
 		// given
 		Long id = 1L;
 		StationResponse stationResponse = StationResponse.from(new Station("잠실역"));
-		given(stationService.findStationEntityById(id)).willReturn(stationResponse);
+		given(stationService.findStationResponseById(id)).willReturn(stationResponse);
 
 		// when & then
 		mockMvc.perform(
 			get("/stations/" + id)
 		).andExpect(status().isOk());
 
-		verify(stationService).findStationEntityById(id);
+		verify(stationService).findStationResponseById(id);
 	}
 
 	@Test
@@ -108,14 +98,14 @@ public class StationControllerTest {
 	void exception_whenStationNotFound() throws Exception {
 		// given
 		Long id = 1L;
-		given(stationService.findStationEntityById(id)).willThrow(StationNotFoundException.class);
+		given(stationService.findStationResponseById(id)).willThrow(StationNotFoundException.class);
 
 		// when & then
 		mockMvc.perform(
 			get("/stations/" + id)
 		).andExpect(status().isNotFound());
 
-		verify(stationService).findStationEntityById(id);
+		verify(stationService).findStationResponseById(id);
 	}
 
 	@Test
