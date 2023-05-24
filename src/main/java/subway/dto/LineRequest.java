@@ -1,7 +1,12 @@
 package subway.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class LineRequest {
+
+    @NotNull
     private String name;
+    @NotNull
     private String color;
 
     public LineRequest() {

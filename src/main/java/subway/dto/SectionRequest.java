@@ -1,18 +1,25 @@
 package subway.dto;
 
-import subway.domain.Direction;
+import javax.validation.constraints.NotNull;
+import subway.domain.vo.Direction;
 
 public class SectionRequest {
 
-    private final Long lineId;
-    private final SectionStations sectionStations;
-    private final SectionDirection sectionDirection;
+    @NotNull
+    private SectionStations sectionStations;
+    @NotNull
+    private Direction direction;
 
-    public SectionRequest(final Long lineId, final SectionStations sectionStations,
-                          final SectionDirection sectionDirection) {
-        this.lineId = lineId;
+    public SectionRequest() {
+    }
+
+    public SectionRequest(final SectionStations sectionStations, final String direction) {
         this.sectionStations = sectionStations;
-        this.sectionDirection = sectionDirection;
+        this.direction = Direction.convert(direction);
+    }
+
+    public SectionStations getSectionStations() {
+        return sectionStations;
     }
 
     public Long baseStationId() {
@@ -23,19 +30,7 @@ public class SectionRequest {
         return sectionStations.getNextStationId();
     }
 
-    public Long getLineId() {
-        return lineId;
-    }
-
-    public SectionStations getSectionStations() {
-        return sectionStations;
-    }
-
-    public SectionDirection getSectionDirection() {
-        return sectionDirection;
-    }
-
-    public Direction direction() {
-        return sectionDirection.getDirection();
+    public Direction getDirection() {
+        return direction;
     }
 }

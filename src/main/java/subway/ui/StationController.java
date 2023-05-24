@@ -3,7 +3,7 @@ package subway.ui;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
-import javax.annotation.PostConstruct;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,19 +27,8 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @PostConstruct
-    public void init() {
-        stationService.saveStation(new StationRequest("종각역"));
-        stationService.saveStation(new StationRequest("서울역"));
-        stationService.saveStation(new StationRequest("아현역"));
-        stationService.saveStation(new StationRequest("시청역"));
-        stationService.saveStation(new StationRequest("잠실역"));
-        stationService.saveStation(new StationRequest("잠실새내역"));
-
-    }
-
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
@@ -55,7 +44,8 @@ public class StationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
+    public ResponseEntity<Void> updateStation(@PathVariable Long id,
+                                              @RequestBody @Valid StationRequest stationRequest) {
         stationService.updateStation(id, stationRequest);
         return ResponseEntity.ok().build();
     }

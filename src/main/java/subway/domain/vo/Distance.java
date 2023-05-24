@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.vo;
 
 import java.util.Objects;
+import subway.domain.exception.IllegalDistanceArgumentException;
 
 public class Distance {
 
@@ -13,8 +14,20 @@ public class Distance {
 
     private void validate(final int value) {
         if (value <= 0) {
-            throw new IllegalArgumentException("거리는 양의 정수여야 합니다.");
+            throw new IllegalDistanceArgumentException("거리는 양의 정수여야 합니다.");
         }
+    }
+
+    public Distance minus(Distance distance) {
+        return new Distance(value - distance.value);
+    }
+
+    public Distance plus(Distance distance) {
+        return new Distance(value + distance.value);
+    }
+
+    public boolean isWithIn(Distance distance) {
+        return value <= distance.value;
     }
 
     public int getValue() {
@@ -36,5 +49,12 @@ public class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "Distance{" +
+                "value=" + value +
+                '}';
     }
 }

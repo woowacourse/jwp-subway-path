@@ -4,9 +4,9 @@ import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.vo.Distance;
+import subway.domain.entity.Section;
+import subway.domain.entity.Station;
 
 @Repository
 public class SectionDao {
@@ -24,19 +24,14 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insert(Long lineId, Section section) {
+    public void insertAllByLineId(final Long lineId, final List<Section> sections) {
         String sql = "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, lineId, section.getLeftId(), section.getRightId(), section.getDistance());
-    }
-
-    public List<Section> findAll() {
-        String sql =
-                "select left_station_id, left_st.name as left_station_name, right_station_id, right_st.name as right_station_name, distance from SECTIONS as se"
-                        + " LEFT JOIN STATION as left_st"
-                        + " ON se.left_station_id = left_st.id"
-                        + " LEFT JOIN STATION as right_st"
-                        + " ON se.right_station_id = right_st.id";
-        return jdbcTemplate.query(sql, rowMapper);
+        jdbcTemplate.batchUpdate(sql, sections, sections.size(), (ps, argument) -> {
+            ps.setLong(1, lineId);
+            ps.setLong(2, argument.getLeftId());
+            ps.setLong(3, argument.getRightId());
+            ps.setInt(4, argument.getDistance().getValue());
+        });
     }
 
     public List<Section> findByLineId(Long lineId) {
@@ -50,24 +45,8 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public Section findById(Long id) {
-        String sql =
-                "select left_station_id, left_st.name as left_station_name, right_station_id, right_st.name as right_station_name, distance from SECTIONS as se"
-                        + " LEFT JOIN STATION as left_st"
-                        + " ON se.left_station_id = left_st.id"
-                        + " LEFT JOIN STATION as right_st"
-                        + " ON se.right_station_id = right_st.id"
-                        + " WHERE se.id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public void deleteByStationId(Long lineId, Long stationId) {
-        String sql = "delete from SECTIONS where (left_station_id = ? or right_station_id = ?) and line_id = ?";
-        jdbcTemplate.update(sql, stationId, stationId, lineId);
-    }
-
-    public void deleteByLeftStationIdAndRightStationId(Long lineId, Long leftStationId, Long rightStationId) {
-        String sql = "delete from SECTIONS where (left_station_id = ? and right_station_id = ?) and line_id = ?";
-        jdbcTemplate.update(sql, leftStationId, rightStationId, lineId);
+    public void deleteByLineId(final Long lineId) {
+        String sql = "delete from SECTIONS where line_id = ?";
+        jdbcTemplate.update(sql, lineId);
     }
 }

@@ -1,29 +1,32 @@
 package subway.application;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
-import static subway.domain.SectionFixture.SECTION_MIDDLE_1;
-import static subway.domain.SectionFixture.SECTION_START;
-import static subway.domain.StationFixture.FIXTURE_STATION_1;
-import static subway.domain.StationFixture.FIXTURE_STATION_2;
-import static subway.domain.StationFixture.FIXTURE_STATION_3;
-import static subway.domain.StationFixture.FIXTURE_STATION_4;
+import static subway.fixture.SectionFixture.SECTION_ST1_ST2;
+import static subway.fixture.SectionFixture.SECTION_ST2_ST3;
+import static subway.fixture.StationFixture.FIXTURE_STATION_1;
+import static subway.fixture.StationFixture.FIXTURE_STATION_2;
+import static subway.fixture.StationFixture.FIXTURE_STATION_3;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.dto.SectionDirection;
+import subway.domain.entity.Section;
+import subway.domain.exception.RequestDataNotFoundException;
+import subway.domain.vo.Distance;
 import subway.dto.SectionRequest;
 import subway.dto.SectionStations;
 
+@DisplayName("지하철 구간 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
 
@@ -40,164 +43,70 @@ class SectionServiceTest {
         sectionService = new SectionService(sectionDao, stationDao);
     }
 
-
-    @DisplayName("빈 노선에 새로운 두 역의 노선을 저장할 수 있다.")
+    @DisplayName("역 등록 시 DB의 해당 노선에 대한 구간 정보를 갱신한다")
     @Test
-    void addStations_init_success() {
-        when(sectionDao.findByLineId(1L)).thenReturn(new ArrayList<>());
-        when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
-        when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
+    void addStations() {
+        when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_ST1_ST2));
+        when(stationDao.findById(1L)).thenReturn(Optional.of(FIXTURE_STATION_1));
+        when(stationDao.findById(3L)).thenReturn(Optional.of(FIXTURE_STATION_3));
 
-        SectionStations sectionStations = new SectionStations(1L, 2L, 3);
-        SectionRequest sectionRequest = new SectionRequest(1L, sectionStations, new SectionDirection("down"));
+        sectionService.addStations(1L, new SectionRequest(new SectionStations(1L, 3L, 6), "down"));
 
-        assertThatCode(() -> sectionService.addStations(sectionRequest))
-                .doesNotThrowAnyException();
+        InOrder inOrder = inOrder(sectionDao);
+        inOrder.verify(sectionDao).deleteByLineId(1L);
+        inOrder.verify(sectionDao)
+                .insertAllByLineId(1L, List.of(
+                        new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(6)),
+                        new Section(FIXTURE_STATION_3, FIXTURE_STATION_2,
+                                SECTION_ST1_ST2.getDistance().minus(new Distance(6)))
+                ));
     }
 
-    @DisplayName("비어있지 않은 노선에 두 역의 노선의 구간을 추가할 수 있다.")
+    @DisplayName("역 등록 시 전달받은 기준 역이 존재하지 않으면 예외를 발생한다")
     @Test
-    void addStations_normal_success() {
-        when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_START));
-        when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
-        when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
+    void addStationsFailNotValidBaseStationId() {
+        when(stationDao.findById(1L)).thenReturn(Optional.empty());
 
-        SectionStations sectionStations = new SectionStations(2L, 3L, 3);
-        SectionRequest sectionRequest = new SectionRequest(1L, sectionStations, new SectionDirection("down"));
-
-        assertThatCode(() -> sectionService.addStations(sectionRequest))
-                .doesNotThrowAnyException();
+        assertThatThrownBy(
+                () -> sectionService.addStations(1L, new SectionRequest(new SectionStations(1L, 3L, 6), "down")))
+                .isInstanceOf(RequestDataNotFoundException.class)
+                .hasMessageContaining("기준 역: 해당 Id를 가진 역 정보가 존재하지 않습니다.");
     }
 
-    @DisplayName("비어있지 않은 노선의 앞 쪽에 두 역의 노선의 구간을 추가할 수 있다.")
+    @DisplayName("역 등록 시 전달받은 다음 역이 존재하지 않으면 예외를 발생한다")
     @Test
-    void addStations_firstInsert_success() {
-        when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_START));
-        when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
-        when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
+    void addStationsFailNotValidNextStationId() {
+        when(stationDao.findById(1L)).thenReturn(Optional.of(FIXTURE_STATION_1));
+        when(stationDao.findById(3L)).thenReturn(Optional.empty());
 
-        SectionStations sectionStations = new SectionStations(1L, 3L, 3);
-        SectionRequest sectionRequest = new SectionRequest(1L, sectionStations, new SectionDirection("up"));
-
-        assertThatCode(() -> sectionService.addStations(sectionRequest))
-                .doesNotThrowAnyException();
+        assertThatThrownBy(
+                () -> sectionService.addStations(1L, new SectionRequest(new SectionStations(1L, 3L, 6), "down")))
+                .isInstanceOf(RequestDataNotFoundException.class)
+                .hasMessageContaining("다음 역: 해당 Id를 가진 역 정보가 존재하지 않습니다.");
     }
 
-    @DisplayName("빈 노선에 동일한 두 역의 노선을 저장할 수 없다.")
+    @DisplayName("역 삭제 시 DB의 해당 노선에 대한 구간 정보를 갱신한다")
     @Test
-    void addStations_sameStation_fail() {
-        when(sectionDao.findByLineId(1L)).thenReturn(new ArrayList<>());
-        when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
+    void deleteStation() {
+        when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_ST1_ST2, SECTION_ST2_ST3));
+        when(stationDao.findById(1L)).thenReturn(Optional.of(FIXTURE_STATION_1));
 
-        SectionStations sectionStations = new SectionStations(1L, 1L, 3);
-        SectionRequest sectionRequest = new SectionRequest(1L, sectionStations, new SectionDirection("down"));
+        sectionService.deleteStation(1L, 1L);
 
-        assertThatThrownBy(() -> sectionService.addStations(sectionRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("동일한 역 간 구간을 생성할 수 없습니다.");
+        InOrder inOrder = inOrder(sectionDao);
+        inOrder.verify(sectionDao).deleteByLineId(1L);
+        inOrder.verify(sectionDao)
+                .insertAllByLineId(1L, List.of(SECTION_ST2_ST3));
     }
 
-    @DisplayName("빈 노선에 동일한 두 역의 노선을 저장할 수 없다.")
+    @DisplayName("역 삭제 시 전달받은 역이 존재하지 않으면 예외를 발생한다")
     @Test
-    void addStations_allExistingStation_fail() {
-        when(sectionDao.findByLineId(1L)).thenReturn(
-                List.of(SECTION_START));
-        when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
-        when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
+    void deleteStationFailNotValidStationId() {
+        when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_ST1_ST2, SECTION_ST2_ST3));
+        when(stationDao.findById(3L)).thenReturn(Optional.empty());
 
-        SectionStations sectionStations = new SectionStations(1L, 2L, 3);
-        SectionRequest sectionRequest = new SectionRequest(1L, sectionStations, new SectionDirection("down"));
-
-        assertThatThrownBy(() -> sectionService.addStations(sectionRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("노선에 이미 존재하는 역을 등록할 수 없습니다.");
-    }
-
-    @DisplayName("등록되지 않은 역과 등록된 역의 순서로 입력한 경우 두 역의 노선을 저장할 수 없다.")
-    @Test
-    void addStations_afterExistingStation_fail() {
-        when(sectionDao.findByLineId(1L)).thenReturn(
-                List.of(SECTION_START));
-        when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
-        when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
-
-        SectionStations sectionStations = new SectionStations(1L, 2L, 3);
-        SectionRequest sectionRequest = new SectionRequest(1L, sectionStations, new SectionDirection("down"));
-
-        assertThatThrownBy(() -> sectionService.addStations(sectionRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("노선에 이미 존재하는 역을 등록할 수 없습니다.");
-    }
-
-    @DisplayName("삽입할 거리가 기존 역 사이의 길이보다 크거나 같은 경우 두 역의 노선을 저장할 수 없다.")
-    @Test
-    void addStations_SameOrOverDistance_fail() {
-        when(sectionDao.findByLineId(1L)).thenReturn(
-                List.of(SECTION_START));
-        when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
-        when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
-
-        SectionStations sectionStations = new SectionStations(1L, 3L, 10);
-        SectionRequest sectionRequest = new SectionRequest(1L, sectionStations, new SectionDirection("down"));
-
-        assertThatThrownBy(() -> sectionService.addStations(sectionRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
-    }
-
-    @DisplayName("양 쪽에 연결된 역을 삭제할 수 있다.")
-    @Test
-    void deleteStationInBetween() {
-        when(sectionDao.findByLineId(1L)).thenReturn(
-                List.of(SECTION_START, SECTION_MIDDLE_1));
-        when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
-
-        assertThatCode(() -> sectionService.deleteStation(1L, 2L))
-                .doesNotThrowAnyException();
-    }
-
-    @DisplayName("왼쪽에 연결된 역을 삭제할 수 있다.")
-    @Test
-    void deleteStationLeft() {
-        when(sectionDao.findByLineId(1L)).thenReturn(
-                List.of(SECTION_START, SECTION_MIDDLE_1));
-        when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
-
-        assertThatCode(() -> sectionService.deleteStation(1L, 1L))
-                .doesNotThrowAnyException();
-    }
-
-    @DisplayName("오른쪽에 연결된 역을 삭제할 수 있다.")
-    @Test
-    void deleteStationRight() {
-        when(sectionDao.findByLineId(1L)).thenReturn(
-                List.of(SECTION_START, SECTION_MIDDLE_1));
-        when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
-
-        assertThatCode(() -> sectionService.deleteStation(1L, 3L))
-                .doesNotThrowAnyException();
-    }
-
-    @DisplayName("존재하지 않는 역을 삭제할 수 없다.")
-    @Test
-    void deleteStationNonExisting() {
-        when(sectionDao.findByLineId(1L)).thenReturn(
-                List.of(SECTION_START, SECTION_MIDDLE_1));
-        when(stationDao.findById(4L)).thenReturn(FIXTURE_STATION_4);
-
-        assertThatThrownBy(() -> sectionService.deleteStation(1L, 4L))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("역이 존재하지 않습니다.");
-    }
-
-    @DisplayName("노선에 역이 두 개 있으면 모두 삭제한다.")
-    @Test
-    void deleteStationOnlyTwoExisting() {
-        when(sectionDao.findByLineId(1L)).thenReturn(
-                List.of(SECTION_START));
-        when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
-
-        assertThatCode(() -> sectionService.deleteStation(1L, 2L))
-                .doesNotThrowAnyException();
+        assertThatThrownBy(() -> sectionService.deleteStation(1L, 3L))
+                .isInstanceOf(RequestDataNotFoundException.class)
+                .hasMessageContaining("해당 Id를 가진 역 정보가 존재하지 않습니다.");
     }
 }

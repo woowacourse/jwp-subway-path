@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.entity;
 
 import java.util.Objects;
 
@@ -8,11 +8,6 @@ public class Line {
     private String color;
 
     public Line() {
-    }
-
-    // TODO 생성자 이렇게 만들어도 괜찮을까?
-    public Line(final Long id) {
-        this.id = id;
     }
 
     public Line(String name, String color) {
@@ -39,7 +34,7 @@ public class Line {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -47,11 +42,11 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+        return Objects.equals(id, line.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(id);
     }
 }

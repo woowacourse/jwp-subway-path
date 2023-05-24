@@ -1,7 +1,7 @@
 package subway.dto;
 
 import java.util.List;
-import subway.domain.Line;
+import subway.domain.entity.Line;
 
 public class LineResponse {
     private Long id;
@@ -10,7 +10,6 @@ public class LineResponse {
     private List<StationResponse> stationResponses;
 
     public LineResponse() {
-
     }
 
     public LineResponse(Long id, String name, String color) {

@@ -1,10 +1,18 @@
 package subway.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class SectionStations {
 
-    private final Long baseStationId;
-    private final Long nextStationId;
-    private final Integer distance;
+    @NotNull
+    private Long baseStationId;
+    @NotNull
+    private Long nextStationId;
+    @NotNull
+    private Integer distance;
+
+    public SectionStations() {
+    }
 
     public SectionStations(final Long baseStationId, final Long nextStationId, final Integer distance) {
         this.baseStationId = baseStationId;
