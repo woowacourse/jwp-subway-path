@@ -21,5 +21,6 @@ create table if not exists SECTION
     lower_station bigint not null,
     distance int not null,
     primary key (id),
-    constraint not_same_station check (upper_station != lower_station)
+    constraint not_same_station check (upper_station != lower_station),
+    constraint only_positive_distance check (distance > 0)
 );
