@@ -25,18 +25,39 @@ public class PathService {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
     }
-
+    
     public ShortestPathResponse findShortestPath(Long id, ShortestPathRequest request) {
         List<StationEntity> stationsEntity = lineDao.findAllStationsById(id);
         StationEntity.convertToStations(stationsEntity);
 
         WeightedMultigraph graph = createGraphForPath(stationsEntity);
         DijkstraShortestPath shortestPath = new DijkstraShortestPath<>(graph);
-        List<String> path = shortestPath.getPath(request.getStartName(), request.getDestinationName())
-                .getVertexList();
+        List<String> path = shortestPath.getPath(request.getStartName(), request.getDestinationName()).getVertexList();
         double distance = shortestPath.getPathWeight(request.getStartName(), request.getDestinationName());
+        int cost = calculateCost(distance);
 
-        return new ShortestPathResponse(path, distance);
+        return new ShortestPathResponse(path, distance, cost);
+    }
+
+    private int calculateCost(double distance) {
+        if (distance < 10) {
+            return 1250;
+        } else if (distance < 50) {
+            return 1250 + chargeFirstExtraFee(distance, 5);
+
+        } else {
+            return 1250 + chargeFirstExtraFee(distance, 5) + chargeFirstExtraFee(distance, 8);
+        }
+
+    }
+
+    private int chargeFirstExtraFee(double distance, int maxDistance) {
+        int total = (int) distance - 10;
+        int count = 0;
+        do {
+            count++;
+        } while ((total -= maxDistance) > maxDistance);
+        return (100 * count);
     }
 
     private WeightedMultigraph createGraphForPath(List<StationEntity> stationsEntity) {

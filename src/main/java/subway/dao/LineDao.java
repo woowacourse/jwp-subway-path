@@ -85,6 +85,12 @@ public class LineDao {
         return Optional.of(lineEntity);
     }
 
+    public Optional<LineEntity> findLineEntityByName(String name) {
+        String sql = "SELECT * FROM LINE WHERE name = ?";
+        LineEntity lineEntity = jdbcTemplate.queryForObject(sql, getLineRowMapper(), name);
+        return Optional.of(lineEntity);
+    }
+
     private RowMapper<LineEntity> getLineRowMapper() {
         return (resultSet, rowNum) -> {
             Long id = resultSet.getLong("id");
