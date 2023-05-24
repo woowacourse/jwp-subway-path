@@ -11,49 +11,27 @@ import subway.controller.dto.response.ExceptionResponse;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.DuplicatedSectionException;
 import subway.exception.DuplicatedStationNameException;
+import subway.exception.InvalidDirectionException;
 import subway.exception.InvalidDistanceException;
 import subway.exception.LineNotFoundException;
 import subway.exception.LineOrStationNotFoundException;
 import subway.exception.SectionNotFoundException;
 import subway.exception.StationNotFoundException;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(DuplicatedStationNameException.class)
-    public ResponseEntity<ExceptionResponse> handleDuplicatedStationNameException(DuplicatedStationNameException e) {
+    @ExceptionHandler({DuplicatedStationNameException.class, DuplicatedLineNameException.class, DuplicatedSectionException.class})
+    public ResponseEntity<ExceptionResponse> handleDuplicatedException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(StationNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleStationNotFoundException(StationNotFoundException e) {
-        return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(DuplicatedLineNameException.class)
-    public ResponseEntity<ExceptionResponse> handleDuplicatedLineNameException(DuplicatedLineNameException e) {
-        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(LineNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleLineNotFoundException(LineNotFoundException e) {
-        return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(LineOrStationNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleLineOrStationNotFoundException(LineOrStationNotFoundException e) {
-        return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(DuplicatedSectionException.class)
-    public ResponseEntity<ExceptionResponse> handleDuplicatedSectionException(DuplicatedSectionException e) {
-        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(SectionNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleSectionNotFoundException(SectionNotFoundException e) {
+    @ExceptionHandler({StationNotFoundException.class, LineNotFoundException.class,
+            LineOrStationNotFoundException.class, SectionNotFoundException.class})
+    public ResponseEntity<ExceptionResponse> handleNotFoundException(IllegalArgumentException e) {
         return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
@@ -62,9 +40,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(InvalidDirectionException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidDirectionException(InvalidDirectionException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException() {
-        return ResponseEntity.badRequest().body(new ExceptionResponse("잘못된 방향입니다."));
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        try {
+            final String errorMessage = Objects.requireNonNull(e.getRootCause()).getMessage();
+            return ResponseEntity.badRequest().body(new ExceptionResponse(errorMessage));
+        } catch (NullPointerException ex) {
+            return handleRuntimeException();
+        }
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -76,8 +64,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ExceptionResponse> handleRuntimeException(RuntimeException e) {
-        System.out.println(e.getClass());
+    public ResponseEntity<ExceptionResponse> handleRuntimeException() {
         return ResponseEntity.internalServerError().body(new ExceptionResponse("서버 내부 오류입니다."));
     }
 }
