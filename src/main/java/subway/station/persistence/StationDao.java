@@ -1,11 +1,9 @@
 package subway.station.persistence;
 
-import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -15,7 +13,7 @@ public class StationDao {
 
     private static final RowMapper<StationEntity> STATION_ENTITY_ROW_MAPPER = (rs, rowNum) -> {
         final Long id = rs.getLong("id");
-        final String stationName = rs.getString("stationName");
+        final String stationName = rs.getString("station_name");
         return new StationEntity(id, stationName);
     };
 

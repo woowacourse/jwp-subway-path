@@ -1,7 +1,6 @@
 package subway.section.domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,34 +13,32 @@ public final class Sections {
     private final List<Section> sections;
 
     private Sections(final List<Section> sections) {
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public static Sections empty() {
         return new Sections(new ArrayList<>());
     }
 
-    public static Sections values(final Section... sections) {
-        return new Sections(Arrays.asList(sections));
-    }
-
     public static Sections values(final List<Section> sections) {
         return new Sections(sections);
     }
 
-    public void initializeSections(final Station upStation, final Station downStation, final int distance) {
+    public void initializeSections(final Section section) {
         if (!sections.isEmpty()) {
             throw new IllegalArgumentException("이미 역들이 존재하는 노선입니다.");
         }
-        sections.add(Section.of(upStation, downStation, distance));
+        sections.add(section);
     }
 
-    public void addSection(final Station upStation, final Station downStation, final int distance) {
+    public void addSection(final Section section) {
         if (sections.size() < INITIALIZE_SECTION_COUNT) {
             throw new IllegalArgumentException("노선에는 한 구간이라도 존재해야 역이 추가 가능합니다.");
         }
+        final Station upStation = section.getUpStation();
+        final Station downStation = section.getDownStation();
         validateSection(upStation, downStation);
-        addSectionByPosition(upStation, downStation, distance);
+        addSectionByPosition(upStation, downStation, section.getDistance());
     }
 
     private void validateSection(final Station upStation, final Station downStation) {
@@ -144,7 +141,8 @@ public final class Sections {
 
     private void combineSection(final List<Section> containsSections, final Station station) {
         if (containsSections.size() == 1) {
-            sections.remove(containsSections.get(0));
+            final Section o = containsSections.get(0);
+            sections.remove(o);
             return;
         }
 

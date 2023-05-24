@@ -11,26 +11,34 @@ public class Line {
     private final String lineName;
     private final Sections sections;
 
+    public Line(String lineName) {
+        this(null, lineName, Sections.empty());
+    }
+
+    public Line(Long id, String lineName) {
+        this(id, lineName, Sections.empty());
+    }
+
     public Line(Long id, String lineName, Sections sections) {
         this.id = id;
         this.lineName = lineName;
         this.sections = sections;
     }
 
-    public Line(String lineName, Sections sections) {
-        this(null, lineName, sections);
+    public void add(final Section section) {
+        if (sections.isEmpty()) {
+            initializeLine(section);
+            return;
+        }
+        addStation(section);
     }
 
-    public boolean isEmpty() {
-        return sections.isEmpty();
+    private void initializeLine(final Section section) {
+        sections.initializeSections(section);
     }
 
-    public void initializeLine(final Station upStation, final Station downStation, final int distance) {
-        sections.initializeSections(upStation, downStation, distance);
-    }
-
-    public void addStation(final Station upStation, final Station downStation, final int distance) {
-        sections.addSection(upStation, downStation, distance);
+    private void addStation(final Section section) {
+        sections.addSection(section);
     }
 
     public void removeStation(final Station station) {

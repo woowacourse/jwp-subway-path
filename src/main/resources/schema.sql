@@ -1,20 +1,18 @@
-DROP TABLE IF EXISTS SECTION;
-
-create table if not exists STATION
+create table if not exists station
 (
     id   bigint auto_increment not null,
-    stationName varchar(255)          not null,
+    station_name varchar(255)          not null,
     primary key (id)
 );
 
-create table if not exists LINE
+create table if not exists line
 (
     id   bigint auto_increment not null,
-    lineName varchar(255)          not null unique,
+    line_name varchar(255)          not null unique,
     primary key (id)
 );
 
-create table if not exists SECTION
+create table if not exists section
 (
     id              bigint auto_increment not null,
     line_id         bigint                not null,
