@@ -1,8 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.domain.Station;
-import subway.dto.request.StationCreateRequest;
+import subway.domain.line.Station;
 import subway.repository.StationRepository;
 
 @Service
@@ -14,9 +13,9 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public Station saveStation(StationCreateRequest createRequest) {
-        stationRepository.checkStationIsExist(createRequest.getStationName());
-        Station station = new Station(createRequest.getStationName());
+    public Station saveStation(String stationName) {
+        stationRepository.checkStationIsExist(stationName);
+        Station station = new Station(stationName);
         return stationRepository.insert(station);
     }
 }

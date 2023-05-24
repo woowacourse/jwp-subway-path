@@ -3,10 +3,12 @@ package subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.vo.Distance;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
+import subway.domain.vo.Charge;
 import subway.dto.AddStationToExistLineDto;
-import subway.dto.CreateNewLineDto;
+import subway.dto.LineCreateDto;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -22,12 +24,12 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public Line createNewLine(CreateNewLineDto dto) {
+    public Line createNewLine(LineCreateDto dto) {
         lineRepository.checkLineIsExist(dto.getLineName());
         Station upStation = stationRepository.getStation(dto.getUpStationId());
         Station downStation = stationRepository.getStation(dto.getDownStationId());
 
-        Line createdLine = Line.createLine(dto.getLineName(), upStation, downStation, dto.getDistance());
+        Line createdLine = Line.createLine(dto.getLineName(), new Charge(dto.getExtraCharge()), upStation, downStation, new Distance(dto.getDistance()));
 
         return lineRepository.insertNewLine(createdLine);
     }
@@ -37,7 +39,7 @@ public class LineService {
         Station upStation = stationRepository.getStation(dto.getUpStationId());
         Station downStation = stationRepository.getStation(dto.getDownStationId());
 
-        line.addSection(upStation, downStation, dto.getDistance());
+        line.addSection(upStation, downStation, new Distance(dto.getDistance()));
 
         return lineRepository.updateLine(line);
     }

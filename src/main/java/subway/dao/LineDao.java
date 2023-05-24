@@ -5,28 +5,35 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
+import subway.domain.line.Line;
+import subway.domain.vo.Charge;
 
 @Repository
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
-    private final BeanPropertyRowMapper<Line> lineMapper;
+    private final RowMapper<Line> lineMapper;
 
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.lineMapper = BeanPropertyRowMapper.newInstance(Line.class);
+        this.lineMapper = (resultSet, rowNum) -> {
+            return new Line(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    new Charge(resultSet.getDouble("extra_charge")));
+        };
     }
 
     public Long insert(Line line) {
-        String sql = "INSERT INTO line(name) VALUES (?)";
+        String sql = "INSERT INTO line(name, extra_charge) VALUES (?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, line.getName());
+            ps.setDouble(2, line.getExtraCharge().getValue());
             return ps;
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();

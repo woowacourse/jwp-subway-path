@@ -3,7 +3,9 @@ package subway.repository;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.line.Station;
+import subway.exception.line.StationAlreadyExistException;
+import subway.exception.line.StationDoesNotExistException;
 
 @Repository
 public class StationRepository {
@@ -16,21 +18,22 @@ public class StationRepository {
 
     public Station getStation(Long stationId) {
         return stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new StationDoesNotExistException());
+    }
+
+    public Station getStation(String stationName) {
+        return stationDao.findByName(stationName)
+                .orElseThrow(() -> new StationDoesNotExistException());
     }
 
     public void checkStationIsExist(String stationName) {
         stationDao.findByName(stationName)
                 .ifPresent(station -> {
-                    throw new IllegalArgumentException("이미 존재하는 지하철역입니다.");
+                    throw new StationAlreadyExistException();
                 });
     }
 
     public Station insert(Station station) {
         return stationDao.insert(station);
-    }
-
-    public List<Station> getAllStations() {
-        return stationDao.findAll();
     }
 }

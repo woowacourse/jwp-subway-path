@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,29 +6,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import subway.domain.vo.Distance;
+import subway.exception.line.BothStationsAlreadyExistException;
+import subway.exception.line.BothStationsDoNotExistException;
+import subway.exception.line.ForkedRoadException;
+import subway.exception.line.StationDoesNotExistOnLineException;
 
-public class Line {
+public class Sections {
 
-    private Long id;
-    private String name;
     private List<Section> sections;
 
-    public Line() {
-    }
-
-    public Line(Long id, String name, List<Section> sections) {
-        this.id = id;
-        this.name = name;
+    public Sections(List<Section> sections) {
         this.sections = sections;
     }
 
-    public static Line createLine(String name, Station upStation, Station downStation, int distance) {
+    public static Sections createSections(Section initialSection) {
         List<Section> sections = new ArrayList<>();
-        sections.add(new Section(upStation, downStation, distance));
-        return new Line(null, name, sections);
+        sections.add(initialSection);
+        return new Sections(sections);
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
+    public void addSection(Station upStation, Station downStation, Distance distance) {
         validateStations(upStation, downStation);
         Direction direction = findDirection(upStation);
         direction.add(sections, upStation, downStation, distance);
@@ -36,26 +34,26 @@ public class Line {
 
     private void validateStations(Station upStation, Station downStation) {
         if (isAlreadyExistBoth(upStation, downStation)) {
-            throw new IllegalArgumentException("해당 노선에 두 역이 모두 존재합니다.");
+            throw new BothStationsAlreadyExistException();
         }
         if (isNothingExist(upStation, downStation)) {
-            throw new IllegalArgumentException("해당 노선에 두 역이 모두 존재하지 않습니다.");
+            throw new BothStationsDoNotExistException();
         }
-    }
-
-    private Direction findDirection(Station upStation) {
-        if (getStations().stream().anyMatch(station -> station.equals(upStation))) {
-            return Direction.DOWN;
-        }
-        return Direction.UP;
     }
 
     private boolean isAlreadyExistBoth(Station upStation, Station downStation) {
-        return new HashSet<>(getStations()).containsAll(List.of(upStation, downStation));
+        return hasStation(upStation) && hasStation(downStation);
     }
 
     private boolean isNothingExist(Station upStation, Station downStation) {
-        return !getStations().contains(upStation) && !getStations().contains(downStation);
+        return !hasStation(upStation) && !hasStation(downStation);
+    }
+
+    private Direction findDirection(Station upStation) {
+        if (hasStation(upStation)) {
+            return Direction.DOWN;
+        }
+        return Direction.UP;
     }
 
     public void deleteStation(Station station) {
@@ -72,21 +70,25 @@ public class Line {
             Section section2 = targetSections.get(1);
 
             Section newSection = new Section(section1.getUpStation(), section2.getDownStation(),
-                    section1.getDistance() + section2.getDistance());
-            int removedIndex = sections.indexOf(section1);
+                    section1.getDistance().add(section2.getDistance()));
             sections.remove(section1);
             sections.remove(section2);
-            sections.add(removedIndex, newSection);
+            sections.add(newSection);
         }
     }
 
     private static void validateTargetSections(List<Section> targetSections) {
         if (targetSections.isEmpty()) {
-            throw new IllegalArgumentException("해당 역이 해당 노선에 존재하지 않습니다.");
+            throw new StationDoesNotExistOnLineException();
         }
         if (targetSections.size() > 2) {
-            throw new IllegalArgumentException("해당 노선에 갈래길이 존재합니다. 확인해주세요.");
+            throw new ForkedRoadException();
         }
+    }
+
+    public boolean hasStation(Station station) {
+        return sections.stream()
+                .anyMatch(it -> it.hasStation(station));
     }
 
     public List<Station> getStations() {
@@ -111,27 +113,7 @@ public class Line {
                 .collect(Collectors.toList());
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public List<Section> getSections() {
-        return sections;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return new ArrayList<>(sections);
     }
 }

@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:h2:~/subway;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+  sql:
+    init:
+      schema-locations: classpath:schema.sql
+      mode: always

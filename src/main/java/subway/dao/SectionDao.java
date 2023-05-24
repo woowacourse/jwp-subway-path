@@ -9,8 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.vo.Distance;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 
 @Repository
 public class SectionDao {
@@ -28,7 +29,7 @@ public class SectionDao {
             Station downStation = new Station(
                     resultSet.getLong("downstation_id"),
                     resultSet.getString("downstation_name"));
-            return new Section(resultSet.getLong("id"), upStation, downStation, resultSet.getInt("distance"));
+            return new Section(resultSet.getLong("id"), upStation, downStation, new Distance(resultSet.getInt("distance")));
         };
     }
 
@@ -40,7 +41,7 @@ public class SectionDao {
             ps.setLong(1, lineId);
             ps.setLong(2, section.getUpStation().getId());
             ps.setLong(3, section.getDownStation().getId());
-            ps.setInt(4, section.getDistance());
+            ps.setDouble(4, section.getDistance().getValue());
             return ps;
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
@@ -73,7 +74,7 @@ public class SectionDao {
                 ps.setLong(1, lineId);
                 ps.setLong(2, section.getUpStation().getId());
                 ps.setLong(3, section.getDownStation().getId());
-                ps.setInt(4, section.getDistance());
+                ps.setDouble(4, section.getDistance().getValue());
             }
 
             @Override

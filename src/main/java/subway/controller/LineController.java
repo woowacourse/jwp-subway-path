@@ -3,7 +3,9 @@ package subway.controller;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,10 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.domain.Line;
-import subway.dto.AddStationToExistLineDto;
-import subway.dto.CreateNewLineDto;
-import subway.dto.request.AddStationToLineRequest;
+import subway.domain.line.Line;
+import subway.dto.request.AddStationToExistLineRequest;
 import subway.dto.request.LineCreateRequest;
 import subway.dto.response.AddStationToLineResponse;
 import subway.dto.response.DeleteStationFromLineResponse;
@@ -32,29 +32,19 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineCreateResponse> createLine(@RequestBody LineCreateRequest request) {
-        CreateNewLineDto dto = new CreateNewLineDto(
-                request.getLineName(),
-                request.getUpStationId(),
-                request.getDownStationId(),
-                request.getDistance());
-        Line createdLine = lineService.createNewLine(dto);
+    public ResponseEntity<LineCreateResponse> createLine(@Valid @RequestBody LineCreateRequest request) {
+        Line createdLine = lineService.createNewLine(request.toDto());
 
-        LineCreateResponse response = LineCreateResponse.fromDomain(createdLine);
+        LineCreateResponse response = LineCreateResponse.from(createdLine);
         return ResponseEntity.created(URI.create("/lines/" + createdLine.getId())).body(response);
     }
 
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<AddStationToLineResponse> addStationToLine(@PathVariable Long lineId,
-                                                                     @RequestBody AddStationToLineRequest request) {
-        AddStationToExistLineDto dto = new AddStationToExistLineDto(
-                lineId,
-                request.getUpStationId(),
-                request.getDownStationId(),
-                request.getDistance());
-        Line updatedLine = lineService.addStationToExistLine(dto);
+                                                                     @Valid @RequestBody AddStationToExistLineRequest request) {
+        Line updatedLine = lineService.addStationToExistLine(request.toDto(lineId));
 
-        AddStationToLineResponse response = AddStationToLineResponse.fromDomain(updatedLine);
+        AddStationToLineResponse response = AddStationToLineResponse.from(updatedLine);
         return ResponseEntity.ok(response);
     }
 
@@ -63,7 +53,7 @@ public class LineController {
                                                                                @PathVariable Long stationId) {
         Line updatedLine = lineService.deleteStationFromLine(lineId, stationId);
 
-        DeleteStationFromLineResponse response = DeleteStationFromLineResponse.fromDomain(updatedLine);
+        DeleteStationFromLineResponse response = DeleteStationFromLineResponse.from(updatedLine);
         return ResponseEntity.ok(response);
     }
 
@@ -71,14 +61,14 @@ public class LineController {
     public ResponseEntity<GetAllStationsInLineResponse> findLine(@PathVariable Long lineId) {
         Line findLine = lineService.findOneLine(lineId);
 
-        GetAllStationsInLineResponse response = GetAllStationsInLineResponse.fromDomain(findLine);
+        GetAllStationsInLineResponse response = GetAllStationsInLineResponse.from(findLine);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<List<GetAllStationsInLineResponse>> findAllLines() {
         List<GetAllStationsInLineResponse> response = lineService.findAllLine()
-                .stream().map(GetAllStationsInLineResponse::fromDomain)
+                .stream().map(GetAllStationsInLineResponse::from)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(response);

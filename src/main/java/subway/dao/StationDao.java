@@ -5,21 +5,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.domain.line.Station;
 
 @Repository
 public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final BeanPropertyRowMapper<Station> stationMapper;
+    private final RowMapper<Station> stationMapper;
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.stationMapper = BeanPropertyRowMapper.newInstance(Station.class);
+        this.stationMapper = (resultSet, rowNum) -> {
+            return new Station(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"));
+        };
     }
 
     public Station insert(Station station) {

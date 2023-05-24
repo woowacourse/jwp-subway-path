@@ -1,31 +1,31 @@
 package subway.dto;
 
 public class AddStationToExistLineDto {
-    private final Long lineId;
-    private final Long upStationId;
-    private final Long downStationId;
-    private final Integer distance;
+    private final long lineId;
+    private final long upStationId;
+    private final long downStationId;
+    private final int distance;
 
-    public AddStationToExistLineDto(Long lineId, Long upStationId, Long downStationId, Integer distance) {
+    public AddStationToExistLineDto(long lineId, long upStationId, long downStationId, int distance) {
         this.lineId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
     }
 
-    public Long getLineId() {
+    public long getLineId() {
         return lineId;
     }
 
-    public Long getUpStationId() {
+    public long getUpStationId() {
         return upStationId;
     }
 
-    public Long getDownStationId() {
+    public long getDownStationId() {
         return downStationId;
     }
 
-    public Integer getDistance() {
+    public int getDistance() {
         return distance;
     }
 }

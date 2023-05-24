@@ -59,6 +59,6 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString("message")).isEqualTo("이미 존재하는 지하철역입니다.");
+        assertThat(response.body().jsonPath().getString("message")).isEqualTo("이미 존재하는 역입니다.");
     }
 }

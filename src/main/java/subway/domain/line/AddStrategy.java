@@ -1,10 +1,11 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.List;
 import java.util.Optional;
+import subway.domain.vo.Distance;
 
 public interface AddStrategy {
-    void activate(List<Section> sections, Station upStation, Station downStation, int distance);
+    void activate(List<Section> sections, Station upStation, Station downStation, Distance distance);
 
     default Optional<Section> findSectionByStationExistsAtDirection(
             final List<Section> sections,

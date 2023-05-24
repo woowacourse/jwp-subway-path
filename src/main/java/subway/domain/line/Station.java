@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.Objects;
 
@@ -6,9 +6,6 @@ public class Station {
 
     private Long id;
     private String name;
-
-    public Station() {
-    }
 
     public Station(String name) {
         this.name = name;
@@ -25,14 +22,6 @@ public class Station {
 
     public String getName() {
         return name;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
