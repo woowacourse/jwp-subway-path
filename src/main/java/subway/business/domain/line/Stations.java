@@ -32,9 +32,8 @@ public class Stations {
         return stations.stream()
                 .filter(station -> station.hasNameOf(stationName))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                                String.format("존재하지 않는 이름의 역입니다. " + "(입력한 역 이름 : %s)", stationName)
-                        )
+                .orElseThrow(() -> new IllegalArgumentException(String.format(
+                        "존재하지 않는 이름의 역입니다. " + "(입력한 역 이름 : %s)", stationName))
                 );
     }
 
