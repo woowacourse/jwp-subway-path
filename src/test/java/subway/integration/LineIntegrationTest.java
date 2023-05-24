@@ -109,14 +109,15 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(JONGGAK_ID, JONGROSAMGA_ID, 10))
-                .when().post("/lines/{lineId}/station", lineId1)
+                .when().post("/lines/{lineId}/stations", lineId1)
                 .then().log().all().
                 extract();
+
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SINDORIM_ID, SEOULYEOK_ID, 10))
-                .when().post("/lines/{lineId}/station", lineId2)
+                .when().post("/lines/{lineId}/stations", lineId2)
                 .then().log().all().
                 extract();
 
@@ -138,18 +139,15 @@ class LineIntegrationTest extends IntegrationTest {
                 .collect(Collectors.toList());
         assertThat(resultLineIds).containsAll(expectedLineIds);
 
-        List<LineResponse> lineResponses = response.jsonPath().getList(".", LineResponse.class)
-                .stream()
-                .filter(lineResponse -> !lineResponse.getStations().isEmpty())
-                .collect(Collectors.toList());
+        List<LineResponse> lineResponses = response.jsonPath().getList(".", LineResponse.class);
 
-        assertThat(lineResponses.get(4).getStations())
+        assertThat(lineResponses.get(lineId1.intValue() - 1).getStations())
                 .extracting("id", "name")
                 .containsExactly(
                         tuple(JONGGAK_ID, "종각"),
                         tuple(JONGROSAMGA_ID, "종로3가")
                 );
-        assertThat(lineResponses.get(5).getStations())
+        assertThat(lineResponses.get(lineId2.intValue() - 1).getStations())
                 .extracting("id", "name")
                 .containsExactly(
                         tuple(SINDORIM_ID, "신도림"),
@@ -174,7 +172,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SICHUNG_ID, 10))
-                .when().post("/lines/{lineId}/station", lineId)
+                .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all().
                 extract();
 
@@ -256,7 +254,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
-                .when().post("/lines/5/station")
+                .when().post("/lines/5/stations")
                 .then().log().all().
                 extract();
 
@@ -272,7 +270,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
-                .when().post("/lines/2/station")
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -281,7 +279,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
-                .when().post("/lines/2/station")
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -297,7 +295,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
-                .when().post("/lines/2/station")
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -306,7 +304,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SICHUNG_ID, JONGGAK_ID, 10))
-                .when().post("/lines/2/station")
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -322,7 +320,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
-                .when().post("/lines/5/station")
+                .when().post("/lines/5/stations")
                 .then().log().all().
                 extract();
 
@@ -331,7 +329,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SICHUNG_ID, SEOULYEOK_ID, 5))
-                .when().post("/lines/5/station")
+                .when().post("/lines/5/stations")
                 .then().log().all().
                 extract();
 
@@ -347,7 +345,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
-                .when().post("/lines/5/station")
+                .when().post("/lines/5/stations")
                 .then().log().all().
                 extract();
 
@@ -356,7 +354,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SICHUNG_ID, 5))
-                .when().post("/lines/5/station")
+                .when().post("/lines/5/stations")
                 .then().log().all().
                 extract();
 
@@ -372,7 +370,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
-                .when().post("/lines/2/station")
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -381,7 +379,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SICHUNG_ID,15))
-                .when().post("/lines/2/station")
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -397,7 +395,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
-                .when().post("/lines/2/station")
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -406,7 +404,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SINDORIM_ID, SEOULYEOK_ID, 5))
-                .when().post("/lines/2/station")
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -431,7 +429,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationRegisterRequest(SINDORIM_ID, SEOULYEOK_ID, 10))
-                .when().post("/lines/{lineId}/station", lineId)
+                .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all().
                 extract();
 
@@ -440,7 +438,7 @@ class LineIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new StationDeleteRequest(SINDORIM_ID))
-                .when().delete("/lines/{lineId}/station", lineId)
+                .when().delete("/lines/{lineId}/stations", lineId)
                 .then().log().all()
                 .extract();
 

@@ -42,7 +42,7 @@ class LineControllerTest {
                 )
         );
 
-        this.mockMvc.perform(post("/lines/1/station")
+        this.mockMvc.perform(post("/lines/1/stations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated());
@@ -54,7 +54,7 @@ class LineControllerTest {
         String body = objectMapper.writeValueAsString(
                 new StationRegisterRequest(2L,1L,10));
 
-        this.mockMvc.perform(post("/lines/1/station")
+        this.mockMvc.perform(post("/lines/1/stations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated());
@@ -66,7 +66,7 @@ class LineControllerTest {
         String body = objectMapper.writeValueAsString(
                 new StationDeleteRequest(1L));
 
-        this.mockMvc.perform(delete("/lines/1/station")
+        this.mockMvc.perform(delete("/lines/1/stations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isNoContent());
