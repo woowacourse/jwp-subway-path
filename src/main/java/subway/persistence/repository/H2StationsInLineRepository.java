@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Repository
@@ -117,7 +118,7 @@ public class H2StationsInLineRepository implements SectionRepository {
 
 
     private Map<Line, Sections> makeSectionsPerLine(Map<Long, List<SectionEntity>> sectionEntitiesPerLineId) {
-        Map<Line, Sections> sectionsPerLine = new HashMap<>();
+        Map<Line, Sections> sectionsPerLine = new ConcurrentHashMap<>();
         for (Long lineId : sectionEntitiesPerLineId.keySet()) {
             LineEntity lineEntity = lineDao.findLineById(lineId).orElseThrow(
                     () -> new NotExistException("존재하지 않는 노선입니다.")
