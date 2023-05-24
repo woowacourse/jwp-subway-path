@@ -1,5 +1,6 @@
 package subway.ui;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,7 +23,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.business.domain.line.Stations;
-import subway.business.domain.subwaymap.Money;
+import subway.business.domain.subwaymap.Fare;
 import subway.business.service.SubwayMapService;
 import subway.business.service.dto.LinePathDto;
 import subway.business.service.dto.SubwayPathResponse;
@@ -47,13 +48,13 @@ class PathControllerTest {
         Stations stationsOfLine4 = new Stations(List.of(
                 사당_4호선, 총신대입구, 동작
         ));
-        SubwayPathResponse subwayPathResponse = new SubwayPathResponse(Money.from("1550"), List.of(
+        SubwayPathResponse subwayPathResponse = new SubwayPathResponse(Fare.from("1550"), List.of(
                 LinePathDto.of(이호선, stationsOfLine2),
                 LinePathDto.of(사호선, stationsOfLine4)
         ));
-        given(subwayMapService.findPath(2L, 15L)).willReturn(subwayPathResponse);
+        given(subwayMapService.findPath(any())).willReturn(subwayPathResponse);
 
-        mockMvc.perform(get("/paths?sourceStationId=2&targetStationId=15"))
+        mockMvc.perform(get("/paths?sourceStationId=2&targetStationId=15&passenger=senior"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fare").value(1_550))
                 .andExpect(jsonPath("$.linePathDtos[0].lineId").value("1"))

@@ -53,17 +53,9 @@ public class JgraphtSubwayMap implements SubwayMap {
     }
 
     @Override
-    public Money calculateFareOfPath(Station sourceStation, Station targetStation) {
+    public int calculateDistanceOfPath(Station sourceStation, Station targetStation) {
         validateSameStation(sourceStation, targetStation);
-        int weightSum = (int) pathAlgorithm.getPathWeight(sourceStation, targetStation);
-        // TODO 요금 정책 적용하며 리팩터링
-        if (weightSum < 10) {
-            return Money.from("1250");
-        }
-        if (weightSum <= 50) {
-            return Money.from(String.valueOf(1_250 + ((weightSum - 10) / 5 * 100)));
-        }
-        return Money.from(String.valueOf(2_050 + ((weightSum - 50) / 8 * 100)));
+        return (int) pathAlgorithm.getPathWeight(sourceStation, targetStation);
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {

@@ -92,20 +92,20 @@ class JgraphtSubwayMapTest {
         }
     }
 
-    @DisplayName("경로에 알맞은 요금을 반환한다.")
+    @DisplayName("경로에 알맞은 거리를 반환한다.")
     @ParameterizedTest
     @MethodSource("stationData")
-    void shouldReturnAppropriateFareWhenRequest(Station sourceStation, Station targetStation, String expectedFare) {
-        Money fare = subwayMap.calculateFareOfPath(sourceStation, targetStation);
-        assertThat(fare.getMoney()).isEqualTo(expectedFare);
+    void shouldReturnAppropriateFareWhenRequest(Station sourceStation, Station targetStation, int expectedFare) {
+        int distance = subwayMap.calculateDistanceOfPath(sourceStation, targetStation);
+        assertThat(distance).isEqualTo(expectedFare);
     }
 
     static Stream<Arguments> stationData() {
         return Stream.of(
-                Arguments.of(봉천, 서울대입구, "1250"),
-                Arguments.of(봉천, 사당_2호선, "1350"),
-                Arguments.of(봉천, 동작, "1550"),
-                Arguments.of(동작, 고속터미널, "1650")
+                Arguments.of(봉천, 서울대입구, 5),
+                Arguments.of(봉천, 사당_2호선, 15),
+                Arguments.of(봉천, 동작, 25),
+                Arguments.of(동작, 고속터미널, 30)
         );
     }
 }

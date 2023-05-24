@@ -8,5 +8,5 @@ public interface SubwayMap {
 
     List<Stations> calculateShortestPath(Station sourceStation, Station targetStation);
 
-    Money calculateFareOfPath(Station sourceStation, Station targetStation);
+    int calculateDistanceOfPath(Station sourceStation, Station targetStation);
 }

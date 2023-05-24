@@ -8,11 +8,13 @@ import subway.business.domain.line.Line;
 import subway.business.domain.line.LineRepository;
 import subway.business.domain.line.Station;
 import subway.business.domain.line.Stations;
+import subway.business.domain.subwaymap.Fare;
 import subway.business.domain.subwaymap.JgraphtSubwayMap;
-import subway.business.domain.subwaymap.Money;
+import subway.business.domain.subwaymap.Passenger;
 import subway.business.domain.subwaymap.SubwayMap;
 import subway.business.domain.transfer.TransferRepository;
 import subway.business.service.dto.LinePathDto;
+import subway.business.service.dto.PathCalculateDto;
 import subway.business.service.dto.SubwayPathResponse;
 
 
@@ -27,16 +29,19 @@ public class SubwayMapService {
     }
 
     @Transactional(readOnly = true)
-    public SubwayPathResponse findPath(long sourceStationId, long targetStationId) {
-        Station sourceStation = lineRepository.findStationById(sourceStationId);
-        Station targetStation = lineRepository.findStationById(targetStationId);
+    public SubwayPathResponse findPath(PathCalculateDto pathCalculateDto) {
+        Station sourceStation = lineRepository.findStationById(pathCalculateDto.getSourceStationId());
+        Station targetStation = lineRepository.findStationById(pathCalculateDto.getTargetStationId());
         SubwayMap subwayMap = JgraphtSubwayMap.of(lineRepository.findAll(), transferRepository.findAll());
-        Money fare = subwayMap.calculateFareOfPath(sourceStation, targetStation);
+        int distanceOfPath = subwayMap.calculateDistanceOfPath(sourceStation, targetStation);
         List<Stations> stationsList = subwayMap.calculateShortestPath(sourceStation, targetStation);
-        return mapPathResultToResponse(fare, stationsList);
+        return mapPathResultToResponse(
+                Fare.of(distanceOfPath, Passenger.of(pathCalculateDto.getPassengerText())),
+                stationsList
+        );
     }
 
-    private SubwayPathResponse mapPathResultToResponse(Money fare, List<Stations> stationsList) {
+    private SubwayPathResponse mapPathResultToResponse(Fare fare, List<Stations> stationsList) {
         List<LinePathDto> linePathDtosFromStationsList = stationsList.stream()
                 .map(this::mapStationsToLinePathDto)
                 .collect(Collectors.toList());
