@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import subway.domain.graph.SubwayGraph;
 
 import java.util.List;
 import java.util.Map;

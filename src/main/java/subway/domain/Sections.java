@@ -1,6 +1,7 @@
 package subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.domain.graph.Graph;
 import subway.exeption.InvalidDistanceException;
 import subway.exeption.InvalidStationException;
 
@@ -21,7 +22,6 @@ public class Sections {
         this.graph = graph;
         this.line = line;
     }
-
 
     public void createInitialSection(Station upStation, Station downStation, int distance) {
         validateDistance(distance);
@@ -49,12 +49,6 @@ public class Sections {
         throw new InvalidStationException("부적절한 입력입니다.");
     }
 
-    private void validateTwoNewStations(final Station upStation, final Station downStation) {
-        if (isNewStation(upStation) && isNewStation(downStation)) {
-            throw new InvalidStationException("둘 중 하나는 기존에 입력된 역이어야 합니다!");
-        }
-    }
-
     private Station addStationToDirection(final Direction direction, final Station newStation, final Station existingStation, final int distance) {
         if (graph.isTerminal(direction, existingStation)) {
             direction.addStationToTerminal(graph, existingStation, newStation, distance);
@@ -65,6 +59,12 @@ public class Sections {
         final Station adjacentStation = findAdjacentStation(direction, adjacentSections);
         direction.addStationToMiddle(graph, existingStation, newStation, adjacentStation, distance);
         return newStation;
+    }
+
+    private void validateTwoNewStations(final Station upStation, final Station downStation) {
+        if (isNewStation(upStation) && isNewStation(downStation)) {
+            throw new InvalidStationException("둘 중 하나는 기존에 입력된 역이어야 합니다!");
+        }
     }
 
     private boolean isNewStation(final Station station) {
@@ -162,10 +162,6 @@ public class Sections {
         graph.addSection(upLineStation, downLineStation, distance);
         graph.removeAllSections(edgesToRemove);
         graph.removeStation(station);
-    }
-
-    public boolean containsStation(final Station station) {
-        return graph.stationSet().contains(station);
     }
 
     public Station findAdjacentStationOf(

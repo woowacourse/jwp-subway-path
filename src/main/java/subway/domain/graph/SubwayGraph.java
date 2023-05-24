@@ -1,7 +1,11 @@
-package subway.domain;
+package subway.domain.graph;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.domain.Direction;
+import subway.domain.Section;
+import subway.domain.Station;
+import subway.domain.graph.Graph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +61,7 @@ public class SubwayGraph implements Graph {
 
     @Override
     public double getSectionDistance(final DefaultWeightedEdge edge) {
-        return ((Section)edge).getDistance();
+        return ((Section) edge).getDistance();
     }
 
     @Override
@@ -109,6 +113,16 @@ public class SubwayGraph implements Graph {
                 .map(it -> (Section) it)
                 .collect(Collectors.toList());
         return new ArrayList<>(collect);
+    }
+
+    @Override
+    public DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> getGraph() {
+        return graph;
+    }
+
+    @Override
+    public List<Station> getStations() {
+        return new ArrayList<>(graph.vertexSet());
     }
 
     private boolean isDownLastStation(final Station station) {

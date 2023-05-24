@@ -1,5 +1,8 @@
 package subway.domain;
 
+import subway.domain.graph.Graph;
+import subway.domain.path.ShortestPath;
+import subway.dto.PathDto;
 import subway.exeption.LineNotFoundException;
 
 import java.util.ArrayList;
@@ -37,9 +40,9 @@ public class Subway {
         newSections.createInitialSection(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
-    public Station addStation(final Line line, final Station upStation, final Station downStation, final int distance) {
+    public void addStation(final Line line, final Station upStation, final Station downStation, final int distance) {
         final Sections sections = findSectionsOf(line);
-        return sections.addStation(upStation, downStation, distance);
+        sections.addStation(upStation, downStation, distance);
     }
 
     public Sections findSectionsOf(final Line line) {
@@ -53,15 +56,6 @@ public class Subway {
         return sections.findAllStationsInOrder();
     }
 
-    public int findDistanceBetween(final Line line, final Station upStation, final Station downStation) {
-        final Sections sections = findSectionsOf(line);
-
-        if (!sections.containsStation(upStation) || !sections.containsStation(downStation)) {
-            throw new IllegalArgumentException("존재하지 않는 역입니다!");
-        }
-        return sections.findDistanceBetween(upStation, downStation);
-    }
-
     public Station findStationBefore(final Line line, final Station station) {
         final Sections sections = findSectionsOf(line);
         return sections
@@ -72,5 +66,16 @@ public class Subway {
         final Sections sections = findSectionsOf(line);
         return sections
                 .findAdjacentStationOf(station, element -> sections.getDownStationsOf(station));
+    }
+
+    public PathDto findShortestPath(final Station source,
+                                    final Station target,
+                                    final ShortestPath shortestPath) {
+        final ShortestPath mergedPath = shortestPath.registerSections(sections);
+
+        final List<Station> stations = mergedPath.path(source, target);
+        double distance = mergedPath.distance(source, target);
+
+        return new PathDto(stations, distance);
     }
 }

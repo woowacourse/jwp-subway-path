@@ -1,9 +1,9 @@
 package subway.domain.strategy;
 
-import subway.domain.Graph;
+import subway.domain.graph.Graph;
 import subway.domain.Station;
 
-public interface AddStationStrategy {
+public interface StationAddStrategy {
 
     void addToTerminal(Graph graph,
                        Station existingStation,

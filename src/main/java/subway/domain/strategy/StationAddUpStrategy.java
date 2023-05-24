@@ -1,11 +1,11 @@
 package subway.domain.strategy;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import subway.domain.Graph;
+import subway.domain.graph.Graph;
 import subway.domain.Station;
 import subway.exeption.InvalidDistanceException;
 
-public class AddStationToUpStrategy implements AddStationStrategy {
+public class StationAddUpStrategy implements StationAddStrategy {
     @Override
     public void addToTerminal(
             final Graph graph,
@@ -34,6 +34,6 @@ public class AddStationToUpStrategy implements AddStationStrategy {
         graph.removeSection(adjacentStation, existingStation);
 
         graph.addSection(adjacentStation, newStation, updatedDistance);
-        graph.addSection(newStation,existingStation, distance);
+        graph.addSection(newStation, existingStation, distance);
     }
 }

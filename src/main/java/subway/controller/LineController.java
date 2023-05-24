@@ -51,6 +51,7 @@ public class LineController {
     public ResponseEntity<LineResponse> addStationInLine(
             @PathVariable("id") Long id,
             @Valid @RequestBody SectionCreateRequest request) {
+
         LineResponse response = lineService.addStation(id, request);
 
         return ResponseEntity

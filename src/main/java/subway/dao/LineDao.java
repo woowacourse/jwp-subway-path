@@ -3,6 +3,7 @@ package subway.dao;
 import subway.entity.LineEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LineDao {
 
@@ -10,5 +11,5 @@ public interface LineDao {
 
     List<LineEntity> findAll();
 
-    LineEntity findById(Long id);
+    Optional<LineEntity> findById(Long id);
 }

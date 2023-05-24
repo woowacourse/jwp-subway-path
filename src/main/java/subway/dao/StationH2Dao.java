@@ -1,5 +1,6 @@
 package subway.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import subway.entity.StationEntity;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class StationH2Dao implements StationDao {
@@ -35,9 +37,13 @@ public class StationH2Dao implements StationDao {
     }
 
     @Override
-    public StationEntity findBy(final Long id) {
+    public Optional<StationEntity> findBy(final Long id) {
         final String sql = "SELECT * FROM station WHERE id = :id";
         final Map<String, Long> parameter = Map.of("id", id);
-        return namedParameterJdbcTemplate.queryForObject(sql, parameter, STATION_ENTITY_ROW_MAPPER);
+        try {
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, parameter, STATION_ENTITY_ROW_MAPPER));
+        } catch (EmptyResultDataAccessException exceptionn) {
+            return Optional.empty();
+        }
     }
 }

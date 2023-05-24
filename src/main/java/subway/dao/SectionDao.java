@@ -17,7 +17,5 @@ public interface SectionDao {
 
     Long findStationIdAfter(Long lineId, Long stationId);
 
-    List<Long> findAllStationIdsOf(Long lineId);
-
     void deleteSectionsOf(Long lineId);
 }

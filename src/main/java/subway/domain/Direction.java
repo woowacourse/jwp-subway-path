@@ -1,16 +1,17 @@
 package subway.domain;
 
-import subway.domain.strategy.AddStationStrategy;
-import subway.domain.strategy.AddStationToDownStrategy;
-import subway.domain.strategy.AddStationToUpStrategy;
+import subway.domain.graph.Graph;
+import subway.domain.strategy.StationAddStrategy;
+import subway.domain.strategy.StationAddDownStrategy;
+import subway.domain.strategy.StationAddUpStrategy;
 
 public enum Direction {
-    UP(new AddStationToUpStrategy()),
-    DOWN(new AddStationToDownStrategy());
+    UP(new StationAddUpStrategy()),
+    DOWN(new StationAddDownStrategy());
 
-    private final AddStationStrategy strategy;
+    private final StationAddStrategy strategy;
 
-    Direction(final AddStationStrategy strategy) {
+    Direction(final StationAddStrategy strategy) {
         this.strategy = strategy;
     }
 

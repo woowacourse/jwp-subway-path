@@ -1,5 +1,6 @@
 package subway.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -11,6 +12,7 @@ import subway.entity.LineEntity;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class LineH2Dao implements LineDao {
@@ -47,9 +49,13 @@ public class LineH2Dao implements LineDao {
     }
 
     @Override
-    public LineEntity findById(final Long id) {
+    public Optional<LineEntity> findById(final Long id) {
         final String sql = "SELECT * FROM line WHERE id = :id";
         final Map<String, Long> parameter = Map.of("id", id);
-        return namedParameterJdbcTemplate.queryForObject(sql, parameter, lineEntityRowMapper);
+        try {
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, parameter, lineEntityRowMapper));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 }

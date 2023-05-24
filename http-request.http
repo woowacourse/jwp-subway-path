@@ -1,4 +1,14 @@
-### 노선 등록
+### 3호선 등록 요청
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "3호선",
+  "color": "ORANGE"
+}
+
+### 9호선 등록 요청
 
 POST http://localhost:8080/lines
 Content-Type: application/json
@@ -8,7 +18,7 @@ Content-Type: application/json
   "color": "BROWN"
 }
 
-### 역 등록
+### 고속터미널역 등록 요청
 
 POST http://localhost:8080/stations
 Content-Type: application/json
@@ -17,8 +27,7 @@ Content-Type: application/json
   "name": "고속터미널역"
 }
 
-
-### 역 등록
+### 사평역 등록 요청
 
 POST http://localhost:8080/stations
 Content-Type: application/json
@@ -27,14 +36,67 @@ Content-Type: application/json
   "name": "사평역"
 }
 
-### 노선에 역 등록
+### 깃짱역 등록 요청
 
-POST http://localhost:8080/lines/1/stations
+POST http://localhost:8080/stations
 Content-Type: application/json
 
+{
+  "name": "갓짱역"
+}
+
+
+### 교대역 등록 요청
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "교대역"
+}
+
+### 전체 노선 조회 요청
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+
+### 3호선에 최초의 역(고속터미널역, 교대역) 생성 요청
+
+POST http://localhost:8080/lines/1/station-init
+Content-Type: application/json
+
+{
+  "lineId": 1,
+  "upStationId": 1,
+  "downStationId": 4,
+  "distance": 3
+}
+
+### 9호선에 최초의 역(고속터미널역, 사평역) 생성 요청
+
+POST http://localhost:8080/lines/2/station-init
+Content-Type: application/json
+
+{
+"lineId": 2,
+"upStationId": 1,
+"downStationId": 2,
+"distance": 3
+}
+
+
+### 기존 노선에 역 깃짱역 추가 요청
+
+POST http://localhost:8080/lines/2/stations
+Content-Type: application/json
 
 {
   "upStationId": 1,
-  "downStationId": 2,
-  "distance": 15
+  "downStationId": 3,
+  "distance": 1
 }
+
+### 교대역과 사평역의 최단 경로 조회 요청
+
+GET http://localhost:8080/paths?source=4&target=2
+Content-Type: application/json
