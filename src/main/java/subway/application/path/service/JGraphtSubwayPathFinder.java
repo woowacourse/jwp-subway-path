@@ -1,32 +1,46 @@
-package subway.domain.path;
+package subway.application.path.service;
 
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Service;
 import subway.domain.line.Line;
+import subway.domain.path.SubwayPath;
+import subway.domain.path.SubwayPathFinder;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 
-public class SubwayMap {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> stationsGraph;
+@Service
+public class JGraphtSubwayPathFinder implements SubwayPathFinder {
+    @Override
+    public SubwayPath findShortestPath(final List<Line> allLines, final Station from, final Station to) {
+        final WeightedMultigraph<Station, DefaultWeightedEdge> stations = initGraph(allLines);
 
-    private SubwayMap(final WeightedMultigraph<Station, DefaultWeightedEdge> stationsGraph) {
-        this.stationsGraph = stationsGraph;
+        validateIsExistStations(stations, from, to);
+        final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraPath
+                = new DijkstraShortestPath<>(stations);
+
+        final GraphPath<Station, DefaultWeightedEdge> dijkstraPathPath = dijkstraPath.getPath(from, to);
+
+        validateIsExistPath(from, to, dijkstraPathPath);
+        final List<Station> shortestPath = dijkstraPathPath.getVertexList();
+        final int distance = (int) dijkstraPath.getPathWeight(from, to);
+
+        return new SubwayPath(shortestPath, distance);
     }
 
-    public static SubwayMap from(final List<Line> allLines) {
+    public WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(final List<Line> allLines) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> stationsGraph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
         for (final Line allLine : allLines) {
             final Sections sections = allLine.getSections();
             addSection(stationsGraph, sections);
         }
 
-        return new SubwayMap(stationsGraph);
+        return stationsGraph;
     }
 
     private static void addSection(
@@ -43,25 +57,16 @@ public class SubwayMap {
         }
     }
 
-    public SubwayPath findShortestPath(final Station from, final Station to) {
-        validateIsExistStations(from, to);
-        final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraPath
-                = new DijkstraShortestPath<>(stationsGraph);
-
-        final GraphPath<Station, DefaultWeightedEdge> dijkstraPathPath = dijkstraPath.getPath(from, to);
-
-        validateIsExistPath(from, to, dijkstraPathPath);
-        final List<Station> shortestPath = dijkstraPathPath.getVertexList();
-        final int distance = (int) dijkstraPath.getPathWeight(from, to);
-
-        return new SubwayPath(shortestPath, distance);
-    }
-
-    private void validateIsExistStations(final Station from, final Station to) {
-        if (!stationsGraph.containsVertex(from)) {
+    private void validateIsExistStations(
+            final WeightedMultigraph<Station, DefaultWeightedEdge> stations,
+            final Station from,
+            final Station to
+    ) {
+        if (!stations.containsVertex(from)) {
             throw new IllegalStateException("존재하지 않는 역 입니다: " + from.getStationName());
         }
-        if (!stationsGraph.containsVertex(to)) {
+        
+        if (!stations.containsVertex(to)) {
             throw new IllegalStateException("존재하지 않는 역 입니다: " + to.getStationName());
         }
     }
@@ -76,9 +81,5 @@ public class SubwayMap {
                     "연결 되지 않는 역 정보입니다: " + from.getStationName() + ", " + to.getStationName()
             );
         }
-    }
-
-    public WeightedMultigraph<Station, DefaultWeightedEdge> getStationsGraph() {
-        return stationsGraph;
     }
 }

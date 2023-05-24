@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.path.service.FindShortestPathService;
+import subway.application.path.service.JGraphtSubwayPathFinder;
 import subway.domain.line.Line;
 import subway.domain.line.LineColor;
 import subway.domain.line.LineName;
@@ -38,7 +39,8 @@ class FindShortestPathServiceTest {
     void setUp() {
         findShortestPathService = new FindShortestPathService(
                 lineRepository,
-                stationRepository
+                stationRepository,
+                new JGraphtSubwayPathFinder()
         );
     }
 

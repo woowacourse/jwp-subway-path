@@ -9,8 +9,8 @@ import subway.domain.fare.Fare;
 import subway.domain.fare.distanceproportion.TotalDistanceFareCalculator;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
-import subway.domain.path.SubwayMap;
 import subway.domain.path.SubwayPath;
+import subway.domain.path.SubwayPathFinder;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
 import subway.exception.NoDataFoundException;
@@ -22,10 +22,16 @@ import subway.ui.dto.response.StationResponse;
 public class FindShortestPathService implements FindShortestPathUseCase {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final SubwayPathFinder subwayPathFinder;
 
-    public FindShortestPathService(final LineRepository lineRepository, final StationRepository stationRepository) {
+    public FindShortestPathService(
+            final LineRepository lineRepository,
+            final StationRepository stationRepository,
+            final SubwayPathFinder subwayPathFinder
+    ) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.subwayPathFinder = subwayPathFinder;
     }
 
     public PathResponse findShortestPath(final Long startStationId, final Long arrivalStationId) {
@@ -35,8 +41,7 @@ public class FindShortestPathService implements FindShortestPathUseCase {
                 .orElseThrow(NoDataFoundException::new);
         final List<Line> allLines = lineRepository.findAll();
 
-        final SubwayMap subwayMap = SubwayMap.from(allLines);
-        final SubwayPath shortestPath = subwayMap.findShortestPath(startStation, endStation);
+        final SubwayPath shortestPath = subwayPathFinder.findShortestPath(allLines, startStation, endStation);
         final int pathDistance = shortestPath.getDistance();
 
         final TotalDistanceFareCalculator totalDistanceFareCalculator = new TotalDistanceFareCalculator();
