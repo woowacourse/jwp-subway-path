@@ -14,7 +14,7 @@ import subway.domain.path.SubwayPathFinder;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
 import subway.exception.NoDataFoundException;
-import subway.ui.dto.response.PathResponse;
+import subway.ui.dto.response.ShortestPathResponse;
 import subway.ui.dto.response.StationResponse;
 
 @Transactional(readOnly = true)
@@ -34,7 +34,7 @@ public class FindShortestPathService implements FindShortestPathUseCase {
         this.subwayPathFinder = subwayPathFinder;
     }
 
-    public PathResponse findShortestPath(final Long startStationId, final Long arrivalStationId) {
+    public ShortestPathResponse findShortestPath(final Long startStationId, final Long arrivalStationId) {
         final Station startStation = stationRepository.findById(startStationId)
                 .orElseThrow(NoDataFoundException::new);
         final Station endStation = stationRepository.findById(arrivalStationId)
@@ -48,12 +48,12 @@ public class FindShortestPathService implements FindShortestPathUseCase {
         return toPathResponse(shortestPath, totalDistanceFareCalculator.calculateFareByDistance(pathDistance));
     }
 
-    private PathResponse toPathResponse(final SubwayPath subwayPath, final Fare fare) {
+    private ShortestPathResponse toPathResponse(final SubwayPath subwayPath, final Fare fare) {
         final List<StationResponse> stationResponses = subwayPath.getStations().stream()
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
 
-        return new PathResponse(
+        return new ShortestPathResponse(
                 stationResponses,
                 subwayPath.getDistance(),
                 fare.getFare()

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.path.usecase.FindShortestPathUseCase;
-import subway.ui.dto.response.PathResponse;
+import subway.ui.dto.response.ShortestPathResponse;
 
 @RestController
 @RequestMapping("/path")
@@ -19,11 +19,12 @@ public class FindShortestPathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(
+    public ResponseEntity<ShortestPathResponse> findShortestPath(
             @RequestParam final Long startStationId,
             @RequestParam final Long endStationId
     ) {
-        final PathResponse shortestPath = findShortestPathService.findShortestPath(startStationId, endStationId);
+        final ShortestPathResponse shortestPath = findShortestPathService.findShortestPath(startStationId,
+                endStationId);
 
         return ResponseEntity.ok(shortestPath);
     }

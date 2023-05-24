@@ -21,7 +21,7 @@ import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
 import subway.domain.station.StationRepository;
-import subway.ui.dto.response.PathResponse;
+import subway.ui.dto.response.ShortestPathResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
@@ -54,7 +54,7 @@ class FindShortestPathServiceTest {
         given(stationRepository.findById(2L)).willReturn(Optional.of(new Station("선정릉")));
 
         //when
-        final PathResponse shortestPath = findShortestPathService.findShortestPath(1L, 2L);
+        final ShortestPathResponse shortestPath = findShortestPathService.findShortestPath(1L, 2L);
 
         //then
         assertThat(shortestPath.getStations()).extracting("stationName")

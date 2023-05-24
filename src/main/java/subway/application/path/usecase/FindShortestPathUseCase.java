@@ -1,7 +1,7 @@
 package subway.application.path.usecase;
 
-import subway.ui.dto.response.PathResponse;
+import subway.ui.dto.response.ShortestPathResponse;
 
 public interface FindShortestPathUseCase {
-    PathResponse findShortestPath(final Long startStationId, final Long arrivalStationId);
+    ShortestPathResponse findShortestPath(final Long startStationId, final Long arrivalStationId);
 }
