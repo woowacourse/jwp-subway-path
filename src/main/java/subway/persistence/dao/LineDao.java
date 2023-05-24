@@ -45,7 +45,7 @@ public class LineDao {
     }
 
     public Optional<LineEntity> findById(final Long id) {
-        final String sql = "SELECT id, name, color FROM LINE WHERE id = ?";
+        final String sql = "SELECT id, name, color FROM line WHERE id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
@@ -53,7 +53,7 @@ public class LineDao {
     }
 
     public boolean existsByName(final String name) {
-        final String sql = "SELECT id, name, color FROM LINE WHERE name = ?";
+        final String sql = "SELECT id, name, color FROM line WHERE name = ?";
 
         return jdbcTemplate.query(sql, rowMapper, name)
                 .stream()
@@ -62,7 +62,7 @@ public class LineDao {
     }
 
     public int deleteById(final Long id) {
-        final String sql = "DELETE FROM Line WHERE id = ?";
+        final String sql = "DELETE FROM line WHERE id = ?";
 
         return jdbcTemplate.update(sql, id);
     }

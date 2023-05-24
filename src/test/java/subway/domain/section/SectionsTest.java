@@ -184,4 +184,25 @@ class SectionsTest {
             assertThat(stations).containsExactly(first, second, third);
         }
     }
+
+    @Nested
+    class 인접_역_전체_조회_테스트 {
+
+        @BeforeEach
+        void setUp() {
+            sections = Sections.create();
+            sections.addSection(first, second, Distance.from(5), Direction.DOWN);
+            sections.addSection(second, third, Distance.from(5), Direction.DOWN);
+        }
+
+        @Test
+        void findAllAdjustStationByStation_메소드는_역을_전달하면_해당_역과_인접한_모든_역을_반환한다() {
+            final List<Station> actual = sections.findAllAdjustStationByStation(second);
+
+            assertAll(
+                    () -> assertThat(actual).hasSize(2),
+                    () -> assertThat(actual).contains(first, third)
+            );
+        }
+    }
 }

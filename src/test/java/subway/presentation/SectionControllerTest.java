@@ -30,6 +30,7 @@ import subway.domain.line.Line;
 import subway.domain.section.Direction;
 import subway.domain.section.Distance;
 import subway.domain.station.Station;
+import subway.exception.GlobalExceptionHandler;
 import subway.presentation.dto.request.CreateSectionRequest;
 import subway.presentation.dto.request.DeleteSectionRequest;
 

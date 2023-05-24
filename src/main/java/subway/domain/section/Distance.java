@@ -23,7 +23,7 @@ public class Distance {
         }
     }
 
-    public Distance add(final Distance other) {
+    public Distance plus(final Distance other) {
         return new Distance(this.distance + other.distance);
     }
 
@@ -33,6 +33,10 @@ public class Distance {
 
     public boolean isGreaterThanOrEqualTo(final Distance target) {
         return this.distance >= target.distance;
+    }
+
+    public boolean isLessThan(final Distance target) {
+        return this.distance < target.distance;
     }
 
     public int distance() {

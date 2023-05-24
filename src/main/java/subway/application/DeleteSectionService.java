@@ -36,7 +36,8 @@ public class DeleteSectionService {
         final Station targetStation = stationRepository.findById(targetStationId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION));
 
-        line.deleteSection(targetStation);
-        sectionRepository.insert(line);
+        final Line deletedLine = line.deleteSection(targetStation);
+
+        sectionRepository.insert(deletedLine);
     }
 }

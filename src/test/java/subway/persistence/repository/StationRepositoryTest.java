@@ -10,7 +10,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -84,6 +86,16 @@ class StationRepositoryTest {
         final Optional<Station> actual = stationRepository.findById(-999L);
 
         assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void findAllByIds_메소드는_ids를_전달하면_해당_id를_가진_station을_반환한다() {
+        final StationEntity stationEntity = StationEntity.of(1L, "12역");
+        given(stationDao.findAllByIds(any(Set.class))).willReturn(List.of(stationEntity));
+
+        final Map<Long, Station> actual = stationRepository.findAllByIds(Set.of(1L));
+
+        assertThat(actual).hasSize(1);
     }
 
     @Test

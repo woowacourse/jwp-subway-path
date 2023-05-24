@@ -37,21 +37,29 @@ public class Line {
         return new Line(line.getId(), line.getName(), line.getColor(), sections);
     }
 
-    public void createSection(
+    public Line createSection(
             final Station sourceStation,
             final Station targetStation,
             final Distance distance,
             final Direction direction
     ) {
-        sections.addSection(sourceStation, targetStation, distance, direction);
+        final Sections addedSections = this.sections.addSection(sourceStation, targetStation, distance, direction);
+
+        return Line.of(this, addedSections);
     }
 
-    public void deleteSection(final Station targetStation) {
-        sections.removeStation(targetStation);
+    public Line deleteSection(final Station targetStation) {
+        final Sections removedSections = this.sections.removeStation(targetStation);
+
+        return Line.of(this, removedSections);
     }
 
     public List<Station> findStationsByOrdered() {
         return sections.findStationsByOrdered();
+    }
+
+    public boolean isRegisterStation(final Station targetStation) {
+        return sections.isRegisterStation(targetStation);
     }
 
     public Long getId() {

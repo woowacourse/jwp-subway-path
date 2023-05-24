@@ -28,6 +28,7 @@ import subway.application.StationService;
 import subway.application.dto.CreationStationDto;
 import subway.application.dto.ReadStationDto;
 import subway.domain.station.Station;
+import subway.exception.GlobalExceptionHandler;
 import subway.presentation.dto.request.CreateStationRequest;
 
 @WebMvcTest(controllers = StationController.class)
