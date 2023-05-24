@@ -20,7 +20,7 @@ class PathControllerTest extends IntegrationTest {
 
     @Test
     void 출발역과_도착역을_받아_총_경로와_총_거리를_구한다() {
-        final PathRequest pathRequest = new PathRequest(4L, 3L);
+        final PathRequest pathRequest = new PathRequest(3L, 4L);
 
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()

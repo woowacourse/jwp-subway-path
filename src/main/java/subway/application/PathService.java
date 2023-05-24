@@ -3,8 +3,8 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import subway.domain.fare.DistanceFareStrategies;
 import subway.domain.fare.Fare;
-import subway.domain.fare.FareStrategy;
 import subway.domain.line.Line;
 import subway.domain.path.JgraphPathFinder;
 import subway.domain.path.Path;
@@ -22,16 +22,16 @@ public class PathService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
-    private final FareStrategy fareStrategy;
+    private final DistanceFareStrategies fareStrategies;
 
     public PathService(
             final LineRepository lineRepository,
             final StationRepository stationRepository,
-            final FareStrategy fareStrategy
+            final DistanceFareStrategies fareStrategies
     ) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.fareStrategy = fareStrategy;
+        this.fareStrategies = fareStrategies;
     }
 
     public PathResponse findPath(final PathRequest request) {
@@ -42,7 +42,7 @@ public class PathService {
         final PathFinder pathFinder = new JgraphPathFinder(lines);
         final Path path = pathFinder.findPath(departure, arrival);
 
-        final Fare totalFare = fareStrategy.calculate(path.getPathDistance());
+        final Fare totalFare = fareStrategies.getTotalFare(path.getPathDistance());
 
         return new PathResponse(
                 createAllStationResponse(path.getPathStations()),

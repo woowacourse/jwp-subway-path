@@ -2,14 +2,25 @@ package subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.domain.fare.strategy.DistanceBasicFareStrategy;
+import subway.domain.fare.strategy.DistanceTenFareStrategy;
 import subway.domain.section.Distance;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class DistanceFareStrategyTest {
+
+    private final DistanceFareStrategies strategies = new DistanceFareStrategies(
+            List.of(
+                    new DistanceBasicFareStrategy(),
+                    new DistanceTenFareStrategy(),
+                    new DistanceBasicFareStrategy())
+    );
+
 
     @Test
     void 거리가_10키로_이내이면_1250원이다() {
@@ -17,7 +28,7 @@ class DistanceFareStrategyTest {
         final Distance distance = new Distance(9);
 
         // when
-        final Fare fare = new DistanceFareStrategy().calculate(distance);
+        final Fare fare = strategies.getTotalFare(distance);
 
         // then
         assertThat(fare.getFare()).isEqualTo(1250);
@@ -29,7 +40,7 @@ class DistanceFareStrategyTest {
         final Distance distance = new Distance(16);
 
         // when
-        final Fare fare = new DistanceFareStrategy().calculate(distance);
+        final Fare fare = strategies.getTotalFare(distance);
 
         // then
         assertThat(fare.getFare()).isEqualTo(1450);
@@ -41,7 +52,7 @@ class DistanceFareStrategyTest {
         final Distance distance = new Distance(58);
 
         // when
-        final Fare fare = new DistanceFareStrategy().calculate(distance);
+        final Fare fare = strategies.getTotalFare(distance);
 
         // then
         assertThat(fare.getFare()).isEqualTo(2250);
