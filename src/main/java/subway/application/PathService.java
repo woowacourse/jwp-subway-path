@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
 import subway.domain.*;
 import subway.domain.fare.FareCalculator;
+import subway.domain.graph.Graph;
 import subway.domain.graph.JgraphtGraph;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
@@ -30,13 +31,13 @@ public class PathService {
     public ShortestPathResponse findShortestPath(final ShortestPathRequest shortestPathRequest) {
         List<Section> sections = lineRepository.findSectionsWithSort();
         Map<Long, Station> stationMap = makeStationMap(stationDao.findAll());
-        JgraphtGraph jgraphtGraph = new JgraphtGraph(sections);
+        Graph graph = new JgraphtGraph(sections);
 
         Station upStation = stationMap.get(shortestPathRequest.getSrcStationId());
         Station downStation = stationMap.get(shortestPathRequest.getDstStationId());
 
-        List<Station> dijkstraShortestPath = jgraphtGraph.findShortestPath(upStation, downStation);
-        int shortestPathWeight = jgraphtGraph.findShortestPathWeight(upStation, downStation);
+        List<Station> dijkstraShortestPath = graph.findShortestPath(upStation, downStation);
+        int shortestPathWeight = graph.findShortestPathWeight(upStation, downStation);
         int fare = fareCalculator.calculateFare(shortestPathWeight);
 
         List<StationResponse> dijkstraShortestPathStations = dijkstraShortestPath.stream()
