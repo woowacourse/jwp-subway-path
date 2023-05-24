@@ -12,16 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationInsertRequest;
+import subway.dto.api.LineRequest;
+import subway.dto.api.LineResponse;
+import subway.dto.api.StationInsertRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {

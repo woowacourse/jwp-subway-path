@@ -19,8 +19,8 @@ import subway.exception.StationAlreadyExistsException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
-import subway.service.dto.CreateLineServiceRequest;
-import subway.service.dto.InsertStationServiceRequest;
+import subway.dto.service.CreateLineServiceCommand;
+import subway.dto.service.InsertStationServiceCommand;
 
 @SpringBootTest
 @Transactional
@@ -40,7 +40,7 @@ class LineServiceTest {
     @DisplayName("노선을 생성한다.")
     void createLine() {
         //given
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
 
         //when
         Long createdId = lineService.create(lineRequest);
@@ -49,14 +49,14 @@ class LineServiceTest {
         assertThat(createdId).isNotNull();
     }
 
-    private CreateLineServiceRequest createLineRequest() {
+    private CreateLineServiceCommand createLineRequest() {
         final String name = "8호선";
         final String color = "분홍색";
         final Long upStationId = stationRepository.create(new Station("잠실"));
         final Long downStationId = stationRepository.create(new Station("건대"));
         final int distance = 7;
 
-        CreateLineServiceRequest lineRequest = new CreateLineServiceRequest(name, color, upStationId, downStationId, distance);
+        CreateLineServiceCommand lineRequest = new CreateLineServiceCommand(name, color, upStationId, downStationId, distance);
         return lineRequest;
     }
 
@@ -65,7 +65,7 @@ class LineServiceTest {
     void createLineWithDuplicatedName() {
         //given
         lineService.create(createLineRequest());
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
 
         //when
         //then
@@ -77,13 +77,13 @@ class LineServiceTest {
     @DisplayName("노선에 역을 추가한다.")
     void insertStation() {
         //given
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
         Long lineId = lineService.create(lineRequest);
 
         Long stationId = stationRepository.create(new Station("강남"));
 
         // upstation 에서 1 떨어진 곳에 추가....
-        InsertStationServiceRequest stationInsertRequest = new InsertStationServiceRequest(stationId, lineId,
+        InsertStationServiceCommand stationInsertRequest = new InsertStationServiceCommand(stationId, lineId,
                 lineRequest.getUpStationId(), "DOWN",
                 1);
         //when
@@ -103,13 +103,13 @@ class LineServiceTest {
     @DisplayName("존재하지 않는 역을 추가한다.")
     void insertNullStation() {
         //given
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
         Long generatedLineId = lineService.create(lineRequest);
 
         //when
         //then
         assertThatThrownBy(() -> lineService.insertStation(
-                new InsertStationServiceRequest(1000L, generatedLineId, lineRequest.getUpStationId(), "DOWN", 1)))
+                new InsertStationServiceCommand(1000L, generatedLineId, lineRequest.getUpStationId(), "DOWN", 1)))
                 .isInstanceOf(StationNotFoundException.class);
     }
 
@@ -117,10 +117,10 @@ class LineServiceTest {
     @DisplayName("이미 등록된 역을 노선에 추가한다.")
     void insertAlreadyExistingStation() {
         //given
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
         Long generatedLineId = lineService.create(lineRequest);
         Long stationId = stationRepository.create(new Station("강남"));
-        InsertStationServiceRequest stationInsertRequest = new InsertStationServiceRequest(stationId, generatedLineId,
+        InsertStationServiceCommand stationInsertRequest = new InsertStationServiceCommand(stationId, generatedLineId,
                 lineRequest.getUpStationId(), "DOWN",
                 1);
         lineService.insertStation(stationInsertRequest);
@@ -135,10 +135,10 @@ class LineServiceTest {
     @DisplayName("노선에서 역을 제거한다.")
     void deleteStation() {
         //given up - 강남 - down
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
         Long lineId = lineService.create(lineRequest);
         Long stationId = stationRepository.create(new Station("강남"));
-        InsertStationServiceRequest stationInsertRequest = new InsertStationServiceRequest(stationId, lineId,
+        InsertStationServiceCommand stationInsertRequest = new InsertStationServiceCommand(stationId, lineId,
                 lineRequest.getUpStationId(), "DOWN",
                 1);
         lineService.insertStation(stationInsertRequest);
@@ -159,10 +159,10 @@ class LineServiceTest {
     @DisplayName("등록되어있지 않은 역을 노선에서 삭제한다.")
     void deleteNotExistingStation() {
         //given
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
         Long lineId = lineService.create(lineRequest);
         Long stationId = stationRepository.create(new Station("강남"));
-        InsertStationServiceRequest stationInsertRequest = new InsertStationServiceRequest(stationId, lineId,
+        InsertStationServiceCommand stationInsertRequest = new InsertStationServiceCommand(stationId, lineId,
                 lineRequest.getUpStationId(), "DOWN",
                 1);
         lineService.insertStation(stationInsertRequest);
@@ -179,7 +179,7 @@ class LineServiceTest {
     @DisplayName("역이 2개인 노선에서 역을 제거한다.")
     void deleteStationWithTwoStation() {
         //given
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
         Long lineId = lineService.create(lineRequest);
 
         //when
@@ -194,7 +194,7 @@ class LineServiceTest {
     @DisplayName("id로 노선을 찾는다.")
     void findById() {
         //given
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
         Long lineId = lineService.create(lineRequest);
 
         //when
@@ -208,10 +208,10 @@ class LineServiceTest {
     @DisplayName("전체 노선을 찾는다.")
     void findAll() {
         //given
-        CreateLineServiceRequest lineRequest = createLineRequest();
+        CreateLineServiceCommand lineRequest = createLineRequest();
         Long firstLineId = lineService.create(lineRequest);
 
-        Long secondLineId = lineService.create(new CreateLineServiceRequest(
+        Long secondLineId = lineService.create(new CreateLineServiceCommand(
                 "2호선",
                 "초록색",
                 stationRepository.create(new Station("up")),

@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.exception.StationAlreadyExistsException;
@@ -9,8 +10,12 @@ import subway.exception.StationNotFoundException;
 public class StationEdges {
     private final List<StationEdge> stationEdges;
 
-    public StationEdges(List<StationEdge> stationEdges) {
+    private StationEdges(List<StationEdge> stationEdges) {
         this.stationEdges = stationEdges;
+    }
+
+    public static StationEdges from(List<StationEdge> stationEdges) {
+        return new StationEdges(new LinkedList<>(stationEdges));
     }
 
     public void addStationUpperFrom(

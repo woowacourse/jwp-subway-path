@@ -2,7 +2,9 @@ package subway.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.domain.Line.UP_END_EDGE_DISTANCE;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +20,7 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.StationEdge;
+import subway.domain.StationEdges;
 
 @JdbcTest
 class LineRepositoryTest {
@@ -47,7 +50,11 @@ class LineRepositoryTest {
         //given
         Long upStationId = stationRepository.create(new Station("up"));
         Long downStationId = stationRepository.create(new Station("down"));
-        Line line = Line.of("2호선", "초록색", upStationId, downStationId, INITIAL_DISTANCE);
+        StationEdges stationEdges = StationEdges.from(
+                List.of(new StationEdge(upStationId, UP_END_EDGE_DISTANCE),
+                        new StationEdge(downStationId, INITIAL_DISTANCE))
+        );
+        Line line = new Line("2호선", "초록색", stationEdges);
         //when
         Long id = lineRepository.create(line);
         //then
@@ -71,7 +78,11 @@ class LineRepositoryTest {
     private Line createLineWithTwoStation() {
         Long upStationId = stationRepository.create(new Station("up"));
         Long downStationId = stationRepository.create(new Station("down"));
-        Line line = Line.of("2호선", "초록색", upStationId, downStationId, INITIAL_DISTANCE);
+        StationEdges stationEdges = StationEdges.from(
+                List.of(new StationEdge(upStationId, UP_END_EDGE_DISTANCE),
+                        new StationEdge(downStationId, INITIAL_DISTANCE))
+        );
+        Line line = new Line("2호선", "초록색", stationEdges);
         Long id = lineRepository.create(line);
         return lineRepository.findById(id).get();
     }

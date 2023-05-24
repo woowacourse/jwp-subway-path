@@ -6,16 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.LineDirection;
-import subway.dto.LineRequest;
-import subway.dto.StationInsertRequest;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.LineNotFoundException;
 import subway.exception.NoSuchStationException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
-import subway.service.dto.CreateLineServiceRequest;
-import subway.service.dto.InsertStationServiceRequest;
+import subway.dto.service.CreateLineServiceCommand;
+import subway.dto.service.InsertStationServiceCommand;
 
 @Service
 public class LineService {
@@ -29,13 +27,12 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public Long create(CreateLineServiceRequest request) {
-        validate(request.getName());
-        validate(request.getUpStationId());
-        validate(request.getDownStationId());
+    public Long create(CreateLineServiceCommand command) {
+        validate(command.getName());
+        validate(command.getUpStationId());
+        validate(command.getDownStationId());
 
-        final Line line = Line.of(request.getName(), request.getColor(),
-                request.getUpStationId(), request.getDownStationId(), request.getDistance());
+        final Line line = command.toLine();
 
         return lineRepository.create(line);
     }
@@ -53,7 +50,7 @@ public class LineService {
     }
 
     @Transactional
-    public void insertStation(InsertStationServiceRequest request) {
+    public void insertStation(InsertStationServiceCommand request) {
         validate(request.getStationId());
         validate(request.getAdjacentStationId());
 
@@ -64,7 +61,7 @@ public class LineService {
 
 
     private void addStation(
-            InsertStationServiceRequest stationInsertRequest,
+            InsertStationServiceCommand stationInsertRequest,
             Line line
     ) {
         Long stationId = stationInsertRequest.getStationId();

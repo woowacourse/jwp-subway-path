@@ -3,7 +3,7 @@ package subway.domain;
 import java.util.Objects;
 
 public class Distance {
-    final int value;
+    private final int value;
 
     public Distance(int value) {
         validate(value);
@@ -48,5 +48,17 @@ public class Distance {
 
     public int getValue() {
         return value;
+    }
+
+    public boolean isLongerThan(Distance otherDistance) {
+        return value > otherDistance.value;
+    }
+
+    public boolean isShorterThan(Distance otherDistance) {
+        return value < otherDistance.value;
+    }
+
+    public boolean isSameOrShorterThan(Distance otherDistance) {
+        return value <= otherDistance.value;
     }
 }

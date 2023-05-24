@@ -1,4 +1,6 @@
-package subway.dto;
+package subway.dto.api;
+
+import subway.dto.service.CreateLineServiceCommand;
 
 public class LineRequest {
     private String name;
@@ -16,6 +18,10 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public CreateLineServiceCommand toCommand() {
+        return new CreateLineServiceCommand(name, color, upStationId, downStationId, distance);
     }
 
     public String getName() {

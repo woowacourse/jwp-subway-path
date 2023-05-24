@@ -1,16 +1,15 @@
-package subway.dto;
+package subway.dto.service;
 
-public class StationInsertRequest {
-
+public class InsertStationServiceCommand {
     private final Long stationId;
     private final Long lineId;
     private final Long adjacentStationId;
     private final String direction;
     private final Integer distance;
 
-    public StationInsertRequest(Long AddStationId, Long lineId, Long adjacentStationId, String direction,
-                                Integer distance) {
-        this.stationId = AddStationId;
+    public InsertStationServiceCommand(Long addStationId, Long lineId, Long adjacentStationId, String direction,
+                                       Integer distance) {
+        this.stationId = addStationId;
         this.lineId = lineId;
         this.adjacentStationId = adjacentStationId;
         this.direction = direction;

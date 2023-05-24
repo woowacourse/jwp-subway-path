@@ -22,7 +22,7 @@ class StationEdgesTest {
         StationEdge upStationEdge = new StationEdge(upStationId, 0);
         StationEdge adjacentStationEdge = new StationEdge(downStationId, distance);
         List<StationEdge> beforeEdges = new ArrayList<>(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
-        StationEdges stationEdges = new StationEdges(beforeEdges);
+        StationEdges stationEdges = StationEdges.from(beforeEdges);
 
         //when
         Long newStationId = 3L;
@@ -50,7 +50,7 @@ class StationEdgesTest {
         //given
         StationEdge upStationEdge = new StationEdge(upStationId, 0);
         StationEdge adjacentStationEdge = new StationEdge(downStationId, distance);
-        StationEdges stationEdges = new StationEdges(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
+        StationEdges stationEdges = StationEdges.from(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
 
         //when
         Long newStationId = 3L;
@@ -78,7 +78,7 @@ class StationEdgesTest {
         //given
         StationEdge upStationEdge = new StationEdge(upStationId, 0);
         StationEdge adjacentStationEdge = new StationEdge(downStationId, distance);
-        StationEdges stationEdges = new StationEdges(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
+        StationEdges stationEdges = StationEdges.from(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
 
         //when
         Long newStationId = 3L;
@@ -98,7 +98,7 @@ class StationEdgesTest {
         //given
         StationEdge upStationEdge = new StationEdge(upStationId, 0);
         StationEdge adjacentStationEdge = new StationEdge(downStationId, distance);
-        StationEdges stationEdges = new StationEdges(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
+        StationEdges stationEdges = StationEdges.from(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
 
         stationEdges.addStationDownFrom(3L, upStationId, Distance.from(2));
 
@@ -118,7 +118,7 @@ class StationEdgesTest {
         //given
         StationEdge upStationEdge = new StationEdge(upStationId, 0);
         StationEdge adjacentStationEdge = new StationEdge(downStationId, distance);
-        StationEdges stationEdges = new StationEdges(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
+        StationEdges stationEdges = StationEdges.from(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
         //when
         boolean contains = stationEdges.contains(upStationId);
         //then
@@ -131,7 +131,7 @@ class StationEdgesTest {
         //given
         StationEdge upStationEdge = new StationEdge(upStationId, 0);
         StationEdge adjacentStationEdge = new StationEdge(downStationId, distance);
-        StationEdges stationEdges = new StationEdges(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
+        StationEdges stationEdges = StationEdges.from(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
 
         stationEdges.addStationDownFrom(3L, upStationId, Distance.from(2));
 
@@ -148,7 +148,7 @@ class StationEdgesTest {
         //given
         StationEdge upStationEdge = new StationEdge(upStationId, 0);
         StationEdge adjacentStationEdge = new StationEdge(downStationId, distance);
-        StationEdges stationEdges = new StationEdges(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
+        StationEdges stationEdges = StationEdges.from(new ArrayList<>(Arrays.asList(upStationEdge, adjacentStationEdge)));
 
         //when
         boolean canDeleteStation = stationEdges.canDeleteStation();

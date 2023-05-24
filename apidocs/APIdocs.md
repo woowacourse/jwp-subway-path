@@ -113,3 +113,80 @@ GET http://localhost:8080/lines
   ]
 }
 ```
+
+### 경로 조회 API
+
+```http request
+GET http://localhost:8080/path?departureStationId={DEPARTURE_STATION_ID}&arrivalStationId={ARRIVAL_STATION_ID}
+```
+
+#### 요청 예시
+
+GET `http://localhost:8080/path?departureStationId=1&arrivalStationId=4`
+
+#### 응답 예시
+
+- 경로가 있는 경우
+```json
+{
+  "departureStation": {
+    "id": 1,
+    "name": "잠실"
+  },
+  "arrivalStation": {
+    "id": 4,
+    "name": "혜화"
+  },
+  "totalDistance": 10, // 단위: km
+  "fare": 1350, // 단위: 원(KRW)
+  "doesPathExists": true,
+  "path": [
+    {
+      "line": {
+        "id": 1,
+        "name": "2호선",
+        "color": "#00A84D"
+      },
+      "stations": [
+        {
+          "id": 1,
+          "name": "잠실"
+        },
+        {
+          "id": 2,
+          "name": "성수"
+        },
+        {
+          "id": 3,
+          "name": "동대문역사문화공원"
+        }
+      ]
+    },
+    {
+      "line": {
+        "id": 2,
+        "name": "4호선",
+        "color": "#00A5DE"
+      },
+      "stations": [
+        {
+          "id": 3,
+          "name": "동대문역사문화공원"
+        },
+        {
+          "id": 4,
+          "name": "혜화"
+        }
+      ]
+    }
+  ]
+}
+```
+
+- 경로가 없는 경우
+
+```json
+{
+  "doesPathExists": false
+}
+```
