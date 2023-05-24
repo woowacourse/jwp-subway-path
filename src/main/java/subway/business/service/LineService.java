@@ -27,7 +27,8 @@ public class LineService {
                 lineSaveRequest.getName(),
                 lineSaveRequest.getUpwardTerminus(),
                 lineSaveRequest.getDownwardTerminus(),
-                lineSaveRequest.getDistance()
+                lineSaveRequest.getDistance(),
+                lineSaveRequest.getSurcharge()
         );
         Line savedLine = lineRepository.create(line);
         return LineResponse.from(savedLine);

@@ -39,7 +39,7 @@ class DbLineRepositoryTest {
     @DisplayName("새로운 Line 정보를 DB에 저장한다.")
     @Test
     void shouldSaveLineWhenRequest() {
-        LineEntity lineEntity = new LineEntity(1L, "2호선");
+        LineEntity lineEntity = new LineEntity(1L, "2호선", 0);
         given(lineDao.insert(any())).willReturn(lineEntity);
         given(lineDao.findById(any())).willReturn(lineEntity);
         given(sectionDao.findAllByLineId(any())).willReturn(List.of(
@@ -58,7 +58,7 @@ class DbLineRepositoryTest {
     @DisplayName("ID로 Line을 조회한다.")
     @Test
     void shouldFindLineWhenInputId() {
-        LineEntity lineEntity = new LineEntity(1L, "2호선");
+        LineEntity lineEntity = new LineEntity(1L, "2호선", 0);
         given(lineDao.findById(any())).willReturn(lineEntity);
         given(sectionDao.findAllByLineId(any())).willReturn(List.of(
                 new SectionEntity(1L, 1L, 1L, 2L, 5)
@@ -76,7 +76,7 @@ class DbLineRepositoryTest {
     @DisplayName("모든 Line을 조회한다.")
     @Test
     void shouldFindAllLinesWhenRequest() {
-        LineEntity lineEntity = new LineEntity(1L, "2호선");
+        LineEntity lineEntity = new LineEntity(1L, "2호선", 0);
         given(lineDao.findAll()).willReturn(new ArrayList<>(List.of(lineEntity)));
         given(lineDao.findById(any())).willReturn(lineEntity);
         given(sectionDao.findAllByLineId(any())).willReturn(List.of(
@@ -94,7 +94,7 @@ class DbLineRepositoryTest {
     @DisplayName("Line 정보를 업데이트한다.")
     @Test
     void shouldUpdateLineWhenRequest() {
-        LineEntity lineEntity = new LineEntity(1L, "2호선");
+        LineEntity lineEntity = new LineEntity(1L, "2호선", 0);
         given(lineDao.findById(any())).willReturn(lineEntity);
         given(lineDao.update(any())).willReturn(lineEntity);
         given(sectionDao.findAllByLineId(any())).willReturn(List.of(

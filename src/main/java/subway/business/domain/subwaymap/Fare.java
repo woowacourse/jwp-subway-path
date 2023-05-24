@@ -3,6 +3,7 @@ package subway.business.domain.subwaymap;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
+import subway.business.domain.line.Line;
 
 public class Fare {
 
@@ -27,8 +28,8 @@ public class Fare {
         return new Fare(new BigDecimal(money));
     }
 
-    public static Fare of(int distance, Passenger passenger) {
-        return new Fare(calculateMoneyByDistance(distance)
+    public static Fare of(Line mostExpensiveLine, int distance, Passenger passenger) {
+        return new Fare(calculateMoneyByDistance(distance).add(mostExpensiveLine.getSurcharge())
                 .multiply(BigDecimal.valueOf(passenger.getFareRate()))
         );
     }

@@ -1,8 +1,8 @@
 -- 노선
-INSERT INTO line(id, name) VALUES (1, "2호선");
-INSERT INTO line(id, name) VALUES (2, "3호선");
-INSERT INTO line(id, name) VALUES (3, "4호선");
-INSERT INTO line(id, name) VALUES (4, "7호선");
+INSERT INTO line(id, name, surcharge) VALUES (1, "2호선", 0);
+INSERT INTO line(id, name, surcharge) VALUES (2, "3호선", 100);
+INSERT INTO line(id, name, surcharge) VALUES (3, "4호선", 0);
+INSERT INTO line(id, name, surcharge) VALUES (4, "7호선", 900);
 
 -- 역
 INSERT INTO station(id, line_id, name) VALUES(1, 1, "봉천");

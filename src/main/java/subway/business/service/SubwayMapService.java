@@ -1,5 +1,6 @@
 package subway.business.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -35,10 +36,19 @@ public class SubwayMapService {
         SubwayMap subwayMap = JgraphtSubwayMap.of(lineRepository.findAll(), transferRepository.findAll());
         int distanceOfPath = subwayMap.calculateDistanceOfPath(sourceStation, targetStation);
         List<Stations> stationsList = subwayMap.calculateShortestPath(sourceStation, targetStation);
+        Line mostExpensiveLine = findMostExpensiveLineFrom(stationsList);
         return mapPathResultToResponse(
-                Fare.of(distanceOfPath, Passenger.of(pathCalculateDto.getPassengerText())),
+                Fare.of(mostExpensiveLine, distanceOfPath, Passenger.of(pathCalculateDto.getPassengerText())),
                 stationsList
         );
+    }
+
+    private Line findMostExpensiveLineFrom(List<Stations> stationsList) {
+        List<Line> lines = stationsList.stream()
+                .map(stations -> lineRepository.findLineByStationId(stations.getStations().get(0).getId()))
+                .collect(Collectors.toList());
+        return lines.stream().max(Comparator.comparingInt(line -> line.getSurcharge().intValue()))
+                .orElseThrow(() -> new IllegalStateException("비어 있는 Line list를 대상으로 추가 요금 최대값을 조회했습니다."));
     }
 
     private SubwayPathResponse mapPathResultToResponse(Fare fare, List<Stations> stationsList) {

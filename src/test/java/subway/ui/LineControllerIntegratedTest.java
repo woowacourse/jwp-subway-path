@@ -43,8 +43,7 @@ public class LineControllerIntegratedTest {
     void shouldCreateLineWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
 
@@ -64,8 +63,7 @@ public class LineControllerIntegratedTest {
     void shouldAddStationToLineWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
         LineResponse lineResponse = lineService.createLine(lineSaveRequest);
@@ -94,8 +92,7 @@ public class LineControllerIntegratedTest {
     void shouldRemoveStationFromLineWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
         lineService.createLine(lineSaveRequest);
@@ -123,8 +120,7 @@ public class LineControllerIntegratedTest {
     void shouldReturnLineAndStationsWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
         LineResponse lineResponse = lineService.createLine(lineSaveRequest);
@@ -144,16 +140,14 @@ public class LineControllerIntegratedTest {
     void shouldReturnAllLinesAndStationsWhenRequest() {
         LineSaveRequest lineSaveRequest1 = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
         lineService.createLine(lineSaveRequest1);
 
         LineSaveRequest lineSaveRequest2 = new LineSaveRequest(
                 "3호선",
-                "매봉역",
-                "교대역",
+                0, "교대역", "매봉역",
                 5
         );
         lineService.createLine(lineSaveRequest2);

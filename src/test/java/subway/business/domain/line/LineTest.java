@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.fixture.FixtureForLineTest.line2WithOneSection;
 import static subway.fixture.FixtureForLineTest.line2WithTwoSection;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -206,8 +207,9 @@ class LineTest {
                         1L,
                         new Station(1L, "잠실역"),
                         new Station(2L, "몽촌토성역"),
-                        5))
-                )
+                        5)
+                )),
+                BigDecimal.valueOf(0)
         );
     }
 }

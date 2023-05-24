@@ -33,7 +33,7 @@ class StationDaoTest {
     @DisplayName("DB에 역 정보를 추가 후 ID로 조회한다.")
     @Test
     void shouldInsertStationWhenRequest() {
-        LineEntity lineEntity = new LineEntity("2호선");
+        LineEntity lineEntity = new LineEntity("2호선", 0);
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntity);
 
         StationEntity stationEntityToInsert = new StationEntity(
@@ -49,7 +49,7 @@ class StationDaoTest {
     @DisplayName("DB로부터 Line ID가 일치하는 모든 Station을 삭제한다.")
     @Test
     void shouldDeleteAllStationsByLineId() {
-        LineEntity lineEntity = new LineEntity("2호선");
+        LineEntity lineEntity = new LineEntity("2호선", 0);
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntity);
 
         StationEntity stationEntityToInsert1 = new StationEntity(
@@ -78,7 +78,7 @@ class StationDaoTest {
     @DisplayName("Line ID와 이름이 일치하는 Station을 조회한다.")
     @Test
     void shouldFindStationWhenInputLineIdAndName() {
-        LineEntity lineEntity = new LineEntity("2호선");
+        LineEntity lineEntity = new LineEntity("2호선", 0);
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntity);
 
         StationEntity stationEntityToInsert = new StationEntity(

@@ -35,7 +35,7 @@ class TransferDaoTest {
     @DisplayName("DB에 환승 정보를 추가 후, 모든 환승 정보를 조회한다.")
     @Test
     void shouldReadAllTransferInformationAfterInsert() {
-        LineEntity lineEntity = new LineEntity("2호선");
+        LineEntity lineEntity = new LineEntity("2호선", 0);
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntity);
 
         StationEntity stationEntityToInsert1 = new StationEntity(

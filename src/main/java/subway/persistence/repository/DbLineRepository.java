@@ -1,5 +1,6 @@
 package subway.persistence.repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,8 +33,8 @@ public class DbLineRepository implements LineRepository {
     @Override
     public Line create(Line line) {
         LineEntity lineEntityToSave = new LineEntity(
-                line.getName()
-        );
+                line.getName(),
+                line.getSurcharge().intValue());
         LineEntity savedLineEntity = lineDao.insert(lineEntityToSave);
 
         Section section = line.getSections().get(0);
@@ -49,7 +50,12 @@ public class DbLineRepository implements LineRepository {
 
         List<Section> sections = mapSectionEntitiesToSections(sectionEntities);
         List<Section> orderedSections = getOrderedSections(sections);
-        return new Line(lineEntity.getId(), lineEntity.getName(), orderedSections);
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                orderedSections,
+                BigDecimal.valueOf(lineEntity.getSurcharge())
+        );
     }
 
     @Override
@@ -66,8 +72,8 @@ public class DbLineRepository implements LineRepository {
     public Line update(Line line) {
         LineEntity lineEntityToUpdate = new LineEntity(
                 line.getId(),
-                line.getName()
-        );
+                line.getName(),
+                line.getSurcharge().intValue());
         LineEntity updatedLineEntity = lineDao.update(lineEntityToUpdate);
 
         sectionDao.deleteAllByLineId(updatedLineEntity.getId());

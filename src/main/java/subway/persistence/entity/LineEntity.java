@@ -5,14 +5,16 @@ import java.util.Objects;
 public class LineEntity {
     private final Long id;
     private final String name;
+    private final int surcharge;
 
-    public LineEntity(String name) {
-        this(null, name);
+    public LineEntity(String name, int surcharge) {
+        this(null, name, surcharge);
     }
 
-    public LineEntity(Long id, String name) {
+    public LineEntity(Long id, String name, int surcharge) {
         this.id = id;
         this.name = name;
+        this.surcharge = surcharge;
     }
 
     public Long getId() {
@@ -21,6 +23,10 @@ public class LineEntity {
 
     public String getName() {
         return name;
+    }
+
+    public int getSurcharge() {
+        return surcharge;
     }
 
     @Override

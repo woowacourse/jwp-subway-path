@@ -21,7 +21,7 @@ public class PathController {
         this.subwayMapService = subwayMapService;
     }
 
-    @Operation(summary = "최단 거리 경로 및 요금 조회", description = "출발역과 도착역을 입력 받아, 요금과 최단 거리 경로를 반환합니다.")
+    @Operation(summary = "최단 거리 경로 및 요금 조회", description = "출발역과 도착역, 승객 종류를 입력 받아, 요금과 최단 거리 경로를 반환합니다.")
     @GetMapping
     public ResponseEntity<SubwayPathResponse> findPath(
             @RequestParam("sourceStationId") long sourceStationId,

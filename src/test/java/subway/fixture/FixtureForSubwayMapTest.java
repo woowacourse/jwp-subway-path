@@ -1,5 +1,6 @@
 package subway.fixture;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import subway.business.domain.line.Line;
@@ -54,7 +55,8 @@ public class FixtureForSubwayMapTest {
             "2호선",
             new ArrayList<>(List.of(
                     봉천_서울대입구, 서울대입구_낙성대, 낙성대_사당, 사당_방배, 방배_서초, 서초_교대, 교대_강남
-            ))
+            )),
+            BigDecimal.valueOf(0)
     );
 
     public static Line 삼호선 = new Line(
@@ -62,7 +64,8 @@ public class FixtureForSubwayMapTest {
             "3호선",
             new ArrayList<>(List.of(
                     남부터미널_교대, 교대_고속터미널
-            ))
+            )),
+            BigDecimal.valueOf(100)
     );
 
     public static Line 사호선 = new Line(
@@ -70,7 +73,8 @@ public class FixtureForSubwayMapTest {
             "4호선",
             new ArrayList<>(List.of(
                     남태령_사당, 사당_총신대입구, 총신대입구_동작
-            ))
+            )),
+            BigDecimal.valueOf(200)
     );
 
     // 환승

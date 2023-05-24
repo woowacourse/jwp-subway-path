@@ -1,17 +1,18 @@
-DROP TABLE station;
-DROP TABLE section;
-DROP TABLE transfer;
-DROP TABLE line;
+DROP TABLE IF EXISTS station;
+DROP TABLE IF EXISTS section;
+DROP TABLE IF EXISTS transfer;
+DROP TABLE IF EXISTS line;
 
-CREATE TABLE IF NOT EXISTS line
+CREATE TABLE line
 (
     id                  BIGINT AUTO_INCREMENT  NOT NULL,
     name                VARCHAR(255)           NOT NULL,
+    surcharge           BIGINT                 NOT NULL,
     created_at          TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS station
+CREATE TABLE station
 (
     id                  BIGINT AUTO_INCREMENT  NOT NULL,
     line_id             BIGINT                 NOT NULL,
@@ -20,7 +21,7 @@ CREATE TABLE IF NOT EXISTS station
     FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS section
+CREATE TABLE section
 (
     id                  BIGINT AUTO_INCREMENT  NOT NULL,
     line_id             BIGINT                 NOT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE IF NOT EXISTS section
     FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS transfer
+CREATE TABLE transfer
 (
     id                  BIGINT AUTO_INCREMENT  NOT NULL,
     first_station_id    BIGINT                 NOT NULL,

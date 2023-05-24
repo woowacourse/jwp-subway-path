@@ -3,6 +3,7 @@ package subway.business.domain.line;
 import static subway.business.domain.direction.Direction.DOWNWARD;
 import static subway.business.domain.direction.Direction.UPWARD;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -13,22 +14,26 @@ public class Line {
     private final String name;
     private final List<Section> sections;
 
-    public Line(String name, List<Section> sections) {
-        this(null, name, sections);
+    private final BigDecimal surcharge;
+
+    public Line(String name, List<Section> sections, BigDecimal surcharge) {
+        this(null, name, sections, surcharge);
     }
 
-    public Line(Long id, String name, List<Section> sections) {
+    public Line(Long id, String name, List<Section> sections, BigDecimal surcharge) {
         this.id = id;
         this.name = name;
+        this.surcharge = surcharge;
         this.sections = sections;
     }
 
-    public static Line createToSave(String name, String upwardStationName, String downwardStationName, int distance) {
+    public static Line createToSave(String name, String upwardStationName, String downwardStationName, int distance,
+                                    int surchargeValue) {
         Station upwardStation = Station.from(upwardStationName);
         Station downwardStation = Station.from(downwardStationName);
         List<Section> sections = new LinkedList<>();
         sections.add(Section.createToSave(upwardStation, downwardStation, distance));
-        return new Line(name, sections);
+        return new Line(name, sections, BigDecimal.valueOf(surchargeValue));
     }
 
     public void addStation(String stationName, String neighborhoodStationName, Direction direction, int distance) {
@@ -151,6 +156,10 @@ public class Line {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public BigDecimal getSurcharge() {
+        return surcharge;
     }
 
     @Override

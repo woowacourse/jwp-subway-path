@@ -1,5 +1,6 @@
 package subway.fixture;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import subway.business.domain.line.Line;
@@ -13,8 +14,7 @@ public class FixtureForLineTest {
 
     public static LineSaveRequest LINE_SAVE_REQUEST = new LineSaveRequest(
             "2호선",
-            "잠실역",
-            "몽촌토성역",
+            0, "몽촌토성역", "잠실역",
             5
     );
 
@@ -35,8 +35,9 @@ public class FixtureForLineTest {
                 1L,
                 "2호선",
                 new ArrayList<>(List.of(
-                        new Section(1L, new Station(1L, "잠실역"), new Station(2L, "몽촌토성역"), 5))
-                )
+                        new Section(1L, new Station(1L, "잠실역"), new Station(2L, "몽촌토성역"), 5)
+                )),
+                BigDecimal.valueOf(0)
         );
     }
 
@@ -52,7 +53,8 @@ public class FixtureForLineTest {
                 new ArrayList<>(List.of(
                         new Section(1L, new Station(1L, "잠실역"), new Station(2L, "몽촌토성역"), 5),
                         new Section(2L, new Station(3L, "몽촌토성역"), new Station(4L, "까치산역"), 5))
-                )
+                ),
+                BigDecimal.valueOf(0)
         );
     }
 
@@ -67,8 +69,9 @@ public class FixtureForLineTest {
                         new Section(4L, new Station(4L, "사당역"), new Station(5L, "방배역"), 5),
                         new Section(5L, new Station(5L, "방배역"), new Station(6L, "서초역"), 5),
                         new Section(6L, new Station(6L, "서초역"), new Station(7L, "교대역"), 5),
-                        new Section(7L, new Station(7L, "교대역"), new Station(8L, "강남역"), 5)
-                ))
+                        new Section(7L, new Station(7L, "교대역"), new Station(8L, "강남역"), 5))
+                ),
+                BigDecimal.valueOf(0)
         );
     }
 
@@ -78,8 +81,9 @@ public class FixtureForLineTest {
                 "3호선",
                 new ArrayList<>(List.of(
                         new Section(8L, new Station(9L, "남부터미널역"), new Station(10L, "교대역"), 5),
-                        new Section(9L, new Station(10L, "교대역"), new Station(11L, "고속터미널역"), 5)
-                ))
+                        new Section(9L, new Station(10L, "교대역"), new Station(11L, "고속터미널역"), 5))
+                ),
+                BigDecimal.valueOf(100)
         );
     }
 
@@ -90,8 +94,9 @@ public class FixtureForLineTest {
                 new ArrayList<>(List.of(
                         new Section(10L, new Station(12L, "남태령역"), new Station(13L, "사당역"), 5),
                         new Section(11L, new Station(13L, "사당역"), new Station(14L, "총신대입구역"), 5),
-                        new Section(12L, new Station(14L, "총신대입구역"), new Station(15L, "동작역"), 5)
-                ))
+                        new Section(12L, new Station(14L, "총신대입구역"), new Station(15L, "동작역"), 5))
+                ),
+                BigDecimal.valueOf(0)
         );
     }
 

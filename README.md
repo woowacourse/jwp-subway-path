@@ -65,6 +65,7 @@ erDiagram
   LINE {
 		BIGINT id PK
 		VARCHAR(50) name
+        BIGINT surcharge
         DATE created_at
 	}
     SECTION {
@@ -127,7 +128,7 @@ Swagger link : http://localhost:8080/swagger-ui/index.html#/
   - [x] 같은 역을 가질 수 없다.
 
 ### SubwayMap
-- [ ] 최단 거리 경로를 계산한다.
+- [x] 최단 거리 경로를 계산한다.
   - [x] 경로에 있는 모든 역을 노선 기준으로 나누어 반환한다. 
   - [x] 경로에 알맞은 요금을 계산한다.
     - [x] 기본운임(10㎞ 이내): 기본운임 1,250원

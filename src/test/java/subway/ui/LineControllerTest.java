@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static subway.fixture.FixtureForLineTest.line2WithOneSection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,8 +47,7 @@ public class LineControllerTest {
 
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
         String jsonRequest = objectMapper.writeValueAsString(lineSaveRequest);
@@ -109,11 +109,14 @@ public class LineControllerTest {
         Line line1 = new Line(
                 1L,
                 "1호선",
-                List.of(new Section(1L, Station.from("인천역"), Station.from("부평역"), 5)));
+                List.of(new Section(1L, Station.from("인천역"), Station.from("부평역"), 5)),
+                BigDecimal.valueOf(0));
         Line line2 = new Line(
                 2L,
                 "2호선",
-                List.of(new Section(2L, Station.from("잠실역"), Station.from("몽촌토성역"), 5)));
+                List.of(new Section(2L, Station.from("잠실역"), Station.from("몽촌토성역"), 5)),
+                BigDecimal.valueOf(0)
+        );
         given(lineService.findLineResponses()).willReturn(List.of(LineResponse.from(line1), LineResponse.from(line2)));
 
         mockMvc.perform(get("/lines"))

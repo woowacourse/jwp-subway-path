@@ -33,7 +33,7 @@ class SectionDaoTest {
     @DisplayName("DB에 구간을 삽입한다.")
     @Test
     void shouldInsertSectionWhenRequest() {
-        LineEntity lineEntity = new LineEntity("2호선");
+        LineEntity lineEntity = new LineEntity("2호선", 0);
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntity);
 
         SectionEntity sectionEntityToInsert = new SectionEntity(
@@ -55,7 +55,7 @@ class SectionDaoTest {
     @DisplayName("DB에서 특정 노선에 속하는 모든 구간을 가져온다.")
     @Test
     void shouldReadAllSectionsWhenRequestLineId() {
-        LineEntity lineEntity = new LineEntity("2호선");
+        LineEntity lineEntity = new LineEntity("2호선", 0);
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntity);
 
         SectionEntity sectionEntityToInsert1 = new SectionEntity(
@@ -85,7 +85,7 @@ class SectionDaoTest {
     @DisplayName("DB에서 특정 노선에 속하는 모든 구간을 삭제한다.")
     @Test
     void shouldDeleteSectionsWhenRequestLineId() {
-        LineEntity lineEntity = new LineEntity("2호선");
+        LineEntity lineEntity = new LineEntity("2호선", 0);
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntity);
 
         SectionEntity sectionEntityToInsert1 = new SectionEntity(

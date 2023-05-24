@@ -31,7 +31,7 @@ class LineDaoTest {
     @DisplayName("DB에 노선을 삽입힌다.")
     @Test
     void shouldInsertLineWhenRequest() {
-        LineEntity lineEntityToSave = new LineEntity("2호선");
+        LineEntity lineEntityToSave = new LineEntity("2호선", 0);
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntityToSave);
 
         assertThat(lineEntityAfterSave.getName()).isEqualTo(lineEntityToSave.getName());
@@ -40,7 +40,7 @@ class LineDaoTest {
     @DisplayName("DB에서 ID로 특정 노선을 조회한다")
     @Test
     void shouldFindLineByIdFromDbWhenRequest() {
-        LineEntity lineEntityToSave = new LineEntity("2호선");
+        LineEntity lineEntityToSave = new LineEntity("2호선", 0);
         LineEntity lineEntityAfterSave = lineDao.insert(lineEntityToSave);
 
         LineEntity lineEntityFoundById = lineDao.findById(lineEntityAfterSave.getId());
@@ -51,8 +51,8 @@ class LineDaoTest {
     @DisplayName("DB에서 모든 노선을 조회한다")
     @Test
     void shouldFindAllLinesWhenRequest() {
-        LineEntity lineEntity1 = new LineEntity("2호선");
-        LineEntity lineEntity2 = new LineEntity("3호선");
+        LineEntity lineEntity1 = new LineEntity("2호선", 0);
+        LineEntity lineEntity2 = new LineEntity("3호선", 0);
         lineDao.insert(lineEntity1);
         lineDao.insert(lineEntity2);
 
