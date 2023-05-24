@@ -1,15 +1,19 @@
-package subway.domain.fare;
+package subway.domain.fare.distanceproportion;
 
 import java.util.List;
+import subway.domain.fare.Fare;
 
 public class TotalDistanceFareCalculator {
-
+    private static final DistanceProportionFarePolicy FIRST_DISTANCE_RANGE
+            = new DistanceProportionFarePolicy(10, 50, 5);
+    private static final DistanceProportionFarePolicy SECOND_DISTANCE_RANGE
+            = new DistanceProportionFarePolicy(50, 1_000_000, 8);
     private static final Fare BASE_FARE = new Fare(1_250);
 
     private final List<DistanceProportionFarePolicy> distanceProportionFarePolicies;
 
-    public TotalDistanceFareCalculator(final List<DistanceProportionFarePolicy> distanceProportionFarePolicies) {
-        this.distanceProportionFarePolicies = distanceProportionFarePolicies;
+    public TotalDistanceFareCalculator() {
+        this.distanceProportionFarePolicies = List.of(FIRST_DISTANCE_RANGE, SECOND_DISTANCE_RANGE);
     }
 
     public Fare calculateFareByDistance(final int distance) {

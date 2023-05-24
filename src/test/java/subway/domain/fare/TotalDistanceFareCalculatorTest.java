@@ -2,11 +2,11 @@ package subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.domain.fare.distanceproportion.TotalDistanceFareCalculator;
 
 @SuppressWarnings("NonAsciiCharacters")
 class TotalDistanceFareCalculatorTest {
@@ -17,10 +17,7 @@ class TotalDistanceFareCalculatorTest {
 
     @BeforeEach
     void setUp() {
-        totalDistanceFareCalculator = new TotalDistanceFareCalculator(List.of(
-                new DistanceProportionFarePolicy(10, 50, 5),
-                new DistanceProportionFarePolicy(50, 1_000_000, 8)
-        ));
+        totalDistanceFareCalculator = new TotalDistanceFareCalculator();
     }
 
     @ParameterizedTest

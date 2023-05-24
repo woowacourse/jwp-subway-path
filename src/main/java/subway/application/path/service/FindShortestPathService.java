@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.path.usecase.FindShortestPathUseCase;
 import subway.domain.fare.Fare;
-import subway.domain.fare.TotalDistanceFareCalculator;
+import subway.domain.fare.distanceproportion.TotalDistanceFareCalculator;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.path.SubwayMap;
@@ -20,16 +20,10 @@ import subway.ui.dto.response.StationResponse;
 @Transactional(readOnly = true)
 @Service
 public class FindShortestPathService implements FindShortestPathUseCase {
-    private final TotalDistanceFareCalculator totalDistanceFareCalculator;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public FindShortestPathService(
-            final TotalDistanceFareCalculator totalDistanceFareCalculator,
-            final LineRepository lineRepository,
-            final StationRepository stationRepository
-    ) {
-        this.totalDistanceFareCalculator = totalDistanceFareCalculator;
+    public FindShortestPathService(final LineRepository lineRepository, final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -45,6 +39,7 @@ public class FindShortestPathService implements FindShortestPathUseCase {
         final SubwayPath shortestPath = subwayMap.findShortestPath(startStation, endStation);
         final int pathDistance = shortestPath.getDistance();
 
+        final TotalDistanceFareCalculator totalDistanceFareCalculator = new TotalDistanceFareCalculator();
         return toPathResponse(shortestPath, totalDistanceFareCalculator.calculateFareByDistance(pathDistance));
     }
 
