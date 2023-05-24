@@ -35,6 +35,7 @@ public class SubwayService {
 			.map(StationResponse::from)
 			.collect(Collectors.collectingAndThen(Collectors.toList(), LineStationResponse::from));
 	}
+
 	@Transactional(readOnly = true)
 	public PathsResponse findShortestPath(final PathRequest pathRequest) {
 		String start = pathRequest.getStart();
