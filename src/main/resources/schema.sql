@@ -10,9 +10,10 @@ create table STATION
 
 create table LINE
 (
-    id    bigint auto_increment not null,
-    name  varchar(255)          not null,
-    color varchar(20)           not null,
+    id        bigint auto_increment not null,
+    name      varchar(255)          not null,
+    color     varchar(20)           not null,
+    extra_fee bigint                not null,
     primary key (id)
 );
 

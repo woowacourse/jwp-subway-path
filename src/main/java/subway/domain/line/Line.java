@@ -1,14 +1,17 @@
 package subway.domain.line;
 
 import java.util.Objects;
+import subway.domain.price.Price;
 
 public class Line {
     private final LineName name;
     private final LineColor color;
+    private final Price extraFee;
 
-    public Line(LineName name, LineColor color) {
+    public Line(LineName name, LineColor color, Price extraFee) {
         this.name = name;
         this.color = color;
+        this.extraFee = extraFee;
     }
 
     public String getName() {
@@ -17,6 +20,10 @@ public class Line {
 
     public String getColor() {
         return color.getColor();
+    }
+
+    public long getExtraFee() {
+        return extraFee.getAmount();
     }
 
     @Override
@@ -33,13 +40,17 @@ public class Line {
         if (!Objects.equals(name, line.name)) {
             return false;
         }
-        return Objects.equals(color, line.color);
+        if (!Objects.equals(color, line.color)) {
+            return false;
+        }
+        return Objects.equals(extraFee, line.extraFee);
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (color != null ? color.hashCode() : 0);
+        result = 31 * result + (extraFee != null ? extraFee.hashCode() : 0);
         return result;
     }
 }

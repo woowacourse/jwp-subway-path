@@ -1,5 +1,6 @@
 package subway.domain.line;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 import org.springframework.util.Assert;
 
@@ -33,5 +34,24 @@ public class LineColor {
 
     public String getColor() {
         return color;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LineColor)) {
+            return false;
+        }
+
+        LineColor lineColor = (LineColor) o;
+
+        return Objects.equals(color, lineColor.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return color != null ? color.hashCode() : 0;
     }
 }

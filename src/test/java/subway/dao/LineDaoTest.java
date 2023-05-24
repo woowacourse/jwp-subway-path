@@ -16,6 +16,7 @@ import subway.dao.entity.LineEntity;
 import subway.domain.line.Line;
 import subway.domain.line.LineColor;
 import subway.domain.line.LineName;
+import subway.domain.price.Price;
 
 @JdbcTest
 class LineDaoTest {
@@ -34,7 +35,7 @@ class LineDaoTest {
     @DisplayName("Line을 저장할 수 있어야 한다.")
     void insert_success() {
         // given
-        Line line = new Line(new LineName("1호선"), new LineColor("bg-blue-300"));
+        Line line = new Line(new LineName("1호선"), new LineColor("bg-blue-300"), Price.ZERO);
 
         // when
         long lineId = lineDao.insert(line);
@@ -48,10 +49,10 @@ class LineDaoTest {
     @DisplayName("Line을 수정할 수 있어야 한다.")
     void update_success() {
         // given
-        long lineId = insertLine("1호선", "bg-blue-300");
+        long lineId = insertLine("1호선", "bg-blue-300", 0);
 
         // when
-        lineDao.update(lineId, new Line(new LineName("2호선"), new LineColor("bg-green-300")));
+        lineDao.update(lineId, new Line(new LineName("2호선"), new LineColor("bg-green-300"), Price.from(100)));
 
         // then
         LineEntity line = lineDao.findById(lineId).get();
@@ -59,15 +60,17 @@ class LineDaoTest {
                 .isEqualTo("2호선");
         assertThat(line.getColor())
                 .isEqualTo("bg-green-300");
+        assertThat(line.getExtraFee())
+                .isEqualTo(100L);
     }
 
     @Test
     @DisplayName("모든 Line을 조회할 수 있어야 한다.")
     void findAll_success() {
         // given
-        insertLine("1호선", "bg-blue-300");
-        insertLine("2호선", "bg-green-300");
-        insertLine("3호선", "bg-yellow-300");
+        insertLine("1호선", "bg-blue-300", 0);
+        insertLine("2호선", "bg-green-300", 100);
+        insertLine("3호선", "bg-yellow-300", 200);
 
         // when
         List<LineEntity> lines = lineDao.findAll();
@@ -83,7 +86,7 @@ class LineDaoTest {
     void existsByName_true(String stationName, boolean expect) {
 
         // given
-        insertLine("1호선", "bg-blue-300");
+        insertLine("1호선", "bg-blue-300", 0);
 
         // expect
         assertThat(lineDao.existsByName(stationName))
@@ -105,7 +108,7 @@ class LineDaoTest {
     @DisplayName("Id로 Line을 조회할 수 있어야 한다.")
     void findById_success() {
         // given
-        long lineId = insertLine("1호선", "bg-blue-300");
+        long lineId = insertLine("1호선", "bg-blue-300", 0);
 
         // when
         Optional<LineEntity> line = lineDao.findById(lineId);
@@ -123,7 +126,7 @@ class LineDaoTest {
     @DisplayName("Line의 Id로 Line을 삭제할 수 있어야 한다.")
     void deleteById_success() {
         // given
-        long lineId = insertLine("1호선", "bg-blue-300");
+        long lineId = insertLine("1호선", "bg-blue-300", 0);
 
         // when
         lineDao.deleteById(lineId);
@@ -133,8 +136,8 @@ class LineDaoTest {
                 .isTrue();
     }
 
-    private long insertLine(String lineName, String lineColor) {
-        Line line = new Line(new LineName(lineName), new LineColor(lineColor));
+    private long insertLine(String lineName, String lineColor, long extraFee) {
+        Line line = new Line(new LineName(lineName), new LineColor(lineColor), Price.from(extraFee));
         return lineDao.insert(line);
     }
 }

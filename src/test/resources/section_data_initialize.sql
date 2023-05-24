@@ -9,9 +9,9 @@ INSERT INTO STATION (name) VALUES ('장승배기역');
 INSERT INTO STATION (name) VALUES ('상도역');
 INSERT INTO STATION (name) VALUES ('숭실대입구역');
 
-INSERT INTO LINE (id, name, color) VALUES (1, '2호선', 'bg-green-300');
-INSERT INTO LINE (id, name, color) VALUES (2, '3호선', 'bg-orange-300');
-INSERT INTO LINE (id, name, color) VALUES (3, '4호선', 'bg-blue-300');
+INSERT INTO LINE (id, name, color, extra_fee) VALUES (1, '2호선', 'bg-green-300', 0);
+INSERT INTO LINE (id, name, color, extra_fee) VALUES (2, '3호선', 'bg-orange-300', 100);
+INSERT INTO LINE (id, name, color, extra_fee) VALUES (3, '4호선', 'bg-blue-300', 200);
 
 INSERT INTO SECTION(line_id, start_station_name, end_station_name, distance) VALUES(1, '잠실역', '삼성역', 10);
 INSERT INTO SECTION(line_id, start_station_name, end_station_name, distance) VALUES(1, '삼성역', '포항역', 10);

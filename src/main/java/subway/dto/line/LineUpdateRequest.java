@@ -3,6 +3,7 @@ package subway.dto.line;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 public class LineUpdateRequest {
     @NotBlank(message = "노선의 이름은 비어있을 수 없습니다.")
@@ -24,9 +25,17 @@ public class LineUpdateRequest {
     )
     private String color;
 
-    public LineUpdateRequest(String lineName, String color) {
+    @Range(
+            min = 0,
+            max = 10000,
+            message = "노선의 추가 요금은 {min}~{max}원 사이여야 합니다."
+    )
+    private long extraFee;
+
+    public LineUpdateRequest(String lineName, String color, long extraFee) {
         this.lineName = lineName;
         this.color = color;
+        this.extraFee = extraFee;
     }
 
     public String getLineName() {
@@ -35,5 +44,9 @@ public class LineUpdateRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public long getExtraFee() {
+        return extraFee;
     }
 }
