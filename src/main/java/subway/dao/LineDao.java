@@ -72,10 +72,9 @@ public class LineDao {
 		return jdbcTemplate.queryForObject(sql, lineRowMapper, lineName);
 	}
 
-	public Optional<LineEntity> findById(final Long id) {
-		String sql = "SELECT lineId, name FROM line WHERE lineId = :lineId";
-		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("lineId", id), lineRowMapper).stream()
-			.findAny();
+	public LineEntity findById(final Long id) {
+		String sql = "SELECT * FROM line WHERE lineId = ?";
+		return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
 	}
 
 	public void updateLine(final long lineId, final LineEntity lineEntity) {

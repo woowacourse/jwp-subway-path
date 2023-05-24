@@ -72,7 +72,7 @@ class LineServiceTest {
 		LineUpdateRequest updateRequest = new LineUpdateRequest("2호선");
 
 		LineEntity lineEntity = LINE_TWO;
-		given(lineRepository.findById(id)).willReturn(Optional.of(lineEntity));
+		given(lineRepository.findById(id)).willReturn(lineEntity);
 
 		// when
 		lineService.updateLineById(id, updateRequest);

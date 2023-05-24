@@ -43,7 +43,7 @@ public class LineRepository {
 		lineDao.deleteById(id);
 	}
 
-	public Optional<LineEntity> findById(final Long id) {
+	public LineEntity findById(final Long id) {
 		return lineDao.findById(id);
 	}
 
