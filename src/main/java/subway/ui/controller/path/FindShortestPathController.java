@@ -19,7 +19,7 @@ public class FindShortestPathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findSingleLine(
+    public ResponseEntity<PathResponse> findShortestPath(
             @RequestParam final Long startStationId,
             @RequestParam final Long endStationId
     ) {
