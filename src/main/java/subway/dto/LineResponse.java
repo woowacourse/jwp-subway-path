@@ -9,6 +9,7 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+
     private List<StationResponse> stationResponses;
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stationResponses) {
@@ -32,5 +33,9 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public List<StationResponse> getStationResponses() {
+        return stationResponses;
     }
 }

@@ -70,6 +70,9 @@ public class Sections {
             leftDistance = section.getDistance().getDistance() - rightDistance;
         }
 
+        if (leftDistance <= 0 || rightDistance <= 0) {
+            throw new IllegalArgumentException("사이에 들어갈 역의 거리는 기존 거리보다 작아야 합니다.");
+        }
         Queue<Section> splitSections = section.split(newStation, leftDistance, rightDistance);
         sections.remove(section.getLeftStation().getId());
         addSplitSections(splitSections);
@@ -77,17 +80,13 @@ public class Sections {
 
     private void addSplitSections(Queue<Section> splitSections) {
         if (splitSections.size() != 2) {
-            throw new IllegalStateException("분할된 영역은 2개여야 합니다.");
+            throw new IllegalArgumentException("분할된 영역은 2개여야 합니다.");
         }
 
         Section section = splitSections.remove();
         sections.put(section.getLeftStation().getId(), section);
         section = splitSections.remove();
         sections.put(section.getLeftStation().getId(), section);
-    }
-
-    public Section getSectionByLeftStation(Station station) {
-        return sections.get(station.getId());
     }
 
     public void delete(Section section) {
@@ -107,6 +106,14 @@ public class Sections {
         }
 
         throw new IllegalArgumentException("연결되지 않은 구간을 합칠 수 없습니다.");
+    }
+
+    public Section getSectionByLeftStation(Station station) {
+        if (sections.containsKey(station.getId())) {
+            return sections.get(station.getId());
+        }
+
+        throw new IllegalArgumentException("지정한 역이 좌측에 존재하는 영역이 없습니다.");
     }
 
     public Section getSectionByRightStation(Station station) {

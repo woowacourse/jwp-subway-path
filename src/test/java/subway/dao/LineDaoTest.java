@@ -58,24 +58,6 @@ public class LineDaoTest {
         assertThat(lines.get(1).getName()).isEqualTo(lineName2);
     }
 
-    @DisplayName("이름을 기준으로 노선을 조회한다.")
-    @Test
-    public void find_by_name() {
-        // given
-        String lineName = "a";
-        String color = "#FFFFFF";
-        LineEntity line = new LineEntity(null, lineName, color, null, null);
-        lineDao.insert(line);
-
-        // when
-        Optional<LineEntity> foundLine = lineDao.findByName(lineName);
-
-        // then
-        assertThat(foundLine).isPresent();
-        assertThat(foundLine.get().getName()).isEqualTo(lineName);
-        assertThat(foundLine.get().getColor()).isEqualTo(color);
-    }
-
     @DisplayName("있는 것을 ID로 조회")
     @Test
     public void exists_by_id_with_existing_id() {
@@ -138,7 +120,7 @@ public class LineDaoTest {
     @Test
     public void find_by_id() {
         //given
-        LineEntity inserted = lineDao.insert(new LineEntity(null,"test", "#DDDDDD", null, null));
+        LineEntity inserted = lineDao.insert(new LineEntity(null, "test", "#DDDDDD", null, null));
         Long id = inserted.getId();
 
         //when

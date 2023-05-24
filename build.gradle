@@ -15,11 +15,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
 	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+	implementation group: 'org.jgrapht', name: 'jgrapht-core', version: '1.5.2'
 
 	testImplementation 'io.rest-assured:rest-assured:4.4.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	runtimeOnly 'com.h2database:h2'
+	runtimeOnly group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
 }
 
 test {

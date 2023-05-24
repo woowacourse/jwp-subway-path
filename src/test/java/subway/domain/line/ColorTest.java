@@ -15,7 +15,8 @@ class ColorTest {
     void validate_hex_color_code(String color) {
         // when + then
         assertThatThrownBy(() -> new Color(color))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("#을 포함한 7자리 16진수 색상표여야 합니다.");
     }
 
     @ParameterizedTest

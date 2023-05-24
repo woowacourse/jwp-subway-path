@@ -26,7 +26,8 @@ class SectionsTest {
 
         //then
         assertThatThrownBy(() -> new Sections(List.of(section1, section2)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("갈림길이 존재할 수 없습니다.");
     }
 
     @DisplayName("추가할 때 갈림길은 생성될 수 없다.")
@@ -44,7 +45,8 @@ class SectionsTest {
 
         //then
         assertThatThrownBy(() -> sections.addSection(section2))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("갈림길이 존재할 수 없습니다.");
     }
 
     @DisplayName("영역을 분할하면 하나가 늘어난다.")
@@ -66,6 +68,22 @@ class SectionsTest {
         assertEquals(beforeSize + 1, afterSize);
     }
 
+    @DisplayName("분할하는 영역이 더 크면 실패한다.")
+    @Test
+    void fail_split_section_over_inner_distance() {
+        //given
+        Station leftStation = new Station(1L, "left");
+        Station innerStation = new Station(2L, "inner");
+        Station rightStation = new Station(3L, "right");
+        Section section1 = new Section(leftStation, rightStation, 10);
+        Sections sections = new Sections(List.of(section1));
+
+        //when + then
+        assertThatThrownBy(() -> sections.split(innerStation, leftStation, Direction.RIGHT, 20))
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("사이에 들어갈 역의 거리는 기존 거리보다 작아야 합니다.");
+    }
+
     @DisplayName("왼쪽 역을 기준으로 영역을 가져온다.")
     @Test
     void get_section_by_left() {
@@ -82,6 +100,19 @@ class SectionsTest {
         assertEquals(section2, sections.getSectionByLeftStation(innerStation));
     }
 
+    @DisplayName("왼쪽 역을 기준으로 하는 영역이 없는 경우 조회를 실패한다.")
+    @Test
+    void fail_get_not_exist_section_by_left() {
+        //given
+        Station leftStation = new Station(1L, "left");
+        Sections sections = new Sections(List.of());
+
+        //when + then
+        assertThatThrownBy(() -> sections.getSectionByLeftStation(leftStation))
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("지정한 역이 좌측에 존재하는 영역이 없습니다.");
+    }
+
     @DisplayName("오른쪽 역을 기준으로 영역을 가져온다.")
     @Test
     void get_section_by_right() {
@@ -96,6 +127,19 @@ class SectionsTest {
         //when + then
         assertEquals(section1, sections.getSectionByRightStation(innerStation));
         assertEquals(section2, sections.getSectionByRightStation(rightStation));
+    }
+
+    @DisplayName("오른쪽 역을 기준으로 하는 영역이 없는 경우 조회를 실패한다.")
+    @Test
+    void fail_get_not_exist_section_by_right() {
+        //given
+        Station rightStation = new Station(1L, "right");
+        Sections sections = new Sections(List.of());
+
+        //when + then
+        assertThatThrownBy(() -> sections.getSectionByLeftStation(rightStation))
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("지정한 역이 우측에 존재하는 영역이 없습니다.");
     }
 
     @DisplayName("가장자리 역을 제거해 영역을 제거한다.")

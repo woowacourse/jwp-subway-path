@@ -7,9 +7,6 @@ public class Station {
     private Long id;
     private StationName stationName;
 
-    public Station() {
-    }
-
     public Station(final Long id, final String stationName) {
         this.id = id;
         this.stationName = new StationName(stationName);

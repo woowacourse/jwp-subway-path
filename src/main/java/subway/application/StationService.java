@@ -41,8 +41,8 @@ public class StationService {
 
     public void updateStation(Long id, StationRequest stationRequest) {
         Station station = stationRepository.findById(id);
-        Station update = new Station(station.getId(), stationRequest.getName());
-        stationRepository.save(update);
+        Station updateReadyStation = new Station(station.getId(), stationRequest.getName());
+        stationRepository.save(updateReadyStation);
     }
 
     public void deleteStationById(Long id) {

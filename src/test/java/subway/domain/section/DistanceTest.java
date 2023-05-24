@@ -15,7 +15,8 @@ class DistanceTest {
     void validate_distance_positive(int distance) {
         // when + then
         assertThatThrownBy(() -> new Distance(distance))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("거리는 자연수여야 합니다.");
     }
 
     @ParameterizedTest

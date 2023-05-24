@@ -7,6 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import subway.dto.InitStationsRequest;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
+import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
 import java.util.HashMap;
@@ -139,6 +143,23 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(stationResponse.getId()).isEqualTo(stationId);
     }
 
+    @DisplayName("없는 지하철역을 조회할 수 없다.")
+    @Test
+    void cantGetNotExistStation() {
+        /// given
+        Long dummyId = 999L;
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when()
+                .get("/stations/{stationId}", dummyId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("지하철역을 수정한다.")
     @Test
     void updateStation() {
@@ -193,5 +214,61 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("노선에 등록된 역을 제거할 수 없다.")
+    @Test
+    void cantDeleteStationInLine() {
+        // given
+        LineRequest lineRequest = new LineRequest("신분당선", "#FFFFFF");
+        LineResponse lineResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest)
+                .when().post("/lines")
+                .then().log().all()
+                .extract()
+                .jsonPath()
+                .getObject("", LineResponse.class);
+
+        StationRequest stationRequest1 = new StationRequest("잠실역");
+        StationResponse stationResponse1 = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest1)
+                .when().post("/stations")
+                .then().log().all()
+                .extract()
+                .jsonPath()
+                .getObject("", StationResponse.class);
+        StationRequest stationRequest2 = new StationRequest("삼성역");
+        StationResponse stationResponse2 = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest2)
+                .when().post("/stations")
+                .then().log().all()
+                .extract()
+                .jsonPath()
+                .getObject("", StationResponse.class);
+
+        InitStationsRequest initStationsRequest = new InitStationsRequest(stationResponse1.getId(), stationResponse2.getId(), 10);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(initStationsRequest)
+                .when().post("/lines/{id}/init", lineResponse.getId())
+                .then().log().all()
+                .extract();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .when().delete("/stations/{stationId}", stationResponse1.getId())
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

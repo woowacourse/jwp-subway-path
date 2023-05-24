@@ -22,7 +22,8 @@ class StationsTest {
 
         // when + then
         assertThatThrownBy(() -> new Stations(stations))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("노선의 역은 1개만 존재할 수 없습니다.");
     }
 
     @Test
@@ -33,7 +34,8 @@ class StationsTest {
 
         // when + then
         assertThatThrownBy(() -> new Stations(stations))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .describedAs("역 이름은 중복될 수 없습니다.");
     }
 
     @ParameterizedTest

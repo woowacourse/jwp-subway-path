@@ -34,22 +34,22 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    @PutMapping("/{lineId}")
-    public ResponseEntity<LineResponse> updateLine(@PathVariable Long lineId, @RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.updateLine(lineId, lineRequest);
+    @PutMapping("/{id}")
+    public ResponseEntity<LineResponse> updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
+        LineResponse line = lineService.updateLine(id, lineRequest);
         return ResponseEntity.ok().body(line);
     }
 
-    @PostMapping("/{name}/init")
-    public ResponseEntity<Void> registerStations(@PathVariable String name, @RequestBody InitStationsRequest initStationsRequest) {
-        lineService.registerInitStations(name, initStationsRequest);
+    @PostMapping("/{id}/init")
+    public ResponseEntity<Void> registerStations(@PathVariable Long id, @RequestBody InitStationsRequest initStationsRequest) {
+        lineService.registerInitStationsByLineId(id, initStationsRequest);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{name}/stations")
-    public ResponseEntity<Void> registerStation(@PathVariable String name,
+    @PostMapping("/{id}/stations")
+    public ResponseEntity<Void> registerStation(@PathVariable Long id,
                                                 @RequestBody RegisterStationRequest registerStationRequest) {
-        lineService.registerStation(name, registerStationRequest);
+        lineService.registerStationByLineId(id, registerStationRequest);
         return ResponseEntity.noContent().build();
     }
 
@@ -63,15 +63,15 @@ public class LineController {
         return ResponseEntity.ok(lineService.findAll());
     }
 
-    @DeleteMapping("/{lineName}/stations/{stationName}")
-    public ResponseEntity<Void> deleteStationInLine(@PathVariable String lineName, @PathVariable String stationName) {
-        lineService.deleteStation(lineName, stationName);
+    @DeleteMapping("/{id}/stations/{stationId}")
+    public ResponseEntity<Void> deleteStationInLine(@PathVariable Long id, @PathVariable Long stationId) {
+        lineService.deleteStation(id, stationId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{lineId}")
-    public ResponseEntity<Void> deleteLineById(@PathVariable Long lineId) {
-        lineService.deleteLineById(lineId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLineById(@PathVariable Long id) {
+        lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
 }

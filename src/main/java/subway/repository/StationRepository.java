@@ -21,12 +21,6 @@ public class StationRepository {
         this.lineStationDao = lineStationDao;
     }
 
-    public Station findByName(String stationName) {
-        StationEntity stationEntity = stationDao.findByName(stationName).orElseThrow(NoSuchStationException::new);
-
-        return new Station(stationEntity.getId(), stationEntity.getName());
-    }
-
     public List<Station> findAll() {
         return stationDao.findAll().stream().map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName())).collect(Collectors.toList());
     }

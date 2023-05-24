@@ -4,6 +4,7 @@ import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
+import subway.exception.NotInitializedLineException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,8 +13,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Line {
-
-    private static final int EMPTY = 0;
 
     private Long id;
     private LineName name;
@@ -24,10 +23,6 @@ public class Line {
 
     public Line(final String name, final String color) {
         this(null, name, color, new Sections(List.of()), null, null);
-    }
-
-    public Line(final String name, final String color, final Station upBoundStation, final Station downBoundStation) {
-        this(null, name, color, new Sections(List.of()), upBoundStation, downBoundStation);
     }
 
     public Line(final Long id, final String name, final String color, final Sections sections, Station upBoundStation, Station downBoundStation) {
@@ -41,7 +36,7 @@ public class Line {
 
     public void initStations(Station leftStation, Station rightStation, int distance) {
         if (sections.size() != 0) {
-            throw new IllegalStateException("초기 등록할 때는 노선에 역이 하나도 없어야 합니다.");
+            throw new IllegalArgumentException("초기 등록할 때는 노선에 역이 하나도 없어야 합니다.");
         }
 
         sections.addSection(new Section(leftStation, rightStation, distance));
@@ -50,6 +45,9 @@ public class Line {
     }
 
     public void addStation(Station newStation, Station baseStation, Direction direction, int distance) {
+        if (sections.isEmpty()) {
+            throw new NotInitializedLineException();
+        }
         if (upBoundStation.equals(baseStation) && Direction.LEFT.equals(direction)) {
             sections.addSection(new Section(newStation, baseStation, distance));
             upBoundStation = newStation;
@@ -60,13 +58,13 @@ public class Line {
             downBoundStation = newStation;
             return;
         }
-        if (Direction.LEFT.equals(direction)) {
-
-        }
         sections.split(newStation, baseStation, direction, distance);
     }
 
     public void deleteStation(Station deleteStation) {
+        if (sections.isEmpty()) {
+            throw new NotInitializedLineException();
+        }
         if (sections.size() == 1) {
             deleteLastTwoStations(deleteStation);
             return;
