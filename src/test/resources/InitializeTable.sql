@@ -5,7 +5,7 @@ truncate table STATION restart identity ;
 
 
 insert into line (name, color) values ('1호선', '남색');
-insert into line (name, color) values ('2호선', '초록색');
+insert into line (name, color, additional_fee) values ('2호선', '초록색', 200);
 insert into station (name) values ('신도림');
 insert into station (name) values ('영등포구청');
 insert into station (name) values ('신대방');

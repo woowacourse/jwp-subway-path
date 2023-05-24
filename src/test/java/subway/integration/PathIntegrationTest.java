@@ -18,7 +18,7 @@ class PathIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("최단 경로를 조회한다.")
     void findPathTest() {
-        PathFindingRequest pathFindingRequest = new PathFindingRequest(1L, 3L);
+        PathFindingRequest pathFindingRequest = new PathFindingRequest(1L, 3L, 25);
 
         ExtractableResponse<Response> response = RestAssured
             .given().log().all()

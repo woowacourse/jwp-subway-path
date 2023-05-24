@@ -31,7 +31,7 @@ public class PathResponse {
         return path;
     }
 
-    public int getFee() {
+    public int getFare() {
         return fee;
     }
 }

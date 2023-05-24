@@ -1,18 +1,26 @@
 package subway.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import subway.domain.fee.FeeStrategy;
-import subway.domain.fee.NormalFeeStrategy;
-import subway.domain.path.PathFindByDistanceStrategy;
-import subway.domain.path.PathFindStrategy;
+import subway.domain.fare.strategy.discount.AgeDiscountStrategy;
+import subway.domain.fare.strategy.charge.DistanceChargeStrategy;
+import subway.domain.fare.FareCalculator;
+import subway.domain.fare.strategy.charge.LineChargeStrategy;
+import subway.domain.path.strategy.PathFindByDistanceStrategy;
+import subway.domain.path.strategy.PathFindStrategy;
 
 @Configuration
 public class SubwayConfiguration {
+
     @Bean
-    public FeeStrategy feeStrategy() {
-        return new NormalFeeStrategy();
+    public FareCalculator fareCalculator() {
+        return new FareCalculator(
+            List.of(new DistanceChargeStrategy(), new LineChargeStrategy()),
+            List.of(new AgeDiscountStrategy())
+        );
     }
 
     @Bean
