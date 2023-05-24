@@ -30,7 +30,7 @@ public class LineRepository {
 		this.stationDao = stationDao;
 	}
 
-	public long insertLine(final LineEntity lineEntity) {
+	public String insertLine(final LineEntity lineEntity) {
 		return lineDao.insert(lineEntity);
 	}
 
@@ -74,5 +74,9 @@ public class LineRepository {
 
 	public void updateLine(final long lineId, final LineEntity lineEntity) {
 		lineDao.updateLine(lineId, lineEntity);
+	}
+
+	public long findIdByName(final String lineName) {
+		return lineDao.findByName(lineName).getLineId();
 	}
 }

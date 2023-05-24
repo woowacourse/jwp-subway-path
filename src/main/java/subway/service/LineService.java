@@ -20,7 +20,7 @@ public class LineService {
 	}
 
 	@Transactional
-	public long saveLine(final LineCreateRequest request) {
+	public String saveLine(final LineCreateRequest request) {
 		return lineRepository.insertLine(new LineEntity(null, request.getName()));
 	}
 
@@ -41,5 +41,9 @@ public class LineService {
 	@Transactional
 	public void deleteLineById(final Long id) {
 		lineRepository.deleteLineById(id);
+	}
+
+	public long findIdByName(final String lineName) {
+		return lineRepository.findIdByName(lineName);
 	}
 }

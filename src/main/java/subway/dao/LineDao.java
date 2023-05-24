@@ -1,5 +1,12 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,13 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import subway.entity.LineEntity;
 
-import javax.sql.DataSource;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 @Repository
 public class LineDao {
 
@@ -23,7 +23,7 @@ public class LineDao {
 	private final SimpleJdbcInsert insertAction;
 	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+	private final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) ->
 		new LineEntity(
 			rs.getLong("lineId"),
 			rs.getString("name")
@@ -38,21 +38,29 @@ public class LineDao {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
-	public long insert(final LineEntity lineEntity) {
+	public String insert(final LineEntity lineEntity) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("name", lineEntity.getName());
+		final long lineId = insertAction.executeAndReturnKey(params).longValue();
 
-		return insertAction.executeAndReturnKey(params).longValue();
+		return findById(lineId);
+	}
+
+	private String findById(final long lineId) {
+		String sql = "SELECT * FROM line WHERE lineId = ?";
+		final LineEntity lineEntity = jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
+
+		return lineEntity.getName();
 	}
 
 	public List<LineEntity> findAll() {
 		String sql = "SELECT lineId,  name FROM line";
-		return jdbcTemplate.query(sql, rowMapper);
+		return jdbcTemplate.query(sql, lineRowMapper);
 	}
 
 	public LineEntity findByName(final String name) {
 		String sql = "SELECT lineId,  name FROM line WHERE name = ?";
-		return jdbcTemplate.queryForObject(sql, rowMapper, name);
+		return jdbcTemplate.queryForObject(sql, lineRowMapper, name);
 	}
 
 	public void deleteById(final Long id) {
@@ -61,12 +69,12 @@ public class LineDao {
 
 	public LineEntity findByLineName(final String lineName) {
 		String sql = "SELECT lineId, name FROM line WHERE name = ?";
-		return jdbcTemplate.queryForObject(sql, rowMapper, lineName);
+		return jdbcTemplate.queryForObject(sql, lineRowMapper, lineName);
 	}
 
 	public Optional<LineEntity> findById(final Long id) {
 		String sql = "SELECT lineId, name FROM line WHERE lineId = :lineId";
-		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("lineId", id), rowMapper).stream()
+		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("lineId", id), lineRowMapper).stream()
 			.findAny();
 	}
 

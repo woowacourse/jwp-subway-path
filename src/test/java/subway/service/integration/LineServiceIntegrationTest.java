@@ -30,9 +30,6 @@ public class LineServiceIntegrationTest {
 	@Autowired
 	private LineService lineService;
 
-	@Autowired
-	private ApplicationEventPublisher publisher;
-
 	@BeforeEach
 	void setUp() {
 		RestAssured.port = this.port;
@@ -71,7 +68,8 @@ public class LineServiceIntegrationTest {
 	@DisplayName("노선 갱신 서비스 인수 테스트")
 	void updateLine() {
 		// given
-		Long id = lineService.saveLine(LINE_REQUEST_TWO);
+		final String lineName = lineService.saveLine(LINE_REQUEST_TWO);
+		final long id = lineService.findIdByName(lineName);
 
 		LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("신분당선");
 
@@ -87,7 +85,8 @@ public class LineServiceIntegrationTest {
 	@DisplayName("노선 삭제 서비스 인수 테스트")
 	void deleteLine() {
 		// given
-		Long id = lineService.saveLine(LINE_REQUEST_TWO);
+		final String lineName = lineService.saveLine(LINE_REQUEST_TWO);
+		final long id = lineService.findIdByName(lineName);
 
 		// when
 		lineService.deleteLineById(id);
