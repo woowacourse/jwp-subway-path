@@ -18,6 +18,7 @@ import subway.dto.StationResponse;
 import subway.entity.StationEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -61,12 +62,8 @@ class PathServiceTest {
         Section 강남역_선릉역 = new Section(5L, 강남역, 선릉역, 5, 2);
 
         given(lineRepository.findSectionsWithSort()).willReturn(List.of(판교역_양재역, 양재역_도곡역, 도곡역_선릉역, 양재역_강남역, 강남역_선릉역));
-        given(stationDao.findAll()).willReturn(List.of(
-                new StationEntity(1L, "판교역"),
-                new StationEntity(2L, "양재역"),
-                new StationEntity(3L, "도곡역"),
-                new StationEntity(4L, "강남역"),
-                new StationEntity(5L, "선릉역")));
+        given(stationDao.findById(1L)).willReturn(Optional.of(new StationEntity(1L, "판교역")));
+        given(stationDao.findById(5L)).willReturn(Optional.of(new StationEntity(5L, "선릉역")));
 
         ShortestPathRequest shortestPathRequest = new ShortestPathRequest(1L, 5L);
 

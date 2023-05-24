@@ -39,9 +39,8 @@ public class LineService {
         validateDifferentStation(lineStationRequest);
         validateExistStation(lineStationRequest);
 
-        Map<Long, Station> stationMap = makeStationMap(stationDao.findAll());
-        Station upStation = stationMap.get(lineStationRequest.getUpStationId());
-        Station downStation = stationMap.get(lineStationRequest.getDownStationId());
+        Station upStation = obtainStation(lineStationRequest.getUpStationId());
+        Station downStation = obtainStation(lineStationRequest.getDownStationId());
 
         List<Section> sections = lineRepository.findSectionsByLineIdWithSort(lineId);
         Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
@@ -118,14 +117,11 @@ public class LineService {
     }
 
     public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
-        List<StationEntity> stationEntities = stationDao.findAll();
-        Map<Long, Station> stationMap = makeStationMap(stationEntities);
-
         LineEntity lineEntity = findLineById(lineId);
         List<Section> sections = lineRepository.findSectionsByLineIdWithSort(lineId);
 
         Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
-        line.remove(stationMap.get(stationId));
+        line.remove(obtainStation(stationId));
         sync(lineId, line.getSections());
     }
 
@@ -144,11 +140,9 @@ public class LineService {
         );
     }
 
-    private Map<Long, Station> makeStationMap(final List<StationEntity> stationDao) {
-        return stationDao.stream()
-                .collect(Collectors.toMap(
-                        StationEntity::getId,
-                        station -> new Station(station.getId(), station.getName())
-                ));
+    private Station obtainStation(final Long stationId) {
+        StationEntity stationEntity = stationDao.findById(stationId)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 역 ID 입니다."));
+        return new Station(stationEntity.getId(), stationEntity .getName());
     }
 }

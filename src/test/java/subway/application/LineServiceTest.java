@@ -111,7 +111,9 @@ class LineServiceTest {
         given(stationDao.findById(2L)).willReturn(Optional.of(downStationEntity));
 
         given(lineRepository.findSectionsByLineIdWithSort(anyLong())).willReturn(new ArrayList<>());
-        given(stationDao.findAll()).willReturn(List.of(upStationEntity, downStationEntity));
+
+        given(stationDao.findById(1L)).willReturn(Optional.of(upStationEntity));
+        given(stationDao.findById(2L)).willReturn(Optional.of(downStationEntity));
 
         // when
         lineService.saveStationInLine(lineId, lineStationRequest);
@@ -229,11 +231,7 @@ class LineServiceTest {
         Station 서울역 = new Station(1L, "서울역");
         Station 수원역 = new Station(2L, "수원역");
 
-        List<StationEntity> stationEntities = Arrays.asList(
-                new StationEntity(1L, "서울역"),
-                new StationEntity(2L, "수원역")
-        );
-        given(stationDao.findAll()).willReturn(stationEntities);
+        given(stationDao.findById(1L)).willReturn(Optional.of(new StationEntity(1L, "서울역")));
         given(lineDao.findById(1L)).willReturn(Optional.of(new LineEntity(1L, "1호선", "bg-blue-500")));
 
         Section 서울역_수원역 = new Section(1L, 서울역, 수원역, 3, 1);
@@ -252,6 +250,7 @@ class LineServiceTest {
         // given
         given(lineDao.findById(1L))
                 .willReturn(Optional.of(new LineEntity(1L, "1호선", "bg-blue-500")));
+        given(stationDao.findById(1L)).willReturn(Optional.of(new StationEntity(1L, "서울역")));
 
         // when & then
         assertThatThrownBy(() -> lineService.deleteByLineIdAndStationId(1L, 1L))

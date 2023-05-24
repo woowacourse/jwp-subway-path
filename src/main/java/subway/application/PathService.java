@@ -2,7 +2,9 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.domain.*;
+import subway.domain.LineRepository;
+import subway.domain.Section;
+import subway.domain.Station;
 import subway.domain.fare.FareCalculator;
 import subway.domain.graph.Graph;
 import subway.domain.graph.JgraphtGraph;
@@ -12,7 +14,6 @@ import subway.dto.StationResponse;
 import subway.entity.StationEntity;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,14 +31,12 @@ public class PathService {
 
     public ShortestPathResponse findShortestPath(final ShortestPathRequest shortestPathRequest) {
         List<Section> sections = lineRepository.findSectionsWithSort();
-        Map<Long, Station> stationMap = makeStationMap(stationDao.findAll());
+        Station srcStation = obtainStation(shortestPathRequest.getSrcStationId());
+        Station dstStation = obtainStation(shortestPathRequest.getDstStationId());
+
         Graph graph = new JgraphtGraph(sections);
-
-        Station upStation = stationMap.get(shortestPathRequest.getSrcStationId());
-        Station downStation = stationMap.get(shortestPathRequest.getDstStationId());
-
-        List<Station> dijkstraShortestPath = graph.findShortestPath(upStation, downStation);
-        int shortestPathWeight = graph.findShortestPathWeight(upStation, downStation);
+        List<Station> dijkstraShortestPath = graph.findShortestPath(srcStation, dstStation);
+        int shortestPathWeight = graph.findShortestPathWeight(srcStation, dstStation);
         int fare = fareCalculator.calculateFare(shortestPathWeight);
 
         List<StationResponse> dijkstraShortestPathStations = dijkstraShortestPath.stream()
@@ -46,11 +45,9 @@ public class PathService {
         return new ShortestPathResponse(dijkstraShortestPathStations, shortestPathWeight, fare);
     }
 
-    private Map<Long, Station> makeStationMap(final List<StationEntity> stationDao) {
-        return stationDao.stream()
-                .collect(Collectors.toMap(
-                        StationEntity::getId,
-                        station -> new Station(station.getId(), station.getName())
-                ));
+    private Station obtainStation(final Long stationId) {
+        StationEntity stationEntity = stationDao.findById(stationId)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 역 ID 입니다."));
+        return new Station(stationEntity.getId(), stationEntity .getName());
     }
 }
