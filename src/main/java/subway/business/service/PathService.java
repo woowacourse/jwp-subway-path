@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.business.domain.*;
 import subway.business.domain.fare.FareCalculator;
 import subway.business.service.dto.ShortestPathResponse;
+import subway.business.service.path.PathCalculatorImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,11 +27,11 @@ public class PathService {
         Station sourceStation = stationRepository.findById(sourceStationId);
         Station destStation = stationRepository.findById(destStationId);
         Subway subway = new Subway(lineRepository.findAll());
-        SubwayGraph subwayGraph = SubwayGraph.from(subway);
-        List<String> stationNamesOfShortestPath = subwayGraph.getShortestPath(sourceStation, destStation).stream()
+        PathCalculator pathCalculator = PathCalculatorImpl.from(subway);
+        List<String> stationNamesOfShortestPath = pathCalculator.getShortestPath(sourceStation, destStation).stream()
                 .map(Station::getName)
                 .collect(Collectors.toList());
-        int totalDistance = subwayGraph.getTotalDistance(sourceStation, destStation);
+        int totalDistance = pathCalculator.getTotalDistance(sourceStation, destStation);
         int totalFare = fareCalculator.calculateByDistance(totalDistance);
         return new ShortestPathResponse(stationNamesOfShortestPath, totalDistance, totalFare);
     }

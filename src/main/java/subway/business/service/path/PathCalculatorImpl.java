@@ -1,24 +1,28 @@
-package subway.business.domain;
+package subway.business.service.path;
 
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.business.domain.PathCalculator;
+import subway.business.domain.Section;
+import subway.business.domain.Station;
+import subway.business.domain.Subway;
 
 import java.util.List;
 
-public class SubwayGraph {
-    private final WeightedGraph graph;
+public class PathCalculatorImpl implements PathCalculator {
+    private final WeightedGraph<Station, DefaultWeightedEdge> graph;
 
-    public SubwayGraph(WeightedGraph graph) {
+    public PathCalculatorImpl(WeightedGraph<Station, DefaultWeightedEdge> graph) {
         this.graph = graph;
     }
 
-    public static SubwayGraph from(Subway subway) {
+    public static PathCalculatorImpl from(Subway subway) {
         WeightedGraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         subway.getStations().forEach(graph::addVertex);
         subway.getSections().forEach(section -> setEdgeWeightFromSection(graph, section));
-        return new SubwayGraph(graph);
+        return new PathCalculatorImpl(graph);
     }
 
     private static void setEdgeWeightFromSection(WeightedGraph<Station, DefaultWeightedEdge> graph, Section section) {
@@ -27,13 +31,16 @@ public class SubwayGraph {
                 section.getDistance());
     }
 
+    @Override
     public int getTotalDistance(Station sourceStation, Station destStation) {
         DijkstraShortestPath path = new DijkstraShortestPath(graph);
         return (int) path.getPathWeight(sourceStation, destStation);
     }
 
+    @Override
     public List<Station> getShortestPath(Station sourceStation, Station destStation) {
         DijkstraShortestPath path = new DijkstraShortestPath(graph);
+        // TODO 루트가 없을 경우 예외 처리 필요 : 현재 DijkstraShortestPath에서 IllegalArgumentException을 던짐
         return path.getPath(sourceStation, destStation).getVertexList();
     }
 }

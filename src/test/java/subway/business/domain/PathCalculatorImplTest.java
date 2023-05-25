@@ -2,13 +2,14 @@ package subway.business.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.business.service.path.PathCalculatorImpl;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static subway.fixtures.station.StationFixture.*;
 
-public class SubwayGraphTest {
+public class PathCalculatorImplTest {
 
     @DisplayName("역과 역 사이의 최단 경로 루트(역 리스트)를 반환한다.")
     @Test
@@ -20,9 +21,9 @@ public class SubwayGraphTest {
         line1.addStation(성수역, 잠실역, Direction.DOWNWARD, 10);
         Line line2 = Line.of("3호선", 역삼역, 성수역, 15);
         Subway subway = new Subway(List.of(line1, line2));
-        SubwayGraph subwayGraph = SubwayGraph.from(subway);
+        PathCalculator pathCalculator = PathCalculatorImpl.from(subway);
 
-        List<Station> path = subwayGraph.getShortestPath(강남역, 성수역);
+        List<Station> path = pathCalculator.getShortestPath(강남역, 성수역);
 
         assertThat(path).isEqualTo(List.of(강남역, 역삼역, 성수역));
     }
@@ -37,9 +38,9 @@ public class SubwayGraphTest {
         line1.addStation(성수역, 잠실역, Direction.DOWNWARD, 10);
         Line line2 = Line.of("3호선", 역삼역, 성수역, 15);
         Subway subway = new Subway(List.of(line1, line2));
-        SubwayGraph subwayGraph = SubwayGraph.from(subway);
+        PathCalculator pathCalculator = PathCalculatorImpl.from(subway);
 
-        int totalDistance = subwayGraph.getTotalDistance(강남역, 성수역);
+        int totalDistance = pathCalculator.getTotalDistance(강남역, 성수역);
 
         assertThat(totalDistance).isEqualTo(25);
     }
