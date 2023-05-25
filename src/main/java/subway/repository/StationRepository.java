@@ -50,7 +50,7 @@ public class StationRepository {
 		stationDao.updateById(id, station);
 	}
 
-	public void deleteById(final long stationId) {
-		stationDao.deleteById(stationId);
+	public void deleteByName(final String stationName) {
+		stationDao.deleteByName(stationName);
 	}
 }

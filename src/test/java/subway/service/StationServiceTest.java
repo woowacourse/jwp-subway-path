@@ -111,12 +111,12 @@ public class StationServiceTest {
 	@Test
 	void deleteStation() {
 		// given
-		long id = 1L;
+		String stationName = "잠실역";
 
 		// when
-		stationService.deleteStationById(id);
+		stationService.deleteStationByName(stationName);
 
 		// then
-		verify(stationRepository).deleteById(id);
+		verify(stationRepository).deleteByName(stationName);
 	}
 }

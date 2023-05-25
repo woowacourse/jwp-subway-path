@@ -134,7 +134,7 @@ public class StationServiceIntegrationTest {
 		stationService.saveStation(createRequest);
 
 		// when
-		stationService.deleteStationById(1L);
+		stationService.deleteStationByName(stationName);
 
 		// then
 		StationsResponse expected = stationService.findAllStationResponses();

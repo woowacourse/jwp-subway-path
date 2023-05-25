@@ -102,13 +102,14 @@ class StationControllerIntegrationTest {
 	@DisplayName("역 삭제 테스트")
 	void deleteStation() {
 		// given
-		StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
+		String stationName = "잠실역";
+		StationCreateRequest stationCreateRequest = new StationCreateRequest(stationName);
 		stationService.saveStation(stationCreateRequest);
 
 		// when & then
 		RestAssured
 			.given()
-			.when().delete("/stations/1")
+			.when().delete("/stations/잠실역")
 			.then()
 			.statusCode(HttpStatus.NO_CONTENT.value());
 

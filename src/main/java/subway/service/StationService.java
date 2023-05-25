@@ -53,7 +53,7 @@ public class StationService {
 	}
 
 	@Transactional
-	public void deleteStationById(final Long id) {
-		stationRepository.deleteById(id);
+	public void deleteStationByName(final String stationName) {
+		stationRepository.deleteByName(stationName);
 	}
 }
