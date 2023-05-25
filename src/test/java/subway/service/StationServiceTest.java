@@ -61,12 +61,12 @@ public class StationServiceTest {
 	@DisplayName("역 id를 사용한 조회 서비스 테스트")
 	void findById() {
 		// given
-		long id = 1L;
-		Station station = new Station("잠실역");
-		when(stationRepository.findByStationId(id)).thenReturn(station);
+		String stationName = "잠실역";
+		Station station = new Station(stationName);
+		when(stationRepository.findByStationName(stationName)).thenReturn(station);
 
 		// when
-		StationResponse result = stationService.findStationResponseById(id);
+		StationResponse result = stationService.getStationResponseByName(stationName);
 
 		// then
 		assertThat(result.getName()).isEqualTo(station.getName());
@@ -93,17 +93,18 @@ public class StationServiceTest {
 	@DisplayName("역 갱신 서비스 테스트")
 	void updateStation() {
 		// given
-		Long id = 1L;
-		StationUpdateRequest stationUpdateRequest = new StationUpdateRequest("신사역");
+		long stationId = 1L;
+		String stationName = "잠실역";
+		Station station = new Station(stationId, stationName);
 
-		Station station = new Station(1, "잠실역");
-		given(stationRepository.findByStationId(id)).willReturn(station);
+		StationUpdateRequest stationUpdateRequest = new StationUpdateRequest("신사역");
+		given(stationRepository.findByStationName(stationName)).willReturn(station);
 
 		// when
-		stationService.updateStation(id, stationUpdateRequest);
+		stationService.updateStation(stationName, stationUpdateRequest);
 
 		// then
-		verify(stationRepository).update(id, station);
+		verify(stationRepository).update(stationName, station);
 	}
 
 	@DisplayName("역 삭제 테스트")

@@ -48,19 +48,24 @@ public class StationDao {
 		return jdbcTemplate.query(sql, rowMapper);
 	}
 
-	public Optional<StationEntity> findById(final Long id) {
+	public Optional<StationEntity> findById(final Long stationId) {
 		String sql = "SELECT stationId, name FROM station WHERE stationId = :stationId";
-		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("stationId", id), rowMapper).stream()
+		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("stationId", stationId), rowMapper).stream()
 			.findAny();
 	}
 
-	public Optional<StationEntity> findByName(final String name) {
+	public Optional<StationEntity> findByName(final String findByName) {
 		String sql = "SELECT stationId, name FROM station WHERE name = :name";
-		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("name", name), rowMapper).stream()
+		return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("name", findByName), rowMapper).stream()
 			.findAny();
 	}
 
-	public void update(final long id, final Station station) {
+	public void update(final String stationName, final Station newStation) {
+		String sql = "UPDATE station SET name = ? WHERE name = ?";
+		jdbcTemplate.update(sql, newStation.getName(), stationName);
+	}
+
+	public void updateById(final long id, final Station station) {
 		String sql = "UPDATE station SET name = ? WHERE stationId = ?";
 		jdbcTemplate.update(sql, station.getName(), id);
 	}

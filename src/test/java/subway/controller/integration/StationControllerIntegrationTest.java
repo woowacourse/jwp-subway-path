@@ -79,7 +79,7 @@ class StationControllerIntegrationTest {
 		// when & then
 		RestAssured
 			.given()
-			.when().get("/stations/1")
+			.when().get("/stations/잠실역")
 			.then()
 			.statusCode(HttpStatus.OK.value())
 			.body("id", equalTo(1))

@@ -41,14 +41,14 @@ public class StationController {
 		return ResponseEntity.ok().body(stationService.findAllStationResponses());
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<StationResponse> showStation(@PathVariable final Long id) {
-		return ResponseEntity.ok().body(stationService.findStationResponseById(id));
+	@GetMapping("/{stationName}")
+	public ResponseEntity<StationResponse> showStation(@PathVariable(name = "stationName") final String stationName) {
+		return ResponseEntity.ok().body(stationService.getStationResponseByName(stationName));
 	}
 
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateStation(@PathVariable final Long id, @Valid @RequestBody StationUpdateRequest stationUpdateRequest) {
-		stationService.updateStation(id, stationUpdateRequest);
+		stationService.updateStationById(id, stationUpdateRequest);
 		return ResponseEntity.noContent().build();
 	}
 

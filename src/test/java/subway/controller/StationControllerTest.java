@@ -1,11 +1,14 @@
 package subway.controller;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 import java.util.Objects;
@@ -81,31 +84,31 @@ public class StationControllerTest {
 	@DisplayName("id를 사용한 역 조회 테스트")
 	void findById() throws Exception {
 		// given
-		Long id = 1L;
-		StationResponse stationResponse = StationResponse.from(new Station("잠실역"));
-		given(stationService.findStationResponseById(id)).willReturn(stationResponse);
+		String stationName = "잠실역";
+		StationResponse stationResponse = StationResponse.from(new Station(stationName));
+		given(stationService.getStationResponseByName(stationName)).willReturn(stationResponse);
 
 		// when & then
 		mockMvc.perform(
-			get("/stations/" + id)
+			get("/stations/" + stationName)
 		).andExpect(status().isOk());
 
-		verify(stationService).findStationResponseById(id);
+		verify(stationService).getStationResponseByName(stationName);
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 역에 대해 조회를 시도하면 예외가 발생한다")
 	void exception_whenStationNotFound() throws Exception {
 		// given
-		Long id = 1L;
-		given(stationService.findStationResponseById(id)).willThrow(StationNotFoundException.class);
+		String stationName = "잠실역";
+		given(stationService.getStationResponseByName(stationName)).willThrow(StationNotFoundException.class);
 
 		// when & then
 		mockMvc.perform(
-			get("/stations/" + id)
+			get("/stations/" + stationName)
 		).andExpect(status().isNotFound());
 
-		verify(stationService).findStationResponseById(id);
+		verify(stationService).getStationResponseByName(stationName);
 	}
 
 	@Test
@@ -122,6 +125,6 @@ public class StationControllerTest {
 				.content(objectMapper.writeValueAsString(stationUpdateRequest))
 		).andExpect(status().isNoContent());
 
-		verify(stationService).updateStation(eq(id), any(StationUpdateRequest.class));
+		verify(stationService).updateStationById(eq(id), any(StationUpdateRequest.class));
 	}
 }

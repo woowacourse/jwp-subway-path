@@ -33,16 +33,23 @@ public class StationService {
 	}
 
 	@Transactional(readOnly = true)
-	public StationResponse findStationResponseById(final Long id) {
-		Station station = stationRepository.findByStationId(id);
+	public StationResponse getStationResponseByName(final String stationName) {
+		Station station = stationRepository.findByStationName(stationName);
 		return StationResponse.from(station);
 	}
 
 	@Transactional
-	public void updateStation(final Long id, final StationUpdateRequest stationUpdateRequest) {
-		Station station = stationRepository.findByStationId(id);
+	public void updateStationById(final Long id, final StationUpdateRequest stationUpdateRequest) {
+		final Station station = stationRepository.findByStationId(id);
 		station.update(stationUpdateRequest.getName());
-		stationRepository.update(id, station);
+		stationRepository.updateById(id, station);
+	}
+
+	@Transactional
+	public void updateStation(final String stationName, final StationUpdateRequest stationUpdateRequest) {
+		final Station station = stationRepository.findByStationName(stationName);
+		station.update(stationUpdateRequest.getName());
+		stationRepository.update(stationName, station);
 	}
 
 	@Transactional

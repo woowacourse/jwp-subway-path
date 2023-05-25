@@ -63,11 +63,12 @@ public class StationServiceIntegrationTest {
 	@DisplayName("id로 역 조회 서비스 인수테스트")
 	void findById() {
 		// given
+		String stationName = "잠실역";
 		Station station = new Station("잠실역");
-		Long id = stationRepository.insertStation(station);
+		stationRepository.insertStation(station);
 
 		// when
-		StationResponse response = stationService.findStationResponseById(id);
+		StationResponse response = stationService.getStationResponseByName(stationName);
 
 		// then
 		assertThat(response.getName()).isEqualTo(station.getName());
@@ -100,7 +101,7 @@ public class StationServiceIntegrationTest {
 		StationUpdateRequest updateRequest = new StationUpdateRequest("신사역");
 
 		// when
-		stationService.updateStation(id, updateRequest);
+		stationService.updateStationById(id, updateRequest);
 
 		// then
 		StationsResponse response = stationService.findAllStationResponses();
@@ -119,7 +120,7 @@ public class StationServiceIntegrationTest {
 		Long id = 1L;
 
 		// then
-		assertThatThrownBy(() -> stationService.updateStation(id, updateRequest))
+		assertThatThrownBy(() -> stationService.updateStationById(id, updateRequest))
 			.isInstanceOf(StationNotFoundException.class);
 	}
 
