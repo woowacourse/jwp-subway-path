@@ -39,9 +39,9 @@ class SectionsTest {
     void getSections() {
         sections.insertSectionBetween(2L, SADANG, JAMSIL, DISTANCE_10);
         sections.insertSectionBetween(2L, GUUI, SADANG, DISTANCE_6);
-        List<Station> stations = sections.getSortedSections()
+        List<Station> stations = sections.getOrderedSections()
                 .stream()
-                .map(section -> section.getUpper())
+                .map(Section::getUpper)
                 .collect(Collectors.toList());
 
         assertThat(stations).containsExactlyInAnyOrder(GUUI, SADANG);

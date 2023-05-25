@@ -1,7 +1,6 @@
 package subway.domain;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,7 +25,6 @@ public class Sections {
         if (sections.get(from) != null && sections.get(from).isNext(to)) {
             return sections.get(from).getDistance();
         }
-
         return calculateDistance(from, to);
     }
 
@@ -50,34 +48,39 @@ public class Sections {
         sections.clear();
     }
 
-    public List<Section> getSortedSections() {
-        List<Station> notTop = sections.values()
+    public List<Section> getOrderedSections() {
+        Station index = findStartStation();
+        List<Section> orderedSections = new ArrayList<>();
+
+        while (sections.get(index) != null) {
+            orderedSections.add(sections.get(index));
+            index = getLower(index);
+        }
+        return orderedSections;
+    }
+
+    public List<Station> getOrderedStations() {
+        Station index = findStartStation();
+        List<Station> orderedStations = new ArrayList<>();
+
+        while (sections.get(index) != null) {
+            orderedStations.add(index);
+            index = getLower(index);
+        }
+        orderedStations.add(index);
+        return orderedStations;
+    }
+
+    private Station findStartStation() {
+        List<Station> onlyLowerStations = sections.values()
                 .stream()
                 .map(Section::getLower)
                 .collect(Collectors.toList());
 
-        Station start = sections.keySet()
+        return sections.keySet()
                 .stream()
-                .filter(station -> !notTop.contains(station))
+                .filter(station -> !onlyLowerStations.contains(station))
                 .findFirst()
                 .orElseThrow();
-
-        List<Section> sortedSections = new LinkedList<>();
-        while (sections.get(start) != null) {
-            sortedSections.add(sections.get(start));
-            start = getLower(start);
-        }
-
-        return sortedSections;
-    }
-
-    public List<Station> getSortedStations() {
-        List<Section> sortedSections = getSortedSections();
-        List<Station> sortedStations = new ArrayList<>(List.of(sortedSections.get(0).getUpper()));
-        for (Section section : sortedSections) {
-            sortedStations.add(section.getLower());
-        }
-
-        return sortedStations;
     }
 }

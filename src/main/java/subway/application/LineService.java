@@ -1,20 +1,16 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.*;
+import subway.dto.*;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationDeleteRequest;
-import subway.dto.StationRegisterRequest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,8 +52,8 @@ public class LineService {
         }
 
         Sections sections = new Sections(makeSectionMap(persistLine, sectionEntities));
-        List<Station> stations = sections.getSortedStations();
-        return new Line(persistLine.getId(), persistLine.getName(), persistLine.getColor(), new LinkedList<>(stations), sections);
+        List<Station> orderedStations = sections.getOrderedStations();
+        return new Line(persistLine.getId(), persistLine.getName(), persistLine.getColor(), new ArrayList<>(orderedStations), sections);
     }
 
     private Map<Station, Section> makeSectionMap(final LineEntity persistLine, final List<SectionEntity> sectionEntities) {

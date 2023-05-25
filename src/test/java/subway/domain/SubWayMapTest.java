@@ -17,8 +17,8 @@ class SubWayMapTest {
         Sections shortestPath = subwayMap.getShortestPath(JAMSIL, GUNDAE);
 
         assertSoftly(softly -> {
-            softly.assertThat(shortestPath.getSortedSections()).hasSize(4);
-            softly.assertThat(shortestPath.getSortedStations()).containsExactly(JAMSIL, SINDORIM, GANGBYEON, GUUI, GUNDAE);
+            softly.assertThat(shortestPath.getOrderedSections()).hasSize(4);
+            softly.assertThat(shortestPath.getOrderedStations()).containsExactly(JAMSIL, SINDORIM, GANGBYEON, GUUI, GUNDAE);
             softly.assertThat(shortestPath.getDistanceBetween(JAMSIL, GUNDAE).getValue()).isEqualTo(20);
         });
     }
@@ -29,8 +29,8 @@ class SubWayMapTest {
         Sections shortestPath = subwayMap.getShortestPath(JAMSIL, DONGJAK);
 
         assertSoftly(softly -> {
-            softly.assertThat(shortestPath.getSortedSections()).hasSize(6);
-            softly.assertThat(shortestPath.getSortedStations()).containsExactly(JAMSIL, SINDORIM, GANGBYEON, GUUI, YAKSOO, OKSOO, DONGJAK);
+            softly.assertThat(shortestPath.getOrderedSections()).hasSize(6);
+            softly.assertThat(shortestPath.getOrderedStations()).containsExactly(JAMSIL, SINDORIM, GANGBYEON, GUUI, YAKSOO, OKSOO, DONGJAK);
             softly.assertThat(shortestPath.getDistanceBetween(JAMSIL, DONGJAK).getValue()).isEqualTo(30);
         });
     }
@@ -41,8 +41,8 @@ class SubWayMapTest {
         Sections shortestPath = subwayMap.getShortestPath(JAMSIL, SADANG);
 
         assertSoftly(softly -> {
-            softly.assertThat(shortestPath.getSortedSections()).hasSize(8);
-            softly.assertThat(shortestPath.getSortedStations()).containsExactly(JAMSIL, SINDORIM, GANGBYEON, GUUI, YAKSOO, OKSOO, ISOO, JONGGAK, SADANG);
+            softly.assertThat(shortestPath.getOrderedSections()).hasSize(8);
+            softly.assertThat(shortestPath.getOrderedStations()).containsExactly(JAMSIL, SINDORIM, GANGBYEON, GUUI, YAKSOO, OKSOO, ISOO, JONGGAK, SADANG);
             softly.assertThat(shortestPath.getDistanceBetween(JAMSIL, SADANG).getValue()).isEqualTo(40);
         });
     }
