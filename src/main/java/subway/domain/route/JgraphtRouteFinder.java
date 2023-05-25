@@ -4,21 +4,33 @@ import java.util.List;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 import subway.domain.Distance;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Stations;
+import subway.service.LineQueryService;
 
+@Component
 public class JgraphtRouteFinder implements RouteFinder {
 
-  private final DijkstraShortestPath<String, EdgeSection> dijkstraGraph;
+  private DijkstraShortestPath<String, EdgeSection> dijkstraGraph;
+  private final LineQueryService lineQueryService;
 
-  public JgraphtRouteFinder(final List<Line> lines) {
+  public JgraphtRouteFinder(final LineQueryService lineQueryService) {
+    this.lineQueryService = lineQueryService;
+  }
+
+  @EventListener(ContextRefreshedEvent.class)
+  public void init() {
+    final List<Line> lines = lineQueryService.searchAllLine();
+
     Graph<String, EdgeSection> graph
         = new WeightedMultigraph<>(EdgeSection.class);
 
     for (final Line line : lines) {
-      final List<Section> sections = line.getSections();
       makeGraphFromSections(graph, line);
     }
 
@@ -66,6 +78,8 @@ public class JgraphtRouteFinder implements RouteFinder {
     graph.setEdgeWeight(start, distance);
     graph.setEdgeWeight(end, distance);
   }
+
+  //TODO : 역 연산 수행될 때마다 update
 
   @Override
   public List<String> findShortestRoute(final String startStation, final String endStation) {

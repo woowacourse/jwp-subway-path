@@ -1,15 +1,11 @@
 package subway.service;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Distance;
 import subway.domain.Money;
-import subway.domain.line.Line;
 import subway.domain.policy.ChargePolicyComposite;
 import subway.domain.policy.discount.DiscountCondition;
-import subway.domain.route.Route;
-import subway.domain.station.Station;
+import subway.domain.route.RouteFinder;
 import subway.service.dto.ShortestRouteRequest;
 import subway.service.dto.ShortestRouteResponse;
 
@@ -17,43 +13,34 @@ import subway.service.dto.ShortestRouteResponse;
 @Transactional(readOnly = true)
 public class RouteQueryService {
 
-  private final LineQueryService lineQueryService;
-  private final ChargePolicyComposite chargePolicyComposite;
+  private final ChargePolicyComposite chargePolicyComposite2;
+  private final RouteFinder routeFinder;
 
   public RouteQueryService(
-      final LineQueryService lineQueryService,
-      final ChargePolicyComposite chargePolicyComposite
+      final ChargePolicyComposite chargePolicyComposite2,
+      final RouteFinder routeFinder
   ) {
-    this.lineQueryService = lineQueryService;
-    this.chargePolicyComposite = chargePolicyComposite;
+    this.chargePolicyComposite2 = chargePolicyComposite2;
+    this.routeFinder = routeFinder;
   }
 
   public ShortestRouteResponse searchShortestRoute(
       final ShortestRouteRequest shortestRouteRequest
   ) {
 
-    final List<Line> lines = lineQueryService.searchAllLine();
-
-    final Route route = new Route(
-        lines,
-        new Station(shortestRouteRequest.getStartStation()),
-        new Station(shortestRouteRequest.getEndStation())
-    );
+    final String departure = shortestRouteRequest.getStartStation();
+    final String arrival = shortestRouteRequest.getEndStation();
 
     return new ShortestRouteResponse(
-        route.findShortestRoute(),
-        searchCost(route, shortestRouteRequest.getAge()).getValue(),
-        searchShortestDistance(route).getValue()
+        routeFinder.findShortestRoute(departure, arrival),
+        searchCost(departure, arrival, shortestRouteRequest.getAge()).getValue(),
+        routeFinder.findShortestRouteDistance(departure, arrival).getValue()
     );
   }
 
-  private Money searchCost(final Route route, final Integer age) {
-    final Money totalPrice = chargePolicyComposite.calculate(route);
+  private Money searchCost(final String departure, final String arrival, final Integer age) {
+    final Money totalPrice = chargePolicyComposite2.calculate(routeFinder, departure, arrival);
 
-    return chargePolicyComposite.discount(new DiscountCondition(age), totalPrice);
-  }
-
-  private Distance searchShortestDistance(final Route route) {
-    return route.findShortestRouteDistance();
+    return chargePolicyComposite2.discount(new DiscountCondition(age), totalPrice);
   }
 }

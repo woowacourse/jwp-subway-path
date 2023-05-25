@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import org.springframework.stereotype.Component;
 import subway.domain.Distance;
 import subway.domain.Money;
-import subway.domain.route.Route;
+import subway.domain.route.RouteFinder;
 
 @Component
 public class DistanceFarePolicy implements SubwayFarePolicy {
@@ -18,20 +18,21 @@ public class DistanceFarePolicy implements SubwayFarePolicy {
   private static final int LONG_DISTANCE_RATE = 8;
 
   @Override
-  public Money calculate(final Route route) {
-    final Distance distanceValue = route.findShortestRouteDistance();
+  public Money calculate(final RouteFinder routeFinder, final String departure,
+      final String arrival) {
+    final Distance distance = routeFinder.findShortestRouteDistance(departure, arrival);
 
-    if (distanceValue.isDefaultDistance()) {
+    if (distance.isDefaultDistance()) {
       return DEFAULT_PRICE;
     }
 
-    if (distanceValue.isLongDistance()) {
+    if (distance.isLongDistance()) {
       return DEFAULT_PRICE.add(calculateMidDistance(MID_DISTANCE))
-          .add(calculateLongDistance(distanceValue.minus(MID_DISTANCE)
+          .add(calculateLongDistance(distance.minus(MID_DISTANCE)
               .minus(DEFAULT_DISTANCE)));
     }
 
-    return DEFAULT_PRICE.add(calculateMidDistance(distanceValue.minus(DEFAULT_DISTANCE)));
+    return DEFAULT_PRICE.add(calculateMidDistance(distance.minus(DEFAULT_DISTANCE)));
   }
 
   private BigDecimal calculateMidDistance(final Distance distance) {

@@ -7,7 +7,7 @@ import subway.domain.Money;
 import subway.domain.policy.discount.DiscountCondition;
 import subway.domain.policy.discount.SubwayDiscountPolicy;
 import subway.domain.policy.fare.SubwayFarePolicy;
-import subway.domain.route.Route;
+import subway.domain.route.RouteFinder;
 
 @Primary
 @Component
@@ -25,17 +25,21 @@ public class ChargePolicyComposite implements SubwayFarePolicy, SubwayDiscountPo
   }
 
   @Override
-  public Money calculate(final Route route) {
-    return farePolicies.stream()
-        .map(it -> it.calculate(route))
-        .reduce(Money.ZERO, Money::add);
-  }
-
-  @Override
   public Money discount(final DiscountCondition discountCondition, final Money price) {
     return discountPolicies.stream()
         .reduce(price, (money, subwayDiscountPolicy) ->
                 subwayDiscountPolicy.discount(discountCondition, money),
             (money1, money2) -> money2);
+  }
+
+  @Override
+  public Money calculate(
+      final RouteFinder routeFinder,
+      final String departure,
+      final String arrival
+  ) {
+    return farePolicies.stream()
+        .map(it -> it.calculate(routeFinder, departure, arrival))
+        .reduce(Money.ZERO, Money::add);
   }
 }

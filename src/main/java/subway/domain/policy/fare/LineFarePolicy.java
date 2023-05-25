@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 import subway.domain.Money;
 import subway.domain.route.EdgeSection;
-import subway.domain.route.Route;
+import subway.domain.route.RouteFinder;
 
 @Component
 public class LineFarePolicy implements SubwayFarePolicy {
@@ -15,9 +15,13 @@ public class LineFarePolicy implements SubwayFarePolicy {
       "2호선", 1000);
 
   @Override
-  public Money calculate(final Route route) {
-
-    final List<EdgeSection> shortestRouteSections = route.findShortestRouteSections();
+  public Money calculate(
+      final RouteFinder routeFinder,
+      final String departure,
+      final String arrival
+  ) {
+    final List<EdgeSection> shortestRouteSections = routeFinder.findShortestRouteSections(departure,
+        arrival);
 
     return shortestRouteSections.stream()
         .reduce(Money.ZERO, (money, edgeSection) ->
