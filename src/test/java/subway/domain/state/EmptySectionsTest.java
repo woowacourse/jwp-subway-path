@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import subway.domain.Fixture;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.command.Result;
 import subway.domain.command.SectionOperation;
 import subway.error.exception.StationNotFoundException;
 
@@ -23,8 +24,9 @@ class EmptySectionsTest {
 		final Section addSection = Fixture.NEW_SECTION;
 		final Sections sections = new Sections(Collections.emptyList());
 
-		// when
-		final List<SectionOperation> actual = sections.addStation(addSection);
+		//when
+		final Result result = sections.addStation(addSection);
+		final List<SectionOperation> actual = result.getSectionOperations();
 
 		// then
 		assertThat(actual).hasSize(1);

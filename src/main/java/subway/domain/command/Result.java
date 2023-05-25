@@ -27,4 +27,8 @@ public class Result {
 		}
 		removeSection.accept(sectionOperation.getSection());
 	}
+
+	public List<SectionOperation> getSectionOperations() {
+		return sectionOperations;
+	}
 }

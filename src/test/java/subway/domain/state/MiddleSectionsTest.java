@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import subway.domain.Fixture;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.command.Result;
 import subway.domain.command.SectionOperation;
 
 class MiddleSectionsTest {
@@ -23,7 +24,9 @@ class MiddleSectionsTest {
 		final Sections sections = new Sections(Fixture.LINE_NUMBER_2);
 
 		//when
-		final List<SectionOperation> actual = sections.addStation(addSection);
+		final Result result = sections.addStation(addSection);
+		final List<SectionOperation> actual = result.getSectionOperations();
+
 		//then
 		assertThat(actual).hasSize(3);
 		assertThat(getSections(actual)).contains(addSection);
@@ -37,7 +40,8 @@ class MiddleSectionsTest {
 		final Sections sections = new Sections(Fixture.LINE_NUMBER_2);
 
 		//when
-		final List<SectionOperation> actual = sections.addStation(addSection);
+		final Result result = sections.addStation(addSection);
+		final List<SectionOperation> actual = result.getSectionOperations();
 
 		//then
 		assertThat(actual).hasSize(3);
@@ -53,7 +57,8 @@ class MiddleSectionsTest {
 		final Sections sections = new Sections(상행_2호선);
 
 		// when
-		final List<SectionOperation> actual = sections.removeStation();
+		final Result result = sections.removeStation();
+		final List<SectionOperation> actual = result.getSectionOperations();
 
 		// then
 		assertThat(actual).hasSize(3);
