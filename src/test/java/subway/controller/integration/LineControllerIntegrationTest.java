@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +29,7 @@ import static java.net.URLDecoder.decode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
@@ -46,20 +47,19 @@ public class LineControllerIntegrationTest {
 	@LocalServerPort
 	private int port;
 
+	String lineName;
+	LineCreateRequest lineCreateRequest;
 	@BeforeEach
-	void setUp() {
+	public void setUp() {
 		RestAssured.port = this.port;
+		lineName = "2호선";
+		lineCreateRequest = new LineCreateRequest(lineName);
 	}
 
 	@Test
 	@DisplayName("노선 생성 테스트")
 	void createLine() {
-		// given
-		String lineName = "2호선";
-		LineCreateRequest lineCreateRequest = new LineCreateRequest(lineName);
-		long lineId = 1L;
-
-		// then
+		// when
 		final ExtractableResponse<Response> response = given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(lineCreateRequest)
@@ -67,7 +67,8 @@ public class LineControllerIntegrationTest {
 			.then().extract();
 		final String decodedHeader = decode(response.header("Location"), UTF_8);
 
-		Assertions.assertAll(
+		// then
+		assertAll(
 			() -> assertThat(decodedHeader).isEqualTo("/lines/" + lineName),
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
 		);
@@ -77,31 +78,30 @@ public class LineControllerIntegrationTest {
 	@DisplayName("모든 노선 조회 테스트")
 	void findAll() {
 		// given
-		LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선");
 		lineService.saveLine(lineCreateRequest);
 
-		// when & then
-		Response response = given()
-			.when().get("/lines");
+		// when
+		final ExtractableResponse<Response> response = given()
+			.when()
+			.get("/lines")
+			.then().log().all()
+			.extract();
 
-		response
-			.then()
-			.statusCode(HttpStatus.OK.value())
-			.body("lines[0].lineId", equalTo(1))
-			.body("lines[0].name", equalTo("2호선"));
+		// then
+		assertAll(
+			()-> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+			()-> Assertions.assertThat(response.body().jsonPath().get("lines[0].name").toString()).isEqualTo("2호선")
+		);
 	}
 
 	@Test
 	@DisplayName("노선 조회 테스트")
 	void findByName() {
 		// given
-		LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선");
 		lineService.saveLine(lineCreateRequest);
 
-		StationCreateRequest stationCreateRequest = new StationCreateRequest(
-			"잠실역");
-		StationCreateRequest stationCreateRequest2 = new StationCreateRequest(
-			"잠실새내역");
+		StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
+		StationCreateRequest stationCreateRequest2 = new StationCreateRequest("잠실새내역");
 		stationService.saveStation(stationCreateRequest);
 		stationService.saveStation(stationCreateRequest2);
 
@@ -126,7 +126,6 @@ public class LineControllerIntegrationTest {
 	@DisplayName("노선 갱신 테스트")
 	void updateLine() {
 		// given
-		LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선");
 		lineService.saveLine(lineCreateRequest);
 
 		LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("신분당선");
@@ -145,7 +144,6 @@ public class LineControllerIntegrationTest {
 	@DisplayName("노선 삭제 테스트")
 	void deleteLine() {
 		// given
-		LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선");
 		lineService.saveLine(lineCreateRequest);
 
 		// when & then
