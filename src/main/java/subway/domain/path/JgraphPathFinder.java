@@ -1,5 +1,6 @@
 package subway.domain.path;
 
+import java.util.Arrays;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -13,22 +14,11 @@ import subway.domain.station.Stations;
 public class JgraphPathFinder implements PathFinder {
 
     private final List<Line> lines;
+    private final WeightedMultigraph<Station, Section> graph;
 
     public JgraphPathFinder(final List<Line> lines) {
         this.lines = lines;
-    }
-
-    @Override
-    public Path findPath(final Station departure, final Station arrival) {
-        final WeightedMultigraph<Station, Section> graph = initGraph();
-        final DijkstraShortestPath<Station, Section> dijkstraShortestPath = new DijkstraShortestPath(graph);
-
-        final GraphPath<Station, Section> path = dijkstraShortestPath.getPath(departure, arrival);
-
-        final Stations pathStations = new Stations(path.getVertexList());
-        final Sections pathSections = new Sections(path.getEdgeList());
-
-        return new Path(pathStations, pathSections);
+        graph = initGraph();
     }
 
     private WeightedMultigraph<Station, Section> initGraph() {
@@ -69,4 +59,30 @@ public class JgraphPathFinder implements PathFinder {
         }
     }
 
+    @Override
+    public Path findPath(final Station departure, final Station arrival) {
+        validateContainStation(departure, arrival);
+
+        final DijkstraShortestPath<Station, Section> dijkstraShortestPath = new DijkstraShortestPath(graph);
+        final GraphPath<Station, Section> path = dijkstraShortestPath.getPath(departure, arrival);
+
+        validateLinkedStations(path);
+
+        final Stations pathStations = new Stations(path.getVertexList());
+        final Sections pathSections = new Sections(path.getEdgeList());
+
+        return new Path(pathStations, pathSections);
+    }
+
+    private void validateContainStation(final Station... stations) {
+        if (!Arrays.stream(stations).allMatch(graph::containsVertex)) {
+            throw new IllegalArgumentException("전체 경로상 없는 역이 있습니다.");
+        }
+    }
+
+    private void validateLinkedStations(final GraphPath<Station, Section> path) {
+        if (path == null) {
+            throw new IllegalArgumentException("두 역은 이어져 있지 않습니다.");
+        }
+    }
 }
