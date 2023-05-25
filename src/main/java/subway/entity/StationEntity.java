@@ -26,11 +26,7 @@ public class StationEntity {
     }
 
     public StationEntity(String name) {
-        this.id = null;
-        this.name = name;
-        this.nextStationId = null;
-        this.distance = null;
-        this.lineId = null;
+        this(null, name, null, null, null);
     }
 
     public static Stations convertToStations(List<StationEntity> stationEntity) {
