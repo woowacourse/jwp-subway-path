@@ -8,10 +8,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationsSavingRequest;
+import subway.line.domain.section.domain.Distance;
+import subway.line.presentation.dto.SurchargeRequest;
+import subway.line.presentation.dto.LineRequest;
+import subway.line.presentation.dto.LineResponse;
+import subway.line.presentation.dto.SectionSavingRequest;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -70,16 +73,16 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLines() {
         // given
-        String location1 = saveLine(lineRequest1);
-        String location2 = saveLine(lineRequest2);
+        final var lineId1 = saveLine(lineRequest1);
+        final var lineId2 = saveLine(lineRequest2);
 
-        saveStation("개룡역");
-        saveStation("거여역");
-        saveStations(location1, "개룡역", "거여역");
+        final var 개룡역 = saveStation("개룡역");
+        final var 거여역 = saveStation("거여역");
+        saveSection(lineId1, 개룡역, 거여역);
 
-        saveStation("용인역");
-        saveStation("강릉역");
-        saveStations(location2, "용인역", "강릉역");
+        final var 용인역 = saveStation("용인역");
+        final var 강릉역 = saveStation("강릉역");
+        saveSection(lineId2, 용인역, 강릉역);
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -101,11 +104,12 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLine() {
         // given
-        String requestUri = saveLine(lineRequest1);
+        final var lineId = saveLine(lineRequest1);
+        final var requestUri = "lines/" + lineId;
 
-        saveStation("개룡역");
-        saveStation("거여역");
-        saveStations(requestUri, "개룡역", "거여역");
+        final var stationIdGR = saveStation("개룡역");
+        final var stationIdGY = saveStation("거여역");
+        saveSection(lineId, stationIdGR, stationIdGY);
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -117,40 +121,18 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Long lineId = Long.parseLong(requestUri.split("/")[2]);
         LineResponse resultResponse = response.as(LineResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineId);
         assertThat(resultResponse.getStations()).hasSize(2);
-    }
-
-    private static void saveStations(String requestUri, String previousStationName, String nextStationName) {
-        StationsSavingRequest stationsSavingRequest
-                = new StationsSavingRequest(previousStationName, nextStationName, 5, true);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest)
-                .when().post(requestUri + "/stations")
-                .then().log().all();
-    }
-
-    private static void saveStation(String name) {
-        RestAssured.given().log().all()
-                .body(Map.of("name", name))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
     }
 
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void updateLine() {
         // given
-        String location = saveLine(lineRequest1);
+        final var lineId = saveLine(lineRequest1);
 
         // when
-        Long lineId = Long.parseLong(location.split("/")[2]);
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -167,10 +149,9 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void deleteLine() {
         // given
-        String location = saveLine(lineRequest1);
+        final var lineId = saveLine(lineRequest1);
 
         // when
-        Long lineId = Long.parseLong(location.split("/")[2]);
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .when().delete("/lines/{lineId}", lineId)
@@ -181,8 +162,49 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private String saveLine(LineRequest lineRequest) {
-        return RestAssured
+    @Test
+    @DisplayName("특정 노선에 대한 추가요금을 등록한다.")
+    void saveFare() {
+        final var 일호선 = saveLine(new LineRequest("1호선", "yellow"));
+
+        final var response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new SurchargeRequest("900"))
+                .when().post("/lines/" + 일호선 + "/surcharge")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode())
+                .isEqualTo(201);
+    }
+
+    private static void saveSection(long lineId, long previousStationId, long nextStationId) {
+        SectionSavingRequest sectionSavingRequest
+                = new SectionSavingRequest(previousStationId, nextStationId, Distance.of(5), true);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionSavingRequest)
+                .when().post("/lines/" + lineId + "/section")
+                .then().log().all();
+    }
+
+    private static long saveStation(String name) {
+        final var location = RestAssured.given().log().all()
+                .body(Map.of("name", name))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract()
+                .header("location");
+
+        return Long.parseLong(location.replace("/stations/", ""));
+    }
+
+    private long saveLine(LineRequest lineRequest) {
+        final var location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest)
@@ -190,5 +212,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract()
                 .header("location");
+
+        return Long.parseLong(location.replace("/lines/", ""));
     }
 }

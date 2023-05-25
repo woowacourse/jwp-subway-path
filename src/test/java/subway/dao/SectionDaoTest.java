@@ -6,31 +6,32 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import subway.application.SectionService;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import org.springframework.transaction.annotation.Transactional;
+import subway.line.Line;
+import subway.line.UnRegisteredLine;
+import subway.line.application.LineRepository;
+import subway.line.application.LineService;
+import subway.line.domain.section.domain.Distance;
+import subway.line.domain.section.domain.exception.InvalidDistanceException;
+import subway.line.domain.station.Station;
+import subway.line.domain.station.infrastructure.StationDao;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@JdbcTest
-@Import({SectionDao.class, LineDao.class, StationDao.class, SectionService.class})
+@SpringBootTest
+@Transactional
+@AutoConfigureTestDatabase
 class SectionDaoTest {
     @Autowired
-    private SectionService sectionService;
-
+    private LineRepository lineRepository;
     @Autowired
-    private SectionDao sectionDao;
-
-    @Autowired
-    private LineDao lineDao;
-
+    private LineService lineService;
     @Autowired
     private StationDao stationDao;
 
@@ -41,23 +42,18 @@ class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        line = lineDao.insert(new Line("1호선", "blue"));
-        stationS = stationDao.insert(new Station("송탄"));
-        stationJ = stationDao.insert(new Station("진위"));
-        stationO = stationDao.insert(new Station("오산"));
+        line = lineRepository.save(new UnRegisteredLine("1호선", "blue"));
+        stationS = stationDao.insert("송탄");
+        stationJ = stationDao.insert("진위");
+        stationO = stationDao.insert("오산");
     }
 
     @Test
     @DisplayName("거리 정보는 양의 정수로 제한합니다.")
     void distanceFormat() {
         // when && then
-        assertThatThrownBy(() -> sectionDao.insert(Section.builder()
-                .line(line)
-                .startingStation(stationS)
-                .before(stationJ)
-                .distance(Distance.of(-3)).build())
-        )
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> lineService.saveSection(line, stationS, stationJ, Distance.of(-3)))
+                .isInstanceOf(InvalidDistanceException.class)
                 .hasMessage("거리 정보는 양의 정수로 제한합니다.");
     }
 
@@ -69,26 +65,12 @@ class SectionDaoTest {
         // given
         List<Station> stations = List.of(stationS, stationJ, stationO);
 
-        sectionService.insert(line.getId(), stationS.getName(), stationJ.getName(), Distance.of(6), true);
-        sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), Distance.of(3), false);
+        lineService.saveSection(line, stationS, stationJ, Distance.of(6));
+        lineService.saveSection(line, stationJ, stationO, Distance.of(3));
 
         // when & then
-        Station stationY = stationDao.insert(new Station("양평"));
-        assertThatCode(() -> sectionDao.insert(Section.builder()
-                .line(line)
-                .startingStation(stationY)
-                .after(stations.get(index))
-                .distance(Distance.of(2)).build())
-        ).doesNotThrowAnyException();
-    }
-
-    @Test
-    @DisplayName("특정 노선에 등록된 역을 상행부터 순서대로 조회합니다.")
-    void findAllOrderByUp() {
-        sectionService.insert(line.getId(), stationS.getName(), stationJ.getName(), Distance.of(5), true);
-        sectionService.insert(line.getId(), stationO.getName(), stationS.getName(), Distance.of(6), true);
-
-        assertThat(sectionDao.findAllStationsOrderByUp(line))
-                .containsExactly(stationO, stationS, stationJ);
+        Station stationY = stationDao.insert("양평");
+        assertThatCode(() -> lineService.saveSection(line, stations.get(index), stationY, Distance.of(2)))
+                .doesNotThrowAnyException();
     }
 }
