@@ -15,7 +15,7 @@ public class Sections {
 
     public static Sections createByDetailEntity(final List<SectionDetailEntity> detailEntities) {
         final List<Section> sections = detailEntities.stream()
-                .map(Section::createByDetailEntity)
+                .map(Section::from)
                 .collect(Collectors.toUnmodifiableList());
         return new Sections(sections);
     }

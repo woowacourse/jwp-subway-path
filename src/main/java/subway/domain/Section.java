@@ -17,7 +17,7 @@ public class Section {
         this.distance = distance;
     }
 
-    public static Section createByDetailEntity(final SectionDetailEntity detailEntity) {
+    public static Section from(final SectionDetailEntity detailEntity) {
         return new Section(
                 new Line(detailEntity.getLineId(), detailEntity.getLineName(), detailEntity.getLineColor()),
                 new Station(detailEntity.getPreviousStationId(), detailEntity.getPreviousStationName()),

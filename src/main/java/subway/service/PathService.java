@@ -39,7 +39,7 @@ public class PathService {
         final Path path = shortestPathFinder.find(sections, startStation, endStation);
         final Distance distance = path.getTotalDistance();
         final Fee fee = feeCalculator.calculate(distance);
-        return ShortestPathResponse.createByDomain(distance, fee, path);
+        return ShortestPathResponse.of(distance, fee, path);
     }
 
     private Station makeStationByName(final String name) {

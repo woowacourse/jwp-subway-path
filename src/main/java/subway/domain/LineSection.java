@@ -14,7 +14,7 @@ public class LineSection {
         this.distance = distance;
     }
 
-    public static LineSection createByEntity(final SectionDetailEntity entity) {
+    public static LineSection from(final SectionDetailEntity entity) {
         return new LineSection(
                 new Station(entity.getPreviousStationId(), entity.getPreviousStationName()),
                 new Station(entity.getNextStationId(), entity.getNextStationName()),

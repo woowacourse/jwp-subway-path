@@ -19,7 +19,7 @@ public class ShortestPathResponse {
         this.path = path;
     }
 
-    public static ShortestPathResponse createByDomain(final Distance distance, final Fee fee, final Path path) {
+    public static ShortestPathResponse of(final Distance distance, final Fee fee, final Path path) {
         final List<StationResponse> stationResponses = path.getStations().stream()
                 .map(StationResponse::createByDomain)
                 .collect(Collectors.toUnmodifiableList());

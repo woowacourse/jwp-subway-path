@@ -126,6 +126,6 @@ public class LineModifyService {
 
     private LineResponse convertToResponse(final List<SectionDetailEntity> entities) {
         final LineSections lineSections = LineSections.createByEntities(entities);
-        return LineResponse.createByDomain(lineSections);
+        return LineResponse.from(lineSections);
     }
 }
