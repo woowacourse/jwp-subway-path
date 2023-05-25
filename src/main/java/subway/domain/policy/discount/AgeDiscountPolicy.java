@@ -2,10 +2,8 @@ package subway.domain.policy.discount;
 
 import java.util.EnumMap;
 import java.util.Map;
-import org.springframework.stereotype.Component;
 import subway.domain.Money;
 
-@Component
 public class AgeDiscountPolicy implements SubwayDiscountPolicy {
 
   private static final Map<AgeGroup, DiscountValue> policyMap = new EnumMap<>(AgeGroup.class);

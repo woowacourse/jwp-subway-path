@@ -4,12 +4,10 @@ import static subway.domain.Distance.DEFAULT_DISTANCE;
 import static subway.domain.Distance.MID_DISTANCE;
 
 import java.math.BigDecimal;
-import org.springframework.stereotype.Component;
 import subway.domain.Distance;
 import subway.domain.Money;
 import subway.domain.route.RouteFinder;
 
-@Component
 public class DistanceFarePolicy implements SubwayFarePolicy {
 
   private static final Money DEFAULT_PRICE = new Money(1250);

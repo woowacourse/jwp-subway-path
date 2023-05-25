@@ -2,12 +2,10 @@ package subway.domain.policy.fare;
 
 import java.util.List;
 import java.util.Map;
-import org.springframework.stereotype.Component;
 import subway.domain.Money;
 import subway.domain.route.EdgeSection;
 import subway.domain.route.RouteFinder;
 
-@Component
 public class LineFarePolicy implements SubwayFarePolicy {
 
   private static final Map<String, Integer> priceMap

@@ -1,16 +1,12 @@
 package subway.domain.policy;
 
 import java.util.List;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
 import subway.domain.Money;
 import subway.domain.policy.discount.DiscountCondition;
 import subway.domain.policy.discount.SubwayDiscountPolicy;
 import subway.domain.policy.fare.SubwayFarePolicy;
 import subway.domain.route.RouteFinder;
 
-@Primary
-@Component
 public class ChargePolicyComposite implements SubwayFarePolicy, SubwayDiscountPolicy {
 
   private final List<SubwayFarePolicy> farePolicies;
