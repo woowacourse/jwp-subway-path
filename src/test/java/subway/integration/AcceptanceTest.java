@@ -15,7 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 @Sql({"/scheme.sql", "/data.sql"})
 @Sql(value = "/truncate.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest {
+public abstract class AcceptanceTest {
 
     @Autowired
     protected ObjectMapper objectMapper;

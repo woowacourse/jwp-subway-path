@@ -2,7 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.util.ShortestWayCalculator;
+import subway.domain.util.ShortestPathCalculator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,7 @@ import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class ShortestWayCalculatorTest {
+class ShortestPathCalculatorTest {
 
     @DisplayName("최단 거리를 계산한다.")
     @Test
@@ -29,7 +29,7 @@ class ShortestWayCalculatorTest {
         );
 
         //when
-        final ShortestWay result = ShortestWayCalculator.calculate(stationA, stationC, of(line));
+        final ShortestPath result = ShortestPathCalculator.calculate(stationA, stationC, of(line));
         final double distance = result.getDistance();
 
         //then
@@ -51,7 +51,7 @@ class ShortestWayCalculatorTest {
         );
 
         //when
-        final ShortestWay result = ShortestWayCalculator.calculate(stationA, stationC, of(line));
+        final ShortestPath result = ShortestPathCalculator.calculate(stationA, stationC, of(line));
         final List<Station> way = result.getStations();
 
         //then
@@ -78,7 +78,7 @@ class ShortestWayCalculatorTest {
         );
 
         //when
-        final ShortestWay result = ShortestWayCalculator.calculate(stationA, stationC, of(line, line2));
+        final ShortestPath result = ShortestPathCalculator.calculate(stationA, stationC, of(line, line2));
         final double distance = result.getDistance();
 
         //then
@@ -105,7 +105,7 @@ class ShortestWayCalculatorTest {
         );
 
         //when,then
-        assertThatThrownBy(() -> ShortestWayCalculator.calculate(stationB, stationD, of(line, line2)))
+        assertThatThrownBy(() -> ShortestPathCalculator.calculate(stationB, stationD, of(line, line2)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -42,11 +42,15 @@ public class Line {
         final List<Station> result = new ArrayList<>();
         result.add(start);
         Station current = start;
-        while (result.size() != paths.size() + 1) {
+        while (sortingNotCompleted(result)) {
             current = paths.get(current).getNext();
             result.add(current);
         }
         return result;
+    }
+
+    private boolean sortingNotCompleted(final List<Station> result) {
+        return result.size() != paths.size() + 1;
     }
 
     private Station computeStartStation() {

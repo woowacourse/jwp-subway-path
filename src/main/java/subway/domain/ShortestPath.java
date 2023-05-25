@@ -2,12 +2,12 @@ package subway.domain;
 
 import java.util.List;
 
-public class ShortestWay {
+public class ShortestPath {
 
     private final int distance;
     private final List<Station> stations;
 
-    public ShortestWay(final int distance, final List<Station> stations) {
+    public ShortestPath(final int distance, final List<Station> stations) {
         this.distance = distance;
         this.stations = stations;
     }

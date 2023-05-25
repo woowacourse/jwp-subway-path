@@ -10,7 +10,7 @@ import subway.application.service.LineService;
 import subway.application.service.PathService;
 
 @WebMvcTest({LineController.class, PathController.class, FeeController.class})
-public class ControllerTest {
+public abstract class ControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;

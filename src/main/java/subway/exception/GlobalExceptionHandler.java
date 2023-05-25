@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -6,9 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import subway.exception.DuplicatedNameException;
-import subway.exception.LineNotFoundException;
-import subway.exception.StationNotFoundException;
 
 @Slf4j
 @RestControllerAdvice

@@ -11,7 +11,7 @@ import subway.persistence.repository.SubwayRepository;
 @Sql({"/scheme.sql", "/data.sql"})
 @Sql(value = "/truncate.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @JdbcTest
-public class DaoTest {
+public abstract class DaoTest {
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;

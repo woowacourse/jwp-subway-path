@@ -8,7 +8,7 @@ import org.springframework.test.context.jdbc.Sql;
 @Sql({"/scheme.sql", "/data.sql"})
 @Sql(value = "/truncate.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @SpringBootTest
-public class ServiceTest {
+public abstract class ServiceTest {
 
     @Autowired
     protected PathService pathService;
