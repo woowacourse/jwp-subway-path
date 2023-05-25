@@ -37,8 +37,8 @@ public class LineService {
 	}
 
 	@Transactional
-	public void deleteLineById(final Long id) {
-		lineRepository.deleteLineById(id);
+	public void deleteLineByName(final String lineName) {
+		lineRepository.deleteLineByName(lineName);
 	}
 
 	public long findIdByName(final String lineName) {

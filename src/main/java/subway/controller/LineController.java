@@ -57,9 +57,9 @@ public class LineController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteLineById(@PathVariable final Long id) {
-		lineService.deleteLineById(id);
+	@DeleteMapping("/{lineName}")
+	public ResponseEntity<Void> deleteLineById(@PathVariable(name = "lineName") final String lineName) {
+		lineService.deleteLineByName(lineName);
 		return ResponseEntity.noContent().build();
 	}
 }

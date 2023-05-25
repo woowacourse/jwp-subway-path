@@ -38,9 +38,10 @@ public class LineRepository {
 		return lineDao.findAll();
 	}
 
-	public void deleteLineById(final Long id) {
-		sectionDao.deleteByLineId(id);
-		lineDao.deleteById(id);
+	public void deleteLineByName(final String lineName) {
+		final Long lineId = lineDao.findByName(lineName).getLineId();
+		sectionDao.deleteByLineId(lineId);
+		lineDao.deleteByName(lineName);
 	}
 
 	public Line findLineWithSections(final String lineName, final Sections sections) {

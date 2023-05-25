@@ -75,10 +75,9 @@ public class LineServiceIntegrationTest {
 	void deleteLine() {
 		// given
 		final String lineName = lineService.saveLine(LINE_REQUEST_TWO);
-		final long id = lineService.findIdByName(lineName);
 
 		// when
-		lineService.deleteLineById(id);
+		lineService.deleteLineByName(lineName);
 
 		// then
 		LinesResponse result = lineService.findAll();

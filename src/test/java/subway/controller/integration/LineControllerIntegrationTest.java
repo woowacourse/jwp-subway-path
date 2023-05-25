@@ -150,7 +150,7 @@ public class LineControllerIntegrationTest {
 
 		// when & then
 		Response response = given()
-			.when().delete("/lines/1");
+			.when().delete("/lines/2호선");
 
 		response.then()
 			.statusCode(HttpStatus.NO_CONTENT.value());

@@ -138,13 +138,13 @@ public class LineControllerTest {
 	@DisplayName("노선 삭제 테스트")
 	void deleteLine() throws Exception {
 		// given
-		Long id = 1L;
+		String lineName = "2호선";
 
 		// then
 		mockMvc.perform(
-			delete("/lines/" + id)
+			delete("/lines/" + lineName)
 		).andExpect(status().isNoContent());
 
-		verify(lineService).deleteLineById(id);
+		verify(lineService).deleteLineByName(lineName);
 	}
 }

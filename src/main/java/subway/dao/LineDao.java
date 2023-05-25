@@ -68,13 +68,8 @@ public class LineDao {
 		return lineEntity;
 	}
 
-	public void deleteById(final Long id) {
-		jdbcTemplate.update("DELETE FROM line WHERE lineId = ?", id);
-	}
-
-	public LineEntity findById(final Long id) {
-		String sql = "SELECT * FROM line WHERE lineId = ?";
-		return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
+	public void deleteByName(final String lineName) {
+		jdbcTemplate.update("DELETE FROM line WHERE name = ?", lineName);
 	}
 
 	public void updateLine(final String lineName, final LineEntity lineEntity) {

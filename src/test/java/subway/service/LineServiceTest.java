@@ -99,12 +99,12 @@ class LineServiceTest {
 	@DisplayName("노선 삭제 서비스 테스트")
 	void deleteLine() {
 		// given
-		Long id = 1L;
+		String lineName = "2호선";
 
 		// when
-		lineService.deleteLineById(id);
+		lineService.deleteLineByName(lineName);
 
 		// then
-		verify(lineRepository).deleteLineById(id);
+		verify(lineRepository).deleteLineByName(lineName);
 	}
 }
