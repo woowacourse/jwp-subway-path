@@ -25,8 +25,8 @@ class DtoMapper {
         return new StationAdditionToLineDto(
                 lineId,
                 stationAdditionRequest.getStationName(),
-                stationAdditionRequest.getUpstreamName(),
-                stationAdditionRequest.getDownstreamName(),
+                stationAdditionRequest.getUpstreamId(),
+                stationAdditionRequest.getDownstreamId(),
                 stationAdditionRequest.getDistanceToUpstream()
         );
     }

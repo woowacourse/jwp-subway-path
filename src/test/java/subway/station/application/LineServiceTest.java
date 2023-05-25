@@ -45,12 +45,12 @@ class LineServiceTest {
         final Station newStation = new Station(10L, "서울대입구");
         final int distanceToUpstream = 3;
         final Line line = new Line(LINE_NUMBER_TWO);
-        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(1L, newStation.getName(), JAMSIL_STATION.getName(), JAMSIL_NARU_STATION.getName(), distanceToUpstream);
+        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(1L, newStation.getName(), 1L, 2L, distanceToUpstream);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(line.getId());
         doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
-        doReturn(JAMSIL_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getUpstreamName());
-        doReturn(JAMSIL_NARU_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getDownstreamName());
+        doReturn(JAMSIL_STATION).when(stationService).findStationById(stationAdditionToLineDto.getUpstreamId());
+        doReturn(JAMSIL_NARU_STATION).when(stationService).findStationById(stationAdditionToLineDto.getDownstreamId());
 
         final LineService lineService = new LineService(lineRepository, stationService);
 
@@ -69,12 +69,11 @@ class LineServiceTest {
         final Station newStation = new Station(10L, "서울대입구");
         final int distanceToUpstream = 3;
         final Line line = new Line(LINE_NUMBER_TWO);
-        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(line.getId(), newStation.getName(), DummyTerminalStation.STATION_NAME, SULLEUNG_STATION.getName(), distanceToUpstream);
+        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(line.getId(), newStation.getName(), DummyTerminalStation.STATION_ID, SULLEUNG_STATION.getId(), distanceToUpstream);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(line.getId());
         doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
-        doReturn(DummyTerminalStation.getInstance()).when(stationService).findStationByName(DummyTerminalStation.STATION_NAME);
-        doReturn(SULLEUNG_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getDownstreamName());
+        doReturn(SULLEUNG_STATION).when(stationService).findStationById(stationAdditionToLineDto.getDownstreamId());
 
         final LineService lineService = new LineService(lineRepository, stationService);
 
@@ -93,12 +92,11 @@ class LineServiceTest {
         final Station newStation = new Station(10L, "서울대입구");
         final int distanceToUpstream = 3;
         final Line line = new Line(LINE_NUMBER_TWO);
-        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(line.getId(), newStation.getName(), JAMSIL_NARU_STATION.getName(), DummyTerminalStation.STATION_NAME, distanceToUpstream);
+        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(line.getId(), newStation.getName(), JAMSIL_NARU_STATION.getId(), DummyTerminalStation.STATION_ID, distanceToUpstream);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(line.getId());
         doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
-        doReturn(DummyTerminalStation.getInstance()).when(stationService).findStationByName(DummyTerminalStation.STATION_NAME);
-        doReturn(JAMSIL_NARU_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getUpstreamName());
+        doReturn(JAMSIL_NARU_STATION).when(stationService).findStationById(stationAdditionToLineDto.getUpstreamId());
 
         final LineService lineService = new LineService(lineRepository, stationService);
 

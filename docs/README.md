@@ -8,14 +8,14 @@
 - Request
   - POST /lines/{lineId}/stations 
       - stationName
-      - upstreamName(상행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
-      - downstreamName(하행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
+      - upstreamId(상행 종점으로 역을 추가하고 싶으면 0을 넣는다)
+      - downstreamId(하행 종점으로 역을 추가하고 싶으면 0을 넣는다)
       - distanceToUpstream(단, 상행 종점으로 추가되는 경우에는 하행역과의 거리를 넣는다.)
 
 - Response
   - 400 BAD REQUEST
     - (stationName < 2 || stationName > 15)
-    - (upstreamName, downstreamName이 Section으로 존재하지 않는 경우)
+    - (upstreamId, downstreamId가 Section으로 존재하지 않는 경우)
     - (distanceToUpstream >= distance(upstream, downstream)인 경우)
     - (stationName이 이미 Line에 존재하는 경우)
     - (lineId에 해당하는 Line이 존재하지 않는 경우)

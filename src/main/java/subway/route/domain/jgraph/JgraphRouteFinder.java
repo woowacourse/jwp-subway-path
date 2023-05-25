@@ -14,9 +14,9 @@ import java.util.Objects;
 
 public class JgraphRouteFinder implements RouteFinder<RouteSegment> {
 
-    private final DijkstraShortestPath<Station, WeightedEdgeWithLineInfo> shortestPath;
+    private final DijkstraShortestPath<Station, WeightedEdgeWithLineMetadata> shortestPath;
 
-    public JgraphRouteFinder(DijkstraShortestPath<Station, WeightedEdgeWithLineInfo> shortestPath) {
+    public JgraphRouteFinder(DijkstraShortestPath<Station, WeightedEdgeWithLineMetadata> shortestPath) {
         this.shortestPath = shortestPath;
     }
 
@@ -25,11 +25,11 @@ public class JgraphRouteFinder implements RouteFinder<RouteSegment> {
         validateNotIdenticalStations(source, destination);
 
         final List<RouteSegment> route = new ArrayList<>();
-        final GraphPath<Station, WeightedEdgeWithLineInfo> path = shortestPath.getPath(source, destination);
+        final GraphPath<Station, WeightedEdgeWithLineMetadata> path = shortestPath.getPath(source, destination);
         validatePathExist(source, destination, path);
 
         final List<Station> stationsAlongPath = path.getVertexList();
-        final List<WeightedEdgeWithLineInfo> sectionsAlongPath = path.getEdgeList();
+        final List<WeightedEdgeWithLineMetadata> sectionsAlongPath = path.getEdgeList();
 
         addRouteSegment(route, stationsAlongPath, sectionsAlongPath);
 
@@ -42,17 +42,17 @@ public class JgraphRouteFinder implements RouteFinder<RouteSegment> {
         }
     }
 
-    private void validatePathExist(Station source, Station destination, GraphPath<Station, WeightedEdgeWithLineInfo> path) {
+    private void validatePathExist(Station source, Station destination, GraphPath<Station, WeightedEdgeWithLineMetadata> path) {
         if (Objects.isNull(path)) {
             throw new RouteNotFoundException(source.getId(), destination.getId());
         }
     }
 
-    private void addRouteSegment(List<RouteSegment> route, List<Station> stationsOfPath, List<WeightedEdgeWithLineInfo> sectionsOfPath) {
+    private void addRouteSegment(List<RouteSegment> route, List<Station> stationsOfPath, List<WeightedEdgeWithLineMetadata> sectionsOfPath) {
         for (int i = 0; i < sectionsOfPath.size(); i++) {
             final Station upstream = stationsOfPath.get(i);
             final Station downstream = stationsOfPath.get(i + 1);
-            final WeightedEdgeWithLineInfo section = sectionsOfPath.get(i);
+            final WeightedEdgeWithLineMetadata section = sectionsOfPath.get(i);
             final RouteSegment routeSegment = new RouteSegment(
                     upstream.getId(),
                     upstream.getName(),

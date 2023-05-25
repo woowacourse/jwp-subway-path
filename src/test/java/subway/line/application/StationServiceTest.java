@@ -24,27 +24,6 @@ class StationServiceTest {
     private StationRepository stationRepository;
 
     @Test
-    @DisplayName("역 이름을 통해 저장된 역을 찾을 수 있다")
-    void findStationByNameSuccess() {
-        doReturn(Optional.of(JAMSIL_STATION)).when(stationRepository).findStationByName(JAMSIL_STATION.getName());
-
-        final StationService stationService = new StationService(stationRepository);
-
-        assertThat(stationService.findStationByName(JAMSIL_STATION.getName())).isEqualTo(JAMSIL_STATION);
-    }
-
-    @Test
-    @DisplayName("역 이름으로 저장된 역이 없으면 예외를 던진다")
-    void findStationByNameFail() {
-        doReturn(Optional.empty()).when(stationRepository).findStationByName(JAMSIL_STATION.getName());
-
-        final StationService stationService = new StationService(stationRepository);
-
-        assertThatThrownBy(() -> stationService.findStationByName(JAMSIL_STATION.getName()))
-                .isInstanceOf(StationNotFoundException.class);
-    }
-
-    @Test
     @DisplayName("역 id를 통해 저장된 역을 찾을 수 있다")
     void findStationByIdSuccess() {
         doReturn(Optional.of(JAMSIL_STATION)).when(stationRepository).findStationById(1L);

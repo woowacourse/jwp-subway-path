@@ -16,27 +16,27 @@ public class JgraphRouteFinderBuilder implements RouteFinderBuilder<RouteSegment
 
     @Override
     public RouteFinder<RouteSegment> buildRouteFinder(List<Line> lines) {
-        final Graph<Station, WeightedEdgeWithLineInfo> subwayGraph = new DefaultUndirectedWeightedGraph<>(WeightedEdgeWithLineInfo.class);
+        final Graph<Station, WeightedEdgeWithLineMetadata> subwayGraph = new DefaultUndirectedWeightedGraph<>(WeightedEdgeWithLineMetadata.class);
         buildGraph(subwayGraph, lines);
 
-        final DijkstraShortestPath<Station, WeightedEdgeWithLineInfo> shortestPath = new DijkstraShortestPath<>(subwayGraph);
+        final DijkstraShortestPath<Station, WeightedEdgeWithLineMetadata> shortestPath = new DijkstraShortestPath<>(subwayGraph);
         return new JgraphRouteFinder(shortestPath);
     }
 
-    private void buildGraph(Graph<Station, WeightedEdgeWithLineInfo> subwayGraph, List<Line> lines) {
+    private void buildGraph(Graph<Station, WeightedEdgeWithLineMetadata> subwayGraph, List<Line> lines) {
         for (Line line : lines) {
             configureEdgeWithVertices(subwayGraph, line);
         }
     }
 
-    private void configureEdgeWithVertices(Graph<Station, WeightedEdgeWithLineInfo> subwayGraph, Line line) {
+    private void configureEdgeWithVertices(Graph<Station, WeightedEdgeWithLineMetadata> subwayGraph, Line line) {
         for (MiddleSection section : line.getSections()) {
             subwayGraph.addVertex(section.getUpstream());
             subwayGraph.addVertex(section.getDownstream());
 
-            final WeightedEdgeWithLineInfo weightedEdgeWithLineInfo = new WeightedEdgeWithLineInfo(line.getId(), line.getLineInfo(), section.getDistance());
-            subwayGraph.setEdgeWeight(weightedEdgeWithLineInfo, section.getDistance());
-            subwayGraph.addEdge(section.getUpstream(), section.getDownstream(), weightedEdgeWithLineInfo);
+            final WeightedEdgeWithLineMetadata weightedEdgeWithLineMetadata = new WeightedEdgeWithLineMetadata(line.getId(), line.getLineInfo(), section.getDistance());
+            subwayGraph.setEdgeWeight(weightedEdgeWithLineMetadata, section.getDistance());
+            subwayGraph.addEdge(section.getUpstream(), section.getDownstream(), weightedEdgeWithLineMetadata);
         }
     }
 }
