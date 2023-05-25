@@ -23,7 +23,7 @@ public class Sections {
     public Distance getTotalDistance() {
         return allSections.stream()
                 .map(Section::getDistance)
-                .reduce(Distance.initWithZero(), Distance::add);
+                .reduce(Distance.getInitialDistance(), Distance::add);
     }
 
     public List<Section> getAllSections() {

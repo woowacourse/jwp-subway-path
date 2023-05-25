@@ -33,7 +33,7 @@ public class NormalFeeCalculator implements FeeCalculator {
     }
 
     private Fee calculateFirstLevelExtraFee(final Distance extraDistanceForFirstLevel) {
-        Fee extraFee = Fee.initWithZero();
+        Fee extraFee = Fee.getInitialFee();
         Distance extraDistance = extraDistanceForFirstLevel;
         while (extraDistance.biggerThan(FIRST_LEVEL_DISTANCE_FOR_EXTRA_FEE)) {
             extraFee = extraFee.add(EXTRA_FEE);
@@ -43,7 +43,7 @@ public class NormalFeeCalculator implements FeeCalculator {
     }
 
     private Fee calculateSecondLevelExtraFee(final Distance extraDistanceForSecondLevel) {
-        Fee extraFee = Fee.initWithZero();
+        Fee extraFee = Fee.getInitialFee();
         Distance extraDistance = extraDistanceForSecondLevel;
         while (extraDistance.biggerThan(SECOND_LEVEL_DISTANCE_FOR_EXTRA_FEE)) {
             extraFee = extraFee.add(EXTRA_FEE);

@@ -12,7 +12,7 @@ public final class Fee {
         this.amount = amount;
     }
 
-    public static Fee initWithZero() {
+    public static Fee getInitialFee() {
         return ZERO_FEE;
     }
 

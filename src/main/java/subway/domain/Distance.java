@@ -15,7 +15,7 @@ public final class Distance {
         this.length = length;
     }
 
-    public static Distance initWithZero() {
+    public static Distance getInitialDistance() {
         return ZERO_DISTANCE;
     }
 
