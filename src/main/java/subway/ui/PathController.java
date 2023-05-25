@@ -21,6 +21,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findShortestPath(@RequestBody PathRequest pathRequest) {
-        return ResponseEntity.ok(pathService.findShortestPath(pathRequest));
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest);
+        return ResponseEntity.ok(pathResponse);
     }
 }
