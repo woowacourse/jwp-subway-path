@@ -20,4 +20,14 @@ public class ShortestPathRequest {
     public String getDestinationName() {
         return destinationName;
     }
+
+    //todo 삭제
+
+    @Override
+    public String toString() {
+        return "ShortestPathRequest{" +
+                "startName='" + startName + '\'' +
+                ", destinationName='" + destinationName + '\'' +
+                '}';
+    }
 }
