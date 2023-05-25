@@ -233,9 +233,17 @@ class LineIntegrationTest extends IntegrationTest {
                 .when().post("/lines")
                 .then().log().all().
                 extract();
+        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
+                .when().post("/lines/{lineId}/stations", lineId)
+                .then().log().all().
+                extract();
 
         // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .when().delete("/lines/{lineId}", lineId)
