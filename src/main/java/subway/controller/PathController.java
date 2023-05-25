@@ -19,7 +19,7 @@ public class PathController {
 		this.subwayService = subwayService;
 	}
 
-	@GetMapping
+	@GetMapping("/paths")
 	public ResponseEntity<PathsResponse> findShortestPath(@RequestBody @Valid final PathRequest pathRequest) {
 		return ResponseEntity.ok(subwayService.findShortestPath(pathRequest));
 	}

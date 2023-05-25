@@ -37,7 +37,7 @@ public class PathControllerTest {
 		PathRequest req = new PathRequest("잠실역", "선릉역");
 
 		// when & then
-		mockMvc.perform(get("/routes")
+		mockMvc.perform(get("/paths")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(req))
 		).andExpect(status().isOk());
