@@ -3,8 +3,9 @@ package subway.domain.policy.fare;
 import java.util.List;
 import java.util.Map;
 import subway.domain.Money;
+import subway.domain.line.Line;
 import subway.domain.route.EdgeSection;
-import subway.domain.route.RouteFinder;
+import subway.domain.route.JgraphtRouteFinder;
 import subway.domain.station.Station;
 
 public class LineFarePolicy implements SubwayFarePolicy {
@@ -14,13 +15,9 @@ public class LineFarePolicy implements SubwayFarePolicy {
       "2호선", 1000);
 
   @Override
-  public Money calculate(
-      final RouteFinder routeFinder,
-      final Station departure,
-      final Station arrival
-  ) {
-    final List<EdgeSection> shortestRouteSections = routeFinder.findShortestRouteSections(departure,
-        arrival);
+  public Money calculate(final List<Line> lines, final Station departure, final Station arrival) {
+    final List<EdgeSection> shortestRouteSections =
+        JgraphtRouteFinder.findShortestRouteSections(lines, departure, arrival);
 
     return shortestRouteSections.stream()
         .reduce(Money.ZERO, (money, edgeSection) ->

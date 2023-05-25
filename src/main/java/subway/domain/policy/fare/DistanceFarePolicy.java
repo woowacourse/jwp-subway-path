@@ -4,9 +4,11 @@ import static subway.domain.Distance.DEFAULT_DISTANCE;
 import static subway.domain.Distance.MID_DISTANCE;
 
 import java.math.BigDecimal;
+import java.util.List;
 import subway.domain.Distance;
 import subway.domain.Money;
-import subway.domain.route.RouteFinder;
+import subway.domain.line.Line;
+import subway.domain.route.JgraphtRouteFinder;
 import subway.domain.station.Station;
 
 public class DistanceFarePolicy implements SubwayFarePolicy {
@@ -17,9 +19,10 @@ public class DistanceFarePolicy implements SubwayFarePolicy {
   private static final int LONG_DISTANCE_RATE = 8;
 
   @Override
-  public Money calculate(final RouteFinder routeFinder, final Station departure,
+  public Money calculate(final List<Line> lines, final Station departure,
       final Station arrival) {
-    final Distance distance = routeFinder.findShortestRouteDistance(departure, arrival);
+    final Distance distance =
+        JgraphtRouteFinder.findShortestRouteDistance(lines, departure, arrival);
 
     if (distance.isDefaultDistance()) {
       return DEFAULT_PRICE;

@@ -2,31 +2,41 @@ package subway.domain.policy.fare;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mockStatic;
 
+import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockedStatic;
 import subway.domain.Distance;
 import subway.domain.Money;
-import subway.domain.route.RouteFinder;
+import subway.domain.line.Line;
+import subway.domain.route.JgraphtRouteFinder;
+import subway.domain.section.Section;
 import subway.domain.station.Station;
+import subway.domain.station.Stations;
 
 class DistanceFarePolicyTest {
 
   private SubwayFarePolicy subwayFarePolicy;
 
-  private RouteFinder routeFinder;
+  MockedStatic<JgraphtRouteFinder> jgraphtRouteFinder;
 
   @BeforeEach
   void setUp() {
-    routeFinder = mock(RouteFinder.class);
+    jgraphtRouteFinder = mockStatic(JgraphtRouteFinder.class);
 
     subwayFarePolicy = new DistanceFarePolicy();
+  }
+
+  @AfterEach
+  void tearDown() {
+    jgraphtRouteFinder.close();
   }
 
   @ParameterizedTest
@@ -35,11 +45,13 @@ class DistanceFarePolicyTest {
   void test_calculate(final Station departure, final Station arrival, final Money price,
       final Distance distance) throws Exception {
     //given
-    when(routeFinder.findShortestRouteDistance(any(), any()))
+    final List<Line> lines = createDefaultLines();
+
+    jgraphtRouteFinder.when(() -> JgraphtRouteFinder.findShortestRouteDistance(any(), any(), any()))
         .thenReturn(distance);
 
     //when
-    final Money result = subwayFarePolicy.calculate(routeFinder, departure, arrival);
+    final Money result = subwayFarePolicy.calculate(lines, departure, arrival);
 
     //then
     assertEquals(result, price);
@@ -73,5 +85,32 @@ class DistanceFarePolicyTest {
         Arguments.of(start3, end3, money3, distance3),
         Arguments.of(start4, end4, money4, distance4)
     );
+  }
+
+  private List<Line> createDefaultLines() {
+    final Stations stations1 = new Stations(new Station("A"), new Station("B"), 1);
+    final Stations stations2 = new Stations(new Station("B"), new Station("C"), 2);
+    final Stations stations3 = new Stations(new Station("C"), new Station("D"), 3);
+
+    final Section section1 = new Section(stations1);
+    final Section section2 = new Section(stations2);
+    final Section section3 = new Section(stations3);
+
+    final Line line1 = new Line(1L, "1호선", List.of(section1, section2, section3));
+
+    final Stations stations4 = new Stations(new Station("B"), new Station("F"), 4);
+    final Stations stations5 = new Stations(new Station("F"), new Station("G"), 11);
+    final Stations stations6 = new Stations(new Station("G"), new Station("H"), 5);
+    final Stations stations7 = new Stations(new Station("H"), new Station("D"), 4);
+
+    final Section section4 = new Section(stations4);
+    final Section section5 = new Section(stations5);
+    final Section section6 = new Section(stations6);
+    final Section section7 = new Section(stations7);
+
+    final Line line2 = new Line(2L, "2호선",
+        List.of(section4, section5, section6, section7));
+
+    return List.of(line1, line2);
   }
 }

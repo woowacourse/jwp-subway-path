@@ -23,6 +23,8 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.33'
 
     implementation 'org.jgrapht:jgrapht-core:1.5.2'
+
+    implementation 'org.mockito:mockito-inline:3.4.6'
 }
 
 test {

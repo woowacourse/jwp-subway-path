@@ -23,7 +23,8 @@ public class StationController {
   @PostMapping("/stations")
   @ResponseStatus(HttpStatus.CREATED)
   public StationRegisterResponse registerStation(
-      @RequestBody StationRegisterRequest stationRegisterRequest) {
+      @RequestBody StationRegisterRequest stationRegisterRequest
+  ) {
     stationService.registerStation(stationRegisterRequest);
 
     return new StationRegisterResponse(
