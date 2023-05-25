@@ -10,4 +10,5 @@ import org.springframework.test.context.jdbc.Sql;
 @Sql(value = "/schema.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class IntegrationTestHelper {
+
 }
