@@ -6,6 +6,7 @@ import subway.domain.policy.discount.DiscountCondition;
 import subway.domain.policy.discount.SubwayDiscountPolicy;
 import subway.domain.policy.fare.SubwayFarePolicy;
 import subway.domain.route.RouteFinder;
+import subway.domain.station.Station;
 
 public class ChargePolicyComposite implements SubwayFarePolicy, SubwayDiscountPolicy {
 
@@ -31,8 +32,8 @@ public class ChargePolicyComposite implements SubwayFarePolicy, SubwayDiscountPo
   @Override
   public Money calculate(
       final RouteFinder routeFinder,
-      final String departure,
-      final String arrival
+      final Station departure,
+      final Station arrival
   ) {
     return farePolicies.stream()
         .map(it -> it.calculate(routeFinder, departure, arrival))

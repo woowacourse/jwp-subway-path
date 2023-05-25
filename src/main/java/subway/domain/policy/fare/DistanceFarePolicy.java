@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import subway.domain.Distance;
 import subway.domain.Money;
 import subway.domain.route.RouteFinder;
+import subway.domain.station.Station;
 
 public class DistanceFarePolicy implements SubwayFarePolicy {
 
@@ -16,8 +17,8 @@ public class DistanceFarePolicy implements SubwayFarePolicy {
   private static final int LONG_DISTANCE_RATE = 8;
 
   @Override
-  public Money calculate(final RouteFinder routeFinder, final String departure,
-      final String arrival) {
+  public Money calculate(final RouteFinder routeFinder, final Station departure,
+      final Station arrival) {
     final Distance distance = routeFinder.findShortestRouteDistance(departure, arrival);
 
     if (distance.isDefaultDistance()) {

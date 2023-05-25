@@ -5,6 +5,7 @@ import java.util.Map;
 import subway.domain.Money;
 import subway.domain.route.EdgeSection;
 import subway.domain.route.RouteFinder;
+import subway.domain.station.Station;
 
 public class LineFarePolicy implements SubwayFarePolicy {
 
@@ -15,8 +16,8 @@ public class LineFarePolicy implements SubwayFarePolicy {
   @Override
   public Money calculate(
       final RouteFinder routeFinder,
-      final String departure,
-      final String arrival
+      final Station departure,
+      final Station arrival
   ) {
     final List<EdgeSection> shortestRouteSections = routeFinder.findShortestRouteSections(departure,
         arrival);

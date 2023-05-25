@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import subway.domain.Distance;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
+import subway.domain.station.Station;
 import subway.domain.station.Stations;
 import subway.event.StationChange;
 import subway.service.LineQueryService;
@@ -17,7 +18,7 @@ import subway.service.LineQueryService;
 @Component
 public class JgraphtRouteFinder implements RouteFinder {
 
-  private DijkstraShortestPath<String, EdgeSection> dijkstraGraph;
+  private DijkstraShortestPath<Station, EdgeSection> dijkstraGraph;
   private final LineQueryService lineQueryService;
 
   public JgraphtRouteFinder(final LineQueryService lineQueryService) {
@@ -28,7 +29,7 @@ public class JgraphtRouteFinder implements RouteFinder {
   public void updateDijkstraGraph() {
     final List<Line> lines = lineQueryService.searchAllLine();
 
-    Graph<String, EdgeSection> graph
+    Graph<Station, EdgeSection> graph
         = new WeightedMultigraph<>(EdgeSection.class);
 
     for (final Line line : lines) {
@@ -39,7 +40,7 @@ public class JgraphtRouteFinder implements RouteFinder {
   }
 
   private void makeGraphFromSections(
-      final Graph<String, EdgeSection> graph,
+      final Graph<Station, EdgeSection> graph,
       final Line line
   ) {
 
@@ -58,41 +59,38 @@ public class JgraphtRouteFinder implements RouteFinder {
   }
 
   private void addVertex(
-      final Graph<String, EdgeSection> graph,
+      final Graph<Station, EdgeSection> graph,
       final String startStation,
       final String endStation
   ) {
-    graph.addVertex(startStation);
-    graph.addVertex(endStation);
+    graph.addVertex(new Station(startStation));
+    graph.addVertex(new Station(endStation));
   }
 
   private void addEdge(
-      final Graph<String, EdgeSection> graph, final String startStation,
+      final Graph<Station, EdgeSection> graph, final String startStation,
       final String endStation, final int distance, final String lineName
   ) {
     final EdgeSection start = new EdgeSection(startStation, endStation, distance, lineName);
     final EdgeSection end = new EdgeSection(endStation, startStation, distance, lineName);
 
-    graph.addEdge(startStation, endStation, start);
-    graph.addEdge(endStation, startStation, end);
+    graph.addEdge(new Station(startStation), new Station(endStation), start);
+    graph.addEdge(new Station(endStation), new Station(startStation), end);
 
     graph.setEdgeWeight(start, distance);
     graph.setEdgeWeight(end, distance);
   }
 
-  @Override
-  public List<String> findShortestRoute(final String startStation, final String endStation) {
-    return dijkstraGraph.getPath(startStation, endStation).getVertexList();
+  public List<Station> findShortestRoute(final Station departure, final Station arrival) {
+    return dijkstraGraph.getPath(departure, arrival).getVertexList();
   }
 
-  @Override
-  public Distance findShortestRouteDistance(final String startStation, final String endStation) {
-    return new Distance((int) dijkstraGraph.getPathWeight(startStation, endStation));
+  public Distance findShortestRouteDistance(final Station departure, final Station arrival) {
+    return new Distance((int) dijkstraGraph.getPathWeight(departure, arrival));
   }
 
-  @Override
-  public List<EdgeSection> findShortestRouteSections(final String startStation,
-      final String endStation) {
-    return dijkstraGraph.getPath(startStation, endStation).getEdgeList();
+  public List<EdgeSection> findShortestRouteSections(final Station departure,
+      final Station arrival) {
+    return dijkstraGraph.getPath(departure, arrival).getEdgeList();
   }
 }

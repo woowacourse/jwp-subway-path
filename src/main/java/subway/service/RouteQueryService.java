@@ -1,11 +1,14 @@
 package subway.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Money;
 import subway.domain.policy.ChargePolicyComposite;
 import subway.domain.policy.discount.DiscountCondition;
-import subway.domain.route.RouteFinder;
+import subway.domain.route.JgraphtRouteFinder;
+import subway.domain.station.Station;
 import subway.service.dto.ShortestRouteRequest;
 import subway.service.dto.ShortestRouteResponse;
 
@@ -14,32 +17,39 @@ import subway.service.dto.ShortestRouteResponse;
 public class RouteQueryService {
 
   private final ChargePolicyComposite chargePolicyComposite2;
-  private final RouteFinder routeFinder;
+  private final JgraphtRouteFinder jgraphtRouteFinder;
 
   public RouteQueryService(
       final ChargePolicyComposite chargePolicyComposite2,
-      final RouteFinder routeFinder
+      final JgraphtRouteFinder jgraphtRouteFinder
   ) {
     this.chargePolicyComposite2 = chargePolicyComposite2;
-    this.routeFinder = routeFinder;
+    this.jgraphtRouteFinder = jgraphtRouteFinder;
   }
 
   public ShortestRouteResponse searchShortestRoute(
       final ShortestRouteRequest shortestRouteRequest
   ) {
 
-    final String departure = shortestRouteRequest.getStartStation();
-    final String arrival = shortestRouteRequest.getEndStation();
+    final Station departure = new Station(shortestRouteRequest.getStartStation());
+    final Station arrival = new Station(shortestRouteRequest.getEndStation());
 
     return new ShortestRouteResponse(
-        routeFinder.findShortestRoute(departure, arrival),
+        mapToStationNameFrom(jgraphtRouteFinder.findShortestRoute(departure, arrival)),
         searchCost(departure, arrival, shortestRouteRequest.getAge()).getValue(),
-        routeFinder.findShortestRouteDistance(departure, arrival).getValue()
+        jgraphtRouteFinder.findShortestRouteDistance(departure, arrival).getValue()
     );
   }
 
-  private Money searchCost(final String departure, final String arrival, final Integer age) {
-    final Money totalPrice = chargePolicyComposite2.calculate(routeFinder, departure, arrival);
+  private List<String> mapToStationNameFrom(final List<Station> stations) {
+    return stations.stream()
+        .map(Station::getName)
+        .collect(Collectors.toList());
+  }
+
+  private Money searchCost(final Station departure, final Station arrival, final Integer age) {
+    final Money totalPrice = chargePolicyComposite2.calculate(jgraphtRouteFinder, departure,
+        arrival);
 
     return chargePolicyComposite2.discount(new DiscountCondition(age), totalPrice);
   }

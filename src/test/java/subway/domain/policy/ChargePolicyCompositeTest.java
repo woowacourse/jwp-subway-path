@@ -14,6 +14,7 @@ import subway.domain.policy.discount.DiscountCondition;
 import subway.domain.policy.fare.DistanceFarePolicy;
 import subway.domain.policy.fare.LineFarePolicy;
 import subway.domain.route.RouteFinder;
+import subway.domain.station.Station;
 
 @SpringBootTest
 class ChargePolicyCompositeTest {
@@ -47,8 +48,8 @@ class ChargePolicyCompositeTest {
   @DisplayName("calculate() : 모든 추가 요금 정책을 계산할 수 있다.")
   void test_calculate() throws Exception {
     //given
-    final String departure = "A";
-    final String arrival = "G";
+    final Station departure = new Station("A");
+    final Station arrival = new Station("G");
 
     //when
     final Money totalMoney = pricePolicyComposite.calculate(routeFinder, departure, arrival);

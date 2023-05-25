@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import subway.domain.Distance;
 import subway.domain.Money;
 import subway.domain.route.RouteFinder;
+import subway.domain.station.Station;
 
 class DistanceFarePolicyTest {
 
@@ -31,7 +32,7 @@ class DistanceFarePolicyTest {
   @ParameterizedTest
   @MethodSource("calculatePriceFromDistance")
   @DisplayName("calculate() : 거리에 따라 요금을 계산할 수 있다.")
-  void test_calculate(final String departure, final String arrival, final Money price,
+  void test_calculate(final Station departure, final Station arrival, final Money price,
       final Distance distance) throws Exception {
     //given
     when(routeFinder.findShortestRouteDistance(any(), any()))
@@ -46,23 +47,23 @@ class DistanceFarePolicyTest {
 
   static Stream<Arguments> calculatePriceFromDistance() {
 
-    final String start1 = "A";
-    final String end1 = "G";
+    final Station start1 = new Station("A");
+    final Station end1 = new Station("G");
     final Money money1 = new Money(1350);
     final Distance distance1 = new Distance(13);
 
-    final String start2 = "A";
-    final String end2 = "H";
+    final Station start2 = new Station("A");
+    final Station end2 = new Station("H");
     final Money money2 = new Money(1250);
     final Distance distance2 = new Distance(8);
 
-    final String start3 = "G";
-    final String end3 = "C";
+    final Station start3 = new Station("G");
+    final Station end3 = new Station("C");
     final Money money3 = new Money(1250);
     final Distance distance3 = new Distance(10);
 
-    final String start4 = "F";
-    final String end4 = "H";
+    final Station start4 = new Station("F");
+    final Station end4 = new Station("H");
     final Money money4 = new Money(1350);
     final Distance distance4 = new Distance(11);
 
