@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
-class PathControllerIntegrationTest {
+class PathControllerIntegrationTest{
 
 	@LocalServerPort
 	private int port;
@@ -66,7 +66,7 @@ class PathControllerIntegrationTest {
 			.given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(request)
-			.when().get("/routes")
+			.when().get("/paths")
 			.then()
 			.statusCode(HttpStatus.OK.value())
 			.body("paths[0].station.name", equalTo("잠실역"))
