@@ -86,7 +86,13 @@
   - 하지만 이번 미션에서는 딱히 수동으로 빈을 등록할 이유가 없었던 것 같다.
 - [x] DataSoruce는 application.yml을 통해 자동으로 설정될 텐데, 추가적으로 구현한 이유는?
   - 상용 DB와 테스트용 DB 환경을 분리하는 과정에서 직접 구현했는데, 사실 왜 그랬는지 기억이 안 난다... 디버깅 과정에서 만들었던 것 같다.
-- [ ] SubwayGraph를 컴포넌트로 등록하는 것은 어떨까?
-- [ ] StationRequest의 name으로 빈 갑싱 들어온다면?
+- [x] SubwayGraph를 컴포넌트로 등록하는 것은 어떨까?
+  - SubwayGraph를 스프링을 통해 관리할 필요가 있을까?
+  - 컴포넌트 등록을 통해 얻을 수 있는 이점
+    - 의존성 주입을 쉽게 받을 수 있기 때문에 다른 객체와의 상호작용이 쉬워진다.
+  - 하지만 SubwayGraph는 경로 조회를 하는 PathService에서만 필요하기 때문에 전역적으로 관리될 필요가 없는 것 같다.
+  - 그리고 SubwayGraph는 Subway를 인자로 받고, JgraphT 라이브러리를 통해 Subway 객체의 상태를 그래프로 구성한다. 즉, 매번 상태가 달라질 수 있는 Subway 객체를 통해 본인의 상태를 구성한다.
+    - SubwayGraph를 컴포넌트로 등록하고, 의존성 주입의 이점을 얻기 위해서는 Subway 객체까지 컴포넌트로 등록해야 될 것 같다. 이러면 더더욱 SubwayGraph를 컴포넌트로 등록할 이유가 없어보인다.
+- [x] StationRequest의 name으로 빈 값이 들어온다면?
 - [ ] Line/Section/StationException을 따로 핸들링한 이유는?
 - 
