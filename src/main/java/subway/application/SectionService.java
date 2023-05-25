@@ -3,13 +3,11 @@ package subway.application;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Fare;
 import subway.domain.Line;
+import subway.domain.PathFinder;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.repository.LineRepository;
@@ -54,43 +52,19 @@ public class SectionService {
         Station fromStation = findStation(request.getFromStationName());
         Station toStation = findStation(request.getToStationName());
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeGraph();
-
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        int pathDistance = (int) dijkstraShortestPath.getPathWeight(fromStation, toStation);
+        PathFinder pathFinder = new PathFinder(getAllSections());
+        int pathDistance = pathFinder.getPathDistance(fromStation, toStation);
+        List<StationInfo> stationInfos = getStationInfos(fromStation, toStation, pathFinder);
         int fare = Fare.from(pathDistance).getValue();
-        List<StationInfo> stationInfos = getStationInfos(fromStation, toStation, dijkstraShortestPath);
 
         return new PathResponse(fare, pathDistance, stationInfos);
     }
 
-    private List<StationInfo> getStationInfos(
-            final Station fromStation,
-            final Station toStation,
-            final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
-    ) {
-        return dijkstraShortestPath.getPath(fromStation, toStation)
-                .getVertexList()
+    private List<StationInfo> getStationInfos(Station fromStation, Station toStation, PathFinder pathFinder) {
+        return pathFinder.getStations(fromStation, toStation)
                 .stream()
                 .map(station -> new StationInfo(station.getName()))
                 .collect(Collectors.toList());
-    }
-
-    private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        List<Station> stations = stationRepository.findAll();
-        for (final Station station : stations) {
-            graph.addVertex(station);
-        }
-
-        List<LinkedList<Section>> allSections = getAllSections();
-        for (final LinkedList<Section> sections : allSections) {
-            for (final Section section : sections) {
-                graph.setEdgeWeight(graph.addEdge(section.getLeft(), section.getRight()), section.getDistance());
-            }
-        }
-        return graph;
     }
 
     private List<LinkedList<Section>> getAllSections() {
