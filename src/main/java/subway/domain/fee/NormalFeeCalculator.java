@@ -15,7 +15,7 @@ public class NormalFeeCalculator implements FeeCalculator {
 
     @Override
     public Fee calculate(final Distance distance) {
-        if (distance.lessThanOrEqualTo(FIRST_LEVEL_START_DISTANCE)) {
+        if (distance.isLessThanOrEqualTo(FIRST_LEVEL_START_DISTANCE)) {
             return BASIC_FEE;
         }
         final Distance extraDistance = distance.subtract(FIRST_LEVEL_START_DISTANCE);
@@ -24,7 +24,7 @@ public class NormalFeeCalculator implements FeeCalculator {
 
     private Fee calculateExtraFee(final Distance extraDistance) {
         final Distance extraDistanceForFirstLevel = SECOND_LEVEL_START_DISTANCE.subtract(FIRST_LEVEL_START_DISTANCE);
-        if (extraDistance.lessThanOrEqualTo(extraDistanceForFirstLevel)) {
+        if (extraDistance.isLessThanOrEqualTo(extraDistanceForFirstLevel)) {
             return calculateFirstLevelExtraFee(extraDistance);
         }
         final Distance extraDistanceForSecondLevel = extraDistance.subtract(extraDistanceForFirstLevel);
@@ -35,7 +35,7 @@ public class NormalFeeCalculator implements FeeCalculator {
     private Fee calculateFirstLevelExtraFee(final Distance extraDistanceForFirstLevel) {
         Fee extraFee = Fee.getInitialFee();
         Distance extraDistance = extraDistanceForFirstLevel;
-        while (extraDistance.biggerThan(FIRST_LEVEL_DISTANCE_FOR_EXTRA_FEE)) {
+        while (extraDistance.isGreaterThan(FIRST_LEVEL_DISTANCE_FOR_EXTRA_FEE)) {
             extraFee = extraFee.add(EXTRA_FEE);
             extraDistance = extraDistance.subtract(FIRST_LEVEL_DISTANCE_FOR_EXTRA_FEE);
         }
@@ -45,7 +45,7 @@ public class NormalFeeCalculator implements FeeCalculator {
     private Fee calculateSecondLevelExtraFee(final Distance extraDistanceForSecondLevel) {
         Fee extraFee = Fee.getInitialFee();
         Distance extraDistance = extraDistanceForSecondLevel;
-        while (extraDistance.biggerThan(SECOND_LEVEL_DISTANCE_FOR_EXTRA_FEE)) {
+        while (extraDistance.isGreaterThan(SECOND_LEVEL_DISTANCE_FOR_EXTRA_FEE)) {
             extraFee = extraFee.add(EXTRA_FEE);
             extraDistance = extraDistance.subtract(SECOND_LEVEL_DISTANCE_FOR_EXTRA_FEE);
         }

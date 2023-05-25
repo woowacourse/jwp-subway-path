@@ -35,11 +35,11 @@ public final class Distance {
         }
     }
 
-    public boolean biggerThan(final Distance distance) {
+    public boolean isGreaterThan(final Distance distance) {
         return length > distance.length;
     }
 
-    public boolean lessThanOrEqualTo(final Distance distance) {
+    public boolean isLessThanOrEqualTo(final Distance distance) {
         return length <= distance.length;
     }
 

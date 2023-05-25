@@ -62,7 +62,7 @@ class DistanceTest {
             final Distance distance2 = new Distance(5);
 
             // when
-            final boolean result = distance1.biggerThan(distance2);
+            final boolean result = distance1.isGreaterThan(distance2);
 
             // then
             assertThat(result).isTrue();
@@ -76,7 +76,7 @@ class DistanceTest {
             final Distance distance2 = new Distance(10);
 
             // when
-            final boolean result = distance1.biggerThan(distance2);
+            final boolean result = distance1.isGreaterThan(distance2);
 
             // then
             assertThat(result).isFalse();
@@ -90,7 +90,7 @@ class DistanceTest {
             final Distance distance2 = new Distance(10);
 
             // when
-            final boolean result = distance1.lessThanOrEqualTo(distance2);
+            final boolean result = distance1.isLessThanOrEqualTo(distance2);
 
             // then
             assertThat(result).isTrue();
@@ -104,7 +104,7 @@ class DistanceTest {
             final Distance distance2 = new Distance(5);
 
             // when
-            final boolean result = distance1.lessThanOrEqualTo(distance2);
+            final boolean result = distance1.isLessThanOrEqualTo(distance2);
 
             // then
             assertThat(result).isTrue();
@@ -118,7 +118,7 @@ class DistanceTest {
             final Distance distance2 = new Distance(5);
 
             // when
-            final boolean result = distance1.lessThanOrEqualTo(distance2);
+            final boolean result = distance1.isLessThanOrEqualTo(distance2);
 
             // then
             assertThat(result).isFalse();
