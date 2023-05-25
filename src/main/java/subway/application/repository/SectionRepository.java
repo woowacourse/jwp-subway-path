@@ -15,5 +15,7 @@ public interface SectionRepository {
 
     Sections findAllSectionByLineId(Long lineId);
 
+    Sections findAllSections();
+
     void deleteSections(final Long lineId, List<Section> differentSections);
 }

@@ -26,6 +26,15 @@ public class JdbcSectionRepository implements SectionRepository {
     }
 
     @Override
+    public Sections findAllSections() {
+        return new Sections(
+                sectionDao.findAll().stream()
+                        .map(sectionEntity -> new Section(new Station(sectionEntity.getUpStation()), new Station(sectionEntity.getDownStation()), sectionEntity.getDistance()))
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @Override
     public Line findLineById(final Sections sections, final Long id) {
         final LineEntity lineEntity = lineDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 호선입니다"));
