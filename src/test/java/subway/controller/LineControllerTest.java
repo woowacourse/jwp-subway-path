@@ -1,6 +1,8 @@
 package subway.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(LineController.class)
 public class LineControllerTest {
-
+	String lineName;
+	LineCreateRequest lineCreateRequest;
 	@MockBean
 	private LineService lineService;
 
@@ -41,12 +44,15 @@ public class LineControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@BeforeEach
+	void setUp(){
+		lineName = "2호선";
+		lineCreateRequest = new LineCreateRequest("2호선");
+	}
+
 	@Test
 	@DisplayName("노선 생성 테스트")
 	void createLine() throws Exception {
-		// given
-		LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선");
-
 		// when & then
 		mockMvc.perform(
 				post("/lines")
@@ -59,7 +65,7 @@ public class LineControllerTest {
 	@DisplayName("노선의 이름이 없으면 예외가 발생한다")
 	void exception_whenLineNameEmpty() throws Exception {
 		// given
-		LineCreateRequest lineCreateRequest = new LineCreateRequest("");
+		lineCreateRequest = new LineCreateRequest("");
 		doAnswer(invocation -> {
 			throw new BlankNameException();
 		}).when(lineService).saveLine(any(LineCreateRequest.class));
@@ -86,9 +92,6 @@ public class LineControllerTest {
 	@Test
 	@DisplayName("지하철 조회 테스트")
 	void findSubway() throws Exception {
-		// given
-		String lineName = "2호선";
-
 		// when & then
 		mockMvc.perform(
 			get("/lines/" + lineName)
@@ -101,7 +104,6 @@ public class LineControllerTest {
 	@DisplayName("노선 갱신 테스트")
 	void updateLine() throws Exception {
 		// given
-		String lineName = "2호선";
 		LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(lineName);
 
 		// when & then
@@ -118,13 +120,11 @@ public class LineControllerTest {
 	@DisplayName("존재하지 않는 노선 조회 시 예외가 발생한다")
 	void exception_whenLineNotFound() throws Exception {
 		// given
-		String lineName = "2호선";
 		LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(lineName);
 
 		doAnswer(invocation -> {
 			throw new LineNotFoundException();
 		}).when(lineService).updateLineByLineName(eq(lineName), any(LineUpdateRequest.class));
-
 
 		// then
 		mockMvc.perform(
@@ -137,9 +137,6 @@ public class LineControllerTest {
 	@Test
 	@DisplayName("노선 삭제 테스트")
 	void deleteLine() throws Exception {
-		// given
-		String lineName = "2호선";
-
 		// then
 		mockMvc.perform(
 			delete("/lines/" + lineName)

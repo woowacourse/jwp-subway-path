@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Objects;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ import subway.service.StationService;
 @WebMvcTest(StationController.class)
 public class StationControllerTest {
 
+	String stationName;
+
 	@MockBean
 	private StationService stationService;
 
@@ -44,11 +47,16 @@ public class StationControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@BeforeEach
+	void setUp(){
+		stationName = "잠실역";
+	}
+
 	@Test
 	@DisplayName("역 생성 테스트")
 	void createStation() throws Exception {
 		// given
-		StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
+		StationCreateRequest stationCreateRequest = new StationCreateRequest(stationName);
 
 		// when
 		MvcResult result = mockMvc.perform(
@@ -68,7 +76,7 @@ public class StationControllerTest {
 	@DisplayName("역 전체 조회 테스트")
 	void findAll() throws Exception {
 		// given
-		List<StationResponse> stations = List.of(StationResponse.from(new Station("잠실역")));
+		List<StationResponse> stations = List.of(StationResponse.from(new Station(stationName)));
 		StationsResponse expected = StationsResponse.from(stations);
 		given(stationService.findAllStationResponses()).willReturn(expected);
 
@@ -84,7 +92,6 @@ public class StationControllerTest {
 	@DisplayName("id를 사용한 역 조회 테스트")
 	void findById() throws Exception {
 		// given
-		String stationName = "잠실역";
 		StationResponse stationResponse = StationResponse.from(new Station(stationName));
 		given(stationService.getStationResponseByName(stationName)).willReturn(stationResponse);
 
@@ -100,7 +107,6 @@ public class StationControllerTest {
 	@DisplayName("존재하지 않는 역에 대해 조회를 시도하면 예외가 발생한다")
 	void exception_whenStationNotFound() throws Exception {
 		// given
-		String stationName = "잠실역";
 		given(stationService.getStationResponseByName(stationName)).willThrow(StationNotFoundException.class);
 
 		// when & then
@@ -115,7 +121,6 @@ public class StationControllerTest {
 	@DisplayName("역 갱신 테스트")
 	void updateStation() throws Exception {
 		// given
-		String stationName = "잠실역";
 		StationUpdateRequest stationUpdateRequest = new StationUpdateRequest("교대역");
 
 		// when & then

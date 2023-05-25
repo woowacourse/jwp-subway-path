@@ -29,7 +29,8 @@ import java.net.URLDecoder;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
 class StationControllerIntegrationTest {
-
+	String stationName;
+	StationCreateRequest stationCreateRequest;
 	@Autowired
 	private StationService stationService;
 
@@ -38,16 +39,14 @@ class StationControllerIntegrationTest {
 
 	@BeforeEach
 	void setUp() {
+		stationName = "잠실역";
+		stationCreateRequest = new StationCreateRequest(stationName);
 		RestAssured.port = port;
 	}
 
 	@Test
 	@DisplayName("역 생성 테스트")
 	void createStation() {
-		// given
-		String stationName = "잠실역";
-		StationCreateRequest stationCreateRequest = new StationCreateRequest(stationName);
-
 		// when
 		final ExtractableResponse<Response> response = RestAssured
 			.given()
@@ -59,8 +58,9 @@ class StationControllerIntegrationTest {
 
 		// then
 		Assertions.assertAll(
-			()-> org.assertj.core.api.Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-			()-> org.assertj.core.api.Assertions.assertThat(decodedHeader).isEqualTo("/stations/" + stationName)
+			() -> org.assertj.core.api.Assertions.assertThat(response.statusCode())
+				.isEqualTo(HttpStatus.CREATED.value()),
+			() -> org.assertj.core.api.Assertions.assertThat(decodedHeader).isEqualTo("/stations/" + stationName)
 		);
 	}
 
@@ -68,7 +68,6 @@ class StationControllerIntegrationTest {
 	@DisplayName("모든 역 조회 테스트")
 	void findAll() {
 		// given
-		StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
 		stationService.saveStation(stationCreateRequest);
 
 		// when & then
@@ -85,7 +84,6 @@ class StationControllerIntegrationTest {
 	@DisplayName("역 조회 테스트")
 	void findById() {
 		// given
-		StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
 		stationService.saveStation(stationCreateRequest);
 
 		// when & then
@@ -102,8 +100,6 @@ class StationControllerIntegrationTest {
 	@DisplayName("역 삭제 테스트")
 	void deleteStation() {
 		// given
-		String stationName = "잠실역";
-		StationCreateRequest stationCreateRequest = new StationCreateRequest(stationName);
 		stationService.saveStation(stationCreateRequest);
 
 		// when & then
@@ -121,8 +117,6 @@ class StationControllerIntegrationTest {
 	@DisplayName("역 갱신 테스트")
 	void edit_station_success() {
 		// given
-		String stationName = "잠실역";
-		StationCreateRequest stationCreateRequest = new StationCreateRequest(stationName);
 		stationService.saveStation(stationCreateRequest);
 
 		StationUpdateRequest stationUpdateRequest = new StationUpdateRequest("신사역");

@@ -1,6 +1,8 @@
 package subway.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(SectionController.class)
 public class SectionControllerTest {
 
+	SectionCreateRequest sectionCreateRequest;
+
 	@MockBean
 	private SectionService sectionService;
 
@@ -42,12 +46,14 @@ public class SectionControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@BeforeEach
+	void setUp(){
+		sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
+	}
+
 	@Test
 	@DisplayName("구간 생성 테스트")
 	void createSection() throws Exception {
-		// given
-		SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
-
 		// when & then
 		mockMvc.perform(
 				post("/sections")
@@ -62,7 +68,6 @@ public class SectionControllerTest {
 	@DisplayName("존재하지 않는 노선에 대한 조회 시도 시 예외가 발생한다")
 	void exception_whenSectionNotFound() throws Exception {
 		// given
-		SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
 		doAnswer(invocation -> {
 			throw new SectionNotFoundException();
 		}).when(sectionService).insertSection(any(SectionCreateRequest.class));
@@ -81,7 +86,6 @@ public class SectionControllerTest {
 	@DisplayName("상행 종점을 찾을 수 없으면 예외가 발생한다")
 	void exception_whenUpStationNotFound() throws Exception {
 		// given
-		SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
 		doAnswer(invocation -> {
 			throw new UpStationNotFoundException();
 		}).when(sectionService).insertSection(any(SectionCreateRequest.class));
@@ -100,7 +104,6 @@ public class SectionControllerTest {
 	@DisplayName("역 사이의 거리가 1 미만이면 예외가 발생한다")
 	void exception_whenDistanceLessThanOne() throws Exception {
 		// given
-		SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
 		doAnswer(invocation -> {
 			throw new DistanceLessThatOneException();
 		}).when(sectionService).insertSection(any(SectionCreateRequest.class));
@@ -119,7 +122,6 @@ public class SectionControllerTest {
 	@DisplayName("요청 구간에 겹치는 역이 없으면 예외가 발생한다")
 	void exception_whenSectionNotConnected() throws Exception {
 		// given
-		SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
 		doAnswer(invocation -> {
 			throw new StationNotConnectedException();
 		}).when(sectionService).insertSection(any(SectionCreateRequest.class));
@@ -138,7 +140,6 @@ public class SectionControllerTest {
 	@DisplayName("구간이 중복되면 예외가 발생한다")
 	void exception_whenSectionDuplicate() throws Exception {
 		// given
-		SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
 		doAnswer(invocation -> {
 			throw new SameSectionException();
 		}).when(sectionService).insertSection(any(SectionCreateRequest.class));
@@ -157,7 +158,6 @@ public class SectionControllerTest {
 	@DisplayName("요청 구간이 기존 구간 거리보다 길면 예외가 발생한다")
 	void exception_whenInvalidDistance() throws Exception {
 		// given
-		SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
 		doAnswer(invocation -> {
 			throw new InvalidSectionDistanceException();
 		}).when(sectionService).insertSection(any(SectionCreateRequest.class));
