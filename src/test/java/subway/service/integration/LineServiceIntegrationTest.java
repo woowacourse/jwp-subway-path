@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.request.LineCreateRequest;
 import subway.dto.request.LineUpdateRequest;
@@ -69,12 +68,11 @@ public class LineServiceIntegrationTest {
 	void updateLine() {
 		// given
 		final String lineName = lineService.saveLine(LINE_REQUEST_TWO);
-		final long id = lineService.findIdByName(lineName);
 
 		LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("신분당선");
 
 		// when
-		lineService.updateLineById(id, lineUpdateRequest);
+		lineService.updateLineByLineName(lineName, lineUpdateRequest);
 
 		// then
 		LineResponse lineEntity = lineService.findAll().getLines().get(0);

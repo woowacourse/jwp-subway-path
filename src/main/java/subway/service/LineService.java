@@ -7,7 +7,6 @@ import subway.dto.request.LineCreateRequest;
 import subway.dto.request.LineUpdateRequest;
 import subway.dto.response.LinesResponse;
 import subway.entity.LineEntity;
-import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
 
 @Service
@@ -30,11 +29,11 @@ public class LineService {
 	}
 
 	@Transactional
-	public void updateLineById(final Long lineId, final LineUpdateRequest lineUpdateRequest) {
-		LineEntity lineEntity = lineRepository.findById(lineId);
+	public void updateLineByLineName(final String lineName, final LineUpdateRequest lineUpdateRequest) {
+		LineEntity lineEntity = lineRepository.findLineByName(lineName);
 
 		lineEntity.update(lineUpdateRequest.getName());
-		lineRepository.updateLine(lineId, lineEntity);
+		lineRepository.updateLine(lineName, lineEntity);
 	}
 
 	@Transactional

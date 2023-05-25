@@ -50,10 +50,10 @@ public class LineController {
 		return ResponseEntity.ok().body(subwayService.findStationsByLineName(lineName));
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<Void> updateLindById(@PathVariable final Long id,
+	@PatchMapping("/{lineName}")
+	public ResponseEntity<Void> updateLindById(@PathVariable(name = "lineName") final String lineName,
 		@RequestBody @Valid final LineUpdateRequest lineUpdateRequest) {
-		lineService.updateLineById(id, lineUpdateRequest);
+		lineService.updateLineByLineName(lineName, lineUpdateRequest);
 		return ResponseEntity.noContent().build();
 	}
 

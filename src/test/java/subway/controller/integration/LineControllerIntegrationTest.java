@@ -135,7 +135,7 @@ public class LineControllerIntegrationTest {
 		Response response = given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(lineUpdateRequest)
-			.when().patch("/lines/1");
+			.when().patch("/lines/2호선");
 
 		response.then()
 			.statusCode(HttpStatus.NO_CONTENT.value());

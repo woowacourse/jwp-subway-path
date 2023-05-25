@@ -101,34 +101,34 @@ public class LineControllerTest {
 	@DisplayName("노선 갱신 테스트")
 	void updateLine() throws Exception {
 		// given
-		Long id = 1L;
-		LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선");
+		String lineName = "2호선";
+		LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(lineName);
 
 		// when & then
 		mockMvc.perform(
-			patch("/lines/" + id)
+			patch("/lines/" + lineName)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(lineUpdateRequest))
 		).andExpect(status().isNoContent());
 
-		verify(lineService).updateLineById(eq(id), any(LineUpdateRequest.class));
+		verify(lineService).updateLineByLineName(eq(lineName), any(LineUpdateRequest.class));
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 노선 조회 시 예외가 발생한다")
 	void exception_whenLineNotFound() throws Exception {
 		// given
-		Long id = 1L;
-		LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선");
+		String lineName = "2호선";
+		LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(lineName);
 
 		doAnswer(invocation -> {
 			throw new LineNotFoundException();
-		}).when(lineService).updateLineById(eq(id), any(LineUpdateRequest.class));
+		}).when(lineService).updateLineByLineName(eq(lineName), any(LineUpdateRequest.class));
 
 
 		// then
 		mockMvc.perform(
-			patch("/lines/" + id)
+			patch("/lines/" + lineName)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(lineUpdateRequest))
 		).andExpect(status().isNotFound());

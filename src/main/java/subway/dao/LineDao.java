@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import subway.entity.LineEntity;
+import subway.exception.LineNotFoundException;
 
 @Repository
 public class LineDao {
@@ -56,18 +57,19 @@ public class LineDao {
 		return jdbcTemplate.query(sql, lineRowMapper);
 	}
 
-	public LineEntity findByName(final String name) {
+	public LineEntity findByName(final String lineName) {
 		String sql = "SELECT lineId,  name FROM line WHERE name = ?";
-		return jdbcTemplate.queryForObject(sql, lineRowMapper, name);
+		final LineEntity lineEntity = jdbcTemplate.queryForObject(sql, lineRowMapper, lineName);
+
+		if (lineEntity == null) {
+			throw new LineNotFoundException();
+		}
+
+		return lineEntity;
 	}
 
 	public void deleteById(final Long id) {
 		jdbcTemplate.update("DELETE FROM line WHERE lineId = ?", id);
-	}
-
-	public LineEntity findByLineName(final String lineName) {
-		String sql = "SELECT lineId, name FROM line WHERE name = ?";
-		return jdbcTemplate.queryForObject(sql, lineRowMapper, lineName);
 	}
 
 	public LineEntity findById(final Long id) {
@@ -75,8 +77,8 @@ public class LineDao {
 		return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
 	}
 
-	public void updateLine(final long lineId, final LineEntity lineEntity) {
-		String sql = "UPDATE line SET name = ? WHERE lineId = ?";
-		jdbcTemplate.update(sql, lineEntity.getName(), lineId);
+	public void updateLine(final String lineName, final LineEntity lineEntity) {
+		String sql = "UPDATE line SET name = ? WHERE name = ?";
+		jdbcTemplate.update(sql, lineEntity.getName(), lineName);
 	}
 }

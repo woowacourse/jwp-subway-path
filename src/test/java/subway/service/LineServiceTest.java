@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,14 +67,14 @@ class LineServiceTest {
 	@DisplayName("노선 갱신 서비스 테스트")
 	void updateLine() {
 		// given
-		Long id = 1L;
-		LineUpdateRequest updateRequest = new LineUpdateRequest("2호선");
-
+		String lineName = "2호선";
 		LineEntity lineEntity = LINE_TWO;
-		given(lineRepository.findById(id)).willReturn(lineEntity);
+
+		LineUpdateRequest updateRequest = new LineUpdateRequest(lineName);
+		given(lineRepository.findLineByName(lineName)).willReturn(lineEntity);
 
 		// when
-		lineService.updateLineById(id, updateRequest);
+		lineService.updateLineByLineName(lineName, updateRequest);
 
 		// then
 		assertThat(lineEntity.getName()).isEqualTo(updateRequest.getName());
@@ -85,10 +84,14 @@ class LineServiceTest {
 	@DisplayName("존재하지 않는 노선을 요청하면 예외가 발생한다")
 	void exception_whenLineNotFound() {
 		// given
-		Long id = 1L;
+		String anyLine = "아무노선";
+		String newLine = "새노선";
+		LineUpdateRequest updateRequest = new LineUpdateRequest(newLine);
+
+		given(lineRepository.findLineByName(anyLine)).willThrow(LineNotFoundException.class);
 
 		// then
-		assertThatThrownBy(() -> lineService.updateLineById(id, any()))
+		assertThatThrownBy(() -> lineService.updateLineByLineName(anyLine, updateRequest))
 			.isInstanceOf(LineNotFoundException.class);
 	}
 

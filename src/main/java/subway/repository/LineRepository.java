@@ -14,7 +14,6 @@ import subway.entity.StationEntity;
 import subway.exception.StationNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -43,7 +42,7 @@ public class LineRepository {
 		lineDao.deleteById(id);
 	}
 
-	public LineEntity findById(final Long id) {
+	public LineEntity findLineById(final Long id) {
 		return lineDao.findById(id);
 	}
 
@@ -53,7 +52,7 @@ public class LineRepository {
 	}
 
 	public void insertSectionInLine(final Sections sections, final String lineName) {
-		LineEntity lineEntity = lineDao.findByLineName(lineName);
+		LineEntity lineEntity = lineDao.findByName(lineName);
 		List<SectionEntity> sectionEntities = sections.getSections().stream()
 			.map(section -> {
 				Station upStation = section.getUpStation();
@@ -72,11 +71,15 @@ public class LineRepository {
 		sectionDao.insertBatch(sectionEntities);
 	}
 
-	public void updateLine(final long lineId, final LineEntity lineEntity) {
-		lineDao.updateLine(lineId, lineEntity);
+	public void updateLine(final String lineName, final LineEntity lineEntity) {
+		lineDao.updateLine(lineName, lineEntity);
 	}
 
 	public long findIdByName(final String lineName) {
 		return lineDao.findByName(lineName).getLineId();
+	}
+
+	public LineEntity findLineByName(final String lineName) {
+		return lineDao.findByName(lineName);
 	}
 }

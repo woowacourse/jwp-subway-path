@@ -75,10 +75,10 @@ class SubwayServiceIntegrationTest {
 		lineRepository.insertLine(new LineEntity(1L, "2호선"));
 		lineRepository.insertSectionInLine(createSections(), "2호선");
 
-		PathRequest req = new PathRequest("잠실역", "선릉역");
+		PathRequest request = new PathRequest("잠실역", "선릉역");
 
 		// when
-		PathsResponse result = subwayService.findShortestPath(req);
+		PathsResponse result = subwayService.findShortestPath(request);
 
 		// then
 		assertAll(
