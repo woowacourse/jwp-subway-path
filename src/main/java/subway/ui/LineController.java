@@ -8,7 +8,6 @@ import subway.dto.response.LineResponse;
 import subway.dto.response.LineSectionResponse;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -49,10 +48,5 @@ public class LineController {
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }
