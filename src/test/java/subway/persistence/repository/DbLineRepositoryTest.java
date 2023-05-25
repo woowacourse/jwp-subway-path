@@ -15,6 +15,7 @@ import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -70,11 +71,11 @@ public class DbLineRepositoryTest {
                 3L,
                 10
         );
-        when(lineDao.findById(any())).thenReturn(new LineEntity(1L, "2호선", 1L, 3L));
+        when(lineDao.findById(1L)).thenReturn(Optional.of(new LineEntity(1L, "2호선", 1L, 3L)));
         when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(downwardSection, upwardSection));
-        when(stationDao.findById(1L)).thenReturn(강남역Entity);
-        when(stationDao.findById(2L)).thenReturn(역삼역Entity);
-        when(stationDao.findById(3L)).thenReturn(잠실역Entity);
+        when(stationDao.findById(1L)).thenReturn(Optional.of(강남역Entity));
+        when(stationDao.findById(2L)).thenReturn(Optional.of(역삼역Entity));
+        when(stationDao.findById(3L)).thenReturn(Optional.of(잠실역Entity));
 
         Line line = dbLineRepository.findById(1L);
 
@@ -116,13 +117,13 @@ public class DbLineRepositoryTest {
         );
 
         when(lineDao.findAll()).thenReturn(List.of(lineEntity1, lineEntity2));
-        when(lineDao.findById(1L)).thenReturn(lineEntity1);
-        when(lineDao.findById(2L)).thenReturn(lineEntity2);
+        when(lineDao.findById(1L)).thenReturn(Optional.of(lineEntity1));
+        when(lineDao.findById(2L)).thenReturn(Optional.of(lineEntity2));
         when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(sectionEntity1));
         when(sectionDao.findAllByLineId(2L)).thenReturn(List.of(sectionEntity2));
-        when(stationDao.findById(1L)).thenReturn(강남역Entity);
-        when(stationDao.findById(3L)).thenReturn(잠실역Entity);
-        when(stationDao.findById(4L)).thenReturn(성수역Entity);
+        when(stationDao.findById(1L)).thenReturn(Optional.of(강남역Entity));
+        when(stationDao.findById(3L)).thenReturn(Optional.of(잠실역Entity));
+        when(stationDao.findById(4L)).thenReturn(Optional.of(성수역Entity));
         List<Line> lines = dbLineRepository.findAll();
 
         assertAll(

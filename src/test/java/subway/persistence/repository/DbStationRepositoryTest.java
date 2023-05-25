@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.persistence.dao.StationDao;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -35,7 +36,7 @@ public class DbStationRepositoryTest {
     @DisplayName("ID를 통해 역을 찾는다.")
     @Test
     void shouldReturnStationWhenInputId() {
-        when(stationDao.findById(1L)).thenReturn(강남역Entity);
+        when(stationDao.findById(1L)).thenReturn(Optional.of(강남역Entity));
         assertThat(dbStationRepository.findById(1L)).isEqualTo(강남역);
     }
 

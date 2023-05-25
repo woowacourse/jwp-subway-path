@@ -78,7 +78,7 @@ class LineDaoTest {
         );
         SqlParameterSource params = new BeanPropertySqlParameterSource(lineEntity);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        LineEntity actualLineEntity = lineDao.findById(id);
+        LineEntity actualLineEntity = lineDao.findById(id).get();
 
         assertAll(
                 () -> assertThat(actualLineEntity.getUpwardTerminusId())

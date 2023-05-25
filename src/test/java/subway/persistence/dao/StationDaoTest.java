@@ -4,16 +4,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import subway.persistence.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static subway.fixtures.station.StationFixture.강남역Entity;
 import static subway.fixtures.station.StationFixture.역삼역Entity;
 
@@ -64,7 +63,7 @@ public class StationDaoTest {
     void shouldReturnStationWhenInputId() {
         long id = stationDao.insert(new StationEntity("강남역"));
 
-        StationEntity stationEntity = stationDao.findById(id);
+        StationEntity stationEntity = stationDao.findById(id).get();
 
         assertThat(stationEntity).usingRecursiveComparison().isEqualTo(new StationEntity(id, "강남역"));
     }
@@ -75,7 +74,7 @@ public class StationDaoTest {
         long id = stationDao.insert(new StationEntity("강남역"));
         stationDao.update(new StationEntity(id, "역삼역"));
 
-        StationEntity stationEntity = stationDao.findById(id);
+        StationEntity stationEntity = stationDao.findById(id).get();
 
         assertThat(stationEntity.getName()).isEqualTo("역삼역");
     }
@@ -87,7 +86,6 @@ public class StationDaoTest {
 
         stationDao.deleteById(1L);
 
-        assertThatThrownBy(() -> stationDao.findById(1L))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+        assertThat(stationDao.findById(1L)).isEqualTo(Optional.empty());
     }
 }
