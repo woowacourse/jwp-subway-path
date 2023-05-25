@@ -1,4 +1,13 @@
 spring:
+  profiles:
+    active: local
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
   datasource:
     url: jdbc:mysql://localhost:13306/subway?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -7,6 +16,23 @@ spring:
   sql:
     init:
       schema-locations: classpath:schema.sql
+      mode: always
+  h2:
+    console:
+      enabled: true
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL
+    driver-class-name: org.h2.Driver
+  sql:
+    init:
+      schema-locations: classpath:test-schema.sql
       mode: always
   h2:
     console:
