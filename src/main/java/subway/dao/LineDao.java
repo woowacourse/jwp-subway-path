@@ -3,14 +3,11 @@ package subway.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +18,6 @@ public class LineDao {
 
 	private final JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert insertAction;
-	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	private final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) ->
 		new LineEntity(
@@ -29,13 +25,11 @@ public class LineDao {
 			rs.getString("name")
 		);
 
-	public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource,
-		final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+	public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.insertAction = new SimpleJdbcInsert(dataSource)
 			.withTableName("line")
 			.usingGeneratedKeyColumns("lineId");
-		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
 	public String insert(final LineEntity lineEntity) {
@@ -49,6 +43,10 @@ public class LineDao {
 	private String findById(final long lineId) {
 		String sql = "SELECT * FROM line WHERE lineId = ?";
 		final LineEntity lineEntity = jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
+
+		if (lineEntity == null) {
+			throw new NullPointerException("노선을 찾을 수 없습니다");
+		}
 
 		return lineEntity.getName();
 	}
