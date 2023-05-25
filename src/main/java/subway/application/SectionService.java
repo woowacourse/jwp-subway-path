@@ -23,7 +23,7 @@ public class SectionService {
         final Line line = sectionRepository.findLineById(nowSections, lineId);
 
         final Section newSection = new Section(new Station(sectionRequest.getUpStation()), new Station(sectionRequest.getDownStation()), sectionRequest.getDistance());
-        final Sections newSections = line.getSections().addSection(newSection);
+        final Sections newSections = line.addSection(newSection).getSections();
 
         final List<Section> removedSections = nowSections.findRemovedSection(newSections);
         final List<Section> addedSections = newSections.findAddedSection(nowSections);
