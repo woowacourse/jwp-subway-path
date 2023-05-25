@@ -1,40 +1,42 @@
-package subway.domain.state;
+package subway.domain.strategy;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import subway.domain.Distance;
 import subway.domain.Section;
+import subway.domain.command.Result;
 import subway.domain.command.SectionInsertCommand;
 import subway.domain.command.SectionOperation;
 import subway.domain.command.SectionRemoveCommand;
 import subway.error.exception.SectionConnectionException;
 
-public final class MiddleSections implements SectionState {
+public final class MiddleStrategy extends SectionStrategy {
+
+	MiddleStrategy(final List<Section> sections) {
+		super(sections);
+	}
 
 	@Override
-	public List<SectionOperation> addStation(final List<Section> sections, final Section newSection) {
-		validateExistedSection(sections, newSection);
+	public Result addStation(final Section newSection) {
+		validateExistedSection(newSection);
 
-		final Section targetSection = findTargetSection(sections, newSection);
+		final Section targetSection = findTargetSection(newSection);
 		final Distance newDistance = targetSection.subtractDistance(newSection);
 
 		return addStationSections(newSection, targetSection, newDistance);
 	}
 
 	@Override
-	public List<SectionOperation> removeStation(final List<Section> sections) {
-		final Section upLineTerminal = sections.get(0);
-		final Section downLineTerminal = sections.get(sections.size() - 1);
-
-		final Distance distance = upLineTerminal.addDistance(downLineTerminal);
-		final Section addSection = new Section(null, upLineTerminal.getDeparture(), downLineTerminal.getArrival(),
+	public Result removeStation() {
+		final Distance distance = upLineTerminal().addDistance(downLineTerminal());
+		final Section addSection = new Section(null, upLineTerminal().getDeparture(), downLineTerminal().getArrival(),
 			distance);
 
-		return removeStationSections(sections, addSection);
+		return removeStationSections(addSection);
 	}
 
-	private void validateExistedSection(final List<Section> sections, final Section newSection) {
+	private void validateExistedSection(final Section newSection) {
 		final boolean hasSameSection = sections.stream()
 			.anyMatch(newSection::equals);
 
@@ -43,37 +45,38 @@ public final class MiddleSections implements SectionState {
 		}
 	}
 
-	private Section findTargetSection(final List<Section> sections, final Section newSection) {
+	private Section findTargetSection(final Section newSection) {
 		return sections.stream()
 			.filter(newSection::isConnected)
 			.findFirst()
 			.orElseThrow(() -> new SectionConnectionException("노선에 연결될 수 없는 구간입니다."));
 	}
 
-	private List<SectionOperation> addStationSections(final Section newSection, final Section targetSection,
+	private Result addStationSections(final Section newSection, final Section targetSection,
 		final Distance newDistance) {
-		return List.of(
+		List<SectionOperation> sectionOperations = List.of(
 			new SectionInsertCommand(newSection),
 			new SectionRemoveCommand(targetSection),
 			new SectionInsertCommand(createNewSection(newSection, targetSection, newDistance))
 		);
+		return new Result(sectionOperations);
 	}
 
-	private Section createNewSection(final Section newSection, final Section targetSection, final Distance newDistance) {
+	private Section createNewSection(final Section newSection, final Section targetSection,
+		final Distance newDistance) {
 		if (targetSection.isSameDeparture(newSection)) {
 			return new Section(null, newSection.getArrival(), targetSection.getArrival(), newDistance);
 		}
 		return new Section(null, targetSection.getDeparture(), newSection.getDeparture(), newDistance);
 	}
 
-	private List<SectionOperation> removeStationSections(final List<Section> sections, final Section newSection) {
+	private Result removeStationSections(final Section newSection) {
 		final List<SectionOperation> result = sections.stream()
 			.map(SectionRemoveCommand::new)
 			.collect(Collectors.toList());
 
-		final SectionOperation sectionInsertCommand = new SectionInsertCommand(newSection);
-		result.add(sectionInsertCommand);
+		result.add(new SectionInsertCommand(newSection));
 
-		return result;
+		return new Result(result);
 	}
 }

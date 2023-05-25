@@ -14,7 +14,7 @@ import subway.domain.SectionRepository;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
-import subway.domain.command.SectionOperation;
+import subway.domain.command.Result;
 import subway.error.exception.SectionConnectionException;
 
 @Service
@@ -31,12 +31,12 @@ public class SectionService {
 
 	public SectionDto addStationByLineId(final Long lineId, final SectionDto sectionDto) {
 		final List<Section> lineSections = sectionRepository.findSectionsByLineId(lineId);
-		final Section addSection = createNewSection(sectionDto);
 
 		final Sections sections = new Sections(lineSections);
-		final List<SectionOperation> result = sections.addStation(addSection);
+		final Section addSection = createNewSection(sectionDto);
 
-		executeSectionOperation(lineId, result);
+		final Result result = sections.addStation(addSection);
+		result.execute(lineId, sectionRepository::addSection, sectionRepository::removeSection);
 
 		return SectionDto.from(addSection);
 	}
@@ -57,23 +57,10 @@ public class SectionService {
 
 	public void deleteSectionByLineIdAndStationId(final Long lineId, final Long stationId) {
 		final List<Section> sections = sectionRepository.findSectionsByLineIdAndStationId(lineId, stationId);
-
 		final Sections removeSections = new Sections(sections);
-		final List<SectionOperation> result = removeSections.removeStation();
 
-		executeSectionOperation(lineId, result);
-	}
-
-	private void executeSectionOperation(final Long lineId, final List<SectionOperation> result) {
-		result.forEach(sectionOperation -> execute(lineId, sectionOperation));
-	}
-
-	private void execute(final Long lineId, final SectionOperation sectionOperation) {
-		if (sectionOperation.isInsert()) {
-			sectionRepository.addSection(lineId, sectionOperation.getSection());
-			return;
-		}
-		sectionRepository.removeSection(sectionOperation.getSection());
+		final Result result = removeSections.removeStation();
+		result.execute(lineId, sectionRepository::addSection, sectionRepository::removeSection);
 	}
 
 	private Section createNewSection(final SectionDto sectionDto) {

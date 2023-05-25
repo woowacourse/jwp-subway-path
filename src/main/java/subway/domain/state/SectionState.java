@@ -3,11 +3,13 @@ package subway.domain.state;
 import java.util.List;
 
 import subway.domain.Section;
-import subway.domain.command.SectionOperation;
+import subway.domain.command.Result;
 
 public interface SectionState {
 
-	List<SectionOperation> addStation(final List<Section> sections, final Section newSection);
+	Result addStation(final Section newSection);
 
-	List<SectionOperation> removeStation(final List<Section> sections);
+	Result removeStation();
+
+	List<Section> getSections();
 }
