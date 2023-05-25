@@ -3,12 +3,14 @@ package subway.service;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
+import subway.event.StationChange;
 import subway.service.dto.StationDeleteRequest;
 import subway.service.dto.StationRegisterRequest;
 
@@ -19,15 +21,17 @@ public class StationService {
   private final SectionCommandService sectionCommandService;
   private final LineCommandService lineCommandService;
   private final LineQueryService lineQueryService;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   public StationService(
       final SectionCommandService sectionCommandService,
       final LineCommandService lineCommandService,
-      final LineQueryService lineQueryService
-  ) {
+      final LineQueryService lineQueryService,
+      final ApplicationEventPublisher applicationEventPublisher) {
     this.sectionCommandService = sectionCommandService;
     this.lineCommandService = lineCommandService;
     this.lineQueryService = lineQueryService;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   public void registerStation(final StationRegisterRequest stationRegisterRequest) {
@@ -53,6 +57,8 @@ public class StationService {
         .filter(section -> Objects.nonNull(section.getId()))
         .findFirst()
         .ifPresent(sectionCommandService::updateSection);
+
+    applicationEventPublisher.publishEvent(new StationChange());
   }
 
   private Section mapToSectionFrom(final StationRegisterRequest stationRegisterRequest) {
@@ -88,6 +94,8 @@ public class StationService {
       sectionCommandService.deleteAll(line.getId());
       lineCommandService.deleteLine(line.getId());
     }
+
+    applicationEventPublisher.publishEvent(new StationChange());
   }
 
   private Consumer<Section> updateAndDeleteSection(

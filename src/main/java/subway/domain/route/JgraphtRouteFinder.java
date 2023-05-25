@@ -11,6 +11,7 @@ import subway.domain.Distance;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Stations;
+import subway.event.StationChange;
 import subway.service.LineQueryService;
 
 @Component
@@ -23,8 +24,8 @@ public class JgraphtRouteFinder implements RouteFinder {
     this.lineQueryService = lineQueryService;
   }
 
-  @EventListener(ContextRefreshedEvent.class)
-  public void init() {
+  @EventListener({ContextRefreshedEvent.class, StationChange.class})
+  public void updateDijkstraGraph() {
     final List<Line> lines = lineQueryService.searchAllLine();
 
     Graph<String, EdgeSection> graph
@@ -78,8 +79,6 @@ public class JgraphtRouteFinder implements RouteFinder {
     graph.setEdgeWeight(start, distance);
     graph.setEdgeWeight(end, distance);
   }
-
-  //TODO : 역 연산 수행될 때마다 update
 
   @Override
   public List<String> findShortestRoute(final String startStation, final String endStation) {
