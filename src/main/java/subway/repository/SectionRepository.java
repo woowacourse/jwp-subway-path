@@ -45,7 +45,7 @@ public class SectionRepository {
         StationEntity upStationEntity = sectionEntity.getUpStationEntity();
         StationEntity downStationEntity = sectionEntity.getDownStationEntity();
 
-        return Section.of(
+        return new Section(
                 new Station(upStationEntity.getId(), upStationEntity.getName()),
                 new Station(downStationEntity.getId(), downStationEntity.getName()),
                 sectionEntity.getDistance()

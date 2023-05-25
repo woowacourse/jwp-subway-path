@@ -185,7 +185,7 @@ public class Sections {
                 .findAny()
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_STATION));
 
-        Section newSection = Section.of(frontSection.getUpStation(), backSection.getDownStation(), newDistance);
+        Section newSection = new Section(frontSection.getUpStation(), backSection.getDownStation(), newDistance);
 
         int index = sections.indexOf(frontSection);
         sections.add(index, newSection);

@@ -9,17 +9,13 @@ public class Section {
     private final Station downStation;
     private final int distance;
 
-    private Section(final Station upStation, final Station downStation, final int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
-    }
-
-    public static Section of(final Station upStation, final Station downStation, final int distance) {
+    public Section(final Station upStation, final Station downStation, final int distance) {
         validateDifferentUpAndDown(upStation, downStation);
         validatePositiveDistance(distance);
 
-        return new Section(upStation, downStation, distance);
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
     }
 
     private static void validatePositiveDistance(final int distance) {

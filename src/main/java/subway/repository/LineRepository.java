@@ -53,7 +53,7 @@ public class LineRepository {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
 
         return sectionEntities.stream()
-                .map(entity -> Section.of(
+                .map(entity -> new Section(
                         findStationByStationId(entity.getUpStationId()),
                         findStationByStationId(entity.getDownStationId()),
                         entity.getDistance()
@@ -78,7 +78,7 @@ public class LineRepository {
                     .collect(Collectors.toList());
 
             List<Section> sections = sectionEntities.stream()
-                    .map(section -> Section.of(
+                    .map(section -> new Section(
                             new Station(section.getUpStationEntity().getId(), section.getUpStationEntity().getName()),
                             new Station(section.getDownStationEntity().getId(),
                                     section.getDownStationEntity().getName()),

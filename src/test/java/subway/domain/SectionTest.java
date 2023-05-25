@@ -23,7 +23,7 @@ class SectionTest {
         Station 도착역 = new Station(2L, "잠실새내역");
 
         // expected
-        assertDoesNotThrow(() -> Section.of(시작역, 도착역, 10));
+        assertDoesNotThrow(() -> new Section(시작역, 도착역, 10));
     }
 
     @ParameterizedTest(name = "{displayName}[{index}] = ''{0}''")
@@ -34,7 +34,7 @@ class SectionTest {
         Station 도착역 = new Station(2L, "잠실새내역");
 
         // expected
-        assertThatThrownBy(() -> Section.of(시작역, 도착역, 거리))
+        assertThatThrownBy(() -> new Section(시작역, 도착역, 거리))
                 .isInstanceOf(InvalidException.class);
     }
 
@@ -44,7 +44,7 @@ class SectionTest {
         Station 시작역 = new Station(1L, "잠실역");
 
         // expected
-        assertThatThrownBy(() -> Section.of(시작역, 시작역, 10))
+        assertThatThrownBy(() -> new Section(시작역, 시작역, 10))
                 .isInstanceOf(InvalidException.class);
     }
 
@@ -53,11 +53,11 @@ class SectionTest {
         // given
         Station 시작역 = new Station(1L, "잠실역");
         Station 도착역 = new Station(2L, "잠실새내역");
-        Section 기존_구간 = Section.of(시작역, 도착역, 10);
+        Section 기존_구간 = new Section(시작역, 도착역, 10);
 
         // expected
         assertThatThrownBy(() -> 기존_구간.getDividedSection(
-                Section.of(
+                new Section(
                         new Station(1L, "잠실새내역"),
                         new Station(2L, "신림역"),
                         20)))
@@ -69,10 +69,10 @@ class SectionTest {
         // given
         Station 시작역 = new Station(1L, "잠실역");
         Station 도착역 = new Station(2L, "잠실새내역");
-        Section 기존_구간 = Section.of(시작역, 도착역, 10);
+        Section 기존_구간 = new Section(시작역, 도착역, 10);
 
         Station 새로운_시작역 = new Station(3L, "봉천역");
-        Section 새로운_도착역 = Section.of(새로운_시작역, 도착역, 4);
+        Section 새로운_도착역 = new Section(새로운_시작역, 도착역, 4);
 
         // when
         Section 분리된_구간 = 기존_구간.getDividedSection(새로운_도착역);
@@ -91,10 +91,10 @@ class SectionTest {
         // given
         Station 시작역 = new Station(1L, "잠실역");
         Station 도착역 = new Station(2L, "잠실새내역");
-        Section 기존_구간 = Section.of(시작역, 도착역, 10);
+        Section 기존_구간 = new Section(시작역, 도착역, 10);
 
         Station 새로운_도착역 = new Station(3L, "봉천역");
-        Section 새로운_구간 = Section.of(시작역, 새로운_도착역, 4);
+        Section 새로운_구간 = new Section(시작역, 새로운_도착역, 4);
 
         // when
         Section 분리된_구간 = 기존_구간.getDividedSection(새로운_구간);
