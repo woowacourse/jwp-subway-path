@@ -1,20 +1,21 @@
 package subway.repository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Repository;
 
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.subway.Line;
+import subway.domain.subway.Lines;
 import subway.domain.subway.Sections;
 import subway.domain.subway.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 import subway.exception.StationNotFoundException;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class LineRepository {
@@ -40,10 +41,6 @@ public class LineRepository {
 	public void deleteLineById(final Long id) {
 		sectionDao.deleteByLineId(id);
 		lineDao.deleteById(id);
-	}
-
-	public LineEntity findLineById(final Long id) {
-		return lineDao.findById(id);
 	}
 
 	public Line findLineWithSections(final String lineName, final Sections sections) {
@@ -81,5 +78,9 @@ public class LineRepository {
 
 	public LineEntity findLineByName(final String lineName) {
 		return lineDao.findByName(lineName);
+	}
+
+	public Lines getLines(final List<Line> lines){
+		return new Lines(lines);
 	}
 }
