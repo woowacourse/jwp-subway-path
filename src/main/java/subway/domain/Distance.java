@@ -12,6 +12,7 @@ public final class Distance {
     private final int length;
 
     public Distance(final int length) {
+        validatePositiveOrZero(length);
         this.length = length;
     }
 
@@ -32,6 +33,12 @@ public final class Distance {
     private void validPositive(final int length) {
         if (length <= BOUNDARY_POINT) {
             throw new InvalidDistanceException();
+        }
+    }
+
+    private void validatePositiveOrZero(final int length) {
+        if (length < BOUNDARY_POINT) {
+            throw new RuntimeException("거리가 음수입니다.");
         }
     }
 

@@ -2,8 +2,10 @@ package subway.domain.fee;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.path.TestDomainData;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FeeTest {
 
@@ -19,5 +21,12 @@ class FeeTest {
 
         // then
         assertThat(added).isEqualTo(new Fee(1300));
+    }
+
+    @Test
+    @DisplayName("0미만의 요금으로 생성되면 예외가 발생한다.")
+    void construct_fail_when_amount_is_under_zero() {
+        assertThatThrownBy(() -> new Fee(-1))
+                .isInstanceOf(RuntimeException.class);
     }
 }

@@ -11,6 +11,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class DistanceTest {
 
     @Test
+    @DisplayName("생성 시에 길이가 0이하인 length로 생성되면 예외가 발생한다.")
+    void construct_fail_when_length_is_not_positive() {
+        assertThatThrownBy(() -> new Distance(-1))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
     @DisplayName("덧셈")
     void add_test() {
         // given
