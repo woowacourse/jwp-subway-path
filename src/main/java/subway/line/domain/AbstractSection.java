@@ -1,7 +1,6 @@
 package subway.line.domain;
 
 import subway.line.exception.DuplicateStationInLineException;
-import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 
 import java.util.List;
@@ -41,8 +40,8 @@ public abstract class AbstractSection {
         return upstream.equals(station) || downstream.equals(station);
     }
 
-    public final boolean isCorrespondingSection(Station otherUpstream, Station otherDownstream) {
-        return upstream.equals(otherUpstream) && downstream.equals(otherDownstream);
+    public final boolean isCorrespondingSection(long upstreamId, long downstreamId) {
+        return upstream.getId() == upstreamId && downstream.getId() == downstreamId;
     }
 
     protected void validateSectionLinked(AbstractSection otherSection) {

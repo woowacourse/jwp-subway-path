@@ -8,8 +8,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.line.domain.SectionFixture.DISTANCE;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
-import static subway.utils.SectionFixture.DISTANCE;
 import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
 import static subway.utils.StationFixture.JAMSIL_STATION;
 

@@ -1,8 +1,4 @@
-package subway.utils;
-
-import subway.line.domain.DownstreamTerminalSection;
-import subway.line.domain.MiddleSection;
-import subway.line.domain.UpstreamTerminalSection;
+package subway.line.domain;
 
 import static subway.utils.StationFixture.*;
 

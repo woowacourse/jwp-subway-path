@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import subway.line.exception.DuplicateStationInLineException;
 import subway.line.exception.InvalidAdditionalFareException;
 import subway.line.exception.SectionNotFoundException;
-import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 import subway.station.exception.NameLengthException;
 import subway.station.exception.StationNotFoundException;
@@ -16,8 +15,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.line.domain.SectionFixture.*;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
-import static subway.utils.SectionFixture.*;
 import static subway.utils.StationFixture.*;
 
 class LineTest {
@@ -55,7 +54,7 @@ class LineTest {
         final Line line = new Line(LINE_NUMBER_TWO);
         final Station stationToAdd = GANGNAM_STATION;
 
-        line.addStation(stationToAdd, SULLEUNG_STATION, JAMSIL_STATION, 3);
+        line.addStation(stationToAdd, SULLEUNG_STATION.getId(), JAMSIL_STATION.getId(), 3);
 
         assertThat(line.getSections()).containsExactly(
                 new MiddleSection(SULLEUNG_STATION, stationToAdd, 3),
@@ -70,7 +69,7 @@ class LineTest {
         Line lineNumberTwo = new Line(LINE_NUMBER_TWO);
         Station stationToAdd = GANGNAM_STATION;
 
-        lineNumberTwo.addStation(stationToAdd, DummyTerminalStation.getInstance(), SULLEUNG_STATION, 2);
+        lineNumberTwo.addStation(stationToAdd, DummyTerminalStation.STATION_ID, SULLEUNG_STATION.getId(), 2);
 
         assertThat(lineNumberTwo.getSections()).containsExactly(
                 new MiddleSection(stationToAdd, SULLEUNG_STATION, 2),
@@ -85,7 +84,7 @@ class LineTest {
         Line lineNumberTwo = new Line(LINE_NUMBER_TWO);
         Station stationToAdd = GANGNAM_STATION;
 
-        lineNumberTwo.addStation(stationToAdd, JAMSIL_NARU_STATION, DummyTerminalStation.getInstance(), 2);
+        lineNumberTwo.addStation(stationToAdd, JAMSIL_NARU_STATION.getId(), DummyTerminalStation.STATION_ID, 2);
 
         assertThat(lineNumberTwo.getSections()).containsExactly(
                 SULLEUNG_TO_JAMSIL,
@@ -97,7 +96,7 @@ class LineTest {
     @Test
     @DisplayName("추가하려는 Station이 이미 존재하는 경우 예외를 던진다")
     void addStationFail1() {
-        assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(JAMSIL_STATION, DummyTerminalStation.getInstance(), SULLEUNG_STATION, 2))
+        assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(JAMSIL_STATION, DummyTerminalStation.STATION_ID, SULLEUNG_STATION.getId(), 2))
                 .isInstanceOf(DuplicateStationInLineException.class);
     }
 
@@ -107,9 +106,9 @@ class LineTest {
         Station newStation = new Station("에밀");
 
         assertSoftly(softly -> {
-            assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, SULLEUNG_STATION, JAMSIL_NARU_STATION, 3))
+            assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, SULLEUNG_STATION.getId(), JAMSIL_NARU_STATION.getId(), 3))
                     .isInstanceOf(SectionNotFoundException.class);
-            assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, JAMSIL_STATION, DummyTerminalStation.getInstance(), 3))
+            assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, JAMSIL_STATION.getId(), DummyTerminalStation.STATION_ID, 3))
                     .isInstanceOf(SectionNotFoundException.class);
         });
     }

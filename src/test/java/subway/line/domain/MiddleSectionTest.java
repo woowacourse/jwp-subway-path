@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.line.exception.InvalidDistanceException;
 import subway.line.exception.InvalidStationNameException;
-import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.*;
@@ -40,7 +39,7 @@ class MiddleSectionTest {
     void isCorrespondingSectionTrue() {
         MiddleSection newMiddleSection = new MiddleSection(JAMSIL_STATION, JAMSIL_NARU_STATION, 3);
 
-        assertThat(newMiddleSection.isCorrespondingSection(JAMSIL_STATION, JAMSIL_NARU_STATION)).isTrue();
+        assertThat(newMiddleSection.isCorrespondingSection(JAMSIL_STATION.getId(), JAMSIL_NARU_STATION.getId())).isTrue();
     }
 
     @Test
@@ -48,7 +47,7 @@ class MiddleSectionTest {
     void isCorrespondingSectionFalse() {
         MiddleSection newMiddleSection = new MiddleSection(JAMSIL_STATION, JAMSIL_NARU_STATION, 3);
 
-        assertThat(newMiddleSection.isCorrespondingSection(JAMSIL_NARU_STATION, JAMSIL_STATION)).isFalse();
+        assertThat(newMiddleSection.isCorrespondingSection(JAMSIL_NARU_STATION.getId(), JAMSIL_STATION.getId())).isFalse();
     }
 
     @Test

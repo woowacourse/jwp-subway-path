@@ -44,10 +44,10 @@ public class Line {
         return sections.get(sections.size() - 1).getDownstream();
     }
 
-    public void addStation(Station stationToAdd, Station upstream, Station downstream, int distanceToUpstream) {
+    public void addStation(Station stationToAdd, long upstreamId, long downstreamId, int distanceToUpstream) {
         validateStationNotExist(stationToAdd);
 
-        final AbstractSection correspondingSection = findCorrespondingSection(upstream, downstream);
+        final AbstractSection correspondingSection = findCorrespondingSection(upstreamId, downstreamId);
         final List<AbstractSection> sectionsToAdd = correspondingSection.insertInTheMiddle(stationToAdd, distanceToUpstream);
         addStation(correspondingSection, sectionsToAdd);
     }
@@ -58,9 +58,9 @@ public class Line {
         }
     }
 
-    private AbstractSection findCorrespondingSection(Station upstream, Station downstream) {
+    private AbstractSection findCorrespondingSection(long upstreamId, long downstreamId) {
         return sections.stream()
-                       .filter(section -> section.isCorrespondingSection(upstream, downstream))
+                       .filter(section -> section.isCorrespondingSection(upstreamId, downstreamId))
                        .findAny()
                        .orElseThrow(() -> new SectionNotFoundException("노선에 해당하는 구간이 존재하지 않습니다."));
     }

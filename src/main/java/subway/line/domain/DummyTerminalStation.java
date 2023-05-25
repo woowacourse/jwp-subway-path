@@ -1,6 +1,8 @@
-package subway.station.domain;
+package subway.line.domain;
 
-public class DummyTerminalStation extends Station {
+import subway.station.domain.Station;
+
+class DummyTerminalStation extends Station {
 
     public static final Long STATION_ID = 0L;
     private static final String DUMMY_TERMINAL_NAME = "DummyTerminal";
@@ -8,7 +10,7 @@ public class DummyTerminalStation extends Station {
     private static final DummyTerminalStation INSTANCE = new DummyTerminalStation();
 
     private DummyTerminalStation() {
-        super(DUMMY_TERMINAL_NAME);
+        super(STATION_ID, DUMMY_TERMINAL_NAME);
     }
 
     public static Station getInstance() {

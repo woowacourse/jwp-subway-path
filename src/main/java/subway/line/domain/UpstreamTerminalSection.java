@@ -1,12 +1,11 @@
 package subway.line.domain;
 
-import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpstreamTerminalSection extends AbstractSection {
+class UpstreamTerminalSection extends AbstractSection {
 
     public UpstreamTerminalSection(Station downstream) {
         super(DummyTerminalStation.getInstance(), downstream);

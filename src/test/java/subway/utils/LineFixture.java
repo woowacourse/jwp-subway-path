@@ -6,8 +6,8 @@ import subway.line.domain.MiddleSection;
 import java.util.LinkedList;
 import java.util.List;
 
-import static subway.utils.SectionFixture.JAMSIL_TO_JAMSILNARU;
-import static subway.utils.SectionFixture.SULLEUNG_TO_JAMSIL;
+import static subway.line.domain.SectionFixture.JAMSIL_TO_JAMSILNARU;
+import static subway.line.domain.SectionFixture.SULLEUNG_TO_JAMSIL;
 import static subway.utils.StationFixture.*;
 
 public class LineFixture {

@@ -13,11 +13,9 @@ import subway.line.exception.LineNotFoundException;
 import subway.line.repository.LineRepository;
 import subway.line.ui.dto.LineDto;
 import subway.station.application.StationService;
-import subway.station.domain.DummyTerminalStation;
 import subway.station.domain.Station;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -35,22 +33,15 @@ public class LineService {
 
     public long addStationToLine(StationAdditionToLineDto stationAdditionToLineDto) {
         final Station stationToAdd = stationService.createStationIfNotExist(stationAdditionToLineDto.getStationName());
+        final Long upstreamId = stationAdditionToLineDto.getUpstreamId();
+        final Long downstreamId = stationAdditionToLineDto.getDownstreamId();
+        final int distanceToUpstream = stationAdditionToLineDto.getDistanceToUpstream();
 
         final Line line = findLineOrThrow(stationAdditionToLineDto.getLineId());
-        final Station upstream = findStation(stationAdditionToLineDto.getUpstreamId());
-        final Station downstream = findStation(stationAdditionToLineDto.getDownstreamId());
-
-        line.addStation(stationToAdd, upstream, downstream, stationAdditionToLineDto.getDistanceToUpstream());
+        line.addStation(stationToAdd, upstreamId, downstreamId, distanceToUpstream);
         lineRepository.updateLine(line);
 
         return stationToAdd.getId();
-    }
-
-    private Station findStation(Long stationId) {
-        if (Objects.equals(stationId, DummyTerminalStation.STATION_ID)) {
-            return DummyTerminalStation.getInstance();
-        }
-        return stationService.findStationById(stationId);
     }
 
     public void deleteStationFromLine(StationDeletionFromLineDto stationDeletionFromLineDto) {

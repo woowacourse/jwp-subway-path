@@ -3,13 +3,12 @@ package subway.line.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.line.exception.DuplicateStationInLineException;
-import subway.station.domain.DummyTerminalStation;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.utils.SectionFixture.*;
+import static subway.line.domain.SectionFixture.*;
 import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
 
 class UpstreamTerminalSectionTest {
