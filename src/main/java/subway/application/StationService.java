@@ -5,6 +5,7 @@ import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.exception.DataNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,10 +37,16 @@ public class StationService {
     }
 
     public void updateStation(final Long id, final StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        int modifiedRow = stationDao.update(new Station(id, stationRequest.getName()));
+        if (modifiedRow == 0) {
+            throw new DataNotFoundException("존재하지 않는 역입니다");
+        }
     }
 
     public void deleteStationById(final Long id) {
-        stationDao.deleteById(id);
+        int modifiedRow = stationDao.deleteById(id);
+        if (modifiedRow == 0) {
+            throw new DataNotFoundException("존재하지 않는 역입니다");
+        }
     }
 }

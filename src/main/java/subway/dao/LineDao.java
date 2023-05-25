@@ -51,12 +51,12 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(final Line newLine) {
+    public int update(final Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        return jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
-    public void deleteById(final Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int deleteById(final Long id) {
+        return jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }

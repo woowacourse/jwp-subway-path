@@ -44,13 +44,13 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(final Station newStation) {
+    public int update(final Station newStation) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        return jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
 
-    public void deleteById(final Long id) {
+    public int deleteById(final Long id) {
         String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        return jdbcTemplate.update(sql, id);
     }
 }

@@ -8,6 +8,7 @@ import subway.domain.*;
 import subway.dto.*;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.exception.DataNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+    private static final String NotExistLine = "존재하지 않는 노선입니다";
+    private static final String NotExistStation = "존재하지 않는 역입니다";
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -35,6 +38,10 @@ public class LineService {
 
     public LineResponse findLineById(final Long id) {
         LineEntity persistLine = lineDao.findById(id);
+        if (persistLine == null) {
+            throw new DataNotFoundException(NotExistLine);
+        }
+
         return LineResponse.from(configureLine(persistLine));
     }
 
@@ -58,9 +65,9 @@ public class LineService {
 
     private Map<Station, Section> makeSectionMap(final LineEntity persistLine, final List<SectionEntity> sectionEntities) {
         Map<Station, Section> sectionMap = new HashMap<>();
-        for(SectionEntity sectionEntity : sectionEntities) {
-            Station upperStation = stationDao.findById(sectionEntity.getUpperStation());
-            Station lowerStation = stationDao.findById(sectionEntity.getLowerStation());
+        for (SectionEntity sectionEntity : sectionEntities) {
+            Station upperStation = findStationById(sectionEntity.getUpperStation());
+            Station lowerStation = findStationById(sectionEntity.getLowerStation());
             sectionMap.put(upperStation, new Section(persistLine.getId(), upperStation, lowerStation, new Distance(sectionEntity.getDistance())));
         }
 
@@ -68,17 +75,23 @@ public class LineService {
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        int modifiedRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        if (modifiedRow == 0) {
+            throw new DataNotFoundException(NotExistLine);
+        }
     }
 
     public void deleteLineById(final Long id) {
-        lineDao.deleteById(id);
+        int modifiedRow = lineDao.deleteById(id);
+        if (modifiedRow == 0) {
+            throw new DataNotFoundException(NotExistLine);
+        }
     }
 
     public void registerStation(final Long id, final StationRegisterRequest request) {
         Line line = configureLine(lineDao.findById(id));
-        Station station = stationDao.findById(request.getUpperStation());
-        Station base = stationDao.findById(request.getLowerStation());
+        Station station = findStationById(request.getUpperStation());
+        Station base = findStationById(request.getLowerStation());
 
         line.insert(station, base, new Distance(request.getDistance()));
 
@@ -88,10 +101,19 @@ public class LineService {
 
     public void deleteStation(final Long id, final StationDeleteRequest request) {
         Line line = configureLine(lineDao.findById(id));
-        Station station = stationDao.findById(request.getStationId());
+        Station station = findStationById(request.getStationId());
         line.delete(station);
 
         sectionDao.deleteAllByLineId(line.getId());
         sectionDao.insertAll(SectionDto.makeList(line.getId(), line.getSections()));
+    }
+
+    private Station findStationById(final Long stationId) {
+        try {
+            return stationDao.findById(stationId);
+        }
+        catch (Exception e) {
+            throw new DataNotFoundException(NotExistStation);
+        }
     }
 }
