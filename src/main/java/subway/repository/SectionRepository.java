@@ -2,7 +2,6 @@ package subway.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.SectionWithStationNameEntity;
 import subway.dao.entity.StationEntity;
@@ -15,11 +14,9 @@ import subway.exception.NotFoundException;
 @Repository
 public class SectionRepository {
     private final SectionDao sectionDao;
-    private final StationDao stationDao;
 
-    public SectionRepository(final SectionDao sectionDao, final StationDao stationDao) {
+    public SectionRepository(final SectionDao sectionDao) {
         this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
     }
 
     public Long save(final Long lineId, final Section section) {
