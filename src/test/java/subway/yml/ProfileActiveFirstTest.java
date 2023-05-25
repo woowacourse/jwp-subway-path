@@ -3,9 +3,11 @@ package subway.yml;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.sql.DataSource;
+import subway.domain.route.JgraphtRouteFinder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,6 +17,9 @@ public class ProfileActiveFirstTest {
 
     @Autowired
     private DataSource dataSource;
+
+    @MockBean
+    private JgraphtRouteFinder jgraphtRouteFinder;
 
     @Test
     void test_first() throws Exception {
