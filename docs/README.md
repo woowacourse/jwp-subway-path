@@ -77,3 +77,16 @@
 ### 리팩토링 해야 되는 내용
 - distance 자료형 double로 변경
 - NegativeException -> NotPositiveException으로 변경
+
+### 2단계 리뷰내용
+- [x] 수동 빈 등록의 이점은?
+  1. 객체간의 의존관계를 명확하게 확인할 수 있다.
+  2. 빈을 자동으로 등록할 수 없는 외부 라이브러리를 등록할 때 사용할 수 있다.
+  3. @Conditional을 통해 조건부 빈 등록이 가능하다.
+  - 하지만 이번 미션에서는 딱히 수동으로 빈을 등록할 이유가 없었던 것 같다.
+- [x] DataSoruce는 application.yml을 통해 자동으로 설정될 텐데, 추가적으로 구현한 이유는?
+  - 상용 DB와 테스트용 DB 환경을 분리하는 과정에서 직접 구현했는데, 사실 왜 그랬는지 기억이 안 난다... 디버깅 과정에서 만들었던 것 같다.
+- [ ] SubwayGraph를 컴포넌트로 등록하는 것은 어떨까?
+- [ ] StationRequest의 name으로 빈 갑싱 들어온다면?
+- [ ] Line/Section/StationException을 따로 핸들링한 이유는?
+- 
