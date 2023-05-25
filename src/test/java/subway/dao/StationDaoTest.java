@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.domain.station.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -59,7 +60,7 @@ class StationDaoTest {
         // then
         assertSoftly(softly -> {
             softly.assertThat(stationEntities).hasSize(2);
-            softly.assertThat(stationEntities).extracting(StationEntity::toStation)
+            softly.assertThat(stationEntities).extracting(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName()))
                     .contains(후추, 디노);
         });
     }

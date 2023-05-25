@@ -1,10 +1,5 @@
 package subway.dao;
 
-import subway.domain.line.Line;
-import subway.domain.section.Section;
-
-import java.util.List;
-
 public class LineEntity {
 
     private final Long id;
@@ -15,14 +10,6 @@ public class LineEntity {
         this.id = id;
         this.name = name;
         this.color = color;
-    }
-
-    public static LineEntity from(final Line line) {
-        return new LineEntity(line.getId(), line.getNameValue(), line.getColorValue());
-    }
-
-    public Line toLine(final List<Section> sections) {
-        return new Line(id, name, color, sections);
     }
 
     public Long getId() {

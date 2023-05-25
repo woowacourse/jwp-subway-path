@@ -73,6 +73,14 @@ public class Section {
         return to;
     }
 
+    public Long getFromId() {
+        return from.getId();
+    }
+
+    public Long getToId() {
+        return to.getId();
+    }
+
     public Distance getDistance() {
         return distance;
     }

@@ -12,9 +12,11 @@ import java.util.stream.Collectors;
 public class SectionRepository {
 
     private final SectionDao sectionDao;
+    private final Mapper mapper;
 
-    public SectionRepository(final SectionDao sectionDao) {
+    public SectionRepository(final SectionDao sectionDao, final Mapper mapper) {
         this.sectionDao = sectionDao;
+        this.mapper = mapper;
     }
 
     public List<Section> saveUpdatedSections(final List<Section> updatedSections, final Long lineId) {
@@ -26,7 +28,7 @@ public class SectionRepository {
     private List<Section> insertUpdated(final List<Section> updatedSections, final List<SectionEntity> originalSections, final Long lineId) {
         return updatedSections.stream()
                 .filter(updated -> originalSections.stream().noneMatch(original -> original.getId().equals(updated.getId())))
-                .peek(section -> sectionDao.insert(SectionEntity.of(section, lineId)))
+                .peek(section -> sectionDao.insert(mapper.toSectionEntity(section, lineId)))
                 .collect(Collectors.toUnmodifiableList());
     }
 

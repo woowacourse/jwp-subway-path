@@ -1,7 +1,5 @@
 package subway.dao;
 
-import subway.domain.section.Section;
-
 public class SectionEntity {
 
     private final Long id;
@@ -20,10 +18,6 @@ public class SectionEntity {
 
     public SectionEntity(final Long fromId, final Long toId, final Integer distance, final Long lineId) {
         this(null, fromId, toId, distance, lineId);
-    }
-
-    public static SectionEntity of(final Section section, final Long lineId) {
-        return new SectionEntity(section.getId(), section.getFrom().getId(), section.getTo().getId(), section.getDistanceValue(), lineId);
     }
 
     public Long getId() {
