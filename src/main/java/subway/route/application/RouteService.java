@@ -37,26 +37,25 @@ public class RouteService {
     public RouteDto findRoute(RouteReadDto routeReadDto) {
         final Station source = stationService.findStationById(routeReadDto.getSource());
         final Station destination = stationService.findStationById(routeReadDto.getDestination());
-
         final RouteFinder<RouteSegment> routeFinder = getRouteFinder();
-        final List<RouteSegment> route = routeFinder.getRoute(source, destination);
 
-        final int fare = calculateFare(source, destination, routeFinder, routeReadDto);
+        final List<RouteSegment> route = routeFinder.getRoute(source, destination);
+        final int totalDistance = routeFinder.getTotalWeight(source, destination);
+        final int fare = calculateFare(route, totalDistance, routeReadDto);
 
         return DtoMapper.toRouteDto(route, fare);
     }
 
     private RouteFinder<RouteSegment> getRouteFinder() {
         final Lines allLines = lineRepository.findAllLines();
+
         return routeFinderBuilder.buildRouteFinder(allLines.getLines());
     }
 
-    private int calculateFare(Station source, Station destination, RouteFinder<RouteSegment> routeFinder, RouteReadDto routeReadDto) {
-        final List<RouteSegment> route = routeFinder.getRoute(source, destination);
-        final int distance = routeFinder.getTotalWeight(source, destination);
+    private int calculateFare(List<RouteSegment> route, int totalDistance, RouteReadDto routeReadDto) {
         final FareFactors fareFactors = new FareFactors();
+        farePolicy.buildFareFactors(fareFactors, route, totalDistance, routeReadDto.getAge());
 
-        farePolicy.buildFareFactors(fareFactors, route, distance, routeReadDto.getAge());
         return farePolicy.calculate(fareFactors, 0);
     }
 }
