@@ -14,6 +14,7 @@ import subway.domain.fee.NormalFeeCalculator;
 import subway.domain.path.DijkstraShortestPathFinder;
 import subway.domain.path.ShortestPathFinder;
 import subway.entity.SectionDetailEntity;
+import subway.entity.StationEntity;
 import subway.repository.SectionDao;
 import subway.repository.StationDao;
 
@@ -57,8 +58,11 @@ class PathServiceTest {
                         new SectionDetailEntity(8L, 8, 2L, "7호선", "bg-olive-600", 8L, "광명사거리", 9L, "철산"),
                         new SectionDetailEntity(9L, 8, 2L, "7호선", "bg-olive-600", 9L, "철산", 6L, "가산디지털단지"))
         );
-        given(stationDao.findIdByName(startStationName)).willReturn(1L);
-        given(stationDao.findIdByName(endStationName)).willReturn(6L);
+
+        final StationEntity startStationEntity = new StationEntity(1L, startStationName);
+        final StationEntity endStationEntity = new StationEntity(6L, endStationName);
+        given(stationDao.findByName(startStationName)).willReturn(startStationEntity);
+        given(stationDao.findByName(endStationName)).willReturn(endStationEntity);
 
         // when
         final ShortestPathResponse response = pathService.findShortestPath(startStationName, endStationName);

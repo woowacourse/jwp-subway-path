@@ -22,7 +22,7 @@ public class PathIntegrationTest extends IntegrationTest {
 
     @Nested
     @DisplayName("최단 경로를 조회한다.")
-    @Sql({"/truncate.sql","/data.sql"})
+    @Sql({"/truncate.sql", "/data.sql"})
     class findShortestPath {
 
         @Test
@@ -57,7 +57,7 @@ public class PathIntegrationTest extends IntegrationTest {
 
         @Test
         @DisplayName("성공 - 10km ~ 50km 추가 운임")
-        @Sql({"/truncate.sql","/data.sql"})
+        @Sql({"/truncate.sql", "/data.sql"})
         void success_10km_to_50km() {
             // given
             final String startStationName = "광명사거리";
@@ -91,7 +91,7 @@ public class PathIntegrationTest extends IntegrationTest {
 
         @Test
         @DisplayName("성공 - 50km 초과 추가 운임")
-        @Sql({"/truncate.sql","/data.sql"})
+        @Sql({"/truncate.sql", "/data.sql"})
         void success_50km_up() {
             // given
             final String startStationName = "온수";

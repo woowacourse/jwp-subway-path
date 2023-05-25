@@ -3,10 +3,10 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:subway;MODE=MySQL
+    url: jdbc:h2:~/subway;MODE=MySQL
     driver-class-name: org.h2.Driver
+    username: sa
+    password:
   sql:
     init:
-      data-locations: classpath:truncate.sql
-      schema-locations: classpath:schema.sql
       mode: always

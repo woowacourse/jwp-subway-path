@@ -10,6 +10,7 @@ import subway.domain.fee.FeeCalculator;
 import subway.domain.path.Path;
 import subway.domain.path.ShortestPathFinder;
 import subway.entity.SectionDetailEntity;
+import subway.entity.StationEntity;
 import subway.repository.SectionDao;
 import subway.repository.StationDao;
 
@@ -33,8 +34,8 @@ public class PathService {
 
     public ShortestPathResponse findShortestPath(final String startStationName, final String endStationName) {
         final List<SectionDetailEntity> allSectionEntities = sectionDao.findSectionDetail();
-        final Station startStation = makeStationByName(startStationName);
-        final Station endStation = makeStationByName(endStationName);
+        final Station startStation = getStationByName(startStationName);
+        final Station endStation = getStationByName(endStationName);
         final Sections sections = Sections.createByDetailEntity(allSectionEntities);
         final Path path = shortestPathFinder.find(sections, startStation, endStation);
         final Distance distance = path.getTotalDistance();
@@ -42,8 +43,8 @@ public class PathService {
         return ShortestPathResponse.of(distance, fee, path);
     }
 
-    private Station makeStationByName(final String name) {
-        final long stationId = stationDao.findIdByName(name);
-        return new Station(stationId, name);
+    private Station getStationByName(final String name) {
+        final StationEntity stationEntity = stationDao.findByName(name);
+        return Station.from(stationEntity);
     }
 }

@@ -53,6 +53,15 @@ public class StationDao {
         }
     }
 
+    public StationEntity findByName(final String name) {
+        final String sql = "SELECT * FROM station WHERE name = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, name);
+        } catch (EmptyResultDataAccessException e) {
+            throw new StationNotFoundException();
+        }
+    }
+
     public boolean isNotExist(final long id) {
         final String sql = "SELECT COUNT(*) FROM station WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, id) == 0;
