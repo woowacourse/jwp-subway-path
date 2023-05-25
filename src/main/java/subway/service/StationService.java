@@ -21,7 +21,7 @@ public class StationService {
 	}
 
 	@Transactional
-	public long saveStation(final StationCreateRequest stationCreateRequest) {
+	public String saveStation(final StationCreateRequest stationCreateRequest) {
 		return stationRepository.insertStation(new Station(stationCreateRequest.getName()));
 	}
 

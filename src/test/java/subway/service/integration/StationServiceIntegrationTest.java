@@ -95,13 +95,14 @@ public class StationServiceIntegrationTest {
 	@DisplayName("역 갱신 서비스 인수테스트")
 	void updateStation() {
 		// given
-		StationCreateRequest createRequest = new StationCreateRequest("잠실역");
-		long id = stationService.saveStation(createRequest);
+		String stationName = "잠실역";
+		StationCreateRequest createRequest = new StationCreateRequest(stationName);
+		stationService.saveStation(createRequest);
 
 		StationUpdateRequest updateRequest = new StationUpdateRequest("신사역");
 
 		// when
-		stationService.updateStationById(id, updateRequest);
+		stationService.updateStation(stationName, updateRequest);
 
 		// then
 		StationsResponse response = stationService.findAllStationResponses();
@@ -128,11 +129,12 @@ public class StationServiceIntegrationTest {
 	@DisplayName("역 삭제 서비스 인수테스트")
 	void deleteStation() {
 		// given
-		StationCreateRequest createRequest = new StationCreateRequest("잠실역");
-		long id = stationService.saveStation(createRequest);
+		String stationName = "잠실역";
+		StationCreateRequest createRequest = new StationCreateRequest(stationName);
+		stationService.saveStation(createRequest);
 
 		// when
-		stationService.deleteStationById(id);
+		stationService.deleteStationById(1L);
 
 		// then
 		StationsResponse expected = stationService.findAllStationResponses();

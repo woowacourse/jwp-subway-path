@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import subway.domain.subway.Station;
 import subway.entity.StationEntity;
+import subway.exception.StationNotFoundException;
 
 @Repository
 public class StationDao {
@@ -38,9 +39,11 @@ public class StationDao {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
-	public long insert(final Station station) {
+	public String insert(final Station station) {
 		SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-		return insertAction.executeAndReturnKey(params).longValue();
+		final long stationId = insertAction.executeAndReturnKey(params).longValue();
+
+		return findById(stationId).orElseThrow(StationNotFoundException::new).getName();
 	}
 
 	public List<StationEntity> findAll() {

@@ -32,8 +32,8 @@ public class StationController {
 
 	@PostMapping
 	public ResponseEntity<Void> createStation(@RequestBody @Valid final StationCreateRequest stationCreateRequest) {
-		long id = stationService.saveStation(stationCreateRequest);
-		return ResponseEntity.created(URI.create("/stations/" + id)).build();
+		String stationName = stationService.saveStation(stationCreateRequest);
+		return ResponseEntity.created(URI.create("/stations/" + stationName)).build();
 	}
 
 	@GetMapping

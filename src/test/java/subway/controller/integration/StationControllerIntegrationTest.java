@@ -1,6 +1,8 @@
 package subway.controller.integration;
 
 import io.restassured.RestAssured;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,13 +13,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import subway.dto.request.StationCreateRequest;
 import subway.dto.request.StationUpdateRequest;
 import subway.dto.response.StationsResponse;
 import subway.service.StationService;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+
+import java.net.URLDecoder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
@@ -38,18 +45,23 @@ class StationControllerIntegrationTest {
 	@DisplayName("역 생성 테스트")
 	void createStation() {
 		// given
-		StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
-		long id = 1L;
+		String stationName = "잠실역";
+		StationCreateRequest stationCreateRequest = new StationCreateRequest(stationName);
 
-		// when & then
-		RestAssured
+		// when
+		final ExtractableResponse<Response> response = RestAssured
 			.given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(stationCreateRequest)
-			.when().post("/stations")
-			.then()
-			.statusCode(HttpStatus.CREATED.value())
-			.header("location", "/stations/" + id);
+			.when().post("/stations").then().log().all().extract();
+
+		final String decodedHeader = URLDecoder.decode(response.header("Location"), UTF_8);
+
+		// then
+		Assertions.assertAll(
+			()-> org.assertj.core.api.Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+			()-> org.assertj.core.api.Assertions.assertThat(decodedHeader).isEqualTo("/stations/" + stationName)
+		);
 	}
 
 	@Test
@@ -108,8 +120,10 @@ class StationControllerIntegrationTest {
 	@DisplayName("역 갱신 테스트")
 	void edit_station_success() {
 		// given
-		StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
-		long id = stationService.saveStation(stationCreateRequest);
+		String stationName = "잠실역";
+		long id = 1L;
+		StationCreateRequest stationCreateRequest = new StationCreateRequest(stationName);
+		stationService.saveStation(stationCreateRequest);
 
 		StationUpdateRequest stationUpdateRequest = new StationUpdateRequest("신사역");
 
