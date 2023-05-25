@@ -36,18 +36,8 @@ public class StationRepository {
 		return new Station(stationEntity.getStationId(), stationEntity.getName());
 	}
 
-	public Station findByStationId(final Long stationId) {
-		StationEntity stationEntity = stationDao.findById(stationId)
-			.orElseThrow(StationNotFoundException::new);
-		return new Station(stationEntity.getStationId(), stationEntity.getName());
-	}
-
 	public void update(final String stationName, final Station station) {
 		stationDao.update(stationName, station);
-	}
-
-	public void updateById(final long id, final Station station) {
-		stationDao.updateById(id, station);
 	}
 
 	public void deleteByName(final String stationName) {

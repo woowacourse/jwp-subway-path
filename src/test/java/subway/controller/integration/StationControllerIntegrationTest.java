@@ -122,7 +122,6 @@ class StationControllerIntegrationTest {
 	void edit_station_success() {
 		// given
 		String stationName = "잠실역";
-		long id = 1L;
 		StationCreateRequest stationCreateRequest = new StationCreateRequest(stationName);
 		stationService.saveStation(stationCreateRequest);
 
@@ -133,7 +132,7 @@ class StationControllerIntegrationTest {
 			.given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(stationUpdateRequest)
-			.when().patch("/stations/" + id)
+			.when().patch("/stations/" + stationName)
 			.then()
 			.statusCode(HttpStatus.NO_CONTENT.value());
 

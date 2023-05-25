@@ -46,9 +46,9 @@ public class StationController {
 		return ResponseEntity.ok().body(stationService.getStationResponseByName(stationName));
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<Void> updateStation(@PathVariable final Long id, @Valid @RequestBody StationUpdateRequest stationUpdateRequest) {
-		stationService.updateStationById(id, stationUpdateRequest);
+	@PatchMapping("/{stationName}")
+	public ResponseEntity<Void> updateStation(@PathVariable(name = "stationName") final String stationName, @Valid @RequestBody StationUpdateRequest stationUpdateRequest) {
+		stationService.updateStation(stationName, stationUpdateRequest);
 		return ResponseEntity.noContent().build();
 	}
 

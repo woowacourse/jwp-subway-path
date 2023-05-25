@@ -39,13 +39,6 @@ public class StationService {
 	}
 
 	@Transactional
-	public void updateStationById(final Long id, final StationUpdateRequest stationUpdateRequest) {
-		final Station station = stationRepository.findByStationId(id);
-		station.update(stationUpdateRequest.getName());
-		stationRepository.updateById(id, station);
-	}
-
-	@Transactional
 	public void updateStation(final String stationName, final StationUpdateRequest stationUpdateRequest) {
 		final Station station = stationRepository.findByStationName(stationName);
 		station.update(stationUpdateRequest.getName());

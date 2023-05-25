@@ -115,16 +115,16 @@ public class StationControllerTest {
 	@DisplayName("역 갱신 테스트")
 	void updateStation() throws Exception {
 		// given
-		Long id = 1L;
+		String stationName = "잠실역";
 		StationUpdateRequest stationUpdateRequest = new StationUpdateRequest("교대역");
 
 		// when & then
 		mockMvc.perform(
-			patch("/stations/" + id)
+			patch("/stations/" + stationName)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(stationUpdateRequest))
 		).andExpect(status().isNoContent());
 
-		verify(stationService).updateStationById(eq(id), any(StationUpdateRequest.class));
+		verify(stationService).updateStation(eq(stationName), any(StationUpdateRequest.class));
 	}
 }
