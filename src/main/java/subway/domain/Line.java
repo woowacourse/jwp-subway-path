@@ -31,11 +31,11 @@ public class Line {
         if (this == o) return true;
         if (!(o instanceof Line)) return false;
         Line line = (Line) o;
-        return id == line.id && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+        return id == line.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(id);
     }
 }
