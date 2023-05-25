@@ -1,11 +1,9 @@
 package subway.service;
 
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
-import subway.event.StationChange;
 import subway.exception.line.CanNotDuplicatedLineNameException;
 import subway.service.dto.RegisterLineRequest;
 
@@ -16,17 +14,14 @@ public class LineCommandService {
   private final LineDao lineDao;
   private final SectionCommandService sectionCommandService;
   private final LineQueryService lineQueryService;
-  private final ApplicationEventPublisher applicationEventPublisher;
 
   public LineCommandService(
       final LineDao lineDao,
       final SectionCommandService sectionCommandService,
-      final LineQueryService lineQueryService,
-      final ApplicationEventPublisher applicationEventPublisher) {
+      final LineQueryService lineQueryService) {
     this.lineDao = lineDao;
     this.sectionCommandService = sectionCommandService;
     this.lineQueryService = lineQueryService;
-    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   public void deleteLine(final Long lineId) {
@@ -49,7 +44,5 @@ public class LineCommandService {
         registerLineRequest.getDistance(),
         savedId
     );
-
-    applicationEventPublisher.publishEvent(new StationChange());
   }
 }
