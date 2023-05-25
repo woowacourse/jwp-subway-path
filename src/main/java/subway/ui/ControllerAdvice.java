@@ -15,22 +15,22 @@ public class ControllerAdvice {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(LineException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse("Line Exception: " + e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(StationException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse("Station Exception: " + e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(SectionException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse("Section Exception: " + e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(SubwayException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse("Subway Exception: " + e.getMessage()));
     }
 
     @ExceptionHandler
