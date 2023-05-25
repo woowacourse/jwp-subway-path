@@ -111,23 +111,4 @@ class LineControllerTest {
                .andExpect(status().isNoContent())
                .andDo(print());
     }
-
-    // 써비스에서 할 것
-    // 생성예외
-    // 수정, 삭제, 특정 노선 조회 예외 : 존재하지 않는 노선(id)로 노선 조회하려고 하면 예외 발생한다
-    // 수정 예외 : 이미 존재하는 이름 혹은 색으로 변경하려고하면 예외가 발생한다
-//    @DisplayName("이미 존재하는 이름 혹은 색의 지하철을 생성하려고 하면 예외가 발생한다")
-//    @Test
-//    void HandleSQLException() throws Exception {
-//        given(lineService.saveLine(any()))
-////                .willThrow(new SQLException("이미 존재하는 이름입니다."));
-//                .willAnswer(invocation -> new SQLException("이미 존재하는 이름입니다."));
-//
-//        mockMvc.perform(post("/lines")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(new LineRequest("2호선", "green"))))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("$.message").value("이미 존재하는 이름입니다."))
-//                .andDo(print());
-//    }
 }
