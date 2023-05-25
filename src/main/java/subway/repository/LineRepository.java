@@ -31,7 +31,7 @@ public class LineRepository {
 
     public Line save(final Line line) {
         LineEntity lineEntity = lineDao.save(new LineEntity(line.getId(), line.getName()));
-        return new Line(lineEntity.getId(), line.getName(), line.getSections());
+        return new Line(lineEntity.getId(), line.getName(), line.getSections().getSections());
     }
 
     public List<Line> findAll() {

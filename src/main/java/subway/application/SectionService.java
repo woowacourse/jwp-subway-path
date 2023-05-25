@@ -70,7 +70,7 @@ public class SectionService {
     private List<LinkedList<Section>> getAllSections() {
         return lineRepository.findAll()
                 .stream()
-                .map(Line::getSections)
+                .map(line -> line.getSections().getSections())
                 .collect(Collectors.toList());
     }
 

@@ -19,7 +19,7 @@ public class SectionRepository {
 
     public void save(final Line line) {
         deleteAllByLineId(line.getId());
-        saveAllByLineId(line.getId(), line.getSections());
+        saveAllByLineId(line.getId(), line.getSections().getSections());
     }
 
     private void saveAllByLineId(final Long lineId, final List<Section> sections) {
