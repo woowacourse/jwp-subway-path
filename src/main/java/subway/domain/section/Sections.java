@@ -10,33 +10,6 @@ import subway.domain.station.Station;
 
 public class Sections {
 
-    private enum Direction {
-        UP,
-        DOWN;
-
-        public static Direction of(final List<Section> sections, final Section section) {
-            boolean isUpward = contains(sections, section.getDownStation());
-            boolean isDownward = contains(sections, section.getUpStation());
-
-            if (isUpward && isDownward) {
-                throw new SubwayIllegalArgumentException("이미 존재하는 구간입니다.");
-            }
-            if (!isUpward && !isDownward) {
-                throw new SubwayIllegalArgumentException("하나의 역은 반드시 노선에 존재해야합니다.");
-            }
-
-            if (isUpward) {
-                return UP;
-            }
-            return DOWN;
-        }
-
-        private static boolean contains(final List<Section> sections, final Station station) {
-            return sections.stream()
-                    .anyMatch(section -> section.contains(station));
-        }
-    }
-
     private final List<Section> sections;
 
     public Sections() {
@@ -214,4 +187,32 @@ public class Sections {
     public List<Section> getSections() {
         return new ArrayList<>(sections);
     }
+
+    private enum Direction {
+        UP,
+        DOWN;
+
+        public static Direction of(final List<Section> sections, final Section section) {
+            boolean isUpward = contains(sections, section.getDownStation());
+            boolean isDownward = contains(sections, section.getUpStation());
+
+            if (isUpward && isDownward) {
+                throw new SubwayIllegalArgumentException("이미 존재하는 구간입니다.");
+            }
+            if (!isUpward && !isDownward) {
+                throw new SubwayIllegalArgumentException("하나의 역은 반드시 노선에 존재해야합니다.");
+            }
+
+            if (isUpward) {
+                return UP;
+            }
+            return DOWN;
+        }
+
+        private static boolean contains(final List<Section> sections, final Station station) {
+            return sections.stream()
+                    .anyMatch(section -> section.contains(station));
+        }
+    }
+
 }
