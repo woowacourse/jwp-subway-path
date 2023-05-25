@@ -3,6 +3,7 @@ package subway.route.domain.jgraph;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
+import org.springframework.stereotype.Component;
 import subway.line.domain.Line;
 import subway.line.domain.MiddleSection;
 import subway.route.domain.RouteFinder;
@@ -12,6 +13,7 @@ import subway.station.domain.Station;
 
 import java.util.List;
 
+@Component
 public class JgraphRouteFinderBuilder implements RouteFinderBuilder<RouteSegment> {
 
     @Override

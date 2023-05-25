@@ -12,7 +12,6 @@ import subway.route.domain.RouteFinderBuilder;
 import subway.route.domain.RouteSegment;
 import subway.route.domain.fare.FareFactors;
 import subway.route.domain.fare.FarePolicy;
-import subway.route.domain.jgraph.JgraphRouteFinderBuilder;
 import subway.station.application.StationService;
 import subway.station.domain.Station;
 
@@ -25,12 +24,14 @@ public class RouteService {
     private final StationService stationService;
     private final LineRepository lineRepository;
     private final FarePolicy farePolicy;
+    private final RouteFinderBuilder<RouteSegment> routeFinderBuilder;
 
     @Autowired
-    public RouteService(StationService stationService, LineRepository lineRepository, FarePolicy farePolicy) {
+    public RouteService(StationService stationService, LineRepository lineRepository, FarePolicy farePolicy, RouteFinderBuilder<RouteSegment> routeFinderBuilder) {
         this.stationService = stationService;
         this.lineRepository = lineRepository;
         this.farePolicy = farePolicy;
+        this.routeFinderBuilder = routeFinderBuilder;
     }
 
     public RouteDto findRoute(RouteReadDto routeReadDto) {
@@ -46,7 +47,6 @@ public class RouteService {
     }
 
     private RouteFinder<RouteSegment> getRouteFinder() {
-        final RouteFinderBuilder<RouteSegment> routeFinderBuilder = new JgraphRouteFinderBuilder();
         final Lines allLines = lineRepository.findAllLines();
         return routeFinderBuilder.buildRouteFinder(allLines.getLines());
     }
