@@ -25,6 +25,8 @@ import subway.service.SectionService;
 import subway.service.StationService;
 
 import static io.restassured.RestAssured.given;
+import static java.net.URLDecoder.decode;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -53,7 +55,8 @@ public class LineControllerIntegrationTest {
 	@DisplayName("노선 생성 테스트")
 	void createLine() {
 		// given
-		LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선");
+		String lineName = "2호선";
+		LineCreateRequest lineCreateRequest = new LineCreateRequest(lineName);
 		long lineId = 1L;
 
 		// then
@@ -62,10 +65,10 @@ public class LineControllerIntegrationTest {
 			.body(lineCreateRequest)
 			.when().post("/lines")
 			.then().extract();
+		final String decodedHeader = decode(response.header("Location"), UTF_8);
 
-		final String header = response.header("Location");
 		Assertions.assertAll(
-			() -> assertThat(header).isEqualTo("/lines/" + lineId),
+			() -> assertThat(decodedHeader).isEqualTo("/lines/" + lineName),
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
 		);
 	}
