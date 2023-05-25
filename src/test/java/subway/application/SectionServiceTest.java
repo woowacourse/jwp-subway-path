@@ -20,7 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -30,7 +30,7 @@ import subway.dto.SectionRequest;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
 
     @Mock
@@ -127,8 +127,8 @@ class SectionServiceTest {
         ));
 
         // when
-        when(sectionDao.findSectionsByStationInfo(line.getId(), 4L)).thenReturn(sections);
-        sectionService.deleteStationById(line.getId(), 4L);
+        when(sectionDao.findSectionsByStationInfo(line.getId(), 3L)).thenReturn(sections);
+        sectionService.deleteStationById(line.getId(), 3L);
 
         // then
         verify(sectionDao, atLeastOnce()).deleteSectionByStationId(any(Long.class), any(Long.class));

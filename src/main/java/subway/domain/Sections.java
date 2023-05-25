@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Sections {
 
@@ -24,60 +25,46 @@ public class Sections {
                 sections.get(0).getDistanceValue() + sections.get(1).getDistanceValue());
     }
 
-    public List<Section> insert(final Long fromId, final Long toId, final int distance) {
-        final List<Section> querySections = new ArrayList<>();
+    public List<Section> findSectionsWithChange(final Long fromId, final Long toId, final int distance) {
         if (isAlreadyInSection(fromId, toId)) {
             throw new IllegalArgumentException("해당 조건으로 역을 설치할 수 없습니다.");
         }
-        checkIsMiddleLeft(fromId, toId, distance, querySections);
-        checkIsMiddleRight(fromId, toId, distance, querySections);
 
-        querySections.add(new Section(new Station(fromId, "from_name"), new Station(toId, "to_name"), distance));
+        Optional<Section> targetSection = sections.stream()
+                .filter(section -> section.existRightById(toId) || section.existLeftById(fromId))
+                .findFirst();
+
+        if (targetSection.isPresent() && !targetSection.get().isInsertable(distance)) {
+            throw new IllegalArgumentException("삽입할 수 없는 거리입니다.");
+        }
+
+        return getChangeSections(fromId, toId, distance, targetSection);
+    }
+
+    private List<Section> getChangeSections(Long fromId, Long toId, int distance,
+                                            Optional<Section> targetSection) {
+        List<Section> querySections = new ArrayList<>();
+        Station fromStation = new Station(fromId, "from_name");
+        Station toStation = new Station(toId, "to_name");
+
+        if (targetSection.isPresent() && targetSection.get().existRightById(toId)) {
+            querySections.add(new Section(targetSection.get().getFrom(), fromStation,
+                    targetSection.get().getDistanceValue() - distance));
+            querySections.add(targetSection.get());
+        }
+
+        if (targetSection.isPresent() && targetSection.get().existLeftById(fromId)) {
+            querySections.add(new Section(toStation, targetSection.get().getTo(),
+                    targetSection.get().getDistanceValue() - distance));
+            querySections.add(targetSection.get());
+        }
+
+        querySections.add(new Section(fromStation, toStation, distance));
         return querySections;
-    }
-
-    private void checkIsMiddleLeft(Long fromId, Long toId, int distance, List<Section> querySections) {
-        if (isInsertableMiddleLeft(toId)) {
-            final Section deleteSection = findDeletableSectionFromLeft(toId, distance);
-            querySections.add(new Section(deleteSection.getFrom(), new Station(fromId, "from_name"),
-                    deleteSection.getDistanceValue() - distance));
-            querySections.add(deleteSection);
-        }
-    }
-
-    private void checkIsMiddleRight(Long fromId, Long toId, int distance, List<Section> querySections) {
-        if (isInsertableMiddleRight(fromId)) {
-            final Section deleteSection = findDeletableSectionFromRight(fromId, distance);
-            querySections.add(new Section(new Station(toId, "to_name"), deleteSection.getTo(),
-                    deleteSection.getDistanceValue() - distance));
-            querySections.add(deleteSection);
-        }
-    }
-
-    private boolean isInsertableMiddleLeft(Long toId) {
-        return isExist(toId) && !isLeftEndId(toId);
-    }
-
-    private boolean isInsertableMiddleRight(Long fromId) {
-        return isExist(fromId) && !isRightEndId(fromId);
     }
 
     private boolean isAlreadyInSection(Long fromId, Long toId) {
         return isExist(fromId) == isExist(toId);
-    }
-
-    private Section findDeletableSectionFromRight(Long fromId, int distance) {
-        return sections.stream()
-                .filter(section -> section.existLeftById(fromId) && section.isInsertable(distance))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
-    }
-
-    private Section findDeletableSectionFromLeft(Long toId, int distance) {
-        return sections.stream()
-                .filter(section -> section.existRightById(toId) && section.isInsertable(distance))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
     }
 
     public List<Station> showStations() {
@@ -134,16 +121,6 @@ public class Sections {
             }
         }
         return null;
-    }
-
-    private boolean isRightEndId(final Long id) {
-        return sections.stream()
-                .noneMatch(section -> section.existLeftById(id));
-    }
-
-    private boolean isLeftEndId(final Long id) {
-        return sections.stream()
-                .noneMatch(section -> section.existRightById(id));
     }
 
     public boolean isHead(final Station station) {

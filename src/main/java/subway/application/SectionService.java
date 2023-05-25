@@ -26,11 +26,12 @@ public class SectionService {
                     lineId);
             return;
         }
-        addSectionInMiddle(lineId, sectionRequest, sectionsByLineId.get());
+        addSectionInAlreadyExist(lineId, sectionRequest, sectionsByLineId.get());
     }
 
-    private void addSectionInMiddle(Long lineId, SectionRequest sectionRequest, Sections sectionsByLineId) {
-        List<Section> updateSections = sectionsByLineId.insert(sectionRequest.getFromId(), sectionRequest.getToId(),
+    private void addSectionInAlreadyExist(Long lineId, SectionRequest sectionRequest, Sections sectionsByLineId) {
+        List<Section> updateSections = sectionsByLineId.findSectionsWithChange(sectionRequest.getFromId(),
+                sectionRequest.getToId(),
                 sectionRequest.getDistance());
 
         if (updateSections.size() == 3) {
