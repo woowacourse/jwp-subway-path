@@ -40,7 +40,10 @@ public class PathCalculatorImpl implements PathCalculator {
     @Override
     public List<Station> getShortestPath(Station sourceStation, Station destStation) {
         DijkstraShortestPath path = new DijkstraShortestPath(graph);
-        // TODO 루트가 없을 경우 예외 처리 필요 : 현재 DijkstraShortestPath에서 IllegalArgumentException을 던짐
-        return path.getPath(sourceStation, destStation).getVertexList();
+        try {
+            return path.getPath(sourceStation, destStation).getVertexList();
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("시작역에서 도착역까지 이동할 수 있는 경로가 존재하지 않습니다.");
+        }
     }
 }
