@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.business.domain.*;
-import subway.business.domain.fare.FareCalculator;
+import subway.business.domain.fare.DistanceFareStrategy;
 import subway.business.service.dto.ShortestPathResponse;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class PathServiceTest {
     private PathService pathService;
 
     @Mock
-    private FareCalculator fareCalculator;
+    private DistanceFareStrategy distanceFareStrategy;
 
     @Mock
     private LineRepository lineRepository;
@@ -39,7 +39,7 @@ public class PathServiceTest {
         when(stationRepository.findById(2L)).thenReturn(역삼역);
         List<Section> sections = List.of(new Section(강남역, 역삼역, 10));
         when(lineRepository.findAll()).thenReturn(List.of(new Line(new Name("2호선"), sections)));
-        when(fareCalculator.calculateByDistance(10)).thenReturn(1250);
+        when(distanceFareStrategy.calculateFare(10)).thenReturn(1250);
 
         ShortestPathResponse shortestPathResponse = pathService.getShortestPath(1L, 2L);
 

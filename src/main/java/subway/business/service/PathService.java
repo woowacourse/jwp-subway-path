@@ -3,7 +3,7 @@ package subway.business.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.business.domain.*;
-import subway.business.domain.fare.FareCalculator;
+import subway.business.domain.fare.DistanceFareStrategy;
 import subway.business.service.dto.ShortestPathResponse;
 import subway.business.service.path.PathCalculatorImpl;
 
@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class PathService {
-    private final FareCalculator fareCalculator;
+    private final DistanceFareStrategy distanceFareStrategy;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public PathService(FareCalculator fareCalculator, LineRepository lineRepository, StationRepository stationRepository) {
-        this.fareCalculator = fareCalculator;
+    public PathService(DistanceFareStrategy distanceFareStrategy, LineRepository lineRepository, StationRepository stationRepository) {
+        this.distanceFareStrategy = distanceFareStrategy;
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -32,7 +32,7 @@ public class PathService {
                 .map(Station::getName)
                 .collect(Collectors.toList());
         int totalDistance = pathCalculator.getTotalDistance(sourceStation, destStation);
-        int totalFare = fareCalculator.calculateByDistance(totalDistance);
+        int totalFare = distanceFareStrategy.calculateFare(totalDistance);
         return new ShortestPathResponse(stationNamesOfShortestPath, totalDistance, totalFare);
     }
 }
