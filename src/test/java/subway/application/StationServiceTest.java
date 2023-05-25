@@ -19,10 +19,11 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-@Sql("classpath:initializeTestDB.sql")
+@Sql("classpath:initializeTestDb.sql")
 class StationServiceTest {
 
     @Mock
@@ -38,6 +39,7 @@ class StationServiceTest {
         String testName = "테스트역";
         StationRequest stationRequest = new StationRequest(testName);
         given(stationDao.findByName(testName)).willReturn(Optional.empty());
+        given(stationDao.insert(any(StationEntity.class))).willReturn(new StationEntity(1L, testName));
 
         // when
         StationResponse stationResponse = stationService.saveStation(stationRequest);
@@ -52,7 +54,8 @@ class StationServiceTest {
         // given
         String testName = "서울대입구역";
         StationRequest stationRequest = new StationRequest(testName);
-        given(stationDao.findByName(testName)).willReturn(Optional.empty());
+        given(stationDao.findByName(testName))
+                .willReturn(Optional.of(new StationEntity(1L, testName)));
 
         // then
         assertThatThrownBy(() -> stationService.saveStation(stationRequest))

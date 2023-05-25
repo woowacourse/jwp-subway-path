@@ -73,7 +73,7 @@ public class LineIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().get("message").toString())
+                () -> assertThat(response.body().jsonPath().get("messages").toString())
                         .contains("이미 존재하는 노선 이름입니다.")
         );
     }
@@ -236,7 +236,7 @@ public class LineIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().get("message").toString())
+                () -> assertThat(response.body().jsonPath().get("messages").toString())
                         .contains("해당 노선이 존재하지 않습니다")
         );
     }

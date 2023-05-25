@@ -41,7 +41,7 @@ class StationControllerTest {
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(new StationRequest("서울대입구"))))
                .andExpect(status().isCreated())
-               .andExpect(header().string("Location", "/lines/1"))
+               .andExpect(header().string("Location", "/stations/1"))
                .andExpect(jsonPath("$.id").value(1L))
                .andExpect(jsonPath("$.name").value("서울대입구"))
                .andDo(print());
@@ -89,11 +89,14 @@ class StationControllerTest {
     @DisplayName("특정 역을 수정할 수 있다")
     @Test
     void updateStation() throws Exception {
+        StationRequest stationRequest = new StationRequest("사당");
         willDoNothing().given(stationService)
                        .updateStation(anyLong(), any());
 
-        mockMvc.perform(put("/stations/1"))
-               .andExpect(status().isNoContent())
+        mockMvc.perform(put("/stations/1")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsBytes(stationRequest)))
+               .andExpect(status().isOk())
                .andDo(print());
     }
 
