@@ -1,13 +1,11 @@
 package subway.service.integration;
 
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
+
 import subway.dto.request.LineCreateRequest;
 import subway.dto.request.LineUpdateRequest;
 import subway.dto.response.LineResponse;
@@ -23,16 +21,9 @@ public class LineServiceIntegrationTest {
 
 	private static final LineCreateRequest LINE_REQUEST_TWO = new LineCreateRequest("2호선");
 	private static final LineCreateRequest LINE_REQUEST_SINBUNDANG = new LineCreateRequest("신분당선");
-	@LocalServerPort
-	private int port;
 
 	@Autowired
 	private LineService lineService;
-
-	@BeforeEach
-	void setUp() {
-		RestAssured.port = this.port;
-	}
 
 	@Test
 	@DisplayName("노선 생성 서비스 인수 테스트")

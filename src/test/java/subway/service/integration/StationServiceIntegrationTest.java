@@ -1,13 +1,11 @@
 package subway.service.integration;
 
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
+
 import subway.domain.subway.Station;
 import subway.dto.request.StationCreateRequest;
 import subway.dto.request.StationUpdateRequest;
@@ -26,19 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @Sql("/data.sql")
 public class StationServiceIntegrationTest {
 
-	@LocalServerPort
-	private int port;
-
 	@Autowired
 	private StationService stationService;
 
 	@Autowired
 	private StationRepository stationRepository;
-
-	@BeforeEach
-	void setUp() {
-		RestAssured.port = this.port;
-	}
 
 	@Test
 	@DisplayName("역 생성 서비스 인수테스트")

@@ -1,19 +1,20 @@
 package subway.controller.integration;
 
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
 import subway.dto.request.LineCreateRequest;
 import subway.dto.request.PathRequest;
 import subway.dto.request.SectionCreateRequest;
 import subway.dto.request.StationCreateRequest;
+import subway.IntegrationTest;
 import subway.service.LineService;
 import subway.service.SectionService;
 import subway.service.StationService;
@@ -22,10 +23,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
-class PathControllerIntegrationTest{
-
-	@LocalServerPort
-	private int port;
+class PathControllerIntegrationTest extends IntegrationTest {
 
 	@Autowired
 	private LineService lineService;
@@ -35,11 +33,6 @@ class PathControllerIntegrationTest{
 
 	@Autowired
 	private SectionService sectionService;
-
-	@BeforeEach
-	void setUp() {
-		RestAssured.port = port;
-	}
 
 	@Test
 	@DisplayName("최단 경로 조회 테스트")

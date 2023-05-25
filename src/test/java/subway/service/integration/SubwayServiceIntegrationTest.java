@@ -1,18 +1,15 @@
 package subway.service.integration;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static subway.fixture.SectionsFixture.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.fixture.SectionsFixture.createSections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
 
-import io.restassured.RestAssured;
 import subway.domain.subway.Station;
 import subway.dto.request.PathRequest;
 import subway.dto.response.LineStationResponse;
@@ -26,9 +23,6 @@ import subway.service.SubwayService;
 @Sql("/data.sql")
 class SubwayServiceIntegrationTest {
 
-	@LocalServerPort
-	private int port;
-
 	@Autowired
 	private SubwayService subwayService;
 
@@ -37,11 +31,6 @@ class SubwayServiceIntegrationTest {
 
 	@Autowired
 	private LineRepository lineRepository;
-
-	@BeforeEach
-	void setUp() {
-		RestAssured.port = this.port;
-	}
 
 	@Test
 	@DisplayName("역을 순서대로 정렬한다")
