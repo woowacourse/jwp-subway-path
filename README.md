@@ -15,15 +15,28 @@ classDiagram
     WebEnvironment <--> LineController
     LineController --> LineService
     LineService --> LineRepository
-    DbLineRepository ..|> LineRepository
-    DbLineRepository --> LineDao
+    LineRepository <|.. DbLineRepository
+
+    WebEnvironment <--> TransferController
+    TransferController --> TransferService
+    TransferService --> LineService
+    TransferService  --> TransferRepository
+    TransferRepository <|.. DbTransferRepository
+    
+    WebEnvironment <--> PathController
+    PathController --> SubwayMapService
+    SubwayMapService --> LineRepository
+    SubwayMapService  --> TransferRepository
 ```
 
 ### 클래스 다이어그램 - 도메인
 ```mermaid
 classDiagram
+    JgraphtSubwayMap --> Line
+    JgraphtSubwayMap --> Transfer
     Line *-- Section
     Section *-- Station
+    Transfer *-- Station
     class Line {
         - List(Section) sections
     }
@@ -35,221 +48,51 @@ classDiagram
     class Station {
         - String name
     }
+    class Transfer {
+        - Station firstStation
+        - Station lastStation
+    }
+    class JgraphtSubwayMap{
+        - ShortestPathAlgorithm pathAlgorithm
+    }
 ```
 
 ### Entity-Relationship Diagram
 ```mermaid
 erDiagram
-    LINE ||--|{ SECTION : ""
-	LINE {
+  LINE ||--|{ SECTION : ""
+  LINE ||--|{ STATION : ""
+  LINE {
 		BIGINT id PK
 		VARCHAR(50) name
-		VARCHAR(50) upward_terminus
-		VARCHAR(50) downward_terminus
+        BIGINT surcharge
+        DATE created_at
 	}
     SECTION {
         BIGINT id PK
         BIGINT line_id FK
-        VARCHAR(50) upward_station
-        VARCHAR(50) downward_station
+        BIGINT upward_station_id
+        BIGINT downward_station_id
         INT distance
         DATE created_at
+    }
+    STATION {
+        BIGINT id PK
+        BIGINT line_id FK
+        VARCHAR(255) name
+        DATE created_at
+    }
+    TRANSFER {
+        BIGINT id PK
+        BIGINT first_station_id
+        BIGINT last_station_id
     }
 ```
 
 # API 명세서
+Swagger link : http://localhost:8080/swagger-ui/index.html#/
+(SubwayApplication 실행 후 접속)
 
-### ✅ POST /lines
-- 노선을 추가합니다. 
-- 종점이 될 역 2개와 거리를 설정해야 합니다.
-- 존재하지 않는 역이면, 새로 생성됩니다.
-
-#### Request example
-```text
-POST /lines HTTP/1.1
-Content-type: application/json; charset=UTF-8
-Host: localhost:8080
-```
-```json
-{
-    "name": "2호선",
-    "upward_terminus": "잠실역",
-    "downward_terminus": "몽촌토성역",
-    "distance": 5
-}
-```
-
-#### Response example
-```text
-HTTP/1.1 201 CREATED
-Content-Type: application/json
-Location: /lines/1
-```
-```json
-{
-    "id": 5,
-    "name": "2호선",
-    "sections": [
-        {
-            "id": 9,
-            "upwardStation": "잠실역",
-            "downwardStation": "몽촌토성역",
-            "distance": 5
-        }
-    ]
-}
-```
-
-### ✅ POST /lines/{line_id}/station
-- 노선에 역 한 개를 등록합니다.
-- 노선의 id를 URI에 포함해서 요청해야 합니다.
-- 존재하지 않는 역인 경우, 새로운 역을 생성합니다.
-
-#### Request example
-```text
-POST /lines/1/station HTTP/1.1
-Content-type: application/json; charset=UTF-8
-Host: localhost:8080
-```
-```json
-{
-    "station": "강남역",
-    "adjacent_station": "몽촌토성역",
-    "add_direction": "상행", // "상행" 또는 "하행" 입력
-    "distance": 3
-}
-```
-
-#### Response example
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-```
-```json
-{
-    "id": 5,
-    "name": "2호선",
-    "sections": [
-        {
-            "id": 9,
-            "upwardStation": "잠실역",
-            "downwardStation": "강남역",
-            "distance": 2
-        },
-        {
-            "id": 10,
-            "upwardStation": "강남역",
-            "downwardStation": "몽촌토성역",
-            "distance": 3
-        }
-    ]
-}
-```
-
-### ✅ Delete /lines/{line_id}/station
-- 노선에 포함된 역 한 개를 제외합니다.
-- 해당 역이 더이상 어떤 노선에도 포함되지 않으면, 해당 역을 삭제합니다.
-- 노선에 포함된 역이 2개뿐이라면, Status 401을 반환합니다.
-
-#### Request example
-```text
-DELETE /lines/1/station HTTP/1.1
-Content-type: application/json; charset=UTF-8
-Host: localhost:8080
-
-{
-    "station": "잠실역"
-}
-```
-
-#### Response example
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-```
-
-### ✅ GET /lines/{line_id}
-- 특정 노선의 모든 구간을 포함한 정보를 조회합니다.
-
-#### Request example
-```text
-GET /lines/1 HTTP/1.1
-Content-type: application/json; charset=UTF-8
-Host: localhost:8080
-```
-
-#### Response example
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-```
-```json
-{
-    "id": 6,
-    "name": "2호선",
-    "sections": [
-        {
-            "id": 11,
-            "upwardStation": "잠실역",
-            "downwardStation": "몽촌토성역",
-            "distance": 5
-        },
-        {
-          "id": 12,
-          "upwardStation": "몽촌토성역",
-          "downwardStation": "신천",
-          "distance": 3
-        }
-    ]
-}
-
-```
-
-### ✅ GET /lines
-- 모든 노선의 정보를 조회합니다.
-  - 노선의 정보는 노선의 이름과 포함된 모든 구간 정보를 포함합니다.
-
-#### Request example
-```text
-GET /lines HTTP/1.1
-Content-type: application/json; charset=UTF-8
-Host: localhost:8080
-```
-
-#### Response example
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-```
-
-```json
-[
-    {
-        "id": 3,
-        "name": "2호선",
-        "sections": [
-            {
-                "id": 6,
-                "upwardStation": "잠실역",
-                "downwardStation": "몽촌토성역",
-                "distance": 5
-            }
-        ]
-    },
-    {
-        "id": 4,
-        "name": "3호선",
-        "sections": [
-            {
-                "id": 7,
-                "upwardStation": "매봉역",
-                "downwardStation": "교대역",
-                "distance": 5
-            }
-        ]
-    }
-]
-```
 
 # 기능 목록
 
@@ -278,3 +121,16 @@ Content-Type: application/json
 
 ### Station
 - [x] 역의 이름을 갖는다.
+
+### Transfer
+- [x] 환승 가능한 2개의 역을 갖는다.
+  - [x] ID가 빠른 순서로 저장한다.
+  - [x] 같은 역을 가질 수 없다.
+
+### SubwayMap
+- [x] 최단 거리 경로를 계산한다.
+  - [x] 경로에 있는 모든 역을 노선 기준으로 나누어 반환한다. 
+  - [x] 경로에 알맞은 요금을 계산한다.
+    - [x] 기본운임(10㎞ 이내): 기본운임 1,250원
+    - [x] 10km~50km: 5km 까지 마다 100원 추가
+    - [x] 50km 초과: 8km 까지 마다 100원 추가

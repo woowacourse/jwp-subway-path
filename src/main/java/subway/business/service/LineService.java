@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.business.domain.Direction;
-import subway.business.domain.Line;
-import subway.business.domain.LineRepository;
+import subway.business.domain.direction.Direction;
+import subway.business.domain.line.Line;
+import subway.business.domain.line.LineRepository;
+import subway.business.domain.line.Station;
 import subway.business.service.dto.LineResponse;
 import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.StationAddToLineRequest;
@@ -26,7 +27,8 @@ public class LineService {
                 lineSaveRequest.getName(),
                 lineSaveRequest.getUpwardTerminus(),
                 lineSaveRequest.getDownwardTerminus(),
-                lineSaveRequest.getDistance()
+                lineSaveRequest.getDistance(),
+                lineSaveRequest.getSurcharge()
         );
         Line savedLine = lineRepository.create(line);
         return LineResponse.from(savedLine);
@@ -60,5 +62,9 @@ public class LineService {
         return lines.stream()
                 .map(LineResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public Station findStationById(long stationId) {
+        return lineRepository.findStationById(stationId);
     }
 }

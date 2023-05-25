@@ -13,12 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import subway.business.service.LineService;
 import subway.business.service.dto.LineResponse;
 import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.StationAddToLineRequest;
 import subway.ui.dto.StationDeleteRequest;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class LineControllerIntegratedTest {
     @Autowired
@@ -41,8 +43,7 @@ public class LineControllerIntegratedTest {
     void shouldCreateLineWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
 
@@ -52,8 +53,8 @@ public class LineControllerIntegratedTest {
                 .when().post("/lines")
                 .then().log().all()
                 .body("name", is("2호선"))
-                .body("sections[0].upwardStation", is("잠실역"))
-                .body("sections[0].downwardStation", is("몽촌토성역"))
+                .body("sections[0].upwardStation.name", is("잠실역"))
+                .body("sections[0].downwardStation.name", is("몽촌토성역"))
                 .statusCode(HttpStatus.CREATED.value());
     }
 
@@ -62,8 +63,7 @@ public class LineControllerIntegratedTest {
     void shouldAddStationToLineWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
         LineResponse lineResponse = lineService.createLine(lineSaveRequest);
@@ -77,13 +77,13 @@ public class LineControllerIntegratedTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(stationAddToLineRequest)
-                .when().post("/lines/" + lineResponse.getId() + "/station")
+                .when().post("/lines/" + lineResponse.getId() + "/stations")
                 .then().log().all()
                 .body("name", is("2호선"))
-                .body("sections[0].upwardStation", is("잠실역"))
-                .body("sections[0].downwardStation", is("강남역"))
-                .body("sections[1].upwardStation", is("강남역"))
-                .body("sections[1].downwardStation", is("몽촌토성역"))
+                .body("sections[0].upwardStation.name", is("잠실역"))
+                .body("sections[0].downwardStation.name", is("강남역"))
+                .body("sections[1].upwardStation.name", is("강남역"))
+                .body("sections[1].downwardStation.name", is("몽촌토성역"))
                 .statusCode(HttpStatus.OK.value());
     }
 
@@ -92,8 +92,7 @@ public class LineControllerIntegratedTest {
     void shouldRemoveStationFromLineWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
         lineService.createLine(lineSaveRequest);
@@ -110,9 +109,9 @@ public class LineControllerIntegratedTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(stationDeleteRequest)
-                .when().delete("/lines/1/station")
+                .when().delete("/lines/1/stations")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.NO_CONTENT.value());
 
     }
 
@@ -121,8 +120,7 @@ public class LineControllerIntegratedTest {
     void shouldReturnLineAndStationsWhenRequest() {
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
         LineResponse lineResponse = lineService.createLine(lineSaveRequest);
@@ -133,8 +131,8 @@ public class LineControllerIntegratedTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
                 .body("name", is("2호선"))
-                .body("sections[0].upwardStation", is("잠실역"))
-                .body("sections[0].downwardStation", is("몽촌토성역"));
+                .body("sections[0].upwardStation.name", is("잠실역"))
+                .body("sections[0].downwardStation.name", is("몽촌토성역"));
     }
 
     @DisplayName("모든 노선의 이름과 포함된 모든 역을 조회한다.")
@@ -142,16 +140,14 @@ public class LineControllerIntegratedTest {
     void shouldReturnAllLinesAndStationsWhenRequest() {
         LineSaveRequest lineSaveRequest1 = new LineSaveRequest(
                 "2호선",
-                "잠실역",
-                "몽촌토성역",
+                0, "몽촌토성역", "잠실역",
                 5
         );
         lineService.createLine(lineSaveRequest1);
 
         LineSaveRequest lineSaveRequest2 = new LineSaveRequest(
                 "3호선",
-                "매봉역",
-                "교대역",
+                0, "교대역", "매봉역",
                 5
         );
         lineService.createLine(lineSaveRequest2);
@@ -162,10 +158,10 @@ public class LineControllerIntegratedTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
                 .body("[0].name", is("2호선"))
-                .body("[0].sections[0].upwardStation", is("잠실역"))
-                .body("[0].sections[0].downwardStation", is("몽촌토성역"))
+                .body("[0].sections[0].upwardStation.name", is("잠실역"))
+                .body("[0].sections[0].downwardStation.name", is("몽촌토성역"))
                 .body("[1].name", is("3호선"))
-                .body("[1].sections[0].upwardStation", is("매봉역"))
-                .body("[1].sections[0].downwardStation", is("교대역"));
+                .body("[1].sections[0].upwardStation.name", is("매봉역"))
+                .body("[1].sections[0].downwardStation.name", is("교대역"));
     }
 }

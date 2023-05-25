@@ -33,4 +33,4 @@ out/
 .vscode/
 
 ### Environment variables ###
-application.properties
+src/main/resources/application.yml

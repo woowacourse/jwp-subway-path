@@ -1,4 +1,4 @@
-package subway.business.domain;
+package subway.business.domain.line;
 
 import java.util.List;
 
@@ -11,4 +11,8 @@ public interface LineRepository {
     List<Line> findAll();
 
     Line update(Line line);
+
+    Station findStationById(long stationId);
+
+    Line findLineByStationId(Long stationsId);
 }

@@ -18,15 +18,13 @@ public class LineDao {
     private final RowMapper<LineEntity> rowMapper = (resultSet, rowNumber) -> new LineEntity(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("upward_terminus"),
-            resultSet.getString("downward_terminus")
-    );
+            resultSet.getInt("surcharge"));
 
     public LineDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("line")
-                .usingColumns("name", "upward_terminus", "downward_terminus")
+                .usingColumns("name", "surcharge")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -38,7 +36,7 @@ public class LineDao {
 
     public LineEntity findById(Long id) {
         try {
-            String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line WHERE id=:id";
+            String sql = "SELECT id, name, surcharge FROM line WHERE id=:id";
             SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
             return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
         } catch (EmptyResultDataAccessException exception) {
@@ -49,16 +47,15 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line";
+        String sql = "SELECT id, name, surcharge FROM line";
         return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
 
     public LineEntity update(LineEntity lineEntity) {
-        String sql = "UPDATE line SET name=:name, upward_terminus=:upwardTerminus, downward_terminus=:downwardTerminus WHERE id=:id";
+        String sql = "UPDATE line SET name=:name, surcharge=:surcharge WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("name", lineEntity.getName())
-                .addValue("upwardTerminus", lineEntity.getUpwardTerminus())
-                .addValue("downwardTerminus", lineEntity.getDownwardTerminus())
+                .addValue("surcharge", lineEntity.getSurcharge())
                 .addValue("id", lineEntity.getId());
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
         return findById(lineEntity.getId());
