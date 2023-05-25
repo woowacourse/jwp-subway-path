@@ -23,6 +23,8 @@ public class PathService {
     private static final int FIRST_ADDITIONAL_DISTANCE = 5;
     private static final int LAST_ADDITIONAL_DISTANCE = 8;
     private static final int ADDITIONAL_COST = 100;
+    private static final int MIN_COST_DISTANCE = 10;
+    private static final int MIN_ADDITIONAL_COST_DISTANCE = 50;
     private final StationDao stationDao;
     private final LineDao lineDao;
 
@@ -42,9 +44,9 @@ public class PathService {
     }
 
     private int calculateCost(double distance) {
-        if (distance < 10) {
+        if (distance < MIN_COST_DISTANCE) {
             return MIN_COST;
-        } else if (distance < 50) {
+        } else if (distance < MIN_ADDITIONAL_COST_DISTANCE) {
             return MIN_COST + chargeFirstExtraFee(distance, FIRST_ADDITIONAL_DISTANCE);
 
         } else {
