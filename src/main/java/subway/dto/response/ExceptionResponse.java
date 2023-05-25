@@ -4,13 +4,13 @@ import java.util.List;
 
 public class ExceptionResponse {
 
-    private final List<String> message;
+    private final List<String> messages;
 
-    public ExceptionResponse(List<String> message) {
-        this.message = message;
+    public ExceptionResponse(List<String> messages) {
+        this.messages = messages;
     }
 
-    public List<String> getMessage() {
-        return message;
+    public List<String> getMessages() {
+        return messages;
     }
 }
