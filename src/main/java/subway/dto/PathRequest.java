@@ -2,19 +2,19 @@ package subway.dto;
 
 public class PathRequest {
 
-    private final Long from;
-    private final Long to;
+    private final Long fromStation;
+    private final Long toStation;
 
-    public PathRequest(Long from, Long to) {
-        this.from = from;
-        this.to = to;
+    public PathRequest(Long fromStation, Long toStation) {
+        this.fromStation = fromStation;
+        this.toStation = toStation;
     }
 
-    public Long getFrom() {
-        return from;
+    public Long getFromStation() {
+        return fromStation;
     }
 
-    public Long getTo() {
-        return to;
+    public Long getToStation() {
+        return toStation;
     }
 }

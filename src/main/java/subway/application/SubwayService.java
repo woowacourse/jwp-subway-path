@@ -34,8 +34,8 @@ public class SubwayService {
                 .collect(Collectors.toList());
 
         SubwayMap subwayMap = new SubwayMap(allStation, allSection);
-        Station from = stationDao.findById(request.getFrom());
-        Station to = stationDao.findById(request.getTo());
+        Station from = stationDao.findById(request.getFromStation());
+        Station to = stationDao.findById(request.getToStation());
         Sections sections = subwayMap.getShortestPath(from, to);
 
         List<SectionResponse> sectionResponses = sections.getOrderedSections()

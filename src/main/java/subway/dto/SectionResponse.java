@@ -4,14 +4,14 @@ import subway.domain.Section;
 
 public class SectionResponse {
     private final Long line;
-    private final String from;
-    private final String to;
+    private final String fromStation;
+    private final String toStation;
     private final int distance;
 
-    public SectionResponse(final Long line, final String from, final String to, final int distance) {
+    public SectionResponse(final Long line, final String fromStation, final String toStation, final int distance) {
         this.line = line;
-        this.from = from;
-        this.to = to;
+        this.fromStation = fromStation;
+        this.toStation = toStation;
         this.distance = distance;
     }
 
@@ -26,12 +26,12 @@ public class SectionResponse {
         return line;
     }
 
-    public String getFrom() {
-        return from;
+    public String getFromStation() {
+        return fromStation;
     }
 
-    public String getTo() {
-        return to;
+    public String getToStation() {
+        return toStation;
     }
 
     public int getDistance() {
