@@ -3,9 +3,7 @@ package subway.repository;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineExpenseDao;
 import subway.dao.entity.LineExpenseEntity;
-import subway.domain.fare.expense.ExpenseComposite;
 import subway.domain.fare.expense.LineExpense;
-import subway.domain.fare.expense.LineExpensePolicy;
 
 import java.util.Optional;
 
@@ -13,11 +11,9 @@ import java.util.Optional;
 public class FareRepository {
 
     private final LineExpenseDao lineExpenseDao;
-    private final ExpenseComposite expenseComposite;
 
-    public FareRepository(final LineExpenseDao lineExpenseDao, final ExpenseComposite expenseComposite) {
+    public FareRepository(LineExpenseDao lineExpenseDao) {
         this.lineExpenseDao = lineExpenseDao;
-        this.expenseComposite = expenseComposite;
     }
 
     public Long saveLineExpense(final LineExpenseEntity lineExpenseEntity) {
@@ -44,16 +40,6 @@ public class FareRepository {
         final LineExpenseEntity findLineExpenseEntity = getLineExpenseEntityOrThrowException(lineId);
 
         return findLineExpenseEntity.toDomain();
-    }
-
-    public ExpenseComposite collectExpenseComposite() {
-        lineExpenseDao.findAll()
-                .stream()
-                .map(LineExpenseEntity::toDomain)
-                .map(LineExpensePolicy::new)
-                .forEach(expenseComposite::addExpensePolicy);
-
-        return expenseComposite;
     }
 
     private LineExpenseEntity getLineExpenseEntityOrThrowException(final Long lineId) {

@@ -6,9 +6,13 @@ import subway.application.response.QueryShortestRouteResponse;
 import subway.domain.Line;
 import subway.domain.PassengerType;
 import subway.domain.Station;
+import subway.domain.fare.FareInfo;
+import subway.domain.fare.discount.DiscountComposite;
+import subway.domain.fare.expense.ExpenseComposite;
 import subway.domain.route.Route;
 import subway.domain.route.RouteFinder;
 import subway.domain.vo.Money;
+import subway.repository.FareCompositeRepository;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -19,18 +23,18 @@ import java.util.List;
 public class RouteService {
 
     private final RouteFinder routeFinder;
-    private final CalculateFareService calculateFareService;
+    private final FareCompositeRepository fareCompositeRepository;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
     public RouteService(
             final RouteFinder routeFinder,
-            final CalculateFareService calculateFareService,
+            final FareCompositeRepository fareCompositeRepository,
             final LineRepository lineRepository,
             final StationRepository stationRepository
     ) {
         this.routeFinder = routeFinder;
-        this.calculateFareService = calculateFareService;
+        this.fareCompositeRepository = fareCompositeRepository;
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -46,7 +50,7 @@ public class RouteService {
         final List<Line> lines = lineRepository.findAll();
 
         final Route route = routeFinder.findRouteBy(lines, startStation, endStation);
-        final Money totalFare = calculateFareService.calculate(passengerType, route);
+        final Money totalFare = calculateFare(passengerType, route);
 
         return QueryShortestRouteResponse.from(route, totalFare);
     }
@@ -54,5 +58,16 @@ public class RouteService {
     private Station getStationOrThrowException(final String startStationName, final String message) {
         return stationRepository.findByStationName(startStationName)
                 .orElseThrow(() -> new IllegalArgumentException(message));
+    }
+
+    private Money calculateFare(final PassengerType passengerType, final Route route) {
+        final ExpenseComposite expenseComposite = fareCompositeRepository.collectExpenseComposite();
+        final DiscountComposite discountComposite = fareCompositeRepository.collectDiscountComposite();
+
+        FareInfo fareInfo = FareInfo.from(passengerType, route);
+        fareInfo = expenseComposite.doImpose(fareInfo);
+        fareInfo = discountComposite.doDiscount(fareInfo);
+
+        return fareInfo.getTotalFare();
     }
 }

@@ -17,7 +17,7 @@ class FareRepositoryTest extends RepositoryTestConfig {
 
     @BeforeEach
     void setUp() {
-        fareRepository = new FareRepository(lineExpenseDao, expenseComposite);
+        fareRepository = new FareRepository(lineExpenseDao);
     }
 
     @Test

@@ -18,6 +18,6 @@ public abstract class ServiceTestConfig extends RepositoryTestConfig {
         sectionRepository = new SectionRepository(sectionDao, stationDao);
         stationRepository = new StationRepository(stationDao);
         lineRepository = new LineRepository(lineDao, sectionDao, stationDao);
-        fareRepository = new FareRepository(lineExpenseDao, expenseComposite);
+        fareRepository = new FareRepository(lineExpenseDao);
     }
 }

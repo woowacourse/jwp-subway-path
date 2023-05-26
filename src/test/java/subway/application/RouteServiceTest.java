@@ -9,10 +9,9 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.application.request.CreateLineRequest;
 import subway.application.request.CreateSectionRequest;
 import subway.application.request.UpdateLineExpenseRequest;
+import subway.application.response.QueryShortestRouteResponse;
 import subway.domain.Line;
-import subway.domain.route.Route;
 import subway.domain.route.RouteFinder;
-import subway.domain.vo.Money;
 import subway.repository.FareRepository;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
@@ -22,16 +21,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
-import static subway.domain.PassengerType.*;
-import static subway.fixture.StationFixture.역;
 
 @Sql("/truncate.sql")
 @SpringBootTest
 @DisplayNameGeneration(ReplaceUnderscores.class)
-class CalculateFareServiceTest {
+class RouteServiceTest {
 
     @Autowired
-    CalculateFareService calculateFareService;
+    RouteService routeService;
 
     @Autowired
     RouteFinder routeFinder;
@@ -76,57 +73,41 @@ class CalculateFareServiceTest {
 
     @Test
     void 성인_요금을_계산한다() {
-        // given
-        final Route 최단_경로 = routeFinder.findRouteBy(전체_노선_목록, 역("A"), 역("G"));
-
         // when
-        final Money totalFare = calculateFareService.calculate(ADULT, 최단_경로);
+        final QueryShortestRouteResponse 최단_경로_응답_데이터 = routeService.findByStartAndEnd(20, "A", "G");
+        final String totalPrice = 최단_경로_응답_데이터.getTotalPrice();
 
-        // then
-        assertThat(totalFare)
-                .usingRecursiveComparison()
-                .isEqualTo(Money.from("3550"));
+        // expect
+        assertThat(totalPrice).isEqualTo("3550");
     }
 
     @Test
     void 청소년_요금을_계산한다() {
-        // given
-        final Route 최단_경로 = routeFinder.findRouteBy(전체_노선_목록, 역("A"), 역("G"));
-
         // when
-        final Money totalFare = calculateFareService.calculate(TEENAGER, 최단_경로);
+        final QueryShortestRouteResponse 최단_경로_응답_데이터 = routeService.findByStartAndEnd(17, "A", "G");
+        final String totalPrice = 최단_경로_응답_데이터.getTotalPrice();
 
-        // then
-        assertThat(totalFare)
-                .usingRecursiveComparison()
-                .isEqualTo(Money.from("2840"));
+        // expect
+        assertThat(totalPrice).isEqualTo("2840");
     }
 
     @Test
     void 어린이_요금을_계산한다() {
-        // given
-        final Route 최단_경로 = routeFinder.findRouteBy(전체_노선_목록, 역("A"), 역("G"));
-
         // when
-        final Money totalFare = calculateFareService.calculate(CHILDREN, 최단_경로);
+        final QueryShortestRouteResponse 최단_경로_응답_데이터 = routeService.findByStartAndEnd(10, "A", "G");
+        final String totalPrice = 최단_경로_응답_데이터.getTotalPrice();
 
-        // then
-        assertThat(totalFare)
-                .usingRecursiveComparison()
-                .isEqualTo(Money.from("1775"));
+        // expect
+        assertThat(totalPrice).isEqualTo("1775");
     }
 
     @Test
     void 아기_요금을_계산한다() {
-        // given
-        final Route 최단_경로 = routeFinder.findRouteBy(전체_노선_목록, 역("A"), 역("G"));
-
         // when
-        final Money totalFare = calculateFareService.calculate(BABY, 최단_경로);
+        final QueryShortestRouteResponse 최단_경로_응답_데이터 = routeService.findByStartAndEnd(0, "A", "G");
+        final String totalPrice = 최단_경로_응답_데이터.getTotalPrice();
 
-        // then
-        assertThat(totalFare)
-                .usingRecursiveComparison()
-                .isEqualTo(Money.from("0"));
+        // expect
+        assertThat(totalPrice).isEqualTo("0");
     }
 }
