@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.entity.SectionDetailEntity;
 import subway.entity.SectionEntity;
 
 import java.util.HashMap;
@@ -20,12 +21,26 @@ public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("id"),
                     rs.getLong("line_id"),
-                    rs.getObject("up_station_id", Long.class),
-                    rs.getObject("down_station_id", Long.class),
+                    rs.getLong("up_station_id"),
+                    rs.getLong("down_station_id"),
+                    rs.getInt("distance"),
+                    rs.getInt("order")
+            );
+
+    private final RowMapper<SectionDetailEntity> sectionDetailEntityRowMapper = (rs, rowNum) ->
+            new SectionDetailEntity(
+                    rs.getLong("id"),
+                    rs.getLong("line_id"),
+                    rs.getString("line_name"),
+                    rs.getString("line_color"),
+                    rs.getLong("up_station_id"),
+                    rs.getString("up_station_name"),
+                    rs.getLong("down_station_id"),
+                    rs.getString("down_station_name"),
                     rs.getInt("distance"),
                     rs.getInt("order")
             );
@@ -59,19 +74,36 @@ public class SectionDao {
 
     public List<SectionEntity> findByLineIdAndStationId(final Long lineId, final Long stationId) {
         String sql = "SELECT * FROM section WHERE line_id = ? AND (up_station_id = ? OR down_station_id = ?)";
-        return jdbcTemplate.query(sql, rowMapper, lineId, stationId, stationId);
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationId, stationId);
     }
 
     public List<SectionEntity> findByLineId(final Long lineId) {
         String sql = "SELECT * FROM section WHERE line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
+    }
+
+    public List<SectionDetailEntity> findSectionsWithSort() {
+        String sql = "SELECT section.*, s1.name as up_station_name, s2.name as down_station_name, line.name as line_name, line.color as line_color FROM section " +
+                "LEFT OUTER JOIN station s1 ON section.up_station_id=s1.id " +
+                "LEFT OUTER JOIN station s2 ON section.down_station_id=s2.id " +
+                "LEFT OUTER JOIN line ON section.line_id = line.id " +
+                "ORDER BY `order`";
+        return jdbcTemplate.query(sql, sectionDetailEntityRowMapper);
+    }
+
+    public List<SectionDetailEntity> findSectionsByLineIdWithSort(final Long lineId) {
+        String sql = "SELECT section.*, s1.name as up_station_name, s2.name as down_station_name, line.name as line_name, line.color as line_color FROM section " +
+                "LEFT OUTER JOIN station s1 ON section.up_station_id=s1.id " +
+                "LEFT OUTER JOIN station s2 ON section.down_station_id=s2.id " +
+                "LEFT OUTER JOIN line ON section.line_id = line.id " +
+                "WHERE line_id = ? ORDER BY `order`";
+        return jdbcTemplate.query(sql, sectionDetailEntityRowMapper, lineId);
     }
 
     public List<SectionEntity> findAll() {
         String sql = "SELECT * FROM section";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, sectionEntityRowMapper);
     }
-
 
     public void deleteByLineId(final Long lineId) {
         String sql = "DELETE FROM section WHERE line_id = ?";

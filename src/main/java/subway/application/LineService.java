@@ -4,11 +4,14 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.*;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Station;
 import subway.dto.*;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
+import subway.repository.LineRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,18 +37,14 @@ public class LineService {
     }
 
     public void saveStationInLine(final Long lineId, final LineStationRequest lineStationRequest) {
-        LineEntity lineEntity = findLineById(lineId);
-
+        Line line = lineRepository.findLineWithSort(lineId);
         validateDifferentStation(lineStationRequest);
         validateExistStation(lineStationRequest);
 
         Station upStation = obtainStation(lineStationRequest.getUpStationId());
         Station downStation = obtainStation(lineStationRequest.getDownStationId());
 
-        List<Section> sections = lineRepository.findSectionsByLineIdWithSort(lineId);
-        Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
-        Section section = new Section(upStation, downStation, lineStationRequest.getDistance());
-        line.add(section);
+        line.add(new Section(upStation, downStation, lineStationRequest.getDistance()));
         sync(lineId, line.getSections());
     }
 
@@ -68,11 +67,6 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 호선 ID가 없습니다."));
-    }
-
     public List<LineStationResponse> findAll() {
         List<LineEntity> lineEntities = findLines();
         List<Line> lines = lineRepository.findLinesWithSort();
@@ -91,10 +85,12 @@ public class LineService {
     }
 
     public LineStationResponse findById(Long id) {
-        LineEntity lineEntity = findLineById(id);
-        List<Section> sections = lineRepository.findSectionsByLineIdWithSort(id);
-        List<StationResponse> stationResponses = toStationResponses(sections);
-        return LineStationResponse.from(LineResponse.of(lineEntity), stationResponses);
+        Line line = lineRepository.findLineWithSort(id);
+        List<StationResponse> stationResponses = toStationResponses(line.getSections());
+        return LineStationResponse.from(
+                new LineResponse(line.getId(), line.getName(), line.getColor()),
+                stationResponses
+        );
     }
 
     private List<StationResponse> toStationResponses(final List<Section> sections) {
@@ -117,10 +113,7 @@ public class LineService {
     }
 
     public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
-        LineEntity lineEntity = findLineById(lineId);
-        List<Section> sections = lineRepository.findSectionsByLineIdWithSort(lineId);
-
-        Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
+        Line line = lineRepository.findLineWithSort(lineId);
         line.remove(obtainStation(stationId));
         sync(lineId, line.getSections());
     }

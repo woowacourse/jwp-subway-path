@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.StationDao;
-import subway.domain.LineRepository;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.fare.DistanceFareStrategy;
@@ -16,6 +15,7 @@ import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
 import subway.dto.StationResponse;
 import subway.entity.StationEntity;
+import subway.repository.SectionRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +30,13 @@ class PathServiceTest {
     private StationDao stationDao;
 
     @Mock
-    private LineRepository lineRepository;
+    private SectionRepository sectionRepository;
 
     private PathService pathService;
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stationDao, lineRepository, new FareCalculator(new DistanceFareStrategy()));
+        pathService = new PathService(stationDao, sectionRepository, new FareCalculator(new DistanceFareStrategy()));
     }
 
     @DisplayName("요청된 역의 source와 destination에 맞는 최단 경로와 거리, 요금을 반환한다.")
@@ -61,7 +61,7 @@ class PathServiceTest {
         Section 양재역_강남역 = new Section(4L, 양재역, 강남역, 5, 1);
         Section 강남역_선릉역 = new Section(5L, 강남역, 선릉역, 5, 2);
 
-        given(lineRepository.findSectionsWithSort()).willReturn(List.of(판교역_양재역, 양재역_도곡역, 도곡역_선릉역, 양재역_강남역, 강남역_선릉역));
+        given(sectionRepository.findSectionsWithSort()).willReturn(List.of(판교역_양재역, 양재역_도곡역, 도곡역_선릉역, 양재역_강남역, 강남역_선릉역));
         given(stationDao.findById(1L)).willReturn(Optional.of(new StationEntity(1L, "판교역")));
         given(stationDao.findById(5L)).willReturn(Optional.of(new StationEntity(5L, "선릉역")));
 

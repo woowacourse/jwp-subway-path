@@ -2,7 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.domain.LineRepository;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.fare.FareCalculator;
@@ -12,6 +11,7 @@ import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
 import subway.dto.StationResponse;
 import subway.entity.StationEntity;
+import subway.repository.SectionRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,17 +20,17 @@ import java.util.stream.Collectors;
 public class PathService {
 
     private final StationDao stationDao;
-    private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
     private final FareCalculator fareCalculator;
 
-    public PathService(final StationDao stationDao, final LineRepository lineRepository, final FareCalculator fareCalculator) {
+    public PathService(final StationDao stationDao, final SectionRepository sectionRepository, final FareCalculator fareCalculator) {
         this.stationDao = stationDao;
-        this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
         this.fareCalculator = fareCalculator;
     }
 
     public ShortestPathResponse findShortestPath(final ShortestPathRequest shortestPathRequest) {
-        List<Section> sections = lineRepository.findSectionsWithSort();
+        List<Section> sections = sectionRepository.findSectionsWithSort();
         Station srcStation = obtainStation(shortestPathRequest.getSrcStationId());
         Station dstStation = obtainStation(shortestPathRequest.getDstStationId());
 

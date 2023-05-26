@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### 노선에 역 제거 API
-DELETE {{local}}/lines/2/stations/1
+DELETE {{local}}/lines/1/stations/1
 Content-Type: application/json
 
 
