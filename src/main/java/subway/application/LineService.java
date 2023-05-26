@@ -18,12 +18,9 @@ import subway.persistence.SectionDao;
 import subway.persistence.StationDao;
 import subway.persistence.dto.LineDto;
 import subway.persistence.dto.SectionDto;
-import subway.persistence.exception.NoSuchLineException;
 
 @Service
 public class LineService {
-
-    private static final int ZERO = 0;
 
     private final LineDao lineDao;
     private final StationDao stationDao;
@@ -99,14 +96,7 @@ public class LineService {
     @Transactional
     public void delete(Line line) {
         sectionDao.deleteAllByLineId(line.getId());
-        int deletedCount = lineDao.deleteById(line.getId());
-        validateChangedBy(deletedCount);
-    }
-
-    private void validateChangedBy(int affectedCount) {
-        if (affectedCount == ZERO) {
-            throw new NoSuchLineException();
-        }
+        lineDao.deleteById(line.getId());
     }
 
     private Line create(Line line) {
