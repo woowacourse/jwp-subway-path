@@ -31,13 +31,14 @@ public class TestDomainData {
                 new Station(9L, "영등포"), new Station(10L, "신도림"), new Station(11L, "구로"), new Station(12L, "을지로입구"),
                 new Station(13L, "충정로"), new Station(14L, "아현"), new Station(15L, "이대"), new Station(16L, "신촌"),
                 new Station(17L, "홍대입구"), new Station(18L, "합정"), new Station(19L, "당산"), new Station(20L, "영등포구청"),
-                new Station(21L, "문래"), new Station(22L, "대림")
+                new Station(21L, "문래"), new Station(22L, "대림"), new Station(23L, "서현"), new Station(24L, "수내")
         );
     }
 
     private static List<Section> makeSections(final List<Station> stations) {
         final Line line1 = new Line(1L, "1호선", "bg-color-blue");
         final Line line2 = new Line(2L, "2호선", "bg-color-green");
+        final Line lineBundang = new Line(3L, "분당선", "bg-color-yellow");
 
         final Distance distance = new Distance(1);
 
@@ -55,6 +56,7 @@ public class TestDomainData {
             final Station next = stationsOfLine2.get(i + 1);
             sections.add(new Section(line2, previous, next, distance));
         }
+        sections.add(new Section(lineBundang, stations.get(22), stations.get(23), distance));
         return sections;
     }
 

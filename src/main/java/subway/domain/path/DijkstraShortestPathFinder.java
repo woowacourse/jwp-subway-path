@@ -8,6 +8,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.Stations;
+import subway.exception.InvalidShortestPathException;
 
 import java.util.List;
 import java.util.Set;
@@ -55,6 +56,10 @@ public class DijkstraShortestPathFinder implements ShortestPathFinder {
     private GraphPath<Station, Section> findShortest(final WeightedMultigraph<Station, Section> graph,
                                             final Station startStation, final Station endStation) {
         final DijkstraShortestPath<Station, Section> shortestPath = new DijkstraShortestPath<>(graph);
-        return shortestPath.getPath(startStation, endStation);
+        final GraphPath<Station, Section> path = shortestPath.getPath(startStation, endStation);
+        if (path == null) {
+            throw new InvalidShortestPathException();
+        }
+        return path;
     }
 }

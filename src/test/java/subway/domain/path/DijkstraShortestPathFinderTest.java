@@ -5,11 +5,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.Sections;
 import subway.domain.Station;
+import subway.exception.InvalidShortestPathException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DijkstraShortestPathFinderTest {
 
@@ -58,5 +60,19 @@ class DijkstraShortestPathFinderTest {
                 .collect(Collectors.toUnmodifiableList());
         final List<String> expectedStationNames = List.of("홍대입구", "합정", "당산", "영등포구청", "문래", "신도림", "영등포", "신길");
         assertThat(stations).isEqualTo(expectedStationNames);
+    }
+
+    @Test
+    @DisplayName("이동할 수 없는 경로")
+    void case3() {
+        // given
+        final ShortestPathFinder shortestPathFinder = new DijkstraShortestPathFinder();
+        final Sections sections = new Sections(dummyData.getSections());
+        final Station start = dummyData.getStationByName("홍대입구");
+        final Station end = dummyData.getStationByName("서현");
+
+        // when, then
+        assertThatThrownBy(() -> shortestPathFinder.find(sections, start, end))
+                .isInstanceOf(InvalidShortestPathException.class);
     }
 }

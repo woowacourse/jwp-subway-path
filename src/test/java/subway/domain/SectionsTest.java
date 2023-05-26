@@ -19,6 +19,6 @@ class SectionsTest {
         final Distance totalDistance = sections.getTotalDistance();
 
         // then
-        assertThat(totalDistance).isEqualTo(new Distance(22));
+        assertThat(totalDistance).isEqualTo(new Distance(23));
     }
 }
