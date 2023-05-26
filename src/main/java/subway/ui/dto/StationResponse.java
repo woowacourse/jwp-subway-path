@@ -6,6 +6,10 @@ public class StationResponse {
 	private Long id;
 	private String name;
 
+	public StationResponse(final StationDto stationDto) {
+		this(stationDto.getId(), stationDto.getName());
+	}
+
 	public StationResponse(final Long id, final String name) {
 		this.id = id;
 		this.name = name;

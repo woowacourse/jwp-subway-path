@@ -1,15 +1,17 @@
 package subway.ui.dto;
 
 import subway.application.section.dto.SectionDto;
+import subway.application.station.dto.StationDto;
 
 public class SectionResponse {
 
 	private Long id;
-	private String departure;
-	private String arrival;
+	private StationResponse departure;
+	private StationResponse arrival;
 	private int distance;
 
-	public SectionResponse(final Long id, final String departure, final String arrival, final int distance) {
+	public SectionResponse(final Long id, final StationResponse departure, final StationResponse arrival,
+		final int distance) {
 		this.id = id;
 		this.departure = departure;
 		this.arrival = arrival;
@@ -17,7 +19,10 @@ public class SectionResponse {
 	}
 
 	public static SectionResponse from(final SectionDto sectionDto) {
-		return new SectionResponse(sectionDto.getId(), sectionDto.getDeparture(), sectionDto.getArrival(),
+		final StationDto departure = sectionDto.getDeparture();
+		final StationDto arrival = sectionDto.getArrival();
+
+		return new SectionResponse(sectionDto.getId(), new StationResponse(departure), new StationResponse(arrival),
 			sectionDto.getDistance());
 	}
 
@@ -25,11 +30,11 @@ public class SectionResponse {
 		return id;
 	}
 
-	public String getDeparture() {
+	public StationResponse getDeparture() {
 		return departure;
 	}
 
-	public String getArrival() {
+	public StationResponse getArrival() {
 		return arrival;
 	}
 

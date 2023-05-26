@@ -2,7 +2,6 @@ package subway.ui;
 
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +23,7 @@ import subway.application.line.LineService;
 import subway.application.line.dto.LineDto;
 import subway.application.section.SectionService;
 import subway.application.section.dto.SectionDto;
+import subway.application.station.dto.StationDto;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
 import subway.ui.dto.LineSectionsResponse;
@@ -82,13 +82,12 @@ public class LineController {
 	}
 
 	@PostMapping("/{id}/stations")
-	public ResponseEntity<List<SectionResponse>> addStationToLine(@PathVariable Long id,
+	public ResponseEntity<SectionResponse> addStationToLine(@PathVariable Long id,
 		@Valid @RequestBody SectionRequest sectionRequest) {
 		final SectionDto sectionDto = convertToSectionDto(sectionRequest);
 		final SectionDto addSectionDto = sectionService.addByLineId(id, sectionDto);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(
-			Collections.singletonList(SectionResponse.from(addSectionDto)));
+		return ResponseEntity.status(HttpStatus.CREATED).body(SectionResponse.from(addSectionDto));
 	}
 
 	@DeleteMapping("/{lineId}/stations/{stationId}")
@@ -107,8 +106,8 @@ public class LineController {
 	}
 
 	private SectionDto convertToSectionDto(final SectionRequest sectionRequest) {
-		return new SectionDto(null, sectionRequest.getDeparture(), sectionRequest.getArrival(),
-			sectionRequest.getDistance());
+		return new SectionDto(null, new StationDto(null, sectionRequest.getDeparture()),
+			new StationDto(null, sectionRequest.getArrival()), sectionRequest.getDistance());
 	}
 
 	private LineSectionsResponse convertToLineSectionsResponse(final LineDto lineDto) {

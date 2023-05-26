@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.application.section.dto.SectionDto;
+import subway.application.station.dto.StationDto;
 import subway.domain.line.Distance;
 import subway.domain.line.Section;
 import subway.domain.line.SectionRepository;
@@ -65,9 +66,10 @@ public class SectionService {
 		}
 	}
 
-	private Station getStation(final String departure) {
-		return stationRepository.findByNames(departure)
-			.orElseGet(() -> stationRepository.addStation(departure));
+	private Station getStation(final StationDto station) {
+		final String stationName = station.getName();
+		return stationRepository.findByNames(stationName)
+			.orElseGet(() -> stationRepository.addStation(stationName));
 	}
 
 }
