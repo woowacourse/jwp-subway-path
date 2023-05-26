@@ -6,9 +6,10 @@ import subway.exception.DuplicatedLineNameException;
 import subway.exception.StationEdgeNotFoundException;
 import subway.exception.StationNotFoundException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,22 +52,22 @@ public class Lines {
     }
 
     public Long getLineIdBySection(final Long upStationId, final Long downStationId) {
-        return toSet().stream()
+        return toList().stream()
                 .filter(line -> line.contains(upStationId, downStationId))
                 .mapToLong(Line::getId)
                 .findFirst()
                 .orElseThrow(StationEdgeNotFoundException::new);
     }
 
-    public Set<StationEdge> getAllStationEdges() {
-        return toSet().stream()
+    public List<StationEdge> getAllStationEdges() {
+        return toList().stream()
                 .map(Line::getStationEdges)
                 .map(StationEdges::toSet)
                 .flatMap(Set::stream)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toUnmodifiableList());
     }
 
-    public Set<Line> toSet() {
-        return new HashSet<>(lines.values());
+    public List<Line> toList() {
+        return new ArrayList<>(lines.values());
     }
 }

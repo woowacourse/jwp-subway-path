@@ -60,7 +60,7 @@ public class Subway {
             final Long destinationStationId,
             final PathNavigation pathNavigation
     ) {
-        final Set<StationEdge> allStationEdges = lines.getAllStationEdges();
+        final List<StationEdge> allStationEdges = lines.getAllStationEdges();
         final List<Long> pathStations = pathNavigation.findPath(startStationId, destinationStationId, allStationEdges);
         return convertStationIdsToPath(pathStations);
     }
@@ -89,8 +89,8 @@ public class Subway {
         return lines.get(lineId);
     }
 
-    public Set<Line> getLines() {
-        return lines.toSet();
+    public List<Line> getLines() {
+        return lines.toList();
     }
 
     public Station getStation(final Long stationId) {

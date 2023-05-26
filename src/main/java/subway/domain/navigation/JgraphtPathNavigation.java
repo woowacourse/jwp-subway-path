@@ -6,14 +6,14 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.domain.line.edge.StationEdge;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class JgraphtPathNavigation implements PathNavigation {
 
     @Override
-    public List<Long> findPath(final Long startStationId, final Long endStationId, final Set<StationEdge> subwayGraph) {
+    public List<Long> findPath(final Long startStationId, final Long endStationId, final Collection<StationEdge> subwayGraph) {
         final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         setGraph(subwayGraph, graph);
 
@@ -22,7 +22,7 @@ public class JgraphtPathNavigation implements PathNavigation {
         return dijkstraShortestPath.getPath(startStationId, endStationId).getVertexList();
     }
 
-    private void setGraph(final Set<StationEdge> subwayGraph, final WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+    private void setGraph(final Collection<StationEdge> subwayGraph, final WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
         for (StationEdge stationEdge : subwayGraph) {
             final Long upStationId = stationEdge.getUpStationId();
             final Long downStationId = stationEdge.getDownStationId();
