@@ -109,7 +109,6 @@ class PathControllerTest {
             given(pathService.findShortestPath(startStationId, endStationId)).willThrow(StationNotFoundException.class);
 
             // when, then
-
             mockMvc.perform(get("/path").param("start", String.valueOf(startStationId)).param("end", String.valueOf(endStationId)))
                     .andExpect(status().isNotFound());
         }
