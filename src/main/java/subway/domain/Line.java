@@ -62,6 +62,10 @@ public class Line {
         sections.removeAll(nearBys);
     }
 
+    public boolean contains(Station station) {
+        return findNearBysOf(station).size() > 0;
+    }
+
     public Line withName(String name) {
         return new Line(id, name, color, sections);
     }
@@ -133,7 +137,7 @@ public class Line {
     }
 
     private void validateContains(Station station) {
-        if (findNearBysOf(station).isEmpty()) {
+        if (!contains(station)) {
             throw new NoSuchStationException();
         }
     }

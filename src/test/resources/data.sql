@@ -11,7 +11,8 @@ values ('잠실나루'),
        ('B'),
        ('C'),
        ('D'),
-       ('E');
+       ('E'),
+       ('F');
 
 insert into line (name, color)
 values ('1호선', 'blue'),

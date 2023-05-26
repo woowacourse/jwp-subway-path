@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import subway.domain.exception.BusinessException;
+import subway.domain.exception.ShortestPathLibraryException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -30,6 +31,12 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ExceptionResponse> handleBusinessException(BusinessException e) {
+        return ResponseEntity.badRequest()
+                .body(ExceptionResponse.of(e));
+    }
+
+    @ExceptionHandler(ShortestPathLibraryException.class)
+    public ResponseEntity<ExceptionResponse> handleShortestPathLibraryException(ShortestPathLibraryException e) {
         return ResponseEntity.badRequest()
                 .body(ExceptionResponse.of(e));
     }
