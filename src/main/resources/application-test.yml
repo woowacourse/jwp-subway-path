@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:first
+    driver-class-name: org.h2.Driver
+    username:
+    password:
+  config:
+    activate:
+      on-profile: first
+  sql:
+    init:
+      mode: never
+
+---
+spring:
+  datasource:
+    url: jdbc:h2:mem:second
+    driver-class-name: org.h2.Driver
+    username:
+    password:
+  config:
+    activate:
+      on-profile: second
+  sql:
+    init:
+      mode: never
+
+---
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:third
+    driver-class-name: org.h2.Driver
+    username:
+    password:
+  config:
+    activate:
+      on-profile: third
+  sql:
+    init:
+      mode: never
+
+---
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL
+    driver-class-name: org.h2.Driver
+  config:
+    activate:
+      on-profile: integration
+  sql:
+    init:
+      mode: always
