@@ -55,9 +55,9 @@ public class RouteService {
         return QueryShortestRouteResponse.from(route, totalFare);
     }
 
-    private Station getStationOrThrowException(final String startStationName) {
-        return stationRepository.findByStationName(startStationName)
-                .orElseThrow(() -> new IllegalArgumentException(startStationName + " 이름으로 조회된 출발역이 존재하지 않습니다."));
+    private Station getStationOrThrowException(final String stationName) {
+        return stationRepository.findByStationName(stationName)
+                .orElseThrow(() -> new IllegalArgumentException(stationName + " 이름으로 조회된 출발역이 존재하지 않습니다."));
     }
 
     private Money calculateFare(final PassengerType passengerType, final Route route) {
