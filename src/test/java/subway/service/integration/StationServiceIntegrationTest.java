@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @Sql("/data.sql")
 public class StationServiceIntegrationTest {
 
+	private static final String STATION_NAME = "잠실역";
 	@Autowired
 	private StationService stationService;
 
@@ -34,7 +35,7 @@ public class StationServiceIntegrationTest {
 	@DisplayName("역 생성 서비스 인수테스트")
 	void createSection() {
 		// given
-		StationCreateRequest createRequest = new StationCreateRequest("잠실역");
+		StationCreateRequest createRequest = new StationCreateRequest(STATION_NAME);
 
 		// when
 		stationService.saveStation(createRequest);
@@ -63,12 +64,11 @@ public class StationServiceIntegrationTest {
 	@DisplayName("id로 역 조회 서비스 인수테스트")
 	void findById() {
 		// given
-		String stationName = "잠실역";
-		Station station = new Station("잠실역");
+		Station station = new Station(STATION_NAME);
 		stationRepository.insertStation(station);
 
 		// when
-		StationResponse response = stationService.getStationResponseByName(stationName);
+		StationResponse response = stationService.getStationResponseByName(STATION_NAME);
 
 		// then
 		assertThat(response.getName()).isEqualTo(station.getName());
@@ -78,7 +78,7 @@ public class StationServiceIntegrationTest {
 	@DisplayName("전체 역 조회 서비스 인수테스트")
 	void findAll() {
 		// given
-		Station station = new Station("잠실역");
+		Station station = new Station(STATION_NAME);
 		stationRepository.insertStation(station);
 
 		// when
@@ -95,14 +95,13 @@ public class StationServiceIntegrationTest {
 	@DisplayName("역 갱신 서비스 인수테스트")
 	void updateStation() {
 		// given
-		String stationName = "잠실역";
-		StationCreateRequest createRequest = new StationCreateRequest(stationName);
+		StationCreateRequest createRequest = new StationCreateRequest(STATION_NAME);
 		stationService.saveStation(createRequest);
 
 		StationUpdateRequest updateRequest = new StationUpdateRequest("신사역");
 
 		// when
-		stationService.updateStation(stationName, updateRequest);
+		stationService.updateStation(STATION_NAME, updateRequest);
 
 		// then
 		StationsResponse response = stationService.findAllStationResponses();
@@ -117,11 +116,10 @@ public class StationServiceIntegrationTest {
 	@DisplayName("존재하지 않은 역을 조회 시 예외가 발생한다")
 	void exception_whenStationNotFound() {
 		// given
-		String stationName = "신사역";
-		StationUpdateRequest updateRequest = new StationUpdateRequest(stationName);
+		StationUpdateRequest updateRequest = new StationUpdateRequest(STATION_NAME);
 
 		// then
-		assertThatThrownBy(() -> stationService.updateStation(stationName, updateRequest))
+		assertThatThrownBy(() -> stationService.updateStation(STATION_NAME, updateRequest))
 			.isInstanceOf(StationNotFoundException.class);
 	}
 
@@ -129,12 +127,11 @@ public class StationServiceIntegrationTest {
 	@DisplayName("역 삭제 서비스 인수테스트")
 	void deleteStation() {
 		// given
-		String stationName = "잠실역";
-		StationCreateRequest createRequest = new StationCreateRequest(stationName);
+		StationCreateRequest createRequest = new StationCreateRequest(STATION_NAME);
 		stationService.saveStation(createRequest);
 
 		// when
-		stationService.deleteStationByName(stationName);
+		stationService.deleteStationByName(STATION_NAME);
 
 		// then
 		StationsResponse expected = stationService.findAllStationResponses();

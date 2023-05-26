@@ -36,12 +36,7 @@ class SubwayServiceIntegrationTest {
 	@DisplayName("역을 순서대로 정렬한다")
 	void sortStations() {
 		// given
-		stationRepository.insertStation(new Station("잠실역"));
-		stationRepository.insertStation(new Station("잠실새내역"));
-		stationRepository.insertStation(new Station("선릉역"));
-
-		lineRepository.insertLine(new LineEntity(1L, "2호선"));
-		lineRepository.insertSectionInLine(createSections(), "2호선");
+		initSubway();
 
 		// when
 		LineStationResponse result = subwayService.findStationsByLineName("2호선");
@@ -58,12 +53,7 @@ class SubwayServiceIntegrationTest {
 	@DisplayName("최단 경로를 조회한다")
 	void returns_shortest_path() {
 		// given
-		stationRepository.insertStation(new Station("잠실역"));
-		stationRepository.insertStation(new Station("잠실새내역"));
-		stationRepository.insertStation(new Station("선릉역"));
-		lineRepository.insertLine(new LineEntity(1L, "2호선"));
-		lineRepository.insertSectionInLine(createSections(), "2호선");
-
+		initSubway();
 		PathRequest request = new PathRequest("잠실역", "선릉역");
 
 		// when
@@ -75,5 +65,13 @@ class SubwayServiceIntegrationTest {
 			() -> assertThat(result.getPaths().get(0).getStation().getName()).isEqualTo("잠실역"),
 			() -> assertThat(result.getPaths().get(2).getStation().getName()).isEqualTo("선릉역")
 		);
+	}
+
+	private void initSubway() {
+		stationRepository.insertStation(new Station("잠실역"));
+		stationRepository.insertStation(new Station("잠실새내역"));
+		stationRepository.insertStation(new Station("선릉역"));
+		lineRepository.insertLine(new LineEntity(1L, "2호선"));
+		lineRepository.insertSectionInLine(createSections(), "2호선");
 	}
 }
