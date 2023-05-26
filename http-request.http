@@ -1,3 +1,29 @@
+### 모든 노선 조회 API
+GET {{local}}/lines
+Content-Type: application/json
+
+> {%
+    client.test("getLines", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json'");
+    });
+
+    client.log(response.body.lineResponse);
+%}
+
+### 노선 조회 API
+GET {{local}}/lines/2
+Content-Type: application/json
+
+> {%
+    client.test("getLine", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json'");
+    });
+
+    client.log(response.body.lineResponse);
+%}
+
 ### 노선에 역 등록 API
 POST {{local}}/lines/2/stations
 Content-Type: application/json
@@ -8,20 +34,28 @@ Content-Type: application/json
   "distance": 5
 }
 
+> {%
+    client.test("registerSection", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
 ### 노선에 역 제거 API
 DELETE {{local}}/lines/1/stations/1
 Content-Type: application/json
 
-
-### 모든 노선 조회 API
-GET {{local}}/lines
-Content-Type: application/json
-
-
-### 노선 조회 API
-GET {{local}}/lines/2
-Content-Type: application/json
+> {%
+    client.test("deleteSection", function() {
+        client.assert(response.status === 204, "Response status is not 204");
+    });
+%}
 
 ### 경로 조회 API
 GET {{local}}/path?srcStationId=3&dstStationId=5
 Content-Type: application/json
+
+> {%
+    client.test("findShortestPath", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
