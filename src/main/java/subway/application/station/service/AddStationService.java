@@ -61,7 +61,7 @@ public class AddStationService implements AddStationUseCase {
 
     private void validateIsFrontStation(final Station frontStation, final Station standartStation) {
         if (!standartStation.matchStationName(frontStation)) {
-            throw new IllegalStateException("기준역이 상행 종점이 아닙니다.");
+            throw new IllegalStateException("기준역이 상행 종점이 아닙니다: " + standartStation.getStationName());
         }
     }
 
@@ -82,7 +82,7 @@ public class AddStationService implements AddStationUseCase {
 
     private void validateIsEndStation(final Station endStation, final Station standartStation) {
         if (!standartStation.matchStationName(endStation)) {
-            throw new IllegalStateException("기준역이 하행 종점이 아닙니다.");
+            throw new IllegalStateException("기준역이 하행 종점이 아닙니다: " + standartStation.getStationName());
         }
     }
 
@@ -117,7 +117,11 @@ public class AddStationService implements AddStationUseCase {
         final Section section = sections.peekByFirstStationUnique(firstStation);
 
         if (!section.getSecondStation().matchStationName(secondStation)) {
-            throw new IllegalStateException("두 역은 구간으로 연결되어 있지 않습니다.");
+            throw new IllegalStateException("두 역은 구간으로 연결되어 있지 않습니다: "
+                    + firstStation.getStationName()
+                    + ", "
+                    + secondStation.getStationName()
+            );
         }
     }
 }

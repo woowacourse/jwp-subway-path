@@ -74,7 +74,7 @@ public class Sections {
                 .anyMatch(section -> section.contains(station));
 
         if (isExistStation) {
-            throw new IllegalStateException("이미 존재하는 등록된 역 입니다.");
+            throw new IllegalStateException("이미 존재하는 등록된 역 입니다: " + station.getStationName());
         }
     }
 

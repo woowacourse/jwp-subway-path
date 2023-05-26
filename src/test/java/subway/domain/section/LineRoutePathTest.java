@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import subway.domain.line.LineRoutePath;
+import subway.domain.path.LineRoutePath;
 import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
 
