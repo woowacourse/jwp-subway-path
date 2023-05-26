@@ -3,6 +3,7 @@ package subway.domain;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.service.section.domain.Distance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,5 +33,28 @@ class DistanceTest {
         Distance reducedDistance = original.reduce(minusDistance);
 
         assertThat(reducedDistance).isEqualTo(new Distance(7));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {14, 10})
+    void 입력으로_들어온_거리보다_작으면_true(int distance) {
+        Distance original = new Distance(10);
+        assertThat(original.isSmaller(new Distance(distance))).isTrue();
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 9})
+    void 입력으로_들어온_거리보다_크면_false(int distance) {
+        Distance original = new Distance(10);
+        assertThat(original.isSmaller(new Distance(distance))).isFalse();
+    }
+
+    @Test
+    void 두_개의_거리를_합해_새로운_객체를_반환() {
+        Distance firstDistance = new Distance(3);
+        Distance secondDistance = new Distance(5);
+
+        assertThat(firstDistance.plus(secondDistance)).isEqualTo(new Distance(8));
     }
 }

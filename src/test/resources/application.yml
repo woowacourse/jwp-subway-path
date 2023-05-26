@@ -1,15 +1,14 @@
 spring:
-
   h2:
     console:
       enabled: true
       path: /h2-console
+
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/subway
+    url: jdbc:h2:mem:test;MODE=MySQL
     username: sa
     password:
   sql:
     init:
-      schema-locations: classpath:/schema.sql
-      mode: always
+      schema-locations: classpath:/schema-test.sql
