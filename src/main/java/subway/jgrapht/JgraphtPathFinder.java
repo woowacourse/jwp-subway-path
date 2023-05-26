@@ -9,11 +9,11 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
-import subway.domain.Distance;
-import subway.domain.Path;
-import subway.domain.PathFinder;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Distance;
+import subway.domain.path.Path;
+import subway.domain.path.PathFinder;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 import subway.error.exception.SectionConnectionException;
 
 @Component

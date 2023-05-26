@@ -9,6 +9,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import subway.domain.line.Section;
+import subway.domain.line.Sections;
+
 class SectionsTest {
 
 	@Test

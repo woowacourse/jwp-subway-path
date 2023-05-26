@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import subway.domain.Station;
-import subway.domain.StationRepository;
+import subway.domain.line.Station;
+import subway.domain.line.StationRepository;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.StationEntity;
 
@@ -27,8 +27,19 @@ public class StationJdbcRepository implements StationRepository {
 	}
 
 	@Override
+	public Optional<Station> findById(final Long id) {
+		final Optional<StationEntity> optionalStationEntity = stationDao.findById(id);
+
+		if (optionalStationEntity.isPresent()) {
+			final StationEntity stationEntity = optionalStationEntity.get();
+			return Optional.of(new Station(stationEntity.getId(), stationEntity.getName()));
+		}
+		return Optional.empty();
+	}
+
+	@Override
 	@Transactional(readOnly = true)
-	public Optional<Station> findByStationNames(final String stationName) {
+	public Optional<Station> findByNames(final String stationName) {
 		final Optional<StationEntity> optionalStationEntity = stationDao.findByName(stationName);
 		if (optionalStationEntity.isPresent()) {
 			final StationEntity stationEntity = optionalStationEntity.get();

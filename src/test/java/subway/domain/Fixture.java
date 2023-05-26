@@ -2,6 +2,10 @@ package subway.domain;
 
 import java.util.List;
 
+import subway.domain.line.Distance;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
+
 public class Fixture {
 	// 거리
 	public static final Distance DISTANCE = new Distance(10);

@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import subway.domain.fee.Fee;
+import subway.domain.line.Distance;
+
 class FeeTest {
 
 	@Test

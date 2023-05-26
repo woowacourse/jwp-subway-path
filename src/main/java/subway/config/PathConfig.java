@@ -5,7 +5,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import subway.domain.Station;
+import subway.domain.line.Station;
 
 @Configuration
 public class PathConfig {

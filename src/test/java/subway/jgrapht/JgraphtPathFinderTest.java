@@ -11,9 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import subway.domain.Fixture;
-import subway.domain.Path;
-import subway.domain.PathFinder;
-import subway.domain.Section;
+import subway.domain.path.Path;
+import subway.domain.path.PathFinder;
+import subway.domain.line.Section;
 
 class JgraphtPathFinderTest {
 

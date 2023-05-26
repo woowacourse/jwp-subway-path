@@ -1,21 +1,20 @@
 package subway.application.section;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.application.section.dto.SectionDto;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.SectionRepository;
-import subway.domain.Sections;
-import subway.domain.Station;
-import subway.domain.StationRepository;
-import subway.domain.command.Result;
+import subway.domain.line.Distance;
+import subway.domain.line.Section;
+import subway.domain.line.SectionRepository;
+import subway.domain.line.Sections;
+import subway.domain.line.Station;
+import subway.domain.line.StationRepository;
+import subway.domain.line.command.Result;
 import subway.error.exception.SectionConnectionException;
+import subway.error.exception.StationNotFoundException;
 
 @Service
 @Transactional
@@ -29,37 +28,25 @@ public class SectionService {
 		this.stationRepository = stationRepository;
 	}
 
-	public SectionDto addStationByLineId(final Long lineId, final SectionDto sectionDto) {
+	public SectionDto addByLineId(final Long lineId, final SectionDto sectionDto) {
 		final List<Section> lineSections = sectionRepository.findSectionsByLineId(lineId);
-
-		final Sections sections = new Sections(lineSections);
 		final Section addSection = createNewSection(sectionDto);
 
+		final Sections sections = new Sections(lineSections);
 		final Result result = sections.addStation(addSection);
-		result.execute(lineId, sectionRepository::addSection, sectionRepository::removeSection);
 
+		result.execute(lineId, sectionRepository::addSection, sectionRepository::removeSection);
 		return SectionDto.from(addSection);
 	}
 
-	@Transactional(readOnly = true)
-	public Map<Long, List<SectionDto>> findAllSections() {
-		return sectionRepository.findAllSections().entrySet().stream()
-			.collect(Collectors.toMap(Map.Entry::getKey,
-				entry -> convertToDtos(new Sections(entry.getValue()).getSections())));
-	}
+	public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
+		final List<Section> lineSections = sectionRepository.findSectionsByLineId(lineId);
+		final Station removeStation = stationRepository.findById(stationId)
+			.orElseThrow(() -> StationNotFoundException.EXCEPTION);
 
-	@Transactional(readOnly = true)
-	public List<SectionDto> findSectionsByLineId(final Long lineId) {
-		final List<Section> sections = sectionRepository.findSectionsByLineId(lineId);
-		final Sections result = new Sections(sections);
-		return convertToDtos(result.getSections());
-	}
+		final Sections sections = new Sections(lineSections);
+		final Result result = sections.removeStation(removeStation);
 
-	public void deleteSectionByLineIdAndStationId(final Long lineId, final Long stationId) {
-		final List<Section> sections = sectionRepository.findSectionsByLineIdAndStationId(lineId, stationId);
-		final Sections removeSections = new Sections(sections);
-
-		final Result result = removeSections.removeStation();
 		result.execute(lineId, sectionRepository::addSection, sectionRepository::removeSection);
 	}
 
@@ -79,13 +66,8 @@ public class SectionService {
 	}
 
 	private Station getStation(final String departure) {
-		return stationRepository.findByStationNames(departure)
+		return stationRepository.findByNames(departure)
 			.orElseGet(() -> stationRepository.addStation(departure));
 	}
 
-	private List<SectionDto> convertToDtos(final List<Section> sections) {
-		return sections.stream()
-			.map(SectionDto::from)
-			.collect(Collectors.toList());
-	}
 }

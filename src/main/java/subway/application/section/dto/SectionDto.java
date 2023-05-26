@@ -1,8 +1,8 @@
 package subway.application.section.dto;
 
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Distance;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 
 public class SectionDto {
 

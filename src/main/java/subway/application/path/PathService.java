@@ -9,14 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import subway.application.path.dto.PathDto;
 import subway.application.station.dto.StationDto;
-import subway.domain.Distance;
-import subway.domain.Fee;
-import subway.domain.Path;
-import subway.domain.PathFinder;
-import subway.domain.Section;
-import subway.domain.SectionRepository;
-import subway.domain.Station;
-import subway.domain.StationRepository;
+import subway.domain.fee.Fee;
+import subway.domain.line.Distance;
+import subway.domain.line.Line;
+import subway.domain.line.LineRepository;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
+import subway.domain.line.StationRepository;
+import subway.domain.path.Path;
+import subway.domain.path.PathFinder;
 import subway.error.exception.SectionConnectionException;
 import subway.error.exception.StationNotFoundException;
 
@@ -24,13 +25,13 @@ import subway.error.exception.StationNotFoundException;
 @Transactional(readOnly = true)
 public class PathService {
 
-	private final SectionRepository sectionRepository;
+	private final LineRepository lineRepository;
 	private final StationRepository stationRepository;
 	private final PathFinder pathFinder;
 
-	public PathService(final SectionRepository sectionRepository, final StationRepository stationRepository,
+	public PathService(final LineRepository lineRepository, final StationRepository stationRepository,
 		final PathFinder pathFinder) {
-		this.sectionRepository = sectionRepository;
+		this.lineRepository = lineRepository;
 		this.stationRepository = stationRepository;
 		this.pathFinder = pathFinder;
 	}
@@ -56,13 +57,13 @@ public class PathService {
 	}
 
 	private Station findDepartureStation(final String stationName) {
-		return stationRepository.findByStationNames(stationName)
+		return stationRepository.findByNames(stationName)
 			.orElseThrow(() -> StationNotFoundException.EXCEPTION);
 	}
 
 	private List<Section> findAllSections() {
-		return sectionRepository.findAllSections().values()
-			.stream()
+		return lineRepository.findLines().stream()
+			.map(Line::getSections)
 			.flatMap(Collection::stream)
 			.collect(Collectors.toList());
 	}

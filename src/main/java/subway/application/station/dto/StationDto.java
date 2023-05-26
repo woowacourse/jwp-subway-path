@@ -1,6 +1,6 @@
 package subway.application.station.dto;
 
-import subway.domain.Station;
+import subway.domain.line.Station;
 import subway.persistence.entity.StationEntity;
 
 public class StationDto {

@@ -4,7 +4,6 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -54,24 +53,19 @@ public class LineController {
 
 	@GetMapping
 	public ResponseEntity<List<LineSectionsResponse>> findAllLines() {
-		final List<LineResponse> lineResponses = convertToLineResponses(lineService.findLines());
-		final Map<Long, List<SectionDto>> allSections = sectionService.findAllSections();
-
-		final List<LineSectionsResponse> lineSectionResponses = lineResponses.stream()
-			.map(lineResponse -> new LineSectionsResponse(lineResponse,
-				convertToSectionResponses(allSections.get(lineResponse.getId()))))
+		final List<LineSectionsResponse> lineSectionsResponses = lineService.findLines().stream()
+			.map(this::convertToLineSectionsResponse)
 			.collect(Collectors.toList());
 
-		return ResponseEntity.ok(lineSectionResponses);
+		return ResponseEntity.ok(lineSectionsResponses);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<LineSectionsResponse> findLineById(@PathVariable Long id) {
-		final LineResponse lineResponse = LineResponse.from(lineService.findLineById(id));
-		final List<SectionDto> lineSections = sectionService.findSectionsByLineId(id);
-		final LineSectionsResponse lineSectionsResponse = new LineSectionsResponse(lineResponse,
-			convertToSectionResponses(lineSections));
-		return ResponseEntity.ok(lineSectionsResponse);
+		final LineDto line = lineService.findLineById(id);
+		final LineSectionsResponse response = convertToLineSectionsResponse(line);
+
+		return ResponseEntity.ok(response);
 	}
 
 	@PutMapping("/{id}")
@@ -91,7 +85,7 @@ public class LineController {
 	public ResponseEntity<List<SectionResponse>> addStationToLine(@PathVariable Long id,
 		@Valid @RequestBody SectionRequest sectionRequest) {
 		final SectionDto sectionDto = convertToSectionDto(sectionRequest);
-		final SectionDto addSectionDto = sectionService.addStationByLineId(id, sectionDto);
+		final SectionDto addSectionDto = sectionService.addByLineId(id, sectionDto);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(
 			Collections.singletonList(SectionResponse.from(addSectionDto)));
@@ -99,7 +93,7 @@ public class LineController {
 
 	@DeleteMapping("/{lineId}/stations/{stationId}")
 	public ResponseEntity<Void> deleteStation(@PathVariable final Long lineId, @PathVariable final Long stationId) {
-		sectionService.deleteSectionByLineIdAndStationId(lineId, stationId);
+		sectionService.deleteByLineIdAndStationId(lineId, stationId);
 		return ResponseEntity.noContent().build();
 	}
 
@@ -109,7 +103,7 @@ public class LineController {
 	}
 
 	private LineDto converToLineDto(final LineRequest lineRequest) {
-		return new LineDto(null, lineRequest.getName(), lineRequest.getColor());
+		return new LineDto(lineRequest.getName(), lineRequest.getColor());
 	}
 
 	private SectionDto convertToSectionDto(final SectionRequest sectionRequest) {
@@ -117,10 +111,9 @@ public class LineController {
 			sectionRequest.getDistance());
 	}
 
-	private List<LineResponse> convertToLineResponses(List<LineDto> lines) {
-		return lines.stream()
-			.map(LineResponse::from)
-			.collect(Collectors.toList());
+	private LineSectionsResponse convertToLineSectionsResponse(final LineDto lineDto) {
+		return new LineSectionsResponse(new LineResponse(lineDto.getId(), lineDto.getName(),
+			lineDto.getColor()), convertToSectionResponses(lineDto.getSectionDtos()));
 	}
 
 	private List<SectionResponse> convertToSectionResponses(List<SectionDto> sections) {

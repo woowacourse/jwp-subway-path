@@ -4,15 +4,14 @@ import static java.util.stream.Collectors.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.SectionRepository;
-import subway.domain.Station;
+import subway.domain.line.Distance;
+import subway.domain.line.Section;
+import subway.domain.line.SectionRepository;
+import subway.domain.line.Station;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.SectionEntity;
@@ -32,41 +31,21 @@ public class SectionJdbcRepository implements SectionRepository {
 
 	@Override
 	public Section addSection(final Long lineId, final Section newSection) {
-		final Map<Long, Station> stationMap = mapToStations(stationDao.findAll());
-
 		final SectionEntity newSectionEntity = SectionEntity.of(lineId, newSection);
+
 		final SectionEntity result = sectionDao.insert(newSectionEntity);
+		final Map<Long, Station> stationMap = getStationMap();
 
 		return convertToSection(result, stationMap);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Map<Long, List<Section>> findAllSections() {
-		final Map<Long, Station> stationMap = mapToStations(stationDao.findAll());
-
-		return sectionDao.findAll().stream()
-			.collect(groupingBy(SectionEntity::getLineId,
-				mapping(sectionEntity -> convertToSection(sectionEntity, stationMap), toList())));
-	}
-
-	@Override
-	@Transactional(readOnly = true)
 	public List<Section> findSectionsByLineId(final Long lineId) {
-		final Map<Long, Station> stationMap = mapToStations(stationDao.findAll());
+		final Map<Long, Station> stationMap = getStationMap();
+		final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
 
-		return sectionDao.findByLineId(lineId).stream()
-			.map(sectionEntity -> convertToSection(sectionEntity, stationMap))
-			.collect(toList());
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<Section> findSectionsByLineIdAndStationId(final Long lineId, final Long stationId) {
-		final Map<Long, Station> stationMap = mapToStations(stationDao.findAll());
-
-		return sectionDao.findByLineId(lineId).stream()
-			.filter(sectionEntity -> hasStation(stationId, sectionEntity))
+		return sectionEntities.stream()
 			.map(sectionEntity -> convertToSection(sectionEntity, stationMap))
 			.collect(toList());
 	}
@@ -76,8 +55,8 @@ public class SectionJdbcRepository implements SectionRepository {
 		sectionDao.deleteById(section.getId());
 	}
 
-	private Map<Long, Station> mapToStations(final List<StationEntity> allStations) {
-		return allStations.stream()
+	private Map<Long, Station> getStationMap() {
+		return stationDao.findAll().stream()
 			.collect(toMap(StationEntity::getId, this::convertToStation));
 	}
 
@@ -87,11 +66,6 @@ public class SectionJdbcRepository implements SectionRepository {
 
 	private Section convertToSection(final SectionEntity section, final Map<Long, Station> stationMap) {
 		return new Section(section.getId(), stationMap.get(section.getDepartureId()),
-			stationMap.get(section.getDepartureId()), new Distance(section.getDistance()));
-	}
-
-	private boolean hasStation(final Long stationId, final SectionEntity sectionEntity) {
-		return Objects.equals(sectionEntity.getDepartureId(), stationId) || Objects.equals(sectionEntity.getArrivalId(),
-			stationId);
+			stationMap.get(section.getArrivalId()), new Distance(section.getDistance()));
 	}
 }
