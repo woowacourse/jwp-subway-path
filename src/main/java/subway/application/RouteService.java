@@ -45,8 +45,8 @@ public class RouteService {
             final String endStationName
     ) {
         final PassengerType passengerType = PassengerType.findBy(passengerAge);
-        final Station startStation = getStationOrThrowException(startStationName, "이름으로 조회된 출발역이 존재하지 않습니다.");
-        final Station endStation = getStationOrThrowException(endStationName, "이름으로 조회된 도착역이 존재하지 않습니다.");
+        final Station startStation = getStationOrThrowException(startStationName);
+        final Station endStation = getStationOrThrowException(endStationName);
         final List<Line> lines = lineRepository.findAll();
 
         final Route route = routeFinder.findRouteBy(lines, startStation, endStation);
@@ -55,9 +55,9 @@ public class RouteService {
         return QueryShortestRouteResponse.from(route, totalFare);
     }
 
-    private Station getStationOrThrowException(final String startStationName, final String message) {
+    private Station getStationOrThrowException(final String startStationName) {
         return stationRepository.findByStationName(startStationName)
-                .orElseThrow(() -> new IllegalArgumentException(message));
+                .orElseThrow(() -> new IllegalArgumentException(startStationName + " 이름으로 조회된 출발역이 존재하지 않습니다."));
     }
 
     private Money calculateFare(final PassengerType passengerType, final Route route) {
