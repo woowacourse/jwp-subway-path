@@ -1,4 +1,3 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb;MODE=MYSQL
-    driver-class-name: org.h2.Driver
+  profiles:
+    active: test

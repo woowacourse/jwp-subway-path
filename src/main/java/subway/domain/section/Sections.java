@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import subway.domain.station.Station;
+import subway.domain.station.Stations;
 
 public class Sections {
 
@@ -164,6 +167,20 @@ public class Sections {
         updateSection.add(insertIndex, newSection);
 
         return new Sections(updateSection);
+    }
+
+    public Stations getStations() {
+        return new Stations(sections.stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .distinct()
+                .collect(Collectors.toUnmodifiableList()));
+    }
+
+    public Distance totalDistance() {
+        return sections.stream().
+                map(Section::getDistance).
+                reduce(Distance::add)
+                .orElseThrow(() -> new IllegalArgumentException("구간이 없습니다."));
     }
 
     public boolean isEmpty() {

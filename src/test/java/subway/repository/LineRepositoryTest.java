@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -26,12 +27,13 @@ import subway.domain.station.StationName;
 import subway.entity.StationEntity;
 import subway.fixture.LineFixture.Line1;
 import subway.fixture.LineFixture.Line2;
-import subway.fixture.StationFixture.A;
-import subway.fixture.StationFixture.B;
-import subway.fixture.StationFixture.C;
+import subway.fixture.StationFixture.STATION_A;
+import subway.fixture.StationFixture.STATION_B;
+import subway.fixture.StationFixture.STATION_C;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
+@Transactional
 @JdbcTest
 class LineRepositoryTest {
 
@@ -68,9 +70,9 @@ class LineRepositoryTest {
     void 노선에_속한_구간을_저장한다() {
         //given
         final Long lineId = lineDao.insert(Line1.entity);
-        final Station stationA = getStationByStationEntity(A.entity);
-        final Station stationB = getStationByStationEntity(B.entity);
-        final Station stationC = getStationByStationEntity(C.entity);
+        final Station stationA = getStationByStationEntity(STATION_A.entity);
+        final Station stationB = getStationByStationEntity(STATION_B.entity);
+        final Station stationC = getStationByStationEntity(STATION_C.entity);
 
         final Section section1 = new Section(stationA, stationB, new Distance(5));
         final Section section2 = new Section(stationB, stationC, new Distance(5));
@@ -88,17 +90,16 @@ class LineRepositoryTest {
 
     private Station getStationByStationEntity(final StationEntity stationEntity) {
         final Long id = stationDao.insert(stationEntity);
-        return new Station(id,
-                new StationName(stationEntity.getName()));
+        return new Station(id, new StationName(stationEntity.getName()));
     }
 
     @Test
     void 노선에_속한_구간을_삭제한다() {
         //given
         final Long lineId = lineDao.insert(Line1.entity);
-        final Station stationA = getStationByStationEntity(A.entity);
-        final Station stationB = getStationByStationEntity(B.entity);
-        final Station stationC = getStationByStationEntity(C.entity);
+        final Station stationA = getStationByStationEntity(STATION_A.entity);
+        final Station stationB = getStationByStationEntity(STATION_B.entity);
+        final Station stationC = getStationByStationEntity(STATION_C.entity);
 
         final Section section1 = new Section(stationA, stationB, new Distance(5));
         final Section section2 = new Section(stationB, stationC, new Distance(5));
@@ -121,8 +122,7 @@ class LineRepositoryTest {
         final Long id = lineDao.insert(Line1.entity);
 
         // expect
-        assertThat(lineRepository.findById(id).getLineName().name())
-                .isEqualTo("1호선");
+        assertThat(lineRepository.findById(id).getLineName().name()).isEqualTo("1호선");
     }
 
     @Test
@@ -133,14 +133,9 @@ class LineRepositoryTest {
 
         // expect
         List<Line> lines = lineRepository.findAllLine();
-        assertAll(
-                () -> assertThat(lines)
-                        .hasSize(2),
-                () -> assertThat(lines.get(0).getLineName().name())
-                        .isEqualTo("1호선"),
-                () -> assertThat(lines.get(1).getLineName().name())
-                        .isEqualTo("2호선")
-        );
+        assertAll(() -> assertThat(lines).hasSize(2),
+                () -> assertThat(lines.get(0).getLineName().name()).isEqualTo("1호선"),
+                () -> assertThat(lines.get(1).getLineName().name()).isEqualTo("2호선"));
     }
 
     @Test
@@ -152,11 +147,9 @@ class LineRepositoryTest {
         lineRepository.update(new Line(id, new LineName("1-호선"), new LineColor("검정")));
 
         //then
-        assertAll(
-                () -> assertThat(lineDao.findById(id).get().getName()).isEqualTo("1-호선"),
+        assertAll(() -> assertThat(lineDao.findById(id).get().getName()).isEqualTo("1-호선"),
                 () -> assertThat(lineDao.findById(id).get().getColor()).isEqualTo("검정"),
-                () -> assertThat(lineDao.findById(id).get().getId()).isEqualTo(id)
-        );
+                () -> assertThat(lineDao.findById(id).get().getId()).isEqualTo(id));
     }
 
     @Test
@@ -168,8 +161,7 @@ class LineRepositoryTest {
         lineRepository.delete(id);
 
         // then
-        assertThatThrownBy(() -> lineRepository.findById(id))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> lineRepository.findById(id)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 ID를 가진 노선을 찾을 수 없습니다.");
     }
 }

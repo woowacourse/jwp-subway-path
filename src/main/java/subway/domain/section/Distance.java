@@ -24,6 +24,31 @@ public class Distance {
         return new Distance(this.distance + other.distance);
     }
 
+    public boolean moreThan(final Distance distance) {
+        return this.distance > distance.distance;
+    }
+
+    public boolean moreAndEqualsThan(final Distance distance) {
+        return this.distance >= distance.distance;
+    }
+
+    public boolean lessAndEqualsThan(final Distance distance) {
+        return this.distance <= distance.distance;
+    }
+
+    public boolean lessThan(final Distance distance) {
+        return this.distance < distance.distance;
+    }
+
+    public Distance divideAndCeil(final Distance distance) {
+        final double dividedDistance = (double) this.distance / distance.distance;
+        return new Distance((int) Math.ceil(dividedDistance));
+    }
+
+    public boolean isSame(final Distance distance) {
+        return this.distance == distance.distance;
+    }
+
     public int distance() {
         return distance;
     }

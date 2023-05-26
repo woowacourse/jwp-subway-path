@@ -19,8 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.station.Station;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
-import subway.fixture.StationFixture.A;
-import subway.fixture.StationFixture.B;
+import subway.fixture.StationFixture.STATION_A;
+import subway.fixture.StationFixture.STATION_B;
 import subway.repository.StationRepository;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -50,7 +50,7 @@ class StationServiceTest {
     void id_를_받아_해당_역을_조회한다() {
         // given
         Long id = 1L;
-        final Station response = new Station(id, A.stationA.getName());
+        final Station response = new Station(id, STATION_A.stationA.getName());
         doReturn(response).when(stationRepository).findById(id);
 
         // when
@@ -65,8 +65,8 @@ class StationServiceTest {
     @Test
     void 전체_역을_조회한다() {
         // given
-        final Station stationA = new Station(1L, A.stationA.getName());
-        final Station stationB = new Station(2L, B.stationB.getName());
+        final Station stationA = new Station(1L, STATION_A.stationA.getName());
+        final Station stationB = new Station(2L, STATION_B.stationB.getName());
         doReturn(List.of(stationA, stationB)).when(stationRepository).findAll();
 
         // when

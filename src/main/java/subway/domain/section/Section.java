@@ -33,7 +33,7 @@ public class Section {
     }
 
     private void validateDifferentStation(final Station upStation, final Station downStation) {
-        if (upStation.isSameStation(downStation)) {
+        if (upStation.isSameStation(downStation) || downStation.isSameStation(upStation)) {
             throw new IllegalArgumentException("한 구간은 서로 다른 역으로 이루어져야 합니다.");
         }
     }
