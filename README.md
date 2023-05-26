@@ -449,4 +449,4 @@ HTTP/1.1 200 OK
 - [x] 구현체 대신 인터페이스에 의존하도록 수정
 - [x] 거리 계산 시 double로 계산하도록 수정
 - [x] rowMapper에서 문자열 순서가 아닌 컬럼명에 의존하도록 수정
-- [ ] PathService 테스트 케이스 추가
+- [x] PathService 테스트 케이스 추가
