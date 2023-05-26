@@ -41,8 +41,8 @@ public class LineService {
         Line line = findBy(id);
 
         Line changed = line
-                .changeName(lineRequest.getName())
-                .changeColor(lineRequest.getColor());
+                .withName(lineRequest.getName())
+                .withColor(lineRequest.getColor());
 
         save(changed);
     }

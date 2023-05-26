@@ -62,11 +62,11 @@ public class Line {
         sections.removeAll(nearBys);
     }
 
-    public Line changeName(String name) {
+    public Line withName(String name) {
         return new Line(id, name, color, sections);
     }
 
-    public Line changeColor(String color) {
+    public Line withColor(String color) {
         return new Line(id, name, color, sections);
     }
 
