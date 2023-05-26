@@ -445,7 +445,7 @@ HTTP/1.1 200 OK
 
 ## 2단계 리팩토링 요구사항
 
-- [ ] SectionResponse에서 id가 아닌 StationResponse를 반환하도록 수정
+- [x] SectionResponse에서 id가 아닌 StationResponse를 반환하도록 수정
 - [ ] 구현체 대신 인터페이스에 의존하도록 수정
 - [ ] 거리 계산 시 double로 계산하도록 수정
 - [ ] rowMapper에서 문자열 순서가 아닌 컬럼명에 의존하도록 수정

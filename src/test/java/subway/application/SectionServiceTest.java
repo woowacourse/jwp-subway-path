@@ -90,8 +90,8 @@ class SectionServiceTest {
 
         // then
         assertThat(sectionResponses.size()).isEqualTo(1);
-        assertThat(sectionResponses.get(0).getUpStationId()).isEqualTo(section.getUpStation().getId());
-        assertThat(sectionResponses.get(0).getDownStationId()).isEqualTo(section.getDownStation().getId());
+        assertThat(sectionResponses.get(0).getUpStation().getId()).isEqualTo(section.getUpStation().getId());
+        assertThat(sectionResponses.get(0).getDownStation().getId()).isEqualTo(section.getDownStation().getId());
         assertThat(sectionResponses.get(0).getDistance()).isEqualTo(section.getDistance());
     }
 }
