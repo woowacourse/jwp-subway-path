@@ -34,7 +34,7 @@ public class PathService {
         final Station upStation = stationRepository.findById(upStationId);
         final Station downStation = stationRepository.findById(downStationId);
         final List<Station> shortestPath = graph.findShortestPath(upStation, downStation);
-        final int distance = graph.getDistance(upStation, downStation);
+        final int distance = (int) graph.getDistance(upStation, downStation);
 
         final List<StationResponse> stationResponses = shortestPath.stream()
                 .map(StationResponse::of)

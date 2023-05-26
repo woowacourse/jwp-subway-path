@@ -32,7 +32,7 @@ public class ShortestPath {
         return dijkstraShortestPath.getPath(upStation, downStation).getVertexList();
     }
 
-    public int getDistance(final Station upStation, final Station downStation) {
-        return (int) dijkstraShortestPath.getPathWeight(upStation, downStation);
+    public double getDistance(final Station upStation, final Station downStation) {
+        return dijkstraShortestPath.getPathWeight(upStation, downStation);
     }
 }

@@ -40,7 +40,7 @@ class ShortestPathTest {
     @DisplayName("두 역 사이 최단 경로의 거리를 구할 수 있다.")
     void getShortestPathDistance() {
         // when
-        final int distance = shortestPath.getDistance(station1, station3);
+        final int distance = (int) shortestPath.getDistance(station1, station3);
 
         // then
         assertThat(distance).isEqualTo(15);
