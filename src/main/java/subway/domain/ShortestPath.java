@@ -1,21 +1,22 @@
 package subway.domain;
 
 import java.util.List;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class ShortestPath {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final ShortestPathAlgorithm<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public ShortestPath(final Sections sections) {
         this.dijkstraShortestPath = createPath(sections);
     }
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> createPath(final Sections sections) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
-                DefaultWeightedEdge.class);
+    private ShortestPathAlgorithm<Station, DefaultWeightedEdge> createPath(final Sections sections) {
+        final Graph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         sections.getSections().forEach(
                 section -> {
                     graph.addVertex(section.getUpStation());
