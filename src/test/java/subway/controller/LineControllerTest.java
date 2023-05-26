@@ -70,15 +70,24 @@ class LineControllerTest {
         lineDao.save(new LineEntity(1L, "1호선"));
         sectionDao.batchSave(List.of(new SectionEntity("A역", "B역", 2, 1L)));
 
+
         //when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines/1")
                 .then().log().all()
                 .extract();
 
+        String lineName = response.jsonPath().get("lineName");
+        List<String> currentStations = response.jsonPath().getList("sectionInLineResponses.currentStationName");
+        List<String> nextStations = response.jsonPath().getList("sectionInLineResponses.nextStationName");
+
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(200),
+                () -> assertThat(lineName).isEqualTo("1호선"),
+                () -> assertThat(currentStations).contains("A역"),
+                () -> assertThat(nextStations).contains("B역")
+        );
     }
 
     @Test
@@ -93,13 +102,21 @@ class LineControllerTest {
 
         //when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines")
                 .then().log().all()
                 .extract();
 
+        List<String> lineNames = response.jsonPath().getList("lineName");
+        List<List<String>> currentStationNames = response.jsonPath().getList("sectionInLineResponses.currentStationName");
+        List<List<String>> nextStationNames = response.jsonPath().getList("sectionInLineResponses.nextStationName");
+
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(200),
+                () -> assertThat(lineNames).contains("1호선", "2호선"),
+                () -> assertThat(currentStationNames).contains(List.of("A역"), List.of("Z역")),
+                () -> assertThat(nextStationNames).contains(List.of("B역"), List.of("Y역"))
+        );
     }
 
 }
