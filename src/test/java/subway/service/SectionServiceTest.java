@@ -1,8 +1,9 @@
 package subway.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.mockito.BDDMockito.*;
-import static subway.fixture.SectionsFixture.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.BDDMockito.verify;
+import static org.mockito.BDDMockito.given;
+import static subway.fixture.SectionsFixture.createSections;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
