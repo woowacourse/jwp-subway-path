@@ -20,7 +20,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<ShortestPathResponse> findShortestPath(
-            @RequestParam("start") final String startStationName, @RequestParam("end") final String endStationName) {
-        return ResponseEntity.ok(pathService.findShortestPath(startStationName, endStationName));
+            @RequestParam("start") final Long startStationId, @RequestParam("end") final Long endStationId) {
+        return ResponseEntity.ok(pathService.findShortestPath(startStationId, endStationId));
     }
 }

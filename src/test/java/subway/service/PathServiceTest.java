@@ -44,8 +44,8 @@ class PathServiceTest {
     @DisplayName("최단 경로 조회 성공")
     void findShortestPath_success() {
         // given
-        final String startStationName = "온수";
-        final String endStationName = "가산디지털단지";
+        final long startStationId = 1L;
+        final long endStationId = 6L;
 
         given(sectionDao.findSectionDetail()).willReturn(
                 List.of(new SectionDetailEntity(1L, 5, 1L, "1호선", "bg-blue-600", 1L, "온수", 2L, "오류동"),
@@ -59,13 +59,13 @@ class PathServiceTest {
                         new SectionDetailEntity(9L, 8, 2L, "7호선", "bg-olive-600", 9L, "철산", 6L, "가산디지털단지"))
         );
 
-        final StationEntity startStationEntity = new StationEntity(1L, startStationName);
-        final StationEntity endStationEntity = new StationEntity(6L, endStationName);
-        given(stationDao.findByName(startStationName)).willReturn(startStationEntity);
-        given(stationDao.findByName(endStationName)).willReturn(endStationEntity);
+        final StationEntity startStationEntity = new StationEntity(startStationId, "온수");
+        final StationEntity endStationEntity = new StationEntity(endStationId, "가산디지털단지");
+        given(stationDao.findById(startStationId)).willReturn(startStationEntity);
+        given(stationDao.findById(endStationId)).willReturn(endStationEntity);
 
         // when
-        final ShortestPathResponse response = pathService.findShortestPath(startStationName, endStationName);
+        final ShortestPathResponse response = pathService.findShortestPath(startStationId, endStationId);
 
         // then
         assertAll(

@@ -107,30 +107,6 @@ class StationDaoTest {
     }
 
     @Test
-    @DisplayName("이름으로 조회 성공")
-    void findByName_success() {
-        // given
-        final String name = "잠실";
-
-        // when
-        final StationEntity stationEntity = stationDao.findByName(name);
-
-        // then
-        assertThat(stationEntity.getName()).isEqualTo("잠실");
-    }
-
-    @Test
-    @DisplayName("이름으로 조회 실패 - 없는 역")
-    void findByName_fail_station_not_found() {
-        // given
-        final String name = "디투";
-
-        // when, then
-        assertThatThrownBy(() -> stationDao.findByName(name))
-                .isInstanceOf(StationNotFoundException.class);
-    }
-
-    @Test
     @DisplayName("역 존재 여부 확인 - 존재 안함")
     void IsNotExist_true() {
         // given

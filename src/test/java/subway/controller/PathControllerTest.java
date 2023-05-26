@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.dto.response.ShortestPathResponse;
 import subway.controller.dto.response.StationResponse;
+import subway.exception.StationNotFoundException;
 import subway.service.PathService;
 
 import java.util.List;
@@ -39,8 +40,8 @@ class PathControllerTest {
         @DisplayName("성공")
         void success() throws Exception {
             // given
-            final String startStationName = "잠실";
-            final String endStationName = "양재";
+            final Long startStationId = 1L;
+            final Long endStationId = 8L;
 
             final ShortestPathResponse response = new ShortestPathResponse(
                     20, 1450,
@@ -52,7 +53,7 @@ class PathControllerTest {
                     )
             );
 
-            given(pathService.findShortestPath(startStationName, endStationName)).willReturn(response);
+            given(pathService.findShortestPath(startStationId, endStationId)).willReturn(response);
 
             // when, then
             final String responseBody = "{\n" +
@@ -93,9 +94,24 @@ class PathControllerTest {
                     "        }\n" +
                     "    ]\n" +
                     "}";
-            mockMvc.perform(get("/path").param("start", startStationName).param("end", endStationName))
+            mockMvc.perform(get("/path").param("start", String.valueOf(startStationId)).param("end", String.valueOf(endStationId)))
                     .andExpect(status().isOk())
                     .andExpect(content().json(responseBody));
+        }
+
+        @Test
+        @DisplayName("실패 - 잘못된 id")
+        void fail_invalid_id() throws Exception {
+            // given
+            final Long startStationId = 1L;
+            final Long endStationId = 88L;
+
+            given(pathService.findShortestPath(startStationId, endStationId)).willThrow(StationNotFoundException.class);
+
+            // when, then
+
+            mockMvc.perform(get("/path").param("start", String.valueOf(startStationId)).param("end", String.valueOf(endStationId)))
+                    .andExpect(status().isNotFound());
         }
     }
 }

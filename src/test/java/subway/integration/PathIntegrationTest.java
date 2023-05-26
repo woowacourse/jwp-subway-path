@@ -29,13 +29,13 @@ public class PathIntegrationTest extends IntegrationTest {
         @DisplayName("성공 - 10km 이내 기본 운임")
         void success_under_10km() {
             // given
-            final String startStationName = "광명사거리";
-            final String endStationName = "가산디지털단지";
+            final long startStationId = 3L;
+            final long endStationId = 5L;
 
             // when
             final ExtractableResponse<Response> response = RestAssured
                     .given()
-                    .params(Map.of("start", startStationName, "end", endStationName))
+                    .params(Map.of("start", startStationId, "end", endStationId))
                     .when().get("/path")
                     .then()
                     .extract();
@@ -60,13 +60,13 @@ public class PathIntegrationTest extends IntegrationTest {
         @Sql({"/truncate.sql", "/data.sql"})
         void success_10km_to_50km() {
             // given
-            final String startStationName = "광명사거리";
-            final String endStationName = "신도림";
+            final long startStationId = 3L;
+            final long endStationId = 12L;
 
             // when
             final ExtractableResponse<Response> response = RestAssured
                     .given()
-                    .params(Map.of("start", startStationName, "end", endStationName))
+                    .params(Map.of("start", startStationId, "end", endStationId))
                     .when().get("/path")
                     .then()
                     .extract();
@@ -94,13 +94,13 @@ public class PathIntegrationTest extends IntegrationTest {
         @Sql({"/truncate.sql", "/data.sql"})
         void success_50km_up() {
             // given
-            final String startStationName = "온수";
-            final String endStationName = "신대방";
+            final long startStationId = 1L;
+            final long endStationId = 14L;
 
             // when
             final ExtractableResponse<Response> response = RestAssured
                     .given()
-                    .params(Map.of("start", startStationName, "end", endStationName))
+                    .params(Map.of("start", startStationId, "end", endStationId))
                     .when().get("/path")
                     .then()
                     .extract();

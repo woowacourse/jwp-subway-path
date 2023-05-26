@@ -32,10 +32,10 @@ public class PathService {
         this.feeCalculator = feeCalculator;
     }
 
-    public ShortestPathResponse findShortestPath(final String startStationName, final String endStationName) {
+    public ShortestPathResponse findShortestPath(final long startStationId, final long endStationId) {
         final List<SectionDetailEntity> allSectionEntities = sectionDao.findSectionDetail();
-        final Station startStation = getStationByName(startStationName);
-        final Station endStation = getStationByName(endStationName);
+        final Station startStation = getStationById(startStationId);
+        final Station endStation = getStationById(endStationId);
         final Sections sections = Sections.createByDetailEntity(allSectionEntities);
         final Path path = shortestPathFinder.find(sections, startStation, endStation);
         final Distance distance = path.getTotalDistance();
@@ -43,8 +43,8 @@ public class PathService {
         return ShortestPathResponse.of(distance, fee, path);
     }
 
-    private Station getStationByName(final String name) {
-        final StationEntity stationEntity = stationDao.findByName(name);
+    private Station getStationById(final long id) {
+        final StationEntity stationEntity = stationDao.findById(id);
         return Station.from(stationEntity);
     }
 }
