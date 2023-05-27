@@ -7,9 +7,12 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 import subway.exception.DuplicatedNameException;
-import subway.exception.NonExistLineException;
-import subway.exception.StationNotFoundException;
+import subway.exception.line.NonExistLineException;
+import subway.exception.station.StationNotFoundException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

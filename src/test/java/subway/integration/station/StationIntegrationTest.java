@@ -2,8 +2,6 @@ package subway.integration.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.integration.station.StationSteps.역_단건_삭제_요청;
-import static subway.integration.station.StationSteps.역_단건_수정_요청;
-import static subway.integration.station.StationSteps.역_단건_조회_요청;
 import static subway.integration.station.StationSteps.역_등록_요청;
 import static subway.integration.station.StationSteps.역_전체_조회_요청;
 
@@ -19,12 +17,14 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import subway.dto.StationSelectResponse;
+import org.springframework.test.context.ActiveProfiles;
+import subway.dto.station.StationSelectResponse;
 import subway.integration.IntegrationTest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("지하철역 관련 기능")
+@ActiveProfiles("test")
 public class StationIntegrationTest extends IntegrationTest {
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -80,42 +80,6 @@ public class StationIntegrationTest extends IntegrationTest {
                 .map(StationSelectResponse::getId)
                 .collect(Collectors.toList());
         assertThat(resultStationIds).containsAll(expectedStationIds);
-    }
-
-    @DisplayName("지하철역을 조회한다.")
-    @Test
-    void getStation() {
-        /// given
-        Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
-        ExtractableResponse<Response> createResponse = 역_등록_요청(params1);
-
-        // when
-        Long stationId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = 역_단건_조회_요청(stationId);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        StationSelectResponse stationSelectResponse = response.as(StationSelectResponse.class);
-        assertThat(stationSelectResponse.getId()).isEqualTo(stationId);
-    }
-
-    @DisplayName("지하철역을 수정한다.")
-    @Test
-    void updateStation() {
-        // given
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
-        ExtractableResponse<Response> createResponse = 역_등록_요청(params);
-
-        // when
-        Map<String, String> otherParams = new HashMap<>();
-        otherParams.put("name", "삼성역");
-        String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = 역_단건_수정_요청(otherParams, uri);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("지하철역을 제거한다.")

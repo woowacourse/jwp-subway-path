@@ -5,20 +5,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.dto.ErrorResponse;
-import subway.exception.DuplicatedNameException;
 import subway.exception.SubwayException;
+import subway.exception.line.LineException;
+import subway.exception.section.SectionException;
+import subway.exception.station.StationException;
 
 @RestControllerAdvice
 public class ControllerAdvice {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(DuplicatedNameException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    public ResponseEntity<ErrorResponse> handleException(LineException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse("Line Exception: " + e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(StationException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse("Station Exception: " + e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(SectionException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse("Section Exception: " + e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(SubwayException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse("Subway Exception: " + e.getMessage()));
     }
 
     @ExceptionHandler

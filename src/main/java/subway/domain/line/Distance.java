@@ -1,7 +1,7 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.Objects;
-import subway.exception.NegativeDistanceValueException;
+import subway.exception.section.NegativeDistanceValueException;
 
 public class Distance {
 

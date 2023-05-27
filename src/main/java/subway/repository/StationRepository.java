@@ -2,9 +2,9 @@ package subway.repository;
 
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.domain.line.Station;
 import subway.entity.StationEntity;
-import subway.exception.DuplicatedNameException;
+import subway.exception.station.StationNotFoundException;
 import subway.repository.dao.StationDao;
 
 @Repository
@@ -16,34 +16,22 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public StationEntity save(String stationName) {
-        validateDuplicatedStationName(stationName);
-        return stationDao.insert(new StationEntity(stationName));
-    }
-
-    private void validateDuplicatedStationName(final String stationName) {
+    public Station insert(String stationName) {
         if (stationDao.existsByName(stationName)) {
-            throw new DuplicatedNameException(stationName);
+            final StationEntity findStation = stationDao.findByName(stationName)
+                    .orElseThrow(() -> new StationNotFoundException("해당 이름을 가진 역이 존재하지 않습니다"));
+            return findStation.toDomain();
         }
+        final StationEntity saveStation = stationDao.insert(new StationEntity(stationName));
+        return new Station(saveStation.getId(), saveStation.getName());
     }
 
-    public Station findById(Long stationId) {
-        final StationEntity findStationEntity = stationDao.findById(stationId);
-        final Long id = findStationEntity.getId();
-        final String name = findStationEntity.getName();
-        return new Station(id, name);
+    public Optional<Station> findById(Long stationId) {
+        return stationDao.findById(stationId)
+                .map(StationEntity::toDomain);
     }
 
-    public StationEntity findOrSaveStation(String stationName) {
-        return stationDao.findByName(stationName)
-                .orElseGet(() -> stationDao.insert(new StationEntity(stationName)));
-    }
-
-    public Optional<StationEntity> findByName(String name) {
-        return stationDao.findByName(name);
-    }
-
-    public void delete(final Long stationId) {
+    public void deleteById(final Long stationId) {
         stationDao.deleteById(stationId);
     }
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import subway.domain.line.Station;
 import subway.exception.EmptyNameException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -29,7 +30,7 @@ class StationTest {
         Station other = new Station("강남역");
 
         //when
-        boolean isSameName = station.isSameName(other);
+        boolean isSameName = station.equals(other);
 
         //then
         assertThat(isSameName).isTrue();
@@ -42,7 +43,7 @@ class StationTest {
         Station other = new Station("역삼역");
 
         //when
-        boolean isSameName = station.isSameName(other);
+        boolean isSameName = station.equals(other);
 
         //then
         assertThat(isSameName).isFalse();

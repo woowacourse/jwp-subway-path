@@ -1,6 +1,13 @@
 package subway.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.repository.DomainFixtures.강남_역삼_거리5_구간;
+import static subway.repository.DomainFixtures.광화문_민트_거리5_구간;
+import static subway.repository.DomainFixtures.교대_강남_거리10_구간;
+import static subway.repository.DomainFixtures.명동_광화문_거리7_구간;
+import static subway.repository.DomainFixtures.민트_서울_거리5_구간;
+import static subway.repository.DomainFixtures.박스터_교대_거리2_구간;
+import static subway.repository.DomainFixtures.서울_명동_거리10_구간;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 import subway.domain.Subway;
 import subway.repository.dao.LineDao;
 import subway.repository.dao.SectionDao;
@@ -37,7 +44,7 @@ class LineRepositoryTest {
     @Test
     void 노선을_저장한다() {
         // given
-        List<Section> sections = List.of(new Section("교대역", "강남역", 10), new Section("강남역", "역삼역", 5));
+        List<Section> sections = List.of(교대_강남_거리10_구간, 강남_역삼_거리5_구간);
         Line line = new Line(null, "2호선", sections);
 
         // when
@@ -50,11 +57,9 @@ class LineRepositoryTest {
     @Test
     void 전체_노선을_조회한다() {
         // given
-        List<Section> firstSections = List.of(new Section("서울역", "명동역", 10), new Section("명동역", "광화문역", 7),
-                new Section("민트역", "서울역", 5));
-        Line firstLine = new Line(null, "1호선", firstSections);
-        List<Section> secondSections = List.of(new Section("교대역", "강남역", 10), new Section("강남역", "역삼역", 5),
-                new Section("박스터역", "교대역", 2));
+        List<Section> firstSections = List.of(서울_명동_거리10_구간, 명동_광화문_거리7_구간, 민트_서울_거리5_구간);
+        Line firstLine = new Line("1호선", firstSections);
+        List<Section> secondSections = List.of(교대_강남_거리10_구간, 강남_역삼_거리5_구간, 박스터_교대_거리2_구간);
         Line secondLine = new Line(null, "2호선", secondSections);
         lineRepository.save(firstLine);
         lineRepository.save(secondLine);
@@ -79,12 +84,26 @@ class LineRepositoryTest {
     }
 
     @Test
+    void ID를_기준으로_노선을_조회한다() {
+        // given
+        List<Section> sections = List.of(교대_강남_거리10_구간, 강남_역삼_거리5_구간);
+        final Line line = new Line("2호선", sections);
+        final Long saveId = lineRepository.save(line);
+
+        // when
+        final Line findLine = lineRepository.findById(saveId);
+
+        // then
+        assertThat(findLine.getName()).isEqualTo(line.getName());
+    }
+
+    @Test
     void 노선의_하행종점을_삭제한다() {
         // given
         List<Section> sections = List.of(
-                new Section("서울역", "명동역", 10),
-                new Section("명동역", "광화문역", 7),
-                new Section("광화문역", "민트역", 5)
+                서울_명동_거리10_구간,
+                명동_광화문_거리7_구간,
+                광화문_민트_거리5_구간
         );
         Line line = new Line(null, "1호선", sections);
         final Long lineId = lineRepository.save(line);
@@ -95,7 +114,7 @@ class LineRepositoryTest {
         final Station lastStation = saveLine.getStations().get(lineSize - 1);
 
         // when
-        lineRepository.deleteStation(saveLine.getId(), lastStation.getId());
+        lineRepository.deleteStationByLineIdAndStationId(saveLine.getId(), lastStation.getId());
         final Line findLine = lineRepository.findById(lineId);
 
         // then
@@ -108,10 +127,11 @@ class LineRepositoryTest {
     void 노선의_상행종점을_삭제한다() {
         // given
         List<Section> sections = List.of(
-                new Section("서울역", "명동역", 10),
-                new Section("명동역", "광화문역", 7),
-                new Section("광화문역", "민트역", 5)
+                서울_명동_거리10_구간,
+                명동_광화문_거리7_구간,
+                광화문_민트_거리5_구간
         );
+
         Line line = new Line(null, "1호선", sections);
         final Long lineId = lineRepository.save(line);
 
@@ -120,7 +140,7 @@ class LineRepositoryTest {
         final Station firstStation = saveLine.getStations().get(0);
 
         // when
-        lineRepository.deleteStation(saveLine.getId(), firstStation.getId());
+        lineRepository.deleteStationByLineIdAndStationId(saveLine.getId(), firstStation.getId());
         final Line findLine = lineRepository.findById(lineId);
 
         // then
@@ -133,9 +153,9 @@ class LineRepositoryTest {
     void 노선의_중간_역을_삭제한다() {
         // given
         List<Section> sections = List.of(
-                new Section("서울역", "명동역", 10),
-                new Section("명동역", "광화문역", 7),
-                new Section("광화문역", "민트역", 5)
+                서울_명동_거리10_구간,
+                명동_광화문_거리7_구간,
+                광화문_민트_거리5_구간
         );
         Line line = new Line(null, "1호선", sections);
         final Long lineId = lineRepository.save(line);
@@ -145,7 +165,7 @@ class LineRepositoryTest {
         final Station secondStation = saveLine.getStations().get(1);
 
         // when
-        lineRepository.deleteStation(saveLine.getId(), secondStation.getId());
+        lineRepository.deleteStationByLineIdAndStationId(saveLine.getId(), secondStation.getId());
         final Line findLine = lineRepository.findById(lineId);
 
         // then

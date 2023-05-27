@@ -2,8 +2,8 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.dto.StationRequest;
-import subway.dto.StationSelectResponse;
+import subway.dto.station.StationRequest;
+import subway.dto.station.StationSelectResponse;
 import subway.application.StationService;
 
 import java.net.URI;
@@ -28,17 +28,6 @@ public class StationController {
     @GetMapping
     public ResponseEntity<List<StationSelectResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<StationSelectResponse> showStation(@PathVariable Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
-        stationService.updateStation(id, stationRequest);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

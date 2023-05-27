@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 import subway.domain.Subway;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
@@ -41,7 +41,9 @@ public class LineRepository {
         LineEntity savedLineEntity = lineDao.insert(new LineEntity(lineName));
 
         List<StationEntity> stations = StationEntity.of(line);
-        stationDao.insertAll(stations);
+        for (StationEntity station : stations) {
+            saveNonExistStation(station);
+        }
 
         saveSections(savedLineEntity.getId(), line);
 
@@ -52,6 +54,13 @@ public class LineRepository {
         if (lineDao.existsByName(lineName)) {
             throw new DuplicatedNameException(lineName);
         }
+    }
+
+    private void saveNonExistStation(final StationEntity station) {
+        if (stationDao.existsByName(station.getName())) {
+            return;
+        }
+        stationDao.insert(station);
     }
 
     private void saveSections(Long lineId, Line line) {
@@ -74,8 +83,7 @@ public class LineRepository {
 
     public Line findById(Long id) {
         Subway subway = new Subway(findAll());
-        LineEntity lineEntity = lineDao.findById(id);
-        return subway.findLineByName(lineEntity.getName());
+        return subway.findLineById(id);
     }
 
     public List<Line> findAll() {
@@ -115,11 +123,11 @@ public class LineRepository {
     }
 
     public void updateLine(Long lineId, Line updatedLine) {
-        sectionDao.deleteAll(lineId);
+        sectionDao.deleteByLineId(lineId);
         saveSections(lineId, updatedLine);
     }
 
-    public void deleteStation(final Long lineId, final Long stationId) {
+    public void deleteStationByLineIdAndStationId(final Long lineId, final Long stationId) {
         List<SectionEntity> connectedSections = sectionDao.findByStationId(stationId);
         final int deletedRowCount = sectionDao.deleteByLineIdAndStationId(lineId, stationId);
 
@@ -149,7 +157,7 @@ public class LineRepository {
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    public void delete(final Long lineId) {
+    public void deleteLineById(final Long lineId) {
         lineDao.deleteById(lineId);
     }
 }

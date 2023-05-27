@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.Objects;
 import subway.exception.EmptyNameException;
@@ -22,10 +22,6 @@ public class Station {
         if (name == null || name.isBlank()) {
             throw new EmptyNameException();
         }
-    }
-
-    public boolean isSameName(Station other) {
-        return this.name.equals(other.getName());
     }
 
     public Long getId() {

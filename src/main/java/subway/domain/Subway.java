@@ -2,8 +2,12 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import subway.domain.line.Line;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
 import subway.exception.DuplicatedNameException;
-import subway.exception.NonExistLineException;
+import subway.exception.line.NonExistLineException;
 
 public class Subway {
 
@@ -66,5 +70,12 @@ public class Subway {
     public boolean notContainsStation(final Station station) {
         return lines.stream()
                 .noneMatch(line -> line.containsStation(station));
+    }
+
+    public List<Station> getAllStations() {
+        return lines.stream()
+                .map(Line::getStations)
+                .flatMap(List::stream)
+                .collect(Collectors.toUnmodifiableList());
     }
 }

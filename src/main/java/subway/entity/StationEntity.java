@@ -1,8 +1,10 @@
 package subway.entity;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import subway.domain.Line;
+import subway.domain.line.Line;
+import subway.domain.line.Station;
 
 public class StationEntity {
 
@@ -24,11 +26,41 @@ public class StationEntity {
                 .collect(Collectors.toList());
     }
 
+    public Station toDomain() {
+        return new Station(this.id, this.name);
+    }
+
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final StationEntity station = (StationEntity) o;
+        return Objects.equals(id, station.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "StationEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

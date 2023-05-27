@@ -8,7 +8,9 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.InvalidSectionDirectionException;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
+import subway.exception.section.InvalidSectionDirectionException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -29,7 +31,7 @@ class SectionTest {
 
         // when
         Station sameNameStation = new Station(value);
-        boolean isAnySame = section.isAnySame(sameNameStation);
+        boolean isAnySame = section.contains(sameNameStation);
 
         // then
         assertThat(isAnySame).isTrue();
@@ -42,7 +44,7 @@ class SectionTest {
 
         // when
         Station sameNameStation = new Station("잠실역");
-        boolean isAnySame = section.isAnySame(sameNameStation);
+        boolean isAnySame = section.contains(sameNameStation);
 
         // then
         assertThat(isAnySame).isFalse();

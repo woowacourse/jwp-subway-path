@@ -6,14 +6,14 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.StationSaveRequest;
+import subway.dto.line.LineCreateRequest;
+import subway.dto.station.StationSaveRequest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 public class LineSteps {
 
-    public static ExtractableResponse<Response> 노선_생성_요청(final LineRequest request) {
+    public static ExtractableResponse<Response> 노선_생성_요청(final LineCreateRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -51,7 +51,7 @@ public class LineSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 노선_단건_수정_요청(final Long lineId, final LineRequest request) {
+    public static ExtractableResponse<Response> 노선_단건_수정_요청(final Long lineId, final LineCreateRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
