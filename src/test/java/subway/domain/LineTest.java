@@ -27,7 +27,7 @@ class LineTest {
         final Station station = new Station("충무로");
 
         ///when
-        final Line newLine = line.deleteStation(station);
+        final Line newLine = line.buildNewLineDeleted(station);
 
         ///then
         assertThat(newLine.getSections().copySections().size()).isEqualTo(1);

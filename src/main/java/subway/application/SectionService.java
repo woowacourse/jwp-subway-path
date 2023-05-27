@@ -33,7 +33,7 @@ public class SectionService {
 
     public void deleteStationByName(Long lineId, String name) {
         final Sections nowSections = sectionRepository.findAllSectionByLineId(lineId);
-        final Sections newSections = nowSections.deleteSection(new Station(name));
+        final Sections newSections = nowSections.buildNewSectionsDeleted(new Station(name));
 
         final List<Section> removedSections = nowSections.findRemovedSection(newSections);
         final List<Section> addedSections = newSections.findAddedSection(nowSections);

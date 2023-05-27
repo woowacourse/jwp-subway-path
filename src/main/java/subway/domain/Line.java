@@ -40,12 +40,12 @@ public class Line {
     }
 
     public Line addSection(Section section) {
-        Sections addedSections = sections.buildNewSections(section);
+        Sections addedSections = sections.buildNewSectionsAdded(section);
         return new Line(addedSections);
     }
 
-    public Line deleteStation(Station station) {
-        Sections deletedSections = sections.deleteSection(station);
+    public Line buildNewLineDeleted(Station station) {
+        Sections deletedSections = sections.buildNewSectionsDeleted(station);
         return new Line(deletedSections);
     }
 

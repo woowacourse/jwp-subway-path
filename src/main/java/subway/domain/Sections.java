@@ -13,7 +13,7 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public Sections buildNewSections(final Section newSection) {
+    public Sections buildNewSectionsAdded(final Section newSection) {
         final List<Section> nowSections = copySections();
         final Station newUpStation = newSection.getUpStation();
         final Station newDownStation = newSection.getDownStation();
@@ -79,7 +79,7 @@ public class Sections {
         return new Sections(newSections);
     }
 
-    public Sections deleteSection(final Station targetStation) {
+    public Sections buildNewSectionsDeleted(final Station targetStation) {
         final List<Section> nowSections = copySections();
         final List<Station> nowUpStations = nowSections.stream()
                 .map(Section::getUpStation)
