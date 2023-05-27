@@ -12,7 +12,6 @@ import subway.domain.route.DijkstraRouteMap;
 import subway.domain.route.Path;
 import subway.domain.route.RouteMap;
 import subway.dto.PathStationResponse;
-import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -31,12 +30,12 @@ public class PathService {
         this.farePolicies = farePolicies;
     }
 
-    public ShortestPathResponse findShortestPath(final ShortestPathRequest pathRequest) {
+    public ShortestPathResponse findShortestPath(final Long startStationId, final Long endStationId) {
         final Lines lines = lineRepository.findAll();
         final RouteMap routeMap = new DijkstraRouteMap(lines);
 
-        final Station startStation = stationRepository.findById(pathRequest.getStartStationId());
-        final Station endStation = stationRepository.findById(pathRequest.getEndStationId());
+        final Station startStation = stationRepository.findById(startStationId);
+        final Station endStation = stationRepository.findById(endStationId);
 
         final Path shortestPath = routeMap.findShortestPath(startStation, endStation);
         final Fare fare = farePolicies.calculateFare(shortestPath);

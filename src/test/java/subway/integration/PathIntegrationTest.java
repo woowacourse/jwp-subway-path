@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.integration.step.LineStep.노선_생성_요청;
 import static subway.integration.step.LineStep.노선_생성_요청을_생성한다;
 import static subway.integration.step.PathStep.경로_조회_요청;
-import static subway.integration.step.PathStep.경로_조회_요청을_생성한다;
 import static subway.integration.step.SectionStep.구간_생성_요청;
 import static subway.integration.step.SectionStep.구간_생성_요청을_생성한다;
 import static subway.integration.step.StationStep.역_생성_요청;
@@ -62,7 +61,7 @@ class PathIntegrationTest extends IntegrationTest {
         final Long 서초_ID = 4L;
 
         // when
-        ExtractableResponse<Response> response = 경로_조회_요청(경로_조회_요청을_생성한다(낙성대_ID, 서초_ID));
+        ExtractableResponse<Response> response = 경로_조회_요청(낙성대_ID, 서초_ID);
 
         // then
         assertAll(
@@ -88,7 +87,7 @@ class PathIntegrationTest extends IntegrationTest {
         final Long 고속터미널_ID = 9L;
 
         // when
-        ExtractableResponse<Response> response = 경로_조회_요청(경로_조회_요청을_생성한다(낙성대_ID, 고속터미널_ID));
+        ExtractableResponse<Response> response = 경로_조회_요청(낙성대_ID, 고속터미널_ID);
 
         // then
         assertAll(
@@ -116,7 +115,7 @@ class PathIntegrationTest extends IntegrationTest {
         final Long 고속터미널_ID = 9L;
 
         // when
-        ExtractableResponse<Response> response = 경로_조회_요청(경로_조회_요청을_생성한다(총신대입구_ID, 고속터미널_ID));
+        ExtractableResponse<Response> response = 경로_조회_요청(총신대입구_ID, 고속터미널_ID);
 
         // then
         assertAll(
@@ -140,7 +139,7 @@ class PathIntegrationTest extends IntegrationTest {
         final Long 올바른_역_ID = 1L;
 
         // when
-        ExtractableResponse<Response> response = 경로_조회_요청(경로_조회_요청을_생성한다(올바르지_않은_역_ID, 올바른_역_ID));
+        ExtractableResponse<Response> response = 경로_조회_요청(올바르지_않은_역_ID, 올바른_역_ID);
 
         // then
         assertAll(
