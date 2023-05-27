@@ -59,8 +59,7 @@ class LineCommandServiceTest {
     @Test
     void 아이디를_통해_저장된_노선을_가져온다() {
         // given
-        when(lineRepository.findById(any())).thenReturn(SECOND_LINE);
-        when(sectionRepository.findAllSectionByLine(any())).thenReturn(SECOND_LINE);
+        when(sectionRepository.findLineInAllSectionByLineId(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
 
         // when
         final Line actual = lineCommandService.findLineById(SECOND_LINE.getId());
@@ -83,10 +82,9 @@ class LineCommandServiceTest {
     @Test
     void 구역을_저장하다() {
         // given
-        when(lineRepository.findById(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
         when(stationRepository.findById(JAMSIL.getId())).thenReturn(JAMSIL);
         when(stationRepository.findById(SEOLLEUNG.getId())).thenReturn(SEOLLEUNG);
-        when(sectionRepository.findAllSectionByLine(SECOND_LINE)).thenReturn(SECOND_LINE);
+        when(sectionRepository.findLineInAllSectionByLineId(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
         doNothing().when(sectionRepository).insert(any());
 
         // when, then
@@ -103,8 +101,7 @@ class LineCommandServiceTest {
         final Section section = Section.of(JAMSIL, SEOLLEUNG, Distance.from(10));
         SECOND_LINE.addSection(section);
 
-        when(lineRepository.findById(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
-        when(sectionRepository.findAllSectionByLine(SECOND_LINE)).thenReturn(SECOND_LINE);
+        when(sectionRepository.findLineInAllSectionByLineId(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
         when(stationRepository.findById(JAMSIL.getId())).thenReturn(JAMSIL);
 
         // when, then

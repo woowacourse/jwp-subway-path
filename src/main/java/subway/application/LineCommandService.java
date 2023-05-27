@@ -33,8 +33,7 @@ public class LineCommandService {
     }
 
     public Line findLineById(final Long id) {
-        final Line line = lineRepository.findById(id);
-        return sectionRepository.findAllSectionByLine(line);
+        return sectionRepository.findLineInAllSectionByLineId(id);
     }
 
     public void deleteLineById(final Long id) {
@@ -45,18 +44,17 @@ public class LineCommandService {
                             final Long upStationId,
                             final Long downStationId,
                             final int distance) {
-        final Line line = lineRepository.findById(lineId);
         final Station upStation = stationRepository.findById(upStationId);
         final Station downStation = stationRepository.findById(downStationId);
         final Section section = Section.of(upStation, downStation, Distance.from(distance));
 
-        final Line newLine = sectionRepository.findAllSectionByLine(line);
-        newLine.addSection(section);
-        sectionRepository.insert(newLine);
+        final Line line = sectionRepository.findLineInAllSectionByLineId(lineId);
+        line.addSection(section);
+        sectionRepository.insert(line);
     }
 
     public void deleteStation(final Long lineId, final Long stationId) {
-        final Line line = sectionRepository.findAllSectionByLine(lineRepository.findById(lineId));
+        final Line line = sectionRepository.findLineInAllSectionByLineId(lineId);
         final Station station = stationRepository.findById(stationId);
         line.deleteStation(station);
         sectionRepository.insert(line);

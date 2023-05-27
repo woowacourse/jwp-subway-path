@@ -37,7 +37,7 @@ class LineQueryServiceTest {
         // given
         final List<Line> lines = List.of(SECOND_LINE);
         when(lineRepository.findAll()).thenReturn(lines);
-        when(sectionRepository.findAllSectionByLine(SECOND_LINE)).thenReturn(SECOND_LINE);
+        when(sectionRepository.findLineInAllSectionByLineId(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
 
         // when
         final List<Line> actualLines = lineQueryService.findAllLine();
@@ -55,8 +55,7 @@ class LineQueryServiceTest {
     @Test
     void 아이디를_통해_저장된_노선을_가져온다() {
         // given
-        when(lineRepository.findById(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
-        when(sectionRepository.findAllSectionByLine(SECOND_LINE)).thenReturn(SECOND_LINE);
+        when(sectionRepository.findLineInAllSectionByLineId(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
 
         // when
         final Line actual = lineQueryService.findLineById(SECOND_LINE.getId());

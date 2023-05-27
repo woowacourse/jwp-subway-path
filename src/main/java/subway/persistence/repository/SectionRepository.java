@@ -6,6 +6,7 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.section.Section;
+import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.SectionEntity;
@@ -16,11 +17,13 @@ import java.util.stream.Collectors;
 @Repository
 public class SectionRepository {
 
+    private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
     private final PathService pathService;
 
-    public SectionRepository(final SectionDao sectionDao, final StationDao stationDao, final PathService pathService) {
+    public SectionRepository(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao, final PathService pathService) {
+        this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.pathService = pathService;
@@ -44,17 +47,17 @@ public class SectionRepository {
         sectionDao.insertAll(entities);
     }
 
-    public Line findAllSectionByLine(final Line line) {
-        final Line newLine = Line.of(line.getId(), line.getName(), line.getColor());
-        final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(line.getId());
+    public Line findLineInAllSectionByLineId(final Long id) {
+        final Line line = lineDao.findById(id).toDomain();
+        final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(id);
 
         for (SectionEntity sectionEntity : sectionEntities) {
             final Station upStation = stationDao.findById(sectionEntity.getUpStationId()).toDomain();
             final Station downStation = stationDao.findById(sectionEntity.getDownStationId()).toDomain();
             final Distance distance = Distance.from(sectionEntity.getDistance());
-            newLine.addSection(Section.of(upStation, downStation, distance));
+            line.addSection(Section.of(upStation, downStation, distance));
         }
 
-        return newLine;
+        return line;
     }
 }

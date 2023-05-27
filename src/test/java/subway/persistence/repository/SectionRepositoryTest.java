@@ -27,13 +27,12 @@ class SectionRepositoryTest extends RepositoryTest {
         // given
         final Station station1 = stationRepository.insert(JAMSIL);
         final Station station2 = stationRepository.insert(SEOLLEUNG);
-        final Line persistLine = lineRepository.insert(SECOND_LINE);
-        persistLine.addSection(Section.of(station1, station2, TEN_DISTANCE));
-        sectionRepository.insert(persistLine);
+        final Line line = lineRepository.insert(SECOND_LINE);
+        line.addSection(Section.of(station1, station2, TEN_DISTANCE));
+        sectionRepository.insert(line);
 
         // when
-        final Line tempLine = lineRepository.findById(persistLine.getId());
-        final Line actualLine = sectionRepository.findAllSectionByLine(tempLine);
+        final Line actualLine = sectionRepository.findLineInAllSectionByLineId(line.getId());
         final List<Station> actual = actualLine.findStationsByOrdered();
 
         // then
