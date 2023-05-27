@@ -51,6 +51,8 @@ class PathFinderTest {
         int shortestDistance = pathFinder.findShortestDistance(강변, 잠실);
 
         // then
+        assertThat(강변_잠실나루.getDistance()).isEqualTo(3);
+        assertThat(잠실나루_잠실.getDistance()).isEqualTo(7);
         assertThat(shortestDistance).isEqualTo(10);
     }
 
@@ -92,6 +94,9 @@ class PathFinderTest {
         int shortestDistance = pathFinder.findShortestDistance(잠실나루, 강동구청);
 
         // then
+        assertThat(잠실나루_잠실.getDistance()).isEqualTo(7);
+        assertThat(강동구청_몽촌토성.getDistance()).isEqualTo(15);
+        assertThat(몽촌토성_잠실.getDistance()).isEqualTo(4);
         assertThat(shortestDistance).isEqualTo(26);
     }
 
