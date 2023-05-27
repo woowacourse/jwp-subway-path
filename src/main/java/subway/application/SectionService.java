@@ -28,10 +28,7 @@ public class SectionService {
         final List<Section> removedSections = nowSections.findRemovedSection(newSections);
         final List<Section> addedSections = newSections.findAddedSection(nowSections);
 
-        if (removedSections.size() > 0) {
-            sectionRepository.deleteSections(lineId, removedSections);
-        }
-        sectionRepository.saveAllSection(addedSections, lineId);
+        updateSections(lineId, removedSections, addedSections);
     }
 
     public void deleteStationByName(Long lineId, String name) {
@@ -41,10 +38,13 @@ public class SectionService {
         final List<Section> removedSections = nowSections.findRemovedSection(newSections);
         final List<Section> addedSections = newSections.findAddedSection(nowSections);
 
+        updateSections(lineId, removedSections, addedSections);
+    }
+
+    private void updateSections(final Long lineId, final List<Section> removedSections, final List<Section> addedSections) {
         if (removedSections.size() > 0) {
             sectionRepository.deleteSections(lineId, removedSections);
         }
         sectionRepository.saveAllSection(addedSections, lineId);
-
     }
 }
