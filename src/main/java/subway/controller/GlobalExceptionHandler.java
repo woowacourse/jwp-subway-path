@@ -23,6 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
+        log.error("Error from illegalArgumentException", exception);
         return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 
@@ -30,6 +31,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ErrorResponse>> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException exception
     ) {
+        log.error("Error from MethodArgumentNotValidException", exception);
         List<ErrorResponse> responses = exception.getBindingResult().getAllErrors()
                 .stream()
                 .map(error -> new ErrorResponse(
@@ -40,13 +42,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({SQLException.class, DuplicateKeyException.class})
-    public ResponseEntity<Void> handleSQLException(SQLException exception) {
+    public ResponseEntity<ErrorResponse> handleSQLException(SQLException exception) {
         log.error("Error from handleSQLException", exception);
-        return ResponseEntity.badRequest().build();
+        ErrorResponse errorResponse = new ErrorResponse("[ERROR] DB 작업 중 에러가 발생했습니다. 서버 담당자에게 문의 주세요.");
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler({OptionalHasNoLineException.class, OptionalHasNoStationException.class})
     public ResponseEntity<ErrorResponse> handleNoSuchElementException(Exception exception) {
+        log.error("Error from optionalHasNoValueException", exception);
         return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 
