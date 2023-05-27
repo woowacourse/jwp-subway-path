@@ -8,7 +8,7 @@ import subway.domain.fare.DistanceBasedExtraFarePolicy;
 import subway.domain.fare.FarePolicies;
 
 @Configuration
-public class PathConfiguration {
+public class FareConfiguration {
     @Bean
     public FarePolicies farePolicies() {
         return new FarePolicies(
