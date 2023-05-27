@@ -9,30 +9,30 @@ public class Station {
     private final Long id;
     private final String name;
 
-    public Station(String name) {
+    public Station(final String name) {
         validateName(name);
         this.id = null;
         this.name = name;
     }
 
-    public Station(Long id, String name) {
+    public Station(final Long id, final String name) {
         validateName(name);
         this.id = id;
         this.name = name;
     }
 
-    private void validateName(String name) {
+    private void validateName(final String name) {
         validateBlank(name);
         validateLength(name);
     }
 
-    private void validateBlank(String name) {
+    private void validateBlank(final String name) {
         if (name.isBlank() || name.contains(BLANK)) {
             throw new IllegalArgumentException("역 이름에는 공백이 허용되지 않습니다.");
         }
     }
 
-    private void validateLength(String name) {
+    private void validateLength(final String name) {
         if (name.length() < 2 || name.length() > 10) {
             throw new IllegalArgumentException("역 이름은 2~10자까지 가능합니다.");
         }
@@ -47,19 +47,19 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        final Station station = (Station) o;
+        return Objects.equals(getId(), station.getId()) && Objects.equals(getName(), station.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(getId(), getName());
     }
 }

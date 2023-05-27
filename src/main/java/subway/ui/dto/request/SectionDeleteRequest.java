@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.dto.request;
 
 public class SectionDeleteRequest {
 
@@ -8,7 +8,7 @@ public class SectionDeleteRequest {
     private SectionDeleteRequest() {
     }
 
-    public SectionDeleteRequest(Long lineId, String stationName) {
+    public SectionDeleteRequest(final Long lineId, final String stationName) {
         this.lineId = lineId;
         this.stationName = stationName;
     }

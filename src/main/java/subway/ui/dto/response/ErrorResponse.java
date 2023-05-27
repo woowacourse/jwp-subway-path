@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.dto.response;
 
 public class ErrorResponse {
 
@@ -7,7 +7,7 @@ public class ErrorResponse {
     private ErrorResponse() {
     }
 
-    public ErrorResponse(String message) {
+    public ErrorResponse(final String message) {
         this.message = message;
     }
 

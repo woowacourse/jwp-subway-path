@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.dto.request;
 
 public class LineRequest {
 
@@ -7,7 +7,7 @@ public class LineRequest {
     private LineRequest() {
     }
 
-    public LineRequest(String name) {
+    public LineRequest(final String name) {
         this.name = name;
     }
 

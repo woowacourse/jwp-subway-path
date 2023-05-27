@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.dto.request;
 
 public class StationRequest {
 
@@ -7,7 +7,7 @@ public class StationRequest {
     private StationRequest() {
     }
 
-    public StationRequest(String name) {
+    public StationRequest(final String name) {
         this.name = name;
     }
 

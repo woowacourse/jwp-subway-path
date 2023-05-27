@@ -22,77 +22,10 @@ class LineTest {
         station2 = new Station(2L, "강남역");
         station3 = new Station(3L, "선릉역");
 
-        Section section1 = new Section(station1, station2, new Distance(5));
-        Section section2 = new Section(station2, station3, new Distance(7));
+        Section section1 = new Section(station1, station2, 5);
+        Section section2 = new Section(station2, station3, 7);
 
         line = new Line(1L, "1호선", new LinkedList<>(List.of(section1, section2)));
-    }
-
-    @DisplayName("노선이 역을 가지고 있으면 true를 반환한다.")
-    @Test
-    void hasStationTrue() {
-        // when, then
-        assertSoftly(softly -> {
-            softly.assertThat(line.hasStationInSections(station1)).isTrue();
-            softly.assertThat(line.hasStationInSections(station2)).isTrue();
-            softly.assertThat(line.hasStationInSections(station3)).isTrue();
-        });
-    }
-
-    @DisplayName("노선이 역을 가지고 있지 않으면 false를 반환한다.")
-    @Test
-    void hasStationFalse() {
-        // given
-        Station station = new Station(5L, "신림역");
-
-        // when, then
-        assertThat(line.hasStationInSections(station)).isFalse();
-    }
-
-    @DisplayName("구간의 왼쪽 역과 같은 역이 주어지면 true를 반환한다.")
-    @Test
-    void hasLeftStationInSectionTrue() {
-        // given
-        Station station = new Station(1L, "잠실역");
-
-        // when, then
-        assertThat(line.hasLeftStationInSections(station)).isTrue();
-    }
-
-    @DisplayName("구간의 오른쪽 역과 같은 역이 주어지면 true를 반환한다.")
-    @Test
-    void hasRightStationInSectionTrue() {
-        // given
-        Station station = new Station(3L, "선릉역");
-
-        // when, then
-        assertThat(line.hasRightStationInSections(station)).isTrue();
-    }
-
-    @DisplayName("찾는 역이 구간의 왼쪽 역에 해당하는 구간을 반환한다.")
-    @Test
-    void findSectionByLeftStation() {
-        // given
-        Station station = new Station(1L, "잠실역");
-
-        // when
-        Section section = line.findSectionByLeftStation(station);
-
-        // then
-        assertThat(section.getLeft()).isEqualTo(station);
-    }
-
-    @DisplayName("찾는 역이 구간의 오른쪽 역에 해당하는 구간을 반환한다.")
-    @Test
-    void findSectionByRightStation() {
-        // given
-        Station station = new Station(3L, "선릉역");
-
-        // when
-        Section section = line.findSectionByRightStation(station);
-
-        // then
-        assertThat(section.getRight()).isEqualTo(station);
     }
 
     @DisplayName("상행 종점에 해당하는 역이면 true를 반환한다.")
@@ -154,7 +87,7 @@ class LineTest {
 
         // when
         line.addSection(sectionToAdd);
-        LinkedList<Section> sections = line.getSections();
+        LinkedList<Section> sections = line.getSections().getSections();
 
         // then
         assertSoftly(softly -> {
@@ -172,7 +105,7 @@ class LineTest {
 
         // when
         line.addSection(sectionToAdd);
-        LinkedList<Section> sections = line.getSections();
+        LinkedList<Section> sections = line.getSections().getSections();
 
         // then
         assertSoftly(softly -> {
@@ -190,7 +123,7 @@ class LineTest {
 
         // when
         line.addSection(section);
-        LinkedList<Section> sections = line.getSections();
+        LinkedList<Section> sections = line.getSections().getSections();
 
         // then
         assertSoftly(softly -> {
@@ -208,7 +141,7 @@ class LineTest {
 
         // when
         line.addSection(section);
-        LinkedList<Section> sections = line.getSections();
+        LinkedList<Section> sections = line.getSections().getSections();
 
         // then
         assertSoftly(softly -> {
@@ -222,7 +155,7 @@ class LineTest {
     void deleteSectionAtLeftEnd() {
         // when
         line.deleteSection(station1);
-        LinkedList<Section> sections = line.getSections();
+        LinkedList<Section> sections = line.getSections().getSections();
 
         // then
         assertSoftly(softly -> {
@@ -237,7 +170,7 @@ class LineTest {
     void deleteSectionAtRightEnd() {
         // when
         line.deleteSection(station3);
-        LinkedList<Section> sections = line.getSections();
+        LinkedList<Section> sections = line.getSections().getSections();
 
         // then
         assertSoftly(softly -> {
@@ -252,7 +185,7 @@ class LineTest {
     void deleteSectionMiddle() {
         // when
         line.deleteSection(station2);
-        LinkedList<Section> sections = line.getSections();
+        LinkedList<Section> sections = line.getSections().getSections();
 
         // then
         assertSoftly(softly -> {

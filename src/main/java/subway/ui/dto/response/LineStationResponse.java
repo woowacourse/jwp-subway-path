@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.dto.response;
 
 import java.util.List;
 
@@ -11,7 +11,11 @@ public class LineStationResponse {
     private LineStationResponse() {
     }
 
-    public LineStationResponse(Long id, String name, List<StationResponse> stations) {
+    public LineStationResponse(
+            final Long id,
+            final String name,
+            final List<StationResponse> stations
+    ) {
         this.id = id;
         this.name = name;
         this.stations = stations;

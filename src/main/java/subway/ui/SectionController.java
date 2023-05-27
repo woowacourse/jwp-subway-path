@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
-import subway.ui.dto.SectionCreateRequest;
-import subway.ui.dto.SectionDeleteRequest;
+import subway.ui.dto.request.SectionCreateRequest;
+import subway.ui.dto.request.SectionDeleteRequest;
 
 @RestController
 @RequestMapping("/sections")
@@ -22,14 +22,14 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createSection(@RequestBody SectionCreateRequest sectionCreateRequest) {
-        sectionService.createSection(sectionCreateRequest);
+    public ResponseEntity<Void> createSection(@RequestBody final SectionCreateRequest request) {
+        sectionService.createSection(request);
         return ResponseEntity.created(URI.create("/sections")).build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteSection(@RequestBody SectionDeleteRequest deleteRequest) {
-        sectionService.deleteSection(deleteRequest);
+    public ResponseEntity<Void> deleteSection(@RequestBody final SectionDeleteRequest request) {
+        sectionService.deleteSection(request);
         return ResponseEntity.noContent().build();
     }
 }

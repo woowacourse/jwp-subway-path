@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.dto.response;
 
 import subway.domain.Station;
 
@@ -9,12 +9,12 @@ public class StationResponse {
     private StationResponse() {
     }
 
-    private StationResponse(Long id, String name) {
+    private StationResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationResponse from(Station station) {
+    public static StationResponse from(final Station station) {
         return new StationResponse(station.getId(), station.getName());
     }
 

@@ -3,11 +3,13 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
 import subway.repository.StationRepository;
-import subway.ui.dto.StationRequest;
-import subway.ui.dto.StationResponse;
+import subway.ui.dto.request.StationRequest;
+import subway.ui.dto.response.StationResponse;
 
+@Transactional(readOnly = true)
 @Service
 public class StationService {
 
@@ -17,12 +19,13 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.save(new Station(stationRequest.getName()));
+    @Transactional
+    public StationResponse saveStation(final StationRequest request) {
+        Station station = stationRepository.save(new Station(request.getName()));
         return StationResponse.from(station);
     }
 
-    public StationResponse findStationById(Long id) {
+    public StationResponse findStationById(final Long id) {
         Station station = stationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 존재하지 않습니다."));
         return StationResponse.from(station);
@@ -35,7 +38,8 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteStationById(Long id) {
+    @Transactional
+    public void deleteStationById(final Long id) {
         stationRepository.deleteById(id);
     }
 }

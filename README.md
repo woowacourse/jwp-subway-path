@@ -2,6 +2,42 @@
 
 ## API SPEC
 
+### 최단 경로 조회
+
+- URL: localhost:8080/path
+- method: GET
+- Request body
+
+```json
+{
+  "fromStation": "잠실역",
+  "toStation": "삼성역"
+}
+```
+
+- Response body
+
+```json
+{
+  "fare": 1650,
+  "distance": 30,
+  "stations": [
+    {
+      "stationName": "잠실역"
+    },
+    {
+      "stationName": "잠실새내역"
+    },
+    {
+      "stationName": "종합운동장역"
+    },
+    {
+      "stationName": "삼성역"
+    }
+  ]
+}
+```
+
 ### 역 추가
 
 - URL: localhost:8080/sections
@@ -133,3 +169,12 @@
 - [x] 구간이 하나만 있는지 확인한다.
 - [x] 해당 역이 종점인지 확인한다.
 - [x] 전체 역을 상행 -> 하행 순서대로 반환한다.
+
+### 최단 경로 조회
+
+- 출발역과 도착역 사이의 최단거리 경로를 조회한다.
+- 출발역과 도착역을 입력받는다.
+- 최단거리를 찾아서 가중치를 전부 더한 값을 통해 거리를 계산한다.
+-
+- 
+

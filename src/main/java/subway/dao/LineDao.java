@@ -21,14 +21,14 @@ public class LineDao {
                     rs.getString("name")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate) {
+    public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public LineEntity save(LineEntity lineEntity) {
+    public LineEntity save(final LineEntity lineEntity) {
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(lineEntity);
         long savedId = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
         return new LineEntity(savedId, lineEntity.getName());
@@ -39,14 +39,14 @@ public class LineDao {
         return jdbcTemplate.query(sql, lineRowMapper);
     }
 
-    public Optional<LineEntity> findById(Long id) {
+    public Optional<LineEntity> findById(final Long id) {
         String sql = "select * from LINE where id = ?";
         return jdbcTemplate.query(sql, lineRowMapper, id)
                 .stream()
                 .findAny();
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }

@@ -16,8 +16,8 @@ import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
-import subway.ui.dto.SectionCreateRequest;
-import subway.ui.dto.SectionDeleteRequest;
+import subway.ui.dto.request.SectionCreateRequest;
+import subway.ui.dto.request.SectionDeleteRequest;
 
 @Sql("/truncate.sql")
 public class SectionIntegrationTest extends IntegrationTest {
