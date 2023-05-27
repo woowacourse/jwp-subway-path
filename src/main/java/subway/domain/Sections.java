@@ -13,7 +13,7 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public Sections addSection(final Section newSection) {
+    public Sections buildNewSections(final Section newSection) {
         final List<Section> nowSections = copySections();
         final Station newUpStation = newSection.getUpStation();
         final Station newDownStation = newSection.getDownStation();

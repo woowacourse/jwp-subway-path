@@ -40,7 +40,7 @@ public class Line {
     }
 
     public Line addSection(Section section) {
-        Sections addedSections = sections.addSection(section);
+        Sections addedSections = sections.buildNewSections(section);
         return new Line(addedSections);
     }
 
