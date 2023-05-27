@@ -25,7 +25,7 @@ public class Line {
     private final String color;
     private final List<Section> sections;
 
-    public Line(String name, String color, List<Section> sections) {
+    public Line(final String name, final String color, final List<Section> sections) {
         this.name = name;
         this.color = color;
         this.sections = new ArrayList<>(sections);
@@ -109,7 +109,7 @@ public class Line {
         removeMiddleStation(findSections, station);
     }
 
-    private void removeMiddleStation(List<Section> findSections, Station station) {
+    private void removeMiddleStation(final List<Section> findSections, final Station station) {
         final Section section = findSections.get(0);
         final Section otherSection = findSections.get(1);
         sections.remove(section);
