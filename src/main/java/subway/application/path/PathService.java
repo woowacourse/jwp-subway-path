@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import subway.application.path.dto.PathDto;
 import subway.application.station.dto.StationDto;
-import subway.domain.fee.Fee;
+import subway.domain.fare.Fare;
 import subway.domain.line.Distance;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
@@ -72,9 +72,10 @@ public class PathService {
 		final List<StationDto> stationDtos = shortestPath.getPath().stream()
 			.map(StationDto::new)
 			.collect(Collectors.toList());
-		final Fee fee = Fee.Calculate(shortestPath.getDistance());
+		final Fare fare = new Fare(shortestPath.getDistance());
+
 		final Distance distance = shortestPath.getDistance();
 
-		return new PathDto(stationDtos, fee.getFee(), distance.getValue());
+		return new PathDto(stationDtos, fare.calculate(), distance.getValue());
 	}
 }

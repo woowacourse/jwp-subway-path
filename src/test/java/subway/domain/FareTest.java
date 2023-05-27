@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import subway.domain.fee.Fee;
+import subway.domain.fare.Fare;
 import subway.domain.line.Distance;
 
-class FeeTest {
+class FareTest {
 
 	@Test
 	@DisplayName("10km 미만일때는 기본 요금이 부과된다.")
@@ -19,10 +19,11 @@ class FeeTest {
 		final Distance distance = new Distance(9);
 
 		// when
-		final Fee fee = Fee.Calculate(distance);
+		final Fare fare = new Fare(distance);
+		final int actual = fare.calculate();
 
 		// then
-		assertThat(fee.getFee()).isEqualTo(1250);
+		assertThat(actual).isEqualTo(1250);
 	}
 
 	@ParameterizedTest
@@ -33,10 +34,11 @@ class FeeTest {
 		final Distance distance = new Distance(distanceValue);
 
 		// when
-		final Fee fee = Fee.Calculate(distance);
+		final Fare fare = new Fare(distance);
+		final int actual = fare.calculate();
 
 		// then
-		assertThat(fee.getFee()).isEqualTo(feeValue);
+		assertThat(actual).isEqualTo(feeValue);
 	}
 
 	@Test
@@ -46,9 +48,10 @@ class FeeTest {
 		final Distance distance = new Distance(58);
 
 		// when
-		final Fee fee = Fee.Calculate(distance);
+		final Fare fare = new Fare(distance);
+		final int actual = fare.calculate();
 
 		// then
-		assertThat(fee.getFee()).isEqualTo(2150);
+		assertThat(actual).isEqualTo(2150);
 	}
 }
