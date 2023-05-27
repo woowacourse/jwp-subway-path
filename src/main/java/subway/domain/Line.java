@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
 import subway.exception.StationNotFoundException;
@@ -166,7 +164,7 @@ public class Line {
 
     public boolean hasStation(String startStationName) {
         return sections.stream()
-                .anyMatch(section -> section.contains(new Station(startStationName)));
+                .anyMatch(section -> section.contains(startStationName));
     }
 
     @Override
