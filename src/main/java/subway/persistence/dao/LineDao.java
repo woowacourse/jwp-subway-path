@@ -1,5 +1,6 @@
 package subway.persistence.dao;
 
+import subway.Entity.LineEntity;
 import subway.domain.line.Line;
 
 import java.util.List;
@@ -7,13 +8,13 @@ import java.util.Optional;
 
 public interface LineDao {
 
-    Line insert(Line line);
+    LineEntity insert(Line line);
 
-    List<Line> findAll();
+    List<LineEntity> findAll();
 
-    Optional<Line> findById(Long id);
+    Optional<LineEntity> findById(Long id);
 
-    void update(Line newLine);
+    void update(LineEntity lineEntity);
 
     void deleteById(Long id);
 }

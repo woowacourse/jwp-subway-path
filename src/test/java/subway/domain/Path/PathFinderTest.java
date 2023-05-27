@@ -98,7 +98,7 @@ class PathFinderTest {
 
     @Nested
     class FareTest {
-        
+
         @Test
         @DisplayName("기본 운임 + 노선별 추가 요금 계산 (2호선 환승X)")
         void fareTest1() {

@@ -7,12 +7,12 @@ import java.util.List;
 
 public class Path {
 
-    private final List<Station> orderedStations;
+    private final List<Station> pathStations;
     private final int distance;
     private final Fare fare;
 
-    public Path(List<Station> orderedStations, int distance, Fare fare) {
-        this.orderedStations = orderedStations;
+    public Path(List<Station> pathStations, int distance, Fare fare) {
+        this.pathStations = pathStations;
         this.distance = distance;
         this.fare = fare;
     }
@@ -21,8 +21,8 @@ public class Path {
         return new Path(new ArrayList<>(orderedStations), pathDistance, fare);
     }
 
-    public List<Station> getOrderedStations() {
-        return orderedStations;
+    public List<Station> getPathStations() {
+        return pathStations;
     }
 
     public int getDistance() {

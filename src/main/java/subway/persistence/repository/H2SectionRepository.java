@@ -1,11 +1,10 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.Entity.EntityMapper;
+import subway.Entity.LineEntity;
 import subway.Entity.SectionEntity;
 import subway.controller.exception.OptionalHasNoLineException;
 import subway.controller.exception.OptionalHasNoStationException;
-import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.section.SectionRepository;
 import subway.persistence.NullChecker;
@@ -30,17 +29,32 @@ public class H2SectionRepository implements SectionRepository {
     }
 
     @Override
-    public void updateAllSectionsInLine(Line line, List<Section> lineSections) {
-        NullChecker.isNull(line);
+    public void updateAllSectionsInLine(LineEntity lineEntity, List<Section> lineSections) {
+        NullChecker.isNull(lineEntity);
         NullChecker.isNull(lineSections);
-        sectionDao.deleteAllByLineId(line.getId());
-        sectionDao.insertAll(EntityMapper.convertToSectionEntities(lineSections));
+        sectionDao.deleteAllByLineId(lineEntity.getId());
+        List<SectionEntity> updatedSectionEntities = convertNewSectionsToEntities(lineEntity, lineSections);
+        sectionDao.insertAll(updatedSectionEntities);
+    }
+
+    private List<SectionEntity> convertNewSectionsToEntities(LineEntity lineEntity, List<Section> lineSections) {
+        return lineSections.stream()
+                .map(section -> new SectionEntity(
+                        null,
+                        lineEntity.getId(),
+                        stationDao.findIdByName(section.getUpward().getName())
+                                .orElseThrow(OptionalHasNoStationException::new),
+                        stationDao.findIdByName(section.getDownward().getName())
+                                .orElseThrow(OptionalHasNoStationException::new),
+                        section.getDistance()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Section> readSectionsByLine(Line line) {
-        NullChecker.isNull(line);
-        return mapToSections(sectionDao.selectSectionsByLineId(line.getId()));
+    public List<Section> readSectionsByLine(LineEntity lineEntity) {
+        NullChecker.isNull(lineEntity);
+        return mapToSections(sectionDao.selectSectionsByLineId(lineEntity.getId()));
     }
 
     @Override
@@ -51,10 +65,15 @@ public class H2SectionRepository implements SectionRepository {
     private List<Section> mapToSections(List<SectionEntity> sectionEntities) {
         return sectionEntities.stream()
                 .map(entity -> Section.of(
-                        entity.getId(),
-                        lineDao.findById(entity.getLineId()).orElseThrow(OptionalHasNoLineException::new),
-                        stationDao.findById(entity.getUpwardId()).orElseThrow(OptionalHasNoStationException::new),
-                        stationDao.findById(entity.getDownwardId()).orElseThrow(OptionalHasNoStationException::new),
+                        lineDao.findById(entity.getLineId())
+                                .orElseThrow(OptionalHasNoLineException::new)
+                                .mapToLine(),
+                        stationDao.findById(entity.getUpwardId())
+                                .orElseThrow(OptionalHasNoStationException::new)
+                                .mapToStation(),
+                        stationDao.findById(entity.getDownwardId())
+                                .orElseThrow(OptionalHasNoStationException::new)
+                                .mapToStation(),
                         entity.getDistance())
                 ).collect(Collectors.toList());
     }

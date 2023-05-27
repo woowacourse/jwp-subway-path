@@ -2,6 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.Entity.EntityMapper;
 import subway.controller.exception.OptionalHasNoStationException;
 import subway.domain.Path.Path;
 import subway.domain.Path.PathFinder;
@@ -28,9 +29,11 @@ public class PathService {
 
     public PathResponse findShortestPath(PathRequest request) {
         Station source = stationDao.findById(request.getSourceId())
-                .orElseThrow(OptionalHasNoStationException::new);
+                .orElseThrow(OptionalHasNoStationException::new)
+                .mapToStation();
         Station destination = stationDao.findById(request.getDestinationId())
-                .orElseThrow(OptionalHasNoStationException::new);
+                .orElseThrow(OptionalHasNoStationException::new)
+                .mapToStation();
 
         PathFinder pathFinder = PathFinder.from(sectionRepository.readAllSections(), DistanceFarePolicy.getInstance());
 
@@ -41,6 +44,10 @@ public class PathService {
                         .applyDiscount(AgeDiscountPolicy.from(request.getAge()))
         );
 
-        return DtoMapper.convertToPathResponse(shortestPath);
+        return DtoMapper.convertToPathResponse(
+                EntityMapper.convertToStationEntities(shortestPath.getPathStations(), stationDao.findAll()),
+                shortestPath.getDistance(),
+                shortestPath.getFare()
+        );
     }
 }

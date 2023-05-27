@@ -2,6 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.Entity.StationEntity;
 import subway.controller.exception.OptionalHasNoStationException;
 import subway.domain.station.Station;
 import subway.dto.request.StationRequest;
@@ -21,26 +22,27 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(Station.from(stationRequest.getName()));
-        return StationResponse.of(station);
+        StationEntity stationEntity = stationDao.insert(Station.from(stationRequest.getName()));
+        return StationResponse.of(stationEntity);
     }
 
     public StationResponse findStationResponseById(Long id) {
-        Station station = stationDao.findById(id)
+        StationEntity stationEntity = stationDao.findById(id)
                 .orElseThrow(OptionalHasNoStationException::new);
-        return StationResponse.of(station);
+        return StationResponse.of(stationEntity);
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
 
-        return stations.stream()
+        return stationEntities.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(Station.of(id, stationRequest.getName()));
+        StationEntity stationEntity = new StationEntity(id, stationRequest.getName());
+        stationDao.update(stationEntity);
     }
 
     public void deleteStationById(Long id) {

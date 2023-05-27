@@ -2,9 +2,9 @@ package subway.domain.Path;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.domain.policy.basic.FarePolicy;
 import subway.domain.line.Line;
 import subway.domain.line.Lines;
+import subway.domain.policy.basic.FarePolicy;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 

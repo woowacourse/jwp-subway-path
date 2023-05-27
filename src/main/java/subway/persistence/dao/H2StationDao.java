@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.Entity.StationEntity;
 import subway.domain.station.Station;
 import subway.persistence.NullChecker;
 
@@ -19,8 +20,8 @@ public class H2StationDao implements StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
-            Station.of(
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
@@ -34,21 +35,21 @@ public class H2StationDao implements StationDao {
     }
 
     @Override
-    public Station insert(Station station) {
+    public StationEntity insert(Station station) {
         NullChecker.isNull(station);
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         long id = insertAction.executeAndReturnKey(params).longValue();
-        return Station.of(id, station.getName());
+        return new StationEntity(id, station.getName());
     }
 
     @Override
-    public List<Station> findAll() {
+    public List<StationEntity> findAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
-    public Optional<Station> findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         NullChecker.isNull(id);
         String sql = "select * from STATION where id = ?";
 
@@ -60,10 +61,22 @@ public class H2StationDao implements StationDao {
     }
 
     @Override
-    public void update(Station newStation) {
-        NullChecker.isNull(newStation);
+    public Optional<Long> findIdByName(String name) {
+        NullChecker.isNull(name);
+        String sql = "select id from STATION where name = ?";
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Long.class, name));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void update(StationEntity stationEntity) {
+        NullChecker.isNull(stationEntity);
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        jdbcTemplate.update(sql, new Object[]{stationEntity.getName(), stationEntity.getId()});
     }
 
     @Override

@@ -71,5 +71,4 @@ public class H2SectionDao implements SectionDao {
 
         insertAction.executeBatch(batchParams.toArray(new SqlParameterSource[0]));
     }
-
 }

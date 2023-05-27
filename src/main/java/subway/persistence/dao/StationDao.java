@@ -1,5 +1,6 @@
 package subway.persistence.dao;
 
+import subway.Entity.StationEntity;
 import subway.domain.station.Station;
 
 import java.util.List;
@@ -7,13 +8,15 @@ import java.util.Optional;
 
 public interface StationDao {
 
-    Station insert(Station station);
+    StationEntity insert(Station station);
 
-    List<Station> findAll();
+    List<StationEntity> findAll();
 
-    Optional<Station> findById(Long id);
+    Optional<StationEntity> findById(Long id);
 
-    void update(Station newStation);
+    Optional<Long> findIdByName(String name);
+
+    void update(StationEntity stationEntity);
 
     void deleteById(Long id);
 }

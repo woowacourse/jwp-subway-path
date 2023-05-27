@@ -1,6 +1,7 @@
 package subway.domain.fare;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import java.util.List;
 @DisplayName("distanceFarePolicy 기능 테스트")
 class DistanceFarePolicyTest {
 
-    private final Line _1호선 = Line.of(1L, "1호선", "남색", 0);
+    private final Line _1호선 = Line.of("1호선", "남색", 0);
     private final Lines lines = Lines.from(List.of(_1호선));
 
     @ParameterizedTest

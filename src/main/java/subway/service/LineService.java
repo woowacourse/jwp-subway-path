@@ -2,6 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.Entity.LineEntity;
 import subway.controller.exception.OptionalHasNoLineException;
 import subway.domain.line.Line;
 import subway.dto.request.LineRequest;
@@ -21,33 +22,39 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(Line.of(request.getName(), request.getColor(), request.getExtraFare()));
-        return LineResponse.of(persistLine);
+        LineEntity lineEntity = lineDao.insert(Line.of(request.getName(), request.getColor(), request.getExtraFare()));
+        return LineResponse.of(lineEntity);
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
+        List<LineEntity> persistLines = findLines();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
+    public List<LineEntity> findLines() {
         return lineDao.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        LineEntity lineEntity = findLineById(id);
+        return LineResponse.of(lineEntity);
     }
 
-    public Line findLineById(Long id) {
+    public LineEntity findLineById(Long id) {
         return lineDao.findById(id)
                 .orElseThrow(OptionalHasNoLineException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(Line.of(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFare()));
+        LineEntity lineEntity = new LineEntity(
+                id,
+                lineUpdateRequest.getName(),
+                lineUpdateRequest.getColor(),
+                lineUpdateRequest.getExtraFare()
+        );
+        lineDao.update(lineEntity);
     }
 
     public void deleteLineById(Long id) {
