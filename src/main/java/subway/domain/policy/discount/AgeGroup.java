@@ -43,7 +43,9 @@ public enum AgeGroup {
 
     private static void validateRange(int age) {
         if (age < 0) {
-            throw new IllegalArgumentException("[ERROR] 나이는 음수가 될 수 없습니다.");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] 나이는 음수가 될 수 없습니다. (입력값 : %d)", age)
+            );
         }
     }
 

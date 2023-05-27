@@ -33,7 +33,9 @@ public class DistanceFarePolicy implements FarePolicy {
 
     private void validateNegativeDistance(int distance) {
         if (distance < 0) {
-            throw new IllegalArgumentException("[ERROR] 요금 계산 상 거리는 음수가 될 수 없습니다.");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] 요금 계산 상 거리는 음수가 될 수 없습니다. (입력값 : %d)", distance)
+            );
         }
     }
 

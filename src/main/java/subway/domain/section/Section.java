@@ -48,7 +48,9 @@ public class Section {
 
     private void validateSameStations(Station upward, Station downward) {
         if (upward.equals(downward)) {
-            throw new IllegalArgumentException("[ERROR] 구간을 구성하는 역은 동일한 역일 수 없습니다.");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] 구간을 구성하는 역은 동일한 역일 수 없습니다. (입력값 : %s)", upward.getName())
+            );
         }
     }
 

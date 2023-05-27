@@ -24,7 +24,9 @@ public class Stations {
         boolean result = stations.stream().anyMatch(each -> each.isSameName(station));
 
         if (result) {
-            throw new IllegalArgumentException("[ERROR] 동일한 이름의 역을 중복으로 등록할 수 없습니다.");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] 동일한 이름의 역을 중복으로 등록할 수 없습니다. (입력값 : %s)", station.getName())
+            );
         }
     }
 
@@ -34,7 +36,9 @@ public class Stations {
 
     public void remove(Station station) {
         if (!stations.contains(station)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 역을 삭제할 수 없습니다.");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] 등록되지 않은 역을 삭제할 수 없습니다. (입력값 : %s)", station.getName())
+            );
         }
         stations.remove(station);
     }
@@ -43,6 +47,10 @@ public class Stations {
         return stations.stream()
                 .filter(each -> each.isSameName(station))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 역을 조회했습니다."));
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                String.format("[ERROR] 등록되지 않은 역을 조회했습니다. (입력값 : %s)", station.getName())
+                        )
+                );
     }
 }

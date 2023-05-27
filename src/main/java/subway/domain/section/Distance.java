@@ -17,7 +17,9 @@ public class Distance {
 
     private void validateDistance(int distance) {
         if (distance < 0) {
-            throw new IllegalArgumentException("[ERROR] 거리는 음수 일 수 없습니다.");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] 거리는 음수 일 수 없습니다. (입력값 : %d)", distance)
+            );
         }
     }
 

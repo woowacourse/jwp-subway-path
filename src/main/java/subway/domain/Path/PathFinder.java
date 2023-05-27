@@ -49,7 +49,9 @@ public class PathFinder {
 
     private static void validateStations(Station source, Station destination) {
         if (source.equals(destination)) {
-            throw new IllegalArgumentException("[ERROR] 동일한 역 간 경로 조회는 불가능합니다.");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] 동일한 역 간 경로 조회는 불가능합니다. (입력값 : %s)", source.getName())
+            );
         }
     }
 

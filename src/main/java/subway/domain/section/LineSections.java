@@ -56,7 +56,13 @@ public class LineSections {
 
     private void validateDuplicatedSection(Station upward, Station downward) {
         if (sections.containsStationsComposedWith(upward, downward)) {
-            throw new IllegalArgumentException("[ERROR] 상행, 하행 방향 역이 해당 노선에 이미 등록되어 있습니다.");
+            throw new IllegalArgumentException(
+                    String.format(
+                            "[ERROR] 상행, 하행 방향 역이 해당 노선에 이미 등록되어 있습니다. (입력값 : %s, %s)",
+                            upward.getName(),
+                            downward.getName()
+                    )
+            );
         }
     }
 
@@ -69,7 +75,13 @@ public class LineSections {
             return upward;
         }
 
-        throw new IllegalArgumentException("[ERROR] 두 역 모두 새로운 역입니다.");
+        throw new IllegalArgumentException(
+                String.format(
+                        "[ERROR] 두 역 모두 새로운 역입니다. (입력값 : %s, %s)",
+                        upward.getName(),
+                        downward.getName()
+                )
+        );
     }
 
     private void addSectionWithNewUpward(Station newUpward, Station downward, int distance) {
@@ -90,7 +102,11 @@ public class LineSections {
     private void validateDistance(Section existedSection, int distance) {
         if (!existedSection.hasGreaterDistanceThan(distance)) {
             throw new IllegalArgumentException(
-                    "[ERROR] 새로운 역과 기존 역 사이의 거리는 기존 구간의 거리 이상일 수 없습니다."
+                    String.format(
+                            "[ERROR] 새로운 역과 기존 역 사이의 거리는 기존 구간의 거리 이상일 수 없습니다. (기존 구간 : %d, 입력값: %d)",
+                            existedSection.getDistance(),
+                            distance
+                    )
             );
         }
     }
@@ -122,7 +138,9 @@ public class LineSections {
 
     private void validateIsExistingStation(Station station) {
         if (!sections.containsStation(station)) {
-            throw new IllegalArgumentException("[ERROR] 노선에 등록되어 있지 않은 역입니다.");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] 노선에 등록되어 있지 않은 역입니다. (입력값: %s)", station.getName())
+            );
         }
     }
 

@@ -44,14 +44,27 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.isUpward(upward))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 상행 방향 역을 가지는 구간이 없습니다."));
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                String.format(
+                                        "[ERROR] 해당 상행 방향 역을 가지는 구간이 없습니다. (입력값 : %s)", upward.getName()
+                                )
+                        )
+                );
     }
 
     public Section findSectionHasDownward(Station downward) {
         return sections.stream()
                 .filter(section -> section.isDownward(downward))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 하행 방향 역을 가지는 구간이 없습니다."));
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                String.format(
+                                        "[ERROR] 해당 하행 방향 역을 가지는 구간이 없습니다. (입력값 : %s)", downward.getName()
+                                )
+
+                        )
+                );
     }
 
     public List<Station> findDistinctStations() {
