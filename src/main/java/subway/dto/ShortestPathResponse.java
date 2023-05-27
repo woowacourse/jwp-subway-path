@@ -19,7 +19,7 @@ public class ShortestPathResponse {
     }
 
     public static ShortestPathResponse of(final Path path, final int fare) {
-        return new ShortestPathResponse(path.getAllStationName(), path.getDistance().getValue(), fare);
+        return new ShortestPathResponse(path.getAllStationName(), path.getDistance(), fare);
     }
 
     public List<String> getPath() {

@@ -23,7 +23,7 @@ public class Path {
         return path;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.getValue();
     }
 }

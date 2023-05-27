@@ -25,7 +25,7 @@ public class PathService {
         Subway subway = new Subway(lineRepository.findAll());
         PathFinder pathFinder = new PathFinder(subway);
         Path shortestPath = pathFinder.findShortestPath(startStationName, endStationName);
-        int fare = farePolicy.calculate(shortestPath.getDistance().getValue());
+        int fare = farePolicy.calculate(shortestPath.getDistance());
 
         return ShortestPathResponse.of(shortestPath, fare);
     }

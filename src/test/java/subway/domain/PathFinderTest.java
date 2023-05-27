@@ -27,7 +27,7 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(shortestPath.getPath()).containsExactly(
                         new Station("A"), new Station("B"), new Station("D")),
-                () -> assertThat(shortestPath.getDistance()).isEqualTo(new Distance(4))
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(4)
         );
     }
 
@@ -44,7 +44,7 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(shortestPath.getPath()).containsExactly(
                         new Station("D"), new Station("B"), new Station("A")),
-                () -> assertThat(shortestPath.getDistance()).isEqualTo(new Distance(4))
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(4)
         );
     }
 
