@@ -39,7 +39,7 @@ class LineSectionsTest {
 
     @Test
     @DisplayName("서로 다른 노선에 포함되는 구간들로 초기화를 시도하는 경우 예외처리한다.")
-    void LineSectionsTest() {
+    void validateInitializeWithOtherLinesTest() {
         // given
         Section section1 = Section.of(1L, _2호선, 잠실나루, 잠실, 10);
         Section section2 = Section.of(2L, _3호선, 강변, 잠실나루, 5);
@@ -90,7 +90,7 @@ class LineSectionsTest {
 
                     //when
                     sections.addSection(잠실나루, 잠실, 3);
-                    List<Section> lineSections = sections.findAllSections();
+                    List<Section> lineSections = sections.getAllSections();
 
                     //then
                     assertThat(lineSections).contains(
@@ -124,7 +124,7 @@ class LineSectionsTest {
 
                     //when
                     sections.addSection(강변, 잠실나루, 7);
-                    List<Section> lineSections = sections.findAllSections();
+                    List<Section> lineSections = sections.getAllSections();
 
                     //then
                     assertThat(lineSections).contains(
@@ -147,7 +147,7 @@ class LineSectionsTest {
 
                     //when
                     sections.addSection(강변, 잠실나루, 7);
-                    List<Section> lineSections = sections.findAllSections();
+                    List<Section> lineSections = sections.getAllSections();
 
                     //then
                     assertThat(lineSections).contains(
@@ -181,7 +181,7 @@ class LineSectionsTest {
 
                     //when
                     sections.addSection(강변, 잠실나루, 7);
-                    List<Section> lineSections = sections.findAllSections();
+                    List<Section> lineSections = sections.getAllSections();
 
                     //then
                     assertThat(lineSections).contains(
@@ -221,7 +221,7 @@ class LineSectionsTest {
 
             //when
             sections.removeStation(잠실나루);
-            List<Section> lineSections = sections.findAllSections();
+            List<Section> lineSections = sections.getAllSections();
 
             //then
             assertThat(lineSections).containsExactly(
@@ -239,7 +239,7 @@ class LineSectionsTest {
 
             //when
             sections.removeStation(잠실);
-            List<Section> lineSections = sections.findAllSections();
+            List<Section> lineSections = sections.getAllSections();
 
             //then
             assertThat(lineSections).containsExactly(
@@ -256,7 +256,7 @@ class LineSectionsTest {
 
             //when
             sections.removeStation(잠실);
-            List<Section> lineSections = sections.findAllSections();
+            List<Section> lineSections = sections.getAllSections();
 
             //then
             assertThat(lineSections).isEmpty();

@@ -43,7 +43,7 @@ public class SectionService {
         LineSections lineSections = LineSections.from(line, sectionRepository.readSectionsByLine(line));
         lineSections.addSection(upward, downward, request.getDistance());
 
-        sectionRepository.updateAllSectionsInLine(line, lineSections.findAllSections());
+        sectionRepository.updateAllSectionsInLine(line, lineSections.getAllSections());
     }
 
     public void removeStationFromLine(SectionDeleteRequest request) {
@@ -55,7 +55,7 @@ public class SectionService {
         LineSections lineSections = LineSections.from(line, sectionRepository.readSectionsByLine(line));
         lineSections.removeStation(removeStation);
 
-        sectionRepository.updateAllSectionsInLine(line, lineSections.findAllSections());
+        sectionRepository.updateAllSectionsInLine(line, lineSections.getAllSections());
     }
 
     public LineStationsResponse readAllStationsOfLine(Long lineId) {
@@ -63,9 +63,9 @@ public class SectionService {
                 .orElseThrow(OptionalHasNoStationException::new);
 
         LineSections lineSections = LineSections.from(line, sectionRepository.readSectionsByLine(line));
-        List<Station> inOrderLineStations = lineSections.findStationsInOrder();
+        List<Station> orderedStations = lineSections.getOrderedStations();
 
-        return DtoMapper.convertToLineStationsResponse(line, inOrderLineStations);
+        return DtoMapper.convertToLineStationsResponse(line, orderedStations);
     }
 
     public List<LineStationsResponse> readAllStationsOfAllLines() {

@@ -3,6 +3,8 @@ package subway.domain.section;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Section {
@@ -31,6 +33,10 @@ public class Section {
         return new Section(null, line, upward, downward, Distance.from(distance));
     }
 
+    public static Section of(Line line, Station upward, Station downward, Distance distance) {
+        return new Section(null, line, upward, downward, distance);
+    }
+
     public static Section ofCombinedTwoSection(Line line, Section upwardSection, Section downwardSection) {
         return new Section(
                 null,
@@ -51,6 +57,32 @@ public class Section {
         if (upward.equals(downward)) {
             throw new IllegalArgumentException("[ERROR] 구간을 구성하는 역은 동일한 역일 수 없습니다.");
         }
+    }
+
+    public List<Section> splitSectionWithNewUpwardStation(Station newStation, int distance) {
+        Distance newUpwardDistance = Distance.from(distance);
+        Section newUpwardSection = of(
+                line,
+                upward,
+                newStation,
+                this.distance.subtract(newUpwardDistance)
+        );
+        Section newDownwardSection = Section.of(line, newStation, downward, distance);
+
+        return new ArrayList<>(List.of(newUpwardSection, newDownwardSection));
+    }
+
+    public List<Section> splitSectionWithNewDownwardStation(Station newStation, int distance) {
+        Distance newDownwardDistance = Distance.from(distance);
+        Section newUpwardSection = Section.of(line, upward, newStation, distance);
+        Section newDownwardSection = Section.of(
+                line,
+                newStation,
+                downward,
+                this.distance.subtract(newDownwardDistance)
+        );
+
+        return new ArrayList<>(List.of(newUpwardSection, newDownwardSection));
     }
 
     public boolean isComposed(Station upward, Station downward) {
