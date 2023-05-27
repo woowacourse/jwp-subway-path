@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 class AgePassengerTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"3:1", "6:0.5", "12:0.5", "13:0.2", "18:0.2", "20:1"}, delimiter = ':')
+    @CsvSource(value = {"3:1", "6:0.5", "12:0.5", "13:0.8", "18:0.8", "20:1"}, delimiter = ':')
     void 나이에따른_할인_비율_테스트(final int age, final double discountProportion) {
         final double discountProportionByAge = AgePassenger.findDiscountProportionByAge(age);
 

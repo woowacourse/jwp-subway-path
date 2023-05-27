@@ -1,6 +1,8 @@
 package subway.application.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
@@ -10,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.application.fare.FareCalculator;
 import subway.application.path.service.FindShortestPathService;
 import subway.application.path.service.JGraphtSubwayPathFinder;
+import subway.domain.fare.Fare;
 import subway.domain.line.Line;
 import subway.domain.line.LineColor;
 import subway.domain.line.LineName;
@@ -32,6 +36,8 @@ class FindShortestPathServiceTest {
     private LineRepository lineRepository;
     @Mock
     private StationRepository stationRepository;
+    @Mock
+    private FareCalculator fareCalculator;
 
     private FindShortestPathService findShortestPathService;
 
@@ -40,7 +46,8 @@ class FindShortestPathServiceTest {
         findShortestPathService = new FindShortestPathService(
                 lineRepository,
                 stationRepository,
-                new JGraphtSubwayPathFinder()
+                new JGraphtSubwayPathFinder(),
+                fareCalculator
         );
     }
 
@@ -52,15 +59,15 @@ class FindShortestPathServiceTest {
         given(lineRepository.findAll()).willReturn(List.of(firstLine, secondLine));
         given(stationRepository.findById(1L)).willReturn(Optional.of(new Station("역삼")));
         given(stationRepository.findById(2L)).willReturn(Optional.of(new Station("선정릉")));
+        given(fareCalculator.calculatePathFare(any(), anyInt())).willReturn(new Fare(1_250));
 
         //when
-        final ShortestPathResponse shortestPath = findShortestPathService.findShortestPath(1L, 2L);
+        final ShortestPathResponse shortestPath = findShortestPathService.findShortestPath(1L, 2L, 25);
 
         //then
         assertThat(shortestPath.getStations()).extracting("stationName")
                 .containsExactly("역삼", "선릉", "선정릉");
         assertThat(shortestPath.getDistance()).isEqualTo(2 + 8);
-
     }
 
     private Line firstLineFixture() {
