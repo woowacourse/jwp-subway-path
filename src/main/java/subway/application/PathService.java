@@ -2,10 +2,11 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Path;
-import subway.domain.PathFinder;
+import subway.domain.path.Path;
+import subway.domain.path.JgraphtPathFinder;
 import subway.domain.Subway;
 import subway.domain.fare.FarePolicy;
+import subway.domain.path.PathFinder;
 import subway.dto.ShortestPathResponse;
 import subway.repository.LineRepository;
 
@@ -23,8 +24,8 @@ public class PathService {
     @Transactional(readOnly = true)
     public ShortestPathResponse findShortestPath(final String startStationName, final String endStationName) {
         Subway subway = new Subway(lineRepository.findAll());
-        PathFinder pathFinder = new PathFinder(subway);
-        Path shortestPath = pathFinder.findShortestPath(startStationName, endStationName);
+        PathFinder pathFinder = new JgraphtPathFinder(subway);
+        Path shortestPath = pathFinder.find(startStationName, endStationName);
         int fare = farePolicy.calculate(shortestPath.getDistance());
 
         return ShortestPathResponse.of(shortestPath, fare);

@@ -1,7 +1,7 @@
 package subway.dto;
 
 import java.util.List;
-import subway.domain.Path;
+import subway.domain.path.Path;
 
 public class ShortestPathResponse {
 
