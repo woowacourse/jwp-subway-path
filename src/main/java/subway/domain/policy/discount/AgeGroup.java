@@ -7,11 +7,27 @@ public enum AgeGroup {
         int calculate(int fare) {
             return 0;
         }
+
+        @Override
+        AgeGroup checkAgeGroup(int age) {
+            if (age < 6) {
+                return BABY;
+            }
+            return CHILD.checkAgeGroup(age);
+        }
     },
     CHILD {
         @Override
         int calculate(int fare) {
             return (int) Math.ceil((fare - 350) * 0.5);
+        }
+
+        @Override
+        AgeGroup checkAgeGroup(int age) {
+            if (6 <= age && age < 13) {
+                return CHILD;
+            }
+            return TEEN.checkAgeGroup(age);
         }
     },
     TEEN {
@@ -19,26 +35,30 @@ public enum AgeGroup {
         int calculate(int fare) {
             return (int) Math.ceil((fare - 350) * 0.8);
         }
+
+        @Override
+        AgeGroup checkAgeGroup(int age) {
+            if (13 <= age && age < 19) {
+                return TEEN;
+            }
+            return ADULT.checkAgeGroup(age);
+        }
     },
     ADULT {
         @Override
         int calculate(int fare) {
             return fare;
         }
+
+        @Override
+        AgeGroup checkAgeGroup(int age) {
+            return ADULT;
+        }
     };
 
     public static AgeGroup of(int age) {
         validateRange(age);
-        if (age < 6) {
-            return BABY;
-        }
-        if (6 <= age && age < 13) {
-            return CHILD;
-        }
-        if (13 <= age && age < 19) {
-            return TEEN;
-        }
-        return ADULT;
+        return BABY.checkAgeGroup(age);
     }
 
     private static void validateRange(int age) {
@@ -50,4 +70,6 @@ public enum AgeGroup {
     }
 
     abstract int calculate(int fare);
+
+    abstract AgeGroup checkAgeGroup(int age);
 }
