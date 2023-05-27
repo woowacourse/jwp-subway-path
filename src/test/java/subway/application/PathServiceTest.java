@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
@@ -48,9 +49,10 @@ public class PathServiceTest {
                             new Section("B", "E", 2)
                     )
             ));
+            final ShortestPathRequest request = new ShortestPathRequest("A", "D");
 
             // when
-            final ShortestPathResponse result = pathService.findShortestPath("A", "D");
+            final ShortestPathResponse result = pathService.findShortestPath(request);
 
             // then
             assertAll(
@@ -80,9 +82,10 @@ public class PathServiceTest {
                             new Section("B", "E", 2)
                     )
             ));
+            final ShortestPathRequest request = new ShortestPathRequest("Q", "D");
 
             // expect
-            assertThatThrownBy(() -> pathService.findShortestPath("Q", "D"))
+            assertThatThrownBy(() -> pathService.findShortestPath(request))
                     .isInstanceOf(StationNotFoundException.class)
                     .hasMessageContaining("역을 찾을 수 없습니다.");
         }
@@ -103,9 +106,10 @@ public class PathServiceTest {
                             new Section("B", "E", 2)
                     )
             ));
+            final ShortestPathRequest request = new ShortestPathRequest("A", "Q");
 
             // expect
-            assertThatThrownBy(() -> pathService.findShortestPath("A", "Q"))
+            assertThatThrownBy(() -> pathService.findShortestPath(request))
                     .isInstanceOf(StationNotFoundException.class)
                     .hasMessageContaining("역을 찾을 수 없습니다.");
         }

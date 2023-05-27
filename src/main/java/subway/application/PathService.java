@@ -7,6 +7,7 @@ import subway.domain.path.JgraphtPathFinder;
 import subway.domain.Subway;
 import subway.domain.fare.FarePolicy;
 import subway.domain.path.PathFinder;
+import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
 import subway.repository.LineRepository;
 
@@ -22,10 +23,10 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public ShortestPathResponse findShortestPath(final String startStationName, final String endStationName) {
+    public ShortestPathResponse findShortestPath(final ShortestPathRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
         PathFinder pathFinder = new JgraphtPathFinder(subway);
-        Path shortestPath = pathFinder.find(startStationName, endStationName);
+        Path shortestPath = pathFinder.find(request.getStartStationName(), request.getEndStationName());
         int fare = farePolicy.calculate(shortestPath.getDistance());
 
         return ShortestPathResponse.of(shortestPath, fare);

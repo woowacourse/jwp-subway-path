@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import subway.IntegrationTest;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.dto.ShortestPathRequest;
 import subway.repository.LineRepository;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -42,12 +43,13 @@ class PathControllerTest extends IntegrationTest {
                             new Section("B", "E", 2)
                     )
             ));
+            final ShortestPathRequest request = new ShortestPathRequest("A", "D");
 
             // when
             ExtractableResponse<Response> response = RestAssured
                     .given().log().all()
-                    .param("startStationName", "A")
-                    .param("endStationName", "D")
+                    .param("startStationName", request.getStartStationName())
+                    .param("endStationName", request.getEndStationName())
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .when().get("/path")
                     .then().log().all()
@@ -82,11 +84,12 @@ class PathControllerTest extends IntegrationTest {
                             new Section("B", "E", 2)
                     )
             ));
+            final ShortestPathRequest request = new ShortestPathRequest("A", "D");
 
             // when
             ExtractableResponse<Response> response = RestAssured
                     .given().log().all()
-                    .param("endStationName", "D")
+                    .queryParam("endStationName", request.getEndStationName())
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .when().get("/path")
                     .then().log().all()
@@ -116,11 +119,12 @@ class PathControllerTest extends IntegrationTest {
                             new Section("B", "E", 2)
                     )
             ));
+            final ShortestPathRequest request = new ShortestPathRequest("A", "D");
 
             // when
             ExtractableResponse<Response> response = RestAssured
                     .given().log().all()
-                    .param("startStationName", "D")
+                    .param("startStationName", request.getStartStationName())
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .when().get("/path")
                     .then().log().all()
