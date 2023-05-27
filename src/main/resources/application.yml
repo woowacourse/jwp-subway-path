@@ -1,0 +1,12 @@
+constant:
+  distance:
+    FIVE_KM: 5
+    TEN_KM: 10
+    EIGHT_KM: 8
+    FIFTY_KM: 50
+  charge:
+    STANDARD: 1250
+    PER_OVER: 100
+
+
+
