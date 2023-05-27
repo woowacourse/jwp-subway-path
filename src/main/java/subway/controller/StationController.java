@@ -55,5 +55,4 @@ public class StationController {
         stationService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }

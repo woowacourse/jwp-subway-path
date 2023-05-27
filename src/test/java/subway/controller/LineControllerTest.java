@@ -185,7 +185,7 @@ class LineControllerTest {
         void success_upper_mid() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실새내", "송파", 5);
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, 2L, 5L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(1L, "잠실"), new StationResponse(2L, "잠실새내"), new StationResponse(5L, "송파"))
@@ -214,7 +214,7 @@ class LineControllerTest {
         void success_upper_end_point() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "송파", 5);
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 5L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(1L, "잠실"), new StationResponse(5L, "송파"), new StationResponse(2L, "잠실새내"))
@@ -243,7 +243,7 @@ class LineControllerTest {
         void success_down_mid() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실", "송파", 5);
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, 1L, 5L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(1L, "잠실새내"), new StationResponse(5L, "송파"), new StationResponse(2L, "잠실"))
@@ -272,7 +272,7 @@ class LineControllerTest {
         void success_down_end_point() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실새내", "송파", 5);
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, 1L, 5L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(5L, "송파"), new StationResponse(1L, "잠실새내"), new StationResponse(2L, "잠실"))
@@ -301,7 +301,7 @@ class LineControllerTest {
         void fail_duplicated_station_name() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실새내", "잠실", 5);
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, 2L, 1L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
 
             // when
@@ -319,7 +319,7 @@ class LineControllerTest {
         void fail_duplicated_line() throws Exception {
             // given
             final long lineId = 2L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실새내", "잠실", 5);
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, 2L, 1L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
 
             // when
@@ -342,7 +342,7 @@ class LineControllerTest {
         void success_delete_one_station() throws Exception {
             // given
             final long lineId = 1L;
-            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("잠실");
+            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest(1L);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(2L, "잠실새내"), new StationResponse(3L, "종합운동장"))
@@ -370,7 +370,7 @@ class LineControllerTest {
         void success_delete_with_line() throws Exception {
             // given
             final long lineId = 1L;
-            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("잠실");
+            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest(1L);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final Optional<LineResponse> lineDetailResponse = Optional.empty();
 
@@ -389,7 +389,7 @@ class LineControllerTest {
         void fail_line_not_found() throws Exception {
             // given
             final long lineId = 11L;
-            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("잠실");
+            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest(1L);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
 
             // when
@@ -407,7 +407,7 @@ class LineControllerTest {
         void fail_station_not_found() throws Exception {
             // given
             final long lineId = 1L;
-            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("실");
+            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest(11L);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
 
             // when

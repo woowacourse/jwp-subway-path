@@ -43,17 +43,13 @@ class LineModifyServiceTest {
     void registerStation_success_upper_end() {
         // given
         final long lineId = 1L;
-        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실", "석촌", 1);
-        final long standardStationId = 1L;
-        final long newStationId = 4L;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 1);
         final List<SectionDetailEntity> sectionDetailEntities = List.of(
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 4L, "석촌", 1L, "잠실"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 2L, "잠실새내"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 2L, "잠실새내", 3L, "종합운동장")
         );
 
-        given(stationDao.findIdByName(request.getStandardStationName())).willReturn(standardStationId);
-        given(stationDao.findIdByName(request.getNewStationName())).willReturn(newStationId);
         given(sectionDao.findByLineIdAndPreviousStationId(lineId, 1L)).willReturn(Optional.empty());
         given(sectionDao.insert(any())).willReturn(any());
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
@@ -78,17 +74,13 @@ class LineModifyServiceTest {
     void registerStation_success_down_end() {
         // given
         final long lineId = 1L;
-        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, "종합운동장", "석촌", 1);
-        final long standardStationId = 3L;
-        final long newStationId = 4L;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, 3L, 4L, 1);
         final List<SectionDetailEntity> sectionDetailEntities = List.of(
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 2L, "잠실새내"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 2L, "잠실새내", 3L, "종합운동장"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 3L, "종합운동장", 4L, "석촌")
         );
 
-        given(stationDao.findIdByName(request.getStandardStationName())).willReturn(standardStationId);
-        given(stationDao.findIdByName(request.getNewStationName())).willReturn(newStationId);
         given(sectionDao.findByLineIdAndNextStationId(lineId, 3L)).willReturn(Optional.empty());
         given(sectionDao.insert(any())).willReturn(any());
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
@@ -113,17 +105,13 @@ class LineModifyServiceTest {
     void registerStation_success_upper_mid() {
         // given
         final long lineId = 1L;
-        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실새내", "석촌", 1);
-        final long standardStationId = 1L;
-        final long newStationId = 4L;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 1);
         final List<SectionDetailEntity> sectionDetailEntities = List.of(
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 4L, "석촌"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 4L, "석촌", 2L, "잠실새내"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 2L, "잠실새내", 3L, "종합운동장")
         );
 
-        given(stationDao.findIdByName(request.getStandardStationName())).willReturn(standardStationId);
-        given(stationDao.findIdByName(request.getNewStationName())).willReturn(newStationId);
         given(sectionDao.findByLineIdAndPreviousStationId(lineId, 1L)).willReturn(Optional.empty());
         lenient().doNothing().when(sectionDao).delete(any());
         given(sectionDao.insert(any())).willReturn(any());
@@ -149,17 +137,13 @@ class LineModifyServiceTest {
     void registerStation_success_down_mid() {
         // given
         final long lineId = 1L;
-        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실새내", "석촌", 1);
-        final long standardStationId = 1L;
-        final long newStationId = 4L;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, 1L, 4L, 1);
         final List<SectionDetailEntity> sectionDetailEntities = List.of(
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 4L, "석촌"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 4L, "석촌", 2L, "잠실새내"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 2L, "잠실새내", 3L, "종합운동장")
         );
 
-        given(stationDao.findIdByName(request.getStandardStationName())).willReturn(standardStationId);
-        given(stationDao.findIdByName(request.getNewStationName())).willReturn(newStationId);
         given(sectionDao.findByLineIdAndNextStationId(lineId, 1L)).willReturn(Optional.empty());
         lenient().doNothing().when(sectionDao).delete(any());
         given(sectionDao.insert(any())).willReturn(any());
@@ -185,8 +169,8 @@ class LineModifyServiceTest {
     void unregisterStation_success() {
         // given
         final long lineId = 1L;
-        final String stationName = "잠실새내";
-        final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest("잠실새내");
+        final long stationId = 2L;
+        final StationUnregisterInLineRequest request = new StationUnregisterInLineRequest(stationId);
         final SectionEntity frontSection = new SectionEntity(1L, lineId, 3, 1L, 2L);
         final SectionEntity backSection = new SectionEntity(2L, lineId, 3, 2L, 3L);
         final List<SectionEntity> entities = List.of(frontSection, backSection);
@@ -194,7 +178,7 @@ class LineModifyServiceTest {
                 new SectionDetailEntity(1L, 6, lineId, "2호선", "bg-green-600", 1L, "잠실", 3L, "종합운동장")
         );
 
-        given(sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(1L, stationName)).willReturn(entities);
+        given(sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(1L, stationId)).willReturn(entities);
         lenient().doNothing().when(sectionDao).delete(frontSection);
         lenient().doNothing().when(sectionDao).delete(backSection);
         given(sectionDao.insert(any())).willReturn(any());

@@ -98,19 +98,15 @@ public class SectionDao {
         }
     }
 
-    public List<SectionEntity> findByLineIdAndPreviousStationNameOrNextStationName(
-            final long lineId, final String stationName) {
-        final String sql = "SELECT se.id, se.line_id, se.distance, se.previous_station_id, se.next_station_id " +
-                "FROM section se " +
-                "JOIN station pst ON se.previous_station_id = pst.id " +
-                "JOIN station nst ON se.next_station_id = nst.id " +
-                "WHERE se.line_id = ? AND (pst.name = ? OR nst.name = ?)";
-        final List<SectionEntity> result = jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationName, stationName);
-        validateFindByLineIdAndPreviousStationNameOrNextStationNameResult(result);
+    public List<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(
+            final long lineId, final long stationId) {
+        final String sql = "SELECT * FROM section se WHERE se.line_id = ? AND (previous_station_id = ? OR next_station_id = ?)";
+        final List<SectionEntity> result = jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationId, stationId);
+        validateFindByLineIdAndPreviousStationIdOrNextStationIdResult(result);
         return result;
     }
 
-    private void validateFindByLineIdAndPreviousStationNameOrNextStationNameResult(final List<SectionEntity> sectionEntities) {
+    private void validateFindByLineIdAndPreviousStationIdOrNextStationIdResult(final List<SectionEntity> sectionEntities) {
         if (sectionEntities.isEmpty()) {
             throw new LineOrStationNotFoundException();
         }
@@ -120,13 +116,10 @@ public class SectionDao {
     }
 
     public boolean isStationExistInLine(final long lineId, final long stationId) {
-        return !findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId).isEmpty();
-    }
-
-    private List<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(final long lineId, final long stationId) {
-        final String sql = "SELECT * FROM section " +
+        final String sql = "SELECT COUNT(*) FROM section " +
                 "WHERE line_id = ? AND (previous_station_id = ? OR next_station_id = ?)";
-        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationId, stationId);
+        final int count = jdbcTemplate.queryForObject(sql, Integer.class, lineId, stationId, stationId);
+        return count != 0;
     }
 
     public List<SectionDetailEntity> findSectionDetail() {
@@ -173,9 +166,19 @@ public class SectionDao {
                 "WHERE se.line_id = ?";
 
         final List<SectionDetailEntity> result = jdbcTemplate.query(sql, sectionDetailRowMapper, lineId);
+
         if (result.isEmpty()) {
             throw new LineNotFoundException();
         }
         return result;
+    }
+
+    public boolean isSectionNotExistInLine(final long lineId) {
+        try {
+            findSectionDetailByLineId(lineId);
+            return false;
+        } catch (LineNotFoundException e) {
+            return true;
+        }
     }
 }

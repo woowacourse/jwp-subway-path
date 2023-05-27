@@ -8,19 +8,19 @@ public class StationRegisterInLineRequest {
 
     @NotNull(message = "direction 이 null 입니다.")
     private final SubwayDirection direction;
-    @NotBlank(message = "standardStationName 이 비어있습니다.")
-    private final String standardStationName;
-    @NotBlank(message = "newStationName 이 비어있습니다.")
-    private final String newStationName;
+    @NotNull(message = "standardStationId 이 null 입니다.")
+    private final Long standardStationId;
+    @NotNull(message = "newStationId 이 null 입니다.")
+    private final Long newStationId;
     @NotNull(message = "distance 가 null 입니다.")
     @Positive(message = "거리는 양의 정수만 가능합니다.")
     private final Integer distance;
 
-    public StationRegisterInLineRequest(final SubwayDirection direction, final String standardStationName,
-                                        final String newStationName, final Integer distance) {
+    public StationRegisterInLineRequest(final SubwayDirection direction, final Long standardStationId,
+                                        final Long newStationId, final Integer distance) {
         this.direction = direction;
-        this.standardStationName = standardStationName;
-        this.newStationName = newStationName;
+        this.standardStationId = standardStationId;
+        this.newStationId = newStationId;
         this.distance = distance;
     }
 
@@ -28,16 +28,15 @@ public class StationRegisterInLineRequest {
         return direction;
     }
 
-    public String getStandardStationName() {
-        return standardStationName;
+    public Long getStandardStationId() {
+        return standardStationId;
     }
 
-    public String getNewStationName() {
-        return newStationName;
+    public Long getNewStationId() {
+        return newStationId;
     }
 
     public Integer getDistance() {
         return distance;
     }
-
 }

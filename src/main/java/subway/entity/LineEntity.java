@@ -31,5 +31,4 @@ public class LineEntity {
     public String getColor() {
         return color;
     }
-
 }

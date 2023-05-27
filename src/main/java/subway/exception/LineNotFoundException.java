@@ -7,5 +7,4 @@ public class LineNotFoundException extends IllegalArgumentException {
     public LineNotFoundException() {
         super(MESSAGE);
     }
-
 }

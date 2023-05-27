@@ -10,10 +10,12 @@ import subway.domain.LineSections;
 import subway.entity.SectionDetailEntity;
 import subway.entity.SectionEntity;
 import subway.exception.DuplicatedStationNameException;
+import subway.exception.StationNotFoundException;
 import subway.repository.LineDao;
 import subway.repository.SectionDao;
 import subway.repository.StationDao;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,6 @@ public class LineModifyService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
 
-
     public LineModifyService(final LineDao lineDao, final StationDao stationDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
@@ -35,9 +36,9 @@ public class LineModifyService {
 
     @Transactional
     public LineResponse registerStation(final Long lineId, final StationRegisterInLineRequest request) {
-        final long standardStationId = stationDao.findIdByName(request.getStandardStationName());
-        final long newStationId = stationDao.findIdByName(request.getNewStationName());
-        validateNewStationNotExistInLine(lineId, newStationId);
+        final long standardStationId = request.getStandardStationId();
+        final long newStationId = request.getNewStationId();
+        validateNewStation(lineId, newStationId);
         final int distance = request.getDistance();
         if (request.getDirection() == SubwayDirection.UP) {
             final List<SectionDetailEntity> registeredUpperEntity = registerUpperStation(new SectionEntity(lineId, distance, standardStationId, newStationId));
@@ -47,9 +48,12 @@ public class LineModifyService {
         return convertToResponse(registeredDownEntity);
     }
 
-    private void validateNewStationNotExistInLine(final long lineId, final long stationId) {
+    private void validateNewStation(final long lineId, final long stationId) {
         if (sectionDao.isStationExistInLine(lineId, stationId)) {
             throw new DuplicatedStationNameException();
+        }
+        if (stationDao.isNotExist(stationId)) {
+            throw new StationNotFoundException();
         }
     }
 
@@ -91,9 +95,12 @@ public class LineModifyService {
 
     @Transactional
     public Optional<LineResponse> unregisterStation(final Long lineId, final StationUnregisterInLineRequest request) {
-        final List<SectionEntity> relatedSectionEntities = sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, request.getStationName());
+        final List<SectionEntity> relatedSectionEntities = sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(lineId, request.getStationId());
         if (relatedSectionEntities.size() == END_POINT_STATION_SIZE) {
             final List<SectionDetailEntity> sectionDetailEntities = unregisterEndStation(relatedSectionEntities.get(0));
+            if (sectionDetailEntities.isEmpty()) {
+                return Optional.empty();
+            }
             return Optional.of(convertToResponse(sectionDetailEntities));
         }
         final List<SectionDetailEntity> sectionDetailEntities = unregisterMidStation(relatedSectionEntities.get(0), relatedSectionEntities.get(1));
@@ -103,15 +110,11 @@ public class LineModifyService {
     private List<SectionDetailEntity> unregisterEndStation(final SectionEntity sectionEntity) {
         final long lineId = sectionEntity.getLineId();
         sectionDao.delete(sectionEntity);
-        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineId(lineId);
-        deleteLineIfSectionNonExist(lineId, sectionDetailEntities);
-        return sectionDetailEntities;
-    }
-
-    private void deleteLineIfSectionNonExist(final long lineId, final List<SectionDetailEntity> sectionDetailEntities) {
-        if (sectionDetailEntities.isEmpty()) {
+        if (sectionDao.isSectionNotExistInLine(lineId)) {
             lineDao.deleteById(lineId);
+            return Collections.emptyList();
         }
+        return sectionDao.findSectionDetailByLineId(lineId);
     }
 
     private List<SectionDetailEntity> unregisterMidStation(final SectionEntity previous, final SectionEntity next) {
@@ -123,6 +126,6 @@ public class LineModifyService {
 
     private LineResponse convertToResponse(final List<SectionDetailEntity> entities) {
         final LineSections lineSections = LineSections.createByEntities(entities);
-        return LineResponse.createByDomain(lineSections);
+        return LineResponse.from(lineSections);
     }
 }

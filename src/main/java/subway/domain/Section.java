@@ -1,24 +1,29 @@
 package subway.domain;
 
+import subway.entity.SectionDetailEntity;
+
 public class Section {
 
-    private final Long id;
     private final Line line;
     private final Station previousStation;
     private final Station nextStation;
     private final Distance distance;
 
-    public Section(final long id, final Line line, final Station previousStation,
+    public Section(final Line line, final Station previousStation,
                    final Station nextStation, final Distance distance) {
-        this.id = id;
         this.line = line;
         this.previousStation = previousStation;
         this.nextStation = nextStation;
         this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
+    public static Section from(final SectionDetailEntity detailEntity) {
+        return new Section(
+                new Line(detailEntity.getLineId(), detailEntity.getLineName(), detailEntity.getLineColor()),
+                new Station(detailEntity.getPreviousStationId(), detailEntity.getPreviousStationName()),
+                new Station(detailEntity.getNextStationId(), detailEntity.getNextStationName()),
+                new Distance(detailEntity.getDistance())
+        );
     }
 
     public Line getLine() {

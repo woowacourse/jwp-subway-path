@@ -2,20 +2,19 @@ package subway.controller.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class StationUnregisterInLineRequest {
 
-    @NotBlank(message = "stationName 이 비어있습니다.")
-    private final String stationName;
+    @NotNull(message = "stationName 이 null 입니다.")
+    private final Long stationId;
 
     @JsonCreator
-    public StationUnregisterInLineRequest(final String stationName) {
-        this.stationName = stationName;
+    public StationUnregisterInLineRequest(final Long stationId) {
+        this.stationId = stationId;
     }
 
-    public String getStationName() {
-        return stationName;
+    public Long getStationId() {
+        return stationId;
     }
-
 }

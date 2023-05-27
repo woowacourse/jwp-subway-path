@@ -23,7 +23,7 @@ public class LineResponse {
         this.stations = stations;
     }
 
-    public static LineResponse createByDomain(final LineSections lineSections) {
+    public static LineResponse from(final LineSections lineSections) {
         return new LineResponse(
                 lineSections.getLine().getId(),
                 lineSections.getLine().getName(),
@@ -57,5 +57,4 @@ public class LineResponse {
     public List<StationResponse> getStations() {
         return stations;
     }
-
 }

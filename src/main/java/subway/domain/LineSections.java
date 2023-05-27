@@ -21,7 +21,7 @@ public class LineSections {
         final SectionDetailEntity entity = detailEntities.get(FIRST_INDEX);
         final Line line = new Line(entity.getLineId(), entity.getLineName(), entity.getLineColor());
         final List<LineSection> sections = detailEntities.stream()
-                .map(LineSection::createByEntity)
+                .map(LineSection::from)
                 .collect(Collectors.toUnmodifiableList());
         return new LineSections(line, LineSectionsSortFactory.sort(sections));
     }
@@ -33,5 +33,4 @@ public class LineSections {
     public List<LineSection> getSections() {
         return List.copyOf(sections);
     }
-
 }
