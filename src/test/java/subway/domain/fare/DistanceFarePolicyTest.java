@@ -9,9 +9,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class StandardFarePolicyTest {
+class DistanceFarePolicyTest {
 
-    private final FarePolicy farePolicy = new StandardFarePolicy();
+    private final FarePolicy farePolicy = new DistanceFarePolicy();
 
     @CsvSource({"9, 1250", "10, 1250", "11, 1350", "15, 1350", "16, 1450", "50, 2050", "55, 2150", "58, 2150", "66, 2250"})
     @ParameterizedTest(name = "이동 거리가 {0}km일 때 {1}만큼의 요금이 부과된다.")
