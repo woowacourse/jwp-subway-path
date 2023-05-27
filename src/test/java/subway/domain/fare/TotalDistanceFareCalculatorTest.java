@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.domain.fare.distanceproportion.TotalDistanceFareCalculator;
 
 @SuppressWarnings("NonAsciiCharacters")
 class TotalDistanceFareCalculatorTest {

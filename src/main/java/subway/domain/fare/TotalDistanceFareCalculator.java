@@ -1,7 +1,6 @@
-package subway.domain.fare.distanceproportion;
+package subway.domain.fare;
 
 import java.util.List;
-import subway.domain.fare.Fare;
 
 public class TotalDistanceFareCalculator {
     private static final DistanceProportionFarePolicy FIRST_DISTANCE_RANGE

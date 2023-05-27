@@ -1,6 +1,4 @@
-package subway.domain.fare.distanceproportion;
-
-import subway.domain.fare.Fare;
+package subway.domain.fare;
 
 public class DistanceProportionFarePolicy {
     private static final int SURCHARGE_FARE = 100;
@@ -29,7 +27,7 @@ public class DistanceProportionFarePolicy {
             throw new IllegalStateException("할증 단위 범위는 0보다 커야 합니다.");
         }
     }
-    
+
     public Fare calculate(final int distance) {
         if (distance <= lowerBoundDistance) {
             return new Fare(0);
