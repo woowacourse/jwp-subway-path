@@ -34,16 +34,16 @@ public enum DeleteCase {
 
     private static void notEndPointStation(final Sections sections, final Station targetStation) {
         List<Section> targetSections = sections.getSections().stream()
-                .filter(section -> section.getUpStation().equals(targetStation) || section.getDownStation().equals(targetStation))
+                .filter(section -> section.getUpStation().getName().equals(targetStation.getName()) || section.getDownStation().getName().equals(targetStation.getName()))
                 .collect(Collectors.toList());
 
         Section upStationTargetSection = targetSections.stream()
-                .filter(section -> section.getUpStation().equals(targetStation))
+                .filter(section -> section.getUpStation().getName().equals(targetStation.getName()))
                 .findAny()
                 .orElseThrow(SectionNotFoundException::new);
 
         Section downStationTargetSection = targetSections.stream()
-                .filter(section -> section.getDownStation().equals(targetStation))
+                .filter(section -> section.getDownStation().getName().equals(targetStation.getName()))
                 .findAny()
                 .orElseThrow(SectionNotFoundException::new);
 

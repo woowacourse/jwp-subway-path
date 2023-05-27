@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dto.line.LineRequest;
+import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -24,9 +24,9 @@ public class LineServiceTest {
 
     @Test
     void 노선_정보를_저장한다() {
-        final LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
+        final LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
 
-        lineService.saveLine(lineRequest);
+        lineService.save(lineCreateRequest);
 
         final List<LineResponse> lineResponses = lineService.findAll();
         assertThat(lineResponses.size()).isEqualTo(1);
@@ -34,10 +34,10 @@ public class LineServiceTest {
 
     @Test
     void 모든_노선_정보를_조회한다() {
-        final LineRequest lineRequest1 = new LineRequest("2호선", 2L, "초록색");
-        final LineRequest lineRequest2 = new LineRequest("4호선", 4L, "하늘색");
-        lineService.saveLine(lineRequest1);
-        lineService.saveLine(lineRequest2);
+        final LineCreateRequest lineCreateRequest1 = new LineCreateRequest("2호선", 2L, "초록색");
+        final LineCreateRequest lineCreateRequest2 = new LineCreateRequest("4호선", 4L, "하늘색");
+        lineService.save(lineCreateRequest1);
+        lineService.save(lineCreateRequest2);
 
         final List<LineResponse> lineResponses = lineService.findAll();
 
@@ -54,10 +54,10 @@ public class LineServiceTest {
 
     @Test
     void 노선_ID로_노선을_삭제한다() {
-        final LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
-        final Long id = lineService.saveLine(lineRequest);
+        final LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        final Long id = lineService.save(lineCreateRequest);
 
-        lineService.removeLineById(id);
+        lineService.removeById(id);
 
         final List<LineResponse> lineResponses = lineService.findAll();
         assertThat(lineResponses.isEmpty()).isTrue();

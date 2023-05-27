@@ -14,7 +14,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.line.LineRequest;
+import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.station.StationRequest;
@@ -47,14 +47,14 @@ public class LineControllerIntegrationTest {
     @DisplayName("노선을 생성한다.")
     void create_line_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
         Long lineId = 1L;
 
         // when & then
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest)
+                .body(lineCreateRequest)
                 .when().post("/lines")
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
@@ -65,8 +65,8 @@ public class LineControllerIntegrationTest {
     @DisplayName("모든 노선을 조회한다.")
     void find_all_lines_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
-        lineService.saveLine(lineRequest);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        lineService.save(lineCreateRequest);
 
         // when & then
         RestAssured
@@ -84,18 +84,16 @@ public class LineControllerIntegrationTest {
     @DisplayName("노선을 조회한다.")
     void find_line_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
-        lineService.saveLine(lineRequest);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        final Long lineId = lineService.save(lineCreateRequest);
 
         StationRequest stationRequest = new StationRequest("잠실역");
         StationRequest stationRequest2 = new StationRequest("잠실새내역");
-        stationService.saveStation(stationRequest);
-        stationService.saveStation(stationRequest2);
+        stationService.save(stationRequest);
+        stationService.save(stationRequest2);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(2L, "잠실역", "잠실새내역", 3L);
         sectionService.addSection(sectionCreateRequest);
-
-        Long lineId = lineRequest.getLineNumber();
 
         // when & then
         RestAssured
@@ -113,8 +111,8 @@ public class LineControllerIntegrationTest {
     @DisplayName("노선을 삭제한다.")
     void delete_line_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
-        lineService.saveLine(lineRequest);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        lineService.save(lineCreateRequest);
 
         // when & then
         RestAssured

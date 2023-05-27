@@ -9,23 +9,23 @@ import subway.exception.notfound.UpStationNotFoundException;
 
 public class LineMap {
 
-    private final Map<Station, List<Station>> lineMap;
-    private final Map<Station, Boolean> visited;
+    private final Map<String, List<Station>> lineMap;
+    private final Map<String, Boolean> visited;
     private final Station upStationEndPoint;
 
     public LineMap(final Sections sections) {
         this.lineMap = initLineMap(sections);
         sections.getSections().forEach(this::addUndirectedEdgeBySection);
         this.visited = initVisited();
-        this.upStationEndPoint = getUpStationEndPoint(sections, getEndPointStations());
+        this.upStationEndPoint = new Station(getUpStationEndPoint(sections, getEndPointStations()));
     }
 
-    private Map<Station, List<Station>> initLineMap(final Sections sections) {
-        Map<Station, List<Station>> lineMap = new HashMap<>();
+    private Map<String, List<Station>> initLineMap(final Sections sections) {
+        Map<String, List<Station>> lineMap = new HashMap<>();
 
         for (Section section : sections.getSections()) {
-            lineMap.put(section.getUpStation(), new ArrayList<>());
-            lineMap.put(section.getDownStation(), new ArrayList<>());
+            lineMap.put(section.getUpStation().getName(), new ArrayList<>());
+            lineMap.put(section.getDownStation().getName(), new ArrayList<>());
         }
 
         return lineMap;
@@ -35,30 +35,30 @@ public class LineMap {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
 
-        List<Station> upStationList = lineMap.get(upStation);
-        List<Station> downStationList = lineMap.get(downStation);
+        List<Station> upStationList = lineMap.get(upStation.getName());
+        List<Station> downStationList = lineMap.get(downStation.getName());
 
         upStationList.add(downStation);
         downStationList.add(upStation);
     }
 
-    private Map<Station, Boolean> initVisited() {
-        Map<Station, Boolean> visited = new HashMap<>();
-        for (Station station : lineMap.keySet()) {
+    private Map<String, Boolean> initVisited() {
+        Map<String, Boolean> visited = new HashMap<>();
+        for (String station : lineMap.keySet()) {
             visited.put(station, false);
         }
         return visited;
     }
 
-    private Station getUpStationEndPoint(final Sections sections, final List<Station> endPointStations) {
+    private String getUpStationEndPoint(final Sections sections, final List<String> endPointStations) {
         return sections.getSections().stream()
                 .flatMap(section -> endPointStations.stream()
-                        .filter(station -> station.equals(section.getUpStation())))
+                        .filter(station -> station.equals(section.getUpStation().getName())))
                 .findFirst()
                 .orElseThrow(UpStationNotFoundException::new);
     }
 
-    private List<Station> getEndPointStations() {
+    private List<String> getEndPointStations() {
         return lineMap.keySet().stream()
                 .filter(key -> lineMap.get(key).size() == 1)
                 .collect(Collectors.toList());
@@ -72,9 +72,9 @@ public class LineMap {
     }
 
     private void dfs(final List<Station> stations, final Station station) {
-        visited.put(station, true);
-        for (Station nextStation : lineMap.get(station)) {
-            if (visited.get(nextStation).equals(Boolean.FALSE)) {
+        visited.put(station.getName(), true);
+        for (Station nextStation : lineMap.get(station.getName())) {
+            if (visited.get(nextStation.getName()).equals(Boolean.FALSE)) {
                 stations.add(nextStation);
                 dfs(stations, nextStation);
             }

@@ -23,36 +23,36 @@ public class StationServiceTest {
 
     @Test
     void 역_정보를_저장한다() {
-        stationService.saveStation(new StationRequest("잠실역"));
+        stationService.save(new StationRequest("잠실역"));
 
-        final List<StationResponse> stationResponses = stationService.findAllStationResponses().getStations();
+        final List<StationResponse> stationResponses = stationService.findAll().getStations();
         assertThat(stationResponses.size()).isEqualTo(1);
     }
 
     @Test
     void 역_ID로_역_정보를_조회한다() {
-        final Long id = stationService.saveStation(new StationRequest("잠실역"));
+        final Long id = stationService.save(new StationRequest("잠실역"));
 
-        final StationResponse stationResponse = stationService.findStationResponseById(id);
+        final StationResponse stationResponse = stationService.findById(id);
         assertThat(stationResponse.getName()).isEqualTo("잠실역");
     }
 
     @Test
     void 모든_역_정보들을_조회한다() {
-        stationService.saveStation(new StationRequest("잠실역"));
-        stationService.saveStation(new StationRequest("아현역"));
+        stationService.save(new StationRequest("잠실역"));
+        stationService.save(new StationRequest("아현역"));
 
-        final List<StationResponse> stationResponses = stationService.findAllStationResponses().getStations();
+        final List<StationResponse> stationResponses = stationService.findAll().getStations();
         assertThat(stationResponses.size()).isEqualTo(2);
     }
 
     @Test
     void 역_ID로_역_정보를_삭제한다() {
-        final Long id = stationService.saveStation(new StationRequest("잠실역"));
+        final Long id = stationService.save(new StationRequest("잠실역"));
 
-        stationService.removeStationById(id);
+        stationService.removeById(id);
 
-        final List<StationResponse> stationResponses = stationService.findAllStationResponses().getStations();
+        final List<StationResponse> stationResponses = stationService.findAll().getStations();
         assertThat(stationResponses.isEmpty()).isTrue();
     }
 }

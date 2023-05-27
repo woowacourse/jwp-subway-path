@@ -15,25 +15,22 @@ import subway.repository.StationRepository;
 @Service
 public class SubwayMapService {
 
-    private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
 
-    public SubwayMapService(final StationRepository stationRepository, final SectionRepository sectionRepository) {
-        this.stationRepository = stationRepository;
+    public SubwayMapService(final SectionRepository sectionRepository, final StationRepository stationRepository) {
         this.sectionRepository = sectionRepository;
+        this.stationRepository = stationRepository;
     }
 
     @Transactional(readOnly = true)
-    public LineMapResponse showLineMap(final Long lineNumber) {
-        Sections sections = sectionRepository.findByLineNumber(lineNumber);
+    public LineMapResponse findById(final Long id) {
+        Sections sections = sectionRepository.findById(id);
         LineMap lineMap = new LineMap(sections);
 
         List<Station> orderedStations = lineMap.getOrderedStations();
         List<StationResponse> stations = orderedStations.stream()
-                .map(station -> {
-                    Long stationId = stationRepository.findStationIdByStationName(station.getName());
-                    return StationResponse.from(stationId, station);
-                })
+                .map(station -> StationResponse.from(stationRepository.findByName(station.getName()).getId(), station))
                 .collect(Collectors.toList());
 
         return LineMapResponse.from(stations);

@@ -49,12 +49,20 @@ public class SectionServiceTest {
         final SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(sections.size()).isEqualTo(2);
 
-        softAssertions.assertThat(sections.get(0).getUpStation()).isEqualTo(new Station("잠실역"));
-        softAssertions.assertThat(sections.get(0).getDownStation()).isEqualTo(new Station("신촌역"));
+        softAssertions.assertThat(sections.get(0).getUpStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("잠실역"));
+        softAssertions.assertThat(sections.get(0).getDownStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("신촌역"));
         softAssertions.assertThat(sections.get(0).getDistance()).isEqualTo(3L);
 
-        softAssertions.assertThat(sections.get(1).getUpStation()).isEqualTo(new Station("신촌역"));
-        softAssertions.assertThat(sections.get(1).getDownStation()).isEqualTo(new Station("아현역"));
+        softAssertions.assertThat(sections.get(1).getUpStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("신촌역"));
+        softAssertions.assertThat(sections.get(1).getDownStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("아현역"));
         softAssertions.assertThat(sections.get(1).getDistance()).isEqualTo(2L);
         softAssertions.assertAll();
     }
@@ -74,8 +82,12 @@ public class SectionServiceTest {
         final SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(sections.size()).isEqualTo(1);
 
-        softAssertions.assertThat(sections.get(0).getUpStation()).isEqualTo(new Station("잠실역"));
-        softAssertions.assertThat(sections.get(0).getDownStation()).isEqualTo(new Station("아현역"));
+        softAssertions.assertThat(sections.get(0).getUpStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("잠실역"));
+        softAssertions.assertThat(sections.get(0).getDownStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("아현역"));
         softAssertions.assertThat(sections.get(0).getDistance()).isEqualTo(5L);
         softAssertions.assertAll();
     }

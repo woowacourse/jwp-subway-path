@@ -35,14 +35,14 @@ public class SubwayMapServiceTest {
 
     @Test
     void 지하철_노선도를_조회한다() {
-        lineRepository.save(new Line(2L, "2호선", "초록색"));
+        final Long lineId = lineRepository.save(new Line(2L, "2호선", "초록색"));
         stationRepository.save(new Station("잠실역"));
         stationRepository.save(new Station("아현역"));
         stationRepository.save(new Station("신촌역"));
         sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
         sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
 
-        final List<StationResponse> stationResponses = subwayMapService.showLineMap(2L).getStations();
+        final List<StationResponse> stationResponses = subwayMapService.findById(lineId).getStations();
 
         final SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(stationResponses.get(0).getName()).isEqualTo("잠실역");

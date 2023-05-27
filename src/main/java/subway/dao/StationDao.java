@@ -3,7 +3,6 @@ package subway.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -29,12 +28,12 @@ public class StationDao {
                 .usingGeneratedKeyColumns("station_id");
     }
 
-    public boolean isStationIdExist(final Long stationId) {
+    public boolean isIdExist(final Long id) {
         String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE station_id = ?)";
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId));
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
     }
 
-    public boolean isStationNameExist(final String name) {
+    public boolean isNameExist(final String name) {
         String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE name = ?)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, name));
     }
@@ -45,23 +44,23 @@ public class StationDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
+    public void deleteById(final Long id) {
+        String sql = "DELETE FROM station WHERE station_id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     public List<StationEntity> findAll() {
         String sql = "SELECT station_id, name FROM station";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findByStationId(final Long stationId) {
+    public StationEntity findById(final Long id) {
         String sql = "SELECT station_id, name FROM station WHERE station_id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, stationId);
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public StationEntity findByName(final String name) {
         String sql = "SELECT station_id, name FROM station WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
-    }
-
-    public void deleteByStationId(final Long stationId) {
-        String sql = "DELETE FROM station WHERE station_id = ?";
-        jdbcTemplate.update(sql, stationId);
     }
 }

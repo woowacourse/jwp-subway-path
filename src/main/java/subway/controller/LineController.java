@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.dto.line.LineRequest;
+import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.station.LineMapResponse;
 import subway.service.LineService;
@@ -30,24 +30,24 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody @Valid LineRequest lineRequest) {
-        Long id = lineService.saveLine(lineRequest);
+    public ResponseEntity<Void> create(@RequestBody @Valid LineCreateRequest lineCreateRequest) {
+        Long id = lineService.save(lineCreateRequest);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> remove(@PathVariable final Long id) {
+        lineService.removeById(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
+    public ResponseEntity<List<LineResponse>> findAll() {
         return ResponseEntity.ok(lineService.findAll());
     }
 
-    @GetMapping("/{lineNumber}")
-    public ResponseEntity<LineMapResponse> findLineById(@PathVariable final Long lineNumber) {
-        return ResponseEntity.ok().body(subwayMapService.showLineMap(lineNumber));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeLine(@PathVariable final Long id) {
-        lineService.removeLineById(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<LineMapResponse> findById(@PathVariable final Long id) {
+        return ResponseEntity.ok().body(subwayMapService.findById(id));
     }
 }

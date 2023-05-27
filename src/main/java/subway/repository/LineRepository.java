@@ -22,27 +22,18 @@ public class LineRepository {
         return lineDao.save(lineEntity);
     }
 
-    public Long findLineIdByLine(final Line line) {
-        final boolean exist = lineDao.isLineNumberExist(line.getLineNumber());
+    public void deleteById(final Long id) {
+        final boolean exist = lineDao.isIdExist(id);
         if (exist) {
-            final LineEntity lineEntity = lineDao.findByLineNumber(line.getLineNumber());
-            return lineEntity.getLineId();
+            lineDao.deleteByLineId(id);
+            return;
         }
         throw new LineNotFoundException();
     }
 
     public List<Line> findAll() {
         return lineDao.findAll().stream()
-                .map(lineEntity -> new Line(lineEntity.getLineNumber(), lineEntity.getName(), lineEntity.getColor()))
+                .map(lineEntity -> new Line(lineEntity.getLineId(), lineEntity.getLineNumber(), lineEntity.getName(), lineEntity.getColor()))
                 .collect(Collectors.toList());
-    }
-
-    public void deleteByLineId(final Long lineId) {
-        final boolean exist = lineDao.isLineIdExist(lineId);
-        if (exist) {
-            lineDao.deleteByLineId(lineId);
-            return;
-        }
-        throw new LineNotFoundException();
     }
 }

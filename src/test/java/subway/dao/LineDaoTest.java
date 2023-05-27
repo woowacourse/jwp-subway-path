@@ -42,7 +42,7 @@ public class LineDaoTest {
         final LineEntity lineEntity = new LineEntity(2L, "2호선", "초록색");
         final Long id = lineDao.save(lineEntity);
 
-        final boolean lineIdExist = lineDao.isLineIdExist(id);
+        final boolean lineIdExist = lineDao.isIdExist(id);
 
         assertThat(lineIdExist).isTrue();
     }

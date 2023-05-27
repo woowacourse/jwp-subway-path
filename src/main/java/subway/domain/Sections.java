@@ -60,21 +60,21 @@ public class Sections {
 
     public Section findSectionWithUpStation(final Station station) {
         return sections.stream()
-                .filter(nowSection -> nowSection.getUpStation().equals(station))
+                .filter(nowSection -> nowSection.getUpStation().getName().equals(station.getName()))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
     }
 
     public Section findSectionWithDownStation(final Station station) {
         return sections.stream()
-                .filter(nowSection -> nowSection.getDownStation().equals(station))
+                .filter(nowSection -> nowSection.getDownStation().getName().equals(station.getName()))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
     }
 
     public boolean isExistAsUpStation(final Station station) {
         return sections.stream()
-                .anyMatch(nowSection -> nowSection.getUpStation().equals(station));
+                .anyMatch(nowSection -> nowSection.getUpStation().getName().equals(station.getName()));
     }
 
     public List<Section> getSections() {

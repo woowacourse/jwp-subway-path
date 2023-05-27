@@ -21,20 +21,11 @@ public class StationRepository {
         return stationDao.save(new StationEntity(station.getName()));
     }
 
-    public Station findByStationId(final Long stationId) {
-        final boolean exist = stationDao.isStationIdExist(stationId);
+    public void deleteById(final Long id) {
+        final boolean exist = stationDao.isIdExist(id);
         if (exist) {
-            StationEntity stationEntity = stationDao.findByStationId(stationId);
-            return new Station(stationEntity.getName());
-        }
-        throw new StationNotFoundException();
-    }
-
-    public Long findStationIdByStationName(final String stationName) {
-        final boolean exist = stationDao.isStationNameExist(stationName);
-        if (exist) {
-            StationEntity stationEntity = stationDao.findByName(stationName);
-            return stationEntity.getStationId();
+            stationDao.deleteById(id);
+            return;
         }
         throw new StationNotFoundException();
     }
@@ -43,15 +34,24 @@ public class StationRepository {
         List<StationEntity> stationEntities = stationDao.findAll();
 
         return stationEntities.stream()
-                .map(station -> new Station(station.getName()))
+                .map(station -> new Station(station.getStationId(), station.getName()))
                 .collect(Collectors.toList());
     }
 
-    public void deleteByStationId(final Long stationId) {
-        final boolean exist = stationDao.isStationIdExist(stationId);
+    public Station findById(final Long id) {
+        final boolean exist = stationDao.isIdExist(id);
         if (exist) {
-            stationDao.deleteByStationId(stationId);
-            return;
+            StationEntity stationEntity = stationDao.findById(id);
+            return new Station(stationEntity.getStationId(), stationEntity.getName());
+        }
+        throw new StationNotFoundException();
+    }
+
+    public Station findByName(final String name) {
+        final boolean exist = stationDao.isNameExist(name);
+        if (exist) {
+            final StationEntity stationEntity = stationDao.findByName(name);
+            return new Station(stationEntity.getStationId(), stationEntity.getName());
         }
         throw new StationNotFoundException();
     }
