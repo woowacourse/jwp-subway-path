@@ -6,14 +6,17 @@ import subway.domain.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
 
 @Service
 public class LineService {
 
     private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
 
-    public LineService(final LineRepository lineRepository) {
+    public LineService(final LineRepository lineRepository, final SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     @Transactional
@@ -48,6 +51,7 @@ public class LineService {
     @Transactional
     public void deleteLine(final Long lineId) {
         Line line = lineRepository.findById(lineId);
+        sectionRepository.deleteAll(line.getSections(), line);
         lineRepository.delete(line);
     }
 }

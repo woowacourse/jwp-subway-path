@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.IllegalInputForDomainException;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ class LineTest {
                         null,
                         new LineColor("초록"),
                         new Sections(List.of(SECTION))))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalInputForDomainException.class);
     }
 
     @DisplayName("노선색이 null이면 예외를 발생한다")
@@ -41,7 +42,7 @@ class LineTest {
                         new LineName("2호선"),
                         null,
                         new Sections(List.of(SECTION))))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalInputForDomainException.class);
     }
 
     @DisplayName("노선의 구간이 null이면 예외를 발생한다")
@@ -52,7 +53,7 @@ class LineTest {
                         new LineName("2호선"),
                         new LineColor("초록"),
                         null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalInputForDomainException.class);
     }
 
     @DisplayName("역이 중복된 이름이 있는지 검증한다")
@@ -62,6 +63,6 @@ class LineTest {
         Line line = new Line(new LineName("2호선"), new LineColor("빨강"), new Sections(List.of(SECTION)));
         Station jamsilnaru = new Station("잠실나루");
         //then
-        assertThatThrownBy(() -> line.validateNotDuplicatedStation(jamsilnaru)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> line.validateNotDuplicatedStation(jamsilnaru)).isInstanceOf(IllegalInputForDomainException.class);
     }
 }

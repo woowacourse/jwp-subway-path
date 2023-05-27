@@ -13,10 +13,12 @@ import subway.domain.Sections;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +26,8 @@ class LineServiceTest {
 
     @Mock
     LineRepository lineRepository;
+    @Mock
+    SectionRepository sectionRepository;
     @InjectMocks
     LineService lineService;
 
@@ -88,6 +92,9 @@ class LineServiceTest {
         //when
         lineService.deleteLine(1L);
         //then
-        verify(lineRepository, times(1)).delete(line);
+        assertAll(
+                () -> verify(sectionRepository, times(1)).deleteAll(line.getSections(), line),
+                () -> verify(lineRepository, times(1)).delete(line)
+        );
     }
 }

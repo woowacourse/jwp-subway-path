@@ -1,5 +1,8 @@
 package subway.domain;
 
+import subway.exception.IllegalInputForDomainException;
+import subway.exception.UnsupportedParameterException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +20,7 @@ public class Lines {
         Line targetLine = lines.stream()
                 .filter(line -> line.getId().equals(lineId))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("삭제하려는 역이 존재하지 않습니다,"));
+                .orElseThrow(() -> new UnsupportedParameterException("삭제하려는 역이 존재하지 않습니다,"));
         List<Line> updateLines = new ArrayList<>(lines);
         updateLines.remove(targetLine);
         return new Lines(updateLines);
@@ -34,13 +37,13 @@ public class Lines {
                 .map(Line::getName)
                 .collect(Collectors.toList());
         if (names.contains(line.getName())) {
-            throw new IllegalArgumentException("중복된 노선명이 존재합니다.");
+            throw new IllegalInputForDomainException("중복된 노선명이 존재합니다.");
         }
         List<String> colors = lines.stream()
                 .map(Line::getColor)
                 .collect(Collectors.toList());
         if (colors.contains(line.getColor())) {
-            throw new IllegalArgumentException("중복된 노선색이 존재합니다.");
+            throw new IllegalInputForDomainException("중복된 노선색이 존재합니다.");
         }
     }
 
@@ -48,7 +51,7 @@ public class Lines {
         return lines.stream()
                 .filter(line -> line.isExistSection(section))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 구간이 없습니다."));
+                .orElseThrow(() -> new UnsupportedParameterException("해당 구간이 없습니다."));
     }
 
     public List<Station> getAllStations() {

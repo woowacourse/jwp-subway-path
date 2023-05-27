@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exception.IllegalInputForDomainException;
+
 import java.util.Objects;
 
 public class LineName {
@@ -15,10 +17,10 @@ public class LineName {
 
     private void validate(final String value) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("역 이름은 빈 값일 수 없습니다.");
+            throw new IllegalInputForDomainException("역 이름은 빈 값일 수 없습니다.");
         }
         if (value.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("역 이름은 10자 이하로 입력해주세요.");
+            throw new IllegalInputForDomainException("역 이름은 10자 이하로 입력해주세요.");
         }
     }
 

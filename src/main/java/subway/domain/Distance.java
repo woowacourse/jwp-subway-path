@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exception.IllegalInputForDomainException;
+
 import java.util.Objects;
 
 public class Distance {
@@ -15,7 +17,7 @@ public class Distance {
 
     private void validate(final int value) {
         if (value <= MIN_VALUE) {
-            throw new IllegalArgumentException("거리는 " + MIN_VALUE + " 이하일 수 없습니다.");
+            throw new IllegalInputForDomainException("거리는 " + MIN_VALUE + " 이하일 수 없습니다.");
         }
     }
 

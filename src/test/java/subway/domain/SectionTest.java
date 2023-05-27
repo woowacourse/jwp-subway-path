@@ -2,6 +2,8 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.IllegalInputForDomainException;
+import subway.exception.UnsupportedParameterException;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ class SectionTest {
     void upStation이_null이면_예외를_발생한다() {
 
         assertThatThrownBy(() -> new Section(null, DOWN_STATION, DISTANCE))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalInputForDomainException.class);
     }
 
     @DisplayName("downStation이 null이면 예외를 발생한다.")
@@ -35,7 +37,7 @@ class SectionTest {
     void downStation이_null이면_예외를_발생한다() {
 
         assertThatThrownBy(() -> new Section(UP_STATION, null, DISTANCE))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalInputForDomainException.class);
     }
 
     @DisplayName("distance가 null이면 예외를 발생한다.")
@@ -43,7 +45,7 @@ class SectionTest {
     void distance가_null이면_예외를_발생한다() {
 
         assertThatThrownBy(() -> new Section(UP_STATION, DOWN_STATION, null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalInputForDomainException.class);
     }
 
     @DisplayName("구간을 입력 받아 나눠 List<Section>을 반환한다")

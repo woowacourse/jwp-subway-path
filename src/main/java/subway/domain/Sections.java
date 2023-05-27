@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exception.UnsupportedParameterException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,7 +23,7 @@ public class Sections {
         Optional<Section> maybeSectionByUpStation = findSectionByUpStation(upStation);
         Optional<Section> maybeSectionByDownStation = findSectionByDownStation(downStation);
         if (checkDuplicatedStations(upStation, downStation)) {
-            throw new IllegalArgumentException("두 역이 모두 노선에 존재합니다.");
+            throw new UnsupportedParameterException("두 역이 모두 노선에 존재합니다.");
         }
         if (maybeSectionByUpStation.isPresent() && maybeSectionByDownStation.isEmpty()) {
             Section beforeSection = maybeSectionByUpStation.get();
@@ -40,7 +42,7 @@ public class Sections {
         if (upStation.equals(findLastStation())) {
             return addEdgeSection(section);
         }
-        throw new IllegalArgumentException("구간을 추가할 수 없습니다.");
+        throw new UnsupportedParameterException("구간을 추가할 수 없습니다.");
     }
 
     private boolean checkDuplicatedStations(final Station upStation, final Station downStation) {
@@ -76,7 +78,7 @@ public class Sections {
 
     private Sections addInitSection(final Section section) {
         if (!sections.isEmpty()) {
-            throw new IllegalArgumentException("추가할 수 없는 구간입니다.");
+            throw new UnsupportedParameterException("추가할 수 없는 구간입니다.");
         }
         List<Section> editSections = new ArrayList<>();
         editSections.add(section);
@@ -87,7 +89,7 @@ public class Sections {
         Optional<Section> maybeUpSection = findSectionByDownStation(station);
         Optional<Section> maybeDownSection = findSectionByUpStation(station);
         if (maybeUpSection.isEmpty() && maybeDownSection.isEmpty()) {
-            throw new IllegalArgumentException("삭제하려는 역이 존재하지 않습니다.");
+            throw new UnsupportedParameterException("삭제하려는 역이 존재하지 않습니다.");
         }
         if (maybeUpSection.isEmpty()) {
             Section downSection = maybeDownSection.get();
@@ -138,7 +140,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !downToUp.containsKey(section.getUpStation()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역은 비어있는 역입니다."))
+                .orElseThrow(() -> new UnsupportedParameterException("해당 역은 비어있는 역입니다."))
                 .getUpStation();
     }
 
@@ -148,7 +150,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !upToDown.containsKey(section.getDownStation()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역은 비어있는 역입니다."))
+                .orElseThrow(() -> new UnsupportedParameterException("해당 역은 비어있는 역입니다."))
                 .getDownStation();
     }
 

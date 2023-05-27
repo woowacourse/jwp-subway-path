@@ -2,6 +2,8 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.IllegalInputForDomainException;
+import subway.exception.UnsupportedParameterException;
 
 import java.util.List;
 
@@ -47,7 +49,7 @@ class LinesTest {
         Lines lines = new Lines(LINES);
         //then
         assertThatThrownBy(() -> lines.validateNotDuplicatedStation(STATION1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalInputForDomainException.class);
     }
 
     @DisplayName("중복 노선을 검증한다")
@@ -57,6 +59,6 @@ class LinesTest {
         Lines lines = new Lines(LINES);
         //then
         assertThatThrownBy(() -> lines.validateNotDuplicatedLine(LINE))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalInputForDomainException.class);
     }
 }
