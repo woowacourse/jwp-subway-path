@@ -1,10 +1,11 @@
-package subway.domain.fare;
+package subway.application.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import subway.domain.fare.Fare;
 import subway.domain.line.Line;
 import subway.domain.line.LineColor;
 import subway.domain.line.LineName;
