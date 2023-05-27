@@ -35,6 +35,9 @@ class JGraphtSubwayPathFinderTest {
         assertThat(shortestPath.getStations()).extractingResultOf("getStationName")
                 .containsExactly("역삼", "선릉", "선정릉", "강남구청");
         assertThat(shortestPath.getDistance()).isEqualTo(2 + 8 + 5);
+        assertThat(shortestPath.getPassingLine()).hasSize(2);
+        assertThat(shortestPath.getPassingLine()).extractingResultOf("getLineName")
+                .contains("1호선", "2호선");
     }
 
     @Test
