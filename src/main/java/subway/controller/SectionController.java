@@ -23,14 +23,14 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> insertSection(@RequestBody @Valid final SectionCreateRequest sectionCreateRequest) {
-        sectionService.insertSection(sectionCreateRequest);
+    public ResponseEntity<Void> addSection(@RequestBody @Valid final SectionCreateRequest sectionCreateRequest) {
+        sectionService.addSection(sectionCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteSection(@RequestBody @Valid final SectionDeleteRequest sectionDeleteRequest) {
-        sectionService.deleteSection(sectionDeleteRequest);
+    public ResponseEntity<Void> removeSection(@RequestBody @Valid final SectionDeleteRequest sectionDeleteRequest) {
+        sectionService.removeSection(sectionDeleteRequest);
         return ResponseEntity.noContent().build();
     }
 }

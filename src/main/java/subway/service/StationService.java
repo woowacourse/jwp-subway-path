@@ -42,7 +42,7 @@ public class StationService {
         return StationsResponse.from(stations);
     }
 
-    public void deleteStationById(final Long id) {
+    public void removeStationById(final Long id) {
         stationRepository.deleteByStationId(id);
     }
 }

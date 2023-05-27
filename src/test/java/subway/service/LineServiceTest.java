@@ -57,7 +57,7 @@ public class LineServiceTest {
         final LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
         final Long id = lineService.saveLine(lineRequest);
 
-        lineService.deleteLineById(id);
+        lineService.removeLineById(id);
 
         final List<LineResponse> lineResponses = lineService.findAll();
         assertThat(lineResponses.isEmpty()).isTrue();

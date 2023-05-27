@@ -39,8 +39,8 @@ public class SubwayMapServiceTest {
         stationRepository.save(new Station("잠실역"));
         stationRepository.save(new Station("아현역"));
         stationRepository.save(new Station("신촌역"));
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
 
         final List<StationResponse> stationResponses = subwayMapService.showLineMap(2L).getStations();
 

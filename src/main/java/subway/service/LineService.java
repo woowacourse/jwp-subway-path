@@ -34,7 +34,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteLineById(final Long id) {
+    public void removeLineById(final Long id) {
         lineRepository.deleteByLineId(id);
     }
 }

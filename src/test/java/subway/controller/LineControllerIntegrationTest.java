@@ -93,7 +93,7 @@ public class LineControllerIntegrationTest {
         stationService.saveStation(stationRequest2);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(2L, "잠실역", "잠실새내역", 3L);
-        sectionService.insertSection(sectionCreateRequest);
+        sectionService.addSection(sectionCreateRequest);
 
         Long lineId = lineRequest.getLineNumber();
 

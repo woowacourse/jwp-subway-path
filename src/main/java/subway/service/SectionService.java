@@ -19,7 +19,7 @@ public class SectionService {
         this.sectionRepository = sectionRepository;
     }
 
-    public void insertSection(final SectionCreateRequest request) {
+    public void addSection(final SectionCreateRequest request) {
         final Long requestLineNumber = request.getLineNumber();
         final Sections sections = sectionRepository.findByLineNumber(requestLineNumber);
 
@@ -31,7 +31,7 @@ public class SectionService {
         sectionRepository.updateByLineNumber(sections, requestLineNumber);
     }
 
-    public void deleteSection(final SectionDeleteRequest request) {
+    public void removeSection(final SectionDeleteRequest request) {
         final Long requestLineNumber = request.getLineNumber();
         final Station requestStation = new Station(request.getStation());
 

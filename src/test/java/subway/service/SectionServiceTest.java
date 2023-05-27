@@ -42,8 +42,8 @@ public class SectionServiceTest {
         stationRepository.save(new Station("아현역"));
         stationRepository.save(new Station("신촌역"));
 
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
 
         final List<Section> sections = sectionRepository.findByLineNumber(2L).getSections();
         final SoftAssertions softAssertions = new SoftAssertions();
@@ -65,10 +65,10 @@ public class SectionServiceTest {
         stationRepository.save(new Station("잠실역"));
         stationRepository.save(new Station("아현역"));
         stationRepository.save(new Station("신촌역"));
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
 
-        sectionService.deleteSection(new SectionDeleteRequest(2L, "신촌역"));
+        sectionService.removeSection(new SectionDeleteRequest(2L, "신촌역"));
 
         final List<Section> sections = sectionRepository.findByLineNumber(2L).getSections();
         final SoftAssertions softAssertions = new SoftAssertions();

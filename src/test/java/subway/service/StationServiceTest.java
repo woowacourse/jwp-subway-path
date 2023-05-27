@@ -50,7 +50,7 @@ public class StationServiceTest {
     void 역_ID로_역_정보를_삭제한다() {
         final Long id = stationService.saveStation(new StationRequest("잠실역"));
 
-        stationService.deleteStationById(id);
+        stationService.removeStationById(id);
 
         final List<StationResponse> stationResponses = stationService.findAllStationResponses().getStations();
         assertThat(stationResponses.isEmpty()).isTrue();
