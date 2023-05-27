@@ -1,8 +1,9 @@
 CREATE TABLE IF NOT EXISTS line
 (
-    line_id BIGINT AUTO_INCREMENT NOT NULL,
-    name    VARCHAR(255)          NOT NULL UNIQUE,
-    color   VARCHAR(20)           NOT NULL,
+    line_id    BIGINT AUTO_INCREMENT NOT NULL,
+    name       VARCHAR(255)          NOT NULL UNIQUE,
+    color      VARCHAR(20)           NOT NULL,
+    extra_fare INT                   NULL DEFAULT 0,
     PRIMARY KEY (line_id)
 );
 
