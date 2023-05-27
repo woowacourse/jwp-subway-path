@@ -52,12 +52,8 @@ public class LineRepository {
     private List<Section> findSectionsByLineId(final Long id) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
 
-        return sectionEntities.stream()
-                .map(entity -> new Section(
-                        findStationByStationId(entity.getUpStationId()),
-                        findStationByStationId(entity.getDownStationId()),
-                        entity.getDistance()
-                )).collect(Collectors.toList());
+        return sectionEntities.stream().map(entity -> new Section(findStationByStationId(entity.getUpStationId()),
+                findStationByStationId(entity.getDownStationId()), entity.getDistance())).collect(Collectors.toList());
     }
 
     private Station findStationByStationId(final Long stationId) {
@@ -70,29 +66,23 @@ public class LineRepository {
     public Lines findAll() {
         List<LineWithSectionEntities> linesWithSections = lineDao.findLinesWithSections();
         List<Line> lines = new ArrayList<>();
+
         for (LineWithSectionEntities linesWithSection : linesWithSections) {
             List<SectionWithStationNameEntity> sectionEntities = linesWithSection.getSectionEntities().stream()
-                    .filter(entity -> entity.getUpStationId() != 0 && entity.getDownStationId() != 0)
-                    .map(sectionEntity -> sectionDao.findBySectionIdWithStationName(sectionEntity.getId())
-                            .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_SECTION)))
+                    .filter(entity -> entity.getSectionId() != 0)
                     .collect(Collectors.toList());
 
             List<Section> sections = sectionEntities.stream()
                     .map(section -> new Section(
                             new Station(section.getUpStationEntity().getId(), section.getUpStationEntity().getName()),
-                            new Station(section.getDownStationEntity().getId(),
-                                    section.getDownStationEntity().getName()),
+                            new Station(section.getDownStationEntity().getId(), section.getDownStationEntity().getName()),
                             section.getDistance()
-                    ))
+                            )
+                    )
                     .collect(Collectors.toList());
 
-            lines.add(
-                    Line.of(
-                            linesWithSection.getLineEntity().getId(),
-                            linesWithSection.getLineEntity().getName(),
-                            sections
-                    )
-            );
+            lines.add(Line.of(linesWithSection.getLineEntity().getId(), linesWithSection.getLineEntity().getName(),
+                    sections));
         }
 
         return new Lines(lines);

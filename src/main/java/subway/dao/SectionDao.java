@@ -105,26 +105,6 @@ public class SectionDao {
         }
     }
 
-    public Optional<SectionWithStationNameEntity> findBySectionIdWithStationName(final Long sectionId) {
-        final String sql = "SELECT s.id AS id, "
-                + "s.distance AS distance, "
-                + "us.id AS up_station_id, "
-                + "ds.id AS down_station_id, "
-                + "us.name AS up_station_name, "
-                + "ds.name AS down_station_name "
-                + "FROM section s "
-                + "JOIN station us ON s.up_station_id = us.id "
-                + "JOIN station ds ON s.down_station_id = ds.id "
-                + "WHERE s.id = ?";
-        try {
-            return Optional.ofNullable(
-                    jdbcTemplate.queryForObject(sql, sectionWithStationNameEntityRowMapper, sectionId)
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
     public int delete(final SectionEntity sectionEntity) {
         final String sql = "DELETE FROM section WHERE up_station_id = ? AND down_station_id = ? AND line_id = ?";
         return jdbcTemplate.update(

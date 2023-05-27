@@ -13,8 +13,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.LineWithSectionEntities;
-import subway.dao.entity.LineWithSectionEntity;
-import subway.dao.entity.SectionEntity;
+import subway.dao.entity.LineWithSectionEntityAndStationEntity;
+import subway.dao.entity.SectionWithStationNameEntity;
+import subway.dao.entity.StationEntity;
 
 @Repository
 public class LineDao {
@@ -28,20 +29,29 @@ public class LineDao {
                     rs.getString("name")
             );
 
-    private final RowMapper<LineWithSectionEntity> lineWithSectionEntityRowMapper = (rs, rowNum) ->
-            new LineWithSectionEntity(
-                    new LineEntity(
-                            rs.getLong("line.id"),
-                            rs.getString("line.name")
-                    ),
-                    new SectionEntity(
-                            rs.getLong("section.id"),
-                            rs.getLong("section.up_station_id"),
-                            rs.getLong("section.down_station_id"),
-                            rs.getLong("section.line_id"),
-                            rs.getInt("section.distance")
-                    )
-            );
+    private final RowMapper<LineWithSectionEntityAndStationEntity> sectionAndStationRowMapper = (rs, rowNum) -> {
+        StationEntity upStationEntity = new StationEntity(
+                rs.getLong("up_station_id"),
+                rs.getString("up_station_name")
+        );
+        StationEntity downStationEntity = new StationEntity(
+                rs.getLong("down_station_id"),
+                rs.getString("down_station_name")
+        );
+
+        return new LineWithSectionEntityAndStationEntity(
+                new LineEntity(
+                        rs.getLong("line.id"),
+                        rs.getString("line_name")
+                ),
+                new SectionWithStationNameEntity(
+                        rs.getLong("section_id"),
+                        upStationEntity,
+                        downStationEntity,
+                        rs.getInt("distance")
+                )
+        );
+    };
 
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -70,14 +80,27 @@ public class LineDao {
     }
 
     public List<LineWithSectionEntities> findLinesWithSections() {
-        final String sql = "SELECT * FROM line "
-                + "LEFT JOIN section ON line.id = section.line_id";
+        final String sql = "SELECT us.id AS up_station_id, "
+                + "l.name AS line_name, "
+                + "us.name AS up_station_name, "
+                + "ds.id AS down_station_id, "
+                + "ds.name AS down_station_name, "
+                + "l.id AS line_id, "
+                + "s.id AS section_id, "
+                + "s.distance AS section_distance "
+                + "FROM line l "
+                + "LEFT JOIN section s ON l.id = s.line_id "
+                + "LEFT JOIN station us ON s.id IS NOT NULL AND s.up_station_id = us.id "
+                + "LEFT JOIN station ds ON s.id IS NOT NULL AND s.down_station_id = ds.id ";
 
         try {
-            List<LineWithSectionEntity> lineWithSectionEntities = jdbcTemplate.query(sql,
-                    lineWithSectionEntityRowMapper);
-            Map<LineEntity, List<LineWithSectionEntity>> lineEntities = lineWithSectionEntities.stream()
-                    .collect(Collectors.groupingBy(LineWithSectionEntity::getLineEntity, Collectors.toList()));
+            List<LineWithSectionEntityAndStationEntity> sections = jdbcTemplate.query(sql, sectionAndStationRowMapper);
+            Map<LineEntity, List<LineWithSectionEntityAndStationEntity>> lineEntities = sections.stream()
+                    .collect(Collectors.groupingBy(
+                                    LineWithSectionEntityAndStationEntity::getLineEntity,
+                                    Collectors.toList()
+                            )
+                    );
 
             return lineEntities.entrySet().stream()
                     .map(entry -> LineWithSectionEntities.of(entry.getKey(), entry.getValue()))
