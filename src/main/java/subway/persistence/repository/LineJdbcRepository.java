@@ -101,7 +101,7 @@ public class LineJdbcRepository implements LineRepository {
 
 	private Section convertToSection(final SectionEntity section, final Map<Long, Station> stationMap) {
 		return new Section(section.getId(), stationMap.get(section.getDepartureId()),
-			stationMap.get(section.getDepartureId()), new Distance(section.getDistance()));
+			stationMap.get(section.getArrivalId()), new Distance(section.getDistance()));
 	}
 
 	private Line convertToLine(final Map<Long, List<Section>> sections, final LineEntity lineEntity) {

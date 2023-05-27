@@ -64,9 +64,10 @@ public final class FilledSections implements SectionState {
 	}
 
 	private static Station getFirstStationFromSections(Map<Station, Section> sectionsMap) {
-		Set<Station> arrivalStations = findArrivalStations(sectionsMap);
+		final Set<Station> departureStations = sectionsMap.keySet();
+		final Set<Station> arrivalStations = findArrivalStations(sectionsMap);
 
-		return sectionsMap.keySet().stream()
+		return departureStations.stream()
 			.filter(Predicate.not(arrivalStations::contains))
 			.findFirst()
 			.orElseThrow(() -> new IllegalArgumentException("해당 노선에 시작역이 존재하지 않습니다."));
