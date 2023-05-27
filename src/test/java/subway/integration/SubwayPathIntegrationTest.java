@@ -9,7 +9,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.request.SectionRequest;
 import subway.dto.request.PathRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -37,7 +36,7 @@ public class SubwayPathIntegrationTest {
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().get("/path")
+                .when().get("/paths")
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }

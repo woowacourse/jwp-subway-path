@@ -12,7 +12,7 @@ import subway.service.PathService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/paths")
 public class PathController {
 
     private final PathService pathService;
