@@ -3,9 +3,9 @@ package subway.entity;
 import subway.domain.Line;
 
 public class LineEntity {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
 
     private LineEntity(final Long id, final String name, final String color) {
         this.id = id;
@@ -13,7 +13,7 @@ public class LineEntity {
         this.color = color;
     }
 
-    public static LineEntity toEntity(final Line line) {
+    public static LineEntity from(final Line line) {
         return new LineEntity(line.getId(), line.getName(), line.getColor());
     }
 

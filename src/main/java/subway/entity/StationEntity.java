@@ -3,15 +3,15 @@ package subway.entity;
 import subway.domain.Station;
 
 public class StationEntity {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     private StationEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationEntity toEntity(final Station station) {
+    public static StationEntity from(final Station station) {
         return new StationEntity(station.getId(), station.getName());
     }
 

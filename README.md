@@ -150,6 +150,13 @@ HTTP/1.1 200 OK
                 "id": 2,
                 "name": "동대구역"
             }
+        ],
+        "sectionResponses": [
+            {
+                "upStationId": 1,
+                "downStationId": 2,
+                "distance": 10
+            }
         ]
     },
     {
@@ -166,6 +173,13 @@ HTTP/1.1 200 OK
             {
                 "id": 4,
                 "name": "죽전역"
+            }
+        ],
+        "sectionResponses": [
+            {
+                "upStationId": 3,
+                "downStationId": 4,
+                "distance": 10
             }
         ]
     }
@@ -200,6 +214,13 @@ HTTP/1.1 200 OK
         {
             "id": 2,
             "name": "동대구역"
+        }
+    ],
+    "sectionResponses": [
+        {
+            "upStationId": 1,
+            "downStationId": 2,
+            "distance": 10
         }
     ]
 }
@@ -306,6 +327,44 @@ HTTP/1.1 204 No Content
 
 ---
 
+## Path API
+
+### Path 조회
+
+Request
+```http
+GET /paths?upStationId=1&downStationId=3 HTTP/1.1
+Host: localhost:8080
+...
+```
+
+Response
+```http
+HTTP/1.1 200 OK
+...
+
+{
+    "stations": [
+        {
+            "id": 1,
+            "name": "청라언덕역"
+        },
+        {
+            "id": 2,
+            "name": "반월당역"
+        },
+        {
+            "id": 3,
+            "name": "경대병원역"
+        }
+    ],
+    "distance": 16,
+    "fare": 1450
+}
+```
+
+---
+
 
 ## 비즈니스 규칙
 
@@ -351,3 +410,43 @@ HTTP/1.1 204 No Content
 - [x] @AutoConfigureTestDatabase의 default 옵션 제거
 - [x] 가독성을 위해 개행 추가 및 제거
 - [x] ExceptionHandler 설정 추가
+
+---
+
+## 2단계 기능 요구사항
+
+### 0. 1단계 피드백 반영
+
+- [x] `toEntity()` 메서드 이름 변경
+- [x] DB 접근 최소화
+- [x] Line 조회에 Section 정보를 포함하도록 수정
+- [x] repository를 이용해 persistence layer와 서비스 로직 분리
+
+### 1. DB 설정
+
+- 데이터베이스 설정을 프로덕션과 테스트를 다르게 합니다.
+  - 프로덕션의 데이터베이스는 로컬에 저장될 수 있도록 설정
+  - 테스트용 데이터베이스는 인메모리로 동작할 수 있도록 설정
+
+### 2. 경로 조회 API 구현
+
+- 출발역과 도착역 사이의 최단 거리 경로를 구하는 API를 구현합니다.
+- 최단 거리 경로와 함께 총 거리 정보를 함께 응답합니다.
+- 한 노선에서 경로 찾기 뿐만 아니라 여러 노선의 환승도 고려합니다.
+
+### 3. **요금 조회 기능 추가**
+
+- 기본운임(10㎞ 이내): 기본운임 1,250원
+- 이용 거리 초과 시 추가운임 부과
+  - 10km~50km: 5km 까지 마다 100원 추가
+  - 50km 초과: 8km 까지 마다 100원 추가
+
+---
+
+## 2단계 리팩토링 요구사항
+
+- [x] SectionResponse에서 id가 아닌 StationResponse를 반환하도록 수정
+- [x] 구현체 대신 인터페이스에 의존하도록 수정
+- [x] 거리 계산 시 double로 계산하도록 수정
+- [x] rowMapper에서 문자열 순서가 아닌 컬럼명에 의존하도록 수정
+- [x] PathService 테스트 케이스 추가

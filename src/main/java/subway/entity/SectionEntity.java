@@ -1,7 +1,6 @@
 package subway.entity;
 
 import subway.domain.Section;
-import subway.domain.Station;
 
 public class SectionEntity {
 
@@ -17,14 +16,9 @@ public class SectionEntity {
         this.distance = distance;
     }
 
-    public static SectionEntity toEntity(final Long lineId, final Section section) {
+    public static SectionEntity of(final Long lineId, final Section section) {
         return new SectionEntity(lineId, section.getUpStation().getId(), section.getDownStation().getId(),
                 section.getDistance());
-    }
-
-
-    public Section toDomain(Station upStation, Station downStation) {
-        return new Section(upStation, downStation, this.getDistance());
     }
 
     public Long getLineId() {

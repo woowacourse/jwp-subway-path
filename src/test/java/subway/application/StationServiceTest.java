@@ -10,34 +10,33 @@ import static org.mockito.BDDMockito.willDoNothing;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.StationDao;
+import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.entity.StationEntity;
+import subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class StationServiceTest {
     @Mock
-    private StationDao stationDao;
+    private StationRepository stationRepository;
     private StationService stationService;
 
     @BeforeEach
     void setUp() {
-        stationService = new StationService(stationDao);
+        stationService = new StationService(stationRepository);
     }
 
     @DisplayName("station이 정상적으로 저장되고 stationId 값을 반환한다.")
     @Test
     void save() {
         // given
-        given(stationDao.insert(any())).willReturn(1L);
+        given(stationRepository.insert(any())).willReturn(1L);
         // when
         Long id = stationService.save(new StationRequest("강남역"));
         // then
@@ -48,7 +47,7 @@ class StationServiceTest {
     @Test
     void findById() {
         // given
-        given(stationDao.findById(anyLong())).willReturn(Optional.of(StationEntity.of(1L, "강남역")));
+        given(stationRepository.findById(anyLong())).willReturn(new Station(1L, "강남역"));
         // when
         StationResponse stationResponse = stationService.findById(1L);
         // then
@@ -59,7 +58,7 @@ class StationServiceTest {
     @Test
     void findByIdWhenEmpty() {
         // given
-        given(stationDao.findById(anyLong())).willReturn(Optional.empty());
+        given(stationRepository.findById(anyLong())).willThrow(new NoSuchElementException("해당하는 역이 존재하지 않습니다."));
         // when & then
         assertThatThrownBy(() -> stationService.findById(1L))
                 .isInstanceOf(NoSuchElementException.class)
@@ -70,9 +69,9 @@ class StationServiceTest {
     @Test
     void findAll() {
         // given
-        final StationEntity station1 = StationEntity.of(1L, "강남역");
-        final StationEntity station2 = StationEntity.of(2L, "선릉역");
-        given(stationDao.findAll()).willReturn(List.of(station1, station2));
+        final Station station1 = new Station(1L, "강남역");
+        final Station station2 = new Station(2L, "선릉역");
+        given(stationRepository.findAll()).willReturn(List.of(station1, station2));
         // when
         List<StationResponse> stationResponse = stationService.findAll();
         // then
@@ -85,12 +84,12 @@ class StationServiceTest {
     @Test
     void update() {
         // given
-        given(stationDao.insert(any())).willReturn(1L);
+        given(stationRepository.insert(any())).willReturn(1L);
         Long id = stationService.save(new StationRequest("강남역"));
-        willDoNothing().given(stationDao).update(anyLong(), any(StationEntity.class));
+        willDoNothing().given(stationRepository).update(anyLong(), any(Station.class));
         // when
         stationService.update(id, new StationRequest("서울역"));
-        given(stationDao.findById(id)).willReturn(Optional.of(StationEntity.of(1L, "서울역")));
+        given(stationRepository.findById(id)).willReturn(new Station(1L, "서울역"));
         // then
         assertThat(stationService.findById(id).getName()).isEqualTo("서울역");
     }
@@ -99,7 +98,7 @@ class StationServiceTest {
     @Test
     void deleteById() {
         // given
-        willDoNothing().given(stationDao).deleteById(anyLong());
+        willDoNothing().given(stationRepository).deleteById(anyLong());
         // when & then
         assertDoesNotThrow(() -> stationService.deleteById(1L));
     }

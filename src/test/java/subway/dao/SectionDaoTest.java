@@ -15,6 +15,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.entity.SectionStationEntity;
 import subway.entity.StationEntity;
 
 @JdbcTest
@@ -37,22 +38,26 @@ class SectionDaoTest {
     @DisplayName("Section 전체 삽입 테스트")
     void insertAll() {
         // given
-        final Long lineId = lineDao.insert(LineEntity.toEntity(new Line("2호선", "bg-green-600")));
-        final Long stationId1 = stationDao.insert(StationEntity.toEntity(new Station("용산역")));
-        final Long stationId2 = stationDao.insert(StationEntity.toEntity(new Station("죽전역")));
-        final Long stationId3 = stationDao.insert(StationEntity.toEntity(new Station("감삼역")));
-        final SectionEntity sectionEntity1 = SectionEntity.toEntity(lineId,
+        final Long lineId = lineDao.insert(LineEntity.from(new Line("2호선", "bg-green-600")));
+        final Long stationId1 = stationDao.insert(StationEntity.from(new Station("용산역")));
+        final Long stationId2 = stationDao.insert(StationEntity.from(new Station("죽전역")));
+        final Long stationId3 = stationDao.insert(StationEntity.from(new Station("감삼역")));
+        final SectionEntity sectionEntity1 = SectionEntity.of(lineId,
                 new Section(new Station(stationId1, "용산역"), new Station(stationId2, "죽전역"), 10));
-        final SectionEntity sectionEntity2 = SectionEntity.toEntity(lineId,
+        final SectionEntity sectionEntity2 = SectionEntity.of(lineId,
                 new Section(new Station(stationId2, "죽전역"), new Station(stationId3, "감삼역"), 5));
         // when
         sectionDao.insertAll(List.of(sectionEntity1, sectionEntity2));
         // then
+        final SectionStationEntity sectionStationEntity1 = new SectionStationEntity(lineId, stationId1, "용산역",
+                stationId2, "죽전역", 10);
+        final SectionStationEntity sectionStationEntity2 = new SectionStationEntity(lineId, stationId2, "죽전역",
+                stationId3, "감삼역", 5);
         assertAll(
                 () -> assertThat(sectionDao.findByLineId(lineId)).hasSize(2),
                 () -> assertThat(sectionDao.findByLineId(lineId))
                         .usingRecursiveComparison()
-                        .isEqualTo(List.of(sectionEntity1, sectionEntity2))
+                        .isEqualTo(List.of(sectionStationEntity1, sectionStationEntity2))
         );
     }
 
@@ -60,28 +65,30 @@ class SectionDaoTest {
     @DisplayName("lineId로 Section 조회 테스트")
     void findByLineId() {
         // given
-        final Long lineId = lineDao.insert(LineEntity.toEntity(new Line("2호선", "bg-green-600")));
-        final Long stationId1 = stationDao.insert(StationEntity.toEntity(new Station("용산역")));
-        final Long stationId2 = stationDao.insert(StationEntity.toEntity(new Station("죽전역")));
-        final SectionEntity sectionEntity = SectionEntity.toEntity(lineId,
+        final Long lineId = lineDao.insert(LineEntity.from(new Line("2호선", "bg-green-600")));
+        final Long stationId1 = stationDao.insert(StationEntity.from(new Station("용산역")));
+        final Long stationId2 = stationDao.insert(StationEntity.from(new Station("죽전역")));
+        final SectionEntity sectionEntity = SectionEntity.of(lineId,
                 new Section(new Station(stationId1, "용산역"), new Station(stationId2, "죽전역"), 10));
         sectionDao.insertAll(List.of(sectionEntity));
         // when
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        final List<SectionStationEntity> sectionStationEntities = sectionDao.findByLineId(lineId);
         // then
-        assertThat(sectionEntities)
+        final SectionStationEntity sectionStationEntity = new SectionStationEntity(lineId, stationId1, "용산역",
+                stationId2, "죽전역", 10);
+        assertThat(sectionStationEntities)
                 .usingRecursiveComparison()
-                .isEqualTo(List.of(sectionEntity));
+                .isEqualTo(List.of(sectionStationEntity));
     }
 
     @Test
     @DisplayName("lineId로 Section 전체 삭제 테스트")
     void deleteAllByLineId() {
         // given
-        final Long lineId = lineDao.insert(LineEntity.toEntity(new Line("2호선", "bg-green-600")));
-        final Long stationId1 = stationDao.insert(StationEntity.toEntity(new Station("용산역")));
-        final Long stationId2 = stationDao.insert(StationEntity.toEntity(new Station("죽전역")));
-        final SectionEntity sectionEntity = SectionEntity.toEntity(lineId,
+        final Long lineId = lineDao.insert(LineEntity.from(new Line("2호선", "bg-green-600")));
+        final Long stationId1 = stationDao.insert(StationEntity.from(new Station("용산역")));
+        final Long stationId2 = stationDao.insert(StationEntity.from(new Station("죽전역")));
+        final SectionEntity sectionEntity = SectionEntity.of(lineId,
                 new Section(new Station(stationId1, "용산역"), new Station(stationId2, "죽전역"), 10));
         sectionDao.insertAll(List.of(sectionEntity));
         // when

@@ -67,4 +67,8 @@ public class Line {
     public String getColor() {
         return color;
     }
+
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
 }

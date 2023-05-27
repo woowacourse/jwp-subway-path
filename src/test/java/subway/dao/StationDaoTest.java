@@ -31,7 +31,7 @@ class StationDaoTest {
         // given
         final String name = "반월당역";
         // when
-        final Long id = stationDao.insert(StationEntity.toEntity(new Station(name)));
+        final Long id = stationDao.insert(StationEntity.from(new Station(name)));
         // then
         assertThat(stationDao.findById(id)).isNotNull();
     }
@@ -40,8 +40,8 @@ class StationDaoTest {
     @DisplayName("전체 Station 조회 테스트")
     void findAll() {
         // given
-        final Long id1 = stationDao.insert(StationEntity.toEntity(new Station("반월당역")));
-        final Long id2 = stationDao.insert(StationEntity.toEntity(new Station("청라언덕역")));
+        final Long id1 = stationDao.insert(StationEntity.from(new Station("반월당역")));
+        final Long id2 = stationDao.insert(StationEntity.from(new Station("청라언덕역")));
         // when
         final List<StationEntity> stationEntities = stationDao.findAll();
         // then
@@ -61,7 +61,7 @@ class StationDaoTest {
     void findById() {
         // given
         final String name = "반월당역";
-        final Long id = stationDao.insert(StationEntity.toEntity(new Station(name)));
+        final Long id = stationDao.insert(StationEntity.from(new Station(name)));
         // when
         final StationEntity stationEntity = stationDao.findById(id).orElseThrow();
         // then
@@ -75,10 +75,10 @@ class StationDaoTest {
     void update() {
         // given
         final String name = "반월당역";
-        final Long id = stationDao.insert(StationEntity.toEntity(new Station(name)));
+        final Long id = stationDao.insert(StationEntity.from(new Station(name)));
         // when
         final String updatedName = "청라언덕역";
-        stationDao.update(id, StationEntity.toEntity(new Station(updatedName)));
+        stationDao.update(id, StationEntity.from(new Station(updatedName)));
         // then
         assertThat(stationDao.findById(id).orElseThrow())
                 .usingRecursiveComparison()
@@ -90,7 +90,7 @@ class StationDaoTest {
     void deleteById() {
         // given
         final String name = "반월당역";
-        final Long id = stationDao.insert(StationEntity.toEntity(new Station(name)));
+        final Long id = stationDao.insert(StationEntity.from(new Station(name)));
         // when
         stationDao.deleteById(id);
         // then
@@ -102,7 +102,7 @@ class StationDaoTest {
     void notExistsById() {
         // given
         final String name = "반월당역";
-        final Long id = stationDao.insert(StationEntity.toEntity(new Station(name)));
+        final Long id = stationDao.insert(StationEntity.from(new Station(name)));
         // when
         final boolean isNotExist = stationDao.notExistsById(id);
         // then

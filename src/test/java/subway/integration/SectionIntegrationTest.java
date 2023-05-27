@@ -101,8 +101,8 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        final List<Long> upStationId = response.jsonPath().getList("upStationId", Long.class);
-        final List<Long> downStationId = response.jsonPath().getList("downStationId", Long.class);
+        final List<Long> upStationId = response.jsonPath().getList("upStation.id", Long.class);
+        final List<Long> downStationId = response.jsonPath().getList("downStation.id", Long.class);
         final List<Integer> distance = response.jsonPath().getList("distance", Integer.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(upStationId).containsExactly(1L);
