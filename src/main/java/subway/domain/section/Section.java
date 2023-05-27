@@ -83,7 +83,9 @@ public class Section {
             throw new IllegalArgumentException("현재 구역의 역이 삭제되지 않았습니다. 삭제하려는 구역의 역이 현재 구역의 역에 존재하는지 확인해주세요");
         }
 
-        return ownStations.iterator().next();
+        final Station otherStation = ownStations.iterator().next();
+
+        return otherStation;
     }
 
     public boolean contains(final Station station) {
