@@ -1,8 +1,10 @@
 package subway.domain.fare;
 
 import java.util.List;
+import org.springframework.stereotype.Component;
 import subway.domain.route.Path;
 
+@Component
 public class FarePolicies {
     private final BaseFarePolicy baseFarePolicy;
     private final List<ExtraFarePolicy> extraFarePolicies;

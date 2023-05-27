@@ -1,7 +1,9 @@
 package subway.domain.fare;
 
+import org.springframework.stereotype.Component;
 import subway.domain.route.Path;
 
+@Component
 public class DistanceBasedExtraFarePolicy implements ExtraFarePolicy {
     private static final int DEFAULT_EXTRA_FARE_UNIT = 100;
     private static final int BASE_DISTANCE = 10;
