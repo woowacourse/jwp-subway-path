@@ -1,6 +1,8 @@
-package subway.ui.dto;
+package subway.ui.path.dto;
 
 import java.util.List;
+
+import subway.ui.station.dto.StationResponse;
 
 public class PathResponse {
 

@@ -1,7 +1,8 @@
-package subway.ui.dto;
+package subway.ui.section.dto;
 
 import subway.application.section.dto.SectionDto;
 import subway.application.station.dto.StationDto;
+import subway.ui.station.dto.StationResponse;
 
 public class SectionResponse {
 

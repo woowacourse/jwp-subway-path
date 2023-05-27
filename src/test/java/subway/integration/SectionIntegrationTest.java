@@ -11,9 +11,9 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.SectionRequest;
-import subway.ui.dto.SectionResponse;
+import subway.ui.line.dto.LineRequest;
+import subway.ui.section.dto.SectionRequest;
+import subway.ui.section.dto.SectionResponse;
 
 @DisplayName("지하철 구간 관련 기능")
 

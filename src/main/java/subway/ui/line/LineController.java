@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.ui.line;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,25 +20,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.line.LineService;
 import subway.application.line.dto.LineDto;
-import subway.application.section.SectionService;
 import subway.application.section.dto.SectionDto;
-import subway.application.station.dto.StationDto;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
-import subway.ui.dto.LineSectionsResponse;
-import subway.ui.dto.SectionRequest;
-import subway.ui.dto.SectionResponse;
+import subway.ui.line.dto.LineRequest;
+import subway.ui.line.dto.LineResponse;
+import subway.ui.line.dto.LineSectionsResponse;
+import subway.ui.section.dto.SectionResponse;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
 	private final LineService lineService;
-	private final SectionService sectionService;
 
-	public LineController(final LineService lineService, final SectionService sectionService) {
+	public LineController(final LineService lineService) {
 		this.lineService = lineService;
-		this.sectionService = sectionService;
 	}
 
 	@PostMapping
@@ -81,21 +75,6 @@ public class LineController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PostMapping("/{id}/stations")
-	public ResponseEntity<SectionResponse> addStationToLine(@PathVariable Long id,
-		@Valid @RequestBody SectionRequest sectionRequest) {
-		final SectionDto sectionDto = convertToSectionDto(sectionRequest);
-		final SectionDto addSectionDto = sectionService.addByLineId(id, sectionDto);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(SectionResponse.from(addSectionDto));
-	}
-
-	@DeleteMapping("/{lineId}/stations/{stationId}")
-	public ResponseEntity<Void> deleteStation(@PathVariable final Long lineId, @PathVariable final Long stationId) {
-		sectionService.deleteByLineIdAndStationId(lineId, stationId);
-		return ResponseEntity.noContent().build();
-	}
-
 	@ExceptionHandler(SQLException.class)
 	public ResponseEntity<Void> handleSQLException() {
 		return ResponseEntity.badRequest().build();
@@ -103,11 +82,6 @@ public class LineController {
 
 	private LineDto converToLineDto(final LineRequest lineRequest) {
 		return new LineDto(lineRequest.getName(), lineRequest.getColor());
-	}
-
-	private SectionDto convertToSectionDto(final SectionRequest sectionRequest) {
-		return new SectionDto(null, new StationDto(null, sectionRequest.getDeparture()),
-			new StationDto(null, sectionRequest.getArrival()), sectionRequest.getDistance());
 	}
 
 	private LineSectionsResponse convertToLineSectionsResponse(final LineDto lineDto) {

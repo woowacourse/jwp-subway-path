@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.ui.station;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.station.StationService;
 import subway.application.station.dto.StationDto;
-import subway.ui.dto.StationRequest;
-import subway.ui.dto.StationResponse;
+import subway.ui.station.dto.StationRequest;
+import subway.ui.station.dto.StationResponse;
 
 @RestController
 @RequestMapping("/stations")

@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.ui.path;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.path.PathService;
 import subway.application.path.dto.PathDto;
-import subway.ui.dto.PathRequest;
-import subway.ui.dto.PathResponse;
-import subway.ui.dto.StationResponse;
+import subway.ui.path.dto.PathRequest;
+import subway.ui.path.dto.PathResponse;
+import subway.ui.station.dto.StationResponse;
 
 @RestController
 @RequestMapping("/paths")

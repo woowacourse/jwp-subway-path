@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.line.dto;
 
 import javax.validation.constraints.NotBlank;
 

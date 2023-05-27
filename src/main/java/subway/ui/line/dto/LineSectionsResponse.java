@@ -1,6 +1,8 @@
-package subway.ui.dto;
+package subway.ui.line.dto;
 
 import java.util.List;
+
+import subway.ui.section.dto.SectionResponse;
 
 public class LineSectionsResponse {
 

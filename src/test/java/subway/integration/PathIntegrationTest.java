@@ -13,11 +13,11 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.PathRequest;
-import subway.ui.dto.PathResponse;
-import subway.ui.dto.SectionRequest;
-import subway.ui.dto.StationRequest;
+import subway.ui.line.dto.LineRequest;
+import subway.ui.path.dto.PathRequest;
+import subway.ui.path.dto.PathResponse;
+import subway.ui.section.dto.SectionRequest;
+import subway.ui.station.dto.StationRequest;
 
 public class PathIntegrationTest extends IntegrationTest {
 

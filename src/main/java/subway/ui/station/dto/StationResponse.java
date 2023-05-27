@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.station.dto;
 
 import subway.application.station.dto.StationDto;
 
