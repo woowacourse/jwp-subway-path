@@ -16,29 +16,6 @@ import subway.domain.Station;
 import subway.domain.Subway;
 
 class DijkstraRouteStrategyTest {
-//
-//    private static final Sections sectionsOfLine2 = new Sections(List.of(
-//            new Section(new Station("낙성대"), new Station("사당"), new Distance(5)),
-//            new Section(new Station("사당"), new Station("교대"), new Distance(5)),
-//            new Section(new Station("교대"), new Station("방배"), new Distance(5)))
-//    );
-//    private static final Sections sectionsOfLine3 = new Sections(List.of(
-//            new Section(new Station("잠원"), new Station("고속터미널"), new Distance(5)),
-//            new Section(new Station("고속터미널"), new Station("교대"), new Distance(500)),
-//            new Section(new Station("교대"), new Station("남부터미널"), new Distance(5)))
-//    );
-//    private static final Sections sectionsOfLine4 = new Sections(List.of(
-//            new Section(new Station("사당"), new Station("이수"), new Distance(5)),
-//            new Section(new Station("이수"), new Station("동작"), new Distance(5)))
-//    );
-//    private static final Sections sectionsOfLine5 = new Sections(List.of(
-//            new Section(new Station("천호"), new Station("강동"), new Distance(5)))
-//    );
-//    private static final Sections sectionsOfLine7 = new Sections(List.of(
-//            new Section(new Station("이수"), new Station("내방"), new Distance(5)),
-//            new Section(new Station("내방"), new Station("고속터미널"), new Distance(5)),
-//            new Section(new Station("고속터미널"), new Station("반포"), new Distance(5)))
-//    );
 
     private static final Sections sectionsOfLine2 = new Sections(List.of(
             new Section(new Station(1L, "낙성대"), new Station(2L, "사당"), new Distance(5)),
@@ -63,11 +40,11 @@ class DijkstraRouteStrategyTest {
             new Section(new Station(6L, "고속터미널"), new Station(16L, "반포"), new Distance(5)))
     );
 
-    private static final Line line2 = new Line(2L, "2호선", "초록", sectionsOfLine2);
-    private static final Line line3 = new Line(3L, "3호선", "주황", sectionsOfLine3);
-    private static final Line line4 = new Line(4L, "4호선", "하늘", sectionsOfLine4);
-    private static final Line line5 = new Line(5L, "5호선", "보라", sectionsOfLine5);
-    private static final Line line7 = new Line(7L, "7호선", "올리브", sectionsOfLine7);
+    private static final Line line2 = new Line(2L, "2호선", "초록", 0, sectionsOfLine2);
+    private static final Line line3 = new Line(3L, "3호선", "주황", 0, sectionsOfLine3);
+    private static final Line line4 = new Line(4L, "4호선", "하늘", 0, sectionsOfLine4);
+    private static final Line line5 = new Line(5L, "5호선", "보라", 0, sectionsOfLine5);
+    private static final Line line7 = new Line(7L, "7호선", "올리브", 0, sectionsOfLine7);
 
 
     @Test

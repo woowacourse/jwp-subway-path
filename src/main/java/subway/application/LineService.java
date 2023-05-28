@@ -20,7 +20,7 @@ public class LineService {
 
     public Line createLine(LineRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
-        Line newLine = new Line(null, request.getName(), request.getColor(), new Sections());
+        Line newLine = new Line(null, request.getName(), request.getColor(), request.getCharge(), new Sections());
         subway.addLine(newLine);
         return lineRepository.saveLine(newLine);
     }
@@ -39,6 +39,7 @@ public class LineService {
         Subway subway = new Subway(lineRepository.findAll());
         subway.updateLineName(lineId, request.getName());
         subway.updateLineColor(lineId, request.getColor());
+        subway.updateLineCharge(lineId, request.getCharge());
         lineRepository.updateLineInfo(subway.findLineById(lineId));
     }
 

@@ -12,18 +12,20 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final int charge;
     private final Sections sections;
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, int charge, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.charge = charge;
         this.sections = sections;
         validateNameLength(name);
     }
 
-    public Line(String name, String color, Sections sections) {
-        this(null, name, color, sections);
+    public Line(String name, String color, int charge, Sections sections) {
+        this(null, name, color, charge, sections);
     }
 
     private void validateNameLength(String name) {
@@ -103,7 +105,11 @@ public class Line {
     public String getColor() {
         return color;
     }
-
+    
+    public int getCharge() {
+        return charge;
+    }
+    
     public List<Section> getSections() {
         return new LinkedList<>(sections.getSections());
     }

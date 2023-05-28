@@ -11,15 +11,18 @@ public class LineRequest {
 
     @NotBlank(message = "노선의 색깔은 비어있을 수 없습니다.")
     private String color;
+    
+    private int charge;
 
     public LineRequest() {
     }
-
-    public LineRequest(String name, String color) {
+    
+    public LineRequest(String name, String color, int charge) {
         this.name = name;
         this.color = color;
+        this.charge = charge;
     }
-
+    
     public String getName() {
         return name;
     }
@@ -27,5 +30,8 @@ public class LineRequest {
     public String getColor() {
         return color;
     }
-
+    
+    public int getCharge() {
+        return charge;
+    }
 }

@@ -22,7 +22,8 @@ public class LineDao {
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("charge")
             );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -35,18 +36,19 @@ public class LineDao {
     public Long insert(LineEntity lineEntity) {
         SqlParameterSource source = new MapSqlParameterSource()
                 .addValue("name", lineEntity.getName())
-                .addValue("color", lineEntity.getColor());
+                .addValue("color", lineEntity.getColor())
+                .addValue("charge", lineEntity.getCharge());
 
         return insertAction.executeAndReturnKey(source).longValue();
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "select id, name, color, charge from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<LineEntity> findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
+        String sql = "select id, name, color, charge from LINE WHERE id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
         }

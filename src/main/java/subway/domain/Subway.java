@@ -41,7 +41,7 @@ public class Subway {
         }
         lines.remove(line);
     }
-
+    
     public void updateLineName(Long lineId, String newName) {
         Line oldLine = findLineById(lineId);
         if (oldLine.hasSameName(newName)) {
@@ -49,7 +49,7 @@ public class Subway {
         }
         validateDuplicatedName(newName);
         lines.remove(oldLine);
-        lines.add(new Line(lineId, newName, oldLine.getColor(), new Sections(oldLine.getSections())));
+        lines.add(new Line(lineId, newName, oldLine.getColor(), oldLine.getCharge(), new Sections(oldLine.getSections())));
     }
 
     public void updateLineColor(Long lineId, String newColor) {
@@ -58,7 +58,7 @@ public class Subway {
             validateDuplicatedColor(newColor);
         }
         lines.remove(oldLine);
-        lines.add(new Line(lineId, oldLine.getName(), newColor, new Sections(oldLine.getSections())));
+        lines.add(new Line(lineId, oldLine.getName(), newColor, oldLine.getCharge(), new Sections(oldLine.getSections())));
     }
 
     public void initLine(Long lineId, Station upStation, Station downStation, Distance distance) {

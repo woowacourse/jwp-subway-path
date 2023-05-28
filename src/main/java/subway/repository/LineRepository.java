@@ -30,26 +30,26 @@ public class LineRepository {
     public Line findLineById(Long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId)
                 .orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다."));
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getCharge(),
                 new Sections(sectionDao.findSectionsByLineId(lineId)));
     }
 
     public List<Line> findAll() {
         List<LineEntity> lineEntities = lineDao.findAll();
         return lineEntities.stream()
-                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
+                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getCharge(),
                         new Sections(sectionDao.findSectionsByLineId(lineEntity.getId()))))
                 .collect(Collectors.toList());
     }
 
     public Line saveLine(Line line) {
-        LineEntity lineEntity = new LineEntity(line.getName(), line.getColor());
+        LineEntity lineEntity = new LineEntity(line.getName(), line.getColor(), line.getCharge());
         long lineId = lineDao.insert(lineEntity);
-        return new Line(lineId, line.getName(), line.getColor(), new Sections(line.getSections()));
+        return new Line(lineId, line.getName(), line.getColor(), line.getCharge(), new Sections(line.getSections()));
     }
 
     public void updateLineInfo(Line line) {
-        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor()));
+        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor(), line.getCharge()));
     }
 
     public void updateLineStation(Line line) {

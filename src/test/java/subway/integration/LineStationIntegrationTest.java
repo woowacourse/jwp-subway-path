@@ -29,7 +29,7 @@ public class LineStationIntegrationTest extends IntegrationTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        lineRequest1 = new LineRequest("2호선", "bg-red-600");
+        lineRequest1 = new LineRequest("2호선", "bg-red-600", 0);
         stationRequest1 = new StationRequest("강남역");
         stationRequest2 = new StationRequest("선릉역");
         stationRequest3 = new StationRequest("역삼역");

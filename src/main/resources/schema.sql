@@ -3,6 +3,7 @@ create table if not exists LINE
     id        bigint            not null      auto_increment,
     name      varchar(255)      not null,
     color     varchar(20)       not null,
+    charge    bigint            not null,
     primary key(id),
     unique (name, color)
 );
