@@ -18,17 +18,25 @@ public class PathFinder {
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         Set<String> containingStations = sections.getContainingStationNames();
 
-        for (String stationName : containingStations) {
-            graph.addVertex(stationName);
-        }
+        addVertex(graph, containingStations);
+        addEdgeAndSetEdgeWeight(graph, sections);
+
+        GraphPath<String, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(start, end);
+        return new Path(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private static void addEdgeAndSetEdgeWeight(WeightedMultigraph<String, DefaultWeightedEdge> graph, Sections sections) {
         for (Section section : sections.getSections()) {
             graph.setEdgeWeight(
                     graph.addEdge(section.getUpStationName(), section.getDownStationName()),
                     section.getDistanceValue()
             );
         }
+    }
 
-        GraphPath<String, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(start, end);
-        return new Path(path.getVertexList(), (int) path.getWeight());
+    private static void addVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph, Set<String> containingStations) {
+        for (String stationName : containingStations) {
+            graph.addVertex(stationName);
+        }
     }
 }
