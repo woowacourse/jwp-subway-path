@@ -5,10 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
@@ -18,8 +16,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AutoConfigureTestDatabase
-@Sql({"/test-data.sql"})
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
     @DisplayName("지하철역을 생성한다.")
@@ -29,22 +25,11 @@ public class StationIntegrationTest extends IntegrationTest {
         StationRequest request = new StationRequest("해운대역");
 
         // when
-        ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> createResponse = 지하철_역_생성_요청(request);
 
         String stationId = parseUri(createResponse.header("Location"));
         ExtractableResponse<Response> response =
-                RestAssured.given()
-                        .when()
-                        .get("/stations/{id}", stationId)
-                        .then()
-                        .log().all()
-                        .extract();
+                지하철_역_정보_조회(stationId);
 
         // then
         StationResponse stationResponse = response.as(StationResponse.class);
@@ -58,14 +43,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void createStationWithDuplicateName() {
         // given
         StationRequest request = new StationRequest("강남역");
-
-        ExtractableResponse<Response> response1 = RestAssured.given().log().all()
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+        지하철_역_생성_요청(request);
 
         // when
         ExtractableResponse<Response> response2 = RestAssured.given().log().all()
@@ -86,25 +64,13 @@ public class StationIntegrationTest extends IntegrationTest {
     void showStations() {
         /// given
         StationRequest request1 = new StationRequest("동대구역");
-        ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all()
-                .body(request1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
-
         StationRequest request2 = new StationRequest("신천역");
-        ExtractableResponse<Response> createResponse2 = RestAssured.given().log().all()
-                .body(request2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> createResponse1 = 지하철_역_생성_요청(request1);
+        ExtractableResponse<Response> createResponse2 = 지하철_역_생성_요청(request2);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
                 .when()
                 .get("/stations")
                 .then().log().all()
@@ -126,24 +92,11 @@ public class StationIntegrationTest extends IntegrationTest {
     void showStation() {
         /// given
         StationRequest request = new StationRequest("동대구역");
-
-        ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> createResponse = 지하철_역_생성_요청(request);
 
         // when
         String stationId = parseUri(createResponse.header("Location"));
-        ExtractableResponse<Response> response =
-                RestAssured.given()
-                        .when()
-                        .get("/stations/{id}", stationId)
-                        .then()
-                        .log().all()
-                        .extract();
+        ExtractableResponse<Response> response = 지하철_역_정보_조회(stationId);
 
         // then
         StationResponse stationResponse = response.as(StationResponse.class);
@@ -157,35 +110,25 @@ public class StationIntegrationTest extends IntegrationTest {
     void updateStation() {
         // given
         StationRequest request1 = new StationRequest("동대구역");
-        ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-                .body(request1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> createResponse = 지하철_역_생성_요청(request1);
 
         // when
         StationRequest request2 = new StationRequest("신천역");
         String stationId = parseUri(createResponse.header("Location"));
-        ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request2)
-                .when()
-                .put("/stations/{id}", stationId)
-                .then().log().all()
-                .extract();
-
-        ExtractableResponse<Response> response =
-                RestAssured.given()
+        ExtractableResponse<Response> updateResponse =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(request2)
                         .when()
-                        .get("/stations/{id}", stationId)
-                        .then()
-                        .log().all()
+                        .put("/stations/{id}", stationId)
+                        .then().log().all()
                         .extract();
+
+        ExtractableResponse<Response> response = 지하철_역_정보_조회(stationId);
+
         // then
         StationResponse stationResponse = response.as(StationResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(stationResponse.getName()).isEqualTo("신천역");
         assertThat(stationResponse.getId()).isEqualTo(Long.parseLong(stationId));
     }
@@ -195,25 +138,37 @@ public class StationIntegrationTest extends IntegrationTest {
     void deleteStation() {
         // given
         StationRequest request = new StationRequest("동대구역");
-
-        ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> createResponse = 지하철_역_생성_요청(request);
 
         // when
         String stationId = parseUri(createResponse.header("Location"));
-        ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all()
-                .when()
-                .delete("/stations/{id}", stationId)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> deleteResponse =
+                RestAssured.given().log().all()
+                        .when()
+                        .delete("/stations/{id}", stationId)
+                        .then().log().all()
+                        .extract();
 
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    protected static ExtractableResponse<Response> 지하철_역_생성_요청(final StationRequest stationRequest) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest)
+                .when().post("/stations")
+                .then().extract();
+    }
+
+    private ExtractableResponse<Response> 지하철_역_정보_조회(final String stationId) {
+        return RestAssured.given()
+                .when()
+                .get("/stations/{id}", stationId)
+                .then()
+                .log().all()
+                .extract();
     }
 
     private String parseUri(String uri) {

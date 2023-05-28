@@ -7,15 +7,18 @@
   - 노선에 포함된 역을 순서대로 보여주도록 응답 개선
 - [x] 노선 목록 조회 API 수정
   - 노선에 포함된 역을 순서대로 보여주도록 응답 개선
+- [x] (2단계) 경로 조회 API 구현
+  - 최단 거리 경로와 거리 정보, 요금 정보
 
 ## API 명세
 
-> section
-- 노선에 역 등록 API: POST /lines/{lineId}/stations
+- 노선에 역 등록 API: POST /lines/{id}/stations
   - BODY: upStationId, downStationId, distance
-- 노선에 역 제거 API: DELETE /lines/{lineId}/stations/{stationId}
-- 노선 조회 API: GET /lines/{lineId}/stations
-- 모든 노선 조회 API: GET /lines/stations
+- 노선에 역 제거 API: DELETE /lines/{id}/stations/{stationId}
+- 노선 조회 API: GET /lines/{id}
+- 모든 노선 조회 API: GET /lines
+- 경로 조회 API: GET /path?srcStationId={srcStationId}&dstStationId={dstStationId}
+
 
 ## 비즈니스 규칙
 
@@ -41,3 +44,19 @@
     - A - C의 거리는 A - B, B - C 의 거리 합으로 정합니다.
   - 노선에 두 개 역
     - 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거되어야 합니다.
+
+- 경로 조회
+  - 출발역과 도착역 사이의 최단 거리 경로 
+    - 한 노선에서 경로 찾기 뿐만 아니라 여러 노선의 환승도 고려합니다.
+  - 최단 거리 경로와 함께 총 거리 정보를 함께 응답합니다.
+  - 경로 조회 시 요금 정보를 포함하여 응답합니다.
+    - 기본운임(10㎞ 이내): 기본운임 1,250원
+    - 이용 거리 초과 시 추가운임 부과
+      10km~50km: 5km 까지 마다 100원 추가
+      50km 초과: 8km 까지 마다 100원 추가
+
+## 리팩토링 사항
+- [x] Section 테이블에 order 추가
+- [x] 도메인에게 책임 옮기기
+- [x] 라인 정보 조회 API 합치기
+- [x] 테스트 메서드 추가 및 메서드 분리

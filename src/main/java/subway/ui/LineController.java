@@ -4,9 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
-import subway.dto.RegisterStationRequest;
+import subway.dto.LineStationRequest;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -31,29 +30,19 @@ public class LineController {
     @PostMapping("/{id}/stations")
     public ResponseEntity<Void> registerStation(
             @PathVariable final Long id,
-            @RequestBody final RegisterStationRequest registerStationRequest
+            @RequestBody final LineStationRequest lineStationRequest
     ) {
-        lineService.saveStationInLine(id, registerStationRequest);
+        lineService.saveStationInLine(id, lineStationRequest);
         return ResponseEntity.created(URI.create("/lines/" + id + "/stations/")).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
-    }
-
-    @GetMapping("/stations")
-    public ResponseEntity<List<LineStationResponse>> findRegisteredStations() {
+    public ResponseEntity<List<LineStationResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
-    }
-
-    @GetMapping("/{id}/stations")
-    public ResponseEntity<LineStationResponse> findRegisteredStationsById(@PathVariable final Long id) {
+    public ResponseEntity<LineStationResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findById(id));
     }
 

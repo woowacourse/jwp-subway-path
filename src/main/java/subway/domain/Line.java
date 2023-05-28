@@ -1,7 +1,6 @@
 package subway.domain;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Line {
 
@@ -47,25 +46,8 @@ public class Line {
         sections.add(section);
     }
 
-    // TODO: 삭제할 세션을 넘겨줄지, 그냥 Station만 넘겨줄지
-    public void remove(final Sections deleteSections, final Station deleteStation) {
-        if (sections.size() == 3) { // 현재 노선에 역이 2개만 있는 경우
-            sections.clear();
-            return;
-        }
-
-        List<Section> deleteMiddleStation = deleteSections.getSections()
-                .stream()
-                .filter(Section::isMiddleStation)
-                .collect(Collectors.toList());
-
-        if (deleteMiddleStation.size() == 2) {
-            sections.remove(deleteSections.getSections(), deleteStation);
-            return;
-        }
-
-        // 종점을 삭제하는 경우
-        sections.removeFinalSection(deleteMiddleStation.get(0), deleteStation);
+    public void remove(final Station station) {
+        sections.remove(station);
     }
 
     public Long getId() {
