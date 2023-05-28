@@ -21,44 +21,55 @@ public class Sections {
         }
 
         if (isContainsUpStation(newSection, nowSections)) {
-            final Section targetSection = nowSections.stream()
-                    .filter(section -> section.isSameUpStation(newSection.getUpStation()))
-                    .findFirst().orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다"));
-
-            validateSectionDirection(newSection, targetSection);
-
-            final Section newDownSection = new Section(newSection.getDownStation(), targetSection.getDownStation(), targetSection.getDistance() - newSection.getDistance());
-
-            List<Section> newSections = new ArrayList<>();
-            Collections.addAll(newSections, nowSections.toArray(new Section[0]));
-            Collections.addAll(newSections, newSection, newDownSection);
-            newSections.remove(targetSection);
-
-            return new Sections(newSections);
+            return buildSectionsBasedUp(newSection, nowSections);
         }
 
         if (isContainsDownStation(newSection, nowSections)) {
-
-            final Section targetSection = nowSections.stream()
-                    .filter(section -> section.isSameDownStation(newSection.getDownStation()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("경로가 존재하지 않습니다"));
-
-            validateSectionDirection(newSection, targetSection);
-            final Section newUpSection = new Section(targetSection.getUpStation(), newSection.getUpStation(), targetSection.getDistance() - newSection.getDistance());
-
-            List<Section> newSections = new ArrayList<>();
-            Collections.addAll(newSections, nowSections.toArray(new Section[0]));
-            Collections.addAll(newSections, newSection, newUpSection);
-            newSections.remove(targetSection);
-            return new Sections(newSections);
+            return buildSectionsBasedDown(newSection, nowSections);
         }
 
         validateSectionsIsConnected(newSection, nowSections);
 
+        return buildConnectedSections(newSection, nowSections);
+    }
+
+    private Sections buildConnectedSections(final Section newSection, final List<Section> nowSections) {
         List<Section> newSections = new ArrayList<>();
         Collections.addAll(newSections, nowSections.toArray(new Section[0]));
         Collections.addAll(newSections, newSection);
+
+        return new Sections(newSections);
+    }
+
+    private Sections buildSectionsBasedDown(final Section newSection, final List<Section> nowSections) {
+        final Section targetSection = nowSections.stream()
+                .filter(section -> section.isSameDownStation(newSection.getDownStation()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("경로가 존재하지 않습니다"));
+
+        validateSectionDirection(newSection, targetSection);
+        final Section newUpSection = new Section(targetSection.getUpStation(), newSection.getUpStation(), targetSection.getDistance() - newSection.getDistance());
+
+        return combineSections(newSection, nowSections, targetSection, newUpSection);
+    }
+
+    private Sections buildSectionsBasedUp(final Section newSection, final List<Section> nowSections) {
+        final Section targetSection = nowSections.stream()
+                .filter(section -> section.isSameUpStation(newSection.getUpStation()))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다"));
+
+        validateSectionDirection(newSection, targetSection);
+
+        final Section newDownSection = new Section(newSection.getDownStation(), targetSection.getDownStation(), targetSection.getDistance() - newSection.getDistance());
+
+        return combineSections(newSection, nowSections, targetSection, newDownSection);
+    }
+
+    private Sections combineSections(final Section newSection, final List<Section> nowSections, final Section targetSection, final Section newOtherSection) {
+        List<Section> newSections = new ArrayList<>();
+        Collections.addAll(newSections, nowSections.toArray(new Section[0]));
+        Collections.addAll(newSections, newSection, newOtherSection);
+        newSections.remove(targetSection);
 
         return new Sections(newSections);
     }
