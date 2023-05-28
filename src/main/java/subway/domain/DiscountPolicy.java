@@ -28,7 +28,8 @@ public enum DiscountPolicy {
         }
         
         int result = fee - discountPolicy.fixedDiscount;
-        return (int) Math.ceil(result - (result * discountPolicy.discountPercent));
+
+        return applyPercentage(discountPolicy, result);
     }
 
     private static DiscountPolicy from(final int age) {
@@ -37,6 +38,10 @@ public enum DiscountPolicy {
                 .findFirst();
 
         return filtered.orElse(NONE);
+    }
+
+    private static int applyPercentage(final DiscountPolicy discountPolicy, final int result) {
+        return (int) Math.ceil(result - (result * discountPolicy.discountPercent));
     }
 
     public int getFixedDiscount() {
