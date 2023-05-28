@@ -75,14 +75,14 @@ public class Sections {
     }
 
     private void changeSection(final Station from, final Station to, final int distance) {
-        final Section changedSection = getChangedSection(from, to, distance, RIGHT)
-                .orElseGet(() -> getChangedSection(to, from, distance, LEFT)
+        final Section changedSection = updateSectionForDistance(from, to, distance, RIGHT)
+                .orElseGet(() -> updateSectionForDistance(to, from, distance, LEFT)
                         .orElseThrow(() -> new IllegalArgumentException("기존 두 역 사이의 거리가 부족합니다.")));
 
         sections.add(changedSection);
     }
 
-    private Optional<Section> getChangedSection(final Station from, final Station to, final int distance, final Direction direction) {
+    private Optional<Section> updateSectionForDistance(final Station from, final Station to, final int distance, final Direction direction) {
         return sections.stream()
                 .filter(section -> section.containsOn(to, direction) && section.isInsertable(distance))
                 .findFirst()
