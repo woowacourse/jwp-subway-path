@@ -73,18 +73,22 @@ public class StationEdges {
             final LineDirection adjacentToInsertedDirection,
             final int distance
     ) {
+
+        final Set<StationEdge> insertedEdges = splitEdge(insertedStationId, targetEdge, adjacentToInsertedDirection, distance);
+        stationEdges.remove(targetEdge);
+        stationEdges.addAll(insertedEdges);
+    }
+
+    private Set<StationEdge> splitEdge(
+            final Long insertedStationId,
+            final StationEdge targetEdge,
+            final LineDirection adjacentToInsertedDirection,
+            final int distance
+    ) {
         if (adjacentToInsertedDirection == LineDirection.UP) {
-            // down middle
-            final Set<StationEdge> insertedEdges = targetEdge.splitFromDown(insertedStationId, distance);
-            stationEdges.remove(targetEdge);
-            stationEdges.addAll(insertedEdges);
+            return targetEdge.splitFromDown(insertedStationId, distance);
         }
-        if (adjacentToInsertedDirection == LineDirection.DOWN) {
-            // up middle
-            final Set<StationEdge> insertedEdges = targetEdge.splitFromUp(insertedStationId, distance);
-            stationEdges.remove(targetEdge);
-            stationEdges.addAll(insertedEdges);
-        }
+        return targetEdge.splitFromUp(insertedStationId, distance);
     }
 
     private void insertEndStation(
