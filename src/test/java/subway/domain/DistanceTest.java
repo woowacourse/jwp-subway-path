@@ -81,4 +81,19 @@ class DistanceTest {
         // expect
         assertThat(distance1.equals(distance2)).isFalse();
     }
+
+    @ParameterizedTest
+    @CsvSource({"10, 15, true", "11, 15, false", "5, 11, true", "5, 10, true"})
+    void 거리_값이_범위에_포함되는지_판별한다(final double minDistanceValue, final double maxDistanceValue, final boolean expect) {
+        // given
+        Distance minDistance = new Distance(minDistanceValue);
+        Distance maxDistance = new Distance(maxDistanceValue);
+        Distance distance = new Distance(10);
+
+        // when
+        boolean result = distance.isInclude(minDistance, maxDistance);
+
+        // then
+        assertThat(result).isEqualTo(expect);
+    }
 }

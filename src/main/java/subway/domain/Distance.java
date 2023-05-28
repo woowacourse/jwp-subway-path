@@ -27,7 +27,11 @@ public class Distance {
         return new Distance(this.value + otherDistance.value);
     }
 
-    public int getValue() {
+    public boolean isInclude(final Distance minDistance, final Distance maxDistance) {
+        return minDistance.value <= value && value <= maxDistance.value;
+    }
+
+    public double getValue() {
         return value;
     }
 
