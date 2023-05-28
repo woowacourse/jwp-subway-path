@@ -12,7 +12,6 @@ import subway.domain.section.Section;
 import subway.dto.DistanceResponse;
 import subway.dto.FareResponse;
 import subway.dto.LineAndSectionsResponse;
-import subway.dto.PathRequest;
 import subway.dto.PathResponse;
 import subway.dto.StationAddRequest;
 
@@ -53,14 +52,13 @@ public class PathIntegrationTest extends IntegrationTest{
         addStationToLine(new StationAddRequest(디노_id, 조앤_id, 5), 일호선_id);
         addStationToLine(new StationAddRequest(디노_id, 로운_id, 3), 이호선_id);
 
-        final PathRequest pathRequest = new PathRequest(후추_id, 로운_id);
-
         //when
         final ExtractableResponse<Response> response = given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(pathRequest)
+                .param("fromStationId", 후추_id)
+                .param("toStationId", 로운_id)
                 .when()
-                .get("/routes/shortest")
+                .get("/routes/shortest-path")
                 .then().log().all()
                 .extract();
 

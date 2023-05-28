@@ -43,8 +43,7 @@
         - 요청 path param : lineId, stationId
 
 - 경로 조회
-    - 최단 경로 조회 : Get /routes/shortest
-        - 요청 body : PathRequest (fromId, toId)
+    - 최단 경로 조회 : Get /routes/shortest-path?fromStationId={Long}&toStationId={Long}
         - 응답 body : PathResponse
 
 ### 비즈니스 규칙
@@ -119,7 +118,7 @@
     - Get `/lines`
 
 - [x] 최단 경로 조회
-    - Get `/routes/shortest`
+    - Get `/routes/shortest-path?fromStationId={}&toStationId={}`
 
 ## 📀 데이터베이스
 
