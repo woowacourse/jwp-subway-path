@@ -1,6 +1,5 @@
-package subway.service.dto;
+package subway.service.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RegisterLineRequest {
@@ -10,7 +9,6 @@ public class RegisterLineRequest {
     private final String lineName;
     private final int distance;
 
-    @JsonCreator
     public RegisterLineRequest(@JsonProperty(value = "stationName") String currentStationName,
                                @JsonProperty(value = "nextStationName") String nextStationName,
                                @JsonProperty(value = "lineName") String lineName,

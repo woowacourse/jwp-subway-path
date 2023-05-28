@@ -6,8 +6,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.Stations;
-import subway.service.dto.StationDeleteRequest;
-import subway.service.dto.StationRegisterRequest;
+import subway.service.dto.request.StationRegisterRequest;
 
 @Service
 public class StationService {
@@ -47,12 +46,12 @@ public class StationService {
         return new Section(newStations);
     }
 
-    public void deleteStation(final long lineId, final String station) {
+    public void deleteTargetStationInLine(final long lineId, final String station) {
 
         final LineEntity lineEntity = lineMakerService.getLineEntityById(lineId);
         final Line line = lineMakerService.mapToLineFrom(lineEntity.getName());
 
-        line.delete(new Station(station));
+        line.deleteTargetStation(new Station(station));
 
         if (line.isDeleted()) {
             sectionService.deleteAll(lineEntity.getId());

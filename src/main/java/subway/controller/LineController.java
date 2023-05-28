@@ -1,11 +1,12 @@
 package subway.controller;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.service.LineService;
-import subway.service.dto.LineResponse;
-import subway.service.dto.RegisterLineRequest;
+import subway.service.dto.response.LineResponse;
+import subway.service.dto.request.RegisterLineRequest;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -18,22 +19,19 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping
-    public List<LineResponse> searchAllLines() {
-        return lineService.searchAllLines();
+    public ResponseEntity<List<LineResponse>> searchAllLines() {
+        return ResponseEntity.ok(lineService.searchAllLines());
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/{id}")
-    public LineResponse searchLine(@PathVariable long id) {
-        return lineService.searchLine(id);
+    public ResponseEntity<LineResponse> searchLine(@PathVariable long id) {
+        return ResponseEntity.ok(lineService.searchLine(id));
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
-    public String registerLine(@RequestBody RegisterLineRequest registerLineRequest) {
-        lineService.registerLine(registerLineRequest);
-        return "redirect:/lines";
+    public ResponseEntity<Void> registerLine(@RequestBody RegisterLineRequest registerLineRequest) {
+        long lineId = lineService.registerLine(registerLineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 }

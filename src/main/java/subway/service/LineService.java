@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.domain.Line;
-import subway.service.dto.LineResponse;
-import subway.service.dto.RegisterLineRequest;
-import subway.service.dto.SectionInLineResponse;
+import subway.service.dto.response.LineResponse;
+import subway.service.dto.request.RegisterLineRequest;
+import subway.service.dto.response.SectionInLineResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +59,7 @@ public class LineService {
         lineDao.deleteLineById(lineId);
     }
 
-    public void registerLine(final RegisterLineRequest registerLineRequest) {
+    public long registerLine(final RegisterLineRequest registerLineRequest) {
 
         final Long savedId = lineDao.save(new LineEntity(registerLineRequest.getLineName()));
 
@@ -69,5 +69,7 @@ public class LineService {
                 registerLineRequest.getDistance(),
                 savedId
         );
+
+        return savedId;
     }
 }

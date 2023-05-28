@@ -1,6 +1,5 @@
-package subway.service.dto;
+package subway.service.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class StationDeleteRequest {
@@ -8,7 +7,6 @@ public class StationDeleteRequest {
     private final String lineName;
     private final String stationName;
 
-    @JsonCreator
     public StationDeleteRequest(@JsonProperty(value = "lineName") String lineName,
                                 @JsonProperty(value = "stationName") String stationName) {
         this.lineName = lineName;

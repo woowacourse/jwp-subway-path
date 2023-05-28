@@ -5,7 +5,7 @@ import subway.dao.LineEntity;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.domain.Line;
-import subway.service.dto.SectionInLineResponse;
+import subway.service.dto.response.SectionInLineResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

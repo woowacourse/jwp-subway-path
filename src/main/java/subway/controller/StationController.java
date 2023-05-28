@@ -1,9 +1,9 @@
 package subway.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.service.StationService;
-import subway.service.dto.StationDeleteRequest;
-import subway.service.dto.StationRegisterRequest;
+import subway.service.dto.request.StationRegisterRequest;
 
 @RestController
 @RequestMapping("/stations")
@@ -16,12 +16,15 @@ public class StationController {
     }
 
     @PostMapping
-    public void registerStation(@RequestBody StationRegisterRequest stationRegisterRequest) {
+    public ResponseEntity<Void> registerStation(@RequestBody StationRegisterRequest stationRegisterRequest) {
         stationService.registerStation(stationRegisterRequest);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}/{station}")
-    public void deleteStation(@PathVariable long id, @PathVariable String station) {
-        stationService.deleteStation(id, station);
+    @DeleteMapping("/{lineId}/{stationName}")
+    public ResponseEntity<Void> deleteStationInLine(@PathVariable long lineId, @PathVariable String stationName) {
+        stationService.deleteTargetStationInLine(lineId, stationName);
+        return ResponseEntity.noContent().build();
     }
+
 }
