@@ -48,10 +48,11 @@ public class Section {
     }
 
     public Section change(final Station station, final int distance, final Direction direction) {
+        final Distance newDistance = this.distance.subtract(distance);
         if (direction == LEFT) {
-            return new Section(station, to, this.distance.subtract(distance));
+            return new Section(station, to, newDistance.getDistance());
         }
-        return new Section(from, station, this.distance.subtract(distance));
+        return new Section(from, station, newDistance.getDistance());
     }
 
     public Station getStationOn(final Direction direction) {

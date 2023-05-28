@@ -17,16 +17,16 @@ public class Distance {
         }
     }
 
-    public boolean isLongerThan(final int otherDistance) {
-        return distance > otherDistance;
+    public boolean isLongerThan(final int distance) {
+        return this.distance > distance;
     }
 
     public boolean isNotLongerThan(final int distance) {
         return this.distance <= distance;
     }
 
-    public int subtract(int otherDistance) {
-        return distance - otherDistance;
+    public Distance subtract(final int distance) {
+        return new Distance(this.distance - distance);
     }
 
     public int getDistance() {
