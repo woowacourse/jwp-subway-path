@@ -1,7 +1,6 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import subway.Entity.EntityMapper;
 import subway.controller.exception.OptionalHasNoStationException;
 import subway.domain.Path.Path;
@@ -16,7 +15,6 @@ import subway.dto.response.PathResponse;
 import subway.persistence.dao.StationDao;
 
 @Service
-@Transactional
 public class PathService {
 
     private final StationDao stationDao;
