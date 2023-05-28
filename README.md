@@ -45,7 +45,9 @@ Section --> Station
 Section --> Distance
 
 PathFinder
-FeeCalculator
+FeeCalculator --> DistancePolicy
+FeeCalculator --> LinePolicy
+FeeCalculator --> AgePolicy
 ```
 
 # API 설계
