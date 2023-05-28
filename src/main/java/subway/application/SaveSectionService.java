@@ -28,31 +28,12 @@ public class SaveSectionService {
     }
 
     public Long saveSection(StationRequest stationRequest) {
-        Optional<Line> findNullableLine = lineRepository.findByLineName(stationRequest.getLineName());
-        if (findNullableLine.isEmpty()) {
-            return saveInitialSection(stationRequest);
-        }
-
-        Line line = findNullableLine.get();
+        Long lineId = stationRequest.getLineId();
+        Line line = lineRepository.findLineById(lineId);
         Section sectionToAdd = getSectionFromRequest(stationRequest, line);
         Sections sections = new Sections(sectionRepository.findSectionsByLineId(line.getId()));
         validateSectionCanLink(sections, sectionToAdd);
-        return saveAdditionalSection(sections, sectionToAdd);
-    }
-
-    private void validateSectionCanLink(Sections sections, Section sectionToAdd) {
-        List<Section> sectionsContainUpStation = sections.findSectionsContainStation(sectionToAdd.getUpStation());
-        List<Section> sectionsContainDownStation = sections.findSectionsContainStation(sectionToAdd.getDownStation());
-        if (sectionsContainUpStation.isEmpty() && sectionsContainDownStation.isEmpty()) {
-            throw new CannotLinkException();
-        }
-    }
-
-    private Long saveInitialSection(StationRequest stationRequest) {
-        Line line = lineRepository.insert(new Line(null, stationRequest.getLineName()));
-        Section sectionToAdd = getSectionFromRequest(stationRequest, line);
-        Section insertedSection = sectionRepository.insert(sectionToAdd);
-        return insertedSection.getLineId();
+        return saveAccordingRule(sectionToAdd, sections);
     }
 
     private Section getSectionFromRequest(StationRequest stationRequest, Line line) {
@@ -62,17 +43,24 @@ public class SaveSectionService {
         return new Section(null, upStation, downStation, distance);
     }
 
-    private Long saveAdditionalSection(Sections sections, Section sectionToAdd) {
-        Optional<Section> nullableSectionToModify = sections.findSectionContainSection(sectionToAdd);
-        if (nullableSectionToModify.isEmpty()) {
-            return insertToEnd(sectionToAdd);
+    private void validateSectionCanLink(Sections sections, Section sectionToAdd) {
+        if (sections.getSections().isEmpty()) {
+            return;
         }
-        return insertToMiddle(sectionToAdd, nullableSectionToModify.get());
+        List<Section> sectionsContainUpStation = sections.findSectionsContainStation(sectionToAdd.getUpStation());
+        List<Section> sectionsContainDownStation = sections.findSectionsContainStation(sectionToAdd.getDownStation());
+        if (sectionsContainUpStation.isEmpty() && sectionsContainDownStation.isEmpty()) {
+            throw new CannotLinkException();
+        }
     }
 
-    private Long insertToEnd(Section sectionToAdd) {
-        Section insertedSection = sectionRepository.insert(sectionToAdd);
-        return insertedSection.getLineId();
+    private Long saveAccordingRule(Section sectionToAdd, Sections sections) {
+        Optional<Section> nullableSectionToModify = sections.findSectionContainSection(sectionToAdd);
+        if (nullableSectionToModify.isEmpty()) {
+            Section insertedSection = sectionRepository.insert(sectionToAdd);
+            return insertedSection.getLineId();
+        }
+        return insertToMiddle(sectionToAdd, nullableSectionToModify.get());
     }
 
     private Long insertToMiddle(Section sectionToAdd, Section sectionToModify) {
@@ -81,6 +69,7 @@ public class SaveSectionService {
         sectionRepository.insert(modifiedSection);
         sectionRepository.insert(sectionToAdd);
         sectionRepository.remove(sectionToModify);
+
         return sectionToAdd.getLineId();
     }
 }

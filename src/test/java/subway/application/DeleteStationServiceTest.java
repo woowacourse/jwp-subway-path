@@ -13,7 +13,6 @@ import subway.exception.StationNotFoundException;
 
 import java.util.List;
 
-import static fixtures.LineFixtures.LINE2;
 import static fixtures.LineFixtures.LINE2_ID;
 import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
@@ -58,7 +57,7 @@ class DeleteStationServiceTest {
         when(sectionRepository.findSectionsByLineId(LINE2_ID))
                 .thenReturn(List.of(SECTION_잠실역_TO_건대역));
         doNothing().when(stationRepository).remove(STATION_잠실역);
-        doNothing().when(lineRepository).remove(LINE2);
+        doNothing().when(lineRepository).deleteById(LINE2_ID);
 
         // when
         Long changedLineId = deleteStationService.deleteStationById(stationIdToDelete);

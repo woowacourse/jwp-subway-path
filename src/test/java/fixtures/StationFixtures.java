@@ -32,13 +32,13 @@ public class StationFixtures {
     /**
      * request
      */
-    public static final StationRequest REQUEST_잠실역_TO_건대역 = new StationRequest(STATION_잠실역_NAME, STATION_건대역_NAME, DISTANCE_잠실역_TO_건대역, LINE2_NAME);
-    public static final StationRequest REQUEST_잠실역_TO_강변역 = new StationRequest(STATION_잠실역_NAME, STATION_강변역_NAME, DISTANCE_잠실역_TO_강변역, LINE2_NAME);
-    public static final StationRequest REQUEST_강변역_TO_건대역 = new StationRequest(STATION_강변역_NAME, STATION_건대역_NAME, DISTANCE_강변역_TO_건대역, LINE2_NAME);
-    public static final StationRequest REQUEST_대림역_TO_잠실역 = new StationRequest(STATION_대림역_NAME, STATION_잠실역_NAME, DISTANCE_대림역_TO_잠실역, LINE2_NAME);
-    public static final StationRequest REQUEST_건대역_TO_성수역 = new StationRequest(STATION_건대역_NAME, STATION_성수역_NAME, DISTANCE_건대역_TO_성수역, LINE2_NAME);
-    public static final StationRequest REQUEST_대림역_TO_신림역 = new StationRequest(STATION_대림역_NAME, STATION_신림역_NAME, DISTANCE_대림역_TO_신림역, LINE2_NAME);
-    public static final StationRequest REQUEST_LONG_DISTANCE = new StationRequest(STATION_잠실역_NAME, STATION_예외역_NAME, DISTANCE_잠실역_TO_예외역, LINE2_NAME);
+    public static final StationRequest REQUEST_잠실역_TO_건대역 = new StationRequest(STATION_잠실역_NAME, STATION_건대역_NAME, DISTANCE_잠실역_TO_건대역, LINE2_ID);
+    public static final StationRequest REQUEST_잠실역_TO_강변역 = new StationRequest(STATION_잠실역_NAME, STATION_강변역_NAME, DISTANCE_잠실역_TO_강변역, LINE2_ID);
+    public static final StationRequest REQUEST_강변역_TO_건대역 = new StationRequest(STATION_강변역_NAME, STATION_건대역_NAME, DISTANCE_강변역_TO_건대역, LINE2_ID);
+    public static final StationRequest REQUEST_대림역_TO_잠실역 = new StationRequest(STATION_대림역_NAME, STATION_잠실역_NAME, DISTANCE_대림역_TO_잠실역, LINE2_ID);
+    public static final StationRequest REQUEST_건대역_TO_성수역 = new StationRequest(STATION_건대역_NAME, STATION_성수역_NAME, DISTANCE_건대역_TO_성수역, LINE2_ID);
+    public static final StationRequest REQUEST_대림역_TO_신림역 = new StationRequest(STATION_대림역_NAME, STATION_신림역_NAME, DISTANCE_대림역_TO_신림역, LINE2_ID);
+    public static final StationRequest REQUEST_LONG_DISTANCE = new StationRequest(STATION_잠실역_NAME, STATION_예외역_NAME, DISTANCE_잠실역_TO_예외역, LINE2_ID);
 
     /**
      * domain

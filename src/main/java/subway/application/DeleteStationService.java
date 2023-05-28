@@ -39,13 +39,13 @@ public class DeleteStationService {
     }
 
     private Long updateLineAndSectionAfterRemoveStation(Sections sections, List<Section> sectionsToCombine) {
-        Line targetLine = sections.getLine();
+        Long targetLineId = sections.getLineId();
         if (wasOnlyTwoStationsExist(sections)) {
-            lineRepository.remove(targetLine);
-            return targetLine.getId();
+            lineRepository.deleteById(targetLineId);
+            return targetLineId;
         }
         if (wasDeleteEndStation(sectionsToCombine)) {
-            return targetLine.getId();
+            return targetLineId;
         }
         return combineTwoSectionsAndUpdate(sectionsToCombine);
     }

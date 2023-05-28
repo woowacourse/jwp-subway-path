@@ -40,6 +40,10 @@ public class Sections {
         return sections.get(0).getLine();
     }
 
+    public Long getLineId() {
+        return getLine().getId();
+    }
+
     public int getSectionsSize() {
         return sections.size();
     }

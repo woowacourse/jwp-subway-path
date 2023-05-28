@@ -6,7 +6,10 @@ import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.entity.LineEntity;
 
+import java.util.List;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 @Repository
 public class DBLineRepository implements LineRepository {
@@ -25,6 +28,12 @@ public class DBLineRepository implements LineRepository {
     }
 
     @Override
+    public Line findLineById(Long lineId) {
+        LineEntity findLineEntity = lineDao.findById(lineId);
+        return new Line(findLineEntity.getId(), findLineEntity.getLineName());
+    }
+
+    @Override
     public Optional<Line> findByLineName(String lineName) {
         Optional<LineEntity> nullableLineEntity = lineDao.findByLineName(lineName);
         if (nullableLineEntity.isEmpty()) {
@@ -35,7 +44,21 @@ public class DBLineRepository implements LineRepository {
     }
 
     @Override
-    public void remove(Line line) {
-        lineDao.deleteById(line.getId());
+    public List<Line> findAllLines() {
+        List<LineEntity> lineEntities = lineDao.findAll();
+        return lineEntities.stream()
+                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getLineName()))
+                .collect(toList());
+    }
+
+    @Override
+    public void update(Line newLine) {
+        LineEntity newLineEntity = new LineEntity(newLine.getId(), newLine.getName());
+        lineDao.updateById(newLineEntity);
+    }
+
+    @Override
+    public void deleteById(Long lineId) {
+        lineDao.deleteById(lineId);
     }
 }

@@ -2,6 +2,7 @@ package fixtures;
 
 import subway.domain.line.Line;
 import subway.dto.LineFindResponse;
+import subway.dto.LineRequest;
 import subway.entity.LineEntity;
 
 import java.util.List;
@@ -15,12 +16,20 @@ public class LineFixtures {
     public static final long LINE7_ID = 2L;
     public static final String LINE2_NAME = "2호선";
     public static final String LINE7_NAME = "7호선";
+    public static final String LINE2_NEW_NAME = "새로운 2호선";
+
+    /**
+     * request
+     */
+    public static final LineRequest REQUEST_LINE7 = new LineRequest(LINE7_NAME);
+    public static final LineRequest REQUEST_NEW_LINE2 = new LineRequest(LINE2_NEW_NAME);
 
     /**
      * domain
      */
     public static final Line LINE2 = new Line(LINE2_ID, LINE2_NAME);
-    public static final Line LINE2_TO_INSERT = new Line(null, LINE2_NAME);
+    public static final Line NEW_LINE2 = new Line(LINE2_ID, LINE2_NEW_NAME);
+    public static final Line LINE7_TO_INSERT = new Line(null, LINE7_NAME);
     public static final Line LINE7 = new Line(LINE7_ID, LINE7_NAME);
 
     /**

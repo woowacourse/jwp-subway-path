@@ -15,9 +15,9 @@ import subway.exception.DuplicateSectionException;
 import subway.exception.IllegalDistanceException;
 
 import java.util.List;
-import java.util.Optional;
 
-import static fixtures.LineFixtures.*;
+import static fixtures.LineFixtures.LINE2;
+import static fixtures.LineFixtures.LINE2_ID;
 import static fixtures.SectionFixtures.*;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,8 +46,7 @@ class SaveSectionServiceTest {
         void saveInitialSectionTest() {
             // given
             StationRequest request = REQUEST_잠실역_TO_건대역;
-            when(lineRepository.findByLineName(request.getLineName())).thenReturn(Optional.empty());
-            when(lineRepository.insert(LINE2_TO_INSERT)).thenReturn(LINE2);
+            when(lineRepository.findLineById(LINE2_ID)).thenReturn(LINE2);
             when(sectionRepository.insert(SECTION_TO_INSERT_잠실역_TO_건대역)).thenReturn(SECTION_잠실역_TO_건대역);
 
             // when
@@ -66,8 +65,8 @@ class SaveSectionServiceTest {
         @DisplayName("두 역 모두 존재하지 않으면 예외가 발생한다.")
         void saveNewStationTest_fail_when_allNotSaved() {
             // given
+            when(lineRepository.findLineById(LINE2_ID)).thenReturn(LINE2);
             StationRequest request = REQUEST_대림역_TO_신림역;
-            when(lineRepository.findByLineName(request.getLineName())).thenReturn(Optional.of(LINE2));
             when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
             // when, then
             assertThatThrownBy(() -> saveSectionService.saveSection(request))
@@ -80,7 +79,7 @@ class SaveSectionServiceTest {
         void saveNewStationTest_fail_when_allAlreadySaved() {
             // given
             StationRequest request = REQUEST_잠실역_TO_건대역;
-            when(lineRepository.findByLineName(request.getLineName())).thenReturn(Optional.of(LINE2));
+            when(lineRepository.findLineById(LINE2_ID)).thenReturn(LINE2);
             when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
 
             // when, then
@@ -94,7 +93,7 @@ class SaveSectionServiceTest {
         void saveNewStationTest_fail_negativeDistance() {
             // given
             StationRequest request = REQUEST_LONG_DISTANCE;
-            when(lineRepository.findByLineName(LINE2_NAME)).thenReturn(Optional.of(LINE2));
+            when(lineRepository.findLineById(LINE2_ID)).thenReturn(LINE2);
             when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
 
             assertThatThrownBy(() -> saveSectionService.saveSection(request))
@@ -107,7 +106,7 @@ class SaveSectionServiceTest {
         void saveNewStationTest_success_when_upStationExist() {
             // given
             StationRequest request = REQUEST_잠실역_TO_강변역;
-            when(lineRepository.findByLineName(request.getLineName())).thenReturn(Optional.of(LINE2));
+            when(lineRepository.findLineById(LINE2_ID)).thenReturn(LINE2);
             when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
             when(sectionRepository.insert(SECTION_AFTER_CALCULATE_강변역_TO_건대역)).thenReturn(SECTION_강변역_TO_건대역);
             when(sectionRepository.insert(SECTION_TO_INSERT_잠실역_TO_강변역)).thenReturn(SECTION_잠실역_TO_강변역);
@@ -125,7 +124,7 @@ class SaveSectionServiceTest {
         void saveNewStationTest_success_when_downStationExist() {
             // given
             StationRequest request = REQUEST_강변역_TO_건대역;
-            when(lineRepository.findByLineName(request.getLineName())).thenReturn(Optional.of(LINE2));
+            when(lineRepository.findLineById(LINE2_ID)).thenReturn(LINE2);
             when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
             when(sectionRepository.insert(SECTION_AFTER_CALCULATE_잠실역_TO_강변역)).thenReturn(SECTION_잠실역_TO_강변역);
             when(sectionRepository.insert(SECTION_TO_INSERT_강변역_TO_건대역)).thenReturn(SECTION_강변역_TO_건대역);
@@ -143,7 +142,7 @@ class SaveSectionServiceTest {
         void saveNewStationTest_success_whenSaveUpEndStation() {
             // given
             StationRequest request = REQUEST_대림역_TO_잠실역;
-            when(lineRepository.findByLineName(request.getLineName())).thenReturn(Optional.of(LINE2));
+            when(lineRepository.findLineById(LINE2_ID)).thenReturn(LINE2);
             when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
             when(sectionRepository.insert(SECTION_TO_INSERT_대림역_TO_잠실역)).thenReturn(SECTION_대림역_TO_잠실역);
 
@@ -159,7 +158,7 @@ class SaveSectionServiceTest {
         void saveNewStationTest_success_whenSaveDownEndStation() {
             // given
             StationRequest request = REQUEST_건대역_TO_성수역;
-            when(lineRepository.findByLineName(request.getLineName())).thenReturn(Optional.of(LINE2));
+            when(lineRepository.findLineById(LINE2_ID)).thenReturn(LINE2);
             when(sectionRepository.findSectionsByLineId(LINE2_ID)).thenReturn(List.of(SECTION_잠실역_TO_건대역));
             when(sectionRepository.insert(SECTION_TO_INSERT_건대역_TO_성수역)).thenReturn(SECTION_건대역_TO_성수역);
 

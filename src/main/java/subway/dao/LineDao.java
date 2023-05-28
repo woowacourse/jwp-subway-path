@@ -40,7 +40,7 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "SELECT id, name FROM line";
+        String sql = "SELECT id, name FROM LINE";
         return jdbcTemplate.query(sql, lineEntityRowMapper);
     }
 
@@ -50,14 +50,19 @@ public class LineDao {
     }
 
     public Optional<LineEntity> findByLineName(String lineName) {
-        String sql = "SELECT id, name FROM line WHERE name = ?";
+        String sql = "SELECT id, name FROM LINE WHERE name = ?";
         List<LineEntity> lineEntities = jdbcTemplate.query(sql,
                 lineEntityRowMapper, lineName
         );
         return lineEntities.stream().findAny();
     }
 
+    public void updateById(LineEntity newLineEntity) {
+        String sql = "UPDATE LINE set name = ? where id = ?";
+        jdbcTemplate.update(sql, newLineEntity.getLineName(), newLineEntity.getId());
+    }
+
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 }

@@ -1,5 +1,6 @@
 INSERT INTO LINE (name) VALUES ('2호선');
 INSERT INTO LINE (name) VALUES ('8호선');
+INSERT INTO LINE (name) VALUES ('7호선');
 
 INSERT INTO STATION (name, line_id) VALUES ('선릉역', 1);
 INSERT INTO STATION (name, line_id) VALUES ('잠실역', 1);

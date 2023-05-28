@@ -11,6 +11,7 @@ import subway.dao.LineDao;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static fixtures.LineFixtures.*;
@@ -45,6 +46,20 @@ class DBLineRepositoryTest {
     }
 
     @Test
+    @DisplayName("주어진 Line id에 해당하는 Line을 찾는다.")
+    void findLineByIdTest() {
+        // given
+        Long lineId = LINE2_ID;
+        Line expectLine = LINE2;
+
+        // when
+        Line findLine = lineRepository.findLineById(lineId);
+
+        // then
+        assertThat(findLine).isEqualTo(expectLine);
+    }
+
+    @Test
     @DisplayName("주어진 Line 이름과 일치하는 Line을 찾는다.")
     void findByLineNameTest_notNull() {
         // given
@@ -72,15 +87,41 @@ class DBLineRepositoryTest {
     }
 
     @Test
-    @DisplayName("주어진 Line을 삭제한다.")
-    void removeTest() {
+    @DisplayName("모든 Line을 찾는다.")
+    void findAllLinesTest() {
         // given
-        Line line = LINE2;
+        List<Line> expectLines = List.of(LINE2);
 
         // when
-        lineRepository.remove(line);
+        List<Line> findLines = lineRepository.findAllLines();
 
         // then
-        assertThat(lineRepository.findByLineName(line.getName())).isEmpty();
+        assertThat(findLines).isEqualTo(expectLines);
+    }
+
+    @Test
+    @DisplayName("Line 정보를 수정한다.")
+    void updateTest() {
+        // given
+        Line newLine = NEW_LINE2;
+
+        // when
+        lineRepository.update(newLine);
+
+        // then
+        assertThat(lineRepository.findLineById(newLine.getId())).isEqualTo(NEW_LINE2);
+    }
+
+    @Test
+    @DisplayName("주어진 Line을 삭제한다.")
+    void deleteByIdTest() {
+        // given
+        Long lineId = LINE2_ID;
+
+        // when
+        lineRepository.deleteById(lineId);
+
+        // then
+        assertThat(lineRepository.findByLineName(LINE2_NAME)).isEmpty();
     }
 }
