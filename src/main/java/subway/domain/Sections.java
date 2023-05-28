@@ -16,7 +16,7 @@ public class Sections {
     private static final int ONLY_ONE_SECTION_INDEX = 0;
 
     private final List<Section> sections;
-    private final TopDownStationArranger topDownStationArranger = new TopDownStationArranger();
+    private final StationArranger stationArranger = new StationArranger();
 
     public Sections(final List<Section> sections) {
         this.sections = new ArrayList<>(sections);
@@ -117,7 +117,7 @@ public class Sections {
     }
 
     public List<Station> allStations() {
-        return topDownStationArranger.arrange(this.sections);
+        return stationArranger.arrange(this.sections);
     }
 
     public void removeStation(final Station targetStation) {

@@ -7,11 +7,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TopDownStationArranger {
+public class StationArranger {
 
     private static final String KEY_LAST_STATION_OF_UP = "up";
     private static final String KEY_LAST_STATION_OF_DOWN = "down";
@@ -77,11 +76,11 @@ public class TopDownStationArranger {
     }
 
     private Station nextStationOf(final List<Section> sections, final Station upStation) {
-        Optional<Section> foundSection = sections.stream()
+        Section foundSection = sections.stream()
                 .filter(section -> section.isSameUpStation(upStation))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(SectionNotFoundException::new);
 
-        Section section = foundSection.orElseThrow(SectionNotFoundException::new);
-        return section.getDownStation();
+        return foundSection.getDownStation();
     }
 }
