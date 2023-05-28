@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.fare;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -26,7 +26,7 @@ public enum PassengerAge {
             .orElseThrow(() -> new IllegalArgumentException("나이는 1보다 작을 수 없습니다"));
     }
 
-    public int getDiscountedPrice(final int fare) {
-        return (int) (fare - (fare - excludedAmount) * discountRate);
+    public int getDiscountAmount(final int fare) {
+        return (int) ((fare - excludedAmount) * discountRate);
     }
 }

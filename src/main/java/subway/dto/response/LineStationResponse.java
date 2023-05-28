@@ -1,9 +1,9 @@
-package subway.dto;
+package subway.dto.response;
 
 import java.util.Objects;
-import subway.domain.Line;
-import subway.domain.LineStation;
-import subway.domain.Station;
+import subway.domain.subwaymap.Line;
+import subway.domain.subwaymap.LineStation;
+import subway.domain.subwaymap.Station;
 
 public class LineStationResponse {
 

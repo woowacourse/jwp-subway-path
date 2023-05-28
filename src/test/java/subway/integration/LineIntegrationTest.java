@@ -12,10 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.SectionCreateRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.LineRequest;
+import subway.dto.request.SectionCreateRequest;
+import subway.dto.response.LineResponse;
+import subway.dto.response.StationResponse;
 import subway.exception.ExceptionResponse;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -211,7 +211,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("지하철 노선을 제거한다.")

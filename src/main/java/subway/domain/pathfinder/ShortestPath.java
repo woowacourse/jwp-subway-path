@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.pathfinder;
 
 import java.util.List;
+import subway.domain.subwaymap.LineStation;
 
 public final class ShortestPath {
 

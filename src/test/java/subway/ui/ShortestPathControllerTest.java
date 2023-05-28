@@ -19,8 +19,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import subway.application.ShortestPathService;
-import subway.dto.LineStationResponse;
-import subway.dto.ShortestPathResponse;
+import subway.dto.response.LineStationResponse;
+import subway.dto.response.ShortestPathResponse;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class ShortestPathControllerTest {

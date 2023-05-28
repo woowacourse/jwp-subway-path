@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
-import subway.dto.SectionCreateRequest;
-import subway.dto.SectionsRemovedResponse;
+import subway.dto.request.SectionCreateRequest;
+import subway.dto.response.SectionsRemovedResponse;
 
 @RestController
 @RequestMapping("/lines/{lineId}/sections")

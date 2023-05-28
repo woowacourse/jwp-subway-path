@@ -10,7 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import subway.domain.Line;
+import subway.domain.subwaymap.Line;
+import subway.dto.LineSectionDto;
 
 @Component
 public class LineDao {
@@ -22,7 +23,19 @@ public class LineDao {
             rs.getString("color"),
             rs.getInt("additional_fare")
         );
-
+    private static final RowMapper<LineSectionDto> LINE_SECTION_DTO_ROW_MAPPER = (rs, rowNum) ->
+        new LineSectionDto(
+            rs.getLong("line_id"),
+            rs.getString("line_name"),
+            rs.getString("line_color"),
+            rs.getInt("line_additional_fare"),
+            rs.getLong("sec_id"),
+            rs.getInt("distance"),
+            rs.getLong("up_station_id"),
+            rs.getString("up_station_name"),
+            rs.getLong("down_station_id"),
+            rs.getString("down_station_name")
+        );
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -56,6 +69,20 @@ public class LineDao {
     public List<Line> findAll() {
         final String sql = "SELECT * FROM LINE";
         return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
+    }
+
+    public List<LineSectionDto> findAllSections() {
+        final String sql = "SELECT "
+            + "LINE.id AS line_id, LINE.name AS line_name, "
+            + "LINE.color AS line_color, LINE.additional_fare AS line_additional_fare, "
+            + "SEC.id AS sec_id, SEC.distance AS distance, "
+            + "S1.id as up_station_id, S1.name as up_station_name, "
+            + "S2.id as down_station_id, S2.name as down_station_name "
+            + "FROM LINE AS LINE "
+            + "INNER JOIN LINE_SECTION AS SEC ON SEC.line_id = LINE.id "
+            + "INNER JOIN STATION AS S1 ON S1.id = SEC.up_station_id "
+            + "INNER JOIN STATION AS S2 ON S2.id = SEC.down_station_id ";
+        return jdbcTemplate.query(sql, LINE_SECTION_DTO_ROW_MAPPER);
     }
 
     public void update(final Line newLine) {

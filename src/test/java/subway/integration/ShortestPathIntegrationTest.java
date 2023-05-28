@@ -9,9 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.SectionCreateRequest;
-import subway.dto.ShortestPathResponse;
+import subway.dto.request.LineRequest;
+import subway.dto.request.SectionCreateRequest;
+import subway.dto.response.ShortestPathResponse;
 
 public class ShortestPathIntegrationTest extends IntegrationTest {
 
@@ -52,7 +52,7 @@ public class ShortestPathIntegrationTest extends IntegrationTest {
         //when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
             .when()
-            .get("/shortest-path?start=첫번째역&end=첫번째역&age=6")
+            .get("/shortest-path?start=첫번째역&end=첫번째역&age=5")
             .then()
             .extract();
 

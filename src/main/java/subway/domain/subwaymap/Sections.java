@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.subwaymap;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import subway.exception.custom.LineDoesNotContainStationException;
 import subway.exception.custom.SectionDistanceTooLongException;
 import subway.exception.custom.StartStationNotExistException;
 import subway.exception.custom.StationNotExistException;
@@ -129,7 +130,7 @@ public final class Sections {
             sections.remove(removeStation);
             return;
         }
-        
+
         final Section downSection = sections.get(removeStation);
         final Section upSection = findSectionGetAsDownStation(removeStation);
 
@@ -145,14 +146,20 @@ public final class Sections {
         sections.put(upSection.getUpStation(), mergedSection);
     }
 
-    public List<Station> getStations() {
-        final Set<Station> upStations = sections.keySet();
-        final List<Station> downStations = sections.values().stream().map(Section::getDownStation)
-            .collect(Collectors.toList());
+    public Station getStationByName(final String stationName) {
+        return getStations().stream()
+            .filter(station -> station.getName().equals(stationName))
+            .findFirst()
+            .orElseThrow(() -> new LineDoesNotContainStationException("노선에 역이 존재하지 않습니다. ( " + stationName + " )"));
+    }
 
+    public List<Station> getStations() {
         final Set<Station> stations = new HashSet<>();
-        stations.addAll(upStations);
-        stations.addAll(downStations);
+        sections.values()
+            .forEach(section -> {
+                stations.add(section.getUpStation());
+                stations.add(section.getDownStation());
+            });
 
         return new ArrayList<>(stations);
     }

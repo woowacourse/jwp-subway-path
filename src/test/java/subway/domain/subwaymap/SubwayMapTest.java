@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.subwaymap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.pathfinder.JgraphtShortestPathFinder;
+import subway.domain.pathfinder.ShortestPath;
 
 class SubwayMapTest {
 
@@ -24,7 +26,7 @@ class SubwayMapTest {
                 15)));
         final Sections secondLineInfo = Sections.of(List.of(Section.withNullId(첫번쩨_, 세번째_, 24)));
         final SubwayMap subwayMap = new SubwayMap(List.of(FIRST_LINE, SECOND_LINE),
-            List.of(firstLineInfo, secondLineInfo));
+            List.of(firstLineInfo, secondLineInfo), new JgraphtShortestPathFinder());
 
         //when
         final ShortestPath shortestPath = subwayMap.getShortestPath(첫번쩨_, 세번째_);
@@ -44,7 +46,8 @@ class SubwayMapTest {
     void getShortestPath_sameStation() {
         //given
         final Sections firstLineInfo = Sections.of(List.of(Section.withNullId(첫번쩨_, 두번째_, 10)));
-        final SubwayMap subwayMap = new SubwayMap(List.of(FIRST_LINE), List.of(firstLineInfo));
+        final SubwayMap subwayMap = new SubwayMap(List.of(FIRST_LINE), List.of(firstLineInfo),
+            new JgraphtShortestPathFinder());
 
         //when
         final ShortestPath shortestPath = subwayMap.getShortestPath(첫번쩨_, 첫번쩨_);

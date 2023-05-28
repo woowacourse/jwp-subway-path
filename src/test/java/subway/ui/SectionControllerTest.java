@@ -13,7 +13,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.application.SectionService;
-import subway.dto.SectionCreateRequest;
+import subway.dto.request.SectionCreateRequest;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class SectionControllerTest {

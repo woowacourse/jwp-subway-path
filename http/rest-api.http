@@ -49,7 +49,7 @@ Content-Type: application/json
 %}
 
 ### 순서4. 성공 테스트 : 1호선에 역을 추가한다 ( 첫번쨰역 -> 두번째역 ).
-POST http://localhost:8080/lines/1/sections
+POST http://localhost:8080/lines/2/sections
 Content-Type: application/json
 
 {
@@ -67,11 +67,11 @@ Content-Type: application/json
 %}
 
 ### 순서5. 성공 테스트 : 1호선에 역을 추가한다. ( 두번째역 -> 세번째역 )
-POST http://localhost:8080/lines/1/sections
+POST http://localhost:8080/lines/2/sections
 Content-Type: application/json
 
 {
-  "baseStation": "두번째역",
+  "baseStation": "두째역",
   "newStation": "세번째역",
   "direction": "하행",
   "distance": 5
@@ -205,5 +205,14 @@ Accept: application/json
 		client.assert(body["route"].length == 3);
 		client.assert(body["totalDistance"] == 9);
 		client.assert(body["totalFare"] == 1450);
+	});
+%}
+
+### 순서 14. 성공 테스트 : 노선을 삭제한다.
+DELETE http://localhost:8080/lines/1
+
+> {%
+	client.test("노선을 삭제한다.", function () {
+		client.assert(response.status == 204, "204 상태코드를 반환한다.");
 	});
 %}

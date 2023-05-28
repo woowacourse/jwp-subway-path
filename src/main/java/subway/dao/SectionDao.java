@@ -6,13 +6,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.subwaymap.Section;
+import subway.domain.subwaymap.Station;
 
 @Component
 public class SectionDao {
 
-    private static final RowMapper<Section> LINE_SECTION_ROW_MAPPER = (rs, rowNum) ->
+    private static final RowMapper<Section> SECTION_ROW_MAPPER = (rs, rowNum) ->
         Section.of(
             rs.getLong("line_id"),
             Station.of(rs.getLong("up_station_id"), rs.getString("up_station_name")),
@@ -59,7 +59,7 @@ public class SectionDao {
             + "INNER JOIN STATION AS S2 ON S2.id = SEC.down_station_id "
             + "WHERE line_id = ?";
 
-        return jdbcTemplate.query(sql, LINE_SECTION_ROW_MAPPER, id);
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, id);
     }
 
     public void deleteAllByLineId(final Long lineId) {
