@@ -1,12 +1,14 @@
 package subway.ui;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineStationService;
 import subway.dto.LineStationResponse;
-import subway.dto.LineStationsRequest;
+import subway.dto.LineStationRequest;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -21,7 +23,10 @@ public class LineStationController {
     }
 
     @PostMapping("/{lineId}/stations")
-    public ResponseEntity<Void> createLinesStations(@PathVariable Long lineId, @RequestBody LineStationsRequest request) {
+    public ResponseEntity<Void> createLinesStations(
+            @PathVariable final Long lineId,
+            @RequestBody @Valid final LineStationRequest request
+    ) {
         lineStationService.saveLinesStations(lineId, request);
 
         return ResponseEntity
@@ -40,7 +45,9 @@ public class LineStationController {
     }
 
     @GetMapping("/{lineId}/stations")
-    public ResponseEntity<LineStationResponse> findLineStations(@PathVariable Long lineId) {
+    public ResponseEntity<LineStationResponse> findLineStations(
+            @PathVariable final Long lineId
+    ) {
         final LineStationResponse lineStationResponse = lineStationService.findLinesStations(lineId);
 
         return ResponseEntity
@@ -49,7 +56,10 @@ public class LineStationController {
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> deleteLineStations(@PathVariable Long lineId, @PathVariable Long stationId) {
+    public ResponseEntity<Void> deleteLineStations(
+            @PathVariable final Long lineId,
+            @PathVariable final Long stationId
+    ) {
         lineStationService.deleteLinesStations(lineId, stationId);
 
         return ResponseEntity

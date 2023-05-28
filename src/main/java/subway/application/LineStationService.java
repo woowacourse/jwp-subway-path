@@ -2,13 +2,12 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineStationResponse;
-import subway.dto.LineStationsRequest;
+import subway.dto.LineStationRequest;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
@@ -30,7 +29,7 @@ public class LineStationService {
     }
 
     @Transactional
-    public void saveLinesStations(final Long lineId, final LineStationsRequest request) {
+    public void saveLinesStations(final Long lineId, final LineStationRequest request) {
         Line line = lineRepository.findById(lineId);
         Station upStation = stationRepository.findById(request.getUpStationId());
         Station downStation = stationRepository.findById(request.getDownStationId());

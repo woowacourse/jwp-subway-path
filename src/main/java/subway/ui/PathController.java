@@ -11,6 +11,8 @@ import subway.application.PathService;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/paths")
 public class PathController {
@@ -22,7 +24,9 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> searchPath(@RequestBody final PathRequest request) {
+    public ResponseEntity<PathResponse> searchPath(
+            @RequestBody @Valid final PathRequest request
+    ) {
         PathResponse response = pathService.calculatePath(request);
 
         return ResponseEntity

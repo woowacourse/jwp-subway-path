@@ -5,11 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dto.LineRequest;
-import subway.dto.LineStationsRequest;
+import subway.dto.LineStationRequest;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
 
 @Transactional
@@ -19,7 +17,7 @@ public class LineStationIntegrationTest extends  IntegrationTest{
     @DisplayName("노선 역 등록")
     @Test
     void 노선_역_등록() {
-        LineStationsRequest request = new LineStationsRequest(1L, 4L, 3);
+        LineStationRequest request = new LineStationRequest(1L, 4L, 3);
 
         given()
                 .log().all()

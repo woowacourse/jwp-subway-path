@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.*;
 import subway.dto.LineStationResponse;
-import subway.dto.LineStationsRequest;
+import subway.dto.LineStationRequest;
 import subway.dto.StationResponse;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
@@ -36,7 +36,7 @@ class LineStationServiceTest {
     @Test
     void 노선에_역을_추가한다() {
         //given
-        LineStationsRequest request = new LineStationsRequest(1L, 2L, 10);
+        LineStationRequest request = new LineStationRequest(1L, 2L, 10);
         LineName name = new LineName("테스트노선");
         LineColor color = new LineColor("테스트색");
         Line line = new Line(1L, name, color, Sections.create());

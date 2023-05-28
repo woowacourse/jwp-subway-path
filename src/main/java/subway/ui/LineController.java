@@ -7,6 +7,7 @@ import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -15,12 +16,14 @@ public class LineController {
 
     private final LineService lineService;
 
-    public LineController(LineService lineService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<Void> createLine(
+            @RequestBody @Valid final LineRequest lineRequest
+    ) {
         Long savedId = lineService.saveLine(lineRequest);
 
         return ResponseEntity
@@ -30,7 +33,9 @@ public class LineController {
     }
 
     @GetMapping("/{lineId}")
-    public ResponseEntity<LineResponse> readLine(@PathVariable Long lineId) {
+    public ResponseEntity<LineResponse> readLine(
+            @PathVariable final Long lineId
+    ) {
         LineResponse line = lineService.findLine(lineId);
 
         return ResponseEntity
@@ -39,7 +44,10 @@ public class LineController {
     }
 
     @PutMapping("/{lineId}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody LineRequest request) {
+    public ResponseEntity<Void> updateLine(
+            @PathVariable final Long lineId,
+            @RequestBody @Valid final LineRequest request
+    ) {
         lineService.editLine(lineId, request);
 
         return ResponseEntity
@@ -49,7 +57,9 @@ public class LineController {
     }
 
     @DeleteMapping("/{lineId}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
+    public ResponseEntity<Void> deleteLine(
+            @PathVariable final Long lineId
+    ) {
         lineService.deleteLine(lineId);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
