@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.service.LineService;
+import subway.service.SectionService;
 
 @WebMvcTest(LineController.class)
 @DisplayName("LineController 테스트")
@@ -28,6 +29,8 @@ class LineControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private LineService lineService;
+    @MockBean
+    private SectionService sectionService;
 
     @Test
     @DisplayName("createLine 요청 메세지 검증 기능 테스트")

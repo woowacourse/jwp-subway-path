@@ -69,7 +69,7 @@ public class SectionService {
 
     public LineStationsResponse readAllStationsOfLine(Long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId)
-                .orElseThrow(OptionalHasNoStationException::new);
+                .orElseThrow(OptionalHasNoLineException::new);
 
         LineSections lineSections = LineSections.from(
                 lineEntity.mapToLine(),

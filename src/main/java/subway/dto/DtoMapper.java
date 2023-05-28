@@ -2,7 +2,6 @@ package subway.dto;
 
 import subway.Entity.LineEntity;
 import subway.Entity.StationEntity;
-import subway.dto.response.LineResponse;
 import subway.dto.response.LineStationsResponse;
 import subway.dto.response.PathResponse;
 import subway.dto.response.StationResponse;
@@ -16,10 +15,6 @@ public class DtoMapper {
         return new StationResponse(stationEntity.getId(), stationEntity.getName());
     }
 
-    public static LineResponse convertToLineResponse(LineEntity lineEntity) {
-        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
-    }
-
     public static List<StationResponse> convertToStationResponses(List<StationEntity> stationEntities) {
         return stationEntities.stream()
                 .map(DtoMapper::convertToStationResponse)
@@ -30,7 +25,9 @@ public class DtoMapper {
             LineEntity lineEntity, List<StationEntity> stationEntities
     ) {
         return new LineStationsResponse(
-                convertToLineResponse(lineEntity),
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor(),
                 convertToStationResponses(stationEntities)
         );
     }

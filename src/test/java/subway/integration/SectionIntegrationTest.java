@@ -21,7 +21,6 @@ class SectionIntegrationTest {
     private long 노량진 = 4L;
     private long 용산 = 5L;
     private long 서울역 = 6L;
-    
     private long _1호선 = 1L;
 
     @BeforeEach
