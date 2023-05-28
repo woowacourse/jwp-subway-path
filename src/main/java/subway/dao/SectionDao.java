@@ -20,10 +20,7 @@ public class SectionDao {
     private static final String DISTANCE = "distance";
     private static final String ALL_COLUMN = String.join(", ", ID, LINE_ID, UP_STATION_ID, DOWN_STATION_ID, DISTANCE);
 
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
-
-    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+    private static final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong(ID),
                     rs.getLong(LINE_ID),
@@ -31,6 +28,9 @@ public class SectionDao {
                     rs.getLong(DOWN_STATION_ID),
                     rs.getInt(DISTANCE)
             );
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

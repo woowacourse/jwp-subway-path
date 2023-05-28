@@ -19,15 +19,15 @@ public class LineDao {
     private static final String EXTRA_FEE = "extra_fee";
     private static final String ALL_COLUMN = String.join(", ", List.of(ID, NAME, COLOR, EXTRA_FEE));
 
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
-
-    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
+    private static final RowMapper<Line> rowMapper = (rs, rowNum) ->
             new Line(
                     rs.getLong(ID),
                     rs.getString(NAME),
                     rs.getString(COLOR),
                     rs.getInt(EXTRA_FEE));
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

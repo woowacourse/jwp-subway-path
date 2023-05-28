@@ -17,14 +17,14 @@ public class StationDao {
     private static final String NAME = "name";
     private static final String ALL_COLUMN = String.join(", ", ID, NAME);
 
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
-
-    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private static final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong(ID),
                     rs.getString(NAME)
             );
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
