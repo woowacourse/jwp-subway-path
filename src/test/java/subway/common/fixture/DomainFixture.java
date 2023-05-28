@@ -17,12 +17,10 @@ public class DomainFixture {
     public static final Station 주호민 = new Station(6L, "주호민");
     public static final Station 김풍 = new Station(7L, "김풍");
 
-    public static final Section 조앤_로운 = new Section(new Station(3L, "조앤"), new Station(4L, "로운"), 5);
-
-    public static final Section 후추_디노 = new Section(new Station(1L, "후추"), new Station(2L, "디노"), 7);
-    public static final Section 디노_조앤 = new Section(new Station(2L, "디노"), new Station(3L, "조앤"), 4);
+    public static final Section 조앤_로운 = new Section(조앤, 로운, 5);
+    public static final Section 후추_디노 = new Section(후추, 디노, 7);
+    public static final Section 디노_조앤 = new Section(디노, 조앤, 4);
     public static final Section 조앤_주호민 = new Section(조앤, 주호민, 5);
-
     public static final Section 침착맨_디노 = new Section(침착맨, 디노, 5);
     public static final Section 디노_로운 = new Section(디노, 로운, 2);
     public static final Section 로운_김풍 = new Section(로운, 김풍, 4);
