@@ -9,12 +9,12 @@ public class PathResponse {
 
     private final int distance;
     private final int fare;
-    private final List<LineResponse> path;
+    private final List<LineResponse> paths;
 
-    private PathResponse(final int distance, final int fare, final List<LineResponse> path) {
+    private PathResponse(final int distance, final int fare, final List<LineResponse> paths) {
         this.distance = distance;
         this.fare = fare;
-        this.path = path;
+        this.paths = paths;
     }
 
     public static PathResponse from(final PathDto pathDto) {
@@ -36,7 +36,7 @@ public class PathResponse {
         return fare;
     }
 
-    public List<LineResponse> getPath() {
-        return path;
+    public List<LineResponse> getPaths() {
+        return paths;
     }
 }
