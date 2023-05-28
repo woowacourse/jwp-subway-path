@@ -4,13 +4,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.domain.FeeCalculator;
-import subway.domain.Line;
+import subway.domain.Path;
 import subway.domain.PathFinder;
 import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.feePolicy.AgePolicy;
+import subway.domain.feePolicy.DistancePolicy;
 import subway.dto.RouteResponse;
 import subway.repository.SectionRepository;
-import java.util.List;
 
 @Service
 @Transactional
@@ -30,15 +31,13 @@ public class RouteService {
         Sections sections = sectionRepository.findAll();
 
         PathFinder pathFinder = new PathFinder(sections.getSections());
-        List<Station> stations = pathFinder.findShortestPath(startStation, endStation);
-        double distance = pathFinder.calculateShortestDistance(startStation, endStation);
-        List<Line> passLines = pathFinder.findPassLine(startStation, endStation);
+        Path shortesPath = pathFinder.findShortesPath(startStation, endStation);
 
-        FeeCalculator feeCalculator = new FeeCalculator();
-        int fee = feeCalculator.calculate(distance);
-        int extraFeeByLine = feeCalculator.addExtraFeeByLine(fee, passLines);
-        int totalFee = feeCalculator.discountByAge(extraFeeByLine, age);
+        DistancePolicy distancePolicy = DistancePolicy.from(shortesPath.getDistance());
+        AgePolicy agePolicy = AgePolicy.from(age);
+        FeeCalculator feeCalculator = new FeeCalculator(distancePolicy, agePolicy);
+        int totalFee = feeCalculator.calculate(shortesPath);
 
-        return new RouteResponse(stations, distance, totalFee);
+        return new RouteResponse(shortesPath.getStations(), shortesPath.getDistanceValue(), totalFee);
     }
 }
