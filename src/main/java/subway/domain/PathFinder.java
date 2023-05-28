@@ -32,15 +32,25 @@ public class PathFinder {
         subwayRoute.setEdgeWeight(upStation, downStation, distance.getValue());
     }
 
-    public List<Station> findShortestPath(final Station startStation, final Station endStation) {
+    public Path findShortesPath(final Station startStation, final Station endStation) {
+        return new Path(
+                findPassStations(startStation, endStation),
+                calculateShortestDistance(startStation, endStation),
+                findPassLine(startStation, endStation)
+        );
+    }
+
+    private List<Station> findPassStations(final Station startStation, final Station endStation) {
         return shortestPathAlgorithm.getPath(startStation, endStation).getVertexList();
     }
 
-    public double calculateShortestDistance(final Station startStation, final Station endStation) {
-        return shortestPathAlgorithm.getPathWeight(startStation, endStation);
+    private Distance calculateShortestDistance(final Station startStation, final Station endStation) {
+        double value = shortestPathAlgorithm.getPathWeight(startStation, endStation);
+
+        return new Distance(value);
     }
 
-    public List<Line> findPassLine(final Station startStation, final Station endStation) {
+    private List<Line> findPassLine(final Station startStation, final Station endStation) {
         List<StationEdge> edges = shortestPathAlgorithm.getPath(startStation, endStation).getEdgeList();
 
         return edges.stream()

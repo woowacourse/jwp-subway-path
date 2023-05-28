@@ -52,9 +52,10 @@ class PathFinderTest {
     @MethodSource("startToEndStationAndExpectRoute")
     void 시작역과_도착역의_최단_경로를_구한다(final Station startStation, final Station endStation, final List<Station> expect) {
         // when
-        List<Station> result = pathFinder.findShortestPath(startStation, endStation);
+        Path shortesPath = pathFinder.findShortesPath(startStation, endStation);
 
         // then
+        List<Station> result = shortesPath.getStations();
         assertThat(result).isEqualTo(expect);
     }
 
@@ -73,7 +74,7 @@ class PathFinderTest {
 
         // expect
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathFinder.findShortestPath(신림역, 천안역)
+                () -> pathFinder.findShortesPath(신림역, 천안역)
         );
     }
 
@@ -81,9 +82,10 @@ class PathFinderTest {
     @MethodSource("startToEndStationAndExpectDistance")
     void 시작역과_도착역의_최단_거리를_구한다(final Station startStation, final Station endStation, final double expect) {
         // when
-        var result = pathFinder.calculateShortestDistance(startStation, endStation);
+        Path shortesPath = pathFinder.findShortesPath(startStation, endStation);
 
         // then
+        double result = shortesPath.getDistanceValue();
         assertThat(result).isEqualTo(expect);
     }
 
@@ -102,7 +104,7 @@ class PathFinderTest {
 
         // expect
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathFinder.calculateShortestDistance(신림역, 천안역)
+                () -> pathFinder.findShortesPath(신림역, 천안역)
         );
     }
 
@@ -110,9 +112,10 @@ class PathFinderTest {
     @MethodSource("startToEndStationAndExpectLines")
     void 최단_거리를_지날_때_거치는_모든_라인을_구한다(final Station startStation, final Station endStation, final List<Line> expect) {
         // when
-        var result = pathFinder.findPassLine(startStation, endStation);
+        Path shortesPath = pathFinder.findShortesPath(startStation, endStation);
 
         // expect
+        List<Line> result = shortesPath.getPassLines();
         assertThat(result).isEqualTo(expect);
     }
 
