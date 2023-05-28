@@ -38,13 +38,14 @@
 ```mermaid
 graph TD
 Sections --> Section
-Sections --> TopDownStationArranger
+Sections --> StationArranger
 
 Section -->  Line
 Section --> Station
 Section --> Distance
 
-PathFinder
+PathFinder --> JGraphT
+
 FeeCalculator --> DistancePolicy
 FeeCalculator --> LinePolicy
 FeeCalculator --> AgePolicy
