@@ -5,16 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.exception.*;
+import subway.exception.SubwayException;
 
 @RestControllerAdvice
 public class ControllerAdvice {
 
     public static final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
 
-    @ExceptionHandler({CannotLinkException.class, DuplicateSectionException.class, DuplicateSectionException.class,
-            IllegalDistanceException.class, IllegalLineNameException.class, IllegalStationNameException.class,
-            LineNotFoundException.class, StationNotFoundException.class})
+    @ExceptionHandler(SubwayException.class)
     public ResponseEntity<String> handleIllegalArgumentException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
