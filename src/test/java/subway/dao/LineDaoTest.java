@@ -29,15 +29,19 @@ class LineDaoTest {
 
     @Test
     void 호선_삽입() {
+        // when
         Line savedLine = lineDao.insert(line);
 
+        // then
         assertThat(line).isEqualTo(savedLine);
     }
 
     @Test
     void ID가_없는_호선_삽입() {
+        // when
         Line savedLine = lineDao.insert(line);
 
+        // then
         assertAll(
                 () -> assertThat(savedLine.getId()).isEqualTo(1L),
                 () -> assertThat(savedLine.getName()).isEqualTo("2호선"),
@@ -47,19 +51,26 @@ class LineDaoTest {
 
     @Test
     void 모든_호선_조회() {
+        // init expect
         assertThat(lineDao.findAll()).hasSize(0);
 
+        // when
         lineDao.insert(line);
+
+        // then expect
         assertThat(lineDao.findAll()).hasSize(1);
     }
 
     @Test
     void ID로_단일_호선_조회() {
+        // given
         Line savedLine = lineDao.insert(line);
         Long id = savedLine.getId();
 
+        // when
         Line foundLine = lineDao.findById(id);
 
+        // then
         assertThat(savedLine).isEqualTo(foundLine);
     }
 

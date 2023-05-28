@@ -40,8 +40,10 @@ class PathFinderTest {
 
     @Test
     void 모든_Section_정보를_토대로_그래프_자료구조를_초기화한다() {
+        // when
         Graph<Station, StationEdge> subwayRoute = pathFinder.getSubwayRoute();
 
+        // then
         assertThat(subwayRoute.vertexSet().isEmpty()).isFalse();
         assertThat(subwayRoute.edgeSet().isEmpty()).isFalse();
     }
@@ -49,8 +51,10 @@ class PathFinderTest {
     @ParameterizedTest
     @MethodSource("startToEndStationAndExpectRoute")
     void 시작역과_도착역의_최단_경로를_구한다(final Station startStation, final Station endStation, final List<Station> expect) {
+        // when
         List<Station> result = pathFinder.findShortestPath(startStation, endStation);
 
+        // then
         assertThat(result).isEqualTo(expect);
     }
 
@@ -64,8 +68,10 @@ class PathFinderTest {
 
     @Test
     void 최단_경로를_구할_때_존재하지_않은_역이_포함되면_예외가_발생한다() {
+        // given
         Station 천안역 = new Station("천안역");
 
+        // expect
         assertThatIllegalArgumentException().isThrownBy(
                 () -> pathFinder.findShortestPath(신림역, 천안역)
         );
@@ -74,8 +80,10 @@ class PathFinderTest {
     @ParameterizedTest
     @MethodSource("startToEndStationAndExpectDistance")
     void 시작역과_도착역의_최단_거리를_구한다(final Station startStation, final Station endStation, final double expect) {
+        // when
         var result = pathFinder.calculateShortestDistance(startStation, endStation);
 
+        // then
         assertThat(result).isEqualTo(expect);
     }
 
@@ -89,8 +97,10 @@ class PathFinderTest {
 
     @Test
     void 최단_거리를_구할_때_존재하지_않은_역이_포함되면_예외가_발생한다() {
+        // given
         Station 천안역 = new Station("천안역");
 
+        // expect
         assertThatIllegalArgumentException().isThrownBy(
                 () -> pathFinder.calculateShortestDistance(신림역, 천안역)
         );
@@ -99,8 +109,10 @@ class PathFinderTest {
     @ParameterizedTest
     @MethodSource("startToEndStationAndExpectLines")
     void 최단_거리를_지날_때_거치는_모든_라인을_구한다(final Station startStation, final Station endStation, final List<Line> expect) {
+        // when
         var result = pathFinder.findPassLine(startStation, endStation);
 
+        // expect
         assertThat(result).isEqualTo(expect);
     }
 

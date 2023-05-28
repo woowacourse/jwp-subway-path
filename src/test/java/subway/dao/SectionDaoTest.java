@@ -52,6 +52,7 @@ class SectionDaoTest {
 
     @Test
     void 모든_Section_조회() {
+        // init expect
         assertThat(sectionDao.findAll()).hasSize(0);
 
         // given
@@ -109,13 +110,17 @@ class SectionDaoTest {
 
     @Test
     void 특정_호선ID와_일치하는_모든_Section_삭제() {
+        // given
         long lineId = 1L;
 
         SectionEntity sectionEntity = new SectionEntity(lineId, 1L, 2L, 10);
         sectionDao.insert(sectionEntity);
         assertThat(sectionDao.findAll()).hasSize(1);
 
+        // when
         sectionDao.deleteAllByLineId(lineId);
+
+        // then
         assertThat(sectionDao.findByLineId(lineId)).hasSize(0);
     }
 }

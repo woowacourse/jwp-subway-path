@@ -25,9 +25,11 @@ class SectionTest {
 
     @Test
     void 모든_필드가_같으면_같은_객체이다() {
+        // given
         Section section1 = new Section(1L, line, upStation, downStation, distance);
         Section section2 = new Section(1L, line, upStation, downStation, distance);
 
+        // expect
         assertThat(section1).isEqualTo(section2);
     }
 
@@ -48,17 +50,21 @@ class SectionTest {
 
     @Test
     void 같은_방향인지_확인한다() {
+        // given
         Section section1 = new Section(1L, line, upStation, downStation, new Distance(10));
         Section section2 = new Section(2L, line, upStation, downStation, new Distance(5));
 
+        // expect
         assertThat(section1.isSameDirection(section2)).isTrue();
     }
 
     @Test
     void 반대_방향인지_확인한다() {
+        // given
         Section section1 = new Section(1L, line, upStation, downStation, new Distance(10));
         Section section2 = new Section(2L, line, downStation, upStation, new Distance(5));
 
+        // expect
         assertThat(section1.isReverseDirection(section2)).isTrue();
     }
 

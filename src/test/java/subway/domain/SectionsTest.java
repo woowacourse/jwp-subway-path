@@ -32,89 +32,113 @@ class SectionsTest {
 
     @Test
     void 하나의_Section을_추가한다() {
+        // when
         sections.add(_2호선_봉천_서울대입구_10);
 
+        // then
         assertThat(sections.getSections()).containsExactly(_2호선_봉천_서울대입구_10);
     }
 
     @Test
     void 두_Section을_동시에_등록할_때_기존에_존재하면_예외가_발생한다() {
+        // expect
         assertThatThrownBy(() -> sections.addTwoSections(_2호선_신림_봉천_7, _2호선_신림_봉천_7))
                 .isInstanceOf(IllegalAddSectionException.class);
     }
 
     @Test
     void 두_Section을_동시에_등록할_때_기존에_존재하는_Section과_방향이_반대면_예외를_발생한다() {
+        // given
         Section _2호선_봉천_신림_5 = new Section(_2호선, 봉천역, 신림역, new Distance(5));
 
+        // expect
         assertThatThrownBy(() -> sections.addTwoSections(_2호선_신림_봉천_7, _2호선_봉천_신림_5))
                 .isInstanceOf(IllegalAddSectionException.class);
     }
 
     @Test
     void 두_Section을_동시에_등록할_때_방향이_같으면_예외가_발생한다() {
+        // given
         Section 신림선_신림_봉천_5 = new Section(신림선, 신림역, 봉천역, new Distance(5));
 
+        // expect
         assertThatThrownBy(() -> sections.addTwoSections(_2호선_신림_봉천_7, 신림선_신림_봉천_5))
                 .isInstanceOf(IllegalAddSectionException.class);
     }
 
     @Test
     void 하나의_역을_추가할_때_기존에_존재하면_예외가_발생한다() {
+        // when
         sections.add(_2호선_신림_봉천_7);
 
+        // expect
         assertThatThrownBy(() -> sections.add(_2호선_신림_봉천_7))
                 .isInstanceOf(IllegalAddSectionException.class);
     }
 
     @Test
     void 하나의_Section을_등록할_때_기존에_존재하는_Section과_방향만_반대면_예외를_발생한다() {
+        // given
         sections.add(_2호선_신림_봉천_7);
 
+        // when
         Section _2호선_봉천_신림_거리7 = new Section(_2호선, 봉천역, 신림역, new Distance(7));
 
+        // then
         assertThatThrownBy(() -> sections.add(_2호선_봉천_신림_거리7))
                 .isInstanceOf(IllegalAddSectionException.class);
     }
 
     @Test
     void 하나의_Section을_등록할_때_존재하는_Section과_역의_방향이_같아도_호선이_다르면_예외가_발생하지_않는다() {
+        // given
         sections.add(_2호선_신림_봉천_7);
 
+        // when
         Section 신림선_신림_봉천_9 = new Section(신림선, 신림역, 봉천역, new Distance(9));
 
+        // then
         assertThatNoException().isThrownBy(() -> sections.add(신림선_신림_봉천_9));
     }
 
     @Test
     void 특정_호선의_모든_역들을_순서대로_조회한다() {
+        // given
         sections.add(_2호선_신림_봉천_7);
 
+        // when
         var allStation = sections.allStations();
 
+        // then
         assertThat(allStation).containsExactly(신림역, 봉천역);
     }
 
     @Test
     void 비어있는_호선을_조회하면_아무_역이_없는_결과가_반환된다() {
+        // when
         var stations = sections.allStations();
 
+        // then
         assertThat(stations.isEmpty()).isTrue();
     }
 
     @Test
     void 비어있는_호선에_두_역을_추가한다() {
+        // expect
         assertThatThrownBy(() -> sections.addTwoSections(_2호선_신림_봉천_7, _2호선_봉천_서울대입구_10))
                 .isInstanceOf(IllegalAddSectionException.class);
     }
 
     @Test
     void 하나의_호선에_두_개의_Section이_있을_때_맨_앞에_역을_추가한다() {
+        // given
         sections.add(_2호선_봉천_서울대입구_10);
         sections.add(_2호선_서울대입구_사당_6);
 
+        // when
         sections.add(_2호선_신림_봉천_7);
 
+        // then
         assertThat(sections.allStations()).containsExactly(신림역, 봉천역, 서울대입구역, 사당역);
     }
 
