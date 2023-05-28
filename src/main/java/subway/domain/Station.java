@@ -16,7 +16,7 @@ public class Station {
     public Station(final Long id, final String name) {
         validate(name);
         this.id = id;
-        this.name = new Name(name);
+        this.name = Name.from(name);
     }
 
     private void validate(final String name) {

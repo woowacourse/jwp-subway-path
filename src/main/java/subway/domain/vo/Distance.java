@@ -4,9 +4,11 @@ import java.util.Objects;
 
 public class Distance {
 
+    public static final Distance ZERO = new Distance(0);
+
     private final int value;
 
-    public Distance(final int value) {
+    private Distance(final int value) {
         validate(value);
         this.value = value;
     }
@@ -35,6 +37,10 @@ public class Distance {
 
     public boolean isEqualsOrGreaterThan(final Distance other) {
         return value >= other.value;
+    }
+
+    public boolean isZero() {
+        return value == 0;
     }
 
     public int getValue() {

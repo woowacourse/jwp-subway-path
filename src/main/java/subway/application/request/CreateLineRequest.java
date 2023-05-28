@@ -2,6 +2,7 @@ package subway.application.request;
 
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class CreateLineRequest {
@@ -11,6 +12,7 @@ public class CreateLineRequest {
     private String name;
 
     @NotNull
+    @NotBlank(message = "노선 색상은 공백일 수 없습니다.")
     private String color;
 
     public CreateLineRequest() {

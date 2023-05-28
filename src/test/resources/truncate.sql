@@ -1,0 +1,4 @@
+TRUNCATE TABLE station;
+TRUNCATE TABLE section;
+TRUNCATE TABLE line;
+TRUNCATE TABLE line_expense;

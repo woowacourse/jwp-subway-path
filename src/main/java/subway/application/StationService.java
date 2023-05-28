@@ -47,7 +47,7 @@ public class StationService {
         final Station upStation = saveStationWhenNameIsNotExist(request.getUpStationName());
         final Station downStation = saveStationWhenNameIsNotExist(request.getDownStationName());
 
-        final Section section = new Section(new Distance(request.getDistance()), false, upStation, downStation);
+        final Section section = new Section(Distance.from(request.getDistance()), false, upStation, downStation);
         line.addSection(section);
 
         deleteAllThenSaveAllSections(line);

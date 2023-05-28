@@ -4,13 +4,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.application.response.QueryShortestRouteResponse;
 import subway.application.response.RouteEdgeResponse;
-import subway.integration.support.RestAssuredFixture;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.integration.support.RestAssuredFixture.get;
 
 public class RouteAssured {
 
@@ -45,8 +45,9 @@ public class RouteAssured {
 
         private ExtractableResponse<Response> response;
 
-        public RouteRequestBuilder 출발역과_도착역의_최단경로를_조회한다(final String 출발역명, final String 도착역명) {
-            response = RestAssuredFixture.get("/routes", Map.of(
+        public RouteRequestBuilder 최단경로와_총금액_조회한다(final Integer 승객_나이, final String 출발역명, final String 도착역명) {
+            response = get("/routes", Map.of(
+                    "passengerAge", 승객_나이,
                     "startStationName", 출발역명,
                     "endStationName", 도착역명
             ));

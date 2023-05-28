@@ -15,14 +15,14 @@ class NameTest {
     @ParameterizedTest
     @NullAndEmptySource
     void 이름이_공백이거나_null일_경우_예외가_발생한다(final String nameValue) {
-        assertThatThrownBy(() -> new Name(nameValue))
+        assertThatThrownBy(() -> Name.from(nameValue))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"", "01234567890"})
     void 이름의_길이가_1미만_10초과일_경우_예외가_발생한다(final String nameValue) {
-        assertThatThrownBy(() -> new Name(nameValue))
+        assertThatThrownBy(() -> Name.from(nameValue))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

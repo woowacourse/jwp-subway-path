@@ -27,6 +27,11 @@ public class SqlHelper {
         return this;
     }
 
+    public SqlHelper update() {
+        sql.append("UPDATE");
+        return this;
+    }
+
     public SqlHelper values(final String columns) {
         sql.append(" VALUES(").append(columns).append(")");
         return this;
@@ -59,6 +64,11 @@ public class SqlHelper {
 
     public SqlHelper in(final String columnName, final String values) {
         sql.append(" ").append(columnName).append(" IN (").append(values).append(")");
+        return this;
+    }
+
+    public SqlHelper set(final String condition) {
+        sql.append(" SET ").append(condition);
         return this;
     }
 

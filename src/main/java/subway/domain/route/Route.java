@@ -1,8 +1,7 @@
 package subway.domain.route;
 
-import subway.domain.vo.Distance;
-import subway.domain.vo.Money;
 import subway.domain.Station;
+import subway.domain.vo.Distance;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,22 +13,19 @@ public class Route {
     private final List<Station> transfers;
     private final List<RouteEdge> sections;
     private final Distance totalDistance;
-    private final Money totalPrice;
 
     public Route(
             final Station from,
             final Station to,
             final List<Station> transfers,
             final List<RouteEdge> sections,
-            final Distance totalDistance,
-            final Money totalPrice
+            final Distance totalDistance
     ) {
         this.from = from;
         this.to = to;
         this.transfers = transfers;
         this.sections = sections;
         this.totalDistance = totalDistance;
-        this.totalPrice = totalPrice;
     }
 
     public Station getStart() {
@@ -44,16 +40,12 @@ public class Route {
         return transfers;
     }
 
-    public List<RouteEdge> getSections() {
+    public List<RouteEdge> getRouteEdges() {
         return sections;
     }
 
     public Distance getTotalDistance() {
         return totalDistance;
-    }
-
-    public Money getTotalPrice() {
-        return totalPrice;
     }
 
     @Override
@@ -65,12 +57,11 @@ public class Route {
                 && Objects.equals(to, route.to)
                 && Objects.equals(transfers, route.transfers)
                 && Objects.equals(sections, route.sections)
-                && Objects.equals(totalDistance, route.totalDistance)
-                && Objects.equals(totalPrice, route.totalPrice);
+                && Objects.equals(totalDistance, route.totalDistance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from, to, transfers, sections, totalDistance, totalPrice);
+        return Objects.hash(from, to, transfers, sections, totalDistance);
     }
 }

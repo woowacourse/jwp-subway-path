@@ -27,22 +27,27 @@ public class SectionRepository {
     }
 
     public Section findBySectionId(final Long sectionId) {
-        final SectionEntity section = sectionDao.findBySectionId(sectionId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 구간_식별자값으로 구간을 조회하지 못했습니다."));
+        final SectionEntity section = getSectionOrThrowException(sectionId);
+        final StationEntity upStationEntity = getStationOrThrowException(section.getUpStationId());
+        final StationEntity downStationEntity = getStationOrThrowException(section.getDownStationId());
 
-        final StationEntity upStationEntity = stationDao.findByStationId(section.getUpStationId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 역_식별자값으로 구간을 조회하지 못했습니다."));
+        final Station upStation = upStationEntity.toDomain();
+        final Station downStation = downStationEntity.toDomain();
 
-        final StationEntity downStationEntity = stationDao.findByStationId(section.getDownStationId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 역_식별자값으로 구간을 조회하지 못했습니다."));
-
-        final Station upStation = new Station(upStationEntity.getId(), upStationEntity.getName());
-        final Station downStation = new Station(downStationEntity.getId(), downStationEntity.getName());
-
-        final Distance distance = new Distance(section.getDistance());
+        final Distance distance = Distance.from(section.getDistance());
         final Boolean isStart = section.getStart();
 
         return new Section(sectionId, distance, isStart, upStation, downStation);
+    }
+
+    private StationEntity getStationOrThrowException(final Long section) {
+        return stationDao.findByStationId(section)
+                .orElseThrow(() -> new IllegalArgumentException("해당 역_식별자값으로 구간을 조회하지 못했습니다."));
+    }
+
+    private SectionEntity getSectionOrThrowException(final Long sectionId) {
+        return sectionDao.findBySectionId(sectionId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 구간_식별자값으로 구간을 조회하지 못했습니다."));
     }
 
     public void deleteByLineId(final Long lineId) {

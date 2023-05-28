@@ -3,12 +3,15 @@ package subway.integration;
 import org.junit.jupiter.api.Test;
 import subway.config.ControllerTestConfig;
 import subway.integration.builder.LineAssured;
+import subway.integration.builder.FareAssured;
 import subway.integration.builder.RouteAssured;
 import subway.integration.builder.StationAssured;
 
 import java.util.List;
 
 import static subway.integration.builder.LineAssured.노선_요청_데이터;
+import static subway.integration.builder.FareAssured.노선_추가_비용_정책_수정_데이터;
+import static subway.integration.builder.FareAssured.노선_추가_비용_정책_응답_데이터;
 import static subway.integration.builder.RouteAssured.중간_경로_응답;
 import static subway.integration.builder.RouteAssured.최종_경로_정보_응답;
 import static subway.integration.builder.StationAssured.구간_요청_데이터;
@@ -16,12 +19,28 @@ import static subway.integration.builder.StationAssured.역_삭제_요청_데이
 
 class RouteIntegrationTest extends ControllerTestConfig {
 
-    Long 노선_저장(final String number, final String 파랑) {
+    Long 노선을_저장한다(final String 노선명, final String 노선_색상) {
         return LineAssured
                 .클라이언트_요청()
-                    .노선을_등록한다(노선_요청_데이터(number, 파랑))
+                    .노선을_등록한다(노선_요청_데이터(노선명, 노선_색상))
                 .서버_응답_검증()
                 .서버_응답_추출(Long.class);
+    }
+
+    Long 노선_추가_비용_정책을_수정한다(final String 추가_비용, final Integer 거리당, final Long 노선_식별자값) {
+        final Long 노선_추가_비용_정책_식별자값 = FareAssured
+                .클라이언트_요청()
+                    .노선_추가_비용_정책을_수정한다(노선_식별자값, 노선_추가_비용_정책_수정_데이터(추가_비용, 거리당))
+                .서버_응답_검증()
+                .서버_응답_추출(Long.class);
+
+        FareAssured
+                .클라이언트_요청()
+                    .노선_추가_비용_정책을_조회한다(노선_식별자값)
+                .서버_응답_검증()
+                    .노선_추가_비용_정책_조회_검증(노선_추가_비용_정책_응답_데이터(노선_추가_비용_정책_식별자값, 추가_비용, 거리당, 노선_식별자값));
+
+        return 노선_추가_비용_정책_식별자값;
     }
 
     @Test
@@ -31,7 +50,7 @@ class RouteIntegrationTest extends ControllerTestConfig {
 
         RouteAssured
                 .클라이언트_요청()
-                    .출발역과_도착역의_최단경로를_조회한다("G", "A")
+                    .최단경로와_총금액_조회한다(20, "G", "A")
                 .서버_응답_검증()
                     .최단_경로_조회_검증(최종_경로_정보_응답("G", "A",
                             List.of("F", "D"),
@@ -41,7 +60,7 @@ class RouteIntegrationTest extends ControllerTestConfig {
                                     중간_경로_응답("D", "C", "1", 3),
                                     중간_경로_응답("C", "B", "1", 2),
                                     중간_경로_응답("B", "A", "1", 1)
-                            ), 19, "1350"));
+                            ), 19, "2850"));
     }
 
     @Test
@@ -55,13 +74,13 @@ class RouteIntegrationTest extends ControllerTestConfig {
 
         RouteAssured
                 .클라이언트_요청()
-                    .출발역과_도착역의_최단경로를_조회한다("G", "A")
+                    .최단경로와_총금액_조회한다(20, "G", "A")
                 .서버_응답_검증()
                     .최단_경로_조회_검증(
                             최종_경로_정보_응답("G", "A",
                                     List.of(),
                                     List.of(중간_경로_응답("G", "A", "1", 1)),
-                                    1, "1250"));
+                                    1, "1350"));
     }
 
     @Test
@@ -69,12 +88,13 @@ class RouteIntegrationTest extends ControllerTestConfig {
 
         출발역과_도착지가_있을_때_환승을_2번하는_상황에서_최단_경로와_금액을_구한다();
 
-        StationAssured.클라이언트_요청()
-                .역과_구간을_삭제한다(역_삭제_요청_데이터("B", "1"));
+        StationAssured
+                .클라이언트_요청()
+                    .역과_구간을_삭제한다(역_삭제_요청_데이터("B", "1"));
 
         RouteAssured
                 .클라이언트_요청()
-                    .출발역과_도착역의_최단경로를_조회한다("G", "A")
+                    .최단경로와_총금액_조회한다(20, "G", "A")
                 .서버_응답_검증()
                     .최단_경로_조회_검증(
                             최종_경로_정보_응답("G", "A",
@@ -84,13 +104,17 @@ class RouteIntegrationTest extends ControllerTestConfig {
                                             중간_경로_응답("E", "D", "2", 1),
                                             중간_경로_응답("D", "C", "1", 3),
                                             중간_경로_응답("C", "A", "1", 3)
-                                    ), 19, "1350"));
+                                    ), 19, "2850"));
     }
 
     void 출발역과_도착지가_있을_때_환승을_2번하는_상황에서_최단_경로와_금액을_구한다() {
-        final Long 파랑_노선_식별자값 = 노선_저장("1", "파랑");
-        final Long 초록_노선_식별자값 = 노선_저장("2", "초록");
-        final Long 주황_노선_식별자값 = 노선_저장("3", "주황");
+        final Long 파랑_노선_식별자값 = 노선을_저장한다("1", "파랑");
+        final Long 초록_노선_식별자값 = 노선을_저장한다("2", "초록");
+        final Long 주황_노선_식별자값 = 노선을_저장한다("3", "주황");
+
+        노선_추가_비용_정책을_수정한다("100", 1, 파랑_노선_식별자값);
+        노선_추가_비용_정책을_수정한다("500", 5, 초록_노선_식별자값);
+        노선_추가_비용_정책을_수정한다("1000", 10, 주황_노선_식별자값);
 
         StationAssured
                 .클라이언트_요청()
@@ -121,7 +145,7 @@ class RouteIntegrationTest extends ControllerTestConfig {
 
         RouteAssured
                 .클라이언트_요청()
-                    .출발역과_도착역의_최단경로를_조회한다("A", "G")
+                    .최단경로와_총금액_조회한다(20, "A", "G")
                 .서버_응답_검증()
                     .최단_경로_조회_검증(
                             최종_경로_정보_응답("A", "G",
@@ -132,23 +156,24 @@ class RouteIntegrationTest extends ControllerTestConfig {
                                             중간_경로_응답("D", "E", "2", 1),
                                             중간_경로_응답("E", "F", "2", 2),
                                             중간_경로_응답("F", "G", "3", 10)
-                                    ), 19, "1350"));
+                                    ), 19, "2850"));
     }
 
     @Test
     void 출발역과_도착지가_있을_때_환승을_하지않는_상황에서_최단_경로와_금액을_구한다() {
-        final Long 파랑_노선_식별자값 = 노선_저장("1", "파랑");
-        final Long 초록_노선_식별자값 = 노선_저장("2", "초록");
-        final Long 주황_노선_식별자값 = 노선_저장("3", "주황");
+        final Long 파랑_노선_식별자값 = 노선을_저장한다("1", "파랑");
+        final Long 초록_노선_식별자값 = 노선을_저장한다("2", "초록");
+        final Long 주황_노선_식별자값 = 노선을_저장한다("3", "주황");
 
 
-        StationAssured.클라이언트_요청()
-                .역과_구간을_등록한다(구간_요청_데이터("A", "B", 파랑_노선_식별자값, 1))
-                .역과_구간을_등록한다(구간_요청_데이터("B", "C", 파랑_노선_식별자값, 2))
-                .역과_구간을_등록한다(구간_요청_데이터("C", "D", 파랑_노선_식별자값, 3))
-                .역과_구간을_등록한다(구간_요청_데이터("D", "E", 초록_노선_식별자값, 1))
-                .역과_구간을_등록한다(구간_요청_데이터("E", "F", 초록_노선_식별자값, 2))
-                .역과_구간을_등록한다(구간_요청_데이터("A", "F", 주황_노선_식별자값, 1));
+        StationAssured
+                .클라이언트_요청()
+                    .역과_구간을_등록한다(구간_요청_데이터("A", "B", 파랑_노선_식별자값, 1))
+                    .역과_구간을_등록한다(구간_요청_데이터("B", "C", 파랑_노선_식별자값, 2))
+                    .역과_구간을_등록한다(구간_요청_데이터("C", "D", 파랑_노선_식별자값, 3))
+                    .역과_구간을_등록한다(구간_요청_데이터("D", "E", 초록_노선_식별자값, 1))
+                    .역과_구간을_등록한다(구간_요청_데이터("E", "F", 초록_노선_식별자값, 2))
+                    .역과_구간을_등록한다(구간_요청_데이터("A", "F", 주황_노선_식별자값, 1));
 
         LineAssured
                 .클라이언트_요청()
@@ -170,12 +195,12 @@ class RouteIntegrationTest extends ControllerTestConfig {
 
         RouteAssured
                 .클라이언트_요청()
-                    .출발역과_도착역의_최단경로를_조회한다("A", "F")
+                .최단경로와_총금액_조회한다(20, "A", "F")
                 .서버_응답_검증()
-                    .최단_경로_조회_검증(
-                            최종_경로_정보_응답("A", "F",
-                                    List.of(),
-                                    List.of(중간_경로_응답("A", "F", "3", 1)
-                                    ), 1, "1250"));
+                .최단_경로_조회_검증(
+                        최종_경로_정보_응답("A", "F",
+                                List.of(),
+                                List.of(중간_경로_응답("A", "F", "3", 1)
+                                ), 1, "1250"));
     }
 }

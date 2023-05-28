@@ -5,14 +5,12 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.domain.Line;
-import subway.domain.Payment;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.route.Route;
 import subway.domain.route.RouteEdge;
 import subway.domain.route.RouteFinder;
 import subway.domain.vo.Distance;
-import subway.domain.vo.Money;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -31,16 +29,16 @@ public class RouteGraphFinder implements RouteFinder {
     private DijkstraShortestPath<Station, RouteEdge> createDijkstra(final List<Line> lines) {
         final WeightedMultigraph<Station, RouteEdge> newGraph = new WeightedMultigraph<>(RouteEdge.class);
         lines.forEach(line -> line.getSections()
-                .forEach(section -> setUpEdge(newGraph, RouteEdge.from(section, line.getNameValue()))));
+                .forEach(section -> setUpEdge(newGraph, RouteEdge.from(section, line))));
         return new DijkstraShortestPath<>(newGraph);
     }
 
-    private void setUpEdge(final WeightedMultigraph<Station, RouteEdge> newGraph, final RouteEdge section) {
-        newGraph.addVertex(section.getUpStation());
-        newGraph.addVertex(section.getDownStation());
-        newGraph.addEdge(section.getUpStation(), section.getDownStation(), section);
-        newGraph.addEdge(section.getDownStation(), section.getUpStation(), section);
-        newGraph.setEdgeWeight(section, section.getDistance().getValue());
+    private void setUpEdge(final WeightedMultigraph<Station, RouteEdge> newGraph, final RouteEdge routeEdge) {
+        newGraph.addVertex(routeEdge.getUpStation());
+        newGraph.addVertex(routeEdge.getDownStation());
+        newGraph.addEdge(routeEdge.getUpStation(), routeEdge.getDownStation(), routeEdge);
+        newGraph.addEdge(routeEdge.getDownStation(), routeEdge.getUpStation(), routeEdge);
+        newGraph.setEdgeWeight(routeEdge, routeEdge.getDistance().getValue());
     }
 
     public Route findRouteBy(final DijkstraShortestPath<Station, RouteEdge> graph, final Station start, final Station end) {
@@ -51,9 +49,8 @@ public class RouteGraphFinder implements RouteFinder {
         final List<RouteEdge> sectionsInOrder = collectSectionsInOrder(findSections, findStations);
         final List<Station> transfersInOrder = collectTransfersInOrder(findSections, findStations);
         final Distance totalDistance = Distance.from((int) findPath.getWeight());
-        final Money totalPrice = Payment.calculate(totalDistance);
 
-        return new Route(start, end, transfersInOrder, sectionsInOrder, totalDistance, totalPrice);
+        return new Route(start, end, transfersInOrder, sectionsInOrder, totalDistance);
     }
 
     private List<Station> collectTransfersInOrder(final List<RouteEdge> sections, final List<Station> stations) {
@@ -67,7 +64,8 @@ public class RouteGraphFinder implements RouteFinder {
             final RouteEdge currentSection = sectionDeque.pollFirst();
             final RouteEdge nextSection = sectionDeque.peek();
             final Station transfer = stationDeque.pollFirst();
-            if (!currentSection.getLineName().equals(nextSection.getLineName())) {
+
+            if (currentSection.isNotSameLine(nextSection)) {
                 transfersInOrder.add(transfer);
             }
         }
@@ -85,8 +83,7 @@ public class RouteGraphFinder implements RouteFinder {
             final Station rightStation = stationDeque.peek();
             final RouteEdge currentSection = sectionDeque.removeFirst();
             final Section sectionInOrder = new Section(currentSection.getDistance(), false, leftStation, rightStation);
-            sectionsInOrder.add(RouteEdge.from(
-                    sectionInOrder, currentSection.getLineName().getValue()));
+            sectionsInOrder.add(RouteEdge.from(sectionInOrder, currentSection.getLine()));
         }
 
         return sectionsInOrder;

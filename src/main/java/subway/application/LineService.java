@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.request.CreateLineRequest;
 import subway.application.response.LineResponse;
-import subway.domain.Line;
 import subway.application.response.StationResponse;
+import subway.dao.entity.LineExpenseEntity;
+import subway.domain.Line;
+import subway.repository.FareRepository;
 import subway.repository.LineRepository;
 
 import java.util.List;
@@ -16,14 +18,19 @@ import java.util.stream.Collectors;
 public class LineService {
 
     private final LineRepository lineRepository;
+    private final FareRepository fareRepository;
 
-    public LineService(final LineRepository lineRepository) {
+    public LineService(final LineRepository lineRepository, final FareRepository fareRepository) {
         this.lineRepository = lineRepository;
+        this.fareRepository = fareRepository;
     }
 
     @Transactional
     public Long saveLine(final CreateLineRequest request) {
-        return lineRepository.saveLine(request.getName(), request.getColor());
+        final Long saveLineId = lineRepository.saveLine(request.getName(), request.getColor());
+        fareRepository.saveLineExpense(LineExpenseEntity.freeExpenseWithLineId(saveLineId));
+
+        return saveLineId;
     }
 
     public LineResponse findByLineId(final Long lineId) {

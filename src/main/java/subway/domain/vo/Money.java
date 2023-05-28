@@ -6,9 +6,11 @@ import java.util.Objects;
 
 public class Money {
 
+    public static final Money ZERO = new Money(new BigDecimal("0"));
+
     private final BigDecimal value;
 
-    public Money(final BigDecimal value) {
+    private Money(final BigDecimal value) {
         this.value = value;
     }
 
@@ -18,6 +20,10 @@ public class Money {
 
     public Money plus(final Money otherValue) {
         return new Money(value.add(otherValue.value));
+    }
+
+    public Money minus(final Money otherValue) {
+        return new Money(value.subtract(otherValue.value));
     }
 
     public Money multiply(final BigDecimal otherValue) {

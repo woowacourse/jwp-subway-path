@@ -22,7 +22,7 @@ public class Line {
     public Line(final Long id, final String name, final String color, final Sections sections) {
         validate(name, color, sections);
         this.id = id;
-        this.name = new Name(name);
+        this.name = Name.from(name);
         this.color = new Color(color);
         this.sections = sections;
     }

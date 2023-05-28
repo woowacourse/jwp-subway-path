@@ -40,7 +40,7 @@ public class SectionEntity {
     }
 
     public Section toDomain(final Station upStation, final Station downStation) {
-        return new Section(id, new Distance(distance), isStart, upStation, downStation);
+        return new Section(id, Distance.from(distance), isStart, upStation, downStation);
     }
 
     public Long getId() {

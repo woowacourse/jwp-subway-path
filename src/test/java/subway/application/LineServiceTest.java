@@ -2,11 +2,14 @@ package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import subway.application.request.CreateLineRequest;
 import subway.application.response.LineResponse;
 import subway.application.response.StationResponse;
 import subway.config.ServiceTestConfig;
+import subway.dao.entity.LineExpenseEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
+import subway.domain.fare.expense.LineExpense;
 
 import java.util.List;
 
@@ -18,7 +21,23 @@ class LineServiceTest extends ServiceTestConfig {
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(lineRepository);
+        lineService = new LineService(lineRepository, fareRepository);
+    }
+
+    @Test
+    void 새로운_노선을_저장할_경우_기본_노선_추가_비용_정책이_저장된다() {
+        // given
+        final CreateLineRequest request = new CreateLineRequest("1", "파랑");
+        final Long saveLineId = lineService.saveLine(request);
+
+        // when
+        final LineExpense findLineExpense = fareRepository.findLineExpenseByLineId(saveLineId);
+
+        // then
+        assertThat(findLineExpense)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(LineExpenseEntity.freeExpenseWithLineId(saveLineId).toDomain());
     }
 
     @Test

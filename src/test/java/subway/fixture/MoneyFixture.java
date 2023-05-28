@@ -4,7 +4,7 @@ import subway.domain.vo.Money;
 
 public abstract class MoneyFixture {
 
-    public static Money 비용(final String 비용) {
-        return Money.from(비용);
+    public static Money 금액(final String 금액) {
+        return Money.from(금액);
     }
 }

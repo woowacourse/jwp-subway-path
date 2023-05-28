@@ -23,3 +23,13 @@ create table if not exists section
     line_id         bigint  not null,
     primary key (id)
 );
+
+create table if not exists line_expense
+(
+    id           bigint not null auto_increment,
+    per_expense     int    not null,
+    per_distance int    not null,
+    line_id      bigint not null,
+    primary key (id),
+    unique (line_id)
+);
