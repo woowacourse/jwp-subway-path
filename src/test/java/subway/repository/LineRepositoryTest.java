@@ -40,7 +40,7 @@ class LineRepositoryTest {
         SectionDao sectionDao = new SectionDao(jdbcTemplate);
         LineDao lineDao = new LineDao(jdbcTemplate);
         stationRepository = new StationRepository(stationDao);
-        sectionRepository = new SectionRepository(sectionDao, stationDao);
+        sectionRepository = new SectionRepository(sectionDao);
         lineRepository = new LineRepository(lineDao, sectionDao, stationDao);
     }
 
@@ -98,7 +98,7 @@ class LineRepositoryTest {
         lineRepository.save(Line.createWithoutId("3호선", List.of()));
 
         // when
-        List<Line> 노선들 = lineRepository.findAll();
+        List<Line> 노선들 = lineRepository.findAll().getLines();
 
         // then
         assertAll(

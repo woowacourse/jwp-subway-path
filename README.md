@@ -2,6 +2,10 @@
 
 ## 요구사항
 
+- [x] 데이터베이스 설정을 프로덕션과 테스트로 분리한다.
+    - [x] 프로덕션 데이터베이스는 로컬에 저장하도록 설정한다.
+    - [x] 테스트용 데이터베이스는 인메모리로 동작하도록 설정한다.
+
 ### API 요구사항
 
 - [x] 노선 추가
@@ -9,6 +13,9 @@
     - [x] 노선에 포함된 역을 순서대로 보여주도록 한다.
 - [x] 노선 목록 조회
     - [x] 노선에 포함된 역을 순서대로 보여주도록 한다.
+- [x] 경로 조회
+    - [x] 출발역과 도착역 사이의 최단 경로를 구한다.
+    - [x] 최단 거리 경로, 총 거리 정보, 요금 정보를 응답한다.
 - [x] 역 추가
     - [x] 역이 등록될 때 양의 정수인 거리 정보가 포함되어야 한다.
     - [x] 노선에 역이 하나도 없을 때 두 역을 동시에 등록해야 한다.
@@ -57,6 +64,12 @@
 | Method | URI       | Description |
 |--------|-----------|-------------|
 | POST   | /stations | 역 추가        |
+
+### 경로 조회 API
+
+| Method | URI   | Description |
+|--------|-------|-------------|
+| GET    | /path | 경로 조회       |
 
 ## Line API 요청 / 응답 예시
 
@@ -208,4 +221,62 @@ Host: localhost:8080
 HTTP/1.1 201 Created
 Content-Type: application/json
 Location: /stations/1
+```
+
+---
+## Path API 요청 / 응답 예시
+
+### GET : 경로 조회
+
+#### Request
+### GET : 모든 노선 목록 조회
+
+#### Request
+
+```http request
+GET /path HTTP/1.1
+Host: localhost:8080
+
+{
+    "startStationId": 7,
+    "endStationId": 9
+}
+```
+
+#### Response
+
+``` http request
+HTTP/1.1 200
+Content-Type: application/json
+
+{
+    "path": [
+        {
+            "stationId": 7,
+            "stationName": "총신대입구역"
+        },
+        {
+            "stationId": 2,
+            "stationName": "사당역"
+        },
+        {
+            "stationId": 3,
+            "stationName": "방배역"
+        },
+        {
+            "stationId": 4,
+            "stationName": "서초역"
+        },
+        {
+            "stationId": 5,
+            "stationName": "교대역"
+        },
+        {
+            "stationId": 9,
+            "stationName": "고속터미널역"
+        }
+    ],
+    "totalDistance": 52,
+    "fare": 2150
+}
 ```

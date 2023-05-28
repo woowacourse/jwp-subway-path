@@ -20,6 +20,10 @@ public class LineStep {
                 .extract();
     }
 
+    public static LineRequest 노선_생성_요청을_생성한다(final String 노선_이름) {
+        return new LineRequest(노선_이름);
+    }
+
     public static ExtractableResponse<Response> 노선_조회_요청() {
         return RestAssured
                 .given().log().all()

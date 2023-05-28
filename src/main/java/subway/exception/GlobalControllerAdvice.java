@@ -1,5 +1,7 @@
 package subway.exception;
 
+import java.util.List;
+import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,6 +24,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(ConstraintViolationException e) {
+        List<String> errorMessages = List.of(e.getMessage().split(": "));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errorMessages.get(1)));
     }
 
     @ExceptionHandler(Exception.class)

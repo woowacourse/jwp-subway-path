@@ -5,23 +5,23 @@ import java.util.stream.Collectors;
 
 public class LineWithSectionEntities {
     private final LineEntity lineEntity;
-    private final List<SectionEntity> sectionEntities;
+    private final List<SectionWithStationNameEntity> sectionEntities;
 
-    public LineWithSectionEntities(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
+    public LineWithSectionEntities(final LineEntity lineEntity,
+                                   final List<SectionWithStationNameEntity> sectionEntities) {
         this.lineEntity = lineEntity;
         this.sectionEntities = sectionEntities;
     }
 
     public static LineWithSectionEntities of(final LineEntity lineEntity,
-                                             final List<LineWithSectionEntity> lineWithSectionEntities
+                                             final List<LineWithSectionEntityAndStationEntity> lineWithSectionEntities
     ) {
-        List<SectionEntity> sectionEntities = lineWithSectionEntities.stream()
-                .map(LineWithSectionEntity::getSectionEntity)
-                .map(entity -> new SectionEntity(
-                        entity.getId(),
-                        entity.getUpStationId(),
-                        entity.getDownStationId(),
-                        entity.getLineId(),
+        List<SectionWithStationNameEntity> sectionEntities = lineWithSectionEntities.stream()
+                .map(LineWithSectionEntityAndStationEntity::getSectionEntity)
+                .map(entity -> new SectionWithStationNameEntity(
+                        entity.getSectionId(),
+                        entity.getUpStationEntity(),
+                        entity.getDownStationEntity(),
                         entity.getDistance()
                 ))
                 .collect(Collectors.toList());
@@ -33,7 +33,7 @@ public class LineWithSectionEntities {
         return lineEntity;
     }
 
-    public List<SectionEntity> getSectionEntities() {
+    public List<SectionWithStationNameEntity> getSectionEntities() {
         return sectionEntities;
     }
 }

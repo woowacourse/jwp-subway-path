@@ -13,6 +13,7 @@ import subway.dao.entity.SectionEntity;
 import subway.dao.entity.SectionWithStationNameEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.exception.DuplicateException;
@@ -51,12 +52,8 @@ public class LineRepository {
     private List<Section> findSectionsByLineId(final Long id) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
 
-        return sectionEntities.stream()
-                .map(entity -> new Section(
-                        findStationByStationId(entity.getUpStationId()),
-                        findStationByStationId(entity.getDownStationId()),
-                        entity.getDistance()
-                )).collect(Collectors.toList());
+        return sectionEntities.stream().map(entity -> new Section(findStationByStationId(entity.getUpStationId()),
+                findStationByStationId(entity.getDownStationId()), entity.getDistance())).collect(Collectors.toList());
     }
 
     private Station findStationByStationId(final Long stationId) {
@@ -66,35 +63,29 @@ public class LineRepository {
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
-    public List<Line> findAll() {
-        List<LineWithSectionEntities> linesWithSections = lineDao.findLinesWithSections();   // section 리스트를 들고 있는 노선들
+    public Lines findAll() {
+        List<LineWithSectionEntities> linesWithSections = lineDao.findLinesWithSections();
         List<Line> lines = new ArrayList<>();
-        for (LineWithSectionEntities linesWithSection : linesWithSections) {    // 라인 하나 꺼내기
+
+        for (LineWithSectionEntities linesWithSection : linesWithSections) {
             List<SectionWithStationNameEntity> sectionEntities = linesWithSection.getSectionEntities().stream()
-                    .filter(entity ->
-                            entity.getUpStationId() != 0 && entity.getDownStationId() != 0)
-                    .map(sectionEntity -> sectionDao.findBySectionIdWithStationName(sectionEntity.getId())
-                            .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_SECTION)))
+                    .filter(entity -> entity.getSectionId() != 0)
                     .collect(Collectors.toList());
 
             List<Section> sections = sectionEntities.stream()
                     .map(section -> new Section(
                             new Station(section.getUpStationEntity().getId(), section.getUpStationEntity().getName()),
-                            new Station(section.getDownStationEntity().getId(),
-                                    section.getDownStationEntity().getName()),
-                            section.getSectionDistance()
-                    ))
+                            new Station(section.getDownStationEntity().getId(), section.getDownStationEntity().getName()),
+                            section.getDistance()
+                            )
+                    )
                     .collect(Collectors.toList());
 
-            // 라인 리스트에 추가
-            lines.add(Line.of(
-                    linesWithSection.getLineEntity().getId(),
-                    linesWithSection.getLineEntity().getName(),
-                    sections)
-            );
+            lines.add(Line.of(linesWithSection.getLineEntity().getId(), linesWithSection.getLineEntity().getName(),
+                    sections));
         }
 
-        return lines;
+        return new Lines(lines);
     }
 
     private LineEntity toEntity(final Line line) {

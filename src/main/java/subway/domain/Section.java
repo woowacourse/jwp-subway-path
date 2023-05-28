@@ -12,18 +12,19 @@ public class Section {
     public Section(final Station upStation, final Station downStation, final int distance) {
         validateDifferentUpAndDown(upStation, downStation);
         validatePositiveDistance(distance);
+
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    private void validatePositiveDistance(final int distance) {
+    private static void validatePositiveDistance(final int distance) {
         if (distance <= 0) {
             throw new InvalidException(ErrorMessage.INVALID_NOT_POSITIVE_DISTANCE);
         }
     }
 
-    private void validateDifferentUpAndDown(final Station upStation, final Station downStation) {
+    private static void validateDifferentUpAndDown(final Station upStation, final Station downStation) {
         if (upStation.getId() == null || downStation.getId() == null) {
             return;
         }

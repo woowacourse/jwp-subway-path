@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineRequest;
@@ -40,7 +40,7 @@ public class LineService {
     public LineResponse findById(final Long id) {
         Line line = lineRepository.findById(id);
         List<StationResponse> stationsResponse = line.getStations().stream()
-                .map(station -> new StationResponse(station.getName()))
+                .map(station -> new StationResponse(id, station.getName()))
                 .collect(Collectors.toList());
 
         return new LineResponse(id, line.getName(), stationsResponse);
@@ -48,12 +48,12 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
-        List<Line> lines = lineRepository.findAll();
+        Lines lines = lineRepository.findAll();
 
-        return lines.stream()
+        return lines.getLines().stream()
                 .map(line -> {
                     List<StationResponse> stationResponses = line.getStations().stream()
-                            .map(station -> new StationResponse(station.getName()))
+                            .map(station -> new StationResponse(station.getId(), station.getName()))
                             .collect(Collectors.toList());
                     return new LineResponse(line.getId(), line.getName(), stationResponses);
                 })
@@ -61,20 +61,13 @@ public class LineService {
     }
 
     public Long createSectionInLine(final Long lineId, final SectionCreateRequest sectionCreateRequest) {
-        SectionEntity sectionEntity = new SectionEntity(
-                sectionCreateRequest.getUpStationId(),
-                sectionCreateRequest.getDownStationId(),
-                lineId,
-                sectionCreateRequest.getDistance()
-        );
-
         Station upStation = stationRepository.findById(sectionCreateRequest.getUpStationId());
         Station downStation = stationRepository.findById(sectionCreateRequest.getDownStationId());
 
         Line line = lineRepository.findById(lineId);
         List<Section> originalSections = line.getSectionsByList();
 
-        line.addSection(upStation, downStation, sectionEntity.getDistance());
+        line.addSection(upStation, downStation, sectionCreateRequest.getDistance());
 
         Long newSectionId = saveNewSections(lineId, originalSections, line);
         deleteOriginalSection(lineId, originalSections, line);
@@ -111,7 +104,7 @@ public class LineService {
 
         line.deleteStation(station);
 
-        if (line.isEmpty()) {
+        if (line.isEmptyLine()) {
             sectionRepository.deleteByLineId(lineId);
             return;
         }
