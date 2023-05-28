@@ -5,27 +5,27 @@ import java.util.List;
 public class PathResponse {
 
     private List<LineAndSectionsResponse> lineAndSectionsResponse;
-    private DistanceResponse distanceResponse;
-    private FareResponse fareResponse;
+    private Integer distance;
+    private Integer fare;
 
     public PathResponse() {
     }
 
-    public PathResponse(final List<LineAndSectionsResponse> lineAndSectionsResponses, final DistanceResponse distanceResponse, final FareResponse fareResponse) {
+    public PathResponse(final List<LineAndSectionsResponse> lineAndSectionsResponses, final Integer distance, final Integer fare) {
         this.lineAndSectionsResponse = lineAndSectionsResponses;
-        this.distanceResponse = distanceResponse;
-        this.fareResponse = fareResponse;
+        this.distance = distance;
+        this.fare = fare;
     }
 
     public List<LineAndSectionsResponse> getLineAndSectionsResponse() {
         return lineAndSectionsResponse;
     }
 
-    public FareResponse getFareResponse() {
-        return fareResponse;
+    public Integer getDistance() {
+        return distance;
     }
 
-    public DistanceResponse getDistanceResponse() {
-        return distanceResponse;
+    public Integer getFare() {
+        return fare;
     }
 }

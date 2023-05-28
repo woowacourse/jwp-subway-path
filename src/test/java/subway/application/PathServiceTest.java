@@ -8,8 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.fare.FarePolicy;
-import subway.dto.DistanceResponse;
-import subway.dto.FareResponse;
 import subway.dto.LineAndSectionsResponse;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
@@ -77,8 +75,8 @@ class PathServiceTest {
                                 LineAndSectionsResponse.of(일호선_남색_후추_디노_조앤, List.of(후추_디노)),
                                 LineAndSectionsResponse.of(이호선_초록색_침착맨_디노_로운, List.of(침착맨_디노))
                         ),
-                        new DistanceResponse(12),
-                        new FareResponse(1350)
+                        12,
+                        1350
                 ));
     }
 }

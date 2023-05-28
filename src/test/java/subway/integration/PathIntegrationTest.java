@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
-import subway.dto.DistanceResponse;
-import subway.dto.FareResponse;
 import subway.dto.LineAndSectionsResponse;
 import subway.dto.PathResponse;
 import subway.dto.StationAddRequest;
@@ -79,8 +77,8 @@ public class PathIntegrationTest extends IntegrationTest{
                                             List.of(new Section(3L, 디노, 로운, 3))
                                     )
                             ),
-                            new DistanceResponse(10),
-                            new FareResponse(1250)
+                            10,
+                            1250
                     ));
         });
     }

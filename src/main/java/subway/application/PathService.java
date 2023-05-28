@@ -10,8 +10,6 @@ import subway.domain.path.PathFinder;
 import subway.domain.path.SectionEdge;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
-import subway.dto.DistanceResponse;
-import subway.dto.FareResponse;
 import subway.dto.LineAndSectionsResponse;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
@@ -42,7 +40,7 @@ public class PathService {
         final Station to = stationRepository.findStationById(pathRequest.getToStationId());
         final Path path = pathFinder.findShortest(from, to);
         final int fare = farePolicy.calculate(path.getDistance());
-        return new PathResponse(toResponses(path.getSectionEdges()), DistanceResponse.of(path.getDistance()), new FareResponse(fare));
+        return new PathResponse(toResponses(path.getSectionEdges()), path.getDistanceValue(), fare);
     }
 
     private List<LineAndSectionsResponse> toResponses(final List<SectionEdge> sectionEdges) {

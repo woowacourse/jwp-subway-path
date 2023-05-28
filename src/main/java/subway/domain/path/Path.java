@@ -22,6 +22,10 @@ public class Path {
         return distance;
     }
 
+    public int getDistanceValue() {
+        return distance.getDistance();
+    }
+
     @Override
     public String toString() {
         return "Path{" +
