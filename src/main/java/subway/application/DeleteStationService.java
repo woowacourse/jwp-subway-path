@@ -40,7 +40,7 @@ public class DeleteStationService {
 
     private Long updateLineAndSectionAfterRemoveStation(Sections sections, List<Section> sectionsToCombine) {
         Long targetLineId = sections.getLineId();
-        if (wasOnlyTwoStationsExist(sections)) {
+        if (sections.isOnlyTwoStationsExist()) {
             lineRepository.deleteById(targetLineId);
             return targetLineId;
         }
@@ -64,10 +64,6 @@ public class DeleteStationService {
 
     private boolean wasDeleteEndStation(List<Section> sectionsToCombine) {
         return sectionsToCombine.size() == 1;
-    }
-
-    private boolean wasOnlyTwoStationsExist(Sections sections) {
-        return sections.getSectionsSize() == 1;
     }
 
     private void removeStationIfExist(Station stationToDelete, List<Section> sectionsToCombine) {

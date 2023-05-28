@@ -45,6 +45,32 @@ class SectionsTest {
     }
 
     @Test
+    @DisplayName("Sections에 역이 2개만 존재한다면 (section이 1개만 존재한다면) true를 반환한다.")
+    void isOnlyTwoStationsExistTest_true() {
+        // given
+        Sections sections = new Sections(List.of(SECTION_잠실역_TO_건대역));
+
+        // when
+        boolean isOnlyTwoStationExist = sections.isOnlyTwoStationsExist();
+
+        // then
+        assertThat(isOnlyTwoStationExist).isTrue();
+    }
+
+    @Test
+    @DisplayName("Sections에 역이 2개가 아니라면 (section이 1개가 아니라면) false를 반환한다.")
+    void isOnlyTwoStationsExistTest() {
+        // given
+        Sections sections = new Sections(List.of(SECTION_잠실역_TO_건대역, SECTION_건대역_TO_성수역));
+
+        // when
+        boolean isOnlyTwoStationExist = sections.isOnlyTwoStationsExist();
+
+        // then
+        assertThat(isOnlyTwoStationExist).isFalse();
+    }
+
+    @Test
     @DisplayName("Sections에 포함된 모든 역을 가져온다.")
     void getContainingStationNamesTest() {
         // given

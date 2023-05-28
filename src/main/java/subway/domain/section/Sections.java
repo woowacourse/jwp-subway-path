@@ -27,6 +27,10 @@ public class Sections {
                 .findAny();
     }
 
+    public boolean isOnlyTwoStationsExist() {
+        return sections.size() == 1;
+    }
+
     public Set<String> getContainingStationNames() {
         Set<String> stationNames = new HashSet<>();
         for (Section section : sections) {

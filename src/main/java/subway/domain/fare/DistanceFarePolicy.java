@@ -11,11 +11,11 @@ public class DistanceFarePolicy implements FarePolicy {
 
     @Override
     public int calculateFare(int distance) {
-        if (distance > 50) {
+        if (distance > SECOND_DISTANCE_THRESHOLD) {
             return calculateFare(50) +
                     (int) Math.ceil((double) (distance - SECOND_DISTANCE_THRESHOLD) / SECOND_DISTANCE_THRESHOLD_FARE_INCREMENT) * ADDITIONAL_FARE;
         }
-        if (distance > 10) {
+        if (distance > FIRST_DISTANCE_THRESHOLD) {
             return BASIC_FARE +
                     (int) Math.ceil((double) (distance - FIRST_DISTANCE_THRESHOLD) / FIRST_DISTANCE_THRESHOLD_FARE_INCREMENT) * ADDITIONAL_FARE;
         }
