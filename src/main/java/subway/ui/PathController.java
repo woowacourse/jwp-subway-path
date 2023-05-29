@@ -13,7 +13,7 @@ import subway.application.PriceService;
 import subway.application.StationService;
 import subway.domain.Distance;
 import subway.domain.Line;
-import subway.domain.Price;
+import subway.domain.price.Price;
 import subway.domain.Station;
 import subway.ui.dto.request.ReadPathPriceRequest;
 import subway.ui.dto.response.ReadPathResponse;

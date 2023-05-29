@@ -1,6 +1,6 @@
 package subway.ui.dto.response;
 
-import subway.domain.Price;
+import subway.domain.price.Price;
 import subway.domain.Station;
 
 import java.util.List;

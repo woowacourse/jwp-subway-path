@@ -37,8 +37,12 @@ public class Distance {
         return new Distance(this.distance - other.distance);
     }
 
-    public boolean isLessThanOrEqualTo(final Distance value) {
-        return distance <= value.getDistance();
+    public boolean isLessThanOrEqualTo(final Distance other) {
+        return distance <= other.distance;
+    }
+
+    public boolean isMoreThan(final Distance other) {
+        return this.distance > other.distance;
     }
 
     @Override
