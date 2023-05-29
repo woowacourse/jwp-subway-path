@@ -138,6 +138,10 @@ public class Sections {
         return sections.size();
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

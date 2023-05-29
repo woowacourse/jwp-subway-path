@@ -104,4 +104,12 @@ public class SectionDao {
         return new Sections(jdbcTemplate.query(sql, SECTION_STATION_ROW_MAPPER, lineId, stationId, stationId));
     }
 
+    public Sections findAllSectionInfo() {
+        final String sql = "SELECT ST.id from_id, ST.name from_name, ST2.id to_id, ST2.name to_name, distance\n"
+                + "FROM SECTION SE\n"
+                + "INNER JOIN STATION ST ON SE.from_id = ST.id \n"
+                + "INNER JOIN STATION ST2 ON SE.to_id = ST2.id;";
+        return new Sections(jdbcTemplate.query(sql, SECTION_STATION_ROW_MAPPER));
+    }
+
 }
