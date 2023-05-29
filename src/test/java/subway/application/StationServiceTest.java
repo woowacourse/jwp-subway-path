@@ -22,8 +22,6 @@ class StationServiceTest {
 
     @Mock
     StationRepository stationRepository;
-    @Mock
-    LineRepository lineRepository;
     @InjectMocks
     StationService stationService;
 
@@ -34,12 +32,6 @@ class StationServiceTest {
         StationRequest request = new StationRequest("테스트");
         Station station = new Station("테스트");
         when(stationRepository.save(station)).thenReturn(new Station(1L, "테스트"));
-        when(lineRepository.findAll())
-                .thenReturn(
-                        List.of(
-                                new Line(1L, new LineName("2호선"), new LineColor("초록"), Sections.create()),
-                                new Line(2L, new LineName("8호선"), new LineColor("핑크"), Sections.create())
-                        ));
         //when
         Long saveId = stationService.saveStation(request);
         //then
@@ -64,15 +56,12 @@ class StationServiceTest {
         //given
         Long stationId = 1L;
         StationRequest request = new StationRequest("수정");
-        Station before = new Station(stationId, "테스트");
-        Station after = new Station(null, "수정");
-        when(stationRepository.findById(stationId)).thenReturn(before);
+        Station after = new Station(1L, "수정");
         //when
         stationService.editStation(stationId, request);
         //then
-        verify(stationRepository, times(1)).update(before, after);
+        verify(stationRepository, times(1)).update(after);
     }
-
 
     @DisplayName("역을 수정한다")
     @Test

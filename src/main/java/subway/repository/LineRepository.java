@@ -10,12 +10,10 @@ import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.*;
 import subway.exception.DataConstraintViolationException;
+import subway.exception.DuplicatedDataException;
 import subway.exception.NotFoundDataException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -33,6 +31,7 @@ public class LineRepository {
 
     public Line save(final Line line) {
         LineEntity lineEntity = LineEntity.from(line);
+        validateDuplicate(lineEntity);
         Long savedId = lineDao.save(lineEntity);
         return new Line(
                 savedId,
@@ -76,15 +75,31 @@ public class LineRepository {
 
     public void update(final Line updateLine) {
         LineEntity lineEntity = LineEntity.from(updateLine);
+        validateExist(lineEntity);
         lineDao.update(lineEntity);
     }
 
     public void delete(final Line line) {
+        LineEntity lineEntity = LineEntity.from(line);
+        validateExist(lineEntity);
         try {
-            LineEntity lineEntity = LineEntity.from(line);
             lineDao.delete(lineEntity);
         } catch (DataIntegrityViolationException e) {
             throw new DataConstraintViolationException("해당 라인은 삭제할 수 없습니다.");
+        }
+    }
+
+    private void validateExist(final LineEntity lineEntity) {
+        Optional<LineEntity> maybeLine = lineDao.findById(lineEntity.getId());
+        if (maybeLine.isEmpty()) {
+            throw new NotFoundDataException("해당 라인은 존재하지 않습니다");
+        }
+    }
+
+    private void validateDuplicate(final LineEntity lineEntity) {
+        List<LineEntity> maybeLineEntity = lineDao.findByNameOrColor(lineEntity);
+        if (!maybeLineEntity.isEmpty()) {
+            throw new DuplicatedDataException("이미 존재하는 라인이 있습니다.");
         }
     }
 }

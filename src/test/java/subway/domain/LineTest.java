@@ -55,14 +55,4 @@ class LineTest {
                         null))
                 .isInstanceOf(IllegalInputForDomainException.class);
     }
-
-    @DisplayName("역이 중복된 이름이 있는지 검증한다")
-    @Test
-    void 역이_이미_있는지_검증한다() {
-        //given
-        Line line = new Line(new LineName("2호선"), new LineColor("빨강"), new Sections(List.of(SECTION)));
-        Station jamsilnaru = new Station("잠실나루");
-        //then
-        assertThatThrownBy(() -> line.validateNotDuplicatedStation(jamsilnaru)).isInstanceOf(IllegalInputForDomainException.class);
-    }
 }

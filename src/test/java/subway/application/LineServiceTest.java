@@ -37,12 +37,6 @@ class LineServiceTest {
         //given
         LineRequest request = new LineRequest("new호선", "빨강");
         Line line = new Line(new LineName("new호선"), new LineColor("빨강"), Sections.create());
-        when(lineRepository.findAll())
-                .thenReturn(
-                        List.of(
-                                new Line(1L, new LineName("2호선"), new LineColor("초록"), Sections.create()),
-                                new Line(2L, new LineName("8호선"), new LineColor("핑크"), Sections.create())
-                        ));
         when(lineRepository.save(line)).thenReturn(new Line(3L, new LineName("new호선"), new LineColor("빨강"), Sections.create()));
         //when
         Long id = lineService.saveLine(request);
@@ -68,12 +62,6 @@ class LineServiceTest {
     void 노선을_수정한다() {
         //given
         LineRequest request = new LineRequest("수정", "빨강");
-        when(lineRepository.findAll())
-                .thenReturn(
-                        List.of(
-                                new Line(1L, new LineName("2호선"), new LineColor("초록"), Sections.create()),
-                                new Line(2L, new LineName("8호선"), new LineColor("핑크"), Sections.create())
-                        ));
         Line line = new Line(1L, new LineName("2호선"), new LineColor("초록"), Sections.create());
         when(lineRepository.findById(1L)).thenReturn(line);
         Line updateLine = new Line(1L, new LineName("수정"), new LineColor("빨강"), Sections.create());

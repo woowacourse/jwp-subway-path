@@ -59,6 +59,17 @@ class StationDaoTest {
         //then
         assertThat(station).isEqualTo(new StationEntity(1L, "잠실새내"));
     }
+    
+    @DisplayName("이름으로 역을 찾는다")
+    @Test
+    void 이름으로_역을_찾는다() {
+        //given
+        StationEntity stationEntity = new StationEntity(1L, "잠실새내");
+        //when
+        List<StationEntity> stations = stationDao.findByName(stationEntity);
+        //then
+        assertThat(stations).contains(new StationEntity(1L, "잠실새내"));
+    }
 
     @DisplayName("아이디를 통해 수정한다.")
     @Test

@@ -50,6 +50,11 @@ public class StationDao {
         }
     }
 
+    public List<StationEntity> findByName(final StationEntity stationEntity) {
+        String sql = "select * from station where name = ?";
+        return jdbcTemplate.query(sql, rowMapper, stationEntity.getName());
+    }
+
     public void update(final StationEntity stationEntity) {
         final String sql = "UPDATE station SET name = ? WHERE id = ? ";
         jdbcTemplate.update(sql, stationEntity.getName(), stationEntity.getId());

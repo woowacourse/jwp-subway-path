@@ -21,9 +21,10 @@ public class LineService {
 
     @Transactional
     public Long saveLine(final LineRequest request) {
-        Lines lines = new Lines(lineRepository.findAll());
-        Line line = new Line(new LineName(request.getName()), new LineColor(request.getColor()), Sections.create());
-        lines.validateNotDuplicatedLine(line);
+        Line line = new Line(
+                new LineName(request.getName()),
+                new LineColor(request.getColor()),
+                Sections.create());
         Line savedLine = lineRepository.save(line);
         return savedLine.getId();
     }
@@ -36,7 +37,6 @@ public class LineService {
 
     @Transactional
     public void editLine(final Long lineId, final LineRequest request) {
-        Lines lines = new Lines(lineRepository.findAll());
         Line line = lineRepository.findById(lineId);
         Line updateLine = new Line(
                 lineId,
@@ -44,7 +44,6 @@ public class LineService {
                 new LineColor(request.getColor()),
                 new Sections(line.getSections())
         );
-        lines.deleteById(lineId).validateNotDuplicatedLine(updateLine);
         lineRepository.update(updateLine);
     }
 

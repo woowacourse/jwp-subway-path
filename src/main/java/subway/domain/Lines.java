@@ -1,6 +1,5 @@
 package subway.domain;
 
-import subway.exception.IllegalInputForDomainException;
 import subway.exception.UnsupportedParameterException;
 
 import java.util.ArrayList;
@@ -14,37 +13,6 @@ public class Lines {
 
     public Lines(final List<Line> lines) {
         this.lines = lines;
-    }
-
-    public Lines deleteById(final Long lineId) {
-        Line targetLine = lines.stream()
-                .filter(line -> line.getId().equals(lineId))
-                .findAny()
-                .orElseThrow(() -> new UnsupportedParameterException("삭제하려는 역이 존재하지 않습니다,"));
-        List<Line> updateLines = new ArrayList<>(lines);
-        updateLines.remove(targetLine);
-        return new Lines(updateLines);
-    }
-
-    public void validateNotDuplicatedStation(final Station station) {
-        for (Line line : lines) {
-            line.validateNotDuplicatedStation(station);
-        }
-    }
-
-    public void validateNotDuplicatedLine(final Line line) {
-        List<String> names = lines.stream()
-                .map(Line::getName)
-                .collect(Collectors.toList());
-        if (names.contains(line.getName())) {
-            throw new IllegalInputForDomainException("중복된 노선명이 존재합니다.");
-        }
-        List<String> colors = lines.stream()
-                .map(Line::getColor)
-                .collect(Collectors.toList());
-        if (colors.contains(line.getColor())) {
-            throw new IllegalInputForDomainException("중복된 노선색이 존재합니다.");
-        }
     }
 
     public Line getLineOfSection(final Section section) {

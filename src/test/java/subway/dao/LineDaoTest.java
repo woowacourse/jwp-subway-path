@@ -59,6 +59,17 @@ class LineDaoTest {
         assertThat(lineEntity).isEqualTo(new LineEntity(1L, "2호선", "초록"));
     }
 
+    @DisplayName("이름이나 색으로 노선을 찾는다")
+    @Test
+    void 이름이나_색으로_노선을_찾는다() {
+        //given
+        LineEntity line2 = new LineEntity(null, "2호선", null);
+        //when
+        List<LineEntity> maybeLine = lineDao.findByNameOrColor(line2);
+        //then
+        assertThat(maybeLine).contains(new LineEntity(1L, "2호선", "초록"));
+    }
+
     @DisplayName("아이디를 통해 수정한다.")
     @Test
     void 수정한다() {

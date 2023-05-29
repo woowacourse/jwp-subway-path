@@ -51,6 +51,11 @@ public class LineDao {
         }
     }
 
+    public List<LineEntity> findByNameOrColor(final LineEntity lineEntity) {
+        String sql = "SELECT * FROM line WHERE name = ? OR color = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineEntity.getName(), lineEntity.getColor());
+    }
+
     public void update(final LineEntity lineEntity) {
         final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
         jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
@@ -60,5 +65,4 @@ public class LineDao {
         final String sql = "DELETE FROM line WHERE id = ?";
         jdbcTemplate.update(sql, lineEntity.getId());
     }
-
 }

@@ -5,8 +5,6 @@ import subway.exception.IllegalInputForDomainException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Line {
 
@@ -55,16 +53,6 @@ public class Line {
 
     public List<Station> findAllStation() {
         return sections.findAllStationUpToDown();
-    }
-
-    public void validateNotDuplicatedStation(final Station station) {
-        List<Station> allStations = sections.findAllStationUpToDown();
-        Set<String> names = allStations.stream()
-                .map(Station::getName)
-                .collect(Collectors.toSet());
-        if (names.contains(station.getName())) {
-            throw new IllegalInputForDomainException(name.getValue() + "선의 중복된 역명이 존재합니다.");
-        }
     }
 
     public boolean isExistSection(final Section section) {

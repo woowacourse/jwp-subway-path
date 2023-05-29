@@ -2,7 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Lines;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
@@ -22,9 +21,7 @@ public class StationService {
 
     @Transactional
     public Long saveStation(final StationRequest request) {
-        Lines lines = new Lines(lineRepository.findAll());
         Station station = new Station(request.getName());
-        lines.validateNotDuplicatedStation(station);
         Station savedStation = stationRepository.save(station);
         return savedStation.getId();
     }
@@ -37,9 +34,10 @@ public class StationService {
 
     @Transactional
     public void editStation(final Long stationId, final StationRequest request) {
-        Station findStation = stationRepository.findById(stationId);
-        Station station = new Station(request.getName());
-        stationRepository.update(findStation, station);
+        Station station = new Station(
+                stationId,
+                request.getName());
+        stationRepository.update(station);
     }
 
     @Transactional
