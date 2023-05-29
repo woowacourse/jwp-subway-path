@@ -34,8 +34,7 @@ public class PathService {
         SubwayMap subwayMap = new SubwayMap(lines, new JGraphTSubwayGraph());
         List<Section> sections = subwayMap.calculateShortestPaths(from, to);
         Integer distance = subwayMap.calculateTotalDistance(sections);
-        SubwayFareManager subwayFareManager = new SubwayFareManager();
-        Integer charge = subwayFareManager.calculateChargeForDistance(distance);
+        Integer charge = SubwayFare.decideFare(distance).calculateCharge(distance);
 
         List<SectionResponse> sectionResponses = convertSectionResponses(lines, sections);
         return new PathResponse(distance, charge, sectionResponses);
