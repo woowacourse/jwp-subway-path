@@ -92,32 +92,32 @@ public class LineControllerTest {
         mockMvc.perform(get("/lines/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("2호선"))
-                .andExpect(jsonPath("$.stations[0]").value(StationResponse.from(강남역)))
-                .andExpect(jsonPath("$.stations[1]").value(StationResponse.from(잠실역)))
+                .andExpect(jsonPath("$.stations[0].id").value(1L))
+                .andExpect(jsonPath("$.stations[0].name").value("강남역"))
+                .andExpect(jsonPath("$.stations[1].id").value(3L))
+                .andExpect(jsonPath("$.stations[1].name").value("잠실역"))
                 .andExpect(jsonPath("$.fare").value(0));
     }
 
     @DisplayName("모든 노선의 이름과 모든 역의 이름을 반환한다.")
     @Test
     void shouldReturnAllLineNameAndAllStationsOfLineWhenRequest() throws Exception {
-        StationResponse stationResponse1 = StationResponse.from(new Station("몽촌토성역"));
-        StationResponse stationResponse2 = StationResponse.from(new Station("잠실역"));
+        StationResponse stationResponse1 = StationResponse.from(강남역);
+        StationResponse stationResponse2 = StationResponse.from(잠실역);
         given(lineService.findLineResponses()).willReturn(List.of(
                 new LineStationsResponse(
                         1L, "2호선",
                         List.of(stationResponse1, stationResponse2),
-                        0),
-                new LineStationsResponse(
-                        2L, "1호선",
-                        List.of(stationResponse1, stationResponse2),
-                        1000)
+                        0)
         ));
 
         mockMvc.perform(get("/lines"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("2호선"))
-                .andExpect(jsonPath("$[0].stations[0]").value(stationResponse1))
-                .andExpect(jsonPath("$[0].stations[1]").value(stationResponse2))
+                .andExpect(jsonPath("$[0].stations[0].id").value(1L))
+                .andExpect(jsonPath("$[0].stations[0].name").value("강남역"))
+                .andExpect(jsonPath("$[0].stations[1].id").value(3L))
+                .andExpect(jsonPath("$[0].stations[1].name").value("잠실역"))
                 .andExpect(jsonPath("$[0].fare").value(0));
     }
 }

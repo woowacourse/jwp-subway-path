@@ -112,7 +112,12 @@ public class LineServiceTest {
 
         assertAll(
                 () -> assertThat(lineStationResponse.getName()).isEqualTo("2호선"),
-                () -> assertThat(lineStationResponse.getStations()).contains(StationResponse.from(강남역), StationResponse.from(잠실역))
+                () -> assertThat(lineStationResponse.getStations().get(0))
+                        .usingRecursiveComparison()
+                        .isEqualTo(StationResponse.from(강남역)),
+                () -> assertThat(lineStationResponse.getStations().get(1))
+                        .usingRecursiveComparison()
+                        .isEqualTo(StationResponse.from(잠실역))
         );
     }
 }

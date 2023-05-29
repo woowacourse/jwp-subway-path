@@ -13,13 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.business.service.LineService;
-import subway.business.service.dto.LineResponse;
-import subway.business.service.dto.LineSaveRequest;
-import subway.business.service.dto.StationAddToLineRequest;
-import subway.business.service.dto.StationDeleteRequest;
+import subway.business.service.dto.*;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+import static subway.fixtures.station.StationFixture.성수역;
+import static subway.fixtures.station.StationFixture.잠실역;
 
 @Sql("classpath:station_data.sql")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -128,7 +127,8 @@ public class LineControllerIntegratedTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
                 .body("name", is("2호선"))
-                .body("stations", hasItems("강남역", "역삼역"));
+                .body("stations.id", hasItems(1, 2))
+                .body("stations.name", hasItems("강남역", "역삼역"));
     }
 
     @DisplayName("모든 노선의 이름과 포함된 모든 역을 조회한다.")
@@ -156,8 +156,10 @@ public class LineControllerIntegratedTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
                 .body("[0].name", is("2호선"))
-                .body("[0].stations", hasItems("강남역", "역삼역"))
+                .body("[0].stations.id", hasItems(1, 2))
+                .body("[0].stations.name", hasItems("강남역", "역삼역"))
                 .body("[1].name", is("3호선"))
-                .body("[1].stations", hasItems("잠실역", "성수역"));
+                .body("[1].stations.id", hasItems(3, 4))
+                .body("[1].stations.name", hasItems("잠실역", "성수역"));
     }
 }
