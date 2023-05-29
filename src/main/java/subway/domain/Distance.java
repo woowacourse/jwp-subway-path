@@ -16,9 +16,6 @@ public class Distance {
         if(value <= MIN_DISTANCE) {
             throw new IllegalArgumentException("역 사이의 거리는 양수여야 합니다");
         }
-        if((value % MIN_DISTANCE) != 0) {
-            throw new IllegalArgumentException("역 사이의 거리는 1km 단위여야 합니다");
-        }
     }
 
     public boolean isLongerThan(Distance other) {
@@ -26,6 +23,9 @@ public class Distance {
     }
 
     public Distance subtract(Distance other) {
+        if(other.isLongerThan(this)) {
+            throw new IllegalArgumentException("더 큰 거리를 뺄 수 없습니다.");
+        }
         return new Distance(this.value - other.value);
     }
 
