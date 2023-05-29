@@ -2,11 +2,13 @@ package subway.domain.fare;
 
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.stereotype.Component;
 import subway.domain.fare.surchargescalculator.BasicSectionCalculator;
 import subway.domain.fare.surchargescalculator.FirstSectionCalculator;
 import subway.domain.fare.surchargescalculator.SecondSectionCalculator;
 import subway.domain.fare.surchargescalculator.SurchargesCalculator;
 
+@Component
 public class DistanceStrategy implements FareStrategy {
     private final static List<SurchargesCalculator> calculators = Arrays.asList(
             new BasicSectionCalculator(),

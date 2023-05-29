@@ -1,6 +1,7 @@
 package subway.application;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.willReturn;
 import static subway.fixture.PathRequestFixture.PATH_REQUEST_1_3;
 import static subway.fixture.SectionFixture.SECTION_강남_잠실_5;
@@ -19,6 +20,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.fare.Fare;
+import subway.domain.fare.FareCalculator;
 import subway.dto.StationDto;
 import subway.dto.response.PathResponse;
 import subway.repository.PathRepository;
@@ -33,6 +36,9 @@ class PathServiceTest {
     private PathService pathService;
 
     @MockBean
+    FareCalculator fareCalculator;
+
+    @MockBean
     private PathRepository pathRepository;
 
     @Test
@@ -42,6 +48,7 @@ class PathServiceTest {
         willReturn(new Sections(sections)).given(pathRepository).findAllSections();
         willReturn(STATION_강남).given(pathRepository).findStationById(1L);
         willReturn(STATION_몽촌토성).given(pathRepository).findStationById(3L);
+        willReturn(new Fare(1_250)).given(fareCalculator).calculate(anyInt());
 
         // when
         PathResponse path = pathService.findPath(PATH_REQUEST_1_3);
