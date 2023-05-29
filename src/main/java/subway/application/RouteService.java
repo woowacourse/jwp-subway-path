@@ -8,6 +8,7 @@ import subway.domain.Station;
 import subway.domain.Subway;
 import subway.domain.fare.FareCalculator;
 import subway.domain.routestrategy.RouteStrategy;
+import subway.domain.routestrategy.SubwaySection;
 import subway.dto.RouteRequest;
 import subway.repository.LineRepository;
 
@@ -41,7 +42,11 @@ public class RouteService {
     }
 
     public Fare findShortestRouteFare(RouteRequest request) {
-        Distance totalDistance = findShortestDistance(request);
-        return fareCalculator.calculateFare(totalDistance);
+        Subway subway = new Subway(lineRepository.findAll());
+        List<SubwaySection> route = routeStrategy.findShortestSections(subway,
+                subway.findStationByName(request.getStartStation()),
+                subway.findStationByName(request.getEndStation())
+        );
+        return fareCalculator.calculateFare(route);
     }
 }

@@ -1,9 +1,11 @@
 package subway.domain.fare;
 
 import java.util.List;
-import subway.domain.Distance;
+import org.springframework.stereotype.Component;
 import subway.domain.Fare;
+import subway.domain.routestrategy.SubwaySection;
 
+@Component
 public class FareCalculator {
     
     private final List<FareStrategy> fareStrategies;
@@ -12,10 +14,10 @@ public class FareCalculator {
         this.fareStrategies = fareStrategies;
     }
     
-    public Fare calculateFare(Distance distance) {
+    public Fare calculateFare(List<SubwaySection> route) {
         int fare = 0;
         for(FareStrategy fareStrategy: fareStrategies) {
-            fare += fareStrategy.calculteFare(distance);
+            fare += fareStrategy.calculateFare(route);
         }
         return new Fare(fare);
     }
