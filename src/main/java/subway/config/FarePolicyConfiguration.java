@@ -1,4 +1,4 @@
-package subway.common.config;
+package subway.config;
 
 import java.util.List;
 import org.springframework.context.annotation.Bean;
