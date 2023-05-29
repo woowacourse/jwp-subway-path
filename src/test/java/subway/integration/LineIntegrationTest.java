@@ -19,8 +19,6 @@ import subway.dto.StationRequest;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
-import java.sql.SQLException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -50,7 +48,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
-    void createLine() throws SQLException {
+    void createLine() {
         //given
         StationEntity station = new StationEntity(1L, "역삼역", 2L, 10, 1L);
         StationEntity nextStation = new StationEntity(2L, "선릉역", null, 0, 1L);
@@ -86,9 +84,25 @@ public class LineIntegrationTest extends IntegrationTest {
         lineDao.insert(new LineEntity(2L, lineRequest2.getName(), lineRequest2.getColor(), 1L));
 
 
-        ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).body(lineCreateRequest).when().post("/lines").then().log().all().extract();
+        RestAssured.given()
+                .log().all().
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineCreateRequest)
+                .when()
+                .post("/lines")
+                .then()
+                .log().all()
+                .extract();
 
-        ExtractableResponse<Response> createResponse2 = RestAssured.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).body(lineCreateRequest2).when().post("/lines").then().log().all().extract();
+        RestAssured.given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineCreateRequest2)
+                .when()
+                .post("/lines")
+                .then()
+                .log().all()
+                .extract();
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).when().get("/lines").then().log().all().extract();
@@ -115,8 +129,8 @@ public class LineIntegrationTest extends IntegrationTest {
         LineCreateRequest lineCreateRequest =
                 new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
 
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
+        RestAssured.given()
+                .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineCreateRequest)
                 .when().post("/lines")
@@ -151,8 +165,8 @@ public class LineIntegrationTest extends IntegrationTest {
         LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
         LineCreateRequest lineCreateRequest2 = new LineCreateRequest(lineRequest1, new StationRequest("강남역", "선릉역", 10));
 
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
+        RestAssured.given()
+                .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineCreateRequest)
                 .when().post("/lines")
@@ -184,7 +198,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
 
-        ExtractableResponse<Response> createResponse = RestAssured
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineCreateRequest)

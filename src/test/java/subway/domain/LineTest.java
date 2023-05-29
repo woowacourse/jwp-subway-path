@@ -21,7 +21,6 @@ class LineTest {
     void constructor_success() {
         //given
         Distance distance = new Distance(10);
-
         Station nextStation = new Station("하행역", distance);
         Station station = new Station("상행역", distance);
 
@@ -217,7 +216,6 @@ class LineTest {
             Station newStation = new Station(newStationName, distance);
 
             //when
-            int index = line.getStations().findIndex(downEndStation);
             line.getStations().addStation(newStation);
             stations.addStation(newStation);
 
@@ -314,10 +312,7 @@ class removeStation {
     @Test
     @DisplayName("상행 종점을 삭제할 수 있다")
     void upEndStation_success() {
-        //given
-        String removeName = "강남역";
-
-        //when
+        //given, when
         line.getStations().remove(upEndStation);
         int expectedSize = line.getStations().getStationsSize();
         Station newUpEndStation = line.getStations().getStations().get(0);
@@ -325,18 +320,13 @@ class removeStation {
         //then
         assertThat(expectedSize).isEqualTo(2);
         assertThat(newUpEndStation.getName()).isEqualTo("역삼역");
-
         assertThat(newUpEndStation.getDistance().getValue()).isEqualTo(4);
-
     }
 
     @Test
     @DisplayName("하행 종점을 삭제할 수 있다")
     void downEndStation_success() {
-        //given
-        String removeName = "선릉역";
-
-        //when
+        //given, when
         line.getStations().remove(newStation);
         int expectedSize = line.getStations().getStationsSize();
         Station newDownEndStation = line.getStations().getStations().get(1);
@@ -349,14 +339,9 @@ class removeStation {
     @Test
     @DisplayName("두 역 사이에 있는 역을 삭제할 수 있다")
     void middle_Station_success() {
-        //given
-        String removeName = "역삼역";
-
-        //when
+        //given, when
         line.getStations().remove(downEndStation);
         int expectedSize = line.getStations().getStationsSize();
-
-        Station upEndStation = line.getStations().getStations().get(0);
         Station nextStation = line.getStations().getStations().get(1);
 
         //then

@@ -10,11 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.dto.LineCreateRequest;
 import subway.dto.LineRequest;
 import subway.dto.ShortestPathRequest;
 import subway.dto.ShortestPathResponse;
-import subway.dto.StationRequest;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 import subway.service.PathService;
@@ -44,7 +42,6 @@ class PathIntegrationTest extends IntegrationTest {
         stationDao.insert(thirdStation);
 
         LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
         lineDao.insert(new LineEntity(1L, lineRequest1.getName(), lineRequest1.getColor(), 1L));
 
         //when
@@ -75,7 +72,6 @@ class PathIntegrationTest extends IntegrationTest {
         stationDao.insert(thirdStation);
 
         LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
         lineDao.insert(new LineEntity(1L, lineRequest1.getName(), lineRequest1.getColor(), 1L));
 
         //when
@@ -106,7 +102,6 @@ class PathIntegrationTest extends IntegrationTest {
         stationDao.insert(thirdStation);
 
         LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
         lineDao.insert(new LineEntity(1L, lineRequest1.getName(), lineRequest1.getColor(), 1L));
 
         //when
@@ -146,11 +141,9 @@ class PathIntegrationTest extends IntegrationTest {
         stationDao.insert(otherLineStationThirdStation);
 
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600");
-        LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest, new StationRequest("역삼역", "선릉역", 10));
         lineDao.insert(new LineEntity(1L, lineRequest.getName(), lineRequest.getColor(), 1L));
 
         LineRequest otherLineRequest = new LineRequest("두번째노선", "bg-orange-500");
-        LineCreateRequest otherLineCreateRequest = new LineCreateRequest(otherLineRequest, new StationRequest("역삼역", "선릉역", 10));
         lineDao.insert(new LineEntity(2L, otherLineRequest.getName(), otherLineRequest.getColor(), 5L));
 
 
