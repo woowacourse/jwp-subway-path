@@ -32,4 +32,14 @@ public class AddLineRequest {
     public int getDistance() {
         return distance;
     }
+
+    @Override
+    public String toString() {
+        return "AddLineRequest{" +
+                "lineName='" + lineName + '\'' +
+                ", upstreamName='" + upstreamName + '\'' +
+                ", downstreamName='" + downstreamName + '\'' +
+                ", distance=" + distance +
+                '}';
+    }
 }

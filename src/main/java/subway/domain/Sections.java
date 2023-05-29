@@ -1,5 +1,7 @@
 package subway.domain;
 
+import org.jgrapht.graph.WeightedMultigraph;
+
 import java.util.List;
 
 public class Sections {
@@ -10,7 +12,17 @@ public class Sections {
         this.sections = sections;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public WeightedMultigraph<Station, Section> setEdgeWeightToGraph(WeightedMultigraph<Station, Section> graph) {
+        for (Section section : sections) {
+            graph = section.addWeightedEdges(graph);
+        }
+        return graph;
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "sections=" + sections +
+                '}';
     }
 }

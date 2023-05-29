@@ -119,11 +119,6 @@ public class SubwayService {
         return toShortestPathResponse(shortestPath, fare);
     }
 
-    public StationResponse findStationById(long stationId) {
-        Station station = subwayRepository.findStation(stationId);
-        return new StationResponse(station.getName());
-    }
-
     private ShortestPathResponse toShortestPathResponse(ShortestPath shortestPath, int fare) {
         return shortestPath.getStations()
                 .stream()
@@ -132,6 +127,11 @@ public class SubwayService {
                         toList(),
                         stations -> new ShortestPathResponse(stations, shortestPath.getDistance(), fare))
                 );
+    }
+
+    public StationResponse findStationById(long stationId) {
+        Station station = subwayRepository.findStation(stationId);
+        return new StationResponse(station.getName());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.jgrapht.graph.WeightedMultigraph;
 import subway.exception.InvalidDistanceException;
 import subway.exception.SectionMergeException;
 
@@ -74,6 +75,12 @@ public class Section {
             return Integer.MAX_VALUE;
         }
         return distance + sectionToMerge.distance;
+    }
+
+    public WeightedMultigraph<Station, Section> addWeightedEdges(WeightedMultigraph<Station, Section> graph) {
+        graph.addEdge(upstream, downstream, this);
+        graph.setEdgeWeight(upstream, downstream, distance);
+        return graph;
     }
 
     public int getDistance() {

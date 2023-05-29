@@ -36,6 +36,17 @@ public class SectionEntity {
         return distance;
     }
 
+    @Override
+    public String toString() {
+        return "SectionEntity{" +
+                "id=" + id +
+                ", upstreamId=" + upstreamId +
+                ", downstreamId=" + downstreamId +
+                ", lineId=" + lineId +
+                ", distance=" + distance +
+                '}';
+    }
+
     public static class Builder {
 
         private long id;

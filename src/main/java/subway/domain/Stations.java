@@ -1,5 +1,7 @@
 package subway.domain;
 
+import org.jgrapht.graph.WeightedMultigraph;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +14,11 @@ public class Stations {
 
     public Stations(Set<Station> stations) {
         this.stations = new HashSet<>(stations);
+    }
+
+    public WeightedMultigraph<Station, Section> addStationsToGraph(WeightedMultigraph<Station, Section> graph) {
+        stations.forEach(graph::addVertex);
+        return graph;
     }
 
     public Optional<Station> getStationByName(String stationName) {
