@@ -10,6 +10,8 @@ public interface SectionDao {
 
     List<SectionEntity> selectSectionsByLineId(long lineId);
 
+    List<SectionEntity> selectAllSections();
+
     long deleteAllByLineId(Long lineId);
 
     void insertAll(List<SectionEntity> entities);

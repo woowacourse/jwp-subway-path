@@ -1,12 +1,14 @@
 package subway.domain.section;
 
-import subway.domain.line.Line;
+import subway.Entity.LineEntity;
 
 import java.util.List;
 
 public interface SectionRepository {
 
-    void updateAllSectionsInLine(Line line, List<Section> lineSections);
+    void updateAllSectionsInLine(LineEntity lineEntity, List<Section> lineSections);
 
-    List<Section> readSectionsByLine(Line line);
+    List<Section> readSectionsByLine(LineEntity lineEntity);
+
+    List<Section> readAllSections();
 }

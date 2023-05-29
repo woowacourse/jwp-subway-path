@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.Entity.LineEntity;
 import subway.domain.line.Line;
 import subway.persistence.NullChecker;
 
@@ -19,11 +20,12 @@ public class H2LineDao implements LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
-            Line.of(
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("extra_fare")
             );
 
     public H2LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -34,26 +36,26 @@ public class H2LineDao implements LineDao {
     }
 
     @Override
-    public Line insert(Line line) {
+    public LineEntity insert(Line line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return Line.of(lineId, line.getName(), line.getColor());
+        return new LineEntity(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+    public List<LineEntity> findAll() {
+        String sql = "select id, name, color, extra_fare from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
-    public Optional<Line> findById(Long id) {
+    public Optional<LineEntity> findById(Long id) {
         NullChecker.isNull(id);
-        String sql = "select id, name, color from LINE WHERE id = ?";
+        String sql = "select id, name, color, extra_fare from LINE WHERE id = ?";
 
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -63,10 +65,10 @@ public class H2LineDao implements LineDao {
     }
 
     @Override
-    public void update(Line newLine) {
-        NullChecker.isNull(newLine);
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    public void update(LineEntity lineEntity) {
+        NullChecker.isNull(lineEntity);
+        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
+        jdbcTemplate.update(sql, new Object[]{lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraFare(), lineEntity.getId()});
     }
 
     @Override

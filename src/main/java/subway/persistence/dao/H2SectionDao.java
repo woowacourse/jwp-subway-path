@@ -48,6 +48,12 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
+    public List<SectionEntity> selectAllSections() {
+        String sql = "SELECT * FROM SECTION";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    @Override
     public long deleteAllByLineId(Long lineId) {
         NullChecker.isNull(lineId);
         String sql = "DELETE FROM SECTION WHERE line_id=?";
@@ -65,5 +71,4 @@ public class H2SectionDao implements SectionDao {
 
         insertAction.executeBatch(batchParams.toArray(new SqlParameterSource[0]));
     }
-
 }

@@ -3,28 +3,19 @@ package subway.domain.station;
 import java.util.Objects;
 
 public class Station {
-    private final Long id;
+
     private final StationName name;
 
-    private Station(Long id, String name) {
-        this.id = id;
+    private Station(String name) {
         this.name = StationName.from(name);
     }
 
     public static Station from(String name) {
-        return new Station(null, name);
-    }
-
-    public static Station of(long id, String name) {
-        return new Station(id, name);
+        return new Station(name);
     }
 
     public boolean isSameName(Station other) {
         return this.name.equals(other.name);
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {
@@ -35,8 +26,8 @@ public class Station {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return name.equals(station.name);
+        Station other = (Station) o;
+        return name.equals(other.name);
     }
 
     @Override

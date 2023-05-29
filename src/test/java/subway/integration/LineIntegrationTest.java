@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.request.LineRequest;
-import subway.dto.response.LineResponse;
+import subway.dto.response.LineStationsResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,8 +27,8 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 1000);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 0);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -106,8 +106,8 @@ public class LineIntegrationTest extends IntegrationTest {
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineStationsResponse.class).stream()
+                .map(LineStationsResponse::getId)
                 .collect(Collectors.toList());
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
@@ -135,7 +135,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
+        LineStationsResponse resultResponse = response.as(LineStationsResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineId);
     }
 

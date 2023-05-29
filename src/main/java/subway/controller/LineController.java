@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
+import subway.dto.response.LineStationsResponse;
 import subway.service.LineService;
+import subway.service.SectionService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -22,9 +24,11 @@ import java.util.List;
 public class LineController {
 
     private final LineService lineService;
+    private final SectionService sectionService;
 
-    public LineController(LineService lineService) {
+    public LineController(LineService lineService, SectionService sectionService) {
         this.lineService = lineService;
+        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -34,13 +38,15 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<LineStationsResponse>> findAllLines() {
+        List<LineStationsResponse> lineStationsResponses = sectionService.readAllStationsOfAllLines();
+        return ResponseEntity.ok().body(lineStationsResponses);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<LineStationsResponse> findLineById(@PathVariable Long id) {
+        LineStationsResponse lineStationsResponse = sectionService.readAllStationsOfLine(id);
+        return ResponseEntity.ok().body(lineStationsResponse);
     }
 
     @PutMapping("/{id}")
