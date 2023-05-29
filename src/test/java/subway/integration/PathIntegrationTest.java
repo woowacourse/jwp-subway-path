@@ -2,7 +2,6 @@ package subway.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fixtures.IntegrationFixtures;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -11,9 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.PathRequest;
 
-import static fixtures.IntegrationFixtures.REQUEST_PATH_선릉역_TO_암사역;
+import static fixtures.IntegrationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("경로 및 요금 조회 기능")
@@ -37,20 +35,20 @@ class PathIntegrationTest extends IntegrationTest {
     @DisplayName("경로와 요금을 조회할 수 있다.")
     void findPathTest() throws JsonProcessingException {
         // given
-        PathRequest request = REQUEST_PATH_선릉역_TO_암사역;
+        Long startStationId = STATION_LINE2_선릉역_ID;
+        Long endStationId = STATION_LINE8_암사역_ID;
 
         // when
         ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
-                        .body(request)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .when()
-                        .get("/path")
+                        .get("/path/" + startStationId + "/" + endStationId)
                         .then().log().all()
                         .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.body().asString()).isEqualTo(objectMapper.writeValueAsString(IntegrationFixtures.PATH_선릉역_TO_암사역));
+        assertThat(response.body().asString()).isEqualTo(objectMapper.writeValueAsString(PATH_선릉역_TO_암사역));
     }
 }
