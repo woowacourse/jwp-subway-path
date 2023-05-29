@@ -28,7 +28,7 @@ public class DBSectionRepository implements SectionRepository {
     private final RowMapper<Section> sectionRowMapper =
             (rs, rowNum) -> {
                 Long sectionId = rs.getLong("section_id");
-                Line line = new Line(rs.getLong("line_id"), rs.getString("line_name"));
+                Line line = new Line(rs.getLong("line_id"), rs.getString("line_name"), rs.getInt("line_surcharge"));
                 Station upStation = new Station(rs.getLong("up_station_id"), rs.getString("up_station_name"), line);
                 Station downStation = new Station(rs.getLong("down_station_id"), rs.getString("down_station_name"), line);
                 int distance = rs.getInt("distance");
@@ -107,7 +107,8 @@ public class DBSectionRepository implements SectionRepository {
                 "ds.name AS down_station_name, " +
                 "ss.distance, " +
                 "ss.line_id, " +
-                "line.name AS line_name " +
+                "line.name AS line_name, " +
+                "line.surcharge AS line_surcharge " +
                 "FROM " +
                 "section ss " +
                 "INNER JOIN station us ON us.line_id = ss.line_id AND us.id = ss.up_station_id " +
@@ -128,7 +129,8 @@ public class DBSectionRepository implements SectionRepository {
                 "ds.name AS down_station_name, " +
                 "ss.distance, " +
                 "ss.line_id, " +
-                "line.name AS line_name " +
+                "line.name AS line_name, " +
+                "line.surcharge AS line_surcharge  " +
                 "FROM " +
                 "section ss " +
                 "INNER JOIN station us ON us.line_id = ss.line_id AND us.id = ss.up_station_id " +

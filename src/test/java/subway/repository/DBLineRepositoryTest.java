@@ -35,7 +35,7 @@ class DBLineRepositoryTest {
     @DisplayName("Line을 entity로 변환하여 저장한 후 저장된 entity를 Line으로 만들어서 반환한다.")
     void insertTest() {
         // given
-        Line line = new Line(null, LINE7_NAME);
+        Line line = new Line(null, LINE7_NAME, LINE7_SURCHARGE);
         Line expectLine = LINE7;
 
         // when

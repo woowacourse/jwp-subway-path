@@ -4,17 +4,20 @@ import java.util.Objects;
 
 public class LineRequest {
 
-    private String lineName;
+    private final String lineName;
+    private final int surcharge;
 
-    public LineRequest() {
-    }
-
-    public LineRequest(String lineName) {
+    public LineRequest(String lineName, int surcharge) {
         this.lineName = lineName;
+        this.surcharge = surcharge;
     }
 
     public String getLineName() {
         return lineName;
+    }
+
+    public int getSurcharge() {
+        return surcharge;
     }
 
     @Override
@@ -25,12 +28,20 @@ public class LineRequest {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LineRequest that = (LineRequest) o;
-        return Objects.equals(lineName, that.lineName);
+        LineRequest request = (LineRequest) o;
+        return surcharge == request.surcharge && Objects.equals(lineName, request.lineName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineName);
+        return Objects.hash(lineName, surcharge);
+    }
+
+    @Override
+    public String toString() {
+        return "LineRequest{" +
+                "lineName='" + lineName + '\'' +
+                ", surcharge=" + surcharge +
+                '}';
     }
 }

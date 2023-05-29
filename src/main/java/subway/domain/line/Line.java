@@ -6,10 +6,12 @@ public class Line {
 
     private final Long id;
     private final LineName name;
+    private final Surcharge surcharge;
 
-    public Line(Long id, String name) {
+    public Line(Long id, String name, int surcharge) {
         this.id = id;
         this.name = new LineName(name);
+        this.surcharge = new Surcharge(surcharge);
     }
 
     public Long getId() {
@@ -18,6 +20,10 @@ public class Line {
 
     public String getName() {
         return name.getLineName();
+    }
+
+    public int getSurcharge() {
+        return surcharge.getSurcharge();
     }
 
     @Override
@@ -29,12 +35,12 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name);
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(surcharge, line.surcharge);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, surcharge);
     }
 
     @Override
@@ -42,6 +48,7 @@ public class Line {
         return "Line{" +
                 "id=" + id +
                 ", name=" + name +
+                ", surcharge=" + surcharge +
                 '}';
     }
 }

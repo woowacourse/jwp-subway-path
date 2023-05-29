@@ -26,7 +26,7 @@ public class LineService {
     }
 
     public Long saveLine(LineRequest lineRequest) {
-        Line line = new Line(null, lineRequest.getLineName());
+        Line line = new Line(null, lineRequest.getLineName(), lineRequest.getSurcharge());
         Line insertedLine = lineRepository.insert(line);
         return insertedLine.getId();
     }
@@ -53,7 +53,7 @@ public class LineService {
     }
 
     public void updateLine(Long lineId, LineRequest updateLineRequest) {
-        Line newLine = new Line(lineId, updateLineRequest.getLineName());
+        Line newLine = new Line(lineId, updateLineRequest.getLineName(), updateLineRequest.getSurcharge());
         lineRepository.update(newLine);
     }
 

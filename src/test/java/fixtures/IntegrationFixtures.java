@@ -19,6 +19,8 @@ public class IntegrationFixtures {
     public static final String LINE8_NAME = "8호선";
     public static final String LINE4_NAME = "4호선";
     public static final String LINE2_NEW_NAME = "새로운 2호선";
+    public static final int LINE2_SURCHARGE = 1000;
+
     public static final Long STATION_LINE2_선릉역_ID = 1L;
     public static final Long STATION_LINE2_잠실역_ID = 2L;
     public static final Long STATION_LINE2_건대역_ID = 3L;
@@ -46,8 +48,8 @@ public class IntegrationFixtures {
 
     public static final int FARE_선릉역_TO_암사역 = 1350;
 
-    public static final LineRequest REQUEST_LINE4 = new LineRequest(LINE4_NAME);
-    public static final LineRequest REQUEST_NEW_LINE2 = new LineRequest(LINE2_NEW_NAME);
+    public static final LineRequest REQUEST_LINE4 = new LineRequest(LINE4_NAME, 0);
+    public static final LineRequest REQUEST_NEW_LINE2 = new LineRequest(LINE2_NEW_NAME, LINE2_SURCHARGE);
 
 
     public static final StationRequest REQUEST_선릉역_TO_잠실역 = new StationRequest(STATION_선릉역_NAME, STATION_잠실역_NAME, DISTANCE_선릉역_TO_잠실역, LINE2_ID);
@@ -68,7 +70,7 @@ public class IntegrationFixtures {
     public static final LineFindResponse LINE2_노선도_AFTER_DELETE_잠실역 = new LineFindResponse(LINE2_NAME, List.of(STATION_선릉역_NAME, STATION_건대역_NAME));
     public static final LineFindResponse LINE8_노선도 = new LineFindResponse(LINE8_NAME, List.of(STATION_잠실역_NAME, STATION_암사역_NAME));
     public static final LineFindResponse LINE7_노선도 = new LineFindResponse(LINE7_NAME, new ArrayList<>());
-    public static final List<LineFindResponse> ALL_LINE_노선도 = List.of(LINE2_노선도, LINE7_노선도, LINE8_노선도);
+    public static final List<LineFindResponse> ALL_LINE_노선도 = List.of(LINE2_노선도, LINE8_노선도, LINE7_노선도);
 
     public static final PathResponse PATH_선릉역_TO_암사역 = new PathResponse(
             List.of(STATION_선릉역_NAME, STATION_잠실역_NAME, STATION_암사역_NAME),

@@ -22,15 +22,15 @@ public class DBLineRepository implements LineRepository {
 
     @Override
     public Line insert(Line line) {
-        LineEntity lineEntity = new LineEntity(null, line.getName());
+        LineEntity lineEntity = new LineEntity(null, line.getName(), line.getSurcharge());
         LineEntity insertedLineEntity = lineDao.insert(lineEntity);
-        return new Line(insertedLineEntity.getId(), insertedLineEntity.getLineName());
+        return new Line(insertedLineEntity.getId(), insertedLineEntity.getLineName(), insertedLineEntity.getSurcharge());
     }
 
     @Override
     public Line findLineById(Long lineId) {
         LineEntity findLineEntity = lineDao.findById(lineId);
-        return new Line(findLineEntity.getId(), findLineEntity.getLineName());
+        return new Line(findLineEntity.getId(), findLineEntity.getLineName(), findLineEntity.getSurcharge());
     }
 
     @Override
@@ -40,20 +40,20 @@ public class DBLineRepository implements LineRepository {
             return Optional.empty();
         }
         LineEntity findLineEntity = nullableLineEntity.get();
-        return Optional.of(new Line(findLineEntity.getId(), findLineEntity.getLineName()));
+        return Optional.of(new Line(findLineEntity.getId(), findLineEntity.getLineName(), findLineEntity.getSurcharge()));
     }
 
     @Override
     public List<Line> findAllLines() {
         List<LineEntity> lineEntities = lineDao.findAll();
         return lineEntities.stream()
-                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getLineName()))
+                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getLineName(), lineEntity.getSurcharge()))
                 .collect(toList());
     }
 
     @Override
     public void update(Line newLine) {
-        LineEntity newLineEntity = new LineEntity(newLine.getId(), newLine.getName());
+        LineEntity newLineEntity = new LineEntity(newLine.getId(), newLine.getName(), newLine.getSurcharge());
         lineDao.updateById(newLineEntity);
     }
 

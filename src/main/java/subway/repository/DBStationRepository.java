@@ -20,7 +20,7 @@ public class DBStationRepository implements StationRepository {
             (rs, rowNum) -> new Station(
                     rs.getLong("station_id"),
                     rs.getString("station_name"),
-                    new Line(rs.getLong("line_id"), rs.getString("line_name"))
+                    new Line(rs.getLong("line_id"), rs.getString("line_name"), rs.getInt("line_surcharge"))
             );
 
     public DBStationRepository(JdbcTemplate jdbcTemplate, StationDao stationDao) {
@@ -40,7 +40,8 @@ public class DBStationRepository implements StationRepository {
                 "station.id AS station_id, " +
                 "station.name AS station_name, " +
                 "line.id AS line_id, " +
-                "line.name AS line_name " +
+                "line.name AS line_name, " +
+                "line.surcharge AS line_surcharge " +
                 "FROM STATION " +
                 "INNER JOIN line ON station.line_id = line.id " +
                 "WHERE station.id = ?";
@@ -53,7 +54,8 @@ public class DBStationRepository implements StationRepository {
                 "station.id AS station_id, " +
                 "station.name AS station_name, " +
                 "line.id AS line_id, " +
-                "line.name AS line_name " +
+                "line.name AS line_name, " +
+                "line.surcharge AS line_surcharge " +
                 "FROM STATION " +
                 "INNER JOIN line ON station.line_id = line.id " +
                 "WHERE line.id = ?";

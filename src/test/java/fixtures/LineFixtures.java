@@ -17,28 +17,30 @@ public class LineFixtures {
     public static final String LINE2_NAME = "2호선";
     public static final String LINE7_NAME = "7호선";
     public static final String LINE2_NEW_NAME = "새로운 2호선";
+    public static final int LINE7_SURCHARGE = 0;
+    public static final int LINE2_SURCHARGE = 1000;
 
     /**
      * request
      */
-    public static final LineRequest REQUEST_LINE7 = new LineRequest(LINE7_NAME);
-    public static final LineRequest REQUEST_NEW_LINE2 = new LineRequest(LINE2_NEW_NAME);
+    public static final LineRequest REQUEST_LINE7 = new LineRequest(LINE7_NAME, LINE7_SURCHARGE);
+    public static final LineRequest REQUEST_NEW_LINE2 = new LineRequest(LINE2_NEW_NAME, LINE2_SURCHARGE);
 
     /**
      * domain
      */
-    public static final Line LINE2 = new Line(LINE2_ID, LINE2_NAME);
-    public static final Line NEW_LINE2 = new Line(LINE2_ID, LINE2_NEW_NAME);
-    public static final Line LINE7_TO_INSERT = new Line(null, LINE7_NAME);
-    public static final Line LINE7 = new Line(LINE7_ID, LINE7_NAME);
+    public static final Line LINE2 = new Line(LINE2_ID, LINE2_NAME, LINE2_SURCHARGE);
+    public static final Line NEW_LINE2 = new Line(LINE2_ID, LINE2_NEW_NAME, LINE2_SURCHARGE);
+    public static final Line LINE7_TO_INSERT = new Line(null, LINE7_NAME, LINE7_SURCHARGE);
+    public static final Line LINE7 = new Line(LINE7_ID, LINE7_NAME, LINE7_SURCHARGE);
 
     /**
      * entity
      */
-    public static final LineEntity LINE2_INSERT_ENTITY = new LineEntity(null, LINE2_NAME);
-    public static final LineEntity LINE7_INSERT_ENTITY = new LineEntity(null, LINE7_NAME);
-    public static final LineEntity LINE2_FIND_ENTITY = new LineEntity(LINE2_ID, LINE2_NAME);
-    public static final LineEntity LINE7_FIND_ENTITY = new LineEntity(LINE7_ID, LINE7_NAME);
+    public static final LineEntity LINE2_INSERT_ENTITY = new LineEntity(null, LINE2_NAME, LINE2_SURCHARGE);
+    public static final LineEntity LINE7_INSERT_ENTITY = new LineEntity(null, LINE7_NAME, LINE7_SURCHARGE);
+    public static final LineEntity LINE2_FIND_ENTITY = new LineEntity(LINE2_ID, LINE2_NAME, LINE2_SURCHARGE);
+    public static final LineEntity LINE7_FIND_ENTITY = new LineEntity(LINE7_ID, LINE7_NAME, LINE7_SURCHARGE);
 
     /**
      * response

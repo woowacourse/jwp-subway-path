@@ -14,10 +14,10 @@ public class SectionFixtures {
     public static final long SECTION_잠실역_TO_건대역_ID = 1L;
     public static final long SECTION_잠실역_TO_건대역_ID_AFTER_INSERT_AGAIN = 4L;
     public static final long SECTION_잠실역_TO_강변역_ID = 2L;
-    private static final long SECTION_강변역_TO_건대역_ID = 2L;
-    private static final long SECTION_대림역_TO_잠실역_ID = 2L;
-    private static final long SECTION_건대역_TO_성수역_ID = 2L;
-    private static final long SECTION_온수역_TO_철산역_ID = 2L;
+    public static final long SECTION_강변역_TO_건대역_ID = 2L;
+    public static final long SECTION_대림역_TO_잠실역_ID = 2L;
+    public static final long SECTION_건대역_TO_성수역_ID = 2L;
+    public static final long SECTION_온수역_TO_철산역_ID = 2L;
 
     public static final int DISTANCE_잠실역_TO_건대역 = 10;
     public static final int DISTANCE_잠실역_TO_강변역 = 3;
