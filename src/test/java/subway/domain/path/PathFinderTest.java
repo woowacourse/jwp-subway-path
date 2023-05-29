@@ -20,13 +20,17 @@ class PathFinderTest {
         // given
         Station startStation = new Station(null, "a", LINE2);
         Station endStation = new Station(null, "c", LINE7);
-        Sections sections = new Sections(List.of(
-                new Section(null, startStation, new Station(null, "b", LINE2), 10),
-                new Section(null, new Station(null, "b", LINE2), new Station(null, "c", LINE2), 15),
-                new Section(null, new Station(null, "b", LINE7), new Station(null, "d", LINE7), 1),
-                new Section(null, new Station(null, "d", LINE7), endStation, 2))
-        );
-        Path expectPath = new Path(List.of("a", "b", "d", "c"), 13);
+
+        Section sectionAtoB = new Section(null, startStation, new Station(null, "b", LINE2), 10);
+        Section sectionBtoC = new Section(null, new Station(null, "b", LINE2), new Station(null, "c", LINE2), 15);
+        Section sectionBtoD = new Section(null, new Station(null, "b", LINE7), new Station(null, "d", LINE7), 1);
+        Section sectionDtoC = new Section(null, new Station(null, "d", LINE7), endStation, 2);
+
+        Sections sections = new Sections(List.of(sectionAtoB, sectionBtoC, sectionBtoD, sectionDtoC));
+
+        Path expectPath = new Path(List.of("a", "b", "d", "c"),
+                List.of(new SectionEdge(sectionAtoB), new SectionEdge(sectionBtoD), new SectionEdge(sectionDtoC)),
+                13);
 
         // when
         Path path = PathFinder.findPath(sections, startStation, endStation);

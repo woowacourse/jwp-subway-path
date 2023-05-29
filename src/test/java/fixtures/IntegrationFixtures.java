@@ -20,6 +20,7 @@ public class IntegrationFixtures {
     public static final String LINE4_NAME = "4호선";
     public static final String LINE2_NEW_NAME = "새로운 2호선";
     public static final int LINE2_SURCHARGE = 1000;
+    public static final int LINE8_SURCHARGE = 500;
 
     public static final Long STATION_LINE2_선릉역_ID = 1L;
     public static final Long STATION_LINE2_잠실역_ID = 2L;
@@ -46,7 +47,7 @@ public class IntegrationFixtures {
     public static final int DISTANCE_잠실역_TO_암사역 = 8;
     public static final int DISTANCE_온수역_TO_철산역 = 11;
 
-    public static final int FARE_선릉역_TO_암사역 = 1350;
+    public static final int FARE_선릉역_TO_암사역 = 1350 + LINE2_SURCHARGE;
 
     public static final LineRequest REQUEST_LINE4 = new LineRequest(LINE4_NAME, 0);
     public static final LineRequest REQUEST_NEW_LINE2 = new LineRequest(LINE2_NEW_NAME, LINE2_SURCHARGE);

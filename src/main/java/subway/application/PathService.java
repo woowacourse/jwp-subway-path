@@ -35,7 +35,7 @@ public class PathService {
         Path path = PathFinder.findPath(new Sections(allSections), startStation, endStation);
         List<String> stationNames = path.getStationNames();
         int totalDistance = path.getDistance();
-        int fare = fareCalculator.calculate(totalDistance);
+        int fare = fareCalculator.calculate(totalDistance, path.getLinesToUse());
         return new PathResponse(stationNames, totalDistance, fare);
     }
 }
