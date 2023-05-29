@@ -1,4 +1,4 @@
-package subway.common.mapper;
+package subway.application.service.mapper;
 
 import subway.adapter.out.persistence.entity.SectionEntity;
 import subway.domain.section.Section;

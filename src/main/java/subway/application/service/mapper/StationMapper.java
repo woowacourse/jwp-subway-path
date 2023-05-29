@@ -1,4 +1,4 @@
-package subway.common.mapper;
+package subway.application.service.mapper;
 
 import subway.adapter.out.persistence.entity.StationEntity;
 import subway.application.port.in.station.dto.response.StationQueryResponse;

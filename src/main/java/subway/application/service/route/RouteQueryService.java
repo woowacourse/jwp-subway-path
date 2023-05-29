@@ -11,7 +11,7 @@ import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.route.RouteFinderPort;
 import subway.application.port.out.station.LoadStationPort;
 import subway.application.service.exception.NoSuchStationException;
-import subway.common.mapper.RouteMapper;
+import subway.application.service.mapper.RouteMapper;
 import subway.domain.fare.Fare;
 import subway.domain.fare.FarePolicy;
 import subway.domain.line.Line;

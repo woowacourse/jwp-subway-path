@@ -1,4 +1,4 @@
-package subway.common.mapper;
+package subway.application.service.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
