@@ -22,10 +22,10 @@ import subway.dto.StationResponse;
 @SuppressWarnings("NonAsciiCharacters")
 public class RouteIntegrationTest extends IntegrationTest {
 
-    private LineRequest line2Request = new LineRequest("2호선", "초록"); //1
-    private LineRequest line3Request = new LineRequest("3호선", "주황"); //2
-    private LineRequest line4Request = new LineRequest("4호선", "하늘"); //3
-    private LineRequest line7Request = new LineRequest("7호선", "올리브"); //4
+    private LineRequest line2Request = new LineRequest("2호선", "초록", 500); //1
+    private LineRequest line3Request = new LineRequest("3호선", "주황", 0); //2
+    private LineRequest line4Request = new LineRequest("4호선", "하늘", 0); //3
+    private LineRequest line7Request = new LineRequest("7호선", "올리브", 1000); //4
 
     private List<LineRequest> lineRequests = List.of(line2Request, line3Request, line4Request, line7Request);
     private List<StationRequest> stationRequests = List.of("낙성대", "사당", "이수", "내방", "고속터미널", "방배", "잠원", "교대").stream()
@@ -73,8 +73,8 @@ public class RouteIntegrationTest extends IntegrationTest {
                 .isEqualTo(List.of("낙성대", "사당", "이수", "내방", "고속터미널"));
         //then : 거리 확인
         assertThat(resultResponse.getDistance()).isEqualTo(20);
-        //then : 요금 확인
-        assertThat(resultResponse.getFare()).isEqualTo(1450);
+        //then : 요금 확인 (1450 + 노선 요금 1000 = 2450)
+        assertThat(resultResponse.getFare()).isEqualTo(2450);
     }
 
 
