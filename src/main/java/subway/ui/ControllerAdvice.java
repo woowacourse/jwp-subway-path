@@ -7,14 +7,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.exception.SubwayException;
 
+import java.sql.SQLException;
+
 @RestControllerAdvice
 public class ControllerAdvice {
 
     public static final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
 
     @ExceptionHandler(SubwayException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(Exception e) {
+    public ResponseEntity<String> handleSubwayException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<String> handleSqlException(Exception e) {
+        logError(e);
+        return ResponseEntity.badRequest()
+                .body("SQL 오류가 발생했습니다.");
     }
 
     @ExceptionHandler(Exception.class)
