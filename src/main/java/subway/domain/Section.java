@@ -1,17 +1,17 @@
 package subway.domain;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.util.Objects;
 
-@Getter
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Section {
     private final Station upStation;
     private final Station downStation;
     private final Distance distance;
+
+    private Section(final Station upStation, final Station downStation, final Distance distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
 
     public static Section of(Station upStation, Station downStation, int distance) {
         return new Section(upStation, downStation, new Distance(distance));
@@ -43,5 +43,35 @@ public class Section {
 
     public boolean contains(Station station) {
         return upStation.equalsName(station) || downStation.equalsName(station);
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public Distance getDistance() {
+        return distance;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Section section = (Section) o;
+        return Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
+                section.downStation) && Objects.equals(distance, section.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(upStation, downStation, distance);
     }
 }

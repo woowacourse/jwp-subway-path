@@ -1,11 +1,15 @@
 package subway.dto;
 
 import java.util.List;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@Getter
-@RequiredArgsConstructor
 public class SectionsDto {
     private final List<SectionDto> sections;
+
+    public SectionsDto(final List<SectionDto> sections) {
+        this.sections = sections;
+    }
+
+    public List<SectionDto> getSections() {
+        return sections;
+    }
 }

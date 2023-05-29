@@ -1,10 +1,7 @@
 package subway.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import java.util.Objects;
 
-@Getter
-@EqualsAndHashCode
 public class Line {
     private final Long id;
     private final Name name;
@@ -18,5 +15,34 @@ public class Line {
 
     public Line(final String name, final String color) {
         this(null, name, color);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Name getName() {
+        return name;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

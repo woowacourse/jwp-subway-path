@@ -1,22 +1,35 @@
 package subway.entity.vo;
 
 import java.util.Objects;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import subway.entity.StationEntity;
 
-@Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class SectionVo {
     private final StationEntity upStationEntity;
     private final StationEntity downStationEntity;
     private final Integer distance;
 
+    private SectionVo(final StationEntity upStationEntity, final StationEntity downStationEntity, final Integer distance) {
+        this.upStationEntity = upStationEntity;
+        this.downStationEntity = downStationEntity;
+        this.distance = distance;
+    }
+
     public static SectionVo of(Long upStationId, String upStationName, Long downStationId, String downStationName, Integer distance) {
         return new SectionVo(StationEntity.of(upStationId, upStationName),
                 StationEntity.of(downStationId, downStationName),
                 distance);
+    }
+
+    public StationEntity getUpStationEntity() {
+        return upStationEntity;
+    }
+
+    public StationEntity getDownStationEntity() {
+        return downStationEntity;
+    }
+
+    public Integer getDistance() {
+        return distance;
     }
 
     @Override
