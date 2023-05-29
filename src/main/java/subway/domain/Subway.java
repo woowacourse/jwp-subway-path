@@ -60,6 +60,13 @@ public class Subway {
         lines.remove(oldLine);
         lines.add(new Line(lineId, oldLine.getName(), newColor, oldLine.getCharge(), new Sections(oldLine.getSections())));
     }
+    
+    public void updateLineCharge(Long lineId, int charge) {
+        Line oldLine = findLineById(lineId);
+    
+        lines.remove(oldLine);
+        lines.add(new Line(lineId, oldLine.getName(), oldLine.getColor(), charge, new Sections(oldLine.getSections())));
+    }
 
     public void initLine(Long lineId, Station upStation, Station downStation, Distance distance) {
         Line line = findLineById(lineId);

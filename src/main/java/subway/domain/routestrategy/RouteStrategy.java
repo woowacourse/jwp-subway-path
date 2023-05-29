@@ -10,5 +10,7 @@ public interface RouteStrategy {
     List<Station> findShortestRoute(Subway subway, Station start, Station end);
 
     Distance findShortestDistance(Subway subway, Station start, Station end);
+    
+    List<SubwaySection> findShortestSections(Subway subway, Station start, Station end);
 
 }
