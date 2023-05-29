@@ -30,21 +30,49 @@ public class SectionService {
     }
 
     private void addSectionInAlreadyExist(Long lineId, SectionRequest sectionRequest, Sections sectionsByLineId) {
-        List<Section> updateSections = sectionsByLineId.findSectionsWithChange(sectionRequest.getFromId(),
-                sectionRequest.getToId(),
-                sectionRequest.getDistance());
+        sectionsByLineId.validateAlreadyIn(sectionRequest.getFromId(), sectionRequest.getToId());
+        Optional<Section> targetSection = sectionsByLineId.findTargetSection(sectionRequest.getFromId(),
+                sectionRequest.getToId());
+        sectionsByLineId.checkInsertableDistance(targetSection, sectionRequest.getDistance());
 
-        if (updateSections.size() == 3) {
-            Section deleteSection = updateSections.get(1);
-            Section addSection = updateSections.get(2);
-            sectionDao.deleteSectionBySectionInfo(lineId, deleteSection);
-            sectionDao.insert(addSection.getFrom().getId(), addSection.getTo().getId(), addSection.getDistanceValue(),
-                    lineId);
+        if (isInsertableAtMiddleLeft(lineId, sectionRequest, sectionsByLineId, targetSection)) {
+            return;
+        }
+        if (isInsertableAtMiddleRight(lineId, sectionRequest, sectionsByLineId, targetSection)) {
+            return;
         }
 
-        Section addSection2 = updateSections.get(0);
-        sectionDao.insert(addSection2.getFrom().getId(), addSection2.getTo().getId(), addSection2.getDistanceValue(),
-                lineId);
+        sectionDao.insert(sectionRequest.getFromId(), sectionRequest.getToId(), sectionRequest.getDistance(), lineId);
+    }
+
+    private boolean isInsertableAtMiddleLeft(Long lineId, SectionRequest sectionRequest, Sections sectionsByLineId,
+                                             Optional<Section> targetSection) {
+        if (sectionsByLineId.isInsertableLeft(targetSection, sectionRequest.getToId())) {
+            List<Section> leftChangeSections = sectionsByLineId.getLeftChangeSections(sectionRequest.getFromId(),
+                    sectionRequest.getToId(), sectionRequest.getDistance(), targetSection);
+            insertInMiddle(lineId, leftChangeSections);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isInsertableAtMiddleRight(Long lineId, SectionRequest sectionRequest, Sections sectionsByLineId,
+                                              Optional<Section> targetSection) {
+        if (sectionsByLineId.isInsertableRight(targetSection, sectionRequest.getFromId())) {
+            List<Section> rightChangeSections = sectionsByLineId.getRightChangeSections(sectionRequest.getFromId(),
+                    sectionRequest.getToId(), sectionRequest.getDistance(), targetSection);
+            insertInMiddle(lineId, rightChangeSections);
+            return true;
+        }
+        return false;
+    }
+
+    private void insertInMiddle(Long lineId, List<Section> leftChangeSections) {
+        sectionDao.insert(leftChangeSections.get(0).getFrom().getId(), leftChangeSections.get(0).getTo().getId(),
+                leftChangeSections.get(0).getDistanceValue(), lineId);
+        sectionDao.deleteSectionBySectionInfo(lineId, leftChangeSections.get(1));
+        sectionDao.insert(leftChangeSections.get(2).getFrom().getId(), leftChangeSections.get(2).getTo().getId(),
+                leftChangeSections.get(2).getDistanceValue(), lineId);
     }
 
     public void deleteStationById(final Long lineId, final Long stationId) {

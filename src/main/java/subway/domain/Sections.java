@@ -25,45 +25,58 @@ public class Sections {
                 sections.get(0).getDistanceValue() + sections.get(1).getDistanceValue());
     }
 
-    public List<Section> findSectionsWithChange(final Long fromId, final Long toId, final int distance) {
-        if (isAlreadyInSection(fromId, toId)) {
+    public void validateAlreadyIn(final Long fromId, final Long toId) {
+        if (validateSameSection(fromId, toId)) {
             throw new IllegalArgumentException("해당 조건으로 역을 설치할 수 없습니다.");
         }
+    }
 
-        Optional<Section> targetSection = sections.stream()
-                .filter(section -> section.existRightById(toId) || section.existLeftById(fromId))
-                .findFirst();
-
+    public void checkInsertableDistance(final Optional<Section> targetSection, final int distance) {
         if (targetSection.isPresent() && !targetSection.get().isInsertable(distance)) {
             throw new IllegalArgumentException("삽입할 수 없는 거리입니다.");
         }
-
-        return getChangeSections(fromId, toId, distance, targetSection);
     }
 
-    private List<Section> getChangeSections(Long fromId, Long toId, int distance,
-                                            Optional<Section> targetSection) {
+    public Optional<Section> findTargetSection(Long fromId, Long toId) {
+        return sections.stream()
+                .filter(section -> section.existRightById(toId) || section.existLeftById(fromId))
+                .findFirst();
+    }
+
+    public boolean isInsertableLeft(Optional<Section> targetSection, Long toId) {
+        return targetSection.isPresent() && targetSection.get().existRightById(toId);
+    }
+
+    public List<Section> getLeftChangeSections(Long fromId, Long toId, int distance, Optional<Section> targetSection) {
         List<Section> querySections = new ArrayList<>();
         Station fromStation = new Station(fromId, "from_name");
         Station toStation = new Station(toId, "to_name");
 
-        if (targetSection.isPresent() && targetSection.get().existRightById(toId)) {
-            querySections.add(new Section(targetSection.get().getFrom(), fromStation,
-                    targetSection.get().getDistanceValue() - distance));
-            querySections.add(targetSection.get());
-        }
+        querySections.add(new Section(targetSection.get().getFrom(), fromStation,
+                targetSection.get().getDistanceValue() - distance));
+        querySections.add(targetSection.get());
+        querySections.add(new Section(fromStation, toStation, distance));
+        return querySections;
+    }
 
-        if (targetSection.isPresent() && targetSection.get().existLeftById(fromId)) {
-            querySections.add(new Section(toStation, targetSection.get().getTo(),
-                    targetSection.get().getDistanceValue() - distance));
-            querySections.add(targetSection.get());
-        }
+    public boolean isInsertableRight(Optional<Section> targetSection, Long fromId) {
+        return targetSection.isPresent() && targetSection.get().existLeftById(fromId);
+    }
+
+    public List<Section> getRightChangeSections(Long fromId, Long toId, int distance, Optional<Section> targetSection) {
+        List<Section> querySections = new ArrayList<>();
+        Station fromStation = new Station(fromId, "from_name");
+        Station toStation = new Station(toId, "to_name");
+
+        querySections.add(new Section(toStation, targetSection.get().getTo(),
+                targetSection.get().getDistanceValue() - distance));
+        querySections.add(targetSection.get());
 
         querySections.add(new Section(fromStation, toStation, distance));
         return querySections;
     }
 
-    private boolean isAlreadyInSection(Long fromId, Long toId) {
+    private boolean validateSameSection(Long fromId, Long toId) {
         return isExist(fromId) == isExist(toId);
     }
 

@@ -72,11 +72,10 @@ class SectionServiceTest {
         verify(sectionDao, atLeast(2)).insert(any(Long.class), any(Long.class), any(Integer.class), any(Long.class));
         verify(sectionDao, atLeastOnce()).deleteSectionBySectionInfo(any(Long.class), any(Section.class));
         InOrder inOrder = inOrder(sectionDao);
+        inOrder.verify(sectionDao).insert(any(Long.class), any(Long.class), any(Integer.class), any(Long.class));
         inOrder.verify(sectionDao).deleteSectionBySectionInfo(any(Long.class), any(Section.class));
         inOrder.verify(sectionDao).insert(sectionRequest.getFromId(), sectionRequest.getToId(),
                 sectionRequest.getDistance(), line.getId());
-        inOrder.verify(sectionDao).insert(any(Long.class), any(Long.class), any(Integer.class), any(Long.class));
-
     }
 
     @Test
