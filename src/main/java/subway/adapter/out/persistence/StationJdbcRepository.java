@@ -8,7 +8,7 @@ import subway.adapter.out.persistence.dao.StationDao;
 import subway.adapter.out.persistence.entity.StationEntity;
 import subway.application.port.out.station.LoadStationPort;
 import subway.application.port.out.station.PersistStationPort;
-import subway.application.service.mapper.StationMapper;
+import subway.application.service.station.StationMapper;
 import subway.domain.station.Station;
 
 @Repository

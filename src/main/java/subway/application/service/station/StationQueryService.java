@@ -9,7 +9,6 @@ import subway.application.port.in.station.FindStationByIdUseCase;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
 import subway.application.port.out.station.LoadStationPort;
 import subway.application.service.exception.NoSuchStationException;
-import subway.application.service.mapper.StationMapper;
 import subway.domain.station.Station;
 
 @Service

@@ -1,10 +1,11 @@
-package subway.application.service.mapper;
+package subway.application.service.line;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.adapter.out.persistence.entity.LineEntity;
 import subway.application.port.in.line.dto.response.LineQueryResponse;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
+import subway.application.service.station.StationMapper;
 import subway.domain.line.Line;
 import subway.domain.line.LineInfo;
 
