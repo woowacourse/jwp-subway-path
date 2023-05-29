@@ -1,6 +1,9 @@
-package subway.domain;
+package subway.domain.addstrategy;
 
 import java.util.List;
+import subway.domain.Distance;
+import subway.domain.Section;
+import subway.domain.Station;
 
 public interface AddStationStrategy {
 

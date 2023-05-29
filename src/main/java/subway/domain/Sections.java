@@ -1,14 +1,16 @@
 package subway.domain;
 
 import static java.util.Collections.EMPTY_LIST;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import subway.domain.addstrategy.AddStationStrategy;
 
 public class Sections {
 
@@ -16,6 +18,10 @@ public class Sections {
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public Sections() {
+        this(new ArrayList<>());
     }
 
     public void addInitialSection(Station upStation, Station downStation, Distance newDistance) {
@@ -54,44 +60,34 @@ public class Sections {
     private boolean isExistingSectionIsLongerThanNewSection(Station baseStation, Direction directionOfBase,
             Distance newDistance) {
         Optional<Section> sectionToRevise = findSectionIncludingStationOnDirection(baseStation, directionOfBase);
-        return sectionToRevise
-                .map(section -> section.isLongerThan(newDistance))
-                .orElse(false);
+        return sectionToRevise.map(section -> section.isLongerThan(newDistance)).orElse(true);
     }
 
     public List<Station> findAllStations() {
         if (sections.isEmpty()) {
             return EMPTY_LIST;
         }
-        Station startStation = findFirstStation();
-        List<Station> stations = new LinkedList<>(List.of(startStation));
-        while (stations.size() <= sections.size()) {
-            sections.stream()
-                    .filter(section -> stations.get(stations.size() - 1).equals(section.getUpStation()))
-                    .findFirst()
-                    .ifPresent(section -> stations.add(section.getDownStation()));
+        final Map<Station, Station> stationToStation = sections.stream()
+                .collect(toMap(Section::getUpStation, Section::getDownStation));
+        Station firstStation = findFirstStation(stationToStation);
+
+        return findOrderedStations(stationToStation, firstStation);
+    }
+
+    private Station findFirstStation(final Map<Station, Station> stationToStation) {
+        final Set<Station> upStations = new HashSet<>(stationToStation.keySet());
+        upStations.removeAll(stationToStation.values());
+        return upStations.stream().findFirst().get();
+    }
+
+    private static List<Station> findOrderedStations(Map<Station, Station> stationToStation, Station firstStation) {
+        Station upStation = firstStation;
+        List<Station> stations = new LinkedList<>(List.of(upStation));
+        while (stationToStation.containsKey(upStation)) {
+            upStation = stationToStation.get(upStation);
+            stations.add(upStation);
         }
         return stations;
-    }
-
-    private Station findFirstStation() {
-        Map<Station, Station> upAndDownStation = sections.stream()
-                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
-        Set<Station> stations = upAndDownStation.keySet();
-        stations.removeAll(upAndDownStation.values());
-        return stations.stream()
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("상행 종점을 찾을 수 없습니다"));
-    }
-
-    public List<Section> findSectionsByStation(Station station) {
-        List<Section> sectionWithStation = sections.stream()
-                .filter(section -> section.hasStationInSection(station))
-                .collect(Collectors.toList());
-        if(sectionWithStation.isEmpty()) {
-            throw new IllegalArgumentException("해당 역이 존재하지 않습니다.");
-        }
-        return sectionWithStation;
     }
 
     public void removeStation(Station stationToRemove) {
@@ -121,6 +117,11 @@ public class Sections {
 
     public boolean isEmpty() {
         return sections.isEmpty();
+    }
+
+    public boolean hasSameSection(Section section) {
+        return sections.stream()
+                .anyMatch(savedSection -> savedSection.equals(section));
     }
 
     public List<Section> getSections() {

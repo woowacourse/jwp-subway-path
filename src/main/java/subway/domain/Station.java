@@ -26,6 +26,10 @@ public class Station {
         }
     }
 
+    public boolean hasSameName(String name) {
+        return this.name.equals(name);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -43,20 +47,20 @@ public class Station {
         return Objects.hash(name);
     }
 
-    @Override
-    public String toString() {
-        return "Station{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
 }

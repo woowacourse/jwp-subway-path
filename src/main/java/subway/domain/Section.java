@@ -29,7 +29,10 @@ public class Section {
         if(direction == Direction.UP) {
             return upStation.equals(baseStation);
         }
-        return downStation.equals(baseStation);
+        if(direction == Direction.DOWN) {
+            return downStation.equals(baseStation);
+        }
+        return false;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
+        return upStation.equals(section.upStation) && downStation.equals(
                 section.downStation);
     }
 

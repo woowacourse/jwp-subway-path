@@ -3,6 +3,7 @@ create table if not exists LINE
     id        bigint            not null      auto_increment,
     name      varchar(255)      not null,
     color     varchar(20)       not null,
+    charge    bigint            not null,
     primary key(id),
     unique (name, color)
 );
@@ -10,10 +11,8 @@ create table if not exists LINE
 create table if not exists STATION
 (
     id          bigint            not null      auto_increment,
-    line_id     bigint            not null      references line(id)        on delete cascade,
-    name        varchar(255)      not null,
-    primary key(id),
-    unique (line_id, name)
+    name        varchar(255)      not null      unique,
+    primary key(id)
 );
 
 

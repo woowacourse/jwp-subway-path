@@ -49,9 +49,9 @@ public class SectionDao {
         return jdbcTemplate.query(sql, source, sectionRowMapper);
     }
 
-    public void insert(SectionEntity sectionEntity) {
+    public Long insert(SectionEntity sectionEntity) {
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
-        insertAction.execute(source);
+        return insertAction.executeAndReturnKey(source).longValue();
     }
 
     public void delete(SectionEntity sectionEntity) {

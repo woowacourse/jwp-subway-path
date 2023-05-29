@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.dao.DataAccessException;
@@ -17,7 +18,6 @@ public class StationDao {
     private static final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
-                    rs.getLong("line_id"),
                     rs.getString("name")
             );
 
@@ -36,27 +36,36 @@ public class StationDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public Optional<StationEntity> findById(Long stationId, Long lineId) {
-        String sql = "select * from STATION where id = ? and line_id = ?";
+    public Optional<StationEntity> findById(Long stationId) {
+        String sql = "select * from STATION where id = ?";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, stationId, lineId));
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, stationId));
         } catch (DataAccessException exception) {
             return Optional.empty();
         }
     }
 
-    public Optional<StationEntity> findByName(String name, Long lineId) {
-        String sql = "select id, line_id, name from STATION where name = ? and line_id = ?";
+    public Optional<StationEntity> findByName(String name) {
+        String sql = "select id, name from STATION where name = ?";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name, lineId));
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
         } catch (DataAccessException exception) {
             return Optional.empty();
         }
     }
 
-    public void delete(StationEntity savedStation) {
-        String sql = "delete from STATION where name = ? and line_id = ?";
-        jdbcTemplate.update(sql, new Object[]{savedStation.getName(), savedStation.getId()});
+    public void deleteById(Long stationId) {
+        String sql = "delete from STATION where id = ?";
+        jdbcTemplate.update(sql, stationId);
     }
 
+    public List<StationEntity> findAll() {
+        String sql = "select id, name, from STATION";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public void update(StationEntity stationEntity) {
+        String sql = "update STATION set name = ? where id =?";
+        jdbcTemplate.update(sql, stationEntity.getName(), stationEntity.getId());
+    }
 }

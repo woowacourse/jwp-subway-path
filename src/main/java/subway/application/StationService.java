@@ -2,50 +2,57 @@ package subway.application;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import subway.domain.Direction;
-import subway.domain.Distance;
-import subway.domain.Line;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
-import subway.dto.StationCreateRequest;
-import subway.dto.StationInitialCreateRequest;
-import subway.repository.LineStationRepository;
+import subway.dto.StationRequest;
+import subway.exception.NotFoundException;
+import subway.repository.StationRepository;
 
+@Transactional
 @Service
 public class StationService {
 
-    private LineStationRepository lineStationRepository;
+    private final StationRepository stationRepository;
 
-    public StationService(LineStationRepository lineStationRepository) {
-        this.lineStationRepository = lineStationRepository;
+    public StationService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public List<Station> createInitialStations(Long lineId, StationInitialCreateRequest request) {
-        Line line = lineStationRepository.findLineById(lineId);
-        line.addInitialStations(
-                new Station(null, request.getUpStationName()),
-                new Station(null, request.getDownStationName()),
-                new Distance(request.getDistance())
-        );
-        return lineStationRepository.saveInitialStations(line);
+    public Station createStation(StationRequest request) {
+        return stationRepository.saveStation(new Station(null, request.getName()));
     }
 
-    public Station createStation(Long lineId, StationCreateRequest request) {
-        Line line = lineStationRepository.findLineById(lineId);
-        line.addStation(
-                new Station(null, request.getBaseStationName()),
-                new Station(null, request.getNewStationName()),
-                Direction.findDirection(request.getDirectionOfBaseStation()),
-                new Distance(request.getDistance())
-        );
-        return lineStationRepository.saveStation(line, line.findStationByName(request.getNewStationName()));
+    @Transactional(readOnly = true)
+    public List<Station> findStations() {
+        return stationRepository.findAll();
     }
 
-    //1. 라인 가져와서 삭제한다음에
-    public void removeStation(Long lineId, Long stationId) {
-        Line line = lineStationRepository.findLineById(lineId);
-        Station stationToRemove = lineStationRepository.findStationById(lineId, stationId);
-        line.removeStation(stationToRemove);
-        lineStationRepository.removeStation(line, stationToRemove);
+    @Transactional(readOnly = true)
+    public Station findStationById(Long stationId) {
+        return stationRepository.findStationById(stationId)
+                .orElseThrow(() -> new NotFoundException("해당 역이 존재하지 않습니다."));
     }
 
+    public void updateStation(Long stationId, StationRequest request) {
+        validateExistStation(stationId);
+        validateDuplicatedName(request.getName());
+        stationRepository.updateStation(stationId, request.getName());
+    }
+
+    private void validateExistStation(Long stationId) {
+        if(stationRepository.findStationById(stationId).isEmpty()) {
+            throw new NotFoundException("해당 역이 존재하지 않습니다.");
+        }
+    }
+
+    private void validateDuplicatedName(String name) {
+        if(stationRepository.findStationByName(name).isPresent()) {
+            throw new IllegalArgumentException("이미 해당 역의 이름이 존재합니다.");
+        }
+    }
+
+    public void removeStation(Long stationId) {
+        Station station = findStationById(stationId);
+        stationRepository.delete(station);
+    }
 }

@@ -12,14 +12,20 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final int charge;
     private final Sections sections;
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, int charge, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.charge = charge;
         this.sections = sections;
         validateNameLength(name);
+    }
+
+    public Line(String name, String color, int charge, Sections sections) {
+        this(null, name, color, charge, sections);
     }
 
     private void validateNameLength(String name) {
@@ -43,13 +49,9 @@ public class Line {
         return sections.findAllStations();
     }
 
-    public List<Section> findSectionByStation(Station station) {
-        return sections.findSectionsByStation(station);
-    }
-
-    public Station findStationByName(String stationName) {
+    public Station findStationById(Long stationId) {
         return findStations().stream()
-                .filter(station -> station.getName().equals(stationName))
+                .filter(station -> station.getId().equals(stationId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 역이 노선에 존재하지 않습니다"));
     }
@@ -62,6 +64,18 @@ public class Line {
         return sections.isEmpty();
     }
 
+    public boolean hasSameName(String otherName) {
+        return this.name.equals(otherName);
+    }
+
+    public boolean hasSameColor(String otherColor) {
+        return this.color.equals(otherColor);
+    }
+
+    public boolean hasSameSection(Section section) {
+        return sections.hasSameSection(section);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -71,12 +85,13 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
-        return Objects.equals(name, line.name) || Objects.equals(color, line.color);
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name)
+                && Objects.equals(color, line.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, color);
+        return Objects.hash(id, name, color);
     }
 
     public Long getId() {
@@ -90,9 +105,12 @@ public class Line {
     public String getColor() {
         return color;
     }
-
+    
+    public int getCharge() {
+        return charge;
+    }
+    
     public List<Section> getSections() {
         return new LinkedList<>(sections.getSections());
     }
-
 }

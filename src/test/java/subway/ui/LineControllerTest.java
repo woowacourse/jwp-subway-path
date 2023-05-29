@@ -47,11 +47,11 @@ class LineControllerTest {
     @DisplayName("노선 정상 생성한다")
     void createLine() throws Exception {
         given(lineService.createLine(any()))
-                .willReturn(new Line(1L, "2호선", "green", new Sections(new ArrayList<>())));
+                .willReturn(new Line(1L, "2호선", "green", 0, new Sections(new ArrayList<>())));
 
         mockMvc.perform(post("/lines")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LineRequest("2호선", "green"))))
+                        .content(objectMapper.writeValueAsString(new LineRequest("2호선", "green", 0))))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/lines/1"))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -64,14 +64,13 @@ class LineControllerTest {
     @Test
     void findAllLines() throws Exception {
         List<Line> lines = List.of(
-                new Line(1L, "2호선", "green", new Sections(new ArrayList<>())),
-                new Line(2L, "1호선", "blue",
+                new Line(1L, "2호선", "green", 0, new Sections(new ArrayList<>())),
+                new Line(2L, "1호선", "blue", 0,
                         new Sections(
                                 List.of(new Section(new Station("동인천역"), new Station("주안역"), new Distance(10))))));
         given(lineService.findLines())
                 .willReturn(lines);
 
-        //todo 처음 배운 정보 기록1 : Matchers.empty() 메서드는 Hamcrest 라이브러리의 Matcher 클래스의 정적 메서드이며, 빈 리스트(empty list)인 경우에 true를 반환합니다.
         mockMvc.perform(get("/lines"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
@@ -91,7 +90,7 @@ class LineControllerTest {
     void findLineById() throws Exception {
         Long lineId = 1L;
         given(lineService.findLineById(anyLong()))
-                .willReturn(new Line(lineId, "1호선", "blue",
+                .willReturn(new Line(lineId, "1호선", "blue", 0,
                         new Sections(
                                 List.of(new Section(new Station("동인천역"), new Station("주안역"), new Distance(10)))
                         )));
@@ -111,7 +110,7 @@ class LineControllerTest {
         Long lineId = 1L;
         mockMvc.perform(put("/lines/" + lineId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LineRequest("2호선", "green"))))
+                        .content(objectMapper.writeValueAsString(new LineRequest("2호선", "green",0))))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
