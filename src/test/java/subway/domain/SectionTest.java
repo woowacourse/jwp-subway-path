@@ -24,11 +24,11 @@ class SectionTest {
     void equalsUpStation() {
         assertAll(
                 () -> assertThat(SECTION_강남_암사_5
-                        .equalsUpStation(SECTION_강남_잠실_5))
+                        .hasSameNameUpStation(SECTION_강남_잠실_5))
                         .isTrue(),
 
                 () -> assertThat(SECTION_강남_암사_5
-                        .equalsUpStation(SECTION_잠실_강남_5))
+                        .hasSameNameUpStation(SECTION_잠실_강남_5))
                         .isFalse()
         );
     }
@@ -38,10 +38,10 @@ class SectionTest {
     void equalsDownStation() {
         assertAll(
                 () -> assertThat(SECTION_강남_암사_5
-                        .equalsDownStation(SECTION_몽촌토성_암사_5))
+                        .hasSameNameDownStation(SECTION_몽촌토성_암사_5))
                         .isTrue(),
                 () -> assertThat(SECTION_강남_암사_5
-                        .equalsDownStation(SECTION_잠실_강남_5))
+                        .hasSameNameDownStation(SECTION_잠실_강남_5))
                         .isFalse()
         );
     }
@@ -51,10 +51,10 @@ class SectionTest {
     void isNextSection() {
         assertAll(
                 () -> assertThat(SECTION_강남_잠실_5
-                        .isNextSection(SECTION_잠실_강남_5))
+                        .isNextSectionByName(SECTION_잠실_강남_5))
                         .isTrue(),
                 () -> assertThat(SECTION_강남_잠실_5
-                        .isNextSection(SECTION_몽촌토성_암사_5))
+                        .isNextSectionByName(SECTION_몽촌토성_암사_5))
                         .isFalse()
         );
     }
@@ -64,10 +64,10 @@ class SectionTest {
     void contains() {
         assertAll(
                 () -> assertThat(SECTION_강남_잠실_5
-                        .contains(STATION_강남))
+                        .containsByName(STATION_강남))
                         .isTrue(),
                 () -> assertThat(SECTION_강남_잠실_5
-                        .contains(STATION_몽촌토성))
+                        .containsByName(STATION_몽촌토성))
                         .isFalse()
         );
     }

@@ -10,7 +10,7 @@ public class FareCalculator {
         this.fareStrategy = fareStrategy;
     }
 
-    public Fare calculate(final int value) {
-        return fareStrategy.calculate(value);
+    public Fare calculate(final int distance) {
+        return fareStrategy.calculate(distance);
     }
 }

@@ -1,6 +1,7 @@
 package subway.application;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.willReturn;
 import static subway.fixture.PathRequestFixture.PATH_REQUEST_1_3;
@@ -18,10 +19,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import subway.domain.section.Section;
-import subway.domain.section.Sections;
 import subway.domain.fare.Fare;
 import subway.domain.fare.FareCalculator;
+import subway.domain.graph.JgraphtGraph;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
 import subway.dto.StationDto;
 import subway.dto.response.PathResponse;
 import subway.repository.PathRepository;
@@ -39,6 +41,9 @@ class PathServiceTest {
     FareCalculator fareCalculator;
 
     @MockBean
+    JgraphtGraph subwayGraph;
+
+    @MockBean
     private PathRepository pathRepository;
 
     @Test
@@ -49,6 +54,8 @@ class PathServiceTest {
         willReturn(STATION_강남).given(pathRepository).findStationById(1L);
         willReturn(STATION_몽촌토성).given(pathRepository).findStationById(3L);
         willReturn(new Fare(1_250)).given(fareCalculator).calculate(anyInt());
+        willReturn(10).given(subwayGraph).getWeight(any(), any(), any());
+        willReturn(List.of(STATION_강남, STATION_잠실, STATION_몽촌토성)).given(subwayGraph).getPath(any(), any(), any());
 
         // when
         PathResponse path = pathService.findPath(PATH_REQUEST_1_3);

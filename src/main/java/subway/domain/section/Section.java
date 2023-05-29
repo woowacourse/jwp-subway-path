@@ -26,15 +26,15 @@ public class Section {
         return new Section(new Station(upStationName), new Station(downStationName), new Distance(distance));
     }
 
-    public boolean equalsUpStation(Section section) {
+    public boolean hasSameNameUpStation(Section section) {
         return this.upStation.equalsName(section.upStation);
     }
 
-    public boolean equalsDownStation(Section section) {
+    public boolean hasSameNameDownStation(Section section) {
         return this.downStation.equalsName(section.downStation);
     }
 
-    public boolean isNextSection(Section section) {
+    public boolean isNextSectionByName(Section section) {
         return this.downStation.equalsName(section.upStation);
     }
 
@@ -42,7 +42,7 @@ public class Section {
         return this.downStation.equalsName(section.upStation) || this.upStation.equalsName(section.downStation);
     }
 
-    public boolean contains(Station station) {
+    public boolean containsByName(Station station) {
         return upStation.equalsName(station) || downStation.equalsName(station);
     }
 
