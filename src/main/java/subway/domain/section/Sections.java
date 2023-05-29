@@ -2,10 +2,12 @@ package subway.domain.section;
 
 import subway.domain.line.Line;
 import subway.domain.station.Station;
+import subway.exception.StationNotFoundException;
 
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class Sections {
 
@@ -38,6 +40,31 @@ public class Sections {
             stationNames.add(section.getDownStationName());
         }
         return stationNames;
+    }
+
+    public List<String> getSortedStationNames() {
+        Map<Station, Station> stationConnections = sections.stream()
+                .collect(toMap(Section::getUpStation, Section::getDownStation));
+
+        List<String> sortedStationNames = new ArrayList<>();
+        Station upEndStation = findUpEndStation(stationConnections);
+        sortedStationNames.add(upEndStation.getName());
+        while (stationConnections.containsKey(upEndStation)) {
+            upEndStation = stationConnections.get(upEndStation);
+            sortedStationNames.add(upEndStation.getName());
+        }
+
+        return sortedStationNames;
+    }
+
+    private Station findUpEndStation(Map<Station, Station> stationConnections) {
+        List<Station> upStations = new ArrayList<>(stationConnections.keySet());
+        List<Station> downStations = new ArrayList<>(stationConnections.values());
+        upStations.removeAll(downStations);
+        if (upStations.size() != 1) {
+            throw new StationNotFoundException("상행 종점을 찾을 수 없습니다.");
+        }
+        return upStations.get(0);
     }
 
     public Line getLine() {

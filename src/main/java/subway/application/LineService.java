@@ -5,7 +5,7 @@ import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.section.Section;
 import subway.domain.section.SectionRepository;
-import subway.domain.station.StationConnections;
+import subway.domain.section.Sections;
 import subway.dto.LineFindResponse;
 import subway.dto.LineRequest;
 
@@ -41,8 +41,8 @@ public class LineService {
         if (findSections.isEmpty()) {
             return new LineFindResponse(findLine.getName(), new ArrayList<>());
         }
-        StationConnections stationConnections = StationConnections.fromSections(findSections);
-        return new LineFindResponse(findLine.getName(), stationConnections.getSortedStationNames());
+        Sections sections = new Sections(findSections);
+        return new LineFindResponse(findLine.getName(), sections.getSortedStationNames());
     }
 
     public List<LineFindResponse> findAllLineStationNames() {
