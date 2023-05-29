@@ -11,7 +11,7 @@ import subway.dto.RouteRequest;
 import subway.dto.RouteResponse;
 
 @RestController
-@RequestMapping("subway/route")
+@RequestMapping("/subway")
 public class RouteController {
 
     private final RouteService routeService;
@@ -20,7 +20,7 @@ public class RouteController {
         this.routeService = routeService;
     }
 
-    @GetMapping
+    @GetMapping("/shortest-route")
     public ResponseEntity<RouteResponse> findRoute(@RequestBody @Valid RouteRequest routeRequest) {
         RouteResponse routeResponse = RouteResponse.of(
                 routeService.findShortestRoute(routeRequest),
