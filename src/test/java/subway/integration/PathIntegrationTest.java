@@ -57,7 +57,7 @@ public class PathIntegrationTest {
     public void setUp() {
         RestAssured.port = port;
         upstream = JAMSIL_STATION;
-        downstream = JAMSIL_NARU_STATION;
+        downstream = JAMSILNARU_STATION;
         line = new Line(new LineName(VALID_LINE_NAME), List.of(JAMSIL_TO_JAMSILNARU));
 
         lineDao.insert(new LineEntity.Builder().name(VALID_LINE_NAME).build());
@@ -78,7 +78,7 @@ public class PathIntegrationTest {
     void findShortestPath() {
         // given
         long 선릉역_아이디 = subwayRepository.addStation(SULLEUNG_STATION);
-        line.addStation(SULLEUNG_STATION, JAMSIL_STATION, JAMSIL_NARU_STATION, 3);
+        line.addStation(SULLEUNG_STATION, JAMSIL_STATION, JAMSILNARU_STATION, 3);
         subwayRepository.updateLine(line);
 
         given().log().all()

@@ -18,43 +18,43 @@ class SectionTest {
     void Section은_하행역_상행역에_해당하는_Station을_갖는다() {
         assertThatNoException()
                 .isThrownBy(
-                        () -> new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5)
+                        () -> new Section(JAMSIL_STATION, JAMSILNARU_STATION, 5)
                 );
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, -1})
     void 구간의_거리가_양의정수가_아니면_예외를_던진다(int invalidDistance) {
-        assertThatThrownBy(() -> new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, invalidDistance))
+        assertThatThrownBy(() -> new Section(JAMSIL_STATION, JAMSILNARU_STATION, invalidDistance))
                 .isInstanceOf(InvalidDistanceException.class);
     }
 
     @Test
     void 구간의_거리가_양의정수가_아니면_예외를_던진다() {
-        assertThatNoException().isThrownBy(() -> new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 1));
+        assertThatNoException().isThrownBy(() -> new Section(JAMSIL_STATION, JAMSILNARU_STATION, 1));
     }
 
     @Test
     void upstream과_downstream이_일치한다면_true를_반환한다() {
-        Section newSection = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 3);
+        Section newSection = new Section(JAMSIL_STATION, JAMSILNARU_STATION, 3);
 
-        assertThat(newSection.containsSameStations(JAMSIL_STATION, JAMSIL_NARU_STATION)).isTrue();
+        assertThat(newSection.containsSameStations(JAMSIL_STATION, JAMSILNARU_STATION)).isTrue();
     }
 
     @Test
     void upstream과_downstream이_순서가_일치하지_않으면_false를_반환한다() {
-        Section newSection = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 3);
+        Section newSection = new Section(JAMSIL_STATION, JAMSILNARU_STATION, 3);
 
-        assertThat(newSection.containsSameStations(JAMSIL_NARU_STATION, JAMSIL_STATION)).isFalse();
+        assertThat(newSection.containsSameStations(JAMSILNARU_STATION, JAMSIL_STATION)).isFalse();
     }
 
     @Test
     void Station을_중간에_추가해서_새로운_Section들을_반환한다() {
-        Section section = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
+        Section section = new Section(JAMSIL_STATION, JAMSILNARU_STATION, 5);
         Station newStation = new Station("건대입구");
 
         Section expectedFirstSection = new Section(JAMSIL_STATION, newStation, 2);
-        Section expectedSecondSection = new Section(newStation, JAMSIL_NARU_STATION, 3);
+        Section expectedSecondSection = new Section(newStation, JAMSILNARU_STATION, 3);
 
         assertThat(section.insertInTheMiddle(newStation, 2))
                 .hasSize(2)
@@ -63,7 +63,7 @@ class SectionTest {
 
     @Test
     void 기존_section_거리_이상의_거리를_넣을_수_없다() {
-        Section section = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
+        Section section = new Section(JAMSIL_STATION, JAMSILNARU_STATION, 5);
         Station newStation = new Station("건대입구");
 
         assertThatThrownBy(() -> section.insertInTheMiddle(newStation, 5))
@@ -83,7 +83,7 @@ class SectionTest {
     @Test
     void Section병합시_하나의_Downstream과_다른_하나의_Upstream이_같지_않은_경우_예외를_던진다() {
         Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
-        Section section2 = new Section(JAMSIL_NARU_STATION, JAMSIL_STATION, 5);
+        Section section2 = new Section(JAMSILNARU_STATION, JAMSIL_STATION, 5);
 
         assertSoftly(softly -> {
             softly.assertThatThrownBy(() -> section1.merge(section2))
@@ -96,7 +96,7 @@ class SectionTest {
     @Test
     void Section을_병합할_수_있다() {
         Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
-        Section section2 = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
+        Section section2 = new Section(JAMSIL_STATION, JAMSILNARU_STATION, 5);
 
         Section mergedSection1 = section1.merge(section2);
         Section mergedSection2 = section2.merge(section1);

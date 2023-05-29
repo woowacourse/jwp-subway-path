@@ -30,7 +30,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
 import static subway.domain.Line.EMPTY_ENDPOINT_STATION;
 import static subway.utils.SectionFixture.JAMSIL_TO_JAMSILNARU;
-import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
+import static subway.utils.StationFixture.JAMSILNARU_STATION;
 import static subway.utils.StationFixture.JAMSIL_STATION;
 import static subway.utils.TestUtils.toJson;
 
@@ -67,7 +67,7 @@ public class StationIntegrationTest {
     public void setUp() {
         RestAssured.port = port;
         upstream = JAMSIL_STATION;
-        downstream = JAMSIL_NARU_STATION;
+        downstream = JAMSILNARU_STATION;
         line = new Line(new LineName(VALID_LINE_NAME), List.of(JAMSIL_TO_JAMSILNARU));
 
         lineDao.insert(new LineEntity.Builder().name(VALID_LINE_NAME).build());

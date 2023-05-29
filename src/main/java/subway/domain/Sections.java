@@ -19,6 +19,10 @@ public class Sections {
         return graph;
     }
 
+    public void addNewSection(Section newSection) {
+        sections.add(newSection);
+    }
+
     @Override
     public String toString() {
         return "Sections{" +

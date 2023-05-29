@@ -19,6 +19,7 @@ import subway.dto.SubwayPathRequest;
 import subway.exception.LineNotFoundException;
 import subway.exception.NameLengthException;
 import subway.exception.StationNotFoundException;
+import subway.exception.StationsNotConnectedException;
 import subway.repository.SubwayRepository;
 
 import java.util.ArrayList;
@@ -32,8 +33,8 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
-import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
-import static subway.utils.StationFixture.JAMSIL_STATION;
+import static subway.utils.SectionFixture.SULLEUNG_JAMSIL_JAMSILNARU_SECTIONS;
+import static subway.utils.StationFixture.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
@@ -55,7 +56,7 @@ class SubwayServiceTest {
                 newStation.getName(),
                 LINE_NUMBER_TWO.getName().getName(),
                 JAMSIL_STATION.getName(),
-                JAMSIL_NARU_STATION.getName(),
+                JAMSILNARU_STATION.getName(),
                 distanceToUpstream
         );
         Line line = new Line(LINE_NUMBER_TWO);
@@ -66,13 +67,13 @@ class SubwayServiceTest {
 
             doReturn(line).when(subwayRepository).getLineByName(LINE_NUMBER_TWO.getName());
             doReturn(Optional.of(1L)).when(subwayRepository).findStationIdByName(newStation.getName());
-            doReturn(new Stations(Set.of(JAMSIL_STATION, JAMSIL_NARU_STATION))).when(subwayRepository).getStations();
+            doReturn(new Stations(Set.of(JAMSIL_STATION, JAMSILNARU_STATION))).when(subwayRepository).getStations();
 
             subwayService.addStation(addStationRequest);
 
             assertThat(line.getSectionsWithoutEndPoints()).contains(
                     new Section(JAMSIL_STATION, newStation, distanceToUpstream),
-                    new Section(newStation, JAMSIL_NARU_STATION, 2)
+                    new Section(newStation, JAMSILNARU_STATION, 2)
             );
         }
 
@@ -81,13 +82,18 @@ class SubwayServiceTest {
             SubwayService subwayService = new SubwayService(subwayRepository);
 
             doReturn(line).when(subwayRepository).getLineByName(LINE_NUMBER_TWO.getName());
-            doReturn(new Stations(Set.of(JAMSIL_STATION, JAMSIL_NARU_STATION))).when(subwayRepository).getStations();
+            doReturn(new Stations(Set.of(JAMSIL_STATION, JAMSILNARU_STATION))).when(subwayRepository).getStations();
 
             assertThatThrownBy(() -> subwayService.addStation(addStationRequest))
                     .isInstanceOf(NoSuchElementException.class);
         }
     }
 
+    /**
+     * 저장되어 있는 정보
+     * LINE_NUMBER_TWO
+     * 선릉 --(거리: 5)--> 잠실 --(거리: 5)--> 잠실나루
+     */
     @Nested
     class delete_메서드는 {
 
@@ -124,6 +130,11 @@ class SubwayServiceTest {
         }
     }
 
+    /**
+     * 저장되어 있는 정보
+     * LINE_NUMBER_TWO
+     * 선릉 --(거리: 5)--> 잠실 --(거리: 5)--> 잠실나루
+     */
     @Nested
     class addNewLine_메서드는 {
 
@@ -178,8 +189,13 @@ class SubwayServiceTest {
                 .hasMessageContaining("조회하고자 하는 노선이 없습니다");
     }
 
+    /**
+     * 저장되어 있는 정보
+     * LINE_NUMBER_TWO
+     * 선릉 --(거리: 5)--> 잠실 --(거리: 5)--> 잠실나루
+     */
     @Nested
-    class findShortestPath메서드는 {
+    class findShortestPath_메서드는 {
 
         @Test
         void 출발역_또는_도착역이_존재하지_않으면_예외를_던진다() {
@@ -199,6 +215,35 @@ class SubwayServiceTest {
                 softly.assertThatThrownBy(() -> subwayService.findShortestPath(출발역이_존재하지_않는_경우))
                         .isInstanceOf(StationNotFoundException.class);
             });
+        }
+
+        @Test
+        void 출발역과_도착역이_연결되어있지_않은_경우_예외를_던진다() {
+            // 역 추가
+            Station 야당역 = new Station("야당역");
+            Station 화전역 = new Station("화전역");
+            Stations stations = SULLEUNG_JAMSIL_JAMSILNARU;
+            stations.addNewStation(야당역);
+            stations.addNewStation(화전역);
+            long 야당_도착역_아이디 = subwayRepository.addStation(야당역);
+            long 잠실_출발역_아이디 = 1L;
+
+            // 구간 추가
+            Section 화전역_to_야당역 = new Section(화전역, 야당역, 3);
+            Sections sections = SULLEUNG_JAMSIL_JAMSILNARU_SECTIONS;
+            sections.addNewSection(화전역_to_야당역);
+
+            SubwayService subwayService = new SubwayService(subwayRepository);
+
+            doReturn(stations).when(subwayRepository).getStations();
+            doReturn(sections).when(subwayRepository).getSections();
+            doReturn(야당역).when(subwayRepository).findStation(야당_도착역_아이디);
+            doReturn(JAMSIL_STATION).when(subwayRepository).findStation(잠실_출발역_아이디);
+
+            SubwayPathRequest subwayPathRequest = new SubwayPathRequest(잠실_출발역_아이디, 야당_도착역_아이디);
+
+            assertThatThrownBy(() -> subwayService.findShortestPath(subwayPathRequest))
+                    .isInstanceOf(StationsNotConnectedException.class);
         }
     }
 }

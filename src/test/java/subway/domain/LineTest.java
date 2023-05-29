@@ -62,7 +62,7 @@ class LineTest {
         Station newStation = new Station("에밀");
 
         assertSoftly(softly -> {
-            softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, SULLEUNG_STATION, JAMSIL_NARU_STATION, 3))
+            softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, SULLEUNG_STATION, JAMSILNARU_STATION, 3))
                     .isInstanceOf(SectionNotFoundException.class);
             softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, JAMSIL_STATION, EMPTY_ENDPOINT_STATION, 3))
                     .isInstanceOf(SectionNotFoundException.class);
@@ -76,16 +76,16 @@ class LineTest {
         lineNumberTwo.deleteStation(JAMSIL_STATION);
 
         assertThat(lineNumberTwo.getSectionsWithoutEndPoints())
-                .contains(new Section(SULLEUNG_STATION, JAMSIL_NARU_STATION, 10));
+                .contains(new Section(SULLEUNG_STATION, JAMSILNARU_STATION, 10));
     }
 
     @Test
     void 하행_종점을_삭제하면_종점의_전_역이_종점이_된다() {
         Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
-        Section section2 = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
+        Section section2 = new Section(JAMSIL_STATION, JAMSILNARU_STATION, 5);
 
         Line line = new Line(new LineName("2호선"), List.of(section1, section2));
-        line.deleteStation(JAMSIL_NARU_STATION);
+        line.deleteStation(JAMSILNARU_STATION);
 
         assertSoftly(softly -> {
             softly.assertThat(line.getSectionsWithoutEndPoints()).hasSize(1);
@@ -96,7 +96,7 @@ class LineTest {
     @Test
     void 상행_종점을_삭제하면_두_번째_역이_상행_종점이_된다() {
         Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
-        Section section2 = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
+        Section section2 = new Section(JAMSIL_STATION, JAMSILNARU_STATION, 5);
 
         Line line = new Line(new LineName("2호선"), List.of(section1, section2));
         line.deleteStation(SULLEUNG_STATION);

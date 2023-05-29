@@ -21,6 +21,10 @@ public class Stations {
         return graph;
     }
 
+    public void addNewStation(Station newStation) {
+        stations.add(newStation);
+    }
+
     public Optional<Station> getStationByName(String stationName) {
         return stations.stream()
                 .filter(station -> station.getName().equals(stationName))
