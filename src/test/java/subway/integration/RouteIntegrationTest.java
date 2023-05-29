@@ -7,6 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -32,9 +33,9 @@ public class RouteIntegrationTest extends IntegrationTest {
             .map(name -> new StationRequest(name))
             .collect(Collectors.toList());
 
-    @Test
-    @DisplayName("최단 경로, 최단 거리, 요금을 조회한다")
-    void create() {
+    
+    @BeforeEach
+    void setup() {
         //given
         lineRequests.forEach(this::노선_생성);
         stationRequests.forEach(this::역_생성);
@@ -50,8 +51,13 @@ public class RouteIntegrationTest extends IntegrationTest {
         //7호선
         노선에_초기_구간_추가(4,"이수", "내방", 5);
         노선에_구간_추가(4,"내방", "고속터미널", "UP", 5);
+        
+    }
+    @Test
+    @DisplayName("최단 경로, 최단 거리, 10세일 때, 요금을 조회한다")
+    void getFareWhen10() {
 
-        RouteRequest routeRequest = new RouteRequest("낙성대", "고속터미널");
+        RouteRequest routeRequest = new RouteRequest("낙성대", "고속터미널", 10);
 
         //when
         ExtractableResponse<Response> response = RestAssured
@@ -73,10 +79,68 @@ public class RouteIntegrationTest extends IntegrationTest {
                 .isEqualTo(List.of("낙성대", "사당", "이수", "내방", "고속터미널"));
         //then : 거리 확인
         assertThat(resultResponse.getDistance()).isEqualTo(20);
-        //then : 요금 확인 (1450 + 노선 요금 1000 = 2450)
-        assertThat(resultResponse.getFare()).isEqualTo(2450);
+        //then : 요금 확인 (1450 + 노선 요금 1000 = 2450) + 할인 50% 1050원
+        assertThat(resultResponse.getFare()).isEqualTo(1050);
     }
-
+    
+    @Test
+    @DisplayName("최단 경로, 최단 거리, 15세일 때, 요금을 조회한다")
+    void getFareWhen15() {
+        RouteRequest routeRequest = new RouteRequest("낙성대", "고속터미널", 15);
+        
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(routeRequest)
+                .when().get("subway/route")
+                .then().log().all().
+                extract();
+        
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        RouteResponse resultResponse = response.as(RouteResponse.class);
+        
+        //then : 경로 확인
+        assertThat(resultResponse.getRoute().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList()))
+                .usingRecursiveComparison()
+                .isEqualTo(List.of("낙성대", "사당", "이수", "내방", "고속터미널"));
+        //then : 거리 확인
+        assertThat(resultResponse.getDistance()).isEqualTo(20);
+        //then : 요금 확인 (1450 + 노선 요금 1000 = 2450) + 할인 20% 1680
+        assertThat(resultResponse.getFare()).isEqualTo(1680);
+    }
+    
+    @Test
+    @DisplayName("최단 경로, 최단 거리, 2세일 때, 요금을 조회한다")
+    void getFareWhen2() {
+        
+        RouteRequest routeRequest = new RouteRequest("낙성대", "고속터미널", 2);
+        
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(routeRequest)
+                .when().get("subway/route")
+                .then().log().all().
+                extract();
+        
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        RouteResponse resultResponse = response.as(RouteResponse.class);
+        
+        //then : 경로 확인
+        assertThat(resultResponse.getRoute().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList()))
+                .usingRecursiveComparison()
+                .isEqualTo(List.of("낙성대", "사당", "이수", "내방", "고속터미널"));
+        //then : 거리 확인
+        assertThat(resultResponse.getDistance()).isEqualTo(20);
+        //then : 요금 확인 (1450 + 노선 요금 1000 = 2450) + 할인 20% 1680
+        assertThat(resultResponse.getFare()).isEqualTo(0);
+    }
 
     private void 노선_생성(LineRequest lineRequest) {
         RestAssured
