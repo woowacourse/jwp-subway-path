@@ -7,10 +7,13 @@ import java.util.Objects;
 
 public class SectionResponse {
 
-    private final StationResponse upStation;
-    private final StationResponse downStation;
-    private final LineResponse line;
-    private final Integer distance;
+    private StationResponse upStation;
+    private StationResponse downStation;
+    private LineResponse line;
+    private Integer distance;
+
+    public SectionResponse() {
+    }
 
     public SectionResponse(final StationResponse upStation, final StationResponse downStation, final LineResponse line, final Integer distance) {
         this.upStation = upStation;

@@ -8,9 +8,12 @@ import java.util.stream.Collectors;
 
 public class PathResponse {
 
-    private final Integer distance;
-    private final Integer charge;
-    private final List<SectionResponse> paths;
+    private Integer distance;
+    private Integer charge;
+    private List<SectionResponse> paths;
+
+    public PathResponse() {
+    }
 
     public PathResponse(final Integer distance, final Integer charge, final List<SectionResponse> paths) {
         this.distance = distance;

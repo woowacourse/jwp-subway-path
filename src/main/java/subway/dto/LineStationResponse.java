@@ -9,10 +9,13 @@ import java.util.stream.Collectors;
 
 public class LineStationResponse {
 
-    private final Long id;
-    private final String name;
-    private final String color;
-    private final List<StationResponse> stationResponses;
+    private Long id;
+    private String name;
+    private String color;
+    private List<StationResponse> stationResponses;
+
+    public LineStationResponse() {
+    }
 
     public LineStationResponse(final Long id, final String name, final String color, final List<StationResponse> stationResponses) {
         this.id = id;
