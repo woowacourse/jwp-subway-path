@@ -2,9 +2,9 @@ package subway.domain;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static subway.domain.Location.END;
-import static subway.domain.Location.MIDDLE;
-import static subway.domain.Location.NONE;
+import static subway.domain.section.Location.END;
+import static subway.domain.section.Location.MIDDLE;
+import static subway.domain.section.Location.NONE;
 import static subway.fixture.SectionFixture.SECTION_강남_잠실_5;
 import static subway.fixture.SectionFixture.SECTION_길동_강남_5;
 import static subway.fixture.SectionFixture.SECTION_길동_암사_3;
@@ -24,6 +24,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.section.Sections;
 
 class SectionsTest {
 

@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.section;
 
 public enum Status {
     INIT,

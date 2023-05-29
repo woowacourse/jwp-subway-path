@@ -2,7 +2,7 @@ package subway.entity;
 
 import java.util.Objects;
 import subway.domain.Name;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationEntity {
     private final Long id;

@@ -1,6 +1,6 @@
 package subway.dto;
 
-import subway.domain.Distance;
+import subway.domain.section.Distance;
 
 public class SectionDto {
     private final StationDto upStation;

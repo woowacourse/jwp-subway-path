@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.Objects;
+import subway.domain.Name;
 
 public class Line {
     private final Long id;

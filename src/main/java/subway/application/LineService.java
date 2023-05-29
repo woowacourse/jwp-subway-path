@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.repository.LineRepository;

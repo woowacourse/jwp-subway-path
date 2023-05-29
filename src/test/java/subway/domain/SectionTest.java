@@ -9,6 +9,7 @@ import static subway.fixture.StationFixture.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.section.Section;
 
 class SectionTest {
     @Test

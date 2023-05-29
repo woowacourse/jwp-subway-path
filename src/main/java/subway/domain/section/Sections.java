@@ -1,17 +1,18 @@
-package subway.domain;
+package subway.domain.section;
 
-import static subway.domain.Location.END;
-import static subway.domain.Location.MIDDLE;
-import static subway.domain.Location.NONE;
-import static subway.domain.Status.INCLUDED;
-import static subway.domain.Status.INIT;
-import static subway.domain.Status.NOT_INCLUDED;
+import static subway.domain.section.Location.END;
+import static subway.domain.section.Location.MIDDLE;
+import static subway.domain.section.Location.NONE;
+import static subway.domain.section.Status.INCLUDED;
+import static subway.domain.section.Status.INIT;
+import static subway.domain.section.Status.NOT_INCLUDED;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import subway.domain.station.Station;
 
 public class Sections {
     private final List<Section> sections;

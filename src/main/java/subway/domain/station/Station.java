@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.station;
 
 import java.util.Objects;
+import subway.domain.Name;
 
 public class Station {
     private final Long id;

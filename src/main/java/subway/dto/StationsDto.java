@@ -2,7 +2,7 @@ package subway.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationsDto {
     private final List<StationDto> stations;

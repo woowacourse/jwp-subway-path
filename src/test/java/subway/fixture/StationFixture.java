@@ -1,6 +1,6 @@
 package subway.fixture;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationFixture {
     public static final Station STATION_강남 = new Station(1L, "강남");

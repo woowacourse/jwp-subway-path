@@ -21,8 +21,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 import subway.entity.StationEntity;
 import subway.entity.vo.SectionVo;
 

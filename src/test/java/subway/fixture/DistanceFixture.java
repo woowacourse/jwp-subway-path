@@ -1,6 +1,6 @@
 package subway.fixture;
 
-import subway.domain.Distance;
+import subway.domain.section.Distance;
 
 public class DistanceFixture {
     public static final Distance DISTANCE_2 = new Distance(2);

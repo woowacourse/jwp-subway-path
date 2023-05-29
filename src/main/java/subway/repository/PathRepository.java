@@ -1,7 +1,7 @@
 package subway.repository;
 
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 
 public interface PathRepository {
     Sections findAllSections();

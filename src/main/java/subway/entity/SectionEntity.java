@@ -1,7 +1,7 @@
 package subway.entity;
 
 import java.util.Objects;
-import subway.domain.Distance;
+import subway.domain.section.Distance;
 
 public class SectionEntity {
     private final long upStationId;

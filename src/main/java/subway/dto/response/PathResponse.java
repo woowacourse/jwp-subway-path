@@ -2,14 +2,14 @@ package subway.dto.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.domain.fare.Fare;
 import subway.dto.StationDto;
 
 public class PathResponse {
-    private List<StationDto> path;
-    private int distance;
-    private int fare;
+    private final List<StationDto> path;
+    private final int distance;
+    private final int fare;
 
     public PathResponse(final List<StationDto> path, final int distance, final int fare) {
         this.path = path;
