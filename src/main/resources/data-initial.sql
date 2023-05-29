@@ -1,6 +1,6 @@
-INSERT INTO line (name, color)
-VALUES ('2호선', '초록'),
-       ('분당선', '노랑');
+INSERT INTO line (name, color, extra_fare)
+VALUES ('2호선', '초록', 200),
+       ('분당선', '노랑', 100);
 
 INSERT INTO station (name)
 VALUES ('강남'),

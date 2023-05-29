@@ -21,6 +21,10 @@ public class Fare {
         return new Fare(this.fare + other.fare);
     }
 
+    public Fare subtract(final Fare other) {
+        return new Fare(this.fare - other.fare);
+    }
+
     public int getFare() {
         return fare;
     }

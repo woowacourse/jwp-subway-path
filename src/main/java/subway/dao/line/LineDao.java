@@ -17,7 +17,8 @@ public class LineDao {
             new LineEntity(
                     rs.getLong("line_id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("extra_fare")
             );
 
     public LineDao(final JdbcTemplate jdbcTemplate) {
@@ -38,12 +39,12 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        final String sql = "select line_id, name, color from line";
+        final String sql = "select line_id, name, color, extra_fare from line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public LineEntity findById(final Long id) {
-        final String sql = "select line_id, name, color from line WHERE line_id = ?";
+        final String sql = "select line_id, name, color, extra_fare from line WHERE line_id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 }

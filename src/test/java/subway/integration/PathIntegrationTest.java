@@ -16,7 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 public class PathIntegrationTest extends IntegrationTest {
 
     @Test
-    void 전체_노선_조회_테스트() {
+    void 경로_조회_테스트() {
         // when
         final long startStationId = 1L;
         final long endStationId = 4L;
@@ -37,5 +37,31 @@ public class PathIntegrationTest extends IntegrationTest {
         final Integer fare = response.jsonPath().get("fare");
         assertThat(fare).isNotNull();
         assertThat(fare).isEqualTo(1450);
+    }
+
+    @Test
+    void 경로_조회_연령_할인_테스트() {
+        // when
+        final long startStationId = 1L;
+        final long endStationId = 4L;
+        final int passengerAge = 15;
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .param("startStationId", startStationId)
+                .param("endStationId", endStationId)
+                .param("passengerAge", passengerAge)
+                .when()
+                .get("/path")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        final Integer distance = response.jsonPath().get("distance");
+        assertThat(distance).isNotNull();
+        assertThat(distance).isEqualTo(18);
+
+        final Integer fare = response.jsonPath().get("fare");
+        assertThat(fare).isNotNull();
+        assertThat(fare).isEqualTo(880);
     }
 }
