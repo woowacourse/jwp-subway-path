@@ -1,6 +1,6 @@
 package subway.domain.fare;
 
-import subway.common.exception.SubwayIllegalArgumentException;
+import subway.exception.SubwayIllegalArgumentException;
 
 public class Fare implements Comparable<Fare> {
 

@@ -1,4 +1,4 @@
-package subway.common.exception;
+package subway.exception;
 
 public class SubwayIllegalArgumentException extends SubwayException {
 

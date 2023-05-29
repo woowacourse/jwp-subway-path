@@ -21,7 +21,7 @@ import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.station.LoadStationPort;
 import subway.application.port.out.station.PersistStationPort;
 import subway.application.service.exception.NoSuchStationException;
-import subway.common.exception.SubwayIllegalArgumentException;
+import subway.exception.SubwayIllegalArgumentException;
 import subway.fixture.StationFixture.역삼역;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

@@ -11,9 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.common.exception.SubwayIllegalArgumentException;
+import subway.exception.SubwayIllegalArgumentException;
 import subway.domain.fare.Fare;
-import subway.domain.line.LineInfo;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

@@ -1,6 +1,6 @@
 package subway.application.service.exception;
 
-import subway.common.exception.SubwayException;
+import subway.exception.SubwayException;
 
 public class SubwayNoSuchResourceException extends SubwayException {
 

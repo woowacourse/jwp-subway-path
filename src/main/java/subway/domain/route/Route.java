@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import subway.common.exception.SubwayIllegalArgumentException;
+import subway.exception.SubwayIllegalArgumentException;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 

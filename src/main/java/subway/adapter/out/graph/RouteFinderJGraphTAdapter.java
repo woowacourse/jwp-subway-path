@@ -9,7 +9,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.application.port.out.route.RouteFinderPort;
-import subway.common.exception.SubwayIllegalArgumentException;
+import subway.exception.SubwayIllegalArgumentException;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Station;

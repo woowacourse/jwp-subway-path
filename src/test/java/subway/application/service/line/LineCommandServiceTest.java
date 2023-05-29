@@ -16,7 +16,7 @@ import subway.application.port.in.line.dto.command.UpdateLineInfoCommand;
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
 import subway.application.service.exception.NoSuchLineException;
-import subway.common.exception.SubwayIllegalArgumentException;
+import subway.exception.SubwayIllegalArgumentException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

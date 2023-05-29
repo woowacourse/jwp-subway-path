@@ -1,6 +1,6 @@
 package subway.domain.line;
 
-import subway.common.exception.SubwayIllegalArgumentException;
+import subway.exception.SubwayIllegalArgumentException;
 import subway.domain.fare.Fare;
 
 public class LineInfo {

@@ -1,7 +1,7 @@
 package subway.domain.fare;
 
 import java.util.Arrays;
-import subway.common.exception.SubwayIllegalArgumentException;
+import subway.exception.SubwayIllegalArgumentException;
 
 public enum AgeFareRate {
     ADULT(19, Integer.MAX_VALUE, 0, 0),
