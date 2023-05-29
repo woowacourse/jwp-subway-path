@@ -7,7 +7,7 @@ public class LineStationRequest {
 
     @NotNull(message = "상행역 정보를 입력해주세요.")
     private final Long upStationId;
-    
+
     @NotNull(message = "하행역 정보를 입력해주세요.")
     private final Long downStationId;
 

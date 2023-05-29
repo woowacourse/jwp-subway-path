@@ -20,7 +20,7 @@ public class SubwayMap {
         subwayGraph.addVertexes(vertexes);
         subwayGraph.addEdges(edges);
 
-        return  subwayGraph.getDijkstraShortestPath(from, to);
+        return subwayGraph.getDijkstraShortestPath(from, to);
     }
 
     public Integer calculateTotalDistance(final List<Section> sections) {

@@ -6,13 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.*;
+import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.repository.LineRepository;
 import subway.repository.StationRepository;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;

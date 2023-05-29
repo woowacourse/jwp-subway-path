@@ -1,6 +1,6 @@
 package subway.fixture;
 
-import subway.domain.*;
+import subway.domain.Station;
 import subway.dto.StationResponse;
 
 

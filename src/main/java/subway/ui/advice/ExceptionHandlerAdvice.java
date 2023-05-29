@@ -3,7 +3,6 @@ package subway.ui.advice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.beanvalidation.MethodValidationInterceptor;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,7 +19,7 @@ import subway.ui.StationController;
                 LineController.class,
                 LineStationController.class,
                 PathController.class
-})
+        })
 public class ExceptionHandlerAdvice {
 
     @ExceptionHandler({

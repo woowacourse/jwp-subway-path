@@ -7,10 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dto.StationRequest;
 
-import static io.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
-
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 @Transactional
 @DisplayName("지하철역 관련 기능")

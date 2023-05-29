@@ -2,13 +2,11 @@ package subway.fixture;
 
 import subway.domain.Distance;
 import subway.domain.Section;
-import subway.domain.Sections;
 import subway.dto.SectionResponse;
 
-import java.util.List;
-
+import static subway.fixture.LineFixture.호선2_응답;
+import static subway.fixture.LineFixture.호선8_응답;
 import static subway.fixture.StationFixture.*;
-import static subway.fixture.LineFixture.*;
 
 public class SectionFixture {
 

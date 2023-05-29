@@ -1,26 +1,24 @@
 package subway.application;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.*;
-import subway.dto.*;
+import subway.dto.PathRequest;
+import subway.dto.PathResponse;
 import subway.repository.LineRepository;
-import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
-import static subway.fixture.StationFixture.*;
+import static subway.fixture.LineFixture.LINES;
 import static subway.fixture.SectionFixture.*;
-import static subway.fixture.LineFixture.*;
+import static subway.fixture.StationFixture.석촌;
+import static subway.fixture.StationFixture.잠실새내;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {

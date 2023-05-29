@@ -15,8 +15,6 @@ import subway.dto.LineResponse;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;

@@ -1,12 +1,11 @@
 package subway.ui;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineStationService;
-import subway.dto.LineStationResponse;
 import subway.dto.LineStationRequest;
+import subway.dto.LineStationResponse;
 
 import javax.validation.Valid;
 import java.net.URI;

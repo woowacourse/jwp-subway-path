@@ -2,7 +2,10 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.*;
+import subway.domain.Line;
+import subway.domain.LineColor;
+import subway.domain.LineName;
+import subway.domain.Sections;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.repository.LineRepository;

@@ -3,7 +3,6 @@ package subway.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.exception.IllegalInputForDomainException;
-import subway.exception.UnsupportedParameterException;
 
 import java.util.List;
 

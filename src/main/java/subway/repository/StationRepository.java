@@ -48,7 +48,7 @@ public class StationRepository {
     public void delete(final Station station) {
         try {
             stationDao.deleteById(station.getId());
-        } catch(DataIntegrityViolationException exception) {
+        } catch (DataIntegrityViolationException exception) {
             throw new DataConstraintViolationException("해당 역을 삭제할 수 없습니다.");
         }
     }

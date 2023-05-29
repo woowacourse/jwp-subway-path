@@ -5,7 +5,6 @@ import subway.dto.LineResponse;
 
 import java.util.List;
 
-import static subway.fixture.StationFixture.*;
 import static subway.fixture.SectionFixture.*;
 
 public class LineFixture {
