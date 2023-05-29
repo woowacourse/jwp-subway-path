@@ -12,12 +12,15 @@ public class RouteRequest {
     @NotBlank
     @Length(min = 1, max = 10, message = "역의 이름은 {min}자 ~ {max}자여야 합니다")
     private final String endStation;
-
-    public RouteRequest(String startStation, String endStation) {
+    
+    private final int ageOfPassenger;
+    
+    public RouteRequest(String startStation, String endStation, int ageOfPassenger) {
         this.startStation = startStation;
         this.endStation = endStation;
+        this.ageOfPassenger = ageOfPassenger;
     }
-
+    
     public String getStartStation() {
         return startStation;
     }
@@ -25,5 +28,8 @@ public class RouteRequest {
     public String getEndStation() {
         return endStation;
     }
-
+    
+    public int getAgeOfPassenger() {
+        return ageOfPassenger;
+    }
 }

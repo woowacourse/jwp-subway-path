@@ -7,6 +7,7 @@ import subway.domain.Fare;
 import subway.domain.Station;
 import subway.domain.Subway;
 import subway.domain.fare.FareCalculator;
+import subway.domain.fare.PassengerAge;
 import subway.domain.routestrategy.RouteStrategy;
 import subway.domain.routestrategy.SubwaySection;
 import subway.dto.RouteRequest;
@@ -47,6 +48,7 @@ public class RouteService {
                 subway.findStationByName(request.getStartStation()),
                 subway.findStationByName(request.getEndStation())
         );
-        return fareCalculator.calculateFare(route);
+        PassengerAge age = PassengerAge.from(request.getAgeOfPassenger());
+        return fareCalculator.calculateFare(age, route);
     }
 }
