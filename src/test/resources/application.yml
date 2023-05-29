@@ -1,0 +1,26 @@
+#DB
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+
+  sql:
+    init:
+      schema-locations: classpath:/testSchema.sql
+      mode: always
+
+#상수
+constant:
+  distance:
+    FIVE_KM: 5
+    TEN_KM: 10
+    EIGHT_KM: 8
+    FIFTY_KM: 50
+  charge:
+    STANDARD: 1250
+    PER_OVER: 100
+
+

@@ -16,7 +16,7 @@ class LineTest {
         final Line line = new Line("3호선", "orange", sections);
 
         ///when,then
-        assertThat(line.addSection(section).getSections().getSections().size()).isEqualTo(3);
+        assertThat(line.addSection(section).getSections().copySections().size()).isEqualTo(3);
     }
 
     @Test
@@ -27,10 +27,10 @@ class LineTest {
         final Station station = new Station("충무로");
 
         ///when
-        final Line newLine = line.deleteStation(station);
+        final Line newLine = line.buildNewLineDeleted(station);
 
         ///then
-        assertThat(newLine.getSections().getSections().size()).isEqualTo(1);
+        assertThat(newLine.getSections().copySections().size()).isEqualTo(1);
     }
 
     @Test

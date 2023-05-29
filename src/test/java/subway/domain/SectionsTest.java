@@ -17,10 +17,10 @@ class SectionsTest {
         final Sections sections = new Sections(List.of(new Section(new Station("충무로"), new Station("동대입구"), 10L), new Section(new Station("동대입구"), new Station("약수"), 10L)));
 
         ///when
-        final Sections newSections = sections.addSection(new Section(new Station("약수"), new Station("금호"), 10L));
+        final Sections newSections = sections.buildNewSectionsAdded(new Section(new Station("약수"), new Station("금호"), 10L));
 
         ///then
-        assertThat(newSections.getSections().size()).isEqualTo(3);
+        assertThat(newSections.copySections().size()).isEqualTo(3);
     }
 
     @Test
@@ -30,7 +30,7 @@ class SectionsTest {
 
         ///when,then
         assertThatThrownBy(
-                () -> sections.addSection(new Section(new Station("경복궁"), new Station("종로3가"), 10L))
+                () -> sections.buildNewSectionsAdded(new Section(new Station("경복궁"), new Station("종로3가"), 10L))
         ).isInstanceOf(IllegalArgumentException.class).hasMessage("이어지지 않는 경로를 추가할 수 없습니다");
     }
 
@@ -40,8 +40,8 @@ class SectionsTest {
         final Sections sections = new Sections(List.of(new Section(new Station("충무로"), new Station("동대입구"), 10L), new Section(new Station("동대입구"), new Station("약수"), 10L)));
 
         ///when
-        final Sections newSections = sections.addSection(new Section(new Station("충무로"), new Station("대한극장"), 5L));
-        final Section newSection = newSections.getSections()
+        final Sections newSections = sections.buildNewSectionsAdded(new Section(new Station("충무로"), new Station("대한극장"), 5L));
+        final Section newSection = newSections.copySections()
                 .stream()
                 .filter(section -> section.equals(new Section(new Station("대한극장"), new Station("동대입구"), 5L)))
                 .findFirst().get();
@@ -56,8 +56,8 @@ class SectionsTest {
         final Sections sections = new Sections(List.of(new Section(new Station("충무로"), new Station("동대입구"), 10L), new Section(new Station("동대입구"), new Station("약수"), 10L)));
 
         ///when
-        final Sections newSections = sections.addSection(new Section(new Station("충무로"), new Station("대한극장"), 5L));
-        final Section newSection = newSections.getSections()
+        final Sections newSections = sections.buildNewSectionsAdded(new Section(new Station("충무로"), new Station("대한극장"), 5L));
+        final Section newSection = newSections.copySections()
                 .stream()
                 .filter(section -> section.equals(new Section(new Station("대한극장"), new Station("동대입구"), 5L)))
                 .findFirst().get();
@@ -72,8 +72,8 @@ class SectionsTest {
         final Sections sections = new Sections(List.of(new Section(new Station("충무로"), new Station("동대입구"), 10L), new Section(new Station("동대입구"), new Station("약수"), 10L)));
 
         ///when
-        final Sections newSections = sections.addSection(new Section(new Station("대한극장"), new Station("약수"), 5L));
-        final Section newSection = newSections.getSections()
+        final Sections newSections = sections.buildNewSectionsAdded(new Section(new Station("대한극장"), new Station("약수"), 5L));
+        final Section newSection = newSections.copySections()
                 .stream()
                 .filter(section -> section.equals(new Section(new Station("동대입구"), new Station("대한극장"), 5L)))
                 .findFirst().get();
@@ -88,8 +88,8 @@ class SectionsTest {
         final Sections sections = new Sections(List.of(new Section(new Station("충무로"), new Station("동대입구"), 10L), new Section(new Station("동대입구"), new Station("약수"), 10L)));
 
         ///when
-        final Sections newSections = sections.addSection(new Section(new Station("대한극장"), new Station("약수"), 5L));
-        final Section newSection = newSections.getSections()
+        final Sections newSections = sections.buildNewSectionsAdded(new Section(new Station("대한극장"), new Station("약수"), 5L));
+        final Section newSection = newSections.copySections()
                 .stream()
                 .filter(section -> section.equals(new Section(new Station("동대입구"), new Station("대한극장"), 5L)))
                 .findFirst().get();
@@ -106,7 +106,7 @@ class SectionsTest {
 
         ///when,then
         assertThatThrownBy(
-                () -> sections.addSection(new Section(new Station("대한극장"), new Station("약수"), newDistance))
+                () -> sections.buildNewSectionsAdded(new Section(new Station("대한극장"), new Station("약수"), newDistance))
         ).isInstanceOf(IllegalArgumentException.class).hasMessage("새로운 경로 거리는 기존 경로보다 짧아야 합니다");
     }
 
@@ -117,7 +117,7 @@ class SectionsTest {
 
         ///when,then
         assertThatThrownBy(
-                () -> sections.addSection(new Section(new Station("충무로"), new Station("동대입구"), 10L))
+                () -> sections.buildNewSectionsAdded(new Section(new Station("충무로"), new Station("동대입구"), 10L))
         ).isInstanceOf(IllegalArgumentException.class).hasMessage("이미 존재하는 경로를 추가할 수 없습니다");
     }
 
@@ -129,7 +129,7 @@ class SectionsTest {
 
         ///when,then
         assertThatThrownBy(
-                () -> sections.deleteSection(station)
+                () -> sections.buildNewSectionsDeleted(station)
         ).isInstanceOf(IllegalArgumentException.class).hasMessage("이미 존재하는 역만 삭제할 수 있습니다");
     }
 
@@ -140,10 +140,10 @@ class SectionsTest {
         final Station station = new Station("충무로");
 
         ///when
-        Sections deletedSections = sections.deleteSection(station);
+        Sections deletedSections = sections.buildNewSectionsDeleted(station);
 
         ///then
-        assertThat(deletedSections.getSections().size()).isZero();
+        assertThat(deletedSections.copySections().size()).isZero();
     }
 
     @Test
@@ -154,7 +154,7 @@ class SectionsTest {
         final Sections deleted = new Sections(List.of(new Section(new Station("동대입구"), new Station("약수"), 10L)));
 
         ///when,then
-        assertThat(sections.deleteSection(targetStation)).isEqualTo(deleted);
+        assertThat(sections.buildNewSectionsDeleted(targetStation).copySections().size()).isEqualTo(1);
     }
 
     @Test
@@ -165,7 +165,7 @@ class SectionsTest {
         final Sections deleted = new Sections(List.of(new Section(new Station("충무로"), new Station("동대입구"), 10L)));
 
         ///when,then
-        assertThat(sections.deleteSection(targetStation)).isEqualTo(deleted);
+        assertThat(sections.buildNewSectionsDeleted(targetStation).copySections().size()).isEqualTo(1);
     }
 
     @Test
@@ -176,7 +176,7 @@ class SectionsTest {
         final Sections deleted = new Sections(List.of(new Section(new Station("충무로"), new Station("약수"), 20L)));
 
         ///when,then
-        assertThat(sections.deleteSection(targetStation)).isEqualTo(deleted);
+        assertThat(sections.buildNewSectionsDeleted(targetStation).copySections().get(0).getDistance()).isEqualTo(20);
 
     }
 

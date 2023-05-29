@@ -3,14 +3,8 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.application.repository.LineRepository;
 import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,58 +19,20 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        final LineEntity lineEntity = new LineEntity(request.getName(), request.getColor());
-        final LineEntity inserted = lineRepository.saveLine(lineEntity);
+        final Line inserted = lineRepository.saveLine(new Line(request.getName(), request.getColor()));
         return LineResponse.of(inserted);
     }
 
     public LineResponse findLineResponseById(Long id) {
-        LineEntity persistLine = lineRepository.findLineById(id);
-        Line line = toLine(persistLine);
+        Line line = lineRepository.findLineById(id);
         return LineResponse.of(line);
     }
 
     public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = lineRepository.findAllLines();
-        System.out.println("persistLines = " + persistLines);
-        List<Line> lines = toLines(persistLines);
+        List<Line> lines = lineRepository.findAllLines();
         return lines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    private List<Line> toLines(final List<LineEntity> persistLines) {
-        return persistLines.stream()
-                .map(this::toLine)
-                .collect(Collectors.toList());
-    }
-
-    private Line toLine(final LineEntity lineEntity) {
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), toSections(lineEntity));
-    }
-
-    private Sections toSections(final LineEntity lineEntity) {
-        return new Sections(
-                findSectionEntitiesByLine(lineEntity).stream()
-                        .map(this::toSection)
-                        .collect(Collectors.toList())
-        );
-    }
-
-    private List<SectionEntity> findSectionEntitiesByLine(final LineEntity lineEntity) {
-        return lineRepository.findSectionsByLine(lineEntity);
-    }
-
-    private Section toSection(SectionEntity sectionEntity) {
-        StationEntity upStationEntity = lineRepository.findStationById(sectionEntity.getUpStationId());
-        StationEntity downStationEntity = lineRepository.findStationById(sectionEntity.getDownStationId());
-        Station upStation = new Station(upStationEntity.getName());
-        Station downStation = new Station(downStationEntity.getName());
-        return new Section(upStation, downStation, sectionEntity.getDistance());
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineRepository.updateLine(new LineEntity(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {

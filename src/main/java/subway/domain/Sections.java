@@ -1,12 +1,9 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static subway.domain.Direction.DOWN;
-import static subway.domain.Direction.UP;
 
 public class Sections {
 
@@ -16,137 +13,152 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public Sections addSection(final Section newSection) {
-        final List<Section> nowSections = getSections();
-        final Station newUpStation = newSection.getUpStation();
-        final Station newDownStation = newSection.getDownStation();
-        final List<Station> nowUpStations = getUpStations(nowSections);
-        final List<Station> nowDownStations = getDownStations(nowSections);
-        //이미 경로가 존재하는 경우
-        if (isContainsStation(newUpStation, nowUpStations) && isContainsStation(newDownStation, nowDownStations)) {
+    public Sections buildNewSectionsAdded(final Section newSection) {
+        final List<Section> nowSections = copySections();
+
+        if (isContainsBothStation(newSection, nowSections)) {
             throw new IllegalArgumentException("이미 존재하는 경로를 추가할 수 없습니다");
         }
 
-        // 상행역 기준 사이 경로 추가하는 경우
-        if ((isContainsStation(newUpStation, nowUpStations)) && (!isContainsStation(newDownStation, nowDownStations))) {
-            return addBetweenBasedUp(newSection, nowSections, newUpStation, nowUpStations);
+        if (isContainsUpStation(newSection, nowSections)) {
+            return buildSectionsBasedUp(newSection, nowSections);
         }
-        //하행역 기준 사이 경로 추가하는 경우
-        if ((!isContainsStation(newUpStation, nowUpStations)) && isContainsStation(newDownStation, nowDownStations)) {
-            return addBetWeenBasedDown(newSection, nowSections, newDownStation, nowDownStations);
+
+        if (isContainsDownStation(newSection, nowSections)) {
+            return buildSectionsBasedDown(newSection, nowSections);
         }
-        //경로가 이어지지 않은 경우 검증
-        validateSectionsIsConnected(newUpStation, newDownStation, nowUpStations, nowDownStations);
-        //새로운 경로 추가
-        nowSections.add(newSection);
-        return new Sections(nowSections);
+
+        validateSectionsIsConnected(newSection, nowSections);
+
+        return buildConnectedSections(newSection, nowSections);
     }
 
-    private Sections addBetWeenBasedDown(final Section newSection, final List<Section> nowSections, final Station newDownStation, final List<Station> nowDownStations) {
-        final Station targetDownStation = extractTargetStation(newDownStation, nowDownStations);
-        final Section targetSection = extractTargetSection(nowSections, targetDownStation, Direction.DOWN);
+    private Sections buildConnectedSections(final Section newSection, final List<Section> nowSections) {
+        List<Section> newSections = new ArrayList<>();
+        Collections.addAll(newSections, nowSections.toArray(new Section[0]));
+        Collections.addAll(newSections, newSection);
+
+        return new Sections(newSections);
+    }
+
+    private Sections buildSectionsBasedDown(final Section newSection, final List<Section> nowSections) {
+        final Section targetSection = nowSections.stream()
+                .filter(section -> section.isSameDownStation(newSection.getDownStation()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("경로가 존재하지 않습니다"));
+
         validateSectionDirection(newSection, targetSection);
         final Section newUpSection = new Section(targetSection.getUpStation(), newSection.getUpStation(), targetSection.getDistance() - newSection.getDistance());
-        nowSections.add(newSection);
-        nowSections.add(newUpSection);
-        nowSections.remove(targetSection);
-        return new Sections(nowSections);
+
+        return combineSections(newSection, nowSections, targetSection, newUpSection);
     }
 
-    private Sections addBetweenBasedUp(final Section newSection, final List<Section> nowSections, final Station newUpStation, final List<Station> nowUpStations) {
-        // 상행역 중 추가하려는 경로 상행역이 있는지 확인 후 추출
-        final Station targetUpStation = extractTargetStation(newUpStation, nowUpStations);
-
-        //경로 중 추가하려는 경로의 상행역이 상행역으로 있는 경로가 존재하는지 확인 후 추출
-        final Section targetSection = extractTargetSection(nowSections, targetUpStation, UP);
+    private Sections buildSectionsBasedUp(final Section newSection, final List<Section> nowSections) {
+        final Section targetSection = nowSections.stream()
+                .filter(section -> section.isSameUpStation(newSection.getUpStation()))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다"));
 
         validateSectionDirection(newSection, targetSection);
 
-        //기존 경로를 삭제 후 새로운 경로 둘을 추가
         final Section newDownSection = new Section(newSection.getDownStation(), targetSection.getDownStation(), targetSection.getDistance() - newSection.getDistance());
-        nowSections.add(newSection);
-        nowSections.add(newDownSection);
-        nowSections.remove(targetSection);
-        return new Sections(nowSections);
+
+        return combineSections(newSection, nowSections, targetSection, newDownSection);
     }
 
+    private Sections combineSections(final Section newSection, final List<Section> nowSections, final Section targetSection, final Section newOtherSection) {
+        List<Section> newSections = new ArrayList<>();
+        Collections.addAll(newSections, nowSections.toArray(new Section[0]));
+        Collections.addAll(newSections, newSection, newOtherSection);
+        newSections.remove(targetSection);
 
-    public Sections deleteSection(final Station targetStation) {
-        final List<Section> nowSections = getSections();
-        final List<Station> nowUpStations = getUpStations(nowSections);
-        final List<Station> nowDownStations = getDownStations(nowSections);
+        return new Sections(newSections);
+    }
 
-        validateStationIsExists(targetStation, nowUpStations, nowDownStations);
-        if (getSections().size() == 1) {
+    public Sections buildNewSectionsDeleted(final Station targetStation) {
+        final List<Section> nowSections = copySections();
+        final List<Station> nowUpStations = nowSections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+        final List<Station> nowDownStations = nowSections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+
+        validateStationIsExists(targetStation, nowSections);
+
+        if (copySections().size() == 1) {
             return new Sections(new ArrayList<>());
         }
-        Station lastUpstation = getLastUpstation(nowSections, nowUpStations);
-        Station lastDownStation = getLastDownStation(nowSections, nowDownStations);
+
+        nowDownStations.removeAll(nowSections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList()));
+
+        nowUpStations.removeAll(nowSections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList()));
+
+        Station lastUpstation = nowUpStations.get(0);
+        Station lastDownStation = nowDownStations.get(0);
 
         if (lastUpstation.equals(targetStation)) {
-            return deleteEndSection(nowSections, targetStation, UP);
+            Section targetSection = nowSections.stream()
+                    .filter(section -> section.isSameUpStation(targetStation))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("경로가 존재하지 않습니다"));
+
+            nowSections.remove(targetSection);
+            return new Sections(nowSections);
         }
 
         if (lastDownStation.equals(targetStation)) {
-            return deleteEndSection(nowSections, targetStation, DOWN);
+            Section targetSection = nowSections.stream()
+                    .filter(section -> section.isSameDownStation(targetStation))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("경로가 존재하지 않습니다"));
+
+            nowSections.remove(targetSection);
+            return new Sections(nowSections);
         }
 
-        deleteBetweenSection(targetStation, nowSections);
-        return new Sections(nowSections);
+        final Section targetUpSection = nowSections.stream()
+                .filter(section -> section.isSameDownStation(targetStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("경로가 존재하지 않습니다"));
 
-    }
+        final Section targetDownSection = nowSections.stream()
+                .filter(section -> section.isSameUpStation(targetStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("경로가 존재하지 않습니다"));
 
-    private void deleteBetweenSection(final Station targetStation, final List<Section> nowSections) {
-        final Section targetUpSection = extractTargetSection(nowSections, targetStation, DOWN);
-        final Section targetDownSection = extractTargetSection(nowSections, targetStation, UP);
         final Long newDistance = targetUpSection.getDistance() + targetDownSection.getDistance();
         final Section newSection = new Section(targetUpSection.getUpStation(), targetDownSection.getDownStation(), newDistance);
-        nowSections.remove(targetUpSection);
-        nowSections.remove(targetDownSection);
-        nowSections.add(newSection);
-    }
 
-    private Station getLastDownStation(final List<Section> nowSections, final List<Station> nowDownStations) {
-        nowDownStations.removeAll(getUpStations(nowSections));
-        Station lastDownStation = nowDownStations.get(0);
-        return lastDownStation;
-    }
-
-    private Station getLastUpstation(final List<Section> nowSections, final List<Station> nowUpStations) {
-        nowUpStations.removeAll(getDownStations(nowSections));
-        Station lastUpstation = nowUpStations.get(0);
-        return lastUpstation;
-    }
-
-    private Sections deleteEndSection(final List<Section> nowSections, final Station targetStation, final Direction direction) {
-        Section targetSection = extractTargetSection(nowSections, targetStation, direction);
-        //경로 하나 제거
-        nowSections.remove(targetSection);
-        return new Sections(nowSections);
-    }
-
-    private void validateStationIsExists(final Station targetStation, final List<Station> nowUpStations, final List<Station> nowDownStations) {
-        if ((!isContainsStation(targetStation, nowUpStations)) && (!isContainsStation(targetStation, nowDownStations))) {
-            throw new IllegalArgumentException("이미 존재하는 역만 삭제할 수 있습니다");
-        }
+        List<Section> newSections = new ArrayList<>();
+        Collections.addAll(newSections, nowSections.toArray(new Section[0]));
+        newSections.remove(targetUpSection);
+        newSections.remove(targetDownSection);
+        newSections.add(newSection);
+        return new Sections(newSections);
     }
 
     public List<Station> sortStations() {
-        final List<Section> nowSections = getSections();
-        final List<Station> nowUpStations = getUpStations(nowSections);
+        final List<Section> nowSections = copySections();
+        final List<Station> nowUpStations = nowSections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
 
-        Station lastUpstation = getLastUpstation(nowSections, nowUpStations);
+        nowUpStations.removeAll(nowSections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList()));
+        Station lastUpstation = nowUpStations.get(0);
+
         List<Station> stations = new ArrayList<>(List.of(lastUpstation));
 
         Station targetStation = lastUpstation;
-        defineRoute(stations, targetStation);
-        return stations;
-    }
-
-    private void defineRoute(final List<Station> stations, Station targetStation) {
         while (stations.size() < sections.size() + 1) {
             targetStation = seekNextStation(stations, targetStation);
         }
+        return stations;
     }
 
     private Station seekNextStation(final List<Station> stations, Station targetStation) {
@@ -161,35 +173,52 @@ public class Sections {
         return targetStation;
     }
 
-
-    private Section extractTargetSection(final List<Section> nowSections, final Station targetStation, final Direction direction) {
-        return nowSections.stream()
-                .filter(section -> section.isHavingSameStationWithDirection(targetStation, direction))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("경로가 존재하지 않습니다"));
-    }
-
-    private Station extractTargetStation(final Station newStation, final List<Station> nowStations) {
-        return nowStations.stream()
-                .filter(station -> station.equals(newStation))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다"));
-    }
-
     private boolean isContainsStation(final Station newStation, final List<Station> nowStations) {
         return nowStations.stream()
                 .anyMatch(station -> station.equals(newStation));
     }
 
-    private List<Station> getDownStations(final List<Section> nowSections) {
+    private boolean isContainsBothStation(final Section newSection, final List<Section> nowSections) {
         return nowSections.stream()
-                .map(Section::getDownStation)
-                .collect(Collectors.toList());
+                .anyMatch(section -> section.isSameUpStation(newSection.getUpStation()) && section.isSameDownStation(newSection.getDownStation()));
     }
 
-    private List<Station> getUpStations(final List<Section> nowSections) {
-        return nowSections.stream()
-                .map(Section::getUpStation)
+    private boolean isContainsUpStation(final Section newSection, final List<Section> nowSections) {
+        return isContainsStation(newSection.getUpStation(),
+                nowSections.stream()
+                        .map(section -> section.getUpStation())
+                        .collect(Collectors.toList()))
+                &&
+                !isContainsStation(newSection.getDownStation(),
+                        nowSections.stream()
+                                .map(section -> section.getDownStation())
+                                .collect(Collectors.toList()));
+    }
+
+    private boolean isContainsDownStation(final Section newSection, final List<Section> nowSections) {
+        return !isContainsStation(newSection.getUpStation(),
+                nowSections.stream()
+                        .map(section -> section.getUpStation())
+                        .collect(Collectors.toList()))
+                &&
+                isContainsStation(newSection.getDownStation(),
+                        nowSections.stream()
+                                .map(section -> section.getDownStation())
+                                .collect(Collectors.toList()));
+    }
+
+    public List<Section> findRemovedSection(Sections otherSections) {
+        return this.sections.stream()
+                .filter(section -> !otherSections.sections.contains(section))
                 .collect(Collectors.toList());
+
+    }
+
+    public List<Section> findAddedSection(Sections nowSections) {
+        return this.copySections().stream()
+                .filter(section -> !nowSections.copySections().contains(section))
+                .collect(Collectors.toList());
+
     }
 
     private void validateSectionDirection(final Section newSection, final Section targetSection) {
@@ -198,28 +227,30 @@ public class Sections {
         }
     }
 
-    private void validateSectionsIsConnected(final Station newUpStation, final Station newDownStation, final List<Station> nowUpStations, final List<Station> nowDownStations) {
-        if (sections.size() > 0) {
-            if ((!isContainsStation(newUpStation, nowDownStations)) && (!isContainsStation(newDownStation, nowUpStations))) {
+    private void validateSectionsIsConnected(final Section newSection, final List<Section> nowSections) {
+        if (nowSections.size() > 0) {
+            if (
+                    !isContainsStation(newSection.getUpStation(), nowSections.stream()
+                            .map(section -> section.getDownStation())
+                            .collect(Collectors.toList()))
+                            &&
+                            !isContainsStation(newSection.getDownStation(), nowSections.stream()
+                                    .map(section -> section.getUpStation())
+                                    .collect(Collectors.toList()))
+            ) {
                 throw new IllegalArgumentException("이어지지 않는 경로를 추가할 수 없습니다");
             }
         }
     }
 
-    public List<Section> getSections() {
+    private void validateStationIsExists(final Station targetStation, final List<Section> sections) {
+        sections.stream()
+                .filter(section -> section.isSameUpStation(targetStation) || section.isSameDownStation(targetStation))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("이미 존재하는 역만 삭제할 수 있습니다"));
+    }
+
+    public List<Section> copySections() {
         return new ArrayList<>(sections);
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Sections sections1 = (Sections) o;
-        return Objects.equals(sections, sections1.sections);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sections);
     }
 }

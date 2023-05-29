@@ -1,4 +1,4 @@
-package subway.entity;
+package subway.persistence.entity;
 
 public class LineEntity {
     private Long id;
