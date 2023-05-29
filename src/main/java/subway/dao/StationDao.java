@@ -22,7 +22,7 @@ public class StationDao {
     }
 
     public Long insert(StationEntity stationEntity) {
-        String sql = "INSERT INTO STATION (name, next_station, distance, line_id) values(?, ?, ?, ?)";
+        String sql = "INSERT INTO STATION (name, next_station_id, distance, line_id) values(?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -50,7 +50,7 @@ public class StationDao {
     }
 
     public Long update(Long id, StationEntity stationEntity) {
-        String sql = "UPDATE STATION SET name = ?, next_station = ?, distance = ? WHERE id = ?";
+        String sql = "UPDATE STATION SET name = ?, next_station_id = ?, distance = ? WHERE id = ?";
         return Long.valueOf(jdbcTemplate.update(sql, stationEntity.getName(), stationEntity.getNextStationId(), stationEntity.getDistance(), id));
     }
 
@@ -97,7 +97,7 @@ public class StationDao {
         return (resultSet, rowNum) -> {
             Long id = resultSet.getLong("id");
             String stationName = resultSet.getString("name");
-            Long nextStationId = resultSet.getLong("next_station");
+            Long nextStationId = resultSet.getLong("next_station_id");
             if (resultSet.wasNull()) {
                 nextStationId = null; // NULL 값인 경우에는 변수에 null을 할당
             }
@@ -112,5 +112,10 @@ public class StationDao {
 
             return new StationEntity(id, stationName, nextStationId, distance, lineId);
         };
+    }
+
+    public Long removeAllByLineId(Long lineId) {
+        String query = "DELETE FROM STATION WHERE line_id = ?";
+        return Long.valueOf(jdbcTemplate.update(query, lineId));
     }
 }

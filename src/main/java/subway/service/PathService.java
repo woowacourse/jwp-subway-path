@@ -33,7 +33,7 @@ public class PathService {
         this.lineDao = lineDao;
     }
 
-    public ShortestPathResponse findShortestPath(Long id, ShortestPathRequest request) {
+    public ShortestPathResponse findShortestPath(ShortestPathRequest request) {
         WeightedMultigraph graph = createGraphForPath();
         DijkstraShortestPath shortestPath = new DijkstraShortestPath<>(graph);
         List<String> path = shortestPath.getPath(request.getStartName(), request.getDestinationName()).getVertexList();
@@ -47,15 +47,15 @@ public class PathService {
         if (distance < MIN_COST_DISTANCE) {
             return MIN_COST;
         } else if (distance < MIN_ADDITIONAL_COST_DISTANCE) {
-            return MIN_COST + chargeFirstExtraFee(distance, FIRST_ADDITIONAL_DISTANCE);
+            return MIN_COST + chargeExtraFee(distance, FIRST_ADDITIONAL_DISTANCE);
 
         } else {
-            return MIN_COST + chargeFirstExtraFee(distance, FIRST_ADDITIONAL_DISTANCE) + chargeFirstExtraFee(distance, LAST_ADDITIONAL_DISTANCE);
+            return MIN_COST + chargeExtraFee(distance, FIRST_ADDITIONAL_DISTANCE) + chargeExtraFee(distance, LAST_ADDITIONAL_DISTANCE);
         }
 
     }
 
-    private int chargeFirstExtraFee(double distance, int maxDistance) {
+    private int chargeExtraFee(double distance, int maxDistance) {
         int total = (int) distance - 10;
         int count = 0;
         do {

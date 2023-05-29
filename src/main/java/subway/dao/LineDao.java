@@ -24,7 +24,7 @@ public class LineDao {
     }
 
     public Long insert(LineEntity lineEntity) {
-        String sql = "INSERT INTO LINE (name, color, head_station) values(?, ?, ?)";
+        String sql = "INSERT INTO LINE (name, color, head_station_id) values(?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -45,7 +45,7 @@ public class LineDao {
                 (resultSet, rowNum) -> {
                     Long id = resultSet.getLong("id");
                     String name = resultSet.getString("name");
-                    Long nextStationId = resultSet.getLong("next_station");
+                    Long nextStationId = resultSet.getLong("next_station_id");
                     int distance = resultSet.getInt("distance");
                     Long entityLineId = resultSet.getLong("line_id");
 
@@ -61,7 +61,7 @@ public class LineDao {
                     Long id = resultSet.getLong("id");
                     String name = resultSet.getString("name");
                     String color = resultSet.getString("color");
-                    Long headStationId = resultSet.getLong("head_station");
+                    Long headStationId = resultSet.getLong("head_station_id");
 
                     return new LineEntity(id, name, color, headStationId);
                 });
@@ -74,7 +74,7 @@ public class LineDao {
     }
 
     public Long updateHeadStation(Long id, Station upStation) {
-        String sql = "UPDATE LINE SET head_station = ? WHERE id = ?";
+        String sql = "UPDATE LINE SET head_station_id = ? WHERE id = ?";
 
         return Long.valueOf(jdbcTemplate.update(sql, upStation.getId(), id));
     }
@@ -96,7 +96,7 @@ public class LineDao {
             Long id = resultSet.getLong("id");
             String name = resultSet.getString("name");
             String color = resultSet.getString("color");
-            Long headStation = resultSet.getLong("head_station");
+            Long headStation = resultSet.getLong("head_station_id");
 
             return new LineEntity(id, name, color, headStation);
         };

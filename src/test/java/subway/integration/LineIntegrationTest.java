@@ -151,42 +151,6 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(resultResponse.getId()).isEqualTo(1);
     }
 
-    @DisplayName("지하철 노선을 수정한다.")
-    @Test
-    void updateLine() {
-        // given
-        StationEntity station = new StationEntity(1L, "역삼역", 2L, 10, 1L);
-        StationEntity nextStation = new StationEntity(2L, "선릉역", null, 0, 1L);
-        StationEntity thirdStation = new StationEntity(3L, "강남역", null, 3, 1L);
-        stationDao.insert(station);
-        stationDao.insert(nextStation);
-        stationDao.insert(thirdStation);
-
-        LineCreateRequest lineCreateRequest = new LineCreateRequest(lineRequest1, new StationRequest("역삼역", "선릉역", 10));
-        LineCreateRequest lineCreateRequest2 = new LineCreateRequest(lineRequest1, new StationRequest("강남역", "선릉역", 10));
-
-        RestAssured.given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineCreateRequest)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineCreateRequest2)
-                .when().put("/lines/{lineId}", 1)
-                .then().log().all()
-                .extract();
-
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
     @DisplayName("지하철 노선을 제거한다.")
     @Test
     void deleteLine() {

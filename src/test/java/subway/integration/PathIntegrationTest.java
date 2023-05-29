@@ -49,11 +49,11 @@ class PathIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new ShortestPathRequest("역삼역", "강남역"))
-                .when().get("/shortestPath/{id}", 1L)
+                .when().get("/shortestPath")
                 .then().log().all()
                 .extract();
 
-        ShortestPathResponse shortestPath = pathService.findShortestPath(1L, new ShortestPathRequest("역삼역", "강남역"));
+        ShortestPathResponse shortestPath = pathService.findShortestPath(new ShortestPathRequest("역삼역", "강남역"));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -79,11 +79,11 @@ class PathIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new ShortestPathRequest("역삼역", "강남역"))
-                .when().get("/shortestPath/{id}", 1L)
+                .when().get("/shortestPath")
                 .then().log().all()
                 .extract();
 
-        ShortestPathResponse shortestPath = pathService.findShortestPath(1L, new ShortestPathRequest("역삼역", "강남역"));
+        ShortestPathResponse shortestPath = pathService.findShortestPath(new ShortestPathRequest("역삼역", "강남역"));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -109,11 +109,11 @@ class PathIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new ShortestPathRequest("역삼역", "강남역"))
-                .when().get("/shortestPath/{id}", 1L)
+                .when().get("/shortestPath")
                 .then().log().all()
                 .extract();
 
-        ShortestPathResponse shortestPath = pathService.findShortestPath(1L, new ShortestPathRequest("역삼역", "강남역"));
+        ShortestPathResponse shortestPath = pathService.findShortestPath(new ShortestPathRequest("역삼역", "강남역"));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -152,11 +152,11 @@ class PathIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new ShortestPathRequest("역삼역", "환승역"))
-                .when().get("/shortestPath/{id}", 1L)
+                .when().get("/shortestPath")
                 .then().log().all()
                 .extract();
 
-        ShortestPathResponse shortestPath = pathService.findShortestPath(1L, new ShortestPathRequest("역삼역", "환승역"));
+        ShortestPathResponse shortestPath = pathService.findShortestPath(new ShortestPathRequest("역삼역", "환승역"));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

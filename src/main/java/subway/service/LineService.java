@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;
+import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.Stations;
 import subway.dto.LineCreateRequest;
@@ -14,9 +15,9 @@ import subway.dto.StationRequest;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @Transactional
@@ -25,6 +26,8 @@ public class LineService {
     private final LineDao lineDao;
     private final StationDao stationDao;
 
+    //TODO: 맨 위는 dao에서 entity가져와서 domain에서 검증(ex.생성자 혹은 method), 중간에서 검증(domain 비즈니스 검증. 이를테면 null check).... ->
+    //TODO: entity는 중간 매개체. domain으로 변환할 때 검증하면 됨.
     public LineService(LineDao lineDao, StationDao stationDao) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
@@ -32,26 +35,33 @@ public class LineService {
 
     public LineResponse saveLine(LineCreateRequest request) {
         StationRequest stationRequest = request.getStationRequest();
-        StationEntity stationEntity = validateStationExistByName(stationRequest.getName());
-        validateStationExistByName(stationRequest.getNextStationName());
+        validateStationsExist(stationRequest.getName(), stationRequest.getNextStationName());
+        StationEntity stationEntity = stationDao.findByName(stationRequest.getName()).get();
 
         return addLine(request, stationEntity);
     }
 
+    private void validateStationsExist(String name, String nextStationName) {
+        validateStationExistByName(name);
+        validateStationExistByName(nextStationName);
+    }
+
     private LineResponse addLine(LineCreateRequest request, StationEntity stationEntity) {
         Station station = stationEntity.convertToStation();
+        Station nextStation = stationDao.findStationEntityById(stationEntity.getNextStationId()).get().convertToStation();
+
         LineRequest lineRequest = request.getLineRequest();
-        LineEntity lineEntity = new LineEntity(null, lineRequest.getName(), lineRequest.getColor(), station.getId());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), new Stations(List.of(station, nextStation)));
+        LineEntity lineEntity = new LineEntity(null, line.getName(), line.getColor(), line.getId());
         Long lineId = lineDao.insert(lineEntity);
 
         return new LineResponse(lineId, lineEntity.getName(), lineEntity.getColor());
     }
 
-    private StationEntity validateStationExistByName(String stationName) {
-        return stationDao.findByName(stationName)
+    private void validateStationExistByName(String stationName) {
+        stationDao.findByName(stationName)
                 .orElseThrow(() -> new IllegalArgumentException(stationName + "역은 등록되지 않았습니다"));
     }
-
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
@@ -85,100 +95,39 @@ public class LineService {
 
     private void addStationInLine(Long id, LineCreateRequest updateRequest) {
         StationRequest stationRequest = updateRequest.getStationRequest();
-        List<StationEntity> allStations = lineDao.findAllStationsById(id);
-        Stations lineStations = StationEntity.convertToStations(allStations);
+        List<StationEntity> stationsEntities = lineDao.findAllStationsById(id);
+        Stations lineStations = StationEntity.convertToStations(stationsEntities);
 
-        if (isUpStationAdd(stationRequest, lineStations)) {
-            addUpStation(id, stationRequest, lineStations);
-        }
+        Station station = new Station(stationRequest.getName(), new Distance(0));
+        Station nextStation = new Station(stationRequest.getNextStationName(), new Distance(0));
+        Distance distance = new Distance(stationRequest.getDistance());
 
-        if (isDownStationAdd(stationRequest, lineStations)) {
-            addDownStation(id, stationRequest, lineStations);
-        }
+        List<Station> stations = lineStations.addStationInLine(station, nextStation, distance);
+        addAllFromStations(id, station, stations);
     }
 
-    private boolean isUpStationAdd(StationRequest stationRequest, Stations lineStations) {
-        return !lineStations.isExistStation(stationRequest.getName())
-                && lineStations.isExistStation(stationRequest.getNextStationName());
-    }
-
-    private void addUpStation(Long lineId, StationRequest stationRequest, Stations lineStations) {
-        //downStation이 line에 존재, 새로운 upStation을 삽입하고자 하는 경우
-        Station downStation = lineStations.findByName(stationRequest.getNextStationName());
-        Station upStation = new Station(stationRequest.getName(), new Distance(stationRequest.getDistance()));
-        Long nextStationId = null;
-        int downStationIndex = lineStations.findIndex(downStation);
-
-        if (downStationIndex != 0) {
-            //역과 역 사이에 삽입
-            Station preStation = lineStations.findUpStation(downStation);
-            preStation.setDistance(new Distance(preStation.getDistance().getValue() - stationRequest.getDistance()));
-
-            if (lineStations.findNextStationById(downStation.getId()).isPresent()) {
-                nextStationId = lineStations.findNextStationById(downStation.getId()).get().getId();
-            }
-        } else {
-            lineDao.updateHeadStation(lineId, upStation);
+    private void addAllFromStations(Long id, Station station, List<Station> stations) {
+        lineDao.updateHeadStation(id, stations.get(0));
+        stationDao.removeAllByLineId(id);
+        for (int i = 0; i < stations.size(); i++) {
+            StationEntity stationEntity = new StationEntity(station.getId(), station.getName(), null, station.getDistance().getValue(), id);
+            stationDao.insert(stationEntity);
         }
-
-        lineStations.addStationByIndex(downStationIndex, upStation);
-        StationEntity stationEntity = new StationEntity(upStation.getId(), upStation.getName(), downStation.getId(), upStation.getDistance().getValue(), lineId);
-        stationDao.insert(stationEntity);
-        stationDao.update(downStation.getId(), new StationEntity(
-                downStation.getId(), downStation.getName(), nextStationId, downStation.getDistance().getValue(), lineId));
-    }
-
-    private boolean isDownStationAdd(StationRequest stationRequest, Stations lineStations) {
-        return lineStations.isExistStation(stationRequest.getName()) && !lineStations.isExistStation(stationRequest.getNextStationName());
-    }
-
-    private void addDownStation(Long lineId, StationRequest stationRequest, Stations lineStations) {
-        //upStation이 line에 존재, 새로운 downStation을 삽입하고자 하는 경우
-        Station upStation = lineStations.findByName(stationRequest.getName());
-        Station downStation = new Station(stationRequest.getNextStationName(), new Distance(0));
-
-        int upStationIndex = lineStations.findIndex(upStation);
-        if (upStationIndex == lineStations.getStationsSize() - 1) {
-            downStation.setDistance(new Distance(upStation.getDistance().getValue() - stationRequest.getDistance()));
-        }
-
-        upStation.setDistance(new Distance(stationRequest.getDistance()));
-
-        lineStations.addStationByIndex(upStationIndex + 1, downStation);
-        StationEntity stationEntity = new StationEntity(downStation.getId(), downStation.getName(), downStation.getId(), downStation.getDistance().getValue(), lineId);
-        stationDao.insert(stationEntity);
-        stationDao.update(upStation.getId(), new StationEntity(
-                upStation.getId(), upStation.getName(), downStation.getId(), upStation.getDistance().getValue(), lineId));
     }
 
     public LineResponse findById(Long id) {
         LineEntity lineEntity = validateLineResponseById(id);
         List<StationEntity> allStations = lineDao.findAllStationsById(id);
-        List<String> stationsNamesInOrder = sortStations(lineEntity, allStations);
+        List<String> stationNames = StationEntity.convertToStations(allStations).getStationNames();
 
-        return new LineResponse(id, lineEntity.getName(), lineEntity.getColor(), stationsNamesInOrder);
+        return new LineResponse(id, lineEntity.getName(), lineEntity.getColor(), stationNames);
     }
 
     private LineEntity validateLineResponseById(Long id) {
-        LineEntity lineEntity = lineDao.findLineEntityById(id)
+        return lineDao.findLineEntityById(id)
                 .orElseThrow(() -> new IllegalArgumentException("찾고자하는 id에 해당하는 LineResponse를 생성할 수 없습니다."));
-        return lineEntity;
     }
 
-    private List<String> sortStations(LineEntity lineEntity, List<StationEntity> allStations) {
-        List<String> stationsNamesInOrder = new ArrayList<>();
-        Long targetId = lineEntity.getHeadStationId();
-
-        for (int i = 0; i < allStations.size(); i++) {
-            StationEntity stationEntity = allStations.get(i);
-            if (targetId == stationEntity.getId()) {
-                stationsNamesInOrder.add(stationEntity.getName());
-                targetId = stationEntity.getNextStationId();
-                i = -1;
-            }
-        }
-        return stationsNamesInOrder;
-    }
 
     public Long deleteLineById(Long id) {
         validateLineExistById(id);

@@ -1,5 +1,8 @@
 package subway.entity;
 
+import subway.domain.Line;
+import subway.domain.Stations;
+
 public class LineEntity {
 
     private final Long id;
@@ -12,6 +15,10 @@ public class LineEntity {
         this.name = name;
         this.color = color;
         this.headStationId = headStationId;
+    }
+
+    public Line convertToLine(Stations stations) {
+        return new Line(name, color, stations);
     }
 
     public String getName() {
