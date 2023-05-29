@@ -67,8 +67,8 @@ public class SectionDao implements Dao<SectionEntity> {
 
     public void insertAll(final List<SectionEntity> sections) {
         final String sql = "INSERT INTO section (start_station_id, end_station_id, distance, line_id) VALUES ("
-                + "SELECT id FROM station WHERE name = ? and line_id = ?, "
-                + "SELECT id FROM station WHERE name = ? and line_id = ?, "
+                + "(SELECT id FROM station WHERE name = ? and line_id = ?), "
+                + "(SELECT id FROM station WHERE name = ? and line_id = ?), "
                 + "?, "
                 + "?)";
         jdbcTemplate.batchUpdate(sql, sections, sections.size(), ((ps, section) -> {

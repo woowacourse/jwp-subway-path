@@ -54,7 +54,7 @@ public class Subway {
         findLine.initialAdd(left, right, distance);
     }
 
-    private void validateExistLine(Station base, Station additional) {
+    private void validateExistLine(final Station base, final Station additional) {
         if (lines.stream().anyMatch(line -> line.containsAll(base, additional))) {
             throw new InvalidSectionException("지하철 전체 노선에 이미 존재하는 구간입니다.");
         }

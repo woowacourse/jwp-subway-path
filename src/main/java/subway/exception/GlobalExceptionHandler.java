@@ -21,15 +21,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(final Exception e) {
         logger.error("ERROR: ", e);
-        return ResponseEntity.internalServerError()
-                .body(new ExceptionResponse("서버가 응답할 수 없습니다."));
+        return ResponseEntity.internalServerError().body(new ExceptionResponse("서버가 응답할 수 없습니다."));
     }
 
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<ExceptionResponse> handleSubwayException(final SubwayException e) {
         logger.warn(e.getMessage());
-        return ResponseEntity.badRequest()
-                .body(new ExceptionResponse(e.getMessage()));
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(NotValidException.class)
+    public ResponseEntity<ExceptionResponse> handleNotValidException(final NotValidException e) {
+        logger.warn(e.getMessage());
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
 
     @ExceptionHandler(LineNotFoundException.class)
@@ -44,7 +48,6 @@ public class GlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(DELIMITER));
         logger.warn(errorMessage);
-        return ResponseEntity.badRequest()
-                .body(new ExceptionResponse(errorMessage));
+        return ResponseEntity.badRequest().body(new ExceptionResponse(errorMessage));
     }
 }

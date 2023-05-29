@@ -24,7 +24,7 @@ class SectionEntityTest {
         ));
 
         // when
-        List<SectionEntity> result = SectionEntity.of(line, 1L);
+        List<SectionEntity> result = SectionEntity.of(line.getSections(), 1L);
 
         // then
         assertThat(result).containsAll(List.of(

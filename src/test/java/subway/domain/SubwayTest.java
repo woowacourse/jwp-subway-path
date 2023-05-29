@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.Direction.LEFT;
+import static subway.fixture.SubwayFixtures.SUBWAY1;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,16 +52,7 @@ class SubwayTest {
     @Test
     void 노선에_구간이_정상적으로_등록된다() {
         // given
-        final Subway subway = new Subway(List.of(
-                new Line("1호선", "RED", List.of(
-                        new Section("A", "B", 5),
-                        new Section("B", "C", 5)
-                )),
-                new Line("2호선", "RED", List.of(
-                        new Section("Z", "B", 5),
-                        new Section("B", "Y", 5)
-                ))
-        ));
+        final Subway subway = SUBWAY1;
 
         // when
         subway.add("1호선", "B", "D", 3, LEFT);
@@ -152,16 +144,7 @@ class SubwayTest {
     @Test
     void 입력받은_라인_이름으로_라인을_찾는다() {
         // given
-        final Subway subway = new Subway(List.of(
-                new Line("1호선", "RED", List.of(
-                        new Section("A", "B", 5),
-                        new Section("B", "C", 5)
-                )),
-                new Line("2호선", "BLUE", List.of(
-                        new Section("Z", "B", 5),
-                        new Section("B", "Y", 5)
-                ))
-        ));
+        final Subway subway = SUBWAY1;
 
         // when
         Line line = subway.findLineByLineName("2호선");

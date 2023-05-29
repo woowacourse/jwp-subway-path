@@ -7,18 +7,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
+import subway.IntegrationTest;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.dto.LineResponse;
@@ -26,22 +20,11 @@ import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
 import subway.repository.LineRepository;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-@Sql(value = "/deleteAll.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class LineControllerTest {
-
-    @LocalServerPort
-    int port;
+public class LineControllerTest extends IntegrationTest {
 
     @Autowired
     private LineRepository lineRepository;
-
-    @BeforeEach
-    public void setUp() {
-        RestAssured.port = port;
-    }
 
     @Nested
     class 성공_테스트 {

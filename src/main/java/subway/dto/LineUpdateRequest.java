@@ -10,6 +10,9 @@ public class LineUpdateRequest {
     @NotBlank(message = "노선 색을 입력해주세요.")
     private String color;
 
+    private LineUpdateRequest() {
+    }
+
     public LineUpdateRequest(String name, String color) {
         this.name = name;
         this.color = color;

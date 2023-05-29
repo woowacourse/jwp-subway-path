@@ -6,16 +6,19 @@ import javax.validation.constraints.Positive;
 public class StationInitialSaveRequest {
 
     @NotBlank(message = "노선명을 입력해주세요.")
-    private final String lineName;
+    private String lineName;
 
     @NotBlank(message = "시작역을 입력해주세요.")
-    private final String leftStationName;
+    private String leftStationName;
 
     @NotBlank(message = "도착역을 입력해주세요.")
-    private final String rightStationName;
+    private String rightStationName;
 
     @Positive(message = "등록할 거리는 양수여야 합니다.")
-    private final Integer distance;
+    private Integer distance;
+
+    private StationInitialSaveRequest() {
+    }
 
     public StationInitialSaveRequest(
             final String lineName,

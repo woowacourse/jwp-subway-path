@@ -4,7 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
-import subway.domain.Line;
+import subway.domain.Section;
 
 public class SectionEntity {
 
@@ -37,8 +37,8 @@ public class SectionEntity {
         this.lineId = lineId;
     }
 
-    public static List<SectionEntity> of(final Line line, final long lineId) {
-        return line.getSections().stream()
+    public static List<SectionEntity> of(final List<Section> sections, final Long lineId) {
+        return sections.stream()
                 .map(section -> new SectionEntity(
                         section.getStartName(),
                         section.getEndName(),

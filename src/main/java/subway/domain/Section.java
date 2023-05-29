@@ -22,6 +22,10 @@ public class Section {
         return start.equals(station) || end.equals(station);
     }
 
+    public boolean contains(final String stationName) {
+        return start.isSame(stationName) || end.isSame(stationName);
+    }
+
     public boolean containsAll(final Station start, final Station end) {
         return (this.start.equals(start) && this.end.equals(end))
                 || (this.start.equals(end) && this.end.equals(start));

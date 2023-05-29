@@ -5,7 +5,7 @@ import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
 
-public interface AddInMiddleStrategy {
+public interface AddStationStrategy {
 
     void addStation(
             final List<Section> sections,
