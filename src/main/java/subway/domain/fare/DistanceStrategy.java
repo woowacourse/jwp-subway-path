@@ -1,35 +1,30 @@
 package subway.domain.fare;
 
+import java.util.Arrays;
+import java.util.List;
+import subway.domain.fare.surchargescalculator.BasicSectionCalculator;
+import subway.domain.fare.surchargescalculator.FirstSectionCalculator;
+import subway.domain.fare.surchargescalculator.SecondSectionCalculator;
+import subway.domain.fare.surchargescalculator.SurchargesCalculator;
+
 public class DistanceStrategy implements FareStrategy {
-
-    public static final Fare BASIC_FARE = new Fare(1_250);
-    public static final int BASE_THRESHOLD = 10;
-    public static final int ADDITIONAL_THRESHOLD = 50;
-    public static final double FIRST_STANDARD = 5.0;
-    public static final double SECOND_STANDARD = 8.0;
-    public static final int ADDITIONAL_FEE = 100;
-
+    private final static List<SurchargesCalculator> calculators = Arrays.asList(
+            new BasicSectionCalculator(),
+            new FirstSectionCalculator(),
+            new SecondSectionCalculator());
 
     @Override
     public Fare calculate(final int distance) {
         validateDistance(distance);
-
-        if (distance <= BASE_THRESHOLD) {
-            return BASIC_FARE;
-        }
-
-        if (distance <= ADDITIONAL_THRESHOLD) {
-            int surcharge = calculateSurcharge(distance, BASE_THRESHOLD, FIRST_STANDARD);
-            return BASIC_FARE.sum(new Fare(surcharge));
-        }
-
-        int surcharge = calculateSurcharge(ADDITIONAL_THRESHOLD, BASE_THRESHOLD, FIRST_STANDARD)
-                + calculateSurcharge(distance, ADDITIONAL_THRESHOLD, SECOND_STANDARD);
-        return BASIC_FARE.sum(new Fare(surcharge));
+        SurchargesCalculator strategy = getStrategy(distance);
+        return strategy.calculate(distance);
     }
 
-    private int calculateSurcharge(final int distance, final int threshold, final double standard) {
-        return ADDITIONAL_FEE * (int) Math.ceil((distance - threshold) / standard);
+    private SurchargesCalculator getStrategy(final int distance) {
+        return calculators.stream()
+                .filter(strategy -> strategy.isAcceptable(distance))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("추가 요금에 대한 알맞은 정책을 찾을 수 없습니다."));
     }
 
     private void validateDistance(final int distance) {
