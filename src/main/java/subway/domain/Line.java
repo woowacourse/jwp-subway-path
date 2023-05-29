@@ -26,7 +26,7 @@ public class Line {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public void addSection(final Section section) {
@@ -127,7 +127,7 @@ public class Line {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return new ArrayList<>(sections);
     }
 
     @Override
