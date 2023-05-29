@@ -15,6 +15,8 @@ import subway.persistence.repository.LineRepository;
 import subway.persistence.repository.SectionRepository;
 import subway.persistence.repository.StationRepository;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -30,6 +32,9 @@ class LineCommandServiceTest {
 
     @InjectMocks
     LineCommandService lineCommandService;
+
+    @Mock
+    PathService pathService;
 
     @Mock
     LineRepository lineRepository;
@@ -85,7 +90,8 @@ class LineCommandServiceTest {
         when(stationRepository.findById(JAMSIL.getId())).thenReturn(JAMSIL);
         when(stationRepository.findById(SEOLLEUNG.getId())).thenReturn(SEOLLEUNG);
         when(sectionRepository.findLineInAllSectionByLineId(SECOND_LINE.getId())).thenReturn(SECOND_LINE);
-        doNothing().when(sectionRepository).insert(any());
+        when(pathService.getSectionsByShortestPath(any(), any(), any())).thenReturn(List.of());
+        doNothing().when(sectionRepository).insert(any(), any());
 
         // when, then
         assertDoesNotThrow(() -> lineCommandService.saveSection(

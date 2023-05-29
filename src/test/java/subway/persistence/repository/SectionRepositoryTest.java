@@ -19,7 +19,7 @@ class SectionRepositoryTest extends RepositoryTest {
 
     @Test
     void 역과_역의_관계를_저장한다() {
-        assertDoesNotThrow(() -> sectionRepository.insert(SECOND_LINE));
+        assertDoesNotThrow(() -> sectionRepository.insert(SECOND_LINE, List.of()));
     }
 
     @Test
@@ -29,7 +29,7 @@ class SectionRepositoryTest extends RepositoryTest {
         final Station station2 = stationRepository.insert(SEOLLEUNG);
         final Line line = lineRepository.insert(SECOND_LINE);
         line.addSection(Section.of(station1, station2, TEN_DISTANCE));
-        sectionRepository.insert(line);
+        sectionRepository.insert(line, getOrderedSectionPath(line));
 
         // when
         final Line actualLine = sectionRepository.findLineInAllSectionByLineId(line.getId());
@@ -41,5 +41,12 @@ class SectionRepositoryTest extends RepositoryTest {
             softAssertions.assertThat(actual.get(0).getName()).isEqualTo("잠실역");
             softAssertions.assertThat(actual.get(1).getName()).isEqualTo("선릉역");
         });
+    }
+
+    private List<Section> getOrderedSectionPath(final Line line) {
+        final Station upEndStation = line.getSections().findUpSection().getUpStation();
+        final Station downEndStation = line.getSections().findDownSection().getDownStation();
+
+        return pathService.getSectionsByShortestPath(upEndStation, downEndStation, List.of(line));
     }
 }

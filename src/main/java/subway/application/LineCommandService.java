@@ -10,17 +10,22 @@ import subway.persistence.repository.LineRepository;
 import subway.persistence.repository.SectionRepository;
 import subway.persistence.repository.StationRepository;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class LineCommandService {
 
+    private final PathService pathService;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
-    public LineCommandService(final LineRepository lineRepository,
+    public LineCommandService(final PathService pathService,
+                              final LineRepository lineRepository,
                               final StationRepository stationRepository,
                               final SectionRepository sectionRepository) {
+        this.pathService = pathService;
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
@@ -50,13 +55,30 @@ public class LineCommandService {
 
         final Line line = sectionRepository.findLineInAllSectionByLineId(lineId);
         line.addSection(section);
-        sectionRepository.insert(line);
+
+        final List<Section> orderedSectionPath = getOrderedSectionPath(line);
+
+        sectionRepository.insert(line, orderedSectionPath);
     }
 
     public void deleteStation(final Long lineId, final Long stationId) {
         final Line line = sectionRepository.findLineInAllSectionByLineId(lineId);
         final Station station = stationRepository.findById(stationId);
         line.deleteStation(station);
-        sectionRepository.insert(line);
+
+        final List<Section> orderedSectionPath = getOrderedSectionPath(line);
+
+        sectionRepository.insert(line, orderedSectionPath);
+    }
+
+    private List<Section> getOrderedSectionPath(final Line line) {
+        if (line.getSections().isEmpty()) {
+            return List.of();
+        }
+
+        final Station upEndStation = line.getSections().findUpSection().getUpStation();
+        final Station downEndStation = line.getSections().findDownSection().getDownStation();
+
+        return pathService.getSectionsByShortestPath(upEndStation, downEndStation, List.of(line));
     }
 }

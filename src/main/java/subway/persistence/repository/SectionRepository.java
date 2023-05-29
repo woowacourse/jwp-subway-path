@@ -20,25 +20,15 @@ public class SectionRepository {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
-    private final PathService pathService;
 
     public SectionRepository(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao, final PathService pathService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
-        this.pathService = pathService;
     }
 
-    public void insert(final Line line) {
+    public void insert(final Line line, final List<Section> orderedSectionPath) {
         sectionDao.deleteByLineId(line.getId());
-
-        if (line.getSections().isEmpty()) {
-            return;
-        }
-
-        final Station upStation = line.getSections().findUpSection().getUpStation();
-        final Station downStation = line.getSections().findDownSection().getDownStation();
-        final List<Section> orderedSectionPath = pathService.getSectionsByShortestPath(upStation, downStation, List.of(line));
 
         final List<SectionEntity> entities = orderedSectionPath.stream()
                 .map(section -> SectionEntity.of(line.getId(), section))
