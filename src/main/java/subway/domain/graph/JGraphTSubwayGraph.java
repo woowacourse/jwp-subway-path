@@ -7,30 +7,32 @@ import subway.domain.Station;
 
 import java.util.List;
 
-public class JGraphTSubwayGraph extends WeightedMultigraph<Station, Section> implements SubwayGraph {
+public class JGraphTSubwayGraph implements SubwayGraph {
+
+    private final WeightedMultigraph<Station, Section> weightedMultiGraph;
 
     public JGraphTSubwayGraph() {
-        super(Section.class);
+        this.weightedMultiGraph = new WeightedMultigraph<>(Section.class);
     }
 
     @Override
     public void addVertexes(final List<Station> stations) {
         for (Station station : stations) {
-            addVertex(station);
+            weightedMultiGraph.addVertex(station);
         }
     }
 
     @Override
     public void addEdges(final List<Section> sections) {
         for (Section section : sections) {
-            addEdge(section.getUpStation(), section.getDownStation(), section);
-            setEdgeWeight(section, section.getDistance().getValue());
+            weightedMultiGraph.addEdge(section.getUpStation(), section.getDownStation(), section);
+            weightedMultiGraph.setEdgeWeight(section, section.getDistance().getValue());
         }
     }
 
     @Override
     public List<Section> getDijkstraShortestPath(final Station from, final Station to) {
-        final DijkstraShortestPath<Station, Section> dijkstraShortestPath = new DijkstraShortestPath<>(this);
+        final DijkstraShortestPath<Station, Section> dijkstraShortestPath = new DijkstraShortestPath<>(weightedMultiGraph);
         return dijkstraShortestPath.getPath(from, to).getEdgeList();
     }
 }
