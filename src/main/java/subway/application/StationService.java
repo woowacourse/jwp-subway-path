@@ -8,6 +8,7 @@ import subway.dto.StationRequest;
 import subway.exception.NotFoundException;
 import subway.repository.StationRepository;
 
+@Transactional
 @Service
 public class StationService {
 

@@ -2,6 +2,7 @@ package subway.application;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Distance;
 import subway.domain.Fare;
 import subway.domain.Station;
@@ -13,6 +14,7 @@ import subway.domain.routestrategy.SubwaySection;
 import subway.dto.RouteRequest;
 import subway.repository.LineRepository;
 
+@Transactional(readOnly = true)
 @Service
 public class RouteService {
 

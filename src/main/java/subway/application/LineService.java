@@ -9,6 +9,7 @@ import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.repository.LineRepository;
 
+@Transactional
 @Service
 public class LineService {
 
