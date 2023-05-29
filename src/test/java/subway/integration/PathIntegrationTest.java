@@ -16,6 +16,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+import static subway.fixture.SectionFixture.*;
 
 @Transactional
 @DisplayName("경로 관련 기능")
@@ -27,12 +28,7 @@ public class PathIntegrationTest extends IntegrationTest {
     @Test
     void 출발역_도착역_최단_거리_정보_조회() throws JsonProcessingException {
         PathRequest pathRequest = new PathRequest(1L, 5L);
-        List<SectionResponse> paths = List.of(
-                new SectionResponse(new StationResponse(1L, "잠실새내"), new StationResponse(2L, "잠실"), new LineResponse(1L, "2호선", "초록"), 10),
-                new SectionResponse(new StationResponse(2L, "잠실"), new StationResponse(3L, "잠실나루"), new LineResponse(1L, "2호선", "초록"), 15),
-                new SectionResponse(new StationResponse(3L, "잠실나루"), new StationResponse(5L, "석촌"), new LineResponse(2L, "8호선", "파랑"), 15)
-        );
-        PathResponse pathResponse = new PathResponse(40, 1850, paths);
+        PathResponse pathResponse = new PathResponse(40, 1850, List.of(잠실새내_잠실_응답, 잠실_잠실나루_응답, 잠실나루_석촌_응답));
 
 
         Response response = given()
