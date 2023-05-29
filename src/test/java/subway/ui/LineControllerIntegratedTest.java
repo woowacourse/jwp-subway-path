@@ -46,8 +46,8 @@ public class LineControllerIntegratedTest {
                 "2호선",
                 1L,
                 2L,
-                5
-        );
+                5,
+                0);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -64,8 +64,8 @@ public class LineControllerIntegratedTest {
                 "2호선",
                 1L,
                 2L,
-                5
-        );
+                5,
+                0);
         LineResponse lineResponse = lineService.createLine(lineSaveRequest);
 
         StationAddToLineRequest stationAddToLineRequest = new StationAddToLineRequest(
@@ -89,8 +89,8 @@ public class LineControllerIntegratedTest {
                 "2호선",
                 1L,
                 2L,
-                5
-        );
+                5,
+                0);
         lineService.createLine(lineSaveRequest);
 
         StationAddToLineRequest stationAddToLineRequest = new StationAddToLineRequest(
@@ -118,8 +118,8 @@ public class LineControllerIntegratedTest {
                 "2호선",
                 1L,
                 2L,
-                5
-        );
+                5,
+                0);
         LineResponse lineResponse = lineService.createLine(lineSaveRequest);
 
         RestAssured.given().log().all()
@@ -138,16 +138,16 @@ public class LineControllerIntegratedTest {
                 "2호선",
                 1L,
                 2L,
-                5
-        );
+                5,
+                0);
         lineService.createLine(lineSaveRequest1);
 
         LineSaveRequest lineSaveRequest2 = new LineSaveRequest(
                 "3호선",
                 3L,
                 4L,
-                5
-        );
+                5,
+                0);
         lineService.createLine(lineSaveRequest2);
 
         RestAssured.given().log().all()

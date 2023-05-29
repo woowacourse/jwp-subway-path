@@ -11,10 +11,7 @@ import subway.business.domain.Direction;
 import subway.business.domain.Line;
 import subway.business.domain.LineRepository;
 import subway.business.domain.StationRepository;
-import subway.business.service.dto.LineSaveRequest;
-import subway.business.service.dto.LineStationsResponse;
-import subway.business.service.dto.StationAddToLineRequest;
-import subway.business.service.dto.StationDeleteRequest;
+import subway.business.service.dto.*;
 
 import java.util.List;
 
@@ -47,8 +44,8 @@ public class LineServiceTest {
                 "2호선",
                 1L,
                 3L,
-                10
-        );
+                10,
+                0);
 
         long id = lineService.createLine(lineSaveRequest).getId();
         assertThat(id).isEqualTo(1L);
@@ -57,7 +54,7 @@ public class LineServiceTest {
     @DisplayName("노선에 역을 추가한다.")
     @Test
     void shouldAddStationToLineWhenRequest() {
-        Line line = Line.of("2호선", 강남역, 잠실역, 10);
+        Line line = Line.of("2호선", 강남역, 잠실역, 10, 0);
         when(lineRepository.findById(1L)).thenReturn(line);
         when(stationRepository.findById(2L)).thenReturn(역삼역);
         when(stationRepository.findById(3L)).thenReturn(잠실역);
@@ -76,7 +73,7 @@ public class LineServiceTest {
     @DisplayName("노선에서 역을 삭제한다.")
     @Test
     void shouldDeleteStationLineWhenRequest() {
-        Line line = Line.of("2호선", 강남역, 잠실역, 10);
+        Line line = Line.of("2호선", 강남역, 잠실역, 10, 0);
         line.addStation(역삼역, 잠실역, Direction.UPWARD, 5);
         // 현재 노선 상태
         // 강남역(상행) - 역삼역 - 잠실역(하행)
@@ -93,8 +90,8 @@ public class LineServiceTest {
     @DisplayName("모든 노선의 역 정보를 가져온다.")
     @Test
     void shouldReturnAllLineNameAndAllStationsOfLineWhenRequest() {
-        Line line1 = Line.of("2호선", 강남역, 잠실역, 10);
-        Line line2 = Line.of("3호선", 역삼역, 잠실역, 10);
+        Line line1 = Line.of("2호선", 강남역, 잠실역, 10, 0);
+        Line line2 = Line.of("3호선", 역삼역, 잠실역, 10, 0);
         when(lineRepository.findAll()).thenReturn(List.of(line1, line2));
 
         List<LineStationsResponse> lineStationsResponses = lineService.findLineResponses();
@@ -108,14 +105,14 @@ public class LineServiceTest {
     @DisplayName("노선의 ID를 통해 노선의 역 정보를 가져온다.")
     @Test
     void shouldReturnLineNameAndAllStationsOfLineWhenRequest() {
-        Line line = Line.of("2호선", 강남역, 잠실역, 10);
+        Line line = Line.of("2호선", 강남역, 잠실역, 10, 0);
         when(lineRepository.findById(1L)).thenReturn(line);
 
         LineStationsResponse lineStationResponse = lineService.findLineResponseById(1L);
 
         assertAll(
                 () -> assertThat(lineStationResponse.getName()).isEqualTo("2호선"),
-                () -> assertThat(lineStationResponse.getStations()).contains("강남역", "잠실역")
+                () -> assertThat(lineStationResponse.getStations()).contains(StationResponse.from(강남역), StationResponse.from(잠실역))
         );
     }
 }

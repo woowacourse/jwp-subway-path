@@ -31,15 +31,15 @@ class LineDaoTest {
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getLong("upward_terminus_id"),
-            resultSet.getLong("downward_terminus_id")
-    );
+            resultSet.getLong("downward_terminus_id"),
+            resultSet.getInt("fare"));
 
     @Autowired
     LineDaoTest(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("line")
-                .usingColumns("name", "upward_terminus_id", "downward_terminus_id")
+                .usingColumns("name", "upward_terminus_id", "downward_terminus_id", "fare")
                 .usingGeneratedKeyColumns("id");
         this.lineDao = new LineDao(namedParameterJdbcTemplate);
     }
@@ -51,11 +51,11 @@ class LineDaoTest {
                 1L,
                 "2호선",
                 1L,
-                3L
-        );
+                3L,
+                0);
         long id = lineDao.insert(lineEntity);
 
-        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id FROM line WHERE id=:id";
+        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id, fare FROM line WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         LineEntity actualLineEntity = namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
 
@@ -74,8 +74,8 @@ class LineDaoTest {
                 1L,
                 "2호선",
                 1L,
-                3L
-        );
+                3L,
+                0);
         SqlParameterSource params = new BeanPropertySqlParameterSource(lineEntity);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         LineEntity actualLineEntity = lineDao.findById(id).get();
@@ -95,8 +95,8 @@ class LineDaoTest {
                 1L,
                 "2호선",
                 1L,
-                3L
-        );
+                3L,
+                0);
         SqlParameterSource params1 = new BeanPropertySqlParameterSource(lineEntity1);
         simpleJdbcInsert.executeAndReturnKey(params1).longValue();
 
@@ -104,8 +104,8 @@ class LineDaoTest {
                 2L,
                 "3호선",
                 2L,
-                3L
-        );
+                3L,
+                0);
         SqlParameterSource params2 = new BeanPropertySqlParameterSource(lineEntity2);
         simpleJdbcInsert.executeAndReturnKey(params2).longValue();
 
@@ -127,15 +127,15 @@ class LineDaoTest {
                 1L,
                 "2호선",
                 1L,
-                3L
-        );
+                3L,
+                0);
         SqlParameterSource params = new BeanPropertySqlParameterSource(lineEntity);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        LineEntity lineEntityToUpdate = new LineEntity(lineEntity.getId(), "2호선", 1L, 2L);
+        LineEntity lineEntityToUpdate = new LineEntity(lineEntity.getId(), "2호선", 1L, 2L, 0);
         lineDao.update(lineEntityToUpdate);
 
-        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id FROM line WHERE id=:id";
+        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id, fare FROM line WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         LineEntity actualLineEntity = namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
 

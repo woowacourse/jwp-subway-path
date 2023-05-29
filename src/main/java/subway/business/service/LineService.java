@@ -62,21 +62,22 @@ public class LineService {
                 lineSaveRequest.getName(),
                 upwardStation,
                 downwardStation,
-                lineSaveRequest.getDistance()
+                lineSaveRequest.getDistance(),
+                lineSaveRequest.getFare()
         );
-        return new LineResponse(lineRepository.create(line), line.getName());
+        return new LineResponse(lineRepository.create(line), line.getName(), line.getFare());
     }
 
     private LineStationsResponse getLineStationsResponseFrom(Line line) {
         List<Section> sections = line.getSections();
-        List<String> stationNames = sections.stream()
-                .map(section -> section.getUpwardStation().getName())
+        List<StationResponse> stationResponses = sections.stream()
+                .map(section -> StationResponse.from(section.getUpwardStation()))
                 .collect(Collectors.toList());
-        stationNames.add(getDownwardTerminusName(sections));
-        return new LineStationsResponse(line.getName(), stationNames);
+        stationResponses.add(getDownwardTerminusResponse(sections));
+        return new LineStationsResponse(line.getId(), line.getName(), stationResponses, line.getFare());
     }
 
-    private String getDownwardTerminusName(List<Section> sections) {
-        return sections.get(sections.size() - 1).getDownwardStation().getName();
+    private StationResponse getDownwardTerminusResponse(List<Section> sections) {
+        return StationResponse.from(sections.get(sections.size() - 1).getDownwardStation());
     }
 }

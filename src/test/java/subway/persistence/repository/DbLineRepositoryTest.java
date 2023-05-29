@@ -43,7 +43,7 @@ public class DbLineRepositoryTest {
     @Test
     void shouldCreateLineWhenRequest() {
         when(lineDao.insert(any())).thenReturn(1L);
-        Line line = Line.of("2호선", 강남역, 잠실역, 10);
+        Line line = Line.of("2호선", 강남역, 잠실역, 10, 0);
         assertThat(dbLineRepository.create(line)).isEqualTo(1L);
     }
 
@@ -54,8 +54,8 @@ public class DbLineRepositoryTest {
                 1L,
                 "2호선",
                 1L,
-                3L
-        );
+                3L,
+                0);
 
         SectionEntity upwardSection = new SectionEntity(
                 1L,
@@ -71,7 +71,7 @@ public class DbLineRepositoryTest {
                 3L,
                 10
         );
-        when(lineDao.findById(1L)).thenReturn(Optional.of(new LineEntity(1L, "2호선", 1L, 3L)));
+        when(lineDao.findById(1L)).thenReturn(Optional.of(new LineEntity(1L, "2호선", 1L, 3L, 0)));
         when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(downwardSection, upwardSection));
         when(stationDao.findById(1L)).thenReturn(Optional.of(강남역Entity));
         when(stationDao.findById(2L)).thenReturn(Optional.of(역삼역Entity));
@@ -94,8 +94,8 @@ public class DbLineRepositoryTest {
                 1L,
                 "2호선",
                 1L,
-                3L
-        );
+                3L,
+                0);
         SectionEntity sectionEntity1 = new SectionEntity(
                 1L,
                 1L,
@@ -107,8 +107,8 @@ public class DbLineRepositoryTest {
                 2L,
                 "1호선",
                 3L,
-                4L
-        );
+                4L,
+                0);
         SectionEntity sectionEntity2 = new SectionEntity(
                 1L,
                 3L,
@@ -136,7 +136,7 @@ public class DbLineRepositoryTest {
     @Test
     void shouldUpdateLineWhenInputLine() {
         Section section = new Section(강남역, 잠실역, 10);
-        Line line = new Line(1L, "2호선", List.of(section));
+        Line line = new Line(1L, "2호선", List.of(section), 0);
         doNothing().when(lineDao).update(any());
         doNothing().when(sectionDao).deleteAllByLineId(any());
 

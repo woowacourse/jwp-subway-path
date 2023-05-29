@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import subway.business.domain.Station;
 import subway.business.service.LineService;
 import subway.business.service.dto.*;
 
@@ -18,6 +19,8 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static subway.fixtures.station.StationFixture.강남역;
+import static subway.fixtures.station.StationFixture.잠실역;
 
 @WebMvcTest(LineController.class)
 public class LineControllerTest {
@@ -33,14 +36,14 @@ public class LineControllerTest {
     @DisplayName("노선과 두 개의 역을 추가한다")
     @Test
     void shouldCreateLineWhenRequest() throws Exception {
-        given(lineService.createLine(any())).willReturn(new LineResponse(1L, "2호선"));
+        given(lineService.createLine(any())).willReturn(new LineResponse(1L, "2호선", 0));
 
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
                 1L,
                 2L,
-                10
-        );
+                10,
+                0);
         String jsonRequest = objectMapper.writeValueAsString(lineSaveRequest);
 
         mockMvc.perform(post("/lines")
@@ -82,35 +85,39 @@ public class LineControllerTest {
     @Test
     void shouldReturnLineNameAndAllStationsOfLineWhenRequest() throws Exception {
         given(lineService.findLineResponseById(any())).willReturn(new LineStationsResponse(
-                "2호선",
-                List.of("강남역", "잠실역")
-        ));
+                1L, "2호선",
+                List.of(StationResponse.from(강남역), StationResponse.from(잠실역)),
+                0));
 
         mockMvc.perform(get("/lines/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("2호선"))
-                .andExpect(jsonPath("$.stations[0]").value("강남역"))
-                .andExpect(jsonPath("$.stations[1]").value("잠실역"));
+                .andExpect(jsonPath("$.stations[0]").value(StationResponse.from(강남역)))
+                .andExpect(jsonPath("$.stations[1]").value(StationResponse.from(잠실역)))
+                .andExpect(jsonPath("$.fare").value(0));
     }
 
     @DisplayName("모든 노선의 이름과 모든 역의 이름을 반환한다.")
     @Test
     void shouldReturnAllLineNameAndAllStationsOfLineWhenRequest() throws Exception {
+        StationResponse stationResponse1 = StationResponse.from(new Station("몽촌토성역"));
+        StationResponse stationResponse2 = StationResponse.from(new Station("잠실역"));
         given(lineService.findLineResponses()).willReturn(List.of(
                 new LineStationsResponse(
-                        "2호선",
-                        List.of("몽촌토성역", "잠실역")
-                ),
+                        1L, "2호선",
+                        List.of(stationResponse1, stationResponse2),
+                        0),
                 new LineStationsResponse(
-                        "1호선",
-                        List.of("인천역", "부평역")
-                )
+                        2L, "1호선",
+                        List.of(stationResponse1, stationResponse2),
+                        1000)
         ));
 
         mockMvc.perform(get("/lines"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("2호선"))
-                .andExpect(jsonPath("$[0].stations[0]").value("몽촌토성역"))
-                .andExpect(jsonPath("$[0].stations[1]").value("잠실역"));
+                .andExpect(jsonPath("$[0].stations[0]").value(stationResponse1))
+                .andExpect(jsonPath("$[0].stations[1]").value(stationResponse2))
+                .andExpect(jsonPath("$[0].fare").value(0));
     }
 }

@@ -10,25 +10,35 @@ public class Line {
     private final Long id;
     private final Name name;
     private final List<Section> sections;
+    private final Integer fare;
 
     public Line(Name name, List<Section> sections) {
-        this(null, name, sections);
+        this(null, name, sections, 0);
     }
 
-    public Line(Long id, Name name, List<Section> sections) {
+    public Line(Name name, List<Section> sections, Integer fare) {
+        this(null, name, sections, fare);
+    }
+
+    public Line(Long id, Name name, List<Section> sections, Integer fare) {
         this.id = id;
         this.name = name;
         this.sections = sections;
+        this.fare = fare;
     }
 
-    public Line(Long id, String name, List<Section> sections) {
-        this(id, new Name(name), sections);
+    public Line(Long id, String name, List<Section> sections, Integer fare) {
+        this(id, new Name(name), sections, fare);
     }
 
     public static Line of(String name, Station upwardStation, Station downwardStation, int distance) {
+        return of(name, upwardStation, downwardStation, distance, 0);
+    }
+
+    public static Line of(String name, Station upwardStation, Station downwardStation, int distance, Integer fare) {
         List<Section> sections = new LinkedList<>();
         sections.add(new Section(upwardStation, downwardStation, distance));
-        return new Line(new Name(name), sections);
+        return new Line(new Name(name), sections, fare);
     }
 
     public List<Station> getStations() {
@@ -248,6 +258,10 @@ public class Line {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public Integer getFare() {
+        return fare;
     }
 
     @Override

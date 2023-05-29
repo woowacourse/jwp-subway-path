@@ -7,16 +7,18 @@ public class LineEntity {
     private final String name;
     private final Long upwardTerminusId;
     private final Long downwardTerminusId;
+    private final Integer fare;
 
-    public LineEntity(String name, Long upwardTerminusId, Long downwardTerminusId) {
-        this(null, name, upwardTerminusId, downwardTerminusId);
+    public LineEntity(String name, Long upwardTerminusId, Long downwardTerminusId, Integer fare) {
+        this(null, name, upwardTerminusId, downwardTerminusId, fare);
     }
 
-    public LineEntity(Long id, String name, Long upwardTerminusId, Long downwardTerminusId) {
+    public LineEntity(Long id, String name, Long upwardTerminusId, Long downwardTerminusId, Integer fare) {
         this.id = id;
         this.name = name;
         this.upwardTerminusId = upwardTerminusId;
         this.downwardTerminusId = downwardTerminusId;
+        this.fare = fare;
     }
 
     public Long getId() {
@@ -33,6 +35,10 @@ public class LineEntity {
 
     public Long getDownwardTerminusId() {
         return downwardTerminusId;
+    }
+
+    public Integer getFare() {
+        return fare;
     }
 
     @Override

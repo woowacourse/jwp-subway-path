@@ -21,14 +21,14 @@ public class LineDao {
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getLong("upward_terminus_id"),
-            resultSet.getLong("downward_terminus_id")
-    );
+            resultSet.getLong("downward_terminus_id"),
+            resultSet.getInt("fare"));
 
     public LineDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("line")
-                .usingColumns("name", "upward_terminus_id", "downward_terminus_id")
+                .usingColumns("name", "upward_terminus_id", "downward_terminus_id", "fare")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -38,7 +38,7 @@ public class LineDao {
     }
 
     public Optional<LineEntity> findById(Long id) {
-        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id FROM line WHERE id=:id";
+        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id, fare FROM line WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         try {
             return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper));
@@ -48,17 +48,18 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id FROM line";
+        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id, fare FROM line";
         return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
 
     public void update(LineEntity lineEntity) {
-        String sql = "UPDATE line SET name=:name, upward_terminus_id=:upwardTerminusId, downward_terminus_id=:downwardTerminusId WHERE id=:id";
+        String sql = "UPDATE line SET name=:name, upward_terminus_id=:upwardTerminusId, downward_terminus_id=:downwardTerminusId, fare=:fare WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("name", lineEntity.getName())
                 .addValue("upwardTerminusId", lineEntity.getUpwardTerminusId())
                 .addValue("downwardTerminusId", lineEntity.getDownwardTerminusId())
-                .addValue("id", lineEntity.getId());
+                .addValue("id", lineEntity.getId())
+                .addValue("fare", lineEntity.getFare());
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 }

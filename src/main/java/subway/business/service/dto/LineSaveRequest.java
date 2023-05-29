@@ -4,13 +4,15 @@ public class LineSaveRequest {
     private final String name;
     private final Long upwardTerminusId;
     private final Long downwardTerminusId;
-    private final int distance;
+    private final Integer distance;
+    private final Integer fare;
 
-    public LineSaveRequest(String name, Long upwardTerminusId, Long downwardTerminusId, int distance) {
+    public LineSaveRequest(String name, Long upwardTerminusId, Long downwardTerminusId, Integer distance, Integer fare) {
         this.name = name;
         this.upwardTerminusId = upwardTerminusId;
         this.downwardTerminusId = downwardTerminusId;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public String getName() {
@@ -25,7 +27,11 @@ public class LineSaveRequest {
         return downwardTerminusId;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
+    }
+
+    public Integer getFare() {
+        return fare;
     }
 }

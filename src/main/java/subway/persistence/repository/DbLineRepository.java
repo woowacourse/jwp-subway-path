@@ -1,10 +1,7 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.business.domain.Line;
-import subway.business.domain.LineRepository;
-import subway.business.domain.Section;
-import subway.business.domain.Station;
+import subway.business.domain.*;
 import subway.exception.NoSuchLineException;
 import subway.exception.NoSuchStationException;
 import subway.persistence.dao.LineDao;
@@ -35,8 +32,8 @@ public class DbLineRepository implements LineRepository {
         LineEntity lineEntityToSave = new LineEntity(
                 line.getName(),
                 line.getUpwardTerminus().getId(),
-                line.getDownwardTerminus().getId()
-        );
+                line.getDownwardTerminus().getId(),
+                line.getFare());
         long lineId = lineDao.insert(lineEntityToSave);
 
         Section section = line.getSections().get(0);
@@ -51,7 +48,7 @@ public class DbLineRepository implements LineRepository {
 
         List<Section> sections = mapSectionEntitiesToSections(sectionEntities);
         List<Section> orderedSections = getOrderedSections(lineEntity, sections);
-        return new Line(lineEntity.getId(), lineEntity.getName(), orderedSections);
+        return new Line(lineEntity.getId(), new Name(lineEntity.getName()), orderedSections, lineEntity.getFare());
     }
 
     @Override
@@ -70,8 +67,8 @@ public class DbLineRepository implements LineRepository {
                 line.getId(),
                 line.getName(),
                 line.getUpwardTerminus().getId(),
-                line.getDownwardTerminus().getId()
-        );
+                line.getDownwardTerminus().getId(),
+                line.getFare());
         lineDao.update(lineEntityToUpdate);
 
         sectionDao.deleteAllByLineId(line.getId());

@@ -8,11 +8,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.fixtures.station.StationFixture.*;
 
 class LineTest {
-
     @DisplayName("추가하려는 역이 이미 존재하는 경우 예외가 발생한다.")
     @Test
     void shouldThrowExceptionWhenInputStationToAddAlreadyExist() {
-        Line line = Line.of("2호선", 강남역, 잠실역, 5);
+        Line line = Line.of("2호선", 강남역, 잠실역, 5, 0);
 
         assertThatThrownBy(() -> line.addStation(잠실역, 강남역, Direction.UPWARD, 3))
                 .isInstanceOf(IllegalArgumentException.class)

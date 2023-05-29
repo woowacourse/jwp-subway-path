@@ -44,7 +44,7 @@ public class PathControllerIntegratedTest {
     void shouldReturnShortestPathResponseWhenRequest() {
         long sourceStationId = stationService.saveStation(new StationRequest("강남역"));
         long destStationId = stationService.saveStation(new StationRequest("역삼역"));
-        lineService.createLine(new LineSaveRequest("2호선", sourceStationId, destStationId, 10));
+        lineService.createLine(new LineSaveRequest("2호선", sourceStationId, destStationId, 10, 0));
 
         RestAssured.given().log().all()
                 .when().get("/path?sourceStationId=" + sourceStationId + "&destStationId=" + destStationId)

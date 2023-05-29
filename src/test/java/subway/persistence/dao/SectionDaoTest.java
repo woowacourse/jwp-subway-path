@@ -44,14 +44,14 @@ class SectionDaoTest {
         this.sectionDao = new SectionDao(namedParameterJdbcTemplate);
         this.simpleJdbcInsertForLine = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("line")
-                .usingColumns("name", "upward_terminus_id", "downward_terminus_id")
+                .usingColumns("name", "upward_terminus_id", "downward_terminus_id", "fare")
                 .usingGeneratedKeyColumns("id");
     }
 
     @DisplayName("DB에 구간을 삽입한다.")
     @Test
     void shouldInsertSectionWhenRequest() {
-        LineEntity lineEntity = new LineEntity("2호선", 1L, 2L);
+        LineEntity lineEntity = new LineEntity("2호선", 1L, 2L, 0);
         SqlParameterSource params = new BeanPropertySqlParameterSource(lineEntity);
         Long lineId = simpleJdbcInsertForLine.executeAndReturnKey(params).longValue();
 
@@ -76,7 +76,7 @@ class SectionDaoTest {
     @DisplayName("DB에서 특정 노선에 속하는 모든 구간을 가져온다.")
     @Test
     void shouldReadAllSectionsWhenRequestLineId() {
-        LineEntity lineEntity = new LineEntity("2호선", 1L, 3L);
+        LineEntity lineEntity = new LineEntity("2호선", 1L, 3L, 0);
         SqlParameterSource params = new BeanPropertySqlParameterSource(lineEntity);
         Long lineId = simpleJdbcInsertForLine.executeAndReturnKey(params).longValue();
 
@@ -99,7 +99,7 @@ class SectionDaoTest {
     @DisplayName("DB에서 특정 노선에 속하는 모든 구간을 삭제한다.")
     @Test
     void shouldDeleteSectionsWhenRequestLineId() {
-        LineEntity lineEntity = new LineEntity("2호선", 1L, 3L);
+        LineEntity lineEntity = new LineEntity("2호선", 1L, 3L, 0);
         SqlParameterSource params = new BeanPropertySqlParameterSource(lineEntity);
         Long lineId = simpleJdbcInsertForLine.executeAndReturnKey(params).longValue();
 

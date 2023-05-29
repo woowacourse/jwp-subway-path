@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS line
     name                    VARCHAR(255)           NOT NULL,
     upward_terminus_id      BIGINT                 NOT NULL,
     downward_terminus_id    BIGINT                 NOT NULL,
+    fare                    INT                    NOT NULL,
     created_at             TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
