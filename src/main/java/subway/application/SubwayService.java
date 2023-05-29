@@ -53,10 +53,7 @@ public class SubwayService {
         Station to = stationIdMap.get(request.getToStation());
         Sections sections = subwayMap.getShortestPath(from, to);
 
-        List<SectionResponse> sectionResponses = sections.getOrderedSections()
-                .stream()
-                .map(SectionResponse::from)
-                .collect(Collectors.toList());
+        List<SectionResponse> sectionResponses = SectionResponse.toList(sections.getOrderedSections());
         int distance = sections.getDistanceBetween(from, to).getValue();
         int fare = FareCalculator.calculate(distance);
 

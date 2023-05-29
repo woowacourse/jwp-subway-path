@@ -2,6 +2,9 @@ package subway.dto;
 
 import subway.domain.Section;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class SectionResponse {
     private final Long line;
     private final String fromStation;
@@ -20,6 +23,12 @@ public class SectionResponse {
                 section.getUpper().getName(),
                 section.getLower().getName(),
                 section.getDistance().getValue());
+    }
+
+    public static List<SectionResponse> toList(final List<Section> sections) {
+        return sections.stream()
+                .map(SectionResponse::from)
+                .collect(Collectors.toList());
     }
 
     public Long getLine() {
