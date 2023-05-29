@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
 import subway.application.port.out.station.LoadStationPort;
-import subway.common.exception.NoSuchStationException;
+import subway.application.service.exception.NoSuchStationException;
 import subway.domain.station.Station;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

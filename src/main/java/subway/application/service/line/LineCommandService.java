@@ -9,7 +9,7 @@ import subway.application.port.in.line.dto.command.CreateLineCommand;
 import subway.application.port.in.line.dto.command.UpdateLineInfoCommand;
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
-import subway.common.exception.NoSuchLineException;
+import subway.application.service.exception.NoSuchLineException;
 import subway.common.exception.SubwayIllegalArgumentException;
 import subway.domain.line.LineInfo;
 

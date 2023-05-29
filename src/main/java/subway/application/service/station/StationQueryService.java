@@ -1,6 +1,5 @@
 package subway.application.service.station;
 
-import subway.common.exception.NoSuchStationException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -9,8 +8,9 @@ import subway.application.port.in.station.FindAllStationsUseCase;
 import subway.application.port.in.station.FindStationByIdUseCase;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
 import subway.application.port.out.station.LoadStationPort;
-import subway.domain.station.Station;
+import subway.application.service.exception.NoSuchStationException;
 import subway.common.mapper.StationMapper;
+import subway.domain.station.Station;
 
 @Service
 @Transactional(readOnly = true)

@@ -10,13 +10,13 @@ import subway.application.port.in.route.dto.response.RouteQueryResponse;
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.route.RouteFinderPort;
 import subway.application.port.out.station.LoadStationPort;
-import subway.common.exception.NoSuchStationException;
+import subway.application.service.exception.NoSuchStationException;
 import subway.common.mapper.RouteMapper;
-import subway.domain.line.Line;
-import subway.domain.station.Station;
 import subway.domain.fare.Fare;
 import subway.domain.fare.FarePolicy;
+import subway.domain.line.Line;
 import subway.domain.route.Route;
+import subway.domain.station.Station;
 
 @Service
 @Transactional(readOnly = true)

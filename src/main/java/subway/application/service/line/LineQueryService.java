@@ -8,7 +8,7 @@ import subway.application.port.in.line.FindAllLinesUseCase;
 import subway.application.port.in.line.FindLineByIdUseCase;
 import subway.application.port.in.line.dto.response.LineQueryResponse;
 import subway.application.port.out.line.LoadLinePort;
-import subway.common.exception.NoSuchLineException;
+import subway.application.service.exception.NoSuchLineException;
 import subway.common.mapper.LineMapper;
 import subway.domain.line.Line;
 

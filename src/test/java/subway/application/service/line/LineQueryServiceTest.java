@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.application.port.in.line.dto.response.LineQueryResponse;
 import subway.application.port.out.line.LoadLinePort;
-import subway.common.exception.NoSuchLineException;
+import subway.application.service.exception.NoSuchLineException;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.fixture.SectionFixture.이호선_삼성_잠실_2;

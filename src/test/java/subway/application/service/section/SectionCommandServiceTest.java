@@ -18,8 +18,8 @@ import subway.application.port.in.section.dto.command.RemoveStationFromLineComma
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
 import subway.application.port.out.station.LoadStationPort;
-import subway.common.exception.NoSuchLineException;
-import subway.common.exception.NoSuchStationException;
+import subway.application.service.exception.NoSuchLineException;
+import subway.application.service.exception.NoSuchStationException;
 import subway.domain.line.Line;
 import subway.fixture.LineFixture.이호선;
 import subway.fixture.SectionFixture.이호선_역삼_삼성_3;

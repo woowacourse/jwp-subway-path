@@ -1,4 +1,4 @@
-package subway.common.exception;
+package subway.application.service.exception;
 
 public class NoSuchLineException extends SubwayNoSuchResourceException {
 
