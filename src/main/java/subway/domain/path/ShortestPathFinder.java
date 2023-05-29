@@ -7,6 +7,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.Stations;
+import subway.exception.IllegalDestinationException;
 import subway.exception.StationsNotConnectedException;
 
 import java.util.Objects;
@@ -17,12 +18,19 @@ import static java.util.stream.Collectors.toList;
 public class ShortestPathFinder {
 
     public ShortestPath findShortestPath(Sections sections, Stations stations, Station departure, Station destination) {
+        validateSameStations(departure, destination);
         DijkstraShortestPath<Station, Section> dijkstraShortestPath = createDijkstraPath(stations, sections);
         GraphPath<Station, Section> path = getPath(dijkstraShortestPath, departure, destination);
         int shortestPathDistance = (int) dijkstraShortestPath.getPathWeight(departure, destination);
         return path.getVertexList()
                 .stream()
                 .collect(collectingAndThen(toList(), shortestPathStations -> new ShortestPath(shortestPathStations, shortestPathDistance)));
+    }
+
+    private void validateSameStations(Station departure, Station destination) {
+        if (departure.equals(destination)) {
+            throw new IllegalDestinationException("출발역과 동일한 도착역을 입력할 수 없습니다.");
+        }
     }
 
     private DijkstraShortestPath<Station, Section> createDijkstraPath(Stations stations, Sections sections) {

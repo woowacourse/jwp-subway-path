@@ -16,6 +16,7 @@ import subway.dto.AddLineRequest;
 import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
 import subway.dto.SubwayPathRequest;
+import subway.exception.IllegalDestinationException;
 import subway.exception.LineNotFoundException;
 import subway.exception.NameLengthException;
 import subway.exception.StationNotFoundException;
@@ -244,6 +245,22 @@ class SubwayServiceTest {
 
             assertThatThrownBy(() -> subwayService.findShortestPath(subwayPathRequest))
                     .isInstanceOf(StationsNotConnectedException.class);
+        }
+
+        @Test
+        void 출발역과_도착역이_같은_경우_예외를_던진다() {
+            SubwayService subwayService = new SubwayService(subwayRepository);
+            Stations stations = SULLEUNG_JAMSIL_JAMSILNARU;
+            Sections sections = SULLEUNG_JAMSIL_JAMSILNARU_SECTIONS;
+            SubwayPathRequest subwayPathRequest = new SubwayPathRequest(1L, 1L);
+
+            doReturn(stations).when(subwayRepository).getStations();
+            doReturn(sections).when(subwayRepository).getSections();
+            doReturn(JAMSIL_STATION).when(subwayRepository).findStation(1L);
+
+            assertThatThrownBy(() -> subwayService.findShortestPath(subwayPathRequest))
+                    .isInstanceOf(IllegalDestinationException.class)
+                    .hasMessageContaining("출발역과 동일한 도착역을 입력할 수 없습니다.");
         }
     }
 }

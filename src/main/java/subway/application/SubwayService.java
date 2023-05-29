@@ -6,7 +6,6 @@ import subway.domain.Line;
 import subway.domain.LineName;
 import subway.domain.Lines;
 import subway.domain.Section;
-import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.Stations;
 import subway.domain.fare.FareCalculator;
@@ -106,13 +105,13 @@ public class SubwayService {
     }
 
     public ShortestPathResponse findShortestPath(SubwayPathRequest subwayPathRequest) {
-        Stations stations = subwayRepository.getStations();
-        Sections sections = subwayRepository.getSections();
-        Station departure = subwayRepository.findStation(subwayPathRequest.getDepartureId());
-        Station destination = subwayRepository.findStation(subwayPathRequest.getDestinationId());
-
         ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
-        ShortestPath shortestPath = shortestPathFinder.findShortestPath(sections, stations, departure, destination);
+        ShortestPath shortestPath = shortestPathFinder.findShortestPath(
+                subwayRepository.getSections(),
+                subwayRepository.getStations(),
+                subwayRepository.findStation(subwayPathRequest.getDepartureId()),
+                subwayRepository.findStation(subwayPathRequest.getDestinationId())
+        );
 
         FareCalculator fareCalculator = new FareCalculator();
         int fare = fareCalculator.calculate(shortestPath.getDistance());
