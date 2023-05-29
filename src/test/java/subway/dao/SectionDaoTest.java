@@ -49,12 +49,15 @@ class SectionDaoTest {
     @Test
     void 노선에_새로운_구간을_추가한다() {
         //when
-        sectionDao.insert(1L, 2L, 7, 3L);
+        sectionDao.insert(2L, 3L, 7, 2L);
 
         //then
-        Optional<Sections> sectionsByLineId = sectionDao.findSectionsByLineId(3L);
+        Optional<Sections> sectionsByLineId = sectionDao.findSectionsByLineId(2L);
         assertThat(sectionsByLineId.get()).isEqualTo(
-                new Sections(List.of(new Section(new Station(1L, "후추"), new Station(2L, "디노"), 7))));
+                new Sections(List.of(
+                        new Section(new Station(5L, "포비"), new Station(4L, "로운"), 3),
+                        new Section(new Station(3L, "조앤"), new Station(5L, "포비"), 3),
+                        new Section(new Station(2L, "디노"), new Station(3L, "조앤"), 7))));
     }
 
     @Test

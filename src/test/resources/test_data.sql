@@ -13,8 +13,6 @@ insert into Line (name, color)
 values ('2호선', 'Green');
 insert into Line (name, color)
 values ('8호선', 'pink');
-insert into Line (name, color)
-values ('9호선', 'yellow');
 
 insert into SECTION (line_id, from_id, to_id, distance)
 values (1, 1, 2, 5);
