@@ -1,0 +1,14 @@
+### 역 등록 API
+POST http://localhost:8080/stations
+Content-Type: application/json
+Accept: application/json
+
+{
+  "upStationName": "잠실역",
+  "downStationName": "건대역",
+  "distance": 10,
+  "lineId": 1
+}
+
+### 역 삭제 API
+DELETE http://localhost:8080/stations/1

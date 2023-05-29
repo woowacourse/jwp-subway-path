@@ -1,0 +1,2 @@
+### 경로 및 요금 조회 API
+GET http://localhost:8080/path/1/2
