@@ -29,9 +29,39 @@
   - `200 OK`/`400 BAD REQUEST`
 - 노선에 역 제거 API
   - DELETE `/lines/{lineId}/stations/{stationId}`
-  - `201 NO CONTENT`/`400 BAD REQUEST`
+  - `204 NO CONTENT`/`400 BAD REQUEST`
+- 최단 경로 조회 API
+  - GET `/subway/shortest-path?from={fromStationId}&to={toStationId}`
+  - body:
+    ```json
+    {
+      "stations":[
+        {
+          "id": 9,
+          "name":"A"
+        },
+        {
+          "id": 11,
+          "name":"C"
+        },
+        {
+          "id": 13,
+          "name":"E"
+        }
+      ],
+      "fare": 1250,
+      "distance": 7
+    }
+    ```
+  - `200 OK`/`400 BAD REQUEST`
 ## 기능 목록
-
+- 지하철
+  - 역에서 역까지 최단 경로를 알 수 있다.
+    - 환승을 포함한 최단 경로를 알아낸다.
+- 경로
+  - 운임을 구한다.
+  - 하행 방향으로 중복 없이 역들을 꺼낸다
+  - 거리를 구한다.
 - 호선
   - 역들을 알 수 있다.
   - 구간을 추가할 수 있다.
@@ -69,5 +99,11 @@
   - 거리끼리 차를 구한다.
   - 거리끼리 더한다.
   - 어느 거리가 더 긴지 알 수 있다.
+  - 운임을 구한다.
+- 운임 정책
+  - 운임을 계산한다.
+    - `10km` 이내는 1,250원
+    - `10km~50km` `5km` 당 100원
+    - `50km` 초과 시 `8km` 당 100원
 - 역
   - 이름이 같으면 같은 역으로 취급한다

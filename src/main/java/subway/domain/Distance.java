@@ -30,6 +30,10 @@ public class Distance {
         return value > other.value;
     }
 
+    public int calculateFare() {
+        return FarePolicy.of(value).calculate(value);
+    }
+
     public Distance sum(Distance other) {
         return new Distance(value + other.value);
     }

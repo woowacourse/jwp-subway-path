@@ -135,6 +135,6 @@ class SectionTest {
     void getDistance() {
         var section = new Section(잠실역, 잠실새내역, 10);
 
-        assertThat(section.getDistance()).isEqualTo(10);
+        assertThat(section.getDistance()).isEqualTo(new Distance(10));
     }
 }

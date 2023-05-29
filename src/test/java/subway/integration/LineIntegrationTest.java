@@ -138,7 +138,7 @@ class LineIntegrationTest extends IntegrationTest {
 
         List<LineResponse> lineResponses = response.jsonPath().getList(".", LineResponse.class)
                 .stream()
-                .filter(lineResponse -> !lineResponse.getStations().isEmpty())
+                .filter(lineResponse -> lineResponse.getName().equals("신분당선") || lineResponse.getName().equals("구신분당선") )
                 .collect(Collectors.toList());
 
         assertThat(lineResponses.get(0).getStations())

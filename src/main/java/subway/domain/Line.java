@@ -14,23 +14,26 @@ public class Line {
     private static final int FIRST = 0;
 
     private final Long id;
-    private String name;
-    private String color;
+    private final String name;
+    private final String color;
     private final List<Section> sections;
 
     public Line(String name, String color) {
-        this(null, name, color, new ArrayList<>());
-    }
-
-    public Line(Long id, String name, String color) {
-        this(id, name, color, new ArrayList<>());
+        this(null, name, color);
     }
 
     public Line(Long id, String name, String color, List<Section> sections) {
+        this(id, name, color);
+        for (Section section : sections) {
+            add(section);
+        }
+    }
+
+    public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = sections;
+        this.sections = new ArrayList<>();
     }
 
     public void add(Section section) {
@@ -59,10 +62,16 @@ public class Line {
         sections.removeAll(nearBys);
     }
 
-    private void validateContains(Station station) {
-        if (findNearBysOf(station).isEmpty()) {
-            throw new NoSuchStationException();
-        }
+    public boolean contains(Station station) {
+        return findNearBysOf(station).size() > 0;
+    }
+
+    public Line withName(String name) {
+        return new Line(id, name, color, sections);
+    }
+
+    public Line withColor(String color) {
+        return new Line(id, name, color, sections);
     }
 
     private boolean hasOverlapWith(Section child) {
@@ -127,6 +136,12 @@ public class Line {
         }
     }
 
+    private void validateContains(Station station) {
+        if (!contains(station)) {
+            throw new NoSuchStationException();
+        }
+    }
+
     private Section firstOf(List<Section> sections) {
         return sections.get(FIRST);
     }
@@ -164,13 +179,5 @@ public class Line {
 
     public List<Section> getSections() {
         return new ArrayList<>(sections);
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 }

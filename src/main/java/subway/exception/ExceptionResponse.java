@@ -16,16 +16,16 @@ public class ExceptionResponse {
         return ExceptionResponse.of(DEFAULT_MESSAGE);
     }
 
+    public static ExceptionResponse withMessageOf(Exception exception) {
+        return ExceptionResponse.of(exception.getMessage());
+    }
+
     public static ExceptionResponse of(String message) {
         return new ExceptionResponse(List.of(message));
     }
 
     public static ExceptionResponse of(List<String> messages) {
         return new ExceptionResponse(messages);
-    }
-
-    public static ExceptionResponse of(Exception exception) {
-        return ExceptionResponse.of(exception.getMessage());
     }
 
     public List<String> getMessages() {
