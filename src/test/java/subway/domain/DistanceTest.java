@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -24,13 +25,40 @@ class DistanceTest {
 
     @ParameterizedTest
     @CsvSource({"4, true", "5, false", "6, false"})
-    void 거리_정보가_두_역_사이에_삽입_가능한지_확인한다(final int otherDistance, final boolean expected) {
+    void 거리가_더_길다(final int otherDistance, final boolean expected) {
         // given
         final Distance distance = new Distance(5);
+
         // when
         final boolean actual = distance.isLongerThan(otherDistance);
+
         // then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"4, false", "5, true", "6, true"})
+    void 거리가_더_길지_않다(final int otherDistance, final boolean expected){
+        // given
+        final Distance distance = new Distance(5);
+
+        // when
+        final boolean actual = distance.isNotLongerThan(otherDistance);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 거리를_뺀다(){
+        //given
+        final Distance distance = new Distance(5);
+
+        //when
+        final Distance subtractedDistance = distance.subtract(3);
+
+        //then
+        assertThat(subtractedDistance.getDistance()).isEqualTo(2);
     }
 
 }

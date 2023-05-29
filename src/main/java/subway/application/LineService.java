@@ -1,10 +1,8 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineEntity;
-import subway.dao.SectionEntity;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.line.Line;
-import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.dto.LineAndStationsResponse;
 import subway.dto.LineRequest;
@@ -18,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class LineService {
 
     private final LineRepository lineRepository;
@@ -31,17 +30,18 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest request) {
-        final LineEntity lineEntity = new LineEntity(request.getName(), request.getColor());
-        validateDuplication(lineEntity);
-        return LineResponse.of(lineRepository.save(lineEntity));
+        final Line line = new Line(request.getName(), request.getColor());
+        validateDuplication(line);
+        return LineResponse.of(lineRepository.save(line));
     }
 
-    private void validateDuplication(final LineEntity lineEntity) {
-        if (lineRepository.contains(lineEntity)) {
+    private void validateDuplication(final Line line) {
+        if (lineRepository.contains(line)) {
             throw new IllegalArgumentException("이미 존재하는 호선입니다.");
         }
     }
 
+    @Transactional(readOnly = true)
     public List<LineAndStationsResponse> findLines() {
         final List<Line> lines = lineRepository.findLines();
         return lines.stream()
@@ -49,6 +49,7 @@ public class LineService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    @Transactional(readOnly = true)
     public LineAndStationsResponse findLineById(final Long id) {
         return LineAndStationsResponse.of(lineRepository.findLineById(id));
     }
@@ -60,14 +61,8 @@ public class LineService {
 
         final Line insertedLine = line.insert(from, to, stationAddRequest.getDistance());
 
-        sectionRepository.saveUpdatedSections(generateSectionEntities(line, insertedLine.getSections()), lineId);
+        sectionRepository.saveUpdatedSections(insertedLine.getSections(), lineId);
         return LineAndStationsResponse.of(insertedLine);
-    }
-
-    private List<SectionEntity> generateSectionEntities(final Line line, final List<Section> sections) {
-        return sections.stream()
-                .map(section -> SectionEntity.of(section, line.getId()))
-                .collect(Collectors.toUnmodifiableList());
     }
 
     public void deleteStationFromLine(final Long lineId, final Long stationId) {
@@ -76,6 +71,7 @@ public class LineService {
 
         final Line deletedLine = line.delete(station);
 
-        sectionRepository.saveUpdatedSections(generateSectionEntities(line, deletedLine.getSections()), lineId);
+        sectionRepository.saveUpdatedSections(deletedLine.getSections(), lineId);
     }
 }
+

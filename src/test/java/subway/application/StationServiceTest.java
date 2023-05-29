@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.StationEntity;
+import subway.domain.station.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.repository.StationRepository;
@@ -33,7 +33,7 @@ class StationServiceTest {
     @Test
     void 역을_저장한다() {
         //given
-        when(stationRepository.save(any(StationEntity.class)))
+        when(stationRepository.save(any(Station.class)))
                 .thenReturn(후추);
 
         //when
@@ -49,7 +49,7 @@ class StationServiceTest {
     @Test
     void 동일한_역을_저장하면_예외를_던진다() {
         //given
-        when(stationRepository.contains(any(StationEntity.class)))
+        when(stationRepository.contains(any(Station.class)))
                 .thenReturn(true);
 
         //expect

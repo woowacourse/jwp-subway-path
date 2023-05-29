@@ -4,6 +4,7 @@ import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,18 +14,19 @@ public class Line {
     private final Color color;
     private final Sections sections;
 
-    public Line(final Long id, final String name, final String color, final List<Section> sections) {
-        this.id = id;
-        this.name = new Name(name);
-        this.color = new Color(color);
-        this.sections = new Sections(sections);
-    }
-
     private Line(final Long id, final Name name, final Color color, final Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
+    }
+
+    public Line(final Long id, final String name, final String color, final List<Section> sections) {
+        this(id, new Name(name), new Color(color), new Sections(sections));
+    }
+
+    public Line(final String name, final String color) {
+        this(null, name, color, new ArrayList<>());
     }
 
     public Line insert(final Station from, final Station to, final int distance) {

@@ -1,7 +1,12 @@
 package subway.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.dao.*;
+import subway.dao.LineDao;
+import subway.dao.LineEntity;
+import subway.dao.SectionDao;
+import subway.dao.SectionEntity;
+import subway.dao.StationDao;
+import subway.dao.StationEntity;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 
@@ -14,26 +19,26 @@ public class LineRepository {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final Mapper mapper;
 
-    public LineRepository(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
+    public LineRepository(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao, final Mapper mapper) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.mapper = mapper;
     }
 
-    public Line save(final LineEntity lineEntity) {
-        return lineDao.insert(lineEntity).toLine();
+    public Line save(final Line line) {
+        final LineEntity lineEntity = lineDao.insert(mapper.toLineEntity(line));
+        final List<Section> sections = findSectionsByLineId(lineEntity.getId());
+        return mapper.toLine(lineEntity, sections);
     }
 
     public List<Line> findLines() {
         final List<LineEntity> lineEntities = lineDao.findAll();
         return lineEntities.stream()
-                .map(this::generateLine)
+                .map(lineEntity -> mapper.toLine(lineEntity, findSectionsByLineId(lineEntity.getId())))
                 .collect(Collectors.toUnmodifiableList());
-    }
-
-    private Line generateLine(final LineEntity lineEntity) {
-        return lineEntity.toLine(findSectionsByLineId(lineEntity.getId()));
     }
 
     private List<Section> findSectionsByLineId(final Long lineId) {
@@ -44,19 +49,19 @@ public class LineRepository {
     }
 
     private Section generateSection(final SectionEntity sectionEntity) {
-        return new Section(
-                sectionEntity.getId(),
-                stationDao.findById(sectionEntity.getFromId()).toStation(),
-                stationDao.findById(sectionEntity.getToId()).toStation(),
-                sectionEntity.getDistance());
+        final StationEntity from = stationDao.findById(sectionEntity.getFromId());
+        final StationEntity to = stationDao.findById(sectionEntity.getToId());
+        return mapper.toSection(sectionEntity, from, to);
     }
 
     public Line findLineById(final Long id) {
-        return generateLine(lineDao.findById(id));
+        final LineEntity lineEntity = lineDao.findById(id);
+        final List<Section> sections = findSectionsByLineId(lineEntity.getId());
+        return mapper.toLine(lineEntity, sections);
     }
 
-    public boolean contains(final LineEntity lineEntity) {
+    public boolean contains(final Line line) {
         return lineDao.findAll().stream()
-                .anyMatch(it -> it.getName().equals(lineEntity.getName()));
+                .anyMatch(it -> it.getName().equals(line.getNameValue()));
     }
 }

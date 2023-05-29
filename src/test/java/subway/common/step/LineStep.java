@@ -42,7 +42,7 @@ public class LineStep {
         return given().log().all()
                 .pathParam("lineId", id)
                 .when()
-                .get("/lines/{lineId}/stations")
+                .get("/lines/{lineId}")
                 .then().log().all()
                 .extract();
     }

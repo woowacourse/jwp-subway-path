@@ -15,8 +15,14 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static subway.common.fixture.WebFixture.*;
-import static subway.common.step.LineStep.*;
+import static subway.common.fixture.WebFixture.디노_요청;
+import static subway.common.fixture.WebFixture.일호선_남색_요청;
+import static subway.common.fixture.WebFixture.조앤_요청;
+import static subway.common.fixture.WebFixture.후추_요청;
+import static subway.common.step.LineStep.addStationToLine;
+import static subway.common.step.LineStep.createLine;
+import static subway.common.step.LineStep.createLineAndGetId;
+import static subway.common.step.LineStep.findStationsByLineId;
 import static subway.common.step.StationStep.createStationAndGetId;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -69,7 +75,7 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = given().log().all()
                 .pathParam("lineId", lineId)
                 .when()
-                .get("/lines/{lineId}/stations")
+                .get("/lines/{lineId}")
                 .then().log().all()
                 .extract();
 
@@ -98,12 +104,12 @@ public class LineIntegrationTest extends IntegrationTest {
         //when
         final ExtractableResponse<Response> response = given().log().all()
                 .when()
-                .get("/lines/stations")
+                .get("/lines")
                 .then().log().all()
                 .extract();
 
         //then
-        final List<LineAndStationsResponse> lineAndStationsResponses = response.as(new TypeRef<List<LineAndStationsResponse>>() {
+        final List<LineAndStationsResponse> lineAndStationsResponses = response.as(new TypeRef<>() {
         });
         assertSoftly(softly -> {
             softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -140,7 +146,7 @@ public class LineIntegrationTest extends IntegrationTest {
         //then
         final LineAndStationsResponse lineAndStationsResponse = findStationsByLineId(lineId).as(LineAndStationsResponse.class);
         assertSoftly(softly -> {
-            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
             softly.assertThat(lineAndStationsResponse.getStationResponses()).hasSize(2);
             softly.assertThat(doesNotContain(lineAndStationsResponse, "디노")).isTrue();
         });
@@ -171,7 +177,7 @@ public class LineIntegrationTest extends IntegrationTest {
         //then
         final LineAndStationsResponse lineAndStationsResponse = findStationsByLineId(lineId).as(LineAndStationsResponse.class);
         assertSoftly(softly -> {
-            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
             softly.assertThat(lineAndStationsResponse.getLineResponse().getId()).isEqualTo(1L);
             softly.assertThat(lineAndStationsResponse.getLineResponse().getName()).isEqualTo("일호선");
             softly.assertThat(lineAndStationsResponse.getLineResponse().getColor()).isEqualTo("남색");

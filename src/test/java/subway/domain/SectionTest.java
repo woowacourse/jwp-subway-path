@@ -5,12 +5,18 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import subway.domain.section.Direction;
 import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static subway.common.fixture.DomainFixture.*;
+import static subway.common.fixture.DomainFixture.디노;
+import static subway.common.fixture.DomainFixture.조앤;
+import static subway.common.fixture.DomainFixture.후추;
+import static subway.domain.section.Direction.LEFT;
+import static subway.domain.section.Direction.RIGHT;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -36,28 +42,17 @@ class SectionTest {
         });
     }
 
-    @Test
-    void 역을_왼쪽에_포함하는지_확인한다() {
+    @ParameterizedTest
+    @CsvSource({"후추, LEFT, true", "후추, RIGHT, false"})
+    void 역을_입력_방향에_포함하는지_확인한다(final Station station, final Direction direction, final boolean expected) {
         // given
-        final Section section = new Section(후추, 디노, 7);
+        final Section section = new Section(station, 디노, 7);
 
-        // expect
-        assertSoftly(softly -> {
-            softly.assertThat(section.containsOnLeft(후추)).isTrue();
-            softly.assertThat(section.containsOnLeft(디노)).isFalse();
-        });
-    }
+        // when
+        final boolean actual = section.containsOn(station, direction);
 
-    @Test
-    void 역을_오른쪽에_포함하는지_확인한다() {
-        // given
-        final Section section = new Section(후추, 디노, 7);
-
-        // expect
-        assertSoftly(softly -> {
-            softly.assertThat(section.containsOnRight(후추)).isFalse();
-            softly.assertThat(section.containsOnRight(디노)).isTrue();
-        });
+        // then
+        assertThat(actual).isEqualTo(expected);
     }
 
     @ParameterizedTest
@@ -79,7 +74,7 @@ class SectionTest {
         final Section section = new Section(후추, 디노, 7);
 
         //when
-        final Section insertedSection = section.changeLeft(조앤, 4);
+        final Section insertedSection = section.change(조앤, 4, LEFT);
 
         //then
         assertThat(insertedSection).isEqualTo(new Section(조앤, 디노, 3));
@@ -91,7 +86,7 @@ class SectionTest {
         final Section section = new Section(후추, 디노, 7);
 
         //when
-        final Section insertedSection = section.changeRight(조앤, 4);
+        final Section insertedSection = section.change(조앤, 4, RIGHT);
 
         //then
         assertThat(insertedSection).isEqualTo(new Section(후추, 조앤, 3));

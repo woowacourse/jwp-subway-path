@@ -18,16 +18,33 @@
 
 - 노선
     - 등록 : Post /lines
+        - 요청 body : LineRequest (name, color)
+        - 응답 body : LineResponse (id, name, color)
+
     - 조회 : Get
-        - 전체 조회 /lines/stations
-        - 특정 노선 조회 : /lines/{lineId}/stations
+        - 전체 조회 /lines
+            - 응답 body : List<LineAndStationsResponse>
+
+        - 특정 노선 조회 : /lines/{lineId}
+            - 요청 path param : lineId
+            - 응답 body : LineAndStationsResponse
 
 - 역
     - 등록 : Post /stations
+        - 요청 body : StationRequest (name)
+        - 응답 body : StationResponse (id, name)
 
 - 노선과 역
     - 등록 : Post /lines/{lineId}/stations
+        - 요청 path param : lineId
+        - 요청 body : StationAddRequest (fromId, toId, distance)
+
     - 삭제 : Delete /lines/{lineId}/stations/{stationId}
+        - 요청 path param : lineId, stationId
+
+- 경로 조회
+    - 최단 경로 조회 : Get /routes/shortest-path?fromStationId={Long}&toStationId={Long}
+        - 응답 body : PathResponse
 
 ### 비즈니스 규칙
 
@@ -49,6 +66,16 @@
         - A-B-C-D 역이 있는 노선에서 C역이 제거되는 경우 A-B-D 순으로 재배치된다.
         - A-B가 2km, B-C가 3km, C-D가 4km인 경우 C역이 제거되면 B-D 거리가 7km가 된다.
     - 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거된다.
+
+- 경로 조회
+    - 최단 거리 경로를 반환한다.
+    - 총 거리 정보와 요금을 함께 반환한다.
+
+- 요금 계산
+    - 기본운임(10㎞ 이내): 기본운임 1,250원
+    - 이용 거리 초과 시 추가운임 부과
+    - 10km~50km: 5km 까지 마다 100원 추가
+    - 50km 초과: 8km 까지 마다 100원 추가
 
 ## 🧂 구현할 기능 목록
 
@@ -85,25 +112,70 @@
     - Delete `/lines/{lineId}/stations/{stationId}`
 
 - [x] 노선의 역 조회
-    - Get `/lines/{lineId}/stations`
+    - Get `/lines/{lineId}`
 
 - [x] 모든 노선의 역 조회
-    - Get `/lines/stations`
+    - Get `/lines`
+
+- [x] 최단 경로 조회
+    - Get `/routes/shortest-path?fromStationId={}&toStationId={}`
 
 ## 📀 데이터베이스
+
+### Production
+
+- mysql 사용
+- docker 사용
 
 ```sql
 create table if not exists STATION
 (
     id   bigint auto_increment not null,
-    name varchar(255)          not null unique
+    name varchar(255)          not null unique,
+    primary key(id)
+);
+
+create table if not exists LINE
+(
+    id    bigint auto_increment not null,
+    name  varchar(255)          not null unique,
+    color varchar(20)           not null,
+    primary key(id)
+);
+
+create table if not exists SECTION
+(
+    id       bigint auto_increment not null,
+    line_id  bigint                not null,
+    from_id  bigint                not null,
+    to_id    bigint                not null,
+    distance bigint                not null,
+    primary key(id)
+);
+```
+
+### Test
+
+- h2 사용
+
+```sql
+truncate table STATION restart identity;
+truncate table LINE restart identity;
+truncate table SECTION restart identity;
+
+create table if not exists STATION
+(
+    id   bigint auto_increment not null,
+    name varchar(255)          not null unique,
+    primary key(id)
     );
 
 create table if not exists LINE
 (
     id    bigint auto_increment not null,
     name  varchar(255)          not null unique,
-    color varchar(20)           not null
+    color varchar(20)           not null,
+    primary key(id)
     );
 
 create table if not exists SECTION
@@ -112,6 +184,31 @@ create table if not exists SECTION
     line_id  bigint                not null,
     from_id  bigint                not null,
     to_id    bigint                not null,
-    distance bigint                not null
-);
+    distance bigint                not null,
+    primary key(id)
+    );
+
+```
+## Docker
+
+```dockerfile
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0.28
+    platform: linux/x86_64
+    restart: always
+    ports:
+      - "13306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: subway
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      TZ: Asia/Seoul
+    volumes:
+      - ./db/mysql/data:/var/lib/mysql
+      - ./db/mysql/config:/etc/mysql/conf.d
+      - ./db/mysql/init:/docker-entrypoint-initdb.d
+
 ```

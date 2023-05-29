@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.LineEntity;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.dto.LineAndStationsResponse;
@@ -24,8 +23,15 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static subway.common.fixture.DomainFixture.*;
+import static subway.common.fixture.DomainFixture.디노;
+import static subway.common.fixture.DomainFixture.디노_조앤;
+import static subway.common.fixture.DomainFixture.조앤;
+import static subway.common.fixture.DomainFixture.후추;
+import static subway.common.fixture.DomainFixture.후추_디노;
 import static subway.common.fixture.WebFixture.일호선_남색_요청;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -46,7 +52,7 @@ class LineServiceTest {
     @Test
     void 호선을_저장한다() {
         //given
-        when(lineRepository.save(any(LineEntity.class)))
+        when(lineRepository.save(any(Line.class)))
                 .thenReturn(new Line(1L, "일호선", "남색", new ArrayList<>()));
 
         //when
@@ -63,7 +69,7 @@ class LineServiceTest {
     @Test
     void 동일한_호선을_저장하면_예외를_던진다() {
         //given
-        when(lineRepository.contains(any(LineEntity.class)))
+        when(lineRepository.contains(any(Line.class)))
                 .thenReturn(true);
 
         //expect
@@ -151,6 +157,7 @@ class LineServiceTest {
             softly.assertThat(stationResponses.get(1).getName()).isEqualTo("조앤");
             softly.assertThat(stationResponses.get(2).getName()).isEqualTo("디노");
         });
+        verify(sectionRepository, times(1)).saveUpdatedSections(anyList(), any());
     }
 
     @Test
@@ -178,5 +185,6 @@ class LineServiceTest {
             softly.assertThat(stationResponses.get(0).getName()).isEqualTo("후추");
             softly.assertThat(stationResponses.get(1).getName()).isEqualTo("조앤");
         });
+        verify(sectionRepository, times(1)).saveUpdatedSections(anyList(), any());
     }
 }

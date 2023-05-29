@@ -14,7 +14,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static subway.common.fixture.DomainFixture.*;
+import static subway.common.fixture.DomainFixture.디노;
+import static subway.common.fixture.DomainFixture.디노_조앤;
+import static subway.common.fixture.DomainFixture.로운;
+import static subway.common.fixture.DomainFixture.조앤;
+import static subway.common.fixture.DomainFixture.조앤_로운;
+import static subway.common.fixture.DomainFixture.후추;
+import static subway.common.fixture.DomainFixture.후추_디노;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -41,7 +47,7 @@ class SectionsTest {
         @Test
         void 역을_오른쪽_사이에_추가한다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤));
 
             // when
             final Sections insertedSections = sections.insert(디노, 로운, 2);
@@ -59,7 +65,7 @@ class SectionsTest {
         @Test
         void 역을_왼쪽_사이에_추가한다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤));
 
             // when
             final Sections insertedSections = sections.insert(로운, 디노, 2);
@@ -77,7 +83,7 @@ class SectionsTest {
         @Test
         void 역을_오른쪽_끝에_추가한다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤));
 
             // when
             final Sections insertedSections = sections.insert(조앤, 로운, 2);
@@ -91,7 +97,7 @@ class SectionsTest {
         @Test
         void 역을_왼쪽_끝에_추가한다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤));
 
             // when
             final Sections insertedSections = sections.insert(로운, 후추, 2);
@@ -104,7 +110,7 @@ class SectionsTest {
         @Test
         void 호선에_존재하는_역인_경우_예외를_던진다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤));
 
             // expect
             assertThatThrownBy(() -> sections.insert(후추, 조앤, 2))
@@ -116,12 +122,24 @@ class SectionsTest {
         @Test
         void 역이_다른_역들과_연결되지_않는_경우_예외를_던진다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노)));
+            final Sections sections = new Sections(List.of(후추_디노));
 
             // expect
             assertThatThrownBy(() -> sections.insert(로운, 조앤, 3))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("역이 기존 호선과 연결되어야 합니다.");
+        }
+
+        // 후추 - 1 - 디노
+        @Test
+        void 역_사이에_추가할_수_없는_거리인_경우_예외를_던진다() {
+            // given
+            final Sections sections = new Sections(List.of(new Section(1L, 후추, 디노, 1)));
+
+            // expect
+            assertThatThrownBy(() -> sections.insert(후추, 조앤, 3))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("기존 두 역 사이의 거리가 부족합니다.");
         }
     }
 
@@ -133,7 +151,7 @@ class SectionsTest {
         @Test
         void 오른쪽_끝_역을_삭제한다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤));
 
             // when
             final Sections deletedSections = sections.delete(조앤);
@@ -151,7 +169,7 @@ class SectionsTest {
         @Test
         void 왼쪽_끝_역을_삭제한다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤));
 
             // when
             final Sections deletedSections = sections.delete(후추);
@@ -169,7 +187,7 @@ class SectionsTest {
         @Test
         void 중간_역을_삭제한다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤));
 
             // when
             final Sections deletedSections = sections.delete(디노);
@@ -187,7 +205,7 @@ class SectionsTest {
         @Test
         void 역이_두_개인_경우_역을_모두_삭제한다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노)));
+            final Sections sections = new Sections(List.of(후추_디노));
 
             // when
             final Sections deletedSections = sections.delete(디노);
@@ -204,7 +222,7 @@ class SectionsTest {
         @Test
         void 역이_호선에_존재하지_않는_경우_예외를_던진다() {
             // given
-            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+            final Sections sections = new Sections(List.of(후추_디노, 디노_조앤));
 
             // expect
             assertThatThrownBy(() -> sections.delete(로운))

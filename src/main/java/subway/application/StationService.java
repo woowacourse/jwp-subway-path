@@ -1,12 +1,14 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationEntity;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.station.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.repository.StationRepository;
 
 @Service
+@Transactional
 public class StationService {
 
     private final StationRepository stationRepository;
@@ -16,13 +18,13 @@ public class StationService {
     }
 
     public StationResponse saveStation(final StationRequest stationRequest) {
-        final StationEntity stationEntity = new StationEntity(stationRequest.getName());
-        validateDuplication(stationEntity);
-        return StationResponse.of(stationRepository.save(stationEntity));
+        final Station station = new Station(stationRequest.getName());
+        validateDuplication(station);
+        return StationResponse.of(stationRepository.save(station));
     }
 
-    private void validateDuplication(final StationEntity stationEntity) {
-        if (stationRepository.contains(stationEntity)) {
+    private void validateDuplication(final Station station) {
+        if (stationRepository.contains(station)) {
             throw new IllegalArgumentException("이미 존재하는 역입니다.");
         }
     }

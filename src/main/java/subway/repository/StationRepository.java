@@ -9,21 +9,25 @@ import subway.domain.station.Station;
 public class StationRepository {
 
     private final StationDao stationDao;
+    private final Mapper mapper;
 
-    public StationRepository(final StationDao stationDao) {
+    public StationRepository(final StationDao stationDao, final Mapper mapper) {
         this.stationDao = stationDao;
+        this.mapper = mapper;
     }
 
-    public Station save(final StationEntity stationEntity) {
-        return stationDao.insert(stationEntity).toStation();
+    public Station save(final Station station) {
+        final StationEntity stationEntity = stationDao.insert(mapper.toStationEntity(station));
+        return mapper.toStation(stationEntity);
     }
 
     public Station findStationById(final Long id) {
-        return stationDao.findById(id).toStation();
+        final StationEntity stationEntity = stationDao.findById(id);
+        return mapper.toStation(stationEntity);
     }
 
-    public boolean contains(final StationEntity stationEntity) {
+    public boolean contains(final Station station) {
         return stationDao.findAll().stream()
-                .anyMatch(it -> it.getName().equals(stationEntity.getName()));
+                .anyMatch(it -> it.getName().equals(station.getName()));
     }
 }
