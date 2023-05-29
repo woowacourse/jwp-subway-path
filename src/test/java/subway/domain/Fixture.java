@@ -2,6 +2,10 @@ package subway.domain;
 
 import java.util.List;
 
+import subway.domain.line.Distance;
+import subway.domain.line.Section;
+import subway.domain.line.Station;
+
 public class Fixture {
 	// 거리
 	public static final Distance DISTANCE = new Distance(10);
@@ -26,8 +30,8 @@ public class Fixture {
 	// 2호선
 	public static final Station 잠실역 = new Station(6L, "잠실");
 	public static final Station 잠실새내역 = new Station(7L, "잠실새내");
-	public static final Station 종합운동장역 = new Station(8L, "잠실새내");
-	public static final Station 삼성역 = new Station(9L, "잠실새내");
+	public static final Station 종합운동장역 = new Station(8L, "종합운동장");
+	public static final Station 삼성역 = new Station(9L, "삼성");
 	public static final Station 선릉역 = new Station(10L, "선릉");
 
 	public static final Section 상행_종점_2호선 = new Section(1L, 잠실역, 잠실새내역, DISTANCE);
@@ -36,4 +40,19 @@ public class Fixture {
 	public static final Section 하행_종점_2호선 = new Section(4L, 삼성역, 선릉역, DISTANCE);
 
 	public static final List<Section> LINE_NUMBER_2 = List.of(상행_종점_2호선, 상행_경유_2호선, 하행_경유_2호선, 하행_종점_2호선);
+
+	// 9호선
+
+	public static final Station 선정릉역 = new Station(11L, "선정릉");
+	public static final Station 봉은사역 = new Station(12L, "봉은사");
+	public static final Station 석촌역 = new Station(13L, "석촌");
+	public static final Station 올림픽공원역 = new Station(13L, "올림픽공원");
+
+	public static final Section 상행_종점_9호선 = new Section(5L, 선정릉역, 봉은사역, new Distance(10));
+	public static final Section 상행_경유_9호선 = new Section(6L, 봉은사역, 종합운동장역, new Distance(5));
+	public static final Section 하행_경유_9호선 = new Section(7L, 종합운동장역, 석촌역, new Distance(4));
+	public static final Section 하행_종점_9호선 = new Section(8L, 석촌역, 올림픽공원역, new Distance(12));
+
+	public static final List<Section> LINE_NUMBER_9 = List.of(상행_종점_9호선, 상행_경유_9호선, 하행_경유_9호선, 하행_종점_9호선);
+
 }

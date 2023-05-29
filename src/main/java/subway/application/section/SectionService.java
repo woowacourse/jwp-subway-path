@@ -1,62 +1,75 @@
 package subway.application.section;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.application.section.dto.SectionDto;
-import subway.domain.Section;
-import subway.domain.SectionRepository;
-import subway.domain.Sections.SectionsFactory;
-import subway.domain.Sections.StationAddable;
-import subway.domain.Sections.StationRemovable;
+import subway.application.station.dto.StationDto;
+import subway.domain.line.Distance;
+import subway.domain.line.Section;
+import subway.domain.line.SectionRepository;
+import subway.domain.line.Sections;
+import subway.domain.line.Station;
+import subway.domain.line.StationRepository;
+import subway.domain.line.command.Result;
+import subway.error.exception.SectionConnectionException;
+import subway.error.exception.StationNotFoundException;
 
 @Service
 @Transactional
 public class SectionService {
 
 	private final SectionRepository sectionRepository;
+	private final StationRepository stationRepository;
 
-	public SectionService(final SectionRepository sectionRepository) {
+	public SectionService(final SectionRepository sectionRepository, final StationRepository stationRepository) {
 		this.sectionRepository = sectionRepository;
+		this.stationRepository = stationRepository;
 	}
 
-	public List<SectionDto> addStationByLineId(final Long lineId, final SectionDto sectionDto) {
+	public SectionDto addByLineId(final Long lineId, final SectionDto sectionDto) {
 		final List<Section> lineSections = sectionRepository.findSectionsByLineId(lineId);
-		final Section addSection = sectionRepository.findByStationNames(sectionDto.getDeparture(),
-			sectionDto.getArrival(), sectionDto.getDistance());
+		final Section addSection = createNewSection(sectionDto);
 
-		final StationAddable sections = SectionsFactory.createForAdd(lineSections, addSection);
-		final List<Section> result = sections.addStation(addSection);
+		final Sections sections = new Sections(lineSections);
+		final Result result = sections.addStation(addSection);
 
-		return convertToDtos(sectionRepository.addStation(lineId, result));
+		result.execute(lineId, sectionRepository::addSection, sectionRepository::removeSection);
+		return SectionDto.from(addSection);
 	}
 
-	@Transactional(readOnly = true)
-	public Map<Long, List<SectionDto>> findAllSections() {
-		return sectionRepository.findAllSections().entrySet().stream()
-			.collect(Collectors.toMap(Map.Entry::getKey, entry -> convertToDtos(entry.getValue())));
+	public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
+		final List<Section> lineSections = sectionRepository.findSectionsByLineId(lineId);
+		final Station removeStation = stationRepository.findById(stationId)
+			.orElseThrow(() -> StationNotFoundException.EXCEPTION);
+
+		final Sections sections = new Sections(lineSections);
+		final Result result = sections.removeStation(removeStation);
+
+		result.execute(lineId, sectionRepository::addSection, sectionRepository::removeSection);
 	}
 
-	@Transactional(readOnly = true)
-	public List<SectionDto> findSectionsByLineId(final Long lineId) {
-		final List<Section> sections = sectionRepository.findSectionsByLineId(lineId);
-		return convertToDtos(sections);
+	private Section createNewSection(final SectionDto sectionDto) {
+		final Station departureStation = getStation(sectionDto.getDeparture());
+		final Station arriavalStation = getStation(sectionDto.getArrival());
+
+		validateSameStation(departureStation, arriavalStation);
+
+		return new Section(null, departureStation, arriavalStation, new Distance(sectionDto.getDistance()));
 	}
 
-	public void deleteSectionByLineIdAndStationId(final Long lineId, final Long stationId) {
-		final List<Section> sections = sectionRepository.findSectionsByLineIdAndStationId(lineId, stationId);
-		final StationRemovable removeSections = SectionsFactory.createForRemove(sections);
-		final List<Section> result = removeSections.removeStation();
-		sectionRepository.removeStation(lineId, result);
+	private void validateSameStation(final Station departure, final Station arrival) {
+		if (departure.equals(arrival)) {
+			throw new SectionConnectionException("같은 역은 연결될 수 없습니다.");
+		}
 	}
 
-	private List<SectionDto> convertToDtos(final List<Section> sections) {
-		return sections.stream()
-			.map(SectionDto::from)
-			.collect(Collectors.toList());
+	private Station getStation(final StationDto station) {
+		final String stationName = station.getName();
+		return stationRepository.findByNames(stationName)
+			.orElseGet(() -> stationRepository.addStation(stationName));
 	}
+
 }

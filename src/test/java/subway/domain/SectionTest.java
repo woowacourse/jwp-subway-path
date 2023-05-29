@@ -9,6 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import subway.domain.line.Distance;
+import subway.domain.line.Section;
+import subway.error.exception.SectionDistanceException;
+
 public class SectionTest {
 
 	@Nested
@@ -187,8 +191,7 @@ public class SectionTest {
 
 			// when & then
 			assertThatThrownBy(() -> NEW_SECTION.subtractDistance(comparison))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("거리는 항상 양의 정수여야 합니다.");
+				.isInstanceOf(SectionDistanceException.class);
 		}
 	}
 

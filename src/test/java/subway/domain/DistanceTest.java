@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import subway.domain.line.Distance;
+import subway.error.exception.SectionDistanceException;
+
 class DistanceTest {
 
 	@ParameterizedTest
@@ -15,8 +18,7 @@ class DistanceTest {
 	@DisplayName("양의 정수가 아닌 값을 입력하면 예외가 발생한다.")
 	void validateTest(final int input) {
 		assertThatThrownBy(() -> new Distance(input))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("거리는 항상 양의 정수여야 합니다.");
+			.isInstanceOf(SectionDistanceException.class);
 	}
 
 	@Test
@@ -67,8 +69,7 @@ class DistanceTest {
 
 			//when
 			assertThatThrownBy(() -> distance.subtractDistance(comparison))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("거리는 항상 양의 정수여야 합니다.");
+				.isInstanceOf(SectionDistanceException.class);
 		}
 	}
 }
