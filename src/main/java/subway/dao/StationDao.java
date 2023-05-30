@@ -22,10 +22,10 @@ public class StationDao {
     }
 
     public Long insert(StationEntity stationEntity) {
-        String sql = "INSERT INTO STATION (name, next_station, distance, line_id) values(?, ?, ?, ?)";
+        String sql = "INSERT INTO STATION (name, next_station_id, distance, line_id) values(?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        int update = jdbcTemplate.update(connection -> {
+        jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, stationEntity.getName());
             if (stationEntity.getNextStationId() != null) {
@@ -50,14 +50,20 @@ public class StationDao {
     }
 
     public Long update(Long id, StationEntity stationEntity) {
-        String sql = "UPDATE STATION SET name = ?, next_station = ?, distance = ? WHERE id = ?";
+        String sql = "UPDATE STATION SET name = ?, next_station_id = ?, distance = ? WHERE id = ?";
         return Long.valueOf(jdbcTemplate.update(sql, stationEntity.getName(), stationEntity.getNextStationId(), stationEntity.getDistance(), id));
     }
 
     public Optional<StationEntity> findByName(String name) {
         String sql = "SELECT * FROM STATION WHERE name = ?";
 
-        return Optional.of(jdbcTemplate.queryForObject(sql, getStationRowMapper(), name));
+        List<StationEntity> result = jdbcTemplate.query(sql, getStationRowMapper(), name);
+
+        if (result.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(result.get(0));
+        }
     }
 
     public Long remove(Long id) {
@@ -78,15 +84,20 @@ public class StationDao {
 
     public Optional<StationEntity> findStationEntityById(Long id) {
         String sql = "SELECT * FROM STATION WHERE id = ?";
-        StationEntity stationEntity = jdbcTemplate.queryForObject(sql, getStationRowMapper(), id);
-        return Optional.of(stationEntity);
+        List<StationEntity> stationEntities = jdbcTemplate.query(sql, getStationRowMapper(), id);
+
+        if (stationEntities.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(stationEntities.get(0));
+        }
     }
 
     private RowMapper<StationEntity> getStationRowMapper() {
         return (resultSet, rowNum) -> {
             Long id = resultSet.getLong("id");
             String stationName = resultSet.getString("name");
-            Long nextStationId = resultSet.getLong("next_station");
+            Long nextStationId = resultSet.getLong("next_station_id");
             if (resultSet.wasNull()) {
                 nextStationId = null; // NULL 값인 경우에는 변수에 null을 할당
             }
@@ -101,5 +112,10 @@ public class StationDao {
 
             return new StationEntity(id, stationName, nextStationId, distance, lineId);
         };
+    }
+
+    public Long removeAllByLineId(Long lineId) {
+        String query = "DELETE FROM STATION WHERE line_id = ?";
+        return Long.valueOf(jdbcTemplate.update(query, lineId));
     }
 }

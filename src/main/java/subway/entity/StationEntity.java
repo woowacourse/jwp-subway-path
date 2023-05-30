@@ -1,6 +1,13 @@
 package subway.entity;
 
+import subway.domain.Distance;
+import subway.domain.Station;
+import subway.domain.Stations;
+import subway.dto.StationResponse;
+
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class StationEntity {
 
@@ -16,6 +23,24 @@ public class StationEntity {
         this.nextStationId = nextStationId;
         this.distance = distance;
         this.lineId = lineId;
+    }
+
+    public StationEntity(String name) {
+        this(null, name, null, null, null);
+    }
+
+    public static Stations convertToStations(List<StationEntity> stationEntity) {
+        return new Stations(stationEntity.stream()
+                .map(entity -> new Station(entity.getName(), new Distance(entity.getDistance())))
+                .collect(Collectors.toList()));
+    }
+
+    public StationResponse convertToResponse() {
+        return new StationResponse(id, name);
+    }
+
+    public Station convertToStation() {
+        return new Station(name, new Distance(distance));
     }
 
     public Long getId() {

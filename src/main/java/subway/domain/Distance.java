@@ -17,6 +17,10 @@ public class Distance {
         this.value = 0;
     }
 
+    public Distance abs(Distance anotherDistance) {
+        return new Distance(value - anotherDistance.getValue());
+    }
+
     public int getValue() {
         return value;
     }

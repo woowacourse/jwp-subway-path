@@ -1,7 +1,7 @@
 package subway.domain;
 
 public class Line {
-    //TODO: stations 제거?? 동시성 문제. id도 마찬가지임.
+
     private static Long sequence = 1L;
     private final Long id;
     private final Stations stations;
@@ -16,8 +16,12 @@ public class Line {
         this.stations = stations;
     }
 
-
     private void validateStations(Stations stations) {
+        validateStationSize(stations);
+    }
+
+
+    private void validateStationSize(Stations stations) {
         if (stations.getStationsSize() < 2) {
             throw new IllegalArgumentException("노선 생성시 역을 2개 입력해야합니다");
         }

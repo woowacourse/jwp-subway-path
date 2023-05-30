@@ -43,34 +43,6 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-//    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
-//    @Test
-//    void createStationWithDuplicateName() {
-//        // given
-//        Map<String, String> params = new HashMap<>();
-//        params.put("name", "강남역");
-//        RestAssured.given().log().all()
-//                .body(params)
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .when()
-//                .post("/stations")
-//                .then().log().all()
-//                .extract();
-//
-//        // when
-//        ExtractableResponse<Response> response = RestAssured.given().log().all()
-//                .body(params)
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .when()
-//                .post("/stations")
-//                .then()
-//                .log().all()
-//                .extract();
-//
-//        // then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-//    }
-
     @DisplayName("지하철역 목록을 조회한다.")
     @Test
     void getStations() {
@@ -78,7 +50,7 @@ public class StationIntegrationTest extends IntegrationTest {
 
         Map<String, String> params1 = new HashMap<>();
         params1.put("name", "강남역");
-        ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(params1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -89,7 +61,7 @@ public class StationIntegrationTest extends IntegrationTest {
 
         Map<String, String> params2 = new HashMap<>();
         params2.put("name", "역삼역");
-        ExtractableResponse<Response> createResponse2 = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(params2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()

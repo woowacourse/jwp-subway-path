@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 public class StationController {
+
     private final StationService stationService;
 
     public StationController(StationService stationService) {
@@ -31,11 +32,6 @@ public class StationController {
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
-    // @GetMapping("/stations/test")
-//    public ResponseEntity<List<StationEntity>> showAllStations() {
-//        return ResponseEntity.ok().body(stationService.findAllStationTest());
-//    }
-//
     @GetMapping("/stations")
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
