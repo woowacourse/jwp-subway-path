@@ -16,6 +16,7 @@ public class Station {
     }
 
     public static Station from(final String name) {
+        validate(name);
         return new Station(null, name);
     }
 

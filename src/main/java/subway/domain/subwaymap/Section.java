@@ -39,10 +39,6 @@ public final class Section {
         return Section.withNullId(to, from, distance);
     }
 
-    public boolean containsStation(final Station station) {
-        return upStation.equals(station) || downStation.equals(station);
-    }
-
     public Long getId() {
         return id;
     }

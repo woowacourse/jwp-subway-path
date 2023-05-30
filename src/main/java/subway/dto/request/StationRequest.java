@@ -9,7 +9,7 @@ public class StationRequest {
     @Size(max = 10, message = "역 이름 최대 {max}자 까지만 가능합니다.")
     private String name;
 
-    public StationRequest() {
+    StationRequest() {
     }
 
     public StationRequest(String name) {

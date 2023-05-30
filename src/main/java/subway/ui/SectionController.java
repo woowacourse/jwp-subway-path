@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
 import subway.dto.request.SectionCreateRequest;
-import subway.dto.response.SectionsRemovedResponse;
 
 @RestController
 @RequestMapping("/lines/{lineId}/sections")
@@ -35,7 +34,7 @@ public class SectionController {
     }
 
     @DeleteMapping
-    public ResponseEntity<SectionsRemovedResponse> delete(
+    public ResponseEntity<Void> delete(
         @PathVariable(name = "lineId") final Long lineId,
         @RequestParam(name = "stationName") final String stationName
     ) {

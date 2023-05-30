@@ -1,7 +1,6 @@
 package subway.application;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -102,11 +101,5 @@ public class ShortestPathService {
             .stream()
             .map(LineStationResponse::of)
             .collect(Collectors.toList());
-    }
-
-    private Line findMostExpensiveLine(final List<LineStation> path) {
-        return path.stream()
-            .map(LineStation::getLine).min(Comparator.comparingInt(Line::getAdditionalFare))
-            .orElseThrow(() -> new LineNotExistException("경로가 비어있습니다."));
     }
 }

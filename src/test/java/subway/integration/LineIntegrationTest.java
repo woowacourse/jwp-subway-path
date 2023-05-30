@@ -163,16 +163,6 @@ public class LineIntegrationTest extends IntegrationTest {
         return Long.parseLong(createResponse.header("Location").split("/")[2]);
     }
 
-    private ExtractableResponse<Response> addLineAndReturnResponse(final LineRequest request) {
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(request)
-            .when().post("/lines")
-            .then().log().all().
-            extract();
-    }
-
     private void addTwoSection(final Long lineId) {
         final SectionCreateRequest firstRequest = new SectionCreateRequest("첫째역", "둘째역", "하행", 10);
 
