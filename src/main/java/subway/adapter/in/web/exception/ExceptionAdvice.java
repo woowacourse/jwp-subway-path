@@ -7,21 +7,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.common.exception.SubwayException;
-import subway.common.exception.SubwayNoSuchResourceException;
+import subway.application.service.exception.SubwayNoSuchResourceException;
+import subway.exception.SubwayIllegalArgumentException;
 
 @RestControllerAdvice
 public class ExceptionAdvice {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @ExceptionHandler(SubwayException.class)
-    private ResponseEntity<ErrorResponse> handleApiIllegalArgumentException(SubwayException exception) {
-        logger.warn("[SubwayException]", exception);
+    @ExceptionHandler(SubwayIllegalArgumentException.class)
+    private ResponseEntity<ErrorResponse> handleApiIllegalArgumentException(SubwayIllegalArgumentException exception) {
+        logger.warn("[SubwayIllegalArgumentException]", exception);
 
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(exception.getMessage()));
@@ -29,7 +31,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private ResponseEntity<ErrorResponse> handleInvalidArgument(MethodArgumentNotValidException exception) {
-        logger.warn("[MethodArgumentNotValidException] ", exception);
+        logger.warn("[MethodArgumentNotValidException]", exception);
 
         List<FieldError> fieldErrors = exception.getFieldErrors();
 
@@ -40,6 +42,14 @@ public class ExceptionAdvice {
 
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(stringBuilder.toString()));
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class, MissingServletRequestParameterException.class})
+    private ResponseEntity<ErrorResponse> handleIncorrectRequestException(Exception exception) {
+        logger.warn("[IncorrectRequestException]", exception);
+
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse("요청 값이 잘못되었습니다."));
     }
 
     @ExceptionHandler(SubwayNoSuchResourceException.class)
@@ -60,7 +70,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     private ResponseEntity<ErrorResponse> unhandledException(Exception exception) {
-        logger.error("[Internal Server Error] ", exception);
+        logger.error("[Internal Server Error]", exception);
 
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse("Internal Server Error."));

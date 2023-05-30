@@ -7,9 +7,10 @@ CREATE TABLE IF NOT EXISTS station
 
 CREATE TABLE IF NOT EXISTS line
 (
-    id    BIGINT AUTO_INCREMENT NOT NULL,
-    name  VARCHAR(50)           NOT NULL UNIQUE,
-    color VARCHAR(20)           NOT NULL,
+    id        BIGINT AUTO_INCREMENT NOT NULL,
+    name      VARCHAR(50)           NOT NULL UNIQUE,
+    color     VARCHAR(20)           NOT NULL,
+    surcharge INT                   NOT NULL,
     PRIMARY KEY (id)
 );
 

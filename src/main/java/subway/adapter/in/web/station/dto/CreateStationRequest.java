@@ -8,7 +8,7 @@ public class CreateStationRequest {
     @NotNull(message = "이름 정보가 없습니다.")
     private String name;
 
-    public CreateStationRequest() {
+    private CreateStationRequest() {
     }
 
     public CreateStationRequest(String name) {

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import subway.adapter.in.web.station.dto.CreateStationRequest;
 import subway.application.port.in.station.CreateStationUseCase;
-import subway.application.port.in.station.dto.response.StationQueryResponse;
 
 @RestController
 public class CreateStationController {
@@ -20,7 +19,7 @@ public class CreateStationController {
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<StationQueryResponse> createStation(@RequestBody @Valid CreateStationRequest request) {
+    public ResponseEntity<Void> createStation(@RequestBody @Valid CreateStationRequest request) {
         long stationId = createStationUseCase.createStation(request.toCommand());
         URI uri = URI.create("/stations/" + stationId);
         return ResponseEntity.created(uri).build();

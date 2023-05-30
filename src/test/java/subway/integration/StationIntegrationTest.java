@@ -1,6 +1,7 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -14,7 +15,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import subway.adapter.in.web.section.dto.AddStationToLineRequest;
+import subway.application.port.in.line.dto.response.LineQueryResponse;
+import subway.application.port.in.route.dto.response.RouteQueryResponse;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
+import subway.fixture.LineFixture.이호선;
+import subway.fixture.StationFixture.강남역;
+import subway.fixture.StationFixture.역삼역;
+import subway.fixture.StationFixture.잠실역;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
@@ -192,5 +200,41 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("역 삭제시 구간도 제거한다")
+    @Test
+    void deleteStationWithSections() {
+        // given
+        // 역 등록
+        StationQueryResponse station1 = addStation(강남역.REQUEST);
+        StationQueryResponse station2 = addStation(역삼역.REQUEST);
+        StationQueryResponse station3 = addStation(잠실역.REQUEST);
+
+        // 노선 등록
+        LineQueryResponse line1 = addLine(이호선.REQUEST);
+
+        // 구간 등록
+        addSection(new AddStationToLineRequest(station1.getId(), station2.getId(), 3), line1.getId());
+        addSection(new AddStationToLineRequest(station2.getId(), station3.getId(), 5), line1.getId());
+
+        // when
+        // 역 삭제
+        deleteStation(station2.getId());
+
+        // then
+        // 노선 조회
+        LineQueryResponse line = findLine(line1.getId());
+        RouteQueryResponse route = findRoute(station1.getId(), station3.getId());
+        assertAll(
+                () -> assertThat(line.getStations())
+                        .extracting("name")
+                        .containsExactly("강남역", "잠실역"),
+                () -> assertThat(route.getRoute())
+                        .extracting("name")
+                        .containsExactly("강남역", "잠실역"),
+                () -> assertThat(route.getDistance())
+                        .isEqualTo(8)
+        );
     }
 }

@@ -9,11 +9,11 @@ import subway.application.port.in.section.dto.command.RemoveStationFromLineComma
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
 import subway.application.port.out.station.LoadStationPort;
-import subway.common.exception.NoSuchLineException;
-import subway.common.exception.NoSuchStationException;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.application.service.exception.NoSuchLineException;
+import subway.application.service.exception.NoSuchStationException;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 @Service
 @Transactional

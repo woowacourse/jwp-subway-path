@@ -9,8 +9,9 @@ import subway.application.port.in.line.dto.command.CreateLineCommand;
 import subway.application.port.in.line.dto.command.UpdateLineInfoCommand;
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
-import subway.common.exception.NoSuchLineException;
-import subway.domain.LineInfo;
+import subway.application.service.exception.NoSuchLineException;
+import subway.exception.SubwayIllegalArgumentException;
+import subway.domain.line.LineInfo;
 
 @Service
 @Transactional
@@ -24,23 +25,27 @@ public class LineCommandService implements CreateLineUseCase, UpdateLineInfoUseC
         this.persistLinePort = persistLinePort;
     }
 
-    // TODO: 이름 및 색상 중복 검사? 서비스 or 일급컬렉션
     @Override
     public long createLine(final CreateLineCommand command) {
-        return persistLinePort.create(new LineInfo(command.getName(), command.getColor()));
+        if (loadLinePort.checkExistByName(command.getName())) {
+            throw new SubwayIllegalArgumentException("기존 노선과 중복된 이름입니다.");
+        }
+        return persistLinePort.create(new LineInfo(command.getName(), command.getColor(), command.getSurcharge()));
     }
 
     @Override
     public void updateLineInfo(final UpdateLineInfoCommand command) {
         validateLineId(command.getLineId());
 
-        persistLinePort.updateInfo(command.getLineId(), new LineInfo(command.getName(), command.getColor()));
+        persistLinePort.updateInfo(command.getLineId(),
+                new LineInfo(command.getName(), command.getColor(), command.getSurcharge()));
     }
 
-    // TODO: 해당 Line에 존재하는 section 정보 전부 삭제.
     @Override
     public void deleteLine(final long lineId) {
         validateLineId(lineId);
+
+        persistLinePort.deleteSectionsByLineId(lineId);
 
         persistLinePort.deleteById(lineId);
     }

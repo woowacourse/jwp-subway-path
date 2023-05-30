@@ -53,6 +53,16 @@ public class StationDao {
         }
     }
 
+    public Optional<StationEntity> findByName(final String name) {
+        String sql = "SELECT * FROM station WHERE name = ?";
+        try {
+            StationEntity station = jdbcTemplate.queryForObject(sql, rowMapper, name);
+            return Optional.of(station);
+        } catch (IncorrectResultSizeDataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+
     public void update(StationEntity newStationEntity) {
         String sql = "UPDATE station SET name = ? WHERE id = ?";
         jdbcTemplate.update(sql, new Object[]{newStationEntity.getName(), newStationEntity.getId()});

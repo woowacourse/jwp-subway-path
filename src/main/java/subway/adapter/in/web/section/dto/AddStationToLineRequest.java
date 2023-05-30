@@ -16,7 +16,7 @@ public class AddStationToLineRequest {
     @Positive(message = "두 역간 거리는 양의 정수여야합니다.")
     private Integer distance;
 
-    public AddStationToLineRequest() {
+    private AddStationToLineRequest() {
     }
 
     public AddStationToLineRequest(final Long upStationId, final Long downStationId, final Integer distance) {

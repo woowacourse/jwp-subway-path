@@ -1,8 +1,6 @@
 package subway.application.port.in.line.dto.response;
 
-import java.util.Collections;
 import java.util.List;
-import subway.adapter.out.persistence.entity.LineEntity;
 import subway.application.port.in.station.dto.response.StationQueryResponse;
 
 public class LineQueryResponse {
@@ -12,7 +10,7 @@ public class LineQueryResponse {
     private String color;
     private List<StationQueryResponse> stations;
 
-    public LineQueryResponse() {
+    private LineQueryResponse() {
     }
 
     public LineQueryResponse(final Long id, final String name, final String color,
@@ -21,11 +19,6 @@ public class LineQueryResponse {
         this.name = name;
         this.color = color;
         this.stations = stations;
-    }
-
-    public static LineQueryResponse of(LineEntity lineEntity) {
-        return new LineQueryResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
-                Collections.emptyList());
     }
 
     public Long getId() {

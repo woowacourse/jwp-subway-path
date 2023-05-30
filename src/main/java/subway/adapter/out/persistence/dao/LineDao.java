@@ -22,7 +22,8 @@ public class LineDao {
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("surcharge")
             );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -37,18 +38,19 @@ public class LineDao {
         params.put("id", lineEntity.getId());
         params.put("name", lineEntity.getName());
         params.put("color", lineEntity.getColor());
+        params.put("surcharge", lineEntity.getSurcharge());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor(), lineEntity.getSurcharge());
     }
 
     public List<LineEntity> findAll() {
-        String sql = "SELECT id, name, color FROM line";
+        String sql = "SELECT id, name, color, surcharge FROM line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<LineEntity> findById(Long id) {
-        String sql = "SELECT id, name, color FROM line WHERE id = ?";
+        String sql = "SELECT id, name, color, surcharge FROM line WHERE id = ?";
 
         try {
             LineEntity line = jdbcTemplate.queryForObject(sql, rowMapper, id);
@@ -58,12 +60,24 @@ public class LineDao {
         }
     }
 
-    public void update(LineEntity newLineEntity) {
-        String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
-        jdbcTemplate.update(sql,
-                new Object[]{newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId()});
+    public Optional<LineEntity> findByName(final String name) {
+        String sql = "SELECT id, name, color, surcharge FROM line where name = ?";
+
+        try {
+            LineEntity line = jdbcTemplate.queryForObject(sql, rowMapper, name);
+            return Optional.of(line);
+        } catch (IncorrectResultSizeDataAccessException exception) {
+            return Optional.empty();
+        }
     }
-    
+
+    public void update(LineEntity newLineEntity) {
+        String sql = "UPDATE line SET name = ?, color = ?, surcharge = ? WHERE id = ?";
+        jdbcTemplate.update(sql,
+                new Object[]{newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getSurcharge(),
+                        newLineEntity.getId()});
+    }
+
     public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM line WHERE id = ?", id);
     }

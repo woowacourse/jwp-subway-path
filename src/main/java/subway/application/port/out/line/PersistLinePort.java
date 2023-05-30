@@ -1,7 +1,7 @@
 package subway.application.port.out.line;
 
-import subway.domain.Line;
-import subway.domain.LineInfo;
+import subway.domain.line.Line;
+import subway.domain.line.LineInfo;
 
 public interface PersistLinePort {
 
@@ -10,6 +10,8 @@ public interface PersistLinePort {
     void updateInfo(long lineId, LineInfo lineInfo);
 
     void updateSections(Line line);
+
+    void deleteSectionsByLineId(long lineId);
 
     void deleteById(long lineId);
 }
