@@ -5,19 +5,19 @@ import java.util.Objects;
 public class AddStationRequest {
 
     private String addStationName;
-    private String lineName;
-    private String upstreamName;
-    private String downstreamName;
+    private long lineId;
+    private long upstreamId;
+    private long downstreamId;
     private int distanceToUpstream;
 
     public AddStationRequest() {
     }
 
-    public AddStationRequest(String addStationName, String lineName, String upstreamName, String downstreamName, int distanceToUpstream) {
+    public AddStationRequest(String addStationName, long lineId, long upstreamId, long downstreamId, int distanceToUpstream) {
         this.addStationName = addStationName;
-        this.lineName = lineName;
-        this.upstreamName = upstreamName;
-        this.downstreamName = downstreamName;
+        this.lineId = lineId;
+        this.upstreamId = upstreamId;
+        this.downstreamId = downstreamId;
         this.distanceToUpstream = distanceToUpstream;
     }
 
@@ -25,16 +25,16 @@ public class AddStationRequest {
         return addStationName;
     }
 
-    public String getLineName() {
-        return lineName;
+    public long getLineId() {
+        return lineId;
     }
 
-    public String getUpstreamName() {
-        return upstreamName;
+    public long getUpstreamId() {
+        return upstreamId;
     }
 
-    public String getDownstreamName() {
-        return downstreamName;
+    public long getDownstreamId() {
+        return downstreamId;
     }
 
     public int getDistanceToUpstream() {
@@ -46,21 +46,21 @@ public class AddStationRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AddStationRequest that = (AddStationRequest) o;
-        return distanceToUpstream == that.distanceToUpstream && Objects.equals(addStationName, that.addStationName) && Objects.equals(lineName, that.lineName) && Objects.equals(upstreamName, that.upstreamName) && Objects.equals(downstreamName, that.downstreamName);
+        return lineId == that.lineId && upstreamId == that.upstreamId && downstreamId == that.downstreamId && distanceToUpstream == that.distanceToUpstream && Objects.equals(addStationName, that.addStationName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(addStationName, lineName, upstreamName, downstreamName, distanceToUpstream);
+        return Objects.hash(addStationName, lineId, upstreamId, downstreamId, distanceToUpstream);
     }
 
     @Override
     public String toString() {
         return "AddStationRequest{" +
                 "addStationName='" + addStationName + '\'' +
-                ", lineName='" + lineName + '\'' +
-                ", upstreamName='" + upstreamName + '\'' +
-                ", downstreamName='" + downstreamName + '\'' +
+                ", lineId=" + lineId +
+                ", upstreamId=" + upstreamId +
+                ", downstreamId=" + downstreamId +
                 ", distanceToUpstream=" + distanceToUpstream +
                 '}';
     }

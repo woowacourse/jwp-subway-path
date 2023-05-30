@@ -14,6 +14,7 @@ public class Line {
     private static final int NONE = 0;
     public static final Station EMPTY_ENDPOINT_STATION = new Station("종점역에 연결된 더미 데이터");
 
+    private Long id;
     private final LineName name;
     private final LinkedList<Section> sections;
 
@@ -29,7 +30,12 @@ public class Line {
     }
 
     public Line(Line otherLine) {
-        this(otherLine.getName(), otherLine.getSectionsWithoutEndPoints());
+        this(otherLine.getId(), otherLine.getName(), otherLine.getSectionsWithoutEndPoints());
+    }
+
+    public Line(long lineId, LineName lineName, List<Section> sections) {
+        this(lineName, sections);
+        this.id = lineId;
     }
 
     private void validateEmptySection(List<Section> sections) {
@@ -65,7 +71,7 @@ public class Line {
         return sections.stream()
                 .filter(section -> section.containsSameStations(upstream, downstream))
                 .findAny()
-                .orElseThrow(() -> new SectionNotFoundException("노선에 해당하는 구간이 존재하지 않습니다."));
+                .orElseThrow(() -> new SectionNotFoundException("노선에 해당하는 구간이 존재하지 않습니다; upstream=" + upstream.toString() + " downstream=" + downstream.toString()));
     }
 
     private void addSections(Section section, List<Section> sectionsToAdd) {
@@ -89,9 +95,9 @@ public class Line {
         }
     }
 
-    private boolean hasStation(Station newStation) {
+    private boolean hasStation(Station station) {
         return sections.stream()
-                .anyMatch(section -> section.contains(newStation));
+                .anyMatch(section -> section.contains(station));
     }
 
     private List<Section> findSectionsToMerge(Station stationToDelete) {
@@ -124,12 +130,8 @@ public class Line {
         return name;
     }
 
-    @Override
-    public String toString() {
-        return "Line{" +
-                "name=" + name +
-                ", sections=" + sections +
-                '}';
+    public Long getId() {
+        return id;
     }
 
     @Override
@@ -137,11 +139,20 @@ public class Line {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
-        return Objects.equals(name, line.name) && Objects.equals(sections, line.sections);
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(sections, line.sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, sections);
+        return Objects.hash(id, name, sections);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name=" + name +
+                ", sections=" + sections +
+                '}';
     }
 }

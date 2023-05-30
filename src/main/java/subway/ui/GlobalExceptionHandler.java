@@ -1,21 +1,33 @@
-package subway.exception;
+package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import subway.exception.DuplicateLineNameException;
+import subway.exception.DuplicateStationInLineException;
+import subway.exception.IllegalDestinationException;
+import subway.exception.InvalidDistanceException;
+import subway.exception.LineNotFoundException;
+import subway.exception.NameLengthException;
+import subway.exception.SectionMergeException;
+import subway.exception.SectionNotFoundException;
+import subway.exception.StationNotFoundException;
+import subway.exception.StationsNotConnectedException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             DuplicateStationInLineException.class,
+            DuplicateLineNameException.class,
+            IllegalDestinationException.class,
             InvalidDistanceException.class,
+            LineNotFoundException.class,
             NameLengthException.class,
             SectionMergeException.class,
             SectionNotFoundException.class,
             StationNotFoundException.class,
-            LineNotFoundException.class,
-            DuplicateLineNameException.class
+            StationsNotConnectedException.class
     })
     public ResponseEntity<String> handleException(RuntimeException runtimeException) {
         return ResponseEntity.badRequest().body(runtimeException.getMessage());

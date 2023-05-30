@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SubwayService;
+import subway.domain.Station;
 import subway.dto.AddStationRequest;
 import subway.dto.StationResponse;
 
@@ -31,6 +32,7 @@ public class StationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StationResponse> getStation(@PathVariable long id) {
-        return ResponseEntity.ok(subwayService.findStationById(id));
+        Station station = subwayService.findStationById(id);
+        return ResponseEntity.ok(new StationResponse(station.getName()));
     }
 }

@@ -11,7 +11,7 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dto.AddStationRequest;
-import subway.exception.SectionNotFoundException;
+import subway.exception.StationNotFoundException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -45,18 +45,19 @@ public class SubwayServiceStationIntegrationTest extends StationIntegrationTest 
 
     @Test
     void 역을_추가하는_도중_에러가_발생하면_DB에_저장되지_않는다() {
-        AddStationRequest addStationRequest = new AddStationRequest("홍대입구", "2호선", "잠실나루", "잠실", 2);
+        long invalidId = 0L;
+        AddStationRequest addStationRequest = new AddStationRequest("홍대입구", lineId, upstreamId, invalidId, 2);
 
         assertSoftly(softly -> {
             softly.assertThatThrownBy(() -> subwayService.addStation(addStationRequest))
-                    .isInstanceOf(SectionNotFoundException.class);
+                    .isInstanceOf(StationNotFoundException.class);
             softly.assertThat(subwayService.findAllLines().toString()).doesNotContain("홍대입구");
         });
     }
 
     @Test
     void 역을_추가하면_정상적으로_DB에_저장된다() {
-        AddStationRequest addStationRequest = new AddStationRequest("홍대입구", "2호선", "잠실", "잠실나루", 2);
+        AddStationRequest addStationRequest = new AddStationRequest("홍대입구", lineId, upstreamId, downstreamId, 2);
         subwayService.addStation(addStationRequest);
 
         assertThat(subwayService.findAllLines().toString()).contains("홍대입구");

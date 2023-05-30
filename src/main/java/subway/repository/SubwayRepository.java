@@ -42,31 +42,24 @@ public class SubwayRepository {
     public Stations getStations() {
         List<StationEntity> stationEntities = stationDao.findAll();
         return stationEntities.stream()
-                .map(stationEntity -> new Station(stationEntity.getName()))
+                .map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName()))
                 .collect(collectingAndThen(toSet(), Stations::new));
     }
 
-    public Line getLineByName(LineName lineName) {
-        long lineId = lineDao.findIdByName(lineName.getName())
-                .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다."));
-        List<SectionEntity> sectionsOfLineName = sectionDao.findSectionsByLineId(lineId);
-        return toLine(lineName.getName(), sectionsOfLineName);
-    }
-
-    private Line toLine(String lineName, List<SectionEntity> sectionsOfLineName) {
+    private Line toLine(long lineId, String lineName, List<SectionEntity> sectionsOfLineName) {
         return sectionsOfLineName.stream()
                 .map(sectionEntity -> {
                     long upstreamId = sectionEntity.getUpstreamId();
                     long downstreamId = sectionEntity.getDownstreamId();
-                    return new Section(findStation(upstreamId), findStation(downstreamId), sectionEntity.getDistance());
+                    return new Section(findStationById(upstreamId), findStationById(downstreamId), sectionEntity.getDistance());
                 })
-                .collect(collectingAndThen(toList(), (sections) -> new Line(new LineName(lineName), sections)));
+                .collect(collectingAndThen(toList(), (sections) -> new Line(lineId, new LineName(lineName), sections)));
     }
 
-    public Station findStation(long stationId) {
+    public Station findStationById(long stationId) {
         StationEntity stationEntity = stationDao.findById(stationId)
                 .orElseThrow(() -> new StationNotFoundException("찾는 역이 존재하지 않습니다."));
-        return new Station(stationEntity.getName());
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
     public long addStation(Station stationToAdd) {
@@ -110,16 +103,17 @@ public class SubwayRepository {
                 .build();
     }
 
-    public Optional<Line> getLineById(long id) {
+    public Line findLineById(long id) {
         List<SectionEntity> sections = sectionDao.findSectionsByLineId(id);
-        Optional<LineEntity> lineEntity = lineDao.findById(id);
-        return lineEntity.map(entity -> toLine(entity.getName(), sections));
+        LineEntity lineEntity = lineDao.findById(id)
+                .orElseThrow(() -> new LineNotFoundException("찾는 노선이 존재하지 않습니다."));
+        return toLine(id, lineEntity.getName(), sections);
     }
 
     public Lines getLines() {
         return lineDao.findAll()
                 .stream()
-                .map(lineEntity -> toLine(lineEntity.getName(), sectionDao.findSectionsByLineId(lineEntity.getId())))
+                .map(lineEntity -> toLine(lineEntity.getId(), lineEntity.getName(), sectionDao.findSectionsByLineId(lineEntity.getId())))
                 .collect(collectingAndThen(toList(), Lines::new));
     }
 

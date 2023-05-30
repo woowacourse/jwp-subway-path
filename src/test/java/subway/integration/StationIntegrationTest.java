@@ -41,11 +41,8 @@ import static subway.utils.TestUtils.toJson;
 public class StationIntegrationTest {
 
     public static final String VALID_STATION_NAME = "서울대입구";
-    public static final String VALID_UPSTREAM_NAME = "잠실";
-    public static final String EMPTY_STATION_NAME = "";
     protected static final String SET_UP_LINE_NAME = "2호선";
     private static final String VALID_LINE_NAME = "2호선";
-    private static final String VALID_DOWNSTREAM_NAME = "잠실나루";
     private static final int DISTANCE = 5;
 
     @LocalServerPort
@@ -60,28 +57,32 @@ public class StationIntegrationTest {
     private Line line;
     private Station upstream;
     private Station downstream;
-    private long upstreamId;
-    private long downstreamId;
+    protected long upstreamId;
+    protected long downstreamId;
+    protected long lineId;
 
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
         upstream = JAMSIL_STATION;
         downstream = JAMSILNARU_STATION;
-        line = new Line(new LineName(VALID_LINE_NAME), List.of(JAMSIL_TO_JAMSILNARU));
+        line = new Line(1L, new LineName(VALID_LINE_NAME), List.of(JAMSIL_TO_JAMSILNARU));
 
         lineDao.insert(new LineEntity.Builder().name(VALID_LINE_NAME).build());
         upstreamId = subwayRepository.addStation(upstream);
         downstreamId = subwayRepository.addStation(downstream);
-        subwayRepository.updateLine(line);
+        lineId = subwayRepository.updateLine(line);
     }
 
     @Test
     @DisplayName("/line/stations에 post 요청을 보내면 노선에 새로운 역을 추가할 수 있다.")
     void addStation() {
+        long 잠실_아이디 = 1L;
+        long 잠실나루_아이디 = 2L;
+
         given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_STATION_NAME, line.getName().getName(), upstream.getName(), downstream.getName(), DISTANCE - 1)))
+                .body(toJson(new AddStationRequest("홍대입구역", line.getId(), 잠실_아이디, 잠실나루_아이디, DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")
@@ -96,7 +97,7 @@ public class StationIntegrationTest {
     void addStationFail1(String invalidStationName) {
         given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(invalidStationName, line.getName().getName(), upstream.getName(), downstream.getName(), DISTANCE - 1)))
+                .body(toJson(new AddStationRequest(invalidStationName, line.getId(), upstream.getId(), downstream.getId(), DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")
@@ -105,28 +106,12 @@ public class StationIntegrationTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @ParameterizedTest(name = "/line/stations에 post 요청 노선 이름 길이가 맞지 않으면 역을 추가할 수 없다.")
-    @ValueSource(strings = {"2", "2호선16자길이의노선이름입니다"})
-    void addStationFail2(String invalidLineName) {
-        given()
-                .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_STATION_NAME, invalidLineName, upstream.getName(), downstream.getName(), DISTANCE - 1)))
-                .log().all()
-                .when()
-                .post("/line/stations")
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("/line/stations에 post 요청 노선이 등록되어 있지 않으면 역을 추가할 수 없다.")
+    @DisplayName("잘못된 노선 아이디를 입력한 경우 예외를 던진다.")
     @Test
-    void addStationFail3() {
-        final String invalidLineName = "10호선";
-
+    void addStationFail2() {
         given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_STATION_NAME, invalidLineName, upstream.getName(), downstream.getName(), DISTANCE - 1)))
+                .body(toJson(new AddStationRequest(VALID_STATION_NAME, 0L, upstream.getId(), downstream.getId(), DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")
@@ -140,7 +125,7 @@ public class StationIntegrationTest {
     void addStationFail4() {
         given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_STATION_NAME, VALID_LINE_NAME, "등록되지 않은 상행역", VALID_DOWNSTREAM_NAME, DISTANCE - 1)))
+                .body(toJson(new AddStationRequest(VALID_STATION_NAME, 1L, 0L, 1L, DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")
@@ -154,7 +139,7 @@ public class StationIntegrationTest {
     void addStationFail5() {
         given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_STATION_NAME, VALID_LINE_NAME, VALID_UPSTREAM_NAME, "등록되지않은하행역", DISTANCE - 1)))
+                .body(toJson(new AddStationRequest(VALID_STATION_NAME, 1L, 1L, 0L, DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")
@@ -168,7 +153,7 @@ public class StationIntegrationTest {
     void addStationFail6() {
         given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_STATION_NAME, VALID_LINE_NAME, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, DISTANCE)))
+                .body(toJson(new AddStationRequest(VALID_STATION_NAME, 1L, 1L, 2L, DISTANCE)))
                 .log().all()
                 .when()
                 .post("/line/stations")
@@ -177,18 +162,18 @@ public class StationIntegrationTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("/line/stations에 상행역과 하행역이 Section을 이루지 않는 경우 추가할 수 없다.")
+    @DisplayName("/line/stations에 상행역과 하행역이 Section을 이루지 않는 경우 새로운 역을 추가할 수 없다.")
     @Test
     void addStationFail7() {
         Line newLine = new Line(line);
         Station newStation = new Station("건대입구");
         newLine.addStation(newStation, downstream, EMPTY_ENDPOINT_STATION, DISTANCE);
-        subwayRepository.addStation(newStation);
+        long newStationId = subwayRepository.addStation(newStation);
         subwayRepository.updateLine(newLine);
 
         ExtractableResponse<Response> notConnectedSection = given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_STATION_NAME, VALID_LINE_NAME, VALID_UPSTREAM_NAME, newStation.getName(), DISTANCE - 1)))
+                .body(toJson(new AddStationRequest(VALID_STATION_NAME, 1L, 1L, newStationId, DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")
@@ -199,7 +184,7 @@ public class StationIntegrationTest {
 
         ExtractableResponse<Response> midToEndSection = given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_STATION_NAME, VALID_LINE_NAME, VALID_UPSTREAM_NAME, EMPTY_STATION_NAME, DISTANCE - 1)))
+                .body(toJson(new AddStationRequest(VALID_STATION_NAME, 1L, 1L, 0L, DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")
@@ -219,7 +204,7 @@ public class StationIntegrationTest {
     void addStationFail8() {
         given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_UPSTREAM_NAME, VALID_LINE_NAME, VALID_UPSTREAM_NAME, VALID_DOWNSTREAM_NAME, DISTANCE - 1)))
+                .body(toJson(new AddStationRequest("잠실역", 1L, 1L, 0L, DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")

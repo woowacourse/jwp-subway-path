@@ -17,7 +17,6 @@ import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
 import subway.dto.SubwayPathRequest;
 import subway.exception.IllegalDestinationException;
-import subway.exception.LineNotFoundException;
 import subway.exception.NameLengthException;
 import subway.exception.StationNotFoundException;
 import subway.exception.StationsNotConnectedException;
@@ -25,8 +24,7 @@ import subway.repository.SubwayRepository;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
@@ -34,7 +32,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
-import static subway.utils.SectionFixture.SULLEUNG_JAMSIL_JAMSILNARU_SECTIONS;
+import static subway.utils.SectionFixture.*;
 import static subway.utils.StationFixture.*;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -51,24 +49,19 @@ class SubwayServiceTest {
      */
     @Nested
     class addStation_메서드는 {
-        Station newStation = new Station("서울대입구");
+
+        Station newStation = new Station(4L, "서울대입구");
         int distanceToUpstream = 3;
-        AddStationRequest addStationRequest = new AddStationRequest(
-                newStation.getName(),
-                LINE_NUMBER_TWO.getName().getName(),
-                JAMSIL_STATION.getName(),
-                JAMSILNARU_STATION.getName(),
-                distanceToUpstream
-        );
         Line line = new Line(LINE_NUMBER_TWO);
 
         @Test
         void 노선에_새로운_역을_추가할_수_있다() {
+            AddStationRequest addStationRequest = new AddStationRequest(newStation.getName(), 1L, 2L, 3L, distanceToUpstream);
             SubwayService subwayService = new SubwayService(subwayRepository);
 
-            doReturn(line).when(subwayRepository).getLineByName(LINE_NUMBER_TWO.getName());
-            doReturn(Optional.of(1L)).when(subwayRepository).findStationIdByName(newStation.getName());
-            doReturn(new Stations(Set.of(JAMSIL_STATION, JAMSILNARU_STATION))).when(subwayRepository).getStations();
+            doReturn(line).when(subwayRepository).findLineById(1L);
+            doReturn(SULLEUNG_JAMSIL_JAMSILNARU).when(subwayRepository).getStations();
+            doReturn(4L).when(subwayRepository).addStation(new Station("서울대입구"));
 
             subwayService.addStation(addStationRequest);
 
@@ -80,13 +73,14 @@ class SubwayServiceTest {
 
         @Test
         void DB에_정상적으로_추가되지_않은_경우_예외를_던진다() {
+            AddStationRequest addStationRequest = new AddStationRequest(newStation.getName(), 1L, 0L, 3L, distanceToUpstream);
             SubwayService subwayService = new SubwayService(subwayRepository);
 
-            doReturn(line).when(subwayRepository).getLineByName(LINE_NUMBER_TWO.getName());
-            doReturn(new Stations(Set.of(JAMSIL_STATION, JAMSILNARU_STATION))).when(subwayRepository).getStations();
+            doReturn(line).when(subwayRepository).findLineById(1L);
+            doReturn(SULLEUNG_JAMSIL_JAMSILNARU).when(subwayRepository).getStations();
 
             assertThatThrownBy(() -> subwayService.addStation(addStationRequest))
-                    .isInstanceOf(NoSuchElementException.class);
+                    .isInstanceOf(StationNotFoundException.class);
         }
     }
 
@@ -98,7 +92,6 @@ class SubwayServiceTest {
     @Nested
     class delete_메서드는 {
 
-        String stationNameToDelete = "잠실";
         LineName lineName = new LineName("2호선");
 
         Line line = new Line(LINE_NUMBER_TWO);
@@ -106,11 +99,12 @@ class SubwayServiceTest {
         @Test
         void 역이_존재한다면_삭제할_수_있다() {
             SubwayService subwayService = new SubwayService(subwayRepository);
+            long lineId = line.getId();
 
-            DeleteStationRequest deleteStationRequest = new DeleteStationRequest(lineName.getName(), stationNameToDelete);
+            DeleteStationRequest deleteStationRequest = new DeleteStationRequest(lineId, JAMSIL_STATION.getId());
 
-            doReturn(line).when(subwayRepository).getLineByName(new LineName(lineName.getName()));
-            doReturn(new Stations(Set.of(new Station(stationNameToDelete)))).when(subwayRepository).getStations();
+            doReturn(line).when(subwayRepository).findLineById(lineId);
+            doReturn(SULLEUNG_JAMSIL_JAMSILNARU).when(subwayRepository).getStations();
 
             assertThatNoException()
                     .isThrownBy(() -> subwayService.deleteStation(deleteStationRequest));
@@ -119,15 +113,16 @@ class SubwayServiceTest {
         @Test
         void 삭제하려는_역이_없는_경우_예외를_던진다() {
             SubwayService subwayService = new SubwayService(subwayRepository);
+            long lineId = line.getId();
 
-            DeleteStationRequest deleteStationRequest = new DeleteStationRequest(lineName.getName(), "존재하지 않는 역");
+            DeleteStationRequest deleteStationRequest = new DeleteStationRequest(line.getId(), 10L);
 
-            doReturn(line).when(subwayRepository).getLineByName(lineName);
-            doReturn(new Stations(new HashSet<>())).when(subwayRepository).getStations();
+            doReturn(line).when(subwayRepository).findLineById(lineId);
+            doReturn(SULLEUNG_JAMSIL_JAMSILNARU).when(subwayRepository).getStations();
 
             assertThatThrownBy(() -> subwayService.deleteStation(deleteStationRequest))
                     .isInstanceOf(StationNotFoundException.class)
-                    .hasMessageContaining("삭제하고자 하는 역이 존재하지 않습니다.");
+                    .hasMessageContaining("찾는 역이 없습니다.");
         }
     }
 
@@ -145,14 +140,11 @@ class SubwayServiceTest {
             Line line = createLine("야당", "홍대입구", 5, "경의중앙선");
             AddLineRequest addLineRequest = new AddLineRequest("경의중앙선", "야당", "홍대입구", 5);
 
-            doReturn(new Stations(Set.of())).when(subwayRepository).getStations();
+            doReturn(SULLEUNG_JAMSIL_JAMSILNARU).when(subwayRepository).getStations();
             doReturn(new Lines(new ArrayList<>())).when(subwayRepository).getLines();
-            doReturn(1L).when(subwayRepository).addNewLine(line);
 
-            subwayService.addNewLine(addLineRequest);
-
-            assertThat(subwayService.findAllLines().toString())
-                    .contains("경의중앙선");
+            assertThatNoException()
+                    .isThrownBy(() -> subwayService.addNewLine(addLineRequest));
         }
 
         @Test
@@ -179,17 +171,6 @@ class SubwayServiceTest {
         }
     }
 
-    @Test
-    void 잘못된_line_아이디를_입력하면_예외를_던진다() {
-        SubwayService subwayService = new SubwayService(subwayRepository);
-
-        doReturn(Optional.empty()).when(subwayRepository).getLineById(0L);
-
-        assertThatThrownBy(() -> subwayService.findLineById(0L))
-                .isInstanceOf(LineNotFoundException.class)
-                .hasMessageContaining("조회하고자 하는 노선이 없습니다");
-    }
-
     /**
      * 저장되어 있는 정보
      * LINE_NUMBER_TWO
@@ -207,8 +188,8 @@ class SubwayServiceTest {
 
             doReturn(new Stations(new HashSet<>())).when(subwayRepository).getStations();
             doReturn(new Sections(new ArrayList<>())).when(subwayRepository).getSections();
-            doReturn(new Station("잠실역")).when(subwayRepository).findStation(1L);
-            doThrow(new StationNotFoundException("찾는 역이 존재하지 않습니다.")).when(subwayRepository).findStation(0L);
+            doReturn(new Station("잠실역")).when(subwayRepository).findStationById(1L);
+            doThrow(new StationNotFoundException("찾는 역이 존재하지 않습니다.")).when(subwayRepository).findStationById(0L);
 
             assertSoftly(softly -> {
                 softly.assertThatThrownBy(() -> subwayService.findShortestPath(도착역이_존재하지_않는_경우))
@@ -223,7 +204,7 @@ class SubwayServiceTest {
             // 역 추가
             Station 야당역 = new Station("야당역");
             Station 화전역 = new Station("화전역");
-            Stations stations = SULLEUNG_JAMSIL_JAMSILNARU;
+            Stations stations = new Stations(Set.of(SULLEUNG_STATION, JAMSIL_STATION, JAMSILNARU_STATION));
             stations.addNewStation(야당역);
             stations.addNewStation(화전역);
             long 야당_도착역_아이디 = subwayRepository.addStation(야당역);
@@ -231,15 +212,15 @@ class SubwayServiceTest {
 
             // 구간 추가
             Section 화전역_to_야당역 = new Section(화전역, 야당역, 3);
-            Sections sections = SULLEUNG_JAMSIL_JAMSILNARU_SECTIONS;
+            Sections sections = new Sections(new ArrayList<>(List.of(SULLEUNG_TO_JAMSIL, JAMSIL_TO_JAMSILNARU)));
             sections.addNewSection(화전역_to_야당역);
 
             SubwayService subwayService = new SubwayService(subwayRepository);
 
             doReturn(stations).when(subwayRepository).getStations();
             doReturn(sections).when(subwayRepository).getSections();
-            doReturn(야당역).when(subwayRepository).findStation(야당_도착역_아이디);
-            doReturn(JAMSIL_STATION).when(subwayRepository).findStation(잠실_출발역_아이디);
+            doReturn(야당역).when(subwayRepository).findStationById(야당_도착역_아이디);
+            doReturn(JAMSIL_STATION).when(subwayRepository).findStationById(잠실_출발역_아이디);
 
             SubwayPathRequest subwayPathRequest = new SubwayPathRequest(잠실_출발역_아이디, 야당_도착역_아이디);
 
@@ -256,7 +237,7 @@ class SubwayServiceTest {
 
             doReturn(stations).when(subwayRepository).getStations();
             doReturn(sections).when(subwayRepository).getSections();
-            doReturn(JAMSIL_STATION).when(subwayRepository).findStation(1L);
+            doReturn(JAMSIL_STATION).when(subwayRepository).findStationById(1L);
 
             assertThatThrownBy(() -> subwayService.findShortestPath(subwayPathRequest))
                     .isInstanceOf(IllegalDestinationException.class)

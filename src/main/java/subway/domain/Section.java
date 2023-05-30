@@ -14,6 +14,7 @@ public class Section {
 
     private static final int MINIMUM_DISTANCE = 1;
 
+    private Long id;
     private final Station upstream;
     private final Station downstream;
     private final int distance;
@@ -25,6 +26,11 @@ public class Section {
         this.distance = distance;
     }
 
+    public Section(long id, Station upstream, Station downstream, int distance) {
+        this(upstream, downstream, distance);
+        this.id = id;
+    }
+
     private void validateDistance(int distance) {
         if (distance < MINIMUM_DISTANCE) {
             throw new InvalidDistanceException("거리는 " + MINIMUM_DISTANCE + "이상이어야 합니다");
@@ -32,6 +38,8 @@ public class Section {
     }
 
     public boolean containsSameStations(Station upstream, Station downstream) {
+        System.out.println("in section: " + upstream + downstream);
+        System.out.println(this.upstream.equals(upstream) && this.downstream.equals(downstream));
         return this.upstream.equals(upstream) && this.downstream.equals(downstream);
     }
 
@@ -95,6 +103,10 @@ public class Section {
         return downstream;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "Section{" +
@@ -109,11 +121,11 @@ public class Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return distance == section.distance && Objects.equals(upstream, section.upstream) && Objects.equals(downstream, section.downstream);
+        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(upstream, section.upstream) && Objects.equals(downstream, section.downstream);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(upstream, downstream, distance);
+        return Objects.hash(id, upstream, downstream, distance);
     }
 }

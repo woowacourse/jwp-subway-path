@@ -1,6 +1,7 @@
 package subway.domain;
 
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.exception.StationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +26,15 @@ public class Stations {
         stations.add(newStation);
     }
 
-    public Optional<Station> getStationByName(String stationName) {
+    public Station findStationById(long stationId) {
+        System.out.println("in stations : " + stationId);
+        return stations.stream()
+                .filter(station -> station.getId() == stationId)
+                .findAny()
+                .orElseThrow(() -> new StationNotFoundException("찾는 역이 없습니다."));
+    }
+
+    public Optional<Station> findStationByName(String stationName) {
         return stations.stream()
                 .filter(station -> station.getName().equals(stationName))
                 .findAny();
