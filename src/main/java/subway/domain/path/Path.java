@@ -24,10 +24,6 @@ public class Path {
         return stationNames;
     }
 
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
-    }
-
     public int getDistance() {
         return distance;
     }

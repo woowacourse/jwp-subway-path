@@ -21,7 +21,6 @@ public class LineController {
     @PostMapping
     public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
         Long lineId = lineService.saveLine(lineRequest);
-        System.out.println("asdfasdfasdfasdfa" + lineId);
         return ResponseEntity
                 .created(URI.create("/lines/" + lineId))
                 .build();

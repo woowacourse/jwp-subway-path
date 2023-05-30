@@ -12,9 +12,9 @@ public class LineSurchargeFarePolicy implements FarePolicy {
     public int calculateFare(int distance, Set<Line> linesToUse) {
         int maxSurcharge = linesToUse.stream()
                 .mapToInt(Line::getSurcharge)
-                .filter(line -> line > 0)
+                .filter(lineSurcharge -> lineSurcharge > ZERO)
                 .max()
-                .orElse(0);
+                .orElse(ZERO);
         return ZERO + maxSurcharge;
     }
 }

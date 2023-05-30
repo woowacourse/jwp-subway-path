@@ -75,10 +75,6 @@ public class Sections {
         return getLine().getId();
     }
 
-    public int getSectionsSize() {
-        return sections.size();
-    }
-
     public List<Section> getSections() {
         return sections;
     }

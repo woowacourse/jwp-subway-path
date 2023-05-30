@@ -35,6 +35,10 @@ public class PathService {
         Station endStation = stationRepository.findStationById(endStationId);
 
         Path path = PathFinder.findPath(new Sections(allSections), startStation, endStation);
+        return getPathResponse(path, age);
+    }
+
+    private PathResponse getPathResponse(Path path, int age) {
         List<String> stationNames = path.getStationNames();
         int totalDistance = path.getDistance();
 
