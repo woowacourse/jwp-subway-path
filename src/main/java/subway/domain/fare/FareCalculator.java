@@ -1,9 +1,8 @@
 package subway.domain.fare;
 
-import subway.domain.line.Line;
+import subway.domain.path.Path;
 
 import java.util.List;
-import java.util.Set;
 
 public class FareCalculator {
 
@@ -13,9 +12,9 @@ public class FareCalculator {
         this.farePolicies = farePolicies;
     }
 
-    public int calculate(int distance, Set<Line> linesToUse) {
+    public int calculate(Path path) {
         return farePolicies.stream()
-                .mapToInt(farePolicy -> farePolicy.calculateFare(distance, linesToUse))
+                .mapToInt(farePolicy -> farePolicy.calculateFare(path))
                 .sum();
     }
 }

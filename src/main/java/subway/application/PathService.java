@@ -42,7 +42,7 @@ public class PathService {
         List<String> stationNames = path.getStationNames();
         int totalDistance = path.getDistance();
 
-        int fare = fareCalculator.calculate(totalDistance, path.getLinesToUse());
+        int fare = fareCalculator.calculate(path);
         Customer customer = new Customer(age);
         fare = customer.getDiscountedPrice(fare);
 

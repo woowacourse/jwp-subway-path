@@ -1,10 +1,8 @@
 package subway.domain.fare;
 
-import subway.domain.line.Line;
-
-import java.util.Set;
+import subway.domain.path.Path;
 
 public interface FarePolicy {
 
-    int calculateFare(int distance, Set<Line> linesToUse);
+    int calculateFare(Path path);
 }

@@ -3,8 +3,9 @@ package subway.domain.fare;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import subway.domain.path.Path;
 
-import java.util.Set;
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,9 +18,10 @@ class DistanceFarePolicyTest {
     void calculateDistanceFareTest(int distance, int expectSurcharge) {
         // given
         FarePolicy farePolicy = new DistanceFarePolicy();
+        Path path = new Path(new ArrayList<>(), new ArrayList<>(), distance);
 
         // when
-        int fare = farePolicy.calculateFare(distance, Set.of());
+        int fare = farePolicy.calculateFare(path);
 
         // then
         assertThat(fare).isEqualTo(expectSurcharge);

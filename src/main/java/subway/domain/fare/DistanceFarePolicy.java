@@ -1,8 +1,8 @@
 package subway.domain.fare;
 
-import subway.domain.line.Line;
+import subway.domain.path.Path;
 
-import java.util.Set;
+import java.util.ArrayList;
 
 public class DistanceFarePolicy implements FarePolicy {
 
@@ -14,9 +14,12 @@ public class DistanceFarePolicy implements FarePolicy {
     public static final int ADDITIONAL_FARE = 100;
 
     @Override
-    public int calculateFare(int distance, Set<Line> linesToUse) {
+    public int calculateFare(Path path) {
+        int distance = path.getDistance();
+
         if (distance > SECOND_DISTANCE_THRESHOLD) {
-            return calculateFare(SECOND_DISTANCE_THRESHOLD, null) +
+            Path secondDistanceThresholdPath = new Path(new ArrayList<>(), new ArrayList<>(), SECOND_DISTANCE_THRESHOLD);
+            return calculateFare(secondDistanceThresholdPath) +
                     (int) Math.ceil((double) (distance - SECOND_DISTANCE_THRESHOLD) / SECOND_DISTANCE_THRESHOLD_FARE_INCREMENT) * ADDITIONAL_FARE;
         }
         if (distance > FIRST_DISTANCE_THRESHOLD) {
