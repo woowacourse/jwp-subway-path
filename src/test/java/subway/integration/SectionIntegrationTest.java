@@ -29,7 +29,7 @@ public class SectionIntegrationTest extends IntegrationTest {
     private void insert_신림역_봉천역_2호선() {
         StationRequest 신림역 = new StationRequest("신림");
         StationRequest 봉천역 = new StationRequest("봉천");
-        LineRequest _2호선 = new LineRequest("2호선", "초록색");
+        LineRequest _2호선 = new LineRequest("2호선", "초록색", 0);
 
         postStation(신림역);
         postStation(봉천역);

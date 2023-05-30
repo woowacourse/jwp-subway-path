@@ -25,13 +25,13 @@ class SectionDaoTest {
 
     private final Station 신림역 = new Station(1L, "신림");
     private final Station 봉천역 = new Station(2L, "봉천");
-    private final Line _2호선 = new Line(1L, "2호선", "초록색");
+    private final Line _2호선 = new Line(1L, "2호선", "초록색", 0);
 
     @BeforeEach
     void setUp() {
-        this.sectionDao = new SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        StationDao stationDao = new StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        LineDao lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        this.sectionDao = new SectionDao(jdbcTemplate);
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        LineDao lineDao = new LineDao(jdbcTemplate);
 
         stationDao.insert(신림역);
         stationDao.insert(봉천역);
@@ -52,6 +52,7 @@ class SectionDaoTest {
 
     @Test
     void 모든_Section_조회() {
+        // init expect
         assertThat(sectionDao.findAll()).hasSize(0);
 
         // given
@@ -109,13 +110,17 @@ class SectionDaoTest {
 
     @Test
     void 특정_호선ID와_일치하는_모든_Section_삭제() {
+        // given
         long lineId = 1L;
 
         SectionEntity sectionEntity = new SectionEntity(lineId, 1L, 2L, 10);
         sectionDao.insert(sectionEntity);
         assertThat(sectionDao.findAll()).hasSize(1);
 
+        // when
         sectionDao.deleteAllByLineId(lineId);
+
+        // then
         assertThat(sectionDao.findByLineId(lineId)).hasSize(0);
     }
 }

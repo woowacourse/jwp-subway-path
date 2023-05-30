@@ -15,8 +15,8 @@ import subway.dto.LineRequest;
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
 
-    private static final LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-    private static final LineRequest lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+    private static final LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", 0);
+    private static final LineRequest lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 0);
 
     @BeforeEach
     public void setUp() {

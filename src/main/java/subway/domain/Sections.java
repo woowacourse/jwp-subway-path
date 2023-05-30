@@ -16,7 +16,7 @@ public class Sections {
     private static final int ONLY_ONE_SECTION_INDEX = 0;
 
     private final List<Section> sections;
-    private final TopDownStationArranger topDownStationArranger = new TopDownStationArranger();
+    private final StationArranger stationArranger = new StationArranger();
 
     public Sections(final List<Section> sections) {
         this.sections = new ArrayList<>(sections);
@@ -68,7 +68,7 @@ public class Sections {
 
     private void validateSameDirection(final Section otherSection) {
         boolean isSameDirection = sections.stream()
-                .anyMatch(section -> section.isSameDirection(otherSection));
+                .anyMatch(section -> section.isSameDirection(otherSection) && section.isSameLine(otherSection));
 
         if (isSameDirection) {
             throw new IllegalAddSectionException("이미 같은 방향인 Section이 존재합니다.");
@@ -117,7 +117,7 @@ public class Sections {
     }
 
     public List<Station> allStations() {
-        return topDownStationArranger.arrange(this.sections);
+        return stationArranger.arrange(this.sections);
     }
 
     public void removeStation(final Station targetStation) {

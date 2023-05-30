@@ -18,16 +18,37 @@
 - [x] 노선 목록 조회 API 수정
   - [x] 존재하는 노선들을 보여준다.
 
+- [x] 최단 경로 조회 API 구현
+  - 입력받은 출발역과 도착역으로 최단 경로를 구한다.
+  - 최단 경로뿐만 아니라 최단 거리 정보도 함께 응답한다.
+  - 환승도 고려한다.
+- [x] 요금 조회 기능
+  - 경로 조회 시, 요금 정보도 포함하여 응답한다.
+
+- [x] 노선별 추가 요금 정책 반영
+  - 추가 요금이 있는 노선을 이용한 경우 측정된 요금에 추가한다.
+  - 여러 노선을 거친 경우, 가장 높은 금액의 추가 금액만 적용한다.
+- [x] 연령변 요금 할인 정책 반영
+  - 6~12세는 어린이, 13~18세는 청소년으로 한다.
+  - 어린이는 운임에서 350원을 공제한 금액의 50%를 할인한다.
+  - 청소년은 운임에서 350원을 공제한 금액의 20%를 할인한다.
+
 # 도메인 객체 설계
 
 ```mermaid
 graph TD
 Sections --> Section
-Sections --> TopDownStationArranger
+Sections --> StationArranger
 
 Section -->  Line
 Section --> Station
 Section --> Distance
+
+PathFinder --> JGraphT
+
+FeeCalculator --> DistancePolicy
+FeeCalculator --> LinePolicy
+FeeCalculator --> AgePolicy
 ```
 
 # API 설계

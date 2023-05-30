@@ -11,19 +11,20 @@ CREATE TABLE STATION
 
 CREATE TABLE LINE
 (
-    id    BIGINT AUTO_INCREMENT NOT NULL,
-    name  VARCHAR(255)          NOT NULL UNIQUE,
-    color VARCHAR(255)          NOT NULL UNIQUE,
+    id        BIGINT AUTO_INCREMENT NOT NULL,
+    name      VARCHAR(255) NOT NULL UNIQUE,
+    color     VARCHAR(255) NOT NULL UNIQUE,
+    extra_fee INT          NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE SECTION
 (
-    id         BIGINT AUTO_INCREMENT NOT NULL,
-    line_id    BIGINT,
-    up_station_id BIGINT,
+    id              BIGINT AUTO_INCREMENT NOT NULL,
+    line_id         BIGINT,
+    up_station_id   BIGINT,
     down_station_id BIGINT,
-    distance INT NOT NULL,
+    distance        INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE,
     FOREIGN KEY (up_station_id) REFERENCES STATION (id) ON DELETE CASCADE,

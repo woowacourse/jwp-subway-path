@@ -17,29 +17,31 @@ import subway.domain.Line;
 class LineDaoTest {
 
     private LineDao lineDao;
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private final Line line = new Line(1L, "2호선", "초록색");
-
+    private final Line line = new Line(1L, "2호선", "초록색", 0);
 
     @BeforeEach
     void setUp() {
-        this.lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        this.lineDao = new LineDao(jdbcTemplate);
     }
 
     @Test
     void 호선_삽입() {
+        // when
         Line savedLine = lineDao.insert(line);
 
+        // then
         assertThat(line).isEqualTo(savedLine);
     }
 
     @Test
     void ID가_없는_호선_삽입() {
+        // when
         Line savedLine = lineDao.insert(line);
 
+        // then
         assertAll(
                 () -> assertThat(savedLine.getId()).isEqualTo(1L),
                 () -> assertThat(savedLine.getName()).isEqualTo("2호선"),
@@ -49,19 +51,26 @@ class LineDaoTest {
 
     @Test
     void 모든_호선_조회() {
+        // init expect
         assertThat(lineDao.findAll()).hasSize(0);
 
+        // when
         lineDao.insert(line);
+
+        // then expect
         assertThat(lineDao.findAll()).hasSize(1);
     }
 
     @Test
     void ID로_단일_호선_조회() {
+        // given
         Line savedLine = lineDao.insert(line);
         Long id = savedLine.getId();
 
+        // when
         Line foundLine = lineDao.findById(id);
 
+        // then
         assertThat(savedLine).isEqualTo(foundLine);
     }
 
@@ -71,7 +80,7 @@ class LineDaoTest {
         Line savedLine = lineDao.insert(line);
         Long id = savedLine.getId();
 
-        Line newLine = new Line(id, "신림선", "청색");
+        Line newLine = new Line(id, "신림선", "청색", 0);
 
         // when
         lineDao.update(newLine);
