@@ -6,8 +6,8 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.LineStationRequest;
 import subway.dto.LineStationResponse;
-import subway.dto.LineStationsRequest;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
@@ -15,7 +15,6 @@ import subway.repository.StationRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional(readOnly = true)
 @Service
 public class LineStationService {
 
@@ -30,16 +29,17 @@ public class LineStationService {
     }
 
     @Transactional
-    public void saveLinesStations(final Long lineId, final LineStationsRequest request) {
+    public void saveLinesStations(final Long lineId, final LineStationRequest request) {
         Line line = lineRepository.findById(lineId);
         Station upStation = stationRepository.findById(request.getUpStationId());
         Station downStation = stationRepository.findById(request.getDownStationId());
         Distance distance = new Distance(request.getDistance());
         Section section = new Section(upStation, downStation, distance);
         Line updateLine = line.addSection(section);
-        sectionRepository.updateByLine(line, updateLine);
+        updateByLine(line, updateLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineStationResponse> findAllLinesStations() {
         final List<Line> lines = lineRepository.findAll();
 
@@ -51,6 +51,7 @@ public class LineStationService {
         return lineStationResponses;
     }
 
+    @Transactional(readOnly = true)
     public LineStationResponse findLinesStations(final Long lineId) {
         final Line line = lineRepository.findById(lineId);
         List<Station> stations = line.findAllStation();
@@ -62,6 +63,16 @@ public class LineStationService {
         Line line = lineRepository.findById(lineId);
         Station station = stationRepository.findById(stationId);
         Line updateLine = line.removeStation(station);
-        sectionRepository.updateByLine(line, updateLine);
+        updateByLine(line, updateLine);
+    }
+
+    private void updateByLine(final Line line, final Line updateLine) {
+        List<Section> beforeSections = line.getSections();
+        beforeSections.removeAll(updateLine.getSections());
+        sectionRepository.deleteAll(beforeSections, line);
+
+        List<Section> updateSections = updateLine.getSections();
+        updateSections.removeAll(line.getSections());
+        sectionRepository.saveAll(updateSections, line);
     }
 }

@@ -7,6 +7,7 @@ import subway.application.StationService;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -15,12 +16,14 @@ public class StationController {
 
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationController(final StationService stationService) {
         this.stationService = stationService;
     }
 
     @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody StationRequest request) {
+    public ResponseEntity<Void> createStation(
+            @RequestBody @Valid final StationRequest request
+    ) {
         final Long savedSectionId = stationService.saveStation(request);
 
         return ResponseEntity
@@ -30,7 +33,9 @@ public class StationController {
     }
 
     @GetMapping("/{stationId}")
-    public ResponseEntity<StationResponse> readStation(@PathVariable Long stationId) {
+    public ResponseEntity<StationResponse> readStation(
+            @PathVariable final Long stationId
+    ) {
         StationResponse station = stationService.findStation(stationId);
 
         return ResponseEntity
@@ -39,7 +44,10 @@ public class StationController {
     }
 
     @PutMapping("/{stationId}")
-    public ResponseEntity<Void> udpateStation(@PathVariable Long stationId, @RequestBody StationRequest request) {
+    public ResponseEntity<Void> updateStation(
+            @PathVariable final Long stationId,
+            @RequestBody @Valid final StationRequest request
+    ) {
         stationService.editStation(stationId, request);
 
         return ResponseEntity
@@ -49,7 +57,9 @@ public class StationController {
     }
 
     @DeleteMapping("/{stationId}")
-    public ResponseEntity<Void> deleteStationByName(@PathVariable Long stationId) {
+    public ResponseEntity<Void> deleteStationByName(
+            @PathVariable final Long stationId
+    ) {
         stationService.removeStation(stationId);
 
         return ResponseEntity

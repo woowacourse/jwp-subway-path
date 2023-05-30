@@ -1,10 +1,10 @@
 package subway.domain;
 
+import subway.exception.IllegalInputForDomainException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Line {
 
@@ -31,13 +31,13 @@ public class Line {
 
     private void validate(final LineName name, final LineColor color, final Sections sections) {
         if (Objects.isNull(name)) {
-            throw new IllegalArgumentException("노선명이 필요합니다.");
+            throw new IllegalInputForDomainException("노선명이 필요합니다.");
         }
         if (Objects.isNull(color)) {
-            throw new IllegalArgumentException("노선색이 필요합니다.");
+            throw new IllegalInputForDomainException("노선색이 필요합니다.");
         }
         if (Objects.isNull(sections)) {
-            throw new IllegalArgumentException("노선의 구간이 필요합니다.");
+            throw new IllegalInputForDomainException("노선의 구간이 필요합니다.");
         }
     }
 
@@ -55,14 +55,8 @@ public class Line {
         return sections.findAllStationUpToDown();
     }
 
-    public void validateNotDuplicatedStation(final Station station) {
-        List<Station> allStations = sections.findAllStationUpToDown();
-        Set<String> names = allStations.stream()
-                .map(Station::getName)
-                .collect(Collectors.toSet());
-        if (names.contains(station.getName())) {
-            throw new IllegalArgumentException(name.getValue() + "선의 중복된 역명이 존재합니다.");
-        }
+    public boolean isExistSection(final Section section) {
+        return sections.isExistSection(section);
     }
 
     public Long getId() {

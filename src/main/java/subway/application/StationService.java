@@ -3,13 +3,11 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
-import subway.domain.Subway;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
-@Transactional(readOnly = true)
 @Service
 public class StationService {
 
@@ -23,13 +21,12 @@ public class StationService {
 
     @Transactional
     public Long saveStation(final StationRequest request) {
-        Subway subway = new Subway(lineRepository.findAll());
         Station station = new Station(request.getName());
-        subway.validateNotDuplicatedStation(station);
         Station savedStation = stationRepository.save(station);
         return savedStation.getId();
     }
 
+    @Transactional(readOnly = true)
     public StationResponse findStation(final Long stationId) {
         Station station = stationRepository.findById(stationId);
         return StationResponse.from(station);
@@ -37,9 +34,10 @@ public class StationService {
 
     @Transactional
     public void editStation(final Long stationId, final StationRequest request) {
-        Station findStation = stationRepository.findById(stationId);
-        Station station = new Station(request.getName());
-        stationRepository.update(findStation, station);
+        Station station = new Station(
+                stationId,
+                request.getName());
+        stationRepository.update(station);
     }
 
     @Transactional

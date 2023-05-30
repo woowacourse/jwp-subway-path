@@ -13,10 +13,10 @@ import subway.domain.Sections;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.repository.LineRepository;
-
-import java.util.List;
+import subway.repository.SectionRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +24,8 @@ class LineServiceTest {
 
     @Mock
     LineRepository lineRepository;
+    @Mock
+    SectionRepository sectionRepository;
     @InjectMocks
     LineService lineService;
 
@@ -33,12 +35,6 @@ class LineServiceTest {
         //given
         LineRequest request = new LineRequest("new호선", "빨강");
         Line line = new Line(new LineName("new호선"), new LineColor("빨강"), Sections.create());
-        when(lineRepository.findAll())
-                .thenReturn(
-                        List.of(
-                                new Line(1L, new LineName("2호선"), new LineColor("초록"), Sections.create()),
-                                new Line(2L, new LineName("8호선"), new LineColor("핑크"), Sections.create())
-                        ));
         when(lineRepository.save(line)).thenReturn(new Line(3L, new LineName("new호선"), new LineColor("빨강"), Sections.create()));
         //when
         Long id = lineService.saveLine(request);
@@ -64,12 +60,6 @@ class LineServiceTest {
     void 노선을_수정한다() {
         //given
         LineRequest request = new LineRequest("수정", "빨강");
-        when(lineRepository.findAll())
-                .thenReturn(
-                        List.of(
-                                new Line(1L, new LineName("2호선"), new LineColor("초록"), Sections.create()),
-                                new Line(2L, new LineName("8호선"), new LineColor("핑크"), Sections.create())
-                        ));
         Line line = new Line(1L, new LineName("2호선"), new LineColor("초록"), Sections.create());
         when(lineRepository.findById(1L)).thenReturn(line);
         Line updateLine = new Line(1L, new LineName("수정"), new LineColor("빨강"), Sections.create());
@@ -88,6 +78,9 @@ class LineServiceTest {
         //when
         lineService.deleteLine(1L);
         //then
-        verify(lineRepository, times(1)).delete(line);
+        assertAll(
+                () -> verify(sectionRepository, times(1)).deleteAll(line.getSections(), line),
+                () -> verify(lineRepository, times(1)).delete(line)
+        );
     }
 }

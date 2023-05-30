@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.UnsupportedParameterException;
 
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class SectionsTest {
         Section section = new Section(STATION1, station, new Distance(10));
         //then
         assertThatThrownBy(() -> sections.addSection(section))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(UnsupportedParameterException.class);
     }
 
     // TODO: 5/18/23 현재 순환선은 가능함 이거 끊어줘야함
@@ -76,7 +77,7 @@ public class SectionsTest {
         Sections sections = new Sections(SECTION_LIST);
         Section section = new Section(STATION1, STATION3, new Distance(5));
         //then
-        assertThatThrownBy(() -> sections.addSection(section)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> sections.addSection(section)).isInstanceOf(UnsupportedParameterException.class);
     }
 
     @DisplayName("중간역을 삭제하면 양옆의 구간을 합친다")
@@ -110,7 +111,7 @@ public class SectionsTest {
         Sections sections = new Sections(SECTION_LIST);
         //then
         assertThatThrownBy(() -> sections.removeStation(new Station("없는역")))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(UnsupportedParameterException.class);
     }
 
     @DisplayName("역을 순서대로 반환한다")

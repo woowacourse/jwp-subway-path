@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.IllegalInputForDomainException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -18,7 +19,7 @@ public class DistanceTest {
     @DisplayName("거리가 0 이하면 예외를 발생한다.")
     @Test
     void throwExceptionWithZeroValue() {
-        assertThatThrownBy(() -> new Distance(0)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Distance(0)).isInstanceOf(IllegalInputForDomainException.class);
     }
 
     @DisplayName("두 거리의 합을 계산한다.")

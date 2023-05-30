@@ -1,5 +1,8 @@
 package subway.domain;
 
+import subway.exception.IllegalInputForDomainException;
+import subway.exception.UnsupportedParameterException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,25 +28,25 @@ public class Section {
 
     private void validate(final Station upStation, final Station downStation, final Distance distance) {
         if (Objects.isNull(upStation)) {
-            throw new IllegalArgumentException("다음역은 null 일 수 없습니다.");
+            throw new IllegalInputForDomainException("다음역은 null 일 수 없습니다.");
         }
         if (Objects.isNull(downStation)) {
-            throw new IllegalArgumentException("다음역은 null 일 수 없습니다.");
+            throw new IllegalInputForDomainException("다음역은 null 일 수 없습니다.");
         }
         if (Objects.isNull(distance)) {
-            throw new IllegalArgumentException("거리는 null 일 수 없습니다.");
+            throw new IllegalInputForDomainException("거리는 null 일 수 없습니다.");
         }
     }
 
     public List<Section> divide(final Section other) {
         if (other.upStation.equals(this.upStation) && other.downStation.equals(this.downStation)) {
-            throw new IllegalArgumentException("나누는 구간과 역이 같습니다.");
+            throw new UnsupportedParameterException("나누는 구간과 역이 같습니다.");
         }
         if (!other.upStation.equals(this.upStation) && !other.downStation.equals(this.downStation)) {
-            throw new IllegalArgumentException("구간을 나눌 수 없는 역입니다.");
+            throw new UnsupportedParameterException("구간을 나눌 수 없는 역입니다.");
         }
         if (other.distance.isSameOrOverThan(this.distance)) {
-            throw new IllegalArgumentException("나누는 구간의 길이보다 깁니다.");
+            throw new UnsupportedParameterException("나누는 구간의 길이보다 깁니다.");
         }
         List<Section> sections = new ArrayList<>();
         sections.add(other);
@@ -63,7 +66,7 @@ public class Section {
         if (this.upStation.equals(other.downStation)) {
             return new Section(other.upStation, this.downStation, other.distance.sum(this.distance));
         }
-        throw new IllegalArgumentException("합치는 구간이 연결된 구간이 아닙니다.");
+        throw new UnsupportedOperationException("합치는 구간이 연결된 구간이 아닙니다.");
     }
 
     public Long getId() {

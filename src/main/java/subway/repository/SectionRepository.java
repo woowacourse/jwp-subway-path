@@ -18,16 +18,14 @@ public class SectionRepository {
         this.sectionDao = sectionDao;
     }
 
-    public void updateByLine(final Line beforeLine, final Line updateLine) {
-        List<Section> beforeSections = beforeLine.getSections();
-        beforeSections.removeAll(updateLine.getSections());
-        List<SectionEntity> beforeSectionEntities = convertToSectionEntities(beforeLine, beforeSections);
-        sectionDao.delete(beforeSectionEntities);
+    public void saveAll(final List<Section> sections, final Line line) {
+        List<SectionEntity> sectionEntities = convertToSectionEntities(line, sections);
+        sectionDao.save(sectionEntities);
+    }
 
-        List<Section> updateSections = updateLine.getSections();
-        updateSections.removeAll(beforeLine.getSections());
-        List<SectionEntity> updateSectionEntities = convertToSectionEntities(updateLine, updateSections);
-        sectionDao.save(updateSectionEntities);
+    public void deleteAll(final List<Section> sections, final Line line) {
+        List<SectionEntity> sectionEntities = convertToSectionEntities(line, sections);
+        sectionDao.delete(sectionEntities);
     }
 
     private List<SectionEntity> convertToSectionEntities(final Line line, final List<Section> sections) {

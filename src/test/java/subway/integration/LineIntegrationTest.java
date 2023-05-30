@@ -4,13 +4,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dto.LineRequest;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
-import static io.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
-
+@Transactional
 @DisplayName("노선 관련 기능")
 class LineIntegrationTest extends IntegrationTest {
 
@@ -26,8 +26,8 @@ class LineIntegrationTest extends IntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body("id", equalTo(1))
-                .body("name", equalTo("1"))
-                .body("color", equalTo("파랑"));
+                .body("name", equalTo("2호선"))
+                .body("color", equalTo("초록"));
     }
 
     @DisplayName("노선 추가")

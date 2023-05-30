@@ -1,9 +1,12 @@
 package subway.domain;
 
+import subway.exception.IllegalInputForDomainException;
+
 import java.util.Objects;
 
 public class Station {
 
+    public static final int MAX_LENGTH = 10;
     private final Long id;
     private final String name;
 
@@ -19,10 +22,10 @@ public class Station {
 
     private void validate(final String name) {
         if (Objects.isNull(name) || name.isBlank()) {
-            throw new IllegalArgumentException("지하철 역 이름은 null 또는 공백일 수 없습니다.");
+            throw new IllegalInputForDomainException("지하철 역 이름은 null 또는 공백일 수 없습니다.");
         }
-        if (name.length() > 10) {
-            throw new IllegalArgumentException("이름은 1~10글자여야합니다.");
+        if (name.length() > MAX_LENGTH) {
+            throw new IllegalInputForDomainException("이름은 1~10글자여야합니다.");
         }
     }
 

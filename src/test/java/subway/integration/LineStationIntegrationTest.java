@@ -4,20 +4,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.LineStationsRequest;
+import org.springframework.transaction.annotation.Transactional;
+import subway.dto.LineStationRequest;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
 
+@Transactional
 @DisplayName("노선의 구간 관련")
 public class LineStationIntegrationTest extends  IntegrationTest{
 
     @DisplayName("노선 역 등록")
     @Test
     void 노선_역_등록() {
-        LineStationsRequest request = new LineStationsRequest(1L, 4L, 3);
+        LineStationRequest request = new LineStationRequest(1L, 4L, 3);
 
         given()
                 .log().all()
@@ -45,8 +45,8 @@ public class LineStationIntegrationTest extends  IntegrationTest{
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body("$", hasSize(2))
                 .body("id", hasItems(1, 2))
-                .body("name", hasItems("1", "2"))
-                .body("color", hasItems("파랑", "초록"));
+                .body("name", hasItems("2호선", "8호선"))
+                .body("color", hasItems("초록", "파랑"));
     }
 
     @DisplayName("노선 역 조회")
@@ -62,9 +62,9 @@ public class LineStationIntegrationTest extends  IntegrationTest{
                 .statusCode(HttpStatus.OK.value())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body("id", equalTo(1))
-                .body("name", equalTo("1"))
-                .body("color", equalTo("파랑"))
-                .body("stationResponses", hasSize(2));
+                .body("name", equalTo("2호선"))
+                .body("color", equalTo("초록"))
+                .body("stationResponses", hasSize(3));
     }
 
     @DisplayName("노선 역 삭제")
