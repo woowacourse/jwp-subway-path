@@ -2,6 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.domain.customer.Customer;
 import subway.domain.fare.FareCalculator;
 import subway.domain.path.Path;
 import subway.domain.path.PathFinder;
@@ -28,14 +29,19 @@ public class PathService {
         this.fareCalculator = fareCalculator;
     }
 
-    public PathResponse findShortestPath(Long startStationId, Long endStationId) {
+    public PathResponse findShortestPath(Long startStationId, Long endStationId, int age) {
         List<Section> allSections = sectionRepository.findAllSections();
         Station startStation = stationRepository.findStationById(startStationId);
         Station endStation = stationRepository.findStationById(endStationId);
+
         Path path = PathFinder.findPath(new Sections(allSections), startStation, endStation);
         List<String> stationNames = path.getStationNames();
         int totalDistance = path.getDistance();
+
         int fare = fareCalculator.calculate(totalDistance, path.getLinesToUse());
+        Customer customer = new Customer(age);
+        fare = customer.getDiscountedPrice(fare);
+
         return new PathResponse(stationNames, totalDistance, fare);
     }
 }

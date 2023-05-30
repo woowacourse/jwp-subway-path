@@ -1,10 +1,7 @@
 package subway.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import subway.application.PathService;
 import subway.dto.PathResponse;
 
@@ -21,7 +18,8 @@ public class PathController {
     @GetMapping("/{startStationId}/{endStationId}")
     public ResponseEntity<PathResponse> shortestPath(
             @PathVariable("startStationId") Long startStationId,
-            @PathVariable("endStationId") Long endStationId) {
-        return ResponseEntity.ok(pathService.findShortestPath(startStationId, endStationId));
+            @PathVariable("endStationId") Long endStationId,
+            @RequestParam int age) {
+        return ResponseEntity.ok(pathService.findShortestPath(startStationId, endStationId, age));
     }
 }
