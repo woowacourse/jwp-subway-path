@@ -70,8 +70,9 @@
 
 ### 리팩토링 목록
 
-- [ ] 최단 경로 조회 API url 변경
-  -  [ ] 응답 형식 변경
+- [ ] 최단 경로 조회 API
+  - [x] url 변경
+  - [ ] 응답 형식 변경
 - [ ] 최단 경로 조회 기능
   - [ ] getDijkstraShortestPath 메소드 추상화
   - [ ] getDijkstraShortestPath 메소드 sourceStation과 targetStation이 같은 경우 예외 처리 기능 구현
@@ -110,9 +111,9 @@
 
 ### 경로 조회 API
 
-| Method | URI                 | Description   |
-|--------|---------------------|---------------|
-| GET    | /paths/shortestPath | 최단 경로 및 요금 조회 |
+| Method | URI             | Description   |
+|--------|-----------------|---------------|
+| GET    | /paths/shortest | 최단 경로 및 요금 조회 |
 
 ---
 
