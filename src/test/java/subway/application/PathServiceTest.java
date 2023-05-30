@@ -43,7 +43,7 @@ class PathServiceTest {
         when(fareCalculator.calculate(DISTANCE_잠실역_TO_건대역, Set.of(LINE2))).thenReturn(FARE_잠실역_TO_건대역);
 
         // when
-        PathResponse response = pathService.findShortestPath(STATION_잠실역_ID, STATION_건대역_ID);
+        PathResponse response = pathService.findShortestPath(STATION_잠실역_ID, STATION_건대역_ID, 50);
 
         // then
         assertThat(response).isEqualTo(RESPONSE_PATH_잠실역_TO_건대역);

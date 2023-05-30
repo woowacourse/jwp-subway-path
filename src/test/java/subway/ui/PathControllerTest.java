@@ -34,11 +34,12 @@ class PathControllerTest {
     @DisplayName("GET /path uri로 요청해서 최단 거리 경로를 조회한다.")
     void findShortestPathTest() throws Exception {
         // given
+        int age = 50;
         PathResponse response = RESPONSE_PATH_강변역_TO_성수역;
-        when(pathService.findShortestPath(STATION_강변역_ID, STATION_성수역_ID)).thenReturn(response);
+        when(pathService.findShortestPath(STATION_강변역_ID, STATION_성수역_ID, age)).thenReturn(response);
 
         // when, then
-        mockMvc.perform(get("/path/" + STATION_강변역_ID + "/" + STATION_성수역_ID))
+        mockMvc.perform(get("/path/" + STATION_강변역_ID + "/" + STATION_성수역_ID + "?age=" + age))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.stationNames").value(is(RESPONSE_PATH_강변역_TO_성수역.getStationNames())))
                 .andExpect(jsonPath("$.distance").value(is(RESPONSE_PATH_강변역_TO_성수역.getDistance())))

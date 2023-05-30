@@ -1,44 +1,30 @@
 package subway.domain.customer;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 public enum AgeGroup {
 
-    ADULT(19, 64, 0, 0),
-    TEENAGER(13, 18, 350, 0.2),
-    CHILD(6, 12, 350, 0.5),
-    PREFERENTIAL(0, 1);
+    ADULT(age -> (Constants.MIN_ADULT_AGE <= age) && (age <= Constants.MAX_ADULT_AGE), 0, 0),
+    TEENAGER(age -> (Constants.MIN_TEENAGER_AGE <= age) && (age <= Constants.MAX_TEENAGER_AGE), 350, 0.2),
+    CHILD(age -> (Constants.MIN_CHILD_AGE <= age) && (age <= Constants.MAX_CHILD_AGE), 350, 0.5),
+    PREFERENTIAL(age -> (age <= Constants.MAX_BABY_AGE) || (age >= Constants.MIN_OLD_AGE), 0, 1);
 
-    private int minAge;
-    private int maxAge;
+    private final Predicate<Integer> condition;
     private final int deductPrice;
     private final double discountRate;
 
-    AgeGroup(int deductPrice, double discountRate) {
-        this.deductPrice = deductPrice;
-        this.discountRate = discountRate;
-    }
-
-    AgeGroup(int minAge, int maxAge, int deductPrice, double discountRate) {
-        this.minAge = minAge;
-        this.maxAge = maxAge;
+    AgeGroup(Predicate<Integer> condition, int deductPrice, double discountRate) {
+        this.condition = condition;
         this.deductPrice = deductPrice;
         this.discountRate = discountRate;
     }
 
     public static AgeGroup from(int age) {
-        return Arrays.stream(values()).filter(ageGroup -> ageGroup != PREFERENTIAL)
-                .filter(ageGroup -> ageGroup.minAge <= age && age <= ageGroup.maxAge)
+        return Arrays.stream(values())
+                .filter(value -> value.condition.test(age))
                 .findAny()
-                .orElse(PREFERENTIAL);
-    }
-
-    public int getMinAge() {
-        return minAge;
-    }
-
-    public int getMaxAge() {
-        return maxAge;
+                .orElseThrow();
     }
 
     public int getDeductPrice() {
@@ -47,5 +33,16 @@ public enum AgeGroup {
 
     public double getDiscountRate() {
         return discountRate;
+    }
+
+    private static class Constants {
+        public static final int MIN_ADULT_AGE = 19;
+        public static final int MAX_ADULT_AGE = 64;
+        public static final int MIN_TEENAGER_AGE = 13;
+        public static final int MAX_TEENAGER_AGE = 18;
+        public static final int MIN_CHILD_AGE = 6;
+        public static final int MAX_CHILD_AGE = 12;
+        public static final int MAX_BABY_AGE = 5;
+        public static final int MIN_OLD_AGE = 65;
     }
 }

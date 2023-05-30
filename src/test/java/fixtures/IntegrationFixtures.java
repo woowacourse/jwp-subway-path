@@ -8,6 +8,8 @@ import subway.dto.StationRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+import static subway.domain.customer.AgeGroup.*;
+
 
 public class IntegrationFixtures {
 
@@ -47,7 +49,10 @@ public class IntegrationFixtures {
     public static final int DISTANCE_잠실역_TO_암사역 = 8;
     public static final int DISTANCE_온수역_TO_철산역 = 11;
 
-    public static final int FARE_선릉역_TO_암사역 = 1350 + LINE2_SURCHARGE;
+    public static final int ADULT_FARE_선릉역_TO_암사역 = 1350 + LINE2_SURCHARGE;
+    public static final int TEENAGER_FARE_선릉역_TO_암사역 = (int) ((ADULT_FARE_선릉역_TO_암사역 - TEENAGER.getDeductPrice()) * (1 - TEENAGER.getDiscountRate()));
+    public static final int CHILD_FARE_선릉역_TO_암사역 = (int) ((ADULT_FARE_선릉역_TO_암사역 - CHILD.getDeductPrice()) * (1 - CHILD.getDiscountRate()));
+    public static final int PREFERENTIAL_FARE_선릉역_TO_암사역 = (int) ((ADULT_FARE_선릉역_TO_암사역 - PREFERENTIAL.getDeductPrice()) * (1 - PREFERENTIAL.getDiscountRate()));
 
     public static final LineRequest REQUEST_LINE4 = new LineRequest(LINE4_NAME, 0);
     public static final LineRequest REQUEST_NEW_LINE2 = new LineRequest(LINE2_NEW_NAME, LINE2_SURCHARGE);
@@ -73,9 +78,20 @@ public class IntegrationFixtures {
     public static final LineFindResponse LINE7_노선도 = new LineFindResponse(LINE7_NAME, new ArrayList<>());
     public static final List<LineFindResponse> ALL_LINE_노선도 = List.of(LINE2_노선도, LINE8_노선도, LINE7_노선도);
 
-    public static final PathResponse PATH_선릉역_TO_암사역 = new PathResponse(
+    public static final PathResponse PATH_선릉역_TO_암사역_FOR_ADULT = new PathResponse(
             List.of(STATION_선릉역_NAME, STATION_잠실역_NAME, STATION_암사역_NAME),
             DISTANCE_선릉역_TO_잠실역 + DISTANCE_잠실역_TO_암사역,
-            FARE_선릉역_TO_암사역);
-
+            ADULT_FARE_선릉역_TO_암사역);
+    public static final PathResponse PATH_선릉역_TO_암사역_FOR_TEENAGER = new PathResponse(
+            List.of(STATION_선릉역_NAME, STATION_잠실역_NAME, STATION_암사역_NAME),
+            DISTANCE_선릉역_TO_잠실역 + DISTANCE_잠실역_TO_암사역,
+            TEENAGER_FARE_선릉역_TO_암사역);
+    public static final PathResponse PATH_선릉역_TO_암사역_FOR_CHILD = new PathResponse(
+            List.of(STATION_선릉역_NAME, STATION_잠실역_NAME, STATION_암사역_NAME),
+            DISTANCE_선릉역_TO_잠실역 + DISTANCE_잠실역_TO_암사역,
+            CHILD_FARE_선릉역_TO_암사역);
+    public static final PathResponse PATH_선릉역_TO_암사역_FOR_PREFERENTIAL = new PathResponse(
+            List.of(STATION_선릉역_NAME, STATION_잠실역_NAME, STATION_암사역_NAME),
+            DISTANCE_선릉역_TO_잠실역 + DISTANCE_잠실역_TO_암사역,
+            PREFERENTIAL_FARE_선릉역_TO_암사역);
 }

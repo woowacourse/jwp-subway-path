@@ -35,6 +35,7 @@ class PathIntegrationTest extends IntegrationTest {
     @DisplayName("경로와 요금을 조회할 수 있다.")
     void findPathTest() throws JsonProcessingException {
         // given
+        int age = 50;
         Long startStationId = STATION_LINE2_선릉역_ID;
         Long endStationId = STATION_LINE8_암사역_ID;
 
@@ -43,12 +44,78 @@ class PathIntegrationTest extends IntegrationTest {
                 RestAssured.given().log().all()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .when()
-                        .get("/path/" + startStationId + "/" + endStationId)
+                        .get("/path/" + startStationId + "/" + endStationId + "?age=" + age)
                         .then().log().all()
                         .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.body().asString()).isEqualTo(objectMapper.writeValueAsString(PATH_선릉역_TO_암사역));
+        assertThat(response.body().asString()).isEqualTo(objectMapper.writeValueAsString(PATH_선릉역_TO_암사역_FOR_ADULT));
+    }
+
+    @Test
+    @DisplayName("경로와 청소년 요금을 조회할 수 있다.")
+    void findPathTest_teenager() throws JsonProcessingException {
+        // given
+        int teenagerAge = 15;
+        Long startStationId = STATION_LINE2_선릉역_ID;
+        Long endStationId = STATION_LINE8_암사역_ID;
+
+        // when
+        ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .get("/path/" + startStationId + "/" + endStationId + "?age=" + teenagerAge)
+                        .then().log().all()
+                        .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().asString()).isEqualTo(objectMapper.writeValueAsString(PATH_선릉역_TO_암사역_FOR_TEENAGER));
+    }
+
+    @Test
+    @DisplayName("경로와 어린이 요금을 조회할 수 있다.")
+    void findPathTest_child() throws JsonProcessingException {
+        // given
+        int childAge = 10;
+        Long startStationId = STATION_LINE2_선릉역_ID;
+        Long endStationId = STATION_LINE8_암사역_ID;
+
+        // when
+        ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .get("/path/" + startStationId + "/" + endStationId + "?age=" + childAge)
+                        .then().log().all()
+                        .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().asString()).isEqualTo(objectMapper.writeValueAsString(PATH_선릉역_TO_암사역_FOR_CHILD));
+    }
+
+    @Test
+    @DisplayName("경로와 우대 요금을 조회할 수 있다.")
+    void findPathTest_preferential() throws JsonProcessingException {
+        // given
+        int preferentialAge = 80;
+        Long startStationId = STATION_LINE2_선릉역_ID;
+        Long endStationId = STATION_LINE8_암사역_ID;
+
+        // when
+        ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .get("/path/" + startStationId + "/" + endStationId + "?age=" + preferentialAge)
+                        .then().log().all()
+                        .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().asString()).isEqualTo(objectMapper.writeValueAsString(PATH_선릉역_TO_암사역_FOR_PREFERENTIAL));
     }
 }
