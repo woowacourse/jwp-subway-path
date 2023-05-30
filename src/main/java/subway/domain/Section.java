@@ -8,53 +8,53 @@ public class Section {
     private final Station right;
     private final Distance distance;
 
-    public Section(Station left, Station right, Distance distance) {
-        this.left = left;
-        this.right = right;
-        this.distance = distance;
-    }
+        public Section(final Station left, final Station right, final Distance distance) {
+            this.left = left;
+            this.right = right;
+            this.distance = distance;
+        }
 
-    public boolean hasSameStationWith(Section targetSection) {
+    public boolean hasSameStationWith(final Section targetSection) {
         return hasStationOf(targetSection.left) || hasStationOf(targetSection.right);
     }
 
-    private boolean hasStationOf(Station station) {
+    private boolean hasStationOf(final Station station) {
         return left.equals(station) || right.equals(station);
     }
 
-    public boolean isDistanceBiggerThan(Section target) {
+    public boolean isDistanceBiggerThan(final Section target) {
         return distance.isBiggerThan(target.distance);
     }
 
-    public boolean includeSection(Section target) {
+    public boolean includeSection(final Section target) {
         return target.right.equals(right) || target.left.equals(left);
     }
 
-    public boolean containRightStationOf(Section target) {
+    public boolean containRightStationOf(final Section target) {
         return right.equals(target.right) || left.equals(target.right);
     }
 
-    public boolean containLeftStationOf(Section target) {
+    public boolean containLeftStationOf(final Section target) {
         return right.equals(target.left) || left.equals(target.left);
     }
 
-    public Section makeRightSectionTo(Section targetSection) {
+    public Section makeRightSectionTo(final Section targetSection) {
         return new Section(left, targetSection.left, distance.sub(targetSection.distance));
     }
 
-    public Section makeLeftSectionTo(Section targetSection) {
+    public Section makeLeftSectionTo(final Section targetSection) {
         return new Section(targetSection.right, right, distance.sub(targetSection.distance));
     }
 
-    public boolean hasLeftStation(Station target) {
+    public boolean hasLeftStation(final Station target) {
         return left.equals(target);
     }
 
-    public boolean hasRightStation(Station target) {
+    public boolean hasRightStation(final Station target) {
         return right.equals(target);
     }
 
-    public Section merge(Section target) {
+    public Section merge(final Section target) {
         if (!right.equals(target.left)) {
             throw new IllegalStateException("두 섹션은 접합부가 달라 연결될 수 없습니다.");
         }
@@ -75,10 +75,10 @@ public class Section {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Section section = (Section) o;
+        final Section section = (Section) o;
         return left.equals(section.left) && right.equals(section.right);
     }
 
