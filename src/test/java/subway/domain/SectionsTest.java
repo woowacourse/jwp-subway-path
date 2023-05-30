@@ -166,4 +166,22 @@ public class SectionsTest {
 
         assertThat(sections.isExistAsUpStation(new Station("잠실역"))).isTrue();
     }
+
+    @Test
+    void 중복이_제거된_모든_역을_반환한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                section,
+                new Section(new Station("잠실역"), new Station("신촌역"), 1L)));
+
+        // when
+        final List<Station> stations = sections.getStations();
+
+        // then
+        final List<Station> expected = List.of(new Station("잠실역"), new Station("강남역"), new Station("신촌역"));
+        assertThat(expected).usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .ignoringExpectedNullFields()
+                .isEqualTo(stations);
+    }
 }

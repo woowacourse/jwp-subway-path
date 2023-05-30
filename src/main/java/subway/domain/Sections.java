@@ -1,6 +1,8 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import subway.exception.invalid.SectionInvalidException;
 
 public class Sections {
@@ -75,6 +77,18 @@ public class Sections {
     public boolean isExistAsUpStation(final Station station) {
         return sections.stream()
                 .anyMatch(nowSection -> nowSection.getUpStation().getName().equals(station.getName()));
+    }
+
+    public List<Station> getStations() {
+        List<String> stations = new ArrayList<>();
+        for (final Section section : sections) {
+            stations.add(section.getUpStation().getName());
+            stations.add(section.getDownStation().getName());
+        }
+        return stations.stream()
+                .distinct()
+                .map(Station::new)
+                .collect(Collectors.toList());
     }
 
     public List<Section> getSections() {
