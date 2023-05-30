@@ -4,8 +4,11 @@ import java.util.List;
 
 public class ShortestWayResponse {
 
-    private final int fee;
-    private final List<StationResponse> stations;
+    private int fee;
+    private List<StationResponse> stations;
+
+    public ShortestWayResponse() {
+    }
 
     public ShortestWayResponse(final int fee, final List<StationResponse> stations) {
         this.fee = fee;

@@ -7,10 +7,13 @@ import java.util.List;
 
 public class LineWithStationResponse {
 
-    private final Long id;
-    private final String name;
-    private final String color;
-    private final List<StationResponse> stations;
+    private Long id;
+    private String name;
+    private String color;
+    private List<StationResponse> stations;
+
+    public LineWithStationResponse() {
+    }
 
     public LineWithStationResponse(
             final Long id, final String name,

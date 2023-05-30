@@ -4,11 +4,14 @@ import javax.validation.constraints.NotBlank;
 
 public class LineRequest {
     @NotBlank
-    private final String name;
+    private String name;
     @NotBlank
-    private final String color;
+    private String color;
 
-    public LineRequest(String name, String color) {
+    public LineRequest() {
+    }
+
+    public LineRequest(final String name, final String color) {
         this.name = name;
         this.color = color;
     }

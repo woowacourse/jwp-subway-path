@@ -8,14 +8,17 @@ public class AddPathRequest {
 
     @NotNull
     @Positive
-    private final Long targetStationId;
+    private Long targetStationId;
     @NotNull
     @Positive
-    private final Long addStationId;
+    private Long addStationId;
     @Positive
-    private final Integer distance;
+    private Integer distance;
     @NotBlank
-    private final String direction;
+    private String direction;
+
+    public AddPathRequest() {
+    }
 
     public AddPathRequest(final Long targetStationId, final Long addStationId, final Integer distance, final String direction) {
         this.targetStationId = targetStationId;

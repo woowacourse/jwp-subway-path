@@ -3,9 +3,12 @@ package subway.dto.response;
 import subway.domain.Line;
 
 public class LineResponse {
-    private final Long id;
-    private final String name;
-    private final String color;
+    private Long id;
+    private String name;
+    private String color;
+
+    public LineResponse() {
+    }
 
     public LineResponse(final Long id, final String name, final String color) {
         this.id = id;
@@ -13,7 +16,7 @@ public class LineResponse {
         this.color = color;
     }
 
-    public static LineResponse of(Line line) {
+    public static LineResponse of(final Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 
