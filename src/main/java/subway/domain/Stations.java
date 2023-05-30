@@ -27,7 +27,6 @@ public class Stations {
     }
 
     public Station findStationById(long stationId) {
-        System.out.println("in stations : " + stationId);
         return stations.stream()
                 .filter(station -> station.getId() == stationId)
                 .findAny()

@@ -38,8 +38,6 @@ public class Section {
     }
 
     public boolean containsSameStations(Station upstream, Station downstream) {
-        System.out.println("in section: " + upstream + downstream);
-        System.out.println(this.upstream.equals(upstream) && this.downstream.equals(downstream));
         return this.upstream.equals(upstream) && this.downstream.equals(downstream);
     }
 
