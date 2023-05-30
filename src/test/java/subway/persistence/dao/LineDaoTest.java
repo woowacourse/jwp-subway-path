@@ -30,16 +30,16 @@ class LineDaoTest {
     private final RowMapper<LineEntity> rowMapper = (resultSet, rowNumber) -> new LineEntity(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("upward_terminus"),
-            resultSet.getString("downward_terminus")
-    );
+            resultSet.getLong("upward_terminus_id"),
+            resultSet.getLong("downward_terminus_id"),
+            resultSet.getInt("fare"));
 
     @Autowired
     LineDaoTest(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("line")
-                .usingColumns("name", "upward_terminus", "downward_terminus")
+                .usingColumns("name", "upward_terminus_id", "downward_terminus_id", "fare")
                 .usingGeneratedKeyColumns("id");
         this.lineDao = new LineDao(namedParameterJdbcTemplate);
     }
@@ -50,20 +50,20 @@ class LineDaoTest {
         LineEntity lineEntity = new LineEntity(
                 1L,
                 "2호선",
-                "강남역",
-                "잠실역"
-        );
+                1L,
+                3L,
+                0);
         long id = lineDao.insert(lineEntity);
 
-        String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line WHERE id=:id";
+        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id, fare FROM line WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         LineEntity actualLineEntity = namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
 
         assertAll(
-                () -> assertThat(actualLineEntity.getUpwardTerminus())
-                        .isEqualTo(lineEntity.getUpwardTerminus()),
-                () -> assertThat(actualLineEntity.getDownwardTerminus())
-                        .isEqualTo(lineEntity.getDownwardTerminus())
+                () -> assertThat(actualLineEntity.getUpwardTerminusId())
+                        .isEqualTo(lineEntity.getUpwardTerminusId()),
+                () -> assertThat(actualLineEntity.getDownwardTerminusId())
+                        .isEqualTo(lineEntity.getDownwardTerminusId())
         );
     }
 
@@ -73,18 +73,18 @@ class LineDaoTest {
         LineEntity lineEntity = new LineEntity(
                 1L,
                 "2호선",
-                "강남역",
-                "잠실역"
-        );
+                1L,
+                3L,
+                0);
         SqlParameterSource params = new BeanPropertySqlParameterSource(lineEntity);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        LineEntity actualLineEntity = lineDao.findById(id);
+        LineEntity actualLineEntity = lineDao.findById(id).get();
 
         assertAll(
-                () -> assertThat(actualLineEntity.getUpwardTerminus())
-                        .isEqualTo(lineEntity.getUpwardTerminus()),
-                () -> assertThat(actualLineEntity.getDownwardTerminus())
-                        .isEqualTo(lineEntity.getDownwardTerminus())
+                () -> assertThat(actualLineEntity.getUpwardTerminusId())
+                        .isEqualTo(lineEntity.getUpwardTerminusId()),
+                () -> assertThat(actualLineEntity.getDownwardTerminusId())
+                        .isEqualTo(lineEntity.getDownwardTerminusId())
         );
     }
 
@@ -94,18 +94,18 @@ class LineDaoTest {
         LineEntity lineEntity1 = new LineEntity(
                 1L,
                 "2호선",
-                "강남역",
-                "잠실역"
-        );
+                1L,
+                3L,
+                0);
         SqlParameterSource params1 = new BeanPropertySqlParameterSource(lineEntity1);
         simpleJdbcInsert.executeAndReturnKey(params1).longValue();
 
         LineEntity lineEntity2 = new LineEntity(
                 2L,
                 "3호선",
-                "수서역",
-                "교대역"
-        );
+                2L,
+                3L,
+                0);
         SqlParameterSource params2 = new BeanPropertySqlParameterSource(lineEntity2);
         simpleJdbcInsert.executeAndReturnKey(params2).longValue();
 
@@ -113,10 +113,10 @@ class LineDaoTest {
 
         assertAll(
                 () -> assertThat(actualLineEntities).hasSize(2),
-                () -> assertThat(actualLineEntities.get(0).getUpwardTerminus())
-                        .isEqualTo(lineEntity1.getUpwardTerminus()),
-                () -> assertThat(actualLineEntities.get(0).getDownwardTerminus())
-                        .isEqualTo(lineEntity1.getDownwardTerminus())
+                () -> assertThat(actualLineEntities.get(0).getUpwardTerminusId())
+                        .isEqualTo(lineEntity1.getUpwardTerminusId()),
+                () -> assertThat(actualLineEntities.get(0).getDownwardTerminusId())
+                        .isEqualTo(lineEntity1.getDownwardTerminusId())
         );
     }
 
@@ -126,24 +126,24 @@ class LineDaoTest {
         LineEntity lineEntity = new LineEntity(
                 1L,
                 "2호선",
-                "강남역",
-                "잠실역"
-        );
+                1L,
+                3L,
+                0);
         SqlParameterSource params = new BeanPropertySqlParameterSource(lineEntity);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        LineEntity lineEntityToUpdate = new LineEntity(lineEntity.getId(), "2호선", "강남역", "몽촌토성역");
+        LineEntity lineEntityToUpdate = new LineEntity(lineEntity.getId(), "2호선", 1L, 2L, 0);
         lineDao.update(lineEntityToUpdate);
 
-        String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line WHERE id=:id";
+        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id, fare FROM line WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         LineEntity actualLineEntity = namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
 
         assertAll(
-                () -> assertThat(actualLineEntity.getUpwardTerminus())
-                        .isEqualTo(lineEntityToUpdate.getUpwardTerminus()),
-                () -> assertThat(actualLineEntity.getDownwardTerminus())
-                        .isEqualTo(lineEntity.getDownwardTerminus())
+                () -> assertThat(actualLineEntity.getUpwardTerminusId())
+                        .isEqualTo(lineEntityToUpdate.getUpwardTerminusId()),
+                () -> assertThat(actualLineEntity.getDownwardTerminusId())
+                        .isEqualTo(lineEntity.getDownwardTerminusId())
         );
     }
 }

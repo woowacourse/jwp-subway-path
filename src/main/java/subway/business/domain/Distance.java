@@ -12,7 +12,7 @@ public class Distance {
     }
 
     public void validate(int distance) {
-        if(distance < MIN_LENGTH) {
+        if (distance < MIN_LENGTH) {
             throw new IllegalArgumentException("거리는 1보다 작을 수 없습니다.");
         }
     }

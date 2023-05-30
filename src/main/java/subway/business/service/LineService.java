@@ -1,42 +1,42 @@
 package subway.business.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.business.domain.Direction;
-import subway.business.domain.Line;
-import subway.business.domain.LineRepository;
-import subway.business.domain.Section;
-import subway.business.service.dto.LineResponse;
-import subway.business.service.dto.LineSaveRequest;
-import subway.business.service.dto.LineStationsResponse;
-import subway.business.service.dto.StationAddToLineRequest;
+import subway.business.domain.*;
+import subway.business.service.dto.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
 public class LineService {
 
     private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
     }
 
     public void addStationToLine(long lineId, StationAddToLineRequest stationAddToLineRequest) {
         Line line = lineRepository.findById(lineId);
+        Station station = stationRepository.findById(stationAddToLineRequest.getStationId());
+        Station neighborhoodStation = stationRepository.findById(stationAddToLineRequest.getNeighborhoodStationId());
         line.addStation(
-                stationAddToLineRequest.getStation(),
-                stationAddToLineRequest.getNeighborhoodStation(),
+                station,
+                neighborhoodStation,
                 Direction.from(stationAddToLineRequest.getAddDirection()),
                 stationAddToLineRequest.getDistance()
         );
         lineRepository.update(line);
     }
 
-    public void deleteStation(Long lineId, String stationName) {
+    public void deleteStation(Long lineId, StationDeleteRequest stationDeleteRequest) {
         Line line = lineRepository.findById(lineId);
-        line.deleteStation(stationName);
+        Station station = stationRepository.findById(stationDeleteRequest.getStationId());
+        line.deleteStation(station);
         lineRepository.update(line);
     }
 
@@ -55,25 +55,29 @@ public class LineService {
     }
 
     public LineResponse createLine(LineSaveRequest lineSaveRequest) {
+        Station upwardStation = stationRepository.findById(lineSaveRequest.getUpwardTerminusId());
+        Station downwardStation = stationRepository.findById(lineSaveRequest.getDownwardTerminusId());
+
         Line line = Line.of(
                 lineSaveRequest.getName(),
-                lineSaveRequest.getUpwardTerminus(),
-                lineSaveRequest.getDownwardTerminus(),
-                lineSaveRequest.getDistance()
+                upwardStation,
+                downwardStation,
+                lineSaveRequest.getDistance(),
+                lineSaveRequest.getFare()
         );
-        return new LineResponse(lineRepository.create(line), line.getName());
+        return new LineResponse(lineRepository.create(line), line.getName(), line.getFare());
     }
 
     private LineStationsResponse getLineStationsResponseFrom(Line line) {
         List<Section> sections = line.getSections();
-        List<String> stationNames = sections.stream()
-                .map(section -> section.getUpwardStation().getName())
+        List<StationResponse> stationResponses = sections.stream()
+                .map(section -> StationResponse.from(section.getUpwardStation()))
                 .collect(Collectors.toList());
-        stationNames.add(getDownwardTerminusName(sections));
-        return new LineStationsResponse(line.getName(), stationNames);
+        stationResponses.add(getDownwardTerminusResponse(sections));
+        return new LineStationsResponse(line.getId(), line.getName(), stationResponses, line.getFare());
     }
 
-    private String getDownwardTerminusName(List<Section> sections) {
-        return sections.get(sections.size() - 1).getDownwardStation().getName();
+    private StationResponse getDownwardTerminusResponse(List<Section> sections) {
+        return StationResponse.from(sections.get(sections.size() - 1).getDownwardStation());
     }
 }
