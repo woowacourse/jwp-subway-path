@@ -68,6 +68,21 @@
     - [x] 10km~50km: 5km 까지 마다 100원 추가
     - [x] 50km 초과: 8km 까지 마다 100원 추가
 
+### 리팩토링 목록
+
+- [ ] 최단 경로 조회 API url 변경
+  -  [ ] 응답 형식 변경
+- [ ] 최단 경로 조회 기능
+  - [ ] getDijkstraShortestPath 메소드 추상화
+  - [ ] getDijkstraShortestPath 메소드 sourceStation과 targetStation이 같은 경우 예외 처리 기능 구현
+  - [ ] Vertex로 역(Station) 객체 사용하도록 리팩토링
+  - [ ] Section 도메인에 외부 라이브러리에 대한 의존 끊기
+- [ ] 요금 계산 기능
+  - [ ] 요금 계산 기능 책임 분리
+- [ ] 테스트
+  - [ ] Path 테스트 추가
+  - [ ] Path Integration 테스트 추가
+
 ---
 
 ## API 명세서
@@ -213,6 +228,8 @@ HTTP/1.1 201 Created
 Content-Type: application/json
 Location: /stations/1
 ```
+
+---
 
 ### Section API 요청 / 응답 예시
 
