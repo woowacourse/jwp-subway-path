@@ -1,6 +1,7 @@
 package subway.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
@@ -22,7 +23,11 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        Optional<Station> stationOptional = stationDao.findById(id);
+        if (stationOptional.isEmpty()) {
+            throw new IllegalArgumentException("해당 역이 존재하지 않습니다.");
+        }
+        return StationResponse.of(stationOptional.get());
     }
 
     public List<StationResponse> findAllStationResponses() {

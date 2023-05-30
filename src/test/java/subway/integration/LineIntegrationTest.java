@@ -14,16 +14,17 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
-import subway.dto.StationResponse;
 import subway.dto.StationsByLineResponse;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
+@Sql("classpath:test_schema.sql")
+@Sql("classpath:test_data.sql")
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
@@ -247,24 +248,15 @@ public class LineIntegrationTest extends IntegrationTest {
                 .extract();
 
         StationsByLineResponse stationsByLineResponse = response.as(StationsByLineResponse.class);
-        LineResponse lineResponse = stationsByLineResponse.getLineResponse();
-        List<StationResponse> stationResponses = stationsByLineResponse.getStationResponses();
 
-        assertSoftly(softly -> {
-            softly.assertThat(lineResponse.getId()).isEqualTo(1L);
-            softly.assertThat(lineResponse.getName()).isEqualTo("2호선");
-            softly.assertThat(lineResponse.getColor()).isEqualTo("Green");
+        StationsByLineResponse expect = new StationsByLineResponse(new Line(1L, "2호선", "Green"),
+                List.of(new Station(1L, "후추"),
+                        new Station(2L, "디노"),
+                        new Station(3L, "조앤"),
+                        new Station(4L, "로운")
+                ));
 
-            softly.assertThat(stationResponses.size()).isEqualTo(4);
-            softly.assertThat(stationResponses.get(0).getId()).isEqualTo(1L);
-            softly.assertThat(stationResponses.get(0).getName()).isEqualTo("후추");
-            softly.assertThat(stationResponses.get(1).getId()).isEqualTo(2L);
-            softly.assertThat(stationResponses.get(1).getName()).isEqualTo("디노");
-            softly.assertThat(stationResponses.get(2).getId()).isEqualTo(3L);
-            softly.assertThat(stationResponses.get(2).getName()).isEqualTo("조앤");
-            softly.assertThat(stationResponses.get(3).getId()).isEqualTo(4L);
-            softly.assertThat(stationResponses.get(3).getName()).isEqualTo("로운");
-        });
+        assertThat(stationsByLineResponse).usingRecursiveComparison().isEqualTo(expect);
     }
 
     @Test
@@ -280,40 +272,27 @@ public class LineIntegrationTest extends IntegrationTest {
         List<StationsByLineResponse> stationsByLineResponses = response.jsonPath()
                 .getList(".", StationsByLineResponse.class);
 
+        StationsByLineResponse expect1 = new StationsByLineResponse(new Line(1L, "2호선", "Green"),
+                List.of(new Station(1L, "후추"),
+                        new Station(2L, "디노"),
+                        new Station(3L, "조앤"),
+                        new Station(4L, "로운")
+                ));
+
+        StationsByLineResponse expect2 = new StationsByLineResponse(new Line(2L, "8호선", "pink"),
+                List.of(new Station(3L, "조앤"),
+                        new Station(5L, "포비"),
+                        new Station(4L, "로운")
+                ));
+
         assertSoftly(softly -> {
             softly.assertThat(stationsByLineResponses.size()).isEqualTo(2);
 
             StationsByLineResponse stationsByLineResponse1 = stationsByLineResponses.get(0);
-            LineResponse line1 = stationsByLineResponse1.getLineResponse();
-            List<StationResponse> stations1 = stationsByLineResponse1.getStationResponses();
-
-            softly.assertThat(line1.getId()).isEqualTo(1L);
-            softly.assertThat(line1.getName()).isEqualTo("2호선");
-            softly.assertThat(line1.getColor()).isEqualTo("Green");
-            softly.assertThat(stations1.size()).isEqualTo(4);
-            softly.assertThat(stations1.get(0).getId()).isEqualTo(1L);
-            softly.assertThat(stations1.get(0).getName()).isEqualTo("후추");
-            softly.assertThat(stations1.get(1).getId()).isEqualTo(2L);
-            softly.assertThat(stations1.get(1).getName()).isEqualTo("디노");
-            softly.assertThat(stations1.get(2).getId()).isEqualTo(3L);
-            softly.assertThat(stations1.get(2).getName()).isEqualTo("조앤");
-            softly.assertThat(stations1.get(3).getId()).isEqualTo(4L);
-            softly.assertThat(stations1.get(3).getName()).isEqualTo("로운");
+            softly.assertThat(stationsByLineResponse1).usingRecursiveComparison().isEqualTo(expect1);
 
             StationsByLineResponse stationsByLineResponse2 = stationsByLineResponses.get(1);
-            LineResponse line2 = stationsByLineResponse2.getLineResponse();
-            List<StationResponse> stations2 = stationsByLineResponse2.getStationResponses();
-
-            softly.assertThat(line2.getId()).isEqualTo(2L);
-            softly.assertThat(line2.getName()).isEqualTo("8호선");
-            softly.assertThat(line2.getColor()).isEqualTo("pink");
-            softly.assertThat(stations2.size()).isEqualTo(3);
-            softly.assertThat(stations2.get(0).getId()).isEqualTo(3L);
-            softly.assertThat(stations2.get(0).getName()).isEqualTo("조앤");
-            softly.assertThat(stations2.get(1).getId()).isEqualTo(5L);
-            softly.assertThat(stations2.get(1).getName()).isEqualTo("포비");
-            softly.assertThat(stations2.get(2).getId()).isEqualTo(4L);
-            softly.assertThat(stations2.get(2).getName()).isEqualTo("로운");
+            softly.assertThat(stationsByLineResponse2).usingRecursiveComparison().isEqualTo(expect2);
         });
     }
 

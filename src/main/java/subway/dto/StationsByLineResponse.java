@@ -1,31 +1,50 @@
 package subway.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import subway.domain.Line;
 import subway.domain.Station;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class StationsByLineResponse {
 
-    private LineResponse lineResponse;
-    private List<StationResponse> stationResponses;
+    private Long lineId;
+    private String name;
+    private String color;
+    private List<StationResponse> stations;
 
     public StationsByLineResponse() {
     }
 
+    public StationsByLineResponse(Long lineId, String name, String color, List<StationResponse> stations) {
+        this.lineId = lineId;
+        this.name = name;
+        this.color = color;
+        this.stations = stations;
+    }
+
     public StationsByLineResponse(final Line line, final List<Station> stations) {
-        lineResponse = new LineResponse(line);
-        stationResponses = stations.stream()
+        this.lineId = line.getId();
+        this.name = line.getName();
+        this.color = line.getColor();
+        this.stations = stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public LineResponse getLineResponse() {
-        return lineResponse;
+    public Long getLineId() {
+        return lineId;
     }
 
-    public List<StationResponse> getStationResponses() {
-        return stationResponses;
+    public String getName() {
+        return name;
     }
+
+    public String getColor() {
+        return color;
+    }
+
+    public List<StationResponse> getStations() {
+        return stations;
+    }
+
 }

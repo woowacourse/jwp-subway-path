@@ -1,5 +1,7 @@
 package subway.dao;
 
+import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,12 +19,22 @@ public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<Section> SECTION_STATION_ROW_MAPPER = (rs, rowNum) ->
-            new Section(
-                    new Station(rs.getLong("from_id"), rs.getString("from_name")),
-                    new Station(rs.getLong("to_id"), rs.getString("to_name")),
-                    rs.getInt("distance")
-            );
+    private final RowMapper<Section> SECTION_STATION_ROW_MAPPER = (rs, rowNum) -> {
+        Optional<Station> fromStation = Optional.ofNullable(
+                new Station(rs.getLong("from_id"), rs.getString("from_name"))
+        );
+        Optional<Station> toStation = Optional.ofNullable(
+                new Station(rs.getLong("to_id"), rs.getString("to_name"))
+        );
+
+        int distance = rs.getInt("distance");
+
+        if (fromStation.isPresent() && toStation.isPresent()) {
+            return new Section(fromStation.get(), toStation.get(), distance);
+        }
+        return null;
+    };
+
 
     public SectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -41,7 +53,7 @@ public class SectionDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public Sections findSectionsByLineId(final Long lineId) {
+    public Optional<Sections> findSectionsByLineId(final Long lineId) {
         final String sql = "SELECT\n" +
                 "    s.id AS section_id,\n" +
                 "    s.from_id,\n" +
@@ -55,7 +67,13 @@ public class SectionDao {
                 "    INNER JOIN STATION t ON s.to_id = t.id\n" +
                 "    INNER JOIN LINE l ON s.line_id = l.id AND line_id=?;";
 
-        return new Sections(jdbcTemplate.query(sql, SECTION_STATION_ROW_MAPPER, lineId));
+        Optional<List<Section>> sectionResource = Optional.ofNullable(
+                jdbcTemplate.query(sql, SECTION_STATION_ROW_MAPPER, lineId));
+        if (sectionResource.get().isEmpty()) {
+            return Optional.empty();
+        }
+        Sections sections = new Sections(sectionResource.get());
+        return Optional.of(sections);
     }
 
     public void deleteSectionByStationId(final Long lineId, final Long stationId) {
@@ -84,6 +102,14 @@ public class SectionDao {
                 + "WHERE\n"
                 + "    s.line_id = ? AND (s.from_id = ? OR s.to_id = ?)";
         return new Sections(jdbcTemplate.query(sql, SECTION_STATION_ROW_MAPPER, lineId, stationId, stationId));
+    }
+
+    public Sections findAllSectionInfo() {
+        final String sql = "SELECT ST.id from_id, ST.name from_name, ST2.id to_id, ST2.name to_name, distance\n"
+                + "FROM SECTION SE\n"
+                + "INNER JOIN STATION ST ON SE.from_id = ST.id \n"
+                + "INNER JOIN STATION ST2 ON SE.to_id = ST2.id;";
+        return new Sections(jdbcTemplate.query(sql, SECTION_STATION_ROW_MAPPER));
     }
 
 }

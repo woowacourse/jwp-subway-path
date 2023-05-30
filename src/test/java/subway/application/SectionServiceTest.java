@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -29,7 +30,7 @@ import subway.dto.SectionRequest;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
 
     @Mock
@@ -46,7 +47,7 @@ class SectionServiceTest {
         Sections emptySections = new Sections();
 
         // when
-        when(sectionDao.findSectionsByLineId(1L)).thenReturn(emptySections);
+        when(sectionDao.findSectionsByLineId(1L)).thenReturn(Optional.empty());
         sectionService.addSection(line.getId(), sectionRequest);
 
         // then
@@ -64,18 +65,17 @@ class SectionServiceTest {
                 new Section(new Station(2L, "디노"), new Station(3L, "조앤"), 7)));
 
         // when
-        when(sectionDao.findSectionsByLineId(1L)).thenReturn(sections);
+        when(sectionDao.findSectionsByLineId(1L)).thenReturn(Optional.of(sections));
         sectionService.addSection(line.getId(), sectionRequest);
 
         // then
         verify(sectionDao, atLeast(2)).insert(any(Long.class), any(Long.class), any(Integer.class), any(Long.class));
         verify(sectionDao, atLeastOnce()).deleteSectionBySectionInfo(any(Long.class), any(Section.class));
         InOrder inOrder = inOrder(sectionDao);
+        inOrder.verify(sectionDao).insert(any(Long.class), any(Long.class), any(Integer.class), any(Long.class));
         inOrder.verify(sectionDao).deleteSectionBySectionInfo(any(Long.class), any(Section.class));
         inOrder.verify(sectionDao).insert(sectionRequest.getFromId(), sectionRequest.getToId(),
                 sectionRequest.getDistance(), line.getId());
-        inOrder.verify(sectionDao).insert(any(Long.class), any(Long.class), any(Integer.class), any(Long.class));
-
     }
 
     @Test
@@ -88,7 +88,7 @@ class SectionServiceTest {
                 new Section(new Station(2L, "디노"), new Station(3L, "조앤"), 7)));
 
         // when
-        when(sectionDao.findSectionsByLineId(line.getId())).thenReturn(sections);
+        when(sectionDao.findSectionsByLineId(line.getId())).thenReturn(Optional.of(sections));
         sectionService.addSection(line.getId(), sectionRequest);
 
         // then
@@ -126,8 +126,8 @@ class SectionServiceTest {
         ));
 
         // when
-        when(sectionDao.findSectionsByStationInfo(line.getId(), 4L)).thenReturn(sections);
-        sectionService.deleteStationById(line.getId(), 4L);
+        when(sectionDao.findSectionsByStationInfo(line.getId(), 3L)).thenReturn(sections);
+        sectionService.deleteStationById(line.getId(), 3L);
 
         // then
         verify(sectionDao, atLeastOnce()).deleteSectionByStationId(any(Long.class), any(Long.class));
@@ -161,7 +161,7 @@ class SectionServiceTest {
         ));
 
         // when
-        when(sectionDao.findSectionsByLineId(line.getId())).thenReturn(sections);
+        when(sectionDao.findSectionsByLineId(line.getId())).thenReturn(Optional.of(sections));
         sectionService.showStations(line);
 
         // then
