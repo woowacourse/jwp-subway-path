@@ -22,7 +22,6 @@ public class StationDao {
                     rs.getString("name")
             );
 
-
     public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)

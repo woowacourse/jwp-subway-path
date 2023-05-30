@@ -8,14 +8,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static subway.fixtures.entity.StationEntityFixture.JAMSIL_STATION_ENTITY;
 
 @SuppressWarnings("NonAsciiCharacters")
 class StationDaoTest extends DaoTest {
 
     @Test
     void 역을_저장한다() {
-        final StationEntity stationEntity = StationEntity.from("잠실역");
-        final StationEntity actual = stationDao.insert(stationEntity);
+        final StationEntity actual = stationDao.insert(JAMSIL_STATION_ENTITY);
 
         SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(actual.getId()).isPositive();
@@ -25,8 +25,7 @@ class StationDaoTest extends DaoTest {
 
     @Test
     void 모든_역을_조회한다() {
-        final StationEntity stationEntity = StationEntity.from("잠실역");
-        stationDao.insert(stationEntity);
+        stationDao.insert(JAMSIL_STATION_ENTITY);
 
         final List<StationEntity> actual = stationDao.findAll();
 
@@ -39,8 +38,7 @@ class StationDaoTest extends DaoTest {
 
     @Test
     void 역_하나를_조회한다() {
-        final StationEntity stationEntity = StationEntity.from("잠실역");
-        final StationEntity insertedStationEntity = stationDao.insert(stationEntity);
+        final StationEntity insertedStationEntity = stationDao.insert(JAMSIL_STATION_ENTITY);
 
         final StationEntity actual = stationDao.findById(insertedStationEntity.getId());
 
@@ -52,8 +50,7 @@ class StationDaoTest extends DaoTest {
 
     @Test
     void 역_하나를_삭제한다() {
-        final StationEntity stationEntity = StationEntity.from("잠실역");
-        final StationEntity insertedStationEntity = stationDao.insert(stationEntity);
+        final StationEntity insertedStationEntity = stationDao.insert(JAMSIL_STATION_ENTITY);
 
         final int actual = assertDoesNotThrow(() -> stationDao.deleteById(insertedStationEntity.getId()));
 

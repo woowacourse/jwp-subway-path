@@ -2,13 +2,13 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.dto.CreationStationDto;
 import subway.domain.Station;
 import subway.persistence.repository.StationRepository;
-import subway.ui.dto.response.ReadStationResponse;
 
-@Transactional
+import java.util.List;
+
 @Service
+@Transactional
 public class StationService {
 
     private final StationRepository stationRepository;
@@ -17,17 +17,18 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public CreationStationDto saveStation(final String name) {
-        final Station station = Station.of(name);
-        final Station persistStation = stationRepository.insert(station);
+    public Station saveStation(final String name) {
+        final Station station = Station.from(name);
 
-        return CreationStationDto.from(persistStation);
+        return stationRepository.insert(station);
     }
 
-    public ReadStationResponse findStationById(final Long id) {
-        final Station station = stationRepository.findById(id);
+    public List<Station> findAll() {
+        return stationRepository.findAll();
+    }
 
-        return ReadStationResponse.of(station);
+    public Station findStationById(final Long id) {
+        return stationRepository.findById(id);
     }
 
     public void deleteStationById(final Long id) {

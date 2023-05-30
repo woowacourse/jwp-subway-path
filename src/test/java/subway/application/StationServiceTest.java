@@ -8,15 +8,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.application.dto.CreationStationDto;
 import subway.domain.Station;
 import subway.persistence.repository.StationRepository;
-import subway.ui.dto.response.ReadStationResponse;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static subway.fixtures.domain.StationFixture.JAMSIL;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -31,35 +32,57 @@ class StationServiceTest {
 
     @Test
     void 역을_저장하다() {
-        final Station station = Station.of(1L, "잠실역");
+        // given
+        when(stationRepository.insert(any())).thenReturn(JAMSIL);
 
-        when(stationRepository.insert(any())).thenReturn(station);
+        // when
+        final Station actual = stationService.saveStation(JAMSIL.getName());
 
-        final CreationStationDto actual = stationService.saveStation("잠실역");
-
+        // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(actual.getId()).isEqualTo(station.getId());
-            softAssertions.assertThat(actual.getName()).isEqualTo(station.getName());
+            softAssertions.assertThat(actual.getId()).isEqualTo(JAMSIL.getId());
+            softAssertions.assertThat(actual.getName()).isEqualTo(JAMSIL.getName());
+        });
+    }
+
+    @Test
+    void 모든_역을_검색하다() {
+        // given
+        when(stationRepository.findAll()).thenReturn(List.of(JAMSIL));
+
+        // when
+        final List<Station> actualStations = stationService.findAll();
+        final Station actualStation = actualStations.get(0);
+
+        // then
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(actualStations).hasSize(1);
+            softAssertions.assertThat(actualStation.getId()).isEqualTo(JAMSIL.getId());
+            softAssertions.assertThat(actualStation.getName()).isEqualTo(JAMSIL.getName());
         });
     }
 
     @Test
     void 아이디를_통해_역을_검색하다() {
-        final Station station = Station.of(1L, "잠실역");
-        when(stationRepository.findById(any())).thenReturn(station);
+        // given
+        when(stationRepository.findById(any())).thenReturn(JAMSIL);
 
-        final ReadStationResponse actual = stationService.findStationById(1L);
+        // when
+        final Station actual = stationService.findStationById(JAMSIL.getId());
 
+        // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(actual.getId()).isEqualTo(station.getId());
-            softAssertions.assertThat(actual.getName()).isEqualTo(station.getName());
+            softAssertions.assertThat(actual.getId()).isEqualTo(JAMSIL.getId());
+            softAssertions.assertThat(actual.getName()).isEqualTo(JAMSIL.getName());
         });
     }
 
     @Test
     void 아이디를_통해_역을_삭제하다() {
+        // given
         doNothing().when(stationRepository).deleteById(any());
 
-        assertDoesNotThrow(() -> stationRepository.deleteById(1L));
+        // when, then
+        assertDoesNotThrow(() -> stationService.deleteStationById(JAMSIL.getId()));
     }
 }

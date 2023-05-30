@@ -1,13 +1,13 @@
 package subway.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.section.add.AddSectionHandler;
+import subway.domain.section.add.strategy.AddSectionStrategy;
+import subway.domain.section.delete.DeleteStationHandler;
+import subway.domain.section.delete.strategy.DeleteStationStrategy;
+
 import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Line {
@@ -20,23 +20,27 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
-    private final List<Station> stations;
+    private final Sections sections;
 
-    private Line(final Long id, final String name, final String color, final List<Station> stations) {
+    private Line(final Long id, final String name, final String color, final Sections sections) {
         validateLineInfo(name, color);
 
         this.id = id;
         this.name = name;
         this.color = color;
-        this.stations = stations;
-    }
-
-    public static Line of(final Long id, final String name, final String color) {
-        return new Line(id, name, color, new ArrayList<>());
+        this.sections = sections;
     }
 
     public static Line of(final String name, final String color) {
-        return new Line(null, name, color, new ArrayList<>());
+        return new Line(null, name, color, Sections.create());
+    }
+
+    public static Line of(final Long id, final String name, final String color) {
+        return new Line(id, name, color, Sections.create());
+    }
+
+    public static Line of(final Long id, final String name, final String color, final Section section) {
+        return new Line(id, name, color, Sections.from(section));
     }
 
     private void validateLineInfo(final String name, final String color) {
@@ -63,136 +67,26 @@ public class Line {
         }
     }
 
-    public void addInitialStations(final Station upStation, final Station downStation, final Distance distance) {
-        validateStation(upStation);
-        validateStation(downStation);
-        final Station newUpStation = Station.of(upStation);
-        final Station newDownStation = Station.of(downStation);
+    public void addSection(final Section section) {
+        validateSameSection(section);
 
-        newUpStation.addPath(newDownStation, distance, Direction.DOWN);
-        newDownStation.addPath(newUpStation, distance, Direction.UP);
-
-        stations.add(newUpStation);
-        stations.add(newDownStation);
+        final AddSectionStrategy addSectionStrategy = AddSectionHandler.bind(sections, section);
+        addSectionStrategy.addSection(sections, section);
     }
 
-    public Station findStation(final Station target) {
-        return stations.stream()
-                .filter(station -> station.equals(target))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("노선에 등록되지 않은 역입니다"));
-    }
-
-    public void addEndStation(final Station sourceStation, final Station targetStation, final Distance distance) {
-        validateStation(targetStation);
-
-        final Station newSourceStation = findStation(sourceStation);
-        final Direction direction = newSourceStation.findEndStationPathDirection();
-
-        newSourceStation.addPath(targetStation, distance, direction.reverse());
-        targetStation.addPath(newSourceStation, distance, direction);
-        stations.add(targetStation);
-    }
-
-    public void addMiddleStation(final Station upStation,
-                                 final Station downStation,
-                                 final Station targetStation,
-                                 final Distance distance) {
-        validateStation(targetStation);
-        final Station newUpStation = findStation(upStation);
-        final Station newDownStation = findStation(downStation);
-
-        if (!newUpStation.isConnect(newDownStation)) {
-            throw new IllegalArgumentException("역이 서로 연결되어 있지 않습니다.");
+    private void validateSameSection(final Section section) {
+        if (sections.hasSameSection(section)) {
+            throw new IllegalArgumentException("이미 등록된 구간입니다.");
         }
-
-        final Distance originDistance = newUpStation.findDistanceByStation(newDownStation);
-        if (distance.isGreaterThanOrEqualTo(originDistance)) {
-            throw new IllegalArgumentException("등록되는 역 중간에 다른 역이 존재합니다.");
-        }
-
-        newUpStation.deletePath(newDownStation);
-        newDownStation.deletePath(newUpStation);
-        newUpStation.addPath(targetStation, distance, Direction.DOWN);
-        targetStation.addPath(newUpStation, distance, Direction.UP);
-        newDownStation.addPath(targetStation, originDistance.minus(distance), Direction.UP);
-        targetStation.addPath(newDownStation, originDistance.minus(distance), Direction.DOWN);
-        stations.add(targetStation);
     }
 
-    public void removeAllStation() {
-        stations.clear();
-    }
-
-    public void removeEndStation(final Station targetStation) {
-        final Station newTargetStation = findStation(targetStation);
-
-        if (!newTargetStation.isEnd()) {
-            throw new IllegalArgumentException("삭제하려는 역이 종점역이 아닙니다");
-        }
-
-        final List<Station> adjustStation = newTargetStation.findAdjustStation();
-        for (Station station : adjustStation) {
-            final Station newStation = findStation(station);
-            newStation.deletePath(newTargetStation);
-        }
-        stations.remove(newTargetStation);
-    }
-
-    public void removeMiddleStation(final Station targetStation) {
-        final Station newTargetStation = findStation(targetStation);
-        final AdjustPath adjustPath = newTargetStation.getAdjustPath();
-
-        final Station upStation = adjustPath.findStationByDirection(Direction.UP);
-        final Station downStation = adjustPath.findStationByDirection(Direction.DOWN);
-        final Distance upStationDistance = upStation.findDistanceByStation(newTargetStation);
-        final Distance downStationDistance = downStation.findDistanceByStation(newTargetStation);
-        final Distance distance = upStationDistance.add(downStationDistance);
-
-        upStation.addPath(downStation, distance, Direction.DOWN);
-        downStation.addPath(upStation, distance, Direction.UP);
-        upStation.deletePath(targetStation);
-        downStation.deletePath(targetStation);
-        stations.remove(newTargetStation);
-    }
-
-    private void validateStation(final Station targetStation) {
-        if (stations.contains(targetStation)) {
-            throw new IllegalArgumentException("이미 해당 노선에 등록된 역 입니다.");
-        }
+    public void deleteStation(final Station station) {
+        final DeleteStationStrategy deleteStationStrategy = DeleteStationHandler.bind(sections, station);
+        deleteStationStrategy.deleteSection(sections, station);
     }
 
     public List<Station> findStationsByOrdered() {
-        if (this.stations.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        final Queue<Station> queue = new LinkedList<>();
-        final Set<Station> visited = new LinkedHashSet<>();
-
-        final Station upStation = findStartStation();
-        queue.add(upStation);
-        visited.add(upStation);
-
-        while (!queue.isEmpty()) {
-            final Station nowStation = queue.poll();
-            for (final Station nextStation : nowStation.findAdjustStation()) {
-                if (!visited.contains(nextStation)) {
-                    queue.add(nextStation);
-                    visited.add(nextStation);
-                }
-            }
-        }
-
-        return new ArrayList<>(visited);
-    }
-
-    private Station findStartStation() {
-        return stations.stream()
-                .filter(Station::isEnd)
-                .filter(station -> station.findEndStationPathDirection().matches(Direction.DOWN))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("아직 노선에 역이 등록되지 않았습니다."));
+        return sections.getStations();
     }
 
     public Long getId() {
@@ -207,16 +101,7 @@ public class Line {
         return color;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Line line = (Line) o;
-        return Objects.equals(id, line.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public Sections getSections() {
+        return sections;
     }
 }

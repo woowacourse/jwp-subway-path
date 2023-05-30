@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @Repository
 public class LineRepository {
 
+    private static final int ZERO = 0;
     private final LineDao lineDao;
     private final SectionDao sectionDao;
 
@@ -28,19 +29,22 @@ public class LineRepository {
     }
 
     public Line findById(final Long id) {
-        return lineDao.findById(id)
-                .to();
+        return lineDao.findById(id).toDomain();
     }
 
     public List<Line> findAll() {
         return lineDao.findAll()
                 .stream()
-                .map(LineEntity::to)
+                .map(LineEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
     public void deleteById(final Long id) {
-        lineDao.deleteById(id);
+        final int count = lineDao.deleteById(id);
         sectionDao.deleteByLineId(id);
+
+        if (count == ZERO) {
+            throw new IllegalArgumentException("해당 노선이 존재하지 않습니다.");
+        }
     }
 }

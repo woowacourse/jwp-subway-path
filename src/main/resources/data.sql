@@ -1,7 +1,18 @@
-INSERT INTO station(name) VALUES('1역');
-INSERT INTO station(name) VALUES('2역');
-INSERT INTO station(name) VALUES('3역');
-INSERT INTO station(name) VALUES('4역');
-INSERT INTO station(name) VALUES('5역');
+DELETE FROM station;
+DELETE FROM line;
 
-INSERT INTO line(name, color) VALUES('1호선', 'bg-red-500');
+ALTER TABLE station ALTER COLUMN ID RESTART WITH 1;
+ALTER TABLE line ALTER COLUMN ID RESTART WITH 1;
+ALTER TABLE section ALTER COLUMN ID RESTART WITH 1;
+
+INSERT INTO station(name)
+VALUES ('1역'),
+       ('2역'),
+       ('3역'),
+       ('4역'),
+       ('5역'),
+       ('6역');
+
+INSERT INTO line(name, color)
+VALUES ('1호선', 'bg-red-500'),
+       ('2호선', 'bg-blue-500');

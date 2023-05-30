@@ -1,6 +1,6 @@
 package subway.ui.dto.response;
 
-import subway.application.dto.CreationLineDto;
+import subway.domain.Line;
 
 public class CreationLineResponse {
 
@@ -14,8 +14,8 @@ public class CreationLineResponse {
         this.color = color;
     }
 
-    public static CreationLineResponse from(final CreationLineDto lineDto) {
-        return new CreationLineResponse(lineDto.getId(), lineDto.getName(), lineDto.getColor());
+    public static CreationLineResponse from(final Line line) {
+        return new CreationLineResponse(line.getId(), line.getName(), line.getColor());
     }
 
     public Long getId() {

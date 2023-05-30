@@ -2,7 +2,7 @@ package subway.ui.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import subway.application.dto.CreationStationDto;
+import subway.domain.Station;
 
 public class CreationStationResponse {
 
@@ -16,8 +16,8 @@ public class CreationStationResponse {
         this.name = name;
     }
 
-    public static CreationStationResponse from(final CreationStationDto stationDto) {
-        return new CreationStationResponse(stationDto.getId(), stationDto.getName());
+    public static CreationStationResponse from(final Station station) {
+        return new CreationStationResponse(station.getId(), station.getName());
     }
 
     public Long getId() {

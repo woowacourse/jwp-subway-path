@@ -12,7 +12,7 @@ public class ReadStationResponse {
         this.name = name;
     }
 
-    public static ReadStationResponse of(Station station) {
+    public static ReadStationResponse from(final Station station) {
         return new ReadStationResponse(station.getId(), station.getName());
     }
 
