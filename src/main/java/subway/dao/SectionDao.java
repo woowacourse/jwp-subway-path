@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
+import subway.domain.section.Section;
 import subway.entity.vo.SectionVo;
 
 @Repository
@@ -56,24 +56,22 @@ public class SectionDao {
     public List<SectionVo> findSectionsByLineId(final long lineId) {
         String sql = "SELECT S1.id, S1.name, S2.id, S2.name, SEC.distance"
                 + " FROM SECTIONS AS SEC "
-                + " JOIN STATION AS S1 ON SEC.up_id = S1.id "
-                + " JOIN STATION AS S2 ON SEC.down_id = S2.id "
+                + " INNER JOIN STATION AS S1 ON SEC.up_id = S1.id "
+                + " INNER JOIN STATION AS S2 ON SEC.down_id = S2.id "
                 + " WHERE SEC.line_id = ?";
 
-        return jdbcTemplate.query(sql, upStationMapper(), lineId);
+        return jdbcTemplate.query(sql, sectionVoMapper(), lineId);
     }
 
-    private RowMapper<SectionVo> upStationMapper() {
+    private RowMapper<SectionVo> sectionVoMapper() {
         return (rs, rowNum) -> SectionVo.of(
                 rs.getLong(1), rs.getString(2),
                 rs.getLong(3), rs.getString(4),
                 rs.getInt(5));
     }
 
-
-
     public void deleteSections(List<Section> sections, long lineId) {
-        String sql = "DELETE sections WHERE up_id = ? AND down_id = ? AND line_id =?";
+        String sql = "DELETE FROM sections WHERE up_id = ? AND down_id = ? AND line_id = ?";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(final PreparedStatement ps, final int i) throws SQLException {
@@ -90,4 +88,12 @@ public class SectionDao {
         });
     }
 
+    public List<SectionVo> findAll() {
+        String sql = "SELECT S1.id, S1.name, S2.id, S2.name, SEC.distance"
+                + " FROM SECTIONS AS SEC "
+                + " INNER JOIN STATION AS S1 ON SEC.up_id = S1.id "
+                + " INNER JOIN STATION AS S2 ON SEC.down_id = S2.id ";
+
+        return jdbcTemplate.query(sql, sectionVoMapper());
+    }
 }

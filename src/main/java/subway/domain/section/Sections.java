@@ -1,17 +1,18 @@
-package subway.domain;
+package subway.domain.section;
 
-import static subway.domain.Location.END;
-import static subway.domain.Location.MIDDLE;
-import static subway.domain.Location.NONE;
-import static subway.domain.Status.INCLUDED;
-import static subway.domain.Status.INIT;
-import static subway.domain.Status.NOT_INCLUDED;
+import static subway.domain.section.Location.END;
+import static subway.domain.section.Location.MIDDLE;
+import static subway.domain.section.Location.NONE;
+import static subway.domain.section.Status.INCLUDED;
+import static subway.domain.section.Status.INIT;
+import static subway.domain.section.Status.NOT_INCLUDED;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import subway.domain.station.Station;
 
 public class Sections {
     private final List<Section> sections;
@@ -72,14 +73,14 @@ public class Sections {
         Section rawSection = getSameDirectionSection(section, sections);
         validateDistance(section, rawSection);
 
-        if (section.equalsUpStation(rawSection)) {
+        if (section.hasSameNameUpStation(rawSection)) {
             this.sections.add(Section.of(section.getDownStation(),
                     rawSection.getDownStation(),
                     rawSection.getDistance().minus(section.getDistance())));
             this.sections.remove(rawSection);
         }
 
-        if (section.equalsDownStation(rawSection)) {
+        if (section.hasSameNameDownStation(rawSection)) {
             this.sections.add(Section.of(rawSection.getUpStation(),
                     section.getUpStation(),
                     rawSection.getDistance().minus(section.getDistance())));
@@ -110,7 +111,7 @@ public class Sections {
 
     private Section getSameDirectionSection(Section section, List<Section> sections) {
         return sections.stream()
-                .filter(section2 -> section2.equalsUpStation(section) || section2.equalsDownStation(section))
+                .filter(section2 -> section2.hasSameNameUpStation(section) || section2.hasSameNameDownStation(section))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("동일한 위치의 구간이 아닙니다."));
     }
@@ -138,7 +139,7 @@ public class Sections {
         Station upStation = section.getUpStation();
         Station downStation = other.getDownStation();
 
-        if (other.isNextSection(section)) {
+        if (other.isNextSectionByName(section)) {
             upStation = other.getUpStation();
             downStation = section.getDownStation();
         }
@@ -164,7 +165,7 @@ public class Sections {
 
     public List<Section> findSectionBy(Station station) {
         return sections.stream()
-                .filter(section -> section.contains(station))
+                .filter(section -> section.containsByName(station))
                 .collect(Collectors.toList());
     }
 

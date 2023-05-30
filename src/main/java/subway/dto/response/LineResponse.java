@@ -1,9 +1,7 @@
-package subway.dto;
+package subway.dto.response;
 
-import lombok.Getter;
-import subway.domain.Line;
+import subway.domain.line.Line;
 
-@Getter
 public class LineResponse {
     private final Long id;
     private final String name;
@@ -17,5 +15,17 @@ public class LineResponse {
 
     public static LineResponse from(Line line) {
         return new LineResponse(line.getId(), line.getName().getName(), line.getColor().getColor());
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 }

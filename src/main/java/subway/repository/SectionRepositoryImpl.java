@@ -2,15 +2,17 @@ package subway.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 import subway.entity.StationEntity;
 import subway.entity.vo.SectionVo;
 
+@Component
 public class SectionRepositoryImpl implements SectionRepository {
 
     private final LineDao lineDao;
@@ -37,15 +39,8 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     public Station addSection(final Section section, final long lineId) {
         validateLineId(lineId);
-        StationEntity upStationEntity = stationDao.insert(section.getUpStation());
-        StationEntity downStationEntity = stationDao.insert(section.getDownStation());
-        Station upStation = new Station(upStationEntity.getId(), upStationEntity.getName());
-        Station downStation = new Station(downStationEntity.getId(), downStationEntity.getName());
-        Section newSection = Section.of(upStation,
-                downStation,
-                section.getDistance());
-        sectionDao.insertSection(newSection, lineId);
-        return downStation;
+        sectionDao.insertSection(section, lineId);
+        return section.getDownStation();
     }
 
     public void addSections(final Sections addedSections, final long lineId) {

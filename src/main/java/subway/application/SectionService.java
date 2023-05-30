@@ -3,22 +3,24 @@ package subway.application;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
-import subway.dto.SectionRequest;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 import subway.dto.StationDto;
 import subway.dto.StationsDto;
+import subway.dto.request.SectionRequest;
 import subway.repository.SectionRepository;
 
-@RequiredArgsConstructor
 @Transactional
 @Service
 public class SectionService {
     private final SectionRepository sectionRepository;
+
+    public SectionService(final SectionRepository sectionRepository) {
+        this.sectionRepository = sectionRepository;
+    }
 
     public StationDto add(SectionRequest request, long lineId) {
         Sections rawSections = sectionRepository.findSectionsByLineId(lineId);
@@ -52,7 +54,10 @@ public class SectionService {
     }
 
     private StationDto addFirstSection(final long lineId, final SectionRequest request) {
-        Section section = Section.of(request.getUpStationName(), request.getDownStationName(), request.getDistance());
+        Section section = Section.of(
+                getStation(new Station(request.getUpStationName())),
+                getStation(new Station(request.getDownStationName())),
+                request.getDistance());
         Station station = sectionRepository.addSection(section, lineId);
         return StationDto.from(station);
     }

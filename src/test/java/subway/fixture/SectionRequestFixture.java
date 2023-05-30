@@ -1,6 +1,6 @@
 package subway.fixture;
 
-import subway.dto.SectionRequest;
+import subway.dto.request.SectionRequest;
 
 public class SectionRequestFixture {
     public static final SectionRequest SECTION_REQUEST_강남_잠실_5 = new SectionRequest("강남", "잠실", 5);

@@ -10,7 +10,7 @@ import static subway.fixture.StationFixture.STATION_몽촌토성;
 import static subway.fixture.StationFixture.STATION_암사;
 import static subway.fixture.StationFixture.STATION_잠실;
 
-import subway.domain.Section;
+import subway.domain.section.Section;
 
 public class SectionFixture {
     public static final Section SECTION_강남_잠실_5 = Section.of(STATION_강남, STATION_잠실, DISTANCE_5);

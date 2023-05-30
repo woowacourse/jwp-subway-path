@@ -1,19 +1,31 @@
 package subway.dto;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import subway.domain.Distance;
-import subway.domain.Section;
+import subway.domain.section.Distance;
 
-@Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class SectionDto {
     private final StationDto upStation;
     private final StationDto downStation;
     private final int distance;
 
+    private SectionDto(final StationDto upStation, final StationDto downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
     public static SectionDto of(StationDto upStation, StationDto downStation, Distance distance) {
         return new SectionDto(upStation, downStation, distance.getValue());
+    }
+
+    public StationDto getUpStation() {
+        return upStation;
+    }
+
+    public StationDto getDownStation() {
+        return downStation;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }
