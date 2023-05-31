@@ -70,10 +70,10 @@
 
 ### 리팩토링 목록
 
-- [ ] Repository 생성
+- [x] Repository 생성
   - [x] LineRepository
   - [x] SectionRepository
-  - [ ] StationRepository
+  - [x] StationRepository
 - [ ] 최단 경로 조회 API
   - [x] url 변경
   - [ ] 응답 형식 변경
