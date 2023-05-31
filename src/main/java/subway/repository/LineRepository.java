@@ -13,6 +13,8 @@ import subway.dao.entity.StationEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.exception.DuplicateException;
+import subway.exception.ErrorCode;
 
 @Repository
 public class LineRepository {
@@ -26,17 +28,28 @@ public class LineRepository {
         this.stationDao = stationDao;
     }
 
-    public List<Line> findAllLine() {
+    public Long save(Line line) {
+        duplicateLineName(line.getName());
+        return lineDao.save(new LineEntity(line.getName()));
+    }
+
+    private void duplicateLineName(String name) {
+        if (lineDao.isExisted(name)) {
+            throw new DuplicateException(ErrorCode.DUPLICATE_NAME);
+        }
+    }
+
+    public List<Line> findAll() {
         List<LineEntity> lineEntities = lineDao.findAll();
 
         return lineEntities.stream()
-                .map(lineEntity -> findLineByLineId(lineEntity.getId()))
+                .map(lineEntity -> findById(lineEntity.getId()))
                 .collect(Collectors.toList());
     }
 
-    public Line findLineByLineId(Long lineId) {
+    public Line findById(Long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId);
-        return Line.of(lineEntity.getName(), findSectionsByLineId(lineId));
+        return Line.of(lineEntity.getId(), lineEntity.getName(), findSectionsByLineId(lineId));
     }
 
     private List<Section> findSectionsByLineId(Long lineId) {

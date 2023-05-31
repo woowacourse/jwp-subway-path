@@ -4,19 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Line {
+    private final Long id;
     private final String name;
     private final Sections sections;
 
-    private Line(String name, Sections sections) {
+    private Line(Long id, String name, Sections sections) {
+        this.id = id;
         this.name = name;
         this.sections = sections;
     }
 
-    public static Line of(String name, List<Section> sections) {
+    public static Line of(Long id, String name, List<Section> sections) {
         if (sections.isEmpty()) {
-            return new Line(name, new Sections(sections));
+            return new Line(id, name, new Sections(sections));
         }
-        return new Line(name, Sections.from(sections));
+        return new Line(id, name, Sections.from(sections));
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -26,6 +28,10 @@ public class Line {
 
     public void deleteSection(Station station) {
         sections.deleteSection(station);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -38,9 +44,5 @@ public class Line {
 
     public List<Station> getStations() {
         return new ArrayList<>(sections.getStations());
-    }
-
-    public boolean isEmpty() {
-        return sections.isEmpty();
     }
 }

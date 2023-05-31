@@ -82,7 +82,7 @@ public class SectionService {
         LineEntity lineEntity = lineDao.findById(lineId);
         List<Section> sections = findSections(lineId);
 
-        return Line.of(lineEntity.getName(), sections);
+        return Line.of(lineEntity.getId(), lineEntity.getName(), sections);
     }
 
     private List<Section> findSections(Long id) {

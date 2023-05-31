@@ -52,7 +52,7 @@ public class PathIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(pathRequest)
                 .when()
-                .get("/paths/shortestPath")
+                .get("/paths/shortest")
                 .then().log().all()
                 .extract();
 
