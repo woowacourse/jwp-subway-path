@@ -31,3 +31,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+src/test/java/study/*
+*.db

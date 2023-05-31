@@ -5,7 +5,7 @@ import subway.station.domain.Station;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DownstreamTerminalSection extends AbstractSection {
+class DownstreamTerminalSection extends AbstractSection {
 
     public DownstreamTerminalSection(Station upstream) {
         super(upstream, DummyTerminalStation.getInstance());

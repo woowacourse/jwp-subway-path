@@ -12,17 +12,23 @@ import java.util.stream.Collectors;
 
 public class Line {
 
-    private final LineName name;
+    private final Long id;
+    private final LineMetadata lineMetadata;
     private final LinkedList<AbstractSection> sections;
 
-    public Line(String name, List<MiddleSection> sections) {
-        this.name = new LineName(name);
+    public Line(Long id, String name, int additionalFare, List<MiddleSection> sections) {
+        this.id = id;
+        this.lineMetadata = new LineMetadata(name, additionalFare);
         this.sections = new LinkedList<>(sections);
         addTerminalSections();
     }
 
+    public Line(String name, int additionalFare, List<MiddleSection> sections) {
+        this(null, name, additionalFare, sections);
+    }
+
     public Line(Line otherLine) {
-        this(otherLine.getName(), otherLine.getSections());
+        this(otherLine.getId(), otherLine.getName(), otherLine.getAdditionalFare(), otherLine.getSections());
     }
 
     private void addTerminalSections() {
@@ -38,10 +44,10 @@ public class Line {
         return sections.get(sections.size() - 1).getDownstream();
     }
 
-    public void addStation(Station stationToAdd, Station upstream, Station downstream, int distanceToUpstream) {
+    public void addStation(Station stationToAdd, long upstreamId, long downstreamId, int distanceToUpstream) {
         validateStationNotExist(stationToAdd);
 
-        final AbstractSection correspondingSection = findCorrespondingSection(upstream, downstream);
+        final AbstractSection correspondingSection = findCorrespondingSection(upstreamId, downstreamId);
         final List<AbstractSection> sectionsToAdd = correspondingSection.insertInTheMiddle(stationToAdd, distanceToUpstream);
         addStation(correspondingSection, sectionsToAdd);
     }
@@ -52,9 +58,9 @@ public class Line {
         }
     }
 
-    private AbstractSection findCorrespondingSection(Station upstream, Station downstream) {
+    private AbstractSection findCorrespondingSection(long upstreamId, long downstreamId) {
         return sections.stream()
-                       .filter(section -> section.isCorrespondingSection(upstream, downstream))
+                       .filter(section -> section.isCorrespondingSection(upstreamId, downstreamId))
                        .findAny()
                        .orElseThrow(() -> new SectionNotFoundException("노선에 해당하는 구간이 존재하지 않습니다."));
     }
@@ -117,8 +123,20 @@ public class Line {
         return getSections().size() == 0;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
-        return name.getName();
+        return lineMetadata.getName();
+    }
+
+    public int getAdditionalFare() {
+        return lineMetadata.getAdditionalFare();
+    }
+
+    public LineMetadata getLineInfo() {
+        return lineMetadata;
     }
 
     public List<MiddleSection> getSections() {
@@ -133,18 +151,25 @@ public class Line {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
-        return Objects.equals(name, line.name) && Objects.equals(sections, line.sections);
+        if (Objects.isNull(id) || Objects.isNull(line.id)) {
+            return Objects.equals(lineMetadata, line.lineMetadata) && Objects.equals(sections, line.sections);
+        }
+        return Objects.equals(id, line.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, sections);
+        if (Objects.isNull(id)) {
+            return Objects.hash(lineMetadata, sections);
+        }
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "Line{" +
-                "name=" + name +
+                "id=" + id +
+                ", lineMetadata=" + lineMetadata +
                 ", sections=" + sections +
                 '}';
     }

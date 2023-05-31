@@ -4,15 +4,15 @@ public class StationAdditionToLineDto {
 
     private final long lineId;
     private final String stationName;
-    private final String upstreamName;
-    private final String downstreamName;
+    private final Long upstreamId;
+    private final Long downstreamId;
     private final int distanceToUpstream;
 
-    public StationAdditionToLineDto(long lineId, String stationName, String upstreamName, String downstreamName, int distanceToUpstream) {
+    public StationAdditionToLineDto(long lineId, String stationName, Long upstreamId, Long downstreamId, int distanceToUpstream) {
         this.lineId = lineId;
         this.stationName = stationName;
-        this.upstreamName = upstreamName;
-        this.downstreamName = downstreamName;
+        this.upstreamId = upstreamId;
+        this.downstreamId = downstreamId;
         this.distanceToUpstream = distanceToUpstream;
     }
 
@@ -24,12 +24,12 @@ public class StationAdditionToLineDto {
         return stationName;
     }
 
-    public String getUpstreamName() {
-        return upstreamName;
+    public Long getUpstreamId() {
+        return upstreamId;
     }
 
-    public String getDownstreamName() {
-        return downstreamName;
+    public Long getDownstreamId() {
+        return downstreamId;
     }
 
     public int getDistanceToUpstream() {

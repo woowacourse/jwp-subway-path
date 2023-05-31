@@ -19,21 +19,15 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public Station findStationByName(String stationName) {
-        return stationRepository.findStationByName(stationName)
-                                .orElseThrow(() -> new StationNotFoundException("존재하지 않는 역 이름입니다."));
-    }
-
-    @Transactional(readOnly = true)
     public Station findStationById(long stationId) {
         return stationRepository.findStationById(stationId)
                                 .orElseThrow(() -> new StationNotFoundException("존재하지 않는 역 ID입니다."));
     }
 
-    public long createStationIfNotExist(String stationName) {
+    public Station createStationIfNotExist(String stationName) {
         final Station stationToInsert = new Station(stationName);
 
-        return stationRepository.findIdByName(stationName)
+        return stationRepository.findStationByName(stationName)
                                 .orElseGet(() -> stationRepository.createStation(stationToInsert));
     }
 }

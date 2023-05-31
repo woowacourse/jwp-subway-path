@@ -23,6 +23,7 @@ public class LineDao {
             .Builder()
             .id(rs.getLong("id"))
             .name(rs.getString("name"))
+            .additionalFare(rs.getInt("additional_fare"))
             .build();
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -35,12 +36,13 @@ public class LineDao {
     public long insert(LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getName());
+        params.put("additional_fare", lineEntity.getAdditionalFare());
 
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
     public Optional<LineEntity> findLineById(Long lineId) {
-        String sql = "select id, name from LINE WHERE id = ?";
+        String sql = "select id, name, additional_fare from LINE WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineId));
         } catch (EmptyResultDataAccessException e) {
@@ -49,21 +51,21 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select id, name from LINE";
+        String sql = "select id, name, additional_fare from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Long> findIdByName(String lineName) {
-        String sql = "select id from LINE where name = ?";
+    public Optional<LineEntity> findLineByName(String lineName) {
+        String sql = "select id, name, additional_fare from LINE where name = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Long.class, lineName));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineName));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public void deleteLineByName(String lineName) {
-        String sql = "delete from LINE where name = ?";
-        jdbcTemplate.update(sql, lineName);
+    public void deleteLineById(long id) {
+        String sql = "delete from LINE where id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

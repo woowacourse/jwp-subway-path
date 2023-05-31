@@ -6,14 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.line.application.dto.LineCreationDto;
 import subway.line.application.dto.StationAdditionToLineDto;
 import subway.line.application.dto.StationDeletionFromLineDto;
-import subway.line.domain.DummyTerminalStation;
 import subway.line.domain.Line;
 import subway.line.domain.Lines;
 import subway.line.domain.MiddleSection;
 import subway.line.exception.LineNotFoundException;
 import subway.line.repository.LineRepository;
 import subway.line.ui.dto.LineDto;
-import subway.line.ui.dto.SectionDto;
 import subway.station.application.StationService;
 import subway.station.domain.Station;
 
@@ -34,24 +32,16 @@ public class LineService {
     }
 
     public long addStationToLine(StationAdditionToLineDto stationAdditionToLineDto) {
-        final long stationId = stationService.createStationIfNotExist(stationAdditionToLineDto.getStationName());
-        final Station stationToAdd = new Station(stationAdditionToLineDto.getStationName());
+        final Station stationToAdd = stationService.createStationIfNotExist(stationAdditionToLineDto.getStationName());
+        final Long upstreamId = stationAdditionToLineDto.getUpstreamId();
+        final Long downstreamId = stationAdditionToLineDto.getDownstreamId();
+        final int distanceToUpstream = stationAdditionToLineDto.getDistanceToUpstream();
 
         final Line line = findLineOrThrow(stationAdditionToLineDto.getLineId());
-        final Station upstream = findExistingStationByName(stationAdditionToLineDto.getUpstreamName());
-        final Station downstream = findExistingStationByName(stationAdditionToLineDto.getDownstreamName());
-
-        line.addStation(stationToAdd, upstream, downstream, stationAdditionToLineDto.getDistanceToUpstream());
+        line.addStation(stationToAdd, upstreamId, downstreamId, distanceToUpstream);
         lineRepository.updateLine(line);
 
-        return stationId;
-    }
-
-    private Station findExistingStationByName(String stationName) {
-        if (stationName.equals(DummyTerminalStation.STATION_NAME)) {
-            return DummyTerminalStation.getInstance();
-        }
-        return stationService.findStationByName(stationName);
+        return stationToAdd.getId();
     }
 
     public void deleteStationFromLine(StationDeletionFromLineDto stationDeletionFromLineDto) {
@@ -67,13 +57,14 @@ public class LineService {
     }
 
     public long createLine(LineCreationDto lineCreationDto) {
-        stationService.createStationIfNotExist(lineCreationDto.getUpstreamName());
-        stationService.createStationIfNotExist(lineCreationDto.getDownstreamName());
-        Station upstream = new Station(lineCreationDto.getUpstreamName());
-        Station downstream = new Station(lineCreationDto.getDownstreamName());
+        final String lineName = lineCreationDto.getLineName();
+        final int additionalFare = lineCreationDto.getAdditionalFare();
 
+        Station upstream = stationService.createStationIfNotExist(lineCreationDto.getUpstreamName());
+        Station downstream = stationService.createStationIfNotExist(lineCreationDto.getDownstreamName());
         MiddleSection section = new MiddleSection(upstream, downstream, lineCreationDto.getDistance());
-        Line lineToAdd = new Line(lineCreationDto.getLineName(), List.of(section));
+
+        Line lineToAdd = new Line(lineName, additionalFare, List.of(section));
 
         final Lines allLines = lineRepository.findAllLines();
         allLines.addLine(lineToAdd);
@@ -83,7 +74,12 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineDto findLineById(long id) {
-        return toLineDto(findLineOrThrow(id));
+        return DtoMapper.toLineDto(findLineOrThrow(id));
+    }
+
+    private Line findLineOrThrow(long id) {
+        return lineRepository.findLineById(id)
+                             .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다"));
     }
 
     @Transactional(readOnly = true)
@@ -91,26 +87,7 @@ public class LineService {
         return lineRepository.findAllLines()
                              .getLines()
                              .stream()
-                             .map(this::toLineDto)
+                             .map(DtoMapper::toLineDto)
                              .collect(Collectors.toUnmodifiableList());
-    }
-
-    private Line findLineOrThrow(long stationRemovalFromLineDto) {
-        return lineRepository.findLineById(stationRemovalFromLineDto)
-                             .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다"));
-    }
-
-    private LineDto toLineDto(Line line) {
-        return new LineDto(toSectionDtos(line.getSections()), line.getName());
-    }
-
-    private List<SectionDto> toSectionDtos(List<MiddleSection> sections) {
-        return sections.stream()
-                       .map(section -> new SectionDto(
-                               section.getUpstreamName(),
-                               section.getDownstreamName(),
-                               section.getDistance())
-                       )
-                       .collect(Collectors.toUnmodifiableList());
     }
 }

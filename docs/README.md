@@ -8,14 +8,14 @@
 - Request
   - POST /lines/{lineId}/stations 
       - stationName
-      - upstreamName(상행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
-      - downstreamName(하행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
+      - upstreamId(상행 종점으로 역을 추가하고 싶으면 0을 넣는다)
+      - downstreamId(하행 종점으로 역을 추가하고 싶으면 0을 넣는다)
       - distanceToUpstream(단, 상행 종점으로 추가되는 경우에는 하행역과의 거리를 넣는다.)
 
 - Response
   - 400 BAD REQUEST
     - (stationName < 2 || stationName > 15)
-    - (upstreamName, downstreamName이 Section으로 존재하지 않는 경우)
+    - (upstreamId, downstreamId가 Section으로 존재하지 않는 경우)
     - (distanceToUpstream >= distance(upstream, downstream)인 경우)
     - (stationName이 이미 Line에 존재하는 경우)
     - (lineId에 해당하는 Line이 존재하지 않는 경우)
@@ -29,6 +29,7 @@
       - upstreamName
       - downstreamName
       - distance
+      - additionalFare
 
 - Response
   - 400 BAD REQUEST
@@ -37,6 +38,7 @@
     - (lineName < 2 || lineName > 15)
     - (distance < 1인 경우)
     - (lineName의 노선이 이미 존재하는 경우)
+    - (additionalFare < 0인 경우)
   - 201 CREATED
 
 ### 역 삭제 
@@ -45,7 +47,7 @@
   - DELETE /lines/{lineId}/stations/{stationId}
 
 - Response
-  - 400 BAD REQUEST
+  - 404 NOT FOUND
     - (lineId가 존재하지 않는 경우)
     - (stationId가 Line에 존재하지 않는 경우)
   - 204 NO-CONTENT
@@ -56,7 +58,7 @@
   - GET /lines/{lineId}
 
 - Response
-  - 400 BAD REQUEST
+  - 404 NOT FOUND
     - (lineId가 존재하지 않는 경우)
   - 200 OK
 
@@ -68,6 +70,26 @@
 - Response
   - 200 OK
 
+### 경로 조회 
+- Request
+  - GET /routes
+  - Parameters
+    - source(required): 시작 역의 id
+    - destination(required): 도착 역의 id
+    - age(required): 탑승객의 나이
+
+- Response
+  - 200 OK
+    - route(section의 배열)
+      - section: fromId, fromName, toId, toName, lineId, lineName, distance
+    - totalDistance
+    - fare 
+
+  - 400 BAD REQUEST
+    - from, to, age의 parameter가 없을 때 
+    - age가 0 이하일 때 
+  - 404 NOT FOUND
+    - 역 id가 존재하지 않는 경우
 
 ## 도메인
 
@@ -94,3 +116,24 @@
   - [x] Station을 삭제할 수 있다.
     - [x] Line에 존재하지 않는 Station을 삭제할 경우 예외를 던진다.
   - [x] 역이 두개 뿐이면 한 역을 삭제하면 노선 자체를 삭제한다. 
+
+- [x] RouteFinderBuilder
+  - [x] RouteFinder를 생성한다. 
+
+- [x] RouteFinder
+  - [x] 최적의 경로를 찾아낸다. 
+  - [x] 경로의 전체 거리를 계산한다.
+
+- [x] FarePolicy
+  - [x] DistanceFarePolicy
+    - [x] 거리에 따라 요금을 계산한다.
+    - [x] 10km까지는 기본 요금 1250원으로 계산한다
+    - [x] 10 ~ 50km 구간까지는 5km마다 100원이 추가된다.
+    - [x] 50~km 구간부터는 8km마다 100원이 추가된다.
+  - [x] LineAdditionalFarePolicy
+    - [x] 구간마다 추가 요금이 있는 경우 추가 요금을 더한다.
+    - [x] 환승을 한 경우에는 가장 높은 추가 요금을 적용한다.
+  - [x] AgeDiscountFarePolicy
+    - [x] 0~5세의 경우 요금을 지불하지 않는다.  
+    - [x] 6~12세의 경우 350원을 공제하고 50% 할인 받는다.  
+    - [x] 13~19세의 경우 350원을 공제하고 20% 할인 받는다.  

@@ -21,24 +21,21 @@ public class StationRepository {
 
     public Optional<Station> findStationByName(String stationName) {
         return stationDao.findByName(stationName)
-                         .map(stationEntity -> new Station(stationEntity.getName()));
+                         .map(EntityMapper::toDomain);
     }
 
     public Optional<Station> findStationById(long stationId) {
         return stationDao.findById(stationId)
-                         .map(stationEntity -> new Station(stationEntity.getName()));
+                         .map(EntityMapper::toDomain);
     }
 
-    public long createStation(Station stationToInsert) {
+    public Station createStation(Station stationToInsert) {
         stationDao.findByName(stationToInsert.getName())
-                  .ifPresent(ignored -> {throw new IllegalStateException("디버깅: 추가하려는 역이 이미 존재합니다");});
+                  .ifPresent(ignored -> {
+                      throw new IllegalStateException("디버깅: 추가하려는 역이 이미 존재합니다");
+                  });
 
-        final StationEntity stationEntity = new StationEntity.Builder().name(stationToInsert.getName()).build();
-        return stationDao.insert(stationEntity).getId();
-
-    }
-
-    public Optional<Long> findIdByName(String stationName) {
-        return stationDao.findIdByName(stationName);
+        final StationEntity stationEntity = EntityMapper.toEntity(stationToInsert);
+        return EntityMapper.toDomain(stationDao.insert(stationEntity));
     }
 }
