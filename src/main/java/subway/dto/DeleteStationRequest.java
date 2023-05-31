@@ -2,19 +2,19 @@ package subway.dto;
 
 public class DeleteStationRequest {
 
-    private String lineName;
-    private String stationName;
+    private final long lineId;
+    private final long stationId;
 
-    public DeleteStationRequest(String lineName, String stationName) {
-        this.lineName = lineName;
-        this.stationName = stationName;
+    public DeleteStationRequest(long lineId, long stationId) {
+        this.lineId = lineId;
+        this.stationId = stationId;
     }
 
-    public String getLineName() {
-        return lineName;
+    public long getLineId() {
+        return lineId;
     }
 
-    public String getStationName() {
-        return stationName;
+    public long getStationId() {
+        return stationId;
     }
 }

@@ -1,0 +1,12 @@
+spring:
+    h2.console.enabled: true
+    config:
+        activate:
+            on-profile: "site-prod"
+
+sql.init.mode: always
+datasource:
+    url: jdbc:mysql://localhost:13306/subway?serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: password

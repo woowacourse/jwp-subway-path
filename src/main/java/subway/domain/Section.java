@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.jgrapht.graph.WeightedMultigraph;
 import subway.exception.InvalidDistanceException;
 import subway.exception.SectionMergeException;
 
@@ -11,8 +12,9 @@ import static subway.domain.Line.EMPTY_ENDPOINT_STATION;
 
 public class Section {
 
-    public static final int MINIMUM_DISTANCE = 1;
+    private static final int MINIMUM_DISTANCE = 1;
 
+    private Long id;
     private final Station upstream;
     private final Station downstream;
     private final int distance;
@@ -22,6 +24,11 @@ public class Section {
         this.upstream = upstream;
         this.downstream = downstream;
         this.distance = distance;
+    }
+
+    public Section(long id, Station upstream, Station downstream, int distance) {
+        this(upstream, downstream, distance);
+        this.id = id;
     }
 
     private void validateDistance(int distance) {
@@ -76,6 +83,12 @@ public class Section {
         return distance + sectionToMerge.distance;
     }
 
+    public WeightedMultigraph<Station, Section> addWeightedEdges(WeightedMultigraph<Station, Section> graph) {
+        graph.addEdge(upstream, downstream, this);
+        graph.setEdgeWeight(upstream, downstream, distance);
+        return graph;
+    }
+
     public int getDistance() {
         return distance;
     }
@@ -86,6 +99,10 @@ public class Section {
 
     public Station getDownstream() {
         return downstream;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     @Override
@@ -102,11 +119,11 @@ public class Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return distance == section.distance && Objects.equals(upstream, section.upstream) && Objects.equals(downstream, section.downstream);
+        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(upstream, section.upstream) && Objects.equals(downstream, section.downstream);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(upstream, downstream, distance);
+        return Objects.hash(id, upstream, downstream, distance);
     }
 }

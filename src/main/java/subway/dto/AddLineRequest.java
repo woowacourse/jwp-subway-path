@@ -7,6 +7,9 @@ public class AddLineRequest {
     private String downstreamName;
     private int distance;
 
+    public AddLineRequest() {
+    }
+
     public AddLineRequest(String lineName, String upstreamName, String downstreamName, int distance) {
         this.lineName = lineName;
         this.upstreamName = upstreamName;
@@ -28,5 +31,15 @@ public class AddLineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public String toString() {
+        return "AddLineRequest{" +
+                "lineName='" + lineName + '\'' +
+                ", upstreamName='" + upstreamName + '\'' +
+                ", downstreamName='" + downstreamName + '\'' +
+                ", distance=" + distance +
+                '}';
     }
 }

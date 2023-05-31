@@ -11,5 +11,5 @@ import static subway.utils.SectionFixture.SULLEUNG_TO_JAMSIL;
 
 public class LineFixture {
 
-    public static final Line LINE_NUMBER_TWO = new Line(new LineName("2호선"), new LinkedList(List.of(SULLEUNG_TO_JAMSIL, JAMSIL_TO_JAMSILNARU)));
+    public static final Line LINE_NUMBER_TWO = new Line(1L, new LineName("2호선"), new LinkedList(List.of(SULLEUNG_TO_JAMSIL, JAMSIL_TO_JAMSILNARU)));
 }
