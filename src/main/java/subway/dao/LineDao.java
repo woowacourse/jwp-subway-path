@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
+import subway.exception.DuplicateLineException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,11 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
     private final RowMapper<LineEntity> lineEntityRowMapper =
-            (rs, rowNum) -> new LineEntity(rs.getLong("id"), rs.getString("name"));
+            (rs, rowNum) -> new LineEntity(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getInt("surcharge")
+            );
 
 
     public LineDao(JdbcTemplate jdbcTemplate) {
@@ -30,33 +35,39 @@ public class LineDao {
     public LineEntity insert(LineEntity lineEntity) {
         Optional<LineEntity> findLineEntity = findByLineName(lineEntity.getLineName());
         if (findLineEntity.isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 노선입니다.");
+            throw new DuplicateLineException();
         }
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getLineName());
+        params.put("surcharge", lineEntity.getSurcharge());
         Long insertedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new LineEntity(insertedId, lineEntity.getLineName());
+        return new LineEntity(insertedId, lineEntity.getLineName(), lineEntity.getSurcharge());
     }
 
     public List<LineEntity> findAll() {
-        String sql = "SELECT id, name FROM line";
+        String sql = "SELECT id, name, surcharge FROM LINE";
         return jdbcTemplate.query(sql, lineEntityRowMapper);
     }
 
     public LineEntity findById(Long id) {
-        String sql = "SELECT id, line_name from LINE WHERE id = ?";
+        String sql = "SELECT id, name, surcharge from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, lineEntityRowMapper, id);
     }
 
     public Optional<LineEntity> findByLineName(String lineName) {
-        String sql = "SELECT id, name FROM line WHERE name = ?";
+        String sql = "SELECT id, name, surcharge FROM LINE WHERE name = ?";
         List<LineEntity> lineEntities = jdbcTemplate.query(sql,
                 lineEntityRowMapper, lineName
         );
         return lineEntities.stream().findAny();
     }
 
+    public void updateById(LineEntity newLineEntity) {
+        String sql = "UPDATE LINE set name = ?, surcharge = ? where id = ?";
+        jdbcTemplate.update(sql, newLineEntity.getLineName(), newLineEntity.getSurcharge(), newLineEntity.getId());
+    }
+
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 }

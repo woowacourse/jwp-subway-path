@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.domain.station.Station;
 import subway.entity.StationEntity;
 
 import java.util.Optional;
 
+import static fixtures.LineFixtures.LINE2_ID;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,13 +47,30 @@ class StationDaoTest {
     @DisplayName("받은 역 이름과 노선 이름에 해당하는 행을 조회한다.")
     void findByStationNameAndLineNameTest() {
         // given
-        Long stationId = STATION_건대역_ID;
+        String stationName = STATION_건대역_NAME;
         Long lineId = LINE2_ID;
 
         // when
-        Optional<StationEntity> findStationEntity = stationDao.findByStationIdAndLineId(stationId, lineId);
+        Optional<StationEntity> findStationEntity = stationDao.findByStationNameAndLineId(stationName, lineId);
 
         // then
         assertThat(findStationEntity).contains(ENTITY_건대역_FIND);
+    }
+
+    @Test
+    @DisplayName("역 id에 해당하는 행을 삭제한다.")
+    void deleteByIdTest() {
+        // given
+        Station station = STATION_잠실역;
+        Long stationId = station.getId();
+        String stationName = station.getName();
+        Long lineId = station.getLineId();
+
+        // when
+        stationDao.deleteById(stationId);
+
+        // then
+        assertThat(stationDao.findByStationNameAndLineId(stationName, lineId))
+                .isEmpty();
     }
 }

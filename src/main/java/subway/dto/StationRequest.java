@@ -3,16 +3,16 @@ package subway.dto;
 import java.util.Objects;
 
 public class StationRequest {
-    private String upStationName;
-    private String downStationName;
-    private int distance;
-    private String lineName;
+    private final String upStationName;
+    private final String downStationName;
+    private final int distance;
+    private final Long lineId;
 
-    public StationRequest(String upStationName, String downStationName, int distance, String lineName) {
+    public StationRequest(String upStationName, String downStationName, int distance, Long lineId) {
         this.upStationName = upStationName;
         this.downStationName = downStationName;
         this.distance = distance;
-        this.lineName = lineName;
+        this.lineId = lineId;
     }
 
     public String getUpStationName() {
@@ -27,8 +27,8 @@ public class StationRequest {
         return distance;
     }
 
-    public String getLineName() {
-        return lineName;
+    public Long getLineId() {
+        return lineId;
     }
 
     @Override
@@ -39,12 +39,12 @@ public class StationRequest {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StationRequest that = (StationRequest) o;
-        return distance == that.distance && Objects.equals(upStationName, that.upStationName) && Objects.equals(downStationName, that.downStationName) && Objects.equals(lineName, that.lineName);
+        StationRequest request = (StationRequest) o;
+        return distance == request.distance && Objects.equals(upStationName, request.upStationName) && Objects.equals(downStationName, request.downStationName) && Objects.equals(lineId, request.lineId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(upStationName, downStationName, distance, lineName);
+        return Objects.hash(upStationName, downStationName, distance, lineId);
     }
 }

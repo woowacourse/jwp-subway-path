@@ -1,6 +1,7 @@
 package subway.entity;
 
 import subway.domain.line.LineName;
+import subway.domain.line.Surcharge;
 
 import java.util.Objects;
 
@@ -8,15 +9,12 @@ public class LineEntity {
 
     private final Long id;
     private final LineName lineName;
+    private final Surcharge surcharge;
 
-    public LineEntity(Long id, LineName lineName) {
-        this.id = id;
-        this.lineName = lineName;
-    }
-
-    public LineEntity(Long id, String lineName) {
+    public LineEntity(Long id, String lineName, int surcharge) {
         this.id = id;
         this.lineName = new LineName(lineName);
+        this.surcharge = new Surcharge(surcharge);
     }
 
     public Long getId() {
@@ -25,6 +23,10 @@ public class LineEntity {
 
     public String getLineName() {
         return lineName.getLineName();
+    }
+
+    public int getSurcharge() {
+        return surcharge.getSurcharge();
     }
 
     @Override
@@ -49,6 +51,7 @@ public class LineEntity {
         return "LineEntity{" +
                 "id=" + id +
                 ", lineName=" + lineName +
+                ", surcharge=" + surcharge +
                 '}';
     }
 }

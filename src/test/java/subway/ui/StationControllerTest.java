@@ -8,10 +8,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.StationService;
+import subway.application.DeleteStationService;
+import subway.application.SaveSectionService;
 import subway.dto.StationRequest;
 
-import static fixtures.StationFixtures.*;
+import static fixtures.LineFixtures.LINE2_ID;
+import static fixtures.StationFixtures.REQUEST_잠실역_TO_건대역;
+import static fixtures.StationFixtures.STATION_강변역_ID;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -27,7 +30,9 @@ class StationControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private StationService stationService;
+    private SaveSectionService saveSectionService;
+    @MockBean
+    private DeleteStationService deleteStationService;
 
     @Test
     @DisplayName("POST /stations uri로 요청하면 201을 반환한다.")
@@ -35,7 +40,7 @@ class StationControllerTest {
         // given
         StationRequest request = REQUEST_잠실역_TO_건대역;
         Long response = LINE2_ID;
-        when(stationService.saveSection(request))
+        when(saveSectionService.saveSection(request))
                 .thenReturn(response);
 
         // when, then
@@ -52,7 +57,7 @@ class StationControllerTest {
         // given
         Long stationIdToDelete = STATION_강변역_ID;
         Long response = LINE2_ID;
-        when(stationService.deleteStationById(stationIdToDelete)).thenReturn(response);
+        when(deleteStationService.deleteStationById(stationIdToDelete)).thenReturn(response);
 
         // when, then
         mockMvc.perform(delete("/stations/" + stationIdToDelete))

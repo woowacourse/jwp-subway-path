@@ -4,7 +4,11 @@ import java.util.List;
 
 public interface SectionRepository {
 
-    List<Section> findSectionsContaining(Section sectionToAdd);
+    Section insert(Section sectionToAdd);
 
     List<Section> findSectionsByLineId(Long lineId);
+
+    List<Section> findAllSections();
+
+    void remove(Section sectionToModify);
 }

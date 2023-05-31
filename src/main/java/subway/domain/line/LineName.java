@@ -1,5 +1,7 @@
 package subway.domain.line;
 
+import subway.exception.IllegalLineNameException;
+
 import java.util.Objects;
 
 public class LineName {
@@ -14,7 +16,7 @@ public class LineName {
 
     private void validate(String lineName) {
         if (lineName.length() > MAX_LINE_NAME_LENGTH) {
-            throw new IllegalArgumentException("호선 이름은 10자 이하여야 합니다.");
+            throw new IllegalLineNameException();
         }
     }
 

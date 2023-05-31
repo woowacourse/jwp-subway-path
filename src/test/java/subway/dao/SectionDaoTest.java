@@ -9,11 +9,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.entity.SectionEntity;
 
-import java.util.List;
 import java.util.Optional;
 
-import static fixtures.StationFixtures.*;
+import static fixtures.LineFixtures.LINE2_ID;
+import static fixtures.SectionFixtures.*;
+import static fixtures.StationFixtures.STATION_건대역_ID;
+import static fixtures.StationFixtures.STATION_잠실역_ID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @JdbcTest
 @Sql({"/test-schema.sql", "/test-data.sql"})
@@ -21,7 +24,6 @@ class SectionDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
     private SectionDao sectionDao;
 
     @BeforeEach
@@ -40,6 +42,22 @@ class SectionDaoTest {
 
         // then
         assertThat(insertedSectionEntity).isEqualTo(ENTITY_잠실역_TO_강변역_FIND);
+    }
+
+    @Test
+    @DisplayName("상행역 id, 하행역 id, 거리에 해당하는 행을 조회한다.")
+    void findByStationIdsAndDistanceTest() {
+        // given
+        Long upStationId = STATION_잠실역_ID;
+        Long downStationId = STATION_건대역_ID;
+        int distance = DISTANCE_잠실역_TO_건대역;
+        SectionEntity expectSectionEntity = ENTITY_잠실역_TO_건대역_FIND;
+
+        // when
+        Optional<SectionEntity> findSection = sectionDao.findByStationIdsAndDistance(upStationId, downStationId, distance);
+
+        // then
+        assertThat(findSection).contains(expectSectionEntity);
     }
 
     @Test
@@ -71,28 +89,12 @@ class SectionDaoTest {
     }
 
     @Test
-    @DisplayName("노선 id에 해당하는 모든 행을 조회한다.")
-    void findSectionsByLineIdTest() {
-        // given
-        Long lineId = LINE2_ID;
-
-        // when
-        List<SectionEntity> findSectionEntities = sectionDao.findSectionEntitiesByLineId(lineId);
-
-        // then
-        assertThat(findSectionEntities).isEqualTo(List.of(ENTITY_잠실역_TO_건대역_FIND));
-    }
-
-    @Test
     @DisplayName("sectionId에 해당하는 행을 삭제한다.")
     void deleteBySectionIdTest() {
         // given
         Long sectionIdToDelete = SECTION_잠실역_TO_건대역_ID;
 
-        // when
-        sectionDao.deleteBySectionId(sectionIdToDelete);
-
-        // then
-        assertThat(sectionDao.findSectionEntitiesByLineId(LINE2_ID)).isEmpty();
+        // when, then
+        assertThatNoException().isThrownBy(() -> sectionDao.deleteBySectionId(sectionIdToDelete));
     }
 }

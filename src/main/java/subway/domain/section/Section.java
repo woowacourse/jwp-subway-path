@@ -2,6 +2,9 @@ package subway.domain.section;
 
 import subway.domain.line.Line;
 import subway.domain.station.Station;
+import subway.exception.CannotLinkException;
+import subway.exception.DuplicateSectionException;
+import subway.exception.LineNotFoundException;
 
 import java.util.Objects;
 
@@ -26,6 +29,56 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
+    public Section subtract(Section sectionToSubtract) {
+        validateIsSameSection(sectionToSubtract);
+        if (upStation.isSameStation(sectionToSubtract.getUpStation())) {
+            Station newUpStation = sectionToSubtract.getDownStation();
+            Distance newDistance = this.distance.subtract(sectionToSubtract.getDistance());
+            return new Section(null, newUpStation, downStation, newDistance);
+        }
+        if (downStation.isSameStation(sectionToSubtract.getDownStation())) {
+            Station newDownStation = sectionToSubtract.getUpStation();
+            Distance newDistance = this.distance.subtract(sectionToSubtract.getDistance());
+            return new Section(null, upStation, newDownStation, newDistance);
+        }
+        throw new CannotLinkException();
+    }
+
+    public Section combine(Section sectionToCombine) {
+        validateIsSameSection(sectionToCombine);
+        if (downStation.isSameStation(sectionToCombine.getUpStation())) {
+            Station newDownStation = sectionToCombine.getDownStation();
+            Distance newDistance = this.distance.add(sectionToCombine.getDistance());
+            return new Section(null, upStation, newDownStation, newDistance);
+        }
+        if (upStation.isSameStation(sectionToCombine.getDownStation())) {
+            Station newUpStation = sectionToCombine.getUpStation();
+            Distance newDistance = this.distance.add(sectionToCombine.getDistance());
+            return new Section(null, newUpStation, downStation, newDistance);
+        }
+        throw new CannotLinkException();
+    }
+
+    private void validateIsSameSection(Section otherSection) {
+        if (isSameSection(otherSection)) {
+            throw new DuplicateSectionException();
+        }
+    }
+
+    private boolean isSameSection(Section otherSection) {
+        return upStation.isSameStation(otherSection.getUpStation()) &&
+                downStation.isSameStation(otherSection.getDownStation()) &&
+                distance.equals(otherSection.getDistance());
+    }
+
+    public boolean isContainSection(Section targetSection) {
+        return upStation.isSameStation(targetSection.getUpStation()) || downStation.isSameStation(targetSection.getDownStation());
+    }
+
+    public boolean isContainStation(Station targetStation) {
+        return upStation.isSameStation(targetStation) || downStation.isSameStation(targetStation);
+    }
+
     public Long getId() {
         return id;
     }
@@ -38,12 +91,20 @@ public class Section {
         return upStation.getId();
     }
 
+    public String getUpStationName() {
+        return upStation.getName();
+    }
+
     public Station getDownStation() {
         return downStation;
     }
 
     public Long getDownStationId() {
         return downStation.getId();
+    }
+
+    public String getDownStationName() {
+        return downStation.getName();
     }
 
     public Distance getDistance() {
@@ -58,7 +119,7 @@ public class Section {
         if (upStation.getLineName().equals(downStation.getLineName())) {
             return upStation.getLine();
         }
-        throw new IllegalArgumentException("노선을 찾을 수 없습니다.");
+        throw new LineNotFoundException();
     }
 
     public Long getLineId() {
