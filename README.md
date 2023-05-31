@@ -72,8 +72,8 @@
 
 - [ ] Repository 생성
   - [x] LineRepository
+  - [x] SectionRepository
   - [ ] StationRepository
-  - [ ] SectionRepository
 - [ ] 최단 경로 조회 API
   - [x] url 변경
   - [ ] 응답 형식 변경
