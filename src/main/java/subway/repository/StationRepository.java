@@ -1,5 +1,7 @@
 package subway.repository;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
@@ -25,6 +27,13 @@ public class StationRepository {
         if (stationDao.isExisted(name)) {
             throw new DuplicateException(ErrorCode.DUPLICATE_NAME);
         }
+    }
+
+    public List<Station> findAll() {
+        List<StationEntity> stationEntities = stationDao.findAll();
+        return stationEntities.stream()
+                .map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName()))
+                .collect(Collectors.toList());
     }
 
     public Station findByName(String name) {
