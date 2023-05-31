@@ -2,11 +2,11 @@ package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static subway.integration.TestFixture.JAMSILNARU_ID;
-import static subway.integration.TestFixture.JAMSILSAENAE_ID;
-import static subway.integration.TestFixture.JAMSIL_ID;
-import static subway.integration.TestFixture.JEONGJA_ID;
-import static subway.integration.TestFixture.PANKYO_ID;
+import static subway.integration.TestFixture.SEOULYEOK_ID;
+import static subway.integration.TestFixture.SICHUNG_ID;
+import static subway.integration.TestFixture.SINDORIM_ID;
+import static subway.integration.TestFixture.JONGGAK_ID;
+import static subway.integration.TestFixture.JONGROSAMGA_ID;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,12 +21,13 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.test.context.ActiveProfiles;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationRegisterRequest;
-import subway.dto.StationsRegisterRequest;
 
+@ActiveProfiles("test")
 @DisplayName("지하철 노선 관련 기능")
 class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
@@ -107,14 +108,15 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JEONGJA_ID, PANKYO_ID, 10))
+                .body(new StationRegisterRequest(JONGGAK_ID, JONGROSAMGA_ID, 10))
                 .when().post("/lines/{lineId}/stations", lineId1)
                 .then().log().all().
                 extract();
+
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
+                .body(new StationRegisterRequest(SINDORIM_ID, SEOULYEOK_ID, 10))
                 .when().post("/lines/{lineId}/stations", lineId2)
                 .then().log().all().
                 extract();
@@ -137,22 +139,19 @@ class LineIntegrationTest extends IntegrationTest {
                 .collect(Collectors.toList());
         assertThat(resultLineIds).containsAll(expectedLineIds);
 
-        List<LineResponse> lineResponses = response.jsonPath().getList(".", LineResponse.class)
-                .stream()
-                .filter(lineResponse -> !lineResponse.getStations().isEmpty())
-                .collect(Collectors.toList());
+        List<LineResponse> lineResponses = response.jsonPath().getList(".", LineResponse.class);
 
-        assertThat(lineResponses.get(0).getStations())
+        assertThat(lineResponses.get(lineId1.intValue() - 1).getStations())
                 .extracting("id", "name")
                 .containsExactly(
-                        tuple(JEONGJA_ID, "정자"),
-                        tuple(PANKYO_ID, "판교")
+                        tuple(JONGGAK_ID, "종각"),
+                        tuple(JONGROSAMGA_ID, "종로3가")
                 );
-        assertThat(lineResponses.get(1).getStations())
+        assertThat(lineResponses.get(lineId2.intValue() - 1).getStations())
                 .extracting("id", "name")
                 .containsExactly(
-                        tuple(JAMSIL_ID, "잠실"),
-                        tuple(JAMSILNARU_ID, "잠실나루")
+                        tuple(SINDORIM_ID, "신도림"),
+                        tuple(SEOULYEOK_ID, "서울역")
                 );
     }
 
@@ -172,7 +171,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSILSAENAE_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SICHUNG_ID, 10))
                 .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all().
                 extract();
@@ -192,8 +191,8 @@ class LineIntegrationTest extends IntegrationTest {
         assertThat(resultResponse.getStations())
                 .extracting("id", "name")
                 .containsExactly(
-                        tuple(JAMSILNARU_ID, "잠실나루"),
-                        tuple(JAMSILSAENAE_ID, "잠실새내")
+                        tuple(SEOULYEOK_ID, "서울역"),
+                        tuple(SICHUNG_ID, "시청")
                 );
     }
 
@@ -234,9 +233,17 @@ class LineIntegrationTest extends IntegrationTest {
                 .when().post("/lines")
                 .then().log().all().
                 extract();
+        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
+                .when().post("/lines/{lineId}/stations", lineId)
+                .then().log().all().
+                extract();
 
         // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .when().delete("/lines/{lineId}", lineId)
@@ -249,28 +256,53 @@ class LineIntegrationTest extends IntegrationTest {
 
     @DisplayName("빈 노선에 두 역을 등록한다")
     @Test
-    void registerStationsSuccess() {
+    void registerStationsToEmptyLine() {
         //when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
+                .when().post("/lines/5/stations")
+                .then().log().all().
+                extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("역이 등록된 노선에 이미 등록된 두 역을 등록하면 예외가 발생한다")
+    @Test
+    void throwExceptionWhenRegisterSameStations() {
+        //given
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
+                .when().post("/lines/2/stations")
+                .then().log().all().
+                extract();
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
                 .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("역이 등록된 노선에 두 역을 등록하면 예외가 발생한다")
+    @DisplayName("역이 등록된 노선에 등록되지 않은 두 역을 등록하면 예외가 발생한다")
     @Test
-    void registerStationsFail() {
+    void throwExceptionWhenRegisterStationsToNonEmptyLine() {
         //given
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
                 .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
@@ -279,7 +311,7 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSIL_ID, JAMSILSAENAE_ID, 10))
+                .body(new StationRegisterRequest(SICHUNG_ID, JONGGAK_ID, 10))
                 .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
@@ -295,8 +327,8 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/stations")
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
+                .when().post("/lines/5/stations")
                 .then().log().all().
                 extract();
 
@@ -304,13 +336,13 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("UPPER", JAMSILSAENAE_ID, JAMSILNARU_ID, 5))
-                .when().post("/lines/2/station")
+                .body(new StationRegisterRequest(SICHUNG_ID, SEOULYEOK_ID, 5))
+                .when().post("/lines/5/stations")
                 .then().log().all().
                 extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("노선에서 기준 역의 하행에 하나의 역을 등록한다")
@@ -320,8 +352,8 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
-                .when().post("/lines/2/stations")
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
+                .when().post("/lines/5/stations")
                 .then().log().all().
                 extract();
 
@@ -329,13 +361,13 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("LOWER", JAMSILSAENAE_ID, JAMSILNARU_ID, 5))
-                .when().post("/lines/2/station")
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SICHUNG_ID, 5))
+                .when().post("/lines/5/stations")
                 .then().log().all().
                 extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("노선에 잘못된 거리 정보를 가지는 하나의 역을 등록하면 예외가 발생한다.")
@@ -345,7 +377,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
                 .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
@@ -354,8 +386,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("LOWER", JAMSILSAENAE_ID, JAMSILNARU_ID, 15))
-                .when().post("/lines/2/station")
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SICHUNG_ID,15))
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -370,7 +402,7 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSILNARU_ID, JAMSIL_ID, 10))
+                .body(new StationRegisterRequest(SEOULYEOK_ID, SINDORIM_ID, 10))
                 .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
@@ -379,24 +411,8 @@ class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("UPPER", JAMSIL_ID, JAMSILNARU_ID, 5))
-                .when().post("/lines/2/station")
-                .then().log().all().
-                extract();
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("빈 노선에 하나의 역을 등록하면 예외가 발생한다")
-    @Test
-    void registerStationFailWhenRegisterStationToEmptyLine() {
-        //when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationRegisterRequest("UPPER", JAMSIL_ID, JAMSILNARU_ID, 10))
-                .when().post("/lines/2/station")
+                .body(new StationRegisterRequest(SINDORIM_ID, SEOULYEOK_ID, 5))
+                .when().post("/lines/2/stations")
                 .then().log().all().
                 extract();
 
@@ -420,16 +436,17 @@ class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new StationsRegisterRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
-                .when().post("/lines/{lineId}/station", lineId)
+                .body(new StationRegisterRequest(SINDORIM_ID, SEOULYEOK_ID, 10))
+                .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all().
                 extract();
 
         // when
         RestAssured
                 .given().log().all()
-                .body(new StationDeleteRequest(JAMSIL_ID))
-                .when().delete("/lines/{lineId}/station", lineId)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationDeleteRequest(SINDORIM_ID))
+                .when().delete("/lines/{lineId}/stations", lineId)
                 .then().log().all()
                 .extract();
 
@@ -441,7 +458,7 @@ class LineIntegrationTest extends IntegrationTest {
         LineResponse lineResponse = response.body().as(LineResponse.class);
 
         // then
-        assertThat(lineResponse.getStations()).hasSize(0);
+        assertThat(lineResponse.getStations()).isEmpty();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

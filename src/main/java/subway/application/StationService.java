@@ -5,6 +5,7 @@ import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.exception.DataNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,32 +14,39 @@ import java.util.stream.Collectors;
 public class StationService {
     private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(final StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public StationResponse saveStation(final StationRequest stationRequest) {
+        Long stationId = stationDao.insert(new Station(stationRequest.getName()));
+        return findStationById(stationId);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public StationResponse findStationById(final Long id) {
+        Station station = stationDao.findById(id);
+        return StationResponse.from(station);
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponse> findAllStations() {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+    public void updateStation(final Long id, final StationRequest stationRequest) {
+        int modifiedRow = stationDao.update(new Station(id, stationRequest.getName()));
+        if (modifiedRow == 0) {
+            throw new DataNotFoundException("존재하지 않는 역입니다");
+        }
     }
 
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    public void deleteStationById(final Long id) {
+        int modifiedRow = stationDao.deleteById(id);
+        if (modifiedRow == 0) {
+            throw new DataNotFoundException("존재하지 않는 역입니다");
+        }
     }
 }

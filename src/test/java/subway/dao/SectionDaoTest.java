@@ -12,14 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import org.springframework.test.context.ActiveProfiles;
 import subway.dto.SectionDto;
+import subway.entity.SectionEntity;
 
+@ActiveProfiles("test")
 @JdbcTest
-public class SectionDaoTest {
+class SectionDaoTest {
 
     private static final Long LINE_ID = 2L;
-    private static final Long STATION_ID = 1L;
-    private static final Long NEXT_STATION_ID = 2L;
+    private static final Long UPPER_STATION = 1L;
+    private static final Long LOWER_STATION = 2L;
     private static final int DISTANCE = 10;
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -34,7 +37,7 @@ public class SectionDaoTest {
     @DisplayName("지하철 구간 데이터를 삽입한다")
     @Test
     void insertSection() {
-        SectionDto section = new SectionDto(LINE_ID, STATION_ID, NEXT_STATION_ID, DISTANCE);
+        SectionDto section = new SectionDto(LINE_ID, UPPER_STATION, LOWER_STATION, DISTANCE);
         sectionDao.insert(section);
 
         assertThat(sectionDao.findAllByLineId(LINE_ID)).isNotNull();
@@ -51,7 +54,7 @@ public class SectionDaoTest {
         sectionDao.insertAll(sectionDtos);
 
         assertThat(sectionDao.findAllByLineId(LINE_ID))
-                .extracting("lineId", "stationId", "nextStationId", "distance")
+                .extracting("lineId", "upperStation", "lowerStation", "distance")
                 .contains(
                         tuple(LINE_ID, 1L, 2L, DISTANCE),
                         tuple(LINE_ID, 2L, 3L, DISTANCE),
@@ -62,18 +65,18 @@ public class SectionDaoTest {
     @DisplayName("지하철 구간 데이터를 조회한다")
     @Test
     void findAllByLineId() {
-        SectionDto section = new SectionDto(LINE_ID, STATION_ID, NEXT_STATION_ID, DISTANCE);
+        SectionDto section = new SectionDto(LINE_ID, UPPER_STATION, LOWER_STATION, DISTANCE);
         sectionDao.insert(section);
-        List<SectionDto> result = sectionDao.findAllByLineId(LINE_ID);
+        List<SectionEntity> result = sectionDao.findAllByLineId(LINE_ID);
 
-        assertThat(result).extracting("lineId", "stationId", "nextStationId", "distance")
-                .contains(tuple(LINE_ID, STATION_ID, NEXT_STATION_ID, DISTANCE));
+        assertThat(result).extracting("lineId", "upperStation", "lowerStation", "distance")
+                .contains(tuple(LINE_ID, UPPER_STATION, LOWER_STATION, DISTANCE));
     }
 
     @DisplayName("호선의 지하철 구간 데이터를 삭제한다")
     @Test
     void deleteSection() {
-        SectionDto section = new SectionDto(LINE_ID, STATION_ID, NEXT_STATION_ID, DISTANCE);
+        SectionDto section = new SectionDto(LINE_ID, UPPER_STATION, LOWER_STATION, DISTANCE);
         sectionDao.insert(section);
 
         assertThat(sectionDao.deleteAllByLineId(LINE_ID)).isGreaterThanOrEqualTo(1);

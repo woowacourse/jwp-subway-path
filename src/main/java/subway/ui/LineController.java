@@ -7,7 +7,6 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationRegisterRequest;
-import subway.dto.StationsRegisterRequest;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -31,12 +30,12 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+        return ResponseEntity.ok(lineService.findLines());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+        return ResponseEntity.ok(lineService.findLineById(id));
     }
 
     @PutMapping("/{id}")
@@ -52,20 +51,13 @@ public class LineController {
     }
 
     @PostMapping("/{id}/stations")
-    public ResponseEntity<Void> registerStations(@PathVariable Long id, @RequestBody StationsRegisterRequest request) {
-        lineService.registerStations(id, request);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{id}/station")
     public ResponseEntity<Void> registerStation(@PathVariable Long id, @RequestBody StationRegisterRequest request) {
         lineService.registerStation(id, request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
-    @DeleteMapping("/{id}/station")
-    public ResponseEntity<Void> deleteStations(@PathVariable Long id,
-            @RequestBody StationDeleteRequest request) {
+    @DeleteMapping("/{id}/stations")
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id, @RequestBody StationDeleteRequest request) {
         lineService.deleteStation(id, request);
         return ResponseEntity.noContent().build();
     }

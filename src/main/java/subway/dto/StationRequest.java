@@ -1,12 +1,12 @@
 package subway.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class StationRequest {
-    private String name;
+    private final String name;
 
-    public StationRequest() {
-    }
-
-    public StationRequest(String name) {
+    @JsonCreator
+    public StationRequest(final String name) {
         this.name = name;
     }
 

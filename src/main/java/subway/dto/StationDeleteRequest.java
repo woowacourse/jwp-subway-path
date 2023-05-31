@@ -1,12 +1,12 @@
 package subway.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class StationDeleteRequest {
-    private Long stationId;
+    private final Long stationId;
 
-    public StationDeleteRequest() {
-    }
-
-    public StationDeleteRequest(Long stationId) {
+    @JsonCreator
+    public StationDeleteRequest(final Long stationId) {
         this.stationId = stationId;
     }
 

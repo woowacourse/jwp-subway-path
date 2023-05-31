@@ -1,12 +1,19 @@
-package subway.dto;
+package subway.entity;
 
-public class LineRequest {
+public class LineEntity {
+
+    private final Long id;
     private final String name;
     private final String color;
 
-    public LineRequest(final String name, final String color) {
+    public LineEntity(Long id, String name, String color) {
+        this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -16,5 +23,4 @@ public class LineRequest {
     public String getColor() {
         return color;
     }
-
 }

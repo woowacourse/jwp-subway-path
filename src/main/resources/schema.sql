@@ -15,11 +15,15 @@ create table if not exists LINE
 
 create table if not exists SECTION
 (
-    id bigint not null auto_increment,
+    id bigint auto_increment not null,
     line_id bigint not null,
-    station_id bigint not null,
-    next_station_id bigint,
+    upper_station bigint not null,
+    lower_station bigint not null,
     distance int not null,
     primary key (id),
-    constraint not_same_station check (station_id != next_station_id)
-)
+    foreign key (line_id) references LINE (id) on delete cascade,
+    foreign key (upper_station) references STATION (id) on delete cascade,
+    foreign key (lower_station) references STATION (id) on delete cascade,
+    constraint not_same_station check (upper_station != lower_station),
+    constraint only_positive_distance check (distance > 0)
+);
