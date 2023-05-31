@@ -46,8 +46,7 @@ public class Sections {
         upStations.removeAll(downStations);
         return upStations.get(0);
     }
-
-
+    
     public void addSection(Section newSection) {
         if (isEmpty()) {
             sections.add(newSection);
