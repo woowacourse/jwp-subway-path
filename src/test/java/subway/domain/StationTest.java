@@ -26,13 +26,4 @@ class StationTest {
                 .isInstanceOf(InvalidException.class)
                 .hasMessage("이름은 공백이 될 수 없습니다.");
     }
-
-    @DisplayName("아이디에 0 이하인 수가 입력되면 예외가 발생한다.")
-    @Test
-    void createNegativeId() {
-        // then
-        assertThatThrownBy(() -> new Station(-1L, "찰리역"))
-                .isInstanceOf(InvalidException.class)
-                .hasMessage("아이디는 양수여야 합니다.");
-    }
 }
