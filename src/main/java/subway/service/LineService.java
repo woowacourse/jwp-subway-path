@@ -29,7 +29,6 @@ public class LineService {
     @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
         List<Line> lines = lineRepository.findAll();
-
         return lines.stream()
                 .map(line -> new LineResponse(line.getId(), line.getName(), getStationResponse(line)))
                 .collect(Collectors.toList());
@@ -39,7 +38,6 @@ public class LineService {
     public LineResponse findById(Long id) {
         Line line = lineRepository.findById(id);
         List<StationResponse> stationsResponse = getStationResponse(line);
-
         return new LineResponse(id, line.getName(), stationsResponse);
     }
 

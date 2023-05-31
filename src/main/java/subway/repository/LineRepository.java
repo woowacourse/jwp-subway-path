@@ -41,7 +41,6 @@ public class LineRepository {
 
     public List<Line> findAll() {
         List<LineEntity> lineEntities = lineDao.findAll();
-
         return lineEntities.stream()
                 .map(lineEntity -> findById(lineEntity.getId()))
                 .collect(Collectors.toList());
@@ -55,7 +54,6 @@ public class LineRepository {
     private List<Section> findSectionsByLineId(Long lineId) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
         Map<Long, String> stationEntities = findStations();
-
         return sectionEntities.stream()
                 .map(sectionEntity -> new Section(
                         new Station(sectionEntity.getUpStationId(), stationEntities.get(sectionEntity.getUpStationId())),

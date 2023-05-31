@@ -31,7 +31,7 @@ public class Path {
             graph.setEdgeWeight(graph.addEdge(
                     section.getUpStation().getName(),
                     section.getDownStation().getName()
-            ),section.getDistance());
+            ), section.getDistance());
         }
 
         return new Path(graph);
@@ -40,7 +40,7 @@ public class Path {
     public List<String> getDijkstraShortestPath(String sourceStation, String targetStation) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<String, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        if(path == null) {
+        if (path == null) {
             throw new NoSuchPath(ErrorCode.NO_SUCH_PATH);
         }
         return path.getVertexList();

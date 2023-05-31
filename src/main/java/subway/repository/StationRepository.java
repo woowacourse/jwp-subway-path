@@ -20,7 +20,7 @@ public class StationRepository {
         duplicateLineName(station.getName());
         return stationDao.save(new StationEntity(station.getName()));
     }
-    
+
     private void duplicateLineName(String name) {
         if (stationDao.isExisted(name)) {
             throw new DuplicateException(ErrorCode.DUPLICATE_NAME);

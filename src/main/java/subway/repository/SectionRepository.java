@@ -23,7 +23,6 @@ public class SectionRepository {
                         line.getId(),
                         section.getDistance()))
                 .collect(Collectors.toList());
-
         sectionDao.batchSave(sectionEntities);
     }
 

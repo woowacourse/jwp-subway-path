@@ -24,7 +24,6 @@ public class Sections {
         for (Section section : sections) {
             sectionByUpStation.put(section.getUpStation(), section);
         }
-
         List<Section> sortedSections = new ArrayList<>();
         Station currentStation = findFirstStation(sections);
         while (sectionByUpStation.containsKey(currentStation)) {
@@ -38,7 +37,6 @@ public class Sections {
     private static Station findFirstStation(List<Section> sections) {
         List<Station> upStations = new ArrayList<>();
         List<Station> downStations = new ArrayList<>();
-
         for (Section section : sections) {
             upStations.add(section.getUpStation());
             downStations.add(section.getDownStation());
@@ -46,7 +44,7 @@ public class Sections {
         upStations.removeAll(downStations);
         return upStations.get(0);
     }
-    
+
     public void addSection(Section newSection) {
         if (isEmpty()) {
             sections.add(newSection);
