@@ -88,7 +88,7 @@
 - [ ] 테스트
   - [x] Fare 테스트 추가
   - [x] ShortestPath 테스트 추가
-  - [ ] ShortestPath Integration 테스트 추가
+  - [x] ShortestPath Integration 테스트 추가
 
 ---
 

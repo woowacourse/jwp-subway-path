@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.InvalidException;
 
-@DisplayName("요금 정책 기능")
 class FareTest {
     private Fare fare;
 
