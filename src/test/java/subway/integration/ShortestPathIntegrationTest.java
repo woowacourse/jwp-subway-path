@@ -21,7 +21,7 @@ import subway.integration.step.StationStep;
 
 @DisplayName("최단 경로 구하기 기능")
 @SuppressWarnings("NonAsciiCharacters")
-public class PathIntegrationTest extends IntegrationTest {
+public class ShortestPathIntegrationTest extends IntegrationTest {
     @Override
     @BeforeEach
     public void setUp() {

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import subway.domain.Fare;
 import subway.domain.Path;
 import subway.domain.Section;
+import subway.domain.ShortestPath;
 import subway.domain.Station;
 import subway.dto.PathRequest;
 import subway.dto.PathResponse;
@@ -28,11 +29,11 @@ public class PathService {
         Station sourceStation = stationRepository.findByName(pathRequest.getSourceStation());
         Station targetStation = stationRepository.findByName(pathRequest.getTargetStation());
 
-        Path path = Path.of(sections);
+        Path path = ShortestPath.of(sections);
         Fare fare = new Fare();
 
-        List<Station> shortestPath = path.getShortestPath(sourceStation, targetStation);
-        int shortestPathDistance = path.getShortestPathDistance(sourceStation, targetStation);
+        List<Station> shortestPath = path.findPath(sourceStation, targetStation);
+        int shortestPathDistance = path.getDistance(sourceStation, targetStation);
         int shortestPathFare = fare.calculateFare(shortestPathDistance);
 
         List<StationResponse> stationResponses = shortestPath.stream()
