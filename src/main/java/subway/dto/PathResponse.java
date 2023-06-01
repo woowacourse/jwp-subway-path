@@ -3,22 +3,22 @@ package subway.dto;
 import java.util.List;
 
 public class PathResponse {
-    private final List<String> shortestPath;
-    private final int shortestPathDistance;
+    private final List<StationResponse> stations;
+    private final int distance;
     private final int fare;
 
-    public PathResponse(List<String> shortestPath, int shortestPathDistance, int fare) {
-        this.shortestPath = shortestPath;
-        this.shortestPathDistance = shortestPathDistance;
+    public PathResponse(List<StationResponse> stations, int distance, int fare) {
+        this.stations = stations;
+        this.distance = distance;
         this.fare = fare;
     }
 
-    public List<String> getShortestPath() {
-        return shortestPath;
+    public List<StationResponse> getStations() {
+        return stations;
     }
 
-    public int getShortestPathDistance() {
-        return shortestPathDistance;
+    public int getDistance() {
+        return distance;
     }
 
     public int getFare() {

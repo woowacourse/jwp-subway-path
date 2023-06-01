@@ -6,67 +6,54 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.exception.ErrorCode;
+import subway.exception.InvalidException;
 import subway.exception.NoSuchPath;
 
 public class Path {
-    public static final int DEFAULT_FARE = 1250;
-    public static final int UNIT_OVER_TEN = 5;
-    public static final int UNIT_OVER_FIFTY = 8;
-    public static final int ADD_FARE = 100;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    private final WeightedMultigraph<String, DefaultWeightedEdge> graph;
-
-    private Path(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+    private Path(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         this.graph = graph;
     }
 
-    public static Path of(List<Station> stations, List<Section> sections) {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        for (Station station : stations) {
-            graph.addVertex(station.getName());
-        }
-
+    public static Path of(List<Section> sections) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(
-                    section.getUpStation().getName(),
-                    section.getDownStation().getName()
-            ), section.getDistance());
+            graph.addVertex(section.getUpStation());
+            graph.addVertex(section.getDownStation());
+            graph.setEdgeWeight(
+                    graph.addEdge(section.getUpStation(), section.getDownStation()),
+                    section.getDistance()
+            );
         }
-
         return new Path(graph);
     }
 
-    public List<String> getDijkstraShortestPath(String sourceStation, String targetStation) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<String, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        if (path == null) {
-            throw new NoSuchPath(ErrorCode.NO_SUCH_PATH);
-        }
+    public List<Station> getShortestPath(Station sourceStation, Station targetStation) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        validateSameStation(sourceStation, targetStation);
+        validatePossiblePath(path);
         return path.getVertexList();
     }
 
-    public int getDijkstraShortestPathDistance(String sourceStation, String targetStation) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<String, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        if (path == null) {
-            throw new NoSuchPath(ErrorCode.NO_SUCH_PATH);
-        }
+    public int getShortestPathDistance(Station sourceStation, Station targetStation) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        validateSameStation(sourceStation, targetStation);
+        validatePossiblePath(path);
         return (int) path.getWeight();
     }
 
-    public int calculateFare(int distance) {
-        int fare = DEFAULT_FARE;
-        fare += (calculateOverFare(distance - 10, UNIT_OVER_TEN) - calculateOverFare(distance - 50, UNIT_OVER_TEN));
-        fare += calculateOverFare(distance - 50, UNIT_OVER_FIFTY);
-
-        return fare;
+    private void validatePossiblePath(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new NoSuchPath(ErrorCode.NO_SUCH_PATH);
+        }
     }
 
-    private int calculateOverFare(int distance, int unit) {
-        if (distance <= 0) {
-            return 0;
+    private void validateSameStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new InvalidException(ErrorCode.INVALID_SAME_UP_AND_DOWN_STATION);
         }
-        return (int) ((Math.ceil((distance - 1) / unit) + 1) * ADD_FARE);
     }
 }

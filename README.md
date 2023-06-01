@@ -74,13 +74,13 @@
   - [x] LineRepository
   - [x] SectionRepository
   - [x] StationRepository
-- [ ] 최단 경로 조회 API
+- [x] 최단 경로 조회 API
   - [x] url 변경
-  - [ ] 응답 형식 변경
-- [ ] 최단 경로 조회 기능
-  - [ ] getDijkstraShortestPath 메소드 추상화
-  - [ ] getDijkstraShortestPath 메소드 sourceStation과 targetStation이 같은 경우 예외 처리 기능 구현
-  - [ ] Vertex로 역(Station) 객체 사용하도록 리팩토링
+  - [x] 응답 형식 변경
+- [x] 최단 경로 조회 기능
+  - [x] getDijkstraShortestPath 메소드 추상화
+  - [x] getDijkstraShortestPath 메소드 sourceStation과 targetStation이 같은 경우 예외 처리 기능 구현
+  - [x] Vertex로 역(Station) 객체 사용하도록 리팩토링
   - [ ] Section 도메인에 외부 라이브러리에 대한 의존 끊기
 - [x] 요금 계산 기능
   - [x] 요금 계산 기능 책임 분리
@@ -307,10 +307,16 @@ Content-Type: application/json
 
 {
     "shortestPath": [
-        "주노역",
-        "찰리역"
+        {
+            "id": 6,
+            "name": "찰리역"
+        },
+        {
+            "id": 4,
+            "name": "주노역"
+        }
     ],
-    "shortestPathDistance": 9,
+    "distance": 9,
     "fare": 1250
 }
 ```

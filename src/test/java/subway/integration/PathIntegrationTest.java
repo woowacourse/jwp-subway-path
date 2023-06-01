@@ -58,7 +58,7 @@ public class PathIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(PathResponse.class).getShortestPathDistance()).isEqualTo(2);
+        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(2);
         assertThat(response.as(PathResponse.class).getFare()).isEqualTo(1250);
     }
 }
