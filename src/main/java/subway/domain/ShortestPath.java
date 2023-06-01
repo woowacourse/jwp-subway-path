@@ -47,15 +47,15 @@ public class ShortestPath implements Path {
         return (int) path.getWeight();
     }
 
-    private void validatePossiblePath(GraphPath<Station, DefaultWeightedEdge> path) {
-        if (path == null) {
-            throw new NoSuchPath(ErrorCode.NO_SUCH_PATH);
-        }
-    }
-
     private void validateSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
             throw new InvalidException(ErrorCode.INVALID_SAME_UP_AND_DOWN_STATION);
+        }
+    }
+
+    private void validatePossiblePath(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new NoSuchPath(ErrorCode.NO_SUCH_PATH);
         }
     }
 }
