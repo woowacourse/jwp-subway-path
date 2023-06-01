@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.service.FeeService;
-import subway.dto.response.ShortestWayResponse;
+import subway.dto.response.ShortestPathResponse;
 
 @RequestMapping("/fee")
 @RestController
@@ -19,11 +19,11 @@ public class FeeController {
     }
 
     @GetMapping
-    public ResponseEntity<ShortestWayResponse> findShortestWay(
+    public ResponseEntity<ShortestPathResponse> findShortestWay(
             @RequestParam("start") Long startStationId,
             @RequestParam("end") Long endStationId
     ) {
-        final var shortestWayResponse = feeService.showShortestWay(startStationId, endStationId);
+        final var shortestWayResponse = feeService.showShortestPath(startStationId, endStationId);
 
         return ResponseEntity.ok(shortestWayResponse);
     }

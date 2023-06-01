@@ -5,7 +5,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import subway.dto.response.ShortestWayResponse;
+import subway.dto.response.ShortestPathResponse;
 import subway.fixture.StationFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +36,7 @@ class FeeAcceptanceTest extends AcceptanceTest {
     }
 
     private void 요금이_일치한다(final ExtractableResponse<Response> response, final int fee) {
-        assertThat(response.as(ShortestWayResponse.class).getFee()).isEqualTo(fee);
+        assertThat(response.as(ShortestPathResponse.class).getFee()).isEqualTo(fee);
     }
 
     private void 요금_조회에_실패한다(final ExtractableResponse<Response> response) {

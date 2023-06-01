@@ -1,7 +1,7 @@
 package subway.ui;
 
 import org.junit.jupiter.api.Test;
-import subway.dto.response.ShortestWayResponse;
+import subway.dto.response.ShortestPathResponse;
 import subway.dto.response.StationResponse;
 
 import java.util.List;
@@ -17,8 +17,8 @@ class FeeControllerTest extends ControllerTest {
 
     @Test
     void 요금을_조회한다() throws Exception {
-        given(feeService.showShortestWay(anyLong(), anyLong()))
-                .willReturn(new ShortestWayResponse(1250, List.of(
+        given(feeService.showShortestPath(anyLong(), anyLong()))
+                .willReturn(new ShortestPathResponse(1250, List.of(
                         new StationResponse(1L, "1번역"),
                         new StationResponse(2L, "2번역")
                 )));

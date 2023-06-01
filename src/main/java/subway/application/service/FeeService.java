@@ -7,7 +7,7 @@ import subway.domain.Line;
 import subway.domain.ShortestPath;
 import subway.domain.Station;
 import subway.domain.util.ShortestPathCalculator;
-import subway.dto.response.ShortestWayResponse;
+import subway.dto.response.ShortestPathResponse;
 import subway.dto.response.StationResponse;
 import subway.persistence.repository.SubwayRepository;
 
@@ -25,7 +25,7 @@ public class FeeService {
     }
 
     @Transactional(readOnly = true)
-    public ShortestWayResponse showShortestWay(final Long startStationId, final Long endStationId) {
+    public ShortestPathResponse showShortestPath(final Long startStationId, final Long endStationId) {
         final List<Line> lines = subwayRepository.findLines();
         final Station start = subwayRepository.findStationById(startStationId);
         final Station end = subwayRepository.findStationById(endStationId);
@@ -33,6 +33,7 @@ public class FeeService {
         final ShortestPath result = ShortestPathCalculator.calculate(start, end, lines);
         final int fee = feeCalculator.calculateFee(result.getDistance());
 
-        return new ShortestWayResponse(fee, StationResponse.of(result.getStations()));
+
+        return new ShortestPathResponse(fee, StationResponse.of(result.getStations()));
     }
 }

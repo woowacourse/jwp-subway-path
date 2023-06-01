@@ -2,15 +2,15 @@ package subway.dto.response;
 
 import java.util.List;
 
-public class ShortestWayResponse {
+public class ShortestPathResponse {
 
     private int fee;
     private List<StationResponse> stations;
 
-    public ShortestWayResponse() {
+    public ShortestPathResponse() {
     }
 
-    public ShortestWayResponse(final int fee, final List<StationResponse> stations) {
+    public ShortestPathResponse(final int fee, final List<StationResponse> stations) {
         this.fee = fee;
         this.stations = stations;
     }
