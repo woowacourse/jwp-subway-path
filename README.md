@@ -85,7 +85,7 @@
 - [x] 요금 계산 기능
   - [x] 요금 계산 기능 책임 분리
   - [x] 거리가 0 이하일 때 예외 처리 기능 구현
-- [ ] 테스트
+- [x] 테스트
   - [x] Fare 테스트 추가
   - [x] ShortestPath 테스트 추가
   - [x] ShortestPath Integration 테스트 추가
