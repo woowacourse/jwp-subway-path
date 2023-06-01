@@ -1,12 +1,12 @@
-package subway.application;
+package subway.application.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.LineWithStationResponse;
+import subway.dto.request.LineRequest;
+import subway.dto.response.LineResponse;
+import subway.dto.response.LineWithStationResponse;
 import subway.persistence.dao.LineDao;
 import subway.persistence.repository.SubwayRepository;
 
@@ -25,19 +25,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = subwayRepository.addLine(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
-    }
-
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineDao.findAll();
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -45,15 +34,17 @@ public class LineService {
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        subwayRepository.deleteLineById(id);
     }
 
+    @Transactional(readOnly = true)
     public LineWithStationResponse findLineById(final Long id) {
         final Line line = subwayRepository.findLine(id);
         final List<Station> stations = line.sortStations();
         return LineWithStationResponse.from(line, stations);
     }
 
+    @Transactional(readOnly = true)
     public List<LineWithStationResponse> findAllLines() {
         final List<Line> lines = subwayRepository.findLines();
         return lines.stream()

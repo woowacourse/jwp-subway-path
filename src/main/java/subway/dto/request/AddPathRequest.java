@@ -1,11 +1,24 @@
-package subway.dto;
+package subway.dto.request;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class AddPathRequest {
 
-    private final Long targetStationId;
-    private final Long addStationId;
-    private final Integer distance;
-    private final String direction;
+    @NotNull
+    @Positive
+    private Long targetStationId;
+    @NotNull
+    @Positive
+    private Long addStationId;
+    @Positive
+    private Integer distance;
+    @NotBlank
+    private String direction;
+
+    public AddPathRequest() {
+    }
 
     public AddPathRequest(final Long targetStationId, final Long addStationId, final Integer distance, final String direction) {
         this.targetStationId = targetStationId;

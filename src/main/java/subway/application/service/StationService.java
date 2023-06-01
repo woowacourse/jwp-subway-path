@@ -1,11 +1,12 @@
-package subway.application;
+package subway.application.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.StationRequest;
+import subway.dto.response.StationResponse;
 import subway.persistence.dao.StationDao;
+import subway.persistence.repository.SubwayRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,20 +15,24 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private final StationDao stationDao;
+    private final SubwayRepository subwayRepository;
 
-    public StationService(StationDao stationDao) {
+    public StationService(final StationDao stationDao, final SubwayRepository subwayRepository) {
         this.stationDao = stationDao;
+        this.subwayRepository = subwayRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        final Station persist = subwayRepository.addStation(new Station(stationRequest.getName()));
+        return StationResponse.of(persist);
     }
 
+    @Transactional(readOnly = true)
     public StationResponse findStationResponseById(Long id) {
         return StationResponse.of(stationDao.findById(id));
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 

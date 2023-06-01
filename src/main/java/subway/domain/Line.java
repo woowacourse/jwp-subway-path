@@ -1,13 +1,13 @@
 package subway.domain;
 
+import subway.domain.addpathstrategy.AddPathStrategy;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static subway.domain.Direction.UP;
 
 public class Line {
     private final Long id;
@@ -35,15 +35,22 @@ public class Line {
     }
 
     public List<Station> sortStations() {
+        if (paths.isEmpty()) {
+            return List.of();
+        }
         final Station start = computeStartStation();
         final List<Station> result = new ArrayList<>();
         result.add(start);
         Station current = start;
-        while (result.size() != paths.size() + 1) {
+        while (sortingNotCompleted(result)) {
             current = paths.get(current).getNext();
             result.add(current);
         }
         return result;
+    }
+
+    private boolean sortingNotCompleted(final List<Station> result) {
+        return result.size() != paths.size() + 1;
     }
 
     private Station computeStartStation() {
@@ -55,55 +62,22 @@ public class Line {
         return ups.get(0);
     }
 
-    public void addPath(
+    public Line addPath(
             final Station targetStation,
             final Station addStation,
             final Integer distance,
             final Direction direction
     ) {
         final List<Station> stations = sortStations();
-        final int index = stations.indexOf(targetStation);
-        if (direction == UP) {
-            if (paths.isEmpty()) {
-                paths.put(addStation, new Path(targetStation, distance));
-            }
-            if (index == 0) {
-                paths.put(addStation, new Path(targetStation, distance));
-                return;
-            }
-            final Station stationBefore = stations.get(index - 1);
-            final Path path = paths.get(stationBefore);
-            validatePathDistance(distance, path);
-            paths.put(stationBefore, new Path(addStation, path.getDistance() - distance));
-            paths.put(addStation, new Path(targetStation, distance));
-        }
+        final AddPathStrategy strategy = direction.getStrategy();
+        final Map<Station, Path> added = strategy.add(targetStation, addStation, distance, stations, paths);
 
-        if (paths.isEmpty()) {
-            paths.put(targetStation, new Path(addStation, distance));
-        }
-        if (index == stations.size() - 1) {
-            paths.put(targetStation, new Path(addStation, distance));
-            return;
-        }
-        final Path path = paths.get(targetStation);
-        validatePathDistance(distance, path);
-        paths.put(targetStation, new Path(addStation, distance));
-        paths.put(addStation, new Path(path.getNext(), path.getDistance() - distance));
-
-    }
-
-    private void validatePathDistance(final Integer distance, final Path path) {
-        if (path.isShorterThan(distance)) {
-            throw new IllegalArgumentException("기존 경로보다 짧은 경로를 추가해야 합니다.");
-        }
+        return setPath(added);
     }
 
     public void removeStation(final Station station) {
         final List<Station> stations = sortStations();
         final int index = stations.indexOf(station);
-        if (index == -1) {
-            throw new IllegalArgumentException("삭제할 수 없는 역입니다.");
-        }
         if (paths.size() == 1) {
             paths.clear();
             return;
@@ -112,16 +86,22 @@ public class Line {
             paths.remove(station);
             return;
         }
-        if (index == stations.size() - 1) {
+        if (isEndOfTheLine(stations, index)) {
             paths.remove(stations.get(index - 1));
             return;
         }
-        final Station stationBefore = stations.get(index - 1);
-        final Path pathBefore = paths.get(stationBefore);
-        final Path path = paths.get(station);
-        final int distance = path.sumDistance(pathBefore);
-        paths.remove(station);
-        paths.put(stationBefore, new Path(path.getNext(), distance));
+        if (index > 0) {
+            final Station stationBefore = stations.get(index - 1);
+            final Path pathBefore = paths.get(stationBefore);
+            final Path path = paths.get(station);
+            final int distance = path.sumDistance(pathBefore);
+            paths.remove(station);
+            paths.put(stationBefore, new Path(path.getNext(), distance));
+        }
+    }
+
+    private boolean isEndOfTheLine(final List<Station> stations, final int index) {
+        return index == stations.size() - 1 && !stations.isEmpty();
     }
 
     public Long getId() {
@@ -137,7 +117,7 @@ public class Line {
     }
 
     public Map<Station, Path> getPaths() {
-        return paths;
+        return new HashMap<>(paths);
     }
 
     @Override

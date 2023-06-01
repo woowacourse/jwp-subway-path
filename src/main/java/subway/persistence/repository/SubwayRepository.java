@@ -1,9 +1,11 @@
 package subway.persistence.repository;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.Path;
 import subway.domain.Station;
+import subway.exception.DuplicatedNameException;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.PathDao;
 import subway.persistence.dao.StationDao;
@@ -62,7 +64,7 @@ public class SubwayRepository {
 
         return lines.stream()
                 .map(line -> line.setPath(
-                        entitiesToPath(pathEntitiesByLineId.get(line.getId()), mapper))
+                        entitiesToPath(pathEntitiesByLineId.getOrDefault(line.getId(), List.of()), mapper))
                 )
                 .collect(Collectors.toList());
     }
@@ -72,7 +74,32 @@ public class SubwayRepository {
     }
 
     public void saveLine(final Line line) {
-        pathDao.clear(line.getId());
-        pathDao.addAll(line.getId(), line.getPaths(), line.sortStations());
+        pathDao.deleteByLineId(line.getId());
+        final List<Station> stations = line.sortStations();
+        if (stations.isEmpty()) {
+            return;
+        }
+        pathDao.addAll(line.getId(), line.getPaths(), stations);
+    }
+
+    public void deleteLineById(final Long id) {
+        lineDao.deleteById(id);
+        pathDao.deleteByLineId(id);
+    }
+
+    public Line addLine(final Line line) {
+        try {
+            return lineDao.insert(line);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedNameException();
+        }
+    }
+
+    public Station addStation(final Station station) {
+        try {
+            return stationDao.insert(station);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedNameException();
+        }
     }
 }

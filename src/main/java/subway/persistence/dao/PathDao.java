@@ -31,19 +31,20 @@ public class PathDao {
         return jdbcTemplate.query(sql, mapper);
     }
 
-    public void clear(final Long lineId) {
-        final String sql = "DELETE TABLE paths WHERE line_id = ?";
-        jdbcTemplate.update(sql, lineId);
-    }
-
     public void addAll(final Long lineId, final Map<Station, Path> paths, List<Station> stations) {
         final String sql = "INSERT INTO paths (line_id, up_station_id, down_station_id, distance) " +
                 "VALUES (? ,? ,? ,?)";
+        stations.remove(stations.size() - 1);
         jdbcTemplate.batchUpdate(sql, stations, 100, (ps, station) -> {
             ps.setLong(1, lineId);
             ps.setLong(2, station.getId());
             ps.setLong(3, paths.get(station).getNext().getId());
             ps.setInt(4, paths.get(station).getDistance());
         });
+    }
+
+    public void deleteByLineId(final Long id) {
+        final String sql = "DELETE FROM paths WHERE line_id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

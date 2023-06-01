@@ -5,8 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.exception.LineNotFoundException;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +23,9 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
@@ -56,6 +56,9 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        final int affected = jdbcTemplate.update("delete from Line where id = ?", id);
+        if (affected == 0) {
+            throw new LineNotFoundException();
+        }
     }
 }

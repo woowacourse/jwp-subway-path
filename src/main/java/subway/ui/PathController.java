@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.PathService;
-import subway.dto.AddPathRequest;
+import subway.application.service.PathService;
+import subway.dto.request.AddPathRequest;
+
+import javax.validation.Valid;
 
 @RequestMapping("/lines/{line-id}/stations")
 @RestController
@@ -23,7 +25,7 @@ public class PathController {
     @PostMapping
     public ResponseEntity<Void> addStationInPath(
             @PathVariable("line-id") final Long lineId,
-            @RequestBody final AddPathRequest addPathRequest
+            @Valid @RequestBody final AddPathRequest addPathRequest
     ) {
         pathService.addPath(
                 lineId,
