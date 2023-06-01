@@ -5,18 +5,24 @@ import java.util.List;
 public class PathResponse {
 
     private List<Long> shortestPath;
-    int fee;
+    private int distance;
+    private int fee;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<Long> shortestPath, int fee) {
+    public PathResponse(List<Long> shortestPath, int distance, int fee) {
         this.shortestPath = shortestPath;
+        this.distance = distance;
         this.fee = fee;
     }
 
     public List<Long> getShortestPath() {
         return shortestPath;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 
     public int getFee() {

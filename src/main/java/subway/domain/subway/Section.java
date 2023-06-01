@@ -1,15 +1,13 @@
 package subway.domain.subway;
 
-import subway.dao.dto.SectionStationResultMap;
-
 import java.util.Objects;
 
 public class Section {
-    private Long id;
-    private Distance distance;
-    private Station upStation;
-    private Station downStation;
-    private Long lineId;
+    private final Long id;
+    private final Distance distance;
+    private final Station upStation;
+    private final Station downStation;
+    private final Long lineId;
 
     public Section(Distance distance, Station upStation, Station downStation, Long lineId) {
         this(null, distance, upStation, downStation, lineId);
@@ -28,15 +26,6 @@ public class Section {
         if (Objects.equals(upStation.getId(), downStation.getId())) {
             throw new IllegalArgumentException("같은 역을 구간으로 등록할 수 없습니다.");
         }
-    }
-
-    public static Section of(final SectionStationResultMap sectionStationResultMap) {
-        return new Section(
-                sectionStationResultMap.getSectionId(),
-                new Distance(sectionStationResultMap.getDistance()),
-                new Station(sectionStationResultMap.getUpStationId(), sectionStationResultMap.getUpStationName()),
-                new Station(sectionStationResultMap.getDownStationId(), sectionStationResultMap.getDownStationName()),
-                sectionStationResultMap.getLineId());
     }
 
     public Long getId() {

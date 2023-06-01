@@ -9,7 +9,6 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.dao.dto.SectionStationResultMap;
 import subway.domain.subway.Distance;
 import subway.domain.subway.Line;
 import subway.domain.subway.Section;
@@ -185,7 +184,7 @@ class SectionServiceTest {
         sectionService.deleteStation(new SectionDeleteRequest(1L, 2L));
 
         //then
-        final List<SectionStationResultMap> resultMaps = sectionDao.findAllByLineId(1L);
+        final List<Section> resultMaps = sectionDao.findAllByLineId(1L);
         assertAll(() -> assertThat(resultMaps).hasSize(1),
                 () -> assertThat(resultMaps.get(0).getUpStationId()).isEqualTo(1L),
                 () -> assertThat(resultMaps.get(0).getDownStationId()).isEqualTo(3L),

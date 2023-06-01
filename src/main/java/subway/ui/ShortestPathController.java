@@ -24,7 +24,7 @@ public class ShortestPathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> createStation(@Valid @RequestBody PathRequest pathRequest) {
-        PathResponse path = pathService.getDijkstraShortestPath(pathRequest);
+        PathResponse path = pathService.getPath(pathRequest);
         return ResponseEntity.ok(path);
     }
 }

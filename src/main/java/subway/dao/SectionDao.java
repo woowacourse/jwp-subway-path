@@ -8,11 +8,13 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.dao.dto.SectionStationResultMap;
+import subway.domain.subway.Distance;
 import subway.domain.subway.Section;
+import subway.domain.subway.Station;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,15 +24,22 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
-    private final RowMapper<SectionStationResultMap> rowMapper = (rs, num) -> new SectionStationResultMap(
-            rs.getLong("sectionId"),
-            rs.getInt("distance"),
-            rs.getLong("upStationId"),
-            rs.getString("upStationName"),
-            rs.getLong("downStationId"),
-            rs.getString("downStationName"),
-            rs.getLong("lineId")
-    );
+    private final RowMapper<Section> rowMapper = (rs, num) -> {
+        Long sectionId = rs.getLong("id");
+        int distance = rs.getInt("distance");
+        Long lineId = rs.getLong("line_id");
+
+        Long upStationId = rs.getLong("up_station_id");
+        String upStationName = rs.getString("up_station_name");
+        Station upStation = new Station(upStationId, upStationName);
+
+        Long downStationId = rs.getLong("down_station_id");
+        String downStationName = rs.getString("down_station_name");
+        Station downStation = new Station(downStationId, downStationName);
+
+        Distance sectionDistance = new Distance(distance);
+        return new Section(sectionId, sectionDistance, upStation, downStation, lineId);
+    };
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -54,32 +63,25 @@ public class SectionDao {
         return keyHolder.getKey().longValue();
     }
 
-    public List<SectionStationResultMap> findAll() {
-        final String sql = "SELECT se.id sectionId, " +
-                "se.distance distance, " +
-                "se.up_station_id upStationId, " +
-                "st1.name upStationName, " +
-                "se.down_station_id downStationId, " +
-                "st2.name downStationName, " +
-                "se.line_id lineId " +
-                "FROM section se " +
-                "JOIN station st1 ON st1.id = se.up_station_id " +
-                "JOIN station st2 ON st2.id = se.down_station_id ";
+    public List<Section> findAll() {
+        String query = "SELECT se.id AS section_id, se.distance, se.line_id, " +
+                "s1.id AS up_station_id, s1.name AS up_station_name, " +
+                "s2.id AS down_station_id, s2.name AS down_station_name " +
+                "FROM SECTION se " +
+                "JOIN STATION s1 ON s1.id = se.up_station_id " +
+                "JOIN STATION s2 ON s2.id = se.down_station_id";
 
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(query, rowMapper);
+
     }
 
-    public List<SectionStationResultMap> findAllByLineId(Long lineId) {
-        final String sql = "SELECT se.id sectionId, " +
-                "se.distance distance, " +
-                "se.up_station_id upStationId, " +
-                "st1.name upStationName, " +
-                "se.down_station_id downStationId, " +
-                "st2.name downStationName, " +
-                "se.line_id lineId " +
-                "FROM section se " +
-                "JOIN station st1 ON st1.id = se.up_station_id " +
-                "JOIN station st2 ON st2.id = se.down_station_id " +
+    public List<Section> findAllByLineId(Long lineId) {
+        final String sql = "SELECT se.id AS section_id, se.distance, se.line_id, " +
+                "s1.id AS up_station_id, s1.name AS up_station_name, " +
+                "s2.id AS down_station_id, s2.name AS down_station_name " +
+                "FROM SECTION se " +
+                "JOIN STATION s1 ON s1.id = se.up_station_id " +
+                "JOIN STATION s2 ON s2.id = se.down_station_id " +
                 "WHERE se.line_id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, lineId);

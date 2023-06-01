@@ -4,6 +4,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.subway.Distance;
 import subway.domain.subway.Section;
 
 import java.util.AbstractMap;
@@ -12,14 +13,14 @@ import java.util.Map;
 
 public class ShortestDistancePathStrategy implements PathStrategy {
     @Override
-    public Map.Entry<List<Long>, Integer> getPathAndDistance(List<Section> allSections, Long startStationId, Long targetStationId) {
+    public Map.Entry<List<Long>, Distance> getPathAndDistance(List<Section> allSections, Long startStationId, Long targetStationId) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         setGraph(allSections, graph);
         GraphPath<Long, DefaultWeightedEdge> path = getPath(startStationId, targetStationId, graph);
 
-        return new AbstractMap.SimpleEntry<>(path.getVertexList(), (int) path.getWeight());
+        return new AbstractMap.SimpleEntry<>(path.getVertexList(), new Distance((int) path.getWeight()));
     }
 
     private void setGraph(List<Section> allSections, WeightedMultigraph<Long, DefaultWeightedEdge> graph) {

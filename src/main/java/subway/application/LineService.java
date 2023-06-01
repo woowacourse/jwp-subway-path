@@ -43,9 +43,7 @@ public class LineService {
     }
 
     private List<Section> getSections(Long lineId) {
-        return sectionDao.findAllByLineId(lineId).stream()
-                .map(Section::of)
-                .collect(Collectors.toList());
+        return sectionDao.findAllByLineId(lineId);
     }
 
     public LineResponse findLineResponseById(Long id) {

@@ -8,7 +8,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dao.dto.SectionStationResultMap;
 import subway.domain.subway.Distance;
 import subway.domain.subway.Section;
 import subway.domain.subway.Station;
@@ -79,7 +78,7 @@ class SectionDaoTest {
     @Test
     void LineId로_구간을_조회한다() {
         // when
-        List<SectionStationResultMap> resultMaps = sectionDao.findAll();
+        List<Section> resultMaps = sectionDao.findAll();
         // then
         assertThat(resultMaps).hasSize(3);
     }
@@ -87,7 +86,7 @@ class SectionDaoTest {
     @Test
     void 구간을_모두_조회한다() {
         // when
-        List<SectionStationResultMap> resultMaps = sectionDao.findAllByLineId(1L);
+        List<Section> resultMaps = sectionDao.findAllByLineId(1L);
         // then
         assertThat(resultMaps).hasSize(2);
     }
@@ -173,30 +172,33 @@ class SectionDaoTest {
         assertThat(sectionDao.findAllByLineId(2L)).hasSize(3);
     }
 
-    private SectionStationResultMap findById(Long sectionId) {
-        final String sql = "SELECT se.id sectionId, " +
-                "se.distance distance, " +
-                "se.up_station_id upStationId, " +
-                "st1.name upStationName, " +
-                "se.down_station_id downStationId, " +
-                "st2.name downStationName, " +
-                "se.line_id lineId " +
-                "FROM section se " +
-                "JOIN station st1 ON st1.id = se.up_station_id " +
-                "JOIN station st2 ON st2.id = se.down_station_id " +
+    private Section findById(Long id) {
+        final String sql = "SELECT se.id AS section_id, se.distance, se.line_id, " +
+                "s1.id AS up_station_id, s1.name AS up_station_name, " +
+                "s2.id AS down_station_id, s2.name AS down_station_name " +
+                "FROM SECTION se " +
+                "JOIN STATION s1 ON s1.id = se.up_station_id " +
+                "JOIN STATION s2 ON s2.id = se.down_station_id "+
                 "WHERE se.id = ?";
 
-        final RowMapper<SectionStationResultMap> rowMapper = (rs, num) -> new SectionStationResultMap(
-                rs.getLong("sectionId"),
-                rs.getInt("distance"),
-                rs.getLong("upStationId"),
-                rs.getString("upStationName"),
-                rs.getLong("downStationId"),
-                rs.getString("downStationName"),
-                rs.getLong("lineId")
-        );
+        final RowMapper<Section> rowMapper = (rs, num) -> {
+            Long sectionId = rs.getLong("section_id");
+            int distance = rs.getInt("distance");
+            Long lineId = rs.getLong("line_id");
 
-        return jdbcTemplate.queryForObject(sql, rowMapper, sectionId);
+            Long upStationId = rs.getLong("up_station_id");
+            String upStationName = rs.getString("up_station_name");
+            Station upStation = new Station(upStationId, upStationName);
+
+            Long downStationId = rs.getLong("down_station_id");
+            String downStationName = rs.getString("down_station_name");
+            Station downStation = new Station(downStationId, downStationName);
+
+            Distance sectionDistance = new Distance(distance);
+            return new Section(sectionId, sectionDistance, upStation, downStation, lineId);
+        };
+
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
 }

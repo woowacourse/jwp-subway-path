@@ -45,9 +45,7 @@ public class SectionService {
     }
 
     private List<Section> getSections(Long lineId) {
-        return sectionDao.findAllByLineId(lineId).stream()
-                .map(Section::of)
-                .collect(Collectors.toList());
+        return sectionDao.findAllByLineId(lineId);
     }
 
     private void validateInput(Sections sections, SectionRequest request) {

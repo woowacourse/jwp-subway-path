@@ -1,67 +1,74 @@
 package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
-import subway.dao.LineDao;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import subway.dao.SectionDao;
-import subway.dao.StationDao;
+import subway.domain.fee.FeeStrategy;
 import subway.domain.path.PathStrategy;
-import subway.domain.path.ShortestDistancePathStrategy;
 import subway.domain.subway.Distance;
-import subway.domain.subway.Line;
 import subway.domain.subway.Section;
 import subway.domain.subway.Station;
+import subway.dto.PathRequest;
+import subway.dto.PathResponse;
 
-import javax.sql.DataSource;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-@Sql("classpath:/remove-section-line.sql")
-@JdbcTest
-class PathServiceTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private DataSource dataSource;
+public class PathServiceTest {
 
     private PathService pathService;
-    private StationDao stationDao;
+
+    @Mock
     private SectionDao sectionDao;
-    private LineDao lineDao;
+
+    @Mock
     private PathStrategy pathStrategy;
 
-    // 1 -> 2 -> 3  (10,20)
-    // 1-> 4 -> 3  (10,10)
+    @Mock
+    private FeeStrategy feeStrategy;
+
     @BeforeEach
-    void init() {
-        stationDao = new StationDao(jdbcTemplate, dataSource);
-        sectionDao = new SectionDao(jdbcTemplate, dataSource);
-        lineDao = new LineDao(jdbcTemplate, dataSource);
-        pathStrategy = new ShortestDistancePathStrategy();
-        pathService = new PathService(sectionDao, pathStrategy);
-        initialSection();
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        pathService = new PathService(sectionDao, pathStrategy, feeStrategy);
     }
 
-    private void initialSection() {
-        Long lineId2 = lineDao.insert(new Line("2호선", "초록색"));
-        Long lineId3 = lineDao.insert(new Line("3호선", "노랑색"));
+    @Test
+    public void getDijkstraShortestPath_returnsPathResponse() {
+        // Mock sectionDao.findAll() to return a list of sections
+        List<Section> sections = Arrays.asList(
+                new Section(1L, new Distance(10), new Station(1L, "일번역"), new Station(2L, "이번역"), 1L),
+                new Section(2L, new Distance(20), new Station(2L, "이번역"), new Station(3L, "삼번역"), 1L),
+                new Section(3L, new Distance(30), new Station(3L, "삼번역"), new Station(4L, "사번역"), 1L)
+        );
+        List<Section> allSections = sectionDao.findAll();
+        when(sectionDao.findAll()).thenReturn(sections);
 
-        Station station1 = new Station(1L, "잠실역1");
-        Station station2 = new Station(2L, "잠실역2");
-        Station station3 = new Station(3L, "잠실역3");
-        Station station4 = new Station(4L, "잠실역4");
+        // Mock pathStrategy.getPathAndDistance() to return a map entry of path and distance
+        List<Long> expectedPath = Arrays.asList(1L, 2L, 3L, 4L);
+        Distance expectedDistance = new Distance(60);
+        Map.Entry<List<Long>, Distance> pathAndDistance = Map.entry(expectedPath, expectedDistance);
+        when(pathStrategy.getPathAndDistance(sections, 1L, 4L)).thenReturn(pathAndDistance);
 
-        stationDao.insert(station1).getId();
-        stationDao.insert(station2).getId();
-        stationDao.insert(station3).getId();
-        stationDao.insert(station4).getId();
+        when(feeStrategy.calculateFee(new Distance(60))).thenReturn(2150);
 
-        sectionDao.insert(new Section(new Distance(10), station1, station2, lineId2));
-        sectionDao.insert(new Section(new Distance(20), station2, station3, lineId2));
-        sectionDao.insert(new Section(new Distance(10), station1, station4, lineId3));
-        sectionDao.insert(new Section(new Distance(10), station4, station3, lineId3));
+        // Create a PathRequest object
+        PathRequest pathRequest = new PathRequest(1L, 4L);
+
+        // Call the method under test
+        PathResponse pathResponse = pathService.getPath(pathRequest);
+
+        // Verify the result
+        assertThat(expectedPath).isEqualTo(pathResponse.getShortestPath());
+        assertThat(expectedDistance.getDistance()).isEqualTo(pathResponse.getDistance());
+        assertThat(pathResponse.getFee()).isEqualTo(2150);
     }
+
+    // Add more tests for other methods in PathService if needed
 }
