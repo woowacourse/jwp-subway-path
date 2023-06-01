@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.subway;
 
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;

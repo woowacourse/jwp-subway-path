@@ -5,10 +5,10 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.subway.Distance;
+import subway.domain.subway.Section;
+import subway.domain.subway.Sections;
+import subway.domain.subway.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 

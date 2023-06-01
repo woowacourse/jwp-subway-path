@@ -1,6 +1,5 @@
 package subway.dao;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,21 +7,16 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.dto.SectionStationResultMap;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.subway.Distance;
+import subway.domain.subway.Section;
+import subway.domain.subway.Station;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -124,17 +118,17 @@ class SectionDaoTest {
         );
     }
 
-        @Test
+    @Test
     void 같은_구간이_존재하면_예외가_발생한다() {
         // given
-            Station station1 = new Station(1L, "잠실역1");
-            Station station2 = new Station(2L, "잠실역2");
-            sectionDao.insert(new Section(new Distance(3), station1, station2, 1L));
+        Station station1 = new Station(1L, "잠실역1");
+        Station station2 = new Station(2L, "잠실역2");
+        sectionDao.insert(new Section(new Distance(3), station1, station2, 1L));
 
         // when, then
         assertAll(
-                () -> assertThat(sectionDao.exists(1L, 2L,1L)).isTrue(),
-                () -> assertThat(sectionDao.exists(2L, 1L,2L)).isFalse()
+                () -> assertThat(sectionDao.exists(1L, 2L, 1L)).isTrue(),
+                () -> assertThat(sectionDao.exists(2L, 1L, 2L)).isFalse()
         );
     }
 
@@ -149,7 +143,7 @@ class SectionDaoTest {
     }
 
     @Test
-    void 라인_아이디의_구간을_모두_삭제한다(){
+    void 라인_아이디의_구간을_모두_삭제한다() {
         // when
         sectionDao.deleteByLineId(1L);
 
@@ -158,7 +152,7 @@ class SectionDaoTest {
     }
 
     @Test
-    void 받은_구간들을_모두_저장한다(){
+    void 받은_구간들을_모두_저장한다() {
         Station station7 = new Station(7L, "잠실역7");
         Station station8 = new Station(8L, "잠실역8");
         Station station9 = new Station(9L, "잠실역9");

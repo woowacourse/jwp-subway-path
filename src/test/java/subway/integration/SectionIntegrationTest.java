@@ -13,10 +13,10 @@ import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.subway.Distance;
+import subway.domain.subway.Line;
+import subway.domain.subway.Section;
+import subway.domain.subway.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
@@ -56,13 +56,13 @@ class SectionIntegrationTest extends IntegrationTest {
         final SectionRequest request = new SectionRequest(10, 2L, 3L, 이호선);
 
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+        Response response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when()
                 .post("/sections")
                 .then().log().all()
-                .extract();
+                .extract().response();
 
         // then
         assertAll(

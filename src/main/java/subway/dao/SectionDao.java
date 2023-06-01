@@ -9,7 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.dao.dto.SectionStationResultMap;
-import subway.domain.Section;
+import subway.domain.subway.Section;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;

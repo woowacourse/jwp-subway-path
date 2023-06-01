@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.*;
+import subway.domain.subway.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 

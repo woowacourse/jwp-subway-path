@@ -2,20 +2,20 @@ package subway.dto;
 
 import java.util.List;
 
-public class ShortestPathResponse {
+public class PathResponse {
 
-    private List<String> shortestPath;
+    private List<Long> shortestPath;
     int fee;
 
-    public ShortestPathResponse() {
+    public PathResponse() {
     }
 
-    public ShortestPathResponse(List<String> shortestPath, int fee) {
+    public PathResponse(List<Long> shortestPath, int fee) {
         this.shortestPath = shortestPath;
         this.fee = fee;
     }
 
-    public List<String> getShortestPath() {
+    public List<Long> getShortestPath() {
         return shortestPath;
     }
 

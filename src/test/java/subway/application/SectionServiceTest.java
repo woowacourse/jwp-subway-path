@@ -1,4 +1,4 @@
-package subway.dao.application;
+package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,15 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.application.SectionService;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.dto.SectionStationResultMap;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.subway.Distance;
+import subway.domain.subway.Line;
+import subway.domain.subway.Section;
+import subway.domain.subway.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
