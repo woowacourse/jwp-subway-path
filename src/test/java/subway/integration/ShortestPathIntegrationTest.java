@@ -20,7 +20,6 @@ import subway.integration.step.LineStep;
 import subway.integration.step.SectionStep;
 import subway.integration.step.StationStep;
 
-@DisplayName("최단 경로 조회 기능")
 @SuppressWarnings("NonAsciiCharacters")
 public class ShortestPathIntegrationTest extends IntegrationTest {
     @Override

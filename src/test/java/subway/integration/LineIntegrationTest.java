@@ -17,7 +17,6 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.integration.step.LineStep;
 
-@DisplayName("지하철 노선 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
 public class LineIntegrationTest extends IntegrationTest {
     @Override

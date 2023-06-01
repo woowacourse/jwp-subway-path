@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import subway.dto.StationCreateRequest;
 import subway.integration.step.StationStep;
 
-@DisplayName("지하철역 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
 public class StationIntegrationTest extends IntegrationTest {
     @Override

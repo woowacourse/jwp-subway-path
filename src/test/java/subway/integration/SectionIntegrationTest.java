@@ -19,7 +19,6 @@ import subway.integration.step.LineStep;
 import subway.integration.step.SectionStep;
 import subway.integration.step.StationStep;
 
-@DisplayName("지하철 구간 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
 public class SectionIntegrationTest extends IntegrationTest {
     @Override
