@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import subway.exception.notfound.SectionNotFoundException;
 
@@ -9,10 +10,10 @@ public enum DeleteCase {
     END_POINT_STATION(DeleteCase::endPointStation),
     NOT_END_POINT_STATION(DeleteCase::notEndPointStation);
 
-    private final DeleteAction deleteAction;
+    private final BiConsumer<Sections, Station> biConsumer;
 
-    DeleteCase(final DeleteAction deleteAction) {
-        this.deleteAction = deleteAction;
+    DeleteCase(BiConsumer<Sections, Station> biConsumer) {
+        this.biConsumer = biConsumer;
     }
 
     public static DeleteCase from(final int nearStationCount) {
@@ -54,6 +55,6 @@ public enum DeleteCase {
     }
 
     public void execute(final Sections sections, final Station targetStation) {
-        deleteAction.execute(sections, targetStation);
+        biConsumer.accept(sections, targetStation);
     }
 }

@@ -1,15 +1,17 @@
 package subway.domain;
 
+import java.util.function.BiConsumer;
+
 public enum InsertCase {
 
     EMPTY_SECTIONS(InsertCase::emptySections),
     EXIST_ONLY_UP_STATION(InsertCase::existOnlyUpStation),
     EXIST_ONLY_DOWN_STATION(InsertCase::existOnlyDownStation);
 
-    private final InsertAction insertAction;
+    private final BiConsumer<Sections, Section> biConsumer;
 
-    InsertCase(final InsertAction insertAction) {
-        this.insertAction = insertAction;
+    InsertCase(BiConsumer<Sections, Section> biConsumer) {
+        this.biConsumer = biConsumer;
     }
 
     public static InsertCase of(final boolean isExistUpStation, final boolean isExistDownStation) {
@@ -55,6 +57,6 @@ public enum InsertCase {
     }
 
     public void execute(final Sections sections, final Section targetSection) {
-        insertAction.execute(sections, targetSection);
+        biConsumer.accept(sections, targetSection);
     }
 }
