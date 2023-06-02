@@ -19,7 +19,7 @@ class FareCalculatorTest {
             "50, 2050",
             "58, 2150",
     })
-    void 운임_요금을_계산한다(final int distance, final int expectedFare) {
+    void 운임_요금을_계산한다(final Long distance, final int expectedFare) {
         // when현
         final int fare = FareCalculator.calculate(distance);
 
