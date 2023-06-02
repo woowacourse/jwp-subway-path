@@ -50,10 +50,10 @@ public class SectionRepository {
         throw new LineNotFoundException();
     }
 
-    public Sections findById(final Long id) {
-        final boolean exist = lineDao.isIdExist(id);
+    public Sections findByLineId(final Long lineId) {
+        final boolean exist = lineDao.isIdExist(lineId);
         if (exist) {
-            final LineEntity lineEntity = lineDao.findById(id);
+            final LineEntity lineEntity = lineDao.findById(lineId);
             return getSections(lineEntity);
         }
         throw new LineNotFoundException();

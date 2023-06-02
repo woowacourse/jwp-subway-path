@@ -10,27 +10,24 @@ import subway.domain.Station;
 import subway.dto.station.LineMapResponse;
 import subway.dto.station.StationResponse;
 import subway.repository.SectionRepository;
-import subway.repository.StationRepository;
 
 @Service
 public class SubwayMapService {
 
     private final SectionRepository sectionRepository;
-    private final StationRepository stationRepository;
 
-    public SubwayMapService(final SectionRepository sectionRepository, final StationRepository stationRepository) {
+    public SubwayMapService(final SectionRepository sectionRepository) {
         this.sectionRepository = sectionRepository;
-        this.stationRepository = stationRepository;
     }
 
     @Transactional(readOnly = true)
     public LineMapResponse findById(final Long id) {
-        Sections sections = sectionRepository.findById(id);
+        Sections sections = sectionRepository.findByLineId(id);
         LineMap lineMap = new LineMap(sections);
 
         List<Station> orderedStations = lineMap.getOrderedStations();
         List<StationResponse> stations = orderedStations.stream()
-                .map(station -> StationResponse.from(stationRepository.findByName(station.getName()).getId(), station))
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
 
         return LineMapResponse.from(stations);

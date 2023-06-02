@@ -31,7 +31,7 @@ public class StationService {
     @Transactional(readOnly = true)
     public StationsResponse findAll() {
         List<StationResponse> stations = stationRepository.findAll().stream()
-                .map(station -> StationResponse.from(station.getId(), station))
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
 
         return StationsResponse.from(stations);
@@ -40,6 +40,6 @@ public class StationService {
     @Transactional(readOnly = true)
     public StationResponse findById(final Long id) {
         Station station = stationRepository.findById(id);
-        return StationResponse.from(id, station);
+        return StationResponse.from(station);
     }
 }
