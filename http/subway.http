@@ -53,3 +53,12 @@ GET http://localhost:8080/stations/1
 
 ### 역 삭제
 DELETE http://localhost:8080/stations/1
+
+### 경로를 조회한다
+GET http://localhost:8080/shortest-path
+Content-Type: application/json
+
+{
+  "startStation": "잠실역",
+  "endStation": "매봉역"
+}
