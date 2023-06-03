@@ -8,9 +8,15 @@ import subway.exception.invalid.SectionInvalidException;
 public class Sections {
 
     private final List<Section> sections;
+    private final Long lineId;
 
     public Sections(final List<Section> sections) {
+        this(sections, null);
+    }
+
+    public Sections(List<Section> sections, Long lineId) {
         this.sections = sections;
+        this.lineId = lineId;
     }
 
     public void addSection(final Section section) {
@@ -80,18 +86,23 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        List<String> stations = new ArrayList<>();
+        List<Station> stations = new ArrayList<>();
+
         for (final Section section : sections) {
-            stations.add(section.getUpStation().getName());
-            stations.add(section.getDownStation().getName());
+            stations.add(section.getUpStation());
+            stations.add(section.getDownStation());
         }
+
         return stations.stream()
                 .distinct()
-                .map(Station::new)
                 .collect(Collectors.toList());
     }
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public Long getLineId() {
+        return lineId;
     }
 }

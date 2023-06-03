@@ -13,15 +13,14 @@ public class Subway {
     }
 
     public List<Station> getStations() {
-        List<String> stations = new ArrayList<>();
+        List<Station> stations = new ArrayList<>();
+
         for (final Sections sections : subway) {
-            stations.addAll(sections.getStations().stream()
-                    .map(Station::getName)
-                    .collect(Collectors.toList()));
+            stations.addAll(sections.getStations());
         }
+
         return stations.stream()
                 .distinct()
-                .map(Station::new)
                 .collect(Collectors.toList());
     }
 

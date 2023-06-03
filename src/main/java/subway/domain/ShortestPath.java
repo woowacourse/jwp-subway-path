@@ -5,18 +5,24 @@ import java.util.List;
 public class ShortestPath {
 
     private final List<Station> stations;
-    private final Long shortestDistance;
+    private final List<SectionEdge> sectionEdges;
 
-    public ShortestPath(final List<Station> stations, final Long shortestDistance) {
+    public ShortestPath(List<Station> stations, List<SectionEdge> sectionEdges) {
         this.stations = stations;
-        this.shortestDistance = shortestDistance;
+        this.sectionEdges = sectionEdges;
+    }
+
+    public Long getDistance() {
+        return sectionEdges.stream()
+                .mapToLong(sectionEdge -> sectionEdge.getSection().getDistance())
+                .sum();
     }
 
     public List<Station> getStations() {
         return stations;
     }
 
-    public Long getShortestDistance() {
-        return shortestDistance;
+    public List<SectionEdge> getSectionEdges() {
+        return sectionEdges;
     }
 }
