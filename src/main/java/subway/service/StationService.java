@@ -8,29 +8,29 @@ import subway.domain.Station;
 import subway.dto.station.StationRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
-import subway.repository.StationRepository;
+import subway.repository.JdbcStationRepository;
 
 @Transactional
 @Service
 public class StationService {
 
-    private final StationRepository stationRepository;
+    private final JdbcStationRepository jdbcStationRepository;
 
-    public StationService(final StationRepository stationRepository) {
-        this.stationRepository = stationRepository;
+    public StationService(final JdbcStationRepository jdbcStationRepository) {
+        this.jdbcStationRepository = jdbcStationRepository;
     }
 
     public Long save(final StationRequest stationRequest) {
-        return stationRepository.save(new Station(stationRequest.getName()));
+        return jdbcStationRepository.save(new Station(stationRequest.getName()));
     }
 
     public void removeById(final Long id) {
-        stationRepository.deleteById(id);
+        jdbcStationRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)
     public StationsResponse findAll() {
-        List<StationResponse> stations = stationRepository.findAll().stream()
+        List<StationResponse> stations = jdbcStationRepository.findAll().stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
 
@@ -39,7 +39,7 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public StationResponse findById(final Long id) {
-        Station station = stationRepository.findById(id);
+        Station station = jdbcStationRepository.findById(id);
         return StationResponse.from(station);
     }
 }

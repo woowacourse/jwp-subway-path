@@ -12,8 +12,8 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.station.StationResponse;
-import subway.repository.LineRepository;
-import subway.repository.StationRepository;
+import subway.repository.JdbcLineRepository;
+import subway.repository.JdbcStationRepository;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -28,10 +28,10 @@ public class SubwayMapServiceTest {
     private SectionService sectionService;
 
     @Autowired
-    private LineRepository lineRepository;
+    private JdbcLineRepository lineRepository;
 
     @Autowired
-    private StationRepository stationRepository;
+    private JdbcStationRepository stationRepository;
 
     @Test
     void 지하철_노선도를_조회한다() {

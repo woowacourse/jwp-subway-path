@@ -13,9 +13,9 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
-import subway.repository.LineRepository;
-import subway.repository.SectionRepository;
-import subway.repository.StationRepository;
+import subway.repository.JdbcLineRepository;
+import subway.repository.JdbcSectionRepository;
+import subway.repository.JdbcStationRepository;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -27,13 +27,13 @@ public class SectionServiceTest {
     private SectionService sectionService;
 
     @Autowired
-    private SectionRepository sectionRepository;
+    private JdbcSectionRepository sectionRepository;
 
     @Autowired
-    private LineRepository lineRepository;
+    private JdbcLineRepository lineRepository;
 
     @Autowired
-    private StationRepository stationRepository;
+    private JdbcStationRepository stationRepository;
 
     @Test
     void 역_구간_정보를_추가한다() {
