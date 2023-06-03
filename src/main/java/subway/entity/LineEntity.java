@@ -8,16 +8,22 @@ public class LineEntity {
     private final Long lineNumber;
     private final String name;
     private final String color;
+    private final int additionalFare;
 
-    public LineEntity(final Long lineId, final Long lineNumber, final String name, final String color) {
+    public LineEntity(Long lineNumber, String name, String color) {
+        this(null, lineNumber, name, color, 0);
+    }
+
+    public LineEntity(Long lineNumber, String name, String color, int additionalFare) {
+        this(null, lineNumber, name, color, additionalFare);
+    }
+
+    public LineEntity(Long lineId, Long lineNumber, String name, String color, int additionalFare) {
         this.lineId = lineId;
         this.lineNumber = lineNumber;
         this.name = name;
         this.color = color;
-    }
-
-    public LineEntity(final Long lineNumber, final String name, final String color) {
-        this(null, lineNumber, name, color);
+        this.additionalFare = additionalFare;
     }
 
     public Long getLineId() {
@@ -36,20 +42,25 @@ public class LineEntity {
         return color;
     }
 
+    public int getAdditionalFare() {
+        return additionalFare;
+    }
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof LineEntity)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         LineEntity that = (LineEntity) o;
-        return Objects.equals(lineId, that.lineId) && Objects.equals(name, that.name) && Objects.equals(color, that.color);
+        return additionalFare == that.additionalFare && Objects.equals(lineId, that.lineId) && Objects.equals(lineNumber, that.lineNumber) && Objects.equals(name, that.name)
+                && Objects.equals(color, that.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineId, name, color);
+        return Objects.hash(lineId, lineNumber, name, color, additionalFare);
     }
 }

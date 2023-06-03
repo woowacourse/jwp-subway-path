@@ -8,16 +8,22 @@ public class Line {
     private final Long lineNumber;
     private final String name;
     private final String color;
+    private final int additionalFare;
 
-    public Line(final Long lineNumber, final String name, final String color) {
-        this(null, lineNumber, name, color);
+    public Line(Long lineNumber, String name, String color) {
+        this(null, lineNumber, name, color, 0);
     }
 
-    public Line(final Long id, final Long lineNumber, final String name, final String color) {
+    public Line(Long lineNumber, String name, String color, int additionalFare) {
+        this(null, lineNumber, name, color, additionalFare);
+    }
+
+    public Line(Long id, Long lineNumber, String name, String color, int additionalFare) {
         this.id = id;
         this.lineNumber = lineNumber;
         this.name = name;
         this.color = color;
+        this.additionalFare = additionalFare;
     }
 
     public Long getId() {
@@ -36,15 +42,19 @@ public class Line {
         return color;
     }
 
+    public int getAdditionalFare() {
+        return additionalFare;
+    }
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Line line = (Line) o;
+        Line line = (Line) o;
         return Objects.equals(id, line.id);
     }
 

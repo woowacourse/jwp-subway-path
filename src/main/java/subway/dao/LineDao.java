@@ -20,7 +20,8 @@ public class LineDao {
                     rs.getLong("line_id"),
                     rs.getLong("line_number"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("additional_fare")
             );
 
     public LineDao(final JdbcTemplate jdbcTemplate) {
@@ -45,6 +46,7 @@ public class LineDao {
         params.put("name", lineEntity.getName());
         params.put("line_number", lineEntity.getLineNumber());
         params.put("color", lineEntity.getColor());
+        params.put("additional_fare", lineEntity.getAdditionalFare());
 
         return insertAction.executeAndReturnKey(params).longValue();
     }
@@ -54,17 +56,17 @@ public class LineDao {
     }
 
     public LineEntity findByLineNumber(final Long lineNumber) {
-        String sql = "SELECT line_id, line_number, name, color FROM line WHERE line_number = ?";
+        String sql = "SELECT * FROM line WHERE line_number = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, lineNumber);
     }
 
     public LineEntity findById(final Long id) {
-        String sql = "SELECT line_id, line_number, name, color FROM line WHERE line_id = ?";
+        String sql = "SELECT * FROM line WHERE line_id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public List<LineEntity> findAll() {
-        String sql = "SELECT line_id, line_number, name, color FROM line";
+        String sql = "SELECT * FROM line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 }
