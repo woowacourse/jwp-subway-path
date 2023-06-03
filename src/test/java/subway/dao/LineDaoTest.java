@@ -19,7 +19,8 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.TestFeature.*;
 
@@ -27,13 +28,13 @@ import static subway.TestFeature.*;
 @Sql("classpath:initializeTestDb.sql")
 class LineDaoTest {
 
-    private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
             );
-    private List<LineEntity> expectLines = List.of(
+    private final List<LineEntity> expectLines = List.of(
             LINE_ENTITY_2호선,
             LINE_ENTITY_1호선,
             LINE_ENTITY_3호선
@@ -217,5 +218,83 @@ class LineDaoTest {
         );
         assertThat(lineEntities).usingRecursiveFieldByFieldElementComparator()
                                 .doesNotContain(deleteLine);
+    }
+
+    @DisplayName("아이디가 존재한다면 true를 반환한다")
+    @Test
+    void isExistId() {
+        // given
+        long searchId = 1L;
+
+        // when
+        boolean existName = lineDao.isExistId(searchId);
+
+        // then
+        assertThat(existName).isTrue();
+    }
+
+    @DisplayName("아이디가 존재하지 않는다면 false를 반환한다")
+    @Test
+    void isNotExistId() {
+        // given
+        long searchId = 100L;
+
+        // when
+        boolean existName = lineDao.isExistId(searchId);
+
+        // then
+        assertThat(existName).isFalse();
+    }
+
+    @DisplayName("이름이 이미 존재한다면 true를 반환한다")
+    @Test
+    void isExistName() {
+        // given
+        String searchName = "2호선";
+
+        // when
+        boolean existName = lineDao.isExistName(searchName);
+
+        // then
+        assertThat(existName).isTrue();
+    }
+
+    @DisplayName("이름이 존재하지 않다면 false를 반환한다")
+    @Test
+    void isNotExistName() {
+        // given
+        String searchName = "없는이름";
+
+        // when
+        boolean existName = lineDao.isExistName(searchName);
+
+        // then
+        assertThat(existName).isFalse();
+    }
+
+    @DisplayName("색이 이미 존재한다면 true를 반환한다")
+    @Test
+    void isExistColor() {
+        // given
+        String searchColor = "초록색";
+
+        // when
+        boolean existName = lineDao.isExistColor(searchColor);
+
+        // then
+        assertThat(existName).isTrue();
+    }
+
+    @DisplayName("색이 존재하지 않다면 false를 반환한다")
+    @Test
+    void isNotExistColor() {
+        // given
+        String searchColor = "없는색";
+
+        // when
+        boolean existName = lineDao.isExistColor(searchColor);
+
+        // then
+        assertThat(existName).isFalse();
     }
 }

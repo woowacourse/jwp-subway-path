@@ -18,7 +18,8 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.TestFeature.*;
 
@@ -26,13 +27,13 @@ import static subway.TestFeature.*;
 @Sql("classpath:initializeTestDb.sql")
 class StationDaoTest {
 
-    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
-    private List<StationEntity> expectStations = List.of(
+    private final List<StationEntity> expectStations = List.of(
             STATION_ENTITY_서울대입구,
             STATION_ENTITY_봉천역,
             STATION_ENTITY_낙성대역,
@@ -195,5 +196,57 @@ class StationDaoTest {
         );
         assertThat(stationEntities).usingRecursiveFieldByFieldElementComparator()
                                    .doesNotContain(deleteStation);
+    }
+
+    @DisplayName("아이디가 존재한다면 true를 반환한다")
+    @Test
+    void isExistId() {
+        // given
+        long searchId = 1L;
+
+        // when
+        boolean existName = stationDao.isExistId(searchId);
+
+        // then
+        assertThat(existName).isTrue();
+    }
+
+    @DisplayName("아이디가 존재하지 않는다면 false를 반환한다")
+    @Test
+    void isNotExistId() {
+        // given
+        long searchId = 100L;
+
+        // when
+        boolean existName = stationDao.isExistId(searchId);
+
+        // then
+        assertThat(existName).isFalse();
+    }
+
+    @DisplayName("이름이 이미 존재한다면 true를 반환한다")
+    @Test
+    void isExistName() {
+        // given
+        String searchName = "서울대입구역";
+
+        // when
+        boolean existName = stationDao.isExistName(searchName);
+
+        // then
+        assertThat(existName).isTrue();
+    }
+
+    @DisplayName("이름이 아직 존재하지 않는다면 false를 반환한다")
+    @Test
+    void isNotExistName() {
+        // given
+        String searchName = "없는역";
+
+        // when
+        boolean existName = stationDao.isExistName(searchName);
+
+        // then
+        assertThat(existName).isFalse();
     }
 }

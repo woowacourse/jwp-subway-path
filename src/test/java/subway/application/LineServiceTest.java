@@ -73,8 +73,7 @@ class LineServiceTest {
         // given
         String lineName = "2호선";
         String lineColor = "주황색";
-        given(lineDao.findByName(lineName))
-                .willReturn(Optional.of(LINE_ENTITY_2호선));
+        given(lineDao.isExistName(lineName)).willReturn(true);
 
         // then
         assertThatThrownBy(() -> lineService.saveLine(new LineRequest(lineName, lineColor)))
@@ -87,8 +86,7 @@ class LineServiceTest {
         // given
         String lineName = "3호선";
         String lineColor = "초록색";
-        given(lineDao.findByColor(lineColor))
-                .willReturn(Optional.of(LINE_ENTITY_2호선));
+        given(lineDao.isExistColor(lineColor)).willReturn(true);
 
         // then
         assertThatThrownBy(() -> lineService.saveLine(new LineRequest(lineName, lineColor)))
@@ -122,8 +120,6 @@ class LineServiceTest {
         // given
         List<LineEntity> lineEntities = new ArrayList<>(List.of(LINE_ENTITY_2호선, LINE_ENTITY_1호선));
         given(lineDao.findAll()).willReturn(lineEntities);
-        given(lineDao.findById(1L)).willReturn(Optional.of(new LineEntity(1L, "2호선", "초록색")));
-        given(lineDao.findById(2L)).willReturn(Optional.of(new LineEntity(2L, "1호선", "파랑색")));
         given(sectionDao.findSectionsByLineId(1L)).willReturn(Collections.singletonList(new SectionStationMapper(1L, 1L, "인천역", 2L, "방배역", 5)));
         given(sectionDao.findSectionsByLineId(2L)).willReturn(Collections.singletonList(new SectionStationMapper(2L, 3L, "사당역", 4L, "낙성대역", 5)));
 
@@ -143,7 +139,7 @@ class LineServiceTest {
         // given
         Long updateId = 1L;
         LineRequest updateLineRequest = new LineRequest("3호선", "주황색");
-        given(lineDao.findById(updateId)).willReturn(Optional.of(new LineEntity(1L, "2호선", "초록색")));
+        given(lineDao.isExistId(updateId)).willReturn(true);
         doNothing().when(lineDao)
                    .update(any());
 
@@ -156,7 +152,7 @@ class LineServiceTest {
     void updateLineException() {
         // given
         Long updateId = 100L;
-        given(lineDao.findById(updateId)).willReturn(Optional.empty());
+        given(lineDao.isExistId(updateId)).willReturn(false);
         LineRequest updateLineRequest = new LineRequest("3호선", "주황색");
 
         // then
@@ -169,7 +165,7 @@ class LineServiceTest {
     void deleteLineById() {
         // given
         Long updateId = 1L;
-        given(lineDao.findById(updateId)).willReturn(Optional.of(new LineEntity(1L, "2호선", "초록색")));
+        given(lineDao.isExistId(updateId)).willReturn(true);
 
         // then
         assertDoesNotThrow(() -> lineService.deleteLineById(updateId));
@@ -180,7 +176,7 @@ class LineServiceTest {
     void deleteLineByIdException() {
         // given
         Long updateId = 100L;
-        given(lineDao.findById(updateId)).willReturn(Optional.empty());
+        given(lineDao.isExistId(updateId)).willReturn(false);
 
         // then
         assertThatThrownBy(() -> lineService.deleteLineById(updateId))

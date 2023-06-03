@@ -17,7 +17,7 @@ import subway.exception.NotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.*;
 import static subway.TestFeature.*;
@@ -44,9 +44,9 @@ class SectionServiceTest {
         // given
         Long lineId = 3L;
         SectionRequest sectionRequest = new SectionRequest(3L, 1L, 4);
-        given(lineDao.findById(lineId)).willReturn(Optional.of(LINE_ENTITY_3호선));
-        given(stationDao.findById(3L)).willReturn(Optional.of(STATION_ENTITY_낙성대역));
-        given(stationDao.findById(1L)).willReturn(Optional.of(STATION_ENTITY_서울대입구));
+        given(lineDao.isExistId(lineId)).willReturn(true);
+        given(stationDao.isExistId(sectionRequest.getUpStationId())).willReturn(true);
+        given(stationDao.isExistId(sectionRequest.getDownStationId())).willReturn(true);
         willDoNothing().given(sectionDao).insert(any());
         given(sectionDao.findByLineId(lineId)).willReturn(Optional.empty());
 
@@ -60,7 +60,9 @@ class SectionServiceTest {
         // given
         Long lineId = 1L;
         SectionRequest sectionRequest = new SectionRequest(3L, 7L, 5);
-        given(lineDao.findById(lineId)).willReturn(Optional.of(LINE_ENTITY_1호선));
+        given(lineDao.isExistId(lineId)).willReturn(true);
+        given(stationDao.isExistId(sectionRequest.getUpStationId())).willReturn(true);
+        given(stationDao.isExistId(sectionRequest.getDownStationId())).willReturn(true);
         given(stationDao.findById(3L)).willReturn(Optional.of(STATION_ENTITY_낙성대역));
         given(stationDao.findById(7L)).willReturn(Optional.of(STATION_ENTITY_인천역));
         given(sectionDao.findByLineId(lineId)).willReturn(Optional.of(List.of(SECTION_ENTITY_인천_방배)));
@@ -80,7 +82,7 @@ class SectionServiceTest {
         // given
         Long lineId = 1000L;
         SectionRequest sectionRequest = new SectionRequest(2L, 3L, 3);
-        given(lineDao.findById(lineId)).willReturn(Optional.empty());
+        given(lineDao.isExistId(lineId)).willReturn(false);
 
         // then
         assertThatThrownBy(() -> sectionService.saveSection(lineId, sectionRequest))
@@ -93,8 +95,8 @@ class SectionServiceTest {
         // given
         Long lineId = 1L;
         SectionRequest sectionRequest = new SectionRequest(2L, 3L, 3);
-        given(lineDao.findById(lineId)).willReturn(Optional.of(LINE_ENTITY_1호선));
-        given(stationDao.findById(2L)).willReturn(Optional.empty());
+        given(lineDao.isExistId(lineId)).willReturn(true);
+        given(stationDao.isExistId(sectionRequest.getUpStationId())).willReturn(false);
 
         // then
         assertThatThrownBy(() -> sectionService.saveSection(lineId, sectionRequest))
@@ -107,7 +109,8 @@ class SectionServiceTest {
         // given
         Long lineId = 1L;
         Long stationIdToRemove = 1L;
-        given(lineDao.findById(lineId)).willReturn(Optional.of(LINE_ENTITY_2호선));
+        given(lineDao.isExistId(lineId)).willReturn(true);
+        given(stationDao.isExistId(stationIdToRemove)).willReturn(true);
         given(stationDao.findById(stationIdToRemove)).willReturn(Optional.of(STATION_ENTITY_서울대입구));
         given(sectionDao.findSectionsByLineId(lineId)).willReturn(List.of(
                 SECTION_STATION_MAPPER_서울대입구_사당

@@ -15,7 +15,6 @@ import subway.exception.DuplicatedException;
 import subway.exception.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,19 +78,19 @@ public class LineService {
     }
 
     private void checkIfExistLine(Long lineId) {
-        lineDao.findById(lineId)
-               .orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다."));
+        if (lineDao.isExistId(lineId)) {
+            return;
+        }
+        throw new NotFoundException("해당 노선이 존재하지 않습니다.");
     }
 
     private void validateDuplicateLine(LineRequest request) {
-        Optional<LineEntity> optionalLineByName = lineDao.findByName(request.getName());
-        optionalLineByName.ifPresent(findUser -> {
+        if (lineDao.isExistName(request.getName())) {
             throw new DuplicatedException("이미 존재하는 노선 이름입니다.");
-        });
-        Optional<LineEntity> optionalLineByColor = lineDao.findByColor(request.getColor());
-        optionalLineByColor.ifPresent(findUser -> {
+        }
+        if (lineDao.isExistColor(request.getColor())) {
             throw new DuplicatedException("이미 존재하는 노선 색입니다.");
-        });
+        }
     }
 
 }

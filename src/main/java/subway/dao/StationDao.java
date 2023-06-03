@@ -21,7 +21,7 @@ public class StationDao {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
@@ -81,4 +81,17 @@ public class StationDao {
             return Optional.empty();
         }
     }
+
+    public boolean isExistId(Long id) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM station WHERE id = :id)";
+        SqlParameterSource source = new MapSqlParameterSource("id", id);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
+    public boolean isExistName(String name) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM station WHERE name = :name)";
+        SqlParameterSource source = new MapSqlParameterSource("name", name);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
 }

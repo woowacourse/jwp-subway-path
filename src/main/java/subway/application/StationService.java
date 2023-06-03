@@ -53,8 +53,7 @@ public class StationService {
     }
 
     private void checkDuplicatedStationName(StationRequest stationRequest) {
-        if (stationDao.findByName(stationRequest.getName())
-                      .isPresent()) {
+        if (stationDao.isExistName(stationRequest.getName())) {
             throw new IllegalArgumentException("이미 존재하는 역 이름 입니다");
         }
     }

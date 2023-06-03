@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -38,7 +39,7 @@ class StationServiceTest {
         // given
         String testName = "테스트역";
         StationRequest stationRequest = new StationRequest(testName);
-        given(stationDao.findByName(testName)).willReturn(Optional.empty());
+        given(stationDao.isExistName(testName)).willReturn(false);
         given(stationDao.insert(any(StationEntity.class))).willReturn(new StationEntity(1L, testName));
 
         // when
@@ -54,8 +55,7 @@ class StationServiceTest {
         // given
         String testName = "서울대입구역";
         StationRequest stationRequest = new StationRequest(testName);
-        given(stationDao.findByName(testName))
-                .willReturn(Optional.of(new StationEntity(1L, testName)));
+        given(stationDao.isExistName(testName)).willReturn(true);
 
         // then
         assertThatThrownBy(() -> stationService.saveStation(stationRequest))

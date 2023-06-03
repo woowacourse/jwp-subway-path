@@ -21,7 +21,7 @@ public class LineDao {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
@@ -94,4 +94,23 @@ public class LineDao {
         SqlParameterSource source = new MapSqlParameterSource("id", id);
         jdbcTemplate.update(sql, source);
     }
+
+    public boolean isExistId(Long id) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM line WHERE id = :id)";
+        SqlParameterSource source = new MapSqlParameterSource("id", id);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
+    public boolean isExistName(String name) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM line WHERE name = :name)";
+        SqlParameterSource source = new MapSqlParameterSource("name", name);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
+    public boolean isExistColor(String color) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM line WHERE color = :color)";
+        SqlParameterSource source = new MapSqlParameterSource("color", color);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
 }

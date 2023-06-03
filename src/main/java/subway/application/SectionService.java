@@ -119,13 +119,17 @@ public class SectionService {
 
 
     private void checkIfExistLine(Long lineId) {
-        lineDao.findById(lineId)
-               .orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다."));
+        if (lineDao.isExistId(lineId)) {
+            return;
+        }
+        throw new NotFoundException("해당 노선이 존재하지 않습니다.");
     }
 
     private void checkIfExistStation(Long stationId) {
-        stationDao.findById(stationId)
-                  .orElseThrow(() -> new NotFoundException("해당 역이 존재하지 않습니다."));
+        if (stationDao.isExistId(stationId)) {
+            return;
+        }
+        throw new NotFoundException("해당 역이 존재하지 않습니다.");
     }
 
 }
