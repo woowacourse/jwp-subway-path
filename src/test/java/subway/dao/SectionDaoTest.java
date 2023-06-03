@@ -11,9 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
+import subway.persistence.dao.line.LineDao;
+import subway.persistence.dao.section.SectionDao;
+import subway.persistence.dao.station.StationDao;
+import subway.persistence.entity.line.LineEntity;
+import subway.persistence.entity.section.SectionEntity;
+import subway.persistence.entity.station.StationEntity;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.station.StationRequest;
 import subway.dto.station.StationsResponse;
-import subway.service.StationService;
+import subway.service.station.StationService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")

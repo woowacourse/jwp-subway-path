@@ -9,6 +9,9 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 import subway.exception.invalid.DistanceInvalidException;
 import subway.exception.invalid.SectionInvalidException;
 

@@ -8,14 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
-import subway.repository.JdbcLineRepository;
-import subway.repository.JdbcSectionRepository;
-import subway.repository.JdbcStationRepository;
+import subway.persistence.repository.line.JdbcLineRepository;
+import subway.persistence.repository.section.JdbcSectionRepository;
+import subway.persistence.repository.station.JdbcStationRepository;
+import subway.service.section.SectionService;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

@@ -14,9 +14,9 @@ import subway.dto.line.LineCreateRequest;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 import subway.dto.station.StationRequest;
-import subway.service.LineService;
-import subway.service.SectionService;
-import subway.service.StationService;
+import subway.service.line.LineService;
+import subway.service.section.SectionService;
+import subway.service.station.StationService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
