@@ -45,11 +45,14 @@ public class LineService {
     private Line findLineById(Long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId)
                                        .orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다"));
+        return new Line(lineId, lineEntity.getName(), lineEntity.getColor(), new Sections(getSections(lineId)));
+    }
+
+    private List<Section> getSections(Long lineId) {
         List<SectionStationMapper> sectionStationMappers = sectionDao.findSectionsByLineId(lineId);
-        List<Section> sections = sectionStationMappers.stream()
-                                                      .map(Section::from)
-                                                      .collect(Collectors.toList());
-        return new Line(lineId, lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
+        return sectionStationMappers.stream()
+                                    .map(Section::from)
+                                    .collect(Collectors.toList());
     }
 
     public List<LineSectionResponse> findLineResponses() {
@@ -62,7 +65,11 @@ public class LineService {
     private List<Line> findLines() {
         List<LineEntity> lineEntities = lineDao.findAll();
         return lineEntities.stream()
-                           .map(lineEntity -> findLineById(lineEntity.getId()))
+                           .map(lineEntity -> {
+                               Long lineId = lineEntity.getId();
+                               return new Line(lineId, lineEntity.getName(),
+                                       lineEntity.getColor(), new Sections(getSections(lineId)));
+                           })
                            .collect(Collectors.toList());
     }
 
