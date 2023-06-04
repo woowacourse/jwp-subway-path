@@ -16,7 +16,7 @@ import subway.dao.vo.SectionStationMapper;
 import javax.sql.DataSource;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.TestFeature.*;
 
@@ -120,6 +120,33 @@ class SectionDaoTest {
         // then
         assertThat(section).usingRecursiveComparison()
                            .isEqualTo(SECTION_ENTITY_봉천_서울대입구);
+    }
+
+    @DisplayName("특정 노선에 구간이 하나도 없다면 true를 반환한다")
+    @Test
+    void isEmptySectionByLine() {
+        // given
+        Long lineId = 3L;
+
+        // when
+        boolean isEmpty = sectionDao.isEmptySectionByLine(lineId);
+
+        // then
+        assertThat(isEmpty).isTrue();
+    }
+
+    @DisplayName("특정 노선에 구간이 하나라도 있다면 false를 반환한다")
+    @Test
+    void isNotEmptySectionByLine() {
+        // given
+        Long lineId = 1L;
+
+        // when
+        boolean isEmpty = sectionDao.isEmptySectionByLine(lineId);
+
+
+        // then
+        assertThat(isEmpty).isFalse();
     }
 
     @DisplayName("특정 노선에 구간을 추가한다")

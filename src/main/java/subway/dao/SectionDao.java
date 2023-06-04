@@ -95,6 +95,12 @@ public class SectionDao {
         }
     }
 
+    public boolean isEmptySectionByLine(Long lineId) {
+        String sql = "SELECT NOT EXISTS (SELECT 1 FROM section WHERE line_id = :line_id)";
+        SqlParameterSource source = new MapSqlParameterSource("line_id", lineId);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
     public void insert(SectionEntity sectionEntity) {
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
         insertAction.execute(source);

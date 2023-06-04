@@ -14,7 +14,6 @@ import subway.exception.NotFoundException;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,17 +37,11 @@ public class SectionService {
         SectionEntity sectionEntity = new SectionEntity(lineId, sectionRequest.getUpStationId(),
                 sectionRequest.getDownStationId(), sectionRequest.getDistance());
 
-        if (isEmptyLine(lineId)) {
+        if (sectionDao.isEmptySectionByLine(lineId)) {
             sectionDao.insert(sectionEntity);
             return;
         }
         saveSectionWhenLineIsNotEmpty(lineId, sectionEntity);
-    }
-
-    private boolean isEmptyLine(Long lineId) {
-        Optional<List<SectionEntity>> byLineId = sectionDao.findByLineId(lineId);
-        return byLineId.map(List::isEmpty)
-                       .orElse(true);
     }
 
     private void saveSectionWhenLineIsNotEmpty(Long lineId, SectionEntity sectionToAdd) {

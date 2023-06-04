@@ -47,8 +47,8 @@ class SectionServiceTest {
         given(lineDao.isExistId(lineId)).willReturn(true);
         given(stationDao.isExistId(sectionRequest.getUpStationId())).willReturn(true);
         given(stationDao.isExistId(sectionRequest.getDownStationId())).willReturn(true);
+        given(sectionDao.isEmptySectionByLine(lineId)).willReturn(true);
         willDoNothing().given(sectionDao).insert(any());
-        given(sectionDao.findByLineId(lineId)).willReturn(Optional.empty());
 
         // then
         assertDoesNotThrow(() -> sectionService.saveSection(lineId, sectionRequest));
@@ -65,7 +65,7 @@ class SectionServiceTest {
         given(stationDao.isExistId(sectionRequest.getDownStationId())).willReturn(true);
         given(stationDao.findById(3L)).willReturn(Optional.of(STATION_ENTITY_낙성대역));
         given(stationDao.findById(7L)).willReturn(Optional.of(STATION_ENTITY_인천역));
-        given(sectionDao.findByLineId(lineId)).willReturn(Optional.of(List.of(SECTION_ENTITY_인천_방배)));
+        given(sectionDao.isEmptySectionByLine(lineId)).willReturn(false);
         given(sectionDao.findSectionsByLineId(lineId)).willReturn(List.of(SECTION_STATION_MAPPER_인천_방배));
         willDoNothing().given(sectionDao).insertAll(any());
         willDoNothing().given(sectionDao).deleteAll(any());
