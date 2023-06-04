@@ -29,7 +29,7 @@ public class JdbcSectionRepository implements SectionRepository {
     }
 
     @Override
-    public void updateByLineNumber(final Sections sections, final Long lineNumber) {
+    public void save(final Sections sections, final Long lineNumber) {
         final boolean exist = lineDao.isLineNumberExist(lineNumber);
         if (!exist) {
             throw new LineNotFoundException();

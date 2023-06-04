@@ -55,7 +55,7 @@ class StationControllerIntegrationTest {
     void show_stations_success() {
         // given
         StationRequest stationRequest = new StationRequest("잠실역");
-        stationService.save(stationRequest);
+        stationService.createStation(stationRequest);
 
         // when & then
         RestAssured
@@ -72,7 +72,7 @@ class StationControllerIntegrationTest {
     void show_station_success() {
         // given
         StationRequest stationRequest = new StationRequest("잠실역");
-        stationService.save(stationRequest);
+        stationService.createStation(stationRequest);
 
         // when & then
         RestAssured
@@ -89,7 +89,7 @@ class StationControllerIntegrationTest {
     void delete_station_success() {
         // given
         StationRequest stationRequest = new StationRequest("잠실역");
-        stationService.save(stationRequest);
+        stationService.createStation(stationRequest);
 
         // when & then
         RestAssured

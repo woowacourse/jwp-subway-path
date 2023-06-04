@@ -30,14 +30,14 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid LineCreateRequest lineCreateRequest) {
-        Long id = lineService.save(lineCreateRequest);
+    public ResponseEntity<Void> createLine(@RequestBody @Valid LineCreateRequest lineCreateRequest) {
+        Long id = lineService.createLine(lineCreateRequest);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remove(@PathVariable final Long id) {
-        lineService.removeById(id);
+    public ResponseEntity<Void> removeLine(@PathVariable final Long id) {
+        lineService.removeLine(id);
         return ResponseEntity.noContent().build();
     }
 

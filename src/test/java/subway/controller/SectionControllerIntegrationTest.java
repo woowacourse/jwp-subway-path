@@ -44,12 +44,12 @@ class SectionControllerIntegrationTest {
     void create_section_success() {
         // given
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
-        lineService.save(lineCreateRequest);
+        lineService.createLine(lineCreateRequest);
 
         StationRequest stationRequest1 = new StationRequest("잠실역");
         StationRequest stationRequest2 = new StationRequest("잠실새내역");
-        stationService.save(stationRequest1);
-        stationService.save(stationRequest2);
+        stationService.createStation(stationRequest1);
+        stationService.createStation(stationRequest2);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(2L, "잠실역", "잠실새내역", 3L);
 
@@ -68,12 +68,12 @@ class SectionControllerIntegrationTest {
     void delete_section_success() {
         // given
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
-        lineService.save(lineCreateRequest);
+        lineService.createLine(lineCreateRequest);
 
         StationRequest stationRequest1 = new StationRequest("잠실역");
         StationRequest stationRequest2 = new StationRequest("잠실새내역");
-        stationService.save(stationRequest1);
-        stationService.save(stationRequest2);
+        stationService.createStation(stationRequest1);
+        stationService.createStation(stationRequest2);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(2L, "잠실역", "잠실새내역", 3L);
         sectionService.addSection(sectionCreateRequest);

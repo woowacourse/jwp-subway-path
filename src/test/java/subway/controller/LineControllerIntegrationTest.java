@@ -66,7 +66,7 @@ public class LineControllerIntegrationTest {
     void find_all_lines_success() {
         // given
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
-        lineService.save(lineCreateRequest);
+        lineService.createLine(lineCreateRequest);
 
         // when & then
         RestAssured
@@ -85,12 +85,12 @@ public class LineControllerIntegrationTest {
     void find_line_success() {
         // given
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
-        final Long lineId = lineService.save(lineCreateRequest);
+        final Long lineId = lineService.createLine(lineCreateRequest);
 
         StationRequest stationRequest = new StationRequest("잠실역");
         StationRequest stationRequest2 = new StationRequest("잠실새내역");
-        stationService.save(stationRequest);
-        stationService.save(stationRequest2);
+        stationService.createStation(stationRequest);
+        stationService.createStation(stationRequest2);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(2L, "잠실역", "잠실새내역", 3L);
         sectionService.addSection(sectionCreateRequest);
@@ -112,7 +112,7 @@ public class LineControllerIntegrationTest {
     void delete_line_success() {
         // given
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
-        lineService.save(lineCreateRequest);
+        lineService.createLine(lineCreateRequest);
 
         // when & then
         RestAssured

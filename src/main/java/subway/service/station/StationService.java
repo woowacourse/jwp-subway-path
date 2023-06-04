@@ -20,11 +20,11 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public Long save(final StationRequest stationRequest) {
+    public Long createStation(final StationRequest stationRequest) {
         return stationRepository.save(new Station(stationRequest.getName()));
     }
 
-    public void removeById(final Long id) {
+    public void removeStation(final Long id) {
         stationRepository.deleteById(id);
     }
 

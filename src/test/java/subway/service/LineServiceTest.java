@@ -27,7 +27,7 @@ public class LineServiceTest {
     void 노선_정보를_저장한다() {
         final LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
 
-        lineService.save(lineCreateRequest);
+        lineService.createLine(lineCreateRequest);
 
         final List<LineResponse> lineResponses = lineService.findAll();
         assertThat(lineResponses.size()).isEqualTo(1);
@@ -37,8 +37,8 @@ public class LineServiceTest {
     void 모든_노선_정보를_조회한다() {
         final LineCreateRequest lineCreateRequest1 = new LineCreateRequest("2호선", 2L, "초록색");
         final LineCreateRequest lineCreateRequest2 = new LineCreateRequest("4호선", 4L, "하늘색");
-        lineService.save(lineCreateRequest1);
-        lineService.save(lineCreateRequest2);
+        lineService.createLine(lineCreateRequest1);
+        lineService.createLine(lineCreateRequest2);
 
         final List<LineResponse> lineResponses = lineService.findAll();
 
@@ -56,9 +56,9 @@ public class LineServiceTest {
     @Test
     void 노선_ID로_노선을_삭제한다() {
         final LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
-        final Long id = lineService.save(lineCreateRequest);
+        final Long id = lineService.createLine(lineCreateRequest);
 
-        lineService.removeById(id);
+        lineService.removeLine(id);
 
         final List<LineResponse> lineResponses = lineService.findAll();
         assertThat(lineResponses.isEmpty()).isTrue();

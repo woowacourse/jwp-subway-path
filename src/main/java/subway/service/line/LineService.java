@@ -19,12 +19,12 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    public Long save(final LineCreateRequest request) {
+    public Long createLine(final LineCreateRequest request) {
         final Line line = new Line(request.getLineNumber(), request.getName(), request.getColor(), request.getAdditionalFare());
         return lineRepository.save(line);
     }
 
-    public void removeById(final Long id) {
+    public void removeLine(final Long id) {
         lineRepository.deleteById(id);
     }
 

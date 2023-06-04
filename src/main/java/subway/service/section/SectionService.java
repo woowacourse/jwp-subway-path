@@ -31,7 +31,7 @@ public class SectionService {
         final Section requestSection = new Section(requestUpStation, requestDownStation, request.getDistance());
         sections.addSection(requestSection);
 
-        sectionRepository.updateByLineNumber(sections, requestLineNumber);
+        sectionRepository.save(sections, requestLineNumber);
     }
 
     public void removeSection(final SectionDeleteRequest request) {
@@ -41,6 +41,6 @@ public class SectionService {
         final Sections sections = sectionRepository.findByLineNumber(requestLineNumber);
         sections.deleteSectionByStation(requestStation);
 
-        sectionRepository.updateByLineNumber(sections, requestLineNumber);
+        sectionRepository.save(sections, requestLineNumber);
     }
 }

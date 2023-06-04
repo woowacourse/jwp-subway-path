@@ -28,13 +28,13 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationEntity> createStation(@RequestBody @Valid final StationRequest stationRequest) {
-        Long id = stationService.save(stationRequest);
+        Long id = stationService.createStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + id)).build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeStation(@PathVariable final Long id) {
-        stationService.removeById(id);
+        stationService.removeStation(id);
         return ResponseEntity.noContent().build();
     }
 
