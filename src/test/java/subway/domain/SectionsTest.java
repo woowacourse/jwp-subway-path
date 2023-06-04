@@ -19,7 +19,7 @@ import subway.exception.invalid.SectionInvalidException;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class SectionsTest {
 
-    private Section section = new Section(new Station("잠실역"), new Station("강남역"), 3L);
+    private Section section = new Section(new Station(1L, "잠실역"), new Station(2L, "강남역"), 3L);
 
     @Test
     void 기존의_역_구간_사이에_새로운_역_구간을_추가할_때_길이_관계가_올바르지_않으면_예외를_던진다() {
@@ -175,16 +175,15 @@ public class SectionsTest {
         // given
         final Sections sections = new Sections(List.of(
                 section,
-                new Section(new Station("잠실역"), new Station("신촌역"), 1L)));
+                new Section(new Station(1L, "잠실역"), new Station(3L, "신촌역"), 1L)));
 
         // when
         final List<Station> stations = sections.getStations();
 
         // then
-        final List<Station> expected = List.of(new Station("잠실역"), new Station("강남역"), new Station("신촌역"));
+        final List<Station> expected = List.of(new Station(1L, "잠실역"), new Station(2L, "강남역"), new Station(3L, "신촌역"));
         assertThat(expected).usingRecursiveComparison()
                 .ignoringCollectionOrder()
-                .ignoringExpectedNullFields()
                 .isEqualTo(stations);
     }
 }

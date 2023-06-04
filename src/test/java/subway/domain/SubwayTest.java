@@ -24,16 +24,17 @@ class SubwayTest {
         final List<Station> stations = subway.getStations();
 
         // then
-        final List<Station> expected = List.of(new Station("잠실역"), new Station("아현역"), new Station("신촌역"));
+        final List<Station> expected = List.of(new Station(1L, "잠실역"),
+                new Station(2L, "아현역"),
+                new Station(3L, "신촌역"));
         assertThat(expected).usingRecursiveComparison()
                 .ignoringCollectionOrder()
-                .ignoringExpectedNullFields()
                 .isEqualTo(stations);
     }
 
     Sections getSections1() {
-        final Station 잠실역 = new Station("잠실역");
-        final Station 아현역 = new Station("아현역");
+        final Station 잠실역 = new Station(1L, "잠실역");
+        final Station 아현역 = new Station(2L, "아현역");
 
         final Section section = new Section(잠실역, 아현역, 5L);
 
@@ -41,8 +42,8 @@ class SubwayTest {
     }
 
     Sections getSections2() {
-        final Station 잠실역 = new Station("잠실역");
-        final Station 신촌역 = new Station("신촌역");
+        final Station 잠실역 = new Station(1L, "잠실역");
+        final Station 신촌역 = new Station(3L, "신촌역");
 
         final Section section = new Section(잠실역, 신촌역, 3L);
 
