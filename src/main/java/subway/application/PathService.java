@@ -29,8 +29,8 @@ public class PathService {
         Station startStation = getStationById(pathRequest.getStartStationId());
         Station endStation = getStationById(pathRequest.getEndStationId());
 
-        Map map = getMap();
-        Path path = map.getShortestPath(startStation, endStation);
+        SubwayMap subwayMap = getMap();
+        Path path = subwayMap.getShortestPath(startStation, endStation);
         Fare fare = Fare.createByDistance(path.getDistance());
         return new PathResponse(path.getPath(), path.getDistance(), fare.getFare());
     }
@@ -41,13 +41,13 @@ public class PathService {
         return Station.from(stationEntity);
     }
 
-    private Map getMap() {
+    private SubwayMap getMap() {
         WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         addVertex(stationGraph);
         addEdgeWight(stationGraph);
 
-        return new Map(stationGraph);
+        return new SubwayMap(stationGraph);
     }
 
     private void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph) {

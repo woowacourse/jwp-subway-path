@@ -5,11 +5,11 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class Map {
+public class SubwayMap {
 
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
-    public Map(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph) {
+    public SubwayMap(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph) {
         this.shortestPath = new DijkstraShortestPath<>(stationGraph);
     }
 

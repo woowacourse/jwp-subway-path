@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.TestFeature.*;
 
-class MapTest {
+class SubwayMapTest {
 
     @DisplayName("시작, 끝 역을 넣으면 그에 따른 최단 거리 경로를 반환")
     @Test
@@ -27,10 +27,10 @@ class MapTest {
         stationGraph.setEdgeWeight(stationGraph.addEdge(STATION_봉천역, STATION_낙성대역), 9);
         stationGraph.setEdgeWeight(stationGraph.addEdge(STATION_낙성대역, STATION_사당역), 8);
         stationGraph.setEdgeWeight(stationGraph.addEdge(STATION_방배역, STATION_낙성대역), 12);
-        Map map = new Map(stationGraph);
+        SubwayMap subwayMap = new SubwayMap(stationGraph);
 
         // when
-        Path shortestPath = map.getShortestPath(STATION_서울대입구, STATION_방배역);
+        Path shortestPath = subwayMap.getShortestPath(STATION_서울대입구, STATION_방배역);
 
         // then
         assertAll(
