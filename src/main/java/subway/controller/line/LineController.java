@@ -17,8 +17,8 @@ import subway.dto.station.LineMapResponse;
 import subway.service.line.LineMapService;
 import subway.service.line.LineService;
 
-@RestController
 @RequestMapping("/lines")
+@RestController
 public class LineController {
 
     private final LineService lineService;

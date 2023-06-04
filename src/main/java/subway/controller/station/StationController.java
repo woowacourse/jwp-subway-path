@@ -16,8 +16,8 @@ import subway.dto.station.StationsResponse;
 import subway.persistence.entity.station.StationEntity;
 import subway.service.station.StationService;
 
-@RestController
 @RequestMapping("/stations")
+@RestController
 public class StationController {
 
     private final StationService stationService;
