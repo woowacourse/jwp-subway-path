@@ -8,8 +8,7 @@ public class LineEntity {
     private String color;
 
     public LineEntity(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(null, name, color);
     }
 
     public LineEntity(Long id, String name, String color) {
