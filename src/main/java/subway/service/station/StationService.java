@@ -5,32 +5,32 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.station.Station;
+import subway.domain.station.StationRepository;
 import subway.dto.station.StationRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
-import subway.persistence.repository.station.JdbcStationRepository;
 
 @Transactional
 @Service
 public class StationService {
 
-    private final JdbcStationRepository jdbcStationRepository;
+    private final StationRepository stationRepository;
 
-    public StationService(final JdbcStationRepository jdbcStationRepository) {
-        this.jdbcStationRepository = jdbcStationRepository;
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public Long save(final StationRequest stationRequest) {
-        return jdbcStationRepository.save(new Station(stationRequest.getName()));
+        return stationRepository.save(new Station(stationRequest.getName()));
     }
 
     public void removeById(final Long id) {
-        jdbcStationRepository.deleteById(id);
+        stationRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)
     public StationsResponse findAll() {
-        List<StationResponse> stations = jdbcStationRepository.findAll().stream()
+        List<StationResponse> stations = stationRepository.findAll().stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
 
@@ -39,7 +39,7 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public StationResponse findById(final Long id) {
-        Station station = jdbcStationRepository.findById(id);
+        Station station = stationRepository.findById(id);
         return StationResponse.from(station);
     }
 }

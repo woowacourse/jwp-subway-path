@@ -5,47 +5,47 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.fare.service.FareCalculateService;
+import subway.domain.line.LineRepository;
+import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
 import subway.domain.shortestpath.ShortestPath;
 import subway.domain.shortestpath.ShortestPathFinder;
+import subway.domain.station.StationRepository;
 import subway.domain.subway.Subway;
 import subway.dto.shortestpath.ShortestPathRequest;
 import subway.dto.shortestpath.ShortestPathResponse;
 import subway.dto.station.StationResponse;
-import subway.persistence.repository.line.JdbcLineRepository;
-import subway.persistence.repository.section.JdbcSectionRepository;
-import subway.persistence.repository.station.JdbcStationRepository;
 
 @Transactional
 @Service
 public class ShortestPathService {
 
-    private final JdbcLineRepository jdbcLineRepository;
-    private final JdbcSectionRepository jdbcSectionRepository;
-    private final JdbcStationRepository jdbcStationRepository;
+    private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
     private final FareCalculateService fareCalculateService;
 
-    public ShortestPathService(final JdbcLineRepository jdbcLineRepository,
-                               final JdbcSectionRepository jdbcSectionRepository,
-                               final JdbcStationRepository jdbcStationRepository,
+    public ShortestPathService(final LineRepository lineRepository,
+                               final SectionRepository sectionRepository,
+                               final StationRepository stationRepository,
                                final FareCalculateService fareCalculateService) {
-        this.jdbcLineRepository = jdbcLineRepository;
-        this.jdbcSectionRepository = jdbcSectionRepository;
-        this.jdbcStationRepository = jdbcStationRepository;
+        this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
+        this.stationRepository = stationRepository;
         this.fareCalculateService = fareCalculateService;
     }
 
     @Transactional(readOnly = true)
     public ShortestPathResponse findShortestPath(final ShortestPathRequest request) {
-        final List<Sections> subway = jdbcLineRepository.findAll().stream()
-                .map(line -> jdbcSectionRepository.findByLineId(line.getId()))
+        final List<Sections> subway = lineRepository.findAll().stream()
+                .map(line -> sectionRepository.findByLineId(line.getId()))
                 .collect(Collectors.toList());
 
         final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(new Subway(subway));
 
         final ShortestPath shortestPath = shortestPathFinder.find(
-                jdbcStationRepository.findByName(request.getStartStation()),
-                jdbcStationRepository.findByName(request.getEndStation())
+                stationRepository.findByName(request.getStartStation()),
+                stationRepository.findByName(request.getEndStation())
         );
 
         final List<StationResponse> stations = shortestPath.getStations().stream()
