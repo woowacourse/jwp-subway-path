@@ -102,18 +102,24 @@ public class Sections {
                 .filter(section -> section.isUpStation(upStation))
                 .findFirst();
         if (findSection.isPresent()) {
-            Section originalSection = findSection.get();
-            Station downStationIdOfOrigin = originalSection.getDownStation();
-            Station downStationIdOfToAdd = sectionToAdd.getDownStation();
-            Integer revisedDistance = findRevisedDistance(sectionToAdd, originalSection);
-            Section revisedSection = Section.of(originalSection.getId(), downStationIdOfToAdd, downStationIdOfOrigin, revisedDistance);
-            sections.remove(originalSection);
-            sections.add(sectionToAdd);
-            sections.add(revisedSection);
+            addSectionWhenUpStationIsExist(sectionToAdd, findSection.get());
             return;
         }
 
+        addSectionWhenUpStationIsNotExist(sectionToAdd, upStation);
+    }
 
+    private void addSectionWhenUpStationIsExist(Section sectionToAdd, Section findSection) {
+        Station downStationIdOfOrigin = findSection.getDownStation();
+        Station downStationIdOfToAdd = sectionToAdd.getDownStation();
+        Integer revisedDistance = findRevisedDistance(sectionToAdd, findSection);
+        Section revisedSection = Section.of(findSection.getId(), downStationIdOfToAdd, downStationIdOfOrigin, revisedDistance);
+        sections.remove(findSection);
+        sections.add(sectionToAdd);
+        sections.add(revisedSection);
+    }
+
+    private void addSectionWhenUpStationIsNotExist(Section sectionToAdd, Station upStation) {
         sections.stream()
                 .filter(section -> section.isDownStation(upStation))
                 .findFirst()
@@ -125,17 +131,24 @@ public class Sections {
                                                 .filter(section -> section.isDownStation(downStation))
                                                 .findFirst();
         if (findSection.isPresent()) {
-            Section originalSection = findSection.get();
-            Station upStationIdOfOrigin = originalSection.getUpStation();
-            Station upStationIdOfToAdd = sectionToAdd.getUpStation();
-            Integer revisedDistance = findRevisedDistance(sectionToAdd, originalSection);
-            Section revisedSection = Section.of(originalSection.getId(), upStationIdOfOrigin, upStationIdOfToAdd, revisedDistance);
-            sections.remove(originalSection);
-            sections.add(sectionToAdd);
-            sections.add(revisedSection);
+            addSectionWhenDownStationIsExist(sectionToAdd, findSection.get());
             return;
         }
 
+        addSectionWhenDownStationIsNotExist(sectionToAdd, downStation);
+    }
+
+    private void addSectionWhenDownStationIsExist(Section sectionToAdd, Section findSection) {
+        Station upStationIdOfOrigin = findSection.getUpStation();
+        Station upStationIdOfToAdd = sectionToAdd.getUpStation();
+        Integer revisedDistance = findRevisedDistance(sectionToAdd, findSection);
+        Section revisedSection = Section.of(findSection.getId(), upStationIdOfOrigin, upStationIdOfToAdd, revisedDistance);
+        sections.remove(findSection);
+        sections.add(sectionToAdd);
+        sections.add(revisedSection);
+    }
+
+    private void addSectionWhenDownStationIsNotExist(Section sectionToAdd, Station downStation) {
         sections.stream()
                 .filter(section -> section.isUpStation(downStation))
                 .findFirst()
@@ -155,14 +168,20 @@ public class Sections {
             deleteStationBetweenStations(removeStation);
             return;
         }
+        removeAtUpStation(removeStation);
+        removeAtDownStation(removeStation);
+    }
 
-        sections.stream()
-                .filter(section -> section.isUpStation(removeStation))
-                .findFirst()
-                .ifPresent(sections::remove);
-
+    private void removeAtDownStation(Station removeStation) {
         sections.stream()
                 .filter(section -> section.isDownStation(removeStation))
+                .findFirst()
+                .ifPresent(sections::remove);
+    }
+
+    private void removeAtUpStation(Station removeStation) {
+        sections.stream()
+                .filter(section -> section.isUpStation(removeStation))
                 .findFirst()
                 .ifPresent(sections::remove);
     }
@@ -177,14 +196,8 @@ public class Sections {
     }
 
     private void deleteStationBetweenStations(Station removeStation) {
-        Section upSectionOfOrigin = sections.stream()
-                                            .filter(section -> section.isUpStation(removeStation))
-                                            .findFirst()
-                                            .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
-        Section downSectionOfOrigin = sections.stream()
-                                              .filter(section -> section.isDownStation(removeStation))
-                                              .findFirst()
-                                              .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
+        Section upSectionOfOrigin = getUpSectionOfOrigin(removeStation);
+        Section downSectionOfOrigin = getDownSectionOfOrigin(removeStation);
 
         int revisedDistance = upSectionOfOrigin.getDistance() + downSectionOfOrigin.getDistance();
         Section revisedSection = Section.of(upSectionOfOrigin.getId(), downSectionOfOrigin.getUpStation(), upSectionOfOrigin.getDownStation(), revisedDistance);
@@ -192,6 +205,20 @@ public class Sections {
         sections.remove(upSectionOfOrigin);
         sections.remove(downSectionOfOrigin);
         sections.add(revisedSection);
+    }
+
+    private Section getUpSectionOfOrigin(Station removeStation) {
+        return sections.stream()
+                       .filter(section -> section.isUpStation(removeStation))
+                       .findFirst()
+                       .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
+    }
+
+    private Section getDownSectionOfOrigin(Station removeStation) {
+        return sections.stream()
+                       .filter(section -> section.isDownStation(removeStation))
+                       .findFirst()
+                       .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
     }
 
     public List<Section> getSections() {

@@ -45,10 +45,7 @@ public class SectionService {
     }
 
     private void saveSectionWhenLineIsNotEmpty(Long lineId, SectionEntity sectionToAdd) {
-        List<Section> findSections = sectionDao.findSectionsByLineId(lineId)
-                                               .stream()
-                                               .map(Section::from)
-                                               .collect(Collectors.toList());
+        List<Section> findSections = getSectionsByLineId(lineId);
         Set<Section> sectionsSnapshot = Set.copyOf(findSections);
 
         Sections sections = new Sections(findSections);
@@ -58,6 +55,13 @@ public class SectionService {
         sections.addSection(Section.of(sectionToAdd.getId(), upStation, downStation, sectionToAdd.getDistance()));
 
         updateSection(lineId, sectionsSnapshot, sections);
+    }
+
+    private List<Section> getSectionsByLineId(Long lineId) {
+        return sectionDao.findSectionsByLineId(lineId)
+                         .stream()
+                         .map(Section::from)
+                         .collect(Collectors.toList());
     }
 
     private void updateSection(Long lineId, Set<Section> sectionsSnapshot, Sections sections) {
@@ -98,10 +102,7 @@ public class SectionService {
         checkIfExistLine(lineId);
         checkIfExistStation(stationIdToRemove);
 
-        List<Section> findSections = sectionDao.findSectionsByLineId(lineId)
-                                               .stream()
-                                               .map(Section::from)
-                                               .collect(Collectors.toList());
+        List<Section> findSections = getSectionsByLineId(lineId);
         Set<Section> sectionsSnapshot = Set.copyOf(findSections);
         Station removeStation = convertToStation(stationIdToRemove);
         Sections sections = new Sections(findSections);
