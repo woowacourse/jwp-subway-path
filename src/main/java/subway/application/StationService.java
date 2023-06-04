@@ -49,12 +49,19 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
+        isExist(id);
         stationDao.deleteById(id);
     }
 
     private void checkDuplicatedStationName(StationRequest stationRequest) {
         if (stationDao.isExistName(stationRequest.getName())) {
             throw new IllegalArgumentException("이미 존재하는 역 이름 입니다");
+        }
+    }
+
+    private void isExist(Long id) {
+        if (stationDao.isExistId(id)) {
+            throw new NotFoundException("해당 역은 존재하지 않습니다.");
         }
     }
 }
