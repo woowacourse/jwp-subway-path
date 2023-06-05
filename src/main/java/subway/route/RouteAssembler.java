@@ -1,12 +1,12 @@
 package subway.route;
 
 import java.util.List;
-import subway.route.application.port.in.find.RouteFindRequestDto;
-import subway.route.application.port.in.find.RouteFindResponseDto;
-import subway.route.application.service.find.dto.RouteEdgeResponseDto;
-import subway.route.find.dto.RouteEdgeResponse;
-import subway.route.find.dto.RouteFindRequest;
-import subway.route.find.dto.RouteFindResponse;
+import subway.route.application.dto.request.RouteFindRequestDto;
+import subway.route.application.dto.response.RouteEdgeResponseDto;
+import subway.route.application.dto.response.RouteFindResponse;
+import subway.route.application.dto.response.RouteFindResponseDto;
+import subway.route.ui.dto.request.RouteFindRequest;
+import subway.route.ui.dto.response.RouteEdgeResponse;
 
 public class RouteAssembler {
 

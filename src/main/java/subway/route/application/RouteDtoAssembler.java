@@ -2,7 +2,7 @@ package subway.route.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.route.application.service.find.dto.RouteEdgeResponseDto;
+import subway.route.application.dto.response.RouteEdgeResponseDto;
 import subway.route.domain.InterStationEdge;
 
 public class RouteDtoAssembler {

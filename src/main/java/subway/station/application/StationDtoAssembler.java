@@ -1,6 +1,6 @@
 package subway.station.application;
 
-import subway.station.application.port.in.StationInfoResponseDto;
+import subway.station.application.dto.request.StationInfoResponseDto;
 import subway.station.domain.Station;
 
 public class StationDtoAssembler {

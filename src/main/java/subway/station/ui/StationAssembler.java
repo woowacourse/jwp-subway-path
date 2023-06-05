@@ -2,13 +2,13 @@ package subway.station.ui;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.station.application.port.in.StationCreateRequestDto;
-import subway.station.application.port.in.StationInfoResponseDto;
-import subway.station.application.port.in.StationInfoUpdateRequestDto;
-import subway.station.ui.dto.in.StationCreateRequest;
-import subway.station.ui.dto.in.StationInfoResponse;
-import subway.station.ui.dto.in.StationInfosResponse;
-import subway.station.ui.dto.in.StationUpdateInfoRequest;
+import subway.station.application.dto.request.StationCreateRequestDto;
+import subway.station.application.dto.request.StationInfoResponseDto;
+import subway.station.application.dto.request.StationInfoUpdateRequestDto;
+import subway.station.ui.dto.reqest.StationCreateRequest;
+import subway.station.ui.dto.reqest.StationUpdateInfoRequest;
+import subway.station.ui.dto.response.StationInfoResponse;
+import subway.station.ui.dto.response.StationInfosResponse;
 
 public class StationAssembler {
 

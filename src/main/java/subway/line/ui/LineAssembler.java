@@ -2,17 +2,17 @@ package subway.line.ui;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.line.application.port.in.InterStationResponseDto;
-import subway.line.application.port.in.LineResponseDto;
-import subway.line.application.port.in.addinterstation.LineAddInterStationRequestDto;
-import subway.line.application.port.in.create.LineCreateRequestDto;
-import subway.line.application.port.in.update.LineUpdateRequestDto;
-import subway.line.ui.dto.in.InterStationResponse;
-import subway.line.ui.dto.in.LineAddStationRequest;
-import subway.line.ui.dto.in.LineCreateRequest;
-import subway.line.ui.dto.in.LineResponse;
-import subway.line.ui.dto.in.LineUpdateInfoRequest;
-import subway.line.ui.dto.in.LinesResponse;
+import subway.interstation.ui.dto.response.InterStationResponse;
+import subway.line.application.dto.request.LineAddInterStationRequestDto;
+import subway.line.application.dto.request.LineCreateRequestDto;
+import subway.line.application.dto.request.LineUpdateRequestDto;
+import subway.line.application.dto.response.InterStationResponseDto;
+import subway.line.application.dto.response.LineResponseDto;
+import subway.line.ui.dto.request.LineAddStationRequest;
+import subway.line.ui.dto.request.LineCreateRequest;
+import subway.line.ui.dto.request.LineUpdateInfoRequest;
+import subway.line.ui.dto.response.LineResponse;
+import subway.line.ui.dto.response.LinesResponse;
 
 public class LineAssembler {
 
